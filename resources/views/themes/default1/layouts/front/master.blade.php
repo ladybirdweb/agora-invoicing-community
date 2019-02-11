@@ -32,16 +32,7 @@ if($script){
           <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800%7CShadows+Into+Light" rel="stylesheet" type="text/css">
           
   
-          <!-- Vendor CSS -->
-         <!--  <link rel="stylesheet" href="{{asset('vendor/bootstrap/css/bootstrap.min.css')}}">
-          <link rel="stylesheet" href="{{asset('vendor/font-awesome/css/fontawesome-all.min.css')}}">
-          <link rel="stylesheet" href="{{asset('cart/vendor/font-awesome/css/font-awesome.min.css')}}">
-          <link rel="stylesheet" href="{{asset('vendor/animate/animate.min.css')}}">
-          <link rel="stylesheet" href="{{asset('vendor/simple-line-icons/css/simple-line-icons.min.css')}}">
-          <link rel="stylesheet" href="{{asset('vendor/owl.carousel/assets/owl.carousel.min.css')}}">
-          <link rel="stylesheet" href="{{asset('vendor/owl.carousel/assets/owl.theme.default.min.css')}}">
-          <link rel="stylesheet" href="{{asset('vendor/magnific-popup/magnific-popup.min.css')}}">
-   -->
+
 
 
            <link rel="stylesheet" href="{{asset('client/css/bootstrap.min.css')}}">
@@ -53,11 +44,7 @@ if($script){
           <link rel="stylesheet" href="{{asset('client/css/owl.theme.default.min.css')}}">
           <link rel="stylesheet" href="{{asset('client/css/magnific-popup.min.css')}}">
   
-          <!-- Theme CSS -->
-          <!-- <link rel="stylesheet" href="{{asset('css/theme.css')}}">
-          <link rel="stylesheet" href="{{asset('css/theme-elements.css')}}">
-          <link rel="stylesheet" href="{{asset('css/theme-blog.css')}}">
-          <link rel="stylesheet" href="{{asset('css/theme-shop.css')}}"> -->
+
 
 
            <link rel="stylesheet" href="{{asset('client/css/theme.css')}}">
@@ -66,13 +53,10 @@ if($script){
           <link rel="stylesheet" href="{{asset('client/css/theme-shop.css')}}">
           
           <!-- Demo CSS -->
-          <!-- <link rel="stylesheet" href="{{asset('css/demos/demo-construction.css')}}"> -->
+       
           <link rel="stylesheet" href="{{asset('client/css/demo-construction.css')}}">
   
           <!-- Skin CSS -->
-         <!--  <link rel="stylesheet" href="{{asset('css/skins/skin-construction.css')}}"> 
-           <link rel="stylesheet" href="{{asset('js/intl/css/intlTelInput.css')}}">
-          <link rel="stylesheet" href="{{asset('css/skins/default.css')}}"> -->
 
              <link rel="stylesheet" href="{{asset('client/css/skin-construction.css')}}"> 
            <link rel="stylesheet" href="{{asset('common/css/intlTelInput.css')}}">
@@ -80,11 +64,10 @@ if($script){
 
   
           <!-- Theme Custom CSS -->
-          <!-- <link rel="stylesheet" href="{{asset('css/custom.css')}}"> -->
+  
           <link rel="stylesheet" href="{{asset('client/css/custom.css')}}">
   
           <!-- Head Libs -->
-          <!-- <script src="{{asset('vendor/modernizr/modernizr.min.js')}}"></script> -->
           <script src="{{asset('client/js/modernizr.min.js')}}"></script>
 
    </head>
@@ -281,8 +264,14 @@ if($script){
                                                                             @empty 
 
                                                                             <tr>
-                                                                                <td><a href="{{url('home')}}">Choose a Product</a></td>
-                                                                            </tr>
+                                                                              <td>
+                                                                                @if(Auth::check())
+                                                                              <a href="{{url('my-invoices')}}">Choose a Product
+                                                                                @else
+                                                                                <a href="{{url('login')}}">Choose a Product
+                                                                                  @endif
+                                                                                  </a></td>
+                                                                             </tr>
 
 
                                                                             @endforelse

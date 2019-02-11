@@ -15,7 +15,7 @@ if($script){
           <meta charset="utf-8">
           <meta http-equiv="X-UA-Compatible" content="IE=edge">  
   
-          <title>@yield('title')</title>  
+            <title>@yield('title') | {{$setting->favicon_title_client}}</title>
   
           <meta name="keywords" content="HTML5 Template" />
           <meta name="description" content="Register, signup here to start using Faveo Helpdesk or signin to your existing account">
@@ -31,16 +31,6 @@ if($script){
           <!-- Web Fonts  -->
           <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800%7CShadows+Into+Light" rel="stylesheet" type="text/css">
   
-          <!-- Vendor CSS -->
-          <!-- <link rel="stylesheet" href="{{asset('vendor/bootstrap/css/bootstrap.min.css')}}"> -->
-         <!--  <link rel="stylesheet" href="{{asset('vendor/bootstrap/css/bootstrap.min.css')}}">
-          <link rel="stylesheet" href="{{asset('vendor/font-awesome/css/fontawesome-all.min.css')}}">
-          <link rel="stylesheet" href="{{asset('cart/vendor/font-awesome/css/font-awesome.min.css')}}">
-          <link rel="stylesheet" href="{{asset('vendor/animate/animate.min.css')}}">
-          <link rel="stylesheet" href="{{asset('vendor/simple-line-icons/css/simple-line-icons.min.css')}}">
-          <link rel="stylesheet" href="{{asset('vendor/owl.carousel/assets/owl.carousel.min.css')}}">
-          <link rel="stylesheet" href="{{asset('vendor/owl.carousel/assets/owl.theme.default.min.css')}}">
-          <link rel="stylesheet" href="{{asset('vendor/magnific-popup/magnific-popup.min.css')}}"> -->
 
             <link rel="stylesheet" href="{{asset('client/css/bootstrap.min.css')}}">
           <link rel="stylesheet" href="{{asset('client/css/fontawesome-all.min.css')}}">
@@ -279,7 +269,14 @@ if($script){
                                                                             @empty 
 
                                                                             <tr>
-                                                                                <td><a href="{{url('home')}}">Choose a Product</a></td>
+                                                                               <td>
+                                                                                @if(Auth::check())
+                                                                               
+                                                                              <a href="{{url('my-invoices')}}">Choose a Product
+                                                                                @else
+                                                                                <a href="{{url('login')}}">Choose a Product
+                                                                                  @endif
+                                                                                  </a></td>
                                                                             </tr>
 
 

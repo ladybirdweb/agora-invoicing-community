@@ -174,7 +174,6 @@ class CartController extends BaseCartController
                 $user_state = TaxByState::where('state_code', $geoip_state)->first();
                 $origin_state = $this->setting->first()->state; //Get the State of origin
                 $tax_class_id = TaxProductRelation::where('product_id', $productid)->pluck('tax_class_id')->toArray();
-
                 if (count($tax_class_id) > 0) {//If the product is allowed for tax (Check in tax_product relation table)
                     if ($tax_enable == 1) {//If GST is Enabled
 

@@ -320,7 +320,13 @@ if (count($attributes) > 0) {
 
                             <div class="col-md-offset-5">
                                 <p>There are no items in this cart.</p>
-                                <a href="{{url('home')}}" class="btn btn-primary">CONTINUE SHOPPING</a>
+                                 @if(Auth::check())
+                               
+                              <a href="{{url('my-invoices')}}">CONTINUE SHOPPING
+                                @else
+                                <a href="{{url('login')}}">CONTINUE SHOPPING
+                                  @endif
+                                  </a>
                             </div>
                         </div>
                     </div>

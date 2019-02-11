@@ -153,7 +153,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                             // return "<span style='display:none'>$model->id</span>".$date->format('l, F j, Y H:m');
                         })
                          ->addColumn('grand_total', function ($model) {
-                             return ucfirst($model->number);
+                             return $model->grand_total;
                          })
                           ->addColumn('status', function ($model) {
                               return ucfirst($model->status);
@@ -361,6 +361,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
     {
         try {
             $agents = $request->input('agents');
+            $status = 'pending';
             $qty = $request->input('quantity');
             if ($user_id == '') {
                 $user_id = \Request::input('user');
@@ -390,7 +391,9 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             }
             $grand_total = $this->getGrandTotal($code, $total, $cost, $productid, $currency);
             $grand_total = $qty * $grand_total;
-
+            if ($grand_total == 0) {
+                $status = 'success';
+            }
             $tax = $this->checkTax($product->id, $user_id);
             $tax_name = '';
             $tax_rate = '';
@@ -404,7 +407,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
             $invoice = Invoice::create(['user_id' => $user_id,
                 'number'                          => $number, 'date' => $date, 'grand_total' => $grand_total,
-                'currency'                        => $currency, 'status' => 'pending', 'description' => $description, ]);
+                'currency'                        => $currency, 'status' => $status, 'description' => $description, ]);
 
             $items = $this->createInvoiceItemsByAdmin($invoice->id, $productid,
              $code, $total, $currency, $qty, $agents, $plan, $user_id, $tax_name, $tax_rate);
@@ -444,7 +447,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             }
 
             $subtotal = $this->calculateTotal($tax_rate, $subtotal);
-
             $domain = $this->domain($productid);
             $items = $this->invoiceItem->create([
                 'invoice_id'     => $invoiceid,

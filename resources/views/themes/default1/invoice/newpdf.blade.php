@@ -15,8 +15,6 @@
                 <?php $set = App\Model\Common\Setting::where("id", "1")->first(); ?>
              
             
-                ?>
-
                 <!-- Main content -->
                 <section class="invoice">
                     <!-- title row -->
@@ -129,7 +127,7 @@
 
                         <div class="table-responsive">
                            
-                                                             <?php
+                              <?php
                                 $tax_name = [];
                                 $tax_percentage = [];
                                 foreach ($invoiceItems as $key => $item) {
@@ -147,7 +145,7 @@
                                 }
                                 ?>
                                  <table class="table  table-striped">
-                                @if($tax_name[0] !='null')
+                                @if($tax_name[0] !='null' && $tax_percentage[0] !=null)
                                    <?php 
                                   $order = \App\Model\Order\Order::where('invoice_item_id',$item->id)->first();
                                     if($order != null) {
@@ -158,7 +156,7 @@
                                    $taxInstance= new \App\Http\Controllers\Front\CartController();
                                     $taxes= $taxInstance->checkTax($productId,$user->state,$user->country);
                                      ?>
-                                  @if ($currency['currency'] == 'INR' && $user->country == 'IN')
+                                  @if ($currency['currency'] == 'INR' && $user->country == 'IN'  && $taxes['tax_attributes'][0]['name']!= 'null')
                                     @if($set->state == $user->state)
                                              <tr class="Taxes">
                             <th>

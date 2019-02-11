@@ -134,7 +134,6 @@ trait TaxCalculation
 
                   (TaxProductRelation::where('product_id', $productid)->where('tax_class_id', $taxClassId)->count() ?
                         $c_gst + $s_gst.'%' : 0) : 0;
-
             return $value;
         } catch (Exception $ex) {
             Bugsnag::notifyException($ex);

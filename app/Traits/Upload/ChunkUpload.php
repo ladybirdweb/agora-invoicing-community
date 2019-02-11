@@ -14,7 +14,8 @@ trait ChunkUpload
 {
     public function uploadFile(Request $request)
     {
-        $receiver = new FileReceiver('file', $request, HandlerFactory::classFromRequest($request));
+        try {
+             $receiver = new FileReceiver('file', $request, HandlerFactory::classFromRequest($request));
         if ($receiver->isUploaded() === false) {
             throw new UploadMissingFileException();
         }
@@ -34,6 +35,10 @@ trait ChunkUpload
             'done'   => $handler->getPercentageDone(),
             'status' => true,
         ]);
+    } catch (Exception $ex) {
+        dd($ex);
+    }
+       
     }
 
     /**

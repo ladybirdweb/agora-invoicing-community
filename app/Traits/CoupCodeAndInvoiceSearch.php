@@ -114,6 +114,7 @@ trait CoupCodeAndInvoiceSearch
             'invoices.created_at',
             'invoices.currency',
             'user_id',
+            'invoices.grand_total',
             'number',
             'status'
         );

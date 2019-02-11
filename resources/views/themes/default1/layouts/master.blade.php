@@ -6,7 +6,7 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>@yield('title') | {{$set->favicon_title}}</title>
+        <title>@yield('title') | {{$set->favicon_title_client}}</title>
         <link rel="shortcut icon" href='{{asset("common/images/$set->fav_icon")}}' type="image/x-icon" />
         <!-- Tell the browser to be responsive to screen width -->
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
@@ -38,6 +38,7 @@
          <!-- jQuery 2.1.4 -->
         <script src="{{asset("common/js/jquery-2.1.4.js")}}" type="text/javascript"></script>
         <script src="{{asset("common/js/jquery2.1.1.min.js")}}" type="text/javascript"></script>
+         <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/js/jquery.min.js"></script>
         <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script> -->
 <style>
 

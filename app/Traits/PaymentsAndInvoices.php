@@ -5,6 +5,7 @@ namespace App\Traits;
 use App\Model\Order\Invoice;
 use App\Model\Order\Payment;
 use App\Model\Product\Product;
+use Bugsnag;
 use Illuminate\Http\Request;
 
 //////////////////////////////////////////////////////////////////////////////
@@ -27,7 +28,7 @@ use Illuminate\Http\Request;
                 $paymentid = $request->input('id');
                 $creditAmtUserId = $this->payment->where('id', $paymentid)->value('user_id');
                 $creditAmt = $this->payment->where('user_id', $creditAmtUserId)
-        ->where('invoice_id', '=', 0)->value('amt_to_credit');
+                  ->where('invoice_id', '=', 0)->value('amt_to_credit');
                 $invoices = $invoice->where('user_id', $creditAmtUserId)->orderBy('created_at', 'desc')->get();
                 $cltCont = new \App\Http\Controllers\User\ClientController();
                 $invoiceSum = $cltCont->getTotalInvoice($invoices);

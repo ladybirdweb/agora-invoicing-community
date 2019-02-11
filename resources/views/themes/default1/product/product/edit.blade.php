@@ -18,6 +18,8 @@ Edit Product
      display:none;
 }
 </style>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+ <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/js/jquery.min.js"></script>
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
 
 <script type="text/javascript">
@@ -461,7 +463,8 @@ Edit Product
 
 
 <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script> -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
 <script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 <script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
 <script>
@@ -830,7 +833,7 @@ if ($uploadList.length > 0 && $fileUpload.length > 0) {
         maxChunkSize: 1000000,
         method: "POST",
         // Not supported
-        sequentialUploads: false,
+        sequentialUploads: true,
         formData: function (form) {
             // Append token to the request - required for web routes
             return [{name: '_token', value: $('input[name=_token]').val()}];
@@ -846,8 +849,6 @@ if ($uploadList.length > 0 && $fileUpload.length > 0) {
             data.submit();
         },
         done: function (e, data) {
-            console.log(data.textStatus);
-            console.log(data.result.path,data.result.name);
             $uploadList.append($('<li></li>').text('Uploaded: ' + data.result.path + ' ' + data.result.name));
             if(data.textStatus == 'success') {
                 $("#file_ids").val(data.result.name);

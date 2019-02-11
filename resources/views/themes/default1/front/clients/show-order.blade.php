@@ -1,6 +1,6 @@
 @extends('themes.default1.layouts.front.myaccount_master')
 @section('title')
-Agora | Orders
+Orders
 @stop
 @section('nav-orders')
 active

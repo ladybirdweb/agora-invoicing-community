@@ -174,9 +174,9 @@ class ProductController extends BaseProductController
         $this->validate($request,[
         'producttitle' => 'required',
         'version'      => 'required',
-        'filename'     => 'required',
-        ],
-        ['filename.required' => 'Please Uplaod A file',
+       // 'filename'     => 'required',
+      //  ],
+       // ['filename.required' => 'Please Uplaod A file',
         ]);
 
         try {

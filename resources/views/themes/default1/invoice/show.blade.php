@@ -184,7 +184,7 @@ View Invoice
                                 $tax_name = [];
                                 $tax_percentage = [];
                                 foreach ($invoiceItems as $key => $item) {
-
+                                   
                                     if (str_finish(',', $item->tax_name)) {
                                         $name = ($item->tax_name);
                                        
@@ -198,13 +198,12 @@ View Invoice
                                 }
                                 ?>
                                  <table class="table  table-striped">
-                                @if($tax_name[0] !='null')
-
+                                @if($tax_name[0] !='null' && $tax_percentage[0] !=null)
                                    <?php $productId =  App\Model\Product\Product::where('name',$item->product_name)->pluck('id')->first(); 
                                    $taxInstance= new \App\Http\Controllers\Front\CartController();
                                     $taxes= $taxInstance->checkTax($productId,$user->state,$user->country);
                                      ?>
-                                   @if ($currency['currency'] == 'INR' && $user->country == 'IN')
+                                   @if ($currency['currency'] == 'INR' && $user->country == 'IN' && $taxes['tax_attributes'][0]['name']!= 'null')
                                     @if($set->state == $user->state)
                                              <tr class="Taxes">
                             <th>

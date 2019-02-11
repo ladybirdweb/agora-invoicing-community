@@ -148,7 +148,7 @@ trait ApiKeySettings
     {
         $created = new DateTime($dbdate);
         $tz = \Auth::user()->timezone()->first()->name;
-        $created->setTimezone(new DateTimeZone($tz));
+        $created->setTimezone(new \DateTimeZone($tz));
         $date = $created->format('Y-m-d H:m:i');
 
         return $date;

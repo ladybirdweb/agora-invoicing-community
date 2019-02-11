@@ -15,30 +15,29 @@ trait ChunkUpload
     public function uploadFile(Request $request)
     {
         try {
-             $receiver = new FileReceiver('file', $request, HandlerFactory::classFromRequest($request));
-        if ($receiver->isUploaded() === false) {
-            throw new UploadMissingFileException();
-        }
+            $receiver = new FileReceiver('file', $request, HandlerFactory::classFromRequest($request));
+            if ($receiver->isUploaded() === false) {
+                throw new UploadMissingFileException();
+            }
 
-        $save = $receiver->receive();
-        // check if the upload has finished (in chunk mode it will send smaller files)
-        if ($save->isFinished()) {
-            // save the file and return any response you need, current example uses `move` function. If you are
-            // not using move, you need to manually delete the file by unlink($save->getFile()->getPathname())
-            return $this->saveFile($save->getFile());
-        }
-        // we are in chunk mode, lets send the current progress
-        /** @var AbstractHandler $handler */
-        $handler = $save->handler();
+            $save = $receiver->receive();
+            // check if the upload has finished (in chunk mode it will send smaller files)
+            if ($save->isFinished()) {
+                // save the file and return any response you need, current example uses `move` function. If you are
+                // not using move, you need to manually delete the file by unlink($save->getFile()->getPathname())
+                return $this->saveFile($save->getFile());
+            }
+            // we are in chunk mode, lets send the current progress
+            /** @var AbstractHandler $handler */
+            $handler = $save->handler();
 
-        return response()->json([
+            return response()->json([
             'done'   => $handler->getPercentageDone(),
             'status' => true,
         ]);
-    } catch (Exception $ex) {
-        dd($ex);
-    }
-       
+        } catch (Exception $ex) {
+            dd($ex);
+        }
     }
 
     /**

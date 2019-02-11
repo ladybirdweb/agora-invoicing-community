@@ -171,7 +171,7 @@ class ProductController extends BaseProductController
     // Save file Info in Modal popup
     public function save(Request $request)
     {
-        $this->validate($request,[
+        $this->validate($request, [
         'producttitle' => 'required',
         'version'      => 'required',
        // 'filename'     => 'required',

@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Front;
 
 use App\Model\Common\Country;
+use App\Model\Payment\Plan;
 use App\Model\Payment\Tax;
 use App\Model\Payment\TaxProductRelation;
 use App\Model\Product\Product;
-use App\Model\Payment\Plan;
 use Bugsnag;
 use Cart;
 use Exception;
@@ -60,6 +60,7 @@ class BaseCartController extends ExtendedBaseCartController
             $value = $taxes->toArray()[0]['active'] ?
                     (TaxProductRelation::where('product_id', $productid)->where('tax_class_id', $taxClassId)->count() ?
                         $c_gst + $s_gst.'%' : 0) : 0;
+
             return $value;
         } catch (Exception $ex) {
             Bugsnag::notifyException($ex);

@@ -5,7 +5,7 @@ use Illuminate\Database\Migrations\Migration;
 class CreateCurrencyTable extends Migration
 {
     /**
-     * Currencies table name
+     * Currencies table name.
      *
      * @var string
      */

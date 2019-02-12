@@ -10,8 +10,9 @@ class BaseTemplateController extends ExtendedBaseTemplateController
 {
     public function getPrice($months, $price, $priceDescription, $value, $cost, $currency)
     {
-         $price1 = currency_format($cost, $code = 'INR');
+        $price1 = currency_format($cost, $code = 'INR');
         $price[$value->id] = $months.'  '.$price1.' '.$priceDescription;
+
         return $price;
     }
 
@@ -46,6 +47,7 @@ class BaseTemplateController extends ExtendedBaseTemplateController
                 $price = $this->getPrice($months, $price, $priceDescription, $value, $cost, $currency);
                 // $price = currency_format($cost, $code = $currency);
             }
+
             return $price;
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());

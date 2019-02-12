@@ -262,7 +262,7 @@ return [
           'PDF'        => Barryvdh\DomPDF\Facade::class,
           'Markdown'   => GrahamCampbell\Markdown\Facades\Markdown::class,
           'GeoIP'      => \Torann\GeoIP\Facades\GeoIP::class,
-          'Currency' => \Torann\Currency\Facades\Currency::class,
+          'Currency'   => \Torann\Currency\Facades\Currency::class,
 
     ],
 

@@ -5,8 +5,8 @@ namespace App\Console;
 use App\Model\Common\StatusSetting;
 use App\Model\Mailjob\ActivityLogDay;
 use Illuminate\Console\Scheduling\Schedule;
-use Torann\Currency\Console\Manage as CurrencyManage;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Torann\Currency\Console\Manage as CurrencyManage;
 
 class Kernel extends ConsoleKernel
 {

@@ -359,6 +359,7 @@ class TemplateController extends BaseTemplateController
         $form = \Form::open(['method' => 'get', 'url' => $url]).
         $plan_form.
         \Form::hidden('id', $id);
+
         return $form;
     }
 

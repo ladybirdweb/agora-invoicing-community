@@ -248,7 +248,7 @@ All Currencies
                 setInterval(function() {
                     $('.alert-success').slideUp(3000);
                 }, 500);
-                location.reload();
+                // location.reload();
             });
         });
     }

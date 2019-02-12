@@ -155,9 +155,9 @@ if (count($attributes) > 0) {
                                                     <td class="product-price">
 
 
-                                                         <span class="amount">{!! $symbol !!}&nbsp;
-                                                            
-                                                            {{$item->price}}
+                                                         <span class="amount">&nbsp;
+                                                           
+                                                            {{currency_format($item->price,$code = $attributes[0]['currency']['currency'])}}
                                                          <!-- {{\App\Http\Controllers\Front\CartController::rounding($item->getPriceSumWithConditions())}} -->
                                                      </span>
                                                        <div id="response"></div>
@@ -206,8 +206,8 @@ if (count($attributes) > 0) {
                                                     <td class="product-subtotal">
 
 
-                                                      <span class="amount">{!! $symbol !!}&nbsp;
-                                                        {{$item->getPriceSum()}}
+                                                      <span class="amount">&nbsp;
+                                                        {{currency_format($item->getPriceSum(),$code = $attributes[0]['currency']['currency'])}}
                                                     </span>
 
 
@@ -248,8 +248,8 @@ if (count($attributes) > 0) {
                                         <td>
 
 
-                                            <strong><span class="amount"><small>{!! $symbol !!}&nbsp;</small>  
-                                                {{Cart::getSubTotalWithoutConditions()}}
+                                            <strong><span class="amount"><small>&nbsp;</small>  
+                                                {{currency_format(Cart::getSubTotalWithoutConditions(),$code= $attributes[0]['currency']['currency'])}}
                                            </span></strong>
 
 
@@ -322,9 +322,9 @@ if (count($attributes) > 0) {
                                 <p>There are no items in this cart.</p>
                                  @if(Auth::check())
                                
-                              <a href="{{url('my-invoices')}}">CONTINUE SHOPPING
+                              <a href="{{url('my-invoices')}}" class="btn btn-primary">CONTINUE SHOPPING
                                 @else
-                                <a href="{{url('login')}}">CONTINUE SHOPPING
+                                <a href="{{url('login')}}" class="btn btn-primary">CONTINUE SHOPPING
                                   @endif
                                   </a>
                             </div>

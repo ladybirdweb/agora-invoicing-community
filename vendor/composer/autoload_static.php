@@ -73,6 +73,7 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
         'd7354eb4c8441fbf08eec280b61c7c73' => __DIR__ . '/..' . '/rachidlaasri/laravel-installer/src/Helpers/functions.php',
         '72b1e3f4a2af9b30b3f137b3ec2057fc' => __DIR__ . '/..' . '/spatie/laravel-activitylog/src/helpers.php',
         'def43f6c87e4f8dfd0c9e1b1bab14fe8' => __DIR__ . '/..' . '/symfony/polyfill-iconv/bootstrap.php',
+        '377d15ea71be0306a9829d9f78207a1c' => __DIR__ . '/..' . '/torann/currency/src/helpers.php',
         '1e298922c3e2134d42dcdb03e6d5f55a' => __DIR__ . '/..' . '/torann/geoip/src/helpers.php',
         '6d394c3a532652dafb4dd296ba6a3f0b' => __DIR__ . '/../..' . '/app/Http/helpers.php',
     );
@@ -102,6 +103,7 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
         'T' => 
         array (
             'Torann\\GeoIP\\' => 13,
+            'Torann\\Currency\\' => 16,
             'TijsVerkoyen\\CssToInlineStyles\\' => 31,
             'Thomaswelton\\Tests\\LaravelGravatar\\' => 35,
             'Thomaswelton\\LaravelGravatar\\' => 29,
@@ -258,6 +260,10 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
         'Torann\\GeoIP\\' => 
         array (
             0 => __DIR__ . '/..' . '/torann/geoip/src',
+        ),
+        'Torann\\Currency\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/torann/currency/src',
         ),
         'TijsVerkoyen\\CssToInlineStyles\\' => 
         array (
@@ -932,6 +938,7 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
         'App\\Traits\\Order\\UpdateDates' => __DIR__ . '/../..' . '/app/Traits/Order/UpdateDates.php',
         'App\\Traits\\PaymentsAndInvoices' => __DIR__ . '/../..' . '/app/Traits/PaymentsAndInvoices.php',
         'App\\Traits\\TaxCalculation' => __DIR__ . '/../..' . '/app/Traits/TaxCalculation.php',
+        'App\\Traits\\Upload\\ChunkUpload' => __DIR__ . '/../..' . '/app/Traits/Upload/ChunkUpload.php',
         'App\\User' => __DIR__ . '/../..' . '/app/User.php',
         'App\\UserOrganization' => __DIR__ . '/../..' . '/app/UserOrganization.php',
         'Arcanedev\\LogViewer\\Commands\\CheckCommand' => __DIR__ . '/..' . '/arcanedev/log-viewer/src/Commands/CheckCommand.php',
@@ -1128,6 +1135,7 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
         'CreateConfigurableOptionsTable' => __DIR__ . '/../..' . '/database/migrations/2017_06_10_062630_create_configurable_options_table.php',
         'CreateCountriesTable' => __DIR__ . '/../..' . '/database/migrations/2017_06_10_062630_create_countries_table.php',
         'CreateCurrenciesTable' => __DIR__ . '/../..' . '/database/migrations/2017_06_10_062630_create_currencies_table.php',
+        'CreateCurrencyTable' => __DIR__ . '/../..' . '/database/migrations/2013_11_26_161501_create_currency_table.php',
         'CreateDefaultPagesTable' => __DIR__ . '/../..' . '/database/migrations/2018_11_28_091540_create_default_pages_table.php',
         'CreateExpiryMailDaysTable' => __DIR__ . '/../..' . '/database/migrations/2018_10_23_125346_create_expiry_mail_days_table.php',
         'CreateFrontendPagesTable' => __DIR__ . '/../..' . '/database/migrations/2017_06_10_062630_create_frontend_pages_table.php',
@@ -6103,18 +6111,12 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
         'Tests\\TestCase' => __DIR__ . '/../..' . '/tests/TestCase.php',
         'Tests\\Unit\\Admin\\Dashboard\\DashboardTest' => __DIR__ . '/../..' . '/tests/Unit/Admin/Dashboard/DashboardTest.php',
         'Tests\\Unit\\Admin\\EditUserTest' => __DIR__ . '/../..' . '/tests/Unit/Admin/User/EditUserTest.php',
-        'Tests\\Unit\\Admin\\Product\\CreateProductTest' => __DIR__ . '/../..' . '/tests/Unit/Admin/Product/CreateProductTest.php',
-        'Tests\\Unit\\Admin\\Product\\EditProductTest' => __DIR__ . '/../..' . '/tests/Unit/Admin/Product/EditProductTest.php',
         'Tests\\Unit\\Admin\\Setting\\Tax\\TaxOptionTest' => __DIR__ . '/../..' . '/tests/Unit/Admin/Setting/Tax/TaxOptionTest.php',
         'Tests\\Unit\\Admin\\User\\AdvanceSearchTest' => __DIR__ . '/../..' . '/tests/Unit/Admin/User/AdvanceSearchTest.php',
         'Tests\\Unit\\Admin\\User\\InvoiceAndPaymentCalculationTest' => __DIR__ . '/../..' . '/tests/Unit/Admin/User/InvoiceAndPaymentCalculationTest.php',
-        'Tests\\Unit\\Admin\\User\\InvoiceTest' => __DIR__ . '/../..' . '/tests/Unit/Admin/User/InvoiceTest.php',
         'Tests\\Unit\\Client\\Account\\InvoiceTest' => __DIR__ . '/../..' . '/tests/Unit/Client/Account/InvoiceTest.php',
-        'Tests\\Unit\\Client\\Account\\OrderTest' => __DIR__ . '/../..' . '/tests/Unit/Client/Account/OrderTest.php',
         'Tests\\Unit\\Client\\Account\\ProfileTest' => __DIR__ . '/../..' . '/tests/Unit/Client/Account/ProfileTest.php',
-        'Tests\\Unit\\Client\\Cart\\ClearCartTest' => __DIR__ . '/../..' . '/tests/Unit/Client/Cart/ClearCartTest.php',
         'Tests\\Unit\\Client\\Cart\\CouponTest' => __DIR__ . '/../..' . '/tests/Unit/Client/Cart/CouponTest.php',
-        'Tests\\Unit\\Client\\Checkout\\CheckoutTest' => __DIR__ . '/../..' . '/tests/Unit/Client/Checkout/CheckoutTest.php',
         'Tests\\Unit\\Client\\RegistrationTest' => __DIR__ . '/../..' . '/tests/Unit/Client/RegistrationTest.php',
         'Tests\\Unit\\ExampleTest' => __DIR__ . '/../..' . '/tests/Unit/ExampleTest.php',
         'Tests\\Unit\\LoginTest' => __DIR__ . '/../..' . '/tests/Unit/LoginTest.php',
@@ -6138,6 +6140,19 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
         'TijsVerkoyen\\CssToInlineStyles\\Css\\Property\\Property' => __DIR__ . '/..' . '/tijsverkoyen/css-to-inline-styles/src/Css/Property/Property.php',
         'TijsVerkoyen\\CssToInlineStyles\\Css\\Rule\\Processor' => __DIR__ . '/..' . '/tijsverkoyen/css-to-inline-styles/src/Css/Rule/Processor.php',
         'TijsVerkoyen\\CssToInlineStyles\\Css\\Rule\\Rule' => __DIR__ . '/..' . '/tijsverkoyen/css-to-inline-styles/src/Css/Rule/Rule.php',
+        'Torann\\Currency\\Console\\Cleanup' => __DIR__ . '/..' . '/torann/currency/src/Console/Cleanup.php',
+        'Torann\\Currency\\Console\\Manage' => __DIR__ . '/..' . '/torann/currency/src/Console/Manage.php',
+        'Torann\\Currency\\Console\\Update' => __DIR__ . '/..' . '/torann/currency/src/Console/Update.php',
+        'Torann\\Currency\\Contracts\\DriverInterface' => __DIR__ . '/..' . '/torann/currency/src/Contracts/DriverInterface.php',
+        'Torann\\Currency\\Contracts\\FormatterInterface' => __DIR__ . '/..' . '/torann/currency/src/Contracts/FormatterInterface.php',
+        'Torann\\Currency\\Currency' => __DIR__ . '/..' . '/torann/currency/src/Currency.php',
+        'Torann\\Currency\\CurrencyServiceProvider' => __DIR__ . '/..' . '/torann/currency/src/CurrencyServiceProvider.php',
+        'Torann\\Currency\\Drivers\\AbstractDriver' => __DIR__ . '/..' . '/torann/currency/src/Drivers/AbstractDriver.php',
+        'Torann\\Currency\\Drivers\\Database' => __DIR__ . '/..' . '/torann/currency/src/Drivers/Database.php',
+        'Torann\\Currency\\Drivers\\Filesystem' => __DIR__ . '/..' . '/torann/currency/src/Drivers/Filesystem.php',
+        'Torann\\Currency\\Facades\\Currency' => __DIR__ . '/..' . '/torann/currency/src/Facades/Currency.php',
+        'Torann\\Currency\\Formatters\\PHPIntl' => __DIR__ . '/..' . '/torann/currency/src/Formatters/PHPIntl.php',
+        'Torann\\Currency\\Middleware\\CurrencyMiddleware' => __DIR__ . '/..' . '/torann/currency/src/Middleware/CurrencyMiddleware.php',
         'Torann\\GeoIP\\Cache' => __DIR__ . '/..' . '/torann/geoip/src/Cache.php',
         'Torann\\GeoIP\\Console\\Clear' => __DIR__ . '/..' . '/torann/geoip/src/Console/Clear.php',
         'Torann\\GeoIP\\Console\\Update' => __DIR__ . '/..' . '/torann/geoip/src/Console/Update.php',

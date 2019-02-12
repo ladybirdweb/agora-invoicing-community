@@ -13,6 +13,7 @@ return array(
     'Webmozart\\Assert\\' => array($vendorDir . '/webmozart/assert/src'),
     'Underscore\\' => array($vendorDir . '/anahkiasen/underscore-php/src', $vendorDir . '/anahkiasen/underscore-php/tests'),
     'Torann\\GeoIP\\' => array($vendorDir . '/torann/geoip/src'),
+    'Torann\\Currency\\' => array($vendorDir . '/torann/currency/src'),
     'TijsVerkoyen\\CssToInlineStyles\\' => array($vendorDir . '/tijsverkoyen/css-to-inline-styles/src'),
     'Thomaswelton\\Tests\\LaravelGravatar\\' => array($vendorDir . '/thomaswelton/laravel-gravatar/tests'),
     'Thomaswelton\\LaravelGravatar\\' => array($vendorDir . '/thomaswelton/laravel-gravatar/src'),

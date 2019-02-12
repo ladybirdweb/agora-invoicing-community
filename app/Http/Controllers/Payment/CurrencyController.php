@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Model\Common\Country;
 use App\Model\Common\Setting;
 use App\Model\Payment\Currency;
+use Illuminate\Support\Facades\Artisan;
 use Form;
 use Illuminate\Http\Request;
 use Lang;
@@ -38,7 +39,6 @@ class CurrencyController extends Controller
         $model = Currency::where('name', '!=', null)->where('code', '!=', $defaultCurrency)->
         select('id', 'name', 'code', 'symbol', 'status')
         ->orderBy('id', 'desc')->get();
-
         return \DataTables::of($model)
 
                         ->addColumn('name', function ($model) {
@@ -294,9 +294,11 @@ class CurrencyController extends Controller
 
     public function updatecurrency(Request $request)
     {
+        $code = Currency::where('id',$request->input('current_id'))->value('code');
+        Artisan::call('currency:manage', ['action' => 'add', 'currency' => $code]);
         $updatedStatus = ($request->current_status == '1') ? 0 : 1;
         Currency::where('id', $request->current_id)->update(['status'=>$updatedStatus]);
-
+        
         return Lang::get('message.updated-successfully');
     }
 }

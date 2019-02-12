@@ -463,7 +463,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
 
                                 <h4 class="heading-primary text-uppercase mb-md">Confirm Email/Mobile</h4>
                                            
-                                <input type="text" name="user_id" id="user_id"/>
+                                <input type="hidden" name="user_id" id="user_id"/>
                                 <input type="hidden" name="email_password" id="email_password"/>
                                 <input type="hidden" id="checkEmailStatus" value="{{$emailStatus}}">
                              @if($emailStatus == 1)

@@ -137,7 +137,9 @@ $sum = 0;
                                 <td class="product-price">
                                   
                                    
-                                    <span class="amount">{!! $symbol !!}    {{\App\Http\Controllers\Front\CartController::rounding($item->getPriceSum())}}</span>
+                                    <span class="amount">
+                                     {{currency_format($item->getPriceSum(),$code = $currency)}}    
+                                       
 
 
                                 </td>
@@ -224,13 +226,9 @@ $sum = 0;
                     <td>
                    
 
-                        <strong><span class="amount"> {{$symbol}}  @if($currency == "INR")
-
-                                            {{App\Http\Controllers\Front\CartController::rounding(Cart::getSubTotalWithoutConditions())}}
-                                            @else
-                                            {{App\Http\Controllers\Front\CartController::rounding(Cart::getSubTotalWithoutConditions())}}
+                        <strong><span class="amount"> 
+                                {{currency_format(Cart::getSubTotalWithoutConditions(),$code = $currency)}}
                                            
-                                            @endif
                     </td>
                 </tr>
                 @foreach($item->attributes['tax'] as $attribute)
@@ -244,9 +242,12 @@ $sum = 0;
                        
                     </th>
                     <td>
-
-                        {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($attribute['c_gst'],Cart::getSubTotalWithoutConditions())}} <br/>
-                        {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($attribute['s_gst'],Cart::getSubTotalWithoutConditions())}} <br/>
+                     <?php
+                     $cgst = \App\Http\Controllers\Front\CartController::taxValue($attribute['c_gst'],Cart::getSubTotalWithoutConditions());
+                     $sgst = \App\Http\Controllers\Front\CartController::taxValue($attribute['s_gst'],Cart::getSubTotalWithoutConditions());
+                     ?>
+                       {{currency_format($cgst,$code = $currency)}}<br/>
+                       {{currency_format($sgst,$code = $currency)}} <br/>
                        
                        
 
@@ -265,8 +266,10 @@ $sum = 0;
                      
                     </th>
                     <td>
-
-                        {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($attribute['i_gst'],Cart::getSubTotalWithoutConditions())}} <br/>
+                     <?php 
+                    $igst = \App\Http\Controllers\Front\CartController::taxValue($attribute['i_gst'],Cart::getSubTotalWithoutConditions());
+                     ?>
+                       {{currency_format($igst,$code = $currency)}} <br/><br/>
                       
 
                     </td>
@@ -284,8 +287,12 @@ $sum = 0;
                        
                     </th>
                     <td>
-                        {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($attribute['c_gst'],Cart::getSubTotalWithoutConditions())}} <br/>
-                        {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($attribute['ut_gst'],Cart::getSubTotalWithoutConditions())}} <br/>
+                        <?php
+                        $cgst = \App\Http\Controllers\Front\CartController::taxValue($attribute['c_gst'],Cart::getSubTotalWithoutConditions());
+                        $utgst = \App\Http\Controllers\Front\CartController::taxValue($attribute['ut_gst'],Cart::getSubTotalWithoutConditions())
+                        ?>
+                         {{currency_format($cgst,$code = $currency)}} <br/>
+                         {{currency_format($utgst,$code = $currency)}} <br/>
                        
                     </td>
 
@@ -303,8 +310,10 @@ $sum = 0;
                          
                     </th>
                     <td>
-                       
-                       {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($attribute['rate'],Cart::getSubTotalWithoutConditions())}} <br/>
+                       <?php
+                       $value = \App\Http\Controllers\Front\CartController::taxValue($attribute['rate'],Cart::getSubTotalWithoutConditions())
+                       ?>
+                        {{currency_format($value,$code = $currency)}} <br/>
                          
                        
                     </td>
@@ -320,9 +329,11 @@ $sum = 0;
                          
                     </th>
                     <td>
-
+                     <?php
+                     $value = \App\Http\Controllers\Front\CartController::taxValue($attribute['rate'],Cart::getSubTotalWithoutConditions())
+                     ?>
                       
-                        {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($attribute['rate'],Cart::getSubTotalWithoutConditions())}} <br/>
+                        {{currency_format($value,$code = $currency)}} <br/>
                          
                        
                     </td>
@@ -338,8 +349,11 @@ $sum = 0;
                          
                     </th>
                     <td>
+                        <?php
+                        $value = \App\Http\Controllers\Front\CartController::taxValue($attribute['rate'],Cart::getSubTotalWithoutConditions())
+                        ?>
                        
-                         {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($attribute['rate'],Cart::getSubTotalWithoutConditions())}} <br/>
+                         {{currency_format($value,$code = $currency)}} <br/>
                          
                        
                     </td>
@@ -356,10 +370,12 @@ $sum = 0;
 
 
                          @if($currency == "INR")
-                           
-                                          {{$symbol}}  {{App\Http\Controllers\Front\CartController::rounding(Cart::getTotal())}}
+                                          <?php
+                                          $total = \App\Http\Controllers\Front\CartController::rounding(Cart::getTotal());
+                                          ?>
+                                          {{currency_format($total,$code = $currency)}}
                                             @else
-                                           {{$symbol}}  {{App\Http\Controllers\Front\CartController::rounding(Cart::getTotal())}}
+                                           {{currency_format($total,$code = $currency)}}
 
 
                                             @endif

@@ -199,6 +199,7 @@ return [
          Yajra\DataTables\DataTablesServiceProvider::class,
          GrahamCampbell\Markdown\MarkdownServiceProvider::class,
          Spatie\Activitylog\ActivitylogServiceProvider::class,
+          \Torann\Currency\CurrencyServiceProvider::class,
 
     ],
 
@@ -261,6 +262,7 @@ return [
           'PDF'        => Barryvdh\DomPDF\Facade::class,
           'Markdown'   => GrahamCampbell\Markdown\Facades\Markdown::class,
           'GeoIP'      => \Torann\GeoIP\Facades\GeoIP::class,
+          'Currency' => \Torann\Currency\Facades\Currency::class,
 
     ],
 

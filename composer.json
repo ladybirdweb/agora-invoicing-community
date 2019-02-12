@@ -31,6 +31,7 @@
         "spatie/laravel-activitylog": "^2.7",
         "symfony/polyfill-iconv": "^1.8",
         "thomaswelton/laravel-gravatar": "~1.0",
+        "torann/currency": "^1.0",
         "torann/geoip": "^1.0",
         "yajra/laravel-datatables": "^1.0"
     },

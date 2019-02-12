@@ -7114,6 +7114,70 @@
         "homepage": "https://github.com/tijsverkoyen/CssToInlineStyles"
     },
     {
+        "name": "torann/currency",
+        "version": "1.0.14",
+        "version_normalized": "1.0.14.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/Torann/laravel-currency.git",
+            "reference": "d7d5dc721122f5491a475fc6f0026f110334acd4"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/Torann/laravel-currency/zipball/d7d5dc721122f5491a475fc6f0026f110334acd4",
+            "reference": "d7d5dc721122f5491a475fc6f0026f110334acd4",
+            "shasum": ""
+        },
+        "require": {
+            "illuminate/cache": "~5.1",
+            "illuminate/support": "~5.1",
+            "php": ">=5.5.9"
+        },
+        "suggest": {
+            "illuminate/database": "Allows for storing of currencies in the database"
+        },
+        "time": "2018-05-09T14:36:57+00:00",
+        "type": "library",
+        "extra": {
+            "laravel": {
+                "providers": [
+                    "Torann\\Currency\\CurrencyServiceProvider"
+                ],
+                "aliases": {
+                    "Currency": "Torann\\Currency\\Facades\\Currency"
+                }
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "files": [
+                "src/helpers.php"
+            ],
+            "psr-4": {
+                "Torann\\Currency\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-2-Clause"
+        ],
+        "authors": [
+            {
+                "name": "Daniel Stainback",
+                "email": "torann@gmail.com"
+            }
+        ],
+        "description": "This provides Laravel 5 with currency functions such as currency formatting and conversion using up-to-date exchange rates.",
+        "keywords": [
+            "currency",
+            "exchange rate",
+            "finance",
+            "laravel",
+            "money",
+            "openexchangerates"
+        ]
+    },
+    {
         "name": "torann/geoip",
         "version": "1.0.8",
         "version_normalized": "1.0.8.0",

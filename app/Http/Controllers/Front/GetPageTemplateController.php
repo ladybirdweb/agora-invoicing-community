@@ -26,7 +26,7 @@ class GetPageTemplateController extends Controller
                 $trasform[$value['id']]['url'] = "<input type='submit' 
                 value='Order Now' class='btn btn-dark btn-modern btn-outline py-2 px-4'></form>";
             }
-            $template = $this->transform('cart', $data, $trasform);
+             $template = $this->transform('cart', $data, $trasform);
         } else {
             $template = '';
         }

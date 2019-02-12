@@ -827,6 +827,7 @@ Edit Product
 var $uploadList = $("#file-upload-list");
 var $fileUpload = $('#fileupload');
 if ($uploadList.length > 0 && $fileUpload.length > 0) {
+    console.log($fileUpload)
     var idSequence = 0;
     // A quick way setup - url is taken from the html tag
     $fileUpload.fileupload({

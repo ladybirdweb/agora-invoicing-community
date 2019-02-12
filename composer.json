@@ -8,6 +8,7 @@
         "php": ">=7.2",
         "anhskohbo/no-captcha": "^3.0",
         "arcanedev/log-viewer": "^4.4",
+        "barryvdh/laravel-cors": "^0.11.2",
         "barryvdh/laravel-dompdf": "^0.8.1",
         "bugsnag/bugsnag-laravel": "^2.0",
         "chumper/datatable": "dev-develop",

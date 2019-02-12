@@ -11,11 +11,12 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
         '1d1b89d124cc9cb8219922c9d5569199' => __DIR__ . '/..' . '/hamcrest/hamcrest-php/hamcrest/Hamcrest.php',
         '25072dd6e2470089de65ae7bf11d3109' => __DIR__ . '/..' . '/symfony/polyfill-php72/bootstrap.php',
         '667aeda72477189d0494fecd327c3641' => __DIR__ . '/..' . '/symfony/var-dumper/Resources/functions/dump.php',
+        '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
         '0b47d6d4a00ca9112ba3953b49e7c9a4' => __DIR__ . '/..' . '/yajra/laravel-datatables-oracle/src/helper.php',
         'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
         'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
-        '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
+        '2c102faa651ef8ea5874edb585946bce' => __DIR__ . '/..' . '/swiftmailer/swiftmailer/lib/swift_required.php',
         'f18cc91337d49233e5754e93f3ed9ec3' => __DIR__ . '/..' . '/laravelcollective/html/src/helpers.php',
         'abede361264e2ae69ec1eee813a101af' => __DIR__ . '/..' . '/markbaker/complex/classes/src/functions/abs.php',
         '21a5860fbef5be28db5ddfbc3cca67c4' => __DIR__ . '/..' . '/markbaker/complex/classes/src/functions/acos.php',
@@ -59,17 +60,16 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
         '883af48563631547925fa4c3b48ead07' => __DIR__ . '/..' . '/markbaker/complex/classes/src/operations/multiply.php',
         'f190e3308e6ca23234a2875edc985c03' => __DIR__ . '/..' . '/markbaker/complex/classes/src/operations/divideby.php',
         'ac9e33ce6841aa5bf5d16d465a2f03a7' => __DIR__ . '/..' . '/markbaker/complex/classes/src/operations/divideinto.php',
-        '2c102faa651ef8ea5874edb585946bce' => __DIR__ . '/..' . '/swiftmailer/swiftmailer/lib/swift_required.php',
         'e803af0597ea9e5b518c7d090fb85601' => __DIR__ . '/..' . '/arcanedev/support/constants.php',
         '5323a5cb5bb1bab9b2f24566beed262a' => __DIR__ . '/..' . '/arcanedev/support/helpers.php',
+        'f0906e6318348a765ffb6eb24e0d0938' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Foundation/helpers.php',
+        '58571171fd5812e6e447dce228f52f4d' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Support/helpers.php',
         '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
         '801c31d8ed748cfa537fa45402288c95' => __DIR__ . '/..' . '/psy/psysh/src/functions.php',
         'e91d0dc994644828154ae2387ede1ca8' => __DIR__ . '/..' . '/spatie/string/src/string_functions.php',
         'd04e9322f14ab3e66b5b68c6d1e15433' => __DIR__ . '/..' . '/arcanedev/log-viewer/constants.php',
         '24be6d98d7c305f36699ba4e34b6df3c' => __DIR__ . '/..' . '/arcanedev/log-viewer/helpers.php',
         '2cffec82183ee1cea088009cef9a6fc3' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier.composer.php',
-        'f0906e6318348a765ffb6eb24e0d0938' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Foundation/helpers.php',
-        '58571171fd5812e6e447dce228f52f4d' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Support/helpers.php',
         'd7354eb4c8441fbf08eec280b61c7c73' => __DIR__ . '/..' . '/rachidlaasri/laravel-installer/src/Helpers/functions.php',
         '72b1e3f4a2af9b30b3f137b3ec2057fc' => __DIR__ . '/..' . '/spatie/laravel-activitylog/src/helpers.php',
         'def43f6c87e4f8dfd0c9e1b1bab14fe8' => __DIR__ . '/..' . '/symfony/polyfill-iconv/bootstrap.php',
@@ -215,9 +215,11 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
             'Bugsnag\\' => 8,
             'Barryvdh\\LaravelIdeHelper\\' => 26,
             'Barryvdh\\DomPDF\\' => 16,
+            'Barryvdh\\Cors\\' => 14,
         ),
         'A' => 
         array (
+            'Asm89\\Stack\\' => 12,
             'Arcanedev\\Support\\' => 18,
             'Arcanedev\\LogViewer\\' => 20,
             'App\\' => 4,
@@ -564,6 +566,14 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
         'Barryvdh\\DomPDF\\' => 
         array (
             0 => __DIR__ . '/..' . '/barryvdh/laravel-dompdf/src',
+        ),
+        'Barryvdh\\Cors\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/barryvdh/laravel-cors/src',
+        ),
+        'Asm89\\Stack\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/asm89/stack-cors/src/Asm89/Stack',
         ),
         'Arcanedev\\Support\\' => 
         array (
@@ -1006,6 +1016,12 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
         'Arcanedev\\Support\\Traits\\Paginatable' => __DIR__ . '/..' . '/arcanedev/support/src/Traits/Paginatable.php',
         'Arcanedev\\Support\\Traits\\PrefixedModel' => __DIR__ . '/..' . '/arcanedev/support/src/Traits/PrefixedModel.php',
         'Arcanedev\\Support\\Traits\\Templatable' => __DIR__ . '/..' . '/arcanedev/support/src/Traits/Templatable.php',
+        'Asm89\\Stack\\Cors' => __DIR__ . '/..' . '/asm89/stack-cors/src/Asm89/Stack/Cors.php',
+        'Asm89\\Stack\\CorsService' => __DIR__ . '/..' . '/asm89/stack-cors/src/Asm89/Stack/CorsService.php',
+        'Barryvdh\\Cors\\HandleCors' => __DIR__ . '/..' . '/barryvdh/laravel-cors/src/HandleCors.php',
+        'Barryvdh\\Cors\\HandlePreflight' => __DIR__ . '/..' . '/barryvdh/laravel-cors/src/HandlePreflight.php',
+        'Barryvdh\\Cors\\LumenServiceProvider' => __DIR__ . '/..' . '/barryvdh/laravel-cors/src/LumenServiceProvider.php',
+        'Barryvdh\\Cors\\ServiceProvider' => __DIR__ . '/..' . '/barryvdh/laravel-cors/src/ServiceProvider.php',
         'Barryvdh\\DomPDF\\Facade' => __DIR__ . '/..' . '/barryvdh/laravel-dompdf/src/Facade.php',
         'Barryvdh\\DomPDF\\PDF' => __DIR__ . '/..' . '/barryvdh/laravel-dompdf/src/PDF.php',
         'Barryvdh\\DomPDF\\ServiceProvider' => __DIR__ . '/..' . '/barryvdh/laravel-dompdf/src/ServiceProvider.php',

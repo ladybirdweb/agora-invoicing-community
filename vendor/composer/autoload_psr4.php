@@ -89,6 +89,8 @@ return array(
     'Bugsnag\\' => array($vendorDir . '/bugsnag/bugsnag/src'),
     'Barryvdh\\LaravelIdeHelper\\' => array($vendorDir . '/barryvdh/laravel-ide-helper/src'),
     'Barryvdh\\DomPDF\\' => array($vendorDir . '/barryvdh/laravel-dompdf/src'),
+    'Barryvdh\\Cors\\' => array($vendorDir . '/barryvdh/laravel-cors/src'),
+    'Asm89\\Stack\\' => array($vendorDir . '/asm89/stack-cors/src/Asm89/Stack'),
     'Arcanedev\\Support\\' => array($vendorDir . '/arcanedev/support/src'),
     'Arcanedev\\LogViewer\\' => array($vendorDir . '/arcanedev/log-viewer/src'),
     'App\\' => array($baseDir . '/app'),

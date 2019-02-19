@@ -36,7 +36,7 @@ class ProfileRequest extends Request
                     'address'                => 'required',
                     'zip'                    => 'required|numeric',
                     'user_name'              => 'required|unique:users,user_name,'.$userid,
-                    'profile_pic'           => 'sometimes|mimes:jpeg,jpg,png,gif|max:100000',
+                    'profile_pic'            => 'sometimes|mimes:jpeg,jpg,png,gif|max:100000',
 
         ];
         }

@@ -193,12 +193,13 @@ class BaseClientController extends Controller
             $relation = $order->invoiceRelation()->pluck('invoice_id')->toArray();
             $invoice = new Invoice();
             $invoices = $invoice
-                    ->select('number', 'created_at', 'grand_total','currency', 'id', 'status')
+                    ->select('number', 'created_at', 'grand_total', 'currency', 'id', 'status')
                     ->whereIn('id', $relation);
             if ($invoices->get()->count() == 0) {
                 $invoices = $order->invoice()
                         ->select('number', 'created_at', 'grand_total', 'id', 'status');
             }
+
             return \DataTables::of($invoices->get())
              ->addColumn('number', function ($model) {
                  return $model->number;
@@ -215,7 +216,7 @@ class BaseClientController extends Controller
                 return date_format($date, 'M j, Y, g:i a');
             })
             ->addColumn('total', function ($model) {
-                return currency_format($model->grand_total,$code =$model->currency);
+                return currency_format($model->grand_total, $code = $model->currency);
             })
             ->addColumn('status', function ($model) {
                 return ucfirst($model->status);

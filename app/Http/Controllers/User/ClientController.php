@@ -4,11 +4,10 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\License\LicenseController;
 use App\Http\Requests\User\ClientRequest;
+use App\Model\Common\StatusSetting;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
-use App\Model\Order\Payment;
 use App\Model\Payment\Currency;
-use App\Model\Common\StatusSetting;
 use App\Model\User\AccountActivate;
 use App\Traits\PaymentsAndInvoices;
 use App\User;
@@ -285,7 +284,6 @@ class ClientController extends AdvanceSearchController
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-
 
     /**
      * Show the form for editing the specified resource.

@@ -359,13 +359,14 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
     public function invoiceGenerateByForm(Request $request, $user_id = '')
     {
-        $this->validate($request,[
+        $this->validate($request, [
 
                 'plan'      => 'required_if:subscription,true',
                 'price'     => 'required',
-            ],[
-                'plan.required_if' =>'Select a Plan',
+            ], [
+                'plan.required_if' => 'Select a Plan',
             ]);
+
         try {
             $agents = $request->input('agents');
             $status = 'pending';

@@ -21,17 +21,17 @@ class ApiController extends Controller
 
             $url_info = parse_url($url);
             $domain1 = $url_info['host'];
-            $url = preg_replace('#^www\.(.+\.)#i', '$1', $url_info['host']);//remove www from domain
+            $url = preg_replace('#^www\.(.+\.)#i', '$1', $url_info['host']); //remove www from domain
             $domain2 = 'www.'.$url;
             $domain1check = $url.','.$domain2;
             $orders = new Order();
             $order = $orders->where('domain', $domain1check)->orWhere('domain', $url)->orWhere('domain', $domain2)->first();
             if ($order) {
-                $product = Product::where('id',$order->product)->pluck('name')->first();
+                $product = Product::where('id', $order->product)->pluck('name')->first();
                 $result = 'success';
             }
 
-            return response()->json(compact('result','product'));
+            return response()->json(compact('result', 'product'));
         } catch (Exception $ex) {
             $error = $ex->getMessage();
 

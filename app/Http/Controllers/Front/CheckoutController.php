@@ -174,8 +174,9 @@ class CheckoutController extends InfoController
             // dd($items);
             if ($invoice) {
                 $items = $invoice->invoiceItem()->get();
-                if (count($items > 0))
-                $product = $this->product($invoiceid);
+                if (count($items > 0)) {
+                    $product = $this->product($invoiceid);
+                }
             }
 
             return view('themes.default1.front.paynow', compact('invoice', 'items', 'product'));

@@ -134,7 +134,7 @@ class BaseProductController extends ExtendedBaseProductController
                             'plan',
                             ['' => 'Select', 'Plans' => $plans],
                             null,
-                            ['class' => 'form-control', 'id' => 'plan', 'onchange' => 'getPrice(this.value)']
+                            ['class' => 'form-control required', 'id' => 'plan', 'onchange' => 'getPrice(this.value)']
                         ).'
                 </div>';
             } else {//If No Plan Exist For A Product

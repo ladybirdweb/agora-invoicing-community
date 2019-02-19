@@ -38,16 +38,17 @@
               <div class="form-group {{ $errors->has('version') ? 'has-error' : '' }}">
                     <!-- name -->
                     {!! Form::label('File',Lang::get('File'),['class'=>'required']) !!}
-                <input type="file" id="fileupload" name="file"  data-url="{{ url('chunkupload') }}" style="display: inline;">
-                <ul id="file-upload-list" class="list-unstyled">
+                   <div id="resumable-drop" style="display: none">
+                <p><button id="resumable-browse" data-url="{{ url('chunkupload') }}" >Upload</button> or drop here
+                    </p>
+                </div>
+                <ul id="file-upload-list" class="list-unstyled"  style="display: none">
+
+               </ul>
+                
               </div>
              <input type="hidden" name="file_ids" id="file_ids" value="">
-
-
-
-               
-
-            <div class="modal-footer">
+              <div class="modal-footer">
                 <button type="button" id="close" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
                  <button type="submit" class="btn btn-primary" id="uploadVersion"><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('Save')!!}</button>
             </div>

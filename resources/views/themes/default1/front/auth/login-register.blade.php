@@ -262,7 +262,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
 
                                                         <div class="form-group col-lg-6 {{ $errors->has('bussiness') ? 'has-error' : '' }}">
                                                             <label class="required">Industry</label>
-                                                            {!! Form::select('bussiness',[Lang::get('message.choose')=>$bussinesses],null,['class'=>'form-control input-lg', 'id'=>'business']) !!}
+                                                            {!! Form::select('bussiness',[''=>'Choose','Industry'=>$bussinesses],null,['class'=>'form-control input-lg', 'id'=>'business']) !!}
                                                     
                                                             <h6 id="bussinesscheck"></h6>
                                                         </div>
@@ -281,7 +281,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                     <div class="col-md-6 form-group {{ $errors->has('role') ? 'has-error' : '' }}">
                                                         <!-- email -->
                                                         {!! Form::label('company_type','Company Type',['class'=>'required']) !!}
-                                                        {!! Form::select('company_type',[Lang::get('message.choose')=>'Select','Company Types'=>$type],null,['class' => 'form-control input-lg', 'id'=>'company_type']) !!}
+                                                        {!! Form::select('company_type',[''=>'Choose','Company Types'=>$type],null,['class' => 'form-control input-lg', 'id'=>'company_type']) !!}
                                                      <h6 id="company_typecheck"></h6>
                                                     </div>
                                                     
@@ -289,7 +289,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                     <div class="col-md-6 form-group {{ $errors->has('role') ? 'has-error' : '' }}">
                                                         <!-- email -->
                                                         {!! Form::label('company_size','Company Size',['class'=>'required']) !!}
-                                                        {!! Form::select('company_size',[''=>'Select','Company Sizes'=>$size],null,['class' => 'form-control input-lg', 'id'=>'company_size']) !!}
+                                                        {!! Form::select('company_size',[''=>'Choose','Company Sizes'=>$size],null,['class' => 'form-control input-lg', 'id'=>'company_size']) !!}
                                                        <h6 id="company_sizecheck"></h6>
                                                     </div>
                                                     
@@ -299,7 +299,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                       <div class="form-group col {{ $errors->has('country') ? 'has-error' : '' }}">
                                                                 {!! Form::label('country',Lang::get('message.country'),['class'=>'required']) !!}
                                                                 <?php $countries = \App\Model\Common\Country::pluck('nicename', 'country_code_char2')->toArray(); ?>
-                                                                {!! Form::select('country',[Lang::get('message.choose')=>$countries],$country,['class' => 'form-control input-lg selectpicker','onChange'=>'getCountryAttr(this.value);','id'=>'country']) !!}
+                                                                {!! Form::select('country',[''=>'Choose','Countries'=>$countries],$country,['class' => 'form-control input-lg selectpicker','onChange'=>'getCountryAttr(this.value);','id'=>'country']) !!}
                                                             <h6 id="countrycheck"></h6>
 
                                                             </div>
@@ -349,7 +349,9 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                                     $value = old('state');
                                                                 }
                                                                 ?>
-                                                                {!! Form::select('state',[$states],$value,['class' => 'form-control input-lg','id'=>'state-list']) !!}
+
+                                                                   {!! Form::select('state',[$states],$value,['class' => 'form-control input-lg','id'=>'state-list']) !!}
+                                                               
                                                             <h6 id="statecheck"></h6>
                                                             </div>
                                                              
@@ -410,6 +412,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
 
                                                             <input type="checkbox" value="false"  id="term" > {{Lang::get('message.i-agree-to-the')}} <a href="https://faveohelpdesk.com/terms-conditions" target="_blank">{{Lang::get('message.terms')}}</a>
                                                         </label>
+                                                        <h6 id="termscheck"></h6>
                                                     </div>
                                              
                                                   
@@ -789,7 +792,7 @@ function verify_otp_check(){
     function resendOTP() {
         var data = {
             "mobile":   $('#verify_number').val(),
-            "code"  :    trim($('#verify_country_code').val()),
+            "code"  :  ($('#verify_country_code').val()),
         };
         $.ajax({
           url: '{{url('resend_otp')}}',
@@ -948,7 +951,6 @@ function verify_otp_check(){
           error: function (ex) {
             
             var myJSON = JSON.parse(ex.responseText);
-            console.log(myJSON);
             var html = '<div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<br><br><ul>';
             $("#sendOtp").html("Send");
            
@@ -1065,8 +1067,7 @@ function verify_otp_check(){
         }
    }
 
-  
-                  
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////            
 //Registration Form Validation
  function first_namecheck(){
     var firrstname_val = $('#first_name').val();
@@ -1387,6 +1388,7 @@ function verify_otp_check(){
             }
 
 
+
    //    $('#conpassword').keyup(function(){
    //     con_password_check();
    // });
@@ -1411,6 +1413,30 @@ function verify_otp_check(){
         }
   }
 
+    function terms(){
+    var term_val = $('#term').val();
+    console.log(term_val);
+    if(term_val == 'false'){
+        $('#termscheck').show();
+        $('#termscheck').html("Terms must be accepted");
+        $('#termscheck').focus();
+        $('#term').css("border-color","red");
+        $('#termscheck').css({"color":"red","margin-top":"5px"});
+        // userErr =false;
+           return false;;
+    }
+   
+    else{
+         $('#termscheck').hide();
+          $('#term').css("border-color","");
+         return true;
+    }
+   }
+
+
+////////////////////////Registration Valdation Ends////////////////////////////////////////////////////////////////////////////////////////////
+///
+///////////////////////VALIDATE TERMS AND CNDITION////////////////////////////////////////
  $(document).on('change','#term',function(){
     if($(this).val()=="false"){
       $(this).val("true");
@@ -1419,6 +1445,7 @@ function verify_otp_check(){
       $(this).val("false");
     }
  })
+ ////////////////////////////////////////////////////////////////////////////////////////////////////
 function registerUser() {
    $('#first_namecheck').hide();
    $('#last_namecheck').hide();
@@ -1436,6 +1463,7 @@ function registerUser() {
               $('#user_namecheck').hide();
                $('#password1check').hide();
                 $('#conpasscheck').hide();
+                 $('#termscheck').hide();
 
 
          var first_nameErr = true;
@@ -1454,10 +1482,10 @@ function registerUser() {
           var user_nameErr = true;
           var password1Err = true;
           var conPassErr = true;
-
+           var termsErr = true;
      // con_password_check();
 
-if(first_namecheck() && last_namecheck() && emailcheck() && companycheck()  && mobile_codecheck() && addresscheck() && towncheck()  && zipcheck() && bussinesscheck() && company_typecheck() && company_sizecheck() && countrycheck() && user_namecheck() && password1check() && conpasscheck() ) 
+if(first_namecheck() && last_namecheck() && emailcheck() && companycheck()  && mobile_codecheck() && addresscheck() && towncheck()  && zipcheck() && bussinesscheck() && company_typecheck() && company_sizecheck() && countrycheck() && user_namecheck() && password1check() && conpasscheck()  && terms()) 
      {
       
      $("#register").html("<i class='fas fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
@@ -1528,6 +1556,7 @@ if(first_namecheck() && last_namecheck() && emailcheck() && companycheck()  && m
             }
           },
           error: function (data) {
+            location.reload();
             $("#register").html("Register");
             $('html, body').animate({scrollTop:0}, 500);
            

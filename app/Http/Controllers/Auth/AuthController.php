@@ -317,10 +317,17 @@ class AuthController extends BaseAuthController
             $id = $state;
             $states = \App\Model\Common\State::where('country_code_char2', $id)
             ->orderBy('state_subdivision_name', 'asc')->get();
-            foreach ($states as $stateList) {
+
+            if (count($states)>0) {
+                 echo '<option value="">Choose</option>';
+                foreach ($states as $stateList) {
                 echo '<option value='.$stateList->state_subdivision_code.'>'
                 .$stateList->state_subdivision_name.'</option>';
+             }
+            } else {
+                echo "<option value=''>No States Available</option>";
             }
+            
         } catch (\Exception $ex) {
             echo "<option value=''>Problem while loading</option>";
 

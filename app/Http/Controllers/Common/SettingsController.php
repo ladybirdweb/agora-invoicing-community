@@ -24,7 +24,7 @@ class SettingsController extends BaseSettingsController
     public function __construct()
     {
         $this->middleware('auth', ['except' => 'checkPaymentGateway']);
-        // $this->middleware('admin', ['except' => 'checkPaymentGateway']);
+        $this->middleware('admin', ['except' => 'checkPaymentGateway']);
 
         $apikey = new ApiKey();
         $this->apikey = $apikey;

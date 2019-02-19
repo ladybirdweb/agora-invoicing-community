@@ -281,7 +281,7 @@ class TaxController extends Controller
             $id = $stateid;
             $states = \App\Model\Common\State::where('country_code_char2', $id)
             ->orderBy('state_subdivision_name', 'asc')->get();
-            echo '<option value=>Choose a State</option>';
+            echo '<option value="">Choose a State</option>';
             foreach ($states as $state) {
                 echo '<option value='.$state->state_subdivision_code.'>'.$state->state_subdivision_name.'</option>';
             }

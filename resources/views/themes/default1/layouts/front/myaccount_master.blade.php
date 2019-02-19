@@ -87,7 +87,7 @@ if($script){
                                 <div class="header-row">
                                 <div class="header-logo">
                                     <a href="{{url('home')}}">
-                                        <img alt="Porto" width="111" height="54" data-sticky-width="82" data-sticky-height="40" data-sticky-top="33" src="{{asset('common/images/'.$setting->logo)}}">
+                                        <img alt="Logo" width="111" height="54" data-sticky-width="82" data-sticky-height="40" data-sticky-top="33" src="{{asset('common/images/'.$setting->logo)}}">
                                     </a>
                                 </div>
                               </div>
@@ -255,7 +255,7 @@ if($script){
                                                                                   $price = $controller->rounding($item->getPriceSumWithConditions());
 
                                                                                   ?>
-                                                                                    <a>{{$item->name}}<br><span class="amount"><strong><small>{{$currency['symbol']}}</small> {{$price}}</strong></span></a>
+                                                                                    <a>{{$item->name}}<br><span class="amount"><strong>{{currency_format($price,$code = $currency['currency'])}}</strong></span></a>
 
                                                                                 </td>
 
@@ -362,18 +362,23 @@ if($script){
                     @endif
                 <div class="container">
                     @if(Session::has('success'))
-                    <div class="alert alert-success alert-dismissable">
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                        {{Session::get('success')}}
-                    </div>
-                    @endif
-                    <!-- fail message -->
-                    @if(Session::has('fails'))
-                    <div class="alert alert-danger alert-dismissable">
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                        {{Session::get('fails')}}
-                    </div>
-                    @endif
+                <div class="alert alert-success">
+                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                       <strong><i class="far fa-thumbs-up"></i> Well done!</strong>
+                   
+                    {!!Session::get('success')!!}
+                </div>
+                @endif
+                <!-- fail message -->
+                @if(Session::has('fails'))
+                 <div class="alert alert-danger alert-dismissable" role="alert">
+                   <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <strong><i class="fas fa-exclamation-triangle"></i>Oh snap!</strong> Change a few things up and try submitting again.
+                   {{Lang::get('message.alert')}}! {{Lang::get('message.failed')}}.
+                  
+                    {{Session::get('fails')}}
+                </div>
+                @endif
                     @if (count($errors) > 0)
                      <div class="alert alert-danger alert-dismissable" role="alert">
                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>

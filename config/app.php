@@ -101,6 +101,7 @@ return [
     |
     | This key is used by the Illuminate encrypter service and should be set
 
+'App\Plugins\Ccavenue\ServiceProvider',
 'App\Plugins\Paypal\ServiceProvider',
 'App\Plugins\Ccavanue\ServiceProvider',
 'App\Plugins\Ccavanue\ServiceProvider',

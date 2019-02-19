@@ -61,7 +61,6 @@ All Pages
                          <th>Name</th>
                           <th>Url</th>
                            <th>Created At</th>
-                            <th>Content</th>
                             <th>Action</th>
                         </tr></thead>
                      </table>
@@ -99,8 +98,6 @@ All Pages
                 {data: 'name', name: 'name'},
                 {data: 'url', name: 'Url'},
                 {data: 'created_at', name: 'Created At'},
-                {data: 'content', name: 'Content'},
-                
                 {data: 'action', name: 'Action'}
             ],
             "fnDrawCallback": function( oSettings ) {

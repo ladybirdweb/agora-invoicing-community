@@ -42,25 +42,46 @@ Activity Log
             <div class="col-md-3 form-group">
                 <!-- first name -->
                 {!! Form::label('from','View Logs From') !!}
-                {!! Form::date('from',null,['class' => 'form-control','id'=>'log_from']) !!}
+                <div class="input-group date">
+                  <div class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                  </div>
+                  <input type="text" name="from" class="form-control log_from" id="datepicker1">
+                </div>
 
             </div>
             <div class="col-md-3 form-group">
                 <!-- first name -->
                 {!! Form::label('till','View Logs Till') !!}
-                {!! Form::date('till',null,['class' => 'form-control','id'=>'log_till']) !!}
+                <div class="input-group date">
+                  <div class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                  </div>
+                  <input type="text" name="till" class="form-control log_till" id="datepicker2">
+                </div>
 
             </div>
             <div class="col-md-3 form-group">
                 <!-- first name -->
                 {!! Form::label('delFrom','Delete Logs From') !!}
-                {!! Form::date('delFrom',null,['class' => 'form-control','id'=>'del_from']) !!}
+                <div class="input-group date">
+                  <div class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                  </div>
+                  <input type="text" name="delFrom" class="form-control del_from" id="datepicker3">
+                </div>
 
             </div>
               <div class="col-md-3 form-group">
                 <!-- first name -->
                 {!! Form::label('delTill','Delete Logs Till') !!}
-                {!! Form::date('delTill',null,['class' => 'form-control','id'=>'del_till']) !!}
+                 <div class="input-group date">
+                  <div class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                  </div>
+                  <input type="text" name="delTill" class="form-control del_till" id="datepicker4">
+                </div>
+
 
             </div>
            
@@ -81,10 +102,10 @@ Activity Log
                     $(function () {
                     $('#reset').on('click', function () {
                       
-                        $('#log_from').val('');
-                        $('#log_till').val('');
-                         $('#del_from').val('');
-                         $('#del_till').val('');
+                        $('.log_from').val('');
+                        $('.log_till').val('');
+                         $('.del_from').val('');
+                         $('.del_till').val('');
                        
                     });
                 });
@@ -272,6 +293,23 @@ Activity Log
 
          });
    </script>
+   @section('datepicker')
+<script type="text/javascript">
+
+ $('#datepicker1').datepicker({
+      autoclose: true
+    });
+ $('#datepicker2').datepicker({
+      autoclose: true
+    });
+  $('#datepicker3').datepicker({
+      autoclose: true
+    });
+   $('#datepicker4').datepicker({
+      autoclose: true
+    });
+</script>
+@stop
    @stop
   
 

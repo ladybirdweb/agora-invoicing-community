@@ -60,19 +60,24 @@ class PageController extends GetPageTemplateController
                             return $model->url;
                         })
                         ->addColumn('created_at', function ($model) {
-                            return $model->created_at;
+                            $created = $model->created_at;
+                             if ($created) {
+                                  $date1 = new \DateTime($created);
+                                  $tz = \Auth::user()->timezone()->first()->name;
+                                  $date1->setTimezone(new \DateTimeZone($tz));
+                                  $createdate = $date1->format('M j, Y, g:i a ');
+                              }
+                            return $createdate;
                         })
 
-                        ->addColumn('content', function ($model) {
-                            return str_limit($model->content, 10, '...');
-                        })
+                
                         ->addColumn('action', function ($model) {
                             return '<a href='.url('pages/'.$model->id.'/edit')
                             ." class='btn btn-sm btn-primary btn-xs'><i class='fa fa-edit'
                                  style='color:white;'> </i>&nbsp;&nbsp;Edit</a>";
                         })
 
-                          ->rawColumns(['checkbox', 'name', 'url',  'created_at', 'content', 'action'])
+                          ->rawColumns(['checkbox', 'name', 'url',  'created_at', 'action'])
                         ->make(true);
         // ->searchColumns('name', 'content')
                         // ->orderColumns('name')

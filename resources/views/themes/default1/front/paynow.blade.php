@@ -110,7 +110,8 @@ Checkout
                                     {{$item->quantity}}
                                 </td>
                                 <td class="product-name">
-                                    <span class="amount">{!! $symbol !!}  {{$item->regular_price}}</span>
+                                    
+                                    <span class="amount">{{currency_format(intval($item->regular_price),$code = $currency)}}</span>
                                 </td>
                             </tr>
                             @empty 
@@ -199,7 +200,7 @@ Checkout
                         <strong>Cart Subtotal</strong>
                     </th>
                     <td>
-                        <strong><span class="amount">{{$symbol}} {{$subtotal}}</span></strong>
+                        <strong><span class="amount">{{currency_format($subtotal,$code = $currency)}}</span></strong>
                     </td>
                 </tr>
                   @foreach($items->toArray() as $attribute)
@@ -219,7 +220,10 @@ Checkout
                         <strong>{{$tax_name}}<span>@</span>{{$tax_percentage}}</strong><br/>
                          </th>
                     <td>
-                       {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($attribute['tax_percentage'],$subtotal)}} <br/>
+                    <?php
+                     $value = \App\Http\Controllers\Front\CartController::taxValue($attribute['tax_percentage'],$subtotal);
+                     ?>
+                      {{currency_format($value,$code = $currency)}}
                         
                        
                        
@@ -235,7 +239,8 @@ Checkout
                         <strong>Order Total</strong>
                     </th>
                     <td>
-                        <strong><span class="amount">{{$symbol}} {{$invoice->grand_total}}</span></strong>
+
+                        <strong><span class="amount"> {{currency_format($invoice->grand_total,$code = $currency)}}</span></strong>
                     </td>
                 </tr>
             </tbody>

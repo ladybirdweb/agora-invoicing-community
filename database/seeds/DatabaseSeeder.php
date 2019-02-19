@@ -272,7 +272,7 @@ class TemplateTableSeeder extends Seeder
 <tr>
 <td style="width: 30px;"> </td>
 <td style="width: 640px; padding-top: 30px;">
-<h2 style="color: #333; font-family: Arial, sans-serif; font-size: 18px; font-weight: bold; padding: 0; margin: 0;"><img src="https://www.faveohelpdesk.com/billing/public/cart/img/logo/faveo1.png" alt="Faveo Helpdesk" /></h2>
+<h2 style="color: #333; font-family: Arial, sans-serif; font-size: 18px; font-weight: bold; padding: 0; margin: 0;"><img src="https://billing.faveohelpdesk.com/common/images/faveo1.png" alt="Faveo Helpdesk" /></h2>
 </td>
 <td style="width: 30px;"> </td>
 </tr>
@@ -321,7 +321,7 @@ class TemplateTableSeeder extends Seeder
 <p style="line-height: 20px;"><a class="moz-txt-link-freetext" href="https://www.support.faveohelpdesk.com">www.support.faveohelpdesk.com</a></p>
 </td>
 <td style="color: #333; font-family: Arial, sans-serif; font-size: 11px; padding-left: 25px;" valign="top">
-<p style="line-height: 20px;">Ladybird Web Solution Pvt Ltd<br /><a class="moz-txt-link-abbreviated" href="mailto:accounts@ladybirdweb.com">accounts@ladybirdweb.com</a><br /><a class="moz-txt-link-freetext" href="www.faveohelpdesk.com">https://www.faveohelpdesk.com</a><br /> Tel: +91 80 3075 2618</p>
+<p style="line-height: 20px;">Ladybird Web Solution Pvt Ltd<br /><a class="moz-txt-link-abbreviated" href="mailto:accounts@ladybirdweb.com">accounts@ladybirdweb.com</a><br /><a class="moz-txt-link-freetext" href="https://www.faveohelpdesk.com">www.faveohelpdesk.com</a><br /> Tel: +91 80 3075 2618</p>
 </td>
 </tr>
 </tbody>
@@ -338,14 +338,14 @@ class TemplateTableSeeder extends Seeder
 <tr>
 <td style="width: 30px;">&nbsp;</td>
 <td style="width: 640px; padding-top: 30px;">
-<h2 style="color: #333; font-family: Arial,sans-serif; font-size: 18px; font-weight: bold; padding: 0; margin: 0;"><img src="http://www.faveohelpdesk.com/billing/public/cart/img/logo/faveo.png" alt="Faveo Helpdesk" /></h2>
+<h2 style="color: #333; font-family: Arial,sans-serif; font-size: 18px; font-weight: bold; padding: 0; margin: 0;"><img src="https://billing.faveohelpdesk.com/common/images/faveo1.png" alt="Faveo Helpdesk" /></h2>
 </td>
 <td style="width: 30px;">&nbsp;</td>
 </tr>
 <tr>
 <td style="width: 30px;">&nbsp;</td>
 <td style="width: 640px; padding-top: 30px;">
-<table style="width: 640px;" border="0" cellspacing="0" cellpadding="0">
+<table style="width: 640px;border-bottom: 1px solid #ccc;" border="0" cellspacing="0" cellpadding="0">
 <tbody>
 <tr>
 <td style="background: #fff; border-left: 1px solid                      #ccc; border-top: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px; border-radius: 5px                      0 0 0;">&nbsp;</td>
@@ -426,14 +426,14 @@ class TemplateTableSeeder extends Seeder
 <tr>
 <td style="width: 30px;">&nbsp;</td>
 <td style="width: 640px; padding-top: 30px;">
-<h2 style="color: #333; font-family: Arial, sans-serif; font-size: 18px; font-weight: bold; padding: 0; margin: 0;"><img src="http://www.faveohelpdesk.com/billing/public/cart/img/logo/faveo.png" alt="Faveo Helpdesk" /></h2>
+<h2 style="color: #333; font-family: Arial, sans-serif; font-size: 18px; font-weight: bold; padding: 0; margin: 0;"><img src="https://billing.faveohelpdesk.com/common/images/faveo1.png" alt="Faveo Helpdesk" /></h2>
 </td>
 <td style="width: 30px;">&nbsp;</td>
 </tr>
 <tr>
 <td style="width: 30px;">&nbsp;</td>
 <td style="width: 640px; padding-top: 30px;">
-<table style="width: 640px;" border="0" cellspacing="0" cellpadding="0">
+<table style="width: 640px;border-bottom: 1px solid #ccc;" border="0" cellspacing="0" cellpadding="0">
 <tbody>
 <tr>
 <td style="background: #fff; border-left: 1px solid #ccc; border-top: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;">&nbsp;</td>
@@ -470,7 +470,7 @@ class TemplateTableSeeder extends Seeder
 <p style="line-height: 20px;"><a class="moz-txt-link-freetext" href="https://www.support.faveohelpdesk.com">www.support.faveohelpdesk.com</a></p>
 </td>
 <td style="color: #333; font-family: Arial, sans-serif; font-size: 11px; padding-left: 25px;" valign="top">
-<p style="line-height: 20px;">Ladybird Web Solution Pvt Ltd<br /><a class="moz-txt-link-abbreviated" href="mailto:support@ladybirdweb.com">accounts@ladybirdweb.com</a><br /><a class="moz-txt-link-freetext" href="http://www.faveohelpdesk.com">www.faveohelpdesk.com</a><br /> Tel: +91 80 3075 2618</p>
+<p style="line-height: 20px;">Ladybird Web Solution Pvt Ltd<br /><a class="moz-txt-link-abbreviated" href="mailto:support@ladybirdweb.com">accounts@ladybirdweb.com</a><br /><a class="moz-txt-link-freetext" href="https://www.faveohelpdesk.com">www.faveohelpdesk.com</a><br /> Tel: +91 80 3075 2618</p>
 </td>
 </tr>
 </tbody>
@@ -487,14 +487,14 @@ class TemplateTableSeeder extends Seeder
 <tr>
 <td style="width: 30px;">&nbsp;</td>
 <td style="width: 640px; padding-top: 30px;">
-<h2 style="color: #333; font-family: Arial, sans-serif; font-size: 18px; font-weight: bold; padding: 0; margin: 0;"><img src="http://www.faveohelpdesk.com/billing/public/cart/img/logo/faveo.png" alt="Faveo Helpdesk" /></h2>
+<h2 style="color: #333; font-family: Arial, sans-serif; font-size: 18px; font-weight: bold; padding: 0; margin: 0;"><img src="https://billing.faveohelpdesk.com/common/images/faveo1.png" alt="Faveo Helpdesk" /></h2>
 </td>
 <td style="width: 30px;">&nbsp;</td>
 </tr>
 <tr>
 <td style="width: 30px;">&nbsp;</td>
 <td style="width: 640px; padding-top: 30px;">
-<table style="width: 640px;" border="0" cellspacing="0" cellpadding="0">
+<table style="width: 640px;border-bottom: 1px solid #ccc;" border="0" cellspacing="0" cellpadding="0">
 <tbody>
 <tr>
 <td style="background: #fff; border-left: 1px solid #ccc; border-top: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;">&nbsp;</td>
@@ -572,14 +572,14 @@ class TemplateTableSeeder extends Seeder
 <tr>
 <td style="width: 30px;">&nbsp;</td>
 <td style="width: 640px; padding-top: 30px;">
-<h2 style="color: #333; font-family: Arial, sans-serif; font-size: 18px; font-weight: bold; padding: 0; margin: 0;"><img src="https://www.faveohelpdesk.com/billing/public/cart/img/logo/faveo.png" alt="Faveo Helpdesk" /></h2>
+<h2 style="color: #333; font-family: Arial, sans-serif; font-size: 18px; font-weight: bold; padding: 0; margin: 0;"><img src="https://billing.faveohelpdesk.com/common/images/faveo1.png" alt="Faveo Helpdesk" /></h2>
 </td>
 <td style="width: 30px;">&nbsp;</td>
 </tr>
 <tr>
 <td style="width: 30px;">&nbsp;</td>
 <td style="width: 640px; padding-top: 30px;">
-<table style="width: 640px;" border="0" cellspacing="0" cellpadding="0">
+<table style="width: 640px;border-bottom: 1px solid #ccc;" border="0" cellspacing="0" cellpadding="0">
 <tbody>
 <tr>
 <td style="background: #fff; border-left: 1px solid #ccc; border-top: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;">&nbsp;</td>
@@ -657,14 +657,14 @@ class TemplateTableSeeder extends Seeder
 <tr>
 <td style="width: 30px;">&nbsp;</td>
 <td style="width: 640px; padding-top: 30px;">
-<h2 style="color: #333; font-family: Arial,sans-serif; font-size: 18px; font-weight: bold; padding: 0; margin: 0;"><img src="https://www.faveohelpdesk.com/billing/public/cart/img/logo/faveo.png" alt="Faveo Helpdesk" /></h2>
+<h2 style="color: #333; font-family: Arial,sans-serif; font-size: 18px; font-weight: bold; padding: 0; margin: 0;"><img src="https://billing.faveohelpdesk.com/common/images/faveo1.png" alt="Faveo Helpdesk" /></h2>
 </td>
 <td style="width: 30px;">&nbsp;</td>
 </tr>
 <tr>
 <td style="width: 30px;">&nbsp;</td>
 <td style="width: 640px; padding-top: 30px;">
-<table style="width: 640px;" border="0" cellspacing="0" cellpadding="0">
+<table style="width: 640px;border-bottom: 1px solid #ccc;" border="0" cellspacing="0" cellpadding="0">
 <tbody>
 <tr>
 <td style="background: #fff; border-left: 1px solid                      #ccc; border-top: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px; border-radius: 5px                      0 0 0;">&nbsp;</td>

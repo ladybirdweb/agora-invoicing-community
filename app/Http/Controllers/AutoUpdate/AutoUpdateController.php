@@ -49,11 +49,11 @@ class AutoUpdateController extends Controller
     /*
     *  Add New Version
     */
-    public function addNewVersion($product_id, $version_number, $version_status)
+    public function addNewVersion($product_id, $version_number, $upgrade_zip_file, $version_status)
     {
         $url = $this->url;
         $api_key_secret = $this->api_key_secret;
-        $addNewVersion = $this->postCurl($url, "api_key_secret=$api_key_secret&api_function=versions_add&product_id=$product_id&version_number=$version_number&version_status=$version_status&product_status=1");
+        $addNewVersion = $this->postCurl($url, "api_key_secret=$api_key_secret&api_function=versions_add&product_id=$product_id&version_number=$version_number&version_upgrade_file=$upgrade_zip_file&version_status=$version_status&product_status=1");
     }
 
     /*

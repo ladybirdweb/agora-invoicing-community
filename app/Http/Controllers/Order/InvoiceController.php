@@ -351,7 +351,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             return $invoiceItem;
         } catch (\Exception $ex) {
             dd($ex);
-            Bugsnag::notifyException($ex);
+            Bugsnag::notifyException($ex->getMessage());
 
             throw new \Exception('Can not create Invoice Items');
         }
@@ -359,6 +359,13 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
     public function invoiceGenerateByForm(Request $request, $user_id = '')
     {
+        $this->validate($request,[
+
+                'plan'      => 'required_if:subscription,true',
+                'price'     => 'required',
+            ],[
+                'plan.required_if' =>'Select a Plan',
+            ]);
         try {
             $agents = $request->input('agents');
             $status = 'pending';
@@ -386,9 +393,9 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $date = \Carbon\Carbon::now();
             $product = Product::find($productid);
             $cost = $controller->cost($productid, $user_id, $plan);
-            if ($cost != $total) {
-                $grand_total = $total;
-            }
+            // if ($cost != $total) {
+            //     $grand_total = $total;
+            // }
             $grand_total = $this->getGrandTotal($code, $total, $cost, $productid, $currency);
             $grand_total = $qty * $grand_total;
             if ($grand_total == 0) {

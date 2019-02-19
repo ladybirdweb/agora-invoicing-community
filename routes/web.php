@@ -347,6 +347,7 @@
 
         Route::get('invoices', 'Order\InvoiceController@index');
         Route::get('invoices/{id}', 'Order\InvoiceController@show');
+         Route::get('get-client-invoice/{id}', 'User\ClientController@getClientInvoice');
         Route::get('invoices/edit/{id}', 'Order\InvoiceController@edit');
          Route::post('invoice/edit/{id}', 'Order\InvoiceController@postEdit');
         Route::get('get-invoices', ['as' => 'get-invoices', 'uses' => 'Order\InvoiceController@getInvoices']);

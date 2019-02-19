@@ -46,8 +46,8 @@ Templates
         </div>
         @endif
         <div id="response"></div>
-        <h4>
-            <a href="{{url('templates/create')}}" class="btn btn-primary btn-sm pull-right"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;{{Lang::get('message.create')}}</a></h4>
+       <!--  <h4>
+            <a href="{{url('templates/create')}}" class="btn btn-primary btn-sm pull-right"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;{{Lang::get('message.create')}}</a></h4> -->
     </div>
 
 

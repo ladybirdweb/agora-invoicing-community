@@ -101,7 +101,7 @@ Application Settings
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title" >License Permissions</p>
+                        <p class="box-title">License Permissions</p>
                     </div>
                 </div>
 

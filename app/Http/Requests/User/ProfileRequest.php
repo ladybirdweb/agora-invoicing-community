@@ -36,8 +36,7 @@ class ProfileRequest extends Request
                     'address'                => 'required',
                     'zip'                    => 'required|numeric',
                     'user_name'              => 'required|unique:users,user_name,'.$userid,
-                    'bussiness'              => 'required',
-                     'profile_pic'           => 'sometimes|mimes:jpeg,jpg,png,gif|max:100000',
+                    'profile_pic'           => 'sometimes|mimes:jpeg,jpg,png,gif|max:100000',
 
         ];
         }
@@ -69,7 +68,7 @@ class ProfileRequest extends Request
 
         if ($this->segment(1) == 'auth') {
             return [
-                    'first_name'            => 'required|min:3|max:30',
+                    'first_name'            => 'required|min:2|max:30',
                     'last_name'             => 'required|max:30',
                     'email'                 => 'required|email|unique:users',
                     'company'               => 'required',

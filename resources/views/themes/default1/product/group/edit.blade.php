@@ -1,4 +1,7 @@
 @extends('themes.default1.layouts.master')
+@section('title')
+Edit Group
+@stop
 @section('content')
 
 <div class="row">

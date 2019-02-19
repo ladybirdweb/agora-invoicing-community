@@ -21,12 +21,7 @@ active
            <?php $gst =  App\Model\Payment\TaxOption::where('id', '1')->first(); 
           ?>
             <?php    
-            if($invoice->currency == 'INR'){
-                $symbol = '₹';
-             }
-             else{
-                $symbol = '$';
-             }
+           $symbol = Auth::user()->currency;
                 ?>
            
         <div class="featured-box featured-box-primary align-left mt-xlg"  style="text-align: left;">
@@ -101,10 +96,9 @@ active
                                     <tbody>
                                         @foreach($items as $item)
                                         <tr>
-
                                             <td>{{$item->product_name}}</td>
                                             <td>{{$item->quantity}}</td>
-                                            <td>{{$item->regular_price}}</td>
+                                            <td>{{currency_format(intval($item->regular_price),$code = $symbol)}}</td>
                                             <td>
                                                 <?php $taxes = explode(',', $item->tax_name); ?>
                                                 <ul class="list-unstyled">
@@ -131,7 +125,8 @@ active
                                         <td>
                                             {{$data}}
                                         </td>
-                                            <td>{{$item->subtotal}}</td>
+
+                                            <td>{{currency_format($item->subtotal,$code = $symbol)}}</td>
                                         </tr>
                                         @endforeach
                                     </tbody>
@@ -167,8 +162,7 @@ active
                                     ?>
 
                                    
-                                     
-                                    @if($tax_name[0] !='null')
+                                   @if(count($tax_name)>0 &&$tax_name[0] !='null')
                                      <?php
                                      $order = \App\Model\Order\Order::where('invoice_item_id',$item->id)->first();
                                     if($order != null) {
@@ -179,29 +173,37 @@ active
                                     $taxInstance= new \App\Http\Controllers\Front\CartController();
                                     $taxes= $taxInstance->checkTax($productId);
                                      ?>
-
+ 
                                     @if ($currency['currency'] == 'INR' && $user->country == 'IN')
                                     @if($set->state == $user->state)
-                                             <tr class="Taxes">
+                          <tr class="Taxes">
                             <th>
                                 <strong>CGST<span>@</span>{{$taxes['tax_attributes'][0]['c_gst']}}%</strong><br/>
                                 <strong>SGST<span>@</span>{{$taxes['tax_attributes'][0]['s_gst']}}%</strong><br/>
                                
                             </th>
                             <td>
-                                 {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($taxes['tax_attributes'][0]['c_gst'],$item->regular_price)}} <br/>
-                                {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($taxes['tax_attributes'][0]['s_gst'],$item->regular_price)}} <br/>
+                                <?php
+                                $cgst = \App\Http\Controllers\Front\CartController::taxValue($taxes['tax_attributes'][0]['c_gst'],$item->regular_price);
+                                $sgst = App\Http\Controllers\Front\CartController::taxValue($taxes['tax_attributes'][0]['s_gst'],$item->regular_price);
+                                ?>
+                                {{currency_format($cgst,$code = $symbol)}} <br/>
+                                {{currency_format($sgst,$code = $symbol)}} <br/> <br/>
                              </td>
                               </tr>
                                     @endif
                                       @if($set->state != $user->state && $taxes['tax_attributes'][0]['ut_gst'] == "NULL")
                                       <tr>
                                       <th>
+
                                     <strong>IGST<span>@</span>{{$taxes['tax_attributes'][0]['i_gst']}}%</strong><br/>
                                   
                             </th>
                             <td>
-                                  {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($taxes['tax_attributes'][0]['i_gst'],$item->regular_price)}} <br/>
+                                <?php
+                                $igst =  \App\Http\Controllers\Front\CartController::taxValue($taxes['tax_attributes'][0]['i_gst'],$item->regular_price);
+                                ?>
+                                  {{currency_format($igst,$code = $symbol)}}  <br/>
                               
                              </td>
                          </tr>
@@ -215,8 +217,12 @@ active
                                   
                             </th>
                             <td>
-                                {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($taxes['tax_attributes'][0]['ut_gst'],$item->regular_price)}} <br/>
-                                 {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($taxes['tax_attributes'][0]['c_gst'],$item->regular_price)}}
+                                <?php
+                                $utgst = \App\Http\Controllers\Front\CartController::taxValue($taxes['tax_attributes'][0]['ut_gst'],$item->regular_price);
+                                $cgst = \App\Http\Controllers\Front\CartController::taxValue($taxes['tax_attributes'][0]['c_gst'],$item->regular_price);
+                                ?>
+                                {{currency_format($utgst,$code = $symbol)}}<br/>
+                                 {{currency_format($cgst,$code = $symbol)}}<br/>
 
                               
                              </td>
@@ -230,8 +236,10 @@ active
                                             <strong>{{ucfirst($tax_name[0])}}<span>@</span>{{$tax_percentage[0]}} </strong>
                                         </th>
                                         <td>
-
-                                            <small>{!! $symbol !!}</small>&nbsp;{{App\Http\Controllers\Front\CartController::taxValue($tax_percentage[0],$item->regular_price)}}
+                                           <?php
+                                           $value = \App\Http\Controllers\Front\CartController::taxValue($tax_percentage[0],$item->regular_price);
+                                           ?>
+                                            {{currency_format($value,$code = $symbol)}}
                                             
                                         </td>
 
@@ -242,9 +250,8 @@ active
 
                                
                                
-                               
                                     <th>Total:</th>
-                                    <td><small>{!! $symbol !!}</small>&nbsp;{{$invoice->grand_total}}</td>
+                                    <td>{{currency_format($invoice->grand_total,$code = $symbol)}}</td>
 
                                     </table>
                                 </div>

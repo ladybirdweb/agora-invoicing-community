@@ -56,20 +56,20 @@ All Users
 
         <div class="row">
 
-            <div class="col-md-2 form-group">
+            <div class="col-md-3 form-group">
                 <!-- first name -->
                 {!! Form::label('name','Name') !!}
                 {!! Form::text('name',null,['class' => 'form-control','id'=>'name']) !!}
 
             </div>
             
-            <div class="col-md-2 form-group">
+            <div class="col-md-3 form-group">
                 <!-- first name -->
                 {!! Form::label('username','Username') !!}
                 {!! Form::text('username',null,['class' => 'form-control','id'=>'username']) !!}
 
             </div>
-            <div class="col-md-2 form-group">
+            <div class="col-md-3 form-group">
                 <!-- first name -->
                 {!! Form::label('company','Company Name') !!}
                 {!! Form::text('company',null,['class' => 'form-control','id'=>'company']) !!}
@@ -78,7 +78,7 @@ All Users
              <?php
             $countries=DB::table('countries')->pluck('nicename','country_code_char2')->toarray();
             ?>
-            <div class="col-md-2 form-group">
+            <div class="col-md-3 form-group">
                 <!-- first name -->
                 {!! Form::label('country','Country') !!}
                 <!-- {!! Form::select('country',['Choose',''=>$countries],null,['class' => 'form-control selectpicker','data-live-search'=>'true','data-live-search-placeholder'=>'Search','data-size'=>'10','id'=>'country']) !!} -->
@@ -93,20 +93,20 @@ All Users
 
 
             </div>
-            <div class="col-md-2 form-group">
+            <div class="col-md-3 form-group">
                 <!-- first name -->
                 {!! Form::label('mobile','Mobile') !!}
                 {!! Form::text('mobile',null,['class' => 'form-control','id'=>'mobile']) !!}
 
             </div>
-            <div class="col-md-2 form-group">
+            <div class="col-md-3 form-group">
                 <!-- first name -->
                 {!! Form::label('email','Email') !!}
                 {!! Form::text('email',null,['class' => 'form-control','id'=>'email']) !!}
 
             </div>
            
-<div class="col-md-2 form-group">
+<div class="col-md-3 form-group">
                 <!-- first name -->
                 {!! Form::label('industry','Industries') !!}
 
@@ -124,7 +124,7 @@ All Users
              
             </div>
 
-             <div class="col-md-2 form-group">
+             <div class="col-md-3 form-group">
                 <!-- first name -->
                 {!! Form::label('Role','Role') !!}
                  <select name="role"  class="form-control">
@@ -135,7 +135,7 @@ All Users
                  </select>
              </div>
              
-             <div class="col-md-2 form-group">
+             <div class="col-md-3 form-group">
                 <!-- first name -->
                 {!! Form::label('Position','Position') !!}
                  <select name="position"  class="form-control">
@@ -144,18 +144,27 @@ All Users
                   </select>
              </div>
 
-               <div class="col-md-2 form-group">
+               <div class="col-md-3 form-group">
                 <!-- first name -->
                 {!! Form::label('reg_from','Registered From') !!}
-                {!! Form::date('reg_from',null,['class' => 'form-control','id'=>'reg_from']) !!}
+                  <div class="input-group date">
+                  <div class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                  </div>
+                  <input type="text" name="reg_from" class="form-control reg_from" id="datepicker">
+                </div>
 
             </div>
 
-              <div class="col-md-2 form-group">
+              <div class="col-md-3 form-group">
                 <!-- first name -->
                 {!! Form::label('from','Registered Till') !!}
-                {!! Form::date('reg_till',null,['class' => 'form-control','id'=>'reg_till']) !!}
-
+                <div class="input-group date">
+                  <div class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                  </div>
+                  <input type="text" name="reg_till" class="form-control reg_till" id="datepicker1">
+                </div>
             </div>
 
             
@@ -167,9 +176,9 @@ All Users
             
               
                 <div class="col-md-6">
-                    <button name="Search" type="submit"  class="btn btn-primary" data-loading-text="<i class='fa fa-search fa-spin fa-1x fa-fw'>&nbsp;</i> updating..."><i class="fa fa-search">&nbsp;&nbsp;</i>{!!Lang::get('Search')!!}</button>
-                      &nbsp;&nbsp;
-                      <button name="Reset" type="submit" id="reset" class="btn btn-danger" data-loading-text="<i class='fa fa-refresh fa-spin fa-1x fa-fw'>&nbsp;</i> updating..."><i class="fa fa-refresh">&nbsp;&nbsp;</i>{!!Lang::get('Reset')!!}</button>
+                    <button name="Search" type="submit"  class="btn btn-primary" data-loading-text="<i class='fa fa-search fa-spin fa-1x fa-fw'>&nbsp;</i> updating..."><i class="fa fa-search">&nbsp;</i>{!!Lang::get('Search')!!}</button>
+                      &nbsp;
+                      <button name="Reset" type="submit" id="reset" class="btn btn-danger" data-loading-text="<i class='fa fa-refresh fa-spin fa-1x fa-fw'>&nbsp;</i> updating..."><i class="fa fa-refresh">&nbsp;</i>{!!Lang::get('Reset')!!}</button>
                 </div>
            
          
@@ -184,8 +193,8 @@ All Users
                         $('#email').val('');
                         $('#mobile').val('');
                         $('#username').val('');
-                        $('#reg_from').val('');
-                        $('#reg_till').val('');
+                        $('.reg_from').val('');
+                        $('.reg_till').val('');
                         // $('#role').val('');
                     //     var uri = window.location.toString();
 
@@ -352,5 +361,11 @@ All Users
         }  
 
      });
+      $('#datepicker').datepicker({
+      autoclose: true
+    })
+        $('#datepicker1').datepicker({
+      autoclose: true
+    })
 </script>
 @stop

@@ -324,14 +324,14 @@ select.form-control{
 
 
 <script>
-    $(document).ready(function(){
+
 // get the country data from the plugin
 var countryData = $.fn.intlTelInput.getCountryData(),
   telInput = $("#mobile_code"),
   addressDropdown = $("#country");
 // init plugin
 telInput.intlTelInput({
-  utilsScript: "../../build/js/utils.js" // just for formatting/placeholders etc
+  utilsScript: "common/js/utils.js" // just for formatting/placeholders etc
 });
 
 // populate the country dropdown
@@ -351,7 +351,7 @@ telInput.on("countrychange", function(e, countryData) {
 addressDropdown.change(function() {
   telInput.intlTelInput("setCountry", $(this).val());
 });
-})
+
 
     function getCountryAttr(val) {
         getState(val);

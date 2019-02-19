@@ -143,7 +143,7 @@ Edit Promotion
                         <td>
                             <div class="form-group {{ $errors->has('start') ? 'has-error' : '' }}">
 
-                                {!! Form::date('start',null,['class'=>'form-control']) !!}
+                                {!! Form::text('start',null,['class'=>'form-control','id'=>'datepicker1']) !!}
 
                             </div>
                         </td>
@@ -158,7 +158,7 @@ Edit Promotion
                             <div class="form-group {{ $errors->has('expiry') ? 'has-error' : '' }}">
 
 
-                                {!! Form::date('expiry',null,['class' => 'form-control']) !!}
+                                {!! Form::text('expiry',null,['class' => 'form-control','id'=>'datepicker2']) !!}
 
                             </div>
                         </td>
@@ -201,15 +201,15 @@ Edit Promotion
 
 <script src="{{asset("plugins/moment-develop/moment.js")}}" type="text/javascript"></script>
 
+@section('datepicker')
 <script type="text/javascript">
-    $(function () {
-        $('#start').datetimepicker({
-            format: 'YYYY-MM-DD'
-        });
+
+ $('#datepicker1').datepicker({
+      autoclose: true
     });
-    $(function () {
-        $('#expiry').datetimepicker({
-            format: 'YYYY-MM-DD'
-        });
+  $('#datepicker2').datepicker({
+      autoclose: true
     });
+
 </script>
+@stop

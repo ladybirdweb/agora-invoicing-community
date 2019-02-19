@@ -13,6 +13,6 @@ return [
 
     'settings' => 'payment-gateway/paypal',
 
-    'website' => 'http://www.faveohelpdesk.com/',
+    'website' => 'https://www.faveohelpdesk.com/',
 
 ];

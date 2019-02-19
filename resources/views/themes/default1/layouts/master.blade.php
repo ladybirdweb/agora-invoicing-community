@@ -19,6 +19,7 @@
         <!-- Theme style -->
         <link href="{{asset('admin/css/AdminLTE.min.css')}}" rel="stylesheet" type="text/css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
+         <link rel="stylesheet" href="{{asset('admin/plugins/datepicker/bootstrap-datepicker.min.css')}}">
 
         <!-- Custom style -->
         <link rel="stylesheet" href="{{asset('admin/css/custom.css')}}">
@@ -335,7 +336,7 @@ function move() {
         <script src="{{asset('admin/plugins/jquery-file-upload/jquery.fileupload.js')}}"></script>   
          <!-- <script src="{{asset('plugins/jquery-file-upload/main.js')}}"></script> -->
             <script src="{{asset('admin/plugins/jquery-file-upload/jquery.iframe-transport.js')}}"></script>
-    
+     <script src="{{asset('admin/plugins/jquery-file-upload/resumable.js')}}"></script>
      
           <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script> -->
 
@@ -351,7 +352,7 @@ function move() {
         <script src="{{asset('admin/js/app.min.js')}}" type="text/javascript"></script>
         <script src="{{asset('bower_components/datatables.net/js/jquery.dataTables.min.js')}}"></script>
         <script src="{{asset('bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js')}}"></script>
-        <script src="{{asset('bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js')}}"></script>
+        <script src="{{asset('admin/plugins/datepicker/bootstrap-datepicker.min.js')}}"></script>
         <!-- icheck -->
         <script src="{{asset('admin/plugins/iCheck/icheck.min.js')}}" type="text/javascript"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>

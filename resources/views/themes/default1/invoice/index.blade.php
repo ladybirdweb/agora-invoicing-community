@@ -29,20 +29,20 @@ All Invoices
 
         <div class="row">
             
-             <div class="col-md-2 form-group">
+             <div class="col-md-3 form-group">
                 <!-- first name -->
                 {!! Form::label('name','First Name') !!}
                 {!! Form::text('name',null,['class' => 'form-control','id'=>'name']) !!}
 
             </div>
 
-            <div class="col-md-2 form-group">
+            <div class="col-md-3 form-group">
                 <!-- first name -->
                 {!! Form::label('invoice_no','Invoice No') !!}
                 {!! Form::text('invoice_no',null,['class' => 'form-control','id'=>'invoice_no']) !!}
 
             </div>
-            <div class="col-md-2 form-group">
+            <div class="col-md-3 form-group">
                 <!-- first name -->
                 {!! Form::label('status','Status') !!}
                <select name="status"  class="form-control" id="status">
@@ -52,7 +52,7 @@ All Invoices
                  </select>
 
             </div>
-           <div class="col-md-2 form-group">
+           <div class="col-md-3 form-group">
                 {!! Form::label('currency','Currency') !!}
              <select name="currency_id"  class="form-control" id="currency">
              <option value="">Choose</option>
@@ -62,21 +62,32 @@ All Invoices
                </select>
           </div>
             
-            <div class="col-md-2 form-group">
+            <div class="col-md-3 form-group">
                 <!-- first name -->
                 {!! Form::label('from','Invoice From') !!}
-                {!! Form::text('from',null,['class' => 'form-control','id'=>'from']) !!}
+                 <div class="input-group date">
+                  <div class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                  </div>
+                  <input type="text" name="from" class="form-control from" id="datepicker1">
+                </div>
 
             </div>
-            <div class="col-md-2 form-group">
+            <div class="col-md-3 form-group">
                 <!-- first name -->
                 {!! Form::label('till','Invoice Till') !!}
-                {!! Form::text('till',null,['class' => 'form-control','id'=>'till']) !!}
+                <div class="input-group date">
+                  <div class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                  </div>
+                  <input type="text" name="till" class="form-control till" id="datepicker2">
+                </div>
 
             </div>
-           
+        </div>
+            
 
-          
+            <div class='row'>
                 <div class="col-md-6">
                     <!-- {!! Form::submit('Search',['class'=>'btn btn-primary']) !!} -->
                     <button name="Search" type="submit"  class="btn btn-primary" data-loading-text="<i class='fa fa-search fa-spin fa-1x fa-fw'>&nbsp;</i> updating..."><i class="fa fa-search">&nbsp;&nbsp;</i>{!!Lang::get('Search')!!}</button>
@@ -86,9 +97,8 @@ All Invoices
 
 
                 </div>
-            <?php
+            </div>
 
-?>
 
         </div>
             <script type="text/javascript">
@@ -99,8 +109,8 @@ All Invoices
                         $('#invoice_no').val('');
                         $('#status').val('');
                         $('#currency').val('');
-                        $('#from').val('');
-                        $('#till').val('');
+                        $('.from').val('');
+                        $('.till').val('');
                       
                     
                           
@@ -111,7 +121,7 @@ All Invoices
 
         {!! Form::close() !!}
     </div>
-</div>
+
 <div class="box box-primary">
 
     <div class="box-header">
@@ -264,16 +274,13 @@ All Invoices
 @stop
 @section('datepicker')
 <script type="text/javascript">
-$(function () {
-    $('#from').datetimepicker({
-        format: 'YYYY-MM-DD'
+
+ $('#datepicker1').datepicker({
+      autoclose: true
     });
-});
-$(function () {
-    $('#till').datetimepicker({
-        format: 'YYYY-MM-DD'
+ $('#datepicker2').datepicker({
+      autoclose: true
     });
-});
 </script>
 @stop
 

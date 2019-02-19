@@ -333,24 +333,6 @@ class OrderController extends BaseOrderController
         }
     }
 
-    public function deleleById($id)
-    {
-        try {
-            $order = $this->order->find($id);
-            if ($order) {
-                $order->delete();
-            } else {
-                return redirect()->back()->with('fails', 'Can not delete');
-            }
-
-            return redirect()->back()->with('success', "Order $order->number has Deleted Successfully");
-        } catch (\Exception $e) {
-            Bugsnag::notifyException($e);
-
-            return redirect()->back()->with('fails', $e->getMessage());
-        }
-    }
-
     public function plan($invoice_item_id)
     {
         try {

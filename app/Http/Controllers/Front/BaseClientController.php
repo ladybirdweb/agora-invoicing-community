@@ -131,10 +131,11 @@ class BaseClientController extends Controller
         try {
             $user = \Auth::user();
             if ($request->hasFile('profile_pic')) {
+                $file = $request->file('profile_pic');
                 $name = \Input::file('profile_pic')->getClientOriginalName();
-                $destinationPath = 'dist/app/users';
+                $destinationPath = public_path('common\images\users');
                 $fileName = rand(0000, 9999).'.'.$name;
-                \Input::file('profile_pic')->move($destinationPath, $fileName);
+                $file->move($destinationPath, $fileName);
                 $user->profile_pic = $fileName;
             }
             $user->first_name = strip_tags($request->input('first_name'));
@@ -192,13 +193,12 @@ class BaseClientController extends Controller
             $relation = $order->invoiceRelation()->pluck('invoice_id')->toArray();
             $invoice = new Invoice();
             $invoices = $invoice
-                    ->select('number', 'created_at', 'grand_total', 'id', 'status')
+                    ->select('number', 'created_at', 'grand_total','currency', 'id', 'status')
                     ->whereIn('id', $relation);
             if ($invoices->get()->count() == 0) {
                 $invoices = $order->invoice()
                         ->select('number', 'created_at', 'grand_total', 'id', 'status');
             }
-
             return \DataTables::of($invoices->get())
              ->addColumn('number', function ($model) {
                  return $model->number;
@@ -215,7 +215,7 @@ class BaseClientController extends Controller
                 return date_format($date, 'M j, Y, g:i a');
             })
             ->addColumn('total', function ($model) {
-                return $model->grand_total;
+                return currency_format($model->grand_total,$code =$model->currency);
             })
             ->addColumn('status', function ($model) {
                 return ucfirst($model->status);

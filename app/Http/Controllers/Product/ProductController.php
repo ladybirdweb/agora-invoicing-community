@@ -174,9 +174,9 @@ class ProductController extends BaseProductController
         $this->validate($request, [
         'producttitle' => 'required',
         'version'      => 'required',
-       // 'filename'     => 'required',
-      //  ],
-       // ['filename.required' => 'Please Uplaod A file',
+       'filename'     => 'required',
+       ],
+       ['filename.required' => 'Please Uplaod A file',
         ]);
 
         try {
@@ -192,7 +192,7 @@ class ProductController extends BaseProductController
             $autoUpdateStatus = StatusSetting::pluck('update_settings')->first();
             if ($autoUpdateStatus == 1) { //If License Setting Status is on,Add Product to the License Manager
                 $updateClassObj = new \App\Http\Controllers\AutoUpdate\AutoUpdateController();
-                $addProductToAutoUpdate = $updateClassObj->addNewVersion($product_id->id, $request->input('version'), '1');
+                $addProductToAutoUpdate = $updateClassObj->addNewVersion($product_id->id, $request->input('version'),$request->input('filename'), '1');
             }
             $response = ['success'=>'true', 'message'=>'Product Uploaded Successfully'];
 

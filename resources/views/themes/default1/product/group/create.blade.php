@@ -1,4 +1,7 @@
 @extends('themes.default1.layouts.master')
+@section('title')
+Create Group
+@stop
 @section('content')
 
 <div class="row">

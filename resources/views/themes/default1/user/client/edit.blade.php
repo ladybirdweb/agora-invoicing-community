@@ -334,7 +334,7 @@ Edit User
             });
         },
         separateDialCode: true,
-        // utilsScript: "{{asset('js/intl/js/utils.js')}}",
+        utilsScript: "{{asset('common/js/js/utils.js')}}",
     });
     setTimeout(()=>{
          telInput.intlTelInput("setCountry", currentCountry);

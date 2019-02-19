@@ -143,14 +143,14 @@ Order Details
                 <div class="row">
                     <div class="col-md-12">
                          <table id="editorder-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
-                             <button  value="" class="btn btn-danger btn-sm btn-alldell" id="mass_delete"><i class= "fa fa-trash"></i>&nbsp;&nbsp;Delete Selected</button><br /><br />
+                             
 
                     <thead><tr>
                         
                          <th >Number</th>
                           <th>Products</th>
                            
-                            <th>Date No</th>
+                            <th>Date</th>
                             <th>Total</th>
                             
                              <th>Status</th>
@@ -269,6 +269,7 @@ Order Details
                 {data: 'amount', name: 'amount'},
                 {data: 'payment_method', name: 'payment_method'},
                 {data: 'payment_status', name: 'payment_status'},
+                {data: 'created_at', name: 'created_at'},
                  
                
             ],

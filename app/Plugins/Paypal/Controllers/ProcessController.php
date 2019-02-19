@@ -133,7 +133,6 @@ class ProcessController extends Controller
             $url = $config->paypal_url;
             $post_data = http_build_query($data);
             echo $url;
-            dd($post_data);
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $url);
             curl_setopt($ch, CURLOPT_POST, 1);

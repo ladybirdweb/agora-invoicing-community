@@ -28,13 +28,13 @@ View All Orders
 
         <div class="row">
 
-            <div class="col-md-2 form-group">
+            <div class="col-md-3 form-group">
                 <!-- first name -->
                 {!! Form::label('order_no','Order No:') !!}
                 {!! Form::text('order_no',null,['class' => 'form-control','id'=>'order_no']) !!}
 
             </div>
-            <div class="col-md-2 form-group">
+            <div class="col-md-3 form-group">
                 <!-- first name -->
                 {!! Form::label('product_id','Product') !!}
                <!--  {!! Form::select('product_id',[''=>'Select','Products'=>$products],null,['class' => 'form-control','id'=>'product_id']) !!} -->
@@ -46,31 +46,48 @@ View All Orders
                           </select>
 
             </div>
-            <div class="col-md-2 form-group">
+            <div class="col-md-3 form-group">
                 <!-- first name -->
                 {!! Form::label('expiry','Expiry From') !!}
-                {!! Form::date('expiry',null,['class' => 'form-control','id'=>'expary']) !!}
-
+                 <div class="input-group date">
+                  <div class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                  </div>
+                  <input type="text" name="expiry" class="form-control expary" id="datepicker1">
+                </div>
             </div>
-             <div class="col-md-2 form-group">
+             <div class="col-md-3 form-group">
                 <!-- first name -->
                 {!! Form::label('expiry','Expiry Till') !!}
-                {!! Form::date('expiryTill',null,['class' => 'form-control','id'=>'exparytill']) !!}
-
+                 <div class="input-group date">
+                  <div class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                  </div>
+                  <input type="text" name="expiryTill" class="form-control exparytill" id="datepicker2">
+                </div>
+         
             </div>
-            <div class="col-md-2 form-group">
+            <div class="col-md-3 form-group">
                 <!-- first name -->
                 {!! Form::label('from','Order From') !!}
-                {!! Form::date('from',null,['class' => 'form-control','id'=>'payment_date']) !!}
-
+                 <div class="input-group date">
+                  <div class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                  </div>
+                  <input type="text" name="from" class="form-control payment_date" id="datepicker3">
+                </div>
             </div>
-            <div class="col-md-2 form-group">
+            <div class="col-md-3 form-group">
                 <!-- first name -->
                 {!! Form::label('till','Order Till') !!}
-                {!! Form::date('till',null,['class' => 'form-control','id'=>'payment_till']) !!}
-
+                <div class="input-group date">
+                  <div class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                  </div>
+                  <input type="text" name="till" class="form-control payment_till" id="datepicker4">
+                </div>
             </div>
-            <div class="col-md-2 form-group">
+            <div class="col-md-3 form-group">
                 <!-- first name -->
                 {!! Form::label('domain','Domain') !!}
                 {!! Form::text('domain',null,['class' => 'form-control','id'=>'domain']) !!}
@@ -96,10 +113,10 @@ View All Orders
                       
                         $('#order_no').val('');
                         $('#product_id').val('');
-                        $('#expary').val('');
-                        $('#exparytill').val('');
-                        $('#payment_date').val('');
-                        $('#payment_till').val('');
+                        $('.expary').val('');
+                        $('.exparytill').val('');
+                        $('.payment_date').val('');
+                        $('.payment_till').val('');
                         $('#domain').val('');
                     
                           
@@ -259,5 +276,17 @@ View All Orders
         }  
 
      });
+     $('#datepicker1').datepicker({
+      autoclose: true
+    });
+    $('#datepicker2').datepicker({
+      autoclose: true
+    })
+    $('#datepicker3').datepicker({
+      autoclose: true
+    })
+    $('#datepicker4').datepicker({
+      autoclose: true
+    })
 </script>
 @stop

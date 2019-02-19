@@ -45,10 +45,11 @@ class ProfileController extends Controller
         try {
             $user = \Auth::user();
             if ($request->hasFile('profile_pic')) {
+                $file = $request->file('profile_pic');
                 $name = \Input::file('profile_pic')->getClientOriginalName();
-                $destinationPath = public_path('dist/app/users');
+                $destinationPath = public_path('common\images\users');
                 $fileName = rand(0000, 9999).'.'.$name;
-                \Input::file('profile_pic')->move($destinationPath, $fileName);
+                $file->move($destinationPath, $fileName);
                 $user->profile_pic = $fileName;
             }
             $user->fill($request->input())->save();
@@ -72,7 +73,8 @@ class ProfileController extends Controller
 
                 return redirect()->back()->with('success1', \Lang::get('message.updated-successfully'));
             } else {
-                return redirect()->back()->with('fails1', \Lang::get('message.not-updated'));
+                return redirect()->back()->with('fails1', 'Old Password Not Correct');
+                
             }
         } catch (\Exception $e) {
             return redirect()->back()->with('fails', $e->getMessage());

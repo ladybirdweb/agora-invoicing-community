@@ -7,7 +7,7 @@ use App\Model\Order\Payment;
 use App\User;
 use Illuminate\Http\Request;
 
-class AdvanceSearchController extends Controller
+class AdvanceSearchController extends AdminOrderInvoiceController
 {
     /**
      * Serach for Mobile,Email,Country.

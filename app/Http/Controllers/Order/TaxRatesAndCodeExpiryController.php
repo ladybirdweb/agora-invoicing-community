@@ -47,16 +47,14 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
      **/
     public function getGrandTotal($code, $total, $cost, $productid, $currency)
     {
+        $grand_total = $total;
         if ($code) {
             $grand_total = $this->checkCode($code, $productid, $currency);
         } else {
-            if (!$total) {
+            if ($total != 0) {
                 $grand_total = $cost;
-            } else {
-                $grand_total = $total;
-            }
+            } 
         }
-
         return $grand_total;
     }
 
@@ -280,23 +278,6 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
         }
     }
 
-    public function deleleById($id)
-    {
-        try {
-            $invoice = Invoice::find($id);
-            if ($invoice) {
-                $invoice->delete();
-            } else {
-                return redirect()->back()->with('fails', 'Can not delete');
-            }
-
-            return redirect()->back()->with('success', "Invoice $invoice->number has been Deleted Successfully");
-        } catch (\Exception $e) {
-            Bugsnag::notifyException($e);
-
-            return redirect()->back()->with('fails', $e->getMessage());
-        }
-    }
 
     public function getPromotionDetails($code)
     {

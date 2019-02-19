@@ -125,12 +125,12 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     {
         $image = \Gravatar::src($this->attributes['email']);
         if ($value) {
-            $file = public_path('dist/app/users/'.$value);
+            $file = public_path('common/images/users/'.$value);
             if (is_file($file)) {
                 $mime = \File::mimeType($file);
                 $extension = \File::extension($file);
-                if ($mime == 'image' && $extension == 'image') {
-                    $image = asset('dist/app/users/'.$value);
+                if (mime($mime) == 'image' && mime($extension) == 'image') {
+                    $image = asset('common/images/users/'.$value);
                 } else {
                     unlink($file);
                 }
@@ -151,13 +151,25 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         $this->attributes['country'] = $value;
     }
 
-    public function bussiness()
+    public function getBussinessAttribute()
     {
         $short = $this->attributes['bussiness'];
         $name = '--';
         $bussiness = \App\Model\Common\Bussiness::where('short', $short)->first();
         if ($bussiness) {
             $name = $bussiness->name;
+        }
+
+        return $name;
+    }
+
+    public function getCompanyTypeAttribute()
+    {
+        $short = $this->attributes['company_type'];
+        $name = '--';
+        $company = \DB::table('company_types')->where('short', $short)->first();
+        if ($company) {
+            $name = $company->name;
         }
 
         return $name;

@@ -174,7 +174,7 @@ class CheckoutController extends InfoController
             // dd($items);
             if ($invoice) {
                 $items = $invoice->invoiceItem()->get();
-
+                if (count($items > 0))
                 $product = $this->product($invoiceid);
             }
 

@@ -17,7 +17,7 @@ class LicenseController extends Controller
     public function __construct()
     {
         $model = new ApiKey();
-        $this->license = $model->firstOrFail();
+        $this->license = $model->first();
 
         $this->api_key_secret = $this->license->license_api_secret;
         $this->url = $this->license->license_api_url;

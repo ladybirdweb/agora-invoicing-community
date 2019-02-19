@@ -11,7 +11,7 @@ return [
 
     'version' => '1.0.0',
 
-    'settings' => 'payment-gateway/ccavenue',
+    'settings' => 'payment-gateway/ccavanue',
 
     'website' => 'https://www.faveohelpdesk.com/',
 

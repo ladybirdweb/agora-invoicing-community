@@ -378,7 +378,9 @@ class TemplateController extends BaseTemplateController
                     $prices[] = $value->planPrice()->where('currency', $currencyAndSymbol['currency'])->min('add_price');
                 }
                 $price = min($prices);
-                $cost = '<span class="price-unit">'.$currencyAndSymbol['symbol'].'</span>'.$price;
+                $format = currency_format($price,$code=$currencyAndSymbol['currency']);
+                $finalPrice = str_replace($currencyAndSymbol['symbol'], '', $format);
+                $cost = '<span class="price-unit">'.$currencyAndSymbol['symbol'].'</span>'.$finalPrice;
             }
 
             return $cost;

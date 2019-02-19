@@ -1,4 +1,3 @@
-
 <?php
 use Monolog\Handler\StreamHandler;
 

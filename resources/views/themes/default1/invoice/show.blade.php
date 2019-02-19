@@ -137,7 +137,7 @@ View Invoice
                          
                                         <td>{{$item->product_name}}</td>
                                         <td>{{$item->quantity}}</td>
-                                        <td>{{$item->regular_price}}</td>
+                                        <td>{{currency_format($item->regular_price,$code=$symbol)}}</td>
                                         <td>
                                             <?php $taxes = explode(',', $item->tax_name); ?>
                                             <ul class="list-unstyled">
@@ -164,7 +164,7 @@ View Invoice
                                         <td>
                                             {{$data}}
                                         </td>
-                                        <td>{{$item->subtotal}}</td>
+                                        <td> {{currency_format($item->subtotal,$code=$symbol)}}</td>
                                     </tr>
                                     @endforeach
                                 </tbody>
@@ -212,8 +212,12 @@ View Invoice
                                
                             </th>
                             <td>
-                                 {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($taxes['tax_attributes'][0]['c_gst'],$item->regular_price)}} <br/>
-                                {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($taxes['tax_attributes'][0]['s_gst'],$item->regular_price)}} <br/>
+                                <?php
+                                $cgst = \App\Http\Controllers\Front\CartController::taxValue($taxes['tax_attributes'][0]['c_gst'],$item->regular_price);
+                                $sgst = \App\Http\Controllers\Front\CartController::taxValue($taxes['tax_attributes'][0]['s_gst'],$item->regular_price);
+                                ?>
+                                {{currency_format($cgst,$code=$symbol)}} <br/>
+                                {{currency_format($sgst,$code=$symbol)}}<br/>
                              </td>
                               </tr>
                                     @endif
@@ -224,7 +228,10 @@ View Invoice
                                   
                             </th>
                             <td>
-                                  {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($taxes['tax_attributes'][0]['i_gst'],$item->regular_price)}} <br/>
+                                <?php
+                                $igst =  \App\Http\Controllers\Front\CartController::taxValue($taxes['tax_attributes'][0]['i_gst'],$item->regular_price);
+                                ?>
+                                  {{currency_format($igst,$code=$symbol)}} <br/>
                               
                              </td>
                          </tr>
@@ -238,10 +245,13 @@ View Invoice
                                   
                             </th>
                             <td>
-                                {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($taxes['tax_attributes'][0]['ut_gst'],$item->regular_price)}} <br/>
-                                 {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($taxes['tax_attributes'][0]['c_gst'],$item->regular_price)}}
+                                <?php
+                                $utgst = \App\Http\Controllers\Front\CartController::taxValue($taxes['tax_attributes'][0]['ut_gst'],$item->regular_price);
+                                $cgst = App\Http\Controllers\Front\CartController::taxValue($taxes['tax_attributes'][0]['c_gst'],$item->regular_price)
+                                    ?>
+                                {{currency_format($utgst,$code=$symbol)}} <br/>
+                                {{currency_format($cgst,$code=$symbol)}}
 
-                              
                              </td>
                          </tr>
                                      @endif
@@ -253,21 +263,17 @@ View Invoice
                                             <strong>{{ucfirst($tax_name[0])}}<span>@</span>{{$tax_percentage[0]}} </strong>
                                         </th>
                                         <td>
-
-                                            <small>{!! $symbol !!}</small>&nbsp;{{App\Http\Controllers\Front\CartController::taxValue($tax_percentage[0],$item->regular_price)}}
-                                            
+                                            <?php
+                                            $value = \App\Http\Controllers\Front\CartController::taxValue($tax_percentage[0],$item->regular_price)
+                                            ?>
+                                             {{currency_format($value,$code=$symbol)}}
                                         </td>
 
                                     </tr>
                                     @endif
                                     @endif
-                                   
-
-                               
-                               
-                               
                                     <th>Total:</th>
-                                    <td><small>{!! $symbol !!}</small>&nbsp;{{$invoice->grand_total}}</td>
+                                    <td>{{currency_format($invoice->grand_total,$code=$symbol)}}</td>
                                
                             </table>
                             </div>

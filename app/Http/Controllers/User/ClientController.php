@@ -8,7 +8,7 @@ use App\Model\Order\Invoice;
 use App\Model\Order\Order;
 use App\Model\Order\Payment;
 use App\Model\Payment\Currency;
-use App\Model\Status\StatusSetting;
+use App\Model\Common\StatusSetting;
 use App\Model\User\AccountActivate;
 use App\Traits\PaymentsAndInvoices;
 use App\User;
@@ -256,7 +256,6 @@ class ClientController extends AdvanceSearchController
             // }
             $extraAmt = $this->getExtraAmt($id);
             $client = $this->user->where('id', $id)->first();
-
             // $client = "";
             $currency = $client->currency;
             $orders = $order->where('client', $id)->get();
@@ -287,54 +286,6 @@ class ClientController extends AdvanceSearchController
         }
     }
 
-    public function getOrderDetail($id)
-    {
-        $client = $this->user->where('id', $id)->first();
-        $responseData = [];
-        foreach ($client->order()->orderBy('created_at', 'desc')->get() as $order) {
-            $date = $order->created_at;
-            $productName = $order->product()->first() && $order->product()->first()->name ?
-            $order->product()->first()->name : 'Unknown';
-            $number = $order->number;
-            $price = $order->price_override;
-            $status = $order->order_status;
-            array_push($responseData, (['date'=> $date, 'productName'=>$productName,
-                'number'                      => $number, 'price' =>$price, 'status'=>$status, ]));
-        }
-
-        return $responseData;
-    }
-
-    //Get Payment Details on Invoice Page
-    public function getPaymentDetail($id)
-    {
-        $client = $this->user->where('id', $id)->first();
-        $invoice = new Invoice();
-        $invoices = $invoice->where('user_id', $id)->orderBy('created_at', 'desc')->get();
-        $extraAmt = $this->getExtraAmtPaid($id);
-        $date = '';
-        $responseData = [];
-        if ($invoices) {
-            foreach ($client->payment()->orderBy('created_at', 'desc')->get() as $payment) {
-                $number = $payment->invoice()->first() ? $payment->invoice()->first()->number : '--';
-                $date = $payment->created_at;
-                $date1 = new DateTime($date);
-                $tz = \Auth::user()->timezone()->first()->name;
-                $date1->setTimezone(new DateTimeZone($tz));
-                $date = $date1->format('M j, Y, g:i a ');
-                $pay_method = $payment->payment_method;
-                if ($payment->invoice_id == 0) {
-                    $amount = $extraAmt;
-                } else {
-                    $amount = $payment->amount;
-                }
-                $status = ucfirst($payment->payment_status);
-                array_push($responseData, (['number'=>$number, 'pay_method'=>$pay_method, 'amount'=>$amount, 'status'=>$status, 'date'=>$date]));
-            }
-        }
-
-        return $responseData;
-    }
 
     /**
      * Show the form for editing the specified resource.

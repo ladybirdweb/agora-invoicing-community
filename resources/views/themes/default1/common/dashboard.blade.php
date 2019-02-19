@@ -16,12 +16,9 @@ Dashboard
           <div class="small-box bg-aqua">
             <div class="inner">
               <h4>Total Sales</h4>
-              <?php
-              $rupeeSum = number_format($totalSalesCurrency2,2);
-              $dollarSum = number_format($totalSalesCurrency1,2);
-              ?>
-              <span>{{$allowedCurrencies2}}: &nbsp;  {{$currency2Symbol}} {{$rupeeSum}}</span><br/>
-               <span>{{$allowedCurrencies1}}: &nbsp;  {{$currency1Symbol}} {{$dollarSum}} </span>
+             
+              <span>{{$allowedCurrencies2}}: &nbsp;  {{currency_format($totalSalesCurrency2,$code=$allowedCurrencies2)}}</span><br/>
+               <span>{{$allowedCurrencies1}}: &nbsp;  {{currency_format($totalSalesCurrency1,$code=$allowedCurrencies1)}} </span>
             </div>
 
             <div class="icon">
@@ -37,13 +34,11 @@ Dashboard
             <div class="inner">
             	<h4>Yearly Sales</h4>
                 <?php
-              $rupeeYearlySum = number_format($yearlySalesCurrency2,2);
-              $dollarYearlySum = number_format($yearlySalesCurrency1,2);
               $startingDateOfYear = (date('Y-01-01'));
               
               ?>
-              <span>{{$allowedCurrencies2}}:&nbsp;  {{$currency2Symbol}} {{$rupeeYearlySum}}   </span><br/>
-               <span>{{$allowedCurrencies1}}:&nbsp; {{$currency1Symbol}} {{$dollarYearlySum}} </span>
+              <span>{{$allowedCurrencies2}}:&nbsp;  {{currency_format($yearlySalesCurrency2,$code=$allowedCurrencies2)}}   </span><br/>
+               <span>{{$allowedCurrencies1}}:&nbsp; {{currency_format($yearlySalesCurrency1,$code=$allowedCurrencies1)}} </span>
             </div>
             <div class="icon">
               <i class="ion ion-stats-bars"></i>
@@ -58,13 +53,11 @@ Dashboard
             <div class="inner">
             	<h4>Monthly Sales</h4>
                <?php
-              $rupeeMonthlySum = number_format($monthlySalesCurrency2,2);
-              $dollarMonthlySum = number_format($monthlySalesCurrency1,2);
               $startMonthDate = date('Y-m-01');
               $endMonthDate = date('Y-m-t');
                ?>
-              <span>{{$allowedCurrencies2}}:&nbsp; {{$currency2Symbol}} {{$rupeeMonthlySum}}</span><br/>
-              <span>{{$allowedCurrencies1}}:&nbsp; {{$currency1Symbol}} {{$dollarMonthlySum}}</span>
+              <span>{{$allowedCurrencies2}}:&nbsp; {{currency_format($monthlySalesCurrency2,$code=$allowedCurrencies2)}}</span><br/>
+              <span>{{$allowedCurrencies1}}:&nbsp; {{currency_format($monthlySalesCurrency1,$code=$allowedCurrencies1)}}</span>
              
             </div>
             <div class="icon">
@@ -79,12 +72,8 @@ Dashboard
           <div class="small-box bg-red">
             <div class="inner">
               <h4>Pending Payments</h4>
-                <?php
-              $rupeePendingSum = number_format($pendingPaymentCurrency2,2);
-              $dollarPendingSum = number_format($pendingPaymentCurrency1,2);
-              ?>
-              <span>{{$allowedCurrencies2}}: &nbsp;  {{$currency2Symbol}} {{$rupeePendingSum}}</span><br/>
-               <span>{{$allowedCurrencies1}}: &nbsp;  {{$currency1Symbol}} {{$dollarPendingSum}} </span>
+              <span>{{$allowedCurrencies2}}: &nbsp;  {{currency_format($pendingPaymentCurrency2,$code=$allowedCurrencies2)}}</span><br/>
+               <span>{{$allowedCurrencies1}}: &nbsp; {{currency_format($pendingPaymentCurrency1,$code=$allowedCurrencies1)}} </span>
             </div>
             <div class="icon">
              <i class="ion ion-ios-cart-outline"></i>
@@ -400,7 +389,7 @@ Dashboard
                    @endif
                     @foreach($invoices as $invoice)
                     <?php
-                   $currency  = \App\Model\Payment\Currency::where('code',$invoice->currency)->pluck('symbol')->first();
+                   $currency  = \App\Model\Payment\Currency::where('code',$invoice->currency)->pluck('code')->first();
                    $payment = \App\Model\Order\Payment::where('invoice_id',$invoice->id)->select('amount')->get();
                    $c=count($payment);
                    $sum= 0;
@@ -414,11 +403,12 @@ Dashboard
                     ?>
                   <tr>
                     <td><a href="{{url('invoices/show?invoiceid='.$invoice->id)}}">{{$invoice->number}}</a></td>
-                    <td>{{$currency}} {{$invoice->grand_total}}</td>
+
+                    <td>{{currency_format($invoice->grand_total,$code=$currency)}}  </td>
                      <td>{{$clientName->first_name}} {{$clientName->last_name}}</td>
-                    <td>{{$currency}} {{$sum}}</td>
+                    <td>{{currency_format($sum,$code=$currency)}}  </td>
                     <td>
-                      <div class="sparkbar" data-color="#00a65a" data-height="20">{{$currency}} {{$pendingAmount}}</div>
+                      <div class="sparkbar" data-color="#00a65a" data-height="20">{{currency_format($pendingAmount,$code=$currency)}}</div>
                     </td>
                    @if ($status == 'Success')
                     <td><span class="label label-success">{{$status}}</span></td>

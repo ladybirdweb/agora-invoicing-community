@@ -342,8 +342,8 @@ class HomeController extends BaseHomeController
 
     public function downloadForFaveo(Request $request, Order $order)
     {
-        try {
-            $faveo_encrypted_order_number = $request->input('order_number');
+    try {
+             $faveo_encrypted_order_number = $request->input('order_number');
             $faveo_serial_key = $request->input('serial_key');
             $orderSerialKey = $order->where('number', $faveo_encrypted_order_number)
                     ->value('serial_key');

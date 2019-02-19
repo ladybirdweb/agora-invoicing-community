@@ -259,7 +259,7 @@ trait TaxCalculation
             $result = '';
             if ($rate) {
                 $rate = str_replace('%', '', $rate);
-                $tax = intval($price) * ($rate / 100);
+                $tax = intval($price) * (intval($rate) / 100);
                 $result = $tax;
 
                 $result = self::rounding($result);

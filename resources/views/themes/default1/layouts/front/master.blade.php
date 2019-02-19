@@ -93,7 +93,7 @@ if($script){
                                       @else
                                       <a href="{{url('login')}}">
                                         @endif
-                                        <img alt="Porto" width="111" height="54" data-sticky-width="82" data-sticky-height="40" data-sticky-top="33" src="{{asset('common/images/'.$setting->logo)}}">
+                                        <img alt="Logo" width="111" height="54" data-sticky-width="82" data-sticky-height="40" data-sticky-top="33" src="{{asset('common/images/'.$setting->logo)}}">
                                     </a>
                                 </div>
                               </div>
@@ -247,8 +247,10 @@ if($script){
                                                                                 </td>
 
                                                                                 <td class="product-name">
-                                                                                        
-                                                                                    <a>{{$item->name}}<br><span class="amount"><strong><small>{{$currency}}</small> {{App\Http\Controllers\Front\CartController::rounding($item->getPriceSumWithConditions())}}</strong></span></a>
+                                                                               <?php
+                                                                                $total = \App\Http\Controllers\Front\CartController::rounding($item->getPriceSumWithConditions()) 
+                                                                                ?>
+                                                                                    <a>{{$item->name}}<br><span class="amount"><strong>{{currency_format($total,$code = $currency)}}</strong></span></a>
                                                                                 </td>
 
                                                                                 <td class="product-actions">

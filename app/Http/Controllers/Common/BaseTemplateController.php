@@ -10,7 +10,7 @@ class BaseTemplateController extends ExtendedBaseTemplateController
 {
     public function getPrice($months, $price, $priceDescription, $value, $cost, $currency)
     {
-        $price1 = currency_format($cost, $code = 'INR');
+        $price1 = currency_format($cost, $code = $currency);
         $price[$value->id] = $months.'  '.$price1.' '.$priceDescription;
 
         return $price;

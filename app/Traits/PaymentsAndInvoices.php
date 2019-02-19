@@ -61,7 +61,7 @@ use Illuminate\Http\Request;
         $payment_method,
         $invoiceid,
         $amount,
-    $parent_id = '',
+       $parent_id = '',
         $userid = '',
         $payment_status = 'pending'
     ) {

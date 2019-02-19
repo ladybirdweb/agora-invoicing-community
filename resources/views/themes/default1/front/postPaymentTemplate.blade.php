@@ -15,6 +15,7 @@
            
             @foreach($invoiceItems as $invoiceItem)
             <?php 
+            $currency = \Auth::user()->currency;
              $date1 = new DateTime($invoiceItem->created_at);
             $tz = \Auth::user()->timezone()->first()->name;
             $date1->setTimezone(new DateTimeZone($tz));
@@ -35,9 +36,12 @@
                 <li class="woocommerce-order-overview__email email">
                     Email: <strong>{{\Auth::user()->email}}</strong>
                  </li>
-                
                 <li class="woocommerce-order-overview__total total">
-                    Total:                    <strong><span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol">{{$currency}}</span>{{$invoiceItem->subtotal}}</span></strong>
+                    <?php 
+                    $total = $invoiceItem->subtotal;
+                    ?>
+                    Total:   <strong><span class="amount">{{currency_format($total,$code = $currency)}}
+                </span></strong>
                 </li>
 
                 <li class="woocommerce-order-overview__payment-method method">
@@ -72,7 +76,10 @@
                 </td>
 
         <td class="woocommerce-table__product-total product-total">
-        <span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol">{{$currency}}</span> {{$invoiceItem->regular_price}}</span>   
+            <?php 
+            $invoiceTotal = $invoiceItem->regular_price;
+            ?>
+        <span class="amount">{{currency_format($invoiceTotal,$code = $currency)}}</span>   
        </td>
 
             </tr>
@@ -87,9 +94,12 @@
                         <th scope="row">Payment method:</th>
                         <td>Razorpay</td>
                     </tr>
-                                        <tr>
+                     <tr>
                         <th scope="row">Total:</th>
-                        <td><span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol">{{$currency}}</span> {{$order->price_override}}</span></td>
+                        <?php
+                        $orderTotal = $order->price_override;
+                        ?>
+                        <td><span class="amount">{{currency_format($orderTotal,$code = $currency)}}</span></td>
                     </tr>
         </tfoot>
     </table>

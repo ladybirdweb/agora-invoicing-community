@@ -208,13 +208,13 @@
                     $('#toggle_event').toggleClass('locked_inactive unlocked_active');
 
                     if(settings==0){
-                      $('#merchant_id').val('15675');
-                      $('#access_code').val('AVRO01EK31CB19ORBC');
-                      $('#working_key').val('38133DD6258ADF5FC02E9C900DCE12C6');
-                      $('#redirect_url').val('https://www.faveohelpdesk.com/pay1/response/');
-                      $('#cancel_url').val('https://www.faveohelpdesk.com/pay1/response/');
-                      $('#ccavanue_url').val('https://test.ccavenue.com/transaction/transaction.do?command=initiateTransaction');
-                      $('#currencies').val('INR,USD');
+                      $('#merchant_id').val('');
+                      $('#access_code').val('');
+                      $('#working_key').val('');
+                      $('#redirect_url').val('');
+                      $('#cancel_url').val('');
+                      $('#ccavanue_url').val('');
+                      $('#currencies').val('');
 
                       }
                       else{

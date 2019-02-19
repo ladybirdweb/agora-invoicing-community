@@ -122,7 +122,7 @@ if ($displayCurrency !== 'INR')
 $json = json_encode($data);
 
 
- $symbol = \Auth::user()->currency_symbol;
+ $currency = \Auth::user()->currency;
 
 
 
@@ -246,7 +246,7 @@ $json = json_encode($data);
                                 <td class="product-name">
 
 
-                                    <span class="amount">{!! $symbol !!}  {{$item->regular_price}}</span>
+                                    <span class="amount">{{currency_format(intval($item->regular_price),$code = $currency)}}</span>
 
 
                                 </td>
@@ -306,7 +306,7 @@ $json = json_encode($data);
                     <td>
 
 
-                        <strong><span class="amount">{{$symbol}} {{$subtotal}}</span></strong>
+                        <strong><span class="amount">{{currency_format($subtotal,$code = $currency)}}</span></strong>
                     </td>
                 </tr>
                 @foreach($content as $attributes)
@@ -325,8 +325,12 @@ $json = json_encode($data);
                        
                     </th>
                     <td>
-                        {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($tax_attribute[0]['c_gst'],$subtotal)}} <br/>
-                        {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($tax_attribute[0]['s_gst'],$subtotal)}} <br/>
+                        <?php 
+                        $cgst =  \App\Http\Controllers\Front\CartController::taxValue($tax_attribute[0]['c_gst'],$subtotal);
+                        $sgst = \App\Http\Controllers\Front\CartController::taxValue($tax_attribute[0]['s_gst'],$subtotal);
+                        ?>
+                        {{currency_format( $cgst,$code = $currency)}} <br/>
+                        {{currency_format($sgst,$code = $currency)}}<br/>
                        
                        
                     </td>
@@ -343,7 +347,10 @@ $json = json_encode($data);
                      
                     </th>
                     <td>
-                        {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($tax_attribute[0]['i_gst'],$subtotal)}} <br/>
+                        <?php
+                        $igst = \App\Http\Controllers\Front\CartController::taxValue($tax_attribute[0]['i_gst'],$subtotal);
+                        ?>
+                        {{currency_format( $igst,$code = $currency)}}  <br/>
                       
                     </td>
 
@@ -360,8 +367,12 @@ $json = json_encode($data);
                        
                     </th>
                     <td>
-                         {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($tax_attribute[0]['c_gst'],$subtotal)}} <br/>
-                         {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($tax_attribute[0]['ut_gst'],$subtotal)}} <br/>
+                        <?php
+                        $cgst = \App\Http\Controllers\Front\CartController::taxValue($tax_attribute[0]['c_gst'],$subtotal);
+                        $utgst = \App\Http\Controllers\Front\CartController::taxValue($tax_attribute[0]['ut_gst'],$subtotal);
+                        ?>
+                         {{currency_format( $cgst,$code = $currency)}}  <br/>
+                          {{currency_format( $utgst,$code = $currency)}}  <br/>
                        
                     </td>
 
@@ -378,8 +389,10 @@ $json = json_encode($data);
                          
                     </th>
                     <td>
-                       
-                         {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($tax_attribute[0]['rate'],$subtotal)}} <br/>
+                        <?php
+                        $value = \App\Http\Controllers\Front\CartController::taxValue($tax_attribute[0]['rate'],$subtotal);
+                        ?>
+                         {{currency_format( $value,$code = $currency)}} <br/>
                          
                        
                     </td>
@@ -394,8 +407,10 @@ $json = json_encode($data);
                          
                     </th>
                     <td>
-                      
-                         {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($tax_attribute[0]['rate'],Cart::getSubTotalWithoutConditions())}} <br/>
+                <?php
+                 $value = \App\Http\Controllers\Front\CartController::taxValue($tax_attribute[0]['rate'],Cart::getSubTotalWithoutConditions())
+                 ?>
+                        {{currency_format( $value,$code = $currency)}} <br/>
                          
                        
                     </td>
@@ -411,8 +426,10 @@ $json = json_encode($data);
                          
                     </th>
                     <td>
-                       
-                        {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($tax_attribute[0]['rate'],$subtotal)}} <br/>
+                 <?php
+                 $value = \App\Http\Controllers\Front\CartController::taxValue($tax_attribute[0]['rate'],$subtotal);
+                 ?>
+                        {{currency_format( $value,$code = $currency)}} <br/>
                          
                        
                     </td>
@@ -436,8 +453,10 @@ $json = json_encode($data);
                          
                     </th>
                     <td>
-                       
-                         {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($item['tax_percentage'],$item['regular_price'])}} <br/>
+                 <?php
+                 $value = \App\Http\Controllers\Front\CartController::taxValue($item['tax_percentage'],$item['regular_price']);
+                 ?>
+                       {{currency_format( $value,$code = $currency)}} <br/>
                          
                        
                     </td>
@@ -458,7 +477,7 @@ $json = json_encode($data);
                     <td>
 
 
-                        <strong><span class="amount">{{$symbol}} {{$invoice->grand_total}}</span></strong>
+                        <strong><span class="amount">{{currency_format( $invoice->grand_total,$code = $currency)}} </span></strong>
 
 
                     </td>

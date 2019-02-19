@@ -184,7 +184,7 @@ return [
       'consumer_key'                                               => 'Twitter Consumer Key',
       'consumer_secret'                                            => 'Twitter Consumer Secret',
       'access_token'                                               => 'Twitter Access Token',
-      'token_secret'                                               => 'Twitter Access Tken Secret',
+      'token_secret'                                               => 'Twitter Access Token Secret',
       'rzp_key'                                                    => 'Razorpay Key',
       'rzp_secret'                                                 => 'Razorpay Secret',
       'apilayer_key'                                               => 'ApiLayer Access Key(For Exchange Rate Conversion)',
@@ -430,6 +430,7 @@ return [
     'add_new_comment'=> 'Add New Comment',
     'no-comments'    => 'No Comments',
     'edit-comment'   => 'Edit Comment',
+    'invalid-invoice-id'=> 'Invalid Invoice ',
 
     /*
      * Licence

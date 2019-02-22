@@ -213,7 +213,6 @@ class BaseInvoiceController extends ExtendedBaseInvoiceController
         if ($promo && $code) {
             return $promo->value;
         }
-        return ;
     }
 
         /**

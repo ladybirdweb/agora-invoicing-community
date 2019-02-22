@@ -216,6 +216,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $user = $this->user->find($invoice->user_id);
             $currency = CartController::currency($user->id);
             $symbol = $currency['symbol'];
+
             return view('themes.default1.invoice.show', compact('invoiceItems', 'invoice', 'user', 'currency', 'symbol'));
         } catch (\Exception $ex) {
             app('log')->warning($ex->getMessage());
@@ -265,7 +266,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
     public function generateInvoice()
     {
         try {
-
             $sessionValue = $this->getCodeFromSession();
             $code = $sessionValue['code'];
             $codeValue = $sessionValue['codevalue'];
@@ -308,7 +308,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             throw new \Exception('Can not Generate Invoice');
         }
     }
-    
 
 
     public function createInvoiceItems($invoiceid, $cart, $codevalue = '')
@@ -355,6 +354,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             return $invoiceItem;
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex->getMessage());
+
             throw new \Exception('Can not create Invoice Items');
         }
     }

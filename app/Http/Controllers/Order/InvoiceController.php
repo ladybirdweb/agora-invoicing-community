@@ -309,7 +309,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         }
     }
 
-
     public function createInvoiceItems($invoiceid, $cart, $codevalue = '')
     {
         try {

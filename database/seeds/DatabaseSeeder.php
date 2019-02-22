@@ -91,6 +91,9 @@ class DatabaseSeeder extends Seeder
         $this->call('ActivityLogDelSeeder');
         $this->command->info('Activity Log Days table seeded!');
 
+        $this->call('FormatCurrenciesSeeder');
+        $this->command->info('Format Currencies table seeded!');
+
         $this->call(CompanySize::class);
         $this->call(CompanyType::class);
         $this->call(SettingsSeeder::class);
@@ -144,7 +147,7 @@ class ApiKeyTableSeeder extends Seeder
         \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         \DB::table('api_keys')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        ApiKey::create(['id' => 1, 'rzp_key' => '', 'rzp_secret' => '', 'apilayer_key' => '', 'bugsnag_api_key' => '', 'zoho_api_key'=>'', 'msg91_auth_key'=>'', 'twitter_consumer_key'=>'', 'twitter_consumer_secret'=>'', 'twitter_access_token'=>'', 'access_tooken_secret'=>'', 'license_api_secret'=>'', 'license_api_url'=>'']);
+        ApiKey::create(['id' => 1, 'rzp_key' => '', 'rzp_secret' => '', 'apilayer_key' => '', 'bugsnag_api_key' => '', 'zoho_api_key'=>'', 'msg91_auth_key'=>'', 'twitter_consumer_key'=>'', 'twitter_consumer_secret'=>'', 'twitter_access_token'=>'', 'access_tooken_secret'=>'', 'license_api_secret'=>'', 'license_api_url'=>'','update_api_url'=>'','update_api_secret'=>'','terms_url'=>'']);
     }
 }
 
@@ -375,7 +378,7 @@ class TemplateTableSeeder extends Seeder
 </tr>
 </tbody>
 </table>
-<p><a class="moz-txt-link-abbreviated" href="{{serialkeyurl}}" target="_blank" rel="noopener"> Click Here</a> to get your Serial Key.</p>
+<p><a class="moz-txt-link-abbreviated" href="{{serialkeyurl}}" target="_blank" rel="noopener"> Click Here</a> to get your License Code.</p>
 <p><a class="moz-txt-link-abbreviated" href="{{knowledge_base}}/category-list/installation-and-upgrade-guide"> Refer To Our Knowledge Base</a> for further installation assistance</p>
 <p style="color: #333; font-family: Arial,sans-serif; font-size: 14px; line-height: 20px; text-align: left;">Click below to login to your Control Panel to view invoice or to pay for any pending invoice.</p>
 </td>
@@ -765,7 +768,7 @@ class StatusSettingSeeder extends Seeder
     {
         \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         \DB::table('status_settings')->truncate();
-        StatusSetting::create(['id' => 1, 'expiry_mail'=>0, 'activity_log_delete'=>0, 'license_status'=>0, 'github_status'=>0, 'mailchimp_status'=>0, 'twitter_status'=>0, 'msg91_status'=>0, 'emailverification_status'=>0, 'recaptcha_status'=>0, 'update_settings'=>0, 'zoho_status'=>0, 'rzp_status'=>0, 'mailchimp_product_status'=>0, 'mailchimp_ispaid_status'=>0]);
+        StatusSetting::create(['id' => 1, 'expiry_mail'=>0, 'activity_log_delete'=>0, 'license_status'=>0, 'github_status'=>0, 'mailchimp_status'=>0, 'twitter_status'=>0, 'msg91_status'=>0, 'emailverification_status'=>0, 'recaptcha_status'=>0, 'update_settings'=>0, 'zoho_status'=>0, 'rzp_status'=>0, 'mailchimp_product_status'=>0, 'mailchimp_ispaid_status'=>0,'terms'=>0]);
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 }
@@ -836,6 +839,17 @@ class ActivityLogDelSeeder extends Seeder
         \DB::table('activity_log_days')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         ActivityLogDay::create(['id' => 1, 'days'=>'']);
+    }
+}
+
+class FormatCurrenciesSeeder extends Seeder
+{
+    public function run()
+    {
+        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        \DB::table('format_currencies')->truncate();
+        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        \DB::table('format_currencies')->insert(['id' => 1, 'name'=>'US Dollar', 'code'=>'USD', 'symbol'=>'$', 'format'=>'$1,0.00','exchange_rate'=>0,'active'=>0]);
     }
 }
 

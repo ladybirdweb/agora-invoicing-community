@@ -18,7 +18,7 @@
                     <!-- name -->
                     <b>{{$name}}</b>
                     {!! Form::label('domain',Lang::get('message.domain'),['class'=>'required']) !!}
-                    {!! Form::text('domain['.$product.']',null,['class' => 'form-control' ,'id'=>'validDomain', 'required'=>'required   ']) !!}
+                    {!! Form::text('domain['.$product.']',null,['class' => 'form-control' ,'id'=>'validDomain', 'required'=>'required   ','placeholder'=>'Domain Name Should be in the form domain.com or sub.domain.com']) !!}
                            <h6 id ="domaincheck"></h6>
                 </div>
                 

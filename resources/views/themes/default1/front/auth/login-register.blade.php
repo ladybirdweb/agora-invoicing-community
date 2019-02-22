@@ -407,14 +407,19 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                            <div class="robot-verification"></div>
                                                 @endif
                                                <div class="form-row">
+                                                @if ($termsStatus ==0)
+                                                 <div class="form-group col-lg-6">
+                                                <input type="hidden" value="true" name="terms" id="term">
+                                                  </div>
+                                                    @else
                                                     <div class="form-group col-lg-6">
                                                         <label>
 
-                                                            <input type="checkbox" value="false"  id="term" > {{Lang::get('message.i-agree-to-the')}} <a href="https://faveohelpdesk.com/terms-conditions" target="_blank">{{Lang::get('message.terms')}}</a>
+                                                            <input type="checkbox" value="false" name="terms" id="term" > {{Lang::get('message.i-agree-to-the')}} <a href="{{$termsUrl}}" target="_blank">{{Lang::get('message.terms')}}</a>
                                                         </label>
                                                         <h6 id="termscheck"></h6>
                                                     </div>
-                                             
+                                                 @endif
                                                   
                                                           <div class="form-group col-lg-6">
                                                               <button type="button"  class="btn btn-primary pull-right marginright mb-xl next-step" data-loading-text="Loading..." name="register" id="register" onclick="registerUser()">Submit</button>

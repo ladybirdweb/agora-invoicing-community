@@ -2,6 +2,15 @@
 @section('title')
 Groups
 @stop
+@section('content-header')
+<h1>
+Product Groups
+</h1>
+  <ol class="breadcrumb">
+        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Product Groups</li>
+      </ol>
+@stop
 @section('content')
 
 
@@ -78,10 +87,13 @@ Groups
                 "sSearch"    : "Search: ",
                 "sProcessing": '<img id="blur-bg" class="backgroundfadein" style="top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;" src="{!! asset("lb-faveo/media/images/gifloader3.gif") !!}">'
             },
-            "columnDefs": [{
-                "defaultContent": "-",
-                "targets": "_all"
-              }],
+             columnDefs: [
+                { 
+                    targets: 'no-sort', 
+                    orderable: false,
+                    order: []
+                }
+            ],
     
             columns: [
                 {data: 'checkbox', name: 'checkbox'},

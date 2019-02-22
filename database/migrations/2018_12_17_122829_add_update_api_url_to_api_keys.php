@@ -16,6 +16,7 @@ class AddUpdateApiUrlToApiKeys extends Migration
         Schema::table('api_keys', function (Blueprint $table) {
             $table->string('update_api_url', 255)->nullable();
             $table->string('update_api_secret', 255)->nullable();
+            $table->string('terms_url', 255)->nullable();
         });
     }
 

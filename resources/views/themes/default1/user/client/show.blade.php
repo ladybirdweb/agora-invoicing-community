@@ -16,7 +16,9 @@ User
     .hide_content{
       display: none;
     }
-   
+   .btn-primary {
+    margin-top: 3px;
+}
 
 
 </style>
@@ -183,14 +185,14 @@ User Details
                             <table id="invoice-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
                              <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_invoice_delete"><i class= "fa fa-trash"></i>&nbsp;&nbsp;Delete Selected</button><br /><br />
                                 <thead><tr>
-                                    <th class="no-sort"><input type="checkbox" name="select_all" onchange="checkinginvoice(this)"></th>
-                                        <th>Date</th>
-                                        <th>Invoice Number</th>
-                                        <th>Total</th>
-                                         <th>Paid</th>
-                                          <th>Balance</th>
-                                           <th>Status</th>
-                                        <th>Action</th>
+                                    <th class="no-sort" style="width:1px;"><input type="checkbox" name="select_all" onchange="checkinginvoice(this)"></th>
+                                        <th style="width:150px;">Date</th>
+                                        <th style="width:50px;">Invoice Number</th>
+                                        <th style="width:50px;">Total</th>
+                                         <th style="width:50px;">Paid</th>
+                                          <th style="width:50px;">Balance</th>
+                                           <th style="width:50px;">Status</th>
+                                        <th style="width:150px;">Action</th>
                                     </tr></thead>
                                  </table>
                            
@@ -334,6 +336,7 @@ User Details
                                         <th>Payment Method</th>
                                         <th>Total</th>
                                         <th>Status</th>
+                                         <th>Action</th>
                                     </tr></thead>
                                  </table>
                            
@@ -379,6 +382,7 @@ User Details
                 {data: 'payment_method', name: 'payment_method'},
                 {data: 'total', name: 'total'},
                 {data: 'status', name: 'status'},
+                {data: 'action', name: 'action'},
             ],
             "fnDrawCallback": function( oSettings ) {
                 $('.loader').css('display', 'none');

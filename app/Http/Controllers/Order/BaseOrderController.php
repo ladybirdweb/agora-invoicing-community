@@ -106,7 +106,7 @@ class BaseOrderController extends ExtendedOrderController
             'number'          => $this->generateNumber(),
             ]);
             $this->addOrderInvoiceRelation($invoiceid, $order->id);
-            if ($planid != 0) {
+            if ($plan_id != 0) {
             $this->addSubscription($order->id, $plan_id, $version, $product, $serial_key);
            }
             $this->sendOrderMail($user_id, $order->id, $item->id);
@@ -114,7 +114,7 @@ class BaseOrderController extends ExtendedOrderController
             $mailchimpStatus = StatusSetting::pluck('mailchimp_status')->first();
             if ($mailchimpStatus == 1) {
             $this->addtoMailchimp($product, $user_id, $item);
-        }
+           }
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
             app('log')->error($ex->getMessage());

@@ -70,8 +70,10 @@ main
         
       
          <div class="col-md-12">
+          <h1 style="text-align: center;"> <b>{{($headline)}} </b> </h1>
+           <h4 style="text-align: center;">{{$tagline}} </h4>
         <div class="pricing-table mb-4">
-           
+          
         {!! html_entity_decode($templates) !!}
    
         </div>

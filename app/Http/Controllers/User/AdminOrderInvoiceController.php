@@ -27,29 +27,29 @@ class AdminOrderInvoiceController extends Controller
                             return $date;
                         })
                         ->addColumn('invoice_no', function ($model) {
-                            return  	'<a href='.url('invoices/show?invoiceid='.$model->id).'>'.$model->number.'</a>';
+                            return      '<a href='.url('invoices/show?invoiceid='.$model->id).'>'.$model->number.'</a>';
                         })
                         ->addColumn('total', function ($model) use ($client) {
-                            return currency_format($model->grand_total, $code =$client->currency);
+                            return currency_format($model->grand_total, $code = $client->currency);
                         })
                          ->addColumn('paid', function ($model) use ($client) {
                              $payment = \App\Model\Order\Payment::where('invoice_id', $model->id)->select('amount')->get();
                              $c=count($payment);
                              $sum = 0;
-                             for ($i=0 ;  $i <= $c-1 ; $i++) {
-                                 $sum = $sum + $payment[$i]->amount;
-                             }
-                             return currency_format($sum, $code =$client->currency);
+                            for ($i=0; $i <= $c-1; $i++) {
+                                $sum = $sum + $payment[$i]->amount;
+                            }
+                             return currency_format($sum, $code = $client->currency);
                          })
                          ->addColumn('balance', function ($model) use ($client) {
                              $payment = \App\Model\Order\Payment::where('invoice_id', $model->id)->select('amount')->get();
                              $c=count($payment);
                              $sum = 0;
-                             for ($i=0 ;  $i <= $c-1 ; $i++) {
-                                 $sum = $sum + $payment[$i]->amount;
-                             }
+                            for ($i=0; $i <= $c-1; $i++) {
+                                $sum = $sum + $payment[$i]->amount;
+                            }
                              $pendingAmount = ($model->grand_total)-($sum);
-                             return currency_format($pendingAmount, $code =$client->currency);
+                             return currency_format($pendingAmount, $code = $client->currency);
                          })
                           ->addColumn('status', function ($model) {
                               return $model->status;
@@ -138,8 +138,6 @@ class AdminOrderInvoiceController extends Controller
                         ->addColumn('date', function ($model) {
                             $date = $model->created_at;
                             $date1 = new \DateTime($date);
-                            $tz = \Auth::user()->timezone()->first()->name;
-                            $date1->setTimezone(new \DateTimeZone($tz));
                             $date = $date1->format('M j, Y, g:i a ');
                             return $date;
                         })
@@ -147,19 +145,29 @@ class AdminOrderInvoiceController extends Controller
                             return $model->payment_method;
                             ;
                         })
-                         ->addColumn('total', function ($model) use ($client,$extraAmt) {
-                             if ($model->invoice_id == 0) {
-                                 $amount = currency_format($extraAmt, $code = $client->currency);
-                             } else {
-                                 $amount = currency_format($model->amount, $code = $client->currency);
-                             }
+                         ->addColumn('total', function ($model) use ($client, $extraAmt) {
+                            if ($model->invoice_id == 0) {
+                                $amount = currency_format($extraAmt, $code = $client->currency);
+                            } else {
+                                $amount = currency_format($model->amount, $code = $client->currency);
+                            }
                              return $amount;
                          })
                          ->addColumn('status', function ($model) {
                              return ucfirst($model->payment_status);
                          })
+                         ->addColumn('action', function ($model) {
+                             '<input type="hidden" class="paymentid" value="{{$model->id}}">';
+                            if ($model->invoice_id == 0) {
+                                return '<a href='.url("payments/".$model->id."/edit/")." class='btn btn-sm btn-primary btn-xs'> <i class='fa fa-edit' style='color:white;'> </i>&nbsp;&nbsp;Edit</a>";
+                                ;
+                            } else {
+                                return '--';
+                            }
+                         })
+                            
                       
-                        ->rawColumns(['checkbox', 'invoice_no', 'date', 'payment_method', 'total', 'status'])
+                        ->rawColumns(['checkbox', 'invoice_no', 'date', 'payment_method', 'total', 'status','action'])
                         ->make(true);
-    }
+     }
 }

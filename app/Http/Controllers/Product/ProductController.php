@@ -115,7 +115,6 @@ class ProductController extends BaseProductController
     {
         try {
             $new_product = Product::select('id', 'name', 'type', 'image', 'group', 'image')->get();
-
             return\ DataTables::of($new_product)
 
                             ->addColumn('checkbox', function ($model) {
@@ -136,7 +135,6 @@ class ProductController extends BaseProductController
                                     return 'Not available';
                                 }
                             })
-
                             ->addColumn('group', function ($model) {
                                 if ($this->group->where('id', $model->group)->first()) {
                                     return $this->group->where('id', $model->group)->first()->name;
@@ -171,13 +169,16 @@ class ProductController extends BaseProductController
     // Save file Info in Modal popup
     public function save(Request $request)
     {
-        $this->validate($request, [
-        'producttitle' => 'required',
+        $this->validate(
+            $request,
+            [
+       'producttitle' => 'required',
         'version'      => 'required',
        'filename'     => 'required',
        ],
        ['filename.required' => 'Please Uplaod A file',
-        ]);
+        ]
+        );
 
         try {
             $product_id = Product::where('name', $request->input('productname'))->select('id')->first();
@@ -192,7 +193,7 @@ class ProductController extends BaseProductController
             $autoUpdateStatus = StatusSetting::pluck('update_settings')->first();
             if ($autoUpdateStatus == 1) { //If License Setting Status is on,Add Product to the License Manager
                 $updateClassObj = new \App\Http\Controllers\AutoUpdate\AutoUpdateController();
-                $addProductToAutoUpdate = $updateClassObj->addNewVersion($product_id->id, $request->input('version'),$request->input('filename'), '1');
+                $addProductToAutoUpdate = $updateClassObj->addNewVersion($product_id->id, $request->input('version'), $request->input('filename'), '1');
             }
             $response = ['success'=>'true', 'message'=>'Product Uploaded Successfully'];
 
@@ -218,8 +219,9 @@ class ProductController extends BaseProductController
             /*
              * server url
              */
-            $url = $this->getMyUrl();
-            $i = $this->product->orderBy('created_at', 'desc')->first()->id + 1;
+            // $url = $this->getMyUrl();
+            $url = url('/');
+            $i = $this->product->orderBy('id', 'desc')->first()->id + 1;
             $cartUrl = $url.'/pricing?id='.$i;
             $type = $this->type->pluck('name', 'id')->toArray();
             $subscription = $this->plan->pluck('name', 'id')->toArray();
@@ -310,8 +312,8 @@ class ProductController extends BaseProductController
 
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (\Exception $e) {
+            app('log')->error($e->getMessage());
             Bugsnag::notifyException($e);
-
             return redirect()->with('fails', $e->getMessage());
         }
     }
@@ -334,7 +336,8 @@ class ProductController extends BaseProductController
             $products = $this->product->pluck('name', 'id')->toArray();
             $checkowner = Product::where('id', $id)->value('github_owner');
             $periods = $this->period->pluck('name', 'days')->toArray();
-            $url = $this->GetMyUrl();
+            // $url = $this->GetMyUrl();
+            $url = url('/');
             $cartUrl = $url.'/cart?id='.$id;
             $product = $this->product->where('id', $id)->first();
             $selectedGroup = ProductGroup:: where('id', $product->group)->pluck('name')->toArray();
@@ -349,6 +352,7 @@ class ProductController extends BaseProductController
             $showProductQuantity = $product->show_product_quantity;
             $canModifyAgent = $product->can_modify_agent;
             $canModifyQuantity = $product->can_modify_quantity;
+            $githubStatus = StatusSetting::pluck('github_status')->first();
 
             return view(
                 'themes.default1.product.product.edit',
@@ -373,7 +377,8 @@ class ProductController extends BaseProductController
                     'showProductQuantity',
                     'canModifyAgent',
                     'canModifyQuantity',
-                    'checkowner'
+                    'checkowner',
+                    'githubStatus'
                 )
             );
         } catch (\Exception $e) {

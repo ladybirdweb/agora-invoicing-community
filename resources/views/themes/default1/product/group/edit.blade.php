@@ -2,6 +2,16 @@
 @section('title')
 Edit Group
 @stop
+@section('content-header')
+<h1>
+Edit Product Group
+</h1>
+  <ol class="breadcrumb">
+        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="{{url('groups')}}">Groups</a></li>
+        <li class="active">Edit Group</li>
+      </ol>
+@stop
 @section('content')
 
 <div class="row">
@@ -129,24 +139,6 @@ Edit Group
 
                     </tr>
 
-                    <tr>
-                     <td><b>{!! Form::label('link',Lang::get('message.group_link')) !!}</b></td>
-                        <td>
-                            <div class="form-group">
-
-
-                                 <div class='row'>
-                                    <div class="col-md-10">
-                                        {!! Form::text('cart_link',null,['class' => 'form-control','id'=>'groupslug']) !!}
-                                    </div>
-
-                                </div>
-
-
-                            </div>
-                        </td>
-
-                    </tr>
 
                     <tr>
                           

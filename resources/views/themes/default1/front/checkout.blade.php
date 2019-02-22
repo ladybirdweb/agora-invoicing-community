@@ -306,8 +306,6 @@ $sum = 0;
                  <tr class="Taxes">
                     <th>
                         <strong>{{$attribute['name']}}<span>@</span>{{$attribute['rate']}}%</strong><br/>
-                       
-                         
                     </th>
                     <td>
                        <?php
@@ -369,16 +367,12 @@ $sum = 0;
 
 
 
-                         @if($currency == "INR")
                                           <?php
                                           $total = \App\Http\Controllers\Front\CartController::rounding(Cart::getTotal());
                                           ?>
                                           {{currency_format($total,$code = $currency)}}
-                                            @else
-                                           {{currency_format($total,$code = $currency)}}
+                                        
 
-
-                                            @endif
 
                        
                     </td>

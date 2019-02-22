@@ -18,6 +18,7 @@ class AddZohoStatusToStatusSettings extends Migration
             $table->boolean('rzp_status')->nullable();
             $table->boolean('mailchimp_product_status')->nullable();
             $table->boolean('mailchimp_ispaid_status')->nullable();
+            $table->boolean('terms')->nullable();
         });
     }
 

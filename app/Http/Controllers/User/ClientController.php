@@ -214,6 +214,7 @@ class ClientController extends AdvanceSearchController
             $str = 'demopass';
             $password = \Hash::make($str);
             $user->password = $password;
+            $user->mobile_code = str_replace('+','', $request->input('mobile_code'));
             $cont = new \App\Http\Controllers\Front\PageController();
             $location = $cont->getLocation();
             $user->ip = $location['ip'];
@@ -317,9 +318,9 @@ class ClientController extends AdvanceSearchController
             ->pluck('first_name', 'id')->toArray();
             $selectedCurrency = Currency::where('code', $user->currency)
             ->pluck('name', 'code')->toArray();
-            $selectedCompany = \DB::table('company_types')->where('short', $user->company_type)
+            $selectedCompany = \DB::table('company_types')->where('name', $user->company_type)
             ->pluck('name', 'short')->toArray();
-            $selectedIndustry = \App\Model\Common\Bussiness::where('short', $user->bussiness)
+            $selectedIndustry = \App\Model\Common\Bussiness::where('name', $user->bussiness)
             ->pluck('name', 'short')->toArray();
             $selectedCompanySize = \DB::table('company_sizes')->where('short', $user->company_size)
             ->pluck('name', 'short')->toArray();

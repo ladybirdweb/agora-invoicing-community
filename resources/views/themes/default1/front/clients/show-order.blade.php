@@ -121,8 +121,8 @@ active
 
                                                 }
                                                 ?>
-                                                <tr><td><b>License Ends:</b></td>   <td>{{$sub}}</td></tr>
-                                                <tr><td><b>Update Ends:</b></td>   <td>{{$update_sub}}</td></tr>
+                                                <tr><td><b>License Expiry Date:</b></td>   <td>{{$sub}}</td></tr>
+                                                <tr><td><b>Update Expiry Date:</b></td>   <td>{{$update_sub}}</td></tr>
 
                                             </tbody>
                                          </div>

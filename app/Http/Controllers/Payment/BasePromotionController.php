@@ -59,16 +59,8 @@ class BasePromotionController extends Controller
             if ($cart_control->checkPlanSession() === true) {
                 $planid = \Session::get('plan');
             }
-            if ($product->subscription != 1) {
-                $planId = Plan::where('product', $productid)->pluck('id')->first();
-                $product_price = PlanPrice::where('plan_id', $planId)
-                ->where('currency', $currency)->pluck('add_price')->first();
-            } else {
-                $product_price = $control->planCost($planid, $userid);
-            }
             if (count(\Cart::getContent())) {
-                $product_price = \Cart::getSubTotalWithoutConditions();
-                // dd($product_price);
+                $product_price =  $cart_control->planCost($productid, $userid, $planid = '');
             }
             $updated_price = $this->findCost($promotion_type, $promotion_value, $product_price, $productid);
 

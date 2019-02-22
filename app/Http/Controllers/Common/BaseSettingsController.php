@@ -338,11 +338,14 @@ class BaseSettingsController extends PaymentSettingsController
             $captcha_secretCheck = '00';
             $path_to_file = base_path('.env');
             $file_contents = file_get_contents($path_to_file);
-            $file_contents_sitekey = str_replace(env('NOCAPTCHA_SITEKEY'), $nocaptcha_sitekey, $file_contents);
+             $file_contents_sitekey = str_replace(env('NOCAPTCHA_SITEKEY'), $nocaptcha_sitekey, $file_contents);
             file_put_contents($path_to_file, $file_contents_sitekey);
+            $file_contents_secretchek = str_replace(env('NOCAPTCHA_SECRET'), $captcha_secretCheck, $file_contents);
+            file_put_contents($path_to_file, $file_contents_secretchek);
 
-            $file_contents_sitekey = str_replace(env('NOCAPTCHA_SECRET'), $captcha_secretCheck, $file_contents);
-            file_put_contents($path_to_file, $file_contents_sitekey);
+           
+
+           
         }
 
         StatusSetting::where('id', 1)->update(['recaptcha_status'=>$status]);

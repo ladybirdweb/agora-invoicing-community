@@ -141,6 +141,7 @@ Edit User
                         <select name="bussiness"  class="form-control">
                             <option value="">Choose</option>
                          @foreach($bussinesses as $key=>$bussiness)
+                         
                         <option value="{{$key}}" <?php  if(in_array($bussiness, $selectedIndustry) ) 
                         { echo "selected";} ?>>{{$bussiness}}</option>
                             @endforeach
@@ -257,7 +258,7 @@ Edit User
                         <!-- mobile -->
                         {!! Form::label('timezone_id',Lang::get('message.timezone')) !!}
                        
-                         {!! Form::select('timezone_id', [Lang::get('message.choose')=>$timezones],null,['class' => 'form-control selectpicker','data-live-search'=>'true','required','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false','data-size'=>'10']) !!}
+                         {!! Form::select('timezone_id', ['Timezones'=>$timezones],null,['class' => 'form-control selectpicker','data-live-search'=>'true','required','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false','data-size'=>'10']) !!}
 
                     </div>
                     <?php 
@@ -326,7 +327,7 @@ Edit User
     telInput.intlTelInput({
         initialCountry: "auto",
         geoIpLookup: function (callback) {
-            $.get("http://ipinfo.io", function () {}, "jsonp").always(function (resp) {
+            $.get("https://ipinfo.io", function () {}, "jsonp").always(function (resp) {
                 resp.country = country;
                 var countryCode = (resp && resp.country) ? resp.country : "";
                     currentCountry=countryCode.toLowerCase()
@@ -334,7 +335,7 @@ Edit User
             });
         },
         separateDialCode: true,
-        utilsScript: "{{asset('common/js/js/utils.js')}}",
+        utilsScript: "{{asset('common/js/utils.js')}}",
     });
     setTimeout(()=>{
          telInput.intlTelInput("setCountry", currentCountry);

@@ -303,9 +303,9 @@ class TemplateController extends BaseTemplateController
             'to'       => $to,
              'subject' => $subject,
             'body'     => $data,
-          'status'     => 'success',
+            'status'     => 'success',
           ]);
-
+            
             return 'success';
         } catch (\Exception $ex) {
             \DB::table('email_log')->insert([

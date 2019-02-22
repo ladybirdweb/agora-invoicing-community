@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\License;
 
 use App\Model\License\licenseType;
+use App\Model\Product\Product;
 use Bugsnag;
 use Illuminate\Http\Request;
 
@@ -15,7 +16,7 @@ class LicenseSettingsController extends LicensePermissionsController
         $this->middleware('auth');
         $this->middleware('admin');
 
-        $licenseType = new licenseType();
+        $licenseType = new LicenseType();
         $this->licenseType = $licenseType;
     }
 
@@ -92,17 +93,7 @@ class LicenseSettingsController extends LicensePermissionsController
         }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
+
 
     /**
      * Remove the specified resource from storage.

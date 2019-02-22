@@ -126,7 +126,6 @@ View Invoice
                                         <th>Price</th>
                                         <th>Taxes</th>
                                         <th>Tax Rates</th>
-                                        <th>Discount</th>
                                         <th>Subtotal</th>
                                     </tr>
                                 </thead>
@@ -158,12 +157,7 @@ View Invoice
                                                 @endif
                                             </ul>
                                         </td>
-                                        <?php
-                                        $data=($item->discount)?$item->discount:'No discounts';
-                                        ?>
-                                        <td>
-                                            {{$data}}
-                                        </td>
+                                     
                                         <td> {{currency_format($item->subtotal,$code=$symbol)}}</td>
                                     </tr>
                                     @endforeach
@@ -180,6 +174,7 @@ View Invoice
                         <div class="col-xs-6">
                             <p class="lead">Amount</p>
                             <div class="table-responsive">
+                              
                                           <?php
                                 $tax_name = [];
                                 $tax_percentage = [];
@@ -198,6 +193,11 @@ View Invoice
                                 }
                                 ?>
                                  <table class="table  table-striped">
+                                      @if($invoice->discount != null)
+                                  <th>Discount</th>
+                                    <td>{{currency_format($invoice->discount,$code=$symbol)}}</td>
+                                @endif
+
                                 @if($tax_name[0] !='null' && $tax_percentage[0] !=null)
                                    <?php $productId =  App\Model\Product\Product::where('name',$item->product_name)->pluck('id')->first(); 
                                    $taxInstance= new \App\Http\Controllers\Front\CartController();

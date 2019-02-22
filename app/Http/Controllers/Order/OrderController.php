@@ -8,6 +8,7 @@ use App\Model\Order\InvoiceItem;
 use App\Model\Order\Order;
 use App\Model\Payment\Plan;
 use App\Model\Payment\Promotion;
+use App\Model\Common\StatusSetting;
 use App\Model\Product\Price;
 use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
@@ -221,9 +222,10 @@ class OrderController extends BaseOrderController
             }
             $invoiceItems = $this->invoice_items->where('invoice_id', $invoiceid)->get();
             $user = $this->user->find($invoice->user_id);
-
+            $licenseStatus = StatusSetting::pluck('license_status')->first();
+       
             return view('themes.default1.order.show',
-                compact('invoiceItems', 'invoice', 'user', 'order', 'subscription'));
+                compact('invoiceItems', 'invoice', 'user', 'order', 'subscription','licenseStatus'));
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
 
@@ -393,7 +395,7 @@ class OrderController extends BaseOrderController
     {
         $sub = $this->subscription($orderid);
         if ($sub) {
-            return $sub->ends_at;
+            return $sub->update_ends_at;
         }
 
         return '';

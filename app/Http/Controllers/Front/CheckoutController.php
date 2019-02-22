@@ -273,11 +273,7 @@ class CheckoutController extends InfoController
                 $action = $this->checkoutAction($invoice);
                 $check_product_category = $this->product($invoiceid);
                 //Update Subscriber To Mailchimp
-                $mailchimpStatus = StatusSetting::first()->value('mailchimp_status');
-                if ($mailchimpStatus == 1) {
-                    $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
-                    $r = $mailchimp->updateSubscriberForFreeProduct(\Auth::user()->email, $check_product_category->id);
-                }
+              
 
                 $url = '';
                 if ($check_product_category->category) {
@@ -290,6 +286,7 @@ class CheckoutController extends InfoController
                         'state'
                     ))->render();
                 }
+                
                 \Cart::clear();
 
                 return redirect()->back()->with('success', $url);
@@ -301,6 +298,8 @@ class CheckoutController extends InfoController
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
+
+
 
     public function checkoutAction($invoice)
     {

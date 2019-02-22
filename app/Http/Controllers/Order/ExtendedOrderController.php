@@ -53,7 +53,7 @@ class ExtendedOrderController extends Controller
                'orders.id',
                'orders.created_at',
                'client',
-            'price_override',
+               'price_override',
                'order_status',
                'product',
                'number',
@@ -62,7 +62,7 @@ class ExtendedOrderController extends Controller
 
             return $join;
         } catch (\Exception $ex) {
-            dd($ex);
+            return redirect()->back()->with('fails',$ex->getMessage());
         }
     }
 

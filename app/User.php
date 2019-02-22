@@ -151,7 +151,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         $this->attributes['country'] = $value;
     }
 
-    public function getBussinessAttribute()
+    public function getBussinessAttribute($value)
     {
         $short = $this->attributes['bussiness'];
         $name = '--';

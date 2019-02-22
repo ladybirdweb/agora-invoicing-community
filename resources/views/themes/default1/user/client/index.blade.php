@@ -106,7 +106,7 @@ All Users
 
             </div>
            
-<div class="col-md-3 form-group">
+          <div class="col-md-3 form-group">
                 <!-- first name -->
                 {!! Form::label('industry','Industries') !!}
 

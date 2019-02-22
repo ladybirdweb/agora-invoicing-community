@@ -17,7 +17,7 @@ class CreateInvoicesTable extends Migration
             $table->integer('user_id')->unsigned()->index('invoices_user_id_foreign');
             $table->string('number');
             $table->timestamp('date')->default(DB::raw('CURRENT_TIMESTAMP'));
-            $table->string('discount');
+            $table->string('discount')->nullable();
             $table->string('discount_mode');
             $table->string('coupon_code');
             $table->string('grand_total', 225);

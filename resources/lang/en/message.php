@@ -17,6 +17,7 @@ return [
     /*
      * Common for all
      */
+    'type'                        => 'Type',
     'dashboard'                   => 'Dashboard',
     'home'                        => 'Home',
     'choose'                      => 'Choose',
@@ -190,6 +191,7 @@ return [
       'apilayer_key'                                               => 'ApiLayer Access Key(For Exchange Rate Conversion)',
       'zoho_crm'                                                   => 'Zoho CRM',
       'mailchimp_key'                                              => 'Mailchimp Api Key',
+      'terms_url'                                                  => 'Terms Url',
 
     /*
      * Clients
@@ -339,7 +341,7 @@ return [
 
     'check-code-error'       => 'Please Check Code',
     'no-such-code'           => 'No such Code',
-    'usage-of-code-completed'=> 'Usage of ocde Completed',
+    'usage-of-code-completed'=> 'Usage of code Completed',
     'usage-of-code-expired'  => 'Usage of code expired',
 
     'promotion'                                                                                                                        => 'Promotion',

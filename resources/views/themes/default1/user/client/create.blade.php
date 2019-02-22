@@ -222,7 +222,7 @@ select.form-control{
 
                     <div class="col-md-4 form-group select2{{ $errors->has('country') ? 'has-error' : '' }}">
                         <!-- name -->
-                        {!! Form::label('country',Lang::get('message.country')) !!}
+                        {!! Form::label('country',Lang::get('message.country'),['class'=>'required']) !!}
                         <?php $countries = \App\Model\Common\Country::pluck('nicename', 'country_code_char2')->toArray(); ?>
 
                      <!--    {!! Form::select('country',['choose'=>'Choose',''=>$countries],null,['class' => 'form-control selectpicker','data-live-search'=>'true','data-live-search-placeholder'=>'Search','data-dropup-auto'=>'false','data-size'=>'10','onChange'=>'getCountryAttr(this.value);']) !!} -->
@@ -255,14 +255,16 @@ select.form-control{
                     <div class="col-md-4 form-group {{ $errors->has('timezone_id') ? 'has-error' : '' }}">
                         <!-- mobile -->
                         {!! Form::label('timezone_id',Lang::get('message.timezone'),['class'=>'required']) !!}
-                
-                         <select name="timezone_id" value= "Choose" class="form-control selectpicker" data-live-search="true" data-live-search-placeholder="Search" data-dropup-auto="false" data-size="10"">
+                         {!! Form::select('timezone_id', [''=>'Choose','Timezones'=>$timezones],null,['class' => 'form-control selectpicker','data-live-search'=>'true','required','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false','data-size'=>'10']) !!}
+
+
+                       <!--   <select name="timezone_id" value= "Choose" class="form-control selectpicker" data-live-search="true" data-live-search-placeholder="Search" data-dropup-auto="false" data-size="10"">
                              <option value="">Choose</option>
                            @foreach($timezones as $key=>$timezone)
 
                              <option value={{$key}}>{{$timezone}}</option>
                           @endforeach
-                          </select>
+                          </select> -->
 
                     </div>
                     <div class="col-md-4 form-group {{ $errors->has('currency') ? 'has-error' : '' }}">
@@ -278,19 +280,24 @@ select.form-control{
                           </select>
 
                     </div>
-                    <div class="col-md-4 form-group {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
+                   <!--  <div class="col-md-4 form-group {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
                         <label class="required">Country code</label>
                         {!! Form::hidden('mobile_code',null,['id'=>'mobile_code_hidden']) !!}
                         {!! Form::text('mobil',null,['class'=>'form-control','disabled','id'=>'mobile_code']) !!}
 
                          
-                    </div>
+                    </div> -->
+                   
+
+
                     <div class="col-md-4 form-group {{ $errors->has('mobile') ? 'has-error' : '' }}">
                         <!-- mobile -->
                         {!! Form::label('mobile',Lang::get('message.mobile'),['class'=>'required']) !!}
-                        {!! Form::text('mobile',null,['class' => 'form-control']) !!}
-
+                        {!! Form::hidden('mobile_code',null,['id'=>'mobile_code_hidden']) !!}
+                         <input class="form-control"  id="mobile_code" name="mobile" type="tel">
                     </div>
+
+
                     <div class="col-md-4 form-group {{ $errors->has('skype') ? 'has-error' : '' }}">
                         <!-- mobile -->
                         {!! Form::label('skype','Skype') !!}
@@ -324,13 +331,14 @@ select.form-control{
 
 
 <script>
-
+  $(document).ready(function(){
 // get the country data from the plugin
 var countryData = $.fn.intlTelInput.getCountryData(),
   telInput = $("#mobile_code"),
   addressDropdown = $("#country");
 // init plugin
 telInput.intlTelInput({
+   separateDialCode: true,
   utilsScript: "common/js/utils.js" // just for formatting/placeholders etc
 });
 
@@ -339,8 +347,8 @@ $.each(countryData, function(i, country) {
   addressDropdown.append($("<option></option>").attr("value", country.iso2).text(country.name));
 });
 // set it's initial value
-var initialCountry = telInput.intlTelInput("getSelectedCountryData").iso2;
-addressDropdown.val(initialCountry);
+// var initialCountry = telInput.intlTelInput("getSelectedCountryData").iso2;
+// addressDropdown.val(initialCountry);
 
 // listen to the telephone input for changes
 telInput.on("countrychange", function(e, countryData) {
@@ -351,11 +359,14 @@ telInput.on("countrychange", function(e, countryData) {
 addressDropdown.change(function() {
   telInput.intlTelInput("setCountry", $(this).val());
 });
-
+$('form').on('submit', function (e) {
+        $('input[name=mobile_code]').attr('value', $('.selected-dial-code').text());
+    });
+});
 
     function getCountryAttr(val) {
         getState(val);
-        getCode(val);
+        // getCode(val);
 //        getCurrency(val);
 
     }

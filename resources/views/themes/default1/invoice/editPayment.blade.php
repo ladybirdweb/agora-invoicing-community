@@ -1,4 +1,7 @@
-   @extends('themes.default1.layouts.master')
+@extends('themes.default1.layouts.master')
+@section('title')
+Edit Payment
+@stop
     @section('content-header')
     <h1>
     {{Lang::get('message.link-extra')}}
@@ -123,10 +126,10 @@
 
                                         @forelse ($invoices as $invoice)
                                         <?php
-                                         if($invoice->currency == 'INR')
-                                            $currency = '₹';
-                                            else
-                                            $currency = '$'; 
+                                         $date1 = new DateTime($invoice->date);
+                                         $tz = \Auth::user()->timezone()->first()->name;
+                                         $date1->setTimezone(new DateTimeZone($tz));
+                                        $date = $date1->format('M j, Y, g:i a ');
                                         $payment = \App\Model\Order\Payment::where('invoice_id',$invoice->id)->select('amount')->get();
                                          $c=count($payment);
                                            $sum= 0;
@@ -142,16 +145,16 @@
                                                  <input type="checkbox"  id="check" class="selectedbox" name='selectedcheckbox' value="{{$invoice->id}}">
                                             </td>
                                             <td>
-                                                  {{$invoice->date}}
+                                                  {{$date}}
                                             </td>
                                             <td class="invoice-number">
                                                 <a href="{{url('invoices/show?invoiceid='.$invoice->id)}}">{{$invoice->number}}</a>
                                             </td>
                                             <td class="invoice-total"> 
-                                               {{$invoice->grand_total}}
+                                               {{currency_format($invoice->grand_total,$code = $currency)}}
                                             </td>
                                             <td id="pendingamt">
-                                                  <input type="text" class="pendingamt" name="pending" value ="{{$pendingAmount}}" id="pending_{{$invoice->id}}" disabled="disabled">
+                                                  <input type="text" class="pendingamt" name="pending" value ="{{currency_format($pendingAmount,$code = $currency)}}" id="pending_{{$invoice->id}}" disabled="disabled">
                                                
                                             </td>
                                             <td class="changeamt">

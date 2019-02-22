@@ -58,6 +58,8 @@
             @foreach($orders as $order)  
             <?php 
             $product = \App\Model\Product\Product::where('id', $order->product)->select('id', 'name')->first();
+            $cont = new \App\Http\Controllers\License\LicensePermissionsController();
+            $downloadPermission = $cont->getPermissionsForProduct($order->product);
             ?>
             <table class="table table-bordered table-striped">
     
@@ -103,7 +105,9 @@
                     </tr>
         </tfoot>
     </table>
+      @if($downloadPermission['downloadPermission'] == 1)
       <a href= product/download/{{$order->product}}/{{$invoice->number}} " class="btn btn-sm btn-primary btn-xs" style="margin-bottom:15px;"><i class="fa fa-download" style="color:white;"> </i>&nbsp;&nbsp;Download the Latest Version here</a>
+      @endif
     @endforeach
     <br>
     

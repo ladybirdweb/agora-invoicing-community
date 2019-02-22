@@ -130,6 +130,16 @@ trait ApiKeySettings
         return ['message' => 'success', 'update'=>'Mailchimp Settings Updated'];
     }
 
+    public function updateTermsDetails(Request $request)
+    {
+        $terms_url = $request->input('terms_url');
+        $status = $request->input('status');
+        StatusSetting::find(1)->update(['terms'=>$status]);
+        ApiKey::find(1)->update(['terms_url'=>$terms_url]);
+
+        return ['message' => 'success', 'update'=>'Terms Url Updated'];
+    }
+
     /**
      * Get Date.
      */

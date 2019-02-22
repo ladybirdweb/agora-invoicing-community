@@ -200,24 +200,26 @@ Edit Product
                                                 <input type="hidden" value="{{$checkowner}}" id="checkowner">
                                               <span>Where do you want to retrieve your files from?</span>
                                              </br>
-                                                <tr>              
+                                             <input type="hidden" value="{{$githubStatus}}" id="gitstatus">    
+                                                <tr>  
+                                                      
                                                     <td>
                                                         <label for="chkYes" style="display: block;">
                                                         <input type="radio" id="chkYes" name="chkTax" />
                                                         Github
                                                     </label>
-                                                      <div class="col-md-10" id="git" style="display:none">
+                                                      <div class="col-md-10 gitstatus" id="git" style="display:none">
                                                 <li>
                                                     <div class="form-group {{ $errors->has('github_owner') ? 'has-error' : '' }}">
                                                         <!-- first name -->
                                                         {!! Form::label('github_owner',Lang::get('message.github-owner')) !!}
-                                                         {!! Form::text('github_owner',null,['class'=>'form-control']) !!}
+                                                         {!! Form::text('github_owner',null,['class'=>'form-control','id'=>'owner']) !!}
                                                         
                                                     </div>
                                                     <div class="form-group {{ $errors->has('github_repository') ? 'has-error' : '' }}">
                                                         <!-- last name -->
                                                  {!! Form::label('github_repository',Lang::get('message.github-repository-name')) !!}
-                                                     {!! Form::text('github_repository',null,['class'=>'form-control']) !!}
+                                                     {!! Form::text('github_repository',null,['class'=>'form-control','id'=>'repo']) !!}
                                                         
 
                                                     </div>  
@@ -227,7 +229,7 @@ Edit Product
                                                     <div class="form-group {{ $errors->has('version') ? 'has-error' : '' }}">
                                                         <!-- last name -->
                                                         {!! Form::label('version',Lang::get('message.version')) !!}
-                                                         {!! Form::text('version',null,['class'=>'form-control']) !!}
+                                                         {!! Form::text('version',null,['class'=>'form-control','id'=>'version']) !!}
 
 
                                                       </div>
@@ -604,7 +606,7 @@ Edit Product
         });
         
   
-    
+     
      function openEditPopup(e){
         
         $('#edit-uplaod-option').modal('show');
@@ -764,6 +766,8 @@ Edit Product
 
 <script>
     $(document).ready(function(){
+        var githubstatus =  $('#gitstatus').val();
+        
         if( $("input[type=radio][name='show_agent']:checked").val() == 1) {
             $('#agent').prop('checked',true);
             $('#allowmulagent').show();
@@ -782,6 +786,15 @@ Edit Product
         if($('#checkowner').val() != '') {
             $('#chkYes').prop('checked',true);
             $('#git').show();
+             if(githubstatus == 0) {
+            $("#owner").attr('disabled',true);
+             $("#repo").attr('disabled',true);
+              $("#version").attr('disabled',true);
+        } else {
+              $("#owner").attr('enabled',true);
+             $("#repo").attr('enabled',true);
+              $("#version").attr('enabled',true);
+        }
         } else if($('#checkowner').val() == '') {
             $('#chkNo').prop('checked',true);
             document.getElementById("hide").style.display="block";

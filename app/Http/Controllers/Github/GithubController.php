@@ -20,6 +20,7 @@ class GithubController extends Controller
 
     public function __construct()
     {
+    
         $this->middleware('auth', ['except' => 'getlatestReleaseForUpdate']);
 
         $github_controller = new GithubApiController();

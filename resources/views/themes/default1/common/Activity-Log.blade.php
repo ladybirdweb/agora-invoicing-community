@@ -158,7 +158,7 @@ Activity Log
                      <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_delete"><i class="fa fa-trash">&nbsp;&nbsp;</i> Delete Selected</button><br /><br />
                      
                     <thead><tr>
-                            <th class="no-sort" style="width:1px"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
+                        <th class="no-sort" style="width:1px"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
                             <th style="width:50px;">Module</th>
                             <th style="width:110px;">Description/Event</th>
                              <th style="width:50px;">Name</th>   
@@ -180,16 +180,15 @@ Activity Log
 </div>
 </div>
 </div>
-    <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
 <script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
-<!--  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script> -->
+
 <script type="text/javascript">
      function readmore(){
                         var maxLength = 100;
                         $("#activity-table tbody tr td").each(function(){
                             var myStr = $(this).text();
 
-                           console.log(myStr);
                             if($.trim(myStr).length > maxLength){
                                 var newStr = myStr.substring(0, maxLength);
                                  $(this).empty().html(newStr);

@@ -19,7 +19,7 @@ class GroupController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        // $this->middleware('admin');
+        $this->middleware('admin');
 
         $group = new ProductGroup();
         $this->group = $group;
@@ -97,7 +97,6 @@ class GroupController extends Controller
         $this->validate($request, [
             'name'                 => 'required',
             'headline'             => 'required',
-            'cart_link'            => 'required',
             'pricing_templates_id' => 'required',
             ], [
                 'pricing_templates_id.required'=> 'Please Select a Template',

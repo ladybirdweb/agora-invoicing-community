@@ -36,11 +36,13 @@ class LicenseType extends Model
 
     public function products()
     {
-        return $this->hasOne(Product::class);
+        return $this->hasMany('App\Model\Product\Product','type');
     }
 
     public function delete()
     {
         $this->permissions()->detach();
+        $this->products()->delete();
+         return parent::delete();
     }
 }

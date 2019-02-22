@@ -64,15 +64,16 @@ Order Details
                             <table class="table table-hover">
    
                               
-                                <tbody><tr><td><b>Serial Key:</b></td><td>{{($order->serial_key)}}</td></tr>
+                                <tbody><tr><td><b>License Code:</b></td><td>{{($order->serial_key)}}</td></tr>
                                     <tr>
                                         
                                             <td>
-                                                 <label name="domain" data-toggle="tooltip" data-placement="top" title="{!!Lang::get('message.domain-message') !!}">
+                                                 <label name="domain">
                                                     <b>Licensed Domain:</b></td><td contenteditable="false" id="domain">{{$order->domain}}
-                                                      <button class='class="btn btn-danger mb-2 pull-right' style="border:none;" id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}"
-                                                >
+                                                       @if ($licenseStatus == 1)
+                                      <button class='class="btn btn-danger mb-2 pull-right' style="border:none;" id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}">
                                 Reissue Licesnse</button>
+                                @endif
                             </td></tr>
                                     <?php
                                     $date = "--";

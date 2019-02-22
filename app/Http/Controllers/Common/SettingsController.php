@@ -77,9 +77,11 @@ class SettingsController extends BaseSettingsController
             $rzpKeys = $apikeys->select('rzp_key', 'rzp_secret', 'apilayer_key')->first();
             $mailchimpSetting = StatusSetting::pluck('mailchimp_status')->first();
             $mailchimpKey = MailchimpSetting::pluck('api_key')->first();
+            $termsStatus = StatusSetting::pluck('terms')->first();
+            $termsUrl = $apikeys->pluck('terms_url')->first();
             $model = $apikeys->find(1);
 
-            return view('themes.default1.common.apikey', compact('model', 'status', 'licenseSecret', 'licenseUrl', 'siteKey', 'secretKey', 'captchaStatus', 'updateStatus', 'updateSecret', 'updateUrl', 'mobileStatus', 'mobileauthkey', 'emailStatus', 'twitterStatus', 'twitterKeys', 'zohoStatus', 'zohoKey', 'rzpStatus', 'rzpKeys', 'mailchimpSetting', 'mailchimpKey'));
+            return view('themes.default1.common.apikey', compact('model', 'status', 'licenseSecret', 'licenseUrl', 'siteKey', 'secretKey', 'captchaStatus', 'updateStatus', 'updateSecret', 'updateUrl', 'mobileStatus', 'mobileauthkey', 'emailStatus', 'twitterStatus', 'twitterKeys', 'zohoStatus', 'zohoKey', 'rzpStatus', 'rzpKeys', 'mailchimpSetting', 'mailchimpKey','termsStatus','termsUrl'));
         } catch (\Exception $ex) {
             return redirect('/')->with('fails', $ex->getMessage());
         }
@@ -371,45 +373,48 @@ class SettingsController extends BaseSettingsController
     public function getMails()
     {
         try {
-            $email_log = \DB::table('email_log')->get();
+            $email_log = \DB::table('email_log')->orderBy('date', 'desc')->get();
 
             return\ DataTables::of($email_log)
              ->addColumn('checkbox', function ($model) {
                  return "<input type='checkbox' class='email' value=".$model->id.' name=select[] id=check>';
              })
                            ->addColumn('date', function ($model) {
-                               return ucfirst($model->date);
+                              $date = $model->date;
+                              if ($date) {
+                                  $date1 = new \DateTime($date);
+                                  $tz = \Auth::user()->timezone()->first()->name;
+                                  $date1->setTimezone(new \DateTimeZone($tz));
+                                  $finalDate = $date1->format('M j, Y, g:i a ');
+                              }
+                               return $finalDate;
                            })
                              ->addColumn('from', function ($model) {
-                                 $from = Markdown::convertToHtml(ucfirst($model->from));
+                                 $from = Markdown::convertToHtml($model->from);
 
                                  return $from;
                              })
                               ->addColumn('to', function ($model) {
-                                  $to = Markdown::convertToHtml(ucfirst($model->to));
+                                  $to = Markdown::convertToHtml($model->to);
 
                                   return $to;
                               })
-                             ->addColumn('cc', function ($model) {
-                                 $cc = '--';
-
-                                 return $cc;
-                             })
+                             
 
                                ->addColumn('subject', function ($model) {
                                    return ucfirst($model->subject);
                                })
-                                ->addColumn('headers', function ($model) {
-                                    $headers = Markdown::convertToHtml(ucfirst($model->headers));
+                                // ->addColumn('headers', function ($model) {
+                                //     $headers = Markdown::convertToHtml(ucfirst($model->headers));
 
-                                    return $headers;
-                                })
+                                //     return $headers;
+                                // })
                               ->addColumn('status', function ($model) {
                                   return ucfirst($model->status);
                               })
 
-                            ->rawColumns(['checkbox', 'date', 'from', 'to', 'cc',
-                                'bcc', 'subject', 'headers', 'status', ])
+                            ->rawColumns(['checkbox', 'date', 'from', 'to',
+                                'bcc', 'subject',  'status', ])
                             ->make(true);
         } catch (\Exception $e) {
             Bugsnag::notifyException($e);

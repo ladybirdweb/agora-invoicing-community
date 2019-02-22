@@ -127,7 +127,7 @@ License Types
 
       $(document).on('click','#bulk_delete',function(){
       var id=[];
-      if (confirm("Are you sure you want to delete this?"))
+      if (confirm("Are you sure you want to delete this? All the Products and Permissions related to this License Type would be deleted"))
         {
             $('.type_checkbox:checked').each(function(){
               id.push($(this).val())

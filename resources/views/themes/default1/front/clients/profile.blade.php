@@ -41,8 +41,8 @@ active
 }
 </style>
 
-
-             
+     <div id= "alertMessage"></div>
+     <div id= "error"></div>        
     <h2 class="mb-none" style="margin-bottom:0px;"> My Profile</h2>
     <div class="featured-boxes">
 
@@ -324,8 +324,6 @@ active
                                         type: 'PATCH',
                                         data: data,
                                         success: function (response) {
-                                            console.log(response)
-                                        
                                         if(response.type == 'success'){
                                              var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Well Done! </strong>'+response.message+'!</div>';
                                               $('#error').hide();
@@ -335,11 +333,18 @@ active
                                               $('html, body').animate({scrollTop:0}, 1000);
                                           
                                               // response.success("Success");
+                                           } else {
+                                             var result =  '<div class="alert alert-warning alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="fas fa-exclamation-triangle"></i>Whoops! Something went wrong..</strong>'+response.message+'!</div>';
+                                              $('#error').html(result);
+                                            $('#alertMessage').hide();
+                                            // $('#alertMessage2').html(result);
+                                            $("#password").html("Update");
+                                              $('html, body').animate({scrollTop:0}, 1000);
                                            }  
                                         },
                                         error: function (data) {
-                                          console.log(data)
-                                             var html = '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="fas fa-exclamation-triangle"></i>Oh Snap! </strong>'+data.responseJSON.message+' <br><ul>';
+                                          console.log(data,'sd')
+                                             var html = '<div class="alert alert-warning alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="fas fa-exclamation-triangle"></i>Oh Snap! </strong>'+data.responseJSON.message+' <br><ul>';
                                             $("#password").html("Update");
                                               $('html, body').animate({scrollTop:0}, 500);
                                               for (var key in data.responseJSON.errors)

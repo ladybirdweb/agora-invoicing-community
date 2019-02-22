@@ -278,6 +278,32 @@ API Keys
                   <td style="padding-left: 230px;"><button type="submit" class="form-group btn btn-primary"  id="submit9"><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
                 </tr>
 
+              <tr>
+                 
+                <td class="col-md-2">Show Terms on Registration Page</td>
+                  <td class="col-md-2">
+                    <label class="switch toggle_event_editing">
+                          
+                         <input type="checkbox" value="{{$termsStatus}}"  name="terms_settings" 
+                          class="checkbox10" id="terms">
+                          <span class="slider round"></span>
+                    </label>
+ 
+                  </td>
+                   <td class="col-md-4 termsverify">
+                    
+                       <input type ="hidden" id="hiddenTermsValue" value="{{$termsUrl}}">
+                        <!-- last name -->
+                        {!! Form::label('terms',Lang::get('message.terms_url')) !!}
+                        {!! Form::text('terms',$termsUrl,['class' => 'form-control terms_url','id'=>'terms_url']) !!}
+                         <h6 id="terms_check"></h6>
+                         <br/>
+                  
+                   
+                  </td>
+                  <td style="padding-left: 230px;"><button type="submit" class="form-group btn btn-primary"  id="submit10"><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
+                </tr>
+
    
 
                 
@@ -1111,6 +1137,71 @@ if ($('#update').prop("checked")) {
             var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>'+data.update+'.</div>';
             $('#alertMessage').html(result+ ".");
             $("#submit9").html("<i class='fa fa-floppy-o'>&nbsp;&nbsp;</i>Save");
+              setInterval(function(){ 
+                $('#alertMessage').slideUp(3000); 
+            }, 1000);
+          },
+    })
+  });
+
+   <!--------------------------------------------------------------------------------------------->
+  /*
+ *Terms
+  */
+   $(document).ready(function (){
+  var termsstatus =  $('.checkbox10').val();
+    if(termsstatus ==1)
+     {
+        $('#terms').prop('checked',true);
+       $('.terms_url').attr('enabled', true);
+     } else if(termsstatus ==0){
+      $('#terms').prop('checked',false);
+        $('.terms_url').attr('disabled', true);
+     }
+  });
+ $("#terms").on('change',function (){
+    if($(this).prop('checked')) {
+      var terms =  $('#hiddenTermsValue').val();
+      $('.terms_url').attr('disabled', false);
+       $('#terms_url').val(terms);
+
+     } else {
+        $('.terms_url').attr('disabled', true);
+         $('.terms_url').val('');
+
+
+    }
+ });
+ //Validate and pass value through ajax
+  $("#submit10").on('click',function (){ //When Submit button is checked
+     if ($('#terms').prop('checked')) {//if button is on
+             var termsstatus = 1;
+           if ($('#terms_url').val() == "") { //if value is not entered
+            $('#terms_check').show();
+            $('#terms_check').html("Please Enter Terms Url");
+            $('#terms_url').css("border-color","red");
+            $('#terms_check').css({"color":"red","margin-top":"5px"});
+            return false;
+          }
+    } else {
+       $('#terms_check').html("");
+       $('#terms_url').css("border-color","");
+         var termsstatus = 0;
+        
+  }
+    $("#submit10").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");   
+    $.ajax ({
+      url: '{{url("updateTermsDetails")}}',
+      type : 'get',
+      data: {
+       "status": termsstatus,
+       "terms_url": $('#terms_url').val(),
+      },
+       success: function (data) {
+            $('#alertMessage').show();
+            var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>'+data.update+'.</div>';
+            $('#alertMessage').html(result+ ".");
+            $("#submit10").html("<i class='fa fa-floppy-o'>&nbsp;&nbsp;</i>Save");
               setInterval(function(){ 
                 $('#alertMessage').slideUp(3000); 
             }, 1000);

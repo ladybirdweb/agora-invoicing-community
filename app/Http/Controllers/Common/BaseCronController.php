@@ -46,18 +46,18 @@ class BaseCronController extends Controller
         $sub = [];
         foreach ($allDays as $allDay) {
             if ($allDay >= 2) {
-                if (count($this->getAllDaysSubscription($allDay))) {
+                if ($this->getAllDaysSubscription($allDay) != []) {
                     array_push($sub, $this->getAllDaysSubscription($allDay));
                 }
             } elseif ($allDay == 1) {
-                if (count($this->get1DaysUsers())) {
+                if (count($this->get1DaysUsers())>0) {
                     array_push($sub, $this->get1DaysSubscription());
                 }
             } elseif ($allDay == 0) {
-                if (count($this->get0DaysUsers())) {
+                if (count($this->get0DaysUsers())>0) {
                     array_push($sub, $this->get0DaysSubscription());
                 }
-                if (count($this->getPlus1Users())) {
+                if (count($this->getPlus1Users())>0) {
                     array_push($sub, $this->getPlus1Subscription());
                 }
             }
@@ -140,9 +140,8 @@ class BaseCronController extends Controller
     {
         $yesterday = new Carbon('today');
         $tomorrow = new Carbon('+2 days');
-        $sub = Subscription::where('ends_at', '!=', '0000-00-00 00:00:00')
-                ->whereNotNull('ends_at')
-                ->whereBetween('ends_at', [$yesterday, $tomorrow]);
+        $sub = Subscription::whereNotNull('update_ends_at')
+                ->whereBetween('update_ends_at', [$yesterday, $tomorrow]);
 
         return $sub;
     }
@@ -151,9 +150,8 @@ class BaseCronController extends Controller
     {
         $yesterday = new Carbon('yesterday');
         $tomorrow = new Carbon('tomorrow');
-        $sub = Subscription::where('ends_at', '!=', '0000-00-00 00:00:00')
-            ->whereNotNull('ends_at')
-            ->whereBetween('ends_at', [$yesterday, $tomorrow]);
+        $sub = Subscription::whereNotNull('update_ends_at')
+            ->whereBetween('update_ends_at', [$yesterday, $tomorrow]);
 
         return $sub;
     }
@@ -162,9 +160,8 @@ class BaseCronController extends Controller
     {
         $yesterday = new Carbon('-2 days');
         $today = new Carbon('today');
-        $sub = Subscription::where('ends_at', '!=', '0000-00-00 00:00:00')
-                ->whereNotNull('ends_at')
-                ->whereBetween('ends_at', [$yesterday, $today]);
+        $sub = Subscription::whereNotNull('update_ends_at')
+                ->whereBetween('update_ends_at', [$yesterday, $today]);
 
         return $sub;
     }
@@ -173,9 +170,8 @@ class BaseCronController extends Controller
     {
         $plus14days = new Carbon('+14 days');
         $plus16days = new Carbon('+16 days');
-        $sub = Subscription::where('ends_at', '!=', '0000-00-00 00:00:00')
-            ->whereNotNull('ends_at')
-            ->whereBetween('ends_at', [$plus14days, $plus16days]);
+        $sub = Subscription::whereNotNull('update_ends_at')
+            ->whereBetween('update_ends_at', [$plus14days, $plus16days]);
 
         return $sub;
     }
@@ -184,10 +180,8 @@ class BaseCronController extends Controller
     {
         $minus1day = new Carbon('+'.($day - 1).' days');
         $plus1day = new Carbon('+'.($day + 1).' days');
-        $sub = Subscription::where('ends_at', '!=', '0000-00-00 00:00:00')
-            ->whereNotNull('ends_at')
-            ->whereBetween('ends_at', [$minus1day, $plus1day]);
-
+        $sub = Subscription::whereNotNull('update_ends_at')
+            ->whereBetween('update_ends_at', [$minus1day, $plus1day]);
         return $sub;
     }
 

@@ -89,7 +89,6 @@ active
                                             <th>Price</th>
                                             <th>Taxes</th>
                                             <th>Tax Rates</th>
-                                             <th>Discount</th>
                                             <th>Subtotal</th>
                                         </tr>
                                     </thead>
@@ -120,7 +119,8 @@ active
                                                 </ul>
                                             </td>
                                              <?php
-                                        $data=($item->discount)?$item->discount:'No discounts';
+                                            
+                                        $data=($item->discount)? currency_format($item->discount,$code = $symbol):'No discounts';
                                         ?>
                                         <td>
                                             {{$data}}
@@ -160,7 +160,7 @@ active
                                         }
                                         
                                     ?>
-
+                                    
                                    
                                    @if(count($tax_name)>0 &&$tax_name[0] !='null')
                                      <?php
@@ -246,8 +246,8 @@ active
                                     </tr>
                                     @endif
                                     @endif
-                                   
-
+                                    
+                                  
                                
                                
                                     <th>Total:</th>

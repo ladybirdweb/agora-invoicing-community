@@ -352,12 +352,14 @@ class PageController extends GetPageTemplateController
                 \Session::put('currency', 'INR');
             }
             $data = PricingTemplate::find($templateid)->data;
+            $headline = ProductGroup::find($groupid)->headline;
+            $tagline = ProductGroup::find($groupid)->tagline;
             $productsRelatedToGroup = ProductGroup::find($groupid)->product()->where('hidden', '!=', 1)
-            ->orderBy('created_at', 'desc')->get(); //Get ALL the Products Related to the Grou
+            ->orderBy('created_at', 'desc')->get(); //Get ALL the Products Related to the Group
             $trasform = [];
             $templates = $this->getTemplateOne($productsRelatedToGroup, $data, $trasform);
 
-            return view('themes.default1.common.template.shoppingcart', compact('templates'));
+            return view('themes.default1.common.template.shoppingcart', compact('templates','headline','tagline'));
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);

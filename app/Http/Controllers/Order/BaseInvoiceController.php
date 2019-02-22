@@ -215,4 +215,24 @@ class BaseInvoiceController extends ExtendedBaseInvoiceController
         }
         return ;
     }
+
+        /**
+     * Check if Session has Code and Value of Code
+     *
+     * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
+     *
+     * @date   2019-02-22T13:10:50+0530
+     *
+     * @return array
+     */
+    protected function getCodeFromSession() 
+    {
+        $code = '';
+        $codevalue = '';
+         if(\Session::has('code')){//If coupon code is applied get it here from Session
+              $code = \Session::get('code');
+              $codevalue = \Session::get('codevalue');
+            }
+            return ['code'=> $code , 'codevalue'=>$codevalue] ; 
+    }
 }

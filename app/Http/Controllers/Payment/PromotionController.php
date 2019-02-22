@@ -279,10 +279,10 @@ class PromotionController extends BasePromotionController
             if (\Session::get('usage') == null || \Session::get('usage') != 1) {
                 $userId = \Auth::user()->id;
                 \Cart::update($productid, [
-                'id'        => $productid,
-                'price'     => $value,
+                'id'         => $productid,
+                'price'      => $value,
                 'conditions' => $coupon,
-             
+
            // new item price, price can also be a string format like so: '98.67'
                 ]);
                 \Session::put('usage', 1);

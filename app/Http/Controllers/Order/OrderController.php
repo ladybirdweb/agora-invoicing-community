@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Order;
 
 use App\Http\Requests\Order\OrderRequest;
+use App\Model\Common\StatusSetting;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
 use App\Model\Order\Order;
 use App\Model\Payment\Plan;
 use App\Model\Payment\Promotion;
-use App\Model\Common\StatusSetting;
 use App\Model\Product\Price;
 use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
@@ -223,9 +223,9 @@ class OrderController extends BaseOrderController
             $invoiceItems = $this->invoice_items->where('invoice_id', $invoiceid)->get();
             $user = $this->user->find($invoice->user_id);
             $licenseStatus = StatusSetting::pluck('license_status')->first();
-       
+
             return view('themes.default1.order.show',
-                compact('invoiceItems', 'invoice', 'user', 'order', 'subscription','licenseStatus'));
+                compact('invoiceItems', 'invoice', 'user', 'order', 'subscription', 'licenseStatus'));
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
 

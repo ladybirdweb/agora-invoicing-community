@@ -213,7 +213,7 @@ class ClientController extends AdvanceSearchController
             $str = 'demopass';
             $password = \Hash::make($str);
             $user->password = $password;
-            $user->mobile_code = str_replace('+','', $request->input('mobile_code'));
+            $user->mobile_code = str_replace('+', '', $request->input('mobile_code'));
             $cont = new \App\Http\Controllers\Front\PageController();
             $location = $cont->getLocation();
             $user->ip = $location['ip'];

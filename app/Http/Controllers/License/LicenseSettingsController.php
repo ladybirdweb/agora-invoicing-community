@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\License;
 
 use App\Model\License\licenseType;
-use App\Model\Product\Product;
 use Bugsnag;
 use Illuminate\Http\Request;
 
@@ -92,8 +91,6 @@ class LicenseSettingsController extends LicensePermissionsController
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-
-
 
     /**
      * Remove the specified resource from storage.

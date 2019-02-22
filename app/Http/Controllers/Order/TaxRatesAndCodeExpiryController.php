@@ -53,8 +53,9 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
         } else {
             if ($total != 0) {
                 $grand_total = $cost;
-            } 
+            }
         }
+
         return $grand_total;
     }
 
@@ -277,7 +278,6 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
-
 
     public function getPromotionDetails($code)
     {

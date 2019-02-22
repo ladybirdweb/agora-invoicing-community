@@ -88,8 +88,7 @@ class ClientController extends BaseClientController
                                 return $date;
                             })
                             ->addColumn('total', function ($model) {
-
-                                return  currency_format($model->grand_total,$code =\Auth::user()->currency);
+                                return  currency_format($model->grand_total, $code = \Auth::user()->currency);
                             })
                             ->addColumn('Action', function ($model) {
                                 $status = $model->status;
@@ -411,20 +410,22 @@ class ClientController extends BaseClientController
                             })
                             ->addColumn('amount', function ($model) {
                                 $currency = $model->invoice()->first()->currency;
-                                $total = currency_format($model->amount,$code =$currency);
+                                $total = currency_format($model->amount, $code = $currency);
+
                                 return $total;
                             })
                             ->addColumn('payment_method', function ($model) {
                                 return $model->payment_method;
                             })
                              ->addColumn('payment_status', function ($model) {
-                                return $model->payment_status;
-                            })
+                                 return $model->payment_status;
+                             })
                             ->addColumn('created_at', function ($model) {
                                 $date1 = new DateTime($model->created_at);
                                 $tz = \Auth::user()->timezone()->first()->name;
                                 $date1->setTimezone(new DateTimeZone($tz));
                                 $date = $date1->format('M j, Y, g:i a');
+
                                 return $date;
                             })
                             ->rawColumns(['checkbox', 'number', 'amount',

@@ -174,7 +174,7 @@ class ProductController extends BaseProductController
             [
        'producttitle' => 'required',
         'version'      => 'required',
-       'filename'     => 'required',
+       'filename'      => 'required',
        ],
        ['filename.required' => 'Please Uplaod A file',
         ]

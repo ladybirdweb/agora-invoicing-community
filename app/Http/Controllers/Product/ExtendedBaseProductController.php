@@ -134,7 +134,7 @@ class ExtendedBaseProductController extends Controller
                 header('Content-Description: File Transfer');
                 header('Content-Disposition: attachment; filename = '.$name.'.zip');
                 header('Content-Length: '.filesize($release));
-                 exit;
+                exit;
                 ob_end_clean();
                 readfile($release);
             }

@@ -106,18 +106,22 @@ class BaseOrderController extends ExtendedOrderController
             'number'          => $this->generateNumber(),
             ]);
             $this->addOrderInvoiceRelation($invoiceid, $order->id);
+
             if ($plan_id != 0) {
             $this->addSubscription($order->id, $plan_id, $version, $product, $serial_key);
            }
+
             $this->sendOrderMail($user_id, $order->id, $item->id);
             //Update Subscriber To Mailchimp
             $mailchimpStatus = StatusSetting::pluck('mailchimp_status')->first();
             if ($mailchimpStatus == 1) {
-            $this->addtoMailchimp($product, $user_id, $item);
+             $this->addtoMailchimp($product, $user_id, $item);
            }
+
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
             app('log')->error($ex->getMessage());
+
             throw new \Exception($ex->getMessage());
         }
     }
@@ -125,22 +129,20 @@ class BaseOrderController extends ExtendedOrderController
     public function addToMailchimp($product, $user_id, $item)
     {
         try {
-                $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
-                $email = User::where('id', $user_id)->pluck('email')->first();
-                if ($item->subtotal > 0) {
-                    $r = $mailchimp->updateSubscriberForPaidProduct($email, $product);
-                } else {
-                    $r = $mailchimp->updateSubscriberForFreeProduct($email, $product);
-                }
-            
+            $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
+            $email = User::where('id', $user_id)->pluck('email')->first();
+            if ($item->subtotal > 0) {
+                $r = $mailchimp->updateSubscriberForPaidProduct($email, $product);
+            } else {
+                $r = $mailchimp->updateSubscriberForFreeProduct($email, $product);
+            }
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
             app('log')->info($ex->getMessage());
+
             throw new \Exception('User not Updated to Mailchimp');
         }
     }
-
-    
 
     /**
      * inserting the values to subscription table.
@@ -162,14 +164,14 @@ class BaseOrderController extends ExtendedOrderController
             if ($version == null) {
                 $version = '';
             }
-                $days = $this->plan->where('id', $planid)->first()->days;
-                $licenseExpiry = $this->getLicenseExpiryDate($permissions['generateLicenseExpiryDate'], $days);
-                $updatesExpiry = $this->getUpdatesExpiryDate($permissions['generateUpdatesxpiryDate'], $days);
-                $supportExpiry = $this->getSupportExpiryDate($permissions['generateSupportExpiryDate'], $days);
-                $user_id = $this->order->find($orderid)->client;
-                $this->subscription->create(['user_id' => $user_id,
+            $days = $this->plan->where('id', $planid)->first()->days;
+            $licenseExpiry = $this->getLicenseExpiryDate($permissions['generateLicenseExpiryDate'], $days);
+            $updatesExpiry = $this->getUpdatesExpiryDate($permissions['generateUpdatesxpiryDate'], $days);
+            $supportExpiry = $this->getSupportExpiryDate($permissions['generateSupportExpiryDate'], $days);
+            $user_id = $this->order->find($orderid)->client;
+            $this->subscription->create(['user_id'     => $user_id,
                 'plan_id'                              => $planid, 'order_id' => $orderid, 'update_ends_at' =>$updatesExpiry, 'ends_at' => $licenseExpiry, 'support_ends_at'=>$supportExpiry, 'version'=> $version, 'product_id' =>$product, ]);
-            
+
             $licenseStatus = StatusSetting::pluck('license_status')->first();
             if ($licenseStatus == 1) {
                 $cont = new \App\Http\Controllers\License\LicenseController();

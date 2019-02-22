@@ -120,7 +120,7 @@ class PromotionController extends BasePromotionController
             $startdate = date_create($request->input('start'));
             $start = date_format($startdate, 'Y-m-d H:m:i');
             $enddate = date_create($request->input('expiry'));
-            $expiry =  date_format($enddate, 'Y-m-d H:m:i');
+            $expiry = date_format($enddate, 'Y-m-d H:m:i');
             $this->promotion->code = $request->input('code');
             $this->promotion->type = $request->input('type');
             $this->promotion->value = $request->input('value');
@@ -180,14 +180,14 @@ class PromotionController extends BasePromotionController
             $startdate = date_create($request->input('start'));
             $start = date_format($startdate, 'Y-m-d H:m:i');
             $enddate = date_create($request->input('expiry'));
-            $expiry =  date_format($enddate, 'Y-m-d H:m:i');
+            $expiry = date_format($enddate, 'Y-m-d H:m:i');
 
             $promotion = $this->promotion->where('id', $id)->update([
-            'code' => $request->input('code'),
-            'type' => $request->input('type'),
-            'value' => $request->input('value'),
-            'uses' => $request->input('uses'),
-            'start' => $start,
+            'code'   => $request->input('code'),
+            'type'   => $request->input('type'),
+            'value'  => $request->input('value'),
+            'uses'   => $request->input('uses'),
+            'start'  => $start,
             'expiry' => $expiry,
             ]);
             /* Delete the products has this id */
@@ -204,6 +204,7 @@ class PromotionController extends BasePromotionController
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $ex) {
             dd($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

@@ -7,7 +7,6 @@ use App\Http\Controllers\Common\MailChimpController;
 use App\Http\Controllers\Common\TemplateController;
 use App\Model\Common\Setting;
 use App\Model\Common\State;
-use App\Model\Common\StatusSetting;
 use App\Model\Common\Template;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
@@ -274,7 +273,6 @@ class CheckoutController extends InfoController
                 $action = $this->checkoutAction($invoice);
                 $check_product_category = $this->product($invoiceid);
                 //Update Subscriber To Mailchimp
-              
 
                 $url = '';
                 if ($check_product_category->category) {
@@ -287,7 +285,7 @@ class CheckoutController extends InfoController
                         'state'
                     ))->render();
                 }
-                
+
                 \Cart::clear();
 
                 return redirect()->back()->with('success', $url);
@@ -299,8 +297,6 @@ class CheckoutController extends InfoController
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-
-
 
     public function checkoutAction($invoice)
     {

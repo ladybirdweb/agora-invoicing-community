@@ -81,7 +81,7 @@ class SettingsController extends BaseSettingsController
             $termsUrl = $apikeys->pluck('terms_url')->first();
             $model = $apikeys->find(1);
 
-            return view('themes.default1.common.apikey', compact('model', 'status', 'licenseSecret', 'licenseUrl', 'siteKey', 'secretKey', 'captchaStatus', 'updateStatus', 'updateSecret', 'updateUrl', 'mobileStatus', 'mobileauthkey', 'emailStatus', 'twitterStatus', 'twitterKeys', 'zohoStatus', 'zohoKey', 'rzpStatus', 'rzpKeys', 'mailchimpSetting', 'mailchimpKey','termsStatus','termsUrl'));
+            return view('themes.default1.common.apikey', compact('model', 'status', 'licenseSecret', 'licenseUrl', 'siteKey', 'secretKey', 'captchaStatus', 'updateStatus', 'updateSecret', 'updateUrl', 'mobileStatus', 'mobileauthkey', 'emailStatus', 'twitterStatus', 'twitterKeys', 'zohoStatus', 'zohoKey', 'rzpStatus', 'rzpKeys', 'mailchimpSetting', 'mailchimpKey', 'termsStatus', 'termsUrl'));
         } catch (\Exception $ex) {
             return redirect('/')->with('fails', $ex->getMessage());
         }
@@ -380,13 +380,14 @@ class SettingsController extends BaseSettingsController
                  return "<input type='checkbox' class='email' value=".$model->id.' name=select[] id=check>';
              })
                            ->addColumn('date', function ($model) {
-                              $date = $model->date;
-                              if ($date) {
-                                  $date1 = new \DateTime($date);
-                                  $tz = \Auth::user()->timezone()->first()->name;
-                                  $date1->setTimezone(new \DateTimeZone($tz));
-                                  $finalDate = $date1->format('M j, Y, g:i a ');
-                              }
+                               $date = $model->date;
+                               if ($date) {
+                                   $date1 = new \DateTime($date);
+                                   $tz = \Auth::user()->timezone()->first()->name;
+                                   $date1->setTimezone(new \DateTimeZone($tz));
+                                   $finalDate = $date1->format('M j, Y, g:i a ');
+                               }
+
                                return $finalDate;
                            })
                              ->addColumn('from', function ($model) {
@@ -399,7 +400,6 @@ class SettingsController extends BaseSettingsController
 
                                   return $to;
                               })
-                             
 
                                ->addColumn('subject', function ($model) {
                                    return ucfirst($model->subject);

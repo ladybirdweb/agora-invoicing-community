@@ -62,7 +62,7 @@ class ExtendedOrderController extends Controller
 
             return $join;
         } catch (\Exception $ex) {
-            return redirect()->back()->with('fails',$ex->getMessage());
+            return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 

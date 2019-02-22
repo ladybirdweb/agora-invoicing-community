@@ -15,7 +15,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 use Razorpay\Api\Api;
 use Redirect;
-use App\Http\Controllers\License\LicensePermissionsController;
 
 class RazorpayController extends Controller
 {

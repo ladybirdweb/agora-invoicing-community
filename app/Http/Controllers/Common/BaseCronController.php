@@ -50,14 +50,14 @@ class BaseCronController extends Controller
                     array_push($sub, $this->getAllDaysSubscription($allDay));
                 }
             } elseif ($allDay == 1) {
-                if (count($this->get1DaysUsers())>0) {
+                if (count($this->get1DaysUsers()) > 0) {
                     array_push($sub, $this->get1DaysSubscription());
                 }
             } elseif ($allDay == 0) {
-                if (count($this->get0DaysUsers())>0) {
+                if (count($this->get0DaysUsers()) > 0) {
                     array_push($sub, $this->get0DaysSubscription());
                 }
-                if (count($this->getPlus1Users())>0) {
+                if (count($this->getPlus1Users()) > 0) {
                     array_push($sub, $this->getPlus1Subscription());
                 }
             }
@@ -182,6 +182,7 @@ class BaseCronController extends Controller
         $plus1day = new Carbon('+'.($day + 1).' days');
         $sub = Subscription::whereNotNull('update_ends_at')
             ->whereBetween('update_ends_at', [$minus1day, $plus1day]);
+
         return $sub;
     }
 

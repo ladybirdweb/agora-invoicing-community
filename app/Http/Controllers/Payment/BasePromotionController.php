@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Payment;
 
 use App\Http\Controllers\Controller;
 use App\Model\Payment\Plan;
-use App\Model\Payment\PlanPrice;
 use App\Model\Payment\Promotion;
 use App\Model\Product\Product;
 
@@ -60,7 +59,7 @@ class BasePromotionController extends Controller
                 $planid = \Session::get('plan');
             }
             if (count(\Cart::getContent())) {
-                $product_price =  $cart_control->planCost($productid, $userid, $planid = '');
+                $product_price = $cart_control->planCost($productid, $userid, $planid = '');
             }
             $updated_price = $this->findCost($promotion_type, $promotion_value, $product_price, $productid);
 

@@ -262,10 +262,10 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
      *
      * @throws \Exception
      */
-
     public function generateInvoice()
     {
         try {
+
             $sessionValue = $this->getCodeFromSession();
             $code = $sessionValue['code'];
             $codeValue = $sessionValue['codevalue'];
@@ -290,13 +290,13 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             foreach ($content as $key => $item) {
                 $attributes[] = $item->attributes;
             }
-            
+
             $symbol = $attributes[0]['currency']['symbol'];
             $invoice = $this->invoice->create(['user_id' => $user_id, 'number' => $number,
-             'date' => $date, 'discount'=>$codevalue,'grand_total' => $grand_total, 'coupon_code'=>$code,'status' => 'pending',
-             'currency'  => \Auth::user()->currency, ]);
+             'date'                                      => $date, 'discount'=>$codevalue, 'grand_total' => $grand_total, 'coupon_code'=>$code, 'status' => 'pending',
+             'currency'                                  => \Auth::user()->currency, ]);
             foreach (\Cart::getContent() as $cart) {
-                $this->createInvoiceItems($invoice->id, $cart,$codevalue);
+                $this->createInvoiceItems($invoice->id, $cart, $codevalue);
             }
             $this->sendMail($user_id, $invoice->id);
 
@@ -329,7 +329,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             return ['code'=> $code , 'codevalue'=>$codevalue] ; 
     }
 
-    public function createInvoiceItems($invoiceid, $cart,$codevalue='')
+    public function createInvoiceItems($invoiceid, $cart, $codevalue = '')
     {
         try {
             $planid = 0;
@@ -415,8 +415,8 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $product = Product::find($productid);
             $cost = $controller->cost($productid, $user_id, $plan);
             $grand_total = $this->getGrandTotal($code, $total, $cost, $productid, $currency);
-             $promo = $this->promotion->where('code', $code)->first();
-             $codeValue = $this->getCodeValue($promo,$code);//get coupon code value to be added to Invoice
+            $promo = $this->promotion->where('code', $code)->first();
+            $codeValue = $this->getCodeValue($promo, $code); //get coupon code value to be added to Invoice
             $grand_total = $qty * $grand_total;
             if ($grand_total == 0) {
                 $status = 'success';
@@ -432,9 +432,9 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $grand_total = $this->calculateTotal($tax_rate, $grand_total);
             $grand_total = \App\Http\Controllers\Front\CartController::rounding($grand_total);
 
-            $invoice = Invoice::create(['user_id' => $user_id,'number' => $number, 'date' => $date,
-             'coupon_code'=>$code,'discount'=>$codeValue,
-                'grand_total' => $grand_total,  'currency'  => $currency, 'status' => $status, 'description' => $description, ]);
+            $invoice = Invoice::create(['user_id' => $user_id, 'number' => $number, 'date' => $date,
+             'coupon_code'                        => $code, 'discount'=>$codeValue,
+                'grand_total'                     => $grand_total,  'currency'  => $currency, 'status' => $status, 'description' => $description, ]);
 
             $items = $this->createInvoiceItemsByAdmin($invoice->id, $productid,
              $code, $total, $currency, $qty, $agents, $plan, $user_id, $tax_name, $tax_rate);

@@ -115,6 +115,7 @@ class ProductController extends BaseProductController
     {
         try {
             $new_product = Product::select('id', 'name', 'type', 'image', 'group', 'image')->get();
+
             return\ DataTables::of($new_product)
 
                             ->addColumn('checkbox', function ($model) {
@@ -172,7 +173,7 @@ class ProductController extends BaseProductController
         $this->validate(
             $request,
             [
-       'producttitle' => 'required',
+       'producttitle'  => 'required',
         'version'      => 'required',
        'filename'      => 'required',
        ],
@@ -314,6 +315,7 @@ class ProductController extends BaseProductController
         } catch (\Exception $e) {
             app('log')->error($e->getMessage());
             Bugsnag::notifyException($e);
+
             return redirect()->with('fails', $e->getMessage());
         }
     }

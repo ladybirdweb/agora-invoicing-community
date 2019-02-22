@@ -176,12 +176,13 @@ class BaseClientController extends Controller
                 return $response;
             } else {
                 $response = ['type'=>'error', 'message'=>'Old Password Not Correct'];
+
                 return $response;
             }
         } catch (\Exception $e) {
             app('log')->error($e->getMessage());
             $result = [$e->getMessage()];
-            Bugsnag::notifyException( $result);
+            Bugsnag::notifyException($result);
 
             return response()->json(compact('result'), 500);
         }

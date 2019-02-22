@@ -61,6 +61,7 @@ class CronController extends BaseCronController
                 $users[$key]['subscription'] = $value;
             }
         }
+
         return $users;
     }
 

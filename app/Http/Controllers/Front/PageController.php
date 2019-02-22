@@ -359,7 +359,7 @@ class PageController extends GetPageTemplateController
             $trasform = [];
             $templates = $this->getTemplateOne($productsRelatedToGroup, $data, $trasform);
 
-            return view('themes.default1.common.template.shoppingcart', compact('templates','headline','tagline'));
+            return view('themes.default1.common.template.shoppingcart', compact('templates', 'headline', 'tagline'));
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);

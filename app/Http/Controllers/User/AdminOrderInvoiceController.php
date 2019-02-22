@@ -37,9 +37,9 @@ class AdminOrderInvoiceController extends Controller
                              $c = count($payment);
                              $sum = 0;
 
-                            for ($i=0; $i <= $c-1; $i++) {
-                                $sum = $sum + $payment[$i]->amount;
-                            }
+                             for ($i = 0; $i <= $c - 1; $i++) {
+                                 $sum = $sum + $payment[$i]->amount;
+                             }
 
                              return currency_format($sum, $code = $client->currency);
                          })
@@ -48,10 +48,10 @@ class AdminOrderInvoiceController extends Controller
                              $c = count($payment);
                              $sum = 0;
 
-                            for ($i=0; $i <= $c-1; $i++) {
-                                $sum = $sum + $payment[$i]->amount;
-                            }
-                             $pendingAmount = ($model->grand_total)-($sum);
+                             for ($i = 0; $i <= $c - 1; $i++) {
+                                 $sum = $sum + $payment[$i]->amount;
+                             }
+                             $pendingAmount = ($model->grand_total) - ($sum);
 
                              return currency_format($pendingAmount, $code = $client->currency);
                          })
@@ -152,11 +152,11 @@ class AdminOrderInvoiceController extends Controller
                         })
 
                          ->addColumn('total', function ($model) use ($client, $extraAmt) {
-                            if ($model->invoice_id == 0) {
-                                $amount = currency_format($extraAmt, $code = $client->currency);
-                            } else {
-                                $amount = currency_format($model->amount, $code = $client->currency);
-                            }
+                             if ($model->invoice_id == 0) {
+                                 $amount = currency_format($extraAmt, $code = $client->currency);
+                             } else {
+                                 $amount = currency_format($model->amount, $code = $client->currency);
+                             }
 
                              return $amount;
                          })
@@ -166,17 +166,15 @@ class AdminOrderInvoiceController extends Controller
 
                          ->addColumn('action', function ($model) {
                              '<input type="hidden" class="paymentid" value="{{$model->id}}">';
-                            if ($model->invoice_id == 0) {
-                                return '<a href='.url("payments/".$model->id."/edit/")." class='btn btn-sm btn-primary btn-xs'> <i class='fa fa-edit' style='color:white;'> </i>&nbsp;&nbsp;Edit</a>";
-                                ;
-                            } else {
-                                return '--';
-                            }
+                             if ($model->invoice_id == 0) {
+                                 return '<a href='.url('payments/'.$model->id.'/edit/')." class='btn btn-sm btn-primary btn-xs'> <i class='fa fa-edit' style='color:white;'> </i>&nbsp;&nbsp;Edit</a>";
+                             } else {
+                                 return '--';
+                             }
                          })
-                            
-                      
-                        ->rawColumns(['checkbox', 'invoice_no', 'date', 'payment_method', 'total', 'status','action'])
+
+                        ->rawColumns(['checkbox', 'invoice_no', 'date', 'payment_method', 'total', 'status', 'action'])
 
                         ->make(true);
-     }
+    }
 }

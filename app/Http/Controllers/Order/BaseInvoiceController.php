@@ -38,7 +38,6 @@ class BaseInvoiceController extends ExtendedBaseInvoiceController
                 $taxes = [0];
             }
         } elseif ($state_code != $origin_state && $ut_gst == 'NULL') {//If user is from other state
-
             $taxClassId = TaxClass::where('name', 'Inter State GST')
             ->pluck('id')->toArray(); //Get the class Id  of state
             if ($taxClassId) {
@@ -49,7 +48,7 @@ class BaseInvoiceController extends ExtendedBaseInvoiceController
             }
         } elseif ($state_code != $origin_state && $ut_gst != 'NULL') {//if user from Union Territory
             $taxClassId = TaxClass::where('name', 'Union Territory GST')
-        ->pluck('id')->toArray(); //Get the class Id  of state
+            ->pluck('id')->toArray(); //Get the class Id  of state
             if ($taxClassId) {
                 $taxes = $cartController->getTaxByPriority($taxClassId);
                 $value = $cartController->getValueForUnionTerritory($productid, $c_gst, $ut_gst, $taxClassId, $taxes);
@@ -73,7 +72,6 @@ class BaseInvoiceController extends ExtendedBaseInvoiceController
         $value = '';
         $rate = '';
         if ($taxClassId) { //if state equals the user State
-
             $taxes = $cartController->getTaxByPriority($taxClassId);
 
             // $taxes = $this->cartController::getTaxByPriority($taxClassId);
@@ -146,8 +144,13 @@ class BaseInvoiceController extends ExtendedBaseInvoiceController
             $payment_status = 'success';
             $payment_date = $request->input('payment_date');
             $amount = $request->input('amount');
-            $payment = $this->updateInvoicePayment($invoiceid, $payment_method,
-                $payment_status, $payment_date, $amount);
+            $payment = $this->updateInvoicePayment(
+                $invoiceid,
+                $payment_method,
+                $payment_status,
+                $payment_date,
+                $amount
+            );
 
             return redirect()->back()->with('success', 'Payment Accepted Successfully');
         } catch (\Exception $ex) {
@@ -203,5 +206,13 @@ class BaseInvoiceController extends ExtendedBaseInvoiceController
         $invoiceId = Invoice::where('number', $number)->value('id');
         $invoiceItem = InvoiceItem::where('invoice_id', $invoiceId)->update(['subtotal'=>$total]);
         $invoices = Invoice::where('number', $number)->update(['grand_total'=>$total]);
+    }
+
+    public function getCodeValue($promo, $code)
+    {
+        if ($promo && $code) {
+            return $promo->value;
+        }
+        return ;
     }
 }

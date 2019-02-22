@@ -374,11 +374,5 @@ trait CoupCodeAndInvoiceSearch
         }
     }
 
-    public function getCodeValue($promo,$code)
-    {
-        if($promo && $code) {
-            return $promo->value;
-        }
-        return ;
-    }
+  
 }

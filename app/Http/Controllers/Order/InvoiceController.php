@@ -216,7 +216,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $user = $this->user->find($invoice->user_id);
             $currency = CartController::currency($user->id);
             $symbol = $currency['symbol'];
-
             return view('themes.default1.invoice.show', compact('invoiceItems', 'invoice', 'user', 'currency', 'symbol'));
         } catch (\Exception $ex) {
             app('log')->warning($ex->getMessage());
@@ -267,12 +266,9 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
     public function generateInvoice()
     {
         try {
-            $code = '';
-            $codevalue = '';
-            if(\Session::has('code')){//If coupon code is applied get it here from Session
-              $code = \Session::get('code');
-              $codevalue = \Session::get('codevalue');
-            }
+            $sessionValue = $this->getCodeFromSession();
+            $code = $sessionValue['code'];
+            $codeValue = $sessionValue['codevalue'];
             $tax_rule = new \App\Model\Payment\TaxOption();
             $rule = $tax_rule->findOrFail(1);
             $rounding = $rule->rounding;
@@ -311,6 +307,26 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
             throw new \Exception('Can not Generate Invoice');
         }
+    }
+    
+    /**
+     * Check if Session has Code and Value of Code
+     *
+     * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
+     *
+     * @date   2019-02-22T13:10:50+0530
+     *
+     * @return array
+     */
+    protected function getCodeFromSession() 
+    {
+        $code = '';
+        $codevalue = '';
+         if(\Session::has('code')){//If coupon code is applied get it here from Session
+              $code = \Session::get('code');
+              $codevalue = \Session::get('codevalue');
+            }
+            return ['code'=> $code , 'codevalue'=>$codevalue] ; 
     }
 
     public function createInvoiceItems($invoiceid, $cart,$codevalue='')
@@ -357,7 +373,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             return $invoiceItem;
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex->getMessage());
-
             throw new \Exception('Can not create Invoice Items');
         }
     }
@@ -399,9 +414,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $date = \Carbon\Carbon::now();
             $product = Product::find($productid);
             $cost = $controller->cost($productid, $user_id, $plan);
-            // if ($cost != $total) {
-            //     $grand_total = $total;
-            // }
             $grand_total = $this->getGrandTotal($code, $total, $cost, $productid, $currency);
              $promo = $this->promotion->where('code', $code)->first();
              $codeValue = $this->getCodeValue($promo,$code);//get coupon code value to be added to Invoice

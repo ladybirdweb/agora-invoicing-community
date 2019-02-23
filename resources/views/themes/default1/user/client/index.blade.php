@@ -75,7 +75,14 @@ All Users
                 {!! Form::text('company',null,['class' => 'form-control','id'=>'company']) !!}
 
             </div>
-             <?php
+
+            <div class="col-md-3 form-group">
+                <!-- first name -->
+                {!! Form::label('mobile','Mobile') !!}
+                {!! Form::text('mobile',null,['class' => 'form-control','id'=>'mobile']) !!}
+
+            </div>
+                         <?php
             $countries=DB::table('countries')->pluck('nicename','country_code_char2')->toarray();
             ?>
             <div class="col-md-3 form-group">
@@ -83,7 +90,7 @@ All Users
                 {!! Form::label('country','Country') !!}
                 <!-- {!! Form::select('country',['Choose',''=>$countries],null,['class' => 'form-control selectpicker','data-live-search'=>'true','data-live-search-placeholder'=>'Search','data-size'=>'10','id'=>'country']) !!} -->
                  <select name="country" value= "Choose" onChange="getCountryAttr(this.value)" class="form-control selectpicker" data-live-search="true" data-live-search-placeholder="Search" data-dropup-auto="false" data-size="10">
-                             <option value="" style="color:black;">Choose</option>
+                             <option value="" style="">Choose</option>
                            @foreach($countries as $key=>$coun)
                               <option value={{$key}}>{{$coun}}</option>
                           @endforeach
@@ -91,12 +98,6 @@ All Users
 
                 
 
-
-            </div>
-            <div class="col-md-3 form-group">
-                <!-- first name -->
-                {!! Form::label('mobile','Mobile') !!}
-                {!! Form::text('mobile',null,['class' => 'form-control','id'=>'mobile']) !!}
 
             </div>
             <div class="col-md-3 form-group">
@@ -115,7 +116,7 @@ All Users
 ?>
                 <!-- {!! Form::select('industry',['Choose',''=>DB::table('bussinesses')->pluck('name','short')->toarray(),'old'=>$old],null,['class' => 'form-control','data-live-search'=>'true','data-live-search-placeholder'=>'Search','data-dropup-auto'=>'false','data-size'=>'10','id'=>'industry']) !!} -->
 
-                 <select name="industry"  class="form-control selectpicker" data-live-search="true",data-live-search-placeholder="Search data-dropup-auto="false" data-size="10" id="industry">
+                 <select name="industry"  class="form-control selectpicker" data-live-search="true",data-live-search-placeholder="Search" data-dropup-auto="false"  data-size="10" id="industry">
                              <option value="">Choose</option>
                            @foreach($bussinesses as $key=>$bussines)
                              <option value={{$key}}>{{$bussines}}</option>

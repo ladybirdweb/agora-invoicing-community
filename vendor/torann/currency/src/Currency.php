@@ -175,9 +175,7 @@ class Currency
 
     public function getIndianCurrencyFormat($number)
     {
-        if (setlocale(LC_MONETARY, 'en_IN')) {
-            return money_format('%.0n', $number);
-        } else {
+       
             $explrestunits = "" ;
             $number = explode('.', $number);
             $num = $number[0];
@@ -209,7 +207,7 @@ class Currency
             } else {
                 return $thecash;
             }
-        }
+        
     }
 
     /**

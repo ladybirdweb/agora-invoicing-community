@@ -320,7 +320,7 @@ class CheckoutController extends InfoController
             app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
 
-        return redirect()->back()->with('fails', $ex->getMessage());
+            return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 

@@ -50,7 +50,7 @@ class SettingsController extends Controller
 
     public function postSettings(Request $request)
     {
-          $this->validate($request, [
+        $this->validate($request, [
                 'merchant_id'  => 'required',
                 'access_code'  => 'required',
                 'working_key'  => 'required',
@@ -59,6 +59,7 @@ class SettingsController extends Controller
                 'ccavanue_url' => 'required|url',
                 'currencies'   => 'required',
             ]);
+
         try {
             $ccavanue1 = new Ccavanue();
             $ccavanue = $ccavanue1->where('id', '1')->first();

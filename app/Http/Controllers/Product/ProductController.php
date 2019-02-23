@@ -222,7 +222,8 @@ class ProductController extends BaseProductController
              */
             // $url = $this->getMyUrl();
             $url = url('/');
-            $i = $this->product->orderBy('id', 'desc')->first()->id + 1;
+            $id = $this->product->orderBy('id', 'desc')->first();
+            $i = $id ? $id->id + 1 : 1;
             $cartUrl = $url.'/pricing?id='.$i;
             $type = $this->type->pluck('name', 'id')->toArray();
             $subscription = $this->plan->pluck('name', 'id')->toArray();

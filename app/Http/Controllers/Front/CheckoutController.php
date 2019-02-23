@@ -272,8 +272,6 @@ class CheckoutController extends InfoController
             } else {
                 $action = $this->checkoutAction($invoice);
                 $check_product_category = $this->product($invoiceid);
-                //Update Subscriber To Mailchimp
-
                 $url = '';
                 if ($check_product_category->category) {
                     $url = view('themes.default1.front.postCheckoutTemplate', compact(

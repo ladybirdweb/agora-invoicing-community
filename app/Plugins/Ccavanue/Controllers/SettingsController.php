@@ -12,7 +12,7 @@ class SettingsController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        // $this->middleware('admin');
+        $this->middleware('admin');
     }
 
     public function Settings()
@@ -50,8 +50,7 @@ class SettingsController extends Controller
 
     public function postSettings(Request $request)
     {
-        try {
-            $this->validate($request, [
+          $this->validate($request, [
                 'merchant_id'  => 'required',
                 'access_code'  => 'required',
                 'working_key'  => 'required',
@@ -60,6 +59,7 @@ class SettingsController extends Controller
                 'ccavanue_url' => 'required|url',
                 'currencies'   => 'required',
             ]);
+        try {
             $ccavanue1 = new Ccavanue();
             $ccavanue = $ccavanue1->where('id', '1')->first();
             $ccavanue->fill($request->input())->save();

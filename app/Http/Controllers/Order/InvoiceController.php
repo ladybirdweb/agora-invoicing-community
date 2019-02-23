@@ -268,7 +268,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         try {
             $sessionValue = $this->getCodeFromSession();
             $code = $sessionValue['code'];
-            $codeValue = $sessionValue['codevalue'];
+            $codevalue = $sessionValue['codevalue'];
             $tax_rule = new \App\Model\Payment\TaxOption();
             $rule = $tax_rule->findOrFail(1);
             $rounding = $rule->rounding;

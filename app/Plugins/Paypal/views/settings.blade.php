@@ -1,10 +1,24 @@
 @extends('themes.default1.layouts.master')
+@section('title')
+Payment Gateway
+@stop
+@section('content-header')
+<h1>
+Paypal
+</h1>
+  <ol class="breadcrumb">
+        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="{{url('settings')}}">Settings</a></li>
+        <li><a href="{{url('plugin')}}">Plugins</a></li>
+        <li class="active">Paypal</li>
+      </ol>
+@stop
 @section('content')
 
 <div class="row">
 
     <div class="col-md-12">
-        <div class="box">
+        <div class="box box-primary">
 
             @if (count($errors) > 0)
             <div class="alert alert-danger">

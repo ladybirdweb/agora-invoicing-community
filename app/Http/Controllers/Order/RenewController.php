@@ -49,25 +49,27 @@ class RenewController extends BaseRenewController
         $user = new User();
         $this->user = $user;
     }
-
+    
+    //Renew From admin panel
     public function renewBySubId($id, $planid, $payment_method, $cost, $code)
     {
         try {
             $plan = $this->plan->find($planid);
             $days = $plan->days;
             $sub = $this->sub->find($id);
-            $current = $sub->ends_at;
-            $ends = $this->getExpiryDate($current, $days);
-            $sub->ends_at = $ends;
+            $permissions = LicensePermissionsController::getPermissionsForProduct($sub->product_id);
+            $licenseExpiry = $this->getExpiryDate($permissions['generateLicenseExpiryDate'], $sub, $days);
+            $updatesExpiry = $this->getUpdatesExpiryDate($permissions['generateUpdatesxpiryDate'], $sub, $days);
+            $supportExpiry = $this->getSupportExpiryDate($permissions['generateSupportExpiryDate'], $sub, $days);
+            $sub->ends_at = $licenseExpiry;
+            $sub->update_ends_at = $updatesExpiry;
+            $sub->support_ends_at = $supportExpiry;
             $sub->save();
-            $clientEmail = $sub->user->email;
-            $checkIfProductHasExpiryDate = $sub->product->perpetual_license; //Check if product has Perpetual License
-            $licenseStatus = StatusSetting::pluck('license_status')->first();
-            if ($licenseStatus == 1 && $checkIfProductHasExpiryDate == 1) {
-                $expiryDate = Carbon::parse($ends)->format('Y-m-d');
-                $cont = new \App\Http\Controllers\License\LicenseController();
-                $updateLicensedDomain = $cont->updateExpirationDate($clientEmail, $expiryDate);
+              $licenseStatus = StatusSetting::pluck('license_status')->first();
+            if ($licenseStatus == 1) {
+                $this->editDateInAPL($sub, $updatesExpiry, $licenseExpiry, $supportExpiry);
             }
+           
             $this->invoiceBySubscriptionId($id, $planid, $cost);
 
             return $sub;
@@ -75,7 +77,8 @@ class RenewController extends BaseRenewController
             throw new Exception($ex->getMessage());
         }
     }
-
+    
+    //Renewal from ClienT Panel
     public function successRenew($invoice)
     {
         try {
@@ -257,9 +260,10 @@ class RenewController extends BaseRenewController
         try {
             $sub = $this->sub->find($id);
             $userid = $sub->user_id;
+            $productid = $sub->product_id;
             $plans = $this->plan->pluck('name', 'id')->toArray();
 
-            return view('themes.default1.renew.renew', compact('id', 'plans', 'userid'));
+            return view('themes.default1.renew.renew', compact('id','productid', 'plans', 'userid'));
         } catch (Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }

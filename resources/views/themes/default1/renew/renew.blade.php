@@ -1,4 +1,7 @@
 @extends('themes.default1.layouts.master')
+@section('title')
+Renew
+@stop
 @section('content-header')
 <h1>
 Renew Order
@@ -19,7 +22,9 @@ Renew Order
     </div>
 
     <div class="box-body">
-
+                <?php 
+                 $plans = App\Model\Payment\Plan::where('product',$productid)->pluck('name','id')->toArray();
+                ?>
         <div class="row">
 
             <div class="col-md-12">

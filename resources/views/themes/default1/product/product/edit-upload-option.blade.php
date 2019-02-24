@@ -10,6 +10,7 @@
               
                <div id="error1"></div>
                 <div id="alertMessage2"></div>
+                <input type="hidden" value="" id="uploadid">
                 <div class="form-group">
                     <label> Product Name </label>
                  

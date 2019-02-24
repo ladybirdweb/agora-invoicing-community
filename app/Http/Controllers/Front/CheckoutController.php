@@ -168,12 +168,11 @@ class CheckoutController extends InfoController
     {
         try {
             $invoice = $this->invoice->find($invoiceid);
-            // dd($invoice);
             $items = new \Illuminate\Support\Collection();
             // dd($items);
             if ($invoice) {
                 $items = $invoice->invoiceItem()->get();
-                if (count($items > 0)) {
+                if (count($items) > 0) {
                     $product = $this->product($invoiceid);
                 }
             }
@@ -189,6 +188,9 @@ class CheckoutController extends InfoController
 
     public function postCheckout(Request $request)
     {
+        $this->validate($request,[
+            'payment_gateway'=>'required',
+        ]);
         $invoice_controller = new \App\Http\Controllers\Order\InvoiceController();
         $info_cont = new \App\Http\Controllers\Front\InfoController();
         $payment_method = $request->input('payment_gateway');
@@ -309,11 +311,12 @@ class CheckoutController extends InfoController
             $url = '';
 
             $url = url("download/$user_id/$invoice->number");
+            $payment = new \App\Http\Controllers\Order\InvoiceController();
+            $payment->postRazorpayPayment($invoice_id, $invoice->grand_total);
             //execute the order
             $order = new \App\Http\Controllers\Order\OrderController();
             $order->executeOrder($invoice->id, $order_status = 'executed');
-            $payment = new \App\Http\Controllers\Order\InvoiceController();
-            $payment->postRazorpayPayment($invoice_id, $invoice->grand_total);
+            
 
             return 'success';
         } catch (\Exception $ex) {

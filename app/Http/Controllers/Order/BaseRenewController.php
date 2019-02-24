@@ -108,10 +108,8 @@ class BaseRenewController extends Controller
             if ($code != '') {
                 $product_cost = $controller->checkCode($code, $product->id, $currency);
             }
-            if ($cost != '') {
-                $product_cost = $this->planCost($planid, $user->id);
-            }
-            $cost = $this->tax($product, $product_cost, $user->id);
+            $renewalPrice = $cost;//Get Renewal Price before calculating tax over it to save as regular price of product
+            $cost = $this->tax($product, $renewalPrice, $user->id);
             $currency = $this->getUserCurrencyById($user->id);
             $number = rand(11111111, 99999999);
             $date = \Carbon\Carbon::now();
@@ -125,7 +123,7 @@ class BaseRenewController extends Controller
             ]);
             $this->createOrderInvoiceRelation($orderid, $invoice->id);
             $items = $controller->createInvoiceItemsByAdmin($invoice->id, $product->id,
-             $code, $cost, $currency, $qty = 1, $agents);
+             $code, $renewalPrice, $currency, $qty = 1, $agents);
 
             return $items;
         } catch (Exception $ex) {

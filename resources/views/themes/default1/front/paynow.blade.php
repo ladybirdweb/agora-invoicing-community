@@ -111,7 +111,7 @@ Checkout
                                 </td>
                                 <td class="product-name">
                                     
-                                    <span class="amount">{{currency_format(intval($item->regular_price),$code = $currency)}}</span>
+                                    <span class="amount">{{currency_format(intval($item->subtotal),$code = $currency)}}</span>
                                 </td>
                             </tr>
                             @empty 
@@ -204,7 +204,7 @@ Checkout
                     </td>
                 </tr>
                   @foreach($items->toArray() as $attribute)
-                 @if($attribute['tax_name']!='null,')
+                  @if($attribute['tax_name']!='null')
                 <?php 
                 $tax_name = "";
                 $tax_percentage="";

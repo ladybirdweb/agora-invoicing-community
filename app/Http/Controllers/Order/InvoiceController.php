@@ -18,6 +18,7 @@ use App\Model\Payment\TaxOption;
 use App\Model\Product\Price;
 use App\Model\Product\Product;
 use App\Traits\CoupCodeAndInvoiceSearch;
+use App\Model\Payment\TaxProductRelation;
 use App\Traits\PaymentsAndInvoices;
 use App\User;
 use Bugsnag;
@@ -489,6 +490,8 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $product = $this->product->findOrFail($productid);
             $cartController = new CartController();
             if ($this->tax_option->findOrFail(1)->inclusive == 0) {
+                $tax_class_id = TaxProductRelation::where('product_id', $productid)->pluck('tax_class_id')->toArray();
+                 if (count($tax_class_id) > 0) {
                 if ($this->tax_option->findOrFail(1)->tax_enable == 1) {
                     $taxs = $this->getTaxWhenEnable($productid, $taxs[0], $userid);
                 } elseif ($this->tax_option->tax_enable == 0) {//if tax_enable is 0
@@ -516,7 +519,8 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                         return $taxs;
                     }
                     $taxs = ([$taxs[0]['name'], $taxs[0]['rate']]);
-                } else {
+                }
+            } else {
                     $taxs = ([$taxs[0]['name'], $taxs[0]['rate']]);
                 }
             }

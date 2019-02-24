@@ -41,10 +41,15 @@ class ExtendedBaseProductController extends Controller
             return $model->file;
         })
         ->addColumn('action', function ($model) {
-            return '<a href='.('#edit-upload-option/'.$model->id).' 
-         class=" btn btn-sm btn-primary " data-title="'.$model->title.'"
-          data-description="'.$model->description.'" data-version="'
-              .$model->version.'" data-id="'.$model->id.'" data-file="'.$model->file.'"onclick="openEditPopup(this)" >Edit</a>';
+           return "<p><button data-toggle='modal' 
+             data-id=".$model->id." data-title='$model->title' data-description='$model->description' data-version='$model->version'data-file='$model->file'
+             class='btn btn-sm btn-primary btn-xs editUploadsOption'><i class='fa fa-edit'
+             style='color:white;'> </i>&nbsp;&nbsp;Edit</button>&nbsp;</p>";
+
+         //    return '<a href='.('#edit-upload-option/'.$model->id).' 
+         // class=" btn btn-sm btn-primary editupload" data-title="'.$model->title.'"
+         //  data-description="'.$model->description.'" data-version="'
+         //      .$model->version.'" data-id="'.$model->id.'" data-file="'.$model->file.'"onclick="openEditPopup(this)" >Edit</a>';
         })
         ->rawcolumns(['checkbox', 'product_id', 'title', 'description', 'version', 'file', 'action'])
         ->make(true);
@@ -60,7 +65,7 @@ class ExtendedBaseProductController extends Controller
 
         try {
             $file_upload = ProductUpload::find($id);
-            $file_upload->update(['title'=>$request->input('producttitle'), 'description'=>$request->input('description'), 'version'=> $request->input('version')]);
+            $file_upload->where('id',$id)->update(['title'=>$request->input('producttitle'), 'description'=>$request->input('description'), 'version'=> $request->input('version')]);
             $autoUpdateStatus = StatusSetting::pluck('update_settings')->first();
             if ($autoUpdateStatus == 1) { //If License Setting Status is on,Add Product to the AutoUpdate Script
                 $productSku = $file_upload->product->product_sku;
@@ -134,7 +139,6 @@ class ExtendedBaseProductController extends Controller
                 header('Content-Description: File Transfer');
                 header('Content-Disposition: attachment; filename = '.$name.'.zip');
                 header('Content-Length: '.filesize($release));
-                exit;
                 ob_end_clean();
                 readfile($release);
             }

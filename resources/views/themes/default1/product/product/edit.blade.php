@@ -351,8 +351,8 @@ Edit Product
                                                     }
                                                     $saved1=$savedkey?$savedkey:[];
                                                 } else {
-                                                       $saved1=[];
-                                                   }
+                                                    $saved1=[];
+                                                }
                                                   
                                         
                                                 ?>
@@ -405,8 +405,8 @@ Edit Product
 
                                     <td>{{$plan->name}}</td> 
                                     <?php
-                                    if($plan->days != '') {
-                                         $months = $plan->days / 30;
+                                    if ($plan->days != '') {
+                                        $months = $plan->days / 30;
                                     }
                                     $months = 'No Period Selected';
                                     ?>
@@ -440,6 +440,7 @@ Edit Product
                 
                  <a href="#create-upload-option" id="create" class="btn btn-primary  btn-sm pull-right" data-toggle="modal" data-target="#create-upload-option"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;{{Lang::get('message.add-file')}}</a>
                             @include('themes.default1.product.product.create-upload-option')
+                              @include('themes.default1.product.product.edit-upload-option')
                             
              
             </div>
@@ -452,7 +453,7 @@ Edit Product
                     <thead><tr>
                          <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
                         <th>Title</th>
-                        <th>Description</th>
+                        <th style="width:210px;">Description</th>
                         <th>Version</th>
                         <th>File</th>
                         <th>Action</th>
@@ -598,6 +599,7 @@ Edit Product
                 {data: 'action', name: 'action'}
             ],
             "fnDrawCallback": function( oSettings ) {
+                bindEditButton();
                 $('.loader').css('display', 'none');
             },
             "fnPreDrawCallback": function(oSettings, json) {
@@ -607,19 +609,23 @@ Edit Product
         
   
      
-     function openEditPopup(e){
-        
-        $('#edit-uplaod-option').modal('show');
-        var upload_id = $(e).data('id')
-        var title = $(e).data('title')
-        var version= $(e).data('version')
-        var description = $(e).data('description') 
+        function bindEditButton() {
+        $('.editUploadsOption').click(function(){
+        var upload_id = $(this).attr('data-id');
+        var title =  $(this).attr('data-title');
+        var version=  $(this).attr('data-version');
+        var description =  $(this).attr('data-description');
         tinymce.get('product-description').setContent(description);
+         $('#edit-uplaod-option').modal('show');
+          $("#uploadid").val(upload_id);
          $("#product-title").val(title);
         $("#product-version").val(version);
+    })
+      }
 
          $("#editProductUpload").on('click',function(){
       $("#editProductUpload").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
+    var upload_id = $('#uploadid').val();
     var productname = $('#editName').val();
     var producttitle = $('#product-title').val();
     var description = tinyMCE.get('product-description').getContent()
@@ -651,7 +657,7 @@ Edit Product
  })
       
 
-    }
+    
         </script>
         <script>
         function checking(e){

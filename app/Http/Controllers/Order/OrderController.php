@@ -132,7 +132,8 @@ class OrderController extends BaseOrderController
                             return ucfirst($model->number);
                         })
                         ->addColumn('price_override', function ($model) {
-                            return ucfirst($model->price_override);
+                            $currency = $model->user()->find($model->client)->currency;
+                            return currency_format($model->price_override,$code = $currency);
                         })
                         ->addColumn('order_status', function ($model) {
                             return ucfirst($model->order_status);
@@ -147,7 +148,6 @@ class OrderController extends BaseOrderController
                             $sub = $model->subscription()->first();
                             $status = $this->checkInvoiceStatusByOrderId($model->id);
                             $url = $this->getUrl($model, $status, $sub);
-
                             return $url;
                         })
 

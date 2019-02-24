@@ -20,8 +20,8 @@ class AdminOrderInvoiceController extends Controller
                         })
                         ->addColumn('date', function ($model) use ($client) {
                             $date1 = new \DateTime($model->date);
-                            $tz = $client->timezone()->first()->name;
-                            $date1->setTimezone(new \DateTimeZone($tz));
+                            // $tz = \Auth::user()->timezone()->first()->name;
+                            // $date1->setTimezone(new \DateTimeZone($tz));
                             $date = $date1->format('M j, Y, g:i a ');
 
                             return $date;

@@ -6,7 +6,11 @@ Invoice
  <h1>View Invoice </h1>
 @stop
 @section('breadcrumb')
-<li><a href="{{url('home')}}">Home</a></li>
+ @if(Auth::check())
+   <li><a href="{{url('my-invoices')}}">Home</a></li>
+  @else
+   <li><a href="{{url('login')}}">Home</a></li>
+    @endif
 <li><a href="{{url('my-invoices')}}">My Account</a></li>
 <li class="active">Invoice</li> 
 @stop
@@ -118,13 +122,7 @@ active
                                                     @endif
                                                 </ul>
                                             </td>
-                                             <?php
-                                            
-                                        $data=($item->discount)? currency_format($item->discount,$code = $symbol):'No discounts';
-                                        ?>
-                                        <td>
-                                            {{$data}}
-                                        </td>
+                                          
 
                                             <td>{{currency_format($item->subtotal,$code = $symbol)}}</td>
                                         </tr>
@@ -140,9 +138,13 @@ active
 
                             </div><!-- /.col -->
                             <div class="col-xs-6">
-                                <p class="lead">Subtotal</p>
+                                <p class="lead">Amount</p>
                                 <div class="table-responsive">
                                     <table class="table">
+                                          @if($invoice->discount != null)
+                                          <th>Discount</th>
+                                            <td>{{currency_format($invoice->discount,$code=$symbol)}}</td>
+                                        @endif
                                          <?php 
                                          $tax_name = [];
                                     $tax_percentage = [];
@@ -255,6 +257,7 @@ active
 
                                     </table>
                                 </div>
+
                             </div><!-- /.col -->
                         </div><!-- /.row -->
 

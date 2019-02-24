@@ -86,7 +86,11 @@ if($script){
                             <div class="header-column">
                                 <div class="header-row">
                                 <div class="header-logo">
-                                    <a href="{{url('home')}}">
+                                     @if(Auth::check())
+                                    <a href="{{url('my-invoices')}}">
+                                      @else
+                                      <a href="{{url('login')}}">
+                                        @endif
                                         <img alt="Logo" width="111" height="54" data-sticky-width="82" data-sticky-height="40" data-sticky-top="33" src="{{asset('common/images/'.$setting->logo)}}">
                                     </a>
                                 </div>

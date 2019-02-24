@@ -15,10 +15,10 @@ use App\Model\Payment\Promotion;
 use App\Model\Payment\Tax;
 use App\Model\Payment\TaxByState;
 use App\Model\Payment\TaxOption;
+use App\Model\Payment\TaxProductRelation;
 use App\Model\Product\Price;
 use App\Model\Product\Product;
 use App\Traits\CoupCodeAndInvoiceSearch;
-use App\Model\Payment\TaxProductRelation;
 use App\Traits\PaymentsAndInvoices;
 use App\User;
 use Bugsnag;
@@ -491,36 +491,36 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $cartController = new CartController();
             if ($this->tax_option->findOrFail(1)->inclusive == 0) {
                 $tax_class_id = TaxProductRelation::where('product_id', $productid)->pluck('tax_class_id')->toArray();
-                 if (count($tax_class_id) > 0) {
-                if ($this->tax_option->findOrFail(1)->tax_enable == 1) {
-                    $taxs = $this->getTaxWhenEnable($productid, $taxs[0], $userid);
-                } elseif ($this->tax_option->tax_enable == 0) {//if tax_enable is 0
+                if (count($tax_class_id) > 0) {
+                    if ($this->tax_option->findOrFail(1)->tax_enable == 1) {
+                        $taxs = $this->getTaxWhenEnable($productid, $taxs[0], $userid);
+                    } elseif ($this->tax_option->tax_enable == 0) {//if tax_enable is 0
 
-                    $taxClassId = Tax::where('country', '')->where('state', 'Any State')
+                        $taxClassId = Tax::where('country', '')->where('state', 'Any State')
                      ->pluck('tax_classes_id')->first(); //In case of India when
-                    //other tax is available and tax is not enabled
-                    if ($taxClassId) {
-                        $rate = $this->getTotalRate($taxClassId, $productid, $taxs);
-                        $taxs = $rate['taxes'];
-                        $rate = $rate['rate'];
-                    } elseif ($geoip_country != 'IN') {//In case of other country
-                        // when tax is available and tax is not enabled(Applicable
-                        //when Global Tax class for any country and state is not there)
-
-                        $taxClassId = Tax::where('state', $geoip_state)
-                        ->orWhere('country', $geoip_country)->pluck('tax_classes_id')->first();
-                        if ($taxClassId) { //if state equals the user State
+                        //other tax is available and tax is not enabled
+                        if ($taxClassId) {
                             $rate = $this->getTotalRate($taxClassId, $productid, $taxs);
                             $taxs = $rate['taxes'];
                             $rate = $rate['rate'];
+                        } elseif ($geoip_country != 'IN') {//In case of other country
+                            // when tax is available and tax is not enabled(Applicable
+                            //when Global Tax class for any country and state is not there)
+
+                            $taxClassId = Tax::where('state', $geoip_state)
+                        ->orWhere('country', $geoip_country)->pluck('tax_classes_id')->first();
+                            if ($taxClassId) { //if state equals the user State
+                                $rate = $this->getTotalRate($taxClassId, $productid, $taxs);
+                                $taxs = $rate['taxes'];
+                                $rate = $rate['rate'];
+                            }
+                            $taxs = ([$taxs[0]['name'], $taxs[0]['rate']]);
+
+                            return $taxs;
                         }
                         $taxs = ([$taxs[0]['name'], $taxs[0]['rate']]);
-
-                        return $taxs;
                     }
-                    $taxs = ([$taxs[0]['name'], $taxs[0]['rate']]);
-                }
-            } else {
+                } else {
                     $taxs = ([$taxs[0]['name'], $taxs[0]['rate']]);
                 }
             }

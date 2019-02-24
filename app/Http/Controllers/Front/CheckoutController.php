@@ -188,8 +188,8 @@ class CheckoutController extends InfoController
 
     public function postCheckout(Request $request)
     {
-        $this->validate($request,[
-            'payment_gateway'=>'required',
+        $this->validate($request, [
+            'payment_gateway'=> 'required',
         ]);
         $invoice_controller = new \App\Http\Controllers\Order\InvoiceController();
         $info_cont = new \App\Http\Controllers\Front\InfoController();
@@ -316,7 +316,6 @@ class CheckoutController extends InfoController
             //execute the order
             $order = new \App\Http\Controllers\Order\OrderController();
             $order->executeOrder($invoice->id, $order_status = 'executed');
-            
 
             return 'success';
         } catch (\Exception $ex) {

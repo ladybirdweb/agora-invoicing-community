@@ -49,7 +49,7 @@ class RenewController extends BaseRenewController
         $user = new User();
         $this->user = $user;
     }
-    
+
     //Renew From admin panel
     public function renewBySubId($id, $planid, $payment_method, $cost, $code)
     {
@@ -65,11 +65,11 @@ class RenewController extends BaseRenewController
             $sub->update_ends_at = $updatesExpiry;
             $sub->support_ends_at = $supportExpiry;
             $sub->save();
-              $licenseStatus = StatusSetting::pluck('license_status')->first();
+            $licenseStatus = StatusSetting::pluck('license_status')->first();
             if ($licenseStatus == 1) {
                 $this->editDateInAPL($sub, $updatesExpiry, $licenseExpiry, $supportExpiry);
             }
-           
+
             $this->invoiceBySubscriptionId($id, $planid, $cost);
 
             return $sub;
@@ -77,7 +77,7 @@ class RenewController extends BaseRenewController
             throw new Exception($ex->getMessage());
         }
     }
-    
+
     //Renewal from ClienT Panel
     public function successRenew($invoice)
     {
@@ -263,7 +263,7 @@ class RenewController extends BaseRenewController
             $productid = $sub->product_id;
             $plans = $this->plan->pluck('name', 'id')->toArray();
 
-            return view('themes.default1.renew.renew', compact('id','productid', 'plans', 'userid'));
+            return view('themes.default1.renew.renew', compact('id', 'productid', 'plans', 'userid'));
         } catch (Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }

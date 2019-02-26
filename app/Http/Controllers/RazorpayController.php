@@ -82,8 +82,8 @@ class RazorpayController extends Controller
                     $status = $view['status'];
                     $message = $view['message'];
                     \Session::forget('items');
-                     \Session::forget('code');
-                     \Session::forget('codevalue');
+                    \Session::forget('code');
+                    \Session::forget('codevalue');
                 } else {
                     //Afer Renew
                     $control->successRenew($invoice);
@@ -97,7 +97,7 @@ class RazorpayController extends Controller
 
                 return redirect()->back()->with($status, $message);
             } catch (\Exception $ex) {
-                 throw new \Exception($ex->getMessage(), $ex->getCode(), $ex->getPrevious());
+                throw new \Exception($ex->getMessage(), $ex->getCode(), $ex->getPrevious());
             }
         }
     }

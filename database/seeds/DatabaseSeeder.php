@@ -849,8 +849,8 @@ class FormatCurrenciesSeeder extends Seeder
         \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         \DB::table('format_currencies')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-         \DB::table('format_currencies')->insert(['id' => 1, 'name'=>'US Dollar', 'code'=>'USD', 'symbol'=>'$', 'format'=>'$1,0.00', 'exchange_rate'=>0, 'active'=>0]);
-           \DB::table('format_currencies')->insert(['id' => 2, 'name'=>'Indian Rupee', 'code'=>'INR', 'symbol'=>'₹', 'format'=>'₹1,0.00', 'exchange_rate'=>0, 'active'=>0]);
+        \DB::table('format_currencies')->insert(['id' => 1, 'name'=>'US Dollar', 'code'=>'USD', 'symbol'=>'$', 'format'=>'$1,0.00', 'exchange_rate'=>0, 'active'=>0]);
+        \DB::table('format_currencies')->insert(['id' => 2, 'name'=>'Indian Rupee', 'code'=>'INR', 'symbol'=>'₹', 'format'=>'₹1,0.00', 'exchange_rate'=>0, 'active'=>0]);
     }
 }
 

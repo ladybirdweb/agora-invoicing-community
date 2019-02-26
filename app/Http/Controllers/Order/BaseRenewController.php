@@ -108,7 +108,7 @@ class BaseRenewController extends Controller
             if ($code != '') {
                 $product_cost = $controller->checkCode($code, $product->id, $currency);
             }
-            $renewalPrice = $cost;//Get Renewal Price before calculating tax over it to save as regular price of product
+            $renewalPrice = $cost; //Get Renewal Price before calculating tax over it to save as regular price of product
             $cost = $this->tax($product, $renewalPrice, $user->id);
             $currency = $this->getUserCurrencyById($user->id);
             $number = rand(11111111, 99999999);

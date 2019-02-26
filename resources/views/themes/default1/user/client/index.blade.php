@@ -131,7 +131,6 @@ All Users
                  <select name="role"  class="form-control">
                     <option value="">Choose</option>
                    <option value="admin">Admin</option>
-                  <option value="client">Client</option>
                   <option value="user">User</option>
                  </select>
              </div>

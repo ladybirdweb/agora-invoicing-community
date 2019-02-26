@@ -122,7 +122,7 @@
                        
                         <div class="col-md-6 form-group">
                         <!-- last name -->
-                        {!! Form::label('product_quantity','Product Quantity') !!}
+                        {!! Form::label('product_quantity','Product Quantity',['class'=>'required'])!!}
                         {!! Form::number("product_quantity",null,['class' => 'form-control','disabled'=>'disabled','id'=>'prodquant','placeholder'=>'Pricing for No. of Products']) !!}
                     
                          </div>
@@ -130,7 +130,7 @@
                         <div class="col-md-6 form-group">
                         <!-- last name -->
                         <label data-toggle="tooltip" data-placement="top" title="If '0' Agents Selected, Plan will be for Unlimited Agents">
-                         {!! Form::label('agents','No. of Agents') !!}</label>
+                         {!! Form::label('agents','No. of Agents',['class'=>'required']) !!}</label>
                         {!! Form::number("no_of_agents",null,['class' => 'form-control' ,'disabled'=>'disabled','id'=>'agentquant','placeholder'=>'Pricing for No. of Agents']) !!}
                     
                          </div>

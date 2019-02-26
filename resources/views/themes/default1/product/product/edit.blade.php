@@ -101,7 +101,7 @@ Edit Product
                 <div class="nav-tabs-custom">
                     <ul class="nav nav-tabs">
                         <li class="active"><a href="#tab_1" data-toggle="tab">{{Lang::get('message.details')}}</a></li>
-                        <li><a href="#tab_2" data-toggle="tab">{{Lang::get('message.price')}}</a></li>
+                        <li><a href="#tab_2" data-toggle="tab">{{Lang::get('message.plans')}}</a></li>
                         </ul>
                     <div class="tab-content">
                         <div class="tab-pane active" id="tab_1">
@@ -163,7 +163,7 @@ Edit Product
 
                                 <div class="col-md-6 form-group {{ $errors->has('description') ? 'has-error' : '' }}">
                                     
-                                    {!! Form::label('description',Lang::get('message.description')) !!}
+                                    {!! Form::label('description',Lang::get('message.description'),['class'=>'required']) !!}
                                     {!! Form::textarea('description',null,['class' => 'form-control','id'=>'textarea1']) !!}
                                      <h6 id= "descheck"></h6>
                                      </div>
@@ -711,7 +711,6 @@ Edit Product
 <script>
         $(document).on('click','#upload-table tbody tr td .read-more',function(){
         var text=$(this).siblings(".more-text").text().replace('read more...','');
-        console.log(text)
         $(this).siblings(".more-text").html(text);
         $(this).siblings(".more-text").contents().unwrap();
         $(this).remove();

@@ -173,7 +173,7 @@ class PageController extends GetPageTemplateController
         $url = url('/');
 
         $slug = str_slug($slug, '-');
-        echo $url.'/'.$slug;
+        echo $url.'/pages'.'/'.$slug;
     }
 
     public function getSlug($slug)

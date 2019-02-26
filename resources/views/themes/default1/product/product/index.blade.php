@@ -62,7 +62,7 @@ All Products
                         <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
                             <th>Name</th>
                             <th>Image</th>
-                            <th>Type</th>
+                            <th>License Type</th>
                             <th>Group</th>
                             <th>Action</th>
                         </tr></thead>

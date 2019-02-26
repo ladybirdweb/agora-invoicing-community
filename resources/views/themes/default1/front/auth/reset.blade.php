@@ -63,7 +63,9 @@ main
                             <div class="form-row">
                                 <div class="form-group col{{ $errors->has('password') ? 'has-error' : '' }}">
                                    
-                                        
+                                        <p id="passwordHelpBlock" class="form-text text-muted">
+                                            Your password must be more than 6 characters long, should contain at-least 1 Uppercase, 1 Lowercase, 1 Numeric and 1 special character.
+                                       </p>
                                       
 
                                         {!! Form::password('password',['placeholder'=>Lang::get('message.password'),'class' => 'form-control input-lg']) !!}

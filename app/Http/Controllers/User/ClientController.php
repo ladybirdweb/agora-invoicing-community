@@ -8,6 +8,7 @@ use App\Model\Common\StatusSetting;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
 use App\Model\Payment\Currency;
+use App\Model\Common\Country;
 use App\Model\User\AccountActivate;
 use App\Traits\PaymentsAndInvoices;
 use App\User;
@@ -213,11 +214,44 @@ class ClientController extends AdvanceSearchController
             $str = 'demopass';
             $password = \Hash::make($str);
             $user->password = $password;
-            $user->mobile_code = str_replace('+', '', $request->input('mobile_code'));
+            if ($request->input('mobile_code') == '') {
+                $country = new Country();
+                $mobile_code= $country->where('country_code_char2', $request->input('country'))->pluck('phonecode')->first();
+            } else {
+                $mobile_code = str_replace('+', '', $request->input('mobile_code'));
+            }
             $cont = new \App\Http\Controllers\Front\PageController();
+            $currency_symbol = Currency::where('code', $request->input('currency'))->pluck('symbol')->first();
             $location = $cont->getLocation();
+            $user->user_name = $request->input('user_name');
+            $user->first_name = $request->input('first_name');
+            $user->last_name = $request->input('last_name');
+            $user->email = $request->input('email');
+            $user->password =  $password;
+            $user->company = $request->input('company');
+            $user->bussiness = $request->input('bussiness');
+            $user->active = $request->input('active');
+            $user->mobile_verified = $request->input('mobile_verified');
+            $user->role = $request->input('role');
+            $user->position = $request->input('position');
+            $user->company_type = $request->input('company_type');
+            $user->company_size = $request->input('company_size');
+            $user->address = $request->input('address');
+            $user->town = $request->input('town');
+            $user->country = $request->input('country');
+            $user->state = $request->input('state');
+            $user->zip = $request->input('zip');
+            $user->timezone_id = $request->input('timezone_id');
+            $user->currency = $request->input('currency');
+            $user->mobile_code = $mobile_code;
+            $user->mobile = $request->input('mobile');
+            $user->skype = $request->input('skype');
+            $user->manager = $request->input('manager');
+            $user->currency_symbol = $currency_symbol;
             $user->ip = $location['ip'];
-            $user->fill($request->input())->save();
+
+
+            $user->save();
             $this->sendWelcomeMail($user);
             $mailchimpStatus = StatusSetting::first()->value('mailchimp_status');
             if ($mailchimpStatus == 1) {

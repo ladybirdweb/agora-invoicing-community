@@ -1811,6 +1811,7 @@ function prevTab(elem) {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 <script type="text/javascript">
     var telInput = $('#mobilenum');
+     addressDropdown = $("#country");
     telInput.intlTelInput({
         geoIpLookup: function (callback) {
             $.get("https://ipinfo.io", function () {}, "jsonp").always(function (resp) {
@@ -1833,6 +1834,9 @@ function prevTab(elem) {
     $('input').on('focus', function () {
         $(this).parent().removeClass('has-error');
     });
+    addressDropdown.change(function() {
+  telInput.intlTelInput("setCountry", $(this).val());
+});
 
     $('form').on('submit', function (e) {
         $('input[name=country_code]').attr('value', $('.selected-dial-code').text());

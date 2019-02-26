@@ -65,7 +65,7 @@ Create New Product
                 <div class="nav-tabs-custom">
                     <ul class="nav nav-tabs">
                         <li class="active"><a href="#tab_1" data-toggle="tab">{{Lang::get('message.details')}}</a></li>
-                        <li><a href="#tab_2" data-toggle="tab">{{Lang::get('message.price')}}</a></li>
+                        <li><a href="#tab_2" data-toggle="tab">{{Lang::get('message.plans')}}</a></li>
                         <!-- <li><a href="#tab_3" data-toggle="tab">Plans</a></li> -->
                     </ul>
                     <div class="tab-content">
@@ -156,7 +156,7 @@ Create New Product
                                     </script>
 
 
-                                    {!! Form::label('description',Lang::get('message.description')) !!}
+                                    {!! Form::label('description',Lang::get('message.description'),['class'=>'required']) !!}
                                     {!! Form::textarea('description',null,['class' => 'form-control','id'=>'textarea']) !!}
                                 <h6 id= "descheck"></h6>
                                 </div>

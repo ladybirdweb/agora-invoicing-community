@@ -67,10 +67,17 @@ $orderData = [
      
 ];
 }
+try {
+
+
 $razorpayOrder = $api->order->create($orderData);
 $razorpayOrderId = $razorpayOrder['id'];
 $_SESSION['razorpay_order_id'] = $razorpayOrderId;
 $displayAmount = $amount = $orderData['amount'];
+}catch(Exception $e) {
+    echo ($e->getMessage());
+}
+
 
 $data = [
 

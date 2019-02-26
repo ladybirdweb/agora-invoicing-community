@@ -4,11 +4,11 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\License\LicenseController;
 use App\Http\Requests\User\ClientRequest;
+use App\Model\Common\Country;
 use App\Model\Common\StatusSetting;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
 use App\Model\Payment\Currency;
-use App\Model\Common\Country;
 use App\Model\User\AccountActivate;
 use App\Traits\PaymentsAndInvoices;
 use App\User;
@@ -216,7 +216,7 @@ class ClientController extends AdvanceSearchController
             $user->password = $password;
             if ($request->input('mobile_code') == '') {
                 $country = new Country();
-                $mobile_code= $country->where('country_code_char2', $request->input('country'))->pluck('phonecode')->first();
+                $mobile_code = $country->where('country_code_char2', $request->input('country'))->pluck('phonecode')->first();
             } else {
                 $mobile_code = str_replace('+', '', $request->input('mobile_code'));
             }
@@ -227,7 +227,7 @@ class ClientController extends AdvanceSearchController
             $user->first_name = $request->input('first_name');
             $user->last_name = $request->input('last_name');
             $user->email = $request->input('email');
-            $user->password =  $password;
+            $user->password = $password;
             $user->company = $request->input('company');
             $user->bussiness = $request->input('bussiness');
             $user->active = $request->input('active');
@@ -249,7 +249,6 @@ class ClientController extends AdvanceSearchController
             $user->manager = $request->input('manager');
             $user->currency_symbol = $currency_symbol;
             $user->ip = $location['ip'];
-
 
             $user->save();
             $this->sendWelcomeMail($user);

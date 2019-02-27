@@ -139,8 +139,8 @@ class BaseOrderController extends ExtendedOrderController
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
             app('log')->info($ex->getMessage());
-            return;
 
+            return;
         }
     }
 

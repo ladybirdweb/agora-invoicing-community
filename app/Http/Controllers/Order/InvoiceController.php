@@ -294,7 +294,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $invoice = $this->invoice->create(['user_id' => $user_id, 'number' => $number,
              'date'                                      => $date, 'discount'=>$codevalue, 'grand_total' => $grand_total, 'coupon_code'=>$code, 'status' => 'pending',
              'currency'                                  => \Auth::user()->currency, ]);
-            
+
             foreach (\Cart::getContent() as $cart) {
                 $this->createInvoiceItems($invoice->id, $cart, $codevalue);
             }

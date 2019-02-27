@@ -198,9 +198,9 @@ class ProcessController extends Controller
                 $view = $cont->getViewMessageAfterPayment($invoice, $state, $currency);
                 $status = $view['status'];
                 $message = $view['message'];
-                  \Session::forget('items');
-                    \Session::forget('code');
-                    \Session::forget('codevalue');
+                \Session::forget('items');
+                \Session::forget('code');
+                \Session::forget('codevalue');
             } else {
                 $invoice = new \App\Model\Order\Invoice();
                 $invoice = $invoice->findOrFail($invoiceid);
@@ -215,10 +215,10 @@ class ProcessController extends Controller
                 $status = $view['status'];
                 $message = $view['message'];
             }
+
             return redirect()->back()->with($status, $message);
             \Cart::clear();
         }
-        
     }
 
     public function cancel(Request $request)
@@ -237,6 +237,4 @@ class ProcessController extends Controller
     {
         dd($request);
     }
-
-  
 }

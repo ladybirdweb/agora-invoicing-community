@@ -148,7 +148,7 @@ class ProcessController extends Controller
                     $checkout_controller = new \App\Http\Controllers\Front\CheckoutController();
                     $checkout_controller->checkoutAction($invoice);
                 } else {
-                     $invoice = new \App\Model\Order\Invoice();
+                    $invoice = new \App\Model\Order\Invoice();
                     $invoice = $invoice->findOrFail($invoiceid);
                     $control->successRenew($invoice);
                 }

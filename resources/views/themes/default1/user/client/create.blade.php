@@ -141,7 +141,12 @@ select.form-control{
                        <select name="bussiness"  class="form-control">
                              <option value="">Choose</option>
                            @foreach($bussinesses as $key=>$bussines)
-                             <option value={{$key}}>{{$bussines}}</option>
+                           @if (Input::old('bussiness') == $key)
+                             <option value={{$key}} selected>{{$bussines}}</option>
+                             @else
+                            <option value="{{ $key }}">{{ $bussines }}</option>
+                          @endif
+
                           @endforeach
                           </select>
              
@@ -150,10 +155,17 @@ select.form-control{
                     </div>
 
 
-                    <div class="col-md-4 form-group {{ $errors->has('active') ? 'has-error' : '' }}">
+                    <div class="col-md-2 form-group {{ $errors->has('active') ? 'has-error' : '' }}">
                         <!-- mobile -->
                         {!! Form::label('active',Lang::get('message.active')) !!}
                         <p>{!! Form::radio('active',1,true) !!}&nbsp;Active&nbsp;&nbsp;{!! Form::radio('active',0) !!}&nbsp;Inactive</p>
+
+                    </div>
+
+                      <div class="col-md-2 form-group {{ $errors->has('mobile_verified') ? 'has-error' : '' }}">
+                        <!-- mobile -->
+                        {!! Form::label('mobile_verified',Lang::get('message.mobile')) !!}
+                        <p>{!! Form::radio('mobile_verified',1,true) !!}&nbsp;Active&nbsp;&nbsp;{!! Form::radio('mobile_verified',0) !!}&nbsp;Inactive</p>
 
                     </div>
                 </div>
@@ -178,11 +190,15 @@ select.form-control{
                         <!-- email -->
                         {!! Form::label('company_type','Company Type',['class'=>'required']) !!}
                         <!-- {!! Form::select('company_type',['choose'=>'Choose',''=>$type],null,['class' => 'form-control']) !!} -->
+
                          <select name="company_type" value= "Choose" class="form-control">
                              <option value="">Choose</option>
                            @foreach($type as $key=>$types)
-
+                              @if (Input::old('company_type') == $key)
+                             <option value={{$key}} selected>{{$types}}</option>
+                             @else
                              <option value={{$key}}>{{$types}}</option>
+                               @endif
                           @endforeach
                           </select>
 
@@ -194,8 +210,11 @@ select.form-control{
                           <select name="company_size" value= "Choose" class="form-control">
                              <option value="">Choose</option>
                            @foreach($size as $key=>$sizes)
-
+                              @if (Input::old('company_size') == $key)
+                             <option value={{$key}} selected>{{$sizes}}</option>
+                             @else
                              <option value={{$key}}>{{$sizes}}</option>
+                             @endif
                           @endforeach
                           </select>
 
@@ -219,29 +238,46 @@ select.form-control{
 
                     </div>
 
-
+                    <?php $countries = \App\Model\Common\Country::pluck('nicename', 'country_code_char2')->toArray();
+                     ?>
                     <div class="col-md-4 form-group select2{{ $errors->has('country') ? 'has-error' : '' }}">
                         <!-- name -->
-                        {!! Form::label('country',Lang::get('message.country')) !!}
-                        <?php $countries = \App\Model\Common\Country::pluck('nicename', 'country_code_char2')->toArray(); ?>
+                        {!! Form::label('country',Lang::get('message.country'),['class'=>'required']) !!}
+                      
 
                      <!--    {!! Form::select('country',['choose'=>'Choose',''=>$countries],null,['class' => 'form-control selectpicker','data-live-search'=>'true','data-live-search-placeholder'=>'Search','data-dropup-auto'=>'false','data-size'=>'10','onChange'=>'getCountryAttr(this.value);']) !!} -->
 
                           <select name="country" value= "Choose" id="country" onChange="getCountryAttr(this.value)" class="form-control selectpicker" data-live-search="true" data-live-search-placeholder="Search" data-dropup-auto="false" data-size="10">
                              <option value="">Choose</option>
                            @foreach($countries as $key=>$country)
+                            @if (Input::old('country') == strtolower($key))
+
+                            <option value={{$key}} selected>{{$country}}</option>
+                             @else
                               <option value={{$key}}>{{$country}}</option>
+                               @endif
                           @endforeach
                           </select>
 
                     </div>
+                    <?php
+                     $selectedstate = \App\Model\Common\State::select('state_subdivision_code','state_subdivision_name')->get();
+                    ?>
                     <div class="col-md-4 form-group {{ $errors->has('state') ? 'has-error' : '' }}">
                         <!-- name -->
                         {!! Form::label('state',Lang::get('message.state')) !!}
                         <!--{!! Form::select('state',[],null,['class' => 'form-control','id'=>'state-list']) !!}-->
-                        <select name="state" id="state-list" class="form-control">
-
+                          <select name="state" id="state-list" class="form-control">
+                        @if(old('state') != null)
+                             @foreach($selectedstate as $key=>$state)
+                             @if (Input::old('state') == $state->state_subdivision_code)
+                             <option value="{{old('state')}}" selected>{{$state->state_subdivision_name}}</option>
+                             @endif
+                             @endforeach
+                             @else
+                      
                             <option value="">Choose A Country</option>
+                            @endif
 
                         </select>
 
@@ -255,14 +291,16 @@ select.form-control{
                     <div class="col-md-4 form-group {{ $errors->has('timezone_id') ? 'has-error' : '' }}">
                         <!-- mobile -->
                         {!! Form::label('timezone_id',Lang::get('message.timezone'),['class'=>'required']) !!}
-                
-                         <select name="timezone_id" value= "Choose" class="form-control selectpicker" data-live-search="true" data-live-search-placeholder="Search" data-dropup-auto="false" data-size="10"">
+                         {!! Form::select('timezone_id', [''=>'Choose','Timezones'=>$timezones],null,['class' => 'form-control selectpicker','data-live-search'=>'true','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false','data-size'=>'10']) !!}
+
+
+                       <!--   <select name="timezone_id" value= "Choose" class="form-control selectpicker" data-live-search="true" data-live-search-placeholder="Search" data-dropup-auto="false" data-size="10"">
                              <option value="">Choose</option>
                            @foreach($timezones as $key=>$timezone)
 
                              <option value={{$key}}>{{$timezone}}</option>
                           @endforeach
-                          </select>
+                          </select> -->
 
                     </div>
                     <div class="col-md-4 form-group {{ $errors->has('currency') ? 'has-error' : '' }}">
@@ -272,25 +310,34 @@ select.form-control{
                         <select name="currency" value= "Choose" class="form-control" id ="currency">
                              <option value="">Choose</option>
                            @foreach($currencies as $key=>$currency)
-
+                              @if (Input::old('currency') == $key)
+                            <option value={{$key}} selected>{{$currency}}</option>
+                             @else
                              <option value={{$key}}>{{$currency}}</option>
-                          @endforeach
+                              @endif
+                           @endforeach
                           </select>
 
                     </div>
-                    <div class="col-md-4 form-group {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
+                   <!--  <div class="col-md-4 form-group {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
                         <label class="required">Country code</label>
                         {!! Form::hidden('mobile_code',null,['id'=>'mobile_code_hidden']) !!}
                         {!! Form::text('mobil',null,['class'=>'form-control','disabled','id'=>'mobile_code']) !!}
 
                          
-                    </div>
+                    </div> -->
+                   
+
+
                     <div class="col-md-4 form-group {{ $errors->has('mobile') ? 'has-error' : '' }}">
                         <!-- mobile -->
-                        {!! Form::label('mobile',Lang::get('message.mobile'),['class'=>'required']) !!}
-                        {!! Form::text('mobile',null,['class' => 'form-control']) !!}
 
+                        {!! Form::label('mobile',Lang::get('message.mobile'),['class'=>'required']) !!}
+                        {!! Form::hidden('mobile_code',null,['id'=>'mobile_code_hidden']) !!}
+                         <input class="form-control"  id="mobile_code" name="mobile" value="{{ old('mobile') }}" type="tel">
                     </div>
+
+
                     <div class="col-md-4 form-group {{ $errors->has('skype') ? 'has-error' : '' }}">
                         <!-- mobile -->
                         {!! Form::label('skype','Skype') !!}
@@ -324,14 +371,15 @@ select.form-control{
 
 
 <script>
-    $(document).ready(function(){
+  $(document).ready(function(){
 // get the country data from the plugin
 var countryData = $.fn.intlTelInput.getCountryData(),
   telInput = $("#mobile_code"),
   addressDropdown = $("#country");
 // init plugin
 telInput.intlTelInput({
-  utilsScript: "../../build/js/utils.js" // just for formatting/placeholders etc
+   separateDialCode: true,
+  utilsScript: "common/js/utils.js" // just for formatting/placeholders etc
 });
 
 // populate the country dropdown
@@ -339,8 +387,8 @@ $.each(countryData, function(i, country) {
   addressDropdown.append($("<option></option>").attr("value", country.iso2).text(country.name));
 });
 // set it's initial value
-var initialCountry = telInput.intlTelInput("getSelectedCountryData").iso2;
-addressDropdown.val(initialCountry);
+// var initialCountry = telInput.intlTelInput("getSelectedCountryData").iso2;
+// addressDropdown.val(initialCountry);
 
 // listen to the telephone input for changes
 telInput.on("countrychange", function(e, countryData) {
@@ -351,11 +399,14 @@ telInput.on("countrychange", function(e, countryData) {
 addressDropdown.change(function() {
   telInput.intlTelInput("setCountry", $(this).val());
 });
-})
+$('form').on('submit', function (e) {
+        $('input[name=mobile_code]').attr('value', $('.selected-dial-code').text());
+    });
+});
 
     function getCountryAttr(val) {
         getState(val);
-        getCode(val);
+        // getCode(val);
 //        getCurrency(val);
 
     }

@@ -9,7 +9,11 @@ Pricing
  <h1>Pricing</h1>
 @stop
 @section('breadcrumb')
-<li><a href="{{url('home')}}">Home</a></li>
+ @if(Auth::check())
+<li><a href="{{url('my-invoices')}}">Home</a></li>
+  @else
+  <li><a href="{{url('login')}}">Home</a></li>
+  @endif
 <li class="active">Pricing</li>
 @stop
 @section('main-class') 
@@ -60,101 +64,34 @@ main
                     {{Session::get('fails')}}
                 </div>
                 @endif
-    <div class="row">
-                        
-                            
-                            <h4 style="font-size: 30px;text-align: center;font-weight: bold;margin-left:400px">Helpdesk Self Hosted Pricing</h4>
-                        
-                    </div>
-    <div class="col-md-12">
-        <div class="pricing-table princig-table-flat">
-            <div class="row">
-        {!! html_entity_decode($template) !!}
-    </div>
+   
+   
+      
+        
+      
+         <div class="col-md-12">
+          <h1 style="text-align: center;"> <b>{{($headline)}} </b> </h1>
+           <h4 style="text-align: center;">{{$tagline}} </h4>
+        <div class="pricing-table mb-4">
+          
+        {!! html_entity_decode($templates) !!}
+   
         </div>
     </div>
-    <br/>    <br/>    <br/>    <br/>  <br/> <br/>
-           <div class="row">
-                        
-            
-            <h4 style="font-size: 30px;text-align: center;font-weight: bold;margin-left:400px;margin-top: 65px">Helpdesk VPS Hosting Pricing</h4>
-                        
-                    </div>
-    <div class="col-md-12">
-        <div class="pricing-table princig-table-flat">
-            <div class="row">
-        {!! html_entity_decode($helpdesk_vps_template) !!}
-    </div>
-        </div>
-    </div>
-
-
-
-                    <div class="row">
-                       
-                            <!-- <hr class="tall mt-none"> -->
-                            <h4 style="font-size: 30px;text-align: center;font-weight: bold;margin-top: 65px;margin-left:400px"><strong><center>Service Desk Self Hosted Pricing
-
-
-</center></strong></h4>
-                      
-                    </div>
-  <div class="col-md-12">
-   <div class="pricing-table princig-table-flat">
-     <div class="row">
-        {!! html_entity_decode($servicedesk_template) !!}
-        </div>
-    </div>
-
-</div>
+     <br/>    <br/>    <br/>    <br/>  <br/> <br/>
+    
+    
  <br/>    <br/>    <br/>    <br/>  <br/> <br/>
 
-            <div class="row">
-                        
-            
-            <h4 style="font-size: 30px;text-align: center;font-weight: bold;margin-left:400px;margin-top: 65px">ServiceDesk VPS Hosting Pricing</h4>
-                        
-                    </div>
-    <div class="col-md-12">
-        <div class="pricing-table princig-table-flat">
-            <div class="row">
-        {!! html_entity_decode($servicedesk_vps_template) !!}
-    </div>
-        </div>
-    </div>
 
-  <div class="row">
-                       
-                           <!--  <hr class="tall mt-none"> -->
-                            <h4 style="font-size: 30px;text-align: center;font-weight: bold;margin-top:65px;margin-left:450px;"><strong><center>Services Pricing</center></strong></h4>
-                      
-                    </div>
-<div class="col-md-12" style="margin-bottom:40px;">
-   <div class="pricing-table princig-table-flat">
-    <div class= "row">
-        {!! html_entity_decode($service_template) !!}
-    </div>
-        </div>
 
-</div>
+
+
+
 
 
 
 </div>
-
-<script type="text/javascript">
-    
-
-    $( document ).ready(function() {
-        var printitem= sessionStorage.getItem('successmessage');
-
-         var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Well Done! </strong>'+printitem+'!</div>';
-         $('#alertMessage1').html(result);
-         sessionStorage.removeItem('successmessage');
-    
-});
-</script>
-
 
 @stop
 

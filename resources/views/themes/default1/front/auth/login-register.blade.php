@@ -9,7 +9,11 @@ Login | Register
  <h1>Login <span>Sign in or register to use Faveo</span></h1>
 @stop
 @section('breadcrumb')
-<li><a href="{{url('home')}}">Home</a></li>
+ @if(Auth::check())
+<li><a href="{{url('my-invoices')}}">Home</a></li>
+  @else
+  <li><a href="{{url('login')}}">Home</a></li>
+  @endif
 <li class="active">Login</li>
 @stop
 @section('main-class') 
@@ -181,6 +185,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                 </div>
                                                 
                                                 @if ($captchaStatus==1 && $captchaSiteKey != '00' && $captchaSecretKey != '00')  
+                                                {!! NoCaptcha::renderJs() !!}
                                               {!! NoCaptcha::display() !!}
                                              <div class="loginrobot-verification"></div>
                                                 @endif
@@ -257,7 +262,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
 
                                                         <div class="form-group col-lg-6 {{ $errors->has('bussiness') ? 'has-error' : '' }}">
                                                             <label class="required">Industry</label>
-                                                            {!! Form::select('bussiness',[Lang::get('message.choose')=>$bussinesses],null,['class'=>'form-control input-lg', 'id'=>'business']) !!}
+                                                            {!! Form::select('bussiness',[''=>'Choose','Industry'=>$bussinesses],null,['class'=>'form-control input-lg', 'id'=>'business']) !!}
                                                     
                                                             <h6 id="bussinesscheck"></h6>
                                                         </div>
@@ -276,7 +281,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                     <div class="col-md-6 form-group {{ $errors->has('role') ? 'has-error' : '' }}">
                                                         <!-- email -->
                                                         {!! Form::label('company_type','Company Type',['class'=>'required']) !!}
-                                                        {!! Form::select('company_type',[Lang::get('message.choose')=>'Select','Company Types'=>$type],null,['class' => 'form-control input-lg', 'id'=>'company_type']) !!}
+                                                        {!! Form::select('company_type',[''=>'Choose','Company Types'=>$type],null,['class' => 'form-control input-lg', 'id'=>'company_type']) !!}
                                                      <h6 id="company_typecheck"></h6>
                                                     </div>
                                                     
@@ -284,7 +289,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                     <div class="col-md-6 form-group {{ $errors->has('role') ? 'has-error' : '' }}">
                                                         <!-- email -->
                                                         {!! Form::label('company_size','Company Size',['class'=>'required']) !!}
-                                                        {!! Form::select('company_size',[''=>'Select','Company Sizes'=>$size],null,['class' => 'form-control input-lg', 'id'=>'company_size']) !!}
+                                                        {!! Form::select('company_size',[''=>'Choose','Company Sizes'=>$size],null,['class' => 'form-control input-lg', 'id'=>'company_size']) !!}
                                                        <h6 id="company_sizecheck"></h6>
                                                     </div>
                                                     
@@ -294,7 +299,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                       <div class="form-group col {{ $errors->has('country') ? 'has-error' : '' }}">
                                                                 {!! Form::label('country',Lang::get('message.country'),['class'=>'required']) !!}
                                                                 <?php $countries = \App\Model\Common\Country::pluck('nicename', 'country_code_char2')->toArray(); ?>
-                                                                {!! Form::select('country',[Lang::get('message.choose')=>$countries],$country,['class' => 'form-control input-lg selectpicker','onChange'=>'getCountryAttr(this.value);','id'=>'country']) !!}
+                                                                {!! Form::select('country',[''=>'Choose','Countries'=>$countries],$country,['class' => 'form-control input-lg selectpicker','onChange'=>'getCountryAttr(this.value);','id'=>'country']) !!}
                                                             <h6 id="countrycheck"></h6>
 
                                                             </div>
@@ -343,9 +348,10 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                                 if (old('state')) {
                                                                     $value = old('state');
                                                                 }
-                                                                // dd($value);
                                                                 ?>
-                                                                {!! Form::select('state',[$states],$value,['class' => 'form-control input-lg','id'=>'state-list']) !!}
+
+                                                                   {!! Form::select('state',[$states],$value,['class' => 'form-control input-lg','id'=>'state-list']) !!}
+                                                               
                                                             <h6 id="statecheck"></h6>
                                                             </div>
                                                              
@@ -401,13 +407,19 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                            <div class="robot-verification"></div>
                                                 @endif
                                                <div class="form-row">
+                                                @if ($termsStatus ==0)
+                                                 <div class="form-group col-lg-6">
+                                                <input type="hidden" value="true" name="terms" id="term">
+                                                  </div>
+                                                    @else
                                                     <div class="form-group col-lg-6">
                                                         <label>
 
-                                                            <input type="checkbox" value="false"  id="term" > {{Lang::get('message.i-agree-to-the')}} <a href="https://faveohelpdesk.com/terms-conditions" target="_blank">{{Lang::get('message.terms')}}</a>
+                                                            <input type="checkbox" value="false" name="terms" id="term" > {{Lang::get('message.i-agree-to-the')}} <a href="{{$termsUrl}}" target="_blank">{{Lang::get('message.terms')}}</a>
                                                         </label>
+                                                        <h6 id="termscheck"></h6>
                                                     </div>
-                                             
+                                                 @endif
                                                   
                                                           <div class="form-group col-lg-6">
                                                               <button type="button"  class="btn btn-primary pull-right marginright mb-xl next-step" data-loading-text="Loading..." name="register" id="register" onclick="registerUser()">Submit</button>
@@ -437,76 +449,81 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-12 tab-pane" id="step2">
 
-        <div class="featured-boxes">
+              <div class="col-md-12 tab-pane" id="step2">
 
-            
-                        <!-- fail message -->
-            <div class="row">
-                <div class="col-lg-6 offset-lg-3">
+                    <div class="featured-boxes">
+
+                  
+                              <!-- fail message -->
+                    <div class="row">
+                    <div class="col-lg-6 offset-lg-3">
                     <div id="successMessage1"></div>
+                        <div id = "emailsuccess"></div>
                      <!-- <div id="successMessage2"></div> -->
 
                     <div id="error1">
                     </div>
-                   <div class="featured-box featured-box-primary text-left mt-5">
+                    <div class="featured-box featured-box-primary text-left mt-5">
                         <div class="box-content">
                           
-                            <form class="form-horizontal" novalidate="novalidate" name="verifyForm">
-                                <h4 class="heading-primary text-uppercase mb-md">Confirm Email and Mobile</h4>
-                                            <p>You will be sent a verification email and OTP on your mobile immediately by an automated system, Please click on the verification link in the email and also enter the OTP in the next step. Click next to continue</p>
+                     <form class="form-horizontal" novalidate="novalidate" name="verifyForm">
+
+                                <h4 class="heading-primary text-uppercase mb-md">Confirm Email/Mobile</h4>
+                                           
                                 <input type="hidden" name="user_id" id="user_id"/>
                                 <input type="hidden" name="email_password" id="email_password"/>
-                                <div class="form-row">
-                                                        <div class="form-group col">
-                                                            <label  for="mobile" class="required">Email</label>
-                                                             <div class="input-group">
-
-                                                  
-
-
-                                                            <input type="email" value="" name="verify_email" id="verify_email" class="form-control form-control input-lg">
-                                                             <div class="input-group-append">
-                                                            <span class="input-group-text"><i class="fa fa-envelope"></i></span>
-                                                          </div>
-                                                          
-                                                        </div>
-                                                        <h6 id="conemail"></h6>
-                                                        </div>
-                                                         
-                                                    </div>
-
+                                <input type="hidden" id="checkEmailStatus" value="{{$emailStatus}}">
+                             @if($emailStatus == 1)
+                              <p>You will be sent a verification email by an automated system, Please click on the verification link in the email. Click next to continue</p>
+                              <div class="form-row">
+                                  <div class="form-group col">
+                                        <label  for="mobile" class="required">Email</label>
+                                      <div class="input-group">
+                                         <input type="hidden" id="emailstatusConfirm" value="{{$emailStatus}}">  
+                                         <input type="email" value="" name="verify_email" id="verify_email" class="form-control form-control input-lg">
+                                         <div class="input-group-append">
+                                            <span class="input-group-text"><i class="fa fa-envelope"></i></span>
+                                         </div>
+                                      
+                                    </div>
+                                      <h6 id="conemail"></h6>
+                                  </div>
+                                     
+                              </div>
+                              @endif
 
                                                      
                                             
+                            @if($mobileStatus == 1)   
+                             <p>You will be sent an OTP on your mobile immediately by an automated system, Please enter the OTP in the next step. Click next to continue</p>
+                              <div class="form-row">
+                                   <div class="form-group col">
+                                     <input id="mobile_code_hidden" name="mobile_code" type="hidden">
+                                      <input class="form-control form-control input-lg"  id="verify_country_code" name="verify_country_code" type="hidden">
+                                    <label for="mobile" class="required">Mobile</label><br/>
+                                     <input type="hidden" id="mobstatusConfirm" value="{{$mobileStatus}}">  
+                                    <input class="form-control input-lg phone"  name="verify_number" type="text" id="verify_number">
+                                  
+                                
+                                    <h6 id="conmobile"></h6>
+                              </div>
+                                 
+                              </div>
+                              @endif
 
-                                                     <div class="form-row">
-                                                        <div class="form-group col">
-                                                        <input id="mobile_code_hidden" name="mobile_code" type="hidden">
-                                                         <input class="form-control form-control input-lg"  id="verify_country_code" name="verify_country_code" type="hidden">
-                                                          <label for="mobile" class="required">Mobile</label><br/>
-                                                            
-                                                       <input class="form-control input-lg phone"  name="verify_number" type="text" id="verify_number">
-                                                        
-                                                      
-                                                        <h6 id="conmobile"></h6>
-                                                      </div>
-                                                       
-                                                  </div>
-
-                                                    <div class="form-row">
-                                                        <div class="form-group col">
-                                                       
-                                             <button type="button" class="btn btn-primary mb-xl next-step float-right" name="sendOtp" id="sendOtp" onclick="sendOTP()">
-                                            Next
-                                             </button>
-                                                        </div>
-                                                    </div>
+                                <div class="form-row">
+                                     <div class="form-group col">
+                                           
+                                        <button type="button" class="btn btn-primary mb-xl next-step float-right" name="sendOtp" id="sendOtp" onclick="sendOTP()">
+                                                 Next
+                                        </button>
+                                     </div>
+                                  </div>
                                
                                 
                                
-                            </form>
+                          </form>
                         </div>
                     </div>
                 </div>
@@ -522,9 +539,12 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                     <div id="error2">
                     </div>
                     <div id="successMessage2"></div>
+
                     <div id="alertMessage3"></div>
+                    
                    <div class="featured-box featured-box-primary text-left mt-5">
-                        <div class="box-content">
+                    <input type="hidden" id="checkOtpStatus" value="{{$mobileStatus}}">
+                        <div class="box-content" id="showOtpBox">
                             <h4 class="heading-primary text-uppercase mb-md">OTP Confirmation</h4>
                             <!-- <div class="row verify">
                                 <div class="col-md-12">
@@ -573,17 +593,17 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
 @stop 
 @section('script')
 
-<script>
-   {!! NoCaptcha::renderJs($lang = 'en', $callback = true, $onLoadClass = 'recaptchaCallback') !!}
-  // {!! NoCaptcha::renderJs('en', true, 'recaptchaCallback') !!}
-</script>
+
 
   <script>
+    ///////////////////////////////////////////////////////////////////////////////
+    ///Google Recaptcha
     function recaptchaCallback() {
       document.querySelectorAll('.g-recaptcha').forEach(function (el) {
         grecaptcha.render(el);
       });
     }
+    ///////////////////////////////////////////////////////////////////////////////////
   </script>
 
 <script type="text/javascript">
@@ -699,7 +719,7 @@ function verify_otp_check(){
             "mobile":   $('#verify_number').val(),
             "code"  :   $('#verify_country_code').val(),
             "otp"   :   $('#oneTimePassword').val(),
-            'id'    :   $('#hidden_user_id').val()
+            'id'    :   $('#hidden_user_id').val(),
         };
         $.ajax({
             url: '{{url('otp/verify')}}',
@@ -777,7 +797,7 @@ function verify_otp_check(){
     function resendOTP() {
         var data = {
             "mobile":   $('#verify_number').val(),
-            "code"  :   $('#verify_country_code').val(),
+            "code"  :  ($('#verify_country_code').val()),
         };
         $.ajax({
           url: '{{url('resend_otp')}}',
@@ -815,40 +835,45 @@ function verify_otp_check(){
 
 
 <script type="text/javascript">
-              $('#verify_email').keyup(function(){
+   /*
+   * Email ANd Mobile Validation when Send Button is cliced on Tab2
+    */
+   /////////////////////////////////////////////////////////////////////////////////////////////////
+           $('#verify_email').keyup(function(){//Email
                  verify_email_check();
             });
 
-
             function verify_email_check(){
-              var pattern = new RegExp(/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/);
-              if (pattern.test($('#verify_email').val())){
+              if($("#emailstatusConfirm").val() ==1) {//if email verification is active frm admin panlel then validate else don't
+
+               var pattern = new RegExp(/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/);
+              if (pattern.test($('#verify_email').val())) {
                  $('#conemail').hide();
                   $('#verify_email').css("border-color","");
                  return true;
-               
-              }
-              else{
+               } else{
                  $('#conemail').show();
                 $('#conemail').html("Please Enter a valid email");
                  $('#conemail').focus();
                 $('#verify_email').css("border-color","red");
                 $('#conemail').css({"color":"red","margin-top":"5px"});
-
-                   // mail_error = false;
                 return false;
                 
-              }
+               }
+             }
+             return true;
 
             }
          
-         $('#verify_number').keyup(function(){
+         $('#verify_number').keyup(function(){//Mobile
             verify_number_check();
          });
 
          function verify_number_check(){
+
             var userNumber = $('#verify_number').val();
-            if (userNumber.length < 5){
+            if($("#mobstatusConfirm").val() ==1) { //If Mobile Status Is Active
+                      if (userNumber.length < 5){
                 $('#conmobile').show();
                 $('#conmobile').html("Please Enter Your Mobile No.");
                 $('#conmobile').focus();
@@ -866,16 +891,18 @@ function verify_otp_check(){
                 return true;
                 
               }
+            }
+            return true;
+    
          }
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  /*
+    * After Send Button is Clicked on Tab 2 fOR sending OTP AND Email
+   */
   function sendOTP() {
         $('#conemail').hide();
             $('#conmobile').hide();
-
-            // var mail_error = true;
-            // var mobile_error = true;
-          
-            var mail_error = true;
+          var mail_error = true;
            var mobile_error = true;
            if((verify_email_check()) && (verify_number_check()))
            {
@@ -894,43 +921,49 @@ function verify_otp_check(){
             "oldemail": oldemail,
             "email": $('#verify_email').val(),
             "mobile": $('#verify_number').val(),
-            'code': ($('#verify_country_code').val()).replace(/\s/g, ''),
+            'code': $('#verify_country_code').val(),
             'id': $('#user_id').val(),
             'password': $('#email_password').val()
         };
-          
         $.ajax({
           url: '{{url('otp/sendByAjax')}}',
           type: 'GET',
           data: data,
           success: function (response) {
-           
             var result =  '<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Almost there! </strong>'+response.message+'</div>';
+             if (($("#checkOtpStatus").val()) == 1 ) {
                 $('#successMessage2').html(result);
                 $('#error1').hide();
                 $('.wizard-inner').css('display','none');
                 var $active = $('.wizard .nav-tabs li.active');
-                $active.next().removeClass('disabled');
-                nextTab($active);
-                  setTimeout(function(){ 
+               $active.next().removeClass('disabled');
+                  nextTab($active);
+                
+               setTimeout(function(){ 
                sessionStorage.removeItem('oldemail');
            sessionStorage.clear();
             }, 500);
                 window.scrollTo(0, 10);
                 verify_otp_form.elements['hidden_user_id'].value = $('#user_id').val();
                 $("#sendOtp").html("Send");
-          },
+            } else {//Show Only Email Success Message when Mobile Status is Not Active
+                  $('#emailsuccess').html(result);
+                $('#successMessage1').hide();
+                 $("#sendOtp").html("Send");
+                $('#error1').hide();
+                }
+              },
           error: function (ex) {
-
+            
             var myJSON = JSON.parse(ex.responseText);
             var html = '<div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<br><br><ul>';
             $("#sendOtp").html("Send");
-            for (var key in myJSON)
-            {
-                html += '<li>' + myJSON[key][0] + '</li>'
-            }
+           
+                html += '<li>' + myJSON.message + '</li>'
+            
             html += '</ul></div>';
             $('#alertMessage1').hide();
+            $('#successMessage1').hide();
             $('#error1').show();
             document.getElementById('error1').innerHTML = html;
             setTimeout(function(){ 
@@ -944,6 +977,8 @@ function verify_otp_check(){
     }
    
     }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
    $(document).ready(function(){
    $('#usercheck').hide();
@@ -1037,27 +1072,7 @@ function verify_otp_check(){
         }
    }
 
-    // //Robot Vadidation for registration form
-    // function robotverification(){
-    //   var input = $(".g-recaptcha :input[name='g-recaptcha-response']");
-    //   console.log(input.val());
-    //   if (typeof input.val() === "undefined") {
-    //       alert('sa');
-    //       return true;
-    //   }
-    //    else if(input.val() == null || input.val()=="") {
-    //        alert('dsf');
-    //        $('.robot-verification').empty()
-    //         $('.robot-verification').append("<p style='color:red'>Robot verification failed, please try again.</p>")
-    //         return false;
-    //   } else {
-    //       alert('aaaa');
-    //       return true;
-    //   }
-      
-    //  }
-                  
-                  
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////            
 //Registration Form Validation
  function first_namecheck(){
     var firrstname_val = $('#first_name').val();
@@ -1378,6 +1393,7 @@ function verify_otp_check(){
             }
 
 
+
    //    $('#conpassword').keyup(function(){
    //     con_password_check();
    // });
@@ -1402,6 +1418,30 @@ function verify_otp_check(){
         }
   }
 
+    function terms(){
+    var term_val = $('#term').val();
+    console.log(term_val);
+    if(term_val == 'false'){
+        $('#termscheck').show();
+        $('#termscheck').html("Terms must be accepted");
+        $('#termscheck').focus();
+        $('#term').css("border-color","red");
+        $('#termscheck').css({"color":"red","margin-top":"5px"});
+        // userErr =false;
+           return false;;
+    }
+   
+    else{
+         $('#termscheck').hide();
+          $('#term').css("border-color","");
+         return true;
+    }
+   }
+
+
+////////////////////////Registration Valdation Ends////////////////////////////////////////////////////////////////////////////////////////////
+///
+///////////////////////VALIDATE TERMS AND CNDITION////////////////////////////////////////
  $(document).on('change','#term',function(){
     if($(this).val()=="false"){
       $(this).val("true");
@@ -1409,11 +1449,9 @@ function verify_otp_check(){
     else{
       $(this).val("false");
     }
-    console.log($(this).val());
  })
+ ////////////////////////////////////////////////////////////////////////////////////////////////////
 function registerUser() {
-     
-
    $('#first_namecheck').hide();
    $('#last_namecheck').hide();
     $('#emailcheck').hide();
@@ -1430,6 +1468,7 @@ function registerUser() {
               $('#user_namecheck').hide();
                $('#password1check').hide();
                 $('#conpasscheck').hide();
+                 $('#termscheck').hide();
 
 
          var first_nameErr = true;
@@ -1448,12 +1487,12 @@ function registerUser() {
           var user_nameErr = true;
           var password1Err = true;
           var conPassErr = true;
-
+           var termsErr = true;
      // con_password_check();
 
-if(first_namecheck() && last_namecheck() && emailcheck() && companycheck()  && mobile_codecheck() && addresscheck() && towncheck()  && zipcheck() && bussinesscheck() && company_typecheck() && company_sizecheck() && countrycheck() && user_namecheck() && password1check() && conpasscheck() ) 
+if(first_namecheck() && last_namecheck() && emailcheck() && companycheck()  && mobile_codecheck() && addresscheck() && towncheck()  && zipcheck() && bussinesscheck() && company_typecheck() && company_sizecheck() && countrycheck() && user_namecheck() && password1check() && conpasscheck()  && terms()) 
      {
-      console.log($('#term').val())
+      
      $("#register").html("<i class='fas fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
         $.ajax({
           url: '{{url("auth/register")}}',
@@ -1484,22 +1523,36 @@ if(first_namecheck() && last_namecheck() && emailcheck() && companycheck()  && m
           success: function (response) {
 
             if(response.type == 'success'){
-                var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Thank You! </strong>'+response.message+'!!</div>';
-                $('#successMessage1').html(result);
+               
                 $('.wizard-inner').css('display','block');
+                   if($("#checkEmailStatus").val() == 0 && $("#checkOtpStatus").val() == 0) {
+                 var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Thank You! </strong>'+response.message+'!!</div>';
+                $('#alertMessage1').html(result);
+                 window.scrollTo(0,0);
+                 $("#register").html("Submit");
+                 } else {
+                   var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Thank You! </strong>'+response.message+'!!</div>';
+                $('#successMessage1').html(result);
                 var $active = $('.wizard .nav-tabs li.active');
                 $active.next().removeClass('disabled');
                 nextTab($active);
                 window.scrollTo(0,0);
                 verifyForm.elements['user_id'].value = response.user_id;
-                var $emailverfy = verifyForm.elements['verify_email'].value = $('#email').val();
-                sessionStorage.setItem('oldemail',$emailverfy);
+                 if($("#emailstatusConfirm").val() == 1) {
+                   var emailverfy = verifyForm.elements['verify_email'].value = $('#email').val();
+                sessionStorage.setItem('oldemail',emailverfy);
 
+                }
+               
+                 }
+
+          
                  
 
-                verifyForm.elements['verify_country_code'].value = $('#mobile_code').val();
-               var $numberverify= verifyForm.elements['verify_number'].value = $('#mobilenum').val();
-                sessionStorage.setItem('oldenumber',$numberverify);
+                verifyForm.elements['verify_country_code'].value =$('#mobile_code').val();
+
+               var numberverify= verifyForm.elements['verify_number'].value = $('#mobilenum').val();
+                sessionStorage.setItem('oldenumber',numberverify);
                 verifyForm.elements['email_password'].value = $('#password').val();
                 $("#register").html("Register");
                 /*setTimeout(function(){ 
@@ -1508,6 +1561,7 @@ if(first_namecheck() && last_namecheck() && emailcheck() && companycheck()  && m
             }
           },
           error: function (data) {
+            location.reload();
             $("#register").html("Register");
             $('html, body').animate({scrollTop:0}, 500);
            
@@ -1594,7 +1648,6 @@ if(first_namecheck() && last_namecheck() && emailcheck() && companycheck()  && m
             success: function (data) {
 
             $("#state-list").html('<option value="">Please select Country</option>').val('');
-                console.log()
 
 
               $("#state-list").html(data).val(state.id);
@@ -1602,18 +1655,7 @@ if(first_namecheck() && last_namecheck() && emailcheck() && companycheck()  && m
         });
     }
 
-    // function getState(val) {
 
-
-    //     $.ajax({
-    //         type: "POST",
-    //         url: "{{url('get-state')}}",
-    //         data: {'country_id':val,'_token':"{{csrf_token()}}"},//'country_id=' + val,
-    //         success: function (data) {
-    //             $("#state-list").html(data);
-    //         }
-    //     });
-    // }
     function getCode(val) {
         $.ajax({
             type: "GET",
@@ -1700,7 +1742,7 @@ fbq('track', 'CompleteRegistration');
   src="//www.googleadservices.com/pagead/conversion_async.js">
 </script>
 <!-- Facebook Pixel Code -->
-<script>
+<!-- <script>
 !function(f,b,e,v,n,t,s)
 {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
 n.callMethod.apply(n,arguments):n.queue.push(arguments)};
@@ -1712,7 +1754,7 @@ s.parentNode.insertBefore(t,s)}(window,document,'script',
  fbq('init', '308328899511239'); 
 fbq('track', 'PageView');
 
-</script>
+</script> -->
 
 <script type="text/javascript"
   src="//www.googleadservices.com/pagead/conversion_async.js">
@@ -1767,9 +1809,9 @@ function prevTab(elem) {
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
-<script src="{{asset("lb-faveo/js/intlTelInput.js")}}"></script>
 <script type="text/javascript">
     var telInput = $('#mobilenum');
+     addressDropdown = $("#country");
     telInput.intlTelInput({
         geoIpLookup: function (callback) {
             $.get("https://ipinfo.io", function () {}, "jsonp").always(function (resp) {
@@ -1779,7 +1821,6 @@ function prevTab(elem) {
         },
         initialCountry: "auto",
         separateDialCode: true,
-        utilsScript: "{{asset('lb-faveo/js/utils.js')}}"
     });
     $('.intl-tel-input').css('width', '100%');
 
@@ -1793,6 +1834,9 @@ function prevTab(elem) {
     $('input').on('focus', function () {
         $(this).parent().removeClass('has-error');
     });
+    addressDropdown.change(function() {
+  telInput.intlTelInput("setCountry", $(this).val());
+});
 
     $('form').on('submit', function (e) {
         $('input[name=country_code]').attr('value', $('.selected-dial-code').text());

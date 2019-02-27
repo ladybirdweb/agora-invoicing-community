@@ -40,12 +40,13 @@ class RazorpayController extends Controller
         return view('themes.default1.front.checkout', compact('api'));
     }
 
+    /*
+    * Create Order And Payment for invoice paid with Razorpay
+     */
     public function payment($invoice, Request $request)
     {
-
         //Input items of form
         $input = Input::all();
-
         $success = true;
         $error = 'Payment Failed';
         $rzp_key = ApiKey::where('id', 1)->value('rzp_key');
@@ -53,7 +54,6 @@ class RazorpayController extends Controller
 
         $api = new Api($rzp_key, $rzp_secret);
         $payment = $api->payment->fetch($input['razorpay_payment_id']);
-
         if (count($input) && !empty($input['razorpay_payment_id'])) { //Verify Razorpay Payment Id and Signature
 
             //Fetch payment information by razorpay_payment_id
@@ -81,14 +81,14 @@ class RazorpayController extends Controller
                     $view = $this->getViewMessageAfterPayment($invoice, $state, $currency);
                     $status = $view['status'];
                     $message = $view['message'];
-
                     \Session::forget('items');
+                    \Session::forget('code');
+                    \Session::forget('codevalue');
                 } else {
                     //Afer Renew
                     $control->successRenew($invoice);
                     $payment = new \App\Http\Controllers\Order\InvoiceController();
                     $payment->postRazorpayPayment($invoice->id, $invoice->grand_total);
-
                     $view = $this->getViewMessageAfterRenew($invoice, $state, $currency);
                     $status = $view['status'];
                     $message = $view['message'];
@@ -121,18 +121,13 @@ class RazorpayController extends Controller
 
     public function getViewMessageAfterPayment($invoice, $state, $currency)
     {
-        $order = Order::where('invoice_id', $invoice->id)->first();
-        $invoiceItem = InvoiceItem::where('invoice_id', $invoice->id)->first();
-        $date1 = new DateTime($order->created_at);
-        $tz = \Auth::user()->timezone()->first()->name;
-        $date1->setTimezone(new DateTimeZone($tz));
-        $date = $date1->format('M j, Y, g:i a ');
-        $product = Product::where('id', $order->product)->select('id', 'name')->first();
+        $orders = Order::where('invoice_id', $invoice->id)->get();
+        $invoiceItems = InvoiceItem::where('invoice_id', $invoice->id)->get();
 
         \Cart::clear();
         $status = 'success';
-        $message = view('themes.default1.front.postPaymentTemplate', compact('invoice','date','order',
-            'product', 'invoiceItem', 'state', 'currency'))->render();
+        $message = view('themes.default1.front.postPaymentTemplate', compact('invoice','date','orders',
+             'invoiceItems', 'state', 'currency'))->render();
 
         return ['status'=>$status, 'message'=>$message];
     }

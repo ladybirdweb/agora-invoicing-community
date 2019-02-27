@@ -13,7 +13,15 @@ Edit Product
       </ol>
 @stop
 @section('content')
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<style>
+    .more-text{
+     display:none;
+}
+</style>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+ <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/js/jquery.min.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+
 <script type="text/javascript">
     $(function () {
         $("#chkYes").click(function () {
@@ -49,7 +57,7 @@ Edit Product
     .select2-container--default .select2-selection--multiple .select2-selection__choice {
     background-color: #1b1818 !important;
 </style>
-
+ @include('themes.default1.product.product.edit-upload-option')
 <div class="box box-primary">
 
     <div class="box-header">
@@ -93,7 +101,7 @@ Edit Product
                 <div class="nav-tabs-custom">
                     <ul class="nav nav-tabs">
                         <li class="active"><a href="#tab_1" data-toggle="tab">{{Lang::get('message.details')}}</a></li>
-                        <li><a href="#tab_2" data-toggle="tab">{{Lang::get('message.price')}}</a></li>
+                        <li><a href="#tab_2" data-toggle="tab">{{Lang::get('message.plans')}}</a></li>
                         </ul>
                     <div class="tab-content">
                         <div class="tab-pane active" id="tab_1">
@@ -108,16 +116,25 @@ Edit Product
                    
                                 <div class="col-md-3 form-group {{ $errors->has('type') ? 'has-error' : '' }}">
                                     <!-- last name -->
-                                    {!! Form::label('type',Lang::get('message.type'),['class'=>'required']) !!}
+                                    {!! Form::label('type',Lang::get('message.lic_type')) !!}
                                     {!! Form::select('type',['Types'=>$type],null,['class' => 'form-control']) !!}
 
                                 </div>
-
+                                <?php
+                               $groups = DB::table('product_groups')->pluck('name', 'id')->toarray();
+                                ?>
                                 <div class="col-md-3 form-group {{ $errors->has('group') ? 'has-error' : '' }}">
                                     <!-- last name -->
                                     {!! Form::label('group',Lang::get('message.group')) !!}
-                                    {!! Form::select('group',['Groups'=>$group],null,['class' => 'form-control']) !!}
-
+                                        <select name="group"  class="form-control">
+                            <option>Choose</option>
+                            @foreach($groups as $key=>$group)
+                                   <option value="{{$key}}" <?php  if (in_array($group, $selectedGroup)) {
+                                    echo "selected";
+                                } ?>>{{$group}}</option>
+                           
+                             @endforeach
+                              </select>
                                 </div>
                                 <?php
                                $types = DB::table('product_categories')->pluck('category_name')->toarray();
@@ -130,7 +147,9 @@ Edit Product
                             <select name="category"  class="form-control">
                             <option value="">Choose</option>
                             @foreach($types as $key=>$type)
-                                   <option value="{{$type}}" <?php  if(in_array($type, $selectedCategory) ) { echo "selected";} ?>>{{$type}}</option>
+                                   <option value="{{$type}}" <?php  if (in_array($type, $selectedCategory)) {
+                                    echo "selected";
+                                } ?>>{{$type}}</option>
                            
                              @endforeach
                               </select>
@@ -144,7 +163,7 @@ Edit Product
 
                                 <div class="col-md-6 form-group {{ $errors->has('description') ? 'has-error' : '' }}">
                                     
-                                    {!! Form::label('description',Lang::get('message.description')) !!}
+                                    {!! Form::label('description',Lang::get('message.description'),['class'=>'required']) !!}
                                     {!! Form::textarea('description',null,['class' => 'form-control','id'=>'textarea1']) !!}
                                      <h6 id= "descheck"></h6>
                                      </div>
@@ -178,26 +197,29 @@ Edit Product
                                       
                                        
                                             <table class="table table-responsive">
+                                                <input type="hidden" value="{{$checkowner}}" id="checkowner">
                                               <span>Where do you want to retrieve your files from?</span>
                                              </br>
-                                                <tr>              
+                                             <input type="hidden" value="{{$githubStatus}}" id="gitstatus">    
+                                                <tr>  
+                                                      
                                                     <td>
                                                         <label for="chkYes" style="display: block;">
                                                         <input type="radio" id="chkYes" name="chkTax" />
                                                         Github
                                                     </label>
-                                                      <div class="col-md-10" id="git" style="display:none">
+                                                      <div class="col-md-10 gitstatus" id="git" style="display:none">
                                                 <li>
                                                     <div class="form-group {{ $errors->has('github_owner') ? 'has-error' : '' }}">
                                                         <!-- first name -->
                                                         {!! Form::label('github_owner',Lang::get('message.github-owner')) !!}
-                                                         {!! Form::text('github_owner',null,['class'=>'form-control']) !!}
+                                                         {!! Form::text('github_owner',null,['class'=>'form-control','id'=>'owner']) !!}
                                                         
                                                     </div>
                                                     <div class="form-group {{ $errors->has('github_repository') ? 'has-error' : '' }}">
                                                         <!-- last name -->
                                                  {!! Form::label('github_repository',Lang::get('message.github-repository-name')) !!}
-                                                     {!! Form::text('github_repository',null,['class'=>'form-control']) !!}
+                                                     {!! Form::text('github_repository',null,['class'=>'form-control','id'=>'repo']) !!}
                                                         
 
                                                     </div>  
@@ -207,7 +229,7 @@ Edit Product
                                                     <div class="form-group {{ $errors->has('version') ? 'has-error' : '' }}">
                                                         <!-- last name -->
                                                         {!! Form::label('version',Lang::get('message.version')) !!}
-                                                         {!! Form::text('version',null,['class'=>'form-control']) !!}
+                                                         {!! Form::text('version',null,['class'=>'form-control','id'=>'version']) !!}
 
 
                                                       </div>
@@ -250,8 +272,8 @@ Edit Product
                                                 {!! Form::hidden('hidden', 0) !!}
                                                 <?php 
                                                 $value=  "";
-                                                if($product->hidden==1){
-                                                 $value = 'true';   
+                                                if ($product->hidden==1) {
+                                                    $value = 'true';
                                                 }
                                                 ?>
                                                 <p>{!! Form::checkbox('hidden',1,$value) !!}  {{Lang::get('message.tick-to-hide-from-order-form')}}</p>
@@ -272,67 +294,42 @@ Edit Product
                         <div class="tab-pane" id="tab_2">
                             <table class="table table-responsive">
 
-                                <tr>
-                                    <td><b>{!! Form::label('subscription',Lang::get('message.subscription')) !!}</b></td>
+                                    <br/>
+                                <span>Show on Cart Page</span>
+                                 <tr>
+                                    <div class="row">
                                     <td>
-                                        <div class="form-group {{ $errors->has('subscription') ? 'has-error' : '' }}">
-                                             <div class="row">
-                                                <div class="col-md-4">
-                                                    {!! Form::hidden('subscription',0) !!}
-                                                    {!! Form::checkbox('subscription') !!}
-                                                     <label data-toggle="tooltip" data-placement="top" title="{!!Lang::get('message.limited-subscription-description') !!}">
-                                                    {!! Form::label('subscription',Lang::get('message.limited-subscription')) !!}</label>
-                                                </div>
-                                            
-                                                
-                                                 <div class="col-md-4">
-                                                     {!! Form::radio('deny_after_subscription',1) !!}
-                                                      <label name="subscription" data-toggle="tooltip" data-placement="top" title="{!!Lang::get('message.perpetual-description') !!}">
-                                                    {!! Form::label('deny_after_subscription',Lang::get('message.perpetual-download')) !!}
-                                                </div>
+                                          
+                                        <div><label>
+                                             {!! Form::radio('show_agent',1,null,['id'=>'agent']) !!}
+                                              <!-- <input type ="radio" id="agent" value="0" name="cartquantity" hidden>   -->
+                                            Agents
+                                        </label></div>
+                                   
+                                    <br/> 
+                                    <div class="col-md-10" id="allowmulagent" style="display:none">
+                                       <p>{!! Form::checkbox('can_modify_agent',1,null,['id'=>'agent_multiple_quantity']) !!} {{Lang::get('message.allow_multiple_agents_quantity')}} </p>
+                                    </div>
 
-                                                <div class="col-md-4">
-                                                    {!! Form::radio('deny_after_subscription',0) !!}
-                                                      <label name="subscription" data-toggle="tooltip" data-placement="top" title="{!!Lang::get('message.retired-description') !!}">
-                                                    {!! Form::label('deny_after_subscription',Lang::get('message.retired-download')) !!}
-                                                </div>
-                                                   <div class="col-md-4">
-                                                    {!! Form::hidden('perpetual_license',0) !!}
-                                                     {!! Form::checkbox('perpetual_license') !!}
-                                                      <label name="subscription" data-toggle="tooltip" data-placement="top" title="{!!Lang::get('message.perpetual_license-detail') !!}">
-                                                    {!! Form::label('perpetual_license',Lang::get('message.perpetual_license')) !!}
-                                                </div>
-
-                                          </div>
-                                        </div>
-                                    </td>
+                                   </td>
+                                  </div>
                                 </tr>
-
-                               
                                 <tr>
-                                    <td><b>{!! Form::label('multiple_qty',Lang::get('message.allow-multiple-quantities')) !!}</b></td>
                                     <td>
-                                        <div class="form-group {{ $errors->has('multiple_qty') ? 'has-error' : '' }}">
-                                            <?php
-                                            if ($product) {
-                                                $multiple = $product->multiple_qty;
-                                                if ($multiple == 1) {
-                                                    $value = true;
-                                                } else {
-                                                    $value = '';
-                                                }
-                                            } else {
-                                                $value = '';
-                                            }
-                                            //dd($multiple);
-                                            ?>
-
-                                            <p>{!! Form::checkbox('multiple_qty',1,$value) !!}  {{Lang::get('message.tick-this-box-to-allow-customers-to-specify-if-they-want-more-than-1-of-this-item-when-ordering')}} </p>
-
-                                        </div>
+                                        <div><label>
+                                             {!! Form::radio('show_agent',0,null,['id'=>'quantity']) !!}
+                                            Product Quantity
+                                         </label>
+                                     </div>
+                                         <br/>
+                                     <div class="col-md-10" id="allowmulproduct" style="display:none">
+                                       <p>{!! Form::checkbox('can_modify_quantity',1,null,['id'=>'product_multiple_quantity']) !!}  {{Lang::get('message.allow_multiple_product_quantity')}} </p>
+                                    </div>
+                                  
                                     </td>
-                                 </tr>
-
+                                      </div>
+                                </tr>
+                                  </table>
                                 
                                 <tr>
                                     <td><b>{!! Form::label('tax',Lang::get('message.taxes')) !!}</b></td>
@@ -342,25 +339,20 @@ Edit Product
                                                 <?php
                                                 if (count($saved_taxes) > 0) {
                                                     foreach ($saved_taxes as $tax) {
-
                                                         $saved[$tax->tax_class_id] = 'true';
                                                     }
-                                                }
-                                                else{
+                                                } else {
                                                     $saved=[];
                                                 }
                                                
                                                 if (count($saved) > 0) {
-                                               foreach ($saved as $key => $value) {
-                                                // dd($key);
-                                                   $savedkey[]=$key;
-                                               }
-                                               $saved1=$savedkey?$savedkey:[];
-
-                                                   }
-                                                   else{
+                                                    foreach ($saved as $key => $value) {
+                                                        $savedkey[]=$key;
+                                                    }
+                                                    $saved1=$savedkey?$savedkey:[];
+                                                } else {
                                                     $saved1=[];
-                                                   }
+                                                }
                                                   
                                         
                                                 ?>
@@ -386,7 +378,7 @@ Edit Product
                                     </td>
                                 </tr>
 
-                            </table>
+                           
                       
                 <!-- nav-tabs-custom -->
 
@@ -394,10 +386,13 @@ Edit Product
 
           {!! Form::close() !!}
 
-           <h3>  Plans &nbsp;<a href="#create-plan-option" data-toggle="modal" data-target="#create-plan-option" class="btn btn-default">Add new</a> </h3>
+           <h3>  Plans &nbsp;
+            <!-- <a href="#create-plan-option" data-toggle="modal" data-target="#create-plan-option" class="btn btn-default">Add new</a> -->
+        </h3>
                            
                             @include('themes.default1.product.plan.create') 
-                            @if($product->plan())
+
+                              @if($product->plan())
                             <table class="table table-responsive">
                                 
                                 <tr>
@@ -405,17 +400,25 @@ Edit Product
                                     <th>Months</th>
                                     <th>Action</th>
                                 </tr>
-                                
+                                 @foreach($product->plan()->where('product',$product->id)->get() as $plan)
                                 <tr>
-                                    <td>{{$product->plan()->name}}</td> 
+
+                                    <td>{{$plan->name}}</td> 
                                     <?php
-                                    $months = $product->plan()->days / 30;
+                                    if ($plan->days != '') {
+                                        $months = $plan->days / 30;
+                                    } else {
+                                         $months = 'No Period Selected';
+                                    } 
+                                   
                                     ?>
                                     <td>{{round($months)}}</td> 
-                                    <td><a href="{{url('plans/'.$product->plan()->id.'/edit')}}" class="btn btn-primary btn-xs"><i class='fa fa-edit' style='color:white;'></i>&nbsp;&nbsp;Edit</a></td> 
+                                    <td><a href="{{url('plans/'.$plan->id.'/edit')}}" class="btn btn-primary btn-xs"><i class='fa fa-edit' style='color:white;'></i>&nbsp;&nbsp;Edit</a></td> 
                                 </tr>
-                               
+                                @endforeach
                             </table>
+                            @else
+                            <td>No Plans Created</td>
                             @endif
                               </div>
                        
@@ -439,7 +442,8 @@ Edit Product
                 
                  <a href="#create-upload-option" id="create" class="btn btn-primary  btn-sm pull-right" data-toggle="modal" data-target="#create-upload-option"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;{{Lang::get('message.add-file')}}</a>
                             @include('themes.default1.product.product.create-upload-option')
-                             @include('themes.default1.product.product.edit-upload-option')
+                              @include('themes.default1.product.product.edit-upload-option')
+                            
              
             </div>
             <!-- <div id="response"></div> -->
@@ -451,7 +455,7 @@ Edit Product
                     <thead><tr>
                          <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
                         <th>Title</th>
-                        <th>Description</th>
+                        <th style="width:210px;">Description</th>
                         <th>Version</th>
                         <th>File</th>
                         <th>Action</th>
@@ -468,34 +472,108 @@ Edit Product
 
 
 <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script> -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
 <script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 <script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
 <script>
-    $(function(){
-                                    tinymce.init({
-                                        selector: '#product-description',
-                                        plugins: "code",
-                                        toolbar: "code",
-                                        menubar: "tools"
-
+                                        $(function(){
+                                          tinymce.init({
+                                         selector: '#product-description',
+                                         height: 200,
+                                       //  theme: 'modern',
+                                         relative_urls: true,
+                                         remove_script_host: false,
+                                         convert_urls: false,
+                                         plugins: [
+                                          'advlist autolink lists link image charmap print preview hr anchor pagebreak',
+                                          'searchreplace wordcount visualblocks visualchars code fullscreen',
+                                          'insertdatetime media nonbreaking save table contextmenu directionality',
+                                          'emoticons template paste textcolor colorpicker textpattern imagetools'
+                                          ],
+                                         toolbar1: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
+                                          toolbar2: 'print preview media | forecolor backcolor emoticons',
+                                          image_advtab: true,
+                                          templates: [
+                                              {title: 'Test template 1', content: 'Test 1'},
+                                              {title: 'Test template 2', content: 'Test 2'}
+                                          ],
+                                          content_css: [
+                                              '//fast.fonts.net/cssapi/e6dc9b99-64fe-4292-ad98-6974f93cd2a2.css',
+                                              '//www.tinymce.com/css/codepen.min.css'
+                                          ]
+                                          });
+                                          tinymce.init({
+                                         selector: '#textarea1',
+                                         height: 200,
+                                       //  theme: 'modern',
+                                         relative_urls: true,
+                                         remove_script_host: false,
+                                         convert_urls: false,
+                                         plugins: [
+                                          'advlist autolink lists link image charmap print preview hr anchor pagebreak',
+                                          'searchreplace wordcount visualblocks visualchars code fullscreen',
+                                          'insertdatetime media nonbreaking save table contextmenu directionality',
+                                          'emoticons template paste textcolor colorpicker textpattern imagetools'
+                                          ],
+                                         toolbar1: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
+                                          toolbar2: 'print preview media | forecolor backcolor emoticons',
+                                          image_advtab: true,
+                                          templates: [
+                                              {title: 'Test template 1', content: 'Test 1'},
+                                              {title: 'Test template 2', content: 'Test 2'}
+                                          ],
+                                          content_css: [
+                                              '//fast.fonts.net/cssapi/e6dc9b99-64fe-4292-ad98-6974f93cd2a2.css',
+                                              '//www.tinymce.com/css/codepen.min.css'
+                                          ]
                                     });
-                                     tinymce.init({
-                                            selector: '#textarea1',
-                                            plugins: "code",
-                                            toolbar: "code",
-                                            menubar: "tools"
-                                        });
-                                     tinymce.init({
-                                        selector: '#textarea3',
-                                        plugins: "code",
-                                        toolbar: "code",
-                                        menubar: "tools"
+                                              tinymce.init({
+                                         selector: '#textarea3',
+                                         height: 200,
+                                       //  theme: 'modern',
+                                         relative_urls: true,
+                                         remove_script_host: false,
+                                         convert_urls: false,
+                                         plugins: [
+                                          'advlist autolink lists link image charmap print preview hr anchor pagebreak',
+                                          'searchreplace wordcount visualblocks visualchars code fullscreen',
+                                          'insertdatetime media nonbreaking save table contextmenu directionality',
+                                          'emoticons template paste textcolor colorpicker textpattern imagetools'
+                                          ],
+                                         toolbar1: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
+                                          toolbar2: 'print preview media | forecolor backcolor emoticons',
+                                          image_advtab: true,
+                                          templates: [
+                                              {title: 'Test template 1', content: 'Test 1'},
+                                              {title: 'Test template 2', content: 'Test 2'}
+                                          ],
+                                          content_css: [
+                                              '//fast.fonts.net/cssapi/e6dc9b99-64fe-4292-ad98-6974f93cd2a2.css',
+                                              '//www.tinymce.com/css/codepen.min.css'
+                                          ]
                                     });
                                 });
                                     </script>
 <script type="text/javascript">
+        function readmore(){
+                        var maxLength = 300;
+                        $("#upload-table tbody tr td").each(function(){
+                            var myStr = $(this).text();
+                            if($.trim(myStr).length > maxLength){
+                                var newStr = myStr.substring(0, maxLength);
+                                 $(this).empty().html(newStr);
+                                var removedStr = myStr.substring(maxLength, $.trim(myStr).length);
+                                $(this).append('<span class="more-text">' + removedStr + '</span>');
+                                $(this).append(' <a href="javascript:void(0);" class="read-more">read more...</a>');
+                            }
+                          }); 
+                         }
         $('#upload-table').DataTable({
+              destroy: true,
+            "initComplete": function(settings, json) {
+                         readmore();
+            },
             processing: true,
             serverSide: true,
              stateSave: true,
@@ -523,6 +601,7 @@ Edit Product
                 {data: 'action', name: 'action'}
             ],
             "fnDrawCallback": function( oSettings ) {
+                bindEditButton();
                 $('.loader').css('display', 'none');
             },
             "fnPreDrawCallback": function(oSettings, json) {
@@ -530,31 +609,57 @@ Edit Product
             },
         });
         
-          $('#edit-upload-option').on('show.bs.modal', function(e){
-        
-    })
-     function openEditPopup(e){
-         console.log(e)
-        
-         $('#edit-uplaod-option').modal('toggle');
-         var upload_id = $(e).data('id')
-         var title = $(e).data('title')
-        
-        var version= $(e).data('version')
-        console.log(title,description,version)
-
-        var description = $(e).data('description') 
+  
+     
+        function bindEditButton() {
+        $('.editUploadsOption').click(function(){
+        var upload_id = $(this).attr('data-id');
+        var title =  $(this).attr('data-title');
+        var version=  $(this).attr('data-version');
+        var description =  $(this).attr('data-description');
         tinymce.get('product-description').setContent(description);
-         $("#product-title").val(title)
-        $("#product-version").val(version)
-         var url = "{{url('upload/')}}"+"/"+upload_id
-         
-          $("#upload-edit-form").attr('action', url)
+         $('#edit-uplaod-option').modal('show');
+          $("#uploadid").val(upload_id);
+         $("#product-title").val(title);
+        $("#product-version").val(version);
+    })
+      }
 
+         $("#editProductUpload").on('click',function(){
+      $("#editProductUpload").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
+    var upload_id = $('#uploadid').val();
+    var productname = $('#editName').val();
+    var producttitle = $('#product-title').val();
+    var description = tinyMCE.get('product-description').getContent()
+    var version = $('#product-version').val();
+    $.ajax({
+       type : "PATCH",
+       url  :  "{{url('upload/')}}"+"/"+upload_id,
+       data :  {'productname': productname , 'producttitle': producttitle, 
+       'description': description,'version':version},
+       success: function(response) {
+         $("#editProductUpload").html("<i class='fa fa-floppy-o'>&nbsp;&nbsp;</i>Save");
+        $('#alertMessage2').show();
+        $('#error1').hide();
+        var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="far fa-check"></i> Success! </strong>'+response.message+'.</div>';
+        $('#alertMessage2').html(result+ ".");
+       } ,
+       error: function(ex) {
+         $("#editProductUpload").html("<i class='fa fa-floppy-o'>&nbsp;&nbsp;</i>Save");
+        var html = '<div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<br><br><ul>';
+        for (key in ex.responseJSON.errors) {
+           html += '<li>'+ ex.responseJSON.errors[key][0] + '</li>'
+        }
+          html += '</ul></div>';
+           $('#error1').show(); 
+           document.getElementById('error1').innerHTML = html;
+       }
+    });
 
+ })
+      
 
-
-     }
+    
         </script>
         <script>
         function checking(e){
@@ -605,6 +710,14 @@ Edit Product
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
   <link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css" rel="stylesheet" />
 <script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"></script>
+<script>
+        $(document).on('click','#upload-table tbody tr td .read-more',function(){
+        var text=$(this).siblings(".more-text").text().replace('read more...','');
+        $(this).siblings(".more-text").html(text);
+        $(this).siblings(".more-text").contents().unwrap();
+        $(this).remove();
+    });
+</script>
 <script>
        // Jquery validation for Product Creation
     $(document).ready(function(){
@@ -658,6 +771,69 @@ Edit Product
     });
 </script>
 
+<script>
+    $(document).ready(function(){
+        var githubstatus =  $('#gitstatus').val();
+        
+        if( $("input[type=radio][name='show_agent']:checked").val() == 1) {
+            $('#agent').prop('checked',true);
+            $('#allowmulagent').show();
+             if($('#agent_multiple_qty').val() == 1) {
+                $('#agent_multiple_qty').prop('checked',true);
+             }
+        }
+           if($("input[type=radio][name='show_agent']:checked").val() == 0) {
+            $('#quantity').prop('checked',true);
+            $('#allowmulproduct').show();
+             if($('#product_multiple_qty').val() == 1) {
+                $('#product_multiple_qty').prop('checked',true);
+             }
+        }
+
+        if($('#checkowner').val() != '') {
+            $('#chkYes').prop('checked',true);
+            $('#git').show();
+             if(githubstatus == 0) {
+            $("#owner").attr('disabled',true);
+             $("#repo").attr('disabled',true);
+              $("#version").attr('disabled',true);
+        } else {
+              $("#owner").attr('enabled',true);
+             $("#repo").attr('enabled',true);
+              $("#version").attr('enabled',true);
+        }
+        } else if($('#checkowner').val() == '') {
+            $('#chkNo').prop('checked',true);
+            document.getElementById("hide").style.display="block";
+            $("#uploads").show();
+        }
+        
+    // })
+
+});
+
+
+       $(function() {
+        $('#agent').click(function(){
+            if($('#agent').is(":checked")) {
+               $("#allowmulagent").show();
+               $("#allowmulproduct").hide();
+            } 
+        })
+
+    })
+
+    $(function() {
+        $('#quantity').click(function(){
+            if($('#quantity').is(":checked")) {
+               $("#allowmulagent").hide();
+               $("#allowmulproduct").show();
+            } 
+        })
+
+    })
+
+</script>
 
 
 <script>
@@ -667,6 +843,107 @@ Edit Product
         tags:true
     });
 });
+</script>
+<script>
+ $(document).ready(function(){
+     
+var $ = window.$; // use the global jQuery instance
+
+var $fileUpload = $('#resumable-browse');
+var $fileUploadDrop = $('#resumable-drop');
+var $uploadList = $("#file-upload-list");
+
+if ($fileUpload.length > 0 && $fileUploadDrop.length > 0) {
+    var resumable = new Resumable({
+        // Use chunk size that is smaller than your maximum limit due a resumable issue
+        // https://github.com/23/resumable.js/issues/51
+        chunkSize: 1 * 1024 * 1024, // 1MB
+        simultaneousUploads: 3,
+        testChunks: false,
+        throttleProgressCallbacks: 1,
+        // Get the url from data-url tag
+        target: $fileUpload.data('url'),
+        // Append token to the request - required for web routes
+        query:{_token : $('input[name=_token]').val()}
+    });
+
+// Resumable.js isn't supported, fall back on a different method
+    if (!resumable.support) {
+        $('#resumable-error').show();
+    } else {
+        // Show a place for dropping/selecting files
+        $fileUploadDrop.show();
+        resumable.assignDrop($fileUpload[0]);
+        resumable.assignBrowse($fileUploadDrop[0]);
+
+        // Handle file add event
+        resumable.on('fileAdded', function (file) {
+            // Show progress pabr
+            $uploadList.show();
+            // Show pause, hide resume
+            $('.resumable-progress .progress-resume-link').hide();
+            $('.resumable-progress .progress-pause-link').show();
+            // Add the file to the list
+            $uploadList.append('<li class="resumable-file-' + file.uniqueIdentifier + '">Uploading <span class="resumable-file-name"></span> <span class="resumable-file-progress"></span>');
+            $('.resumable-file-' + file.uniqueIdentifier + ' .resumable-file-name').html(file.fileName);
+            // Actually start the upload
+            resumable.upload();
+        });
+        resumable.on('fileSuccess', function (file, message) {
+            // Reflect that the file upload has completed
+            $('.resumable-file-' + file.uniqueIdentifier + ' .resumable-file-progress').html('(completed)');
+             $("#file_ids").val(JSON.parse(message).name);
+        });
+        resumable.on('fileError', function (file, message) {
+            // Reflect that the file upload has resulted in error
+            $('.resumable-file-' + file.uniqueIdentifier + ' .resumable-file-progress').html('(file could not be uploaded: ' + message + ')');
+        });
+        resumable.on('fileProgress', function (file) {
+            // Handle progress for both the file and the overall upload
+            $('.resumable-file-' + file.uniqueIdentifier + ' .resumable-file-progress').html(Math.floor(file.progress() * 100) + '%');
+            $('.progress-bar').css({width: Math.floor(resumable.progress() * 100) + '%'});
+        });
+    }
+
+}
+})
+
+ //------------------------------------------------------------------------------------------------------------//
+ 
+
+
+ $("#uploadVersion").on('click',function(){
+      $("#uploadVersion").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
+     var filename = $('#file_ids').val();
+    var productname = $('#productname').val();
+    var producttitle = $('#producttitle').val();
+    var description = tinyMCE.get('textarea3').getContent()
+    var version = $('#productver').val();
+    $.ajax({
+       type : "POST",
+       url  :  "{!! route('upload/save') !!}",
+       data :  {'filename': filename , 'productname': productname , 'producttitle': producttitle, 
+       'description': description,'version':version},
+       success: function(response) {
+         $("#uploadVersion").html("<i class='fa fa-floppy-o'>&nbsp;&nbsp;</i>Save");
+        $('#alertMessage1').show();
+        $('#error').hide();
+        var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="far fa-check"></i> Success! </strong>'+response.message+'.</div>';
+        $('#alertMessage1').html(result+ ".");
+       } ,
+       error: function(ex) {
+         $("#uploadVersion").html("<i class='fa fa-floppy-o'>&nbsp;&nbsp;</i>Save");
+        var html = '<div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<br><br><ul>';
+        for (key in ex.responseJSON.errors) {
+           html += '<li>'+ ex.responseJSON.errors[key][0] + '</li>'
+        }
+          html += '</ul></div>';
+           $('#error').show(); 
+           document.getElementById('error').innerHTML = html;
+       }
+    });
+
+ })
 </script>
 
 

@@ -1,4 +1,7 @@
 @extends('themes.default1.layouts.master')
+@section('title')
+Edit Templates
+@stop
 @section('content-header')
 <h1>
 Edit Template
@@ -55,25 +58,20 @@ Edit Template
 
                 <div class="row">
 
-                    <div class="col-md-4 form-group {{ $errors->has('name') ? 'has-error' : '' }}">
+                    <div class="col-md-6 form-group {{ $errors->has('name') ? 'has-error' : '' }}">
                         <!-- first name -->
                         {!! Form::label('name',Lang::get('message.name'),['class'=>'required']) !!}
                         {!! Form::text('name',null,['class' => 'form-control']) !!}
 
                     </div>
 
-                    <div class="col-md-4 form-group {{ $errors->has('type') ? 'has-error' : '' }}">
+                    <div class="col-md-6 form-group {{ $errors->has('type') ? 'has-error' : '' }}">
                         <!-- last name -->
                         {!! Form::label('type',Lang::get('message.template-types'),['class'=>'required']) !!}
                         {!! Form::select('type',[''=>'Select','Type'=>$type],null,['class' => 'form-control']) !!}
 
                     </div>
-                    <div class="col-md-4 form-group {{ $errors->has('url') ? 'has-error' : '' }}">
-                        <!-- first name -->
-                        {!! Form::label('url',Lang::get('message.url')) !!}
-                        {!! Form::text('url',null,['class' => 'form-control']) !!}
-
-                    </div>
+                    
 
                 </div>
 

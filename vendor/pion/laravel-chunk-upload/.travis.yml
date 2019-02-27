@@ -1,0 +1,10 @@
+language: php
+php:
+  - '7.0'
+  - '7.1'
+os:
+  - linux
+
+before_script: composer install --dev
+
+script: ./vendor/phpunit/phpunit/phpunit --configuration phpunit.xml

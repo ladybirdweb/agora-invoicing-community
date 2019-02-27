@@ -9,7 +9,11 @@ Cart
 <h1>Contact <span>What can we help you with?</span></h1>
 @stop
 @section('breadcrumb')
-<li><a href="{{url('home')}}">Home</a></li>
+ @if(Auth::check())
+<li><a href="{{url('my-invoices')}}">Home</a></li>
+  @else
+  <li><a href="{{url('login')}}">Home</a></li>
+  @endif
 <li class="active">Contact Us</li>
 @stop
 @section('main-class') "main shop" @stop
@@ -109,15 +113,15 @@ $set = $set->findOrFail(1);
        <ul class="list list-icons list-icons-style-3 mt-4">
                                 <li><i class="fas fa-map-marker-alt"></i> <strong>Address:</strong> {{$set->address}}</li>
                                 <li><i class="fas fa-phone"></i> <strong>Phone:</strong> {{$set->phone}}</li>
-                                <li><i class="far fa-envelope"></i> <strong>Email:</strong> <a href="mailto:support@faveohelpdesk.com">{{$set->company_email}}</a></li>
+                                <li><i class="far fa-envelope"></i> <strong>Email:</strong> <a href="mailto:{{$set->company_email}}">{{$set->company_email}}</a></li>
                             </ul>
         <hr>
 
-       <h4 class="heading-primary">Business <strong>Hours</strong></h4>
+      <!--  <h4 class="heading-primary">Business <strong>Hours</strong></h4>
                             <ul class="list list-icons list-dark mt-4">
                                 <li><i class="far fa-clock"></i> Monday to Friday 09:30AM to 06:30PM IST</li>
                                 
-                            </ul>
+                            </ul> -->
 
     </div>
 
@@ -135,7 +139,7 @@ $set = $set->findOrFail(1);
         },
         initialCountry: "auto",
         separateDialCode: true,
-        utilsScript: "{{asset('lb-faveo/js/utils.js')}}"
+        utilsScript: "{{asset('common/js/utils.js')}}"
     });
     $('.intl-tel-input').css('width', '100%');
 

@@ -257,7 +257,7 @@ System Setting
                                 {!! Form::file('admin-logo') !!}
                                 <p><i> {{Lang::get('message.enter-the-admin-panel-logo')}}</i> </p>
                                 @if($set->admin_logo) 
-                                <img src='{{ asset("images/admin-logo/$set->admin_logo")}}' class="img-thumbnail" style="height: 50;">
+                                <img src='{{ asset("admin/images/$set->admin_logo")}}' class="img-thumbnail" style="height: 50;">
                                 @endif
                             </div>
                         </td>
@@ -274,7 +274,7 @@ System Setting
                                 {!! Form::file('fav-icon') !!}
                                 <p><i> {{Lang::get('message.enter-the-favicon')}}</i> </p>
                                 @if($set->fav_icon) 
-                                <img src='{{asset("images/favicon/$set->fav_icon")}}' class="img-thumbnail" style="height: 50;">
+                                <img src='{{asset("common/images/$set->fav_icon")}}' class="img-thumbnail" style="height: 50;">
                                 @endif
                             </div>
                         </td>
@@ -322,7 +322,7 @@ System Setting
                                 {!! Form::file('logo') !!}
                                 <p><i> {{Lang::get('message.enter-the-company-logo')}}</i> </p>
                                 @if($set->logo) 
-                                <img src='{{asset("cart/img/logo/$set->logo")}}' class="img-thumbnail" style="height: 50;">
+                                <img src='{{asset("common/images/$set->logo")}}' class="img-thumbnail" style="height: 50;">
                                 @endif
                             </div>
                         </td>

@@ -1,6 +1,6 @@
 @extends('themes.default1.layouts.front.myaccount_master')
 @section('title')
-Agora | Profile
+Profile
 @stop
 @section('nav-profile')
 active
@@ -9,7 +9,11 @@ active
  <h1>My Account </h1>
 @stop
 @section('breadcrumb')
-<li><a href="{{url('home')}}">Home</a></li>
+ @if(Auth::check())
+<li><a href="{{url('my-invoices')}}">Home</a></li>
+  @else
+  <li><a href="{{url('login')}}">Home</a></li>
+  @endif
 <li class="active">My Account</li>
 <li class="active">Profile</li>
 @stop
@@ -37,25 +41,8 @@ active
 }
 </style>
 
-
-              @if(Session::has('success'))
-                <div class="alert alert-success">
-                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                       <strong><i class="far fa-thumbs-up"></i> Well done!</strong>
-                   
-                    {!!Session::get('success')!!}
-                </div>
-                @endif
-                <!-- fail message -->
-                @if(Session::has('fails'))
-                 <div class="alert alert-danger alert-dismissable" role="alert">
-                   <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <strong><i class="fas fa-exclamation-triangle"></i>Oh snap!</strong> Change a few things up and try submitting again.
-                   {{Lang::get('message.alert')}}! {{Lang::get('message.failed')}}.
-                  
-                    {{Session::get('fails')}}
-                </div>
-                @endif
+     <div id= "alertMessage"></div>
+     <div id= "error"></div>        
     <h2 class="mb-none" style="margin-bottom:0px;"> My Profile</h2>
     <div class="featured-boxes">
 
@@ -337,8 +324,6 @@ active
                                         type: 'PATCH',
                                         data: data,
                                         success: function (response) {
-                                            console.log(response)
-                                        
                                         if(response.type == 'success'){
                                              var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Well Done! </strong>'+response.message+'!</div>';
                                               $('#error').hide();
@@ -348,11 +333,18 @@ active
                                               $('html, body').animate({scrollTop:0}, 1000);
                                           
                                               // response.success("Success");
+                                           } else {
+                                             var result =  '<div class="alert alert-warning alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="fas fa-exclamation-triangle"></i>Whoops! Something went wrong..</strong>'+response.message+'!</div>';
+                                              $('#error').html(result);
+                                            $('#alertMessage').hide();
+                                            // $('#alertMessage2').html(result);
+                                            $("#password").html("Update");
+                                              $('html, body').animate({scrollTop:0}, 1000);
                                            }  
                                         },
                                         error: function (data) {
-                                          console.log(data)
-                                             var html = '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="fas fa-exclamation-triangle"></i>Oh Snap! </strong>'+data.responseJSON.message+' <br><ul>';
+                                          console.log(data,'sd')
+                                             var html = '<div class="alert alert-warning alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="fas fa-exclamation-triangle"></i>Oh Snap! </strong>'+data.responseJSON.message+' <br><ul>';
                                             $("#password").html("Update");
                                               $('html, body').animate({scrollTop:0}, 500);
                                               for (var key in data.responseJSON.errors)
@@ -375,7 +367,7 @@ active
 
                                 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
-<script src="{{asset("lb-faveo/js/intlTelInput.js")}}"></script>
+<script src="{{asset('common/js/intlTelInput.js')}}"></script>
 <script type="text/javascript">
        $(document).ready(function(){ 
          var country = $('#country').val();

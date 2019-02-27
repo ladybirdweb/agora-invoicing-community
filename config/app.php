@@ -14,7 +14,7 @@ return [
 
     'name'      => env('APP_NAME', 'Laravel'),
 
-    'version'   => 'v1.0.18',
+    'version'   => 'v1.0.20',
 
     /*
     |--------------------------------------------------------------------------
@@ -100,21 +100,18 @@ return [
     |--------------------------------------------------------------------------
     |
     | This key is used by the Illuminate encrypter service and should be set
-    | to a random, 32 character string, otherwise these encrypted strings
 
 'App\Plugins\Ccavenue\ServiceProvider',
-'App\Plugins\Ccavenue\ServiceProvider',
-'App\Plugins\Razorpay\ServiceProvider',
-'App\Plugins\Razorpay\ServiceProvider',
 'App\Plugins\Paypal\ServiceProvider',
 'App\Plugins\Ccavenue\ServiceProvider',//
-'App\Plugins\Paypal\ServiceProvider',
-'App\Plugins\Ccavenue\ServiceProvider',
-'App\Plugins\Ccavenue\ServiceProvider',
-'App\Plugins\Ccavenue\ServiceProvider',
-'App\Plugins\Ccavenue\ServiceProvider',
-
 'App\Plugins\Ccavanue\ServiceProvider',
+'App\Plugins\Ccavanue\ServiceProvider',
+
+            'App\Plugins\Paypal\ServiceProvider',
+////
+'App\Plugins\Razorpay\ServiceProvider',
+'App\Plugins\Razorpay\ServiceProvider',////////////////
+//
     */
 
      'key'   => 'SomeRandomString',
@@ -150,10 +147,10 @@ return [
 
     'providers' => [
 
-            // 'App\Plugins\Paypal\ServiceProvider',
+            //
 
-            // 'App\Plugins\Ccavanue\ServiceProvider',
-
+            'App\Plugins\Ccavanue\ServiceProvider',
+            'App\Plugins\Paypal\ServiceProvider',
         /*
          * Laravel Framework Service Providers...
          */
@@ -204,6 +201,7 @@ return [
          Yajra\DataTables\DataTablesServiceProvider::class,
          GrahamCampbell\Markdown\MarkdownServiceProvider::class,
          Spatie\Activitylog\ActivitylogServiceProvider::class,
+          \Torann\Currency\CurrencyServiceProvider::class,
 
     ],
 
@@ -266,6 +264,7 @@ return [
           'PDF'        => Barryvdh\DomPDF\Facade::class,
           'Markdown'   => GrahamCampbell\Markdown\Facades\Markdown::class,
           'GeoIP'      => \Torann\GeoIP\Facades\GeoIP::class,
+          'Currency'   => \Torann\Currency\Facades\Currency::class,
 
     ],
 

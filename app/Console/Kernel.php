@@ -6,6 +6,7 @@ use App\Model\Common\StatusSetting;
 use App\Model\Mailjob\ActivityLogDay;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Torann\Currency\Console\Manage as CurrencyManage;
 
 class Kernel extends ConsoleKernel
 {
@@ -18,6 +19,7 @@ class Kernel extends ConsoleKernel
         //
          'App\Console\Commands\Inspire',
          \App\Console\Commands\Install::class,
+          CurrencyManage::class,
         'App\Console\Commands\ExpiryCron',
     ];
 

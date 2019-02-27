@@ -82,6 +82,17 @@
                             </strong>
                         </p>
                     @endif
+                     @if (session('fails'))
+                        <p class="alert alert-danger text-center">
+                            <strong>
+                                @if(is_array(session('fails')))
+                                    {{ session('fails')['fails'] }}
+                                @else
+                                    {{ session('fails') }}
+                                @endif
+                            </strong>
+                        </p>
+                    @endif
                     @if(session()->has('errors'))
                         <div class="alert alert-danger" id="error_alert">
                             <button type="button" class="close" id="close_alert" data-dismiss="alert" aria-hidden="true">

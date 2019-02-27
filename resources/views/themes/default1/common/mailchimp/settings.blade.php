@@ -79,9 +79,13 @@ Mailchimp Settings
                         <td>
                             <div class="row">
                                 <div class="col-md-6 form-group {{ $errors->has('list_id') ? 'has-error' : '' }}">
-
-
-                                    {!! Form::select('list_id',[''=>'Select','Lists'=>$lists],null,['class' => 'form-control']) !!}
+                                <select name="list_id" class="form-control" </select>
+                                    <option value="">Choose</option>
+                                    @foreach($allists as $list) 
+                                     <option value="{{$list->id}}"<?php  if(in_array($list->id, $selectedList) ) 
+                        { echo "selected";} ?>>{{$list->name}}</option>
+                                   
+                                    @endforeach
                                     <p><i> {{Lang::get('message.enter-the-mailchimp-list-id')}}</i> </p>
 
 

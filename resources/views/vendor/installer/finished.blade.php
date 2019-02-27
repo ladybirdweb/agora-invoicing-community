@@ -19,7 +19,7 @@
     <strong>Password : </strong> password
 	
     <div class="buttons">
-        <a href="{{ url('/login') }}" class="button">{{ trans('installer_messages.final.exit') }}</a>
+        <a href="{{ url('/') }}" class="button">{{ trans('installer_messages.final.exit') }}</a>
     </div>
 
 @endsection

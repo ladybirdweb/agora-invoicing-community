@@ -77,6 +77,60 @@ Application Settings
                     </div>
                 </div>
 
+              
+
+                 <div class="col-md-2 col-sm-6">
+                    <div class="settingiconblue">
+                        <div class="settingdivblue">
+                            <a href="{{url('license-type')}}">
+                                <span class="fa-stack fa-2x">
+                                    <i class="fa fa-file fa-stack-1x"></i>
+                                </span>
+                            </a>
+                        </div>
+                        <p class="box-title" >License Type</p>
+                    </div>
+                </div>
+
+                 <div class="col-md-2 col-sm-6">
+                    <div class="settingiconblue">
+                        <div class="settingdivblue">
+                            <a href="{{url('license-permissions')}}">
+                                <span class="fa-stack fa-2x">
+                                    <i class="fa fa-sitemap fa-stack-1x"></i>
+                                </span>
+                            </a>
+                        </div>
+                        <p class="box-title">License Permissions</p>
+                    </div>
+                </div>
+
+                <div class="col-md-2 col-sm-6">
+                    <div class="settingiconblue">
+                        <div class="settingdivblue">
+                            <a href="{{url('file-storage')}}">
+                                <span class="fa-stack fa-2x">
+                                    <i class="fa fa-file-archive-o fa-stack-1x"></i>
+                                </span>
+                            </a>
+                        </div>
+                        <p class="box-title" >File Storage</p>
+                    </div>
+                </div>
+
+                  <div class="col-md-2 col-sm-6">
+                    <div class="settingiconblue">
+                        <div class="settingdivblue">
+                            <a href="{{ url('plugin') }}">
+                                <span class="fa-stack fa-2x">
+                                    <i class="fa fa-credit-card fa-stack-1x"></i>
+                                </span>
+                            </a>
+                        </div>
+                        <p class="box-title" >Payment Gateways</p>
+                    </div>
+                </div>
+
                  <!--/.col-md-2-->
                   
             </div>
@@ -246,6 +300,10 @@ Application Settings
                 </div>
                 <!--/.col-md-2-->
                 <!--col-md-2-->
+                <?php
+                $mailchimpStatus = \App\Model\Common\StatusSetting::first()->value('mailchimp_status');
+                ?>
+                @if($mailchimpStatus ==1)
                 <div class="col-md-2 col-sm-6">
                     <div class="settingiconblue">
                         <div class="settingdivblue">
@@ -258,6 +316,7 @@ Application Settings
                         <p class="box-title" >Mail Chimp</p>
                     </div>
                 </div>
+                @endif
                 <!--/.col-md-2-->
                 <div class="col-md-2 col-sm-6">
                     <div class="settingiconblue">

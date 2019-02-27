@@ -1,4 +1,9 @@
 <a onclick="getTable({{$productid}},{{$clientid}},{{$invoiceid}})" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#list" style="color:white;" >  <i class='fa fa-download' style="color:white;" title=Download></i>&nbsp;Download</a>
+<style>
+    .more-text{
+     display:none;
+}
+</style>
 <div class="modal fade" id="list">
     <div class="modal-dialog">
         <div class="modal-content" style="width:700px;">
@@ -46,10 +51,28 @@
 
                 <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
                 <script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
                 <script type="text/javascript">
                      function hideModals(){
                         $('#list').modal('hide');
                         }
+                       
+                    function readmore(){
+                        var maxLength = 300;
+                        $("#version-table tbody tr td").each(function(){
+                            var myStr = $(this).text();
+                            console.log(myStr,'sdfsdf');
+                           if($.trim(myStr).length > maxLength){
+                                var newStr = myStr.substring(0, maxLength);
+                                 $(this).empty().html(newStr);
+                                var removedStr = myStr.substring(maxLength, $.trim(myStr).length);
+                                $(this).append('<span class="more-text">' + removedStr + '</span>');
+                                $(this).append(' <a href="javascript:void(0);" class="read-more">read more...</a>');
+                            }
+                          }); 
+                         }
+                       
+                
     function getTable($productid, $clientid, $invoiceid){
     $('#version-table').DataTable({
             destroy: true,
@@ -78,6 +101,7 @@
             ],
             "fnDrawCallback": function(oSettings) {
             $('.loader').css('display', 'none');
+              readmore();
             },
             "fnPreDrawCallback": function(oSettings, json) {
             $('.loader').css('display', 'block');
@@ -86,18 +110,7 @@
     }
                 </script>
 
-
-
-
-
-
-
-
-
-
-
-
-            </div>
+                </div>
 
 
         </div>
@@ -111,4 +124,17 @@
     $(function () {
     $('[data-toggle="popover"]').popover()
     })
+
+
+    $(document).on('click','#version-table tbody tr td .read-more',function(){
+        var text=$(this).siblings(".more-text").text().replace('read more...','');
+        console.log(text)
+        $(this).siblings(".more-text").html(text);
+        $(this).siblings(".more-text").contents().unwrap();
+        $(this).remove();
+    });
+    $(function () {
+    $('[data-toggle="popover"]').popover()
+    })
 </script>
+

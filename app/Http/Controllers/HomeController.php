@@ -151,7 +151,6 @@ class HomeController extends BaseHomeController
     public static function decryptByFaveoPrivateKeyold($encrypted)
     {
         try {
-
             // Get the private Key
             $path = storage_path('app'.DIRECTORY_SEPARATOR.'private.key');
             $key_content = file_get_contents($path);
@@ -344,16 +343,15 @@ class HomeController extends BaseHomeController
     public function downloadForFaveo(Request $request, Order $order)
     {
         try {
-            $faveo_encrypted_order_number = self::decryptByFaveoPrivateKey($request->input('order_number'));
-            // $faveo_encrypted_key = self::decryptByFaveoPrivateKey($request->input('serial_key'));
-            // $faveo_encrypted_domain = self::decryptByFaveoPrivateKey($request->input('domain'));
+            $faveo_encrypted_order_number = $request->input('order_number');
+            $faveo_serial_key = $request->input('serial_key');
+            $orderSerialKey = $order->where('number', $faveo_encrypted_order_number)
+                    ->value('serial_key');
+
             $this_order = $order
                      ->where('number', $faveo_encrypted_order_number)
-                    // ->where('number', $request->input('order_number'))
-                    //->where('serial_key', $faveo_encrypted_key)
-                    //->where('domain', $faveo_encrypted_domain)
                     ->first();
-            if ($this_order) {
+            if ($this_order && $orderSerialKey == $faveo_serial_key) {
                 $product_id = $this_order->product;
                 $product_controller = new \App\Http\Controllers\Product\ProductController();
 
@@ -390,4 +388,10 @@ class HomeController extends BaseHomeController
 
         return response()->json($message);
     }
+
+    /*
+     * Check if the Product is valid For Auto Updates
+    * @params string Serial Key in encrypted
+    * @return array
+    */
 }

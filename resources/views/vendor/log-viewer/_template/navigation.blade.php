@@ -1,7 +1,7 @@
 <nav class="navbar navbar-inverse navbar-fixed-top">
-     <script src="{{asset('bootstrap/js/bootstrap.min.js')}}" type="text/javascript"></script>
+     <script src="{{asset('admin/js/bootstrap.min.js')}}" type="text/javascript"></script>
         <!-- SlimScroll -->
-        <script src="{{asset('plugins/slimScroll/jquery.slimscroll.min.js')}}" type="text/javascript"></script>
+         <script src="{{asset('admin/plugins/slimScroll/jquery.slimscroll.min.js')}}" type="text/javascript"></script>
         <!-- FastClick -->
      
         <!-- icheck -->
@@ -19,7 +19,7 @@
                     <span class="logo-lg"><b>{{$set->title}} </b></span>
                     @else
                     <span class="logo-lg">
-                        <img src='{{ asset("images/admin-logo/$set->admin_logo")}}' class="img-rounded" alt="Admin-Logo"  height="45">
+                        <img src='{{ asset("admin/images/$set->admin_logo")}}' class="img-rounded" alt="Admin-Logo"  height="45">
                        
 
                     </span>

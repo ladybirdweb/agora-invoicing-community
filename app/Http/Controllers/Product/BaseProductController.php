@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Product;
 
+use App\Http\Controllers\License\LicensePermissionsController;
+use App\Model\Common\Setting;
 use App\Model\Payment\Plan;
 use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
@@ -23,60 +25,21 @@ class BaseProductController extends ExtendedBaseProductController
         return $server;
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     *
-     * @return \Response
+    /*
+    * Get Product Qty if Product can be modified
      */
-    public function fileDestroy(Request $request)
-    {
-        $ids = $request->input('select');
-        if (!empty($ids)) {
-            foreach ($ids as $id) {
-                $product = ProductUpload::where('id', $id)->first();
-                if ($product) {
-                    $product->delete();
-                } else {
-                    echo "<div class='alert alert-success alert-dismissable'>
-                    <i class='fa fa-ban'></i>
-                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
-                    /* @scrutinizer ignore-type */\Lang::get('message.success').'
-                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        './* @scrutinizer ignore-type */\Lang::get('message.no-record').'
-                </div>';
-                    //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
-                }
-            }
-            echo "<div class='alert alert-success alert-dismissable'>
-                    <i class='fa fa-ban'></i>
-                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
-                    /* @scrutinizer ignore-type */\Lang::get('message.success').'
-                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        './* @scrutinizer ignore-type */\Lang::get('message.deleted-successfully').'
-                </div>';
-        } else {
-            echo "<div class='alert alert-success alert-dismissable'>
-                    <i class='fa fa-ban'></i>
-                    <b>"./* @scrutinizer ignore-type */ \Lang::get('message.alert').'!</b> '.
-                    /* @scrutinizer ignore-type */ \Lang::get('message.success').'
-                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        './* @scrutinizer ignore-type */\Lang::get('message.select-a-row').'
-                </div>';
-            //echo \Lang::get('message.select-a-row');
-        }
-    }
-
-    public function getProductQtyCheck($productid)
+    public function getProductQtyCheck($productid, $planid)
     {
         try {
             $check = self::checkMultiProduct($productid);
             if ($check == true) {
+                $value = Product::find($productid)->planRelation->find($planid)->planPrice->first()->product_quantity;
+                $value = $value == null ? 1 : $value;
+
                 return "<div class='col-md-4 form-group'>
 	                        <label class='required'>"./* @scrutinizer ignore-type */
                             \Lang::get('message.quantity')."</label>
-	                        <input type='text' name='quantity' class='form-control' id='quantity' value='1'>
+	                        <input type='text' name='quantity' class='form-control' id='quantity' value='$value'>
 	                </div>";
             }
         } catch (\Exception $ex) {
@@ -86,32 +49,103 @@ class BaseProductController extends ExtendedBaseProductController
         }
     }
 
-    public function getSubscriptionCheck($productid, Request $request)
+    /*
+    * Check whether Product is allowed for Increasing the Quantity fromAdmin Panel
+    * @param int $productid
+    *
+    * @return boolean
+     */
+    public function checkMultiProduct(int $productid)
+    {
+        $product = new Product();
+        $product = $product->find($productid);
+        if ($product) {
+            if ($product->can_modify_quantity == 1) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function getAgentQtyCheck($productid, $planid)
+    {
+        try {
+            $check = self::checkMultiAgent($productid);
+            if ($check == true) {
+                $value = Product::find($productid)->planRelation->find($planid)->planPrice->first()->no_of_agents;
+                $value = $value == null ? 0 : $value;
+
+                return "<div class='col-md-4 form-group'>
+                            <label class='required'>"./* @scrutinizer ignore-type */
+                            \Lang::get('message.agent')."</label>
+                            <input type='text' name='agents' class='form-control' id='agents' value='$value'>
+                    </div>";
+            }
+        } catch (\Exception $ex) {
+            dd($ex);
+            Bugsnag::notifyException($ex);
+
+            return $ex->getMessage();
+        }
+    }
+
+    /*
+    * Check whether No of the GAents can be modified or not fromAdmin Panel
+    * @param int $productid
+    *
+    * @return boolean
+     */
+    public function checkMultiAgent(int $productid)
+    {
+        $product = new Product();
+        $product = $product->find($productid);
+        if ($product) {
+            if ($product->can_modify_agent == 1) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Get the Subscription and Price Based on the Product Selected while generating Invoice (Admin Panel).
+     *
+     * @param int     $productid
+     * @param Request $request
+     *
+     * @return [type]
+     */
+    public function getSubscriptionCheck(int $productid, Request $request)
     {
         try {
             $controller = new \App\Http\Controllers\Front\CartController();
-            $check = $controller->allowSubscription($productid);
             $field = '';
             $price = '';
-            if ($check === true) {
-                $plan = new Plan();
-                $plans = $plan->where('product', $productid)->pluck('name', 'id')->toArray();
-                $script = ''; //$this->getSubscriptionCheckScript();
+
+            $plan = new Plan();
+            $plans = $plan->where('product', $productid)->pluck('name', 'id')->toArray();
+            if (count($plans) > 0) {//If Plan Exist For A product, Display Dropdown for Plans
                 $field = "<div class='col-md-4 form-group'>
                         <label class='required'>"./* @scrutinizer ignore-type */
                         \Lang::get('message.subscription').'</label>
-                       '.\Form::select('plan', ['' => 'Select', 'Plans' => $plans], null,
-                        ['class' => 'form-control', 'id' => 'plan', 'onchange' => 'getPrice(this.value)']).'
-                </div>'.$script;
-            } else {
+                       '.\Form::select(
+                            'plan',
+                            ['' => 'Select', 'Plans' => $plans],
+                            null,
+                            ['class' => 'form-control required', 'id' => 'plan', 'onchange' => 'getPrice(this.value)']
+                        ).'
+                </div>';
+            } else {//If No Plan Exist For A Product
                 $userid = $request->input('user');
-                $price = $controller->productCost($productid, $userid);
+                $price = $controller->cost($productid, $userid);
             }
-            $field .= $this->getDescriptionField($productid);
             $result = ['price' => $price, 'field' => $field];
 
             return response()->json($result);
         } catch (\Exception $ex) {
+            app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
 
             return $ex->getMessage();
@@ -136,6 +170,7 @@ class BaseProductController extends ExtendedBaseProductController
                 if ($user->active == 1) {
                     $order = $invoice->order()->orderBy('id', 'desc')->select('product')->first();
                     $product_id = $order->product;
+                    $name = Product::where('id', $product_id)->value('name');
                     $invoice_id = $invoice->id;
                     $release = $this->downloadProduct($uploadid, $userid, $invoice_id, $version_id);
                     if (is_array($release) && array_key_exists('type', $release)) {
@@ -145,7 +180,7 @@ class BaseProductController extends ExtendedBaseProductController
                     } else {
                         header('Content-type: Zip');
                         header('Content-Description: File Transfer');
-                        header('Content-Disposition: attachment; filename=Faveo.zip');
+                        header('Content-Disposition: attachment; filename='.$name.'.zip');
                         //header("Content-type: application/zip");
                         header('Content-Length: '.filesize($release));
                         ob_end_clean();
@@ -159,6 +194,7 @@ class BaseProductController extends ExtendedBaseProductController
                 return redirect('auth/login')->with('fails', \Lang::get('please-purcahse-a-product'));
             }
         } catch (\Exception $ex) {
+            app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
 
             return redirect('auth/login')->with('fails', $ex->getMessage());
@@ -175,8 +211,10 @@ class BaseProductController extends ExtendedBaseProductController
         } elseif ($file) {
             //If the Product is Downloaded from FileSystem
             $fileName = $file->file;
+            $path = Setting::find(1)->value('file_storage');
             // $relese = storage_path().'/products'.'//'.$fileName; //For Local Server
-            $relese = '/home/faveo/products/'.$file->file;
+            //$relese = '/home/faveo/products/'.$file->file;
+            $relese = $path.'/'.$file->file;
 
             return $relese;
         }
@@ -191,25 +229,13 @@ class BaseProductController extends ExtendedBaseProductController
             return ['release'=>$relese, 'type'=>'github'];
         } elseif ($file->file) {
             // $relese = storage_path().'\products'.'\\'.$file->file;
-            $relese = '/home/faveo/products/'.$file->file;
+            //    $relese = '/home/faveo/products/'.$file->file;
+            $path = Setting::find(1)->value('file_storage');
+            $relese = $path.'/'.$file->file;
 
             return $relese;
         }
     }
-
-    // public function getLinkToDownload($role, $invoice, $id)
-    // {
-    //      if ($role == 'user') {
-    //         // dd($invoice);
-    //         if ($invoice && $invoice != '') {
-    //             return $this->downloadProductAdmin($id);
-    //         } else {
-    //             throw new \Exception('This user has no permission for this action');
-    //         }
-    //     }
-
-    //     return $this->downloadProductAdmin($id);
-    // }
 
     public function downloadProductAdmin($id)
     {
@@ -221,8 +247,8 @@ class BaseProductController extends ExtendedBaseProductController
             $file = ProductUpload::where('product_id', '=', $id)->select('file')
             ->orderBy('created_at', 'desc')
             ->first();
-
-            if ($type == 2) {
+            $permissions = LicensePermissionsController::getPermissionsForProduct($id);
+            if ($permissions['downloadPermission'] == 1) {
                 $relese = $this->getReleaseAdmin($owner, $repository, $file);
 
                 return $relese;
@@ -234,18 +260,25 @@ class BaseProductController extends ExtendedBaseProductController
         }
     }
 
+    /**
+     * Get Price For a Particular Plan Selected.
+     *
+     * get productid,userid,plan id as request
+     *
+     * @return json The final Price of the Prduct
+     */
     public function getPrice(Request $request)
     {
         try {
             $id = $request->input('product');
-            // dd($id);
             $userid = $request->input('user');
             $plan = $request->input('plan');
             $controller = new \App\Http\Controllers\Front\CartController();
             $price = $controller->cost($id, $userid, $plan);
-            $field = $this->getProductField($id).$this->getProductQtyCheck($id);
-
-            $result = ['price' => $price, 'field' => $field];
+            $field = $this->getProductField($id);
+            $quantity = $this->getProductQtyCheck($id, $plan);
+            $agents = $this->getAgentQtyCheck($id, $plan);
+            $result = ['price' => $price, 'field' => $field, 'quantity'=>$quantity, 'agents'=>$agents];
 
             return response()->json($result);
         } catch (\Exception $ex) {
@@ -275,44 +308,40 @@ class BaseProductController extends ExtendedBaseProductController
         }
     }
 
-    public static function checkMultiProduct($productid)
+    /**
+     * Check Whether No. of Agents Allowed or Product Qunatity on cart.
+     *
+     * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
+     *
+     * @date   2019-01-11T00:18:49+0530
+     *
+     * @param int $productid
+     *
+     * @return bool
+     */
+    public function allowQuantityOrAgent(int $productid)
     {
-        try {
-            $product = new Product();
-            $product = $product->find($productid);
-            if ($product) {
-                // dd($product->multiple_qty == 1);
-                if ($product->multiple_qty == 1) {
-                    return true;
-                }
-            }
+        $product = Product::find($productid);
+        $allowAgents = $product->show_agent == 1 ? true : false;
 
-            return false;
-        } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
-        }
+        return $allowAgents;
     }
 
-    public function getDescriptionField($productid)
+    /**
+     * Checks Permission for Incresing the no. of Agents/Quantity in Cart.
+     *
+     *
+     * @param int $productid The id of the Product added to the cart
+     *
+     * @return array The permissons for Agents and Quantity
+     */
+    public function isAllowedtoEdit(int $productid)
     {
-        try {
-            $product = Product::find($productid);
-            $field = '';
+        $product = Product::where('id', $productid)->first();
 
-            if ($product->retired == 1) {
-                $field .= "<div class='col-md-4 form-group'>
-	                        <label class='required'>"./* @scrutinizer ignore-type */
-                             \Lang::get('message.description')."</label>
-	                        <textarea name='description' class='form-control'
-                             id='description' placeholder='Description'></textarea>
-	                </div>";
-            }
+        $agentModifyPermission = $product->can_modify_agent;
+        $quantityModifyPermission = $product->can_modify_quantity;
 
-            return $field;
-        } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
-
-            return $ex->getMessage();
-        }
+        return ['agent'=>$agentModifyPermission, 'quantity'=>$quantityModifyPermission];
     }
 }

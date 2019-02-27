@@ -16,15 +16,10 @@ class Install
      */
     public function handle($request, Closure $next)
     {
-        // dd($next);
         $env = base_path('.env');
-
-        // 'driver' => env('DB_INSTALL', '1'),
-        // dd(\File::exists($env) && env('DB_INSTALL')==1);
-        if (\File::exists($env) && (\Config('database.DB_INSTALL') == 1)) {
-            // dd(\File::exists($env), env('DB_INSTALL'));
+        if (\File::exists($env) && \Config('database.DB_INSTALL') == 1) {
             return $next($request);
-        } elseif ((!\File::exists($env)) || (\Config('database.DB_INSTALL') == 0)) {
+        } else {
             return redirect()->route('LaravelInstaller::welcome');
         }
     }

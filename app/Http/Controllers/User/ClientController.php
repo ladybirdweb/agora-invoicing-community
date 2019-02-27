@@ -4,12 +4,13 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\License\LicenseController;
 use App\Http\Requests\User\ClientRequest;
+use App\Model\Common\Country;
 use App\Model\Common\StatusSetting;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
-use App\Model\Order\Payment;
 use App\Model\Payment\Currency;
 use App\Model\User\AccountActivate;
+use App\Traits\PaymentsAndInvoices;
 use App\User;
 use Bugsnag;
 use DateTime;
@@ -19,6 +20,8 @@ use Log;
 
 class ClientController extends AdvanceSearchController
 {
+    use PaymentsAndInvoices;
+
     public $user;
     public $activate;
     public $product;
@@ -58,9 +61,24 @@ class ClientController extends AdvanceSearchController
         $reg_from = $request->input('reg_from');
         $reg_till = $request->input('reg_till');
 
-        return view('themes.default1.user.client.index',
-            compact('name', 'username', 'company', 'mobile', 'email',
-                'country', 'industry', 'company_type', 'company_size', 'role', 'position', 'reg_from', 'reg_till'));
+        return view(
+            'themes.default1.user.client.index',
+            compact(
+                'name',
+                'username',
+                'company',
+                'mobile',
+                'email',
+                'country',
+                'industry',
+                'company_type',
+                'company_size',
+                'role',
+                'position',
+                'reg_from',
+                'reg_till'
+            )
+        );
     }
 
     /**
@@ -81,8 +99,21 @@ class ClientController extends AdvanceSearchController
         $position = $request->input('position');
         $reg_from = $request->input('reg_from');
         $reg_till = $request->input('reg_till');
-        $user = $this->advanceSearch($name, $username, $company,
-         $mobile, $email, $country, $industry, $company_type, $company_size, $role, $position, $reg_from, $reg_till);
+        $user = $this->advanceSearch(
+            $name,
+            $username,
+            $company,
+            $mobile,
+            $email,
+            $country,
+            $industry,
+            $company_type,
+            $company_size,
+            $role,
+            $position,
+            $reg_from,
+            $reg_till
+        );
 
         return\ DataTables::of($user->get())
                          ->addColumn('checkbox', function ($model) {
@@ -183,16 +214,48 @@ class ClientController extends AdvanceSearchController
             $str = 'demopass';
             $password = \Hash::make($str);
             $user->password = $password;
+            if ($request->input('mobile_code') == '') {
+                $country = new Country();
+                $mobile_code = $country->where('country_code_char2', $request->input('country'))->pluck('phonecode')->first();
+            } else {
+                $mobile_code = str_replace('+', '', $request->input('mobile_code'));
+            }
             $cont = new \App\Http\Controllers\Front\PageController();
+            $currency_symbol = Currency::where('code', $request->input('currency'))->pluck('symbol')->first();
             $location = $cont->getLocation();
+            $user->user_name = $request->input('user_name');
+            $user->first_name = $request->input('first_name');
+            $user->last_name = $request->input('last_name');
+            $user->email = $request->input('email');
+            $user->password = $password;
+            $user->company = $request->input('company');
+            $user->bussiness = $request->input('bussiness');
+            $user->active = $request->input('active');
+            $user->mobile_verified = $request->input('mobile_verified');
+            $user->role = $request->input('role');
+            $user->position = $request->input('position');
+            $user->company_type = $request->input('company_type');
+            $user->company_size = $request->input('company_size');
+            $user->address = $request->input('address');
+            $user->town = $request->input('town');
+            $user->country = $request->input('country');
+            $user->state = $request->input('state');
+            $user->zip = $request->input('zip');
+            $user->timezone_id = $request->input('timezone_id');
+            $user->currency = $request->input('currency');
+            $user->mobile_code = $mobile_code;
+            $user->mobile = $request->input('mobile');
+            $user->skype = $request->input('skype');
+            $user->manager = $request->input('manager');
+            $user->currency_symbol = $currency_symbol;
             $user->ip = $location['ip'];
-            $user->fill($request->input())->save();
+
+            $user->save();
             $this->sendWelcomeMail($user);
-            $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
-            $r = $mailchimp->addSubscriber($user->email);
-            $licenseStatus = StatusSetting::pluck('license_status')->first();
-            if ($licenseStatus == 1) {
-                $addUserToLicensing = $this->licensing->addNewUser($request->first_name, $request->last_name, $request->email);
+            $mailchimpStatus = StatusSetting::first()->value('mailchimp_status');
+            if ($mailchimpStatus == 1) {
+                $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
+                $r = $mailchimp->addSubscriber($user->email);
             }
 
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
@@ -220,146 +283,40 @@ class ClientController extends AdvanceSearchController
             $invoiceSum = $this->getTotalInvoice($invoices);
             $amountReceived = $this->getAmountPaid($id);
             $pendingAmount = $invoiceSum - $amountReceived;
-            if ($pendingAmount < 0) {
-                $pendingAmount = 0;
-            }
+            // $pendingAmount = $invoiceSum - $amountReceived;
+            // if ($pendingAmount < 0) {
+            //     $pendingAmount = 0;
+            // }
             $extraAmt = $this->getExtraAmt($id);
             $client = $this->user->where('id', $id)->first();
-
             // $client = "";
             $currency = $client->currency;
             $orders = $order->where('client', $id)->get();
             $comments = $client->comments()->where('user_id', $client->id)->get();
 
-            return view('themes.default1.user.client.show',
-                compact('id', 'client', 'invoices', 'model_popup', 'orders',
-                 'payments', 'invoiceSum', 'amountReceived', 'pendingAmount', 'currency', 'extraAmt', 'comments'));
+            return view(
+                'themes.default1.user.client.show',
+                compact(
+                    'id',
+                    'client',
+                    'invoices',
+                    'model_popup',
+                    'orders',
+                    'payments',
+                    'invoiceSum',
+                    'amountReceived',
+                    'pendingAmount',
+                    'currency',
+                    'extraAmt',
+                    'comments'
+                )
+            );
         } catch (\Exception $ex) {
             app('log')->info($ex->getMessage());
             Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
-    }
-
-    public function getOrderDetail($id)
-    {
-        $client = $this->user->where('id', $id)->first();
-        $responseData = [];
-        foreach ($client->order()->orderBy('created_at', 'desc')->get() as $order) {
-            $date = $order->created_at;
-            $productName = $order->product()->first() && $order->product()->first()->name ?
-            $order->product()->first()->name : 'Unknown';
-            $number = $order->number;
-            $price = $order->price_override;
-            $status = $order->order_status;
-            array_push($responseData, (['date'=> $date, 'productName'=>$productName,
-                'number'                      => $number, 'price' =>$price, 'status'=>$status, ]));
-        }
-
-        return $responseData;
-    }
-
-    //Get Paymetn Details on Invoice Page
-    public function getPaymentDetail($id)
-    {
-        $client = $this->user->where('id', $id)->first();
-        $invoice = new Invoice();
-        $invoices = $invoice->where('user_id', $id)->orderBy('created_at', 'desc')->get();
-        $extraAmt = $this->getExtraAmt($id);
-        $date = '';
-        $responseData = [];
-        if ($invoices) {
-            foreach ($client->payment()->orderBy('created_at', 'desc')->get() as $payment) {
-                $number = $payment->invoice()->first() ? $payment->invoice()->first()->number : '--';
-                $date = $payment->created_at;
-                $date1 = new DateTime($date);
-                $tz = \Auth::user()->timezone()->first()->name;
-                $date1->setTimezone(new DateTimeZone($tz));
-                $date = $date1->format('M j, Y, g:i a ');
-                $pay_method = $payment->payment_method;
-                if ($payment->invoice_id == 0) {
-                    $amount = $extraAmt;
-                } else {
-                    $amount = $payment->amount;
-                }
-                $status = ucfirst($payment->payment_status);
-                array_push($responseData, (['number'=>$number, 'pay_method'=>$pay_method, 'amount'=>$amount, 'status'=>$status, 'date'=>$date]));
-            }
-        }
-
-        return $responseData;
-    }
-
-    public function getClientDetail($id)
-    {
-        $client = $this->user->where('id', $id)->first();
-        $currency = $client->currency;
-        if (array_key_exists('name', \App\Http\Controllers\Front\CartController::getStateByCode($client->state))) {
-            $client->state = \App\Http\Controllers\Front\CartController::getStateByCode($client->state)['name'];
-        }
-        $client->country = ucwords(strtolower(\App\Http\Controllers\Front\CartController::getCountryByCode($client->country)));
-
-        $displayData = (['currency'=>$currency, 'client'=> $client]);
-
-        return $displayData;
-    }
-
-    public function getExtraAmt($userId)
-    {
-        try {
-            $amounts = Payment::where('user_id', $userId)
-            ->where('invoice_id', 0)
-            ->select('amt_to_credit')->get();
-            $paidSum = 0;
-            foreach ($amounts as $amount) {
-                $paidSum = $paidSum + $amount->amt_to_credit;
-            }
-
-            return $paidSum;
-        } catch (\Exception $ex) {
-            app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
-            app('log')->info($ex->getMessage());
-            Bugsnag::notifyException($ex);
-
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
-
-    /**
-     * Get total Amount paid for a particular invoice.
-     */
-    public function getAmountPaid($userId)
-    {
-        try {
-            $amounts = Payment::where('user_id', $userId)->select('amount')->get();
-            $paidSum = 0;
-            foreach ($amounts as $amount) {
-                if ($amount) {
-                    $paidSum = $paidSum + $amount->amount;
-                }
-            }
-
-            return $paidSum;
-        } catch (\Exception $ex) {
-            app('log')->info($ex->getMessage());
-            Bugsnag::notifyException($ex);
-
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
-
-    /**
-     * Get total of the Invoices for a User.
-     */
-    public function getTotalInvoice($invoices)
-    {
-        $sum = 0;
-        foreach ($invoices as $invoice) {
-            $sum = $sum + $invoice->grand_total;
-        }
-
-        return $sum;
     }
 
     /**
@@ -392,9 +349,9 @@ class ClientController extends AdvanceSearchController
             ->pluck('first_name', 'id')->toArray();
             $selectedCurrency = Currency::where('code', $user->currency)
             ->pluck('name', 'code')->toArray();
-            $selectedCompany = \DB::table('company_types')->where('short', $user->company_type)
+            $selectedCompany = \DB::table('company_types')->where('name', $user->company_type)
             ->pluck('name', 'short')->toArray();
-            $selectedIndustry = \App\Model\Common\Bussiness::where('short', $user->bussiness)
+            $selectedIndustry = \App\Model\Common\Bussiness::where('name', $user->bussiness)
             ->pluck('name', 'short')->toArray();
             $selectedCompanySize = \DB::table('company_sizes')->where('short', $user->company_size)
             ->pluck('name', 'short')->toArray();
@@ -402,10 +359,21 @@ class ClientController extends AdvanceSearchController
 
             $bussinesses = \App\Model\Common\Bussiness::pluck('name', 'short')->toArray();
 
-            return view('themes.default1.user.client.edit',
-                compact('bussinesses', 'user', 'timezones', 'state',
-                    'states', 'managers', 'selectedCurrency', 'selectedCompany',
-                     'selectedIndustry', 'selectedCompanySize'));
+            return view(
+                'themes.default1.user.client.edit',
+                compact(
+                    'bussinesses',
+                    'user',
+                    'timezones',
+                    'state',
+                    'states',
+                    'managers',
+                    'selectedCurrency',
+                    'selectedCompany',
+                    'selectedIndustry',
+                    'selectedCompanySize'
+                )
+            );
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
 
@@ -427,10 +395,6 @@ class ClientController extends AdvanceSearchController
             $symbol = Currency::where('code', $request->input('currency'))->pluck('symbol')->first();
             $user->currency_symbol = $symbol;
             $user->fill($request->input())->save();
-            $licenseStatus = StatusSetting::pluck('license_status')->first();
-            if ($licenseStatus == 1) {
-                $editUserInLicensing = $this->licensing->editUserInLicensing($user->first_name, $user->last_name, $user->email);
-            }
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $ex) {
@@ -485,59 +449,6 @@ class ClientController extends AdvanceSearchController
                         './* @scrutinizer ignore-type */\Lang::get('message.select-a-row').'
                 </div>';
         }
-    }
-
-    public function getUsers(Request $request)
-    {
-        $options = $this->user
-//->where('email','LIKE','%'.$s.'%')
-                ->select('email AS text', 'id AS value')
-                ->get();
-
-        return response()->json(compact('options'));
-    }
-
-    public function search(Request $request)
-    {
-        try {
-            $term = trim($request->q);
-            if (empty($term)) {
-                return \Response::json([]);
-            }
-            $users = User::where('email', 'LIKE', '%'.$term.'%')
-             ->orWhere('first_name', 'LIKE', '%'.$term.'%')
-             ->orWhere('last_name', 'LIKE', '%'.$term.'%')
-             ->select('id', 'email', 'profile_pic', 'first_name', 'last_name')->get();
-            $formatted_tags = [];
-
-            foreach ($users as $user) {
-                $formatted_users[] = ['id' => $user->id, 'text' => $user->email, 'profile_pic' => $user->profile_pic,
-            'first_name'                   => $user->first_name, 'last_name' => $user->last_name, ];
-            }
-
-            return \Response::json($formatted_users);
-        } catch (\Exception $e) {
-            // returns if try fails with exception meaagse
-            return redirect()->back()->with('fails', $e->getMessage());
-        }
-    }
-
-    public function advanceSearch($name = '', $username = '', $company = '',
-     $mobile = '', $email = '', $country = '', $industry = '',
-      $company_type = '', $company_size = '', $role = '', $position = '', $reg_from = '', $reg_till = '')
-    {
-        $join = \DB::table('users');
-        $join = $this->getNamUserCom($join, $name, $username, $company);
-        $join = $this->getMobEmCoun($join, $mobile, $email, $country);
-        $join = $this->getInCtCs($join, $industry, $company_type, $company_size);
-        $join = $this->getRolPos($join, $role, $position);
-        $join = $this->getregFromTill($join, $reg_from, $reg_till);
-
-        $join = $join->orderBy('created_at', 'desc')
-        ->select('id', 'first_name', 'last_name', 'email', 'created_at',
-         'active', 'mobile_verified', 'role', 'position');
-
-        return $join;
     }
 
     public function sendWelcomeMail($user)

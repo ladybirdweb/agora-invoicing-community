@@ -16,7 +16,9 @@ User
     .hide_content{
       display: none;
     }
-   
+   .btn-primary {
+    margin-top: 3px;
+}
 
 
 </style>
@@ -82,20 +84,21 @@ User Details
           
           <?php
 
-         if($currency == 'INR')
-            $currency = '₹';
-            else
-            $currency = '$'; 
-          ?>
+          if ($currency == 'INR') {
+              $currency = '₹';
+            } else {
+                $currency = '$';
+          }
+            ?>
                    
                       
         <div class="padright">
-             
             
-            <h6 class="rupee colorblack margintopzero"><span class="font18">Invoice Total </span><br>{{$client->currency_symbol }} {{$invoiceSum}}</h6> 
-            <h6 class="rupee colorgreen" style="color:green;"><span class="font18">Paid </span><br>{{$client->currency_symbol }} {{$amountReceived}}</h6> 
-            <h6 class="rupee colorred"><span class="font18">{{Lang::get('message.balance')}} </span><br>{{$client->currency_symbol }} {{$pendingAmount}}</h6> 
-             <h6 class="rupee colorred"><span class="font18">{{Lang::get('message.extra')}} </span><br>{{$client->currency_symbol }} {{$extraAmt}}</h6> 
+            
+            <h6 class="rupee colorblack margintopzero"><span class="font18">Invoice Total </span><br> {{currency_format($invoiceSum,$code=$client->currency)}}</h6> 
+            <h6 class="rupee colorgreen" style="color:green;"><span class="font18">Paid </span><br> {{currency_format($amountReceived,$code=$client->currency)}}</h6> 
+            <h6 class="rupee colorred"><span class="font18">{{Lang::get('message.balance')}} </span><br>{{currency_format($pendingAmount,$code=$client->currency)}}</h6> 
+           <!--   <h6 class="rupee colorred"><span class="font18">{{Lang::get('message.extra')}} </span><br>{{$client->currency_symbol }} {{$extraAmt}}</h6>  -->
           
         </div>
      
@@ -155,183 +158,286 @@ User Details
 <div class="margintop20">
     <div class="nav-tabs-custom">
         <ul class="nav nav-tabs" id="myTab">
-            <li><a href="#activity" data-toggle="tab">{{Lang::get('message.transation_detail')}}</a>
+            <li><a data-toggle="tab" href="#activity" id="invoice" data-toggle="tab">{{Lang::get('message.transation_detail')}}</a>
             </li>
-            <li><a href="#settings" onclick="customer_detail()" onload="customer_detail()" data-toggle="tab">{{Lang::get('message.customer_detail')}}</a>
+            <li><a data-toggle="tab" href="#settings" id="customer_detail" data-toggle="tab">{{Lang::get('message.customer_detail')}}</a>
             </li>
-            <li><a href="#timeline" onclick="payment_detail()" data-toggle="tab">{{Lang::get('message.payment_detail')}}</a>
+            <li><a data-toggle="tab" href="#timeline" id="payment" data-toggle="tab">{{Lang::get('message.payment_detail')}}</a>
             </li>
-            <li><a href="#order" onclick="order_detail()" data-toggle="tab">{{Lang::get('message.order_detail')}}</a>
+            <li><a data-toggle="tab" href="#order" id="orderdetail"  data-toggle="tab">{{Lang::get('message.order_detail')}}</a>
             </li>
-            <li><a href="#comment" data-toggle="tab">{{Lang::get('message.comments')}}</a>
+            <li><a data-toggle="tab" href="#comment" data-toggle="tab">{{Lang::get('message.comments')}}</a>
             </li>
         </ul>
         <div class="tab-content">
+            <div id="response"></div>
             <div class="active tab-pane" id="activity">
+              
+
+                    <div class="box-header">
+
+                        <h4>Invoices </h4>
+                    </div>
                 <div class="box-body">
                     <div class="row">
 
                         <div class="col-md-12">
-                            <table id="example1" class="table table-bordered table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>{{Lang::get('message.date')}}</th>
-                                        <th>{{Lang::get('message.invoice_number')}}</th>
-                                        <th>{{Lang::get('message.total')}}</th>
-                                        <th>{{Lang::get('message.amount_received')}}</th>
-                                        <th>{{Lang::get('message.amount_pending')}}</th>
-                                        <th>{{Lang::get('message.status')}}</th>
-                                        <th>{{Lang::get('message.action')}}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse($invoices as $invoice) 
-                                    <?php
-                                    
-                                     $payment = \App\Model\Order\Payment::where('invoice_id',$invoice->id)->select('amount')->get();
-                                     $c=count($payment);
-                                       $sum= 0;
-                                       for($i=0 ;  $i <= $c-1 ; $i++)
-                                       {
-                                         $sum = $sum + $payment[$i]->amount;
-                                       }
-                                       $pendingAmount = ($invoice->grand_total)-($sum);
-                                     ?>
-                                    <tr>
-                                        <td>
-                                            <?php
-                                          $date1 = new DateTime($invoice->date);
-                                          $tz = $client->timezone()->first()->name;
-                                          $date1->setTimezone(new DateTimeZone($tz));
-                                          $date = $date1->format('M j, Y, g:i a ');
-                                            echo $date;
-                                            ?>
-                                        </td>
-                                        <td class="invoice-number">
-                                            <a href="{{url('invoices/show?invoiceid='.$invoice->id)}}">{{$invoice->number}}</a>
-                                        </td>
-                                        <td contenteditable="false" class="invoice-total"> 
-                                           {{$invoice->grand_total}}
-                                        </td>
-                                        <td>{{$sum}}</td>
-                                        <td>{{$pendingAmount}}</td>
-                                        <td>
-                                            {{ucfirst($invoice->status)}}
-                                        </td>
-                                        
-                                        <td>
-                                            <div class="btn-group">
-                                                <button type="button" class="btn btn-default">{{Lang::get('message.action')}}</button>
-                                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                                                    <span class="caret"></span>
-                                                    <span class="sr-only">Toggle Dropdown</span>
-                                                </button>
-                                                <?php
-                                                $template_controller = new \App\Http\Controllers\Common\TemplateController();
-                                                $user = $client;
-                                                $invoiceItems = \App\Model\Order\InvoiceItem::where('invoice_id', $invoice->id)->get();
-                                                $body = Form::open(['url' => 'order/execute', 'method' => 'GET']);
-                                                $body .= "<input type=hidden value=$invoice->id name=invoiceid />";
-                                                $body .= view('themes.default1.invoice.pdfinvoice', compact('invoice', 'user', 'invoiceItems'))->render();
-                                                $model_popup = $template_controller->popup('Invoice', $body, 897, 'execute order', 'invoice' . $invoice->id);
-                                                ?>
-                                                <ul class="dropdown-menu" role="menu">
-                                                    @if($invoice->order()->get()->count()==0)
-                                                    <li><a href=# class=null  data-toggle='modal' data-target="#editinvoice{{$invoice->id}}">Execute order</a></li>
-                                                    @endif
-                                                    
-                                                  <!--   @if($invoice->status!='success')
-                                                    <li><a href="{{url('payment/receive?invoiceid='.$invoice->id)}}">{{Lang::get('message.payment')}}</a></li>
-                                                    @endif -->
-                                                     <li><a href="{{url('invoices/edit/'.$invoice->id)}}">Edit {{Lang::get('message.invoice')}}</a></li>
-                                                     <li><a href="{{url('invoices/show?invoiceid='.$invoice->id)}}">View {{Lang::get('message.invoice')}}</a></li>
+                            <table id="invoice-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
+                             <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_invoice_delete"><i class= "fa fa-trash"></i>&nbsp;&nbsp;Delete Selected</button><br /><br />
+                                <thead><tr>
+                                    <th class="no-sort" style="width:1px;"><input type="checkbox" name="select_all" onchange="checkinginvoice(this)"></th>
+                                        <th style="width:150px;">Date</th>
+                                        <th style="width:50px;">Invoice Number</th>
+                                        <th style="width:50px;">Total</th>
+                                         <th style="width:50px;">Paid</th>
+                                          <th style="width:50px;">Balance</th>
+                                           <th style="width:50px;">Status</th>
+                                        <th style="width:150px;">Action</th>
+                                    </tr></thead>
+                                 </table>
+                           
 
-                                                     <li><a href="{{url('invoices/'.$invoice->id.'/delete')}}">{{Lang::get('message.delete')}}</a></li>
-                                                </ul>
-                                                {!! $model_popup !!}
-
-                                            </div>
-                                        </td>
-
-                                    </tr>
-                                    @empty 
-                                    <tr>
-                                        <td>No Invoices</td>
-                                    </tr>
-                                    @endforelse
-
-
-                                </tbody>
-                            </table>
                         </div>
                     </div>
 
                 </div>
 
-            </div>
-            <div class="tab-pane" id="timeline">
-                <div>
-                    <div class="box-body">
-                        <table id="example2" class="table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Invoice Number</th>
-                                    <th>Date</th>
-                                    <th>Payment Method</th>
-                                    <th>Total</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
-                                    
-                                    
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @if(count($invoices)>0)
-                                @forelse($client->payment()->orderBy('created_at','desc')->get() as $payment)
-                                <tr>
-                                    <td class="invoice-no invoice">
-                                       
-                                    </td>
-                                    <td class="date">
-                                    </td>
-                                    <td class="paymethod">
-                                    </td>
-                                    @if($payment->invoice_id == 0)
-                                     <td class="payment-total" data-count="{{$payment->id}}"></td>
-                                     @endif
-                                       @if($payment->invoice_id != 0)
-                                    <td contenteditable="false" class="payment-total" data-count="{{$payment->id}}"></td>
-                                     @endif
-                                      
-                                    <td class="payment_status"></td>
-                                    <td>
-                                        <input type="hidden" class="paymentid" value="{{$payment->id}}">
-                                        @if($payment->invoice_id == 0)
-                                          <a href="{{url('payments/'.$payment->id.'/edit')}}" class="btn btn-primary btn-xs" value="{{$payment->id}}"><i class="fa fa-edit"></i>
-                                          {{Lang::get('message.edit')}}</a>
-                                          @endif
-                                          <a href="{{url('payments/'.$payment->id.'/delete')}}" class="btn btn-danger btn-xs" onclick = "return myFunction()" ><i class="fa fa-trash">&nbsp;</i>{{Lang::get('message.delete')}}</a>
-                                  
-                                    </td>
-                                </tr>
-                                @empty 
-                                <tr>
-                                    <td>
-                                        {{Lang::get('message.no-record')}}
-                                    </td>
-                                </tr>
-                                @endforelse
-                                @endif
+            
+
+        <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
+        <script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function(){//Stay On the Selected Tab after Page Refresh
+                $("#invoice").trigger('click');
+                $('a[data-toggle="tab"]').on('show.bs.tab',function(e){
+                    sessionStorage .setItem('activeTab',$(e.target).attr('href'));
+                });
+                var activeTab = sessionStorage .getItem('activeTab');
+                if(activeTab){
+                    $('#myTab a[href="' + activeTab + '"]').tab('show');
+                }
+                if(activeTab == "#timeline") {
+                    $('#payment').trigger('click');
+                } else if(activeTab == "#order") {
+                     $('#orderdetail').trigger('click');
+                } else if(activeTab == "#settings") {
+                  $('#customer_detail').trigger('click');
+                }  else if(activeTab == "#activity") {
+                  $('#invoice').trigger('click');
+                }   
+            });
+
+
+        $("#invoice").on('click',function(){
+         $('#orderdetail-table').DataTable().clear().destroy();
+         $('#payment-table').DataTable().clear().destroy();
+     
+        $('#invoice-table').DataTable({
+   
+            processing: true,
+            "bDestroy": true,
+            serverSide: true,
+             stateSave: false,
+            order: [[ 0, "desc" ]],
+            ajax: '{{url("get-client-invoice/".$id)}}',
+             
+
+            "oLanguage": {
+                "sLengthMenu": "_MENU_ Records per page",
+                "sSearch"    : "Search: ",
+                "sProcessing": '<img id="blur-bg" class="backgroundfadein" style="top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;" src="{!! asset("lb-faveo/media/images/gifloader3.gif") !!}">'
+            },
+                columnDefs: [
+                { 
+                    targets: 'no-sort', 
+                    orderable: false,
+                    order: []
+                }
+            ],
+            columns: [
+                {data: 'checkbox', name: 'checkbox'},
+                {data: 'date', name: 'date'},
+                {data: 'invoice_no', name: 'invoice_no'},
+                {data: 'total', name: 'total'},
+                {data: 'paid', name: 'paid'},
+                {data: 'balance', name: 'balance'},
+                {data: 'status', name: 'status'},
+                {data: 'action', name: 'action'}
+            ],
+            "fnDrawCallback": function( oSettings ) {
+                $('.loader').css('display', 'none');
+            },
+            "fnPreDrawCallback": function(oSettings, json) {
+                $('.loader').css('display', 'block');
+            },
+           });
+    });
+       
+           </script>
+           <script>
+             function checkinginvoice(e){
+              
+              $('#invoice-table').find("td input[type='checkbox']").prop('checked', $(e).prop('checked'));
+             }
+     
+
+         $(document).on('click','#bulk_invoice_delete',function(){
+          var id=[];
+          if (confirm("Are you sure you want to delete this?"))
+            {
+                $('.invoice_checkbox:checked').each(function(){
+                  id.push($(this).val())
+                });
+                if(id.length >0)
+                {
+                   $.ajax({
+                          url:"{!! Url('invoice-delete') !!}",
+                          method:"get",
+                          data: $('#check:checked').serialize(),
+                          beforeSend: function () {
+                    $('#gif').show();
+                    },
+                    success: function (data) {
+                    $('#gif').hide();
+                    $('#response').html(data);
+                    location.reload();
+                    }
+                   })
+                }
+                else
+                {
+                    alert("Please select at least one checkbox");
+                }
+                }  
+
+                 });
+                
+                </script>
+           </div>
 
 
 
-                            </tbody>
-                        </table>
+
+        <div class="tab-pane" id="timeline">
+
+                <div class="box-header">
+                     <h4>Payments </h4>
                     </div>
-                    <!-- /.box-body -->
+                <div class="box-body">
+                    <div class="row">
+
+                        <div class="col-md-12">
+                            <table id="payment-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
+                             <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_payment_delete"><i class= "fa fa-trash"></i>&nbsp;&nbsp;Delete Selected</button><br /><br />
+                                <thead><tr>
+                                    <th class="no-sort"><input type="checkbox" name="select_all" onchange="checkingpayment(this)"></th>
+                                        <th>Invoice Number</th>
+                                        <th>Date</th>
+                                        <th>Payment Method</th>
+                                        <th>Total</th>
+                                        <th>Status</th>
+                                         <th>Action</th>
+                                    </tr></thead>
+                                 </table>
+                           
+
+                        </div>
+                    </div>
+
                 </div>
-                <!-- /.box -->
-            </div>
+
+           
+        <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
+        <script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+        <script type="text/javascript">
+       $("#payment").on('click',function(){
+         $('#orderdetail-table').DataTable().clear().destroy();
+         $('#invoice-table').DataTable().clear().destroy();
+        $('#payment-table').DataTable({
+   
+            processing: true,
+             "bDestroy": true,
+            serverSide: true,
+             stateSave: false,
+            order: [[ 0, "desc" ]],
+            ajax: '{!! url("getPaymentDetail/".$client->id) !!}',
+             
+
+            "oLanguage": {
+                "sLengthMenu": "_MENU_ Records per page",
+                "sSearch"    : "Search: ",
+                "sProcessing": '<img id="blur-bg" class="backgroundfadein" style="top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;" src="{!! asset("lb-faveo/media/images/gifloader3.gif") !!}">'
+            },
+                columnDefs: [
+                { 
+                    targets: 'no-sort', 
+                    orderable: false,
+                    order: []
+                }
+            ],
+            columns: [
+                {data: 'checkbox', name: 'checkbox'},
+                {data: 'invoice_no', name: 'invoice_no'},
+                {data: 'date', name: 'date'},
+                {data: 'payment_method', name: 'payment_method'},
+                {data: 'total', name: 'total'},
+                {data: 'status', name: 'status'},
+                {data: 'action', name: 'action'},
+            ],
+            "fnDrawCallback": function( oSettings ) {
+                $('.loader').css('display', 'none');
+            },
+            "fnPreDrawCallback": function(oSettings, json) {
+                $('.loader').css('display', 'block');
+            },
+        });
+    });
+      </script>
+       <script>
+         function checkingpayment(e){
+          
+          $('#payment-table').find("td input[type='checkbox']").prop('checked', $(e).prop('checked'));
+         }
+
+
+         $(document).on('click','#bulk_payment_delete',function(){
+          var id=[];
+          if (confirm("Are you sure you want to delete this?"))
+            {
+            $('.payment_checkbox:checked').each(function(){
+              id.push($(this).val())
+            });
+            if(id.length >0)
+            {
+               $.ajax({
+                      url:"{!! Url('payment-delete') !!}",
+                      method:"get",
+                      data: $('#checkpayment:checked').serialize(),
+                      beforeSend: function () {
+                $('#gif').show();
+                },
+                success: function (data) {
+                $('#gif').hide();
+                $('#response').html(data);
+                location.reload();
+                }
+               })
+            }
+            else
+            {
+                alert("Please select at least one checkbox");
+            }
+            }  
+
+             });
+          
+            </script>
+
+
+
+
+        <!-- /.box -->
+    </div>
             <!-- /.tab-pane -->
 
             <div class="tab-pane" id="settings">
@@ -376,16 +482,19 @@ User Details
                                             <strong>Business :</strong> <span class="pull-right clientbusiness"></span>
                                         </a>
                                     </li>
+                                    
                                     <li>
                                         <a href="#">
                                             <strong>{{Lang::get('message.mobile')}} :</strong> <span class="pull-right clientmobile">@if($client->mobile_code)<b>+</b>{{$client->mobile_code}}@endif{{$client->mobile}}</span>
                                         </a>
                                     </li>
+                                    <div id="cus_detail"></div>
                                     <li>
                                         <a href="#">
                                             <strong>{{Lang::get('message.address')}} :</strong> <span class="pull-right clientaddress"></span>
                                         </a>
                                     </li>
+                                    
                                     <li>
                                         <a href="#">
                                             <strong>{{Lang::get('message.town')}} :</strong> <span class="pull-right clienttown"></span>
@@ -404,6 +513,7 @@ User Details
                                              </span>
                                         </a>
                                     </li>
+
                                     <li>
                                         <a href="#">
                                             <strong>{{Lang::get('message.zip')}} :</strong> <span class="pull-right clientzip"></span>
@@ -441,7 +551,7 @@ User Details
                                         </a>
                                     </li>
                                     @endif
-                                    <?php $manager = $client->manager()->select('id','first_name','last_name')->first(); ?>
+                                    <?php $manager = $client->manager()->select('id', 'first_name', 'last_name')->first(); ?>
                                     @if($client && $manager)
                                     <li>
                                         <a href="{{url('clients/'.$manager->id)}}">
@@ -461,53 +571,147 @@ User Details
             <!-- order !-->
 
 
-            <div class="tab-pane" id="order">
-
-                <div>
-                    <div class="box box-widget widget-user">
-                         <div class="box-body">
-                        <table id="example3" class="table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Product</th>
-                                    <th>Number</th>
-                                    <th>Total</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
-                                    
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse($client->order()->orderBy('created_at','desc')->get() as $order)
-                                <tr>
-                                    <td class="orderDate"></td>
-                                    <td class="orderName">
-                                    </td>
-                                    <td class="orderNumber"></td>
-                                    <td class="orderPrice"></td>
-                                    <td class="orderStatus"></td>
-                                    <td><a href="{{url('orders/'.$order->id)}}" class="btn btn-primary btn-sm"><i class="fa fa-eye"></i>&nbsp;View</a>
-                                    <a href="{{url('orders/'.$order->id.'/delete')}}"  onclick = "return orderDelFunction()" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i>&nbsp;{{Lang::get('message.delete')}}</a></td>
-                                </tr>
-                                @empty 
-                                <tr>
-                                    <td>
-                                        {{Lang::get('message.no-record')}}
-                                    </td>
-                                </tr>
-                                @endforelse
 
 
 
-                            </tbody>
-                        </table>
-                    </div>  
 
-                    </div>
-                    <!-- /.box box-widget widget-user -->
-                </div>
+
+
+
+
+
+
+
+
+<div class="tab-pane" id="order">
+
+
+
+    <div class="box-header">
+
+        <h4>Orders</h4>
+    </div>
+
+    <div id="response"></div>
+
+    <div class="box-body">
+        <div class="row">
+
+            <div class="col-md-12">
+                <table id="orderdetail-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
+                 <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_order_delete"><i class= "fa fa-trash"></i>&nbsp;&nbsp;Delete Selected</button><br /><br />
+                    <thead><tr>
+                         <th class="no-sort"><input type="checkbox" name="select_all" onchange="checkingorder(this)"></th>
+                            <th>Date</th>
+                            <th>Product</th>
+                            <th>Number</th>
+                             <th>Total</th>
+                             <th>Status</th>
+                            <th>Action</th>
+                        </tr></thead>
+                     </table>
+               
+
             </div>
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
+<script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript">
+       $("#orderdetail").on('click',function(){
+         $('#payment-table').DataTable().clear().destroy();
+         $('#invoice-table').DataTable().clear().destroy();
+
+        $('#orderdetail-table').DataTable({
+   
+            processing: true,
+             "bDestroy": true,
+            serverSide: true,
+             stateSave: true,
+            order: [[ 0, "desc" ]],
+            ajax: '{!! url("getOrderDetail/".$client->id ) !!}',
+             
+
+            "oLanguage": {
+                "sLengthMenu": "_MENU_ Records per page",
+                "sSearch"    : "Search: ",
+                "sProcessing": '<img id="blur-bg" class="backgroundfadein" style="top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;" src="{!! asset("lb-faveo/media/images/gifloader3.gif") !!}">'
+            },
+                columnDefs: [
+                { 
+                    targets: 'no-sort', 
+                    orderable: false,
+                    order: []
+                }
+            ],
+            columns: [
+                {data: 'checkbox', name: 'checkbox'},
+                {data: 'date', name: 'date'},
+                {data: 'product', name: 'product'},
+                {data: 'number', name: 'number'},
+                {data: 'total', name: 'total'},
+                {data: 'status', name: 'status'},
+                {data: 'action', name: 'action'}
+            ],
+            "fnDrawCallback": function( oSettings ) {
+                $('.loader').css('display', 'none');
+            },
+            "fnPreDrawCallback": function(oSettings, json) {
+                $('.loader').css('display', 'block');
+            },
+        });
+     });
+    </script>
+    <script>
+         function checkingorder(e){
+          
+          $('#orderdetail-table').find("td input[type='checkbox']").prop('checked', $(e).prop('checked'));
+         }
+
+
+         $(document).on('click','#bulk_order_delete',function(){
+          var id=[];
+          if (confirm("Are you sure you want to delete this?"))
+            {
+            $('.order_checkbox:checked').each(function(){
+              id.push($(this).val())
+            });
+            if(id.length >0)
+            {
+               $.ajax({
+                      url:"{!! Url('orders-delete') !!}",
+                      method:"get",
+                      data: $('#checkorder:checked').serialize(),
+                      beforeSend: function () {
+                $('#gif').show();
+                },
+                success: function (data) {
+                $('#gif').hide();
+                $('#response').html(data);
+                location.reload();
+                }
+               })
+            }
+            else
+            {
+                alert("Please select at least one checkbox");
+            }
+            }  
+
+             });
+          
+            </script>
+
+
+
+
+
+
+
              @include('themes.default1.user.client.editComment')
             <div class="tab-pane" id="comment">
 
@@ -517,7 +721,7 @@ User Details
                     <span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;{{Lang::get('message.add_comment')}}</a>
                  @include('themes.default1.user.client.createComment')
                   <br/> <br/> <br/>
-                  <table id="example4" class="table table-bordered table-striped">
+                  <table id="" class="table table-bordered table-striped">
                 <!-- The timeline -->
                 <ul class="timeline timeline-inverse">
                     
@@ -527,10 +731,10 @@ User Details
                   <!-- /.timeline-label -->
                   <!-- timeline item -->
                     @forelse($comments as $comment)
-                    <?php 
-                  $userId = $comment ->updated_by_user_id;
-                  $user = \App\User::where('id',$userId)->first();
-                  ?> 
+                    <?php
+                    $userId = $comment ->updated_by_user_id;
+                    $user = \App\User::where('id', $userId)->first();
+                    ?> 
                   <li>
                     
                     <i class="fa fa-comments bg-yellow" title="Posted by {{$user->role}}"></i>
@@ -622,9 +826,13 @@ User Details
 @section('icheck')
 
 <script>
+      function delCommentFunction() {
+     if(!confirm("Are you sure you want to delete this comment?"))
+        event.preventDefault();
+  }
+
+
     $(function () {
-
-
         //Enable check and uncheck all functionality
         $(".checkbox-toggle").click(function () {
             var clicks = $(this).data('clicks');
@@ -644,22 +852,6 @@ User Details
     });
 
      
-</script>
-<script>
-     function myFunction() {
-      if(!confirm("Are You Sure to delete this Payment?"))
-      event.preventDefault();
-  }
-  function orderDelFunction() {
-      if(!confirm("Are You Sure to delete this Order?"))
-      event.preventDefault();
-  }
-  
-
-  function delCommentFunction() {
-     if(!confirm("Are you sure you want to delete this comment?"))
-        event.preventDefault();
-  }
 </script>
 <script>
 
@@ -702,14 +894,7 @@ User Details
     })
 </script>
 <script>
-  $(function () {
-     $('#example1').DataTable();
-      $('#example').DataTable();
-       $('#example3').DataTable();
-       $('#example4').DataTable();
- 
-    
-  })
+
 
     $('.edit-comment').click(function(){
         var commentDescription = $(this).attr('data-description');
@@ -751,12 +936,16 @@ User Details
 
 //Do your stuff, JS!
 
- function customer_detail() {
-    '<img id="blur-bg" class="backgroundfadein" style="top:40%;left:50%; width: 20px; height:250 px; display: block; position:    fixed;" src="{!! asset("lb-faveo/media/images/gifloader3.gif") !!}">'
-        $.ajax({
+  $("#customer_detail").on('click',function(){
+   $.ajax({
           url: '{{url("getClientDetail/".$client->id)}}',
           type: 'get',
+           beforeSend: function () {
+                 $('#cus_detail').html( "<img id='blur-bg' class='backgroundfadein' style='left:50%; width: 50px; height:50 px; display: block; position:    fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
+
+                },
            success: function (response) {
+            $('#cus_detail').html('');
             $('.clientemail').html((response.client).email);
             $('.clientcompanyname').html((response.client).company);
               $('.clientuser_name').html((response.client).user_name);
@@ -776,59 +965,13 @@ User Details
                $('.clientmanager').val((response.client).clientmanager);
          }
       })
-    }
-
-    function payment_detail() {
-        $.ajax({
-        url: '{{url("getPaymentDetail/".$client->id)}}',
-        type: 'get',
-        success: function (response) {
-            console.log(response)
-            for(var i = 0; i < response.length; i++) {
-                $('.invoice-no.invoice').eq(i).html(response[i].number);
-                $('.paymethod').eq(i).html(response[i].pay_method);
-                $('.payment-total').eq(i).html(response[i].amount);
-                $('.payment_status').eq(i).html(response[i].status);
-                $('.date').eq(i).html(response[i].date);
-            }
-         
-        }
-    })
-    }
-
-    function order_detail() {
-      
-       $.ajax({
-        url: '{{url("getOrderDetail/".$client->id)}}',
-        type:'get',
-        success: function (response) {
-            for(var i =0; i < response.length ; i++)
-            {
-                $('.orderDate').eq(i).html(response[i].date);
-                $('.orderName').eq(i).html(response[i].productName);
-                $('.orderNumber').eq(i).html(response[i].number);
-                $('.orderPrice').eq(i).html(response[i].price);
-                $('.orderStatus').eq(i).html(response[i].status);
-            }
-           
-        }
-       })
-    }
-
-    // $('#myTab a').click(function(e) {
-    //   e.preventDefault();
-    //   $(this).tab('show');
-    // });
-
-    // // store the currently selected tab in the hash value
-    // $("ul.nav-tabs > li > a").on("shown.bs.tab", function(e) {
-    //   var id = $(e.target).attr("href").substr(1);
-    //   window.location.hash = id;
-    // });
-
-    // // on load of the page: switch to the currently selected tab
-    // var hash = window.location.hash;
+ })
+   
+        
     
-    // $('#myTab a[href="' + hash + '"]').tab('show');
+
+
 </script>
+
+
 @stop

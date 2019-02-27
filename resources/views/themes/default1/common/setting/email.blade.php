@@ -1,4 +1,7 @@
 @extends('themes.default1.layouts.master')
+@section('title')
+Email
+@stop
 @section('content-header')
 <h1>
 Configure Mail

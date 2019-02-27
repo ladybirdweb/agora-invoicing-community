@@ -238,6 +238,124 @@
         ]
     },
     {
+        "name": "asm89/stack-cors",
+        "version": "1.2.0",
+        "version_normalized": "1.2.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/asm89/stack-cors.git",
+            "reference": "c163e2b614550aedcf71165db2473d936abbced6"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/asm89/stack-cors/zipball/c163e2b614550aedcf71165db2473d936abbced6",
+            "reference": "c163e2b614550aedcf71165db2473d936abbced6",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.5.9",
+            "symfony/http-foundation": "~2.7|~3.0|~4.0",
+            "symfony/http-kernel": "~2.7|~3.0|~4.0"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "^5.0 || ^4.8.10",
+            "squizlabs/php_codesniffer": "^2.3"
+        },
+        "time": "2017-12-20T14:37:45+00:00",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.2-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Asm89\\Stack\\": "src/Asm89/Stack/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Alexander",
+                "email": "iam.asm89@gmail.com"
+            }
+        ],
+        "description": "Cross-origin resource sharing library and stack middleware",
+        "homepage": "https://github.com/asm89/stack-cors",
+        "keywords": [
+            "cors",
+            "stack"
+        ]
+    },
+    {
+        "name": "barryvdh/laravel-cors",
+        "version": "v0.11.2",
+        "version_normalized": "0.11.2.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/barryvdh/laravel-cors.git",
+            "reference": "7969a52f52d0d9a04b42565d25ac9994b8c83332"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/barryvdh/laravel-cors/zipball/7969a52f52d0d9a04b42565d25ac9994b8c83332",
+            "reference": "7969a52f52d0d9a04b42565d25ac9994b8c83332",
+            "shasum": ""
+        },
+        "require": {
+            "asm89/stack-cors": "^1.2",
+            "illuminate/support": "5.5.x|5.6.x|5.7.x",
+            "php": ">=7",
+            "symfony/http-foundation": "^3.1|^4",
+            "symfony/http-kernel": "^3.1|^4"
+        },
+        "require-dev": {
+            "laravel/framework": "^5.5",
+            "orchestra/testbench": "3.3.x|3.4.x|3.5.x|3.6.x|3.7.x",
+            "phpunit/phpunit": "^4.8|^5.2|^7.0",
+            "squizlabs/php_codesniffer": "^2.3"
+        },
+        "time": "2018-09-06T13:20:53+00:00",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "0.11-dev"
+            },
+            "laravel": {
+                "providers": [
+                    "Barryvdh\\Cors\\ServiceProvider"
+                ]
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Barryvdh\\Cors\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Barry vd. Heuvel",
+                "email": "barryvdh@gmail.com"
+            }
+        ],
+        "description": "Adds CORS (Cross-Origin Resource Sharing) headers support in your Laravel application",
+        "keywords": [
+            "api",
+            "cors",
+            "crossdomain",
+            "laravel"
+        ]
+    },
+    {
         "name": "barryvdh/laravel-dompdf",
         "version": "v0.8.2",
         "version_normalized": "0.8.2.0",
@@ -4379,6 +4497,61 @@
         ]
     },
     {
+        "name": "pion/laravel-chunk-upload",
+        "version": "v1.2.8",
+        "version_normalized": "1.2.8.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/pionl/laravel-chunk-upload.git",
+            "reference": "f556e3e7b94001b7fc76f9688a080b864c908cf6"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/pionl/laravel-chunk-upload/zipball/f556e3e7b94001b7fc76f9688a080b864c908cf6",
+            "reference": "f556e3e7b94001b7fc76f9688a080b864c908cf6",
+            "shasum": ""
+        },
+        "require": {
+            "illuminate/console": "5.1.* || 5.2.* || 5.3.* || 5.4.* || 5.5.* || 5.6.* || 5.7.*",
+            "illuminate/filesystem": "5.1.* || 5.2.* || 5.3.* || 5.4.* || 5.5.* || 5.6.* || 5.7.*",
+            "illuminate/http": "5.1.* || 5.2.* || 5.3.* || 5.4.* || 5.5.* || 5.6.* || 5.7.*",
+            "illuminate/support": "5.1.* || 5.2.* || 5.3.* || 5.4.* || 5.5.* || 5.6.* || 5.7.*"
+        },
+        "require-dev": {
+            "friendsofphp/php-cs-fixer": "^2.12",
+            "laravel/laravel": "5.1.* || 5.2.* || 5.3.* || 5.4.* || 5.5.* || 5.6.* || 5.7.*",
+            "mockery/mockery": "^1.1.0",
+            "overtrue/phplint": "^1.1",
+            "phpunit/phpunit": "5.7 || 6.0 || 7.0"
+        },
+        "time": "2018-09-11T09:26:38+00:00",
+        "type": "library",
+        "extra": {
+            "laravel": {
+                "providers": [
+                    "Pion\\Laravel\\ChunkUpload\\Providers\\ChunkUploadServiceProvider"
+                ]
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Pion\\Laravel\\ChunkUpload\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Martin Kluska",
+                "email": "martin@kluska.cz"
+            }
+        ],
+        "description": "Service for chunked upload with several js providers"
+    },
+    {
         "name": "psr/container",
         "version": "1.0.0",
         "version_normalized": "1.0.0.0",
@@ -7057,6 +7230,70 @@
         ],
         "description": "CssToInlineStyles is a class that enables you to convert HTML-pages/files into HTML-pages/files with inline styles. This is very useful when you're sending emails.",
         "homepage": "https://github.com/tijsverkoyen/CssToInlineStyles"
+    },
+    {
+        "name": "torann/currency",
+        "version": "1.0.14",
+        "version_normalized": "1.0.14.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/Torann/laravel-currency.git",
+            "reference": "d7d5dc721122f5491a475fc6f0026f110334acd4"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/Torann/laravel-currency/zipball/d7d5dc721122f5491a475fc6f0026f110334acd4",
+            "reference": "d7d5dc721122f5491a475fc6f0026f110334acd4",
+            "shasum": ""
+        },
+        "require": {
+            "illuminate/cache": "~5.1",
+            "illuminate/support": "~5.1",
+            "php": ">=5.5.9"
+        },
+        "suggest": {
+            "illuminate/database": "Allows for storing of currencies in the database"
+        },
+        "time": "2018-05-09T14:36:57+00:00",
+        "type": "library",
+        "extra": {
+            "laravel": {
+                "providers": [
+                    "Torann\\Currency\\CurrencyServiceProvider"
+                ],
+                "aliases": {
+                    "Currency": "Torann\\Currency\\Facades\\Currency"
+                }
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "files": [
+                "src/helpers.php"
+            ],
+            "psr-4": {
+                "Torann\\Currency\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-2-Clause"
+        ],
+        "authors": [
+            {
+                "name": "Daniel Stainback",
+                "email": "torann@gmail.com"
+            }
+        ],
+        "description": "This provides Laravel 5 with currency functions such as currency formatting and conversion using up-to-date exchange rates.",
+        "keywords": [
+            "currency",
+            "exchange rate",
+            "finance",
+            "laravel",
+            "money",
+            "openexchangerates"
+        ]
     },
     {
         "name": "torann/geoip",

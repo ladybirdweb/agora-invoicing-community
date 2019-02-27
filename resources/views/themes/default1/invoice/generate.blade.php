@@ -106,6 +106,10 @@ Generate An Invoice
           
                 <div id="fields1">
                 </div>
+                 <div id="qty">
+                </div>
+                 <div id="agents">
+                </div>
                 <div id="fields">
                 </div>
 
@@ -118,6 +122,7 @@ Generate An Invoice
                     {!! Form::label('code',Lang::get('message.promotion-code')) !!}
                     {!! Form::text('code',null,['class'=>'form-control']) !!}
                 </div>
+           
                 <div class="col-md-6 form-group">
                     {!! Form::label('send_mail',Lang::get('message.send-mail')) !!}
                     <p>{!! Form::checkbox('client',1) !!} To Client&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{!! Form::checkbox('agent',1) !!} To Agent</p>
@@ -157,12 +162,16 @@ Generate An Invoice
             data: {'product': product, 'user': user, 'plan': val},
             //data: 'product=' + val+'user='+user,
             success: function (data) {
-
+                
                 var price = data['price'];
                 var field = data['field'];
+                 var qty = data['quantity'];
+                var agents = data['agents'];
                 //console.log(field);
                 $("#price").val(price);
                 $("#fields").replaceWith(field);
+                $("#qty").replaceWith(qty);
+                $("#agents").replaceWith(agents);
             }
         });
     }
@@ -172,12 +181,13 @@ Generate An Invoice
             type: "GET",
             url: "{{url('get-subscription')}}" + '/' + val,
             success: function (data) {
-
                 var price = data['price'];
                 var field = data['field'];
+               
                 
                 $("#price").val(price);
                 $("#fields1").replaceWith(field);
+                
 
             }
         });
@@ -190,21 +200,22 @@ Generate An Invoice
 
 
       //   }
-
          /* stop form from submitting normally */
         event.preventDefault();
 
         /* get the action attribute from the <form action=""> element */
         var $form = $(this),
-                url = $form.attr('action');
+        url = $form.attr('action');
         var user = document.getElementsByName('user')[0].value;
         var plan = "";
-        var subscription = "";
+        var subscription = 'false';
         var description = "";
         if ($('#plan').length > 0) {
             var plan = document.getElementsByName('plan')[0].value;
+           
             subscription = 'true';
         }
+         console.log(plan);
         if ($('#description').length > 0) {
             var description = document.getElementsByName('description')[0].value;
         }
@@ -214,7 +225,10 @@ Generate An Invoice
             if ($('#quantity').length > 0) {
                 var quantity = document.getElementsByName('quantity')[0].value;
                 var data = $("#formoid").serialize() + '&domain=' + domain + '&quantity=' + quantity + '&user=' + user;
-            } else {
+            } else if ($('#agents').length > 0) {
+                 var agents = document.getElementsByName('agents')[0].value;
+                 var data = $("#formoid").serialize() + '&domain=' + domain + '&agents=' + agents + '&user=' + user;
+            } else{
                 var data = $("#formoid").serialize() + '&domain=' + domain + '&user=' + user;
             }
         } else {
@@ -226,11 +240,13 @@ Generate An Invoice
             }
         }
         data = data + '&plan=' + plan + '&subscription=' + subscription+'&description='+description;
+        $("#generate").html("<i class='fa fa-refresh fa-spin fa-1x fa-fw'></i>Please Wait...");
         $.ajax({
             type: "POST",
             url: url,
             data: data,
             success: function (data) {
+                $("#generate").html("<i class='fa fa-refresh'>&nbsp;&nbsp;</i>Generate");
                 //var response = JSON.stringify(data.result);
                 for (key in data.result) {
                    
@@ -253,17 +269,26 @@ Generate An Invoice
                 }
 
             },
-            error: function (data) {
-                var response = JSON.parse(data.responseText);
-                $.each(response, function (k, v) {
-                    $('#error').hide();
-                    $('#fails').hide();
-                    $('#success').hide();
+            error: function (response) {
+                 $("#generate").html("<i class='fa fa-refresh'>&nbsp;&nbsp;</i>Generate");
+                // console.log(data)
+                for (key in response.responseJSON.errors) {
+                    //  $('#error').hide();
+                    // $('#fails').hide();
+                    // $('#success').hide();
                     $('#error').show();
-                    $('#error').append('<div class="alert alert-danger"><strong>Whoops!</strong> There were some problems with your input.<br><br><ul><li>' + v + '</li></ul></div>');
-                    // $('#error').remove();
+                    $('#error').append('<div class="alert alert-danger"><strong>Whoops!</strong> There were some problems with your input.<br><br><ul><li>' + response.responseJSON.errors[key][0] + '</li></ul></div>');
+                }
+                // $.each(response, function (k, v) {
+                //     console.log(k, v);
+                //     $('#error').hide();
+                //     $('#fails').hide();
+                //     $('#success').hide();
+                //     $('#error').show();
+                //     $('#error').append('<div class="alert alert-danger"><strong>Whoops!</strong> There were some problems with your input.<br><br><ul><li>' + v[0] + '</li></ul></div>');
+                //     // $('#error').remove();
 
-                });
+                // });
 
             }
         });
@@ -279,63 +304,7 @@ Generate An Invoice
     });
 </script>
 
-<script>
-      $(document).ready(function(){
-      $('#productnamecheck').hide();
-      $('#pricecheck').hide();
-      
-      $('#formoid').submit(function(){
-        //validate name
-        function nameCheck()
-        {
-            var product_name = $('#product').val();
-            if (product_name.length == ''){
-                   $('#productnamecheck').show(); 
-                   $('#productnamecheck').html('Select One Product'); 
-                   $('#productnamecheck').focus();
-                   $('#product').css("border-color","red");
-                   $('#productnamecheck').css({"color":"red","margin-top":"5px"});
-            }
-            else{
-                 $('#productnamecheck').hide();
-                 $('#product').css("border-color","");
-                 return true;
-            }
-        }
 
-          //validate code
-         function price_check()
-        {
-            var price = $('#price').val();
-            if (price.length == ''){
-                   $('#pricecheck').show(); 
-                   $('#pricecheck').html('This field is required'); 
-                   $('#pricecheck').focus();
-                   $('#price').css("border-color","red");
-                   $('#pricecheck').css({"color":"red","margin-top":"5px"});
-            }
-            else{
-                 $('#pricecheck').hide();
-                 $('#price').css("border-color","");
-                 return true;
-            }
-        }
-          
-        
-   
-        nameCheck();
-        price_check();
-        
-        if(nameCheck() && price_check() ){
-                return true;
-             }
-            else{
-            return false;
-          }
-      });
-
-    });
-</script>
 
 @stop
 

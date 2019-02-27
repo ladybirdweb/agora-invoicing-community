@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\License\LicensePermissionsController;
 use App\Http\Requests\User\ProfileRequest;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
@@ -19,18 +20,23 @@ class BaseClientController extends Controller
     /**
      * Get the version list popup for the Product.
      *
-     * @param type $orders
-     * @param type $productid
+     * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
      *
-     * @return type
+     * @date   2019-01-06
+     *
+     * @param Order $orders    Order For the Client
+     * @param int   $productid Product id for the Order
+     *
+     * @return array Show Modal Popup if Condition Satisfies
      */
-    public function getPopup($orders, $productid)
+    public function getPopup(Order $orders, int $productid)
     {
         $listUrl = '';
+        $permissions = LicensePermissionsController::getPermissionsForProduct($productid);
         $productCheck = $orders->product()
         ->select('github_owner', 'github_repository', 'type')
         ->where('id', $orders->product)->first();
-        if ($productCheck->type == 2) {
+        if ($permissions['downloadPermission'] == 1) { //If the Product has doownlaod permission
             if (!$productCheck->github_owner == '' && !$productCheck->github_repository == '') {
                 $listUrl = $this->downloadGithubPopup($orders->client, $orders->invoice()->first()->id, $productid);
             } else {
@@ -52,8 +58,8 @@ class BaseClientController extends Controller
     {
         $end = '--';
         if ($orders->subscription()->first()) {
-            if ($end != '0000-00-00 00:00:00' || $end != null) {
-                $ends = new DateTime($orders->subscription()->first()->ends_at);
+            if (strtotime($orders->subscription()->first()->update_ends_at) > 1) {
+                $ends = new DateTime($orders->subscription()->first()->update_ends_at);
                 $tz = \Auth::user()->timezone()->first()->name;
                 $ends->setTimezone(new DateTimeZone($tz));
                 $date = $ends->format('M j, Y, g:i a ');
@@ -84,9 +90,9 @@ class BaseClientController extends Controller
 
     public function getActionButton($countExpiry, $countVersions, $link, $orderEndDate, $productid)
     {
-        $getDownloadCondition = Product::where('id', $productid)->value('deny_after_subscription');
-        if ($getDownloadCondition == 1) {
-            if (strtotime($link['created_at']) < strtotime($orderEndDate->ends_at)) {
+        $downloadPermission = LicensePermissionsController::getPermissionsForProduct($productid);
+        if ($downloadPermission['allowDownloadTillExpiry'] == 1) {
+            if (strtotime($link['created_at']) < strtotime($orderEndDate->update_ends_at)) {
                 $githubApi = new \App\Http\Controllers\Github\GithubApiController();
 
                 $link = $githubApi->getCurl1($link['zipball_url']);
@@ -100,7 +106,7 @@ class BaseClientController extends Controller
                 return '<button class="btn btn-primary btn-sm disabled tooltip">
             Download <span class="tooltiptext">Please Renew!!</span></button>';
             }
-        } elseif ($getDownloadCondition == 0) {
+        } elseif ($downloadPermission['allowDownloadTillExpiry'] == 0) {
             if ($countExpiry == $countVersions) {
                 $githubApi = new \App\Http\Controllers\Github\GithubApiController();
                 $link = $githubApi->getCurl1($link['zipball_url']);
@@ -125,10 +131,11 @@ class BaseClientController extends Controller
         try {
             $user = \Auth::user();
             if ($request->hasFile('profile_pic')) {
+                $file = $request->file('profile_pic');
                 $name = \Input::file('profile_pic')->getClientOriginalName();
-                $destinationPath = 'dist/app/users';
+                $destinationPath = public_path('common\images\users');
                 $fileName = rand(0000, 9999).'.'.$name;
-                \Input::file('profile_pic')->move($destinationPath, $fileName);
+                $file->move($destinationPath, $fileName);
                 $user->profile_pic = $fileName;
             }
             $user->first_name = strip_tags($request->input('first_name'));
@@ -168,11 +175,14 @@ class BaseClientController extends Controller
 
                 return $response;
             } else {
-                $response = ['type'=>'error', 'message'=>'Password Not Updated'];
+                $response = ['type'=>'error', 'message'=>'Old Password Not Correct'];
+
+                return $response;
             }
         } catch (\Exception $e) {
+            app('log')->error($e->getMessage());
             $result = [$e->getMessage()];
-            Bugsnag::notifyException($e);
+            Bugsnag::notifyException($result);
 
             return response()->json(compact('result'), 500);
         }
@@ -186,7 +196,7 @@ class BaseClientController extends Controller
             $relation = $order->invoiceRelation()->pluck('invoice_id')->toArray();
             $invoice = new Invoice();
             $invoices = $invoice
-                    ->select('number', 'created_at', 'grand_total', 'id', 'status')
+                    ->select('number', 'created_at', 'grand_total', 'currency', 'id', 'status')
                     ->whereIn('id', $relation);
             if ($invoices->get()->count() == 0) {
                 $invoices = $order->invoice()
@@ -209,7 +219,7 @@ class BaseClientController extends Controller
                 return date_format($date, 'M j, Y, g:i a');
             })
             ->addColumn('total', function ($model) {
-                return $model->grand_total;
+                return currency_format($model->grand_total, $code = $model->currency);
             })
             ->addColumn('status', function ($model) {
                 return ucfirst($model->status);
@@ -234,25 +244,74 @@ class BaseClientController extends Controller
         }
     }
 
-    // public function getSubscriptions()
-    // {
-    //     try {
-    //         $subscriptions = Subscription::where('user_id', \Auth::user()->id)->get();
+    public function getInvoice($id)
+    {
+        try {
+            $invoice = $this->invoice->findOrFail($id);
+            $items = $invoice->invoiceItem()->get();
 
-    //         return \Datatable::collection($subscriptions)
-    //                         ->addColumn('id', function ($model) {
-    //                             return $model->id;
-    //                         })
-    //                         ->showColumns('created_at')
-    //                         ->addColumn('ends_at', function ($model) {
-    //                             return $model->subscription()->first()->ends_at;
-    //                         })
-    //                         ->searchColumns('id', 'created_at', 'ends_at')
-    //                         ->orderColumns('created_at', 'ends_at')
-    //                         ->make();
-    //     } catch (Exception $ex) {
-    //         Bugsnag::notifyException($ex);
-    //         echo $ex->getMessage();
-    //     }
-    // }
+            $user = \Auth::user();
+            $currency = CartController::currency($user->id);
+            $symbol = $currency['symbol'];
+
+            return view('themes.default1.front.clients.show-invoice', compact('invoice', 'items', 'user', 'currency', 'symbol'));
+        } catch (Exception $ex) {
+            Bugsnag::notifyException($ex);
+
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
+    public function subscriptions()
+    {
+        try {
+            return view('themes.default1.front.clients.subscription');
+        } catch (Exception $ex) {
+            Bugsnag::notifyException($ex);
+
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
+    public function whenDownloadTillExpiry($updateEndDate, $productid, $versions, $clientid, $invoiceid)
+    {
+        if ($versions->created_at->toDateTimeString()
+        < $updateEndDate->update_ends_at) {
+            return '<p><a href='.url('download/'.$productid.'/'
+            .$clientid.'/'.$invoiceid.'/'.$versions->id).
+            " class='btn btn-sm btn-primary'><i class='fa fa-download'>
+            </i>&nbsp;&nbsp;Download</a>".'&nbsp;
+
+       </p>';
+        } else {
+            return '<button class="btn btn-danger 
+        btn-sm disabled">Please Renew </button>';
+        }
+    }
+
+    public function whenDownloadExpiresAfterExpiry($countExpiry, $countVersions, $updatesEndDate, $productid, $versions, $clientid, $invoiceid)
+    {
+        if ($countExpiry == $countVersions) {
+            return '<p><a href='.url('download/'.$productid.'/'
+            .$clientid.'/'.$invoiceid.'/'.$versions->id).
+            " class='btn btn-sm btn-primary'><i class='fa fa-download'>
+            </i>&nbsp;&nbsp;Download</a>".'&nbsp;
+
+       </p>';
+        } else {
+            return '<button class="btn btn-danger 
+        btn-sm disabled">Please Renew </button>';
+        }
+    }
+
+    public function orders()
+    {
+        try {
+            return view('themes.default1.front.clients.order1');
+        } catch (Exception $ex) {
+            Bugsnag::notifyException($ex);
+
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
 }

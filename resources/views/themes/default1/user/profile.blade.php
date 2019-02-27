@@ -106,7 +106,6 @@ Edit Profile
                     <!-- mobile -->
                     {!! Form::label('user_name',null,['class' => 'required'],Lang::get('message.user_name')) !!}
                     {!! Form::text('user_name',null,['class' => 'form-control']) !!}
-
                 </div>
 
 
@@ -123,12 +122,7 @@ Edit Profile
                     {!! Form::text('company',null,['class' => 'form-control']) !!}
 
                 </div>
-                <div class="form-group {{ $errors->has('bussiness') ? 'has-error' : '' }}">
-                    <!-- company -->
-                    {!! Form::label('bussiness','Industry') !!}
-                    {!! Form::select('bussiness',[''=>'Select','Bussinesses'=>$bussinesses],null,['class' => 'form-control']) !!}
-
-                </div>
+            
 
                 <div class="form-group {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
                   {!! Form::label('mobile',null,['class' => 'required'],Lang::get('message.mobile'),['class'=>'required']) !!}
@@ -167,7 +161,7 @@ Edit Profile
                 </div>
 
                 <div class="row">
-   <?php $countries = \App\Model\Common\Country::pluck('nicename', 'country_code_char2')->toArray(); ?>
+                    <?php $countries = \App\Model\Common\Country::pluck('nicename', 'country_code_char2')->toArray(); ?>
                     <div class="col-md-6 form-group {{ $errors->has('country') ? 'has-error' : '' }}">
                          {!! Form::label('country',Lang::get('message.country')) !!}
 
@@ -237,7 +231,7 @@ Edit Profile
                     <i class="fa fa-ban"></i>
                     <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.success')}}.
                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    {{Session::get('success')}}
+                    {{Session::get('success1')}}
                 </div>
                 @endif
                 <!-- fail message -->
@@ -246,7 +240,7 @@ Edit Profile
                     <i class="fa fa-ban"></i>
                     <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.failed')}}.
                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    {{Session::get('fails')}}
+                    {{Session::get('fails1')}}
                 </div>
                 @endif
                 <!-- old password -->

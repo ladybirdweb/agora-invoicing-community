@@ -1,4 +1,7 @@
 @extends('themes.default1.layouts.master')
+@section('title')
+Email Logs
+@stop
 @section('content-header')
 <h1>
 Email Log
@@ -65,15 +68,13 @@ Email Log
                      
                     <thead><tr>
 
-                            <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
+                            <th class="no-sort" style="width:1px"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
 
                             <th>Date</th>
                             <th>From</th>
                              <th>To</th>   
-                              <th>CC</th>      
                                <th>Subject</th>      
                            
-                             <th>Headers</th>
                              <th>Status</th>
                                </tr></thead>
 
@@ -114,10 +115,8 @@ Email Log
                 {data: 'date', name: 'date'},
                 {data: 'from', name: 'from'},
                 {data: 'to', name: 'to'},
-                 {data: 'cc', name: 'cc'},
                  {data: 'subject', name: 'subject'},
                 
-                 {data: 'headers', name: 'headers'},
                  {data: 'status', name: 'status'},
                 
             ],

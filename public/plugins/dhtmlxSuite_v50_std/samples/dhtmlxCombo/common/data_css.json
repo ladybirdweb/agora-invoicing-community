@@ -1,8 +1,0 @@
-{options: [
-	{value: "1", text: "Walking through the city", css: "color:red;", selected: true},
-	{value: "2", text: "Looking oh so pretty", css: "color:green;"},
-	{value: "3", text: "I've just got to find my way", css: "color:blue;"},
-	{value: "4", text: "See the ladies flashing", css: "color:magenta;"},
-	{value: "5", text: "All their legs and lashes", css: "color:darkorange;"},
-	{value: "6", text: "I've just got to find my way", css: "color:brown;"}
-]}

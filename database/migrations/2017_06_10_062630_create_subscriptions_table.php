@@ -18,7 +18,7 @@ class CreateSubscriptionsTable extends Migration
             $table->integer('plan_id');
             $table->integer('order_id');
             $table->integer('quantity');
-            $table->dateTime('trial_ends_at')->nullable();
+            $table->dateTime('update_ends_at')->nullable();
             $table->dateTime('ends_at')->nullable();
             $table->integer('deny_after_subscription');
             $table->string('version', 225);

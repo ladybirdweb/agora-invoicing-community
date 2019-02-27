@@ -3,9 +3,6 @@
 namespace App\Http\Controllers\Common;
 
 use App\Http\Controllers\Controller;
-use App\Model\Payment\Tax;
-use App\Model\Payment\TaxProductRelation;
-use App\Model\Product\Product;
 use Bugsnag;
 
 class ExtendedBaseTemplateController extends Controller
@@ -46,54 +43,6 @@ class ExtendedBaseTemplateController extends Controller
                                 </div>
                             </div>
                         </div>';
-        } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
-
-            throw new \Exception($ex->getMessage());
-        }
-    }
-
-    public function calculateTotalcart($rate, $price, $cart, $shop)
-    {
-        if (($cart == 1 && $shop == 1) || ($cart == 1 && $shop == 0) || ($cart == 0 && $shop == 1)) {
-            $tax_amount = $price * ($rate / 100);
-            $total = $price + $tax_amount;
-
-            return $total;
-        }
-
-        return $price;
-    }
-
-    public function calculateSub($rate, $price, $cart, $shop)
-    {
-        if (($cart == 1 && $shop == 1) || ($cart == 1 && $shop == 0) || ($cart == 0 && $shop == 1)) {
-            $total = $price / (($rate / 100) + 1);
-
-            return $total;
-        }
-
-        return $price;
-    }
-
-    public function checkTax($productid, $price, $cart = 0, $cart1 = 0, $shop = 0)
-    {
-        try {
-            $product = Product::findOrFail($productid);
-            $controller = new \App\Http\Controllers\Front\CartController();
-
-            $currency = $controller->currency();
-            $tax_relation = TaxProductRelation::where('product_id', $productid)->first();
-            if (!$tax_relation) {
-                return $this->withoutTaxRelation($productid, $currency);
-            }
-            $taxes = Tax::where('tax_classes_id', $tax_relation->tax_class_id)
-            ->where('active', 1)
-            ->orderBy('created_at', 'asc')->get();
-            if (count($taxes) == 0) {
-                throw new \Exception('No taxes is avalable');
-            }
-            $tax_amount = $this->getTaxAmount($cart, $taxes, $price, $cart1, $shop);
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
 

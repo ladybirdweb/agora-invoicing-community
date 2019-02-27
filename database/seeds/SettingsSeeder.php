@@ -22,7 +22,8 @@ class SettingsSeeder extends Seeder
             'country'                   => 'IN',
             'default_currency'          => 'USD',
             'default_symbol'            => '$',
-            'website'                   => 'http://www.ladybirdweb.com',
+            'website'                   => 'https://www.ladybirdweb.com',
+            'logo'                      => 'faveo1.png',
             'admin_logo'                => 'faveo1.png',
             'fav_icon'                  => 'faveo.png',
             'error_log'                 => 1,
@@ -34,6 +35,7 @@ class SettingsSeeder extends Seeder
             'welcome_mail'              => 2,
             'download'                  => 9,
             'invoice_template'          => 8,
+            'file_storage'              => 'storage/upload',
 
         ]);
     }

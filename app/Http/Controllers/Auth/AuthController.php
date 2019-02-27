@@ -64,40 +64,39 @@ class AuthController extends BaseAuthController
             } else {
                 throw new NotFoundHttpException();
             }
-            //dd($email);
             $url = 'auth/login';
             $user = $user->where('email', $email)->first();
             if ($user->where('email', $email)->first()) {
                 $user->active = 1;
                 $user->save();
+                $zohoStatus = StatusSetting::pluck('zoho_status')->first();
+                $mailchimpStatus = StatusSetting::pluck('mailchimp_status')->first();
+                if ($zohoStatus) {
+                    $zoho = $this->reqFields($user, $email);
+                    $auth = ApiKey::where('id', 1)->value('zoho_api_key');
+                    $zohoUrl = 'https://crm.zoho.com/crm/private/xml/Leads/insertRecords??duplicateCheck=1&';
+                    $query = 'authtoken='.$auth.'&scope=crmapi&xmlData='.$zoho;
+                    $ch = curl_init();
+                    curl_setopt($ch, CURLOPT_URL, $zohoUrl);
+                    /* allow redirects */
+                    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+                    /* return a response into a variable */
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                    /* times out after 30s */
+                    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+                    /* set POST method */
+                    curl_setopt($ch, CURLOPT_POST, 1);
+                    /* add POST fields parameters */
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, $query); // Set the request as a POST FIELD for curl.
 
-                $zoho = $this->reqFields($user, $email);
-                $auth = ApiKey::where('id', 1)->value('zoho_api_key');
-                $zohoUrl = 'https://crm.zoho.com/crm/private/xml/Leads/insertRecords??duplicateCheck=1&';
-                $query = 'authtoken='.$auth.'&scope=crmapi&xmlData='.$zoho;
-                $ch = curl_init();
-                curl_setopt($ch, CURLOPT_URL, $zohoUrl);
-                /* allow redirects */
-                curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-                /* return a response into a variable */
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-                /* times out after 30s */
-                curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-                /* set POST method */
-                curl_setopt($ch, CURLOPT_POST, 1);
-                /* add POST fields parameters */
-                curl_setopt($ch, CURLOPT_POSTFIELDS, $query); // Set the request as a POST FIELD for curl.
-
-                //Execute cUrl session
-                $response = curl_exec($ch);
-                curl_close($ch);
-                $licenseStatus = StatusSetting::pluck('license_status')->first();
-                if ($licenseStatus == 1) {
-                    $addUserToLicensing = $this->licensing->addNewUser($user->first_name, $user->last_name, $user->email);
+                    //Execute cUrl session
+                    $response = curl_exec($ch);
+                    curl_close($ch);
                 }
-
-                $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
-                $r = $mailchimp->addSubscriber($user->email);
+                if ($mailchimpStatus == 1) {
+                    $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
+                    $r = $mailchimp->addSubscriber($user->email);
+                }
 
                 if (\Session::has('session-url')) {
                     $url = \Session::get('session-url');
@@ -208,9 +207,10 @@ class AuthController extends BaseAuthController
     public function verifyOtp($mobile, $code, $otp)
     {
         $client = new \GuzzleHttp\Client();
+        $key = ApiKey::where('id', 1)->value('msg91_auth_key');
         $number = $code.$mobile;
         $response = $client->request('GET', 'https://control.msg91.com/api/verifyRequestOTP.php', [
-            'query' => ['authkey' => '54870AO9t5ZB1IEY5913f8e2', 'mobile' => $number, 'otp' => $otp],
+            'query' => ['authkey' => $key, 'mobile' => $number, 'otp' => $otp],
         ]);
 
         return $response->getBody()->getContents();
@@ -317,9 +317,15 @@ class AuthController extends BaseAuthController
             $id = $state;
             $states = \App\Model\Common\State::where('country_code_char2', $id)
             ->orderBy('state_subdivision_name', 'asc')->get();
-            foreach ($states as $stateList) {
-                echo '<option value='.$stateList->state_subdivision_code.'>'
+
+            if (count($states) > 0) {
+                echo '<option value="">Choose</option>';
+                foreach ($states as $stateList) {
+                    echo '<option value='.$stateList->state_subdivision_code.'>'
                 .$stateList->state_subdivision_name.'</option>';
+                }
+            } else {
+                echo "<option value=''>No States Available</option>";
             }
         } catch (\Exception $ex) {
             echo "<option value=''>Problem while loading</option>";

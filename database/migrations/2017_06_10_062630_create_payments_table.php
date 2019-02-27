@@ -18,8 +18,8 @@ class CreatePaymentsTable extends Migration
             $table->integer('invoice_id');
             $table->integer('user_id');
             $table->string('amount')->nullable();
-            $table->string('payment_method');
-            $table->string('payment_status', 225);
+            $table->string('payment_method')->nullable();
+            $table->string('payment_status', 225)->nullable();
             $table->timestamps();
         });
     }

@@ -1,10 +1,23 @@
 @extends('themes.default1.layouts.master')
+@section('title')
+Plugins
+@stop
+@section('content-header')
+<h1>
+Payment Gateway
+</h1>
+  <ol class="breadcrumb">
+        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="{{url('settings')}}">Settings</a></li>
+        <li class="active">Plugins</li>
+      </ol>
+@stop
 @section('content')
 
 <div class="row">
 
     <div class="col-md-12">
-        <div class="box">
+        
 
             <div class="box box-primary">
     <div class="box-header">
@@ -88,7 +101,7 @@
     </div>
 </div>
 
-        </div>
+      
         <!-- /.box -->
 
     </div>

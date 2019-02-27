@@ -56,6 +56,7 @@ All Plans
     <div id="response"></div>
 
     <div class="box-body">
+         @include('themes.default1.product.plan.popup.create-period') 
         <div class="row">
             <div class="col-md-12">
               

@@ -47,13 +47,12 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
      **/
     public function getGrandTotal($code, $total, $cost, $productid, $currency)
     {
+        $grand_total = $total;
         if ($code) {
             $grand_total = $this->checkCode($code, $productid, $currency);
         } else {
-            if (!$total) {
+            if ($total != 0) {
                 $grand_total = $cost;
-            } else {
-                $grand_total = $total;
             }
         }
 
@@ -73,25 +72,6 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
         }
 
         return $result;
-    }
-
-    public function currency($invoiceid)
-    {
-        $invoice = Invoice::find($invoiceid);
-        $currency_code = $invoice->currency;
-        $cur = ' ';
-        if ($invoice->grand_total == 0) {
-            return $cur;
-        }
-        $currency = Currency::where('code', $currency_code)->first();
-        if ($currency) {
-            $cur = $currency->symbol;
-            if (!$cur) {
-                $cur = $currency->code;
-            }
-        }
-
-        return $cur;
     }
 
     /**
@@ -131,18 +111,6 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
 
             throw new \Exception($ex->getMessage());
         }
-    }
-
-    public function getPrice($price, $price_model)
-    {
-        if ($price == '') {
-            $price = $price_model->sales_price;
-            if (!$price) {
-                $price = $price_model->price;
-            }
-        }
-
-        return $price;
     }
 
     public function checkExecution($invoiceid)
@@ -191,6 +159,25 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
         }
 
         return $content;
+    }
+
+    public function currency($invoiceid)
+    {
+        $invoice = Invoice::find($invoiceid);
+        $currency_code = $invoice->currency;
+        $cur = ' ';
+        if ($invoice->grand_total == 0) {
+            return $cur;
+        }
+        $currency = Currency::where('code', $currency_code)->first();
+        if ($currency) {
+            $cur = $currency->symbol;
+            if (!$cur) {
+                $cur = $currency->code;
+            }
+        }
+
+        return $cur;
     }
 
     public function sendInvoiceMail($userid, $number, $total, $invoiceid)
@@ -267,7 +254,6 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
     {
         try {
             $cltCont = new \App\Http\Controllers\User\ClientController();
-            $amountReceived = $cltCont->getAmountPaid($id);
             $payment = Payment::find($id);
             $clientid = $payment->user_id;
             $invoice = new Invoice();
@@ -286,24 +272,6 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
             return view('themes.default1.invoice.editPayment',
                 compact('amountReceived','clientid', 'client', 'invoices',  'orders',
                   'invoiceSum', 'amountReceived', 'pendingAmount', 'currency', 'symbol'));
-        } catch (\Exception $e) {
-            Bugsnag::notifyException($e);
-
-            return redirect()->back()->with('fails', $e->getMessage());
-        }
-    }
-
-    public function deleleById($id)
-    {
-        try {
-            $invoice = Invoice::find($id);
-            if ($invoice) {
-                $invoice->delete();
-            } else {
-                return redirect()->back()->with('fails', 'Can not delete');
-            }
-
-            return redirect()->back()->with('success', "Invoice $invoice->number has been Deleted Successfully");
         } catch (\Exception $e) {
             Bugsnag::notifyException($e);
 

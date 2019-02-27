@@ -63,7 +63,7 @@
     </td>
 
     <td class="woocommerce-table__product-total product-total">
-        <span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol">{{$attributes[0]['currency'][0]['symbol']}}</span> {{$invoice->grand_total}}</span>    </td>
+        <span class="woocommerce-Price-amount amount"> {{currency_format($invoice->grand_total,$code=\Auth::user()->currency)}}</span>    </td>
 
 </tr>
 
@@ -79,7 +79,7 @@
                     </tr>
                                         <tr>
                         <th scope="row">Total:</th>
-                            <td><span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol">{{$attributes[0]['currency'][0]['symbol']}}</span> {{$invoice->grand_total}}</span></td>
+                            <td><span class="woocommerce-Price-amount amount"> {{currency_format($invoice->grand_total,$code = \Auth::user()->currency)}}</span></td>
                     </tr>
                             </tfoot>
     </table>

@@ -15,7 +15,11 @@
                 <div class="page-content">
                     <div>
 <div>
-
+          <?php
+          $currency = \Auth::user()->currency;
+          $cont = new \App\Http\Controllers\License\LicensePermissionsController();
+            $downloadPermission = $cont->getPermissionsForProduct($product->id);
+          ?>
     
         
             <strong>Thank you. Your Subscription has been renewed.</strong>
@@ -35,11 +39,11 @@
                     </li>
                 
                 <li class="woocommerce-order-overview__total total">
-                    Total:                    <strong><span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol"></span>{{$currency}} {{$invoiceItem->subtotal}}</span></strong>
+                    Total:                    <strong><span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol"></span>{{currency_format($invoiceItem->subtotal,$code = $currency)}}</span></strong>
                 </li>
 
                                     <li class="woocommerce-order-overview__payment-method method">
-                        Payment method:                        <strong>Razorpay</strong>
+                        Payment method: <strong>Razorpay</strong>
                     </li>
                 
             </ul>
@@ -67,7 +71,7 @@
         <strong>{{$invoiceItem->product_name}}</strong> <strong>× {{$invoiceItem->quantity}}</strong>    </td>
 
     <td class="woocommerce-table__product-total product-total">
-        <span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol">{{$currency}}</span> {{$invoiceItem->regular_price}}</span>    </td>
+        <span class="woocommerce-Price-amount amount">{{currency_format($invoiceItem->subtotal,$code = $currency)}}</span>    </td>
 
 </tr>
 
@@ -81,7 +85,7 @@
 
                                         <tr>
                         <th scope="row">Total:</th>
-                        <td><span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol">{{$currency}}</span> {{$invoiceItem->subtotal}}</span></td>
+                        <td><span class="woocommerce-Price-amount amount">{{currency_format($invoiceItem->subtotal,$code = $currency)}}</span></td>
                     </tr>
                             </tfoot>
     </table>
@@ -95,7 +99,9 @@
     <strong>
       {{\Auth::user()->first_name}} {{\Auth::user()->last_name}}<br>{{\Auth::user()->address}}<br>{{\Auth::user()->town}} - {{\Auth::user()->zip}}<br> {{$state}} <br>
                    {{\Auth::user()->mobile}} <br><br>
-                     <a href=" product/download/{{$product->id}} / {{$invoice->number}} " class="btn btn-sm btn-primary btn-xs" style="margin-bottom:15px;"><i class="fa fa-download" style="color:white;"> </i>&nbsp;&nbsp;Download the Latest Version here</a>
+                    @if($downloadPermission['downloadPermission'] == 1)
+                     <a href=" product/download/{{$product->id}}/{{$invoice->number}} " class="btn btn-sm btn-primary btn-xs" style="margin-bottom:15px;"><i class="fa fa-download" style="color:white;"> </i>&nbsp;&nbsp;Download the Latest Version here</a>
+                    @endif
                    
             </strong>
 

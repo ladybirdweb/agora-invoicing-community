@@ -4,13 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
+use App\Model\Product\Subscription;
 use Illuminate\Http\Request;
 
 class BaseHomeController extends Controller
 {
     public static function decryptByFaveoPrivateKey($encrypted)
     {
-        // dump($encrypted);
         $encrypted = json_decode($encrypted);
         $sealed_data = $encrypted->seal;
         $envelope = $encrypted->envelope;
@@ -141,5 +141,34 @@ class BaseHomeController extends Controller
         $result = self::decryptByFaveoPrivateKey($enc);
 
         return response()->json($result);
+    }
+
+    public function checkUpdatesExpiry(Request $request)
+    {
+        $v = \Validator::make($request->all(), [
+          'order_number' => 'required',
+        ]);
+        if ($v->fails()) {
+            $error = $v->errors();
+
+            return response()->json(compact('error'));
+        }
+
+        try {
+            $order_number = $request->input('order_number');
+            $orderId = Order::where('number', 'LIKE', $order_number)->pluck('id')->first();
+            if ($orderId) {
+                $expiryDate = Subscription::where('order_id', $orderId)->pluck('update_ends_at')->first();
+                if (\Carbon\Carbon::now()->toDateTimeString() < $expiryDate->toDateTimeString()) {
+                    return ['status' => 'success', 'message' => 'allow-auto-update'];
+                }
+            }
+
+            return ['status' => 'fails', 'message' => 'do-not-allow-auto-update'];
+        } catch (\Exception $e) {
+            $result = ['status'=>'fails', 'error' => $e->getMessage()];
+
+            return $result;
+        }
     }
 }

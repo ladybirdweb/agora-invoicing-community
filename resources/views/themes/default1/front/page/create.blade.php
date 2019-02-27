@@ -83,36 +83,59 @@ Create New Page
                 </div>
                 <div class="row">
 
-                    <div class="col-md-6 form-group {{ $errors->has('url') ? 'has-error' : '' }}">
+                    <div class="col-md-4 form-group {{ $errors->has('url') ? 'has-error' : '' }}">
                         <!-- first name -->
                         {!! Form::label('url',Lang::get('message.url'),['class'=>'required']) !!}
                         {!! Form::text('url',null,['class' => 'form-control','id'=>'url']) !!}
 
                     </div>
 
-                    <div class="col-md-6 form-group {{ $errors->has('parent_page_id') ? 'has-error' : '' }}">
+                    <div class="col-md-4 form-group {{ $errors->has('parent_page_id') ? 'has-error' : '' }}">
                         <!-- last name -->
                         {!! Form::label('parent_page_id',Lang::get('message.parent-page')) !!}
-                        {!! Form::select('parent_page_id',[''=>'Select','Parent Pages'=>$parents],null,['class' => 'form-control']) !!}
+                        {!! Form::select('parent_page_id',['0'=>'Choose','Parent Pages'=>$parents],null,['class' => 'form-control']) !!}
+
+                    </div>
+                   
+                    <div class="col-md-4 form-group {{ $errors->has('parent_page_id') ? 'has-error' : '' }}">
+                        <!-- last name -->
+                        {!! Form::label('type',Lang::get('message.page_type')) !!}
+                          {!! Form::select('type',['none'=>'None','contactus'=>'Contact Us'],null,['class' => 'form-control']) !!} 
 
                     </div>
 
-
-
-
-                </div>
+                 </div>
 
                 <div class="row">
                     <div class="col-md-12 form-group">
 
                         <script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
                         <script>
-    tinymce.init({
-    selector: 'textarea',
-    plugins: "code",
-    toolbar: "code",
-    menubar: "tools"
-});
+             tinymce.init({
+                          selector: 'textarea',
+                          height: 500,
+                          theme: 'modern',
+                          relative_urls: true,
+                          remove_script_host: false,
+                          convert_urls: false,
+                          plugins: [
+                              'advlist autolink lists link image charmap print preview hr anchor pagebreak',
+                              'searchreplace wordcount visualblocks visualchars code fullscreen',
+                              'insertdatetime media nonbreaking save table contextmenu directionality',
+                              'emoticons template paste textcolor colorpicker textpattern imagetools'
+                          ],
+                          toolbar1: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
+                          toolbar2: 'print preview media | forecolor backcolor emoticons',
+                          image_advtab: true,
+                          templates: [
+                              {title: 'Test template 1', content: 'Test 1'},
+                              {title: 'Test template 2', content: 'Test 2'}
+                          ],
+                          content_css: [
+                              '//fast.fonts.net/cssapi/e6dc9b99-64fe-4292-ad98-6974f93cd2a2.css',
+                              '//www.tinymce.com/css/codepen.min.css'
+                          ]
+                      });
 </script>
 
 
@@ -155,7 +178,7 @@ Create New Page
             data:{'slug':this.value},
             url: "{{url('get-url')}}",
             success: function (data) {
-                $("#slug").val(data)
+               $("#slug").val(data);
             }
         });
     });

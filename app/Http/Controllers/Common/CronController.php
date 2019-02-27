@@ -41,9 +41,9 @@ class CronController extends BaseCronController
         $yesterday = new Carbon('today');
         $sub = $this->sub
                 ->where('order_id', $orderid)
-                ->where('ends_at', '!=', '0000-00-00 00:00:00')
-                ->whereNotNull('ends_at')
-                ->where('ends_at', '<', $yesterday)
+                ->where('update_ends_at', '!=', '0000-00-00 00:00:00')
+                ->whereNotNull('update_ends_at')
+                ->where('update_ends_at', '<', $yesterday)
                 ->first();
 
         return $sub;
@@ -253,7 +253,7 @@ class CronController extends BaseCronController
         foreach ($sub as $value) {
             $userid = $value->user_id;
             $user = $this->getUserById($userid);
-            $end = $value->ends_at;
+            $end = $value->update_ends_at;
             $order = $this->getOrderById($value->order_id);
             $invoice = $this->getInvoiceByOrderId($value->order_id);
             $item = $this->getInvoiceItemByInvoiceId($invoice->id);

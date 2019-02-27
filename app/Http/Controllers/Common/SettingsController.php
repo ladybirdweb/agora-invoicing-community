@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Common;
 
 use App\ApiKey;
+use App\Model\Common\Mailchimp\MailchimpSetting;
 use App\Model\Common\Setting;
 use App\Model\Common\StatusSetting;
 use App\Model\Common\Template;
@@ -18,6 +19,7 @@ use Spatie\Activitylog\Models\Activity;
 class SettingsController extends BaseSettingsController
 {
     public $apikey;
+    public $statusSetting;
 
     public function __construct()
     {
@@ -26,6 +28,9 @@ class SettingsController extends BaseSettingsController
 
         $apikey = new ApiKey();
         $this->apikey = $apikey;
+
+        $status = new StatusSetting();
+        $this->statusSetting = $status;
     }
 
     public function settings(Setting $settings)
@@ -43,6 +48,11 @@ class SettingsController extends BaseSettingsController
         return view('themes.default1.common.plugins');
     }
 
+    /**
+     * Get the Status and Api Keys for Settings Module.
+     *
+     * @param ApiKey $apikeys
+     */
     public function getKeys(ApiKey $apikeys)
     {
         try {
@@ -50,11 +60,28 @@ class SettingsController extends BaseSettingsController
             $licenseUrl = $apikeys->pluck('license_api_url')->first();
             $status = StatusSetting::pluck('license_status')->first();
             $captchaStatus = StatusSetting::pluck('recaptcha_status')->first();
+            $updateStatus = StatusSetting::pluck('update_settings')->first();
+            $mobileStatus = StatusSetting::pluck('msg91_status')->first();
             $siteKey = $apikeys->pluck('nocaptcha_sitekey')->first();
             $secretKey = $apikeys->pluck('captcha_secretCheck')->first();
+            $updateSecret = $apikeys->pluck('update_api_secret')->first();
+            $mobileauthkey = $apikeys->pluck('msg91_auth_key')->first();
+            $updateUrl = $apikeys->pluck('update_api_url')->first();
+            $emailStatus = StatusSetting::pluck('emailverification_status')->first();
+            $twitterKeys = $apikeys->select('twitter_consumer_key','twitter_consumer_secret',
+                'twitter_access_token', 'access_tooken_secret')->first();
+            $twitterStatus = $this->statusSetting->pluck('twitter_status')->first();
+            $zohoStatus = $this->statusSetting->pluck('zoho_status')->first();
+            $zohoKey = $apikeys->pluck('zoho_api_key')->first();
+            $rzpStatus = $this->statusSetting->pluck('rzp_status')->first();
+            $rzpKeys = $apikeys->select('rzp_key', 'rzp_secret', 'apilayer_key')->first();
+            $mailchimpSetting = StatusSetting::pluck('mailchimp_status')->first();
+            $mailchimpKey = MailchimpSetting::pluck('api_key')->first();
+            $termsStatus = StatusSetting::pluck('terms')->first();
+            $termsUrl = $apikeys->pluck('terms_url')->first();
             $model = $apikeys->find(1);
 
-            return view('themes.default1.common.apikey', compact('model', 'status', 'licenseSecret', 'licenseUrl', 'siteKey', 'secretKey', 'captchaStatus'));
+            return view('themes.default1.common.apikey', compact('model', 'status', 'licenseSecret', 'licenseUrl', 'siteKey', 'secretKey', 'captchaStatus', 'updateStatus', 'updateSecret', 'updateUrl', 'mobileStatus', 'mobileauthkey', 'emailStatus', 'twitterStatus', 'twitterKeys', 'zohoStatus', 'zohoKey', 'rzpStatus', 'rzpKeys', 'mailchimpSetting', 'mailchimpKey', 'termsStatus', 'termsUrl'));
         } catch (\Exception $ex) {
             return redirect('/')->with('fails', $ex->getMessage());
         }
@@ -72,14 +99,38 @@ class SettingsController extends BaseSettingsController
         }
     }
 
+    /**
+     * PAyment Gateway that is shown on the basis of currency.
+     *
+     * @param string $currency The currency of the Product Selected
+     *
+     * @return string Name of the Payment Gateway
+     */
     public static function checkPaymentGateway($currency)
     {
         try {
             $plugins = new Plugin();
             $models = [];
-            $gateways = 'Razorpay';
+            $gateways = '';
+            $name = '';
+            $active_plugins = $plugins->where('status', 1)->get(); //get the plugins that are active
+            if ($active_plugins->count() > 0) {
+                foreach ($active_plugins as $plugin) {
+                    $models[] = \DB::table(strtolower($plugin->name))->first(); //get the table of the active plugin
+                    $pluginName[] = $plugin->name; //get the name of active plugin
+                }
 
-            return $gateways;
+                if (count($models) > 0) {//If more than 1 plugin is active it will check the currencies allowed for that plugin.If the currencies allowed matches the passed arguement(currency),that plugin name is returned
+                    for ($i = 0; $i < count($pluginName); $i++) {
+                        $currencies = explode(',', $models[$i]->currencies);
+                        if (in_array($currency, $currencies)) {
+                            $name = $pluginName[$i];
+                        }
+                    }
+                }
+            }
+
+            return $name;
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -96,8 +147,10 @@ class SettingsController extends BaseSettingsController
             ->pluck('name', 'symbol')->toArray();
             $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($set->country);
 
-            return view('themes.default1.common.setting.system',
-                compact('set', 'selectedCountry', 'state', 'states', 'selectedCurrency'));
+            return view(
+                'themes.default1.common.setting.system',
+                compact('set', 'selectedCountry', 'state', 'states', 'selectedCurrency')
+            );
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -120,22 +173,21 @@ class SettingsController extends BaseSettingsController
 
         try {
             $setting = $settings->find(1);
-
             if ($request->hasFile('logo')) {
                 $name = $request->file('logo')->getClientOriginalName();
-                $destinationPath = public_path('cart/img/logo');
+                $destinationPath = public_path('common/images');
                 $request->file('logo')->move($destinationPath, $name);
                 $setting->logo = $name;
             }
             if ($request->hasFile('admin-logo')) {
                 $logoName = $request->file('admin-logo')->getClientOriginalName();
-                $destinationPath = public_path('images/admin-logo');
+                $destinationPath = public_path('admin/images');
                 $request->file('admin-logo')->move($destinationPath, $logoName);
                 $setting->admin_logo = $logoName;
             }
             if ($request->hasFile('fav-icon')) {
                 $iconName = $request->file('fav-icon')->getClientOriginalName();
-                $destinationPath = public_path('images/favicon');
+                $destinationPath = public_path('common/images');
                 $request->file('fav-icon')->move($destinationPath, $iconName);
                 $setting->fav_icon = $iconName;
             }
@@ -248,8 +300,6 @@ class SettingsController extends BaseSettingsController
             $delFrom = $request->input('delFrom');
             $delTill = $request->input('delTill');
             $query = $this->advanceSearch($from, $till, $delFrom, $delTill);
-            // $activity_log = Activity::select('id', 'log_name', 'description',
-            //     'subject_id', 'subject_type', 'causer_id', 'properties', 'created_at')->orderBy('id', 'desc');
 
             return \DataTables::of($query->take(50))
              ->setTotalRecords($query->count())
@@ -314,7 +364,6 @@ class SettingsController extends BaseSettingsController
                                 'username', 'role', 'new', 'old', 'created_at', ])
                             ->make(true);
         } catch (\Exception $e) {
-            dd($e);
             Bugsnag::notifyException($e);
 
             return redirect()->back()->with('fails', $e->getMessage());
@@ -324,45 +373,48 @@ class SettingsController extends BaseSettingsController
     public function getMails()
     {
         try {
-            $email_log = \DB::table('email_log')->get();
+            $email_log = \DB::table('email_log')->orderBy('date', 'desc')->get();
 
             return\ DataTables::of($email_log)
              ->addColumn('checkbox', function ($model) {
                  return "<input type='checkbox' class='email' value=".$model->id.' name=select[] id=check>';
              })
                            ->addColumn('date', function ($model) {
-                               return ucfirst($model->date);
+                               $date = $model->date;
+                               if ($date) {
+                                   $date1 = new \DateTime($date);
+                                   $tz = \Auth::user()->timezone()->first()->name;
+                                   $date1->setTimezone(new \DateTimeZone($tz));
+                                   $finalDate = $date1->format('M j, Y, g:i a ');
+                               }
+
+                               return $finalDate;
                            })
                              ->addColumn('from', function ($model) {
-                                 $from = Markdown::convertToHtml(ucfirst($model->from));
+                                 $from = Markdown::convertToHtml($model->from);
 
                                  return $from;
                              })
                               ->addColumn('to', function ($model) {
-                                  $to = Markdown::convertToHtml(ucfirst($model->to));
+                                  $to = Markdown::convertToHtml($model->to);
 
                                   return $to;
                               })
-                             ->addColumn('cc', function ($model) {
-                                 $cc = '--';
-
-                                 return $cc;
-                             })
 
                                ->addColumn('subject', function ($model) {
                                    return ucfirst($model->subject);
                                })
-                                ->addColumn('headers', function ($model) {
-                                    $headers = Markdown::convertToHtml(ucfirst($model->headers));
+                                // ->addColumn('headers', function ($model) {
+                                //     $headers = Markdown::convertToHtml(ucfirst($model->headers));
 
-                                    return $headers;
-                                })
+                                //     return $headers;
+                                // })
                               ->addColumn('status', function ($model) {
                                   return ucfirst($model->status);
                               })
 
-                            ->rawColumns(['checkbox', 'date', 'from', 'to', 'cc',
-                                'bcc', 'subject', 'headers', 'status', ])
+                            ->rawColumns(['checkbox', 'date', 'from', 'to',
+                                'bcc', 'subject',  'status', ])
                             ->make(true);
         } catch (\Exception $e) {
             Bugsnag::notifyException($e);

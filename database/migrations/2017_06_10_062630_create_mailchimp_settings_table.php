@@ -14,8 +14,8 @@ class CreateMailchimpSettingsTable extends Migration
     {
         Schema::create('mailchimp_settings', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('api_key');
-            $table->string('list_id');
+            $table->string('api_key')->nullable();
+            $table->string('list_id')->nullable();
             $table->string('subscribe_status')->default('subscribed');
             $table->string('group_id_products', 255)->nullable();
             $table->string('group_id_is_paid', 255)->nullable();

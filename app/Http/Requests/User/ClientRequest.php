@@ -30,8 +30,7 @@ class ClientRequest extends Request
                         'last_name'  => 'required',
                         'email'      => 'required|email|unique:users',
                         'mobile'     => 'required|numeric',
-
-                        'mobile_code' => 'required|numeric',
+                        'bussiness'  => 'required',
 
                         'address'          => 'required',
                         'zip'              => 'required',

@@ -41,6 +41,9 @@ Order Details
                         </div>
                         <div class="col-md-6">
      @include('themes.default1.front.clients.reissue-licenseModal')
+     @include('themes.default1.order.update_ends-modal')
+      @include('themes.default1.order.license_end-modal')
+       @include('themes.default1.order.support_end-modal')
                             <table class="table table-hover">
                                 <tbody><tr><td><b>Name:</b></td><td><a href="{{url('clients/'.$user->id)}}">{{ucfirst($user->first_name)}}</a></td></tr>
                                     <tr><td><b>Email:</b></td><td>{{$user->email}}</td></tr>
@@ -61,30 +64,67 @@ Order Details
                             <table class="table table-hover">
    
                               
-                                <tbody><tr><td><b>Serial Key:</b></td><td>{{($order->serial_key)}}</td></tr>
+                                <tbody><tr><td><b>License Code:</b></td><td>{{($order->serial_key)}}</td></tr>
                                     <tr>
                                         
                                             <td>
-                                                 <label name="domain" data-toggle="tooltip" data-placement="top" title="{!!Lang::get('message.domain-message') !!}">
+                                                 <label name="domain">
                                                     <b>Licensed Domain:</b></td><td contenteditable="false" id="domain">{{$order->domain}}
-                                                      <button class='class="btn btn-danger mb-2 pull-right' style="border:none;" id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}"
-                                                >
+                                                       @if ($licenseStatus == 1)
+                                      <button class='class="btn btn-danger mb-2 pull-right' style="border:none;" id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}">
                                 Reissue Licesnse</button>
+                                @endif
                             </td></tr>
                                     <?php
                                     $date = "--";
+                                    $licdate = "--";
+                                    $supdate= "--";
                                     if ($subscription) {
-                                        if ($subscription->ends_at != '' || $subscription->ends_at != '0000-00-00 00:00:00') {
-                                             $date1 = new DateTime($subscription->ends_at);
+                                        if (strtotime($subscription->update_ends_at) >1) {
+                                             $date1 = new DateTime($subscription->update_ends_at);
                                                 $tz = \Auth::user()->timezone()->first()->name;
                                                 $date1->setTimezone(new DateTimeZone($tz));
                                                 $date = $date1->format('M j, Y, g:i a ');
-
+                                                $updatesEnd = date('d/m/Y', strtotime($subscription->update_ends_at));
+                                                
+                                             }
+                                             if ((strtotime($subscription->ends_at) > 1)) {
+                                             $date2 = new DateTime($subscription->ends_at);
+                                                $tz = \Auth::user()->timezone()->first()->name;
+                                                $date2->setTimezone(new DateTimeZone($tz));
+                                                $licdate = $date2->format('M j, Y, g:i a ');
+                                                $licenseEnd =  date('d/m/Y', strtotime($subscription->ends_at));
+                                             }
+                                            if (strtotime($subscription->support_ends_at) > 1) {
+                                             $date3 = new DateTime($subscription->support_ends_at);
+                                                $tz = \Auth::user()->timezone()->first()->name;
+                                                $date3->setTimezone(new DateTimeZone($tz));
+                                                $supdate = $date3->format('M j, Y, g:i a ');
+                                                $supportEnd =  date('d/m/Y', strtotime($subscription->support_ends_at));
                                                 
                                              }
                                     }
                                     ?>
-                                    <tr><td><b>Subscription End:</b></td><td>{{$date}}</td></tr>
+                                    <tr><td><b>Updates Expiry Date:</b></td><td>{{$date}}
+                                      @if($date != '--')
+                                    <a class='class="btn btn-sm btn-primary btn-xs pull-right' id="updates_end" updates-id="{{$order->id}}" data-date="{{$updatesEnd}}" style='color:white;border-radius:0px;'><i class="fa fa-edit">&nbsp;</i>
+                                Edit</a>
+                                @endif
+                              </td></tr>
+
+                                <tr><td><b>License Expiry Date:</b></td><td>{{$licdate}}
+                                  @if($licdate != '--')
+                                    <a class='class="btn btn-sm btn-primary btn-xs pull-right' id="license_end" license-id="{{$order->id}}" license-date="{{$licenseEnd}}" style='color:white;border-radius:0px;'><i class="fa fa-edit">&nbsp;</i>
+                                Edit</a>
+                                @endif
+                              </td></tr>
+
+                              <tr><td><b>Support Expiry Date:</b></td><td>{{$supdate}}
+                                @if($supdate != '--')
+                                    <a class='class="btn btn-sm btn-primary btn-xs pull-right' id="support_end" support-id="{{$order->id}}" support-date="{{$supportEnd}}" style='color:white;border-radius:0px;'><i class="fa fa-edit">&nbsp;</i>
+                                Edit</a>
+                                @endif
+                              </td></tr>
 
                                 </tbody></table>
                         </div>
@@ -104,14 +144,14 @@ Order Details
                 <div class="row">
                     <div class="col-md-12">
                          <table id="editorder-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
-                             <button  value="" class="btn btn-danger btn-sm btn-alldell" id="mass_delete"><i class= "fa fa-trash"></i>&nbsp;&nbsp;Delete Selected</button><br /><br />
+                             
 
                     <thead><tr>
                         
                          <th >Number</th>
                           <th>Products</th>
                            
-                            <th>Date No</th>
+                            <th>Date</th>
                             <th>Total</th>
                             
                              <th>Status</th>
@@ -230,6 +270,7 @@ Order Details
                 {data: 'amount', name: 'amount'},
                 {data: 'payment_method', name: 'payment_method'},
                 {data: 'payment_status', name: 'payment_status'},
+                {data: 'created_at', name: 'created_at'},
                  
                
             ],
@@ -287,6 +328,13 @@ Order Details
 </script>
 @stop
 @section('datepicker')
+<script type="text/javascript">
+      $(function () {
+   //Datemask dd/mm/yyyy
+  $('[data-mask]').inputmask()
+  });
+</script>
+<!-----------------------------------For Reissuing License Domain------------------------------------------------------------->
 <script>
         $("#reissueLic").click(function(){
             var oldDomainName = $(this).attr('data-name');
@@ -296,21 +344,7 @@ Order Details
            $("#orderId").val(oldDomainId);
         });
         $("#licenseSave").on('click',function(){
-      //   var pattern = new RegExp(/^((?!-))(xn--)?[a-z0-9][a-z0-9-_]{0,61}[a-z0-9]{0,1}\.(xn--)?([a-z0-9\-]{1,61}|[a-z0-9-]{1,30}\.[a-z]{2,})$/);
-      //         if (pattern.test($('#newDomain').val())){
-      //            $('#domaincheck').hide();
-      //            $('#newDomain').css("border-color","");
-      //         }
-      //         else{
-      //            $('#domaincheck').show();
-      //          $('#domaincheck').html("Please enter a valid Domain");
-      //            $('#domaincheck').focus();
-      //             $('#newDomain').css("border-color","red");
-      //            $('#domaincheck').css({"color":"red","margin-top":"5px"});
-      //              domErr = false;
-      //               return false;
-              
-      // }
+      
             var domain = $('#newDomain').val();
             var id = $('#orderId').val();
              
@@ -336,6 +370,160 @@ Order Details
                 }
                 
             });
+        });
+
+
+ 
+<!------------------------------------------------------------------------------------------------------------------------------->
+/*
+* Update Updates Expiry date 
+ */
+
+ $("#updates_end").click(function(){
+        var olddate = $(this).attr('data-date');
+        var orderId = $(this).attr('updates-id');
+        $("#updateEndsModal").modal();
+        $("#order").val(orderId);
+        $("#newDate").val(olddate);
+        });
+
+ //When Submit Button is Clicked in Modal Popup, passvalue through Ajax
+    $("#updatesSave").on('click',function(){
+        var newdate = $("#newDate").val();
+        var orderId = $("#order").val();
+        $.ajax({
+            type: "get",
+            data: {'orderid': orderId , 'date': newdate},
+            url: "{{url('edit-update-expiry')}}",
+             beforeSend: function () {
+                 $('#response2').html( "<img id='blur-bg' class='backgroundfadein' style='top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
+
+            },
+            success: function (response) {
+                if (response.message =='success') {
+
+                var result =  '<div class="alert alert-success alert-dismissable"><strong><i class="fa fa-check"></i> Success! </strong> '+response.update+' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
+                     $('#response2').html(result);
+                     $('#response2').css('color', 'green');
+                 setTimeout(function(){
+                    window.location.reload();
+                },3000);
+                }
+            },
+            error: function(response) {
+                var myJSON = JSON.parse(response.responseText).errors;
+                var html = '<div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<br><br><ul>';
+                  for (var key in myJSON)
+                  {
+                      html += '<li>' + myJSON[key][0] + '</li>'
+                  }
+                 html += '</ul></div>';
+                 $('#error2').show(); 
+                 $('#response2').html(''); 
+                  document.getElementById('error2').innerHTML = html;
+                }
+        });
+    });
+<!--------------------------------------------------------------------------------------------------------------------->
+
+ /*
+* Update License Expiry date 
+ */
+
+ $("#license_end").click(function(){
+        var olddate = $(this).attr('license-date');
+        var orderId = $(this).attr('license-id');
+        $("#licenseEndsModal").modal();
+        $("#order2").val(orderId);
+        $("#newDate2").val(olddate);
+        });
+
+ //When Submit Button is Clicked in Modal Popup, passvalue through Ajax
+    $("#licenseExpSave").on('click',function(){
+        var newdate = $("#newDate2").val();
+        var orderId = $("#order2").val();
+        $.ajax({
+            type: "get",
+            data: {'orderid': orderId , 'date': newdate},
+            url: "{{url('edit-license-expiry')}}",
+             beforeSend: function () {
+                 $('#response3').html( "<img id='blur-bg' class='backgroundfadein' style='top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
+
+            },
+            success: function (response) {
+                if (response.message =='success') {
+                var result =  '<div class="alert alert-success alert-dismissable"><strong><i class="fa fa-check"></i> Success! </strong> '+response.update+' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
+                     $('#response3').html(result);
+                     $('#response3').css('color', 'green');
+                 setTimeout(function(){
+                    window.location.reload();
+                },3000);
+                }
+            },
+            error: function(response) {
+                  var myJSON = JSON.parse(response.responseText).errors;
+                       var html = '<div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<br><br><ul>';
+                          for (var key in myJSON)
+                          {
+                              html += '<li>' + myJSON[key][0] + '</li>'
+                          }
+                         html += '</ul></div>';
+                         $('#error1').show(); 
+                         $('#response3').html(''); 
+                          document.getElementById('error1').innerHTML = html;
+                }
+            })
+        });
+  <!-------------------------------------------------------------------------------------------------------------------------->  
+  
+
+/*
+* Update Support Expiry date 
+ */
+
+ $("#support_end").click(function(){
+        var olddate = $(this).attr('support-date');
+        var orderId = $(this).attr('support-id');
+        $("#supportEndsModal").modal();
+        $("#order3").val(orderId);
+        $("#newDate3").val(olddate);
+        });
+
+ //When Submit Button is Clicked in Modal Popup, passvalue through Ajax
+    $("#supportExpSave").on('click',function(){
+        var newdate = $("#newDate3").val();
+        var orderId = $("#order3").val();
+        $.ajax({
+            type: "get",
+            data: {'orderid': orderId , 'date': newdate},
+            url: "{{url('edit-support-expiry')}}",
+             beforeSend: function () {
+                 $('#response4').html( "<img id='blur-bg' class='backgroundfadein' style='top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
+
+            },
+            success: function (response) {
+                if (response.message =='success') {
+                var result =  '<div class="alert alert-success alert-dismissable"><strong><i class="fa fa-check"></i> Success! </strong> '+response.update+' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
+                     $('#response4').html(result);
+                     $('#response4').css('color', 'green');
+                 setTimeout(function(){
+                    window.location.reload();
+                },3000);
+                }
+            },
+            error: function(response) {
+                  var myJSON = JSON.parse(response.responseText).errors;
+                       var html = '<div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<br><br><ul>';
+                          for (var key in myJSON)
+                          {
+                              html += '<li>' + myJSON[key][0] + '</li>'
+                          }
+                         html += '</ul></div>';
+                         $('#error3').show(); 
+                         $('#response4').html(''); 
+                          document.getElementById('error3').innerHTML = html;
+                }
+            })
         });
 
 

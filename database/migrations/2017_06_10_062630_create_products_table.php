@@ -22,11 +22,11 @@ class CreateProductsTable extends Migration
             $table->integer('group')->unsigned()->index('products_group_foreign');
             $table->string('welcome_email');
             $table->integer('require_domain');
-            $table->integer('stock_control');
-            $table->integer('stock_qty');
-            $table->integer('sort_order');
+            $table->boolean('can_modify_agent')->nullable();
+            $table->boolean('can_modify_quantity')->nullable();
+            $table->boolean('show_agent')->nullable();
+            $table->boolean('show_product_quantity')->nullable();
             $table->integer('tax_apply');
-            $table->integer('retired');
             $table->integer('deny_after_subscription');
             $table->integer('hidden');
             $table->integer('multiple_qty');

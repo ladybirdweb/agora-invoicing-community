@@ -110,10 +110,6 @@ All Currencies
         @endif
         <div id="response"></div>
        
-            <!--<a href="{{url('currency/create')}}" class="btn btn-primary pull-right   ">{{Lang::get('message.create')}}</a>-->
-            <a href="#create" class="btn btn-primary btn-sm pull-right" data-toggle="modal" data-target="#create"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;{{Lang::get('message.create')}}</a>
-        </h4>
-        @include('themes.default1.payment.currency.create')
     </div>
 
 
@@ -130,6 +126,7 @@ All Currencies
                          <th>CurrencyName</th>
                           <th>Currency Code</th>
                           <th>Currency symbol</th>
+                          <th>Dashboard Currency</th>
                           <th>Status</th>
                          
                         </tr>
@@ -174,6 +171,7 @@ All Currencies
                 {data: 'name', name: 'name'},
                 {data: 'code', name: 'code'},
                 {data: 'symbol', name: 'symbol'},
+                {data: 'dashboard', name: 'dashboard'},
                 {data: 'status', name: 'status'},
                 
             ],
@@ -250,6 +248,7 @@ All Currencies
                 setInterval(function() {
                     $('.alert-success').slideUp(3000);
                 }, 500);
+                location.reload();
             });
         });
     }

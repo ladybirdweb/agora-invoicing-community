@@ -1,4 +1,7 @@
 @extends('themes.default1.layouts.master')
+@section('title')
+Renew
+@stop
 @section('content-header')
 <h1>
 Renew Order
@@ -19,7 +22,9 @@ Renew Order
     </div>
 
     <div class="box-body">
-
+                <?php 
+                 $plans = App\Model\Payment\Plan::where('product',$productid)->pluck('name','id')->toArray();
+                ?>
         <div class="row">
 
             <div class="col-md-12">
@@ -58,7 +63,7 @@ Renew Order
                     <div class="col-md-4 form-group {{ $errors->has('plan') ? 'has-error' : '' }}">
                         <!-- first name -->
                         {!! Form::label('plan','Plans',['class'=>'required']) !!}
-                          <select name="plan" value= "Choose" onChange="getPrice(this.value)" class="form-control">
+                          <select name="plan" value= "Choose" onchange="getPrice(this.value)" class="form-control">
                              <option value="Choose">Choose</option>
                            @foreach($plans as $key=>$plan)
                               <option value={{$key}}>{{$plan}}</option>

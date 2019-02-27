@@ -25,13 +25,13 @@ class GroupRequest extends Request
     {
         return [
             'name'            => 'required',
-            'features.*.name' => 'required',
-            'title'           => 'required_with:type,price,value',
-            'type'            => 'required_with:title,price,value',
-            'price.*.name'    => 'required_unless:type,1|numeric',
-            'price.*.name'    => 'required_unless:type,2|numeric',
-            'value.*.name'    => 'required_unless:type,1',
-            'value.*.name'    => 'required_unless:type,2',
+            // 'features.*.name' => 'required',
+            // 'title'           => 'required_with:type,price,value',
+            // 'type'            => 'required_with:title,price,value',
+            // 'price.*.name'    => 'required_unless:type,1|numeric',
+            // 'price.*.name'    => 'required_unless:type,2|numeric',
+            // 'value.*.name'    => 'required_unless:type,1',
+            // 'value.*.name'    => 'required_unless:type,2',
         ];
     }
 

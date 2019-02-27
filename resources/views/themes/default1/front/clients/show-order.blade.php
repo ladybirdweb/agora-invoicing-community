@@ -1,6 +1,6 @@
 @extends('themes.default1.layouts.front.myaccount_master')
 @section('title')
-Agora | Orders
+Orders
 @stop
 @section('nav-orders')
 active
@@ -9,7 +9,11 @@ active
  <h1>My Account </h1>
 @stop
 @section('breadcrumb')
-<li><a href="{{url('home')}}">Home</a></li>
+ @if(Auth::check())
+<li><a href="{{url('my-invoices')}}">Home</a></li>
+  @else
+  <li><a href="{{url('login')}}">Home</a></li>
+  @endif
 <li class="active">My Account</li>
 <li class="active">Orders</li>
 @stop
@@ -83,18 +87,19 @@ active
                                       
                                         <table class="table table-hover">
                                             <div class="col-md-6">
-                                            <tbody><tr><td><b>Serial Key:</b></td>         <td>{{$order->serial_key}}</td></tr>
+                                            <tbody><tr><td><b>License Code:</b></td>         <td>{{$order->serial_key}}</td></tr>
                                                 <tr><td><b>Licensed Domain:</b></td>     <td>{{$order->domain}}
-                                                <button class='class="btn btn-danger mb-2 pull-right' style="border:none;" id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}"
-                                                >
-                                Reissue Licesnse</button>
+                                                    @if ($licenseStatus == 1)
+                                                <button class='class="btn btn-danger mb-2 pull-right' style="border:none;" id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}">
+                                               Reissue License</button>
+                                               @endif
                                                 </td>
                                            
                                                  </tr>
 
                                                 <?php
                                                 
-                                                if (!$subscription || $subscription->ends_at == '' || $subscription->ends_at == '0000-00-00 00:00:00') {
+                                                if (!$subscription || strtotime($subscription->ends_at) < 1) {
                                                     $sub = "--";
                                                 } else {
                                                     $date = new DateTime($subscription->ends_at);
@@ -106,8 +111,22 @@ active
 
 
                                                 }
+
+                                                if (!$subscription || strtotime($subscription->update_ends_at) < 1) {
+                                                    $update_sub = "--";
+                                                } else {
+                                                    $date1 = new DateTime($subscription->update_ends_at);
+                                                    $tz = \Auth::user()->timezone()->first()->name;
+                                                     $date1->setTimezone(new DateTimeZone($tz));
+                                                      
+                                                    $update_sub = $date1->format('M j, Y, g:i a ');
+                                                     // $sub = $sub2->setTimezone($tz);
+
+
+                                                }
                                                 ?>
-                                                <tr><td><b>Subscription End:</b></td>   <td>{{$sub}}</td></tr>
+                                                <tr><td><b>License Expiry Date:</b></td>   <td>{{$sub}}</td></tr>
+                                                <tr><td><b>Update Expiry Date:</b></td>   <td>{{$update_sub}}</td></tr>
 
                                             </tbody>
                                          </div>

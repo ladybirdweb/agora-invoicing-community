@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Order;
 
 use App\Http\Requests\Order\OrderRequest;
+use App\Model\Common\StatusSetting;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
 use App\Model\Order\Order;
@@ -131,13 +132,15 @@ class OrderController extends BaseOrderController
                             return ucfirst($model->number);
                         })
                         ->addColumn('price_override', function ($model) {
-                            return ucfirst($model->price_override);
+                            $currency = $model->user()->find($model->client)->currency;
+
+                            return currency_format($model->price_override, $code = $currency);
                         })
                         ->addColumn('order_status', function ($model) {
                             return ucfirst($model->order_status);
                         })
                         // ->showColumns('number', 'price_override', 'order_status')
-                        ->addColumn('ends_at', function ($model) {
+                        ->addColumn('update_ends_at', function ($model) {
                             $end = $this->getEndDate($model);
 
                             return $end;
@@ -173,13 +176,13 @@ class OrderController extends BaseOrderController
                                  $query->whereRaw($sql, ["%{$keyword}%"]);
                              })
 
-                              ->filterColumn('ends_at', function ($query, $keyword) {
-                                  $sql = 'ends_at like ?';
+                              ->filterColumn('update_ends_at', function ($query, $keyword) {
+                                  $sql = 'update_ends_at like ?';
                                   $query->whereRaw($sql, ["%{$keyword}%"]);
                               })
 
                          ->rawColumns(['checkbox', 'date', 'client', 'number',
-                          'price_override', 'order_status', 'productname', 'ends_at', 'action', ])
+                          'price_override', 'order_status', 'productname', 'update_ends_at', 'action', ])
                         ->make(true);
     }
 
@@ -221,9 +224,10 @@ class OrderController extends BaseOrderController
             }
             $invoiceItems = $this->invoice_items->where('invoice_id', $invoiceid)->get();
             $user = $this->user->find($invoice->user_id);
+            $licenseStatus = StatusSetting::pluck('license_status')->first();
 
             return view('themes.default1.order.show',
-                compact('invoiceItems', 'invoice', 'user', 'order', 'subscription'));
+                compact('invoiceItems', 'invoice', 'user', 'order', 'subscription', 'licenseStatus'));
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
 
@@ -333,24 +337,6 @@ class OrderController extends BaseOrderController
         }
     }
 
-    public function deleleById($id)
-    {
-        try {
-            $order = $this->order->find($id);
-            if ($order) {
-                $order->delete();
-            } else {
-                return redirect()->back()->with('fails', 'Can not delete');
-            }
-
-            return redirect()->back()->with('success', "Order $order->number has Deleted Successfully");
-        } catch (\Exception $e) {
-            Bugsnag::notifyException($e);
-
-            return redirect()->back()->with('fails', $e->getMessage());
-        }
-    }
-
     public function plan($invoice_item_id)
     {
         try {
@@ -411,7 +397,7 @@ class OrderController extends BaseOrderController
     {
         $sub = $this->subscription($orderid);
         if ($sub) {
-            return $sub->ends_at;
+            return $sub->update_ends_at;
         }
 
         return '';

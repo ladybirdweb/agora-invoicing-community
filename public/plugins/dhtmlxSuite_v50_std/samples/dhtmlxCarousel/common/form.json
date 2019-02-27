@@ -1,7 +1,0 @@
-[
-	{type: "settings", position: "label-left", labelWidth: 110, inputWidth: 110, offsetLeft: 30},
-	{type: "input", label: "Login", value: "root", offsetTop: 20},
-	{type: "password", label: "Password", value: "beK2$rW`uLq#1"},
-	{type: "checkbox", label: "Remember me", checked: true},
-	{type: "button", value: "Proceed", offsetTop: 10, offsetLeft: 100}
-]

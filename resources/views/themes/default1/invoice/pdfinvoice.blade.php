@@ -148,10 +148,13 @@
                                             <p class="lead">Amount</p>
                                             <div class="table-responsive">
                                                 <table class="table">
+                                                     @if($invoice->discount != null)
                                                     <tr>
-                                                        <th></th>
-                                                        <td></td>
+                                                          
+                                                    <th>Discount</th>
+                                                    <td>{{currency_format($invoice->discount,$code=$symbol)}}</td>
                                                     </tr>
+                                                     @endif
                                                     <?php
                                                     $tax_name = [];
                                                     $tax_percentage = [];

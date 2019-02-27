@@ -39,7 +39,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         'state', 'town', 'mobile',
         'email', 'password', 'role', 'active', 'profile_pic',
         'address', 'country', 'currency', 'currency_symbol', 'timezone_id', 'mobile_code', 'bussiness',
-        'company_type', 'company_size', 'ip', 'mobile_verified', 'position', 'skype', 'manager', ];
+        'company_type', 'company_size', 'ip', 'mobile_verified', 'position', 'skype', 'manager', 'currency_symbol', ];
 
     protected static $logName = 'User';
     protected static $logAttributes = ['first_name', 'last_name', 'user_name', 'company', 'zip',
@@ -53,9 +53,6 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     public function getDescriptionForEvent(string $eventName): string
     {
         $lastActivity = Activity::all()->last(); //returns the last logged activity
-        // if ($lastActivity->description == 'Logged In') {
-        //     $this->disableLogging();
-        // }
         if ($eventName == 'updated') {
             $this->enableLogging();
 
@@ -67,9 +64,6 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         }
 
         return '';
-
-        // return "Product  has been {$eventName}";
-         // \Auth::user()->activity;
     }
 
     /**
@@ -131,12 +125,12 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     {
         $image = \Gravatar::src($this->attributes['email']);
         if ($value) {
-            $file = public_path('dist/app/users/'.$value);
+            $file = public_path('common/images/users/'.$value);
             if (is_file($file)) {
                 $mime = \File::mimeType($file);
                 $extension = \File::extension($file);
-                if ($mime == 'image' && $extension == 'image') {
-                    $image = asset('dist/app/users/'.$value);
+                if (mime($mime) == 'image' && mime($extension) == 'image') {
+                    $image = asset('common/images/users/'.$value);
                 } else {
                     unlink($file);
                 }
@@ -157,13 +151,25 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         $this->attributes['country'] = $value;
     }
 
-    public function bussiness()
+    public function getBussinessAttribute($value)
     {
         $short = $this->attributes['bussiness'];
         $name = '--';
         $bussiness = \App\Model\Common\Bussiness::where('short', $short)->first();
         if ($bussiness) {
             $name = $bussiness->name;
+        }
+
+        return $name;
+    }
+
+    public function getCompanyTypeAttribute()
+    {
+        $short = $this->attributes['company_type'];
+        $name = '--';
+        $company = \DB::table('company_types')->where('short', $short)->first();
+        if ($company) {
+            $name = $company->name;
         }
 
         return $name;

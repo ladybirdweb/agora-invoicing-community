@@ -22,11 +22,15 @@
          * Front end
          */
 
-        Route::match(['get', 'post'], 'home', 'Front\CartController@productList');
+        // Route::match(['get', 'post'], 'home', 'Front\CartController@productList');
 
-        Route::get('pricing', 'Front\CartController@cart');
+        Route::get('pricing', 'Front\CartController@cart')->name('pricing');
+        Route::get('group/{templateid}/{groupid}/', 'Front\PageController@pageTemplates');
         Route::get('cart/remove', 'Front\CartController@cartRemove');
-        Route::get('update-qty', 'Front\CartController@updateQty');
+        Route::get('update-agent-qty', 'Front\CartController@updateAgentQty');
+        Route::get('update-qty', 'Front\CartController@updateProductQty');
+        Route::get('reduce-product-qty', 'Front\CartController@reduceProductQty');
+        Route::get('reduce-agent-qty', 'Front\CartController@reduceAgentQty');
         Route::get('cart/addon/{id}', 'Front\CartController@addAddons');
         Route::get('cart/clear', 'Front\CartController@clearCart');
         Route::get('show/cart', 'Front\CartController@showCart');
@@ -45,6 +49,7 @@
         Route::patch('mailchimp', 'Common\MailChimpController@postMailChimpSettings');
         Route::get('mail-chimp/mapping', 'Common\MailChimpController@mapField');
         Route::patch('mail-chimp/mapping', 'Common\MailChimpController@postMapField');
+        Route::patch('mailchimp-ispaid/mapping', 'Common\MailChimpController@postIsPaidMapField');
         Route::patch('mailchimp-group/mapping', 'Common\MailChimpController@postGroupMapField');
         Route::get('get-group-field/{value}', 'Common\MailChimpController@addInterestFieldsToAgora');
         Route::get('contact-us', 'Front\CartController@contactUs');
@@ -55,7 +60,7 @@
          * Front Client Pages
          */
 
-        Route::get('my-invoices', 'Front\ClientController@invoices');
+        Route::get('my-invoices', 'Front\ClientController@invoices')->name('my-invoices');
 
         Route::get('get-my-invoices', 'Front\ClientController@getInvoices')->name('get-my-invoices');
         Route::get('get-my-invoices/{orderid}/{userid}', 'Front\ClientController@getInvoicesByOrderId');
@@ -145,7 +150,17 @@
          Route::get('activity-delete', 'Common\SettingsController@destroy')->name('activity-delete');
           Route::get('email-delete', 'Common\SettingsController@destroyEmail')->name('email-delete');
            Route::get('licenseDetails', 'Common\BaseSettingsController@licenseDetails')->name('licenseDetails');
+            Route::get('updateDetails', 'Common\BaseSettingsController@updateDetails')->name('updateDetails');
             Route::get('captchaDetails', 'Common\BaseSettingsController@captchaDetails')->name('captchaDetails');
+            Route::get('updatemobileDetails', 'Common\BaseSettingsController@updateMobileDetails')->name('updatemobileDetails');
+            Route::get('updateemailDetails', 'Common\BaseSettingsController@updateEmailDetails')->name('updateemailDetails');
+            Route::get('updatetwitterDetails', 'Common\BaseSettingsController@updateTwitterDetails')->name('updatetwitterDetails');
+            Route::get('updateMailchimpDetails', 'Common\BaseSettingsController@updateMailchimpDetails')->name('updateMailchimpDetails');
+             Route::get('updateTermsDetails', 'Common\BaseSettingsController@updateTermsDetails')->name('updateTermsDetails');
+            Route::get('updaterzpDetails', 'Common\BaseSettingsController@updateRazorpayDetails')->name('updaterzpDetails');
+             Route::get('updatezohoDetails', 'Common\BaseSettingsController@updateZohoDetails')->name('updatezohoDetails');
+              Route::get('mailchimp-prod-status', 'Common\BaseSettingsController@updateMailchimpProductStatus')->name('mailchimp-prod-status');
+               Route::get('mailchimp-paid-status', 'Common\BaseSettingsController@updateMailchimpIsPaidStatus')->name('mailchimp-paid-status');
 
         /*
          * Client
@@ -175,8 +190,10 @@
         Route::post('get-product-field', 'Product\ProductController@getProductField');
         Route::get('get-subscription/{id}', 'Product\ProductController@getSubscriptionCheck');
         Route::get('get-upload/{id}', 'Product\ProductController@getUpload')->name('get-upload');
-        Route::post('upload/save', 'Product\ProductController@save');
+        Route::post('upload/save', 'Product\ProductController@save')->name('upload/save');
+         Route::post('chunkupload', 'Product\ProductController@uploadFile');
         Route::patch('upload/{id}', 'Product\ProductController@uploadUpdate');
+        Route::get('get-group-url', 'Product\GroupController@generateGroupUrl');
 
         /*
          * Plan
@@ -187,6 +204,7 @@
         // Route::get('get-plans', 'Product\PlanController@GetPlans');
         Route::get('plans-delete', 'Product\PlanController@destroy')->name('plans-delete');
         Route::get('get-period', 'Product\PlanController@checkSubscription')->name('get-period');
+        Route::post('postInsertPeriod', 'Product\PlanController@postInsertPeriod');
 
         /*
          * Addons
@@ -214,6 +232,7 @@
         Route::get('currency-delete', 'Payment\CurrencyController@destroy')->name('currency-delete');
 
           Route::post('change/currency/status', ['as' => 'change.currency.status', 'uses' => 'Payment\CurrencyController@updatecurrency']);
+        Route::get('dashboard-currency/{id}', 'Payment\CurrencyController@setDashboardCurrency');
 
         /*
          * Tax
@@ -272,6 +291,16 @@
          Route::get('get-type', 'Product\ProductTypeController@getTypes')->name('get-type');
          Route::get('type-delete', 'Product\ProductTypeController@destroy')->name('type-delete');
 
+          /*
+         * License
+         */
+         Route::resource('license-type', 'License\LicenseSettingsController');
+         Route::get('get-license-type', 'License\LicenseSettingsController@getLicenseTypes')->name('get-license-type');
+         Route::get('license-type-delete', 'License\LicenseSettingsController@destroy')->name('license-type-delete');
+         Route::get('license-permissions', 'License\LicensePermissionsController@index');
+         Route::get('get-license-permission', 'License\LicensePermissionsController@getPermissions')->name('get-license-permission');
+         Route::get('add-permission', 'License\LicensePermissionsController@addPermission')->name('add-permission');
+         Route::get('tick-permission', 'License\LicensePermissionsController@tickPermission')->name('tick-permission');
         /*
          * Order
          */
@@ -285,14 +314,16 @@
         Route::get('order/execute', 'Order\OrderController@orderExecute');
         Route::patch('change-domain', 'Order\ExtendedOrderController@changeDomain');
         Route::get('orders/{id}/delete', 'Order\OrderController@deleleById');
-
+        Route::get('edit-update-expiry', 'Order\BaseOrderController@editUpdateExpiry');
+        Route::get('edit-license-expiry', 'Order\BaseOrderController@editLicenseExpiry');
+        Route::get('edit-support-expiry', 'Order\BaseOrderController@editSupportExpiry');
         /*
          * Groups
          */
 
         Route::resource('groups', 'Product\GroupController');
         Route::get('get-groups', 'Product\GroupController@getGroups')->name('get-groups');
-        Route::get('groups-delete', 'Product\GroupController@destroy');
+        Route::get('groups-delete', 'Product\GroupController@destroy')->name('groups-delete');
 
         /*
          * Templates
@@ -317,6 +348,7 @@
 
         Route::get('invoices', 'Order\InvoiceController@index');
         Route::get('invoices/{id}', 'Order\InvoiceController@show');
+         Route::get('get-client-invoice/{id}', 'User\ClientController@getClientInvoice');
         Route::get('invoices/edit/{id}', 'Order\InvoiceController@edit');
          Route::post('invoice/edit/{id}', 'Order\InvoiceController@postEdit');
         Route::get('get-invoices', ['as' => 'get-invoices', 'uses' => 'Order\InvoiceController@getInvoices']);
@@ -341,7 +373,7 @@
         Route::post('payment/receive/{id}', 'Order\InvoiceController@postPayment');
         Route::get('payment-delete', 'Order\InvoiceController@deletePayment')->name('payment-delete');
         Route::get('payments/{id}/delete', 'Order\InvoiceController@paymentDeleleById');
-        Route::get('payments/{id}/edit', 'Order\InvoiceController@paymentEditById');
+        Route::get('payments/{payment_id}/edit', 'Order\InvoiceController@paymentEditById');
         Route::post('newMultiplePayment/receive/{clientid}', 'Order\InvoiceController@postNewMultiplePayment');
          Route::post('newMultiplePayment/update/{clientid}', 'Order\InvoiceController@updateNewMultiplePayment');
 
@@ -399,7 +431,7 @@
         Route::get('github-one-release', 'Github\GithubController@getReleaseByTag');
         Route::get('github-downloads', 'Github\GithubController@getDownloadCount');
         Route::get('github', 'Github\GithubController@getSettings');
-        Route::patch('github', 'Github\GithubController@postSettings');
+        Route::get('github-setting', 'Github\GithubController@postSettings');
 
         /*
          * download
@@ -447,7 +479,8 @@
          Route::patch('post-scheduler', ['as' => 'post.job.scheduler', 'uses' => 'Common\SettingsController@postSchedular'])->name('post-scheduler'); //to update job scheduler
          Route::patch('cron-days', ['as'=>'cron-days', 'uses'=>'Common\SettingsController@saveCronDays'])->name('cron-days');
          Route::post('verify-php-path', ['as' => 'verify-cron', 'uses' => 'Common\SettingsController@checkPHPExecutablePath']);
-
+        Route::get('file-storage', 'Common\SettingsController@showFileStorage');
+         Route::post('file-storage-path', 'Common\SettingsController@updateStoragePath');
         Route::get('expired-subscriptions', 'Common\CronController@eachSubscription');
 
         /*
@@ -459,8 +492,6 @@
         Route::post('get-renew-cost', 'Order\RenewController@getCost');
         Route::post('client/renew/{id}', 'Order\RenewController@renewByClient');
 
-        Route::post('serial', 'HomeController@serial');
-        Route::post('v2/serial', 'HomeController@serialV2');
         Route::get('generate-keys', 'HomeController@createEncryptionKeys');
 
         Route::get('get-code', 'WelcomeController@getCode');
@@ -497,9 +528,14 @@
 
             return redirect('auth/login');
         });
-
-        Route::post('download/faveo', 'HomeController@downloadForFaveo');
+         /*
+         * Faveo APIs
+         */
+        Route::post('serial', 'HomeController@serial');
+        Route::post('v2/serial', 'HomeController@serialV2');
+        Route::get('download/faveo', 'HomeController@downloadForFaveo');
         Route::get('version/latest', 'HomeController@latestVersion');
+        Route::get('v1/checkUpdatesExpiry', 'HomeController@checkUpdatesExpiry');
 
         Route::get('404', ['as' => 'error404', function () {
             return view('errors.404');

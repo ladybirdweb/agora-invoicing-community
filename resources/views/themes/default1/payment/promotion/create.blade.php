@@ -158,8 +158,8 @@ Create New Promotion
                         <td><b>{!! Form::label('start',Lang::get('message.start')) !!}</b></td>
                         <td>
                             <div class="form-group {{ $errors->has('start') ? 'has-error' : '' }}">
-
-                                {!! Form::date('start',null,['class'=>'form-control','title'=>'Date from which Coupon is Valid']) !!}
+                               
+                                {!! Form::text('start',null,['class'=>'form-control','id'=>'datepicker1','title'=>'Date from which Coupon is Valid']) !!}
 
                             </div>
                         </td>
@@ -174,7 +174,7 @@ Create New Promotion
                             <div class="form-group {{ $errors->has('expiry') ? 'has-error' : '' }}">
 
 
-                                {!! Form::date('expiry',null,['class' => 'form-control','title'=>'Date on which Coupon Expires']) !!}
+                                {!! Form::text('expiry',null,['class' => 'form-control','id'=>'datepicker2','title'=>'Date on which Coupon Expires']) !!}
 
                             </div>
                         </td>
@@ -229,4 +229,18 @@ Create New Promotion
       opacity: 0.7
  
       });
+
+  
 </script>
+@section('datepicker')
+<script type="text/javascript">
+
+ $('#datepicker1').datepicker({
+      autoclose: true
+    });
+  $('#datepicker2').datepicker({
+      autoclose: true
+    });
+
+</script>
+@stop

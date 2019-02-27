@@ -45,7 +45,8 @@ use Illuminate\Auth\Events\PasswordReset;
                 $this->validate($request, [
                 'token' => 'required',
                 //'email' => 'required|email',
-                'password' => 'required|confirmed',
+                'password' => 'required|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$/|
+               confirmed',
             ]);
             $token = $request->input('token');
             $pass = $request->input('password');

@@ -1,3 +1,5 @@
+<!DOCTYPE html>
+<html>
 <?php $setting = \App\Model\Common\Setting::where('id', 1)->first();
 $script = \App\Model\Common\ChatScript::where('id', 1)->first(); 
 if($script){
@@ -5,12 +7,7 @@ if($script){
 }else{
   $script = null;
 }
-
-
  ?>
-<!DOCTYPE html>
-<html>
-
 
     <head>
   
@@ -25,8 +22,7 @@ if($script){
           <meta name="author" content="okler.net">
   
           <!-- Favicon -->
-          <!-- <img src='{{ asset("images/$setting->logo")}}' class="img-rounded" alt="Admin-Logo"  height="45"> -->
-          <link rel="shortcut icon" href='{{asset("images/favicon/$setting->fav_icon")}}' type="image/x-icon" />
+          <link rel="shortcut icon" href='{{asset("common/images/$setting->fav_icon")}}' type="image/x-icon" />
           <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
   
           <!-- Mobile Metas -->
@@ -36,48 +32,45 @@ if($script){
           <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800%7CShadows+Into+Light" rel="stylesheet" type="text/css">
           
   
-          <!-- Vendor CSS -->
-          <link rel="stylesheet" href="{{asset('vendor/bootstrap/css/bootstrap.min.css')}}">
-          <link rel="stylesheet" href="{{asset('vendor/font-awesome/css/fontawesome-all.min.css')}}">
-          <link rel="stylesheet" href="{{asset('cart/vendor/font-awesome/css/font-awesome.min.css')}}">
-          <link rel="stylesheet" href="{{asset('vendor/animate/animate.min.css')}}">
-          <link rel="stylesheet" href="{{asset('vendor/simple-line-icons/css/simple-line-icons.min.css')}}">
-          <link rel="stylesheet" href="{{asset('vendor/owl.carousel/assets/owl.carousel.min.css')}}">
-          <link rel="stylesheet" href="{{asset('vendor/owl.carousel/assets/owl.theme.default.min.css')}}">
-          <link rel="stylesheet" href="{{asset('vendor/magnific-popup/magnific-popup.min.css')}}">
+
+
+
+           <link rel="stylesheet" href="{{asset('client/css/bootstrap.min.css')}}">
+          <link rel="stylesheet" href="{{asset('client/css/fontawesome-all.min.css')}}">
+          <link rel="stylesheet" href="{{asset('client/css/font-awesome.min.css')}}">
+          <link rel="stylesheet" href="{{asset('client/css/animate.min.css')}}">
+          <link rel="stylesheet" href="{{asset('client/css/simple-line-icons.min.css')}}">
+          <link rel="stylesheet" href="{{asset('client/css/owl.carousel.min.css')}}">
+          <link rel="stylesheet" href="{{asset('client/css/owl.theme.default.min.css')}}">
+          <link rel="stylesheet" href="{{asset('client/css/magnific-popup.min.css')}}">
   
-          <!-- Theme CSS -->
-          <link rel="stylesheet" href="{{asset('css/theme.css')}}">
-          <link rel="stylesheet" href="{{asset('css/theme-elements.css')}}">
-          <link rel="stylesheet" href="{{asset('css/theme-blog.css')}}">
-          <link rel="stylesheet" href="{{asset('css/theme-shop.css')}}">
+
+
+
+           <link rel="stylesheet" href="{{asset('client/css/theme.css')}}">
+          <link rel="stylesheet" href="{{asset('client/css/theme-elements.css')}}">
+          <link rel="stylesheet" href="{{asset('client/css/theme-blog.css')}}">
+          <link rel="stylesheet" href="{{asset('client/css/theme-shop.css')}}">
           
           <!-- Demo CSS -->
-          <link rel="stylesheet" href="{{asset('css/demos/demo-construction.css')}}">
+       
+          <link rel="stylesheet" href="{{asset('client/css/demo-construction.css')}}">
   
           <!-- Skin CSS -->
-          <link rel="stylesheet" href="{{asset('css/skins/skin-construction.css')}}"> 
-           <link rel="stylesheet" href="{{asset('js/intl/css/intlTelInput.css')}}">
-          <link rel="stylesheet" href="{{asset('css/skins/default.css')}}">
+
+             <link rel="stylesheet" href="{{asset('client/css/skin-construction.css')}}"> 
+           <link rel="stylesheet" href="{{asset('common/css/intlTelInput.css')}}">
+          <link rel="stylesheet" href="{{asset('client/css/default.css')}}">
 
   
           <!-- Theme Custom CSS -->
-          <link rel="stylesheet" href="{{asset('css/custom.css')}}">
+  
+          <link rel="stylesheet" href="{{asset('client/css/custom.css')}}">
   
           <!-- Head Libs -->
-          <script src="{{asset('vendor/modernizr/modernizr.min.js')}}"></script>
+          <script src="{{asset('client/js/modernizr.min.js')}}"></script>
 
-             <script type="text/javascript"> //<![CDATA[ 
-
-        var tlJsHost = ((window.location.protocol == "https:") ? "https://secure.comodo.com/" : "https://www.trustlogo.com/");
-        document.write(unescape("%3Cscript src='" + tlJsHost + "trustlogo/javascript/trustlogo.js' type='text/javascript'%3E%3C/script%3E"));
-        //]]>
-       </script>
-
-         
-    
-  
-      </head>
+   </head>
 
     <body>
 
@@ -95,8 +88,12 @@ if($script){
                             <div class="header-column">
                                 <div class="header-row">
                                 <div class="header-logo">
-                                    <a href="{{url('home')}}">
-                                        <img alt="Porto" width="111" height="54" data-sticky-width="82" data-sticky-height="40" data-sticky-top="33" src="{{asset('images/logo/'.$setting->logo)}}">
+                                  @if(Auth::check())
+                                    <a href="{{url('my-invoices')}}">
+                                      @else
+                                      <a href="{{url('login')}}">
+                                        @endif
+                                        <img alt="Logo" width="111" height="54" data-sticky-width="82" data-sticky-height="40" data-sticky-top="33" src="{{asset('common/images/'.$setting->logo)}}">
                                     </a>
                                 </div>
                               </div>
@@ -117,19 +114,7 @@ if($script){
                                               @endif
                                           </ul>
                                       </nav>
-                                    <!--                                    <nav class="header-nav-top">
-                                                                            <ul class="nav nav-pills">
-                                                                                <li class="hidden-xs">
-                                                                                    <a href="about-us.html"><i class="fa fa-angle-right"></i> About Us</a>
-                                                                                </li>
-                                                                                <li class="hidden-xs">
-                                                                                    <a href="contact-us.html"><i class="fa fa-angle-right"></i> Contact Us</a>
-                                                                                </li>
-                                                                                <li>
-                                                                                    <span class="ws-nowrap"><i class="fa fa-phone"></i> (123) 456-789</span>
-                                                                                </li>
-                                                                            </ul>
-                                                                        </nav>-->
+                                   
                                 </div>
                                   <div class="header-row">
                                     <div class="header-nav">
@@ -141,34 +126,46 @@ if($script){
                                        <div class="header-nav-main header-nav-main-effect-1 header-nav-main-sub-effect-1">
                                             <nav class="collapse">
                                                 <ul class="nav nav-pills" id="mainNav">
-                                                    <li class="dropdown">
-                                                        <a  class="nav-link" href="{{url('home')}}">
-                                                            pricing
-                                                        </a>
-
+                                              <?php 
+                                                $groups = \App\Model\Product\ProductGroup::where('hidden','!=', 1)->get();
+                                              
+                                              ?>
+                                                    
+                                                     <li class="dropdown">
+                                                      <a class="dropdown-item dropdown-toggle" href="#">
+                                                        Store
+                                                      </a>
+                                                      <ul class="dropdown-menu">
+                                                        @if(count($groups)>0)
+                                                        @foreach($groups as $group)
+                                                        <li><a class="dropdown-item" href="{{url('group/'.$group->pricing_templates_id.'/'.$group->id)}}">{{$group->name}}</a></li>
+                                                        @endforeach
+                                                        @else
+                                                         <li><a class="dropdown-item">No Groups Added</a></li>
+                                                         @endif
+                                                      </ul>
                                                     </li>
-                                                    <li class="dropdown dropdown-mega">
-                                                        <a class="nav-link" href="{{url('contact-us')}}">
-                                                            contact us
-                                                        </a>
 
-                                                    </li>
- 
-                                                    <?php $pages = \App\Model\Front\FrontendPage::where('publish', 1)->where('hidden','!=',1)->get(); ?>
+
+                                                    <?php $pages = \App\Model\Front\FrontendPage::where('publish', 1)->orderBy('created_at','asc')->get(); ?>
 
                                                     @foreach($pages as $page)
-                                                    <li class="dropdown">
 
+                                                    <li class="dropdown">
                                                         @if($page->parent_page_id==0)
                                                         <?php
                                                         $ifdrop = \App\Model\Front\FrontendPage::where('publish', 1)->where('parent_page_id', $page->id)->count();
                                                         if ($ifdrop > 0) {
-                                                            $class = 'dropdown-toggle';
+                                                            $class = 'nav-link dropdown-toggle';
                                                         } else {
-                                                            $class = '';
+                                                            $class = 'nav-link';
                                                         }
                                                         ?>
+                                                        @if($page->type == 'contactus')
+                                                         <a class="nav-link" href="{{url('contact-us')}}">
+                                                        @else
                                                         <a class="{{$class}}" href="{{$page->url}}">
+                                                          @endif
                                                             {{ucfirst($page->name)}}
                                                         </a>
                                                         @endif
@@ -250,8 +247,10 @@ if($script){
                                                                                 </td>
 
                                                                                 <td class="product-name">
-                                                                                        
-                                                                                    <a>{{$item->name}}<br><span class="amount"><strong><small>{{$currency}}</small> {{App\Http\Controllers\Front\CartController::rounding($item->getPriceSumWithConditions())}}</strong></span></a>
+                                                                               <?php
+                                                                                $total = \App\Http\Controllers\Front\CartController::rounding($item->getPriceSumWithConditions()) 
+                                                                                ?>
+                                                                                    <a>{{$item->name}}<br><span class="amount"><strong>{{currency_format($total,$code = $currency)}}</strong></span></a>
                                                                                 </td>
 
                                                                                 <td class="product-actions">
@@ -267,8 +266,14 @@ if($script){
                                                                             @empty 
 
                                                                             <tr>
-                                                                                <td><a href="{{url('home')}}">Choose a Product</a></td>
-                                                                            </tr>
+                                                                              <td>
+                                                                                @if(Auth::check())
+                                                                              <a href="{{url('my-invoices')}}">Choose a Product
+                                                                                @else
+                                                                                <a href="{{url('login')}}">Choose a Product
+                                                                                  @endif
+                                                                                  </a></td>
+                                                                             </tr>
 
 
                                                                             @endforelse
@@ -361,24 +366,28 @@ if($script){
             <footer id="footer">
                 <div class="container">
                     <div class="row">
-                        <!-- <div class="footer-ribbon" style="background-color:#E9EFF2 !important">
-                            <span>Get in Touch</span>
-                        </div> -->
-                         <?php $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer1')->first(); ?>
+                         <?php
+                         
+                        
+                          $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer1')->select('name','content','allow_tweets','allow_mailchimp')->first(); 
+                          if ($widgets) {
+                            $tweetDetails = $widgets->allow_tweets ==1 ?  '<div id="tweets" class="twitter" >
+                            </div>' : '';
+                           }
+                            $mailchimpKey = \App\Model\Common\Mailchimp\MailchimpSetting::find(1);
+                            ?>
                            @if($widgets != null)
                         <div class="col-md-3">
                            
                           <div class="newsletter">
                                 <h4>{{ucfirst($widgets->name)}}</h4>
                                 <p> {!! $widgets->content !!}</p>
-
+                                  {!! $tweetDetails !!}
                                 <div class="alert alert-success d-none" id="newsletterSuccess">
                                     <strong>Success!</strong> You've been added to our email list.
                                 </div>
-
                                 <div class="alert alert-danger d-none" id="newsletterError"></div>
-                                <?php $mailchimpKey = \App\Model\Common\Mailchimp\MailchimpSetting::find(1);?>
-                                @if($mailchimpKey != null)
+                                @if($mailchimpKey != null && $widgets->allow_mailchimp ==1)
                                 {!! Form::open(['url'=>'mail-chimp/subcribe','method'=>'GET']) !!}
                                 <div class="input-group">
                                     <input class="form-control" placeholder="Email Address" name="email" id="newsletterEmail" type="text">
@@ -387,46 +396,107 @@ if($script){
                                     </span>
                                 </div>
                                 {!! Form::close() !!}
+                               
                                 @endif
                             </div>
                         </div>
                         @endif
-                          <?php $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer2')->first(); ?>
+                          <?php 
+                       
+                          $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer2')->select('name','content','allow_tweets','allow_mailchimp')->first(); 
+                          if ($widgets) {
+                           $tweetDetails =  $widgets->allow_tweets ==1 ?  '<div id="tweets" class="twitter" >
+                            </div>' : '';
+                          }
+                            ?>
                            @if($widgets != null)
                         <div class="col-md-3">
                             <h4>{{ucfirst($widgets->name)}}</h4>
                              <p> {!! $widgets->content !!}</p>
-                            <div id="tweets" class="twitter" >
-                            <p>Please wait...</p>
-                            </div>
+                               {!! $tweetDetails !!}  
+                                   <div class="alert alert-success d-none" id="newsletterSuccess">
+                                    <strong>Success!</strong> You've been added to our email list.
+                                </div>
+                                <div class="alert alert-danger d-none" id="newsletterError"></div>
+                                @if($mailchimpKey != null && $widgets->allow_mailchimp ==1)
+                                {!! Form::open(['url'=>'mail-chimp/subcribe','method'=>'GET']) !!}
+                                <div class="input-group">
+                                    <input class="form-control" placeholder="Email Address" name="email" id="newsletterEmail" type="text">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default" type="submit">Go!</button>
+                                    </span>
+                                </div>
+                                {!! Form::close() !!}
+                                 @endif
                         </div>
+                        
                         @endif
-                        <?php $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer3')->first(); ?>
+                        <?php
+                         $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer3')->select('name','content','allow_tweets','allow_mailchimp')->first(); 
+                        if ($widgets) {
+                           $tweetDetails = $widgets->allow_tweets   ==1 ?  '<div id="tweets" class="twitter" >
+                            </div>' : '';
+                        }
+
+                        
+                            ?>
                        @if($widgets != null)
                         <div class="col-md-3">
                             <div class="contact-details">
                                 <h4>{{ucfirst($widgets->name)}}</h4>
                                 {!! $widgets->content !!}
+                                
+                                 {!! $tweetDetails !!}
+                                 <div class="alert alert-success d-none" id="newsletterSuccess">
+                                    <strong>Success!</strong> You've been added to our email list.
+                                </div>
+                                <div class="alert alert-danger d-none" id="newsletterError"></div>
+                                  @if($mailchimpKey != null && $widgets->allow_mailchimp ==1)
+                                {!! Form::open(['url'=>'mail-chimp/subcribe','method'=>'GET']) !!}
+                                <div class="input-group">
+                                    <input class="form-control" placeholder="Email Address" name="email" id="newsletterEmail" type="text">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default" type="submit">Go!</button>
+                                    </span>
+                                </div>
+                                {!! Form::close() !!}
+                                 @endif
                             </div>
                         </div>
+                        
                          @endif
-                         <?php $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer4')->first(); ?>
+                         <?php 
+                        
+                         $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer4')->select('name','content','allow_tweets','allow_mailchimp')->first();
+                         if ($widgets) {
+                          $tweetDetails = $widgets->allow_tweets   ==1 ?  '<div id="tweets" class="twitter" >
+                            </div>' : '';
+                          }
+                            ?>
                          
                         <div class="col-md-2">
                           @if($widgets != null)
                             <h4>{{ucfirst($widgets->name)}}</h4>
                              <p> {!! $widgets->content !!}</p>
-                            <ul class="social-icons">
-                                @foreach($social as $media)
-                                <li class="{{$media->class}}"><a href="{{$media->link}}" target="_blank" title="{{ucfirst($media->name)}}"><i class="{{$media->fa_class}}"></i></a></li>
-                                @endforeach
-                            </ul>
+                               <p>{!! $tweetDetails !!}   </p>
+                               <div class="alert alert-success d-none" id="newsletterSuccess">
+                                    <strong>Success!</strong> You've been added to our email list.
+                                </div>
+                                <div class="alert alert-danger d-none" id="newsletterError"></div>
+                                @if($mailchimpKey != null && $widgets->allow_mailchimp ==1)
+                                {!! Form::open(['url'=>'mail-chimp/subcribe','method'=>'GET']) !!}
+                                <div class="input-group">
+                                    <input class="form-control" placeholder="Email Address" name="email" id="newsletterEmail" type="text">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default" type="submit">Go!</button>
+                                    </span>
+                                </div>
+                                {!! Form::close() !!}
+                                 @endif
                           @endif
                             <br>
                        
-                        <a href="https://secure.comodo.com/ttb_searcher/trustlogo?v_querytype=W&v_shortname=CL1&v_search=https://www.billing.faveohelpdesk.com/&x=6&y=5"><img class="img-responsive" alt="" title="" src="https://www.faveohelpdesk.com/wp-content/uploads/2017/07/comodo_secure_seal_113x59_transp.png" /></a>
-                        <br/> <br/>
-                        <a href="https://monitor203.sucuri.net/m/verify/?r=ce48118f19b0feaecb9d46ac593fd041b2a8e31e15"><img class="img-responsive" alt="" title="" src="https://www.faveohelpdesk.com/wp-content/uploads/2017/07/index.gif" /></a>
+                     
                   </div>
                   
                 </div>
@@ -436,8 +506,8 @@ if($script){
 
 
                             <div class="col-md-12">
-                                <p>Copyright 漏 <?php echo date('Y') ?> 路 <a href="{{$set->website}}" target="_blank">{{$set->company}}</a>. All Rights Reserved.Powered by 
-                                    <a href="https://www.ladybirdweb.com/" target="_blank"><img src="{{asset('dist/img/Ladybird1.png')}}" alt="Ladybird"></a></p>
+                              <p>Copyright © <?php echo date('Y') ?> · <a href="{{$set->website}}" target="_blank">{{$set->company}}</a>. All Rights Reserved.Powered by 
+                                    <a href="https://www.ladybirdweb.com/" target="_blank"><img src="{{asset('common/images/Ladybird1.png')}}" alt="Ladybird"></a></p>
                             </div>
 
 
@@ -449,32 +519,29 @@ if($script){
 
         <!-- Vendor -->
     </script>
-         <script>{!! NoCaptcha::renderJs('fr', true, 'recaptchaCallback') !!}  </script>
-        <script src="{{asset('vendor/jquery/jquery.min.js')}}"></script>
-          <script src="{{asset('vendor/jquery.appear/jquery.appear.min.js')}}"></script>
-          <script src="{{asset('vendor/jquery.easing/jquery.easing.min.js')}}"></script>
-          <script src="{{asset('vendor/jquery-cookie/jquery-cookie.min.js')}}"></script>
-          <script src="{{asset('vendor/popper/umd/popper.min.js')}}"></script>
-          <script src="{{asset('vendor/bootstrap/js/bootstrap.min.js')}}"></script>
-          <script src="{{asset('vendor/common/common.min.js')}}"></script>
-          <script src="{{asset('vendor/jquery.validation/jquery.validation.min.js')}}"></script>
-          <script src="{{asset('vendor/jquery.easy-pie-chart/jquery.easy-pie-chart.min.js')}}"></script>
-          <script src="{{asset('vendor/jquery.gmap/jquery.gmap.min.js')}}"></script>
-          <script src="{{asset('vendor/jquery.lazyload/jquery.lazyload.min.js')}}"></script>
-          <script src="{{asset('vendor/isotope/jquery.isotope.min.js')}}"></script>
-          <script src="{{asset('vendor/owl.carousel/owl.carousel.min.js')}}"></script>
-          <script src="{{asset('vendor/magnific-popup/jquery.magnific-popup.min.js')}}"></script>
-          <script src="{{asset('vendor/vide/vide.min.js')}}"></script>
-              <script src="{{asset('css/jquery/jquery.min.js')}}"></script>
-          <script src="{{asset('css/bootstrap/js/bootstrap.min.js')}}"></script>
+        <script src="{{asset('client/js/jquery.min.js')}}"></script>
+          <script src="{{asset('client/js/jquery.appear.min.js')}}"></script>
+          <script src="{{asset('client/js/jquery.easing.min.js')}}"></script>
+          <script src="{{asset('client/js/jquery-cookie.min.js')}}"></script>
+          <script src="{{asset('client/js/popper.min.js')}}"></script>
+          <script src="{{asset('client/js/bootstrap.min.js')}}"></script>
+          <script src="{{asset('client/js/common.min.js')}}"></script>
+          <script src="{{asset('client/js/jquery.validation.min.js')}}"></script>
+          <script src="{{asset('client/js/jquery.easy-pie-chart.min.js')}}"></script>
+          <script src="{{asset('client/js/jquery.gmap.min.js')}}"></script>
+          <script src="{{asset('client/js/jquery.lazyload.min.js')}}"></script>
+          <script src="{{asset('client/js/jquery.isotope.min.js')}}"></script>
+          <script src="{{asset('client/js/owl.carousel.min.js')}}"></script>
+          <script src="{{asset('client/js/jquery.magnific-popup.min.js')}}"></script>
+          <script src="{{asset('client/js/vide.min.js')}}"></script>
           <!-- Theme Base, Components and Settings -->
-          <script src="{{asset('js/theme.js')}}"></script>
+          <script src="{{asset('client/js/theme.js')}}"></script>
           <!-- Theme Custom -->
-          <script src="{{asset('js/custom.js')}}"></script>
+          <script src="{{asset('client/js/custom.js')}}"></script>
           
           <!-- Theme Initialization Files -->
-          <script src="{{asset('js/theme.init.js')}}"></script>
-          <script src="{{asset('js/intl/js/intlTelInput.js')}}"></script>
+          <script src="{{asset('common/js/theme.init.js')}}"></script>
+          <script src="{{asset('common/js/intlTelInput.js')}}"></script>
 
         <script>
          
@@ -491,17 +558,17 @@ if($script){
                       
 
         
-         function removeItem(id) {
+                             function removeItem(id) {
 
-                         $.ajax({
-                        type: "GET",
-                     data:"id=" + id,
-                url: "{{url('cart/remove/')}}",
-                        success: function (data) {
-                            location.reload();
-                                                 }
-                                });
-                                }
+                                             $.ajax({
+                                            type: "GET",
+                                         data:"id=" + id,
+                                    url: "{{url('cart/remove/')}}",
+                                            success: function (data) {
+                                                location.reload();
+                                                                     }
+                                                    });
+                                                    }
 
 
         </script>

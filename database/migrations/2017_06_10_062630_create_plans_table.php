@@ -17,7 +17,7 @@ class CreatePlansTable extends Migration
             $table->string('name');
             $table->integer('product');
             $table->integer('allow_tax');
-            $table->string('days');
+            $table->string('days')->nullable();
             $table->timestamps();
         });
     }

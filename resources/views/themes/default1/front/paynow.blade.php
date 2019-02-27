@@ -14,12 +14,7 @@ Checkout
 <?php
 
     $currency = $invoice->currency;
-    if ($currency == 'INR'){
-        $symbol = '₹';
-    }
-    else {
-        $symbol = '$';
-    }
+    $symbol = \App\Model\Payment\Currency::where('code',$invoice->currency)->pluck('symbol')->first();
 
 ?>
 <div class="container">
@@ -115,7 +110,8 @@ Checkout
                                     {{$item->quantity}}
                                 </td>
                                 <td class="product-name">
-                                    <span class="amount">{!! $symbol !!}  {{$item->regular_price}}</span>
+                                    
+                                    <span class="amount">{{currency_format(intval($item->subtotal),$code = $currency)}}</span>
                                 </td>
                             </tr>
                             @empty 
@@ -148,27 +144,40 @@ Checkout
 
                 </div>
                 {!! Form::open(['url'=>'checkout','method'=>'post']) !!}
-                
+                  @if($invoice->grand_total > 0)
                 <h4 class="heading-primary">Payment</h4>
-                    <?php $gateways = \App\Http\Controllers\Common\SettingsController::checkPaymentGateway($symbol); ?>
+                    <?php $gateways = \App\Http\Controllers\Common\SettingsController::checkPaymentGateway($invoice->currency);
+                      $rzpstatus = \App\Model\Common\StatusSetting::first()->value('rzp_status');
+                       ?>
+                     @if($gateways) 
+                  <div class="form-group">
 
+                    <div class="col-md-6">
+                        {{ucfirst($gateways)}} {!! Form::radio('payment_gateway',strtolower($gateways)) !!}<br><br>
+                    </div>
+                </div>
+            
+            @endif
+             @if($rzpstatus ==1)
                 <div class="form-group">
                     
                     <div class="col-md-6">
+                         {!! Form::radio('payment_gateway',strtolower('Razorpay')) !!}
 
-
-                         <img alt="Porto" width="111" data-sticky-width="82" data-sticky-height="40" data-sticky-top="33" src="{{asset('images/logo/Razorpay.png')}}"><br><br>
+                         <img alt="Porto" width="111" data-sticky-width="82" data-sticky-height="40" data-sticky-top="33" src="{{asset('client/images/Razorpay.png')}}"><br><br>
 
 
                     </div>
                     
-                    <div class="col-md-6">
+                   
+                </div>
+                @endif
+                  @endif
+                   <div class="col-md-6">
                         
                         {!! Form::hidden('invoice_id',$invoice->id) !!}
                         {!! Form::hidden('cost',$invoice->grand_total) !!}
                     </div>
-                </div>
-                
                 <div class="form-group">
                     <div class="col-md-6 col-md-offset-4">
                         <button type="submit" class="btn btn-primary">
@@ -196,11 +205,11 @@ Checkout
                         <strong>Cart Subtotal</strong>
                     </th>
                     <td>
-                        <strong><span class="amount">{{$symbol}} {{$subtotal}}</span></strong>
+                        <strong><span class="amount">{{currency_format($subtotal,$code = $currency)}}</span></strong>
                     </td>
                 </tr>
                   @foreach($items->toArray() as $attribute)
-                 @if($attribute['tax_name']!='null,')
+                  @if($attribute['tax_name']!='null')
                 <?php 
                 $tax_name = "";
                 $tax_percentage="";
@@ -216,7 +225,10 @@ Checkout
                         <strong>{{$tax_name}}<span>@</span>{{$tax_percentage}}</strong><br/>
                          </th>
                     <td>
-                       {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($attribute['tax_percentage'],$subtotal)}} <br/>
+                    <?php
+                     $value = \App\Http\Controllers\Front\CartController::taxValue($attribute['tax_percentage'],$subtotal);
+                     ?>
+                      {{currency_format($value,$code = $currency)}}
                         
                        
                        
@@ -232,7 +244,8 @@ Checkout
                         <strong>Order Total</strong>
                     </th>
                     <td>
-                        <strong><span class="amount">{{$symbol}} {{$invoice->grand_total}}</span></strong>
+
+                        <strong><span class="amount"> {{currency_format($invoice->grand_total,$code = $currency)}}</span></strong>
                     </td>
                 </tr>
             </tbody>

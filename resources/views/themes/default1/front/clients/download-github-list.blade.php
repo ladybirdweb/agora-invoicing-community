@@ -97,7 +97,6 @@
                         var maxLength = 300;
                         $("#github-version-table tbody tr td").each(function(){
                             var myStr = $(this).text();
-                           console.log(myStr);
                             if($.trim(myStr).length > maxLength){
                                 var newStr = myStr.substring(0, maxLength);
                                  $(this).empty().html(newStr);

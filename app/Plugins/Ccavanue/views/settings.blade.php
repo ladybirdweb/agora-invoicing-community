@@ -65,10 +65,10 @@ CCAvenue
                             $status=0;
 
                             ?>
-                            <div class="btn-group {{$status == '0' ? 'locked_active unlocked_inactive' : 'locked_inactive unlocked_active'}}" id="toggle_event" style="margin-top:-8px">
+                          <!--   <div class="btn-group {{$status == '0' ? 'locked_active unlocked_inactive' : 'locked_inactive unlocked_active'}}" id="toggle_event" style="margin-top:-8px">
                                 <button type="button"  class="btn {{$status == '1' ? 'btn-sm btn-info' : 'btn-sm btn-default'}}">Active Mode</button>
                                 <button type="button"  class="btn  {{$status == '0' ? 'btn-sm btn-info' : 'btn-sm btn-default'}}" >Test Mode</button>
-                            </div>
+                            </div> -->
 
                           
                         </div>
@@ -126,44 +126,38 @@ CCAvenue
                         </td>
 
                     </tr>
-                    <tr>
+                    <tr class="hidden">
 
                         <td><b>{!! Form::label('redirect_url','Redirect URL',['class'=>'required']) !!}</b></td>
                         <td>
                             <div class="form-group {{ $errors->has('redirect_url') ? 'has-error' : '' }}">
 
-
-                                {!! Form::text('redirect_url',null,['class' => 'form-control','id'=>'redirect_url']) !!}
-        
+                                <input type="text" name="redirect_url" class="form-control" id="redirect_url" value={{url('/payment-gateway/response')}}>
 
 
                             </div>
                         </td>
 
                     </tr>
-                    <tr>
+                    <tr class="hidden">
 
                         <td><b>{!! Form::label('cancel_url','Cancel URL',['class'=>'required']) !!}</b></td>
                         <td>
                             <div class="form-group {{ $errors->has('cancel_url') ? 'has-error' : '' }}">
-
-
-                                {!! Form::text('cancel_url',null,['class' => 'form-control','id'=>'cancel_url']) !!}
-        
+                         <input type="text" name="cancel_url" class="form-control" id="cancel_url" value={{url('/payment-gateway/response')}}>
 
 
                             </div>
                         </td>
 
                     </tr>
-                    <tr>
+                    <tr class="hidden">
 
                         <td><b>{!! Form::label('ccavanue_url','Ccavanue URL',['class'=>'required']) !!}</b></td>
                         <td>
                             <div class="form-group {{ $errors->has('ccavanue_url') ? 'has-error' : '' }}">
 
-
-                                {!! Form::text('ccavanue_url',null,['class' => 'form-control','id'=>'ccavanue_url']) !!}
+                            <input type="text" name="ccavanue_url" class="form-control" id="cancel_url" value="https://secure.ccavenue.com/transaction/transaction.do?command=initiateTransaction">
         
 
 
@@ -171,7 +165,7 @@ CCAvenue
                         </td>
 
                     </tr>
-                    <tr>
+                    <tr class="hidden">
 
                         <td><b>{!! Form::label('currencies','Supported Currencies',['class'=>'required']) !!}</b></td>
                         <td>
@@ -205,44 +199,40 @@ CCAvenue
 </div>
 <script type="text/javascript">
     
-                $('#toggle_event').click(function() {
-                    var settings = 1;
-                    var settings = 0;
-                    if ($(this).hasClass('locked_inactive')) {
-                        settings = 0
-                    }
-                    if ($(this).hasClass('locked_active')) {
-                        settings = 1;
-                    }
+                // $('#toggle_event').click(function() {
+                    // var settings = 1;
+                    // var settings = 0;
+                    // if ($(this).hasClass('locked_inactive')) {
+                    //     settings = 0
+                    // }
+                    // if ($(this).hasClass('locked_active')) {
+                    //     settings = 1;
+                    // }
                     
                     /* reverse locking status */
-                    $('#toggle_event button').eq(0).toggleClass('btn-info btn-default');
-                    $('#toggle_event button').eq(1).toggleClass('btn-default btn-info');
-                    $('#toggle_event').toggleClass('locked_active unlocked_inactive');
-                    $('#toggle_event').toggleClass('locked_inactive unlocked_active');
+                    // $('#toggle_event button').eq(0).toggleClass('btn-info btn-default');
+                    // $('#toggle_event button').eq(1).toggleClass('btn-default btn-info');
+                    // $('#toggle_event').toggleClass('locked_active unlocked_inactive');
+                    // $('#toggle_event').toggleClass('locked_inactive unlocked_active');
 
-                    if(settings==0){
-                      $('#merchant_id').val('');
-                      $('#access_code').val('');
-                      $('#working_key').val('');
-                      $('#redirect_url').val('');
-                      $('#cancel_url').val('');
-                      $('#ccavanue_url').val('');
-                      $('#currencies').val('');
+                    // if(settings==0){
+                    //   $('#merchant_id').val('');
+                    //   $('#access_code').val('');
+                    //   $('#working_key').val('');
+                    //   $('#redirect_url').val('');
+                    //   $('#cancel_url').val('');
+                    //   $('#ccavanue_url').val('');
+                    //   $('#currencies').val('');
 
-                      }
-                      else{
+                    //   }
+                    //   else
+                    $(document).ready(function(){
+                
+                      $('#currencies').val('USD,INR');
+                    })
+                       
 
-                      $('#merchant_id').val('');
-                      $('#access_code').val('');
-                      $('#working_key').val('');
-                      $('#redirect_url').val('');
-                      $('#cancel_url').val('');
-                      $('#ccavanue_url').val('');
-                      $('#currencies').val('');
-                      }
-
-                     });
+                     // });
 </script>
 
 

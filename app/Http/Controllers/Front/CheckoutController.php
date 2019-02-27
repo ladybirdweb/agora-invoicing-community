@@ -188,20 +188,13 @@ class CheckoutController extends InfoController
 
     public function postCheckout(Request $request)
     {
-        $this->validate($request, [
-            'payment_gateway'=> 'required',
-        ]);
         $invoice_controller = new \App\Http\Controllers\Order\InvoiceController();
         $info_cont = new \App\Http\Controllers\Front\InfoController();
         $payment_method = $request->input('payment_gateway');
         \Session::put('payment_method', $payment_method);
-        $paynow = false;
-        if ($request->input('invoice_id')) {
-            $paynow = true;
-        }
+        $paynow = $this->checkregularPaymentOrRenewal($request->input('invoice_id'));
         $cost = $request->input('cost');
         $state = $this->getState();
-
         try {
             if ($paynow === false) {
                 /*
@@ -239,11 +232,11 @@ class CheckoutController extends InfoController
                 $attributes = $this->getAttributes($content);
             }
             if (Cart::getSubTotal() != 0 || $cost > 0) {
-                $v = $this->validate($request, [
-                'payment_gateway' => 'required',
-                ], [
-                'payment_gateway.required' => 'Please choose a payment gateway',
-                ]);
+                $this->validate($request, [
+                    'payment_gateway'=> 'required',
+                    ],[
+                        'payment_gateway.required'=> 'Please Select a Payment Gateway',
+                    ]);
                 if ($payment_method == 'razorpay') {
                     $rzp_key = ApiKey::where('id', 1)->value('rzp_key');
                     $rzp_secret = ApiKey::where('id', 1)->value('rzp_secret');
@@ -272,10 +265,19 @@ class CheckoutController extends InfoController
                     \Event::fire(new \App\Events\PaymentGateway(['request' => $request, 'cart' => Cart::getContent(), 'order' => $invoice]));
                 }
             } else {
-                $action = $this->checkoutAction($invoice);
-                $check_product_category = $this->product($invoiceid);
+                if ($paynow == false) {//Regular Payment for free Product
+                     $action = $this->checkoutAction($invoice);
+                 } else {//Renewal Payment for free Product
+                     $control = new \App\Http\Controllers\Order\RenewController();
+                    $control->successRenew($invoice);
+                    $payment = new \App\Http\Controllers\Order\InvoiceController();
+                    $payment->postRazorpayPayment($invoice->id, $invoice->grand_total);
+
+                 }
+               
+                // $check_product_category = $this->product($invoiceid);
                 $url = '';
-                if ($check_product_category->category) {
+                // if ($check_product_category->category) {
                     $url = view('themes.default1.front.postCheckoutTemplate', compact(
                         'invoice',
                         'date',
@@ -284,7 +286,7 @@ class CheckoutController extends InfoController
                         'attributes',
                         'state'
                     ))->render();
-                }
+                // }
 
                 \Cart::clear();
 
@@ -296,6 +298,15 @@ class CheckoutController extends InfoController
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
+    }
+
+    public function checkregularPaymentOrRenewal($invoiceid)
+    {
+        $paynow = false;
+         if ($invoiceid) {
+            $paynow = true;
+        }
+        return $paynow;
     }
 
     public function checkoutAction($invoice)
@@ -316,7 +327,6 @@ class CheckoutController extends InfoController
             //execute the order
             $order = new \App\Http\Controllers\Order\OrderController();
             $order->executeOrder($invoice->id, $order_status = 'executed');
-
             return 'success';
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
@@ -342,127 +352,4 @@ class CheckoutController extends InfoController
         }
     }
 
-    public function GenerateOrder()
-    {
-        try {
-            $products = [];
-            $items = \Cart::getContent();
-            foreach ($items as $item) {
-                //this is product
-                $id = $item->id;
-                $this->AddProductToOrder($id);
-            }
-        } catch (\Exception $ex) {
-            app('log')->error($ex->getMessage());
-            Bugsnag::notifyException($ex);
-
-            throw new \Exception('Can not Generate Order');
-        }
-    }
-
-    public function AddProductToOrder($id)
-    {
-        try {
-            $cart = \Cart::get($id);
-            $client = \Auth::user()->id;
-            $payment_method = \Input::get('payment_gateway');
-            $promotion_code = '';
-            $order_status = 'pending';
-            $serial_key = '';
-            $product = $id;
-            $addon = '';
-            $domain = '';
-            $price_override = $cart->getPriceSumWithConditions();
-            $qty = $cart->quantity;
-
-            $planid = $this->price->where('product_id', $id)->first()->subscription;
-
-            $or = $this->order->create(['client' => $client,
-                'payment_method'                 => $payment_method, 'promotion_code' => $promotion_code,
-                'order_status'                   => $order_status, 'serial_key' => $serial_key,
-                'product'                        => $product, 'addon' => $addon, 'domain' => $domain,
-                'price_override'                 => $price_override, 'qty' => $qty, ]);
-
-            $this->AddSubscription($or->id, $planid);
-        } catch (\Exception $ex) {
-            app('log')->error($ex->getMessage());
-            Bugsnag::notifyException($ex);
-
-            throw new \Exception('Can not Generate Order for Product');
-        }
-    }
-
-    public function AddSubscription($orderid, $planid)
-    {
-        try {
-            $days = $this->plan->where('id', $planid)->first()->days;
-            //dd($days);
-            if ($days > 0) {
-                $dt = \Carbon\Carbon::now();
-                //dd($dt);
-                $user_id = \Auth::user()->id;
-                $ends_at = $dt->addDays($days);
-            } else {
-                $ends_at = '';
-            }
-            $this->subscription->create(['user_id' => \Auth::user()->id,
-             'plan_id'                             => $planid, 'order_id' => $orderid, 'ends_at' => $ends_at, ]);
-        } catch (\Exception $ex) {
-            app('log')->error($ex->getMessage());
-            Bugsnag::notifyException($ex);
-
-            throw new \Exception('Can not Generate Subscription');
-        }
-    }
-
-    public function GenerateInvoice()
-    {
-        try {
-            $user_id = \Auth::user()->id;
-            $number = rand(11111111, 99999999);
-            $date = \Carbon\Carbon::now();
-            $grand_total = \Cart::getSubTotal();
-
-            $invoice = $this->invoice->create(['user_id' => $user_id,
-                'number'                                 => $number, 'date' => $date, 'grand_total' => $grand_total, ]);
-            foreach (\Cart::getContent() as $cart) {
-                $this->CreateInvoiceItems($invoice->id, $cart);
-            }
-        } catch (\Exception $ex) {
-            app('log')->error($ex->getMessage());
-            Bugsnag::notifyException($ex);
-
-            throw new \Exception('Can not Generate Invoice');
-        }
-    }
-
-    public function CreateInvoiceItems($invoiceid, $cart)
-    {
-        try {
-            $product_name = $cart->name;
-            $regular_price = $cart->price;
-            $quantity = $cart->quantity;
-            $subtotal = $cart->getPriceSumWithConditions();
-
-            $tax_name = '';
-            $tax_percentage = '';
-
-            foreach ($cart->attributes['tax'] as $tax) {
-                $tax_name .= $tax['name'].',';
-                $tax_percentage .= $tax['rate'].',';
-            }
-
-            //dd($tax_name);
-
-            $invoiceItem = $this->invoiceItem->create(['invoice_id' => $invoiceid,
-                'product_name'                                      => $product_name, 'regular_price' => $regular_price,
-                'quantity'                                          => $quantity, 'tax_name' => $tax_name,
-                 'tax_percentage'                                   => $tax_percentage, 'subtotal' => $subtotal, ]);
-        } catch (\Exception $ex) {
-            app('log')->error($ex->getMessage());
-            Bugsnag::notifyException($ex);
-
-            throw new \Exception('Can not create Invoice Items');
-        }
-    }
 }

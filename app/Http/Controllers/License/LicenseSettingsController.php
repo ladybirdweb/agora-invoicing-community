@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\License;
 
-use App\Model\License\licenseType;
+use App\Model\License\LicenseType;
 use Bugsnag;
 use Illuminate\Http\Request;
 

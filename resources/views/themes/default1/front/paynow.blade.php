@@ -144,18 +144,21 @@ Checkout
 
                 </div>
                 {!! Form::open(['url'=>'checkout','method'=>'post']) !!}
-                
+                  @if($invoice->grand_total > 0)
                 <h4 class="heading-primary">Payment</h4>
-                    <?php $gateways = \App\Http\Controllers\Common\SettingsController::checkPaymentGateway($symbol); ?>
-                     @if($gateways) {
+                    <?php $gateways = \App\Http\Controllers\Common\SettingsController::checkPaymentGateway($invoice->currency);
+                      $rzpstatus = \App\Model\Common\StatusSetting::first()->value('rzp_status');
+                       ?>
+                     @if($gateways) 
                   <div class="form-group">
 
                     <div class="col-md-6">
                         {{ucfirst($gateways)}} {!! Form::radio('payment_gateway',strtolower($gateways)) !!}<br><br>
                     </div>
                 </div>
-            }
+            
             @endif
+             @if($rzpstatus ==1)
                 <div class="form-group">
                     
                     <div class="col-md-6">
@@ -166,13 +169,15 @@ Checkout
 
                     </div>
                     
-                    <div class="col-md-6">
+                   
+                </div>
+                @endif
+                  @endif
+                   <div class="col-md-6">
                         
                         {!! Form::hidden('invoice_id',$invoice->id) !!}
                         {!! Form::hidden('cost',$invoice->grand_total) !!}
                     </div>
-                </div>
-                
                 <div class="form-group">
                     <div class="col-md-6 col-md-offset-4">
                         <button type="submit" class="btn btn-primary">

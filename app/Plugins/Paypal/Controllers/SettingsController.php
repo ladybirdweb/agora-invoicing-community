@@ -50,12 +50,11 @@ class SettingsController extends Controller
     }
 
     public function postSettings(Request $request)
-    {
+    {dd($request->all());
         $this->validate($request, [
             'business'    => 'required',
             'cmd'         => 'required',
             'paypal_url'  => 'required|url',
-            'image_url'   => 'required',
             'success_url' => 'url',
             'cancel_url'  => 'url',
             'notify_url'  => 'url',

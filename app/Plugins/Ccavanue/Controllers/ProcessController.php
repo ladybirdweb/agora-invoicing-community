@@ -27,7 +27,7 @@ class ProcessController extends Controller
             } else {
                 $total = $request->input('cost');
                 \Cart::clear();
-                \Session::set('invoiceid', $order->id);
+                \Session::put('invoiceid', $order->id);
             }
             if ($request->input('payment_gateway') == 'ccavenue') {
                 if (!\Schema::hasTable('ccavenue')) {
@@ -148,7 +148,9 @@ class ProcessController extends Controller
                     $checkout_controller = new \App\Http\Controllers\Front\CheckoutController();
                     $checkout_controller->checkoutAction($invoice);
                 } else {
-                    $control->successRenew();
+                     $invoice = new \App\Model\Order\Invoice();
+                    $invoice = $invoice->findOrFail($invoiceid);
+                    $control->successRenew($invoice);
                 }
                 \Cart::clear();
                 $status = 'success';

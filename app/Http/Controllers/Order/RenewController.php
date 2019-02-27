@@ -86,12 +86,10 @@ class RenewController extends BaseRenewController
             $invoice->save();
 
             $id = Session::get('subscription_id');
-
             $planid = Session::get('plan_id');
             $plan = $this->plan->find($planid);
             $days = $plan->days;
             $sub = $this->sub->find($id);
-
             $permissions = LicensePermissionsController::getPermissionsForProduct($sub->product_id);
             $licenseExpiry = $this->getExpiryDate($permissions['generateLicenseExpiryDate'], $sub, $days);
             $updatesExpiry = $this->getUpdatesExpiryDate($permissions['generateUpdatesxpiryDate'], $sub, $days);

@@ -59,6 +59,27 @@ Paypal
                         <td>{!! Form::submit(Lang::get('message.update'),['class'=>'btn btn-primary pull-right'])!!}</td>
 
                     </tr>
+                              <div class="box-footer">
+                       
+                        <div class="pull-right">
+
+                            <?php
+                            $status=0;
+                            $cont = new \App\Plugins\Paypal\Model\Paypal();
+                            $recentselected = $cont->find(1)->pluck('paypal_url')->first();
+                            ?>
+                            <div class="btn-group {{$status == '0' ? 'locked_active unlocked_inactive' : 'locked_inactive unlocked_active'}}" id="toggle_event" style="margin-top:-8px">
+                                <button type="button"  class="btn {{$status == '1' ? 'btn-sm btn-info' : 'btn-sm btn-default'}}">Live Mode</button>
+                                <button type="button"  class="btn  {{$status == '0' ? 'btn-sm btn-info' : 'btn-sm btn-default'}}" >Test Mode</button>
+                            </div>
+                            @if($recentselected == 'https://www.sandbox.paypal.com/cgi-bin/webscr')
+                           <div>Test Mode Active</div>
+                            @elseif ($recentselected == 'https://www.paypal.com/cgi-bin/webscr')
+                             <div>Live Mode Active</div>
+                            @endif
+                          
+                        </div>
+                    </div>  
                     
                     <tr>
 
@@ -67,7 +88,7 @@ Paypal
                             <div class="form-group {{ $errors->has('business') ? 'has-error' : '' }}">
 
 
-                                {!! Form::text('business',null,['class' => 'form-control']) !!}
+                                {!! Form::text('business',null,['class' => 'form-control','id'=>'business']) !!}
         
 
 
@@ -76,14 +97,14 @@ Paypal
 
                     </tr>
                     
-                    <tr>
+                    <tr class="hidden">
 
                         <td><b>{!! Form::label('cmd','CMD',['class'=>'required']) !!}</b></td>
                         <td>
                             <div class="form-group {{ $errors->has('cmd') ? 'has-error' : '' }}">
 
 
-                                {!! Form::text('cmd',null,['class' => 'form-control']) !!}
+                                {!! Form::text('cmd',null,['class' => 'form-control','id'=>'cmd']) !!}
         
 
 
@@ -91,14 +112,14 @@ Paypal
                         </td>
 
                     </tr>
-                    <tr>
+                    <tr class="hidden">
 
                         <td><b>{!! Form::label('currencies','Supported Currencies',['class'=>'required']) !!}</b></td>
                         <td>
                             <div class="form-group {{ $errors->has('currencies') ? 'has-error' : '' }}">
 
 
-                                {!! Form::text('currencies',null,['class' => 'form-control']) !!}
+                                {!! Form::text('currencies',null,['class' => 'form-control','id'=>'currency']) !!}
         
 
 
@@ -107,14 +128,12 @@ Paypal
 
                     </tr>
                     
-                    <tr>
+                    <tr class="hidden">
 
                         <td><b>{!! Form::label('paypal_url','Paypal URL',['class'=>'required']) !!}</b></td>
                         <td>
                             <div class="form-group {{ $errors->has('paypal_url') ? 'has-error' : '' }}">
-
-
-                                {!! Form::text('paypal_url',null,['class' => 'form-control']) !!}
+                           {!! Form::text('paypal_url',null,['class' => 'form-control','id'=>'paypal_url']) !!}
         
 
 
@@ -123,7 +142,7 @@ Paypal
 
                     </tr>
                     
-                    <tr>
+               <!--      <tr>
 
                         <td><b>{!! Form::label('image_url','Image URL') !!}</b></td>
                         <td>
@@ -137,15 +156,14 @@ Paypal
                             </div>
                         </td>
 
-                    </tr>
-                    <tr>
+                    </tr> -->
+                    <tr class="hidden">
 
                         <td><b>{!! Form::label('success_url','Success URL') !!}</b></td>
                         <td>
                             <div class="form-group {{ $errors->has('success_url') ? 'has-error' : '' }}">
 
-
-                                {!! Form::text('success_url',null,['class' => 'form-control']) !!}
+                                 <input type="text" name="success_url" class="form-control" id="success_url" value={{url('/payment-gateway/paypal/response')}}>
         
 
 
@@ -153,30 +171,27 @@ Paypal
                         </td>
 
                     </tr>
-                    <tr>
+                    <tr class="hidden">
 
                         <td><b>{!! Form::label('cancel_url','Cancel URL') !!}</b></td>
                         <td>
                             <div class="form-group {{ $errors->has('cancel_url') ? 'has-error' : '' }}">
 
 
-                                {!! Form::text('cancel_url',null,['class' => 'form-control']) !!}
-        
+                        <input type="text" name="cancel_url" class="form-control" id="success_url" value={{url('payment-gateway/paypal/cancel')}}>
 
 
                             </div>
                         </td>
 
                     </tr>
-                    <tr>
+                    <tr class="hidden">
 
                         <td><b>{!! Form::label('notify_url','Notify URL') !!}</b></td>
                         <td>
                             <div class="form-group {{ $errors->has('notify_url') ? 'has-error' : '' }}">
 
-
-                                {!! Form::text('notify_url',null,['class' => 'form-control']) !!}
-        
+                          <input type="text" name="notify_url" class="form-control" id="notify_url" value={{url('payment-gateway/paypal/notify')}}>
 
 
                             </div>
@@ -200,5 +215,44 @@ Paypal
 
 
 </div>
+<script type="text/javascript">
+             $(document).ready(function(){
+             var selected =   $('#paypal_url').val();
+               $('#toggle_event').trigger('click'); 
+             })
+                $('#toggle_event').click(function() {
+                    var settings = 1;
+                    var settings = 0;
+                    if ($(this).hasClass('locked_inactive')) {
+                        settings = 0
+                    }
+                    if ($(this).hasClass('locked_active')) {
+                        settings = 1;
+                    }
+                    
+                    /* reverse locking status */
+                    $('#toggle_event button').eq(0).toggleClass('btn-info btn-default');
+                    $('#toggle_event button').eq(1).toggleClass('btn-default btn-info');
+                    $('#toggle_event').toggleClass('locked_active unlocked_inactive');
+                    $('#toggle_event').toggleClass('locked_inactive unlocked_active');
+                    
+                     
+                 
+                    if(settings==0){
+                      $('#cmd').val('_xclick');
+                      $('#paypal_url').val('https://www.sandbox.paypal.com/cgi-bin/webscr');
+                      $('#currency').val('USD,INR,AUD,BRL,CAD,CZK,DKK,EUR,HKD,RUB,HUF,ILS,JPY,MYR,MXN,TWD,NZD,NOK,PHP,PLN,GBP,SGD,SEK,CHF,THB');
+                      
+
+                      }
+                      else{
+
+                      $('#cmd').val('_xclick');
+                      $('#paypal_url').val('https://www.paypal.com/cgi-bin/webscr');
+                      $('#currency').val('USD,INR,AUD,BRL,CAD,CZK,DKK,EUR,HKD,RUB,HUF,ILS,JPY,MYR,MXN,TWD,NZD,NOK,PHP,PLN,GBP,SGD,SEK,CHF,THB');
+                      }
+                 
+                     });
+</script>
 
 @stop

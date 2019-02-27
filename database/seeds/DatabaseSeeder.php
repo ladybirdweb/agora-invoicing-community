@@ -786,7 +786,7 @@ class PricingTemplateSeeder extends Seeder
                                 </div>
                                 <div class="plan-price">
                                     <span class="price">{{price}}</span>
-                                    
+                                    <br>
                                     <label class="price-label">{{price-description}}</label>
                                 </div>
                                 <div class="plan-features">

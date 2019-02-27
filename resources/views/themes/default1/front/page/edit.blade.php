@@ -114,7 +114,9 @@ Edit Page
                        <div class="col-md-6 form-group {{ $errors->has('parent_page_id') ? 'has-error' : '' }}">
                         <!-- last name -->
                         {!! Form::label('default_page_id',Lang::get('message.default-page'),['class'=>'required']) !!}
+
                                    <select name="default_page_id"  class="form-control">
+                                     <option value="">My Invoices</option>
                          @foreach($defaults as $key=>$value)
                                    <option value="{{$key}}" <?php  if($key == $selectedDefault)  { echo "selected";} ?>>{{$value}}</option>
                            

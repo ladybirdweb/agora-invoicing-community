@@ -139,8 +139,8 @@ class BaseOrderController extends ExtendedOrderController
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
             app('log')->info($ex->getMessage());
+            return;
 
-            throw new \Exception('Order Placed Successfully but user not Updated to Mailchimp');
         }
     }
 

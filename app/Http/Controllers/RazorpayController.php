@@ -89,7 +89,6 @@ class RazorpayController extends Controller
                     $control->successRenew($invoice);
                     $payment = new \App\Http\Controllers\Order\InvoiceController();
                     $payment->postRazorpayPayment($invoice->id, $invoice->grand_total);
-
                     $view = $this->getViewMessageAfterRenew($invoice, $state, $currency);
                     $status = $view['status'];
                     $message = $view['message'];

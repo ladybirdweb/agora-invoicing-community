@@ -19,7 +19,6 @@ class ProcessController extends Controller
     public function PassToPayment($requests)
     {
         try {
-            //dd($requests);
             $request = $requests['request'];
             $order = $requests['order'];
             $cart = $requests['cart'];
@@ -29,7 +28,7 @@ class ProcessController extends Controller
             } else {
                 $total = $request->input('cost');
                 \Cart::clear();
-                \Session::set('invoiceid', $order->id);
+                \Session::put('invoiceid', $order->id);
             }
 
             if ($request->input('payment_gateway') == 'paypal') {
@@ -41,7 +40,6 @@ class ProcessController extends Controller
                     throw new \Exception('Paypal Fields not given');
                 }
                 $data = $this->getFields($order);
-                //dd($data);
                 $this->middlePage($data);
             }
         } catch (\Exception $ex) {
@@ -152,6 +150,7 @@ class ProcessController extends Controller
             if (!$config) {
                 throw new \Exception('Paypal Fields not given');
             }
+            \Session::put('invoiceid', $data['invoice']);
             $url = $config->paypal_url;
             echo "<form action=$url id=form name=redirect method=post>";
             foreach ($data as $key => $value) {
@@ -160,8 +159,6 @@ class ProcessController extends Controller
             echo '</form>';
             echo"<script language='javascript'>document.redirect.submit();</script>";
         } catch (\Exception $ex) {
-            dd($ex);
-
             throw new \Exception($ex->getMessage(), $ex->getCode(), $ex->getPrevious());
         }
     }
@@ -182,18 +179,46 @@ class ProcessController extends Controller
         $id = '';
         $url = 'checkout';
         if (\Session::has('invoiceid')) {
-            $id = \Session::get('invoiceid');
+            $invoiceid = \Session::get('invoiceid');
             $url = 'paynow/'.$id;
         }
-        if (\Cart::getContent()->count() > 0) {
+        // if (\Cart::getContent()->count() > 0) {
+        //     \Cart::clear();
+        // }
+        if ($invoiceid) {
+            $control = new \App\Http\Controllers\Order\RenewController();
+            if ($control->checkRenew() === false) {
+                $invoice = new \App\Model\Order\Invoice();
+                $invoice = $invoice->findOrFail($invoiceid);
+                $checkout_controller = new \App\Http\Controllers\Front\CheckoutController();
+                $state = \Auth::user()->state;
+                $currency = \Auth::user()->currency_symbol;
+                $checkout_controller->checkoutAction($invoice);
+                $cont = new \App\Http\Controllers\RazorpayController();
+                $view = $cont->getViewMessageAfterPayment($invoice, $state, $currency);
+                $status = $view['status'];
+                $message = $view['message'];
+                  \Session::forget('items');
+                    \Session::forget('code');
+                    \Session::forget('codevalue');
+            } else {
+                $invoice = new \App\Model\Order\Invoice();
+                $invoice = $invoice->findOrFail($invoiceid);
+                $control->/* @scrutinizer ignore-call */
+                successRenew($invoice);
+                $payment = new \App\Http\Controllers\Order\InvoiceController();
+                $payment->postRazorpayPayment($invoice->id, $invoice->grand_total);
+                $state = \Auth::user()->state;
+                $currency = \Auth::user()->currency_symbol;
+                $cont = new \App\Http\Controllers\RazorpayController();
+                $view = $cont->getViewMessageAfterRenew($invoice, $state, $currency);
+                $status = $view['status'];
+                $message = $view['message'];
+            }
+            return redirect()->back()->with($status, $message);
             \Cart::clear();
         }
-        if ($id) {
-            $this->success($id);
-            \Session::forget('invoiceid');
-        }
-
-        return redirect($url)->with('success', 'Thank you for your order. Your transaction is successful. We will be processing your order soon.');
+        
     }
 
     public function cancel(Request $request)
@@ -213,18 +238,5 @@ class ProcessController extends Controller
         dd($request);
     }
 
-    public function success($invoiceid)
-    {
-        $control = new \App\Http\Controllers\Order\RenewController();
-        if ($control->checkRenew() === false) {
-            $invoice = new \App\Model\Order\Invoice();
-            $invoice = $invoice->findOrFail($invoiceid);
-            $checkout_controller = new \App\Http\Controllers\Front\CheckoutController();
-            $checkout_controller->checkoutAction($invoice);
-        } else {
-            $control->/* @scrutinizer ignore-call */
-            successRenew();
-        }
-        \Cart::clear();
-    }
+  
 }

@@ -127,7 +127,18 @@ class PageController extends GetPageTemplateController
         ]);
 
         try {
-            $this->page->fill($request->input())->save();
+            $url = $request->input('url');
+            if ($request->input('type') =='contactus') {
+               $url = url('/contact-us');
+            }
+            $this->page->name = $request->input('name');
+            $this->page->publish = $request->input('publish');
+            $this->page->slug = $request->input('slug');
+            $this->page->url = $url;
+            $this->page->parent_page_id = $request->input('parent_page_id');
+            $this->page->type = $request->input('type');
+            $this->page->content = $request->input('content');
+            $this->page->save();
 
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (\Exception $ex) {
@@ -146,18 +157,22 @@ class PageController extends GetPageTemplateController
             'slug'           => 'required',
             'url'            => 'required',
             'content'        => 'required',
-            'default_page_id'=> 'required',
             'created_at'     => 'required',
         ]);
 
         try {
+            if($request->input('default_page_id') != '') {
             $page = $this->page->where('id', $id)->first();
             $page->fill($request->except('created_at'))->save();
             $date = \DateTime::createFromFormat('d/m/Y', $request->input('created_at'));
             $page->created_at = $date->format('Y-m-d H:i:s');
             $page->save();
             $defaultUrl = $this->page->where('id', $request->input('default_page_id'))->pluck('url')->first();
-            DefaultPage::find(1)->update(['page_id'=>$request->input('default_page_id'), 'page_url'=>$defaultUrl]);
+            DefaultPage::find(1)->update(['page_id'=>$request->input('default_page_id'), 'page_url'=>$defaultUrl]);  
+            } else {
+                DefaultPage::find(1)->update(['page_id'=>1, 'page_url'=>url('my-invoices')]);
+            }
+            
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $ex) {

@@ -195,6 +195,7 @@ class CheckoutController extends InfoController
         $paynow = $this->checkregularPaymentOrRenewal($request->input('invoice_id'));
         $cost = $request->input('cost');
         $state = $this->getState();
+
         try {
             if ($paynow === false) {
                 /*
@@ -234,7 +235,7 @@ class CheckoutController extends InfoController
             if (Cart::getSubTotal() != 0 || $cost > 0) {
                 $this->validate($request, [
                     'payment_gateway'=> 'required',
-                    ],[
+                    ], [
                         'payment_gateway.required'=> 'Please Select a Payment Gateway',
                     ]);
                 if ($payment_method == 'razorpay') {
@@ -266,19 +267,18 @@ class CheckoutController extends InfoController
                 }
             } else {
                 if ($paynow == false) {//Regular Payment for free Product
-                     $action = $this->checkoutAction($invoice);
-                 } else {//Renewal Payment for free Product
-                     $control = new \App\Http\Controllers\Order\RenewController();
+                    $action = $this->checkoutAction($invoice);
+                } else {//Renewal Payment for free Product
+                    $control = new \App\Http\Controllers\Order\RenewController();
                     $control->successRenew($invoice);
                     $payment = new \App\Http\Controllers\Order\InvoiceController();
                     $payment->postRazorpayPayment($invoice->id, $invoice->grand_total);
+                }
 
-                 }
-               
                 // $check_product_category = $this->product($invoiceid);
                 $url = '';
                 // if ($check_product_category->category) {
-                    $url = view('themes.default1.front.postCheckoutTemplate', compact(
+                $url = view('themes.default1.front.postCheckoutTemplate', compact(
                         'invoice',
                         'date',
                         'product',
@@ -303,9 +303,10 @@ class CheckoutController extends InfoController
     public function checkregularPaymentOrRenewal($invoiceid)
     {
         $paynow = false;
-         if ($invoiceid) {
+        if ($invoiceid) {
             $paynow = true;
         }
+
         return $paynow;
     }
 
@@ -327,6 +328,7 @@ class CheckoutController extends InfoController
             //execute the order
             $order = new \App\Http\Controllers\Order\OrderController();
             $order->executeOrder($invoice->id, $order_status = 'executed');
+
             return 'success';
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
@@ -351,5 +353,4 @@ class CheckoutController extends InfoController
             throw new \Exception($ex->getMessage());
         }
     }
-
 }

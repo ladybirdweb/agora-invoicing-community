@@ -50,7 +50,8 @@ class SettingsController extends Controller
     }
 
     public function postSettings(Request $request)
-    {dd($request->all());
+    {
+        dd($request->all());
         $this->validate($request, [
             'business'    => 'required',
             'cmd'         => 'required',

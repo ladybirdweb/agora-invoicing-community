@@ -493,12 +493,6 @@ if($script){
                                 </div>
                                 {!! Form::close() !!}
                                  @endif
-                            <ul class="social-icons">
-                                @foreach($social as $media)
-                                <li class="{{$media->class}}"><a href="{{$media->link}}" target="_blank" title="{{ucfirst($media->name)}}"><i class="{{$media->fa_class}}"></i></a></li>
-                                @endforeach
-                            </ul>
-                           
                           @endif
                             <br>
                        

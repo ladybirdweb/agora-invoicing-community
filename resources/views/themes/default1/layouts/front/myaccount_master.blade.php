@@ -405,7 +405,7 @@ if($script){
 
                                     <li class="@yield('nav-invoice')"><a class="nav-link" href="{{url('my-invoices')}}">My Invoices</a></li>
                                     <li class="@yield('nav-profile')"><a class="nav-link" href="{{url('my-profile')}}">Profile</a></li>
-                                    <li class="@yield('nav-profile')"><a class="nav-link" href="https://support.faveohelpdesk.com/category-list/installation-and-upgrade-guide" target="_blank">Faveo Installation Instructions</a></li>
+                                    <!-- <li class="@yield('nav-profile')"><a class="nav-link" href="https://support.faveohelpdesk.com/category-list/installation-and-upgrade-guide" target="_blank">Faveo Installation Instructions</a></li> -->
                                     <li><a class="nav-link" href="{{url('auth/logout')}}">Logout</a></li>
                                 </ul>
 
@@ -560,18 +560,14 @@ if($script){
                                 </div>
                                 {!! Form::close() !!}
                                  @endif
-                            <ul class="social-icons">
-                                @foreach($social as $media)
-                                <li class="{{$media->class}}"><a href="{{$media->link}}" target="_blank" title="{{ucfirst($media->name)}}"><i class="{{$media->fa_class}}"></i></a></li>
-                                @endforeach
-                            </ul>
+                           
                            
                           @endif
                             <br>
                        
-                        <a href="https://secure.comodo.com/ttb_searcher/trustlogo?v_querytype=W&v_shortname=CL1&v_search=https://www.billing.faveohelpdesk.com/&x=6&y=5"><img class="img-responsive" alt="" title="" src="https://www.faveohelpdesk.com/wp-content/uploads/2017/07/comodo_secure_seal_113x59_transp.png" /></a>
+                      <!--   <a href="https://secure.comodo.com/ttb_searcher/trustlogo?v_querytype=W&v_shortname=CL1&v_search=https://www.billing.faveohelpdesk.com/&x=6&y=5"><img class="img-responsive" alt="" title="" src="https://www.faveohelpdesk.com/wp-content/uploads/2017/07/comodo_secure_seal_113x59_transp.png" /></a>
                         <br/> <br/>
-                        <a href="https://monitor203.sucuri.net/m/verify/?r=ce48118f19b0feaecb9d46ac593fd041b2a8e31e15"><img class="img-responsive" alt="" title="" src="https://www.faveohelpdesk.com/wp-content/uploads/2017/07/index.gif" /></a>
+                        <a href="https://monitor203.sucuri.net/m/verify/?r=ce48118f19b0feaecb9d46ac593fd041b2a8e31e15"><img class="img-responsive" alt="" title="" src="https://www.faveohelpdesk.com/wp-content/uploads/2017/07/index.gif" /></a> -->
                   </div>
                   
                 </div>

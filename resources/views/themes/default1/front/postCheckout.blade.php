@@ -252,10 +252,8 @@ $json = json_encode($data);
                                 </td>
                                 <td class="product-name">
 
-
+                                        
                                     <span class="amount">{{currency_format(intval($item->regular_price),$code = $currency)}}</span>
-
-
                                 </td>
                             </tr>
                             @empty 
@@ -311,8 +309,6 @@ $json = json_encode($data);
                         <strong>Cart Subtotal</strong>
                     </th>
                     <td>
-
-
                         <strong><span class="amount">{{currency_format($subtotal,$code = $currency)}}</span></strong>
                     </td>
                 </tr>
@@ -452,18 +448,18 @@ $json = json_encode($data);
                 @if ($attributes['attributes']['tax'][0]['name'] == null)
                  
                 @foreach ($items as $item)
-                 @if($item['tax_name']!='null,' )
+                 @if($item->tax_name !='null' )
                <tr class="Taxes">
                   <th>
-                        <strong>{{$item['tax_name']}}<span>@</span>{{$item['tax_percentage']}}</strong><br/>
+                        <strong>{{$item->tax_name}}<span>@</span>{{$item->tax_percentage}}</strong><br/>
                        
                          
                     </th>
                     <td>
                  <?php
-                 $value = \App\Http\Controllers\Front\CartController::taxValue($item['tax_percentage'],$item['regular_price']);
+                 $value = \App\Http\Controllers\Front\CartController::taxValue($item->tax_percentage,$item->regular_price);
                  ?>
-                       {{currency_format( $value,$code = $currency)}} <br/>
+                       {{currency_format($value,$code = $currency)}} <br/>
                          
                        
                     </td>

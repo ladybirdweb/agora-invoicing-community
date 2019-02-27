@@ -162,8 +162,7 @@ active
                                         }
                                         
                                     ?>
-                                    
-                                   
+                                     
                                    @if(count($tax_name)>0 &&$tax_name[0] !='null')
                                      <?php
                                      $order = \App\Model\Order\Order::where('invoice_item_id',$item->id)->first();
@@ -239,6 +238,10 @@ active
                                         </th>
                                         <td>
                                            <?php
+                                        //   dd()
+                                           if($tax_percentage[0] == "") {
+                                              $tax_percentage[0] = 0; 
+                                           }
                                            $value = \App\Http\Controllers\Front\CartController::taxValue($tax_percentage[0],$item->regular_price);
                                            ?>
                                             {{currency_format($value,$code = $symbol)}}
@@ -263,7 +266,7 @@ active
 
                         <!-- this row will not appear when printing -->
                            <div class="row no-print">
-                            <div class="col-xs-12">	
+                            <div class="col-xs-12"> 
                                 <a href="{{url('pdf?invoiceid='.$invoice->id)}}"><button class="btn btn-primary pull-right" style="margin-right: 5px;"><i class="fa fa-download"></i> Generate PDF</button></a>
 
                                 

@@ -407,8 +407,10 @@ Edit Product
                                     <?php
                                     if ($plan->days != '') {
                                         $months = $plan->days / 30;
-                                    }
-                                    $months = 'No Period Selected';
+                                    } else {
+                                         $months = 'No Period Selected';
+                                    } 
+                                   
                                     ?>
                                     <td>{{round($months)}}</td> 
                                     <td><a href="{{url('plans/'.$plan->id.'/edit')}}" class="btn btn-primary btn-xs"><i class='fa fa-edit' style='color:white;'></i>&nbsp;&nbsp;Edit</a></td> 

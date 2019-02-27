@@ -256,7 +256,7 @@ trait TaxCalculation
     public static function taxValue($rate, $price)
     {
         try {
-            $result = '';
+            $result = 0;
             if ($rate) {
                 $rate = str_replace('%', '', $rate);
                 $tax = intval($price) * (intval($rate) / 100);

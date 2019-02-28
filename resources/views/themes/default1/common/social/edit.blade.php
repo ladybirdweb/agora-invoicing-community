@@ -1,4 +1,7 @@
 @extends('themes.default1.layouts.master')
+@section('title')
+Social Media
+@stop
 @section('content-header')
 <h1>
 Edit Social Media
@@ -6,7 +9,7 @@ Edit Social Media
   <ol class="breadcrumb">
         <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
         <li><a href="{{url('settings')}}"><i class="fa fa-dashboard"></i> Settings</a></li>
-         <li><a href="{{url('social-media')}}"><i class="fa fa-dashboard"></i> Settings</a></li>
+         <li><a href="{{url('social-media')}}"><i class="fa fa-dashboard"></i> Social Media</a></li>
          <li class="active"> Edit Social Media</li>
       </ol>
 @stop

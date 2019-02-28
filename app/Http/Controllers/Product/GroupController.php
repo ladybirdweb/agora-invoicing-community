@@ -96,7 +96,6 @@ class GroupController extends Controller
     {
         $this->validate($request, [
             'name'                 => 'required',
-            'headline'             => 'required',
             'pricing_templates_id' => 'required',
             ], [
                 'pricing_templates_id.required'=> 'Please Select a Template',

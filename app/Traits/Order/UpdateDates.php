@@ -7,7 +7,6 @@ use App\Model\Common\StatusSetting;
 use App\Model\Order\Order;
 use App\Model\Product\Subscription;
 use Bugsnag;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 ////////////////////////////////////////////////////////////////////////////
@@ -54,9 +53,9 @@ trait UpdateDates
     public function editUpdateDateInAPL($orderId, $expiryDate, $licenseSupportExpiry)
     {
         $order = Order::find($orderId);
-        $licenseExpiry = $licenseSupportExpiry->ends_at ? Carbon::parse($licenseSupportExpiry->ends_at)->format('Y-m-d') : '';
-        $supportExpiry = $licenseSupportExpiry->support_ends_at ? Carbon::parse($licenseSupportExpiry->support_ends_at)->format('Y-m-d') : '';
-        $expiryDate = $expiryDate ? Carbon::parse($expiryDate)->format('Y-m-d') : '';
+        $licenseExpiry = strtotime($licenseSupportExpiry->ends_at) > 1 ? date('Y-m-d', strtotime($licenseSupportExpiry->ends_at)) : '';
+        $supportExpiry = strtotime($licenseSupportExpiry->support_ends_at) > 1 ? date('Y-m-d', strtotime($licenseSupportExpiry->support_ends_at)) : '';
+        $expiryDate = strtotime($expiryDate) > 1 ? date('Y-m-d', strtotime($expiryDate)) : '';
         $cont = new \App\Http\Controllers\License\LicenseController();
         $updateLicensedDomain = $cont->updateExpirationDate($order->serial_key, $expiryDate, $order->product, $order->domain, $order->number, $licenseExpiry, $supportExpiry);
     }
@@ -99,9 +98,9 @@ trait UpdateDates
     public function editLicenseDateInAPL($orderId, $date, $updatesSupportExpiry)
     {
         $order = Order::find($orderId);
-        $expiryDate = Carbon::parse($updatesSupportExpiry->update_ends_at)->format('Y-m-d');
-        $supportExpiry = Carbon::parse($updatesSupportExpiry->support_ends_at)->format('Y-m-d');
-        $licenseExpiry = Carbon::parse($date)->format('Y-m-d');
+        $expiryDate = strtotime($updatesSupportExpiry->update_ends_at) > 1 ? date('Y-m-d', strtotime($updatesSupportExpiry->update_ends_at)) : '';
+        $supportExpiry = strtotime($updatesSupportExpiry->support_ends_at) > 1 ? date('Y-m-d', strtotime($updatesSupportExpiry->support_ends_at)) : '';
+        $licenseExpiry = strtotime($date) > 1 ? date('Y-m-d', strtotime($date)) : '';
         $cont = new \App\Http\Controllers\License\LicenseController();
         $updateLicensedDomain = $cont->updateExpirationDate($order->serial_key, $expiryDate, $order->product, $order->domain, $order->number, $licenseExpiry, $supportExpiry);
     }
@@ -144,9 +143,9 @@ trait UpdateDates
     public function editSupportDateInAPL($orderId, $date, $updatesLicenseExpiry)
     {
         $order = Order::find($orderId);
-        $expiryDate = Carbon::parse($updatesLicenseExpiry->update_ends_at)->format('Y-m-d');
-        $licenseExpiry = Carbon::parse($updatesLicenseExpiry->ends_at)->format('Y-m-d');
-        $supportExpiry = Carbon::parse($date)->format('Y-m-d');
+        $expiryDate = strtotime($updatesLicenseExpiry->update_ends_at) > 1 ? date('Y-m-d', strtotime($updatesLicenseExpiry->update_ends_at)) : '';
+        $licenseExpiry = strtotime($updatesLicenseExpiry->ends_at) > 1 ? date('Y-m-d', strtotime($updatesLicenseExpiry->ends_at)) : '';
+        $supportExpiry = strtotime($date) > 1 ? date('Y-m-d', strtotime($date)) : '';
         $cont = new \App\Http\Controllers\License\LicenseController();
         $updateLicensedDomain = $cont->updateExpirationDate($order->serial_key, $expiryDate, $order->product, $order->domain, $order->number, $licenseExpiry, $supportExpiry);
     }

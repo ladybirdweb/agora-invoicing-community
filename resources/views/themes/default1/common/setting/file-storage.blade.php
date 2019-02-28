@@ -1,6 +1,6 @@
 @extends('themes.default1.layouts.master')
 @section('title')
-License Permission
+File Storage
 @stop
 @section('content-header')
 <h1>

@@ -1,10 +1,14 @@
 @extends('themes.default1.layouts.master')
+@section('title')
+Edit Widget
+@stop
 @section('content-header')
 <h1>
 Edit Widget
 </h1>
   <ol class="breadcrumb">
         <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="{{url('settings')}}">Settings</a></li>
         <li><a href="{{url('widgets')}}">All Widgets</a></li>
         <li class="active">Edit Widget</li>
       </ol>

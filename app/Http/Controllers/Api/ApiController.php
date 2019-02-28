@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Model\Order\Order;
+use App\Model\Product\Product;
 use Exception;
 use Illuminate\Http\Request;
 

@@ -307,18 +307,20 @@ Dashboard
                   <td><h5>No Orders Expiring in Next 30 Days</h5></td>
                      <td></td>
                     </tr>
-                   @endif
+                   @else
                     
                   @foreach($subscriptions as $subscription)
+
+
                    <?php
                   $todayDate = Carbon\Carbon::now();
                   $clientName = \App\User::where('id', $subscription->user_id)->select('first_name','last_name')->first();
                   $orderNo = \App\Model\Order\Order::where('id',$subscription->order_id)->value('number');
-                  $expiry = $subscription->ends_at;
+                  $expiry = $subscription->update_ends_at;
                   $date = new DateTime($expiry); 
                   $expDate = $date->format('M j, Y ');
                    $product =  \App\Model\Product\Product::where('id',$subscription->product_id)->value('name');
-                    $daysLeft = date_diff($todayDate,$expiry)->format('%a days');
+                    $daysLeft = date_diff($todayDate,$date)->format('%a days');
                    
                     ?>
 
@@ -330,7 +332,7 @@ Dashboard
                      <td>{{$product}}</td>
                   </tr>
                   @endforeach
-                  
+                  @endif
                
 				           </tbody>
                 </table>

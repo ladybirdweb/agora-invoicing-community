@@ -267,7 +267,7 @@ class DashboardController extends Controller
         $dayUtc = new Carbon('+30 days');
         $today = Carbon::now()->toDateTimeString();
         $plus30Day = $dayUtc->toDateTimeString();
-        $subsEnds = Subscription::where('ends_at', '>', $today)->where('ends_at', '<=', $plus30Day)->get();
+        $subsEnds = Subscription::where('update_ends_at', '>', $today)->where('update_ends_at', '<=', $plus30Day)->get();
 
         return $subsEnds;
     }

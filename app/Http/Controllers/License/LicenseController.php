@@ -149,17 +149,28 @@ class LicenseController extends Controller
     /*
     *  Edit Existing License
     */
-    public function updateLicensedDomain($licenseCode, $domain, $productId, $expiryDate, $orderNo)
+    public function updateLicensedDomain($licenseCode, $domain, $productId, $licenseExpiry,$updatesExpiry,$supportExpiry, $orderNo)
     {
-        if ($expiryDate) {
-            $expiryDate = $expiryDate->toDateString();
+        $l_expiry = '';
+        $s_expiry = '';
+        $u_expiry = '';
+        if (strtotime($licenseExpiry) >1) {
+            $l_expiry = date('Y-m-d', strtotime($licenseExpiry));
+        }
+        if(strtotime($updatesExpiry) >1) {
+            $u_expiry = date('Y-m-d', strtotime($updatesExpiry));
+       }
+        if(strtotime($supportExpiry) >1) {
+            $s_expiry = date('Y-m-d', strtotime($supportExpiry));
         }
         $url = $this->url;
         $isIP = (bool) ip2long($domain);
         if ($isIP == true) {
+            $requiredomain= 0;
             $ip = $domain;
             $domain = '';
         } else {
+            $requiredomain= 1;
             $domain = $domain;
             $ip = '';
         }
@@ -168,8 +179,8 @@ class LicenseController extends Controller
         $licenseId = $searchLicense['licenseId'];
         $productId = $searchLicense['productId'];
         $licenseCode = $searchLicense['code'];
-        $updateLicense = $this->postCurl($url, "api_key_secret=$api_key_secret&api_function=licenses_edit&product_id=$productId&license_code=$licenseCode&license_id=$licenseId&license_order_number=$orderNo&license_require_domain=1&license_status=1&license_expire_date=$expiryDate&license_domain=$domain&license_ip=$ip");
-    }
+        $updateLicense = $this->postCurl($url, "api_key_secret=$api_key_secret&api_function=licenses_edit&product_id=$productId&license_code=$licenseCode&license_id=$licenseId&license_order_number=$orderNo&license_require_domain=$requiredomain&license_status=1&license_expire_date=$l_expiry&license_updates_date=$u_expiry&license_support_date=$s_expiry&license_domain=$domain&license_ip=$ip");
+   }
 
     public function searchLicenseId($licenseCode, $productId)
     {
@@ -230,11 +241,21 @@ class LicenseController extends Controller
     public function updateExpirationDate($licenseCode, $expiryDate, $productId, $domain, $orderNo, $licenseExpiry, $supportExpiry)
     {
         $url = $this->url;
+        $isIP = (bool) ip2long($domain);
+        if ($isIP == true) {
+            $requiredomain= 0;
+            $ip = $domain;
+            $domain = '';
+        } else {
+            $requiredomain= 1;
+            $domain = $domain;
+            $ip = '';
+        }
         $api_key_secret = $this->api_key_secret;
         $searchLicense = $this->searchLicenseId($licenseCode, $productId);
         $licenseId = $searchLicense['licenseId'];
         $productId = $searchLicense['productId'];
         $code = $searchLicense['code'];
-        $updateLicense = $this->postCurl($url, "api_key_secret=$api_key_secret&api_function=licenses_edit&product_id=$productId&license_code=$code&license_id=$licenseId&license_order_number=$orderNo&license_domain=$domain&license_require_domain=1&license_status=1&license_expire_date=$licenseExpiry&license_updates_date=$expiryDate&license_support_date=$supportExpiry");
+        $updateLicense = $this->postCurl($url, "api_key_secret=$api_key_secret&api_function=licenses_edit&product_id=$productId&license_code=$code&license_id=$licenseId&license_order_number=$orderNo&license_domain=$domain&license_ip=$ip&license_require_domain=$requiredomain&license_status=1&license_expire_date=$licenseExpiry&license_updates_date=$expiryDate&license_support_date=$supportExpiry");
     }
 }

@@ -26,7 +26,7 @@ class BaseOrderController extends ExtendedOrderController
                 $date1 = new DateTime($ends->update_ends_at);
                 $tz = \Auth::user()->timezone()->first()->name;
                 $date1->setTimezone(new DateTimeZone($tz));
-                $end = $date1->format('M j, Y, g:i a ');
+                $end = $date1->format('M j, Y');
             }
         }
 
@@ -137,9 +137,6 @@ class BaseOrderController extends ExtendedOrderController
                 $r = $mailchimp->updateSubscriberForFreeProduct($email, $product);
             }
         } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
-            app('log')->info($ex->getMessage());
-
             return;
         }
     }

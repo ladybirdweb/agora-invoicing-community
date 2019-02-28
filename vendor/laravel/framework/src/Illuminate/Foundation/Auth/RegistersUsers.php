@@ -38,9 +38,9 @@ trait RegistersUsers
      *
      * @return \Illuminate\Http\Response
      */
-    public function postRegister(ProfileRequest $request,User $user, AccountActivate $activate)
+    public function postRegister(ProfileRequest $request, User $user, AccountActivate $activate)
     {
-          try {
+        try {
             $pass = $request->input('password');
             $fname = strip_tags($request->input('first_name'));
             $lname = strip_tags($request->input('last_name'));
@@ -58,18 +58,18 @@ trait RegistersUsers
             $states = \App\Model\Common\State::pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
             $state_code = $location['iso_code'] . "-" . $location['state'];
             $state = \App\Http\Controllers\Front\CartController::getStateByCode($state_code);
-            $userCountry = Country::where('country_code_char2',$country)->first();
+            $userCountry = Country::where('country_code_char2', $country)->first();
             $currencyStatus = $userCountry->currency->status;
-            if ($currencyStatus == 1){
-                  $currency = $userCountry->currency->code;
-               $currency_symbol = $userCountry->currency->symbol;
+            if ($currencyStatus == 1) {
+                $currency = $userCountry->currency->code;
+                $currency_symbol = $userCountry->currency->symbol;
             }
             // if (\Session::has('currency')) {
             //     $currency = \Session::get('currency');
             // }
             // dd($currency);
             $manager=$this->accountManager();
-            $account_manager =$manager; 
+            $account_manager =$manager;
      
             $password = \Hash::make($pass);
             $user->password = $password;
@@ -85,53 +85,51 @@ trait RegistersUsers
             $user->first_name = $fname;
             $user->last_name = $lname;
             $user->company = $company;
-             $user->zip = $zip;
-             $user->user_name = $user_name;
+            $user->zip = $zip;
+            $user->user_name = $user_name;
 
             $user->manager = $account_manager;
             $user->ip = $location['ip'];
             $user->currency = $currency;
             $user->timezone_id = \App\Http\Controllers\Front\CartController::getTimezoneByName($location['timezone']);
-            $emailMobileSetting = StatusSetting::select('emailverification_status','msg91_status')->first();
-            if($emailMobileSetting->emailverification_status == 0 && $emailMobileSetting->msg91_status ==1){
-                  $user->mobile_verified=0; 
-                 $user->active=1;
-                $user->fill($request->except('password','address','first_name','last_name','company','zip','user_name'))->save();
-                 $response = ['type' => 'success', 'user_id' => $user->id, 'message' => 'Your Submission has been received successfully. Verify your Mobile to log into the Website.'];
-            } elseif( $emailMobileSetting->emailverification_status ==1 && $emailMobileSetting->msg91_status ==0) {
-                $user->mobile_verified=1; 
-                 $user->active=0;
-                  $user->fill($request->except('password','address','first_name','last_name','company','zip','user_name'))->save();
-                  $response = ['type' => 'success', 'user_id' => $user->id, 'message' => 'Your Submission has been received successfully. Verify your Email to log into the Website.'];
-               } elseif($emailMobileSetting->emailverification_status ==0 && $emailMobileSetting->msg91_status ==0) {
-                $user->mobile_verified=1; 
-                 $user->active=1;
-                  $user->fill($request->except('password','address','first_name','last_name','company','zip','user_name'))->save();
-                 $response = ['type' => 'success', 'user_id' => $user->id, 'message' => 'Your have been Registered Successfully.'];
+            $emailMobileSetting = StatusSetting::select('emailverification_status', 'msg91_status')->first();
+            if ($emailMobileSetting->emailverification_status == 0 && $emailMobileSetting->msg91_status ==1) {
+                $user->mobile_verified=0;
+                $user->active=1;
+                $user->fill($request->except('password', 'address', 'first_name', 'last_name', 'company', 'zip', 'user_name'))->save();
+                $response = ['type' => 'success', 'user_id' => $user->id, 'message' => 'Your Submission has been received successfully. Verify your Mobile to log into the Website.'];
+            } elseif ($emailMobileSetting->emailverification_status ==1 && $emailMobileSetting->msg91_status ==0) {
+                $user->mobile_verified=1;
+                $user->active=0;
+                $user->fill($request->except('password', 'address', 'first_name', 'last_name', 'company', 'zip', 'user_name'))->save();
+                $response = ['type' => 'success', 'user_id' => $user->id, 'message' => 'Your Submission has been received successfully. Verify your Email to log into the Website.'];
+            } elseif ($emailMobileSetting->emailverification_status ==0 && $emailMobileSetting->msg91_status ==0) {
+                $user->mobile_verified=1;
+                $user->active=1;
+                $user->fill($request->except('password', 'address', 'first_name', 'last_name', 'company', 'zip', 'user_name'))->save();
+                $response = ['type' => 'success', 'user_id' => $user->id, 'message' => 'Your have been Registered Successfully.'];
             } else {
                 if ($user) {
-                    $user->fill($request->except('password','address','first_name','last_name','company','zip','user_name'))->save();
-                $response = ['type' => 'success', 'user_id' => $user->id, 'message' => 'Your Submission has been received successfully. Verify your Email and Mobile to log into the Website.'];
-                 }
+                    $user->fill($request->except('password', 'address', 'first_name', 'last_name', 'company', 'zip', 'user_name'))->save();
+                    $response = ['type' => 'success', 'user_id' => $user->id, 'message' => 'Your Submission has been received successfully. Verify your Email and Mobile to log into the Website.'];
+                }
             }
-             activity()->log('User <strong>' . $request->input('first_name'). ' '.$request->input('last_name').  '</strong> was created');
+            activity()->log('User <strong>' . $request->input('first_name'). ' '.$request->input('last_name').  '</strong> was created');
             $this->accountManagerMail($user);
              
            
-                return response()->json($response);
+            return response()->json($response);
         } catch (\Exception $ex) {
-             Bugsnag::notifyException($ex->getMessage());;
+            Bugsnag::notifyException($ex->getMessage());
+            ;
             app('log')->error($ex->getMessage());
             $result = [$ex->getMessage()];
-             return response()->json($result);
+            return response()->json($result);
         }
-
-
     }
-     public function sendActivationByGet($email, Request $request)
+    public function sendActivationByGet($email, Request $request)
     {
         try {
-            
             $mail = $this->sendActivation($email, $request->method());
             if ($mail == 'success') {
                 return redirect()->back()->with('success', 'Activation link has sent to your email address');
@@ -143,8 +141,6 @@ trait RegistersUsers
 
     public function sendActivation($email, $method, $str = '')
     {
-
-        
         try {
             $user = new User();
             $activate_model = new AccountActivate();
@@ -191,7 +187,8 @@ trait RegistersUsers
 
     public function Activate($token, AccountActivate $activate, Request $request, User $user)
     {
-        try {dd('df');
+        try {
+            dd('df');
             if ($activate->where('token', $token)->first()) {
                 $email = $activate->where('token', $token)->first()->email;
             } else {
@@ -202,7 +199,7 @@ trait RegistersUsers
             $user = $user->where('email', $email)->first();
             $mobileStatus = StatusSetting::pluck('msg91_status')->first();
             if ($user->where('email', $email)->first()) {
-                if ($mobileStatus == 0){//If Mobile Verification is not on from Admin Panel 
+                if ($mobileStatus == 0) {//If Mobile Verification is not on from Admin Panel
                     $user->mobile_verified = 1;
                 }
                 $user->active = 1;
@@ -268,8 +265,7 @@ trait RegistersUsers
      * @return string
      */
     public function redirectPath()
-    {  
-
+    {
         if (\Session::has('session-url')) {
             $url = \Session::get('session-url');
 
@@ -377,7 +373,6 @@ trait RegistersUsers
             $response = ['type' => 'success', 'proceed' => $check, 'email' => $email, 'message' => 'Activation link has been sent to '.$email];
 
             return response()->json($response);
-
         } catch (\Exception $ex) {
             //dd($ex);
             $result = [$ex->getMessage()];
@@ -413,14 +408,12 @@ trait RegistersUsers
 
 
         
-        $managers = User::where('role', 'admin')->where('position', 'manager')->pluck('id','first_name')->toArray();
-         if(count($managers)>0){
+        $managers = User::where('role', 'admin')->where('position', 'manager')->pluck('id', 'first_name')->toArray();
+        if (count($managers)>0) {
             $randomized[] = array_rand($managers);
-        shuffle($randomized);
-        $manager = $managers[$randomized[0]];
-        }
-        
-        else{
+            shuffle($randomized);
+            $manager = $managers[$randomized[0]];
+        } else {
             $manager = '';
         }
         

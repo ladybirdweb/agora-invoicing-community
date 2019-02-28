@@ -1,10 +1,14 @@
 @extends('themes.default1.layouts.master')
+@section('title')
+Social Media
+@stop
 @section('content-header')
 <h1>
 Social Media
 </h1>
   <ol class="breadcrumb">
         <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+         <li><a href="{{url('settings')}}">Settings</a></li>
          <li class="active">Social Media</li>
       </ol>
 @stop

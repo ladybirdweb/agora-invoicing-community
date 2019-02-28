@@ -48,7 +48,7 @@ View All Orders
             </div>
             <div class="col-md-3 form-group">
                 <!-- first name -->
-                {!! Form::label('expiry','Expiry From') !!}
+                {!! Form::label('expiry','Updates Expiry From') !!}
                  <div class="input-group date">
                   <div class="input-group-addon">
                     <i class="fa fa-calendar"></i>
@@ -58,7 +58,7 @@ View All Orders
             </div>
              <div class="col-md-3 form-group">
                 <!-- first name -->
-                {!! Form::label('expiry','Expiry Till') !!}
+                {!! Form::label('expiry','Updates Expiry Till') !!}
                  <div class="input-group date">
                   <div class="input-group-addon">
                     <i class="fa fa-calendar"></i>
@@ -99,6 +99,7 @@ View All Orders
                 <div class="col-md-6">
                     <!-- {!! Form::submit('Search',['class'=>'btn btn-primary']) !!} -->
                       <button name="Search" type="submit"  class="btn btn-primary" data-loading-text="<i class='fa fa-search fa-spin fa-1x fa-fw'>&nbsp;</i> updating..."><i class="fa fa-search">&nbsp;&nbsp;</i>{!!Lang::get('Search')!!}</button>
+                      &nbsp;
                     <!-- {!! Form::submit('Reset',['class'=>'btn btn-danger','id'=>'reset']) !!} -->
                      <button name="Reset" type="submit" id="reset" class="btn btn-danger" data-loading-text="<i class='fa fa-refresh fa-spin fa-1x fa-fw'>&nbsp;</i> updating..."><i class="fa fa-refresh">&nbsp;&nbsp;</i>{!!Lang::get('Reset')!!}</button>
 
@@ -175,14 +176,14 @@ View All Orders
                     <thead><tr>
                         <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
                          <th>Date</th>
-                          <th>Client Name</th>
+                          <th>Client</th>
                            
                             <th>Order No</th>
-                            <th>Product Name</th>
+                            <th>Product</th>
                             <th>Total</th>
                             
                              <th>Status</th>
-                              <th>Updates Expiry Date</th>
+                              <th>Expiry</th>
                             <th>Action</th>
                         </tr></thead>
                      </table>

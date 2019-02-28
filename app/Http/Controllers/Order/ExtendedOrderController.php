@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Order;
 
 use App\Http\Controllers\Common\BaseSettingsController;
-use App\Http\Controllers\License\LicensePermissionsController;
 use App\Http\Controllers\Controller;
 use App\Model\Common\StatusSetting;
 use App\Model\Order\Order;
@@ -323,16 +322,13 @@ class ExtendedOrderController extends Controller
             $updatesExpiry = $order->subscription->update_ends_at;
             $supportExpiry = $order->subscription->support_ends_at;
             $cont = new \App\Http\Controllers\License\LicenseController();
-            $updateLicensedDomain = $cont->updateLicensedDomain($licenseCode, $order->domain, $order->product, $licenseExpiry,$updatesExpiry,$supportExpiry, $order->number);
+            $updateLicensedDomain = $cont->updateLicensedDomain($licenseCode, $order->domain, $order->product, $licenseExpiry, $updatesExpiry, $supportExpiry, $order->number);
             //Now make Installation status as inactive
             $updateInstallStatus = $cont->updateInstalledDomain($licenseCode, $order->product);
         }
 
         return ['message' => 'success', 'update'=>'Licensed Domain Updated'];
     }
-    
-
-    
 
     public function getAllowedDomains($seperateDomains)
     {

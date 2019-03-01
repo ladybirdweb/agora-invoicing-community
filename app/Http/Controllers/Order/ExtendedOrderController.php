@@ -115,7 +115,8 @@ class ExtendedOrderController extends Controller
             $tills = (new BaseSettingsController())->getDateFormat();
 
             $tillDate = $this->getTillDate($expiryFrom, $expiryTill, $tills);
-            $join = $join->whereBetween('subscriptions.update_ends_at', [$expiryFrom, $tillDate]);
+            $join = $join->whereBetween('subscriptions.update_ends_at', [$expiryFrom, $tillDate])
+            ->orderBy('subscriptions.update_ends_at','asc');
 
             return $join;
         }
@@ -135,7 +136,8 @@ class ExtendedOrderController extends Controller
             $exptill = (new BaseSettingsController())->getDateFormat($expiryTill);
             $froms = Subscription::first()->ends_at;
             $fromDate = $this->getFromDate($expiry, $froms);
-            $join = $join->whereBetween('subscriptions.update_ends_at', [$fromDate, $exptill]);
+            $join = $join->whereBetween('subscriptions.update_ends_at', [$fromDate, $exptill])
+            ->orderBy('subscriptions.update_ends_at','asc');
 
             return $join;
         }

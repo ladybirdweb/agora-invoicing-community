@@ -14,13 +14,13 @@
         "php": ">=5.5",
         "illuminate/contracts": "^5.0",
         "illuminate/support": "^5.0",
-        "bugsnag/bugsnag": "^3.12",
+        "bugsnag/bugsnag": "^3.15.0",
         "bugsnag/bugsnag-psr-logger": "^1.4",
         "monolog/monolog": "^1.12"
     },
     "require-dev": {
         "graham-campbell/testbench": "^3.1|^4.0|^5.0",
-        "mockery/mockery": "^0.9.4|^1.0",
+        "mockery/mockery": "^0.9.4|~1.1.0",
         "phpunit/phpunit": "^4.8|^5.0|^6.0|^7.0"
     },
     "autoload": {

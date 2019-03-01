@@ -318,9 +318,11 @@ Dashboard
                   $orderNo = \App\Model\Order\Order::where('id',$subscription->order_id)->value('number');
                   $expiry = $subscription->update_ends_at;
                   $date = new DateTime($expiry); 
+                  $tz = \Auth::user()->timezone()->first()->name;
+                  $date->setTimezone(new DateTimeZone($tz)); 
                   $expDate = $date->format('M j, Y ');
-                   $product =  \App\Model\Product\Product::where('id',$subscription->product_id)->value('name');
-                    $daysLeft = date_diff($todayDate,$date)->format('%a days');
+                  $product =  \App\Model\Product\Product::where('id',$subscription->product_id)->value('name');
+                  $daysLeft = date_diff($todayDate,$date)->format('%a days');
                    
                     ?>
 

@@ -37,6 +37,7 @@ After updating composer, add the service provider to the `providers` array in `c
 ```php
 Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
 ```
+**Laravel 5.5** uses Package Auto-Discovery, so doesn't require you to manually add the ServiceProvider.
 
 To install this package on only development systems, add the `--dev` flag to your composer command:
 
@@ -66,7 +67,7 @@ You can now re-generate the docs yourself (for future updates)
 php artisan ide-helper:generate
 ```
 
-Note: `bootstrap/compiled.php` has to be cleared first, so run `php artisan clear-compiled` before generating (and `php artisan optimize` after).
+Note: `bootstrap/compiled.php` has to be cleared first, so run `php artisan clear-compiled` before generating.
 
 You can configure your composer.json to do this after each commit:
 
@@ -75,8 +76,7 @@ You can configure your composer.json to do this after each commit:
     "post-update-cmd": [
         "Illuminate\\Foundation\\ComposerScripts::postUpdate",
         "php artisan ide-helper:generate",
-        "php artisan ide-helper:meta",
-        "php artisan optimize"
+        "php artisan ide-helper:meta"
     ]
 },
 ```
@@ -97,11 +97,11 @@ The `Illuminate/Support/helpers.php` is already set up, but you can add/remove y
 
 ### Automatic phpDocs for models
 
-> You need to require `doctrine/dbal: ~2.3` in your own composer.json to get database columns.
+> You need to add `doctrine/dbal: ~2.3` to require-dev in your own composer.json to get database columns.
 
 
 ```bash
-composer require doctrine/dbal
+composer require --dev doctrine/dbal
 ```
 
 If you don't want to write your properties yourself, you can use the command `php artisan ide-helper:models` to generate
@@ -122,8 +122,8 @@ php artisan ide-helper:models Post
  * @property integer $author_id
  * @property string $title
  * @property string $text
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
+ * @property \Illuminate\Support\Carbon $created_at
+ * @property \Illuminate\Support\Carbon $updated_at
  * @property-read \User $author
  * @property-read \Illuminate\Database\Eloquent\Collection|\Comment[] $comments
  */

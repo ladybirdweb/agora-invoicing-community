@@ -56,10 +56,10 @@ class ExceptionHandler
     {
         $handler = new static($debug, $charset, $fileLinkFormat);
 
-        $prev = set_exception_handler(array($handler, 'handle'));
+        $prev = set_exception_handler([$handler, 'handle']);
         if (\is_array($prev) && $prev[0] instanceof ErrorHandler) {
             restore_exception_handler();
-            $prev[0]->setExceptionHandler(array($handler, 'handle'));
+            $prev[0]->setExceptionHandler([$handler, 'handle']);
         }
 
         return $handler;
@@ -142,7 +142,7 @@ class ExceptionHandler
         $this->caughtBuffer = null;
 
         try {
-            \call_user_func($this->handler, $exception);
+            ($this->handler)($exception);
             $this->caughtLength = $caughtLength;
         } catch (\Exception $e) {
             if (!$caughtLength) {
@@ -253,7 +253,8 @@ EOF
         } catch (\Exception $e) {
             // something nasty happened and we cannot throw an exception anymore
             if ($this->debug) {
-                $title = sprintf('Exception thrown when handling an exception (%s: %s)', \get_class($e), $this->escapeHtml($e->getMessage()));
+                $e = FlattenException::create($e);
+                $title = sprintf('Exception thrown when handling an exception (%s: %s)', $e->getClass(), $this->escapeHtml($e->getMessage()));
             } else {
                 $title = 'Whoops, looks like something went wrong.';
             }
@@ -377,7 +378,7 @@ EOF;
 
         if (\is_string($fmt)) {
             $i = strpos($f = $fmt, '&', max(strrpos($f, '%f'), strrpos($f, '%l'))) ?: \strlen($f);
-            $fmt = array(substr($f, 0, $i)) + preg_split('/&([^>]++)>/', substr($f, $i), -1, PREG_SPLIT_DELIM_CAPTURE);
+            $fmt = [substr($f, 0, $i)] + preg_split('/&([^>]++)>/', substr($f, $i), -1, PREG_SPLIT_DELIM_CAPTURE);
 
             for ($i = 1; isset($fmt[$i]); ++$i) {
                 if (0 === strpos($path, $k = $fmt[$i++])) {
@@ -386,7 +387,7 @@ EOF;
                 }
             }
 
-            $link = strtr($fmt[0], array('%f' => $path, '%l' => $line));
+            $link = strtr($fmt[0], ['%f' => $path, '%l' => $line]);
         } else {
             $link = $fmt->format($path, $line);
         }
@@ -403,7 +404,7 @@ EOF;
      */
     private function formatArgs(array $args)
     {
-        $result = array();
+        $result = [];
         foreach ($args as $key => $item) {
             if ('object' === $item[0]) {
                 $formattedValue = sprintf('<em>object</em>(%s)', $this->formatClass($item[1]));

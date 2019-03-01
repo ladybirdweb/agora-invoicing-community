@@ -1,45 +1,59 @@
-@extends('log-viewer::bootstrap-4._master')
-
+@extends('log-viewer::_template.master')
+@section('title')
+Log-Viewer
+@stop
+@section('content-header')
+<h1>
+Log-Viewer
+</h1>
+<ol class="breadcrumb">
+        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="{{url('settings')}}">Settings</a></li>
+        <li class="active">Error Logs</li>
+      </ol>
+      @stop
 @section('content')
-    <div class="page-header mb-4">
-        <h1>Dashboard</h1>
-    </div>
-
+   
+  <div class="box box-primary">
+    <div class="box-body">
     <div class="row">
-        <div class="col-md-6 col-lg-3">
-            <canvas id="stats-doughnut-chart" height="300" class="mb-3"></canvas>
+        <div class="col-md-3">
+            <canvas id="stats-doughnut-chart" height="300"></canvas>
         </div>
-
-        <div class="col-md-6 col-lg-9">
-            <div class="row">
-                @foreach($percents as $level => $item)
-                    <div class="col-sm-6 col-md-12 col-lg-4 mb-3">
-                        <div class="box level-{{ $level }} {{ $item['count'] === 0 ? 'empty' : '' }}">
-                            <div class="box-icon">
-                                {!! log_styler()->icon($level) !!}
-                            </div>
-
-                            <div class="box-content">
-                                <span class="box-text">{{ $item['name'] }}</span>
-                                <span class="box-number">
-                                    {{ $item['count'] }} entries - {!! $item['percent'] !!} %
+        <div class="col-md-9">
+            <section class="box-body">
+                <div class="row">
+                    @foreach($percents as $level => $item)
+                        <div class="col-md-4">
+                            <div class="info-box level level-{{ $level }} {{ $item['count'] === 0 ? 'level-empty' : '' }}">
+                                <span class="info-box-icon">
+                                    {!! log_styler()->icon($level) !!}
                                 </span>
-                                <div class="progress" style="height: 3px;">
-                                    <div class="progress-bar" style="width: {{ $item['percent'] }}%"></div>
+
+                                <div class="info-box-content">
+                                    <span class="info-box-text">{{ $item['name'] }}</span>
+                                    <span class="info-box-number">
+                                        {{ $item['count'] }} entries - {!! $item['percent'] !!} %
+                                    </span>
+                                    <div class="progress">
+                                        <div class="progress-bar" style="width: {{ $item['percent'] }}%"></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                @endforeach
-            </div>
+                    @endforeach
+                </div>
+            </section>
         </div>
     </div>
+</div>
+</div>  
 @endsection
 
 @section('scripts')
     <script>
         $(function() {
-            new Chart(document.getElementById("stats-doughnut-chart"), {
+            new Chart($('canvas#stats-doughnut-chart'), {
                 type: 'doughnut',
                 data: {!! $chartData !!},
                 options: {

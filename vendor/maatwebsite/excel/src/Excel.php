@@ -2,11 +2,14 @@
 
 namespace Maatwebsite\Excel;
 
+use Illuminate\Support\Collection;
+use Maatwebsite\Excel\Files\Filesystem;
+use Maatwebsite\Excel\Files\TemporaryFile;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Filesystem\FilesystemManager;
-use Illuminate\Contracts\Routing\ResponseFactory;
+use Illuminate\Foundation\Bus\PendingDispatch;
+use Maatwebsite\Excel\Helpers\FileTypeDetector;
 
-class Excel implements Exporter
+class Excel implements Exporter, Importer
 {
     use RegistersCustomConcerns;
 
@@ -45,29 +48,29 @@ class Excel implements Exporter
     protected $queuedWriter;
 
     /**
-     * @var ResponseFactory
-     */
-    protected $response;
-
-    /**
-     * @var FilesystemManager
+     * @var Filesystem
      */
     protected $filesystem;
 
     /**
-     * @param Writer            $writer
-     * @param QueuedWriter      $queuedWriter
-     * @param ResponseFactory   $response
-     * @param FilesystemManager $filesystem
+     * @var Reader
+     */
+    private $reader;
+
+    /**
+     * @param Writer       $writer
+     * @param QueuedWriter $queuedWriter
+     * @param Reader       $reader
+     * @param Filesystem   $filesystem
      */
     public function __construct(
         Writer $writer,
         QueuedWriter $queuedWriter,
-        ResponseFactory $response,
-        FilesystemManager $filesystem
+        Reader $reader,
+        Filesystem $filesystem
     ) {
         $this->writer       = $writer;
-        $this->response     = $response;
+        $this->reader       = $reader;
         $this->filesystem   = $filesystem;
         $this->queuedWriter = $queuedWriter;
     }
@@ -77,35 +80,97 @@ class Excel implements Exporter
      */
     public function download($export, string $fileName, string $writerType = null)
     {
-        $file = $this->export($export, $fileName, $writerType);
-
-        return $this->response->download($file, $fileName);
+        return response()->download(
+            $this->export($export, $fileName, $writerType)->getLocalPath(),
+            $fileName
+        )->deleteFileAfterSend(true);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function store($export, string $filePath, string $disk = null, string $writerType = null)
+    public function store($export, string $filePath, string $diskName = null, string $writerType = null, $diskOptions = [])
     {
         if ($export instanceof ShouldQueue) {
-            return $this->queue($export, $filePath, $disk, $writerType);
+            return $this->queue($export, $filePath, $diskName, $writerType, $diskOptions);
         }
 
-        $file = $this->export($export, $filePath, $writerType);
-
-        return $this->filesystem->disk($disk)->put($filePath, fopen($file, 'r+'));
+        return $this->filesystem->disk($diskName, $diskOptions)->copy(
+            $this->export($export, $filePath, $writerType),
+            $filePath
+        );
     }
 
     /**
      * {@inheritdoc}
      */
-    public function queue($export, string $filePath, string $disk = null, string $writerType = null)
+    public function queue($export, string $filePath, string $disk = null, string $writerType = null, $diskOptions = [])
     {
-        if (null === $writerType) {
-            $writerType = $this->findTypeByExtension($filePath);
+        $writerType = FileTypeDetector::detectStrict($filePath, $writerType);
+
+        return $this->queuedWriter->store(
+            $export,
+            $filePath,
+            $disk,
+            $writerType,
+            $diskOptions
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function raw($export, string $writerType)
+    {
+        $temporaryFile = $this->writer->export($export, $writerType);
+
+        $contents = $temporaryFile->contents();
+        $temporaryFile->delete();
+
+        return $contents;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function import($import, $filePath, string $disk = null, string $readerType = null)
+    {
+        $readerType = FileTypeDetector::detect($filePath, $readerType);
+        $response   = $this->reader->read($import, $filePath, $readerType, $disk);
+
+        if ($response instanceof PendingDispatch) {
+            return $response;
         }
 
-        return $this->queuedWriter->store($export, $filePath, $disk, $writerType);
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function toArray($import, $filePath, string $disk = null, string $readerType = null): array
+    {
+        $readerType = FileTypeDetector::detect($filePath, $readerType);
+
+        return $this->reader->toArray($import, $filePath, $readerType, $disk);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function toCollection($import, $filePath, string $disk = null, string $readerType = null): Collection
+    {
+        $readerType = FileTypeDetector::detect($filePath, $readerType);
+
+        return $this->reader->toCollection($import, $filePath, $readerType, $disk);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function queueImport(ShouldQueue $import, $filePath, string $disk = null, string $readerType = null)
+    {
+        return $this->import($import, $filePath, $disk, $readerType);
     }
 
     /**
@@ -114,27 +179,12 @@ class Excel implements Exporter
      * @param string      $writerType
      *
      * @throws \PhpOffice\PhpSpreadsheet\Exception
-     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
-     * @return string
+     * @return TemporaryFile
      */
-    protected function export($export, string $fileName, string $writerType = null)
+    protected function export($export, string $fileName, string $writerType = null): TemporaryFile
     {
-        if (null === $writerType) {
-            $writerType = $this->findTypeByExtension($fileName);
-        }
+        $writerType = FileTypeDetector::detectStrict($fileName, $writerType);
 
         return $this->writer->export($export, $writerType);
-    }
-
-    /**
-     * @param string $fileName
-     *
-     * @return string|null
-     */
-    protected function findTypeByExtension(string $fileName)
-    {
-        $pathInfo = pathinfo($fileName);
-
-        return config('excel.extension_detector.' . strtolower($pathInfo['extension'] ?? ''));
     }
 }

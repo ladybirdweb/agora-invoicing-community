@@ -26,7 +26,7 @@ trait AuthenticatesUsers
      */
     public function showLoginForm()
     {
-        try{
+       try{
            $bussinesses = \App\Model\Common\Bussiness::pluck('name', 'short')->toArray();
            $cont = new \App\Http\Controllers\Front\PageController();
            $captchaStatus = StatusSetting::pluck('recaptcha_status')->first();
@@ -47,13 +47,10 @@ trait AuthenticatesUsers
              $error = $ex->getMessage();
 
          }
-         
-     }
+    }
 
 
-
-
-     /**
+         /**
      * Handle a login request to the application.
      *
      * @param \Illuminate\Http\Request $request
@@ -103,30 +100,13 @@ trait AuthenticatesUsers
          }
     }
 
-
-//         /**
-//      * Get the post register / login redirect path.
-//      *
-//      * @return string
-//      */
-//     public function redirectPath()
-//     {  
-
-// dd('op');
-//         if (\Session::has('session-url')) {
-//             $url = \Session::get('session-url');
-
-//             return property_exists($this, 'redirectTo') ? $this->redirectTo : '/'.$url;
-//         } else {
-//             return property_exists($this, 'redirectTo') ? $this->redirectTo : '/home';
-//         }
-//     }
-
     /**
      * Handle a login request to the application.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|\Illuminate\Http\JsonResponse
+     *
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function login(Request $request)
     {
@@ -158,10 +138,12 @@ trait AuthenticatesUsers
      *
      * @param  \Illuminate\Http\Request  $request
      * @return void
+     *
+     * @throws \Illuminate\Validation\ValidationException
      */
     protected function validateLogin(Request $request)
     {
-        $this->validate($request, [
+        $request->validate([
             $this->username() => 'required|string',
             'password' => 'required|string',
         ]);
@@ -207,6 +189,17 @@ trait AuthenticatesUsers
                 ?: redirect()->intended($this->redirectPath());
     }
 
+    /**
+     * The user has been authenticated.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  mixed  $user
+     * @return mixed
+     */
+    protected function authenticated(Request $request, $user)
+    {
+        //
+    }
 
     /**
      * Get the failed login response instance.
@@ -214,7 +207,7 @@ trait AuthenticatesUsers
      * @param  \Illuminate\Http\Request  $request
      * @return \Symfony\Component\HttpFoundation\Response
      *
-     * @throws ValidationException
+     * @throws \Illuminate\Validation\ValidationException
      */
     protected function sendFailedLoginResponse(Request $request)
     {
@@ -241,10 +234,22 @@ trait AuthenticatesUsers
      */
     public function logout(Request $request)
     {
-         
         $this->guard()->logout();
-         $request->session()->invalidate();
-          return redirect('/');
+
+        $request->session()->invalidate();
+
+        return $this->loggedOut($request) ?: redirect('/');
+    }
+
+    /**
+     * The user has logged out of the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return mixed
+     */
+    protected function loggedOut(Request $request)
+    {
+        //
     }
 
     /**

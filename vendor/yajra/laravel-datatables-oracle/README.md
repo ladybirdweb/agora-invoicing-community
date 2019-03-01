@@ -51,6 +51,7 @@ return datatables(User::all())->toJson();
  5.4.x    | 7.x, 8.x
  5.5.x    | 8.x
  5.6.x    | 8.x
+ 5.7.x    | 8.x
 
 ## DataTables 8.x Upgrade Guide
 There are breaking changes since DataTables v8.x.
@@ -77,7 +78,7 @@ Register provider and facade on your `config/app.php` file.
 
 #### Configuration (Optional)
 ```bash
-$ php artisan vendor:publish --provider=Yajra\DataTables\DataTablesServiceProvider
+$ php artisan vendor:publish --provider="Yajra\DataTables\DataTablesServiceProvider"
 ```
 
 And that's it! Start building out some awesome DataTables!

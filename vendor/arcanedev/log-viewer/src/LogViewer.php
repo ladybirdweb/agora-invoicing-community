@@ -21,7 +21,7 @@ class LogViewer implements LogViewerContract
     /**
      * LogViewer Version
      */
-    const VERSION = '4.5.2';
+    const VERSION = '4.6.3';
 
     /* -----------------------------------------------------------------
      |  Properties
@@ -247,6 +247,16 @@ class LogViewer implements LogViewerContract
     public function delete($date)
     {
         return $this->filesystem->delete($date);
+    }
+
+    /**
+     * Clear the log files.
+     *
+     * @return bool
+     */
+    public function clear()
+    {
+        return $this->filesystem->clear();
     }
 
     /**

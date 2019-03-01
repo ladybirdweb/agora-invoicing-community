@@ -58,7 +58,7 @@ License Permissions
                
                  <table id="permissions-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
                     <thead><tr>
-                            <th>License Type</th>.
+                            <th>License Type</th>
                             <th>License Permissions</th>
                             <th>Action</th>
                         </tr></thead>

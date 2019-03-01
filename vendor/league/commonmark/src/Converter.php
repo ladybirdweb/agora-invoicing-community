@@ -17,7 +17,7 @@ namespace League\CommonMark;
 /**
  * Converts CommonMark-compatible Markdown to HTML.
  */
-class Converter
+class Converter implements ConverterInterface
 {
     /**
      * The document parser instance.
@@ -66,7 +66,7 @@ class Converter
      *
      * @see Converter::convertToHtml
      *
-     * @param $commonMark
+     * @param string $commonMark
      *
      * @return string
      */

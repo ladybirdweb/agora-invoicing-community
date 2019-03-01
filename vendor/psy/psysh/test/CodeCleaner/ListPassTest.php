@@ -56,6 +56,8 @@ class ListPassTest extends CodeCleanerTestCase
                 ['[] = []', $errorShortListAssign],
                 ['[$a] = [1]', $errorShortListAssign],
                 ['list("a" => $a) = array("a" => 1)', $errorAssocListAssign],
+                ['[$a[0], $a[1]] = [1, 2]', $errorShortListAssign],
+                ['[$a->b, $a->c] = [1, 2]', $errorShortListAssign],
             ]);
         }
 
@@ -64,6 +66,7 @@ class ListPassTest extends CodeCleanerTestCase
             ['["a"] = [1]', $errorNonVariableAssign],
             ['[] = []', $errorEmptyList],
             ['[,] = [1,2]', $errorEmptyList],
+            ['[,,] = [1,2,3]', $errorEmptyList],
         ]);
     }
 
@@ -96,6 +99,14 @@ class ListPassTest extends CodeCleanerTestCase
                 ['[,$b] = [1,2,3]'],
                 ['[$a,,$c] = [1,2,3]'],
                 ['[$a,,,] = [1,2,3]'],
+                ['[$a[0], $a[1]] = [1, 2]'],
+                ['[$a[0][0][0], $a[0][0][1]] = [1, 2]'],
+                ['[$a->b, $a->c] = [1, 2]'],
+                ['[$a->b[0], $a->c[1]] = [1, 2]'],
+                ['[$a[0]->b[0], $a[0]->c[1]] = [1, 2]'],
+                ['[$a[$b->c + $b->d]] = [1]'],
+                ['[$a->c()->d, $a->c()->e] = [1, 2]'],
+                ['[x()->a, x()->b] = [1, 2]'],
             ]);
         }
 

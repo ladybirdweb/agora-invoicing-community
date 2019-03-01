@@ -73,7 +73,7 @@ abstract class AbstractDumper implements DataDumperInterface, DumperInterface
                 $output = fopen($output, 'wb');
             }
             $this->outputStream = $output;
-            $this->lineDumper = array($this, 'echoLine');
+            $this->lineDumper = [$this, 'echoLine'];
         }
 
         return $prev;
@@ -164,7 +164,7 @@ abstract class AbstractDumper implements DataDumperInterface, DumperInterface
      */
     protected function dumpLine($depth)
     {
-        \call_user_func($this->lineDumper, $this->line, $depth, $this->indentPad);
+        ($this->lineDumper)($this->line, $depth, $this->indentPad);
         $this->line = '';
     }
 

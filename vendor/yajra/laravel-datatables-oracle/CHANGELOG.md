@@ -8,6 +8,67 @@
 
 ### [Unreleased]
 
+### [v8.13.5] - 2019-02-13
+
+- Keep select bindings option. [#1988], credits to [@royduin].
+- Fix [#1983].
+
+### [v8.13.4] - 2019-01-29
+
+- Added optional merge of config raw columns to rawColumns method. [#1960], credits to [@Spodnet]
+
+### [v8.13.3] - 2019-01-05
+
+- Revert [#1942].
+- Fix [#1951].
+
+### [v8.13.2] - 2019-01-04
+
+- Keep casted attributes. [#1942], credits to [@ridaamirini].
+- Fix [#1747].
+
+### [v8.13.1] - 2018-11-23
+
+- Revert v8.12.0 changes.
+
+### [v8.13.0] - 2018-11-23
+
+- Only escape callable output of add and edit column. [#1852], credits to [@sharifzadesina]
+- Fix adding of index column bug introduced by [#1852]. [#1915]
+- Add tests for [#1852].
+
+### [v8.12.0] - 2018-11-23
+
+- Skipped, bad tagging!
+
+### [v8.11.0] - 2018-11-20
+
+- Use skipTotalRecords as it better describe what the function does. [#1912]
+- Remove method `simplePagination` and use `skipTotalRecords` instead.
+
+### [v8.10.0] - 2018-11-20
+
+- Add simple pagination api. [#1911]
+- Use `toJson()` on all tests api. [#1911]
+- Use dedicated assertCount assertion. [#1903], credits to [@carusogabriel]
+
+### [v8.9.2] - 2018-10-30
+
+- Fix the default name of index column to follow DT syntax. [#1882], credits to [@sharifzadesina].
+
+### [v8.9.1] - 2018-10-05
+
+- DATATABLES_ERROR shouldn't be by default null [#1805] [#1811], credits to [@zeyad82].
+
+### [v8.9.0] - 2018-10-05
+
+- Added ability to pass an array of needed columns on response. [#1860], credits to [@ptuchik].
+
+### [v8.8.0] - 2018-09-05
+
+- Add support for Laravel 5.7
+- Fix [#1824], [#1830]
+
 ### [v8.7.1] - 2018-07-06
 
 - Add validation for order direction. [#1792]
@@ -225,7 +286,19 @@ return (new CollectionDataTable(User::all())->toJson();
 - Fix orderColumn api where related tables are not joined.
 - Fix nested with relation search and sort function.
 
-[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v8.7.1...8.0
+[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v8.13.5...8.0
+[v8.13.5]: https://github.com/yajra/laravel-datatables/compare/v8.13.4...v8.13.5
+[v8.13.4]: https://github.com/yajra/laravel-datatables/compare/v8.13.3...v8.13.4
+[v8.13.3]: https://github.com/yajra/laravel-datatables/compare/v8.13.2...v8.13.3
+[v8.13.2]: https://github.com/yajra/laravel-datatables/compare/v8.13.1...v8.13.2
+[v8.13.1]: https://github.com/yajra/laravel-datatables/compare/v8.13.0...v8.13.1
+[v8.13.0]: https://github.com/yajra/laravel-datatables/compare/v8.11.0...v8.13.0
+[v8.11.0]: https://github.com/yajra/laravel-datatables/compare/v8.10.0...v8.11.0
+[v8.10.0]: https://github.com/yajra/laravel-datatables/compare/v8.9.2...v8.10.0
+[v8.9.2]: https://github.com/yajra/laravel-datatables/compare/v8.9.1...v8.9.2
+[v8.9.1]: https://github.com/yajra/laravel-datatables/compare/v8.9.0...v8.9.1
+[v8.9.0]: https://github.com/yajra/laravel-datatables/compare/v8.8.0...v8.9.0
+[v8.8.0]: https://github.com/yajra/laravel-datatables/compare/v8.7.1...v8.8.0
 [v8.7.1]: https://github.com/yajra/laravel-datatables/compare/v8.7.0...v8.7.1
 [v8.7.0]: https://github.com/yajra/laravel-datatables/compare/v8.6.1...v8.7.0
 [v8.6.1]: https://github.com/yajra/laravel-datatables/compare/v8.6.0...v8.6.1
@@ -296,7 +369,17 @@ return (new CollectionDataTable(User::all())->toJson();
 [#1743]: https://github.com/yajra/laravel-datatables/pull/1743
 [#1758]: https://github.com/yajra/laravel-datatables/pull/1758
 [#1759]: https://github.com/yajra/laravel-datatables/pull/1759
-[##1792]: https://github.com/yajra/laravel-datatables/pull/#1792
+[#1792]: https://github.com/yajra/laravel-datatables/pull/1792
+[#1830]: https://github.com/yajra/laravel-datatables/pull/1830
+[#1860]: https://github.com/yajra/laravel-datatables/pull/1860
+[#1811]: https://github.com/yajra/laravel-datatables/pull/1811
+[#1882]: https://github.com/yajra/laravel-datatables/pull/1882
+[#1911]: https://github.com/yajra/laravel-datatables/pull/1911
+[#1912]: https://github.com/yajra/laravel-datatables/pull/1912
+[#1852]: https://github.com/yajra/laravel-datatables/pull/1852
+[#1942]: https://github.com/yajra/laravel-datatables/pull/1942
+[#1960]: https://github.com/yajra/laravel-datatables/pull/1960
+[#1988]: https://github.com/yajra/laravel-datatables/pull/1988
 
 [#1626]: https://github.com/yajra/laravel-datatables/issues/1626
 [#1617]: https://github.com/yajra/laravel-datatables/issues/1617
@@ -314,6 +397,11 @@ return (new CollectionDataTable(User::all())->toJson();
 [#1739]: https://github.com/yajra/laravel-datatables/issues/1739
 [#1516]: https://github.com/yajra/laravel-datatables/issues/1516
 [#1752]: https://github.com/yajra/laravel-datatables/issues/1752
+[#1824]: https://github.com/yajra/laravel-datatables/issues/1824
+[#1805]: https://github.com/yajra/laravel-datatables/issues/1805
+[#1747]: https://github.com/yajra/laravel-datatables/issues/1747
+[#1951]: https://github.com/yajra/laravel-datatables/issues/1951
+[#1983]: https://github.com/yajra/laravel-datatables/issues/1983
 
 [laravel-datatables-fractal]: https://github.com/yajra/laravel-datatables-fractal
 
@@ -333,3 +421,9 @@ return (new CollectionDataTable(User::all())->toJson();
 [@asahasrabuddhe]: https://github.com/asahasrabuddhe
 [@fschalkwijk]: https://github.com/fschalkwijk
 [@forgottencreature]: https://github.com/forgottencreature
+[@ptuchik]: https://github.com/ptuchik
+[@zeyad82]: https://github.com/zeyad82
+[@sharifzadesina]: https://github.com/sharifzadesina
+[@ridaamirini]: https://github.com/ridaamirini
+[@Spodnet]: https://github.com/Spodnet
+[@royduin]: https://github.com/royduin

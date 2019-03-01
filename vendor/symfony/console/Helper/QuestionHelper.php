@@ -17,6 +17,7 @@ use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\StreamableInputInterface;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
+use Symfony\Component\Console\Output\ConsoleSectionOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;
@@ -46,13 +47,23 @@ class QuestionHelper extends Helper
         }
 
         if (!$input->isInteractive()) {
-            if ($question instanceof ChoiceQuestion) {
+            $default = $question->getDefault();
+
+            if (null !== $default && $question instanceof ChoiceQuestion) {
                 $choices = $question->getChoices();
 
-                return $choices[$question->getDefault()];
+                if (!$question->isMultiselect()) {
+                    return isset($choices[$default]) ? $choices[$default] : $default;
+                }
+
+                $default = explode(',', $default);
+                foreach ($default as $k => $v) {
+                    $v = trim($v);
+                    $default[$k] = isset($choices[$v]) ? $choices[$v] : $v;
+                }
             }
 
-            return $question->getDefault();
+            return $default;
         }
 
         if ($input instanceof StreamableInputInterface && $stream = $input->getStream()) {
@@ -89,7 +100,7 @@ class QuestionHelper extends Helper
     /**
      * Asks the question to the user.
      *
-     * @return bool|mixed|null|string
+     * @return bool|mixed|string|null
      *
      * @throws RuntimeException In case the fallback is deactivated and the response cannot be hidden
      */
@@ -123,6 +134,10 @@ class QuestionHelper extends Helper
             $ret = trim($this->autocomplete($output, $question, $inputStream, \is_array($autocomplete) ? $autocomplete : iterator_to_array($autocomplete, false)));
         }
 
+        if ($output instanceof ConsoleSectionOutput) {
+            $output->addContent($ret);
+        }
+
         $ret = \strlen($ret) > 0 ? $ret : $question->getDefault();
 
         if ($normalizer = $question->getNormalizer()) {
@@ -140,7 +155,7 @@ class QuestionHelper extends Helper
         $message = $question->getQuestion();
 
         if ($question instanceof ChoiceQuestion) {
-            $maxWidth = max(array_map(array($this, 'strlen'), array_keys($question->getChoices())));
+            $maxWidth = max(array_map([$this, 'strlen'], array_keys($question->getChoices())));
 
             $messages = (array) $question->getQuestion();
             foreach ($question->getChoices() as $key => $value) {
@@ -366,7 +381,7 @@ class QuestionHelper extends Helper
             }
 
             try {
-                return \call_user_func($question->getValidator(), $interviewer());
+                return $question->getValidator()($interviewer());
             } catch (RuntimeException $e) {
                 throw $e;
             } catch (\Exception $error) {
@@ -392,7 +407,7 @@ class QuestionHelper extends Helper
         if (file_exists('/usr/bin/env')) {
             // handle other OSs with bash/zsh/ksh/csh if available to hide the answer
             $test = "/usr/bin/env %s -c 'echo OK' 2> /dev/null";
-            foreach (array('bash', 'zsh', 'ksh', 'csh') as $sh) {
+            foreach (['bash', 'zsh', 'ksh', 'csh'] as $sh) {
                 if ('OK' === rtrim(shell_exec(sprintf($test, $sh)))) {
                     self::$shell = $sh;
                     break;

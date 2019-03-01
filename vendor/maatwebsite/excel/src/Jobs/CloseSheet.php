@@ -5,6 +5,7 @@ namespace Maatwebsite\Excel\Jobs;
 use Illuminate\Bus\Queueable;
 use Maatwebsite\Excel\Writer;
 use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Files\TemporaryFile;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
 class CloseSheet implements ShouldQueue
@@ -19,7 +20,7 @@ class CloseSheet implements ShouldQueue
     /**
      * @var string
      */
-    private $filePath;
+    private $temporaryFile;
 
     /**
      * @var string
@@ -32,17 +33,17 @@ class CloseSheet implements ShouldQueue
     private $sheetIndex;
 
     /**
-     * @param object $sheetExport
-     * @param string $filePath
-     * @param string $writerType
-     * @param int    $sheetIndex
+     * @param object        $sheetExport
+     * @param TemporaryFile $temporaryFile
+     * @param string        $writerType
+     * @param int           $sheetIndex
      */
-    public function __construct($sheetExport, string $filePath, string $writerType, int $sheetIndex)
+    public function __construct($sheetExport, TemporaryFile $temporaryFile, string $writerType, int $sheetIndex)
     {
-        $this->sheetExport = $sheetExport;
-        $this->filePath    = $filePath;
-        $this->writerType  = $writerType;
-        $this->sheetIndex  = $sheetIndex;
+        $this->sheetExport   = $sheetExport;
+        $this->temporaryFile = $temporaryFile;
+        $this->writerType    = $writerType;
+        $this->sheetIndex    = $sheetIndex;
     }
 
     /**
@@ -50,11 +51,13 @@ class CloseSheet implements ShouldQueue
      *
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
-     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
      */
     public function handle(Writer $writer)
     {
-        $writer = $writer->reopen($this->filePath, $this->writerType);
+        $writer = $writer->reopen(
+            $this->temporaryFile,
+            $this->writerType
+        );
 
         $sheet = $writer->getSheetByIndex($this->sheetIndex);
 
@@ -64,6 +67,10 @@ class CloseSheet implements ShouldQueue
 
         $sheet->close($this->sheetExport);
 
-        $writer->write($this->sheetExport, $this->filePath, $this->writerType);
+        $writer->write(
+            $this->sheetExport,
+            $this->temporaryFile,
+            $this->writerType
+        );
     }
 }

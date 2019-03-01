@@ -22,7 +22,7 @@ abstract class FormRequest extends BaseFormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -33,22 +33,15 @@ abstract class FormRequest extends BaseFormRequest
     abstract public function rules();
 
     /**
-     * Prepare the data for validation.
-     */
-    protected function prepareForValidation()
-    {
-        $this->merge($this->sanitize());
-    }
-
-    /**
-     * Sanitize the inputs after the validation.
+     * Validate the class instance.
      *
-     * @return array
+     * @return void
      */
-    protected function sanitize()
+    public function validateResolved()
     {
-        return [
-            //
-        ];
+        parent::validateResolved();
+
+        if (method_exists($this, 'prepareAfterValidation'))
+            $this->prepareAfterValidation();
     }
 }

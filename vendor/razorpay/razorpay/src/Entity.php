@@ -133,7 +133,8 @@ class Entity extends Resource implements ArrayableInterface
             'refund',
             'order',
             'customer',
-            'token');
+            'token',
+            'settlement');
     }
 
     protected static function getEntityClass($name)

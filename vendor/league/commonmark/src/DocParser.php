@@ -82,6 +82,7 @@ class DocParser
     public function parse($input)
     {
         $context = new Context(new Document(), $this->getEnvironment());
+        $context->setEncoding(mb_detect_encoding($input, 'ASCII,UTF-8', true) ?: 'ISO-8859-1');
 
         $lines = $this->preProcessInput($input);
         foreach ($lines as $line) {
@@ -89,8 +90,9 @@ class DocParser
             $this->incorporateLine($context);
         }
 
+        $lineCount = count($lines);
         while ($tip = $context->getTip()) {
-            $tip->finalize($context, count($lines));
+            $tip->finalize($context, $lineCount);
         }
 
         $this->processInlines($context, $context->getDocument()->walker());
@@ -102,10 +104,10 @@ class DocParser
 
     private function incorporateLine(ContextInterface $context)
     {
-        $cursor = new Cursor($context->getLine());
         $context->getBlockCloser()->resetTip();
-
         $context->setBlocksParsed(false);
+
+        $cursor = new Cursor($context->getLine(), $context->getEncoding());
 
         $this->resetContainer($context, $cursor);
         $context->getBlockCloser()->setLastMatchedContainer($context->getContainer());
@@ -170,8 +172,11 @@ class DocParser
     {
         $container = $context->getDocument();
 
-        while ($container->hasChildren()) {
-            $lastChild = $container->lastChild();
+        while ($lastChild = $container->lastChild()) {
+            if (!($lastChild instanceof AbstractBlock)) {
+                break;
+            }
+
             if (!$lastChild->isOpen()) {
                 break;
             }
@@ -218,9 +223,9 @@ class DocParser
      */
     private function isLazyParagraphContinuation(ContextInterface $context, Cursor $cursor)
     {
-        return !$context->getBlockCloser()->areAllClosed() &&
+        return $context->getTip() instanceof Paragraph &&
+            !$context->getBlockCloser()->areAllClosed() &&
             !$cursor->isBlank() &&
-            $context->getTip() instanceof Paragraph &&
             count($context->getTip()->getStrings()) > 0;
     }
 
@@ -241,7 +246,7 @@ class DocParser
         $lastLineBlank = $container->shouldLastLineBeBlank($cursor, $context->getLineNumber());
 
         // Propagate lastLineBlank up through parents:
-        while ($container) {
+        while ($container instanceof AbstractBlock) {
             $container->setLastLineBlank($lastLineBlank);
             $container = $container->parent();
         }

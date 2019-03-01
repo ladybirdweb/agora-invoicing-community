@@ -19,11 +19,11 @@ class Subscription extends Entity
         return parent::all($options);
     }
 
-    public function cancel()
+    public function cancel($attributes = array())
     {
         $relativeUrl = $this->getEntityUrl() . $this->id . '/cancel';
 
-        return $this->request('POST', $relativeUrl);
+        return $this->request('POST', $relativeUrl, $attributes);
     }
 
     public function createAddon($attributes = array())

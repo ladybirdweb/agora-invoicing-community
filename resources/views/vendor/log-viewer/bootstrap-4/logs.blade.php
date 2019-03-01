@@ -1,26 +1,41 @@
-@extends('log-viewer::bootstrap-4._master')
-
+@extends('log-viewer::_template.master')
+@section('title')
+Log-Viewer
+@stop
+@section('content-header')
+<h1>
+Log-Viewer
+</h1>
+<ol class="breadcrumb">
+        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="{{url('settings')}}">Settings</a></li>
+        <li><a href="{{url('log-viewer')}}">Dashboard</a></li>
+        <li class="active">Logs</li>
+      </ol>
+      @stop
 @section('content')
-    <div class="page-header mb-4">
-        <h1>Logs</h1>
-    </div>
+<div class="box box-primary">
+    <div class="box-body">
+    <h1 class="page-header">Logs</h1>
+
+    {!! $rows->render() !!}
 
     <div class="table-responsive">
-        <table class="table table-sm table-hover">
+        <table class="table table-condensed table-hover table-stats">
             <thead>
                 <tr>
                     @foreach($headers as $key => $header)
-                    <th scope="col" class="{{ $key == 'date' ? 'text-left' : 'text-center' }}">
+                    <th class="{{ $key == 'date' ? 'text-left' : 'text-center' }}">
                         @if ($key == 'date')
-                            <span class="badge badge-info">{{ $header }}</span>
+                            <span class="label label-info">{{ $header }}</span>
                         @else
-                            <span class="badge badge-level-{{ $key }}">
+                            <span class="level level-{{ $key }}">
                                 {!! log_styler()->icon($key) . ' ' . $header !!}
                             </span>
                         @endif
                     </th>
                     @endforeach
-                    <th scope="col" class="text-right">Actions</th>
+                    <th class="text-right">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -30,24 +45,24 @@
                         @foreach($row as $key => $value)
                             <td class="{{ $key == 'date' ? 'text-left' : 'text-center' }}">
                                 @if ($key == 'date')
-                                    <span class="badge badge-primary">{{ $value }}</span>
+                                    <span class="label label-primary">{{ $value }}</span>
                                 @elseif ($value == 0)
-                                    <span class="badge empty">{{ $value }}</span>
+                                    <span class="level level-empty">{{ $value }}</span>
                                 @else
                                     <a href="{{ route('log-viewer::logs.filter', [$date, $key]) }}">
-                                        <span class="badge badge-level-{{ $key }}">{{ $value }}</span>
+                                        <span class="level level-{{ $key }}">{{ $value }}</span>
                                     </a>
                                 @endif
                             </td>
                         @endforeach
                         <td class="text-right">
-                            <a href="{{ route('log-viewer::logs.show', [$date]) }}" class="btn btn-sm btn-info">
+                            <a href="{{ route('log-viewer::logs.show', [$date]) }}" class="btn btn-xs btn-info">
                                 <i class="fa fa-search"></i>
                             </a>
-                            <a href="{{ route('log-viewer::logs.download', [$date]) }}" class="btn btn-sm btn-success">
+                            <a href="{{ route('log-viewer::logs.download', [$date]) }}" class="btn btn-xs btn-success">
                                 <i class="fa fa-download"></i>
                             </a>
-                            <a href="#delete-log-modal" class="btn btn-sm btn-danger" data-log-date="{{ $date }}">
+                            <a href="#delete-log-modal" class="btn btn-xs btn-danger" data-log-date="{{ $date }}">
                                 <i class="fa fa-trash-o"></i>
                             </a>
                         </td>
@@ -56,37 +71,39 @@
                 @else
                     <tr>
                         <td colspan="11" class="text-center">
-                            <span class="badge badge-secondary">{{ trans('log-viewer::general.empty-logs') }}</span>
+                            <span class="label label-default">{{ trans('log-viewer::general.empty-logs') }}</span>
                         </td>
                     </tr>
                 @endif
             </tbody>
         </table>
     </div>
+</div>
+</div>
 
     {!! $rows->render() !!}
 @endsection
 
 @section('modals')
     {{-- DELETE MODAL --}}
-    <div id="delete-log-modal" class="modal fade" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
+    <div id="delete-log-modal" class="modal fade">
+        <div class="modal-dialog">
             <form id="delete-log-form" action="{{ route('log-viewer::logs.delete') }}" method="POST">
                 <input type="hidden" name="_method" value="DELETE">
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
                 <input type="hidden" name="date" value="">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">DELETE LOG FILE</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
+                        <h4 class="modal-title">DELETE LOG FILE</h4>
                     </div>
                     <div class="modal-body">
                         <p></p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-sm btn-secondary mr-auto" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-sm btn-default pull-left" data-dismiss="modal">Cancel</button>
                         <button type="submit" class="btn btn-sm btn-danger" data-loading-text="Loading&hellip;">DELETE FILE</button>
                     </div>
                 </div>
@@ -102,12 +119,12 @@
                 deleteLogForm  = $('form#delete-log-form'),
                 submitBtn      = deleteLogForm.find('button[type=submit]');
 
-            $("a[href='#delete-log-modal']").on('click', function(event) {
+            $("a[href=#delete-log-modal]").on('click', function(event) {
                 event.preventDefault();
                 var date = $(this).data('log-date');
                 deleteLogForm.find('input[name=date]').val(date);
                 deleteLogModal.find('.modal-body p').html(
-                    'Are you sure you want to <span class="badge badge-danger">DELETE</span> this log file <span class="badge badge-primary">' + date + '</span> ?'
+                    'Are you sure you want to <span class="label label-danger">DELETE</span> this log file <span class="label label-primary">' + date + '</span> ?'
                 );
 
                 deleteLogModal.modal('show');

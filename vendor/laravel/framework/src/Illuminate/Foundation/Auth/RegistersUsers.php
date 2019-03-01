@@ -188,7 +188,6 @@ trait RegistersUsers
     public function Activate($token, AccountActivate $activate, Request $request, User $user)
     {
         try {
-            dd('df');
             if ($activate->where('token', $token)->first()) {
                 $email = $activate->where('token', $token)->first()->email;
             } else {

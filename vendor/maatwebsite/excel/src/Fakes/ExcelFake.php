@@ -3,13 +3,18 @@
 namespace Maatwebsite\Excel\Fakes;
 
 use Illuminate\Bus\Queueable;
+use Maatwebsite\Excel\Reader;
 use PHPUnit\Framework\Assert;
 use Maatwebsite\Excel\Exporter;
+use Maatwebsite\Excel\Importer;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Queue;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\PendingDispatch;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
-class ExcelFake implements Exporter
+class ExcelFake implements Exporter, Importer
 {
     /**
      * @var array
@@ -27,6 +32,11 @@ class ExcelFake implements Exporter
     protected $queued = [];
 
     /**
+     * @var array
+     */
+    protected $imported = [];
+
+    /**
      * {@inheritdoc}
      */
     public function download($export, string $fileName, string $writerType = null)
@@ -39,8 +49,12 @@ class ExcelFake implements Exporter
     /**
      * {@inheritdoc}
      */
-    public function store($export, string $filePath, string $disk = null, string $writerType = null)
+    public function store($export, string $filePath, string $disk = null, string $writerType = null, $diskOptions = [])
     {
+        if ($export instanceof ShouldQueue) {
+            return $this->queue($export, $filePath, $disk, $writerType);
+        }
+
         $this->stored[$disk ?? 'default'][$filePath] = $export;
 
         return true;
@@ -49,11 +63,105 @@ class ExcelFake implements Exporter
     /**
      * {@inheritdoc}
      */
-    public function queue($export, string $filePath, string $disk = null, string $writerType = null)
+    public function queue($export, string $filePath, string $disk = null, string $writerType = null, $diskOptions = [])
     {
         Queue::fake();
 
+        $this->stored[$disk ?? 'default'][$filePath] = $export;
         $this->queued[$disk ?? 'default'][$filePath] = $export;
+
+        return new PendingDispatch(new class {
+            use Queueable;
+
+            public function handle()
+            {
+                //
+            }
+        });
+    }
+
+    /**
+     * @param object $export
+     * @param string $writerType
+     *
+     * @return string
+     */
+    public function raw($export, string $writerType)
+    {
+        return 'RAW-CONTENTS';
+    }
+
+    /**
+     * @param object              $import
+     * @param string|UploadedFile $file
+     * @param string|null         $disk
+     * @param string|null         $readerType
+     *
+     * @return Reader|PendingDispatch
+     */
+    public function import($import, $file, string $disk = null, string $readerType = null)
+    {
+        if ($import instanceof ShouldQueue) {
+            return $this->queueImport($import, $file, $disk, $readerType);
+        }
+
+        $filePath = ($file instanceof UploadedFile) ? $file->getClientOriginalName() : $file;
+
+        $this->imported[$disk ?? 'default'][$filePath] = $import;
+
+        return $this;
+    }
+
+    /**
+     * @param object              $import
+     * @param string|UploadedFile $file
+     * @param string|null         $disk
+     * @param string|null         $readerType
+     *
+     * @return array
+     */
+    public function toArray($import, $file, string $disk = null, string $readerType = null): array
+    {
+        $filePath = ($file instanceof UploadedFile) ? $file->getFilename() : $file;
+
+        $this->imported[$disk ?? 'default'][$filePath] = $import;
+
+        return [];
+    }
+
+    /**
+     * @param object              $import
+     * @param string|UploadedFile $file
+     * @param string|null         $disk
+     * @param string|null         $readerType
+     *
+     * @return Collection
+     */
+    public function toCollection($import, $file, string $disk = null, string $readerType = null): Collection
+    {
+        $filePath = ($file instanceof UploadedFile) ? $file->getFilename() : $file;
+
+        $this->imported[$disk ?? 'default'][$filePath] = $import;
+
+        return new Collection();
+    }
+
+    /**
+     * @param ShouldQueue         $import
+     * @param string|UploadedFile $file
+     * @param string|null         $disk
+     * @param string              $readerType
+     *
+     * @return PendingDispatch
+     */
+    public function queueImport(ShouldQueue $import, $file, string $disk = null, string $readerType = null)
+    {
+        Queue::fake();
+
+        $filePath = ($file instanceof UploadedFile) ? $file->getFilename() : $file;
+
+        $this->queued[$disk ?? 'default'][$filePath]   = $import;
+        $this->imported[$disk ?? 'default'][$filePath] = $import;
 
         return new PendingDispatch(new class {
             use Queueable;
@@ -142,6 +250,37 @@ class ExcelFake implements Exporter
         Assert::assertTrue(
             $callback($queuedForDisk[$filePath]),
             "The file [{$filePath}] was not stored with the expected data."
+        );
+    }
+
+    /**
+     * @param string               $filePath
+     * @param string|callable|null $disk
+     * @param callable|null        $callback
+     */
+    public function assertImported(string $filePath, $disk = null, $callback = null)
+    {
+        if (is_callable($disk)) {
+            $callback = $disk;
+            $disk     = null;
+        }
+
+        $disk           = $disk ?? 'default';
+        $importedOnDisk = $this->imported[$disk] ?? [];
+
+        Assert::assertArrayHasKey(
+            $filePath,
+            $importedOnDisk,
+            sprintf('%s is not stored on disk %s', $filePath, $disk)
+        );
+
+        $callback = $callback ?: function () {
+            return true;
+        };
+
+        Assert::assertTrue(
+            $callback($importedOnDisk[$filePath]),
+            "The file [{$filePath}] was not imported with the expected data."
         );
     }
 }

@@ -82,7 +82,7 @@ class FractalTransformer
      */
     protected function createTransformer($transformer)
     {
-        if ($transformer instanceof TransformerAbstract) {
+        if ($transformer instanceof TransformerAbstract || $transformer instanceof \Closure) {
             return $transformer;
         }
 

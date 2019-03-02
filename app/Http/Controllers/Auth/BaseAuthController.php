@@ -115,7 +115,7 @@ class BaseAuthController extends Controller
                 $result = $this->sendOtp($mobile, $code);
                 $msg1 = 'OTP has been sent to '.$number.'.<br>Please enter the 
             OTP received on your mobile No below. Incase you did not recieve OTP,
-            please get in touch with us on <a href="mailto:'.$companyEmail.'>
+            please get in touch with us on <a href=mailto:'.$companyEmail.'>
             '.$companyEmail.'</a>';
             }
             $method = 'POST';
@@ -126,7 +126,7 @@ class BaseAuthController extends Controller
             }
 
             $response = ['type' => 'success',
-            'message'           => $msg1.'<br>'.$msg2, ];
+            'message'           => $msg1.'<br><br>'.$msg2, ];
 
             return response()->json($response);
         } catch (\Exception $ex) {

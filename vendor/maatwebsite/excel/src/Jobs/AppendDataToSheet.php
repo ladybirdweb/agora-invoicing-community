@@ -4,6 +4,7 @@ namespace Maatwebsite\Excel\Jobs;
 
 use Illuminate\Bus\Queueable;
 use Maatwebsite\Excel\Writer;
+use Maatwebsite\Excel\Files\TemporaryFile;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 
@@ -19,7 +20,7 @@ class AppendDataToSheet implements ShouldQueue
     /**
      * @var string
      */
-    public $filePath;
+    public $temporaryFile;
 
     /**
      * @var string
@@ -37,19 +38,19 @@ class AppendDataToSheet implements ShouldQueue
     public $sheetExport;
 
     /**
-     * @param object $sheetExport
-     * @param string $filePath
-     * @param string $writerType
-     * @param int    $sheetIndex
-     * @param array  $data
+     * @param object        $sheetExport
+     * @param TemporaryFile $temporaryFile
+     * @param string        $writerType
+     * @param int           $sheetIndex
+     * @param array         $data
      */
-    public function __construct($sheetExport, string $filePath, string $writerType, int $sheetIndex, array $data)
+    public function __construct($sheetExport, TemporaryFile $temporaryFile, string $writerType, int $sheetIndex, array $data)
     {
-        $this->sheetExport = $sheetExport;
-        $this->data        = $data;
-        $this->filePath    = $filePath;
-        $this->writerType  = $writerType;
-        $this->sheetIndex  = $sheetIndex;
+        $this->sheetExport   = $sheetExport;
+        $this->data          = $data;
+        $this->temporaryFile = $temporaryFile;
+        $this->writerType    = $writerType;
+        $this->sheetIndex    = $sheetIndex;
     }
 
     /**
@@ -57,16 +58,15 @@ class AppendDataToSheet implements ShouldQueue
      *
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
-     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
      */
     public function handle(Writer $writer)
     {
-        $writer = $writer->reopen($this->filePath, $this->writerType);
+        $writer = $writer->reopen($this->temporaryFile, $this->writerType);
 
         $sheet = $writer->getSheetByIndex($this->sheetIndex);
 
         $sheet->appendRows($this->data, $this->sheetExport);
 
-        $writer->write($this->sheetExport, $this->filePath, $this->writerType);
+        $writer->write($this->sheetExport, $this->temporaryFile, $this->writerType);
     }
 }

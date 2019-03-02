@@ -10,11 +10,9 @@ addons:
 php:
   - 7.1
   - 7.2
-  - master
+  - 7.3
 
 matrix:
-  allow_failures:
-    - php: master
   fast_finish: true
 
 env:
@@ -52,16 +50,7 @@ notifications:
 jobs:
   include:
     - stage: Static Code Analysis
-      php: 7.2
-      env: PHPStan
-      before_install:
-        - travis_retry ./build/tools/composer require --no-update phpunit/php-invoker:^2.0
-      install: travis_retry ./build/tools/composer update --prefer-dist --prefer-stable
-      script:
-        - ./build/tools/phpstan analyse --level=0 -c phpstan.neon src
-        - ./build/tools/phpstan analyse --level=2 -c phpstan-tests.neon tests
-    - stage: Static Code Analysis
-      php: 7.2
+      php: 7.3
       env: php-cs-fixer
       install:
         - phpenv config-rm xdebug.ini

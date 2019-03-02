@@ -429,7 +429,7 @@ Application Settings
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title" >Chat Script</p>
+                        <p class="box-title" >Analytics/Custom Code</p>
                     </div>
                 </div>                                       
             </div>

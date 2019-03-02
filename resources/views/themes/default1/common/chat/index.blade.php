@@ -1,15 +1,15 @@
 @extends('themes.default1.layouts.master')
 @section('title')
-Chat
+Create Script
 @stop
 @section('content-header')
 <h1>
-{{Lang::get('message.chat-script')}}
+Google Analytics And Javascript Codes
 </h1>
   <ol class="breadcrumb">
         <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> {{Lang::get('message.home')}}</a></li>
         <li><a href="{{url('settings')}}">{{Lang::get('message.settings')}}</a></li>
-        <li class="active">{{Lang::get('message.chat-script')}}</li>
+        <li class="active">Script</li>
       </ol>
 @stop
 @section('content')

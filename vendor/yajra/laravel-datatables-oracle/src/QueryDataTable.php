@@ -46,6 +46,20 @@ class QueryDataTable extends DataTableAbstract
     protected $limitCallback;
 
     /**
+     * Flag to skip total records count query.
+     *
+     * @var bool
+     */
+    protected $skipTotalRecords = false;
+
+    /**
+     * Flag to keep the select bindings.
+     *
+     * @var bool
+     */
+    protected $keepSelectBindings = false;
+
+    /**
      * Can the DataTable engine be created with these parameters.
      *
      * @param mixed $source
@@ -112,13 +126,57 @@ class QueryDataTable extends DataTableAbstract
     }
 
     /**
+     * Skip total records and set the recordsTotal equals to recordsFiltered.
+     * This will improve the performance by skipping the total count query.
+     *
+     * @return $this
+     */
+    public function skipTotalRecords()
+    {
+        $this->skipTotalRecords = true;
+
+        return $this;
+    }
+
+    /**
+     * Keep the select bindings.
+     *
+     * @return $this
+     */
+    public function keepSelectBindings()
+    {
+        $this->keepSelectBindings = true;
+
+        return $this;
+    }
+
+    /**
      * Count total items.
      *
      * @return int
      */
     public function totalCount()
     {
+        if ($this->skipTotalRecords) {
+            return true;
+        }
+
         return $this->totalRecords ? $this->totalRecords : $this->count();
+    }
+
+    /**
+     * Count filtered items.
+     *
+     * @return int
+     */
+    protected function filteredCount()
+    {
+        $this->filteredRecords = $this->filteredRecords ?: $this->count();
+        if ($this->skipTotalRecords) {
+            $this->totalRecords = $this->filteredRecords;
+        }
+
+        return $this->filteredRecords;
     }
 
     /**
@@ -148,7 +206,9 @@ class QueryDataTable extends DataTableAbstract
         if (! $this->isComplexQuery($builder)) {
             $row_count = $this->wrap('row_count');
             $builder->select($this->connection->raw("'1' as {$row_count}"));
-            $builder->setBindings([], 'select');
+            if (! $this->keepSelectBindings) {
+                $builder->setBindings([], 'select');
+            }
         }
 
         return $builder;

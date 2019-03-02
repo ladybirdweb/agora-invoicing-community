@@ -22,6 +22,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\View\Engines\CompilerEngine;
 use Laravel\Lumen\Application as LumenApplication;
 use League\CommonMark\Converter;
+use League\CommonMark\ConverterInterface;
 use League\CommonMark\DocParser;
 use League\CommonMark\Environment;
 use League\CommonMark\HtmlRenderer;
@@ -46,6 +47,7 @@ class MarkdownServiceProvider extends ServiceProvider
             $this->enableMarkdownCompiler();
             $this->enablePhpMarkdownEngine();
             $this->enableBladeMarkdownEngine();
+            $this->enableBladeDirective();
         }
     }
 
@@ -122,6 +124,23 @@ class MarkdownServiceProvider extends ServiceProvider
         $app->view->addExtension('md.blade.php', 'blademd');
     }
 
+    protected function enableBladeDirective()
+    {
+        $app = $this->app;
+
+        $app['blade.compiler']->directive('markdown', function ($markdown) {
+            if ($markdown) {
+                return "<?php echo app('markdown')->convertToHtml((string) {$markdown}); ?>";
+            }
+
+            return '<?php ob_start(); ?>';
+        });
+
+        $app['blade.compiler']->directive('endmarkdown', function () {
+            return "<?php echo app('markdown')->convertToHtml(ob_get_clean()); ?>";
+        });
+    }
+
     /**
      * Register the service provider.
      *
@@ -174,6 +193,7 @@ class MarkdownServiceProvider extends ServiceProvider
         });
 
         $this->app->alias('markdown', Converter::class);
+        $this->app->alias('markdown', ConverterInterface::class);
     }
 
     /**

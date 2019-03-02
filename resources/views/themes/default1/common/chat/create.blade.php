@@ -1,13 +1,16 @@
 @extends('themes.default1.layouts.master')
+@section('title')
+Script
+@stop
 @section('content-header')
 <h1>
-{{Lang::get('message.create-chat-script')}}
+Create Script Code
 </h1>
   <ol class="breadcrumb">
         <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> {{Lang::get('message.home')}}</a></li>
         <li><a href="{{url('settings')}}">{{Lang::get('message.settings')}}</a></li>
-        <li><a href="{{url('chat')}}">{{Lang::get('message.chat-script')}}</a></li>
-        <li class="active">{{Lang::get('message.create-chat-script')}}</li>
+        <li><a href="{{url('chat')}}">Script</a></li>
+        <li class="active">Create Script</li>
       </ol>
 @stop
 @section('content')
@@ -43,7 +46,7 @@
         </div>
         @endif
         {!! Form::open(['url'=>'chat','method'=>'post']) !!}
-        <h4>{{Lang::get('message.chat-script')}}	<button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></h4>
+        <h4>Javascript Code<button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></h4>
 
     </div>
 

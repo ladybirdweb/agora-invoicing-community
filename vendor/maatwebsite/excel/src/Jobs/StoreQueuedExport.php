@@ -3,8 +3,9 @@
 namespace Maatwebsite\Excel\Jobs;
 
 use Illuminate\Bus\Queueable;
+use Maatwebsite\Excel\Files\Filesystem;
+use Maatwebsite\Excel\Files\TemporaryFile;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Filesystem\FilesystemManager;
 
 class StoreQueuedExport implements ShouldQueue
 {
@@ -13,12 +14,7 @@ class StoreQueuedExport implements ShouldQueue
     /**
      * @var string
      */
-    private $tempPath;
-
-    /**
-     * @var string
-     */
-    private $path;
+    private $filePath;
 
     /**
      * @var string|null
@@ -26,22 +22,38 @@ class StoreQueuedExport implements ShouldQueue
     private $disk;
 
     /**
-     * @param string      $tempPath
-     * @param string      $path
-     * @param string|null $disk
+     * @var TemporaryFile
      */
-    public function __construct(string $tempPath, string $path, string $disk = null)
+    private $temporaryFile;
+    /**
+     * @var array|string
+     */
+    private $diskOptions;
+
+    /**
+     * @param TemporaryFile $temporaryFile
+     * @param string        $filePath
+     * @param string|null   $disk
+     * @param array|string  $diskOptions
+     */
+    public function __construct(TemporaryFile $temporaryFile, string $filePath, string $disk = null, $diskOptions = [])
     {
-        $this->tempPath = $tempPath;
-        $this->path     = $path;
-        $this->disk     = $disk;
+        $this->disk          = $disk;
+        $this->filePath      = $filePath;
+        $this->temporaryFile = $temporaryFile;
+        $this->diskOptions   = $diskOptions;
     }
 
     /**
-     * @param FilesystemManager $filesystem
+     * @param Filesystem $filesystem
      */
-    public function handle(FilesystemManager $filesystem)
+    public function handle(Filesystem $filesystem)
     {
-        $filesystem->disk($this->disk)->put($this->path, fopen($this->tempPath, 'r+'));
+        $filesystem->disk($this->disk, $this->diskOptions)->copy(
+            $this->temporaryFile,
+            $this->filePath
+        );
+
+        $this->temporaryFile->delete();
     }
 }

@@ -198,25 +198,25 @@ class Generator
         // Get all aliases
         foreach ($this->getAliases() as $name => $facade) {
             // Skip the Redis facade, if not available (otherwise Fatal PHP Error)
-            if ($facade == 'Illuminate\Support\Facades\Redis' && !class_exists('Predis\Client')) {
+            if ($facade == 'Illuminate\Support\Facades\Redis' && $name == 'Redis' && !class_exists('Predis\Client')) {
                 continue;
             }
 
             $magicMethods = array_key_exists($name, $this->magic) ? $this->magic[$name] : array();
-            $alias = new Alias($name, $facade, $magicMethods, $this->interfaces);
+            $alias = new Alias($this->config, $name, $facade, $magicMethods, $this->interfaces);
             if ($alias->isValid()) {
                 //Add extra methods, from other classes (magic static calls)
                 if (array_key_exists($name, $this->extra)) {
                     $alias->addClass($this->extra[$name]);
                 }
-                
+
                 $aliases[] = $alias;
             }
         }
 
         return $aliases;
     }
-    
+
     /**
      * Regroup aliases by namespace of extended classes
      *
@@ -228,7 +228,7 @@ class Generator
             return $alias->getExtendsNamespace();
         });
     }
-    
+
     /**
      * Regroup aliases by namespace of alias
      *
@@ -265,15 +265,20 @@ class Generator
           'Schema' => 'Illuminate\Support\Facades\Schema',
           'Session' => 'Illuminate\Support\Facades\Session',
           'Storage' => 'Illuminate\Support\Facades\Storage',
-          //'Validator' => 'Illuminate\Support\Facades\Validator',
+          'Validator' => 'Illuminate\Support\Facades\Validator',
+          'Gate' => 'Illuminate\Support\Facades\Gate',
         ];
 
         $facades = array_merge($facades, $this->config->get('app.aliases', []));
 
         // Only return the ones that actually exist
-        return array_filter($facades, function ($alias) {
-            return class_exists($alias);
-        });
+        return array_filter(
+            $facades,
+            function ($alias) {
+                return class_exists($alias);
+            },
+            ARRAY_FILTER_USE_KEY
+        );
     }
 
     /**

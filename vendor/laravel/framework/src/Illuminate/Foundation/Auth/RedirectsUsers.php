@@ -2,8 +2,6 @@
 
 namespace Illuminate\Foundation\Auth;
 
-
-
 trait RedirectsUsers
 {
     /**
@@ -13,9 +11,10 @@ trait RedirectsUsers
      */
     public function redirectPath()
     {
-       if (method_exists($this, 'redirectTo')) {
+        if (method_exists($this, 'redirectTo')) {
             return $this->redirectTo();
         }
-      return property_exists($this, 'redirectTo') ? '/my-invoices' : '/my-invoices';
+
+       return property_exists($this, 'redirectTo') ? '/my-invoices' : '/my-invoices';
     }
 }

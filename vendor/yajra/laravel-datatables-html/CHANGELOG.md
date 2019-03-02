@@ -8,6 +8,205 @@
 
 ## CHANGELOG
 
+### v4.4.0 - 02-27-2019
+
+- Add support for Laravel 5.8 / DataTables v9.0 [#90].
+
+### v4.3.2 - 02-05-2019
+
+- Avoid call parseRender when render attribute is null. [#87] credits to @JulianBustamante.
+
+### v4.3.1 - 11-21-2018
+
+- Allow null string computed column title.
+
+### v4.3.0 - 11-21-2018
+
+#### Added
+
+- Builder Support for the following plugins:
+
+- [x] AutoFill
+- [x] ColReorder
+- [x] FixedColumns
+- [x] FixedHeader
+- [x] KeyTable
+- [x] Responsive
+- [x] RowGroup
+- [x] RowReorder
+- [x] Scroller
+- [x] Select
+
+- Builder Support for setting the language:
+
+- [x] Language
+- [x] Language\Aria
+- [x] Language\AutoFill
+- [x] Language\Paginate
+- [x] Language\Select
+
+- Add missing column option setters:
+
+- [x] data
+- [x] orderData
+- [x] orderDataType
+- [x] orderSequence
+- [x] cellType
+- [x] type
+- [x] contentPadding
+- [x] createdCell
+- [x] editField
+
+### v4.2.1 - 11-21-2018
+
+- Fix computed column title if nothing is set.
+
+### v4.2.0 - 11-20-2018
+
+- Add ajaxWithForm api to process dataTables with form data. [#86]
+
+### v4.1.0 - 11-16-2018
+
+- Add full Editor events script builder as per https://editor.datatables.net/reference/event/.
+
+```php
+Editor::make('create')
+  ->on('create', 'js-script-here')
+  ->onCreate('js-script-here') // event via magic method.
+  ->fields([
+      Fields\Text::make('name'),
+      Fields\Text::make('email'),
+  ]);
+```
+
+- Add missing `idSrc` Editor option setter.
+- Add missing `display` Editor option setter.
+
+> NOTE: You need to force [publish](https://github.com/yajra/laravel-datatables-html#publish-assets-optional) the blade templates to be able to use the features if needed.
+
+### v4.0.0 - 11-14-2018
+
+#### ADDED
+
+Add full builder support for the following options based on https://datatables.net/reference/option/.
+
+##### Add builder support for the following plugins:
+
+- [x] AutoFill
+- [x] Buttons
+- [x] ColReorder
+- [x] FixedColumns
+- [x] FixedHeader
+- [x] KeyTable
+- [x] Responsive
+- [x] RowGroup
+- [x] RowReorder
+- [x] Scroller
+- [x] Select
+
+> Note: All plugins requires their corresponding asset files.
+
+##### Add Buttons builder with support for authorization.
+
+```php
+->buttons(
+    Button::makeIfCan('manage-users', 'create')->editor('editor'),
+    Button::makeIf(true, 'edit')->editor('editor'),
+    Button::make('remove')->editor('editor')->className('btn-danger'),
+    Button::make('colvis')->text('<i class="fa fa-eye"></i>'),
+    Button::make('export'),
+    Button::make('print'),
+    Button::make('reset'),
+    Button::make('reload')
+)
+```
+
+#### CHANGED
+
+- `Editor` class was moved from `Yajra\DataTables\Html\Editor` to `Yajra\DataTables\Html\Editor\Editor`.
+- All fields were moved from `Yajra\DataTables\Html\Editor` to `Yajra\DataTables\Html\Editor\Fields` namespace.
+
+### v3.13.0 - 11-10-2018
+
+- Add missing visible option setter. [#83]
+- Add new fields, fix dateTime field format. [#84]
+
+#### Changed
+
+- Fix field and column computed title.
+
+From `created_at` with title `Created_At`
+To `created_at` with title `Created At`
+
+#### Fixed
+
+- Fix DateTime field.
+- Set format to `YYYY-MM-DD hh:mm a`.
+- Add `military()` setter to set the time to military format.
+
+#### Added New Fields
+
+- Boolean
+- Date
+- Time
+- Text
+- Number
+
+### v3.12.7 - 11-03-2018
+
+- Add checker if className is not yet set when adding class.
+
+### v3.12.6 - 11-03-2018
+
+- Fix setting of title.
+- Add title option for checkbox column.
+
+### v3.12.5 - 11-03-2018
+
+- Add name arg for computed column.
+
+### v3.12.4 - 11-03-2018
+
+- Fix options: Use 1 and 0 for true or false.
+
+### v3.12.3 - Skipped (My Bad)
+
+### v3.12.2 - 11-03-2018
+
+- Add missing field options setter and add docs link.
+
+### v3.12.1 - 11-03-2018
+
+- Add to method to append a class to the field.
+
+### v3.12.0 - 11-03-2018
+
+- Add editor options collection builder. [#80]
+
+### v3.11.0 - 11-02-2018
+
+- Add option to prepend action column. [#77]
+- Enhance column fluent builder. [#78]
+
+### v3.10.0 - 11-02-2018
+
+- Add support for DataTables Editor script generation. [#73]
+- Fix script template config key `datatables-html.script`.
+- Add method to `getAjaxUrl()`.
+
+### v3.9.0 - 11-02-2018
+
+- Add support for [built-in render helpers](https://datatables.net/manual/data/renderers#Built-in-helpers). [#71], credits to @Razoxane.
+
+### v3.8.1 - 10-30-2018
+
+- Fix the default name of index column to follow DT syntax. [#69], credits to @jaydons.
+- Fix missing periods. [#70], credits to @jaydons.
+
+### v3.8.0 - 09-05-2018
+
+- Add support for Laravel 5.7
+
 ### v3.7.2 - 07-06-2018
 
 - Fix callback check on empty values. [#62] Credits to @apreiml.
@@ -184,6 +383,18 @@
 [#59]: https://github.com/yajra/laravel-datatables-html/pull/59
 [#55]: https://github.com/yajra/laravel-datatables-html/pull/55
 [#62]: https://github.com/yajra/laravel-datatables-html/pull/62
+[#69]: https://github.com/yajra/laravel-datatables-html/pull/69
+[#70]: https://github.com/yajra/laravel-datatables-html/pull/70
+[#71]: https://github.com/yajra/laravel-datatables-html/pull/71
+[#73]: https://github.com/yajra/laravel-datatables-html/pull/73
+[#77]: https://github.com/yajra/laravel-datatables-html/pull/77
+[#78]: https://github.com/yajra/laravel-datatables-html/pull/78
+[#80]: https://github.com/yajra/laravel-datatables-html/pull/80
+[#83]: https://github.com/yajra/laravel-datatables-html/pull/83
+[#84]: https://github.com/yajra/laravel-datatables-html/pull/84
+[#86]: https://github.com/yajra/laravel-datatables-html/pull/86
+[#87]: https://github.com/yajra/laravel-datatables-html/pull/87
+[#90]: https://github.com/yajra/laravel-datatables-html/pull/90
 
 [#3]: https://github.com/yajra/laravel-datatables-html/issues/3
 [#58]: https://github.com/yajra/laravel-datatables-html/issues/58

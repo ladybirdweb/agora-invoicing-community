@@ -2,7 +2,6 @@
 
 use Closure;
 use Illuminate\Database\Migrations\Migration as IlluminateMigration;
-use Illuminate\Support\Facades\Schema;
 
 /**
  * Class     Migration
@@ -37,6 +36,20 @@ abstract class Migration extends IlluminateMigration
      */
 
     /**
+     * Get a schema builder instance for the connection.
+     *
+     * @return \Illuminate\Database\Schema\Builder
+     */
+    protected function getSchemaBuilder()
+    {
+        /** @var  \Illuminate\Database\DatabaseManager  $db */
+        $db = app()->make('db');
+
+        return $db->connection($this->hasConnection() ? $this->getConnection() : null)
+                  ->getSchemaBuilder();
+    }
+
+    /**
      * Set the migration connection name.
      *
      * @param  string  $connection
@@ -51,25 +64,13 @@ abstract class Migration extends IlluminateMigration
     }
 
     /**
-     * Get the table name.
-     *
-     * @return null|string
-     */
-    public function getTable()
-    {
-        return $this->table;
-    }
-
-    /**
      * Get the prefixed table name.
      *
      * @return string
      */
     public function getTableName()
     {
-        return $this->hasPrefix()
-             ? $this->getPrefix().$this->getTable()
-             : $this->getTable();
+        return $this->hasPrefix() ? $this->prefix.$this->table : $this->table;
     }
 
     /**
@@ -84,16 +85,6 @@ abstract class Migration extends IlluminateMigration
         $this->table = $table;
 
         return $this;
-    }
-
-    /**
-     * Get the prefix name.
-     *
-     * @return null|string
-     */
-    public function getPrefix()
-    {
-        return $this->prefix;
     }
 
     /**
@@ -125,13 +116,7 @@ abstract class Migration extends IlluminateMigration
      */
     public function down()
     {
-        if ( ! $this->hasConnection()) {
-            Schema::dropIfExists($this->getTableName());
-
-            return;
-        }
-
-        Schema::connection($this->getConnection())->dropIfExists($this->getTableName());
+        $this->getSchemaBuilder()->dropIfExists($this->getTableName());
     }
 
     /**
@@ -141,13 +126,17 @@ abstract class Migration extends IlluminateMigration
      */
     protected function createSchema(Closure $blueprint)
     {
-        if ($this->hasConnection()) {
-            Schema::connection($this->getConnection())
-                  ->create($this->getTableName(), $blueprint);
-        }
-        else {
-            Schema::create($this->getTableName(), $blueprint);
-        }
+        $this->getSchemaBuilder()->create($this->getTableName(), $blueprint);
+    }
+
+    /**
+     * Modify a table on the schema.
+     *
+     * @param  \Closure  $callback
+     */
+    protected function table(Closure $callback)
+    {
+        $this->getSchemaBuilder()->table($this->getTableName(), $callback);
     }
 
     /* -----------------------------------------------------------------
@@ -172,7 +161,7 @@ abstract class Migration extends IlluminateMigration
      */
     protected function hasPrefix()
     {
-        return $this->isNotEmpty($this->getPrefix());
+        return $this->isNotEmpty($this->prefix);
     }
 
     /**

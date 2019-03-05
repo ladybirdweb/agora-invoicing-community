@@ -57,6 +57,7 @@ class Admin
                     return redirect($defaulturl);
                 }
                 $domain = \Session::get('domain');
+
                 return redirect($url);
             }
 

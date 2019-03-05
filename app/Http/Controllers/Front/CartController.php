@@ -127,7 +127,7 @@ class CartController extends BaseCartController
             foreach ($cartCollection as $item) {
                 $attributes[] = $item->attributes;
                 $cart_currency = $attributes[0]['currency']['currency'];
-                 \Session::put('currency',$cart_currency);
+                \Session::put('currency', $cart_currency);
                 if (\Auth::user()) {//If User is Loggen in and his currency changes after logginng in then remove his previous order from cart
                     $currency = \Auth::user()->currency;
                     if ($cart_currency != $currency) {

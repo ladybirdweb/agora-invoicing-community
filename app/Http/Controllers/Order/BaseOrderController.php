@@ -209,7 +209,7 @@ class BaseOrderController extends ExtendedOrderController
      *
      * @return string [The final Updates Expiry date that is generated]
      */
-    protected function getUpdatesExpiryDate(bool $permissions,$days)
+    protected function getUpdatesExpiryDate(bool $permissions, $days)
     {
         $update_ends_at = '';
         if ($days > 0 && $permissions == 1) {
@@ -228,7 +228,7 @@ class BaseOrderController extends ExtendedOrderController
      *
      * @return string [The final Suport Expiry date that is generated]
      */
-    protected function getSupportExpiryDate(bool $permissions,$days)
+    protected function getSupportExpiryDate(bool $permissions, $days)
     {
         $support_ends_at = '';
         if ($days > 0 && $permissions == 1) {

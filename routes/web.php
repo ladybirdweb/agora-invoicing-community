@@ -535,7 +535,7 @@
         Route::post('v2/serial', 'HomeController@serialV2');
         Route::get('download/faveo', 'HomeController@downloadForFaveo');
         Route::get('version/latest', 'HomeController@latestVersion');
-        Route::get('v1/checkUpdatesExpiry', 'HomeController@checkUpdatesExpiry');
+        Route::post('v1/checkUpdatesExpiry', 'HomeController@checkUpdatesExpiry');
 
         Route::get('404', ['as' => 'error404', function () {
             return view('errors.404');

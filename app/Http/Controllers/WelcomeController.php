@@ -21,8 +21,9 @@ class WelcomeController extends Controller
         $country_iso2 = $this->request->get('country_id');
         $model = $country->where('country_code_char2', $country_iso2)->select('phonecode')->first();
         if ($model) {
-        $code = $model->phonecode;
+            $code = $model->phonecode;
         }
+
         return $code;
     }
 

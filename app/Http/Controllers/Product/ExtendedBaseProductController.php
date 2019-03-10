@@ -7,7 +7,6 @@ use App\Model\Common\StatusSetting;
 use App\Model\Payment\TaxProductRelation;
 use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
-use GrahamCampbell\Markdown\Facades\Markdown;
 use Bugsnag;
 use Illuminate\Http\Request;
 
@@ -42,7 +41,7 @@ class ExtendedBaseProductController extends Controller
             return $model->file;
         })
         ->addColumn('action', function ($model) {
-              return '<p><a href='.url('edit-upload/'.$model->id).
+            return '<p><a href='.url('edit-upload/'.$model->id).
                                 " class='btn btn-sm btn-primary btn-xs'><i class='fa fa-edit'
                                  style='color:white;'> </i>&nbsp;&nbsp;Edit</a>&nbsp</p>";
         })
@@ -50,26 +49,26 @@ class ExtendedBaseProductController extends Controller
         ->make(true);
     }
 
-   /**
-    * Go to edit Product Upload Page
-    *
-    * @date   2019-03-07T13:15:58+0530
-    *
-    * @param  int $id   Product Upload id 
-    *
-    */
-    public function editProductUpload($id) 
+    /**
+     * Go to edit Product Upload Page.
+     *
+     * @date   2019-03-07T13:15:58+0530
+     *
+     * @param int $id Product Upload id
+     */
+    public function editProductUpload($id)
     {
-        $model = ProductUpload::where('id',$id)->first();
+        $model = ProductUpload::where('id', $id)->first();
         $selectedProduct = $model->product->name;
-        return view('themes.default1.product.product.edit-upload-option',compact('model','selectedProduct'));
+
+        return view('themes.default1.product.product.edit-upload-option', compact('model', 'selectedProduct'));
     }
 
     //Update the File Info
     public function uploadUpdate($id, Request $request)
     {
         $this->validate($request, [
-        'title' => 'required',
+        'title'        => 'required',
         'version'      => 'required',
         ]);
 
@@ -82,7 +81,8 @@ class ExtendedBaseProductController extends Controller
                 $updateClassObj = new \App\Http\Controllers\AutoUpdate\AutoUpdateController();
                 $addProductToAutoUpdate = $updateClassObj->editVersion($request->input('version'), $productSku);
             }
-            return redirect()->back()->with('success','Product Updated Successfully');
+
+            return redirect()->back()->with('success', 'Product Updated Successfully');
         } catch (\Exception $ex) {
             app('log')->error($e->getMessage());
             Bugsnag::notifyException($e);
@@ -149,7 +149,6 @@ class ExtendedBaseProductController extends Controller
                 header('Content-Length: '.filesize($release));
                 readfile($release);
                 ob_end_clean();
-              
             }
         } catch (\Exception $e) {
             if ($api) {

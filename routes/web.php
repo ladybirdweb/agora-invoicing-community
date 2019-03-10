@@ -181,7 +181,7 @@
          */
 
          Route::resource('products', 'Product\ProductController');
-     Route::get('get-products', ['as' => 'get-products', 'uses' => 'Product\ProductController@getProducts']);
+        Route::get('get-products', ['as' => 'get-products', 'uses' => 'Product\ProductController@getProducts']);
         // Route::get('get-products', 'Product\ProductController@GetProducts');
         Route::get('products-delete', 'Product\ProductController@destroy')->name('products-delete');
         Route::get('uploads-delete', 'Product\ProductController@fileDestroy')->name('uploads-delete');
@@ -189,6 +189,7 @@
         Route::post('get-price', 'Product\ProductController@getPrice');
         Route::post('get-product-field', 'Product\ProductController@getProductField');
         Route::get('get-subscription/{id}', 'Product\ProductController@getSubscriptionCheck');
+        Route::get('edit-upload/{id}', 'Product\ProductController@editProductUpload');
         Route::get('get-upload/{id}', 'Product\ProductController@getUpload')->name('get-upload');
         Route::post('upload/save', 'Product\ProductController@save')->name('upload/save');
          Route::post('chunkupload', 'Product\ProductController@uploadFile');

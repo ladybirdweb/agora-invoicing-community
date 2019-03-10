@@ -83,7 +83,6 @@ class BaseProductController extends ExtendedBaseProductController
                     </div>";
             }
         } catch (\Exception $ex) {
-            dd($ex);
             Bugsnag::notifyException($ex);
 
             return $ex->getMessage();

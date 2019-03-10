@@ -76,6 +76,9 @@
     function getTable($productid, $clientid, $invoiceid){
     $('#version-table').DataTable({
             destroy: true,
+              "initComplete": function(settings, json) {
+                         readmore();
+            },
             processing: true,
             serverSide: true,
             stateSave: true,

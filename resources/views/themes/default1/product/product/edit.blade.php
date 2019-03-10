@@ -57,7 +57,6 @@ Edit Product
     .select2-container--default .select2-selection--multiple .select2-selection__choice {
     background-color: #1b1818 !important;
 </style>
- @include('themes.default1.product.product.edit-upload-option')
 <div class="box box-primary">
 
     <div class="box-header">
@@ -442,7 +441,6 @@ Edit Product
                 
                  <a href="#create-upload-option" id="create" class="btn btn-primary  btn-sm pull-right" data-toggle="modal" data-target="#create-upload-option"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;{{Lang::get('message.add-file')}}</a>
                             @include('themes.default1.product.product.create-upload-option')
-                              @include('themes.default1.product.product.edit-upload-option')
                             
              
             </div>

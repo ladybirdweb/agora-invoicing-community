@@ -220,7 +220,6 @@ class ProductController extends BaseProductController
             /*
              * server url
              */
-            // $url = $this->getMyUrl();
             $url = url('/');
             $id = $this->product->orderBy('id', 'desc')->first();
             $i = $id ? $id->id + 1 : 1;

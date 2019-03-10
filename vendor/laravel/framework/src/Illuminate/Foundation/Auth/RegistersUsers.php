@@ -13,6 +13,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\User\ProfileRequest;
 use App\Model\User\AccountActivate;
 use App\User;
+use Bugsnag;
 // use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 
 use Validator;
@@ -121,7 +122,6 @@ trait RegistersUsers
             return response()->json($response);
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex->getMessage());
-            ;
             app('log')->error($ex->getMessage());
             $result = [$ex->getMessage()];
             return response()->json($result);

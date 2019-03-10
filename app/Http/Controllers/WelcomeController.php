@@ -16,11 +16,15 @@ class WelcomeController extends Controller
 
     public function getCode()
     {
+        $code = '';
         $country = new Country();
         $country_iso2 = $this->request->get('country_id');
         $model = $country->where('country_code_char2', $country_iso2)->select('phonecode')->first();
+        if ($model) {
+            $code = $model->phonecode;
+        }
 
-        return $model->phonecode;
+        return $code;
     }
 
     public function getCurrency()

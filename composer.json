@@ -34,6 +34,7 @@
         "thomaswelton/laravel-gravatar": "~1.0",
         "torann/currency": "^1.0",
         "torann/geoip": "^1.0",
+        "voerro/laravel-visitor-tracker": "^1.2",
         "yajra/laravel-datatables": "^1.0"
     },
     "require-dev": {

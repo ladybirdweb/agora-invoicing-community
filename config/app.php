@@ -101,7 +101,8 @@ return [
     |
     | This key is used by the Illuminate encrypter service and should be set
 
-'App\Plugins\Ccavenue\ServiceProvider',//
+'App\Plugins\Ccavenue\ServiceProvider',
+//
 'App\Plugins\Ccavenue\ServiceProvider',//
 'App\Plugins\Ccavanue\ServiceProvider',
 'App\Plugins\Ccavanue\ServiceProvider',
@@ -201,6 +202,7 @@ return [
          GrahamCampbell\Markdown\MarkdownServiceProvider::class,
          Spatie\Activitylog\ActivitylogServiceProvider::class,
           \Torann\Currency\CurrencyServiceProvider::class,
+          Voerro\Laravel\VisitorTracker\VisitorTrackerServiceProvider::class,
 
     ],
 
@@ -264,6 +266,7 @@ return [
           'Markdown'   => GrahamCampbell\Markdown\Facades\Markdown::class,
           'GeoIP'      => \Torann\GeoIP\Facades\GeoIP::class,
           'Currency'   => \Torann\Currency\Facades\Currency::class,
+          'VisitStats' => Voerro\Laravel\VisitorTracker\Facades\VisitStats::class,
 
     ],
 

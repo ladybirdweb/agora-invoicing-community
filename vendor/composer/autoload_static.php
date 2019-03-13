@@ -13,8 +13,8 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
         '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
         'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
         'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
-        '25072dd6e2470089de65ae7bf11d3109' => __DIR__ . '/..' . '/symfony/polyfill-php72/bootstrap.php',
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
+        '25072dd6e2470089de65ae7bf11d3109' => __DIR__ . '/..' . '/symfony/polyfill-php72/bootstrap.php',
         '667aeda72477189d0494fecd327c3641' => __DIR__ . '/..' . '/symfony/var-dumper/Resources/functions/dump.php',
         '0b47d6d4a00ca9112ba3953b49e7c9a4' => __DIR__ . '/..' . '/yajra/laravel-datatables-oracle/src/helper.php',
         '538ca81a9a966a6716601ecf48f4eaef' => __DIR__ . '/..' . '/opis/closure/functions.php',
@@ -86,6 +86,7 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
         '0b0974a5566a1077e4f2e111341112c1' => __DIR__ . '/..' . '/zendframework/zend-diactoros/src/functions/normalize_server.php',
         '1ca3bc274755662169f9629d5412a1da' => __DIR__ . '/..' . '/zendframework/zend-diactoros/src/functions/normalize_uploaded_files.php',
         '40360c0b9b437e69bcbb7f1349ce029e' => __DIR__ . '/..' . '/zendframework/zend-diactoros/src/functions/parse_cookie_header.php',
+        '04c6c5c2f7095ccf6c481d3e53e1776f' => __DIR__ . '/..' . '/mustangostang/spyc/Spyc.php',
         'e803af0597ea9e5b518c7d090fb85601' => __DIR__ . '/..' . '/arcanedev/support/constants.php',
         '5323a5cb5bb1bab9b2f24566beed262a' => __DIR__ . '/..' . '/arcanedev/support/helpers.php',
         'f0906e6318348a765ffb6eb24e0d0938' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Foundation/helpers.php',
@@ -125,6 +126,10 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
         'W' => 
         array (
             'Webmozart\\Assert\\' => 17,
+        ),
+        'V' => 
+        array (
+            'Voerro\\Laravel\\VisitorTracker\\' => 30,
         ),
         'U' => 
         array (
@@ -252,6 +257,7 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
             'Doctrine\\Common\\Inflector\\' => 26,
             'Doctrine\\Common\\Cache\\' => 22,
             'Doctrine\\Common\\' => 16,
+            'DeviceDetector\\' => 15,
             'DeepCopy\\' => 9,
             'Darryldecode\\' => 13,
         ),
@@ -317,6 +323,10 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
         'Webmozart\\Assert\\' => 
         array (
             0 => __DIR__ . '/..' . '/webmozart/assert/src',
+        ),
+        'Voerro\\Laravel\\VisitorTracker\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/voerro/laravel-visitor-tracker/src',
         ),
         'Underscore\\' => 
         array (
@@ -635,6 +645,10 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
         'Doctrine\\Common\\' => 
         array (
             0 => __DIR__ . '/..' . '/doctrine/event-manager/lib/Doctrine/Common',
+        ),
+        'DeviceDetector\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/piwik/device-detector',
         ),
         'DeepCopy\\' => 
         array (
@@ -1532,6 +1546,7 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
         'CreateCurrencyTable' => __DIR__ . '/../..' . '/database/migrations/2013_11_26_161501_create_currency_table.php',
         'CreateDefaultPagesTable' => __DIR__ . '/../..' . '/database/migrations/2018_11_28_091540_create_default_pages_table.php',
         'CreateExpiryMailDaysTable' => __DIR__ . '/../..' . '/database/migrations/2018_10_23_125346_create_expiry_mail_days_table.php',
+        'CreateFailedJobsTable' => __DIR__ . '/../..' . '/database/migrations/2019_03_12_113758_create_failed_jobs_table.php',
         'CreateFrontendPagesTable' => __DIR__ . '/../..' . '/database/migrations/2017_06_10_062630_create_frontend_pages_table.php',
         'CreateGithubsTable' => __DIR__ . '/../..' . '/database/migrations/2017_06_10_062630_create_githubs_table.php',
         'CreateGroupFeaturesTable' => __DIR__ . '/../..' . '/database/migrations/2017_06_10_062630_create_group_features_table.php',
@@ -1631,6 +1646,36 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
         'DeepCopy\\TypeFilter\\Spl\\SplDoublyLinkedListFilter' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/TypeFilter/Spl/SplDoublyLinkedListFilter.php',
         'DeepCopy\\TypeFilter\\TypeFilter' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/TypeFilter/TypeFilter.php',
         'DeepCopy\\TypeMatcher\\TypeMatcher' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/TypeMatcher/TypeMatcher.php',
+        'DeviceDetector\\Cache\\Cache' => __DIR__ . '/..' . '/piwik/device-detector/Cache/Cache.php',
+        'DeviceDetector\\Cache\\PSR16Bridge' => __DIR__ . '/..' . '/piwik/device-detector/Cache/PSR16Bridge.php',
+        'DeviceDetector\\Cache\\PSR6Bridge' => __DIR__ . '/..' . '/piwik/device-detector/Cache/PSR6Bridge.php',
+        'DeviceDetector\\Cache\\StaticCache' => __DIR__ . '/..' . '/piwik/device-detector/Cache/StaticCache.php',
+        'DeviceDetector\\DeviceDetector' => __DIR__ . '/..' . '/piwik/device-detector/DeviceDetector.php',
+        'DeviceDetector\\Parser\\Bot' => __DIR__ . '/..' . '/piwik/device-detector/Parser/Bot.php',
+        'DeviceDetector\\Parser\\BotParserAbstract' => __DIR__ . '/..' . '/piwik/device-detector/Parser/BotParserAbstract.php',
+        'DeviceDetector\\Parser\\Client\\Browser' => __DIR__ . '/..' . '/piwik/device-detector/Parser/Client/Browser.php',
+        'DeviceDetector\\Parser\\Client\\Browser\\Engine' => __DIR__ . '/..' . '/piwik/device-detector/Parser/Client/Browser/Engine.php',
+        'DeviceDetector\\Parser\\Client\\Browser\\Engine\\Version' => __DIR__ . '/..' . '/piwik/device-detector/Parser/Client/Browser/Engine/Version.php',
+        'DeviceDetector\\Parser\\Client\\ClientParserAbstract' => __DIR__ . '/..' . '/piwik/device-detector/Parser/Client/ClientParserAbstract.php',
+        'DeviceDetector\\Parser\\Client\\FeedReader' => __DIR__ . '/..' . '/piwik/device-detector/Parser/Client/FeedReader.php',
+        'DeviceDetector\\Parser\\Client\\Library' => __DIR__ . '/..' . '/piwik/device-detector/Parser/Client/Library.php',
+        'DeviceDetector\\Parser\\Client\\MediaPlayer' => __DIR__ . '/..' . '/piwik/device-detector/Parser/Client/MediaPlayer.php',
+        'DeviceDetector\\Parser\\Client\\MobileApp' => __DIR__ . '/..' . '/piwik/device-detector/Parser/Client/MobileApp.php',
+        'DeviceDetector\\Parser\\Client\\PIM' => __DIR__ . '/..' . '/piwik/device-detector/Parser/Client/PIM.php',
+        'DeviceDetector\\Parser\\Device\\Camera' => __DIR__ . '/..' . '/piwik/device-detector/Parser/Device/Camera.php',
+        'DeviceDetector\\Parser\\Device\\CarBrowser' => __DIR__ . '/..' . '/piwik/device-detector/Parser/Device/CarBrowser.php',
+        'DeviceDetector\\Parser\\Device\\Console' => __DIR__ . '/..' . '/piwik/device-detector/Parser/Device/Console.php',
+        'DeviceDetector\\Parser\\Device\\DeviceParserAbstract' => __DIR__ . '/..' . '/piwik/device-detector/Parser/Device/DeviceParserAbstract.php',
+        'DeviceDetector\\Parser\\Device\\HbbTv' => __DIR__ . '/..' . '/piwik/device-detector/Parser/Device/HbbTv.php',
+        'DeviceDetector\\Parser\\Device\\Mobile' => __DIR__ . '/..' . '/piwik/device-detector/Parser/Device/Mobile.php',
+        'DeviceDetector\\Parser\\Device\\PortableMediaPlayer' => __DIR__ . '/..' . '/piwik/device-detector/Parser/Device/PortableMediaPlayer.php',
+        'DeviceDetector\\Parser\\OperatingSystem' => __DIR__ . '/..' . '/piwik/device-detector/Parser/OperatingSystem.php',
+        'DeviceDetector\\Parser\\ParserAbstract' => __DIR__ . '/..' . '/piwik/device-detector/Parser/ParserAbstract.php',
+        'DeviceDetector\\Parser\\VendorFragment' => __DIR__ . '/..' . '/piwik/device-detector/Parser/VendorFragment.php',
+        'DeviceDetector\\Yaml\\Parser' => __DIR__ . '/..' . '/piwik/device-detector/Yaml/Parser.php',
+        'DeviceDetector\\Yaml\\Pecl' => __DIR__ . '/..' . '/piwik/device-detector/Yaml/Pecl.php',
+        'DeviceDetector\\Yaml\\Spyc' => __DIR__ . '/..' . '/piwik/device-detector/Yaml/Spyc.php',
+        'DeviceDetector\\Yaml\\Symfony' => __DIR__ . '/..' . '/piwik/device-detector/Yaml/Symfony.php',
         'Doctrine\\Common\\Cache\\ApcCache' => __DIR__ . '/..' . '/doctrine/cache/lib/Doctrine/Common/Cache/ApcCache.php',
         'Doctrine\\Common\\Cache\\ApcuCache' => __DIR__ . '/..' . '/doctrine/cache/lib/Doctrine/Common/Cache/ApcuCache.php',
         'Doctrine\\Common\\Cache\\ArrayCache' => __DIR__ . '/..' . '/doctrine/cache/lib/Doctrine/Common/Cache/ArrayCache.php',
@@ -6927,6 +6972,18 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
         'Underscore\\UnderscoreTest' => __DIR__ . '/..' . '/anahkiasen/underscore-php/tests/UnderscoreTest.php',
         'Underscore\\UnderscoreTestCase' => __DIR__ . '/..' . '/anahkiasen/underscore-php/tests/UnderscoreTestCase.php',
         'UserTableSeeder' => __DIR__ . '/../..' . '/database/seeds/DatabaseSeeder.php',
+        'Voerro\\Laravel\\VisitorTracker\\Controllers\\StatisticsController' => __DIR__ . '/..' . '/voerro/laravel-visitor-tracker/src/Controllers/StatisticsController.php',
+        'Voerro\\Laravel\\VisitorTracker\\Facades\\VisitStats' => __DIR__ . '/..' . '/voerro/laravel-visitor-tracker/src/Facades/VisitStats.php',
+        'Voerro\\Laravel\\VisitorTracker\\Geoip' => __DIR__ . '/..' . '/voerro/laravel-visitor-tracker/src/Geoip.php',
+        'Voerro\\Laravel\\VisitorTracker\\Geoip\\Driver' => __DIR__ . '/..' . '/voerro/laravel-visitor-tracker/src/Geoip/Driver.php',
+        'Voerro\\Laravel\\VisitorTracker\\Geoip\\Ipstack' => __DIR__ . '/..' . '/voerro/laravel-visitor-tracker/src/Geoip/Ipstack.php',
+        'Voerro\\Laravel\\VisitorTracker\\Geoip\\Userinfo' => __DIR__ . '/..' . '/voerro/laravel-visitor-tracker/src/Geoip/Userinfo.php',
+        'Voerro\\Laravel\\VisitorTracker\\Jobs\\GetGeoipData' => __DIR__ . '/..' . '/voerro/laravel-visitor-tracker/src/Jobs/GetGeoipData.php',
+        'Voerro\\Laravel\\VisitorTracker\\Middleware\\RecordVisits' => __DIR__ . '/..' . '/voerro/laravel-visitor-tracker/src/Middleware/RecordVisits.php',
+        'Voerro\\Laravel\\VisitorTracker\\Models\\Visit' => __DIR__ . '/..' . '/voerro/laravel-visitor-tracker/src/Models/Visit.php',
+        'Voerro\\Laravel\\VisitorTracker\\Tracker' => __DIR__ . '/..' . '/voerro/laravel-visitor-tracker/src/Tracker.php',
+        'Voerro\\Laravel\\VisitorTracker\\VisitStats' => __DIR__ . '/..' . '/voerro/laravel-visitor-tracker/src/VisitStats.php',
+        'Voerro\\Laravel\\VisitorTracker\\VisitorTrackerServiceProvider' => __DIR__ . '/..' . '/voerro/laravel-visitor-tracker/src/VisitorTrackerServiceProvider.php',
         'Webmozart\\Assert\\Assert' => __DIR__ . '/..' . '/webmozart/assert/src/Assert.php',
         'XdgBaseDir\\Xdg' => __DIR__ . '/..' . '/dnoegel/php-xdg-base-dir/src/Xdg.php',
         'Yajra\\DataTables\\ApiResourceDataTable' => __DIR__ . '/..' . '/yajra/laravel-datatables-oracle/src/ApiResourceDataTable.php',

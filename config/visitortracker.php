@@ -99,8 +99,8 @@ return [
     */
 
     'login_attempt' => [
-        'url' => '/login',
-        'method' => 'POST',
+        'url'     => '/login',
+        'method'  => 'POST',
         'is_ajax' => false,
     ],
 

@@ -19,7 +19,7 @@ class Kernel extends HttpKernel
         // \App\Http\Middleware\TrimStrings::class,
           \Illuminate\Session\Middleware\StartSession::class,
              \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-              \Voerro\Laravel\VisitorTracker\Middleware\RecordVisits::class,
+              // \Voerro\Laravel\VisitorTracker\Middleware\RecordVisits::class,
               // \Torann\Currency\Middleware\CurrencyMiddleware::class,
         // \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
     ];

@@ -98,10 +98,16 @@ class DatabaseSeeder extends Seeder
         $this->call(CompanyType::class);
         $this->call(SettingsSeeder::class);
         $this->call(FrontPageSeeder::class);
+        $this->call(BussinessSeeder::class);
+        $this->call(CountrySeeder::class);
+        $this->call(CurrencySeeder::class);
+        $this->call(StateSubdivision::class);
+        $this->call(TaxByStatesSeeder::class);
+        $this->call(TimezoneSeeder::class);
 
-        \DB::unprepared(file_get_contents(storage_path('agora.sql')));
-        \DB::unprepared(file_get_contents(storage_path('states.sql')));
-        \DB::unprepared(file_get_contents(storage_path('taxrates.sql')));
+        // \DB::unprepared(file_get_contents(storage_path('agora.sql')));
+        // \DB::unprepared(file_get_contents(storage_path('states.sql')));
+        // \DB::unprepared(file_get_contents(storage_path('taxrates.sql')));
         // \DB::unprepared(file_get_contents(storage_path('dummy-data.sql')));
     }
 }

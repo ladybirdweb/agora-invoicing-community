@@ -66,7 +66,6 @@
     62 => 'GrahamCampbell\\Markdown\\MarkdownServiceProvider',
     63 => 'Spatie\\Activitylog\\ActivitylogServiceProvider',
     64 => 'Torann\\Currency\\CurrencyServiceProvider',
-    65 => 'Voerro\\Laravel\\VisitorTracker\\VisitorTrackerServiceProvider',
   ),
   'eager' => 
   array (
@@ -118,7 +117,6 @@
     45 => 'GrahamCampbell\\Markdown\\MarkdownServiceProvider',
     46 => 'Spatie\\Activitylog\\ActivitylogServiceProvider',
     47 => 'Torann\\Currency\\CurrencyServiceProvider',
-    48 => 'Voerro\\Laravel\\VisitorTracker\\VisitorTrackerServiceProvider',
   ),
   'deferred' => 
   array (

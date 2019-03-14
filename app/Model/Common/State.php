@@ -15,4 +15,6 @@ class State extends BaseModel
         'state_subdivision_alternate_names', 'primary_level_name',
          'state_subdivision_code',
     ];
+
+    public $timestamps = false;
 }

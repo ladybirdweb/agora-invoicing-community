@@ -202,7 +202,7 @@ return [
          GrahamCampbell\Markdown\MarkdownServiceProvider::class,
          Spatie\Activitylog\ActivitylogServiceProvider::class,
           \Torann\Currency\CurrencyServiceProvider::class,
-          Voerro\Laravel\VisitorTracker\VisitorTrackerServiceProvider::class,
+          // Voerro\Laravel\VisitorTracker\VisitorTrackerServiceProvider::class,
 
     ],
 
@@ -266,7 +266,7 @@ return [
           'Markdown'   => GrahamCampbell\Markdown\Facades\Markdown::class,
           'GeoIP'      => \Torann\GeoIP\Facades\GeoIP::class,
           'Currency'   => \Torann\Currency\Facades\Currency::class,
-          'VisitStats' => Voerro\Laravel\VisitorTracker\Facades\VisitStats::class,
+          // 'VisitStats' => Voerro\Laravel\VisitorTracker\Facades\VisitStats::class,
 
     ],
 

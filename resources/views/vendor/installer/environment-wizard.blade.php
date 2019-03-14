@@ -42,7 +42,8 @@
                     <label for="app_name">
                         {{ trans('installer_messages.environment.wizard.form.app_name_label') }}
                     </label>
-                    <input type="text" name="app_name" id="app_name" value="" placeholder="{{ trans('installer_messages.environment.wizard.form.app_name_placeholder') }}" />
+
+                    <input type="text" name="app_name" id="app_name" value="{{old('app_name')}}" placeholder="{{ trans('installer_messages.environment.wizard.form.app_name_placeholder') }}" />
                     @if ($errors->has('app_name'))
                         <span class="error-block">
                             <i class="fa fa-fw fa-exclamation-triangle" aria-hidden="true"></i>
@@ -55,7 +56,7 @@
                     <label for="environment">
                         {{ trans('installer_messages.environment.wizard.form.app_environment_label') }}
                     </label>
-                    <select name="environment" id="environment" onchange='checkEnvironment(this.value);'>
+                    <select name="environment" id="environment" value="{{old('environment')}}" onchange='checkEnvironment(this.value);'>
                         <option value="local" selected>{{ trans('installer_messages.environment.wizard.form.app_environment_label_local') }}</option>
                         <option value="development">{{ trans('installer_messages.environment.wizard.form.app_environment_label_developement') }}</option>
                         <option value="qa">{{ trans('installer_messages.environment.wizard.form.app_environment_label_qa') }}</option>
@@ -63,7 +64,7 @@
                         <option value="other">{{ trans('installer_messages.environment.wizard.form.app_environment_label_other') }}</option>
                     </select>
                     <div id="environment_text_input" style="display: none;">
-                        <input type="text" name="environment_custom" id="environment_custom" placeholder="{{ trans('installer_messages.environment.wizard.form.app_environment_placeholder_other') }}"/>
+                        <input type="text" name="environment_custom" id="environment_custom"  placeholder="{{ trans('installer_messages.environment.wizard.form.app_environment_placeholder_other') }}"/>
                     </div>
                     @if ($errors->has('app_name'))
                         <span class="error-block">
@@ -185,7 +186,7 @@
                     <label for="database_name">
                         {{ trans('installer_messages.environment.wizard.form.db_name_label') }}
                     </label>
-                    <input type="text" name="database_name" id="database_name" value="" />
+                    <input type="text" name="database_name" id="database_name" value="{{old('database_name')}}" />
                     @if ($errors->has('database_name'))
                         <span class="error-block">
                             <i class="fa fa-fw fa-exclamation-triangle" aria-hidden="true"></i>
@@ -198,7 +199,7 @@
                     <label for="database_username">
                         {{ trans('installer_messages.environment.wizard.form.db_username_label') }}
                     </label>
-                    <input type="text" name="database_username" id="database_username" value="" }}" />
+                    <input type="text" name="database_username" id="database_username" value="{{old('database_username') }}" />
                     @if ($errors->has('database_username'))
                         <span class="error-block">
                             <i class="fa fa-fw fa-exclamation-triangle" aria-hidden="true"></i>

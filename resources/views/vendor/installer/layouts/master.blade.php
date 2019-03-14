@@ -96,12 +96,12 @@
                     @if(session()->has('errors'))
                         <div class="alert alert-danger" id="error_alert">
                             <button type="button" class="close" id="close_alert" data-dismiss="alert" aria-hidden="true">
-                                 <i class="fa fa-close" style="background-color: #34a0db;" aria-hidden="true"></i>
+                                 <i class="fa fa-close" style="" aria-hidden="true"></i>
                             </button>
-                            <h4>
+                             <div>
                                 <i class="fa fa-fw fa-exclamation-triangle" aria-hidden="true"></i>
                                 {{ trans('installer_messages.forms.errorTitle') }}
-                            </h4>
+                            </div>
                             <ul>
                                 @foreach($errors->all() as $error)
                                     <li>{{ $error }}</li>

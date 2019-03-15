@@ -52,7 +52,7 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
             $grand_total = $this->checkCode($code, $productid, $currency);
         } else {
             if ($total != 0) {
-                $grand_total = $cost;
+                $grand_total = $total;
             }
         }
 

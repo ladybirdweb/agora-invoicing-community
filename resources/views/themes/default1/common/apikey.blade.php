@@ -401,6 +401,32 @@ API Keys
                   <td style="padding-left: 230px;"><button type="submit" class="form-group btn btn-primary"  id="submit7"><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
                 </tr>
 
+                <tr>
+                 
+                  <td class="col-md-2">Pipedrive</td>
+                  <td class="col-md-2">
+                    <label class="switch toggle_event_editing">
+                          
+                         <input type="checkbox" value="{{$pipedriveStatus}}"  name="pipedrive_settings" 
+                          class="checkbox13" id="pipedrive">
+                          <span class="slider round"></span>
+                    </label>
+ 
+                  </td>
+                      <td class="col-md-4 pipedriveverify">
+                    
+                       <input type ="hidden" id="hidden_pipedrive_key" value="{{$pipedriveKey}}">
+                        <!-- last name -->
+                        {!! Form::label('pipedrive_key',Lang::get('message.pipedrive_key')) !!}
+                        {!! Form::text('pipedrive_key',$pipedriveKey,['class' => 'form-control pipedrive_key','id'=>'pipedrive_key']) !!}
+                         <h6 id="pipedrive_keycheck"></h6>
+                         <br/>
+                  
+                   
+                  </td>
+                  <td style="padding-left: 230px;"><button type="submit" class="form-group btn btn-primary"  id="submit13"><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
+                </tr>
+
                   <tr>
                  
                   <td class="col-md-2">Razorpay(Payment Gateway)</td>
@@ -1208,6 +1234,72 @@ if ($('#update').prop("checked")) {
           },
     })
   });
+
+  <!---------------------------------------------------------------------------------------------------------------->
+  /*
+ *Piprdrive
+  */
+   $(document).ready(function (){
+  var pipedrivestatus =  $('.checkbox13').val();
+    if(pipedrivestatus ==1)
+     {
+        $('#pipedrive').prop('checked',true);
+       $('.pipedrive_key').attr('enabled', true);
+     } else if(pipedrivestatus ==0){
+      $('#pipedrive').prop('checked',false);
+        $('.pipedrive_key').attr('disabled', true);
+     }
+  });
+ $("#pipedrive").on('change',function (){
+    if($(this).prop('checked')) {
+      var pipedrivekey =  $('#hidden_pipedrive_key').val();
+      $('.pipedrive_key').attr('disabled', false);
+       $('#pipedrive_key').val(pipedrivekey);
+
+     } else {
+        $('.pipedrive_key').attr('disabled', true);
+         $('.pipedrive_key').val('');
+
+
+    }
+ });
+ //Validate and pass value through ajax
+  $("#submit13").on('click',function (){ //When Submit button is checked
+     if ($('#pipedrive').prop('checked')) {//if button is on
+             var pipedrivestatus = 1;
+           if ($('#pipedrive_key').val() == "") { //if value is not entered
+            $('#pipedrive_keycheck').show();
+            $('#pipedrive_keycheck').html("Please Enter Pipedrive API Key");
+            $('#pipedrive_key').css("border-color","red");
+            $('#pipedrive_keycheck').css({"color":"red","margin-top":"5px"});
+            return false;
+          }
+    } else {
+       $('#pipedrive_keycheck').html("");
+       $('#pipedrive_key').css("border-color","");
+         var pipedrivestatus = 0;
+        
+  }
+    $("#submit13").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");   
+    $.ajax ({
+      url: '{{url("updatepipedriveDetails")}}',
+      type : 'get',
+      data: {
+       "status": pipedrivestatus,
+       "pipedrive_key": $('#pipedrive_key').val(),
+      },
+       success: function (data) {
+            $('#alertMessage').show();
+            var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>'+data.update+'.</div>';
+            $('#alertMessage').html(result+ ".");
+            $("#submit13").html("<i class='fa fa-floppy-o'>&nbsp;&nbsp;</i>Save");
+              setInterval(function(){ 
+                $('#alertMessage').slideUp(3000); 
+            }, 1000);
+          },
+    })
+  });
+ <!--------------------------------------------------------------------------------------------->
 
 </script>
 @stop

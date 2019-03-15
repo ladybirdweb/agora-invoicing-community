@@ -16,8 +16,9 @@ Dashboard
           <div class="small-box bg-aqua">
             <div class="inner">
               <h4>Total Sales</h4>
-             
+              @if(($allowedCurrencies2) != null)
               <span>{{$allowedCurrencies2}}: &nbsp;  {{currency_format($totalSalesCurrency2,$code=$allowedCurrencies2)}}</span><br/>
+              @endif
                <span>{{$allowedCurrencies1}}: &nbsp;  {{currency_format($totalSalesCurrency1,$code=$allowedCurrencies1)}} </span>
             </div>
 
@@ -37,7 +38,9 @@ Dashboard
               $startingDateOfYear = (date('Y-01-01'));
               
               ?>
+              @if(($allowedCurrencies2) != null)
               <span>{{$allowedCurrencies2}}:&nbsp;  {{currency_format($yearlySalesCurrency2,$code=$allowedCurrencies2)}}   </span><br/>
+              @endif
                <span>{{$allowedCurrencies1}}:&nbsp; {{currency_format($yearlySalesCurrency1,$code=$allowedCurrencies1)}} </span>
             </div>
             <div class="icon">
@@ -56,7 +59,9 @@ Dashboard
               $startMonthDate = date('Y-m-01');
               $endMonthDate = date('Y-m-t');
                ?>
+               @if(($allowedCurrencies2) != null)
               <span>{{$allowedCurrencies2}}:&nbsp; {{currency_format($monthlySalesCurrency2,$code=$allowedCurrencies2)}}</span><br/>
+              @endif
               <span>{{$allowedCurrencies1}}:&nbsp; {{currency_format($monthlySalesCurrency1,$code=$allowedCurrencies1)}}</span>
              
             </div>
@@ -72,7 +77,9 @@ Dashboard
           <div class="small-box bg-red">
             <div class="inner">
               <h4>Pending Payments</h4>
+              @if(($allowedCurrencies2) != null)
               <span>{{$allowedCurrencies2}}: &nbsp;  {{currency_format($pendingPaymentCurrency2,$code=$allowedCurrencies2)}}</span><br/>
+              @endif
                <span>{{$allowedCurrencies1}}: &nbsp; {{currency_format($pendingPaymentCurrency1,$code=$allowedCurrencies1)}} </span>
             </div>
             <div class="icon">

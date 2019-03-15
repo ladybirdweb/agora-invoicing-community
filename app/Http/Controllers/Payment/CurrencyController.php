@@ -97,7 +97,7 @@ class CurrencyController extends Controller
     public function getButtonColor($id)
     {
         $defaultCurrency = Setting::pluck('default_currency')->first();
-        $currencyCode = Currency::where('id', $id)->pluck('code')->first(); //If default currency is equal to the currency ode then make that button as Disabled as it would always be shown on dashboard and cannt be modified
+        $currencyCode = Currency::where('id', $id)->pluck('code')->first(); //If default currency is equal to the currency code then make that button as Disabled as it would always be shown on dashboard and cannot be modified
         if ($defaultCurrency == $currencyCode) {
             return  '<a class="btn btn-sm btn-warning btn-xs disabled" style="background-color:#f39c12;">&nbsp;&nbsp;System Default Currency</a>';
         }
@@ -114,7 +114,7 @@ class CurrencyController extends Controller
     }
 
     /**
-     * Activate the Currency to be Shown on Dsshboard.
+     * Activate the Currency to be Shown on Dashboard.
      *
      *
      * @return \Response

@@ -23,7 +23,7 @@
          */
 
         // Route::match(['get', 'post'], 'home', 'Front\CartController@productList');
-
+        // VisitStats::routes();
         Route::get('pricing', 'Front\CartController@cart')->name('pricing');
         Route::get('group/{templateid}/{groupid}/', 'Front\PageController@pageTemplates');
         Route::get('cart/remove', 'Front\CartController@cartRemove');
@@ -159,6 +159,7 @@
              Route::get('updateTermsDetails', 'Common\BaseSettingsController@updateTermsDetails')->name('updateTermsDetails');
             Route::get('updaterzpDetails', 'Common\BaseSettingsController@updateRazorpayDetails')->name('updaterzpDetails');
              Route::get('updatezohoDetails', 'Common\BaseSettingsController@updateZohoDetails')->name('updatezohoDetails');
+             Route::get('updatepipedriveDetails', 'Common\BaseSettingsController@updatepipedriveDetails')->name('updatepipedriveDetails');
               Route::get('mailchimp-prod-status', 'Common\BaseSettingsController@updateMailchimpProductStatus')->name('mailchimp-prod-status');
                Route::get('mailchimp-paid-status', 'Common\BaseSettingsController@updateMailchimpIsPaidStatus')->name('mailchimp-paid-status');
 

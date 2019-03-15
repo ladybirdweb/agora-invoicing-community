@@ -190,6 +190,12 @@ function move() {
                             </a>
                           
                         </li>
+                 <!--         <li class="treeview">
+                            <a href="{{url('/stats')}}">
+                                <i class="fa fa-dashboard"></i> <span>{{Lang::get('message.stats')}}</span>
+                            </a>
+                          
+                        </li> -->
 
 
                         <li class="treeview">

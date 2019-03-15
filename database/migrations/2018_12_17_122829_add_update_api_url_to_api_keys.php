@@ -17,6 +17,7 @@ class AddUpdateApiUrlToApiKeys extends Migration
             $table->string('update_api_url', 255)->nullable();
             $table->string('update_api_secret', 255)->nullable();
             $table->string('terms_url', 255)->nullable();
+            $table->string('pipedrive_api_key', 255)->nullable();
         });
     }
 

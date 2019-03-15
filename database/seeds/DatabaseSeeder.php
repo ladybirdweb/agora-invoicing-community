@@ -98,10 +98,16 @@ class DatabaseSeeder extends Seeder
         $this->call(CompanyType::class);
         $this->call(SettingsSeeder::class);
         $this->call(FrontPageSeeder::class);
+        $this->call(BussinessSeeder::class);
+        $this->call(CurrencySeeder::class);
+        $this->call(CountrySeeder::class);
+        $this->call(StateSubdivision::class);
+        $this->call(TaxByStatesSeeder::class);
+        $this->call(TimezoneSeeder::class);
 
-        \DB::unprepared(file_get_contents(storage_path('agora.sql')));
-        \DB::unprepared(file_get_contents(storage_path('states.sql')));
-        \DB::unprepared(file_get_contents(storage_path('taxrates.sql')));
+        // \DB::unprepared(file_get_contents(storage_path('agora.sql')));
+        // \DB::unprepared(file_get_contents(storage_path('states.sql')));
+        // \DB::unprepared(file_get_contents(storage_path('taxrates.sql')));
         // \DB::unprepared(file_get_contents(storage_path('dummy-data.sql')));
     }
 }
@@ -147,7 +153,7 @@ class ApiKeyTableSeeder extends Seeder
         \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         \DB::table('api_keys')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        ApiKey::create(['id' => 1, 'rzp_key' => '', 'rzp_secret' => '', 'apilayer_key' => '', 'bugsnag_api_key' => '', 'zoho_api_key'=>'', 'msg91_auth_key'=>'', 'twitter_consumer_key'=>'', 'twitter_consumer_secret'=>'', 'twitter_access_token'=>'', 'access_tooken_secret'=>'', 'license_api_secret'=>'', 'license_api_url'=>'', 'update_api_url'=>'', 'update_api_secret'=>'', 'terms_url'=>'']);
+        ApiKey::create(['id' => 1, 'rzp_key' => '', 'rzp_secret' => '', 'apilayer_key' => '', 'bugsnag_api_key' => '', 'zoho_api_key'=>'', 'msg91_auth_key'=>'', 'twitter_consumer_key'=>'', 'twitter_consumer_secret'=>'', 'twitter_access_token'=>'', 'access_tooken_secret'=>'', 'license_api_secret'=>'', 'license_api_url'=>'', 'update_api_url'=>'', 'update_api_secret'=>'', 'terms_url'=>'', 'pipedrive_api_key'=>'']);
     }
 }
 
@@ -768,7 +774,7 @@ class StatusSettingSeeder extends Seeder
     {
         \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         \DB::table('status_settings')->truncate();
-        StatusSetting::create(['id' => 1, 'expiry_mail'=>0, 'activity_log_delete'=>0, 'license_status'=>0, 'github_status'=>0, 'mailchimp_status'=>0, 'twitter_status'=>0, 'msg91_status'=>0, 'emailverification_status'=>0, 'recaptcha_status'=>0, 'update_settings'=>0, 'zoho_status'=>0, 'rzp_status'=>0, 'mailchimp_product_status'=>0, 'mailchimp_ispaid_status'=>0, 'terms'=>0]);
+        StatusSetting::create(['id' => 1, 'expiry_mail'=>0, 'activity_log_delete'=>0, 'license_status'=>0, 'github_status'=>0, 'mailchimp_status'=>0, 'twitter_status'=>0, 'msg91_status'=>0, 'emailverification_status'=>0, 'recaptcha_status'=>0, 'update_settings'=>0, 'zoho_status'=>0, 'rzp_status'=>0, 'mailchimp_product_status'=>0, 'mailchimp_ispaid_status'=>0, 'terms'=>0, 'pipedrive_status'=>0]);
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 }

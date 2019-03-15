@@ -1,0 +1,12 @@
+.visitortracker-icon {
+    width: 1.3rem;
+}
+
+.visitortracker-cell-break-words {
+    word-wrap: break-word;
+    word-break: break-all;
+}
+
+.visitortracker-cell-nowrap {
+    white-space: nowrap;
+}

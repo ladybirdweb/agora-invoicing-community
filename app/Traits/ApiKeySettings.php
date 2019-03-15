@@ -106,6 +106,14 @@ trait ApiKeySettings
         return ['message' => 'success', 'update'=>'Razorpay Settings Updated'];
     }
 
+    public function updatepipedriveDetails(Request $request)
+    {
+        $pipedriveKey = $request->input('pipedrive_key');
+        $status = $request->input('status');
+        StatusSetting::find(1)->update(['pipedrive_status'=>$status]);
+        ApiKey::find(1)->update(['pipedrive_api_key'=>$pipedriveKey]);
+    }
+
     public function updateMailchimpProductStatus(Request $request)
     {
         StatusSetting::first()->update(['mailchimp_product_status'=>$request->input('status')]);

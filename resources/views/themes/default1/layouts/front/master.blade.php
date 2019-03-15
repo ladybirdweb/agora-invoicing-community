@@ -228,6 +228,7 @@ if($script){
                                                                 <div class="dropdown-mega-content">
                                                                     <table class="cart">
                                                                         <tbody>
+                                                                         
                                                                         @forelse(Cart::getContent() as $key=>$item)
                                                                              
                                                                             <?php

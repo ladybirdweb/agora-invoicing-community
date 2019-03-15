@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\ApiKey;
 use App\Http\Controllers\Controller;
+use App\Model\Common\Country;
 use App\Model\Common\Setting;
 use App\Model\Common\StatusSetting;
 use App\Model\User\AccountActivate;
@@ -206,5 +207,21 @@ class BaseAuthController extends Controller
         } else {
             return property_exists($this, 'redirectTo') ? $this->redirectTo : '/home';
         }
+    }
+
+    protected function addToPipedrive($user)
+    {
+        $token = ApiKey::pluck('pipedrive_api_key')->first();
+        $countryFullName = Country::where('country_code_char2', $user->country)->pluck('nicename')->first();
+        $pipedrive = new \Devio\Pipedrive\Pipedrive($token);
+
+        $orgId = $pipedrive->organizations->add(['name'=>$user->company])->getContent()->data->id;
+        $person = $pipedrive->persons()->add(['name' => $user->first_name.' '.$user->last_name, 'email'=>$user->email,
+            'phone'                                  => '+'.$user->mobile_code.$user->mobile, 'org_id'=>$orgId, ]);
+
+        // $person = $pipedrive->persons()->add(['name' => $user->first_name .' '. $user->last_name,'email'=>$user->email,
+        //     'phone'=>'+'.$user->mobile_code.$user->mobile,'org_id'=>$orgId,'af1c1908b70a61f2baf8b33a975a185cce1aefe5'=>$countryFullName]);
+        $personId = $person->getContent()->data->id;
+        $organization = $pipedrive->deals()->add(['title'=>$user->company.' '.'deal', 'person_id'=>$personId, 'org_id'=>$orgId]);
     }
 }

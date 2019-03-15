@@ -192,6 +192,7 @@ return [
       'zoho_crm'                                                   => 'Zoho CRM',
       'mailchimp_key'                                              => 'Mailchimp Api Key',
       'terms_url'                                                  => 'Terms Url',
+      'pipedrive_key'                                              => 'Pipedrive API Key',
 
     /*
      * Clients

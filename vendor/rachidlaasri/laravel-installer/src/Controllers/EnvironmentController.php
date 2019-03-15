@@ -91,7 +91,8 @@ class EnvironmentController extends Controller
 
         if ($validator->fails()) {
             $errors = $validator->errors();
-            return view('vendor.installer.environment-wizard', compact('errors'));
+            return redirect()->back()->withInput()->withErrors($errors);
+            // return view('vendor.installer.environment-wizard', compact('errors'));
         }
 
         $results = $this->EnvironmentManager->saveFileWizard($request);

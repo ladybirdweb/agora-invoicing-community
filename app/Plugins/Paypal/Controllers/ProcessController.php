@@ -22,7 +22,6 @@ class ProcessController extends Controller
             $request = $requests['request'];
             $order = $requests['order'];
             $cart = $requests['cart'];
-            //dd($request);
             if ($cart->count() > 0) {
                 $total = \Cart::getSubTotal();
             } else {

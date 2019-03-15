@@ -69,9 +69,13 @@ class AuthController extends BaseAuthController
             if ($user->where('email', $email)->first()) {
                 $user->active = 1;
                 $user->save();
+                $pipedriveStatus = StatusSetting::pluck('pipedrive_status')->first();
                 $zohoStatus = StatusSetting::pluck('zoho_status')->first();
                 $mailchimpStatus = StatusSetting::pluck('mailchimp_status')->first();
-                if ($zohoStatus) {
+                 if($pipedriveStatus == 1) {//Add to Pipedrive
+                     $this->addToPipedrive($user);
+                }
+                if ($zohoStatus) {//Add to Zoho
                     $zoho = $this->reqFields($user, $email);
                     $auth = ApiKey::where('id', 1)->value('zoho_api_key');
                     $zohoUrl = 'https://crm.zoho.com/crm/private/xml/Leads/insertRecords??duplicateCheck=1&';
@@ -93,7 +97,8 @@ class AuthController extends BaseAuthController
                     $response = curl_exec($ch);
                     curl_close($ch);
                 }
-                if ($mailchimpStatus == 1) {
+
+                if ($mailchimpStatus == 1) {//Add to Mailchimp
                     $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
                     $r = $mailchimp->addSubscriber($user->email);
                 }

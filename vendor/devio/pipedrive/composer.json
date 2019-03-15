@@ -1,0 +1,25 @@
+{
+    "name": "devio/pipedrive",
+    "description": "Complete Pipedrive API client for PHP and/or Laravel",
+    "keywords": ["pipedrive", "api", "client", "laravel"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Israel Ortuño",
+            "email": "ai.ortuno@gmail.com"
+        }
+    ],
+    "require": {
+        "guzzlehttp/guzzle": "~6.0|~5.0|~4.0",
+        "illuminate/support": "~4.0|~5.0"
+    },
+    "require-dev": {
+        "phpspec/phpspec": "^2.4",
+        "symfony/var-dumper": "^2.7"
+    },
+    "autoload": {
+        "psr-4": {
+            "Devio\\Pipedrive\\": "src/"
+        }
+    }
+}

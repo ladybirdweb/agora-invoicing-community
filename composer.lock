@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9572359eeee265446c8072d7064fd0ee",
+    "content-hash": "87c4042c4bd656bd60eeae601334b080",
     "packages": [
         {
             "name": "anahkiasen/underscore-php",
@@ -812,6 +812,53 @@
                 "shopping cart"
             ],
             "time": "2019-02-08T15:58:52+00:00"
+        },
+        {
+            "name": "devio/pipedrive",
+            "version": "2.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/IsraelOrtuno/pipedrive.git",
+                "reference": "a2b2217aebecf2c1fc6db7cbcbb0c93582bade5c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/IsraelOrtuno/pipedrive/zipball/a2b2217aebecf2c1fc6db7cbcbb0c93582bade5c",
+                "reference": "a2b2217aebecf2c1fc6db7cbcbb0c93582bade5c",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "~6.0|~5.0|~4.0",
+                "illuminate/support": "~4.0|~5.0"
+            },
+            "require-dev": {
+                "phpspec/phpspec": "^2.4",
+                "symfony/var-dumper": "^2.7"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Devio\\Pipedrive\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Israel Ortuño",
+                    "email": "ai.ortuno@gmail.com"
+                }
+            ],
+            "description": "Complete Pipedrive API client for PHP and/or Laravel",
+            "keywords": [
+                "api",
+                "client",
+                "laravel",
+                "pipedrive"
+            ],
+            "time": "2018-11-12T20:16:22+00:00"
         },
         {
             "name": "dnoegel/php-xdg-base-dir",

@@ -215,14 +215,13 @@ class BaseAuthController extends Controller
         $countryFullName = Country::where('country_code_char2', $user->country)->pluck('nicename')->first();
         $pipedrive = new \Devio\Pipedrive\Pipedrive($token);
 
-        $orgId  = $pipedrive->organizations->add(['name'=>$user->company])->getContent()->data->id;
-         $person = $pipedrive->persons()->add(['name' => $user->first_name .' '. $user->last_name,'email'=>$user->email,
-            'phone'=>'+'.$user->mobile_code.$user->mobile,'org_id'=>$orgId]);
+        $orgId = $pipedrive->organizations->add(['name'=>$user->company])->getContent()->data->id;
+        $person = $pipedrive->persons()->add(['name' => $user->first_name.' '.$user->last_name, 'email'=>$user->email,
+            'phone'                                  => '+'.$user->mobile_code.$user->mobile, 'org_id'=>$orgId, ]);
 
         // $person = $pipedrive->persons()->add(['name' => $user->first_name .' '. $user->last_name,'email'=>$user->email,
         //     'phone'=>'+'.$user->mobile_code.$user->mobile,'org_id'=>$orgId,'af1c1908b70a61f2baf8b33a975a185cce1aefe5'=>$countryFullName]);
-        $personId= $person->getContent()->data->id;
-        $organization = $pipedrive->deals()->add(['title'=>$user->company.' '.'deal','person_id'=>$personId,'org_id'=>$orgId]);
-
+        $personId = $person->getContent()->data->id;
+        $organization = $pipedrive->deals()->add(['title'=>$user->company.' '.'deal', 'person_id'=>$personId, 'org_id'=>$orgId]);
     }
 }

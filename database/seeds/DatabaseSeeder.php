@@ -99,8 +99,8 @@ class DatabaseSeeder extends Seeder
         $this->call(SettingsSeeder::class);
         $this->call(FrontPageSeeder::class);
         $this->call(BussinessSeeder::class);
+         $this->call(CurrencySeeder::class);
         $this->call(CountrySeeder::class);
-        $this->call(CurrencySeeder::class);
         $this->call(StateSubdivision::class);
         $this->call(TaxByStatesSeeder::class);
         $this->call(TimezoneSeeder::class);

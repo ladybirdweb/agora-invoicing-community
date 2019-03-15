@@ -72,8 +72,8 @@ class AuthController extends BaseAuthController
                 $pipedriveStatus = StatusSetting::pluck('pipedrive_status')->first();
                 $zohoStatus = StatusSetting::pluck('zoho_status')->first();
                 $mailchimpStatus = StatusSetting::pluck('mailchimp_status')->first();
-                 if($pipedriveStatus == 1) {//Add to Pipedrive
-                     $this->addToPipedrive($user);
+                if ($pipedriveStatus == 1) {//Add to Pipedrive
+                    $this->addToPipedrive($user);
                 }
                 if ($zohoStatus) {//Add to Zoho
                     $zoho = $this->reqFields($user, $email);

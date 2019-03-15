@@ -66,6 +66,7 @@
     62 => 'GrahamCampbell\\Markdown\\MarkdownServiceProvider',
     63 => 'Spatie\\Activitylog\\ActivitylogServiceProvider',
     64 => 'Torann\\Currency\\CurrencyServiceProvider',
+
     65 => 'Devio\\Pipedrive\\PipedriveServiceProvider',
   ),
   'eager' => 
@@ -118,6 +119,7 @@
     45 => 'GrahamCampbell\\Markdown\\MarkdownServiceProvider',
     46 => 'Spatie\\Activitylog\\ActivitylogServiceProvider',
     47 => 'Torann\\Currency\\CurrencyServiceProvider',
+
     48 => 'Devio\\Pipedrive\\PipedriveServiceProvider',
   ),
   'deferred' => 
@@ -280,3 +282,4 @@
     ),
   ),
 );
+

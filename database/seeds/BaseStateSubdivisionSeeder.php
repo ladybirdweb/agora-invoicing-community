@@ -1,8 +1,7 @@
 <?php
 
-use Illuminate\Database\Seeder;
 use App\Model\Common\State;
-
+use Illuminate\Database\Seeder;
 
 class BaseStateSubdivisionSeeder extends Seeder
 {
@@ -13,6 +12,7 @@ class BaseStateSubdivisionSeeder extends Seeder
      */
     public function run()
     {
+
 State::create( [
 'state_subdivision_id'=>18302,
 'country_code_char2'=>'TW',
@@ -18009,4 +18009,5 @@ State::create( [
 
 
 }
+
 }

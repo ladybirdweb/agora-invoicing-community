@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Database\Seeder;
 use App\Model\Common\State;
+use Illuminate\Database\Seeder;
 
 class StateSubdivision extends Seeder
 {
@@ -12,9 +12,10 @@ class StateSubdivision extends Seeder
      */
     public function run()
     {
-    	\DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         \DB::table('states_subdivisions')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
         State::create( [
 'state_subdivision_id'=>12254,
 'country_code_char2'=>'AF',
@@ -18003,3 +18004,4 @@ State::create( [
 
    }
 }
+

@@ -104,6 +104,7 @@ class DatabaseSeeder extends Seeder
         $this->call(StateSubdivision::class);
         $this->call(BaseStateSubdivisionSeeder::class);
         $this->call(ExtendedStateSubdivisionSeeder::class);
+        $this->call(StatesSeeder::class);
         $this->call(TaxByStatesSeeder::class);
         $this->call(TimezoneSeeder::class);
 

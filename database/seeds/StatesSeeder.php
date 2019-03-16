@@ -3,7 +3,7 @@
 use App\Model\Common\State;
 use Illuminate\Database\Seeder;
 
-class BaseStateSubdivisionSeeder extends Seeder
+class StatesSeeder extends Seeder
 {
     /**
      * Run the database seeds.

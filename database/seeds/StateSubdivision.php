@@ -9997,7 +9997,5 @@ class StateSubdivision extends Seeder
 'primary_level_name'               => 'metropolitan department',
 'state_subdivision_code'           => 'FR-67',
 ]);
-
-
     }
 }

@@ -11996,7 +11996,5 @@ class ExtendedStateSubdivisionSeeder extends Seeder
 'primary_level_name'               => 'province',
 'state_subdivision_code'           => 'LA-CH',
 ]);
-
-
     }
 }

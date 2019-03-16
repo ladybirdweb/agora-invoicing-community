@@ -9997,7 +9997,5 @@ class BaseStateSubdivisionSeeder extends Seeder
 'primary_level_name'               => 'Municipality',
 'state_subdivision_code'           => 'MK-NV',
 ]);
-
-
     }
 }

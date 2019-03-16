@@ -13080,5 +13080,3997 @@ State::create( [
 'state_subdivision_code'=>'SE-T'
 ] );
 
+State::create( [
+'state_subdivision_id'=>14911,
+'country_code_char2'=>'JM',
+'country_code_char3'=>'JAM',
+'state_subdivision_name'=>'Saint Mary',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'Parish',
+'state_subdivision_code'=>'JM-05'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14912,
+'country_code_char2'=>'JM',
+'country_code_char3'=>'JAM',
+'state_subdivision_name'=>'Trelawny',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'Parish',
+'state_subdivision_code'=>'JM-07'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14913,
+'country_code_char2'=>'JM',
+'country_code_char3'=>'JAM',
+'state_subdivision_name'=>'Westmoreland',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'Parish',
+'state_subdivision_code'=>'JM-10'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14914,
+'country_code_char2'=>'JM',
+'country_code_char3'=>'JAM',
+'state_subdivision_name'=>'Manchester',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'Parish',
+'state_subdivision_code'=>'JM-12'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14915,
+'country_code_char2'=>'JM',
+'country_code_char3'=>'JAM',
+'state_subdivision_name'=>'Hanover',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'Parish',
+'state_subdivision_code'=>'JM-09'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14916,
+'country_code_char2'=>'JP',
+'country_code_char3'=>'JPN',
+'state_subdivision_name'=>'Yamagata',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'Perfecture',
+'state_subdivision_code'=>'JP-06'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14917,
+'country_code_char2'=>'JP',
+'country_code_char3'=>'JPN',
+'state_subdivision_name'=>'Tottori',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'Perfecture',
+'state_subdivision_code'=>'JP-31'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14918,
+'country_code_char2'=>'JP',
+'country_code_char3'=>'JPN',
+'state_subdivision_name'=>'Totigi [Tochigi]',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'Perfecture',
+'state_subdivision_code'=>'JP-09'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14919,
+'country_code_char2'=>'JP',
+'country_code_char3'=>'JPN',
+'state_subdivision_name'=>'Siga [Shiga]',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'Perfecture',
+'state_subdivision_code'=>'JP-25'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14920,
+'country_code_char2'=>'JP',
+'country_code_char3'=>'JPN',
+'state_subdivision_name'=>'Ôita [Oita]',
+'state_subdivision_alternate_names'=>'Oita',
+'primary_level_name'=>'Perfecture',
+'state_subdivision_code'=>'JP-44'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14921,
+'country_code_char2'=>'JP',
+'country_code_char3'=>'JPN',
+'state_subdivision_name'=>'Miyagi',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'Perfecture',
+'state_subdivision_code'=>'JP-04'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14922,
+'country_code_char2'=>'JP',
+'country_code_char3'=>'JPN',
+'state_subdivision_name'=>'Saitama',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'Perfecture',
+'state_subdivision_code'=>'JP-11'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14923,
+'country_code_char2'=>'JP',
+'country_code_char3'=>'JPN',
+'state_subdivision_name'=>'Simane [Shimane]',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'Perfecture',
+'state_subdivision_code'=>'JP-32'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14924,
+'country_code_char2'=>'JP',
+'country_code_char3'=>'JPN',
+'state_subdivision_name'=>'Sizuoka [Shizuoka]',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'Perfecture',
+'state_subdivision_code'=>'JP-22'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14925,
+'country_code_char2'=>'JP',
+'country_code_char3'=>'JPN',
+'state_subdivision_name'=>'Tokusima [Tokushima]',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'Perfecture',
+'state_subdivision_code'=>'JP-36'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14926,
+'country_code_char2'=>'JP',
+'country_code_char3'=>'JPN',
+'state_subdivision_name'=>'Tôkyô [Tokyo]',
+'state_subdivision_alternate_names'=>'Tokyo, Tokio',
+'primary_level_name'=>'Metropolis',
+'state_subdivision_code'=>'JP-13'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14927,
+'country_code_char2'=>'JP',
+'country_code_char3'=>'JPN',
+'state_subdivision_name'=>'Toyama',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'Perfecture',
+'state_subdivision_code'=>'JP-16'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14928,
+'country_code_char2'=>'JP',
+'country_code_char3'=>'JPN',
+'state_subdivision_name'=>'Wakayama',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'Perfecture',
+'state_subdivision_code'=>'JP-30'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14929,
+'country_code_char2'=>'JP',
+'country_code_char3'=>'JPN',
+'state_subdivision_name'=>'Yamaguti [Yamaguchi]',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'Perfecture',
+'state_subdivision_code'=>'JP-35'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14930,
+'country_code_char2'=>'JP',
+'country_code_char3'=>'JPN',
+'state_subdivision_name'=>'Yamanasi [Yamanashi]',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'Perfecture',
+'state_subdivision_code'=>'JP-19'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14931,
+'country_code_char2'=>'JP',
+'country_code_char3'=>'JPN',
+'state_subdivision_name'=>'Aiti [Aichi]',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'Perfecture',
+'state_subdivision_code'=>'JP-23'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14932,
+'country_code_char2'=>'JP',
+'country_code_char3'=>'JPN',
+'state_subdivision_name'=>'Aomori',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'Perfecture',
+'state_subdivision_code'=>'JP-02'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14933,
+'country_code_char2'=>'JP',
+'country_code_char3'=>'JPN',
+'state_subdivision_name'=>'Tiba [Chiba]',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'Perfecture',
+'state_subdivision_code'=>'JP-12'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14934,
+'country_code_char2'=>'JP',
+'country_code_char3'=>'JPN',
+'state_subdivision_name'=>'Hukui [Fukui]',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'Perfecture',
+'state_subdivision_code'=>'JP-18'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14935,
+'country_code_char2'=>'JP',
+'country_code_char3'=>'JPN',
+'state_subdivision_name'=>'Hukuoka [Fukuoka]',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'Perfecture',
+'state_subdivision_code'=>'JP-40'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14936,
+'country_code_char2'=>'JP',
+'country_code_char3'=>'JPN',
+'state_subdivision_name'=>'Gihu [Gifu]',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'Perfecture',
+'state_subdivision_code'=>'JP-21'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14937,
+'country_code_char2'=>'JP',
+'country_code_char3'=>'JPN',
+'state_subdivision_name'=>'Gunma',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'Perfecture',
+'state_subdivision_code'=>'JP-10'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14938,
+'country_code_char2'=>'JP',
+'country_code_char3'=>'JPN',
+'state_subdivision_name'=>'Hirosima [Hiroshima]',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'Perfecture',
+'state_subdivision_code'=>'JP-34'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14939,
+'country_code_char2'=>'JP',
+'country_code_char3'=>'JPN',
+'state_subdivision_name'=>'Hyôgo [Hyogo]',
+'state_subdivision_alternate_names'=>'Hyogo',
+'primary_level_name'=>'Perfecture',
+'state_subdivision_code'=>'JP-28'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14940,
+'country_code_char2'=>'JP',
+'country_code_char3'=>'JPN',
+'state_subdivision_name'=>'Isikawa [Ishikawa]',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'Perfecture',
+'state_subdivision_code'=>'JP-17'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14941,
+'country_code_char2'=>'JP',
+'country_code_char3'=>'JPN',
+'state_subdivision_name'=>'Iwate',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'Perfecture',
+'state_subdivision_code'=>'JP-03'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14942,
+'country_code_char2'=>'JP',
+'country_code_char3'=>'JPN',
+'state_subdivision_name'=>'Kagawa',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'Perfecture',
+'state_subdivision_code'=>'JP-37'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14943,
+'country_code_char2'=>'JP',
+'country_code_char3'=>'JPN',
+'state_subdivision_name'=>'Kanagawa',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'Perfecture',
+'state_subdivision_code'=>'JP-14'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14944,
+'country_code_char2'=>'JP',
+'country_code_char3'=>'JPN',
+'state_subdivision_name'=>'Kôti [Kochi]',
+'state_subdivision_alternate_names'=>'Kochi',
+'primary_level_name'=>'Perfecture',
+'state_subdivision_code'=>'JP-39'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14945,
+'country_code_char2'=>'JP',
+'country_code_char3'=>'JPN',
+'state_subdivision_name'=>'Kyôto [Kyoto]',
+'state_subdivision_alternate_names'=>'Kyoto',
+'primary_level_name'=>'Urban Perfecture',
+'state_subdivision_code'=>'JP-26'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14946,
+'country_code_char2'=>'JP',
+'country_code_char3'=>'JPN',
+'state_subdivision_name'=>'Mie',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'Perfecture',
+'state_subdivision_code'=>'JP-24'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14947,
+'country_code_char2'=>'JP',
+'country_code_char3'=>'JPN',
+'state_subdivision_name'=>'Miyazaki',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'Perfecture',
+'state_subdivision_code'=>'JP-45'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14948,
+'country_code_char2'=>'JP',
+'country_code_char3'=>'JPN',
+'state_subdivision_name'=>'Nagano',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'Perfecture',
+'state_subdivision_code'=>'JP-20'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14949,
+'country_code_char2'=>'JP',
+'country_code_char3'=>'JPN',
+'state_subdivision_name'=>'Nara',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'Perfecture',
+'state_subdivision_code'=>'JP-29'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14950,
+'country_code_char2'=>'JP',
+'country_code_char3'=>'JPN',
+'state_subdivision_name'=>'Niigata',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'Perfecture',
+'state_subdivision_code'=>'JP-15'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14951,
+'country_code_char2'=>'JP',
+'country_code_char3'=>'JPN',
+'state_subdivision_name'=>'Okayama',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'Perfecture',
+'state_subdivision_code'=>'JP-33'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14952,
+'country_code_char2'=>'JP',
+'country_code_char3'=>'JPN',
+'state_subdivision_name'=>'Okinawa',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'Perfecture',
+'state_subdivision_code'=>'JP-47'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14953,
+'country_code_char2'=>'JP',
+'country_code_char3'=>'JPN',
+'state_subdivision_name'=>'Saga',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'Perfecture',
+'state_subdivision_code'=>'JP-41'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14954,
+'country_code_char2'=>'JP',
+'country_code_char3'=>'JPN',
+'state_subdivision_name'=>'Akita',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'Perfecture',
+'state_subdivision_code'=>'JP-05'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14955,
+'country_code_char2'=>'JP',
+'country_code_char3'=>'JPN',
+'state_subdivision_name'=>'Ehime',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'Perfecture',
+'state_subdivision_code'=>'JP-38'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14956,
+'country_code_char2'=>'JP',
+'country_code_char3'=>'JPN',
+'state_subdivision_name'=>'Hukusima [Fukushima]',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'Perfecture',
+'state_subdivision_code'=>'JP-07'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14957,
+'country_code_char2'=>'JP',
+'country_code_char3'=>'JPN',
+'state_subdivision_name'=>'Hokkaidô [Hokkaido]',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'Territory',
+'state_subdivision_code'=>'JP-01'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14958,
+'country_code_char2'=>'JP',
+'country_code_char3'=>'JPN',
+'state_subdivision_name'=>'Ibaraki',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'Perfecture',
+'state_subdivision_code'=>'JP-08'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14959,
+'country_code_char2'=>'JP',
+'country_code_char3'=>'JPN',
+'state_subdivision_name'=>'Kagosima [Kagoshima]',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'Perfecture',
+'state_subdivision_code'=>'JP-46'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14960,
+'country_code_char2'=>'JP',
+'country_code_char3'=>'JPN',
+'state_subdivision_name'=>'Kumamoto',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'Perfecture',
+'state_subdivision_code'=>'JP-43'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14961,
+'country_code_char2'=>'JP',
+'country_code_char3'=>'JPN',
+'state_subdivision_name'=>'Nagasaki',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'Perfecture',
+'state_subdivision_code'=>'JP-42'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14962,
+'country_code_char2'=>'JP',
+'country_code_char3'=>'JPN',
+'state_subdivision_name'=>'Ôsaka [Osaka]',
+'state_subdivision_alternate_names'=>'Osaka',
+'primary_level_name'=>'Urban Perfecture',
+'state_subdivision_code'=>'JP-27'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14975,
+'country_code_char2'=>'JO',
+'country_code_char3'=>'JOR',
+'state_subdivision_name'=>'At Tafilah',
+'state_subdivision_alternate_names'=>'Tafiela, Tafileh, at-Tafilah',
+'primary_level_name'=>'Province',
+'state_subdivision_code'=>'JO-AT'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14976,
+'country_code_char2'=>'JO',
+'country_code_char3'=>'JOR',
+'state_subdivision_name'=>'Az Zarqa',
+'state_subdivision_alternate_names'=>'Zarka, Zarqa, Zerka',
+'primary_level_name'=>'Province',
+'state_subdivision_code'=>'JO-AZ',
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14977,
+'country_code_char2'=>'JO',
+'country_code_char3'=>'JOR',
+'state_subdivision_name'=>'Ma`an',
+'state_subdivision_alternate_names'=>'Maan, Maʿan',
+'primary_level_name'=>'Province',
+'state_subdivision_code'=>'JO-MN'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14978,
+'country_code_char2'=>'JO',
+'country_code_char3'=>'JOR',
+'state_subdivision_name'=>'?Amman',
+'state_subdivision_alternate_names'=>'Amman',
+'primary_level_name'=>'Province',
+'state_subdivision_code'=>'JO-AM'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14979,
+'country_code_char2'=>'JO',
+'country_code_char3'=>'JOR',
+'state_subdivision_name'=>'Al Balqa',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'Province',
+'state_subdivision_code'=>'JO-BA',
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14980,
+'country_code_char2'=>'JO',
+'country_code_char3'=>'JOR',
+'state_subdivision_name'=>'Jarash',
+'state_subdivision_alternate_names'=>'Jarash, Jerash',
+'primary_level_name'=>'Province',
+'state_subdivision_code'=>'JO-JA'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14981,
+'country_code_char2'=>'JO',
+'country_code_char3'=>'JOR',
+'state_subdivision_name'=>'Al Mafraq',
+'state_subdivision_alternate_names'=>'Mafraq',
+'primary_level_name'=>'Province',
+'state_subdivision_code'=>'JO-MA'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14982,
+'country_code_char2'=>'JO',
+'country_code_char3'=>'JOR',
+'state_subdivision_name'=>'?Ajlun',
+'state_subdivision_alternate_names'=>'Ajloan, Ajlun',
+'primary_level_name'=>'Province',
+'state_subdivision_code'=>'JO-AJ'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14983,
+'country_code_char2'=>'JO',
+'country_code_char3'=>'JOR',
+'state_subdivision_name'=>'Madaba',
+'state_subdivision_alternate_names'=>'Madaba, Maʿdaba, Maʿdabâ',
+'primary_level_name'=>'Province',
+'state_subdivision_code'=>'JO-MD'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14984,
+'country_code_char2'=>'JO',
+'country_code_char3'=>'JOR',
+'state_subdivision_name'=>'Al Karak',
+'state_subdivision_alternate_names'=>'Karak, Kerak',
+'primary_level_name'=>'Province',
+'state_subdivision_code'=>'JO-KA'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14985,
+'country_code_char2'=>'JO',
+'country_code_char3'=>'JOR',
+'state_subdivision_name'=>'Aqaba',
+'state_subdivision_alternate_names'=>'Akaba, Aqaba, Aqqaba, al-Aqaba',
+'primary_level_name'=>'Province',
+'state_subdivision_code'=>'JO-AQ'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14986,
+'country_code_char2'=>'JO',
+'country_code_char3'=>'JOR',
+'state_subdivision_name'=>'Irbid',
+'state_subdivision_alternate_names'=>'Irbit',
+'primary_level_name'=>'Province',
+'state_subdivision_code'=>'JO-IR'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14987,
+'country_code_char2'=>'KZ',
+'country_code_char3'=>'KAZ',
+'state_subdivision_name'=>'Zhambyl oblysy',
+'state_subdivision_alternate_names'=>'Aulie-Ata, Auliye-Ata, Cambil, Cambıl, Djambul, Dzhambul, Zhambul, Zhambyl, Zhambül',
+'primary_level_name'=>'region',
+'state_subdivision_code'=>'KZ-ZHA'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14988,
+'country_code_char2'=>'KZ',
+'country_code_char3'=>'KAZ',
+'state_subdivision_name'=>'Batys Qazaqstan oblysy',
+'state_subdivision_alternate_names'=>'Batis Kazakstan, Batys Qazaqstan, Uralsk, Uralskaya Oblast, Western Kazakhstan',
+'primary_level_name'=>'region',
+'state_subdivision_code'=>'KZ-ZAP'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14989,
+'country_code_char2'=>'KZ',
+'country_code_char3'=>'KAZ',
+'state_subdivision_name'=>'Soltüstik Qazaqstan oblysy',
+'state_subdivision_alternate_names'=>'Northern Kazakhstan, Soltüstik Kazakstan, Soltüstik Qazaqstan',
+'primary_level_name'=>'region',
+'state_subdivision_code'=>'KZ-SEV'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14990,
+'country_code_char2'=>'KZ',
+'country_code_char3'=>'KAZ',
+'state_subdivision_name'=>'Qyzylorda oblysy',
+'state_subdivision_alternate_names'=>'Ak-Mechet, Kizilorda, Kyzyl-Orda, Kyzylorda, Kzyl-Orda, Qyzylorda, Ķızılorda',
+'primary_level_name'=>'region',
+'state_subdivision_code'=>'KZ-KZY'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14991,
+'country_code_char2'=>'KZ',
+'country_code_char3'=>'KAZ',
+'state_subdivision_name'=>'Aqmola oblysy',
+'state_subdivision_alternate_names'=>'Akmola, Akmolinsk, Aķmola, Celinograd, Tselinograd',
+'primary_level_name'=>'region',
+'state_subdivision_code'=>'KZ-AKM'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14992,
+'country_code_char2'=>'KZ',
+'country_code_char3'=>'KAZ',
+'state_subdivision_name'=>'Aqtöbe oblysy',
+'state_subdivision_alternate_names'=>'Aktjubinsk, Aktyubinsk, Aktöbe, Aktʿubinsk',
+'primary_level_name'=>'region',
+'state_subdivision_code'=>'KZ-AKT'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14993,
+'country_code_char2'=>'KZ',
+'country_code_char3'=>'KAZ',
+'state_subdivision_name'=>'Almaty',
+'state_subdivision_alternate_names'=>'Almati Oblasti, Almaty Oblasty, Almatı',
+'primary_level_name'=>'city',
+'state_subdivision_code'=>'KZ-ALA'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14994,
+'country_code_char2'=>'KZ',
+'country_code_char3'=>'KAZ',
+'state_subdivision_name'=>'Atyrau oblysy',
+'state_subdivision_alternate_names'=>'Ateransk, Aterau, Atirau, Atırau, Gurjev, Guryev',
+'primary_level_name'=>'region',
+'state_subdivision_code'=>'KZ-ATY'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14995,
+'country_code_char2'=>'KZ',
+'country_code_char3'=>'KAZ',
+'state_subdivision_name'=>'Mangghystau oblysy',
+'state_subdivision_alternate_names'=>'Mangghystau, Mangistau, Mangkistau, Mangqystau',
+'primary_level_name'=>'region',
+'state_subdivision_code'=>'KZ-MAN'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14996,
+'country_code_char2'=>'KZ',
+'country_code_char3'=>'KAZ',
+'state_subdivision_name'=>'Shyghys Qazaqstan oblysy',
+'state_subdivision_alternate_names'=>'Eastern Kazakhstan, Shyghys Qazaqstan, Sigis Kazakstan',
+'primary_level_name'=>'region',
+'state_subdivision_code'=>'KZ-VOS'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14997,
+'country_code_char2'=>'KZ',
+'country_code_char3'=>'KAZ',
+'state_subdivision_name'=>'Qaraghandy oblysy',
+'state_subdivision_alternate_names'=>'Karaganda, Karagandi, Karagandy, Qaraghandy, Ķaragandı',
+'primary_level_name'=>'region',
+'state_subdivision_code'=>'KZ-KAR'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14998,
+'country_code_char2'=>'KZ',
+'country_code_char3'=>'KAZ',
+'state_subdivision_name'=>'Pavlodar oblysy',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'region',
+'state_subdivision_code'=>'KZ-PAV'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>14999,
+'country_code_char2'=>'KZ',
+'country_code_char3'=>'KAZ',
+'state_subdivision_name'=>'Ongtüstik Qazaqstan oblysy',
+'state_subdivision_alternate_names'=>'Ongtüstik Qazaqstan, Ongtüstük Kazakstan, Southern Kazakhstan',
+'primary_level_name'=>'region',
+'state_subdivision_code'=>'KZ-YUZ'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15000,
+'country_code_char2'=>'KZ',
+'country_code_char3'=>'KAZ',
+'state_subdivision_name'=>'Qostanay oblysy',
+'state_subdivision_alternate_names'=>'Kostanay, Kustanai, Kustanaj, Kustanay, Ķostanay',
+'primary_level_name'=>'region',
+'state_subdivision_code'=>'KZ-KUS'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15001,
+'country_code_char2'=>'KE',
+'country_code_char3'=>'KEN',
+'state_subdivision_name'=>'Nyanza',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'province',
+'state_subdivision_code'=>'KE-600'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15003,
+'country_code_char2'=>'KE',
+'country_code_char3'=>'KEN',
+'state_subdivision_name'=>'Western',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'province',
+'state_subdivision_code'=>'KE-900'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15004,
+'country_code_char2'=>'KE',
+'country_code_char3'=>'KEN',
+'state_subdivision_name'=>'North-Eastern',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'province',
+'state_subdivision_code'=>'KE-500'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15005,
+'country_code_char2'=>'KE',
+'country_code_char3'=>'KEN',
+'state_subdivision_name'=>'Coast',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'province',
+'state_subdivision_code'=>'KE-300'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15006,
+'country_code_char2'=>'KE',
+'country_code_char3'=>'KEN',
+'state_subdivision_name'=>'Eastern',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'province',
+'state_subdivision_code'=>'KE-400'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15007,
+'country_code_char2'=>'KE',
+'country_code_char3'=>'KEN',
+'state_subdivision_name'=>'Rift Valley',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'province',
+'state_subdivision_code'=>'KE-700'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15009,
+'country_code_char2'=>'KE',
+'country_code_char3'=>'KEN',
+'state_subdivision_name'=>'Central',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'province',
+'state_subdivision_code'=>'KE-200'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15010,
+'country_code_char2'=>'KE',
+'country_code_char3'=>'KEN',
+'state_subdivision_name'=>'Nairobi',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'province',
+'state_subdivision_code'=>'KE-110'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15018,
+'country_code_char2'=>'KI',
+'country_code_char3'=>'KIR',
+'state_subdivision_name'=>'Line Islands',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'Island group',
+'state_subdivision_code'=>'KI-L'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15033,
+'country_code_char2'=>'KI',
+'country_code_char3'=>'KIR',
+'state_subdivision_name'=>'Phoenix Islands',
+'state_subdivision_alternate_names'=>'Abariringa, Canton, Gardner, Hull, Kanton, Kemins, Manra, Mary Island, Nikumaroro, Orona, Phoenix, Rawaki, Sydney',
+'primary_level_name'=>'Island group',
+'state_subdivision_code'=>'KI-P'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15042,
+'country_code_char2'=>'KR',
+'country_code_char3'=>'KOR',
+'state_subdivision_name'=>'Gang weondo [Kang-won-do]',
+'state_subdivision_alternate_names'=>'Kangwon',
+'primary_level_name'=>'province',
+'state_subdivision_code'=>'KR-42',
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15053,
+'country_code_char2'=>'KP',
+'country_code_char3'=>'PRK',
+'state_subdivision_name'=>'Kangwon-do',
+'state_subdivision_alternate_names'=>'Gangweon, Kangweon, Kangwon',
+'primary_level_name'=>'province',
+'state_subdivision_code'=>'KP-07'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15063,
+'country_code_char2'=>'KW',
+'country_code_char3'=>'KWT',
+'state_subdivision_name'=>'Al Jahrah',
+'state_subdivision_alternate_names'=>'Al Jahra, Jahra, Jahrah, al-Jahra, al-Jahraʿ',
+'primary_level_name'=>'Governorate',
+'state_subdivision_code'=>'KW-JA'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15064,
+'country_code_char2'=>'KW',
+'country_code_char3'=>'KWT',
+'state_subdivision_name'=>'Al Ahmadi',
+'state_subdivision_alternate_names'=>'Ahmadi',
+'primary_level_name'=>'Governorate',
+'state_subdivision_code'=>'KW-AH'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15065,
+'country_code_char2'=>'KW',
+'country_code_char3'=>'KWT',
+'state_subdivision_name'=>'Mubarak al-Kabir',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'Governorate',
+'state_subdivision_code'=>'KW-MU'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15066,
+'country_code_char2'=>'KW',
+'country_code_char3'=>'KWT',
+'state_subdivision_name'=>'Al Kuwayt',
+'state_subdivision_alternate_names'=>'Capital, Koweit, Kuwait, Kuwayt, al-Kuwayt',
+'primary_level_name'=>'Governorate',
+'state_subdivision_code'=>'KW-KU'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15067,
+'country_code_char2'=>'KW',
+'country_code_char3'=>'KWT',
+'state_subdivision_name'=>'Hawalli',
+'state_subdivision_alternate_names'=>'Hawalli',
+'primary_level_name'=>'Governorate',
+'state_subdivision_code'=>'KW-HA'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15068,
+'country_code_char2'=>'KW',
+'country_code_char3'=>'KWT',
+'state_subdivision_name'=>'Al Farwaniyah',
+'state_subdivision_alternate_names'=>'Farwaniyah',
+'primary_level_name'=>'Governorate',
+'state_subdivision_code'=>'KW-FA'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15069,
+'country_code_char2'=>'KG',
+'country_code_char3'=>'KGZ',
+'state_subdivision_name'=>'Osh',
+'state_subdivision_alternate_names'=>'Osh',
+'primary_level_name'=>'region',
+'state_subdivision_code'=>'KG-O'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15070,
+'country_code_char2'=>'KG',
+'country_code_char3'=>'KGZ',
+'state_subdivision_name'=>'Batken',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'region',
+'state_subdivision_code'=>'KG-B'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15071,
+'country_code_char2'=>'KG',
+'country_code_char3'=>'KGZ',
+'state_subdivision_name'=>'Naryn',
+'state_subdivision_alternate_names'=>'Naryn',
+'primary_level_name'=>'region',
+'state_subdivision_code'=>'KG-N'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15072,
+'country_code_char2'=>'KG',
+'country_code_char3'=>'KGZ',
+'state_subdivision_name'=>'Bishkek',
+'state_subdivision_alternate_names'=>'Bishkek, Kenesh Bishkek',
+'primary_level_name'=>'city',
+'state_subdivision_code'=>'KG-GB'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15074,
+'country_code_char2'=>'KG',
+'country_code_char3'=>'KGZ',
+'state_subdivision_name'=>'Ysyk-Köl',
+'state_subdivision_alternate_names'=>'Balikchi, Balykchy, Balıkçı, Issyk-Kul',
+'primary_level_name'=>'region',
+'state_subdivision_code'=>'KG-Y'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15075,
+'country_code_char2'=>'KG',
+'country_code_char3'=>'KGZ',
+'state_subdivision_name'=>'Talas',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'region',
+'state_subdivision_code'=>'KG-T'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15077,
+'country_code_char2'=>'KG',
+'country_code_char3'=>'KGZ',
+'state_subdivision_name'=>'Jalal-Abad',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'region',
+'state_subdivision_code'=>'KG-J'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15078,
+'country_code_char2'=>'KG',
+'country_code_char3'=>'KGZ',
+'state_subdivision_name'=>'Chü',
+'state_subdivision_alternate_names'=>'Chu, Chui, Chuy, Çüy',
+'primary_level_name'=>'region',
+'state_subdivision_code'=>'KG-C'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15079,
+'country_code_char2'=>'LA',
+'country_code_char3'=>'LAO',
+'state_subdivision_name'=>'Xiangkhoang [Xieng Khouang]',
+'state_subdivision_alternate_names'=>'Xiang Khouang, Xiangkhouang, Xiangkhuang, Xieng Khouang',
+'primary_level_name'=>'province',
+'state_subdivision_code'=>'LA-XI'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15080,
+'country_code_char2'=>'LA',
+'country_code_char3'=>'LAO',
+'state_subdivision_name'=>'Attapu [Attopeu]',
+'state_subdivision_alternate_names'=>'Attapu, Attopei, Attopeu',
+'primary_level_name'=>'province',
+'state_subdivision_code'=>'LA-AT'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15081,
+'country_code_char2'=>'LA',
+'country_code_char3'=>'LAO',
+'state_subdivision_name'=>'Bokèo',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'province',
+'state_subdivision_code'=>'LA-BK'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15082,
+'country_code_char2'=>'LA',
+'country_code_char3'=>'LAO',
+'state_subdivision_name'=>'Champasak [Champassak]',
+'state_subdivision_alternate_names'=>'Champasack, Champassak',
+'primary_level_name'=>'province',
+'state_subdivision_code'=>'LA-CH'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15083,
+'country_code_char2'=>'LA',
+'country_code_char3'=>'LAO',
+'state_subdivision_name'=>'Louang Namtha',
+'state_subdivision_alternate_names'=>'Louang Namtha, Louangnamtha, Luang Namtha, Luong Nam Tha',
+'primary_level_name'=>'province',
+'state_subdivision_code'=>'LA-LM'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15084,
+'country_code_char2'=>'LA',
+'country_code_char3'=>'LAO',
+'state_subdivision_name'=>'Oudômxai [Oudomsai]',
+'state_subdivision_alternate_names'=>'Oudomsai, Oudomsay',
+'primary_level_name'=>'province',
+'state_subdivision_code'=>'LA-OU'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15085,
+'country_code_char2'=>'LA',
+'country_code_char3'=>'LAO',
+'state_subdivision_name'=>'Phôngsali [Phong Saly]',
+'state_subdivision_alternate_names'=>'Phongsali',
+'primary_level_name'=>'province',
+'state_subdivision_code'=>'LA-PH'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15086,
+'country_code_char2'=>'LA',
+'country_code_char3'=>'LAO',
+'state_subdivision_name'=>'Savannakhét',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'province',
+'state_subdivision_code'=>'LA-SV'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15087,
+'country_code_char2'=>'LA',
+'country_code_char3'=>'LAO',
+'state_subdivision_name'=>'Vientiane Prefecture',
+'state_subdivision_alternate_names'=>'Viangchan City, Vientiane City',
+'primary_level_name'=>'prefecture',
+'state_subdivision_code'=>'LA-VT'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15088,
+'country_code_char2'=>'LA',
+'country_code_char3'=>'LAO',
+'state_subdivision_name'=>'Xaignabouli [Sayaboury]',
+'state_subdivision_alternate_names'=>'Sayaboury, Sayabury, Xaignaboury',
+'primary_level_name'=>'province',
+'state_subdivision_code'=>'LA-XA'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15089,
+'country_code_char2'=>'LA',
+'country_code_char3'=>'LAO',
+'state_subdivision_name'=>'Bolikhamxai [Borikhane]',
+'state_subdivision_alternate_names'=>'Bolikhamsai, Bolikhamxai, Borikhamxai',
+'primary_level_name'=>'province',
+'state_subdivision_code'=>'LA-BL'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15090,
+'country_code_char2'=>'LA',
+'country_code_char3'=>'LAO',
+'state_subdivision_name'=>'Xékong [Sékong]',
+'state_subdivision_alternate_names'=>'Xékong',
+'primary_level_name'=>'province',
+'state_subdivision_code'=>'LA-XE'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15091,
+'country_code_char2'=>'LA',
+'country_code_char3'=>'LAO',
+'state_subdivision_name'=>'Salavan [Saravane]',
+'state_subdivision_alternate_names'=>'Saravane',
+'primary_level_name'=>'province',
+'state_subdivision_code'=>'LA-SL'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15092,
+'country_code_char2'=>'LA',
+'country_code_char3'=>'LAO',
+'state_subdivision_name'=>'Louangphabang [Louang Prabang]',
+'state_subdivision_alternate_names'=>'Louang Phrabang, Louang Prabang, Louangphrabang, Luang Phrabang',
+'primary_level_name'=>'province',
+'state_subdivision_code'=>'LA-LP'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15093,
+'country_code_char2'=>'LA',
+'country_code_char3'=>'LAO',
+'state_subdivision_name'=>'Houaphan',
+'state_subdivision_alternate_names'=>'Houaphan',
+'primary_level_name'=>'province',
+'state_subdivision_code'=>'LA-HO'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15094,
+'country_code_char2'=>'LA',
+'country_code_char3'=>'LAO',
+'state_subdivision_name'=>'Khammouan',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'province',
+'state_subdivision_code'=>'LA-KH'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15095,
+'country_code_char2'=>'LA',
+'country_code_char3'=>'LAO',
+'state_subdivision_name'=>'Vientiane',
+'state_subdivision_alternate_names'=>'Vientiane Province',
+'primary_level_name'=>'province',
+'state_subdivision_code'=>'LA-VI'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15096,
+'country_code_char2'=>'LA',
+'country_code_char3'=>'LAO',
+'state_subdivision_name'=>'Xaisômboun',
+'state_subdivision_alternate_names'=>'Xaisômboun',
+'primary_level_name'=>'special zone',
+'state_subdivision_code'=>'LA-XN'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15097,
+'country_code_char2'=>'LV',
+'country_code_char3'=>'LVA',
+'state_subdivision_name'=>'Ventspils Aprinkis',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'district',
+'state_subdivision_code'=>'LV-VE'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15098,
+'country_code_char2'=>'LV',
+'country_code_char3'=>'LVA',
+'state_subdivision_name'=>'Ogres Aprinkis',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'district',
+'state_subdivision_code'=>'LV-OG'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15099,
+'country_code_char2'=>'LV',
+'country_code_char3'=>'LVA',
+'state_subdivision_name'=>'Rezekne',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'city',
+'state_subdivision_code'=>'LV-REZ'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15100,
+'country_code_char2'=>'LV',
+'country_code_char3'=>'LVA',
+'state_subdivision_name'=>'Rezeknes Aprinkis',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'district',
+'state_subdivision_code'=>'LV-RE'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15101,
+'country_code_char2'=>'LV',
+'country_code_char3'=>'LVA',
+'state_subdivision_name'=>'Rigas Aprinkis',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'district',
+'state_subdivision_code'=>'LV-RI'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15102,
+'country_code_char2'=>'LV',
+'country_code_char3'=>'LVA',
+'state_subdivision_name'=>'Saldus Aprinkis',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'district',
+'state_subdivision_code'=>'LV-SA'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15103,
+'country_code_char2'=>'LV',
+'country_code_char3'=>'LVA',
+'state_subdivision_name'=>'Tukuma Aprinkis',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'district',
+'state_subdivision_code'=>'LV-TU'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15104,
+'country_code_char2'=>'LV',
+'country_code_char3'=>'LVA',
+'state_subdivision_name'=>'Valkas Aprinkis',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'district',
+'state_subdivision_code'=>'LV-VK'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15105,
+'country_code_char2'=>'LV',
+'country_code_char3'=>'LVA',
+'state_subdivision_name'=>'Ventspils',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'city',
+'state_subdivision_code'=>'LV-VEN'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15106,
+'country_code_char2'=>'LV',
+'country_code_char3'=>'LVA',
+'state_subdivision_name'=>'Aizkraukles Aprinkis',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'district',
+'state_subdivision_code'=>'LV-AI'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15107,
+'country_code_char2'=>'LV',
+'country_code_char3'=>'LVA',
+'state_subdivision_name'=>'Aluksnes Aprinkis',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'district',
+'state_subdivision_code'=>'LV-AL'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15108,
+'country_code_char2'=>'LV',
+'country_code_char3'=>'LVA',
+'state_subdivision_name'=>'Balvu Aprinkis',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'district',
+'state_subdivision_code'=>'LV-BL'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15109,
+'country_code_char2'=>'LV',
+'country_code_char3'=>'LVA',
+'state_subdivision_name'=>'Bauskas Aprinkis',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'district',
+'state_subdivision_code'=>'LV-BU'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15110,
+'country_code_char2'=>'LV',
+'country_code_char3'=>'LVA',
+'state_subdivision_name'=>'Cesu Aprinkis',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'district',
+'state_subdivision_code'=>'LV-CE'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15111,
+'country_code_char2'=>'LV',
+'country_code_char3'=>'LVA',
+'state_subdivision_name'=>'Daugavpils',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'city',
+'state_subdivision_code'=>'LV-DGV'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15112,
+'country_code_char2'=>'LV',
+'country_code_char3'=>'LVA',
+'state_subdivision_name'=>'Daugavpils Aprinkis',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'district',
+'state_subdivision_code'=>'LV-DA'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15113,
+'country_code_char2'=>'LV',
+'country_code_char3'=>'LVA',
+'state_subdivision_name'=>'Dobeles Aprinkis',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'district',
+'state_subdivision_code'=>'LV-DO'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15114,
+'country_code_char2'=>'LV',
+'country_code_char3'=>'LVA',
+'state_subdivision_name'=>'Jekabpils Aprinkis',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'district',
+'state_subdivision_code'=>'LV-JK'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15115,
+'country_code_char2'=>'LV',
+'country_code_char3'=>'LVA',
+'state_subdivision_name'=>'Kraslavas Aprinkis',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'district',
+'state_subdivision_code'=>'LV-KR'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15116,
+'country_code_char2'=>'LV',
+'country_code_char3'=>'LVA',
+'state_subdivision_name'=>'Kuldigas Aprinkis',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'district',
+'state_subdivision_code'=>'LV-KU'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15117,
+'country_code_char2'=>'LV',
+'country_code_char3'=>'LVA',
+'state_subdivision_name'=>'Liepajas Aprinkis',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'district',
+'state_subdivision_code'=>'LV-LE'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15118,
+'country_code_char2'=>'LV',
+'country_code_char3'=>'LVA',
+'state_subdivision_name'=>'Limbažu Aprinkis',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'district',
+'state_subdivision_code'=>'LV-LM'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15119,
+'country_code_char2'=>'LV',
+'country_code_char3'=>'LVA',
+'state_subdivision_name'=>'Madonas Aprinkis',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'district',
+'state_subdivision_code'=>'LV-MA'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15121,
+'country_code_char2'=>'LV',
+'country_code_char3'=>'LVA',
+'state_subdivision_name'=>'Riga',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'city',
+'state_subdivision_code'=>'LV-RIX'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15122,
+'country_code_char2'=>'LV',
+'country_code_char3'=>'LVA',
+'state_subdivision_name'=>'Preilu Aprinkis',
+'state_subdivision_alternate_names'=>'Preiju',
+'primary_level_name'=>'district',
+'state_subdivision_code'=>'LV-PR'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15123,
+'country_code_char2'=>'LV',
+'country_code_char3'=>'LVA',
+'state_subdivision_name'=>'Ludzas Aprinkis',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'district',
+'state_subdivision_code'=>'LV-LU'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15124,
+'country_code_char2'=>'LV',
+'country_code_char3'=>'LVA',
+'state_subdivision_name'=>'Gulbenes Aprinkis',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'district',
+'state_subdivision_code'=>'LV-GU'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15125,
+'country_code_char2'=>'LV',
+'country_code_char3'=>'LVA',
+'state_subdivision_name'=>'Jelgava',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'city',
+'state_subdivision_code'=>'LV-JEL'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15126,
+'country_code_char2'=>'LV',
+'country_code_char3'=>'LVA',
+'state_subdivision_name'=>'Jelgavas Aprinkis',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'district',
+'state_subdivision_code'=>'LV-JL'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15127,
+'country_code_char2'=>'LV',
+'country_code_char3'=>'LVA',
+'state_subdivision_name'=>'Jurmala',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'city',
+'state_subdivision_code'=>'LV-JUR'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15128,
+'country_code_char2'=>'LV',
+'country_code_char3'=>'LVA',
+'state_subdivision_name'=>'Liepaja',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'city',
+'state_subdivision_code'=>'LV-LPX'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15129,
+'country_code_char2'=>'LV',
+'country_code_char3'=>'LVA',
+'state_subdivision_name'=>'Talsu Aprinkis',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'district',
+'state_subdivision_code'=>'LV-TA'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15130,
+'country_code_char2'=>'LV',
+'country_code_char3'=>'LVA',
+'state_subdivision_name'=>'Valmieras Aprinkis',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'district',
+'state_subdivision_code'=>'LV-VM'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15131,
+'country_code_char2'=>'LB',
+'country_code_char3'=>'LBN',
+'state_subdivision_name'=>'Loubnâne ech Chemâli',
+'state_subdivision_alternate_names'=>'Ash Shamal, North',
+'primary_level_name'=>'Province',
+'state_subdivision_code'=>'LB-AS'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15132,
+'country_code_char2'=>'LB',
+'country_code_char3'=>'LBN',
+'state_subdivision_name'=>'Nabatîyé',
+'state_subdivision_alternate_names'=>'Nabatiyeh',
+'primary_level_name'=>'Province',
+'state_subdivision_code'=>'LB-NA'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15133,
+'country_code_char2'=>'LB',
+'country_code_char3'=>'LBN',
+'state_subdivision_name'=>'Jabal Loubnâne',
+'state_subdivision_alternate_names'=>'Mount Lebanon',
+'primary_level_name'=>'Province',
+'state_subdivision_code'=>'LB-JL'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15134,
+'country_code_char2'=>'LB',
+'country_code_char3'=>'LBN',
+'state_subdivision_name'=>'Beirut',
+'state_subdivision_alternate_names'=>'Bayrout, Bayrut, Beirut, Beyrout, Beyrouth, Beyrût',
+'primary_level_name'=>'Province',
+'state_subdivision_code'=>'LB-BA'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15135,
+'country_code_char2'=>'LB',
+'country_code_char3'=>'LBN',
+'state_subdivision_name'=>'El Béqaa',
+'state_subdivision_alternate_names'=>'Bekaa',
+'primary_level_name'=>'Province',
+'state_subdivision_code'=>'LB-BI'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15136,
+'country_code_char2'=>'LB',
+'country_code_char3'=>'LBN',
+'state_subdivision_name'=>'Loubnâne ej Jnoûbi',
+'state_subdivision_alternate_names'=>'South',
+'primary_level_name'=>'Province',
+'state_subdivision_code'=>'LB-JA'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15137,
+'country_code_char2'=>'LS',
+'country_code_char3'=>'LSO',
+'state_subdivision_name'=>'Qacha s Nek',
+'state_subdivision_alternate_names'=>'Qacha s Nek',
+'primary_level_name'=>'District',
+'state_subdivision_code'=>'LS-H',
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15138,
+'country_code_char2'=>'LS',
+'country_code_char3'=>'LSO',
+'state_subdivision_name'=>'Berea',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'District',
+'state_subdivision_code'=>'LS-D'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15139,
+'country_code_char2'=>'LS',
+'country_code_char3'=>'LSO',
+'state_subdivision_name'=>'Butha-Buthe',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'District',
+'state_subdivision_code'=>'LS-B'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15140,
+'country_code_char2'=>'LS',
+'country_code_char3'=>'LSO',
+'state_subdivision_name'=>'Mafeteng',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'District',
+'state_subdivision_code'=>'LS-E'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15141,
+'country_code_char2'=>'LS',
+'country_code_char3'=>'LSO',
+'state_subdivision_name'=>'Mohale s Hoek',
+'state_subdivision_alternate_names'=>'Mohale s Hoek',
+'primary_level_name'=>'District',
+'state_subdivision_code'=>'LS-F',
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15142,
+'country_code_char2'=>'LS',
+'country_code_char3'=>'LSO',
+'state_subdivision_name'=>'Mokhotlong',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'District',
+'state_subdivision_code'=>'LS-J'
+] );
+
+
+State::create( [
+'state_subdivision_id'=>48154,
+'country_code_char2'=>'BS',
+'country_code_char3'=>'BHS',
+'state_subdivision_name'=>'Rum Cay',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'district',
+'state_subdivision_code'=>'BS-RC'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48155,
+'country_code_char2'=>'BS',
+'country_code_char3'=>'BHS',
+'state_subdivision_name'=>'San Salvador',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'district',
+'state_subdivision_code'=>'BS-SS'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48156,
+'country_code_char2'=>'BS',
+'country_code_char3'=>'BHS',
+'state_subdivision_name'=>'South Abaco',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'district',
+'state_subdivision_code'=>'BS-SO'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48157,
+'country_code_char2'=>'BS',
+'country_code_char3'=>'BHS',
+'state_subdivision_name'=>'South Andros',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'district',
+'state_subdivision_code'=>'BS-SA'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48158,
+'country_code_char2'=>'BS',
+'country_code_char3'=>'BHS',
+'state_subdivision_name'=>'South Eleuthera',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'district',
+'state_subdivision_code'=>'BS-SE'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48159,
+'country_code_char2'=>'BS',
+'country_code_char3'=>'BHS',
+'state_subdivision_name'=>'Spanish Wells',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'district',
+'state_subdivision_code'=>'BS-SW'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48160,
+'country_code_char2'=>'BS',
+'country_code_char3'=>'BHS',
+'state_subdivision_name'=>'West Grand Bahama',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'district',
+'state_subdivision_code'=>'BS-WG'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48161,
+'country_code_char2'=>'BA',
+'country_code_char3'=>'BIH',
+'state_subdivision_name'=>'Bosansko-podrinjski kanton',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'canton',
+'state_subdivision_code'=>'BA-05'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48162,
+'country_code_char2'=>'BA',
+'country_code_char3'=>'BIH',
+'state_subdivision_name'=>'Hercegova?ko-neretvanski kanton',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'canton',
+'state_subdivision_code'=>'BA-07'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48163,
+'country_code_char2'=>'BA',
+'country_code_char3'=>'BIH',
+'state_subdivision_name'=>'Kanton br. 10 (Livanjski kanton)',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'canton',
+'state_subdivision_code'=>'BA-10'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48164,
+'country_code_char2'=>'BA',
+'country_code_char3'=>'BIH',
+'state_subdivision_name'=>'Kanton Sarajevo',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'canton',
+'state_subdivision_code'=>'BA-09'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48165,
+'country_code_char2'=>'BA',
+'country_code_char3'=>'BIH',
+'state_subdivision_name'=>'Posavski kanton',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'canton',
+'state_subdivision_code'=>'BA-02'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48166,
+'country_code_char2'=>'BA',
+'country_code_char3'=>'BIH',
+'state_subdivision_name'=>'Srednjobosanski kanton',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'canton',
+'state_subdivision_code'=>'BA-06'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48167,
+'country_code_char2'=>'BA',
+'country_code_char3'=>'BIH',
+'state_subdivision_name'=>'Tuzlanski kanton',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'canton',
+'state_subdivision_code'=>'BA-03'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48168,
+'country_code_char2'=>'BA',
+'country_code_char3'=>'BIH',
+'state_subdivision_name'=>'Unsko-sanski kanton',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'canton',
+'state_subdivision_code'=>'BA-01'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48169,
+'country_code_char2'=>'BA',
+'country_code_char3'=>'BIH',
+'state_subdivision_name'=>'Zapadnohercegova?ki kanton',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'canton',
+'state_subdivision_code'=>'BA-08'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48170,
+'country_code_char2'=>'BA',
+'country_code_char3'=>'BIH',
+'state_subdivision_name'=>'Zeni?ko-dobojski kanton',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'canton',
+'state_subdivision_code'=>'BA-04'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48171,
+'country_code_char2'=>'BF',
+'country_code_char3'=>'BFA',
+'state_subdivision_name'=>'Boucle du Mouhoun',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'region',
+'state_subdivision_code'=>'BF-01'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48172,
+'country_code_char2'=>'BF',
+'country_code_char3'=>'BFA',
+'state_subdivision_name'=>'Cascades',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'region',
+'state_subdivision_code'=>'BF-02'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48173,
+'country_code_char2'=>'BF',
+'country_code_char3'=>'BFA',
+'state_subdivision_name'=>'Centre',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'region',
+'state_subdivision_code'=>'BF-03'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48174,
+'country_code_char2'=>'BF',
+'country_code_char3'=>'BFA',
+'state_subdivision_name'=>'Centre-Est',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'region',
+'state_subdivision_code'=>'BF-04'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48175,
+'country_code_char2'=>'BF',
+'country_code_char3'=>'BFA',
+'state_subdivision_name'=>'Centre-Nord',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'region',
+'state_subdivision_code'=>'BF-05'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48176,
+'country_code_char2'=>'BF',
+'country_code_char3'=>'BFA',
+'state_subdivision_name'=>'Centre-Ouest',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'region',
+'state_subdivision_code'=>'BF-06'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48177,
+'country_code_char2'=>'BF',
+'country_code_char3'=>'BFA',
+'state_subdivision_name'=>'Centre-Sud',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'region',
+'state_subdivision_code'=>'BF-07'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48178,
+'country_code_char2'=>'BF',
+'country_code_char3'=>'BFA',
+'state_subdivision_name'=>'Est',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'region',
+'state_subdivision_code'=>'BF-08'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48179,
+'country_code_char2'=>'BF',
+'country_code_char3'=>'BFA',
+'state_subdivision_name'=>'Hauts-Bassins',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'region',
+'state_subdivision_code'=>'BF-09'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48180,
+'country_code_char2'=>'BF',
+'country_code_char3'=>'BFA',
+'state_subdivision_name'=>'Nord',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'region',
+'state_subdivision_code'=>'BF-10'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48181,
+'country_code_char2'=>'BF',
+'country_code_char3'=>'BFA',
+'state_subdivision_name'=>'Plateau-Central',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'region',
+'state_subdivision_code'=>'BF-11'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48182,
+'country_code_char2'=>'BF',
+'country_code_char3'=>'BFA',
+'state_subdivision_name'=>'Sahel',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'region',
+'state_subdivision_code'=>'BF-12'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48183,
+'country_code_char2'=>'BF',
+'country_code_char3'=>'BFA',
+'state_subdivision_name'=>'Sud-Ouest',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'region',
+'state_subdivision_code'=>'BF-13'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48184,
+'country_code_char2'=>'CV',
+'country_code_char3'=>'CPV',
+'state_subdivision_name'=>'Ilhas de Barlavento',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'geographical region',
+'state_subdivision_code'=>'CV-B'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48185,
+'country_code_char2'=>'CV',
+'country_code_char3'=>'CPV',
+'state_subdivision_name'=>'Ilhas de Sotavento',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'geographical region',
+'state_subdivision_code'=>'CV-S'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48189,
+'country_code_char2'=>'TD',
+'country_code_char3'=>'TCD',
+'state_subdivision_name'=>'Baḩr al Ghazāl',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'region',
+'state_subdivision_code'=>'TD-BG'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48190,
+'country_code_char2'=>'TD',
+'country_code_char3'=>'TCD',
+'state_subdivision_name'=>'Būrkū',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'region',
+'state_subdivision_code'=>'TD-BO'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48191,
+'country_code_char2'=>'TD',
+'country_code_char3'=>'TCD',
+'state_subdivision_name'=>'Innīdī',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'region',
+'state_subdivision_code'=>'TD-EN'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48192,
+'country_code_char2'=>'TD',
+'country_code_char3'=>'TCD',
+'state_subdivision_name'=>'Sīlā',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'region',
+'state_subdivision_code'=>'TD-SI'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48193,
+'country_code_char2'=>'TD',
+'country_code_char3'=>'TCD',
+'state_subdivision_name'=>'Tibastī',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'region',
+'state_subdivision_code'=>'TD-TI'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48194,
+'country_code_char2'=>'EG',
+'country_code_char3'=>'EGY',
+'state_subdivision_name'=>'As Sādis min Uktūbar',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'governorate',
+'state_subdivision_code'=>'EG-SU'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48195,
+'country_code_char2'=>'EG',
+'country_code_char3'=>'EGY',
+'state_subdivision_name'=>'Ḩulwān',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'governorate',
+'state_subdivision_code'=>'EG-HU'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48196,
+'country_code_char2'=>'SI',
+'country_code_char3'=>'SVN',
+'state_subdivision_name'=>'Šmartno pri Litiji',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'commune',
+'state_subdivision_code'=>'SI-194'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48197,
+'country_code_char2'=>'SI',
+'country_code_char3'=>'SVN',
+'state_subdivision_name'=>'Apače',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'commune',
+'state_subdivision_code'=>'SI-195'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48198,
+'country_code_char2'=>'SI',
+'country_code_char3'=>'SVN',
+'state_subdivision_name'=>'Cirkulane',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'commune',
+'state_subdivision_code'=>'SI-197'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48199,
+'country_code_char2'=>'SI',
+'country_code_char3'=>'SVN',
+'state_subdivision_name'=>'Kosanjevica na Krki',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'commune',
+'state_subdivision_code'=>'SI-196'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48200,
+'country_code_char2'=>'SI',
+'country_code_char3'=>'SVN',
+'state_subdivision_name'=>'Makole',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'commune',
+'state_subdivision_code'=>'SI-198'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48201,
+'country_code_char2'=>'SI',
+'country_code_char3'=>'SVN',
+'state_subdivision_name'=>'Mokronog-Trebelno',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'commune',
+'state_subdivision_code'=>'SI-199'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48202,
+'country_code_char2'=>'SI',
+'country_code_char3'=>'SVN',
+'state_subdivision_name'=>'Poljčane',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'commune',
+'state_subdivision_code'=>'SI-200'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48203,
+'country_code_char2'=>'SI',
+'country_code_char3'=>'SVN',
+'state_subdivision_name'=>'Renče-Vogrsko',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'commune',
+'state_subdivision_code'=>'SI-201'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48204,
+'country_code_char2'=>'SI',
+'country_code_char3'=>'SVN',
+'state_subdivision_name'=>'Rečica ob Savinji',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'commune',
+'state_subdivision_code'=>'SI-209'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48205,
+'country_code_char2'=>'SI',
+'country_code_char3'=>'SVN',
+'state_subdivision_name'=>'Sveti Jurij v Slovenskih Goricah',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'commune',
+'state_subdivision_code'=>'SI-210'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48206,
+'country_code_char2'=>'SI',
+'country_code_char3'=>'SVN',
+'state_subdivision_name'=>'Središče ob Dravi',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'commune',
+'state_subdivision_code'=>'SI-202'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48207,
+'country_code_char2'=>'SI',
+'country_code_char3'=>'SVN',
+'state_subdivision_name'=>'Straža',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'commune',
+'state_subdivision_code'=>'SI-203'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48208,
+'country_code_char2'=>'SI',
+'country_code_char3'=>'SVN',
+'state_subdivision_name'=>'Sveta Trojica v Slovenskih Goricah',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'commune',
+'state_subdivision_code'=>'SI-204'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48209,
+'country_code_char2'=>'SI',
+'country_code_char3'=>'SVN',
+'state_subdivision_name'=>'Sveti Tomaž',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'commune',
+'state_subdivision_code'=>'SI-205'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48210,
+'country_code_char2'=>'SI',
+'country_code_char3'=>'SVN',
+'state_subdivision_name'=>'Šentrupert',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'commune',
+'state_subdivision_code'=>'SI-211'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48211,
+'country_code_char2'=>'SI',
+'country_code_char3'=>'SVN',
+'state_subdivision_name'=>'Šmarješke Toplice',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'commune',
+'state_subdivision_code'=>'SI-206'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48212,
+'country_code_char2'=>'SI',
+'country_code_char3'=>'SVN',
+'state_subdivision_name'=>'Gorje',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'commune',
+'state_subdivision_code'=>'SI-207'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48213,
+'country_code_char2'=>'SI',
+'country_code_char3'=>'SVN',
+'state_subdivision_name'=>'Log-Dragomer',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'commune',
+'state_subdivision_code'=>'SI-208'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48214,
+'country_code_char2'=>'YE',
+'country_code_char3'=>'YEM',
+'state_subdivision_name'=>'Şanā',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'municipality',
+'state_subdivision_code'=>'YE-SA'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48216,
+'country_code_char2'=>'SC',
+'country_code_char3'=>'SYC',
+'state_subdivision_name'=>'Les Mamelles',
+'state_subdivision_alternate_names'=>'Les Mamelles, Lemamel',
+'primary_level_name'=>'District',
+'state_subdivision_code'=>'SC-24'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48217,
+'country_code_char2'=>'SC',
+'country_code_char3'=>'SYC',
+'state_subdivision_name'=>'Roche Caiman',
+'state_subdivision_alternate_names'=>'Roche Caiman, Ros Kaiman, Roche Caïman',
+'primary_level_name'=>'District',
+'state_subdivision_code'=>'SC-25'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48218,
+'country_code_char2'=>'SN',
+'country_code_char3'=>'SEN',
+'state_subdivision_name'=>'Kaffrine',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'region',
+'state_subdivision_code'=>'SN-KA'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48219,
+'country_code_char2'=>'SN',
+'country_code_char3'=>'SEN',
+'state_subdivision_name'=>'Kédougou',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'region',
+'state_subdivision_code'=>'SN-KE'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48220,
+'country_code_char2'=>'SN',
+'country_code_char3'=>'SEN',
+'state_subdivision_name'=>'Sédhiou',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'region',
+'state_subdivision_code'=>'SN-SE'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48221,
+'country_code_char2'=>'RU',
+'country_code_char3'=>'RUS',
+'state_subdivision_name'=>'Zabajkal skij kraj',
+'state_subdivision_alternate_names'=>'Zabajkal skij kraj',
+'primary_level_name'=>'administrative territory',
+'state_subdivision_code'=>'RU-ZAB',
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48225,
+'country_code_char2'=>'GL',
+'country_code_char3'=>'GRL',
+'state_subdivision_name'=>'Kommune Kujalleq (kl)',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'municipality',
+'state_subdivision_code'=>'GL-KU'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48226,
+'country_code_char2'=>'GL',
+'country_code_char3'=>'GRL',
+'state_subdivision_name'=>'Kommuneqarfik Sermersooq (kl)',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'municipality',
+'state_subdivision_code'=>'GL-SM'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48227,
+'country_code_char2'=>'GL',
+'country_code_char3'=>'GRL',
+'state_subdivision_name'=>'Qaasuitsup Kommunia (kl)',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'municipality',
+'state_subdivision_code'=>'GL-QA'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48228,
+'country_code_char2'=>'GL',
+'country_code_char3'=>'GRL',
+'state_subdivision_name'=>'Qeqqata Kommunia (kl)',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'municipality',
+'state_subdivision_code'=>'GL-QE'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48229,
+'country_code_char2'=>'LY',
+'country_code_char3'=>'LBY',
+'state_subdivision_name'=>'Al Jabal al Gharbī',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'popularate',
+'state_subdivision_code'=>'LY-JG'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48230,
+'country_code_char2'=>'LY',
+'country_code_char3'=>'LBY',
+'state_subdivision_name'=>'Wādī ash Shāţiʾ',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'popularate',
+'state_subdivision_code'=>'LY-WS'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48231,
+'country_code_char2'=>'MW',
+'country_code_char3'=>'MWI',
+'state_subdivision_name'=>'Neno',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'district',
+'state_subdivision_code'=>'MW-NE'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48232,
+'country_code_char2'=>'MW',
+'country_code_char3'=>'MWI',
+'state_subdivision_name'=>'Central Region',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'region',
+'state_subdivision_code'=>'MW-C'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48233,
+'country_code_char2'=>'MW',
+'country_code_char3'=>'MWI',
+'state_subdivision_name'=>'Northern Region',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'region',
+'state_subdivision_code'=>'MW-N'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48234,
+'country_code_char2'=>'MW',
+'country_code_char3'=>'MWI',
+'state_subdivision_name'=>'Southern Region',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'region',
+'state_subdivision_code'=>'MW-S'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48235,
+'country_code_char2'=>'NZ',
+'country_code_char3'=>'NZL',
+'state_subdivision_name'=>'North Island',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'island',
+'state_subdivision_code'=>'NZ-N'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48236,
+'country_code_char2'=>'NZ',
+'country_code_char3'=>'NZL',
+'state_subdivision_name'=>'South Island',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'island',
+'state_subdivision_code'=>'NZ-S'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48237,
+'country_code_char2'=>'OM',
+'country_code_char3'=>'OMN',
+'state_subdivision_name'=>'Z̧ufār',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'governorate',
+'state_subdivision_code'=>'OM-ZU'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48238,
+'country_code_char2'=>'PA',
+'country_code_char3'=>'PAN',
+'state_subdivision_name'=>'Kuna Yala',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'indigenous region',
+'state_subdivision_code'=>'PA-KY'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48239,
+'country_code_char2'=>'PH',
+'country_code_char3'=>'PHL',
+'state_subdivision_name'=>'CALABARZON (Region IV-A)',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'region',
+'state_subdivision_code'=>'PH-40'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48240,
+'country_code_char2'=>'PH',
+'country_code_char3'=>'PHL',
+'state_subdivision_name'=>'Davao (Region XI)',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'region',
+'state_subdivision_code'=>'PH-11'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48241,
+'country_code_char2'=>'PH',
+'country_code_char3'=>'PHL',
+'state_subdivision_name'=>'MIMAROPA (Region IV-B)',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'region',
+'state_subdivision_code'=>'PH-41'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48242,
+'country_code_char2'=>'PH',
+'country_code_char3'=>'PHL',
+'state_subdivision_name'=>'Soccsksargen (Region XII)',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'region',
+'state_subdivision_code'=>'PH-12'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48243,
+'country_code_char2'=>'PH',
+'country_code_char3'=>'PHL',
+'state_subdivision_name'=>'Zamboanga Peninsula (Region IX)',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'region',
+'state_subdivision_code'=>'PH-09'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48244,
+'country_code_char2'=>'CV',
+'country_code_char3'=>'CPV',
+'state_subdivision_name'=>'Ribeira Brava',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'municipality',
+'state_subdivision_code'=>'CV-RB'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48245,
+'country_code_char2'=>'CV',
+'country_code_char3'=>'CPV',
+'state_subdivision_name'=>'Ribeira Grande de Santiago',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'municipality',
+'state_subdivision_code'=>'CV-RS'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48246,
+'country_code_char2'=>'CV',
+'country_code_char3'=>'CPV',
+'state_subdivision_name'=>'Santa Catarina do Fogo',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'municipality',
+'state_subdivision_code'=>'CV-CF'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48247,
+'country_code_char2'=>'CV',
+'country_code_char3'=>'CPV',
+'state_subdivision_name'=>'São Miguel',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'municipality',
+'state_subdivision_code'=>'CV-SM'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48248,
+'country_code_char2'=>'CV',
+'country_code_char3'=>'CPV',
+'state_subdivision_name'=>'São Salvador do Mundo',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'municipality',
+'state_subdivision_code'=>'CV-SS'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>48249,
+'country_code_char2'=>'CV',
+'country_code_char3'=>'CPV',
+'state_subdivision_name'=>'Tarrafal de São Nicolau',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'municipality',
+'state_subdivision_code'=>'CV-TS'
+] );
+
+			
+State::create( [
+'state_subdivision_id'=>15799,
+'country_code_char2'=>'NG',
+'country_code_char3'=>'NGA',
+'state_subdivision_name'=>'Delta',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'state',
+'state_subdivision_code'=>'NG-DE'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15801,
+'country_code_char2'=>'NG',
+'country_code_char3'=>'NGA',
+'state_subdivision_name'=>'Abuja Federal Capital Territory',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'capital territory',
+'state_subdivision_code'=>'NG-FC'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15802,
+'country_code_char2'=>'NG',
+'country_code_char3'=>'NGA',
+'state_subdivision_name'=>'Adamawa',
+'state_subdivision_alternate_names'=>'Adamaoua, Gongola',
+'primary_level_name'=>'state',
+'state_subdivision_code'=>'NG-AD'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15803,
+'country_code_char2'=>'NG',
+'country_code_char3'=>'NGA',
+'state_subdivision_name'=>'Akwa Ibom',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'state',
+'state_subdivision_code'=>'NG-AK'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15804,
+'country_code_char2'=>'NG',
+'country_code_char3'=>'NGA',
+'state_subdivision_name'=>'Anambra',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'state',
+'state_subdivision_code'=>'NG-AN'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15805,
+'country_code_char2'=>'NG',
+'country_code_char3'=>'NGA',
+'state_subdivision_name'=>'Bauchi',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'state',
+'state_subdivision_code'=>'NG-BA'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15806,
+'country_code_char2'=>'NG',
+'country_code_char3'=>'NGA',
+'state_subdivision_name'=>'Borno',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'state',
+'state_subdivision_code'=>'NG-BO'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15807,
+'country_code_char2'=>'NG',
+'country_code_char3'=>'NGA',
+'state_subdivision_name'=>'Ekiti',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'state',
+'state_subdivision_code'=>'NG-EK'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15808,
+'country_code_char2'=>'NG',
+'country_code_char3'=>'NGA',
+'state_subdivision_name'=>'Kebbi',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'state',
+'state_subdivision_code'=>'NG-KE'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15809,
+'country_code_char2'=>'NG',
+'country_code_char3'=>'NGA',
+'state_subdivision_name'=>'Kwara',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'state',
+'state_subdivision_code'=>'NG-KW'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15810,
+'country_code_char2'=>'NG',
+'country_code_char3'=>'NGA',
+'state_subdivision_name'=>'Lagos',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'state',
+'state_subdivision_code'=>'NG-LA'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15811,
+'country_code_char2'=>'NG',
+'country_code_char3'=>'NGA',
+'state_subdivision_name'=>'Niger',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'state',
+'state_subdivision_code'=>'NG-NI'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15812,
+'country_code_char2'=>'NG',
+'country_code_char3'=>'NGA',
+'state_subdivision_name'=>'Ogun',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'state',
+'state_subdivision_code'=>'NG-OG'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15813,
+'country_code_char2'=>'NG',
+'country_code_char3'=>'NGA',
+'state_subdivision_name'=>'Osun',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'state',
+'state_subdivision_code'=>'NG-OS'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15814,
+'country_code_char2'=>'NG',
+'country_code_char3'=>'NGA',
+'state_subdivision_name'=>'Oyo',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'state',
+'state_subdivision_code'=>'NG-OY'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15815,
+'country_code_char2'=>'NG',
+'country_code_char3'=>'NGA',
+'state_subdivision_name'=>'Rivers',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'state',
+'state_subdivision_code'=>'NG-RI'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15816,
+'country_code_char2'=>'NG',
+'country_code_char3'=>'NGA',
+'state_subdivision_name'=>'Sokoto',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'state',
+'state_subdivision_code'=>'NG-SO'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15817,
+'country_code_char2'=>'NG',
+'country_code_char3'=>'NGA',
+'state_subdivision_name'=>'Benue',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'state',
+'state_subdivision_code'=>'NG-BE'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15818,
+'country_code_char2'=>'NG',
+'country_code_char3'=>'NGA',
+'state_subdivision_name'=>'Cross River',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'state',
+'state_subdivision_code'=>'NG-CR'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15819,
+'country_code_char2'=>'NG',
+'country_code_char3'=>'NGA',
+'state_subdivision_name'=>'Ebonyi',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'state',
+'state_subdivision_code'=>'NG-EB'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15820,
+'country_code_char2'=>'NG',
+'country_code_char3'=>'NGA',
+'state_subdivision_name'=>'Edo',
+'state_subdivision_alternate_names'=>'Bendel',
+'primary_level_name'=>'state',
+'state_subdivision_code'=>'NG-ED'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15821,
+'country_code_char2'=>'NG',
+'country_code_char3'=>'NGA',
+'state_subdivision_name'=>'Enugu',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'state',
+'state_subdivision_code'=>'NG-EN'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15822,
+'country_code_char2'=>'NG',
+'country_code_char3'=>'NGA',
+'state_subdivision_name'=>'Gombe',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'state',
+'state_subdivision_code'=>'NG-GO'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15823,
+'country_code_char2'=>'NG',
+'country_code_char3'=>'NGA',
+'state_subdivision_name'=>'Jigawa',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'state',
+'state_subdivision_code'=>'NG-JI'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15824,
+'country_code_char2'=>'NG',
+'country_code_char3'=>'NGA',
+'state_subdivision_name'=>'Kaduna',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'state',
+'state_subdivision_code'=>'NG-KD'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15825,
+'country_code_char2'=>'NG',
+'country_code_char3'=>'NGA',
+'state_subdivision_name'=>'Katsina',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'state',
+'state_subdivision_code'=>'NG-KT'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15826,
+'country_code_char2'=>'NG',
+'country_code_char3'=>'NGA',
+'state_subdivision_name'=>'Bayelsa',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'state',
+'state_subdivision_code'=>'NG-BY'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15827,
+'country_code_char2'=>'NG',
+'country_code_char3'=>'NGA',
+'state_subdivision_name'=>'Yobe',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'state',
+'state_subdivision_code'=>'NG-YO'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15828,
+'country_code_char2'=>'NG',
+'country_code_char3'=>'NGA',
+'state_subdivision_name'=>'Kano',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'state',
+'state_subdivision_code'=>'NG-KN'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15848,
+'country_code_char2'=>'NO',
+'country_code_char3'=>'NOR',
+'state_subdivision_name'=>'Vest-Agder',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'County',
+'state_subdivision_code'=>'NO-10'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15849,
+'country_code_char2'=>'NO',
+'country_code_char3'=>'NOR',
+'state_subdivision_name'=>'Sør-Trøndelag',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'County',
+'state_subdivision_code'=>'NO-16'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15850,
+'country_code_char2'=>'NO',
+'country_code_char3'=>'NOR',
+'state_subdivision_name'=>'Østfold',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'County',
+'state_subdivision_code'=>'NO-01'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15851,
+'country_code_char2'=>'NO',
+'country_code_char3'=>'NOR',
+'state_subdivision_name'=>'Nord-Trøndelag',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'County',
+'state_subdivision_code'=>'NO-17'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15852,
+'country_code_char2'=>'NO',
+'country_code_char3'=>'NOR',
+'state_subdivision_name'=>'Finnmark',
+'state_subdivision_alternate_names'=>'Finnmarku',
+'primary_level_name'=>'County',
+'state_subdivision_code'=>'NO-20'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15853,
+'country_code_char2'=>'NO',
+'country_code_char3'=>'NOR',
+'state_subdivision_name'=>'Aust-Agder',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'County',
+'state_subdivision_code'=>'NO-09'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15854,
+'country_code_char2'=>'NO',
+'country_code_char3'=>'NOR',
+'state_subdivision_name'=>'Buskerud',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'County',
+'state_subdivision_code'=>'NO-06'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15855,
+'country_code_char2'=>'NO',
+'country_code_char3'=>'NOR',
+'state_subdivision_name'=>'Hedmark',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'County',
+'state_subdivision_code'=>'NO-04'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15856,
+'country_code_char2'=>'NO',
+'country_code_char3'=>'NOR',
+'state_subdivision_name'=>'Møre og Romsdal',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'County',
+'state_subdivision_code'=>'NO-15'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15857,
+'country_code_char2'=>'NO',
+'country_code_char3'=>'NOR',
+'state_subdivision_name'=>'Nordland',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'County',
+'state_subdivision_code'=>'NO-18'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15858,
+'country_code_char2'=>'NO',
+'country_code_char3'=>'NOR',
+'state_subdivision_name'=>'Oppland',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'County',
+'state_subdivision_code'=>'NO-05'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15859,
+'country_code_char2'=>'NO',
+'country_code_char3'=>'NOR',
+'state_subdivision_name'=>'Oslo',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'County',
+'state_subdivision_code'=>'NO-03'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15860,
+'country_code_char2'=>'NO',
+'country_code_char3'=>'NOR',
+'state_subdivision_name'=>'Rogaland',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'County',
+'state_subdivision_code'=>'NO-11'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15861,
+'country_code_char2'=>'NO',
+'country_code_char3'=>'NOR',
+'state_subdivision_name'=>'Sogn og Fjordane',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'County',
+'state_subdivision_code'=>'NO-14'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15862,
+'country_code_char2'=>'NO',
+'country_code_char3'=>'NOR',
+'state_subdivision_name'=>'Telemark',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'County',
+'state_subdivision_code'=>'NO-08'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15863,
+'country_code_char2'=>'NO',
+'country_code_char3'=>'NOR',
+'state_subdivision_name'=>'Troms',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'County',
+'state_subdivision_code'=>'NO-19'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15864,
+'country_code_char2'=>'NO',
+'country_code_char3'=>'NOR',
+'state_subdivision_name'=>'Vestfold',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'County',
+'state_subdivision_code'=>'NO-07'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15866,
+'country_code_char2'=>'NO',
+'country_code_char3'=>'NOR',
+'state_subdivision_name'=>'Akershus',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'County',
+'state_subdivision_code'=>'NO-02'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15867,
+'country_code_char2'=>'NO',
+'country_code_char3'=>'NOR',
+'state_subdivision_name'=>'Hordaland',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'County',
+'state_subdivision_code'=>'NO-12'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15868,
+'country_code_char2'=>'OM',
+'country_code_char3'=>'OMN',
+'state_subdivision_name'=>'Az̧ Z̧āhirah',
+'state_subdivision_alternate_names'=>'Adh Dhahirah',
+'primary_level_name'=>'Region',
+'state_subdivision_code'=>'OM-ZA'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15870,
+'country_code_char2'=>'OM',
+'country_code_char3'=>'OMN',
+'state_subdivision_name'=>'Ash Sharqiyah',
+'state_subdivision_alternate_names'=>'Ash Sharqiyah',
+'primary_level_name'=>'Region',
+'state_subdivision_code'=>'OM-SH'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15871,
+'country_code_char2'=>'OM',
+'country_code_char3'=>'OMN',
+'state_subdivision_name'=>'Ad Dakhiliyah',
+'state_subdivision_alternate_names'=>'Ad Dakhiliya',
+'primary_level_name'=>'Region',
+'state_subdivision_code'=>'OM-DA'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15872,
+'country_code_char2'=>'OM',
+'country_code_char3'=>'OMN',
+'state_subdivision_name'=>'Al Wustá',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'Region',
+'state_subdivision_code'=>'OM-WU'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15873,
+'country_code_char2'=>'OM',
+'country_code_char3'=>'OMN',
+'state_subdivision_name'=>'Al Batinah',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'Region',
+'state_subdivision_code'=>'OM-BA'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15874,
+'country_code_char2'=>'OM',
+'country_code_char3'=>'OMN',
+'state_subdivision_name'=>'Musandam',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'Governorate',
+'state_subdivision_code'=>'OM-MU'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15875,
+'country_code_char2'=>'OM',
+'country_code_char3'=>'OMN',
+'state_subdivision_name'=>'Masqat',
+'state_subdivision_alternate_names'=>'Masqaţ, Maskat, Mascate',
+'primary_level_name'=>'Governorate',
+'state_subdivision_code'=>'OM-MA'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15876,
+'country_code_char2'=>'PK',
+'country_code_char3'=>'PAK',
+'state_subdivision_name'=>'Punjab',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'province',
+'state_subdivision_code'=>'PK-PB'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15877,
+'country_code_char2'=>'PK',
+'country_code_char3'=>'PAK',
+'state_subdivision_name'=>'Northern Areas',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'Pakistan administered area',
+'state_subdivision_code'=>'PK-NA'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15878,
+'country_code_char2'=>'PK',
+'country_code_char3'=>'PAK',
+'state_subdivision_name'=>'Federally Administered Tribal Areas',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'territory',
+'state_subdivision_code'=>'PK-TA'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15879,
+'country_code_char2'=>'PK',
+'country_code_char3'=>'PAK',
+'state_subdivision_name'=>'North-West Frontier',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'province',
+'state_subdivision_code'=>'PK-NW'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15880,
+'country_code_char2'=>'PK',
+'country_code_char3'=>'PAK',
+'state_subdivision_name'=>'Sind (en)',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'province',
+'state_subdivision_code'=>'PK-SD'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15881,
+'country_code_char2'=>'PK',
+'country_code_char3'=>'PAK',
+'state_subdivision_name'=>'Baluchistan (en)',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'province',
+'state_subdivision_code'=>'PK-BA'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15882,
+'country_code_char2'=>'PK',
+'country_code_char3'=>'PAK',
+'state_subdivision_name'=>'Azad Kashmir',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'Pakistan administered area',
+'state_subdivision_code'=>'PK-JK'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15883,
+'country_code_char2'=>'PK',
+'country_code_char3'=>'PAK',
+'state_subdivision_name'=>'Islamabad',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'federal capital territory',
+'state_subdivision_code'=>'PK-IS'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15884,
+'country_code_char2'=>'PW',
+'country_code_char3'=>'PLW',
+'state_subdivision_name'=>'Sonsorol',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'State',
+'state_subdivision_code'=>'PW-370'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15885,
+'country_code_char2'=>'PW',
+'country_code_char3'=>'PLW',
+'state_subdivision_name'=>'Ngeremlengui',
+'state_subdivision_alternate_names'=>'Ngeremlengui',
+'primary_level_name'=>'State',
+'state_subdivision_code'=>'PW-227'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15886,
+'country_code_char2'=>'PW',
+'country_code_char3'=>'PLW',
+'state_subdivision_name'=>'Hatobohei',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'State',
+'state_subdivision_code'=>'PW-050'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15887,
+'country_code_char2'=>'PW',
+'country_code_char3'=>'PLW',
+'state_subdivision_name'=>'Aimeliik',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'State',
+'state_subdivision_code'=>'PW-002'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15888,
+'country_code_char2'=>'PW',
+'country_code_char3'=>'PLW',
+'state_subdivision_name'=>'Melekeok',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'State',
+'state_subdivision_code'=>'PW-212'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15889,
+'country_code_char2'=>'PW',
+'country_code_char3'=>'PLW',
+'state_subdivision_name'=>'Angaur',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'State',
+'state_subdivision_code'=>'PW-010'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15890,
+'country_code_char2'=>'PW',
+'country_code_char3'=>'PLW',
+'state_subdivision_name'=>'Kayangel',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'State',
+'state_subdivision_code'=>'PW-100'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15891,
+'country_code_char2'=>'PW',
+'country_code_char3'=>'PLW',
+'state_subdivision_name'=>'Koror',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'State',
+'state_subdivision_code'=>'PW-150'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15892,
+'country_code_char2'=>'PW',
+'country_code_char3'=>'PLW',
+'state_subdivision_name'=>'Ngaraard',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'State',
+'state_subdivision_code'=>'PW-214'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15893,
+'country_code_char2'=>'PW',
+'country_code_char3'=>'PLW',
+'state_subdivision_name'=>'Ngardmau',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'State',
+'state_subdivision_code'=>'PW-222'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15894,
+'country_code_char2'=>'PW',
+'country_code_char3'=>'PLW',
+'state_subdivision_name'=>'Ngatpang',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'State',
+'state_subdivision_code'=>'PW-224'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15895,
+'country_code_char2'=>'PW',
+'country_code_char3'=>'PLW',
+'state_subdivision_name'=>'Ngchesar',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'State',
+'state_subdivision_code'=>'PW-226'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15896,
+'country_code_char2'=>'PW',
+'country_code_char3'=>'PLW',
+'state_subdivision_name'=>'Ngiwal',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'State',
+'state_subdivision_code'=>'PW-228'
+] );
+
+
+			
+State::create( [
+'state_subdivision_id'=>15897,
+'country_code_char2'=>'PW',
+'country_code_char3'=>'PLW',
+'state_subdivision_name'=>'Peleliu',
+'state_subdivision_alternate_names'=>'',
+'primary_level_name'=>'State',
+'state_subdivision_code'=>'PW-350'
+] );
+
     }
 }

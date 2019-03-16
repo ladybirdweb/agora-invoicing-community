@@ -5483,6 +5483,7 @@ return array(
     'Spatie\\String\\Integrations\\Underscore' => $vendorDir . '/spatie/string/src/Integrations/Underscore.php',
     'Spatie\\String\\Str' => $vendorDir . '/spatie/string/src/Str.php',
     'StateSubdivision' => $baseDir . '/database/seeds/StateSubdivision.php',
+    'StatesSeeder' => $baseDir . '/database/seeds/StatesSeeder.php',
     'StatusSettingSeeder' => $baseDir . '/database/seeds/DatabaseSeeder.php',
     'Svg\\DefaultStyle' => $vendorDir . '/phenx/php-svg-lib/src/Svg/DefaultStyle.php',
     'Svg\\Document' => $vendorDir . '/phenx/php-svg-lib/src/Svg/Document.php',

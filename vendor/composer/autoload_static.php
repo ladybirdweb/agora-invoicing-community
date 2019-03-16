@@ -6309,6 +6309,7 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
         'Spatie\\String\\Integrations\\Underscore' => __DIR__ . '/..' . '/spatie/string/src/Integrations/Underscore.php',
         'Spatie\\String\\Str' => __DIR__ . '/..' . '/spatie/string/src/Str.php',
         'StateSubdivision' => __DIR__ . '/../..' . '/database/seeds/StateSubdivision.php',
+        'StatesSeeder' => __DIR__ . '/../..' . '/database/seeds/StatesSeeder.php',
         'StatusSettingSeeder' => __DIR__ . '/../..' . '/database/seeds/DatabaseSeeder.php',
         'Svg\\DefaultStyle' => __DIR__ . '/..' . '/phenx/php-svg-lib/src/Svg/DefaultStyle.php',
         'Svg\\Document' => __DIR__ . '/..' . '/phenx/php-svg-lib/src/Svg/Document.php',

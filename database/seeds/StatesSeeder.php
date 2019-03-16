@@ -12,7 +12,7 @@ class BaseStateSubdivisionSeeder extends Seeder
      */
     public function run()
     {
-    	        State::create([
+        State::create([
 'state_subdivision_id'             => 20149,
 'country_code_char2'               => 'MK',
 'country_code_char3'               => 'MKD',
@@ -5026,7 +5026,7 @@ class BaseStateSubdivisionSeeder extends Seeder
 'primary_level_name'               => 'district',
 'state_subdivision_code'           => 'BS-NE',
 ]);
-                State::create([
+        State::create([
 'state_subdivision_id'             => 13722,
 'country_code_char2'               => 'FR',
 'country_code_char3'               => 'FRA',
@@ -10036,7 +10036,7 @@ class BaseStateSubdivisionSeeder extends Seeder
 'state_subdivision_code'           => 'JM-08',
 ]);
 
-                State::create([
+        State::create([
 'state_subdivision_id'             => 15083,
 'country_code_char2'               => 'LA',
 'country_code_char3'               => 'LAO',
@@ -12285,6 +12285,5 @@ class BaseStateSubdivisionSeeder extends Seeder
 'primary_level_name'               => 'State',
 'state_subdivision_code'           => 'PW-350',
 ]);
-
     }
 }

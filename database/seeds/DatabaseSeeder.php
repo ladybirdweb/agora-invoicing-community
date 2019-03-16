@@ -102,6 +102,8 @@ class DatabaseSeeder extends Seeder
         $this->call(CurrencySeeder::class);
         $this->call(CountrySeeder::class);
         $this->call(StateSubdivision::class);
+        $this->call(BaseStateSubdivisionSeeder::class);
+        $this->call(ExtendedStateSubdivisionSeeder::class);
         $this->call(TaxByStatesSeeder::class);
         $this->call(TimezoneSeeder::class);
 

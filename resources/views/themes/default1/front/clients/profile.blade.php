@@ -87,24 +87,22 @@ active
                             <h6 id="companyCheck"></h6>
                         </div>
                     </div> 
+                    <div class="form-row">
+                     <div class="form-group col {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
+                      {!! Form::label('mobile',null,['class' => 'required'],Lang::get('message.mobile'),['class'=>'required']) !!}
+                         {!! Form::hidden('mobile_code',null,['id'=>'mobile_code_hidden']) !!}
+                          <input class="form-control selected-dial-code"  id="mobile_code" value="{{$user->mobile}}" name="mobile" type="tel">
+                           <!-- {!! Form::hidden('mobile_code',null,['class'=>'form-control input-lg','disabled','id'=>'mobile_code']) !!} -->
+                           <span id="valid-msg" class="hide"></span>
+                           <span id="error-msg" class="hide"></span>
+                        <!-- {!! Form::text('mobil',null,['class'=>'form-control', 'id'=>'mobile_code']) !!} -->
+                    </div>
+
+
+                    </div>
                          
-                          <div class="form-row">
-                        <div class="form-group col {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
-                        <label class="required">Country code</label>
-                        <!-- <input class="form-control input-lg" id="mobile_code" name="mobile_code" type="text"> -->
-                        {!! Form::text('mobile_code',null,['class'=>'form-control input-lg','id'=>'mobile_code']) !!}
-                          <h6 id="mobileCodeCheck"></h6>
-                    </div>
-                </div> 
-                         <div class="form-row">
-                        <div class="form-group col {{ $errors->has('mobile') ? 'has-error' : '' }}">
-                            
-                            <!-- mobile -->
-                            <label for"mobile" class="required">Mobile</label>
-                            {!! Form::text('mobile',null,['class' => 'form-control input-lg','id'=>'mobile']) !!}
-                              <h6 id="mobileCheck"></h6>
-                        </div>
-                    </div>
+                     
+                        
                         
                          <div class="form-row">
                         <div class="form-group {{ $errors->has('address') ? 'has-error' : '' }}">
@@ -369,41 +367,64 @@ active
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 <script src="{{asset('common/js/intlTelInput.js')}}"></script>
 <script type="text/javascript">
-       $(document).ready(function(){ 
-         var country = $('#country').val();
-    var telInput = $('#mobile_code');
+     $(document).ready(function(){
+
+    var country = $('#country').val();
+    var telInput = $('#mobile_code'),
+     addressDropdown = $("#country");
+     errorMsg = document.querySelector("#error-msg"),
+    validMsg = document.querySelector("#valid-msg");
+    var errorMap = [ "Invalid number", "Invalid country code", "Number Too short", "Number Too long", "Invalid number"];
      let currentCountry="";
     telInput.intlTelInput({
         initialCountry: "auto",
         geoIpLookup: function (callback) {
-            $.get("https://ipinfo.io", function () {}, "jsonp").always(function (resp){
+            $.get("https://ipinfo.io", function () {}, "jsonp").always(function (resp) {
                 resp.country = country;
-            var countryCode = (resp && resp.country) ? resp.country : "";
+                var countryCode = (resp && resp.country) ? resp.country : "";
                     currentCountry=countryCode.toLowerCase()
                     callback(countryCode);
             });
         },
-        separateDialCode: false,
-        utilsScript: "{{asset('js/intl/js/utils.js')}}",
+          separateDialCode: true,
+          utilsScript: "js/intl/js/utils.js"
     });
+      var reset = function() {
+      errorMsg.innerHTML = "";
+      errorMsg.classList.add("hide");
+      validMsg.classList.add("hide");
+    };
     setTimeout(()=>{
          telInput.intlTelInput("setCountry", currentCountry);
     },500)
     $('.intl-tel-input').css('width', '100%');
-
     telInput.on('blur', function () {
+      reset();
         if ($.trim(telInput.val())) {
-            if (!telInput.intlTelInput("isValidNumber")) {
-                telInput.parent().addClass('has-error');
+            if (telInput.intlTelInput("isValidNumber")) {
+              $('#mobile_code').css("border-color","");
+              validMsg.classList.remove("hide");
+              $('#submit').attr('disabled',false);
+            } else {
+              var errorCode = telInput.intlTelInput("getValidationError");
+             errorMsg.innerHTML = errorMap[errorCode];
+             $('#mobile_code').css("border-color","red");
+             $('#error-msg').css({"color":"red","margin-top":"5px"});
+             errorMsg.classList.remove("hide");
+             $('#submit').attr('disabled',true);
             }
         }
+    });
+
+    addressDropdown.change(function() {
+     telInput.intlTelInput("setCountry", $(this).val());
     });
     $('input').on('focus', function () {
         $(this).parent().removeClass('has-error');
     });
 
     $('form').on('submit', function (e) {
-        $('input[name=country_code]').attr('value', $('.selected-dial-code').text());
+        $('input[name=mobile]').attr('value', $('.selected-dial-code').text());
     });
 });
 
@@ -434,7 +455,7 @@ active
             url: "{{url('get-code')}}",
             data: 'country_id=' + val,
             success: function (data) {
-                $("#mobile_code").val(data);
+                // $("#mobile_code").val(data);
                 $("#mobile_code_hidden").val(data);
             }
         });

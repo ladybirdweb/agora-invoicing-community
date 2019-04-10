@@ -31,7 +31,7 @@ class ClientRequest extends Request
                         'email'      => 'required|email|unique:users',
                         'mobile'     => 'required|numeric',
                         'bussiness'  => 'required',
-
+                        'timezone_id'      => 'required',
                         'address'          => 'required',
                         'zip'              => 'required',
                         'user_name'        => 'required|unique:users,user_name',

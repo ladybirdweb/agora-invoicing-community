@@ -68,17 +68,19 @@ class ExtendedBaseInvoiceController extends Controller
     {
         $totalSum = '0';
         $invoice = Invoice::where('id', $invoiceid)->first();
+        $date = date('m/d/Y', strtotime($invoice->date));
         $payment = Payment::where('invoice_id', $invoiceid)->pluck('amount')->toArray();
         if ($payment) {
             $totalSum = array_sum($payment);
         }
 
-        return view('themes.default1.invoice.editInvoice', compact('userid', 'invoiceid', 'invoice', 'totalSum'));
+        return view('themes.default1.invoice.editInvoice', compact('userid','date','invoiceid', 'invoice', 'totalSum'));
     }
 
     public function postEdit($invoiceid, Request $request)
     {
         $this->validate($request, [
+        'date'  => 'required',
         'total' => 'required',
         'status'=> 'required',
         ]);
@@ -87,7 +89,8 @@ class ExtendedBaseInvoiceController extends Controller
             $total = $request->input('total');
             $status = $request->input('status');
             $paid = $request->input('paid');
-            $invoice = Invoice::where('id', $invoiceid)->update(['grand_total'=>$total, 'status'=>$status]);
+            $invoice = Invoice::where('id', $invoiceid)->update(['grand_total'=>$total, 'status'=>$status,
+                'date'=>\Carbon\Carbon::parse($request->input('date'))]);
             $order = Order::where('invoice_id', $invoiceid)->update(['price_override'=>$total]);
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));

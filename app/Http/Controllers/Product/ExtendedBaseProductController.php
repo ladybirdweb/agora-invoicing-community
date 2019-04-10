@@ -118,10 +118,10 @@ class ExtendedBaseProductController extends Controller
             $product = Product::find($productid);
             if ($product->require_domain == 1) {
                 $field .= "<div class='col-md-4 form-group'>
-                        <label class='required'>"./* @scrutinizer ignore-type */
+                        <label>"./* @scrutinizer ignore-type */
                          \Lang::get('message.domain')."</label>
                         <input type='text' name='domain' class='form-control' 
-                        id='domain' placeholder='http://example.com'>
+                        id='domain' placeholder='domain.com or sub.domain.com'>
                 </div>";
             }
 

@@ -18,8 +18,8 @@ class CreateProductsTable extends Migration
             $table->string('description', 2000);
             $table->string('category', 225);
             $table->integer('parent');
-            $table->integer('type')->unsigned()->index('products_type_foreign');
-            $table->integer('group')->unsigned()->index('products_group_foreign');
+            $table->integer('type')->nullable();
+            $table->integer('group')->nullable();
             $table->string('welcome_email');
             $table->integer('require_domain');
             $table->boolean('can_modify_agent')->nullable();

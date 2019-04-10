@@ -63,6 +63,20 @@ Edit Invoice
 
                 <div class="row">
 
+                   <div class="col-md-6 form-group {{ $errors->has('date') ? 'has-error' : '' }}">
+                        <!-- last name -->
+                        {!! Form::label('date',Lang::get('message.date'),['class'=>'required']) !!}
+                      
+                         <div class="input-group date">
+                             <div class="input-group-addon">
+                      <i class="fa fa-calendar"></i>
+                         </div>
+                      <input name="date" type="text" value="{{$date}}" class="form-control" id="datepicker">
+                        </div>
+                      
+
+                    </div>
+
                     <div class="col-md-6 form-group {{ $errors->has('total') ? 'has-error' : '' }}">
                         <!-- first name -->
                         {!! Form::label('total',Lang::get('message.invoice-total'),['class'=>'required']) !!}
@@ -102,11 +116,9 @@ Edit Invoice
 {!! Form::close() !!}
 @stop
 @section('datepicker')
-<script type="text/javascript">
-$(function () {
-    $('#payment_date').datetimepicker({
-        format: 'YYYY-MM-DD'
+<script>
+     $('#datepicker').datepicker({
+      autoclose: true
     });
-});
 </script>
 @stop

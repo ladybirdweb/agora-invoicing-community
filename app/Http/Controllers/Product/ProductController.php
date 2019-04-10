@@ -316,7 +316,7 @@ class ProductController extends BaseProductController
             app('log')->error($e->getMessage());
             Bugsnag::notifyException($e);
 
-            return redirect()->with('fails', $e->getMessage());
+            return redirect()->back()->with('fails', $e->getMessage());
         }
     }
 

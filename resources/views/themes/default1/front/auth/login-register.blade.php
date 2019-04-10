@@ -311,6 +311,8 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                         {!! Form::hidden('mobile',null,['id'=>'mobile_code_hidden']) !!}
                                                            <input class="form-control input-lg" id="mobilenum" name="mobile" type="tel">
                                                         {!! Form::hidden('mobile_code',null,['class'=>'form-control input-lg','disabled','id'=>'mobile_code']) !!}
+                                                        <span id="valid-msg" class="hide"></span>
+                                                        <span id="error-msg" class="hide"></span>
                                                         <h6 id="mobile_codecheck"></h6>
                                                     </div>
                                                      
@@ -504,7 +506,8 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                     <label for="mobile" class="required">Mobile</label><br/>
                                      <input type="hidden" id="mobstatusConfirm" value="{{$mobileStatus}}">  
                                     <input class="form-control input-lg phone"  name="verify_number" type="text" id="verify_number">
-                                  
+                                    <span id="valid-msg1" class="hide"></span>
+                                    <span id="error-msg1" class="hide"></span>
                                 
                                     <h6 id="conmobile"></h6>
                               </div>
@@ -592,7 +595,14 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
 </div>
 @stop 
 @section('script')
+ <script async src="https://www.googletagmanager.com/gtag/js?id=AW-1027628032"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
+  gtag('config', 'AW-1027628032');
+</script>
 
 
   <script>
@@ -1450,9 +1460,24 @@ function verify_otp_check(){
       $(this).val("false");
     }
  })
+ //////////////////////////////Google Analytics Code after Submit button is clicked//////////////////
+ function gtag_report_conversion(url) {
+  console.log(typeof(url));
+  var callback = function () {
+    if (typeof(url) != 'undefined') {
+      window.location = url;
+    }
+  };
+  gtag('event', 'conversion', {
+      'send_to': 'AW-1027628032/ZftSCMqHw5YBEIC4geoD',
+      'event_callback': callback
+  });
+  return false;
+}
  ////////////////////////////////////////////////////////////////////////////////////////////////////
 function registerUser() {
-   $('#first_namecheck').hide();
+
+ $('#first_namecheck').hide();
    $('#last_namecheck').hide();
     $('#emailcheck').hide();
      $('#companycheck').hide();
@@ -1492,6 +1517,7 @@ function registerUser() {
 
 if(first_namecheck() && last_namecheck() && emailcheck() && companycheck()  && mobile_codecheck() && addresscheck() && towncheck()  && zipcheck() && bussinesscheck() && company_typecheck() && company_sizecheck() && countrycheck() && user_namecheck() && password1check() && conpasscheck()  && terms()) 
      {
+        // gtag_report_conversion();
       
      $("#register").html("<i class='fas fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
         $.ajax({
@@ -1810,8 +1836,12 @@ function prevTab(elem) {
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 <script type="text/javascript">
-    var telInput = $('#mobilenum');
+    var telInput = $('#mobilenum'),
+    errorMsg = document.querySelector("#error-msg"),
+    validMsg = document.querySelector("#valid-msg"),
      addressDropdown = $("#country");
+     var errorMap = [ "Invalid number", "Invalid country code", "Number Too short", "Number Too long", "Invalid number"];
+
     telInput.intlTelInput({
         geoIpLookup: function (callback) {
             $.get("https://ipinfo.io", function () {}, "jsonp").always(function (resp) {
@@ -1822,12 +1852,30 @@ function prevTab(elem) {
         initialCountry: "auto",
         separateDialCode: true,
     });
+    var reset = function() {
+  errorMsg.innerHTML = "";
+  errorMsg.classList.add("hide");
+  validMsg.classList.add("hide");
+};
+
     $('.intl-tel-input').css('width', '100%');
 
     telInput.on('blur', function () {
+      reset();
         if ($.trim(telInput.val())) {
-            if (!telInput.intlTelInput("isValidNumber")) {
-                telInput.parent().addClass('has-error');
+            if (telInput.intlTelInput("isValidNumber")) {
+              $('#mobilenum').css("border-color","");
+             $("#error-msg").html('');
+              $('#register').attr('disabled',false);
+            } else {
+              var errorCode = telInput.intlTelInput("getValidationError");
+             errorMsg.innerHTML = errorMap[errorCode];
+              $('#mobile_codecheck').html("");
+           
+             $('#mobilenum').css("border-color","red");
+             $('#error-msg').css({"color":"red","margin-top":"5px"});
+             errorMsg.classList.remove("hide");
+             $('#register').attr('disabled',true);
             }
         }
     });
@@ -1844,7 +1892,11 @@ function prevTab(elem) {
 
 </script>
 <script>
-              $(".phone").intlTelInput({
+    var tel = $('.phone'),
+     errorMsg1 = document.querySelector("#error-msg1"),
+    validMsg1 = document.querySelector("#valid-msg1");
+    var errorMap = [ "Invalid number", "Invalid country code", "Number Too short", "Number Too long", "Invalid number"];
+        tel.intlTelInput({
         // allowDropdown: false,
         // autoHideDialCode: false,
         // autoPlaceholder: "off",
@@ -1866,6 +1918,30 @@ function prevTab(elem) {
         separateDialCode: true,
         utilsScript: "js/intl/js/utils.js"
       });
+      var reset = function() {
+      errorMsg1.innerHTML = "";
+      errorMsg1.classList.add("hide");
+      validMsg1.classList.add("hide");
+     };
+     tel.on('blur', function () {
+      reset();
+        if ($.trim(tel.val())) {
+            if (tel.intlTelInput("isValidNumber")) {
+              $('.phone').css("border-color","");
+              validMsg1.classList.remove("hide");
+              $('#sendOtp').attr('disabled',false);
+            } else {
+              var errorCode = tel.intlTelInput("getValidationError");
+             errorMsg1.innerHTML = errorMap[errorCode];
+              $('#conmobile').html("");
+           
+             $('.phone').css("border-color","red");
+             $('#error-msg1').css({"color":"red","margin-top":"5px"});
+             errorMsg1.classList.remove("hide");
+             $('#sendOtp').attr('disabled',true);
+            }
+        }
+    });
         </script>
 <noscript>
  <img height="1" width="1" 

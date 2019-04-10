@@ -128,13 +128,13 @@ select.form-control{
 
                 <div class="row">
 
-                    <div class="col-md-4 form-group {{ $errors->has('company') ? 'has-error' : '' }}">
+                    <div class="col-md-3 form-group {{ $errors->has('company') ? 'has-error' : '' }}">
                         <!-- company -->
                         {!! Form::label('company',Lang::get('message.company'),['class'=>'required']) !!}
                         {!! Form::text('company',null,['class' => 'form-control']) !!}
 
                     </div>
-                    <div class="col-md-4 form-group {{ $errors->has('bussiness') ? 'has-error' : '' }}">
+                    <div class="col-md-3 form-group {{ $errors->has('bussiness') ? 'has-error' : '' }}">
                         <!-- company -->
                         {!! Form::label('bussiness','Industry',['class'=>'required']) !!}
                          <!-- {!! Form::select('bussiness',['Choose'=>'Choose',''=>$bussinesses],null,['class' => 'form-control selectpicker','data-live-search'=>'true', 'data-live-search-placeholder'=>'Search' ,'data-dropup-auto'=>'false', 'data-size'=>'10']) !!} -->
@@ -155,14 +155,14 @@ select.form-control{
                     </div>
 
 
-                    <div class="col-md-2 form-group {{ $errors->has('active') ? 'has-error' : '' }}">
+                    <div class="col-md-3 form-group {{ $errors->has('active') ? 'has-error' : '' }}">
                         <!-- mobile -->
                         {!! Form::label('active',Lang::get('message.active')) !!}
                         <p>{!! Form::radio('active',1,true) !!}&nbsp;Active&nbsp;&nbsp;{!! Form::radio('active',0) !!}&nbsp;Inactive</p>
 
                     </div>
 
-                      <div class="col-md-2 form-group {{ $errors->has('mobile_verified') ? 'has-error' : '' }}">
+                      <div class="col-md-3 form-group {{ $errors->has('mobile_verified') ? 'has-error' : '' }}">
                         <!-- mobile -->
                         {!! Form::label('mobile_verified',Lang::get('message.mobile')) !!}
                         <p>{!! Form::radio('mobile_verified',1,true) !!}&nbsp;Active&nbsp;&nbsp;{!! Form::radio('mobile_verified',0) !!}&nbsp;Inactive</p>
@@ -231,7 +231,7 @@ select.form-control{
 
                 <div class="row">
 
-                    <div class="col-md-4 form-group {{ $errors->has('town') ? 'has-error' : '' }}">
+                    <div class="col-md-3 form-group {{ $errors->has('town') ? 'has-error' : '' }}">
                         <!-- mobile -->
                         {!! Form::label('town',Lang::get('message.town')) !!}
                         {!! Form::text('town',null,['class' => 'form-control']) !!}
@@ -240,7 +240,7 @@ select.form-control{
 
                     <?php $countries = \App\Model\Common\Country::pluck('nicename', 'country_code_char2')->toArray();
                      ?>
-                    <div class="col-md-4 form-group select2{{ $errors->has('country') ? 'has-error' : '' }}">
+                    <div class="col-md-3 form-group select2{{ $errors->has('country') ? 'has-error' : '' }}">
                         <!-- name -->
                         {!! Form::label('country',Lang::get('message.country'),['class'=>'required']) !!}
                       
@@ -263,7 +263,7 @@ select.form-control{
                     <?php
                      $selectedstate = \App\Model\Common\State::select('state_subdivision_code','state_subdivision_name')->get();
                     ?>
-                    <div class="col-md-4 form-group {{ $errors->has('state') ? 'has-error' : '' }}">
+                    <div class="col-md-3 form-group {{ $errors->has('state') ? 'has-error' : '' }}">
                         <!-- name -->
                         {!! Form::label('state',Lang::get('message.state')) !!}
                         <!--{!! Form::select('state',[],null,['class' => 'form-control','id'=>'state-list']) !!}-->
@@ -282,13 +282,13 @@ select.form-control{
                         </select>
 
                     </div>
-                    <div class="col-md-4 form-group {{ $errors->has('zip') ? 'has-error' : '' }}">
+                    <div class="col-md-3 form-group {{ $errors->has('zip') ? 'has-error' : '' }}">
                         <!-- mobile -->
                         {!! Form::label('zip',Lang::get('message.zip'),['class'=>'required']) !!}
                         {!! Form::text('zip',null,['class' => 'form-control']) !!}
 
                     </div>
-                    <div class="col-md-4 form-group {{ $errors->has('timezone_id') ? 'has-error' : '' }}">
+                    <div class="col-md-3 form-group {{ $errors->has('timezone_id') ? 'has-error' : '' }}">
                         <!-- mobile -->
                         {!! Form::label('timezone_id',Lang::get('message.timezone'),['class'=>'required']) !!}
                          {!! Form::select('timezone_id', [''=>'Choose','Timezones'=>$timezones],null,['class' => 'form-control selectpicker','data-live-search'=>'true','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false','data-size'=>'10']) !!}
@@ -303,7 +303,7 @@ select.form-control{
                           </select> -->
 
                     </div>
-                    <div class="col-md-4 form-group {{ $errors->has('currency') ? 'has-error' : '' }}">
+                    <div class="col-md-3 form-group {{ $errors->has('currency') ? 'has-error' : '' }}">
                         <!-- mobile -->
                         <?php $currencies = DB::table('currencies')->where('status',1)->pluck('name','code')->toarray() ?>
                         {!! Form::label('currency',Lang::get('message.currency'),['class'=>'required']) !!}
@@ -329,23 +329,25 @@ select.form-control{
                    
 
 
-                    <div class="col-md-4 form-group {{ $errors->has('mobile') ? 'has-error' : '' }}">
+                    <div class="col-md-3 form-group {{ $errors->has('mobile') ? 'has-error' : '' }}">
                         <!-- mobile -->
 
                         {!! Form::label('mobile',Lang::get('message.mobile'),['class'=>'required']) !!}
                         {!! Form::hidden('mobile_code',null,['id'=>'mobile_code_hidden']) !!}
                          <input class="form-control"  id="mobile_code" name="mobile" value="{{ old('mobile') }}" type="tel">
+                         <span id="valid-msg" class="hide"></span>
+                          <span id="error-msg" class="hide"></span>
                     </div>
 
 
-                    <div class="col-md-4 form-group {{ $errors->has('skype') ? 'has-error' : '' }}">
+                    <div class="col-md-3 form-group {{ $errors->has('skype') ? 'has-error' : '' }}">
                         <!-- mobile -->
                         {!! Form::label('skype','Skype') !!}
                         {!! Form::text('skype',null,['class' => 'form-control']) !!}
 
                     </div>
                     
-                    <div class="col-md-4 form-group {{ $errors->has('manager') ? 'has-error' : '' }}">
+                    <div class="col-md-3 form-group {{ $errors->has('manager') ? 'has-error' : '' }}">
                         <!-- mobile -->
                         {!! Form::label('manager','Manager') !!}
                  <!-- {!! Form::select('manager',[''=>'Select','Managers'=>$managers],null,['class' => 'form-control']) !!} -->
@@ -375,12 +377,20 @@ select.form-control{
 // get the country data from the plugin
 var countryData = $.fn.intlTelInput.getCountryData(),
   telInput = $("#mobile_code"),
+   errorMsg = document.querySelector("#error-msg"),
+    validMsg = document.querySelector("#valid-msg"),
   addressDropdown = $("#country");
+  var errorMap = [ "Invalid number", "Invalid country code", "Number Too short", "Number Too long", "Invalid number"];
 // init plugin
 telInput.intlTelInput({
    separateDialCode: true,
-  utilsScript: "common/js/utils.js" // just for formatting/placeholders etc
+   utilsScript: "../js/intl/js/utils.js"
 });
+  var reset = function() {
+  errorMsg.innerHTML = "";
+  errorMsg.classList.add("hide");
+  validMsg.classList.add("hide");
+};
 
 // populate the country dropdown
 $.each(countryData, function(i, country) {
@@ -394,6 +404,23 @@ $.each(countryData, function(i, country) {
 telInput.on("countrychange", function(e, countryData) {
   addressDropdown.val(countryData.iso2);
 });
+    telInput.on('blur', function () {
+      reset();
+        if ($.trim(telInput.val())) {
+            if (telInput.intlTelInput("isValidNumber")) {
+              $('#mobile_code').css("border-color","");
+              validMsg.classList.remove("hide");
+              $('#submit').attr('disabled',false);
+            } else {
+              var errorCode = telInput.intlTelInput("getValidationError");
+             errorMsg.innerHTML = errorMap[errorCode];
+             $('#mobile_code').css("border-color","red");
+             $('#error-msg').css({"color":"red","margin-top":"5px"});
+             errorMsg.classList.remove("hide");
+             $('#submit').attr('disabled',true);
+            }
+        }
+    });
 
 // listen to the address dropdown for changes
 addressDropdown.change(function() {

@@ -18,9 +18,8 @@ active
 <li class="active">Profile</li>
 @stop
 @section('content')
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
 <style>
-    <style>
+  
     .required:after{ 
         content:'*'; 
         color:red; 
@@ -36,10 +35,20 @@ active
     background-color: white;
 
    }
+   .open>.dropdown-menu {
+  display: block;
+}
 .bootstrap-select.btn-group .dropdown-toggle .filter-option {
     color:#555;
 }
 </style>
+ <link rel="stylesheet" href="{{asset('client/css/selectpicker.css')}}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/css/bootstrap-select.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/js/bootstrap-select.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+
 
      <div id= "alertMessage"></div>
      <div id= "error"></div>        
@@ -137,7 +146,7 @@ active
                                 <!-- name -->
                               <label for"country" class="required">Country</label>
                                  <?php $countries = \App\Model\Common\Country::pluck('nicename', 'country_code_char2')->toArray(); ?>
-                                {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],null,['class' => 'form-control input-lg ','id'=>'country','onChange'=>'getCountryAttr(this.value);']) !!}
+                                {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],null,['class' => 'form-control input-lg selectpicker','data-live-search-style'=>"startsWith",'data-live-search'=>'true','data-live-search-placeholder'=>'Search','data-dropup-auto'=>'false','data-size'=>'10','id'=>'country','onChange'=>'getCountryAttr(this.value);']) !!}
 
 
                                <h6 id="countryCheck"></h6>
@@ -418,6 +427,20 @@ active
 
     addressDropdown.change(function() {
      telInput.intlTelInput("setCountry", $(this).val());
+       if ($.trim(telInput.val())) {
+            if (telInput.intlTelInput("isValidNumber")) {
+              $('#mobile_code').css("border-color","");
+               errorMsg.classList.add("hide");
+              $('#submit').attr('disabled',false);
+            } else {
+              var errorCode = telInput.intlTelInput("getValidationError");
+             errorMsg.innerHTML = errorMap[errorCode];
+             $('#mobile_code').css("border-color","red");
+             $('#error-msg').css({"color":"red","margin-top":"5px"});
+             errorMsg.classList.remove("hide");
+             $('#submit').attr('disabled',true);
+            }
+        }
     });
     $('input').on('focus', function () {
         $(this).parent().removeClass('has-error');

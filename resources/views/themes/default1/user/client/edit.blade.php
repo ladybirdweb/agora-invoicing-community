@@ -371,6 +371,20 @@ Edit User
 
     addressDropdown.change(function() {
      telInput.intlTelInput("setCountry", $(this).val());
+             if ($.trim(telInput.val())) {
+            if (telInput.intlTelInput("isValidNumber")) {
+              $('#mobile_code').css("border-color","");
+              errorMsg.classList.add("hide");
+              $('#submit').attr('disabled',false);
+            } else {
+              var errorCode = telInput.intlTelInput("getValidationError");
+             errorMsg.innerHTML = errorMap[errorCode];
+             $('#mobile_code').css("border-color","red");
+             $('#error-msg').css({"color":"red","margin-top":"5px"});
+             errorMsg.classList.remove("hide");
+             $('#submit').attr('disabled',true);
+            }
+        }
     });
     $('input').on('focus', function () {
         $(this).parent().removeClass('has-error');

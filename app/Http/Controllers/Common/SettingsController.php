@@ -66,6 +66,7 @@ class SettingsController extends BaseSettingsController
             $secretKey = $apikeys->pluck('captcha_secretCheck')->first();
             $updateSecret = $apikeys->pluck('update_api_secret')->first();
             $mobileauthkey = $apikeys->pluck('msg91_auth_key')->first();
+            $msg91Sender = $apikeys->pluck('msg91_sender')->first();
             $updateUrl = $apikeys->pluck('update_api_url')->first();
             $emailStatus = StatusSetting::pluck('emailverification_status')->first();
             $twitterKeys = $apikeys->select('twitter_consumer_key','twitter_consumer_secret',
@@ -83,7 +84,7 @@ class SettingsController extends BaseSettingsController
             $pipedriveStatus = StatusSetting::pluck('pipedrive_status')->first();
             $model = $apikeys->find(1);
 
-            return view('themes.default1.common.apikey', compact('model', 'status', 'licenseSecret', 'licenseUrl', 'siteKey', 'secretKey', 'captchaStatus', 'updateStatus', 'updateSecret', 'updateUrl', 'mobileStatus', 'mobileauthkey', 'emailStatus', 'twitterStatus', 'twitterKeys', 'zohoStatus', 'zohoKey', 'rzpStatus', 'rzpKeys', 'mailchimpSetting', 'mailchimpKey', 'termsStatus', 'termsUrl', 'pipedriveKey', 'pipedriveStatus'));
+            return view('themes.default1.common.apikey', compact('model', 'status', 'licenseSecret', 'licenseUrl', 'siteKey', 'secretKey', 'captchaStatus', 'updateStatus', 'updateSecret', 'updateUrl', 'mobileStatus', 'mobileauthkey','msg91Sender', 'emailStatus', 'twitterStatus', 'twitterKeys', 'zohoStatus', 'zohoKey', 'rzpStatus', 'rzpKeys', 'mailchimpSetting', 'mailchimpKey', 'termsStatus', 'termsUrl', 'pipedriveKey', 'pipedriveStatus'));
         } catch (\Exception $ex) {
             return redirect('/')->with('fails', $ex->getMessage());
         }

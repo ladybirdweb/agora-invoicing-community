@@ -147,9 +147,22 @@ main
                                        <button class="btn btn-primary float-right mb-5" id="verifyOTP" ng-click="submitOTP(otp)">Verify OTP</button>
                                     </div>
                                     <div class="col-md-3">
-                                        <a class="btn btn-danger float-right mb-5" ng-click="resendOTP()"  id="resendOTP" style="background: grey; color:white;">Resend OTP</a>
+                                         <button type="button" class="btn btn-danger float-right mb-5" name="resendOTP" id="resendOTP">
+                                          Resend OTP
+                                      </button>
                                     </div>
                                </div>
+
+                              <div class="row">
+                                
+                                  <div class="col-sm-6 col-md-3 col-lg-6">
+                                      <p>Did not receive OTP via SMS?</p>
+                                  <button type="button" class="btn btn-secondary" name="voiceOTP" id="voiceOTP" value="Verify OTP" style= "margin-top:-15px;"><i class="fa fa-phone"></i>
+                                                 Receive OTP via Voice call
+                                  </button>
+                                 </div>
+                                   
+                              </div>
 
 
                        
@@ -201,9 +214,21 @@ main
                                         <button class="btn btn-primary float-right mb-5" id="verifyOtp"  onclick="verifyBySendOtp()" >Verify OTP</button>
                                     </div>
                                     <div class="col-md-3">
-                                        <a class="btn btn-danger float-right mb-5" onclick="reOTP()" id="resendOTP" style="background: grey; color:white;">Resend OTP</a>
+                                      <button type="button" class="btn btn-danger float-right mb-5" name="resendOTP" id="resendOTP">
+                                          Resend OTP
+                                      </button>
                                     </div>
                                </div>
+                              <div class="row">
+                                
+                                  <div class="col-sm-6 col-md-3 col-lg-6">
+                                      <p>Did not receive OTP via SMS?</p>
+                                   <button type="button" class="btn btn-secondary" name="voiceOTP" id="voiceOTP" value="Verify OTP" style= "margin-top:-15px;"><i class="fa fa-phone"></i>
+                                                 Receive OTP via Voice call
+                                    </button>
+                                 </div>
+                                   
+                              </div>
                        
                     </div>
 
@@ -233,9 +258,7 @@ main
 
 
                     
-                        <script src="{{asset('css/jquery/jquery.min.js')}}"></script>
-
-                        <script src="{{asset('css/bootstrap/js/bootstrap.min.js')}}"></script>
+                      
                         <script src="{{asset('dist/js/angular.min.js')}}"></script>
 
           <script src="{{asset('js/intl/js/intlTelInput.js')}}"></script>
@@ -378,37 +401,24 @@ main
 
 
     <script type="text/javascript">
-
-    var telInput = $(".phonecode");
+     $(document).ready(function(){
+          var telInput = $(".phonecode");
     let currentCountry="";
-    // telInput.intlTelInput({
-        
-    //     geoIpLookup: function (callback) {
-    //         $.get("http://ipinfo.io", function () {}, "jsonp").always(function (resp) {
-    //             var countryCode = (resp && resp.country) ? resp.country : "";
-    //                 currentCountry=countryCode.toLowerCase()
-    //                 callback(countryCode);
-    //         });
-    //     },
-    //     initialCountry: "auto",
-    //       separateDialCode: true,
-    //     utilsScript: "{{asset('js/intl/js/utils.js')}}",
-    // });
      telInput.intlTelInput({
         geoIpLookup: function (callback) {
             $.get("https://ipinfo.io", function () {}, "jsonp").always(function (resp) {
                 var countryCode = (resp && resp.country) ? resp.country : "";
-                 currentCountry=countryCode.toLowerCase()
+                currentCountry=countryCode.toLowerCase()
                 callback(countryCode);
             });
         },
         initialCountry: "auto",
         separateDialCode: true,
-        utilsScript: "{{asset('lb-faveo/js/utils.js')}}"
+         utilsScript: "{{asset('js/intl/js/utils.js')}}"
     }); 
     setTimeout(()=>{
          telInput.intlTelInput("setCountry", currentCountry);
-    },500)
+    },50)
     $('.intl-tel-input').css('width', '100%');
 
     // telInput.on('blur', function () {
@@ -425,6 +435,9 @@ main
     $('form').on('submit', function (e) {
         $('input[name=country_code]').attr('value', $('.selected-dial-code').text());
     });
+
+    });
+
 
 </script>
 <script> 
@@ -457,6 +470,7 @@ main
                                   function verifyBySendOtp() {
                                      $('#confirmotp').hide();
                                       if(verify_otp1_check()) {
+                                    $("#verifyOtp").attr('disabled',true);   
                                     $("#verifyOtp").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Verifying...");
                                     var data = {
                                         "mobile":   $('#u_mobile').val(),
@@ -469,6 +483,7 @@ main
                                         type: 'GET',
                                         data: data,
                                         success: function (response) {
+                                          $("#verifyOtp").attr('disabled',false)
                                           $('#alertMessage1').hide(); 
                                           localStorage.setItem('successmessage', response.message);
                                               window.location.href = 'login';
@@ -483,6 +498,7 @@ main
                                             
                                         },
                                         error: function (data) {
+                                          $("$verifyOtp").attr('disabled',false)
                                              var html = '<div class="alert alert-success alert-dismissable"><strong><i class="fas fa-exclamation-triangle"></i>Oh Snap! </strong>'+data.responseJSON.result+' <br><ul>';
                                             $("#verifyOtp").html("Verify OTP");
                                               for (var key in data.responseJSON.errors)
@@ -506,17 +522,23 @@ main
                                     }
 
 
+//----------------------------------------------Send OTP via SMS----------------------------------------------------------------------//
 
-                                          function reOTP() {
-                                        var data = {
+                                        $('#resendOTP').on('click',function(){
+                                            var data = {
                                             "mobile":   $('#u_mobile').val(),
                                             "code"  :   $('#u_code').val(),
+                                            "type"  :  "text",
                                         };
+                                        $("#resendOTP").attr('disabled',true);
+                                        $("#resendOTP").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Resending..");
                                         $.ajax({
                                           url: '{{url('resend_otp')}}',
                                           type: 'GET',
                                           data: data,
                                           success: function (response) {
+                                            $("#resendOTP").attr('disabled',false);
+                                            $("#resendOTP").html("Resend OTP");
                                                 $('#alertMessage2').show();
                                                 $('#alertMessage1').hide();
                                                 $('#error2').hide();
@@ -524,6 +546,8 @@ main
                                                 $('#alertMessage2').html(result+ ".");
                                           },
                                           error: function (ex) {
+                                                $("#resendOTP").attr('disabled',false);
+                                                $("#resendOTP").html("Resend OTP");
                                                 var myJSON = JSON.parse(ex.responseText);
                                                 var html = '<div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<br><br><ul>';
                                                 for (var key in myJSON)
@@ -536,14 +560,50 @@ main
                                                 document.getElementById('error2').innerHTML = html;
                                           }
                                         });
-                                    }
+                                      });
+//-----------------------------------------------------Send OTP via VoiceCall------------------------------------------------------------//
+                                       
+                                       $('#voiceOTP').on('click',function(){
+                                        var data = {
+                                        "mobile":   $('#u_mobile').val(),
+                                        "code"  :   $('#u_code').val(),
+                                        "type"  :  "voice",
+                                        };
+                                        $("#voiceOTP").attr('disabled',true);
+                                        $("#voiceOTP").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Sending Voice Call..");
+                                        $.ajax({
+                                          url: '{{url('resend_otp')}}',
+                                          type: 'GET',
+                                          data: data,
+                                          success: function (response) {
+                                            $("#voiceOTP").attr('disabled',false);
+                                            $("#voiceOTP").html("Receive OTP via Voice call");
+                                                $('#alertMessage2').show();
+                                                $('#alertMessage1').hide();
+                                                $('#error2').hide();
+                                                var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="far fa-thumbs-up"></i> Well Done! </strong>'+response.message+'.</div>';
+                                                $('#alertMessage2').html(result+ ".");
+                                          },
+                                          error: function (ex) {
+                                                $("#voiceOTP").attr('disabled',false);
+                                                $("#voiceOTP").html("Receive OTP via Voice call");
+                                                var myJSON = JSON.parse(ex.responseText);
+                                                var html = '<div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<br><br><ul>';
+                                                for (var key in myJSON)
+                                                {
+                                                    html += '<li>' + myJSON[key][0] + '</li>'
+                                                }
+                                                html += '</ul></div>';
+                                                $('#alertMessage2').hide();
+                                                $('#error2').show(); 
+                                                document.getElementById('error2').innerHTML = html;
+                                          }
+                                        });
+                                        });
 
 
-
-                                </script>
-                       
-
-                        <script>
+                                  </script>
+                               <script>
                                 var app = angular.module('smsApp', []);
                                 app.controller('smsCtrl', function ($scope, $http) {
                                   
@@ -575,7 +635,6 @@ main
                                                 $('#alertMessage1').css('color', 'green');
                                             }
                                         }).error(function (data) {
-                                           console.log(data)
                                             $scope.msg2 = true;
                                             var res = "";
                                             $("#sendOTP").html("Send OTP");

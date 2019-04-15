@@ -2225,6 +2225,7 @@ label.required:after {
 	font-size: 13.6px;
 	font-size: 0.85rem;
 	line-height: 1.85;
+	font-weight:bolder;
 }
 
 .form-control.form-control-focused {
@@ -5857,7 +5858,6 @@ hr.invisible {
 .divider {
 	border: 0;
 	height: 1px;
-	margin: 44px auto;
 	background: rgba(0, 0, 0, 0.06);
 	text-align: center;
 	position: relative;

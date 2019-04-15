@@ -121,7 +121,7 @@ trait RegistersUsers
            
             return response()->json($response);
         } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex->getMessage());
+            Bugsnag::notifyException($ex);
             app('log')->error($ex->getMessage());
             $result = [$ex->getMessage()];
             return response()->json($result);

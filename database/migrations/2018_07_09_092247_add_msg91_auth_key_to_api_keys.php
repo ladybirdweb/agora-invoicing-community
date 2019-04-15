@@ -15,6 +15,7 @@ class AddMsg91AuthKeyToApiKeys extends Migration
     {
         Schema::table('api_keys', function (Blueprint $table) {
             $table->string('msg91_auth_key', 255)->nullable();
+            $table->string('msg91_sender',50)->nullable()
         });
     }
 

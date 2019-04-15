@@ -250,7 +250,7 @@ select.form-control{
                           <select name="country" value= "Choose" id="country" onChange="getCountryAttr(this.value)" class="form-control selectpicker" data-live-search="true" data-live-search-placeholder="Search" data-dropup-auto="false" data-size="10">
                              <option value="">Choose</option>
                            @foreach($countries as $key=>$country)
-                            @if (Input::old('country') == strtolower($key))
+                            @if (Input::old('country') == strtolower($key) || Input::old('country') == $key)
 
                             <option value={{$key}} selected>{{$country}}</option>
                              @else
@@ -376,6 +376,7 @@ select.form-control{
   $(document).ready(function(){
 // get the country data from the plugin
 var countryData = $.fn.intlTelInput.getCountryData(),
+
   telInput = $("#mobile_code"),
    errorMsg = document.querySelector("#error-msg"),
     validMsg = document.querySelector("#valid-msg"),
@@ -384,8 +385,9 @@ var countryData = $.fn.intlTelInput.getCountryData(),
 // init plugin
 telInput.intlTelInput({
    separateDialCode: true,
-   utilsScript: "../js/intl/js/utils.js"
+   utilsScript: "{{asset('js/intl/js/utils.js')}}"
 });
+
   var reset = function() {
   errorMsg.innerHTML = "";
   errorMsg.classList.add("hide");
@@ -423,9 +425,25 @@ telInput.on("countrychange", function(e, countryData) {
     });
 
 // listen to the address dropdown for changes
+ telInput.intlTelInput("setCountry", addressDropdown.val().toLowerCase());
 addressDropdown.change(function() {
-  telInput.intlTelInput("setCountry", $(this).val());
+  telInput.intlTelInput("setCountry", addressDropdown.val().toLowerCase());
+       if ($.trim(telInput.val())) {
+            if (telInput.intlTelInput("isValidNumber")) {
+              $('#mobile_code').css("border-color","");
+              errorMsg.classList.add("hide");
+              $('#submit').attr('disabled',false);
+            } else {
+              var errorCode = telInput.intlTelInput("getValidationError");
+             errorMsg.innerHTML = errorMap[errorCode];
+             $('#mobile_code').css("border-color","red");
+             $('#error-msg').css({"color":"red","margin-top":"5px"});
+             errorMsg.classList.remove("hide");
+             $('#submit').attr('disabled',true);
+            }
+        }
 });
+
 $('form').on('submit', function (e) {
         $('input[name=mobile_code]').attr('value', $('.selected-dial-code').text());
     });

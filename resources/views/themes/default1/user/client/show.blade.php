@@ -166,7 +166,7 @@ User Details
             </li>
             <li><a data-toggle="tab" href="#order" id="orderdetail"  data-toggle="tab">{{Lang::get('message.order_detail')}}</a>
             </li>
-            <li><a data-toggle="tab" href="#comment" data-toggle="tab">{{Lang::get('message.comments')}}</a>
+            <li><a data-toggle="tab" href="#comment" data-toggle="tab" >{{Lang::get('message.comments')}} <span class="badge bg-red">{{count($comments)}}</span></a>
             </li>
         </ul>
         <div class="tab-content">
@@ -714,7 +714,7 @@ User Details
 
              @include('themes.default1.user.client.editComment')
             <div class="tab-pane" id="comment">
-
+                  
                   <!-- timeline time label -->
                 
                      <a href="#comment" class="btn btn-primary btn-sm pull-right" data-toggle="modal" data-target="#createComment">

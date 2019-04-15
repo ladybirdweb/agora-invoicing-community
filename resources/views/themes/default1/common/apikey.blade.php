@@ -245,8 +245,10 @@ API Keys
                         {!! Form::text('msg91_auth_key',$mobileauthkey,['class' => 'form-control mobile_authkey','id'=>'mobile_authkey']) !!}
                          <h6 id="mobile_check"></h6>
                          <br/>
-                  
-                   
+                          <input type ="hidden" id="hiddenSender" value="{{$msg91Sender}}">
+                        {!! Form::label('mobile',Lang::get('message.msg91_sender')) !!}
+                        {!! Form::text('msg91_sender',$msg91Sender,['class' => 'form-control sender','id'=>'sender']) !!}
+                        <h6 id="sender_check"></h6>
                   </td>
                   <td style="padding-left: 230px;"><button type="submit" class="form-group btn btn-primary"  id="submit3"><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
                 </tr>
@@ -735,21 +737,27 @@ if ($('#update').prop("checked")) {
      {
         $('#mobile').prop('checked',true);
        $('.mobile_authkey').attr('enabled', true);
+       $('.sender').attr('enabled', true);
      } else if(mobilestatus ==0){
       $('#mobile').prop('checked',false);
         $('.mobile_authkey').attr('disabled', true);
+        $('.sender').attr('disabled', true);
      }
   });
  $("#mobile").on('change',function (){
     if($(this).prop('checked')) {
       var mobilekey =  $('#hiddenMobValue').val();
+      var sender =  $('#hiddenSender').val();
       $('.mobile_authkey').attr('disabled', false);
+      $('.sender').attr('disabled', false);
        $('#mobile_authkey').val(mobilekey);
+       $('#sender').val(sender);
 
      } else {
         $('.mobile_authkey').attr('disabled', true);
-         $('.mobile_authkey').val('');
-
+        $('.sender').attr('disabled', true);
+        $('.mobile_authkey').val('');
+        $('.sender').val('');
 
     }
  });
@@ -763,9 +771,23 @@ if ($('#update').prop("checked")) {
             $('#mobile_authkey').css("border-color","red");
             $('#mobile_check').css({"color":"red","margin-top":"5px"});
             return false;
+          } if($('#sender').val() != "") {
+            var sender =  new RegExp(/^[a-zA-Z]{0,6}$/);
+             if (sender.test($('#sender').val())){
+                 $('#sender_check').hide();
+                 $('#sender').css("border-color","");
+              } else{
+                 $('#sender_check').show();
+                $('#sender_check').html("Sender can only be alphabets and maximum 6 characters");
+                $('#sender').css("border-color","red");
+                $('#sender_check').css({"color":"red","margin-top":"5px"});
+                return false;
+              
+      }
           }
     } else {
        $('#mobile_check').html("");
+       $('#sender').html("");
        $('#mobile_authkey').css("border-color","");
          var mobilestatus = 0;
         
@@ -777,6 +799,7 @@ if ($('#update').prop("checked")) {
       data: {
        "status": mobilestatus,
        "msg91_auth_key": $('#mobile_authkey').val(),
+       "msg91_sender": $('#sender').val(),
       },
        success: function (data) {
             $('#alertMessage').show();

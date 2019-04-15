@@ -24,14 +24,12 @@
 
         // Route::match(['get', 'post'], 'home', 'Front\CartController@productList');
         // VisitStats::routes();
-        Route::get('pricing', 'Front\CartController@cart')->name('pricing');
         Route::get('group/{templateid}/{groupid}/', 'Front\PageController@pageTemplates');
         Route::get('cart/remove', 'Front\CartController@cartRemove');
         Route::get('update-agent-qty', 'Front\CartController@updateAgentQty');
         Route::get('update-qty', 'Front\CartController@updateProductQty');
         Route::get('reduce-product-qty', 'Front\CartController@reduceProductQty');
         Route::get('reduce-agent-qty', 'Front\CartController@reduceAgentQty');
-        Route::get('cart/addon/{id}', 'Front\CartController@addAddons');
         Route::get('cart/clear', 'Front\CartController@clearCart');
         Route::get('show/cart', 'Front\CartController@showCart');
 
@@ -54,7 +52,6 @@
         Route::get('get-group-field/{value}', 'Common\MailChimpController@addInterestFieldsToAgora');
         Route::get('contact-us', 'Front\CartController@contactUs');
         Route::post('contact-us', 'Front\CartController@postContactUs');
-        Route::get('add-cart/{slug}', 'Front\CartController@addCartBySlug');
 
         /*
          * Front Client Pages
@@ -181,7 +178,7 @@
          * Product
          */
 
-         Route::resource('products', 'Product\ProductController');
+        Route::resource('products', 'Product\ProductController');
         Route::get('get-products', ['as' => 'get-products', 'uses' => 'Product\ProductController@getProducts']);
         // Route::get('get-products', 'Product\ProductController@GetProducts');
         Route::get('products-delete', 'Product\ProductController@destroy')->name('products-delete');
@@ -193,7 +190,7 @@
         Route::get('edit-upload/{id}', 'Product\ProductController@editProductUpload');
         Route::get('get-upload/{id}', 'Product\ProductController@getUpload')->name('get-upload');
         Route::post('upload/save', 'Product\ProductController@save')->name('upload/save');
-         Route::post('chunkupload', 'Product\ProductController@uploadFile');
+        Route::post('chunkupload', 'Product\ProductController@uploadFile');
         Route::patch('upload/{id}', 'Product\ProductController@uploadUpdate');
         Route::get('get-group-url', 'Product\GroupController@generateGroupUrl');
 
@@ -438,8 +435,8 @@
         /*
          * download
          */
-      Route::get('download/{uploadid}/{userid}/{invoice_number}/{versionid}', 'Product\ProductController@userDownload');
-      Route::get('product/download/{id}/{invoice?}', 'Product\ProductController@adminDownload');
+        Route::get('download/{uploadid}/{userid}/{invoice_number}/{versionid}', 'Product\ProductController@userDownload');
+        Route::get('product/download/{id}/{invoice?}', 'Product\ProductController@adminDownload');
 
         /*
          * testings

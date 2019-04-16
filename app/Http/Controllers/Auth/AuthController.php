@@ -193,7 +193,7 @@ class AuthController extends BaseAuthController
             $code = $request->input('code');
             $mobile = $request->input('mobile');
             $otp = $request->input('otp');
-            $number = $code.$mobile;
+            $number = '(+'.$code.') '.$mobile;
             $result = $this->sendForReOtp($mobile, $code, $request->input('type'));
             // dd($result);
             switch ($request->input('type')) {

@@ -39,12 +39,15 @@ class AutoUpdateController extends Controller
     /*
     *  Add New Product
     */
-    public function addNewProduct($product_name, $product_sku)
+    public function addNewProductToAUS($product_name, $product_sku)
     {
         $url = $this->url;
+        $key = str_random(16);
         $api_key_secret = $this->api_key_secret;
-        $addProduct = $this->postCurl($url, "api_key_secret=$api_key_secret&api_function=products_add&product_title=$product_name&product_sku=$product_sku&product_key='123456'&product_status=1");
+        $addProduct = $this->postCurl($url, "api_key_secret=$api_key_secret&api_function=products_add&product_title=$product_name&product_sku=$product_sku&product_key=$key&product_status=1");
     }
+
+
 
     /*
     *  Add New Version

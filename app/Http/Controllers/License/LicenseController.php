@@ -96,6 +96,17 @@ class LicenseController extends Controller
         }
     }
 
+    public function deleteProductFromAPL($product)
+    {
+        $url = $this->url;
+        $api_key_secret = $this->api_key_secret;
+        $productId = $this->searchProductId($product->product_sku);
+        $productTitle =  $product->name;
+        $productSku = $product->sku;
+        $delProduct = $this->postCurl($url, "api_key_secret=$api_key_secret&api_function=products_edit
+         &product_id=$productId&product_title=$productTitle&product_sku=$productSku&product_status=1&delete_record=1");
+    }
+
     /*
    *  Edit User
    */

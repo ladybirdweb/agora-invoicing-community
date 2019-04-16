@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Product;
 
 // use Illuminate\Http\Request;
     use App\Http\Controllers\License\LicenseController;
+    use App\Http\Controllers\AutoUpdate\AutoUpdateController;
     use App\Http\Controllers\License\LicensePermissionsController;
     use App\Model\Common\Setting;
     use App\Model\Common\StatusSetting;
@@ -286,8 +287,8 @@ class ProductController extends BaseProductController
             if ($licenseStatus == 1) { //If License Setting Status is on,Add Product to the License Manager
                 $addProductToLicensing = $this->licensing->addNewProduct($input['name'], $input['product_sku']);
             }
-            $licenseCont = new \App\Http\Controllers\AutoUpdate\AutoUpdateController();
-            $addProductToLicensing = $licenseCont->addNewProduct($input['name'], $input['product_sku']);
+            $updateCont = new \App\Http\Controllers\AutoUpdate\AutoUpdateController();
+            $addProductToLicensing = $updateCont->addNewProductToAUS($input['name'], $input['product_sku']);
             if ($request->hasFile('image')) {
                 $image = $request->file('image')->getClientOriginalName();
                 $imagedestinationPath = 'common/images';
@@ -417,7 +418,7 @@ class ProductController extends BaseProductController
             $licenseStatus = StatusSetting::pluck('license_status')->first();
             if ($licenseStatus == 1) {
                 $addProductInLicensing = $this->licensing->editProduct($input['name'], $input['product_sku']);
-            }
+            } 
             $product = $this->product->where('id', $id)->first();
             if ($request->hasFile('image')) {
                 $image = $request->file('image')->getClientOriginalName();
@@ -470,6 +471,10 @@ class ProductController extends BaseProductController
                 foreach ($ids as $id) {
                     $product = $this->product->where('id', $id)->first();
                     if ($product) {
+                        $licenseStatus = StatusSetting::pluck('license_status')->first();
+                        if($licenseStatus ==1) {
+                            $this->licensing->deleteProductFromAPL($product);
+                        }
                         $product->delete();
                     } else {
                         echo "<div class='alert alert-danger alert-dismissable'>

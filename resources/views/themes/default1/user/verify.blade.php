@@ -188,12 +188,12 @@ main
                           
                           
                        
-                             <input type="hidden" class="form-control" name="code" value="{{$user -> mobile_code}}" id="u_code">
+                             <input type="hidden" class="form-control" name="code" value="{{$user->mobile_code}}" id="u_code">
                              <label for="mobile" class="required">Mobile</label><br/>
                           
                          
-                           <input type="text" class="form-control input-lg phonecode"  name="mobile" value="{{$user-> mobile}}" id="u_mobile">
-                            <input type="hidden"  name="oldemail" value="{{$user -> mobile}}" id="oldnumber">
+                           <input type="text" class="form-control input-lg phonecode"  name="mobile" value="{{$user-> mobile}}" id="u_mobile" type="tel">
+                            <input type="hidden"  name="oldemail" value="{{$user->mobile}}" id="oldnumber">
                             <h6 id="mobilecheck"></h6>
                            <div class="clear"></div>
                       
@@ -473,7 +473,7 @@ main
                                     $("#verifyOtp").attr('disabled',true);   
                                     $("#verifyOtp").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Verifying...");
                                     var data = {
-                                        "mobile":   $('#u_mobile').val(),
+                                        "mobile":   $('#u_mobile').val().replace(/[\. ,:-]+/g, ''),
                                         "code"  :   $('#u_code').val(),
                                         "otp"   :   $('#otp1').val(),
                                         'id'    :   $('#u_id').val()
@@ -610,15 +610,15 @@ main
                                     $scope.sendOTP = function () {
                                        $('#mobcheck').hide();
                                       if(verify_mobnumber_check()) { 
-                                    var oldnumber = $('#oldno').val();
-                                    var newnumber = $('#u_mobile').val();
+                                    var oldnumber = $('#oldno').val().replace(/[\. ,:-]+/g, '');
+                                    var newnumber = $('#u_mobile').val().replace(/[\. ,:-]+/g, '');
                                         $("#sendOTP").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Sending...");
                                         $scope.newObj = {};
                                         $scope.newObj['oldnumber'] = oldnumber;
                                         $scope.newObj['newnumber'] = newnumber;
                                         $scope.newObj['id'] = $('#u_id').val();
                                         $scope.newObj['code'] = $('#u_code').val();
-                                        $scope.newObj['mobile'] = $('#u_mobile').val();
+                                        $scope.newObj['mobile'] = $('#u_mobile').val().replace(/[\. ,:-]+/g, '');
                                         console.log($scope.newObj);
                                         $http({
                                             url: '{{url("otp/send")}}',
@@ -734,8 +734,8 @@ main
                                    if((verify_user_check()) && (verify_number_check())){
                                      var oldemail=$('#oldemail').val();
                                     var newemail = $('#u_email').val(); // this.value
-                                    var oldnumber = $('#oldnumber').val();
-                                    var newnumber = $('#u_mobile').val();
+                                    var oldnumber = $('#oldnumber').val().replace(/[\. ,:-]+/g, '');
+                                    var newnumber = $('#u_mobile').val().replace(/[\. ,:-]+/g, '');
                                       $("#sendOTPmail").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Sending...");
                                        
                                         var data = {
@@ -744,7 +744,7 @@ main
                                           "oldnumber": oldnumber,
                                           "oldemail": oldemail,
                                             "email": $('#u_email').val(),
-                                            "mobile": $('#u_mobile').val(),
+                                            "mobile": $('#u_mobile').val().replace(/[\. ,:-]+/g, ''),
                                             "code": $('#u_code').val(),
                                             'id': $('#u_id').val(),
                                             // 'password': $('#email_password').val()

@@ -749,7 +749,7 @@ function verify_otp_check(){
         $("#verifyOtp").attr('disabled',true);
         $("#verifyOtp").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Verifying...");
         var data = {
-            "mobile":   $('#verify_number').val(),
+            "mobile":   $('#verify_number').val().replace(/[\. ,:-]+/g, ''),
             "code"  :   $('#verify_country_code').val(),
             "otp"   :   $('#oneTimePassword').val(),
             'id'    :   $('#hidden_user_id').val(),
@@ -784,6 +784,7 @@ function verify_otp_check(){
                     html += '<li>' + myJSON[key][0] + '</li>'
                 }
                 html += '</ul></div>';
+                $('#successMessage2').hide();
                 $('#alertMessage2').hide(); 
                 $('#error2').show();
                 document.getElementById('error2').innerHTML = html;
@@ -832,7 +833,7 @@ function verify_otp_check(){
 
     $('#resendOTP').on('click',function(){
               var data = {
-            "mobile":   $('#verify_number').val(),
+            "mobile":   $('#verify_number').val().replace(/[\. ,:-]+/g, ''),
             "code"  :  ($('#verify_country_code').val()),
             "type"  :  "text",
         };
@@ -861,6 +862,7 @@ function verify_otp_check(){
                     html += '<li>' + myJSON[key][0] + '</li>'
                 }
                 html += '</ul></div>';
+                ('#successMessage2').hide();
                 $('#alertMessage2').hide();
                 $('#alertMessage3').hide();
                 $('#error2').show(); 
@@ -874,7 +876,7 @@ function verify_otp_check(){
 
     $('#voiceOTP').on('click',function(){
               var data = {
-            "mobile":   $('#verify_number').val(),
+            "mobile":   $('#verify_number').val().replace(/[\. ,:-]+/g, ''),
             "code"  :  ($('#verify_country_code').val()),
             "type"  :  "voice",
         };
@@ -1004,7 +1006,7 @@ function verify_otp_check(){
             "oldnumber": oldnumber,
             "oldemail": oldemail,
             "email": $('#verify_email').val(),
-            "mobile": $('#verify_number').val(),
+            "mobile": $('#verify_number').val().replace(/[\. ,:-]+/g, ''),
             'code': $('#verify_country_code').val(),
             'id': $('#user_id').val(),
             'password': $('#email_password').val()
@@ -1626,7 +1628,7 @@ if(first_namecheck() && last_namecheck() && emailcheck() && companycheck()  && m
                 "company_size": $('#company_size').val(),
                 "country": $('#country').val(),
                 "mobile_code": $('#mobile_code').val().replace(/\s/g, '') ,
-                "mobile": $('#mobilenum').val(),
+                "mobile": $('#mobilenum').val().replace(/[\. ,:-]+/g, ''),
                 "address": $('#address').val(),
                 "city": $('#city').val(),
                 "state": $('#state-list').val(),
@@ -1666,7 +1668,7 @@ if(first_namecheck() && last_namecheck() && emailcheck() && companycheck()  && m
                  }
 
                verifyForm.elements['verify_country_code'].value =$('#mobile_code').val();
-               var numberverify= verifyForm.elements['verify_number'].value = $('#mobilenum').val();
+               var numberverify= verifyForm.elements['verify_number'].value = $('#mobilenum').val().replace(/[\. ,:-]+/g, '');
                 sessionStorage.setItem('oldenumber',numberverify);
                 verifyForm.elements['email_password'].value = $('#password').val();
                 $("#register").html("Register");

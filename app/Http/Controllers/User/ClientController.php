@@ -293,6 +293,7 @@ class ClientController extends AdvanceSearchController
             $currency = $client->currency;
             $orders = $order->where('client', $id)->get();
             $comments = $client->comments()->where('user_id', $client->id)->get();
+
             return view(
                 'themes.default1.user.client.show',
                 compact(

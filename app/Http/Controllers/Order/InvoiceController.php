@@ -495,7 +495,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                     if ($this->tax_option->findOrFail(1)->tax_enable == 1) {
                         $taxs = $this->getTaxWhenEnable($productid, $taxs[0], $userid);
                     } elseif ($this->tax_option->tax_enable == 0) {//if tax_enable is 0
-
+          
                         $taxClassId = Tax::where('country', '')->where('state', 'Any State')
                      ->pluck('tax_classes_id')->first(); //In case of India when
                         //other tax is available and tax is not enabled
@@ -506,6 +506,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                         } elseif ($geoip_country != 'IN') {//In case of other country
                             // when tax is available and tax is not enabled(Applicable
                             //when Global Tax class for any country and state is not there)
+                            
 
                             $taxClassId = Tax::where('state', $geoip_state)
                         ->orWhere('country', $geoip_country)->pluck('tax_classes_id')->first();

@@ -27,7 +27,7 @@ class AddForeignKeysToProductsTable extends Migration
     {
         Schema::table('products', function (Blueprint $table) {
             $table->dropForeign('products_group_foreign');
-            $table->dropForeign('license_types');
+            $table->dropForeign('products_type_foreign');
         });
     }
 }

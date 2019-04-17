@@ -24,6 +24,7 @@
 
         // Route::match(['get', 'post'], 'home', 'Front\CartController@productList');
         // VisitStats::routes();
+        Route::get('pricing', 'Front\CartController@cart')->name('pricing');
         Route::get('group/{templateid}/{groupid}/', 'Front\PageController@pageTemplates');
         Route::get('cart/remove', 'Front\CartController@cartRemove');
         Route::get('update-agent-qty', 'Front\CartController@updateAgentQty');

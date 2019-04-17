@@ -360,7 +360,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
     public function invoiceGenerateByForm(Request $request, $user_id = '')
     {
-            $this->validate($request, [
+        $this->validate($request, [
                 'date'      => 'required',
                 'domain'    => 'sometimes|nullable|regex:/^(?!:\/\/)(?=.{1,255}$)((.{1,63}\.){1,127}(?![0-9]*$)[a-z0-9-]+\.?)$/i',
                 'plan'      => 'required_if:subscription,true',

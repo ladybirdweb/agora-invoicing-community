@@ -120,7 +120,7 @@ System Setting
 
                         <td><b>{!! Form::label('title',Lang::get('message.app-title')) !!}</b></td>
                         <td>
-                            <div class="form-group {{ $errors->has('title') ? 'has-error' : '' }}">
+                            <div class="form-group {{ $errors->has('company') ? 'has-error' : '' }}">
 
 
                                 {!! Form::text('title',null,['class' => 'form-control']) !!}

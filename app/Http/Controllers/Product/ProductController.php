@@ -279,7 +279,8 @@ class ProductController extends BaseProductController
             //     $currency = $input['currency'];
 
             return redirect()->back()
-                        ->withErrors($v);
+                        ->withErrors($v)
+                        ->withInput($request->input());
         }
 
         try {

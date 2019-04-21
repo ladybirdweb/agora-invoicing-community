@@ -133,7 +133,7 @@ class BaseClientController extends Controller
             if ($request->hasFile('profile_pic')) {
                 $file = $request->file('profile_pic');
                 $name = \Input::file('profile_pic')->getClientOriginalName();
-                $destinationPath = public_path('common\images\users');
+                $destinationPath = public_path('common/images/users');
                 $fileName = rand(0000, 9999).'.'.$name;
                 $file->move($destinationPath, $fileName);
                 $user->profile_pic = $fileName;

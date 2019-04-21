@@ -18,7 +18,6 @@ use App\Model\Payment\Promotion;
 use App\Model\Payment\PromotionType;
 use App\Model\Payment\TaxOption;
 use App\Model\Product\Product;
-use App\Model\Product\ProductGroup;
 use App\Model\Product\Type;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
@@ -184,8 +183,6 @@ class PeriodTypeTableSeeder extends Seeder
     }
 }
 
-
-
 class PromotionTableSeeder extends Seeder
 {
     public function run()
@@ -196,8 +193,6 @@ class PromotionTableSeeder extends Seeder
         Promotion::create(['id' => 1, 'code' => 'none', 'type' => 1, 'uses' => 0, 'value' => 'none', 'start' => '1000-01-01 00:00:00', 'expiry' => '1000-01-01 00:00:00']);
     }
 }
-
-
 
 class PromotionTypeTableSeeder extends Seeder
 {

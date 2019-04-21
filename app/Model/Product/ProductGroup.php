@@ -21,7 +21,7 @@ class ProductGroup extends BaseModel
 
     public function product()
     {
-        return $this->hasMany('App\Model\Product\Product');
+        return $this->hasMany('App\Model\Product\Product', 'group');
     }
 
     public function pricingTemplate()

@@ -207,18 +207,18 @@ class AuthController extends BaseAuthController
                     case 'voice':
                     $array = json_decode($result, true);
                     $response = ['type' => 'success',
-                   'message'           => 'Voice call has been sent to '.$number.'.Please Enter the OTP received on the call to login!!', ];
+                   'message'            => 'Voice call has been sent to '.$number.'.Please Enter the OTP received on the call to login!!', ];
                     break;
 
                 default:
                     $array = json_decode($result, true);
                     $response = ['type' => 'success',
-                   'message'           => 'Voice call has been sent to '.$number.'.Please Enter the OTP received on the call to login!!', ];
+                   'message'            => 'Voice call has been sent to '.$number.'.Please Enter the OTP received on the call to login!!', ];
                     break;
-                    
+
             }
 
-          return response()->json($response);
+            return response()->json($response);
         } catch (\Exception $ex) {
             $result = [$ex->getMessage()];
 

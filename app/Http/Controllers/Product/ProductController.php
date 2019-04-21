@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Product;
 
 // use Illuminate\Http\Request;
     use App\Http\Controllers\License\LicenseController;
-    use App\Http\Controllers\AutoUpdate\AutoUpdateController;
     use App\Http\Controllers\License\LicensePermissionsController;
     use App\Model\Common\Setting;
     use App\Model\Common\StatusSetting;
@@ -419,7 +418,7 @@ class ProductController extends BaseProductController
             $licenseStatus = StatusSetting::pluck('license_status')->first();
             if ($licenseStatus == 1) {
                 $addProductInLicensing = $this->licensing->editProduct($input['name'], $input['product_sku']);
-            } 
+            }
             $product = $this->product->where('id', $id)->first();
             if ($request->hasFile('image')) {
                 $image = $request->file('image')->getClientOriginalName();
@@ -473,7 +472,7 @@ class ProductController extends BaseProductController
                     $product = $this->product->where('id', $id)->first();
                     if ($product) {
                         $licenseStatus = StatusSetting::pluck('license_status')->first();
-                        if($licenseStatus ==1) {
+                        if ($licenseStatus == 1) {
                             $this->licensing->deleteProductFromAPL($product);
                         }
                         $product->delete();

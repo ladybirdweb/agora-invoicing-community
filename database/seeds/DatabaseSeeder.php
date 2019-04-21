@@ -184,16 +184,7 @@ class PeriodTypeTableSeeder extends Seeder
     }
 }
 
-class GroupTableSeeder extends Seeder
-{
-    public function run()
-    {
-        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        \DB::table('product_groups')->truncate();
-        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        ProductGroup::create(['id' => 1, 'name' => 'none', 'headline' => 'none', 'tagline' => 'none', 'available_payment'=>'null', 'hidden' => 0, 'cart_link' => 'none']);
-    }
-}
+
 
 class PromotionTableSeeder extends Seeder
 {
@@ -206,17 +197,7 @@ class PromotionTableSeeder extends Seeder
     }
 }
 
-class ProductTableSeeder extends Seeder
-{
-    public function run()
-    {
-        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        \DB::table('products')->truncate();
-        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        Product::create(['id' => 1, 'name' => 'default', 'type' => 1, 'group' => 1]);
-        // Product::create(['id'=>2, 'name'=>'none1', 'type'=>1, 'group' =>1]);
-    }
-}
+
 
 class PromotionTypeTableSeeder extends Seeder
 {

@@ -105,6 +105,7 @@ class CartController extends BaseCartController
                 $items = $this->addProduct($id);
                 \Cart::add($items); //Add Items To the Cart Collection
             }
+
             return redirect('show/cart');
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());

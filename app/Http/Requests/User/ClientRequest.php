@@ -26,11 +26,11 @@ class ClientRequest extends Request
         switch ($this->method()) {
             case 'POST':
                     return [
-                        'first_name' => 'required',
-                        'last_name'  => 'required',
-                        'email'      => 'required|email|unique:users',
-                        'mobile'     => 'required',
-                        'bussiness'  => 'required',
+                        'first_name'       => 'required',
+                        'last_name'        => 'required',
+                        'email'            => 'required|email|unique:users',
+                        'mobile'           => 'required',
+                        'bussiness'        => 'required',
                         'timezone_id'      => 'required',
                         'address'          => 'required',
                         'zip'              => 'required',

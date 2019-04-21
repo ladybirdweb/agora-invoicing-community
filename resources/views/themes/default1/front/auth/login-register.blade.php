@@ -59,9 +59,23 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
     border-top: 0;
     /*padding: 15px;*/
 }
+
+.open>.dropdown-menu {
+  display: block;
+  color:black;
+}
+.inner>.dropdown-menu{
+  margin-top: 0px;
+}
+
+
+
 </style>
-
-
+ <link rel="stylesheet" href="{{asset('client/css/selectpicker.css')}}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/css/bootstrap-select.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/js/bootstrap-select.js"></script>
 <div class="row">
     <div class="col-md-12">
 
@@ -225,7 +239,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                           <label class="required">First Name</label>
                                                           
                                                             {!! Form::text('first_name',null,['class'=>'form-control input-lg', 'id'=>'first_name']) !!}
-                                                            <h6 id="first_namecheck"></h6>
+                                                            <span id="first_namecheck"></span>
                                                            </div>
                                                             
 
@@ -233,7 +247,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                             <div class="form-group col-lg-6 {{ $errors->has('last_name') ? 'has-error' : '' }}">
                                                                 <label class="required">Last Name</label>
                                                                 {!! Form::text('last_name',null,['class'=>'form-control input-lg', 'id'=>'last_name']) !!}
-                                                             <h6 id="last_namecheck"></h6>
+                                                             <span id="last_namecheck"></span>
 
                                                         </div>
                                                         
@@ -244,7 +258,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                         <div class="form-group col {{ $errors->has('email') ? 'has-error' : '' }}">
                                                             <label class="required">Email Address</label>
                                                             {!! Form::email('email',null,['class'=>'form-control input-lg', 'id'=>'email']) !!}
-                                                            <h6 id="emailcheck"></h6>
+                                                            <span id="emailcheck"></span>
                                                         </div>
 
                                                       
@@ -256,7 +270,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                         <div class="form-group col-lg-6 {{ $errors->has('company') ? 'has-error' : '' }}">
                                                             <label  class="required">Company Name</label>
                                                             {!! Form::text('company',null,['class'=>'form-control input-lg', 'id'=>'company']) !!}
-                                                             <h6 id="companycheck"></h6>
+                                                             <span id="companycheck"></span>
                                                         </div>
                                                        
 
@@ -264,7 +278,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                             <label class="required">Industry</label>
                                                             {!! Form::select('bussiness',[''=>'Choose','Industry'=>$bussinesses],null,['class'=>'form-control input-lg', 'id'=>'business']) !!}
                                                     
-                                                            <h6 id="bussinesscheck"></h6>
+                                                            <span id="bussinesscheck"></span>
                                                         </div>
                                                         
 
@@ -282,7 +296,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                         <!-- email -->
                                                         {!! Form::label('company_type','Company Type',['class'=>'required']) !!}
                                                         {!! Form::select('company_type',[''=>'Choose','Company Types'=>$type],null,['class' => 'form-control input-lg', 'id'=>'company_type']) !!}
-                                                     <h6 id="company_typecheck"></h6>
+                                                     <span id="company_typecheck"></span>
                                                     </div>
                                                     
 
@@ -290,7 +304,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                         <!-- email -->
                                                         {!! Form::label('company_size','Company Size',['class'=>'required']) !!}
                                                         {!! Form::select('company_size',[''=>'Choose','Company Sizes'=>$size],null,['class' => 'form-control input-lg', 'id'=>'company_size']) !!}
-                                                       <h6 id="company_sizecheck"></h6>
+                                                       <span id="company_sizecheck"></span>
                                                     </div>
                                                     
 
@@ -299,8 +313,8 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                       <div class="form-group col {{ $errors->has('country') ? 'has-error' : '' }}">
                                                                 {!! Form::label('country',Lang::get('message.country'),['class'=>'required']) !!}
                                                                 <?php $countries = \App\Model\Common\Country::pluck('nicename', 'country_code_char2')->toArray(); ?>
-                                                                {!! Form::select('country',[''=>'Choose','Countries'=>$countries],$country,['class' => 'form-control input-lg selectpicker','onChange'=>'getCountryAttr(this.value);','id'=>'country']) !!}
-                                                            <h6 id="countrycheck"></h6>
+                                                                {!! Form::select('country',[''=>'','Choose'=>$countries],$country,['class' => 'form-control input-lg selectpicker','data-live-search-style'=>"startsWith",'data-live-search'=>'true','data-live-search-placeholder'=>'Search','data-dropup-auto'=>'false','data-size'=>'10','onChange'=>'getCountryAttr(this.value);','id'=>'country']) !!}
+                                                            <span id="countrycheck"></span>
 
                                                             </div>
                                                             
@@ -311,7 +325,9 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                         {!! Form::hidden('mobile',null,['id'=>'mobile_code_hidden']) !!}
                                                            <input class="form-control input-lg" id="mobilenum" name="mobile" type="tel">
                                                         {!! Form::hidden('mobile_code',null,['class'=>'form-control input-lg','disabled','id'=>'mobile_code']) !!}
-                                                        <h6 id="mobile_codecheck"></h6>
+                                                        <span id="valid-msg" class="hide"></span>
+                                                        <span id="error-msg" class="hide"></span>
+                                                        <span id="mobile_codecheck"></span>
                                                     </div>
                                                      
 
@@ -323,7 +339,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                             <label class="required">Address</label>
                                                             {!! Form::textarea('address',null,['class'=>'form-control','rows'=>4, 'id'=>'address']) !!}
 
-                                                       <h6 id="addresscheck"></h6>
+                                                       <span id="addresscheck"></span>
                                                     </div>
                                                      
 
@@ -333,7 +349,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                         <div class="form-group col-lg-6 {{ $errors->has('town') ? 'has-error' : '' }}">
                                                             <label>City/Town</label>
                                                             {!! Form::text('town',$location['city'],['class'=>'form-control input-lg', 'id'=>'city']) !!}
-                                                             <h6 id="towncheck"></h6>
+                                                             <span id="towncheck"></span>
                                                         </div>
                                                        
 
@@ -352,7 +368,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
 
                                                                    {!! Form::select('state',[$states],$value,['class' => 'form-control input-lg','id'=>'state-list']) !!}
                                                                
-                                                            <h6 id="statecheck"></h6>
+                                                            <span id="statecheck"></span>
                                                             </div>
                                                              
 
@@ -365,7 +381,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                             <div class="form-group col-lg-6 {{ $errors->has('zip') ? 'has-error' : '' }}">
                                                                 <label class="required">Zip/Postal Code</label>
                                                                 {!! Form::text('zip',$location['zip'],['class'=>'form-control input-lg', 'id'=>'zip']) !!}
-                                                                 <h6 id="zipcheck"></h6>
+                                                                 <span id="zipcheck"></span>
                                                             </div>
                                                             
 
@@ -373,7 +389,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                             <div class="form-group col-md-6 {{ $errors->has('user_name') ? 'has-error' : '' }}">
                                                                 <label class="required">User Name/E-mail Id</label>
                                                                 {!! Form::text('user_name',null,['class'=>'form-control input-lg', 'id'=>'user_name']) !!}
-                                                                 <h6 id="user_namecheck"></h6>
+                                                                 <span id="user_namecheck"></span>
                                                             </div>
                                                             
 
@@ -385,7 +401,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                               <div class="form-group col-lg-6 {{ $errors->has('password') ? 'has-error' : '' }}">
                                                             <label class="required">Password</label>
                                                             {!! Form::password('password',['class'=>'form-control input-lg', 'id'=>'password']) !!}
-                                                            <h6 id="password1check"></h6>
+                                                            <span id="password1check"></span>
                                                         </div>
                                                          
 
@@ -393,7 +409,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                             <label class="required">Re-enter Password</label>
 
                                                             {!! Form::password('password_confirmation',['class'=>'form-control input-lg', 'id'=>'confirm_pass']) !!}
-                                                             <h6 id="conpasscheck"></h6>
+                                                             <span id="conpasscheck"></span>
                                                         </div>
                                                         
 
@@ -404,7 +420,8 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
  -->                                            
                                                  @if ($captchaStatus==1 && $captchaSiteKey != '00' && $captchaSecretKey != '00')  
                                                  {!! NoCaptcha::display() !!}
-                                           <div class="robot-verification"></div>
+                                           <div class="robot-verification" id="captcha"></div>
+                                           <span id="captchacheck"></span>
                                                 @endif
                                                <div class="form-row">
                                                 @if ($termsStatus ==0)
@@ -417,30 +434,21 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
 
                                                             <input type="checkbox" value="false" name="terms" id="term" > {{Lang::get('message.i-agree-to-the')}} <a href="{{$termsUrl}}" target="_blank">{{Lang::get('message.terms')}}</a>
                                                         </label>
-                                                        <h6 id="termscheck"></h6>
+                                                        <span id="termscheck"></span>
                                                     </div>
                                                  @endif
                                                   
                                                           <div class="form-group col-lg-6">
-                                                              <button type="button"  class="btn btn-primary pull-right marginright mb-xl next-step" data-loading-text="Loading..." name="register" id="register" onclick="registerUser()">Submit</button>
+                                                              <button type="button"  class="btn btn-primary pull-right marginright mb-xl next-step"  name="register" id="register" onclick="registerUser()">Submit</button>
                                                           </div>
                                                    
                                                 </div>
-                                               
-                                                     
 
-                                                
                                                 <div class="form-row">
-                                                    <div class="form-group col-lg-6 ">
-                                                        
-                                                               <!--  <div class="pull-right marginright">
-                    <button type="submit" class="btn btn-medium btn-custom ">Submit</button>
-                </div> -->
-                                                      
-                                                       <!--  <button type="button" class="btn btn-primary mb-xl next-step" name="register" id="register" onclick="registerUser()">Register
-                                                        </button> -->
-                                                    </div>
+                                                   <div class="form-group col-lg-6">
+                                                   </div>
                                                 </div>
+                                             
                                                 </form>
                                             </div>
                                         </div>
@@ -487,7 +495,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                          </div>
                                       
                                     </div>
-                                      <h6 id="conemail"></h6>
+                                      <span id="conemail"></span>
                                   </div>
                                      
                               </div>
@@ -504,9 +512,10 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                     <label for="mobile" class="required">Mobile</label><br/>
                                      <input type="hidden" id="mobstatusConfirm" value="{{$mobileStatus}}">  
                                     <input class="form-control input-lg phone"  name="verify_number" type="text" id="verify_number">
-                                  
+                                    <span id="valid-msg1" class="hide"></span>
+                                    <span id="error-msg1" class="hide"></span>
                                 
-                                    <h6 id="conmobile"></h6>
+                                    <span id="conmobile"></span>
                               </div>
                                  
                               </div>
@@ -554,26 +563,42 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                 </div>
                             </div> -->
                             <form name="verify_otp_form">
-                                   <label for="mobile" class="required">Enter OTP</label><br/>
+                              <label for="mobile" class="required">Enter OTP</label><br/>
                                 <div class="row ">
-                                      <div class="col-md-6">
+                                    <div class="col-md-6">
                                         
                                         <input type="hidden" name="user_id" id="hidden_user_id"/>
                                         <input class="form-control input-lg"  id="oneTimePassword" name="oneTimePassword" type="text" >
-                                         <h6 id="enterotp"></h6>
+                                         <span id="enterotp"></span>
                                     </div>
 
 
-                                        
-                                             <div class="col-md-3">
-                                               <button type="button" class="btn btn-primary float-right mb-5" name="verifyOtp" id="verifyOtp" value="Verify OTP" onclick="verifyBySendOtp()" >
+                                    <div class="col-md-3">
+                                            <button type="button" class="btn btn-primary float-right mb-5" name="verifyOtp" id="verifyOtp" value="Verify OTP" onclick="verifyBySendOtp()" >
                                                         Verify OTP
-                                                 </button>
-                                                 </div>
-                                                      <div class="col-md-3">
-                                                        <a  class="btn btn-primary float-right mb-5" name="resendOTP" onclick="resendOTP()" id="resendOTP" ng-click="resendOTP()" style= "background: grey; color:white;">Resend OTP</a>
-                                        </div>  
+                                            </button>
+                                    </div>
+
+
+                                    <div class="col-md-3">
+                                       <button type="button" class="btn btn-danger float-right mb-5" name="resendOTP" id="resendOTP">
+                                          Resend OTP
+                                        </button>
+                                  
+
+                                    </div>  
                                                           
+                                </div>
+
+                                <div class="row">
+                                
+                                  <div class="col-sm-6 col-md-3 col-lg-6">
+                                      <p>Did not receive OTP via SMS?</p>
+                                   <button type="button" class="btn btn-secondary" name="voiceOTP" id="voiceOTP" value="Verify OTP" style= "margin-top:-15px;"><i class="fa fa-phone"></i>
+                                                 Receive OTP via Voice call
+                                    </button>
+                                 </div>
+                                   
                                 </div>
                              
                             </form>
@@ -592,7 +617,14 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
 </div>
 @stop 
 @section('script')
+ <script async src="https://www.googletagmanager.com/gtag/js?id=AW-1027628032"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
+  gtag('config', 'AW-1027628032');
+</script>
 
 
   <script>
@@ -714,9 +746,10 @@ function verify_otp_check(){
     function verifyBySendOtp() {
       $('#enterotp').hide();
          if(verify_otp_check()) {
+        $("#verifyOtp").attr('disabled',true);
         $("#verifyOtp").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Verifying...");
         var data = {
-            "mobile":   $('#verify_number').val(),
+            "mobile":   $('#verify_number').val().replace(/[\. ,:-]+/g, ''),
             "code"  :   $('#verify_country_code').val(),
             "otp"   :   $('#oneTimePassword').val(),
             'id'    :   $('#hidden_user_id').val(),
@@ -726,6 +759,7 @@ function verify_otp_check(){
             type: 'GET',
             data: data,
             success: function (response) {
+               $("#verifyOtp").attr('disabled',false);
                 $('#error2').hide();
                  $('#error').hide(); 
                 $('#alertMessage2').show();
@@ -738,9 +772,10 @@ function verify_otp_check(){
                   $('.wizard-inner').css('display','none');
                 setTimeout(()=>{
                         getLoginTab();
-                },0)
+                },10)
             },
             error: function (ex) {
+               $("#verifyOtp").attr('disabled',false);
                 var myJSON = JSON.parse(ex.responseText);
                 var html = '<div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<br><br><ul>';
                 $("#verifyOtp").html("Verify OTP");
@@ -749,6 +784,7 @@ function verify_otp_check(){
                     html += '<li>' + myJSON[key][0] + '</li>'
                 }
                 html += '</ul></div>';
+                $('#successMessage2').hide();
                 $('#alertMessage2').hide(); 
                 $('#error2').show();
                 document.getElementById('error2').innerHTML = html;
@@ -793,18 +829,23 @@ function verify_otp_check(){
                  verify_otp_check();
             });
 
+//--------------------------------------------------ReSend OTP via SMS---------------------------------------------------//
 
-    function resendOTP() {
-        var data = {
-            "mobile":   $('#verify_number').val(),
+    $('#resendOTP').on('click',function(){
+              var data = {
+            "mobile":   $('#verify_number').val().replace(/[\. ,:-]+/g, ''),
             "code"  :  ($('#verify_country_code').val()),
+            "type"  :  "text",
         };
+         $("#resendOTP").attr('disabled',true);
+         $("#resendOTP").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Resending..");
         $.ajax({
           url: '{{url('resend_otp')}}',
           type: 'GET',
           data: data,
           success: function (response) {
-               
+                $("#resendOTP").attr('disabled',false);
+                 $("#resendOTP").html("Resend OTP");
                  $('#successMessage2').hide ();
                   $('#alertMessage3').show();
                 $('#error2').hide();
@@ -812,6 +853,51 @@ function verify_otp_check(){
                 $('#alertMessage3').html(result+ ".");
           },
           error: function (ex) {
+            $("#resendOTP").attr('disabled',false);
+            $("#resendOTP").html("Resend OTP");
+                var myJSON = JSON.parse(ex.responseText);
+                var html = '<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>Oh Snap! </strong>Something went wrong<br><br><ul>';
+                for (var key in myJSON)
+                {
+                    html += '<li>' + myJSON[key][0] + '</li>'
+                }
+                html += '</ul></div>';
+                ('#successMessage2').hide();
+                $('#alertMessage2').hide();
+                $('#alertMessage3').hide();
+                $('#error2').show(); 
+                document.getElementById('error2').innerHTML = html;
+          }
+        })
+
+    }); 
+
+//---------------------------------------Resend OTP via voice call--------------------------------------------------//
+
+    $('#voiceOTP').on('click',function(){
+              var data = {
+            "mobile":   $('#verify_number').val().replace(/[\. ,:-]+/g, ''),
+            "code"  :  ($('#verify_country_code').val()),
+            "type"  :  "voice",
+        };
+        $("#voiceOTP").attr('disabled',true);
+         $("#voiceOTP").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Sending Voice Call..");
+        $.ajax({
+          url: '{{url('resend_otp')}}',
+          type: 'GET',
+          data: data,
+          success: function (response) {
+                $("#voiceOTP").attr('disabled',false);
+                 $("#voiceOTP").html("Receive OTP via Voice call");
+                 $('#successMessage2').hide ();
+                  $('#alertMessage3').show();
+                $('#error2').hide();
+                var result =  '<div class="alert alert-success"> <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Well Done! </strong>'+response.message+'!</div>';
+                $('#alertMessage3').html(result+ ".");
+          },
+          error: function (ex) {
+            $("#voiceOTP").attr('disabled',false);
+            $("#voiceOTP").html("Receive OTP via Voice call");
                 var myJSON = JSON.parse(ex.responseText);
                 var html = '<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>Oh Snap! </strong>Something went wrong<br><br><ul>';
                 for (var key in myJSON)
@@ -820,13 +906,13 @@ function verify_otp_check(){
                 }
                 html += '</ul></div>';
                 $('#alertMessage2').hide();
+                $('#alertMessage3').hide();
                 $('#error2').show(); 
                 document.getElementById('error2').innerHTML = html;
           }
-        });
-    }
+        })
 
-//Registration Form Validation
+    }); 
 
  
 </script>
@@ -912,7 +998,7 @@ function verify_otp_check(){
         var oldnumber = sessionStorage.getItem('oldemail');
         var newnumber = $('#verify_number').val();
 
-       
+        $("#sendOtp").attr('disabled',true);
         $("#sendOtp").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Sending...");
         var data = {
             "newemail": newemail,
@@ -920,7 +1006,7 @@ function verify_otp_check(){
             "oldnumber": oldnumber,
             "oldemail": oldemail,
             "email": $('#verify_email').val(),
-            "mobile": $('#verify_number').val(),
+            "mobile": $('#verify_number').val().replace(/[\. ,:-]+/g, ''),
             'code': $('#verify_country_code').val(),
             'id': $('#user_id').val(),
             'password': $('#email_password').val()
@@ -930,6 +1016,7 @@ function verify_otp_check(){
           type: 'GET',
           data: data,
           success: function (response) {
+            $("#sendOtp").attr('disabled',false);
             var result =  '<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Almost there! </strong>'+response.message+'</div>';
              if (($("#checkOtpStatus").val()) == 1 ) {
                 $('#successMessage2').html(result);
@@ -954,7 +1041,7 @@ function verify_otp_check(){
                 }
               },
           error: function (ex) {
-            
+            $("#sendOtp").attr('disabled',false);
             var myJSON = JSON.parse(ex.responseText);
             var html = '<div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<br><br><ul>';
             $("#sendOtp").html("Send");
@@ -1420,7 +1507,6 @@ function verify_otp_check(){
 
     function terms(){
     var term_val = $('#term').val();
-    console.log(term_val);
     if(term_val == 'false'){
         $('#termscheck').show();
         $('#termscheck').html("Terms must be accepted");
@@ -1438,6 +1524,25 @@ function verify_otp_check(){
     }
    }
 
+    function gcaptcha(){
+    var captcha_val = $('#g-recaptcha-response-1').val();
+    if(captcha_val == ''){
+        $('#captchacheck').show();
+        $('#captchacheck').html("Robot Verification Failed, please try again");
+        $('#captchacheck').focus();
+        $('#captcha').css("border-color","red");
+        $('#captchacheck').css({"color":"red","margin-top":"5px"});
+        // userErr =false;
+           return false;;
+    }
+   
+    else{
+         $('#captchacheck').hide();
+          $('#captcha').css("border-color","");
+         return true;
+    }
+   }
+
 
 ////////////////////////Registration Valdation Ends////////////////////////////////////////////////////////////////////////////////////////////
 ///
@@ -1450,9 +1555,24 @@ function verify_otp_check(){
       $(this).val("false");
     }
  })
+ //////////////////////////////Google Analytics Code after Submit button is clicked//////////////////
+ function gtag_report_conversion(url) {
+  console.log(typeof(url));
+  var callback = function () {
+    if (typeof(url) != 'undefined') {
+      window.location = url;
+    }
+  };
+  gtag('event', 'conversion', {
+      'send_to': 'AW-1027628032/ZftSCMqHw5YBEIC4geoD',
+      'event_callback': callback
+  });
+  return false;
+}
  ////////////////////////////////////////////////////////////////////////////////////////////////////
 function registerUser() {
-   $('#first_namecheck').hide();
+
+ $('#first_namecheck').hide();
    $('#last_namecheck').hide();
     $('#emailcheck').hide();
      $('#companycheck').hide();
@@ -1490,9 +1610,10 @@ function registerUser() {
            var termsErr = true;
      // con_password_check();
 
-if(first_namecheck() && last_namecheck() && emailcheck() && companycheck()  && mobile_codecheck() && addresscheck() && towncheck()  && zipcheck() && bussinesscheck() && company_typecheck() && company_sizecheck() && countrycheck() && user_namecheck() && password1check() && conpasscheck()  && terms()) 
+if(first_namecheck() && last_namecheck() && emailcheck() && companycheck()  && mobile_codecheck() && addresscheck() && towncheck()  && zipcheck() && bussinesscheck() && company_typecheck() && company_sizecheck() && countrycheck() && user_namecheck() && password1check() && conpasscheck()  && terms() && gcaptcha()) 
      {
-      
+        // gtag_report_conversion();
+     $("#register").attr('disabled',true);
      $("#register").html("<i class='fas fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
         $.ajax({
           url: '{{url("auth/register")}}',
@@ -1507,7 +1628,7 @@ if(first_namecheck() && last_namecheck() && emailcheck() && companycheck()  && m
                 "company_size": $('#company_size').val(),
                 "country": $('#country').val(),
                 "mobile_code": $('#mobile_code').val().replace(/\s/g, '') ,
-                "mobile": $('#mobilenum').val(),
+                "mobile": $('#mobilenum').val().replace(/[\. ,:-]+/g, ''),
                 "address": $('#address').val(),
                 "city": $('#city').val(),
                 "state": $('#state-list').val(),
@@ -1521,7 +1642,7 @@ if(first_namecheck() && last_namecheck() && emailcheck() && companycheck()  && m
                 "_token": "{!! csrf_token() !!}",
           },
           success: function (response) {
-
+            $("#register").attr('disabled',false);
             if(response.type == 'success'){
                
                 $('.wizard-inner').css('display','block');
@@ -1546,12 +1667,8 @@ if(first_namecheck() && last_namecheck() && emailcheck() && companycheck()  && m
                
                  }
 
-          
-                 
-
-                verifyForm.elements['verify_country_code'].value =$('#mobile_code').val();
-
-               var numberverify= verifyForm.elements['verify_number'].value = $('#mobilenum').val();
+               verifyForm.elements['verify_country_code'].value =$('#mobile_code').val();
+               var numberverify= verifyForm.elements['verify_number'].value = $('#mobilenum').val().replace(/[\. ,:-]+/g, '');
                 sessionStorage.setItem('oldenumber',numberverify);
                 verifyForm.elements['email_password'].value = $('#password').val();
                 $("#register").html("Register");
@@ -1561,6 +1678,7 @@ if(first_namecheck() && last_namecheck() && emailcheck() && companycheck()  && m
             }
           },
           error: function (data) {
+            $("#register").attr('disabled',false);
             location.reload();
             $("#register").html("Register");
             $('html, body').animate({scrollTop:0}, 500);
@@ -1604,13 +1722,7 @@ if(first_namecheck() && last_namecheck() && emailcheck() && companycheck()  && m
     
 });
 
-
-    //confirm email/password Validdation
- 
-            // alert('sdsd');   
-            
-
-        
+     
 
 </script>
 
@@ -1801,6 +1913,7 @@ fbq('track', 'PageView');
 });
 
 function nextTab(elem) {
+
     $(elem).next().find('a[data-toggle="tab"]').click();
 }
 function prevTab(elem) {
@@ -1810,8 +1923,12 @@ function prevTab(elem) {
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 <script type="text/javascript">
-    var telInput = $('#mobilenum');
+    var telInput = $('#mobilenum'),
+    errorMsg = document.querySelector("#error-msg"),
+    validMsg = document.querySelector("#valid-msg"),
      addressDropdown = $("#country");
+     var errorMap = [ "Invalid number", "Invalid country code", "Number Too short", "Number Too long", "Invalid number"];
+
     telInput.intlTelInput({
         geoIpLookup: function (callback) {
             $.get("https://ipinfo.io", function () {}, "jsonp").always(function (resp) {
@@ -1822,12 +1939,31 @@ function prevTab(elem) {
         initialCountry: "auto",
         separateDialCode: true,
     });
+    var reset = function() {
+  errorMsg.innerHTML = "";
+  errorMsg.classList.add("hide");
+  validMsg.classList.add("hide");
+};
+
     $('.intl-tel-input').css('width', '100%');
 
     telInput.on('blur', function () {
+      reset();
         if ($.trim(telInput.val())) {
-            if (!telInput.intlTelInput("isValidNumber")) {
-                telInput.parent().addClass('has-error');
+            if (telInput.intlTelInput("isValidNumber")) {
+              $('#mobilenum').css("border-color","");
+             $("#error-msg").html('');
+              errorMsg.classList.add("hide");
+              $('#register').attr('disabled',false);
+            } else {
+              var errorCode = telInput.intlTelInput("getValidationError");
+             errorMsg.innerHTML = errorMap[errorCode];
+              $('#mobile_codecheck').html("");
+           
+             $('#mobilenum').css("border-color","red");
+             $('#error-msg').css({"color":"red","margin-top":"5px"});
+             errorMsg.classList.remove("hide");
+             $('#register').attr('disabled',true);
             }
         }
     });
@@ -1835,7 +1971,24 @@ function prevTab(elem) {
         $(this).parent().removeClass('has-error');
     });
     addressDropdown.change(function() {
-  telInput.intlTelInput("setCountry", $(this).val());
+   telInput.intlTelInput("setCountry", $(this).val());
+          if ($.trim(telInput.val())) {
+            if (telInput.intlTelInput("isValidNumber")) {
+              $('#mobilenum').css("border-color","");
+             $("#error-msg").html('');
+              errorMsg.classList.add("hide");
+              $('#register').attr('disabled',false);
+            } else {
+              var errorCode = telInput.intlTelInput("getValidationError");
+             errorMsg.innerHTML = errorMap[errorCode];
+              $('#mobile_codecheck').html("");
+           
+             $('#mobilenum').css("border-color","red");
+             $('#error-msg').css({"color":"red","margin-top":"5px"});
+             errorMsg.classList.remove("hide");
+             $('#register').attr('disabled',true);
+            }
+        }
 });
 
     $('form').on('submit', function (e) {
@@ -1844,7 +1997,13 @@ function prevTab(elem) {
 
 </script>
 <script>
-              $(".phone").intlTelInput({
+    var tel = $('.phone'),
+     country = $('#country').val();
+     addressDropdown = $("#country");
+     errorMsg1 = document.querySelector("#error-msg1"),
+    validMsg1 = document.querySelector("#valid-msg1");
+    var errorMap = [ "Invalid number", "Invalid country code", "Number Too short", "Number Too long", "Invalid number"];
+        tel.intlTelInput({
         // allowDropdown: false,
         // autoHideDialCode: false,
         // autoPlaceholder: "off",
@@ -1853,6 +2012,7 @@ function prevTab(elem) {
         // formatOnDisplay: false,
         geoIpLookup: function(callback) {
           $.get("https://ipinfo.io", function() {}, "jsonp").always(function(resp) {
+             resp.country = country;
             var countryCode = (resp && resp.country) ? resp.country : "";
             callback(countryCode);
           });
@@ -1864,8 +2024,38 @@ function prevTab(elem) {
         placeholderNumberType: "MOBILE",
         // preferredCountries: ['cn', 'jp'],
         separateDialCode: true,
-        utilsScript: "js/intl/js/utils.js"
+
+        utilsScript: "{{asset('js/intl/js/utils.js')}}"
       });
+      var reset = function() {
+      errorMsg1.innerHTML = "";
+      errorMsg1.classList.add("hide");
+      validMsg1.classList.add("hide");
+     };
+    
+      addressDropdown.change(function() {
+        tel.intlTelInput("setCountry", $(this).val());
+      });
+    
+     tel.on('blur', function () {
+      reset();
+        if ($.trim(tel.val())) {
+            if (tel.intlTelInput("isValidNumber")) {
+              $('.phone').css("border-color","");
+              validMsg1.classList.remove("hide");
+              $('#sendOtp').attr('disabled',false);
+            } else {
+              var errorCode = tel.intlTelInput("getValidationError");
+             errorMsg1.innerHTML = errorMap[errorCode];
+              $('#conmobile').html("");
+           
+             $('.phone').css("border-color","red");
+             $('#error-msg1').css({"color":"red","margin-top":"5px"});
+             errorMsg1.classList.remove("hide");
+             $('#sendOtp').attr('disabled',true);
+            }
+        }
+    });
         </script>
 <noscript>
  <img height="1" width="1" 

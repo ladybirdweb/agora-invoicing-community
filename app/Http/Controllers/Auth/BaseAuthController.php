@@ -52,9 +52,9 @@ class BaseAuthController extends Controller
     {
         $client = new \GuzzleHttp\Client();
         $number = $code.$mobile;
-        $key = ApiKey::where('id', 1)->value('msg91_auth_key');
+        $key = ApiKey::where('id', 1)->select('msg91_auth_key', 'msg91_sender')->first();
         $response = $client->request('GET', 'https://control.msg91.com/api/sendotp.php', [
-            'query' => ['authkey' => $key, 'mobile' => $number],
+            'query' => ['authkey' => $key->msg91_auth_key, 'mobile' => $number, 'sender'=>$key->msg91_sender],
         ]);
         $send = $response->getBody()->getContents();
         $array = json_decode($send, true);
@@ -68,13 +68,13 @@ class BaseAuthController extends Controller
     /**
      * ReSends Otp.
      */
-    public function sendForReOtp($mobile, $code)
+    public function sendForReOtp($mobile, $code, $type)
     {
         $client = new \GuzzleHttp\Client();
         $number = $code.$mobile;
         $key = ApiKey::where('id', 1)->value('msg91_auth_key');
         $response = $client->request('GET', 'https://control.msg91.com/api/retryotp.php', [
-            'query' => ['authkey' => $key, 'mobile' => $number],
+            'query' => ['authkey' => $key, 'mobile' => $number, 'retrytype'=>$type],
         ]);
         $send = $response->getBody()->getContents();
         $array = json_decode($send, true);
@@ -107,7 +107,7 @@ class BaseAuthController extends Controller
             $userid = $request->input('id');
             $email = $request->input('email');
             $pass = $request->input('password');
-            $number = $code.$mobile;
+            $number = '(+'.$code.') '.$mobile;
             $mobileStatus = StatusSetting::pluck('msg91_status')->first();
             $companyEmail = Setting::find(1)->company_email;
             $msg1 = '';

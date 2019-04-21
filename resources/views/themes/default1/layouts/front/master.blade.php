@@ -34,7 +34,8 @@ if($script){
   
 
 
-
+         <!-- <link href="https://netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet"> -->
+        
            <link rel="stylesheet" href="{{asset('client/css/bootstrap.min.css')}}">
           <link rel="stylesheet" href="{{asset('client/css/fontawesome-all.min.css')}}">
           <link rel="stylesheet" href="{{asset('client/css/font-awesome.min.css')}}">
@@ -70,8 +71,13 @@ if($script){
           <!-- Head Libs -->
           <script src="{{asset('client/js/modernizr.min.js')}}"></script>
 
-   </head>
 
+   </head>
+   <style>
+     .alert {
+      font-weight:bolder;
+     }
+   </style>
     <body>
 
         <?php
@@ -520,6 +526,7 @@ if($script){
 
         <!-- Vendor -->
     </script>
+     
         <script src="{{asset('client/js/jquery.min.js')}}"></script>
           <script src="{{asset('client/js/jquery.appear.min.js')}}"></script>
           <script src="{{asset('client/js/jquery.easing.min.js')}}"></script>

@@ -395,7 +395,7 @@
 	color: #999;
 	font-size: 11px;
 	text-transform: uppercase;
-	font-weight: normal;
+	font-weight: bolder;
 }
 .project-detail-construction .list-project-details li p {
 	padding: 0;
@@ -423,6 +423,7 @@
 	padding: 60px 0 30px;
 	min-height: 400px;
 	overflow: hidden;
+	font-weight: bolder;
 }
 #footer h1, #footer h2, #footer h3, #footer h4, #footer a {
 	color: #333;

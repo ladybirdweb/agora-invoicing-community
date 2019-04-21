@@ -278,7 +278,8 @@ class ProductController extends BaseProductController
             //     $currency = $input['currency'];
 
             return redirect()->back()
-                        ->withErrors($v);
+                        ->withErrors($v)
+                        ->withInput($request->input());
         }
 
         try {
@@ -286,8 +287,8 @@ class ProductController extends BaseProductController
             if ($licenseStatus == 1) { //If License Setting Status is on,Add Product to the License Manager
                 $addProductToLicensing = $this->licensing->addNewProduct($input['name'], $input['product_sku']);
             }
-            $licenseCont = new \App\Http\Controllers\AutoUpdate\AutoUpdateController();
-            $addProductToLicensing = $licenseCont->addNewProduct($input['name'], $input['product_sku']);
+            $updateCont = new \App\Http\Controllers\AutoUpdate\AutoUpdateController();
+            $addProductToLicensing = $updateCont->addNewProductToAUS($input['name'], $input['product_sku']);
             if ($request->hasFile('image')) {
                 $image = $request->file('image')->getClientOriginalName();
                 $imagedestinationPath = 'common/images';
@@ -316,7 +317,7 @@ class ProductController extends BaseProductController
             app('log')->error($e->getMessage());
             Bugsnag::notifyException($e);
 
-            return redirect()->with('fails', $e->getMessage());
+            return redirect()->back()->with('fails', $e->getMessage());
         }
     }
 
@@ -470,6 +471,10 @@ class ProductController extends BaseProductController
                 foreach ($ids as $id) {
                     $product = $this->product->where('id', $id)->first();
                     if ($product) {
+                        $licenseStatus = StatusSetting::pluck('license_status')->first();
+                        if ($licenseStatus == 1) {
+                            $this->licensing->deleteProductFromAPL($product);
+                        }
                         $product->delete();
                     } else {
                         echo "<div class='alert alert-danger alert-dismissable'>

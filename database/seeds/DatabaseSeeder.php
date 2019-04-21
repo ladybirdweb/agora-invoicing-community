@@ -18,7 +18,6 @@ use App\Model\Payment\Promotion;
 use App\Model\Payment\PromotionType;
 use App\Model\Payment\TaxOption;
 use App\Model\Product\Product;
-use App\Model\Product\ProductGroup;
 use App\Model\Product\Type;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
@@ -184,17 +183,6 @@ class PeriodTypeTableSeeder extends Seeder
     }
 }
 
-class GroupTableSeeder extends Seeder
-{
-    public function run()
-    {
-        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        \DB::table('product_groups')->truncate();
-        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        ProductGroup::create(['id' => 1, 'name' => 'none', 'headline' => 'none', 'tagline' => 'none', 'available_payment'=>'null', 'hidden' => 0, 'cart_link' => 'none']);
-    }
-}
-
 class PromotionTableSeeder extends Seeder
 {
     public function run()
@@ -203,18 +191,6 @@ class PromotionTableSeeder extends Seeder
         \DB::table('promotions')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         Promotion::create(['id' => 1, 'code' => 'none', 'type' => 1, 'uses' => 0, 'value' => 'none', 'start' => '1000-01-01 00:00:00', 'expiry' => '1000-01-01 00:00:00']);
-    }
-}
-
-class ProductTableSeeder extends Seeder
-{
-    public function run()
-    {
-        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        \DB::table('products')->truncate();
-        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        Product::create(['id' => 1, 'name' => 'default', 'type' => 1, 'group' => 1]);
-        // Product::create(['id'=>2, 'name'=>'none1', 'type'=>1, 'group' =>1]);
     }
 }
 

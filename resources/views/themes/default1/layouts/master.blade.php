@@ -39,7 +39,6 @@
          <!-- jQuery 2.1.4 -->
         <script src="{{asset("common/js/jquery-2.1.4.js")}}" type="text/javascript"></script>
         <script src="{{asset("common/js/jquery2.1.1.min.js")}}" type="text/javascript"></script>
-         <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/js/jquery.min.js"></script>
         <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script> -->
 <style>
 

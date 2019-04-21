@@ -500,6 +500,7 @@ Theme Version:	6.2.0
 	width: 100%;
 	margin: 0;
 	text-align: left;
+	font-weight: bolder;
 }
 
 .shop table.cart img {
@@ -551,6 +552,7 @@ Theme Version:	6.2.0
 
 .shop .cart-totals {
 	width: 100%;
+	font-weight:bolder;
 }
 
 .shop .cart-totals th, .shop .cart-totals td {

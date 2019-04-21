@@ -69,6 +69,11 @@ if($script){
     
   
       </head>
+      <style>
+        .table {
+          font-weight: bolder;
+        }
+      </style>
 
     <body>
          <?php 

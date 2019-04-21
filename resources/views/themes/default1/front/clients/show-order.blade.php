@@ -313,7 +313,7 @@ active
               }
               else{
                  $('#domaincheck').show();
-               $('#domaincheck').html("Please enter a valid Domain");
+               $('#domaincheck').html("Please enter a valid Domain in the form domain.com or sub.domain.com");
                  $('#domaincheck').focus();
                   $('#newDomain').css("border-color","red");
                  $('#domaincheck').css({"color":"red","margin-top":"5px"});

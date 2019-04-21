@@ -182,7 +182,7 @@ return [
       'lic_api_secret'                                             => 'API Secret',
       'lic_api_url'                                                => 'API URL',
       'msg91_key'                                                  => 'Msg91 Auth Key',
-      'consumer_key'                                               => 'Twitter Consumer Key',
+      'msg91_sender'                                               => 'Sender',      'consumer_key'                                               => 'Twitter Consumer Key',
       'consumer_secret'                                            => 'Twitter Consumer Secret',
       'access_token'                                               => 'Twitter Access Token',
       'token_secret'                                               => 'Twitter Access Token Secret',

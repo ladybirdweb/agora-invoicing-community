@@ -29,11 +29,11 @@ class CreateUsersTable extends Migration
             $table->string('town');
             $table->string('state')->nullable()->default('IN-KA');
             $table->string('zip');
-            $table->string('profile_pic');
+            $table->string('profile_pic')->nullable();
             $table->integer('active');
             $table->string('role')->default('client');
             $table->string('currency', 225)->default('INR');
-            $table->decimal('debit', 10, 0);
+            $table->decimal('debit', 10, 0)->nullable();
             $table->integer('timezone_id')->default(114);
             $table->string('remember_token', 100)->nullable();
             $table->timestamps();
@@ -42,7 +42,7 @@ class CreateUsersTable extends Migration
             $table->integer('mobile_verified');
             $table->string('position', 225)->nullable();
             $table->string('skype', 225)->nullable();
-            $table->integer('manager')->nullable();
+            $table->string('manager')->nullable();
         });
     }
 

@@ -193,13 +193,30 @@ class AuthController extends BaseAuthController
             $code = $request->input('code');
             $mobile = $request->input('mobile');
             $otp = $request->input('otp');
-            $number = $code.$mobile;
-            $result = $this->sendOtp($mobile, $code);
+            $number = '(+'.$code.') '.$mobile;
+            $result = $this->sendForReOtp($mobile, $code, $request->input('type'));
             // dd($result);
+            switch ($request->input('type')) {
+                case 'text':
+                   $array = json_decode($result, true);
+                   $response = ['type' => 'success',
+                   'message'           => 'OTP has been resent to '.$number.'.Please Enter the OTP to login!!', ];
 
-            $array = json_decode($result, true);
-            $response = ['type' => 'success',
-            'message'           => 'OTP has been resent to '.$number.'.Please Enter the OTP to login!!', ];
+                    break;
+
+                    case 'voice':
+                    $array = json_decode($result, true);
+                    $response = ['type' => 'success',
+                   'message'            => 'Voice call has been sent to '.$number.'.Please Enter the OTP received on the call to login!!', ];
+                    break;
+
+                default:
+                    $array = json_decode($result, true);
+                    $response = ['type' => 'success',
+                   'message'            => 'Voice call has been sent to '.$number.'.Please Enter the OTP received on the call to login!!', ];
+                    break;
+
+            }
 
             return response()->json($response);
         } catch (\Exception $ex) {

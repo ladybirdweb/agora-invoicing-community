@@ -26,12 +26,12 @@ class ClientRequest extends Request
         switch ($this->method()) {
             case 'POST':
                     return [
-                        'first_name' => 'required',
-                        'last_name'  => 'required',
-                        'email'      => 'required|email|unique:users',
-                        'mobile'     => 'required|numeric',
-                        'bussiness'  => 'required',
-
+                        'first_name'       => 'required',
+                        'last_name'        => 'required',
+                        'email'            => 'required|email|unique:users',
+                        'mobile'           => 'required',
+                        'bussiness'        => 'required',
+                        'timezone_id'      => 'required',
                         'address'          => 'required',
                         'zip'              => 'required',
                         'user_name'        => 'required|unique:users,user_name',
@@ -46,8 +46,7 @@ class ClientRequest extends Request
                         'last_name'        => 'required',
                         'email'            => 'required|email|unique:users,email,'.$this->getSegmentFromEnd().',id',
                         'company'          => 'required',
-                        'mobile'           => 'required|numeric',
-                        'mobile_code'      => 'required|numeric',
+                        'mobile'           => 'required',
                         'address'          => 'required',
                         'zip'              => 'required',
                         'timezone_id'      => 'required',

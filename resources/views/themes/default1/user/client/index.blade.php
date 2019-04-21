@@ -275,7 +275,7 @@ All Users
         </div>
 
     </div>
-
+<div id="gif"></div>
 </div>
 
 <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
@@ -345,10 +345,10 @@ All Users
                       method:"get",
                       data: $('#check:checked').serialize(),
                       beforeSend: function () {
-                $('#gif').show();
+                $('#gif').html( "<img id='blur-bg' class='backgroundfadein' style='top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
                 },
                 success: function (data) {
-                $('#gif').hide();
+                $('#gif').html('');
                 $('#response').html(data);
                 location.reload();
                 }

@@ -159,7 +159,7 @@ class BaseHomeController extends Controller
             $orderId = Order::where('number', 'LIKE', $order_number)->pluck('id')->first();
             if ($orderId) {
                 $expiryDate = Subscription::where('order_id', $orderId)->pluck('update_ends_at')->first();
-                if (\Carbon\Carbon::now()->toDateTimeString() < $expiryDate->toDateTimeString()) {
+                if (\Carbon\Carbon::now()->toDateTimeString() < $expiryDate) {
                     return ['status' => 'success', 'message' => 'allow-auto-update'];
                 }
             }

@@ -2225,6 +2225,7 @@ label.required:after {
 	font-size: 13.6px;
 	font-size: 0.85rem;
 	line-height: 1.85;
+	font-weight:bolder;
 }
 
 .form-control.form-control-focused {
@@ -2973,6 +2974,7 @@ ul.thumbnail-gallery li {
 	list-style: none;
 	padding-left: 0;
 	padding-right: 0;
+	font-weight:bolder;
 }
 
 .list.list-icons li {
@@ -5857,7 +5859,6 @@ hr.invisible {
 .divider {
 	border: 0;
 	height: 1px;
-	margin: 44px auto;
 	background: rgba(0, 0, 0, 0.06);
 	text-align: center;
 	position: relative;
@@ -6379,6 +6380,7 @@ hr.pattern.pattern-2:after, .divider.pattern.pattern-2:after {
 	flex-wrap: wrap;
 	margin-left: -15px;
 	margin-right: -15px;
+	font-weight:bolder;
 	/* Responsive */
 }
 
@@ -6479,6 +6481,7 @@ hr.pattern.pattern-2:after, .divider.pattern.pattern-2:after {
 	line-height: 2.9;
 	list-style: none;
 	font-size: 0.9em;
+
 }
 
 .pricing-table .plan .plan-features ul li:last-child {

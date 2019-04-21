@@ -8,8 +8,8 @@ Create Invoice
     background-color: #1b1818 !important;
 </style>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
-  <link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+<link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css" rel="stylesheet" />
 <script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"></script>
 <h1>
 Generate An Invoice
@@ -91,6 +91,17 @@ Generate An Invoice
                  
                 </div>
                 @endif
+                <div class="col-md-4 form-group {{ $errors->has('invoice_status') ? 'has-error' : '' }}">
+                            <!-- first name -->
+                            {!! Form::label('date',Lang::get('message.date'),['class'=>'required']) !!}
+                         <div class="input-group date">
+                            <div class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </div>
+                            {!! Form::text('date',null,['class' => 'form-control','id'=>'datepicker']) !!}
+                        </div>
+
+                </div>
 
                 <div class="col-md-4 form-group">
                     {!! Form::label('product',Lang::get('message.product'),['class'=>'required']) !!}
@@ -114,7 +125,7 @@ Generate An Invoice
                 </div>
 
                 <div class="col-md-4 form-group">
-                    {!! Form::label('price',Lang::get('message.price')) !!}
+                    {!! Form::label('price',Lang::get('message.price'),['class'=>'required']) !!}
                     {!! Form::text('price',null,['class'=>'form-control','id'=>'price']) !!}
                       <h6 id ="pricecheck"></h6>
                 </div>
@@ -309,6 +320,11 @@ Generate An Invoice
 @stop
 
 @section('datepicker')
+<script>
+     $('#datepicker').datepicker({
+      autoclose: true
+    });
+</script>
 
 <script>
    

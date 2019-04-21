@@ -47,8 +47,6 @@ class AutoUpdateController extends Controller
         $addProduct = $this->postCurl($url, "api_key_secret=$api_key_secret&api_function=products_add&product_title=$product_name&product_sku=$product_sku&product_key=$key&product_status=1");
     }
 
-
-
     /*
     *  Add New Version
     */

@@ -185,7 +185,6 @@ class BaseProductController extends ExtendedBaseProductController
                         readfile($release);
                         // ob_end_clean();
                         // flush();
-                        
                     }
                 } else {
                     return redirect('auth/login')->with('fails', \Lang::get('activate-your-account'));

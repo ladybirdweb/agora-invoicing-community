@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Github\GithubApiController;
-use App\Http\Controllers\License\LicenseController;
 use App\Http\Controllers\License\LicensePermissionsController;
 use App\Model\Common\StatusSetting;
 use App\Model\Github\Github;
@@ -369,9 +368,9 @@ class ClientController extends BaseClientController
                 $plan = $subscription->plan()->first();
             }
             $licenseStatus = StatusSetting::pluck('license_status')->first();
-             if ($licenseStatus == 1) {
+            if ($licenseStatus == 1) {
                 $cont = new \App\Http\Controllers\License\LicenseController();
-                $installationDetails = $cont->searchInstallationPath($order->serial_key,$order->product);
+                $installationDetails = $cont->searchInstallationPath($order->serial_key, $order->product);
             }
             $product = $order->product()->first();
             $price = $product->price()->first();
@@ -380,7 +379,7 @@ class ClientController extends BaseClientController
 
             return view(
                 'themes.default1.front.clients.show-order',
-                compact('invoice', 'order', 'user', 'plan', 'product', 'subscription', 'licenseStatus','installationDetails')
+                compact('invoice', 'order', 'user', 'plan', 'product', 'subscription', 'licenseStatus', 'installationDetails')
             );
         } catch (Exception $ex) {
             Bugsnag::notifyException($ex);
@@ -388,7 +387,7 @@ class ClientController extends BaseClientController
             return redirect('/')->with('fails', $ex->getMessage());
         }
     }
-    
+
     public function getPaymentByOrderId($orderid, $userid)
     {
         try {

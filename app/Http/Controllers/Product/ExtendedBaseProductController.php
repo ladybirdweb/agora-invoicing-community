@@ -148,7 +148,7 @@ class ExtendedBaseProductController extends Controller
                 header('Content-Disposition: attachment; filename = '.$name.'.zip');
                 header('Content-Length: '.filesize($release));
                 readfile($release);
-                ob_end_clean();
+                // ob_end_clean();
             }
         } catch (\Exception $e) {
             if ($api) {

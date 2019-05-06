@@ -403,7 +403,28 @@ if($script){
                     <div class="row">
                        <div class="col-lg-3 order-2 order-lg-1">
                             <aside class="sidebar">
-
+                       <!--  <div class="tabs tabs-vertical tabs-left tabs-navigation">
+                          <ul class="nav nav-tabs col-sm-3">
+                            <li class="@yield('nav-orders')">
+                              <a class="nav-link" href="{{url('my-orders')}}" data-toggle="tab"><i class="fas fa-users"></i> My Orders</a>
+                            </li>
+                            <li class="@yield('nav-invoice')">
+                              <a class="nav-link" href="{{url('my-invoices')}}" data-toggle="tab"><i class="fas fa-file"></i> My Invoices</a>
+                            </li>
+                            <li class="nav-item">
+                              <a class="nav-link" href="#tabsNavigation3" data-toggle="tab"><i class="fab fa-google-plus-g"></i> 500+ Google Fonts</a>
+                            </li>
+                            <li class="nav-item">
+                              <a class="nav-link" href="#tabsNavigation4" data-toggle="tab"><i class="fas fa-adjust"></i> Colors</a>
+                            </li>
+                            <li class="nav-item">
+                              <a class="nav-link" href="#tabsNavigation5" data-toggle="tab"><i class="fas fa-film"></i> Sliders</a>
+                            </li>
+                            <li class="nav-item">
+                              <a class="nav-link" href="#tabsNavigation6" data-toggle="tab"><i class="fas fa-user"></i> Icons</a>
+                            </li>
+                          </ul>
+                        </div> -->
                                 
                                 <ul class="nav nav-list flex-column mb-4 sort-source" data-sort-id="portfolio" data-option-key="filter" data-plugin-options="{'layoutMode': 'fitRows', 'filter': '*'}">
                                     <li class="@yield('nav-orders')"><a class="nav-link" href="{{url('my-orders')}}">My Orders</a></li>
@@ -622,7 +643,6 @@ if($script){
           <script src="{{asset('client/js/theme.init.js')}}"></script>
           <script src="{{asset('common/js/intlTelInput.js')}}"></script>
            <script src="{{asset('client/js/theme1.init.js')}}"></script>
-
        
         
         <script>

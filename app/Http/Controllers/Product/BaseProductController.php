@@ -182,9 +182,10 @@ class BaseProductController extends ExtendedBaseProductController
                         header('Content-Disposition: attachment; filename='.$name.'.zip');
                         //header("Content-type: application/zip");
                         header('Content-Length: '.filesize($release));
-                        ob_end_clean();
-                        // flush();
                         readfile($release);
+                        // ob_end_clean();
+                        // flush();
+                        
                     }
                 } else {
                     return redirect('auth/login')->with('fails', \Lang::get('activate-your-account'));

@@ -23,30 +23,41 @@ active
 
 
 <style>
-        .table{table-layout:fixed}
+    .accordion .card-header a{
+        color:currentColor;
+    }
         .table td, .table th {
     padding: 0.5rem;
     vertical-align: top;
     border-top: 1px solid #dee2e6;
+}
     </style>
-<div class="col-md-12">
-     @include('themes.default1.front.clients.reissue-licenseModal')
-    <div class="featured-boxes">
+    <div class="row pb-4">
+    <div class="col-lg-12 mb-12 mb-lg-0">
+  
+    
 
-        <div class="row">
-            <h2 class="mb-none" style="margin-bottom: 0px;"> My Orders</h2>
+          <h2>My Orders</h2>
 
-            <div class="featured-box featured-box-primary align-left mt-xlg" style="text-align: left;">
-                <div class="box-content">
-                    <div class="content-wrapper">
+           
+                
+                    <!-- <div class="content-wrapper"> -->
+                        <div class="accordion accordion-modern" id="accordion9">
                         <!-- Content Header (Page header) -->
-                        <section class="content-header">
-
-                            <h2>Overview</h2>
-
-                        </section>
-                        <div class="row">
-                            <section class="content">
+                        <!-- <section class="content-header"> -->
+                        <div class="card card-default">
+                            <div class="card-header">
+                                        <h4 class="card-title m-0">
+                                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion9" href="#collapse9One">
+                                                <i class="fas fa-users"></i> Overview
+                                            </a>
+                                        </h4>
+                            </div>
+                        
+                          
+                        <!-- </section> -->
+                       <div id="collapse9One" class="collapse show">
+                           <div class="card-body">
                                 
                                     <table class="table">
                                         <tr class="info">
@@ -72,44 +83,101 @@ active
                                     </table>  
                               
 
-                                <div id="hide2">
-                                    
-                                        <table class="table table-hover">
+                                 
+                                <div class="col">
+                                  <div class="card card-default">
+                                    <div class="card-header">
+                                        <h4 class="card-title m-0">
+                                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2Primary" href="#collapse2PrimaryTwo" style="background-color: lightblue;">
+                                                User Details
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    <div id="collapse2PrimaryTwo" class="collapse">
+                                      <table class="table table-hover">
                                             <div class="col-md-6">
                                             <tbody><tr><td><b>Name:</b></td>   <td>{{ucfirst($user->first_name)}}</td></tr>
                                                 <tr><td><b>Email:</b></td>     <td>{{$user->email}}</td></tr>
+                                                <tr><td><b>Mobile:</b></td><td>@if($user->mobile_code)(<b>+</b>{{$user->mobile_code}})@endif&nbsp;{{$user->mobile}}</td></tr>
                                                 <tr><td><b>Address:</b></td>   <td>{{$user->address}}</td></tr>
                                                 <tr><td><b>Country:</b></td>   <td>{{\App\Http\Controllers\Front\CartController::getCountryByCode($user->country)}}</td></tr>
 
                                             </tbody> </div>
                                         </table>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                                       
                                    
-                                      
-                                        <table class="table table-hover">
-                                            <div class="col-md-6">
+                        <div class="col">
+                            <div class="accordion accordion-secondary" id="accordion2Secondary">
+                                <div class="card card-default">
+                                    <div class="card-header">
+                                        <h4 class="card-title m-0">
+                                           <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2Secondary" href="#collapse2SecondaryTwo">
+                                               License Details
+                                            </a>
+                                        </h4>
+                                    </div>
+
+                                   <div id="collapse2SecondaryTwo" class="collapse">
+                                       
+                                            <table class="table table-hover">
+                                            
                                             <tbody><tr><td><b>License Code:</b></td>         <td>{{$order->serial_key}}</td></tr>
-                                                <tr><td><b>Licensed Domain:</b></td>     <td>{{$order->domain}}
+                                                <tr><td><b>Licensed Domain/IP:</b></td>     <td>{{$order->domain}} 
                                                     @if ($licenseStatus == 1)
+                                                     @include('themes.default1.front.clients.reissue-licenseModal')
                                                 <button class='class="btn btn-danger mb-2 pull-right' style="border:none;" id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}">
                                                Reissue License</button>
+                                           
                                                @endif
                                                 </td>
-                                           
-                                                 </tr>
+                                                
+                                                
+                                            </tr>
+                                                 <tr><td><b>Installation Path:</b></td> 
+                                                    @if(count($installationDetails['installed_path']) > 0)
+                                                    <td>@foreach($installationDetails['installed_path'] as $paths)
+                                                        <li>{{$paths}}</li>
+                                                        @endforeach
+                                                    </td>
+                                                    @else
+                                                    <td>
+                                                    No Active Installation
+                                                  </td>
+                                                   @endif
+                                                    </tr>
+
+                                                <tr><td><b>Installation IP:</b></td> 
+                                                @if(count($installationDetails['installed_path']) > 0)    
+                                                    <td>
+                                                        @foreach($installationDetails['installed_ip'] as $paths)
+                                                        <li>{{$paths}}</li>
+                                                        @endforeach
+                                                    </td>
+                                                    @else
+                                                     <td>
+                                                    --
+                                                  </td>
+                                                  @endif
+                                                </tr>
+                                                  
 
                                                 <?php
-                                                
+
                                                 if (!$subscription || strtotime($subscription->ends_at) < 1) {
                                                     $sub = "--";
                                                 } else {
                                                     $date = new DateTime($subscription->ends_at);
                                                     $tz = \Auth::user()->timezone()->first()->name;
-                                                     $date->setTimezone(new DateTimeZone($tz));
+                                                    $date->setTimezone(new DateTimeZone($tz));
                                                       
                                                     $sub = $date->format('M j, Y, g:i a ');
-                                                     // $sub = $sub2->setTimezone($tz);
-
-
+                                                    // $sub = $sub2->setTimezone($tz);
                                                 }
 
                                                 if (!$subscription || strtotime($subscription->update_ends_at) < 1) {
@@ -117,54 +185,49 @@ active
                                                 } else {
                                                     $date1 = new DateTime($subscription->update_ends_at);
                                                     $tz = \Auth::user()->timezone()->first()->name;
-                                                     $date1->setTimezone(new DateTimeZone($tz));
+                                                    $date1->setTimezone(new DateTimeZone($tz));
                                                       
                                                     $update_sub = $date1->format('M j, Y, g:i a ');
-                                                     // $sub = $sub2->setTimezone($tz);
-
-
+                                                    // $sub = $sub2->setTimezone($tz);
                                                 }
                                                 ?>
                                                 <tr><td><b>License Expiry Date:</b></td>   <td>{{$sub}}</td></tr>
                                                 <tr><td><b>Update Expiry Date:</b></td>   <td>{{$update_sub}}</td></tr>
 
                                             </tbody>
-                                         </div>
+                                       
+                                        
                                      </table>
+                                       
+                                    
+               
+                                 </div>
+                             </div>
+                         </div>
                                    
                                 </div>
+                            
                             </div>
+                            </div>
+                        </div>
 
                    
-                    <div class="control-sidebar-bg"></div>
-                </div><!-- ./wrapper -->
-            </div> 
-        </div>
-    </div>
-</div>	
-</div>
 
-<div class="col-md-12">
+                    <div class="card card-default">
+                        <div class="card-header">
+                            <h4 class="card-title m-0">
+                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion9" href="#collapse9Two">
+                                    <i class="fas fa-film"></i>  Transaction list
+                                </a>
+                            </h4>
+                        </div>
+                        
+                        <div id="collapse9Two" class="collapse">
+                            <div class="card-body">
+                                
+                 <table id="showorder-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
 
-    <div class="featured-boxes">
-        <div class="row">
-
-            <div class="featured-box featured-box-primary align-left mt-xlg" style="text-align: left;">
-                <div class="box-content">
-                    <div class="content-wrapper">
-                        <!-- Content Header (Page header) -->
-                        <section class="content-header">
-
-                            <h2>
-                                Transaction list
-
-                            </h2>
-
-                        </section>
-
-                        <table id="showorder-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
-
-                    <thead><tr>
+                        <thead><tr>
                             <th>Number</th>
                             <th>Products</th>
                             
@@ -178,15 +241,10 @@ active
 
                 </table>
 
-                     
-
-                    </div>                             
-                </div>
-            </div>					
-        </div>
-
-    </div>
-</div>	
+                 </div>
+             </div>
+ 
+        </div>	
        
            <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
 <script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
@@ -218,29 +276,20 @@ active
                 $('.loader').css('display', 'block');
             },
         });
-    </script>
+        </script>
 
 
-
-
-
-
-
-
-<div class="col-md-12">
-
-    <div class="featured-boxes">
-        <div class="row">
-
-            <div class="featured-box featured-box-primary align-left mt-xlg" style="text-align: left;">
-                <div class="box-content">
-                    <div class="content-wrapper">
+                  <div class="card card-default">
+                    <div class="card-header">
+                        <h4 class="card-title m-0">
+                        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion9" href="#collapse9Three">
+                            <i class="fas fa-bars"></i> Payment receipts
+                        </a>
+                        </h4>
+                    </div>
                         <!-- Content Header (Page header) -->
-                        <section class="content-header">
-                            <h2>Payment receipts</h2>
-                            <!--<a href="shortcodes-pricing-tables.html"  class="btn btn-primary pull-left mb-xl" data-loading-text="Loading...">Payment</a>--> 
-                        </section>
-
+                       <div id="collapse9Three" class="collapse">
+                            <div class="card-body">
                         <table id="showpayment-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
 
                     <thead><tr>
@@ -256,47 +305,45 @@ active
 
 
                 </table>
+            </div>
+            </div>
+            </div>
 
-                    
-                    </div>                             
-                </div>
-            </div>					
         </div>
-
-    </div>
-</div>	
- <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
-<script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
-<script type="text/javascript">
-        $('#showpayment-table').DataTable({
-            processing: true,
-            serverSide: true,
-             ajax: '{!! Url('get-my-payment-client/'.$order->id.'/'.$user->id) !!}',
-      
-            "oLanguage": {
-                "sLengthMenu": "_MENU_ Records per page",
-                "sSearch"    : "Search: ",
-                "sProcessing": '<img id="blur-bg" class="backgroundfadein" style="top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;" src="{!! asset("lb-faveo/media/images/gifloader3.gif") !!}">'
-            },
-    
-            columns: [
-                {data: 'number', name: 'number'},
-                {data: 'total', name: 'total'},
-                {data: 'payment_method', name: 'payment_method'},
-                {data: 'payment_status', name: 'payment_status'},
-                {data: 'created_at', name: 'created_at'},
-                
+    </div>  
+        
+         <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
+        <script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+        <script type="text/javascript">
+                $('#showpayment-table').DataTable({
+                    processing: true,
+                    serverSide: true,
+                     ajax: '{!! Url('get-my-payment-client/'.$order->id.'/'.$user->id) !!}',
               
-                
-               
-            ],
-            "fnDrawCallback": function( oSettings ) {
-                $('.loader').css('display', 'none');
-            },
-            "fnPreDrawCallback": function(oSettings, json) {
-                $('.loader').css('display', 'block');
-            },
-        });
+                    "oLanguage": {
+                        "sLengthMenu": "_MENU_ Records per page",
+                        "sSearch"    : "Search: ",
+                        "sProcessing": '<img id="blur-bg" class="backgroundfadein" style="top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;" src="{!! asset("lb-faveo/media/images/gifloader3.gif") !!}">'
+                    },
+            
+                    columns: [
+                        {data: 'number', name: 'number'},
+                        {data: 'total', name: 'total'},
+                        {data: 'payment_method', name: 'payment_method'},
+                        {data: 'payment_status', name: 'payment_status'},
+                        {data: 'created_at', name: 'created_at'},
+                        
+                      
+                        
+                       
+                    ],
+                    "fnDrawCallback": function( oSettings ) {
+                        $('.loader').css('display', 'none');
+                    },
+                    "fnPreDrawCallback": function(oSettings, json) {
+                        $('.loader').css('display', 'block');
+                    },
+                });
 
         $("#reissueLic").click(function(){
             var oldDomainName = $(this).attr('data-name');
@@ -307,13 +354,14 @@ active
         });
         $("#licenseSave").on('click',function(){
       var pattern = new RegExp(/^((?!-))(xn--)?[a-z0-9][a-z0-9-_]{0,61}[a-z0-9]{0,1}\.(xn--)?([a-z0-9\-]{1,61}|[a-z0-9-]{1,30}\.[a-z]{2,})$/);
-              if (pattern.test($('#newDomain').val())){
+      var ip_pattern = new RegExp(/^\b((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.|$)){4}\b/);
+              if (pattern.test($('#newDomain').val()) || ip_pattern.test($('#newDomain').val())) {
                  $('#domaincheck').hide();
                  $('#newDomain').css("border-color","");
               }
               else{
                  $('#domaincheck').show();
-               $('#domaincheck').html("Please enter a valid Domain in the form domain.com or sub.domain.com");
+               $('#domaincheck').html("Please enter a valid Domain in the form domain.com or sub.domain.com or enter a valid IP");
                  $('#domaincheck').focus();
                   $('#newDomain').css("border-color","red");
                  $('#domaincheck').css({"color":"red","margin-top":"5px"});
@@ -342,6 +390,8 @@ active
                 },3000);
                   }
                
+                }, error: function(err) {
+                    console.log(err);
                 }
                 
             });

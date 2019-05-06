@@ -612,6 +612,7 @@ main
                                       if(verify_mobnumber_check()) { 
                                     var oldnumber = $('#oldno').val().replace(/[\. ,:-]+/g, '');
                                     var newnumber = $('#u_mobile').val().replace(/[\. ,:-]+/g, '');
+                                       $("#sendOTP").attr('disabled',true);
                                         $("#sendOTP").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Sending...");
                                         $scope.newObj = {};
                                         $scope.newObj['oldnumber'] = oldnumber;
@@ -626,6 +627,7 @@ main
                                             params: $scope.newObj
                                         }).success(function (data) {
                                             if (data.type == "success") {
+                                              $("#sendOTP").attr('disabled',false);
                                                 $scope.showOTP = true;
                                                 $scope.msg2 = true;
                                                 $("#sendOTP").html("Send OTP");
@@ -635,6 +637,7 @@ main
                                                 $('#alertMessage1').css('color', 'green');
                                             }
                                         }).error(function (data) {
+                                          $("#sendOTP").attr('disabled',false);
                                             $scope.msg2 = true;
                                             var res = "";
                                             $("#sendOTP").html("Send OTP");

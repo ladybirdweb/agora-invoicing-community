@@ -35,6 +35,7 @@ class LicenseController extends Controller
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
         $result = curl_exec($ch);
         curl_close($ch);
+
         return $result;
     }
 
@@ -175,7 +176,7 @@ class LicenseController extends Controller
         }
         $url = $this->url;
         $isIP = (bool) ip2long($domain);
-         if ($isIP == true) {
+        if ($isIP == true) {
             $requiredomain = 0;
             $ip = $domain;
             $domain = '';
@@ -233,7 +234,6 @@ class LicenseController extends Controller
                 }
             }
         }
-        
     }
 
     public function searchInstallationId($licenseCode)
@@ -246,10 +246,10 @@ class LicenseController extends Controller
         return $getInstallId;
     }
 
-    public function searchInstallationPath($licenseCode, $productId) 
+    public function searchInstallationPath($licenseCode, $productId)
     {
-        $installation_domain = array();
-        $installation_ip = array();
+        $installation_domain = [];
+        $installation_ip = [];
         $details = json_decode($this->searchInstallationId($licenseCode));
         if ($details->api_error_detected == 0 && is_array($details->page_message)) {
             foreach ($details->page_message as $detail) {
@@ -259,8 +259,9 @@ class LicenseController extends Controller
                 }
             }
         }
-        return ['installed_path' => $installation_domain , 'installed_ip' => $installation_ip];
-     }
+
+        return ['installed_path' => $installation_domain, 'installed_ip' => $installation_ip];
+    }
 
     //Update  Expiration Date After Renewal
     public function updateExpirationDate($licenseCode, $expiryDate, $productId, $domain, $orderNo, $licenseExpiry, $supportExpiry)

@@ -227,10 +227,11 @@ class OrderController extends BaseOrderController
             $licenseStatus = StatusSetting::pluck('license_status')->first();
             if ($licenseStatus == 1) {
                 $cont = new \App\Http\Controllers\License\LicenseController();
-                $installationDetails = $cont->searchInstallationPath($order->serial_key,$order->product);
+                $installationDetails = $cont->searchInstallationPath($order->serial_key, $order->product);
             }
+
             return view('themes.default1.order.show',
-                compact('invoiceItems', 'invoice', 'user', 'order', 'subscription', 'licenseStatus','installationDetails'));
+                compact('invoiceItems', 'invoice', 'user', 'order', 'subscription', 'licenseStatus', 'installationDetails'));
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
 

@@ -336,7 +336,7 @@ class ExtendedOrderController extends Controller
     {
         $needle = 'www';
         foreach ($seperateDomains as $domain) {
-                $allowedDomains[] = $domain;
+            $allowedDomains[] = $domain;
         }
 
         return  $allowedDomains;

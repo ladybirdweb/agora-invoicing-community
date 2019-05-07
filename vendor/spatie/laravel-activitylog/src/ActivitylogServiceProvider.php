@@ -4,8 +4,10 @@ namespace Spatie\Activitylog;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
-use Spatie\Activitylog\Models\Activity;
+use Spatie\Activitylog\Contracts\Activity;
 use Spatie\Activitylog\Exceptions\InvalidConfiguration;
+use Spatie\Activitylog\Models\Activity as ActivityModel;
+use Spatie\Activitylog\Contracts\Activity as ActivityContract;
 
 class ActivitylogServiceProvider extends ServiceProvider
 {
@@ -41,16 +43,17 @@ class ActivitylogServiceProvider extends ServiceProvider
 
     public static function determineActivityModel(): string
     {
-        $activityModel = config('activitylog.activity_model') ?? Activity::class;
+        $activityModel = config('activitylog.activity_model') ?? ActivityModel::class;
 
-        if (! is_a($activityModel, Activity::class, true)) {
+        if (! is_a($activityModel, Activity::class, true)
+            || ! is_a($activityModel, Model::class, true)) {
             throw InvalidConfiguration::modelIsNotValid($activityModel);
         }
 
         return $activityModel;
     }
 
-    public static function getActivityModelInstance(): Model
+    public static function getActivityModelInstance(): ActivityContract
     {
         $activityModelClassName = self::determineActivityModel();
 

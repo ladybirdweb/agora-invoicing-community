@@ -16,7 +16,7 @@
   ],
   "require": {
     "php": ">=7.0",
-    "yajra/laravel-datatables-oracle": "8.*",
+    "yajra/laravel-datatables-oracle": "8.*|9.*",
     "league/fractal": "^0.17.0"
   },
   "require-dev": {

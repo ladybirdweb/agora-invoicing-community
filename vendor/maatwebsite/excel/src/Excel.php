@@ -78,11 +78,12 @@ class Excel implements Exporter, Importer
     /**
      * {@inheritdoc}
      */
-    public function download($export, string $fileName, string $writerType = null)
+    public function download($export, string $fileName, string $writerType = null, array $headers = [])
     {
         return response()->download(
             $this->export($export, $fileName, $writerType)->getLocalPath(),
-            $fileName
+            $fileName,
+            $headers
         )->deleteFileAfterSend(true);
     }
 
@@ -95,10 +96,16 @@ class Excel implements Exporter, Importer
             return $this->queue($export, $filePath, $diskName, $writerType, $diskOptions);
         }
 
-        return $this->filesystem->disk($diskName, $diskOptions)->copy(
-            $this->export($export, $filePath, $writerType),
+        $temporaryFile = $this->export($export, $filePath, $writerType);
+
+        $exported = $this->filesystem->disk($diskName, $diskOptions)->copy(
+            $temporaryFile,
             $filePath
         );
+
+        $temporaryFile->delete();
+
+        return $exported;
     }
 
     /**

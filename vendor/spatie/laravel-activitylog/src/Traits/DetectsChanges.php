@@ -2,6 +2,7 @@
 
 namespace Spatie\Activitylog\Traits;
 
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Exceptions\CouldNotLogChanges;
 
@@ -28,16 +29,18 @@ trait DetectsChanges
         $attributes = [];
 
         if (isset(static::$logFillable) && static::$logFillable) {
-            $attributes = array_merge($attributes, $this->fillable);
+            $attributes = array_merge($attributes, $this->getFillable());
+        }
+
+        if ($this->shouldLogUnguarded()) {
+            $attributes = array_merge($attributes, array_diff(array_keys($this->getAttributes()), $this->getGuarded()));
         }
 
         if (isset(static::$logAttributes) && is_array(static::$logAttributes)) {
-            if (in_array('*', static::$logAttributes)) {
-                $withoutWildcard = array_diff(static::$logAttributes, ['*']);
+            $attributes = array_merge($attributes, array_diff(static::$logAttributes, ['*']));
 
-                $attributes = array_merge($attributes, array_keys($this->attributes), $withoutWildcard);
-            } else {
-                $attributes = array_merge($attributes, static::$logAttributes);
+            if (in_array('*', static::$logAttributes)) {
+                $attributes = array_merge($attributes, array_keys($this->getAttributes()));
             }
         }
 
@@ -48,13 +51,30 @@ trait DetectsChanges
         return $attributes;
     }
 
-    public function shouldlogOnlyDirty(): bool
+    public function shouldLogOnlyDirty(): bool
     {
         if (! isset(static::$logOnlyDirty)) {
             return false;
         }
 
         return static::$logOnlyDirty;
+    }
+
+    public function shouldLogUnguarded(): bool
+    {
+        if (! isset(static::$logUnguarded)) {
+            return false;
+        }
+
+        if (! static::$logUnguarded) {
+            return false;
+        }
+
+        if (in_array('*', $this->getGuarded())) {
+            return false;
+        }
+
+        return true;
     }
 
     public function attributeValuesToBeLogged(string $processingEvent): array
@@ -75,7 +95,7 @@ trait DetectsChanges
             $properties['old'] = array_merge($nullProperties, $this->oldAttributes);
         }
 
-        if ($this->shouldlogOnlyDirty() && isset($properties['old'])) {
+        if ($this->shouldLogOnlyDirty() && isset($properties['old'])) {
             $properties['attributes'] = array_udiff_assoc(
                 $properties['attributes'],
                 $properties['old'],
@@ -94,11 +114,19 @@ trait DetectsChanges
     public static function logChanges(Model $model): array
     {
         $changes = [];
-        foreach ($model->attributesToBeLogged() as $attribute) {
-            if (str_contains($attribute, '.')) {
+        $attributes = $model->attributesToBeLogged();
+        $model = clone $model;
+        $model->append(array_filter($attributes, function ($key) use ($model) {
+            return ! array_key_exists($key, $model->getAttributes()) && $model->hasGetMutator($key);
+        }));
+        $model->setHidden(array_diff($model->getHidden(), $attributes));
+        $collection = collect($model);
+
+        foreach ($attributes as $attribute) {
+            if (Str::contains($attribute, '.')) {
                 $changes += self::getRelatedModelAttributeValue($model, $attribute);
             } else {
-                $changes += collect($model)->only($attribute)->toArray();
+                $changes += $collection->only($attribute)->toArray();
             }
         }
 

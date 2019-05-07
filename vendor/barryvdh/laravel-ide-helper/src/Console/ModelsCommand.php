@@ -446,14 +446,17 @@ class ModelsCommand extends Command
                     }
                 } elseif (in_array($method, ['query', 'newQuery', 'newModelQuery'])) {
                     $reflection = new \ReflectionClass($model);
-                    $this->setMethod($method, '\Illuminate\Database\Eloquent\Builder|\\' . $reflection->getName());
+
+                    $builder = get_class($model->newModelQuery());
+
+                    $this->setMethod($method, "\\{$builder}|\\" . $reflection->getName());
                 } elseif (!method_exists('Illuminate\Database\Eloquent\Model', $method)
                     && !Str::startsWith($method, 'get')
                 ) {
                     //Use reflection to inspect the code, based on Illuminate/Support/SerializableClosure.php
                     $reflection = new \ReflectionMethod($model, $method);
                     // php 7.x type or fallback to docblock
-                    $type = (string) $reflection->getReturnType() ?: $this->getReturnTypeFromDocBlock($reflection);
+                    $type = (string) $reflection->getReturnType() ?: (string)$this->getReturnTypeFromDocBlock($reflection);
 
                     $file = new \SplFileObject($reflection->getFileName());
                     $file->seek($reflection->getStartLine() - 1);
@@ -480,7 +483,7 @@ class ModelsCommand extends Command
                                'morphedByMany' => '\Illuminate\Database\Eloquent\Relations\MorphToMany'
                              ) as $relation => $impl) {
                         $search = '$this->' . $relation . '(';
-                        if (stripos($code, $search) || stripos($impl, $type) !== false) {
+                        if (stripos($code, $search) || stripos($impl, (string)$type) !== false) {
                             //Resolve the relation's model to a Relation object.
                             $methodReflection = new \ReflectionMethod($model, $method);
                             if ($methodReflection->getNumberOfParameters()) {

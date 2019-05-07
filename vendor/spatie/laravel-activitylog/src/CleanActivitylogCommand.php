@@ -8,19 +8,10 @@ use Illuminate\Database\Eloquent\Builder;
 
 class CleanActivitylogCommand extends Command
 {
-    /**
-     * The console command name.
-     *
-     * @var string
-     */
     protected $signature = 'activitylog:clean
-                            {log? : (optional) The log name that will be cleaned.}';
+                            {log? : (optional) The log name that will be cleaned.}
+                            {--days= : (optional) Records older than this number of days will be cleaned.}';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Clean up old records from the activity log.';
 
     public function handle()
@@ -29,7 +20,7 @@ class CleanActivitylogCommand extends Command
 
         $log = $this->argument('log');
 
-        $maxAgeInDays = config('activitylog.delete_records_older_than_days');
+        $maxAgeInDays = $this->option('days') ?? config('activitylog.delete_records_older_than_days');
 
         $cutOffDate = Carbon::now()->subDays($maxAgeInDays)->format('Y-m-d H:i:s');
 

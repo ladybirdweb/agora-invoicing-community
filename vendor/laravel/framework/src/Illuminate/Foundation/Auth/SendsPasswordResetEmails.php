@@ -137,6 +137,7 @@ trait SendsPasswordResetEmails {
             return response()->json($response);
       }
       catch (\Exception $ex) {
+        dd($ex);
             $result = [$ex->getMessage()];
             $errors = ['You are not registered with this Email. Please enter correct Email Address !!'];
             return response()->json(compact('result','errors'), 500);

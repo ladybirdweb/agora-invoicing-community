@@ -2,15 +2,15 @@
 
 namespace Spatie\Activitylog\Models;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Spatie\Activitylog\Contracts\Activity as ActivityContract;
 
-class Activity extends Model
+class Activity extends Model implements ActivityContract
 {
-    protected $table;
-
     public $guarded = [];
 
     protected $casts = [
@@ -19,7 +19,9 @@ class Activity extends Model
 
     public function __construct(array $attributes = [])
     {
-        $this->table = config('activitylog.table_name');
+        if (! isset($this->table)) {
+            $this->setTable(config('activitylog.table_name'));
+        }
 
         parent::__construct($attributes);
     }
@@ -38,16 +40,9 @@ class Activity extends Model
         return $this->morphTo();
     }
 
-    /**
-     * Get the extra properties with the given name.
-     *
-     * @param string $propertyName
-     *
-     * @return mixed
-     */
     public function getExtraProperty(string $propertyName)
     {
-        return array_get($this->properties->toArray(), $propertyName);
+        return Arr::get($this->properties->toArray(), $propertyName);
     }
 
     public function changes(): Collection
@@ -56,9 +51,12 @@ class Activity extends Model
             return new Collection();
         }
 
-        return collect(array_filter($this->properties->toArray(), function ($key) {
-            return in_array($key, ['attributes', 'old']);
-        }, ARRAY_FILTER_USE_KEY));
+        return $this->properties->only(['attributes', 'old']);
+    }
+
+    public function getChangesAttribute(): Collection
+    {
+        return $this->changes();
     }
 
     public function scopeInLog(Builder $query, ...$logNames): Builder
@@ -70,14 +68,6 @@ class Activity extends Model
         return $query->whereIn('log_name', $logNames);
     }
 
-    /**
-     * Scope a query to only include activities by a given causer.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param \Illuminate\Database\Eloquent\Model $causer
-     *
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
     public function scopeCausedBy(Builder $query, Model $causer): Builder
     {
         return $query
@@ -85,14 +75,6 @@ class Activity extends Model
             ->where('causer_id', $causer->getKey());
     }
 
-    /**
-     * Scope a query to only include activities for a given subject.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param \Illuminate\Database\Eloquent\Model $subject
-     *
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
     public function scopeForSubject(Builder $query, Model $subject): Builder
     {
         return $query

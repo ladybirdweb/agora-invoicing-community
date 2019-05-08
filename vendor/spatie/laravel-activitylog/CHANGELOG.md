@@ -2,6 +2,60 @@
 
 All notable changes to `spatie/laravel-activitylog` will be documented in this file
 
+## 3.5.0 - 2019-04-15
+
+- add days option to clean command [#497](https://github.com/spatie/laravel-activitylog/pull/497)
+- add `LogsActivity::$submitEmptyLogs` [#514](https://github.com/spatie/laravel-activitylog/pull/514)
+
+## 3.4.0 - 2019-04-09
+
+- use `Illuminate\Contracts\Config\Repository` instead of `Illuminate\Config\Repository` [#505](https://github.com/spatie/laravel-activitylog/pull/505)
+- fix `logChanges()` [#512](https://github.com/spatie/laravel-activitylog/pull/512)
+
+## 3.3.0 - 2019-04-08
+
+- drop support for Laravel 5.7 and lower
+- drop support for PHP 7.1 and lower
+
+## 3.2.2 - 2019-02-27
+
+- add support for Laravel 5.8
+- fix logging hidden attributes
+- fix logging for a causer model without a provider
+- add code coverage reporting for repository
+
+## 3.2.1 - 2019-02-01
+
+- use Str:: and Arr:: instead of helper methods
+
+## 3.2.0 - 2019-01-29
+
+- add `ActivityLogger::tap()` method
+- add `LogsActivity::tapActivity()` method
+- the `ActivityLogger` will work on an activity model instance instead of cache variables
+
+## 3.1.2 - 2018-10-18
+
+- add `shouldLogUnguarded()` method
+- fix typo in methodname `shouldLogOnlyDirty()`
+
+## 3.1.1 - 2018-10-17
+
+- fix `$logUnguarded`
+
+## 3.1.0 - 2018-10-17
+
+- add `$logUnguarded`
+
+## 3.0.0 - 2018-10-16 
+- the preferred way to get changes on an `Activity` model is through the `changes` property instead of the `changes()` function 
+- the `activity` relation of the `CausesActivity` trait has been renamed to `actions`
+- the `activity` relation of the `LogsActivity` trait has been renamed to `activities`
+- the deprecated `loggedActivity` relation has been removed
+- the `HasActivity` trait has been removed.
+- fix for setting a custom table name for the `Activity` model via the `$table` property
+- support for PHP 7.0 has been dropped
+
 ## 2.8.4. - 2018-09-23
 - improve migration
 

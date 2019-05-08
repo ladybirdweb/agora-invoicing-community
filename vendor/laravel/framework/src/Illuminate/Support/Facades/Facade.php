@@ -159,7 +159,7 @@ abstract class Facade
     /**
      * Resolve the facade root instance from the container.
      *
-     * @param  string|object  $name
+     * @param  object|string  $name
      * @return mixed
      */
     protected static function resolveFacadeInstance($name)

@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * This file is part of the Carbon package.
  *
  * (c) Brian Nesbitt <brian@nesbot.com>
@@ -9,7 +9,11 @@
  * file that was distributed with this source code.
  */
 
-return array(
+/*
+ * Authors:
+ * - Muhammad Nasir Rahimi
+ */
+return [
     'year' => ':count کال|:count کاله',
     'y' => ':countکال|:countکاله',
     'month' => ':count مياشت|:count مياشتي',
@@ -28,4 +32,23 @@ return array(
     'from_now' => ':time له اوس څخه',
     'after' => ':time وروسته',
     'before' => ':time دمخه',
-);
+    'list' => ['، ', ' او '],
+    'meridiem' => ['غ.م.', 'غ.و.'],
+    'weekdays' => ['يونۍ', 'دونۍ', 'درېنۍ', 'څلرنۍ', 'پينځنۍ', 'جمعه', 'اونۍ'],
+    'weekdays_short' => ['يونۍ', 'دونۍ', 'درېنۍ', 'څلرنۍ', 'پينځنۍ', 'جمعه', 'اونۍ'],
+    'weekdays_min' => ['يونۍ', 'دونۍ', 'درېنۍ', 'څلرنۍ', 'پينځنۍ', 'جمعه', 'اونۍ'],
+    'months' => ['جنوري', 'فبروري', 'مارچ', 'اپریل', 'مۍ', 'جون', 'جولای', 'اگست', 'سېپتمبر', 'اکتوبر', 'نومبر', 'دسمبر'],
+    'months_short' => ['جنوري', 'فبروري', 'مارچ', 'اپریل', 'مۍ', 'جون', 'جولای', 'اگست', 'سېپتمبر', 'اکتوبر', 'نومبر', 'دسمبر'],
+    'months_standalone' => ['جنوري', 'فېبروري', 'مارچ', 'اپریل', 'مۍ', 'جون', 'جولای', 'اگست', 'سپتمبر', 'اکتوبر', 'نومبر', 'دسمبر'],
+    'months_short_standalone' => ['جنوري', 'فبروري', 'مارچ', 'اپریل', 'مۍ', 'جون', 'جولای', 'اگست', 'سپتمبر', 'اکتوبر', 'نومبر', 'دسمبر'],
+    'first_day_of_week' => 6,
+    'weekend' => [4, 5],
+    'formats' => [
+        'LT' => 'H:mm',
+        'LTS' => 'H:mm:ss',
+        'L' => 'YYYY/M/d',
+        'LL' => 'YYYY MMM D',
+        'LLL' => 'د YYYY د MMMM D H:mm',
+        'LLLL' => 'dddd د YYYY د MMMM D H:mm',
+    ],
+];

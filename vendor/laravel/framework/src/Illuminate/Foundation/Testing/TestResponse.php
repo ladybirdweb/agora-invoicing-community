@@ -9,7 +9,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Traits\Macroable;
-use PHPUnit\Framework\Assert as PHPUnit;
+use Illuminate\Foundation\Testing\Assert as PHPUnit;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Illuminate\Foundation\Testing\Constraints\SeeInOrder;
 
@@ -342,7 +342,7 @@ class TestResponse
      */
     public function assertSee($value)
     {
-        PHPUnit::assertContains((string) $value, $this->getContent());
+        PHPUnit::assertStringContainsString((string) $value, $this->getContent());
 
         return $this;
     }
@@ -368,7 +368,7 @@ class TestResponse
      */
     public function assertSeeText($value)
     {
-        PHPUnit::assertContains((string) $value, strip_tags($this->getContent()));
+        PHPUnit::assertStringContainsString((string) $value, strip_tags($this->getContent()));
 
         return $this;
     }
@@ -394,7 +394,7 @@ class TestResponse
      */
     public function assertDontSee($value)
     {
-        PHPUnit::assertNotContains((string) $value, $this->getContent());
+        PHPUnit::assertStringNotContainsString((string) $value, $this->getContent());
 
         return $this;
     }
@@ -407,7 +407,7 @@ class TestResponse
      */
     public function assertDontSeeText($value)
     {
-        PHPUnit::assertNotContains((string) $value, strip_tags($this->getContent()));
+        PHPUnit::assertStringNotContainsString((string) $value, strip_tags($this->getContent()));
 
         return $this;
     }
@@ -587,7 +587,7 @@ class TestResponse
 
         foreach ($structure as $key => $value) {
             if (is_array($value) && $key === '*') {
-                PHPUnit::assertInternalType('array', $responseData);
+                PHPUnit::assertIsArray($responseData);
 
                 foreach ($responseData as $responseDataItem) {
                     $this->assertJsonStructure($structure['*'], $responseDataItem);
@@ -737,7 +737,7 @@ class TestResponse
     {
         $this->ensureResponseHasView();
 
-        PHPUnit::assertEquals($value, $this->original->getName());
+        PHPUnit::assertEquals($value, $this->original->name());
 
         return $this;
     }
@@ -760,11 +760,11 @@ class TestResponse
         if (is_null($value)) {
             PHPUnit::assertArrayHasKey($key, $this->original->getData());
         } elseif ($value instanceof Closure) {
-            PHPUnit::assertTrue($value($this->original->$key));
+            PHPUnit::assertTrue($value($this->original->getData()[$key]));
         } elseif ($value instanceof Model) {
-            PHPUnit::assertTrue($value->is($this->original->$key));
+            PHPUnit::assertTrue($value->is($this->original->getData()[$key]));
         } else {
-            PHPUnit::assertEquals($value, $this->original->$key);
+            PHPUnit::assertEquals($value, $this->original->getData()[$key]);
         }
 
         return $this;
@@ -799,7 +799,7 @@ class TestResponse
     {
         $this->ensureResponseHasView();
 
-        return $this->original->$key;
+        return $this->original->getData()[$key];
     }
 
     /**
@@ -915,7 +915,7 @@ class TestResponse
         $keys = (array) $keys;
 
         if (empty($keys)) {
-            return $this->assertSessionMissing('errors');
+            return $this->assertSessionHasNoErrors();
         }
 
         if (is_null($this->session()->get('errors'))) {

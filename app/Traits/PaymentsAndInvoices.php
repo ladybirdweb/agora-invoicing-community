@@ -159,7 +159,7 @@ use Illuminate\Http\Request;
                 $paymentRenewal = $this->updateInvoicePayment(
                 $invoiceid,
                 $payment_method,
-             $payment_status,
+                $payment_status,
                 $payment_date,
                 $amount
             );

@@ -175,12 +175,12 @@ class BaseProductController extends ExtendedBaseProductController
                     if (is_array($release) && array_key_exists('type', $release)) {
                         $release = $release['release'];
 
-                        return view('themes.default1.front.download', compact('release', 'form'));
+                        return view('themes.default1.front.download', compact('release'));
                     } else {
                         header('Content-type: Zip');
                         header('Content-Description: File Transfer');
                         header('Content-Disposition: attachment; filename='.$name.'.zip');
-                        //header("Content-type: application/zip");
+                        header('Content-type: application/zip');
                         header('Content-Length: '.filesize($release));
                         readfile($release);
                         // ob_end_clean();

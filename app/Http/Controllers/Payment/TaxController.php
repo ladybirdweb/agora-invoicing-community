@@ -164,8 +164,7 @@ class TaxController extends Controller
             // }
 
             return view('themes.default1.payment.tax.edit',
-                compact('tax', 'txClass', 'states', 'state',
-                'defaultValue', 'taxClassName'));
+                compact('tax', 'txClass', 'states', 'state', 'taxClassName'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }

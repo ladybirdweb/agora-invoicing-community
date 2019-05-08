@@ -109,7 +109,7 @@ class PageController extends GetPageTemplateController
             $selectedParent = $this->page->where('id', $id)->pluck('parent_page_id')->toArray();
             $parentName = $this->page->where('id', $selectedParent)->pluck('name', 'id')->toArray();
 
-            return view('themes.default1.front.page.edit', compact('parents', 'page', 'default', 'selectedDefault', 'publishingDate','selectedParent',
+            return view('themes.default1.front.page.edit', compact('parents', 'page', 'selectedDefault', 'publishingDate','selectedParent',
                 'parentName'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());

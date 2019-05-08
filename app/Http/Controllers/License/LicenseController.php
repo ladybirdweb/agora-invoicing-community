@@ -190,7 +190,7 @@ class LicenseController extends Controller
         $licenseId = $searchLicense['licenseId'];
         $productId = $searchLicense['productId'];
         $licenseCode = $searchLicense['code'];
-        $updateLicense = $this->postCurl($url, "api_key_secret=$api_key_secret&api_function=licenses_edit&product_id=$productId&license_code=$licenseCode&license_id=$licenseId&license_order_number=$orderNo&license_require_domain=$requiredomain&license_status=1&license_expire_date=$l_expiry&license_updates_date=$u_expiry&license_support_date=$s_expiry&license_domain=$domain&license_ip=$ip");
+        $updateLicense = $this->postCurl($url, "api_key_secret=$api_key_secret&api_function=licenses_edit&product_id=$productId&license_code=$licenseCode&license_id=$licenseId&license_order_number=$orderNo&license_require_domain=$requiredomain&license_status=1&license_expire_date=$l_expiry&license_updates_date=$u_expiry&license_support_date=$s_expiry&license_domain=$domain&license_ip=$ip&license_limit=2");
     }
 
     public function searchLicenseId($licenseCode, $productId)
@@ -219,8 +219,6 @@ class LicenseController extends Controller
     //Update the Installation status as Inactive after Licensed Domain Is Chnaged
     public function updateInstalledDomain($licenseCode, $productId)
     {
-        $installation_id = '';
-        $installation_ip = '';
         $url = $this->url;
         $api_key_secret = $this->api_key_secret;
         //Search for the Installation Id
@@ -231,11 +229,11 @@ class LicenseController extends Controller
                 if ($detail->product_id == $productId) {
                     $installation_id = $detail->installation_id;
                     $installation_ip = $detail->installation_ip;
+                    //delete all existing installation
+                    $updateInstallation = $this->postCurl($url, "api_key_secret=$api_key_secret&api_function=installations_edit&installation_id=$installation_id&installation_ip=$installation_ip&installation_status=0&delete_record=1");
                 }
             }
         }
-        // deactivate The Existing Installation
-        $updateInstallation = $this->postCurl($url, "api_key_secret=$api_key_secret&api_function=installations_edit&installation_id=$installation_id&installation_ip=$installation_ip&installation_status=0");
     }
 
     public function searchInstallationId($licenseCode)
@@ -246,6 +244,23 @@ class LicenseController extends Controller
       &search_type=installation&search_keyword=$licenseCode");
 
         return $getInstallId;
+    }
+
+    public function searchInstallationPath($licenseCode, $productId)
+    {
+        $installation_domain = [];
+        $installation_ip = [];
+        $details = json_decode($this->searchInstallationId($licenseCode));
+        if ($details->api_error_detected == 0 && is_array($details->page_message)) {
+            foreach ($details->page_message as $detail) {
+                if ($detail->product_id == $productId) {
+                    $installation_domain[] = $detail->installation_domain;
+                    $installation_ip[] = $detail->installation_ip;
+                }
+            }
+        }
+
+        return ['installed_path' => $installation_domain, 'installed_ip' => $installation_ip];
     }
 
     //Update  Expiration Date After Renewal
@@ -267,6 +282,6 @@ class LicenseController extends Controller
         $licenseId = $searchLicense['licenseId'];
         $productId = $searchLicense['productId'];
         $code = $searchLicense['code'];
-        $updateLicense = $this->postCurl($url, "api_key_secret=$api_key_secret&api_function=licenses_edit&product_id=$productId&license_code=$code&license_id=$licenseId&license_order_number=$orderNo&license_domain=$domain&license_ip=$ip&license_require_domain=$requiredomain&license_status=1&license_expire_date=$licenseExpiry&license_updates_date=$expiryDate&license_support_date=$supportExpiry");
+        $updateLicense = $this->postCurl($url, "api_key_secret=$api_key_secret&api_function=licenses_edit&product_id=$productId&license_code=$code&license_id=$licenseId&license_order_number=$orderNo&license_domain=$domain&license_ip=$ip&license_require_domain=$requiredomain&license_status=1&license_expire_date=$licenseExpiry&license_updates_date=$expiryDate&license_support_date=$supportExpiry&license_limit=2");
     }
 }

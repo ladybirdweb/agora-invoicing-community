@@ -20,6 +20,7 @@ use Composer\DependencyResolver\Pool;
 use Composer\Json\JsonFile;
 use Composer\Cache;
 use Composer\Config;
+use Composer\Composer;
 use Composer\Factory;
 use Composer\IO\IOInterface;
 use Composer\Util\RemoteFilesystem;
@@ -699,12 +700,7 @@ class ComposerRepository extends ArrayRepository implements ConfigurableReposito
                 }
 
                 $data = JsonFile::parseJson($json, $filename);
-                if (!empty($data['warning'])) {
-                    $this->io->writeError('<warning>Warning from '.$this->url.': '.$data['warning'].'</warning>');
-                }
-                if (!empty($data['info'])) {
-                    $this->io->writeError('<info>Info from '.$this->url.': '.$data['info'].'</info>');
-                }
+                RemoteFilesystem::outputWarnings($this->io, $this->url, $data);
 
                 if ($cacheKey) {
                     if ($storeLastModifiedTime) {
@@ -769,12 +765,7 @@ class ComposerRepository extends ArrayRepository implements ConfigurableReposito
                 }
 
                 $data = JsonFile::parseJson($json, $filename);
-                if (!empty($data['warning'])) {
-                    $this->io->writeError('<warning>Warning from '.$this->url.': '.$data['warning'].'</warning>');
-                }
-                if (!empty($data['info'])) {
-                    $this->io->writeError('<info>Info from '.$this->url.': '.$data['info'].'</info>');
-                }
+                RemoteFilesystem::outputWarnings($this->io, $this->url, $data);
 
                 $lastModifiedDate = $rfs->findHeaderValue($rfs->getLastHeaders(), 'last-modified');
                 if ($lastModifiedDate) {

@@ -384,7 +384,7 @@ return [
     'order-confirmation'             => 'Order Confirmation',
     'generate-invoice'               => 'Generate Invoice',
     'send-email'                     => 'Send Email',
-    'domain'                         => 'Domain',
+    'domain'                         => 'Domain/Ip',
     'price-override'                 => 'Price Override',
     'quantity'                       => 'Quantity',
     'agent'                          => 'No. of Agents',

@@ -225,9 +225,13 @@ class OrderController extends BaseOrderController
             $invoiceItems = $this->invoice_items->where('invoice_id', $invoiceid)->get();
             $user = $this->user->find($invoice->user_id);
             $licenseStatus = StatusSetting::pluck('license_status')->first();
+            if ($licenseStatus == 1) {
+                $cont = new \App\Http\Controllers\License\LicenseController();
+                $installationDetails = $cont->searchInstallationPath($order->serial_key, $order->product);
+            }
 
             return view('themes.default1.order.show',
-                compact('invoiceItems', 'invoice', 'user', 'order', 'subscription', 'licenseStatus'));
+                compact('invoiceItems', 'invoice', 'user', 'order', 'subscription', 'licenseStatus', 'installationDetails'));
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
 

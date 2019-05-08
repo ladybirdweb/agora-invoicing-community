@@ -13,15 +13,32 @@ Order Details
       </ol>
 @stop
 @section('content')
+<style type="text/css">
+  .box-header.with-border {
+    border-bottom: 0px!important;
+  }
+  a {
+    color: currentColor;!important;
+  }
+</style>
 <div class="row">
     <div class="col-md-12">
-        <div class="box box-primary">
-            <div class="box-header with-border">
-                <h3 class="box-title">Orders</h3>
-            </div>
+        
+         
             <div class="box-body">
-                <div class="row">
-                    <div class="col-md-12">
+                <div class="box-group" id="accordion">
+                  <div class="panel box box-primary">
+                     <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                   <div class="box-header with-border">
+                    <h4 class="box-title">
+                     
+                         <i class="fa fa-users"></i>
+                        Overview
+                     
+                    </h4>
+                  </div>
+                    <div id="collapseOne" class="panel-collapse collapse in">
+                       <div class="box-body">
                         <div class="callout callout-info">
                             <div class="row">
                                 <div class="col-md-3">
@@ -39,15 +56,27 @@ Order Details
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
-     @include('themes.default1.front.clients.reissue-licenseModal')
-     @include('themes.default1.order.update_ends-modal')
-      @include('themes.default1.order.license_end-modal')
-       @include('themes.default1.order.support_end-modal')
+                         <div class="col-md-12">
+                         <div class="box-body">
+                           
+                          <div class="box-group" id="accordion1">
+                           <div class="panel box box-success">
+                             <a data-toggle="collapse" data-parent="#accordion1" href="#collapseTwo">
+                              <div class="box-header with-border">
+                              <h4 class="box-title">
+                              User Details
+                               <span class="caret"></span>
+                              </h4>
+                            </div>
+                             </a>
+                              <div id="collapseTwo" class="panel-collapse collapse">
+                       <div class="box-body">
+    
                             <table class="table table-hover">
+
                                 <tbody><tr><td><b>Name:</b></td><td><a href="{{url('clients/'.$user->id)}}">{{ucfirst($user->first_name)}}</a></td></tr>
                                     <tr><td><b>Email:</b></td><td>{{$user->email}}</td></tr>
-                                    <tr><td><b>Mobile:</b></td><td>@if($user->mobile_code)<b>+</b>{{$user->mobile_code}}@endif{{$user->mobile}}</td></tr>
+                                    <tr><td><b>Mobile:</b></td><td>@if($user->mobile_code)(<b>+</b>{{$user->mobile_code}})@endif&nbsp;{{$user->mobile}}</td></tr>
                                     <tr><td><b>Address:</b></td><td>{{$user->address}}, 
                                             {{ucfirst($user->town)}}, 
                                             @if(key_exists('name',\App\Http\Controllers\Front\CartController::getStateByCode($user->state)))
@@ -57,10 +86,31 @@ Order Details
                                     <tr><td><b>Country:</b></td><td>{{\App\Http\Controllers\Front\CartController::getCountryByCode($user->country)}}</td></tr>
 
                                 </tbody></table>
+                              </div>
+                            </div>
+                            </div>
                         </div>
-                        <div class="col-md-6">
-
-
+                      </div>
+                    </div>
+                        <div class="col-md-12">
+                            <div class="box-body">
+                               @include('themes.default1.front.clients.reissue-licenseModal')
+                               @include('themes.default1.order.update_ends-modal')
+                                @include('themes.default1.order.license_end-modal')
+                                 @include('themes.default1.order.support_end-modal')
+                               <div class="box-group" id="accordion2">
+                                 <div class="panel box box-danger">
+                                   <a data-toggle="collapse" data-parent="#accordion2" href="#collapseThree">
+                                   <div class="box-header with-border">
+                              <h4 class="box-title">
+                                
+                                  License Details
+                                   <span class="caret"></span>
+                              </h4>
+                            </div>
+                          </a>
+                             <div id="collapseThree" class="panel-collapse collapse">
+                               <div class="box-body">
                             <table class="table table-hover">
    
                               
@@ -69,10 +119,36 @@ Order Details
                                         
                                             <td>
                                                  <label name="domain">
-                                                    <b>Licensed Domain:</b></td><td contenteditable="false" id="domain">{{$order->domain}}
+                                                    <b>Licensed Domain/IP:</b></td><td contenteditable="false" id="domain">{{$order->domain}}
                                                        @if ($licenseStatus == 1)
                                       <button class='class="btn btn-danger mb-2 pull-right' style="border:none;" id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}">
                                 Reissue Licesnse</button>
+                                <tr><td><b>Installation Path:</b></td> 
+                                        @if(count($installationDetails['installed_path']) > 0)
+                                          <td>@foreach($installationDetails['installed_path'] as $paths)
+                                              <li>{{$paths}}</li>
+                                              @endforeach
+                                          </td>
+                                        @else
+                                        <td>
+                                        No Active Installation
+                                      </td>
+                                        @endif
+                                      </tr>
+
+                                      <tr><td><b>Installation IP:</b></td> 
+                                      @if(count($installationDetails['installed_path']) > 0)  
+                                          <td>
+                                              @foreach($installationDetails['installed_ip'] as $paths)
+                                              <li>{{$paths}}</li>
+                                              @endforeach
+                                          </td>
+                                         @else
+                                          <td>
+                                        --
+                                      </td>
+                                        @endif
+                                       </tr>
                                 @endif
                             </td></tr>
                                     <?php
@@ -127,22 +203,35 @@ Order Details
                               </td></tr>
 
                                 </tbody></table>
+                              </div>
+                              </div>
+                              </div>
+                              </div>
                         </div>
+                      </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-<div class="row">
-    <div class="col-md-12">
-        <div class="box box-primary">
-            <div class="box-header with-border">
-                <h3 class="box-title">Transaction list</h3>
-            </div>
+
+
+        <div class="row">
+            <div class="col-md-12">
             <div class="box-body">
-                <div class="row">
-                    <div class="col-md-12">
+                <div class="box-group" id="accordion3">
+                  <div class="panel box box-primary">
+                     <a data-toggle="collapse" data-parent="#accordion3" href="#collapseFour">
+                   <div class="box-header with-border">
+                    <h4 class="box-title">
+                      <i class="fa fa-film"></i>
+                        Transaction List
+                    </h4>
+                  </div>
+                </a>
+                    <div id="collapseFour" class="panel-collapse collapse">
+                       <div class="box-body">
+                       <div class="col-md-12">
                          <table id="editorder-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
                              
 
@@ -158,14 +247,19 @@ Order Details
                              
                             <th>Action</th>
                         </tr></thead>
-                     </table>
+                        </table>
 
- </div>
+                          </div>
+      
+
+                          </div>
+                        </div>
+                    </div>
                 </div>
             </div>
+          </div>
         </div>
-    </div>
-</div>
+
 <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
 <script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript">
@@ -206,21 +300,24 @@ Order Details
                 $('.loader').css('display', 'block');
             },
         });
-    </script>
-
-<div class="row">
-    <div class="col-md-12">
-        <div class="box box-primary">
-            <div class="box-header with-border">
-                <h3 class="box-title">Payment receipts</h3>
-            </div>
+      </script>
+         <div class="row">
+            <div class="col-md-12">
             <div class="box-body">
-                <div class="row">
-                    <div class="col-md-12">
-
-
-                    
-                <table id="order1-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
+                <div class="box-group" id="accordion4">
+                  <div class="panel box box-primary">
+                     <a data-toggle="collapse" data-parent="#accordion4" href="#collapseFive">
+                   <div class="box-header with-border">
+                    <h4 class="box-title">
+                       <i class="fa fa-bars"></i>
+                       Payment Receipts
+                    </h4>
+                  </div>
+                </a>
+                    <div id="collapseFive" class="panel-collapse collapse">
+                       <div class="box-body">
+                       <div class="col-md-12">
+                           <table id="order1-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
                  <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_delete"><i class= "fa fa-trash"></i>&nbsp;&nbsp;Delete Selected</button><br /><br />
                     <thead><tr>
                         <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
@@ -235,13 +332,18 @@ Order Details
                         </tr></thead>
                      </table>
 
-     
+                          </div>
+      
+
+                          </div>
+                        </div>
                     </div>
                 </div>
             </div>
+          </div>
         </div>
-    </div>
-</div>
+
+
 <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
 <script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript">

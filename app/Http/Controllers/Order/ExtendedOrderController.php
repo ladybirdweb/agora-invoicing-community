@@ -336,13 +336,7 @@ class ExtendedOrderController extends Controller
     {
         $needle = 'www';
         foreach ($seperateDomains as $domain) {
-            $isIP = (bool) ip2long($domain);
-            if ($isIP == true) {
-                $allowedDomains[] = $domain;
-            } else {
-                $customDomain = (strpos($domain, $needle) !== false) ? str_replace('www.', '', $domain) : 'www.'.$domain;
-                $allowedDomains[] = ($domain.','.$customDomain);
-            }
+            $allowedDomains[] = $domain;
         }
 
         return  $allowedDomains;

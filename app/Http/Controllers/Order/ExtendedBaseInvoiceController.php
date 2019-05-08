@@ -74,7 +74,7 @@ class ExtendedBaseInvoiceController extends Controller
             $totalSum = array_sum($payment);
         }
 
-        return view('themes.default1.invoice.editInvoice', compact('userid', 'date', 'invoiceid', 'invoice', 'totalSum'));
+        return view('themes.default1.invoice.editInvoice', compact('date', 'invoiceid', 'invoice', 'totalSum'));
     }
 
     public function postEdit($invoiceid, Request $request)

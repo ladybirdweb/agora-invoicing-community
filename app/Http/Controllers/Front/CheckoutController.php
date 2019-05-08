@@ -225,6 +225,7 @@ class CheckoutController extends InfoController
                 $items = new \Illuminate\Support\Collection();
                 $invoiceid = $request->input('invoice_id');
                 $invoice = $this->invoice->find($invoiceid);
+                $invoice_no = $invoice->number;
                 $date = $this->getDate($invoice);
                 $items = $invoice->invoiceItem()->get();
                 $product = $this->product($invoiceid);
@@ -248,9 +249,8 @@ class CheckoutController extends InfoController
                         compact(
                             'amount',
                             'invoice_no',
-                            ' invoiceid',
-                            ' payment_method',
-                            'phone',
+                            'invoiceid',
+                            'payment_method',
                             'invoice',
                             'items',
                             'product',

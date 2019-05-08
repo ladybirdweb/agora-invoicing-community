@@ -2,6 +2,7 @@
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/spatie/laravel-activitylog.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-activitylog)
 [![Build Status](https://img.shields.io/travis/spatie/laravel-activitylog/master.svg?style=flat-square)](https://travis-ci.org/spatie/laravel-activitylog)
+[![Code coverage](https://scrutinizer-ci.com/g/spatie/laravel-activitylog/badges/coverage.png)](https://scrutinizer-ci.com/g/spatie/laravel-activitylog)
 [![Quality Score](https://img.shields.io/scrutinizer/g/spatie/laravel-activitylog.svg?style=flat-square)](https://scrutinizer-ci.com/g/spatie/laravel-activitylog)
 [![StyleCI](https://styleci.io/repos/61802818/shield)](https://styleci.io/repos/61802818)
 [![Total Downloads](https://img.shields.io/packagist/dt/spatie/laravel-activitylog.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-activitylog)
@@ -68,7 +69,7 @@ Calling `$activity->changes()` will return this array:
 
 
 ## Documentation
-You'll find the documentation on [https://docs.spatie.be/laravel-activitylog/v2](https://docs.spatie.be/laravel-activitylog/v2).
+You'll find the documentation on [https://docs.spatie.be/laravel-activitylog/v3](https://docs.spatie.be/laravel-activitylog/v3).
 
 Find yourself stuck using the package? Found a bug? Do you have general questions or suggestions for improving the activity log? Feel free to [create an issue on GitHub](https://github.com/spatie/laravel-activitylog/issues), we'll try to address it as soon as possible.
 
@@ -138,28 +139,33 @@ return [
     'subject_returns_soft_deleted_models' => false,
 
     /*
-     * This model will be used to log activity. The only requirement is that
-     * it should be or extend the Spatie\Activitylog\Models\Activity model.
+     * This model will be used to log activity.
+     * It should be implements the Spatie\Activitylog\Contracts\Activity interface
+     * and extend Illuminate\Database\Eloquent\Model.
      */
     'activity_model' => \Spatie\Activitylog\Models\Activity::class,
-    
+
     /*
      * This is the name of the table that will be created by the migration and
      * used by the Activity model shipped with this package.
      */
     'table_name' => 'activity_log',
 ];
-
 ```
 
 ## Changelog
 
 Please see [CHANGELOG](CHANGELOG.md) for more information about recent changes.
 
+## Upgrading
+
+Please see [UPGRADING](UPGRADING.md) for details.
+
+
 ## Testing
 
 ``` bash
-$ composer test
+composer test
 ```
 
 ## Contributing

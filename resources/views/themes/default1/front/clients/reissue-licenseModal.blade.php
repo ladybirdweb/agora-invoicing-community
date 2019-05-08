@@ -2,7 +2,7 @@
 <div class="modal-dialog">
 	<div class="modal-content">
 		<div class="modal-header">
-			<h4 class="modal-title" id="defaultModalLabel">Enter Domain</h4>
+			<h4 class="modal-title" id="defaultModalLabel">Enter Domain/IP</h4>
 			<!-- <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button> -->
 		</div>
 		<div class="modal-body">
@@ -21,7 +21,7 @@
 		
 		  <div class="modal-footer">
                 <button type="button" id="close" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-                <input type="submit" id="licenseSave" onclick="validdomaincheck()" class="btn btn-primary" value="{{Lang::get('message.save')}}">
+                <input type="submit" id="licenseSave"  class="btn btn-primary" value="{{Lang::get('message.save')}}">
             </div>
 	</div>
 </div>

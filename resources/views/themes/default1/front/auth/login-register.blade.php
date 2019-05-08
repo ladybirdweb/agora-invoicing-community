@@ -619,6 +619,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
 @section('script')
  <script async src="https://www.googletagmanager.com/gtag/js?id=AW-1027628032"></script>
 <script>
+
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
@@ -1016,6 +1017,7 @@ function verify_otp_check(){
           type: 'GET',
           data: data,
           success: function (response) {
+            window.history.replaceState(response.type, "TitleTest", "login");
             $("#sendOtp").attr('disabled',false);
             var result =  '<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Almost there! </strong>'+response.message+'</div>';
              if (($("#checkOtpStatus").val()) == 1 ) {
@@ -1642,9 +1644,10 @@ if(first_namecheck() && last_namecheck() && emailcheck() && companycheck()  && m
                 "_token": "{!! csrf_token() !!}",
           },
           success: function (response) {
+            window.history.pushState(response.type, "TitleTest", "thankyou");
+           
             $("#register").attr('disabled',false);
             if(response.type == 'success'){
-               
                 $('.wizard-inner').css('display','block');
                    if($("#checkEmailStatus").val() == 0 && $("#checkOtpStatus").val() == 0) {
                  var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Thank You! </strong>'+response.message+'!!</div>';

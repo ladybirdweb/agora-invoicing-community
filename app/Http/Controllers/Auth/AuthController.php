@@ -170,7 +170,7 @@ class AuthController extends BaseAuthController
         try {
             $code = $request->input('code');
             $mobile = $request->input('mobile');
-            $number = $code.$mobile;
+            $number = '(+'.$code.') '.$mobile;
             $result = $this->sendOtp($mobile, $code);
             $response = ['type' => 'success', 'message' => 'OTP has been sent to '.$number.'.Please Verify to Login'];
 

@@ -126,7 +126,7 @@ class RazorpayController extends Controller
 
         \Cart::clear();
         $status = 'success';
-        $message = view('themes.default1.front.postPaymentTemplate', compact('invoice','date','orders',
+        $message = view('themes.default1.front.postPaymentTemplate', compact('invoice','orders',
              'invoiceItems', 'state', 'currency'))->render();
 
         return ['status'=>$status, 'message'=>$message];
@@ -146,7 +146,7 @@ class RazorpayController extends Controller
         \Cart::clear();
         $status = 'success';
 
-        $message = view('themes.default1.front.postRenewTemplate', compact('invoice','date','order',
+        $message = view('themes.default1.front.postRenewTemplate', compact('invoice','date',
             'product', 'invoiceItem', 'state', 'currency'))->render();
 
         return ['status'=>$status, 'message'=>$message];

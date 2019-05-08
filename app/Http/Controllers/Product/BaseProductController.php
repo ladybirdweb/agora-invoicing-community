@@ -180,7 +180,7 @@ class BaseProductController extends ExtendedBaseProductController
                         header('Content-type: Zip');
                         header('Content-Description: File Transfer');
                         header('Content-Disposition: attachment; filename='.$name.'.zip');
-                        header("Content-type: application/zip");
+                        header('Content-type: application/zip');
                         header('Content-Length: '.filesize($release));
                         readfile($release);
                         // ob_end_clean();

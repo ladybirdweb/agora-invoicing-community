@@ -15,6 +15,7 @@ class ApiController extends Controller
         try {
             $result = 'fails';
             $url = $request->input('url');
+            $url2 = preg_replace('#^https?://#', '', $url);
 
             //            if (ends_with($domain, '/')) {
             //                $domain = substr_replace($domain,"", -1, 1);
@@ -22,17 +23,17 @@ class ApiController extends Controller
 
             $url_info = parse_url($url);
             $domain1 = $url_info['host'];
-            $url = preg_replace('#^www\.(.+\.)#i', '$1', $url_info['host']); //remove www from domain
-            $domain2 = 'www.'.$url;
-            $domain1check = $url.','.$domain2;
+            $url1 = preg_replace('#^www\.(.+\.)#i', '$1', $url_info['host']); //remove www from domain
+            $domain2 = 'www.'.$url1;
+            $domain1check = $url1.','.$domain2;
             $orders = new Order();
-            $order = $orders->where('domain', $domain1check)->orWhere('domain', $url)->orWhere('domain', $domain2)->first();
+            $order = $orders->where('domain', $domain1check)->orWhere('domain', $url1)->orWhere('domain', $domain2)->orWhere('domain', $url2)->first();
             if ($order) {
                 $product = Product::where('id', $order->product)->pluck('name')->first();
                 $result = 'success';
             }
 
-            return response()->json(compact('result', 'product'));
+            return response()->json(compact('result'));
         } catch (Exception $ex) {
             $error = $ex->getMessage();
 

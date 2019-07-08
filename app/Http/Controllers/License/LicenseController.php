@@ -153,9 +153,13 @@ class LicenseController extends Controller
         $order = Order::where('id', $orderid)->first();
         $orderNo = $order->number;
         $domain = $order->domain;
+        $ipAndDomain = $this->getIpAndDomain($domain);
+        $ip = $ipAndDomain['ip'];
+        $domain = $ipAndDomain['domain'];
+         $requiredomain = $ipAndDomain['requiredomain'];
         $productId = $this->searchProductId($sku);
-        $addLicense = $this->postCurl($url, "api_key_secret=$api_key_secret&api_function=licenses_add&product_id=$productId&license_code=$serial_key&license_require_domain=1&license_status=1&license_order_number=$orderNo&license_domain=$domain&license_limit=6&license_expire_date=$licenseExpiry&license_updates_date=$updatesExpiry&license_support_date=$supportExpiry&license_disable_ip_verification=0");
-    }
+        $addLicense = $this->postCurl($url, "api_key_secret=$api_key_secret&api_function=licenses_add&product_id=$productId&license_code=$serial_key&license_require_domain=1&license_status=1&license_order_number=$orderNo&license_domain=$domain&&license_ip=$ip&license_require_domain=$requiredomain&license_limit=6&license_expire_date=$licenseExpiry&license_updates_date=$updatesExpiry&license_support_date=$supportExpiry&license_disable_ip_verification=0&license_limit=2");
+  }
 
     /*
     *  Edit Existing License
@@ -175,8 +179,35 @@ class LicenseController extends Controller
             $s_expiry = date('Y-m-d', strtotime($supportExpiry));
         }
         $url = $this->url;
+        
+        $ipAndDomain = $this->getIpAndDomain($domain);
+        $ip = $ipAndDomain['ip'];
+        $domain = $ipAndDomain['domain'];
+        $requiredomain = $ipAndDomain['requiredomain'];
+       
+        $api_key_secret = $this->api_key_secret;
+        $searchLicense = $this->searchLicenseId($licenseCode, $productId);
+        $licenseId = $searchLicense['licenseId'];
+        $productId = $searchLicense['productId'];
+        $licenseCode = $searchLicense['code'];
+        $updateLicense = $this->postCurl($url, "api_key_secret=$api_key_secret&api_function=licenses_edit&product_id=$productId&license_code=$licenseCode&license_id=$licenseId&license_order_number=$orderNo&license_require_domain=$requiredomain&license_status=1&license_expire_date=$l_expiry&license_updates_date=$u_expiry&license_support_date=$s_expiry&license_domain=$domain&license_ip=$ip&license_limit=2");
+    }
+
+    /**
+     * Get the Ip and domain that is to be entered in License Manager
+     *
+     * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
+     *
+     * @date   2019-05-11T11:31:07+0530
+     *
+     * @param  string $domain
+     *
+     * @return array
+     */
+    protected function getIpAndDomain($domain)
+    {
         $isIP = (bool) ip2long($domain);
-        if ($isIP == true) {
+         if ($isIP == true) {
             $requiredomain = 0;
             $ip = $domain;
             $domain = '';
@@ -185,12 +216,8 @@ class LicenseController extends Controller
             $domain = $domain;
             $ip = '';
         }
-        $api_key_secret = $this->api_key_secret;
-        $searchLicense = $this->searchLicenseId($licenseCode, $productId);
-        $licenseId = $searchLicense['licenseId'];
-        $productId = $searchLicense['productId'];
-        $licenseCode = $searchLicense['code'];
-        $updateLicense = $this->postCurl($url, "api_key_secret=$api_key_secret&api_function=licenses_edit&product_id=$productId&license_code=$licenseCode&license_id=$licenseId&license_order_number=$orderNo&license_require_domain=$requiredomain&license_status=1&license_expire_date=$l_expiry&license_updates_date=$u_expiry&license_support_date=$s_expiry&license_domain=$domain&license_ip=$ip&license_limit=2");
+
+        return ['ip'=>$ip , 'domain'=>$domain, 'requiredomain'=>$requiredomain];
     }
 
     public function searchLicenseId($licenseCode, $productId)

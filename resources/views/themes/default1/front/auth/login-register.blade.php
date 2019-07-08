@@ -1017,7 +1017,7 @@ function verify_otp_check(){
           type: 'GET',
           data: data,
           success: function (response) {
-            window.history.replaceState(response.type, "TitleTest", "login");
+            // window.history.replaceState(response.type, "TitleTest", "login");
             $("#sendOtp").attr('disabled',false);
             var result =  '<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Almost there! </strong>'+response.message+'</div>';
              if (($("#checkOtpStatus").val()) == 1 ) {
@@ -1644,7 +1644,7 @@ if(first_namecheck() && last_namecheck() && emailcheck() && companycheck()  && m
                 "_token": "{!! csrf_token() !!}",
           },
           success: function (response) {
-            window.history.pushState(response.type, "TitleTest", "thankyou");
+            // window.history.pushState(response.type, "TitleTest", "thankyou");
            
             $("#register").attr('disabled',false);
             if(response.type == 'success'){

@@ -16,7 +16,6 @@ use Bugsnag;
 use DateTime;
 use DateTimeZone;
 use Illuminate\Http\Request;
-use Log;
 
 class ClientController extends AdvanceSearchController
 {

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Payment;
 
 use App\Http\Controllers\Controller;
-use App\Model\Payment\Plan;
 use App\Model\Payment\Promotion;
 use App\Model\Product\Product;
 

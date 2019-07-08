@@ -33,9 +33,9 @@ class DBTestCase extends TestCase
     /**
      * for testing non-public methods.
      *
-     * @param   $classObject Object => object of the class, whose methods are required to be fetched
-     * @param   $methodName  String => name of the method as string
-     * @param   $arguments   Array => method arguments
+     * @param $classObject Object => object of the class, whose methods are required to be fetched
+     * @param $methodName  String => name of the method as string
+     * @param $arguments   Array => method arguments
      *
      * @return ReflectionMethod
      */

@@ -6,7 +6,6 @@ use App\ApiKey;
 use App\Http\Controllers\Common\MailChimpController;
 use App\Http\Controllers\Common\TemplateController;
 use App\Model\Common\Setting;
-use App\Model\Common\State;
 use App\Model\Common\Template;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;

@@ -24,7 +24,6 @@ use App\User;
 use Bugsnag;
 use Illuminate\Http\Request;
 use Input;
-use Log;
 
 class InvoiceController extends TaxRatesAndCodeExpiryController
 {

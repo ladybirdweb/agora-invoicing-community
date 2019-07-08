@@ -4,7 +4,6 @@ namespace Tests\Unit\Client\Account;
 
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
-use App\User;
 use Tests\DBTestCase;
 
 class InvoiceTest extends DBTestCase

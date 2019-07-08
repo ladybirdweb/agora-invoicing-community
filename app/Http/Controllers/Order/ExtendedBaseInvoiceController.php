@@ -10,7 +10,6 @@ use App\Model\Payment\Currency;
 use Bugsnag;
 use Exception;
 use Illuminate\Http\Request;
-use Log;
 
 class ExtendedBaseInvoiceController extends Controller
 {

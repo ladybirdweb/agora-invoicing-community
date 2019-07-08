@@ -11,7 +11,7 @@
             </div>
               <div class="modal-body" style="padding:0px;margin-bottom:-26px;padding-top:25px;">
                     
-                    <?php 
+                    <?php
                     //All the versions of Uploades Files
                    $versions = \App\Model\Product\ProductUpload::where('product_id', $productid)->select('id', 'title', 'description', 'version', 'file', 'created_at')->get();
                    //End Date of the Current Product Version

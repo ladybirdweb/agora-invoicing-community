@@ -379,7 +379,7 @@ class ClientController extends BaseClientController
 
             return view(
                 'themes.default1.front.clients.show-order',
-                compact('invoice', 'order', 'user', 'plan', 'product', 'subscription', 'licenseStatus', 'installationDetails','allowDomainStatus')
+                compact('invoice', 'order', 'user', 'plan', 'product', 'subscription', 'licenseStatus', 'installationDetails', 'allowDomainStatus')
             );
         } catch (Exception $ex) {
             Bugsnag::notifyException($ex);

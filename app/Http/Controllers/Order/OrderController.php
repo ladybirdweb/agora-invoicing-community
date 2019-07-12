@@ -229,9 +229,10 @@ class OrderController extends BaseOrderController
                 $cont = new \App\Http\Controllers\License\LicenseController();
                 $installationDetails = $cont->searchInstallationPath($order->serial_key, $order->product);
             }
+            $allowDomainStatus = StatusSetting::pluck('domain_check')->first();
 
             return view('themes.default1.order.show',
-                compact('invoiceItems', 'invoice', 'user', 'order', 'subscription', 'licenseStatus', 'installationDetails'));
+                compact('invoiceItems', 'invoice', 'user', 'order', 'subscription', 'licenseStatus', 'installationDetails', 'allowDomainStatus'));
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
 

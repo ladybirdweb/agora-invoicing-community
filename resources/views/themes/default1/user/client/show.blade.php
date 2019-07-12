@@ -300,7 +300,7 @@ User Details
                     success: function (data) {
                     $('#gif').hide();
                     $('#response').html(data);
-                    // location.reload();
+                    location.reload();
                     }
                    })
                 }

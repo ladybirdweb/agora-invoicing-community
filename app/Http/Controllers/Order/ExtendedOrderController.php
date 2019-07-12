@@ -348,6 +348,7 @@ class ExtendedOrderController extends Controller
             //Now make Installation status as inactive
             $updateInstallStatus = $cont->updateInstalledDomain($licenseCode, $order->product);
         }
+
         return ['message' => 'success', 'update'=>'License Reissued'];
     }
 

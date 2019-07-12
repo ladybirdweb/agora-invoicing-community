@@ -86,7 +86,6 @@ trait ApiKeySettings
         return ['message' => 'success', 'update'=>'Domain Check Status Updated'];
     }
 
-
     /*
     * Update Twitter Details In Database
     */

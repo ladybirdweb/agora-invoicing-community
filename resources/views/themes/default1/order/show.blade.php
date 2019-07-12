@@ -28,7 +28,6 @@ Order Details
             <div class="box-body">
                 <div class="box-group" id="accordion">
                   <div class="panel box box-primary">
-                     <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
                    <div class="box-header with-border">
                     <h4 class="box-title">
                      
@@ -56,21 +55,20 @@ Order Details
                                 </div>
                             </div>
                         </div>
-                         <div class="col-md-12">
-                         <div class="box-body">
+                         <div class="col-md-6">
+                     
                            
-                          <div class="box-group" id="accordion1">
+                          
                            <div class="panel box box-success">
-                             <a data-toggle="collapse" data-parent="#accordion1" href="#collapseTwo">
+                            <div class="box-body">
                               <div class="box-header with-border">
                               <h4 class="box-title">
                               User Details
-                               <span class="caret"></span>
-                              </h4>
+                             </h4>
                             </div>
-                             </a>
-                              <div id="collapseTwo" class="panel-collapse collapse">
-                       <div class="box-body">
+                            
+                        
+                       
     
                             <table class="table table-hover">
 
@@ -87,33 +85,32 @@ Order Details
 
                                 </tbody></table>
                               </div>
+                           
                             </div>
-                            </div>
-                        </div>
-                      </div>
+                        
+                     
                     </div>
-                        <div class="col-md-12">
+                        <div class="col-md-6">
+                            <div class="panel box box-success">
                             <div class="box-body">
                                @include('themes.default1.front.clients.reissue-licenseModal')
+                               @include('themes.default1.front.clients.domainRestriction')
                                @include('themes.default1.order.update_ends-modal')
                                 @include('themes.default1.order.license_end-modal')
                                  @include('themes.default1.order.support_end-modal')
-                               <div class="box-group" id="accordion2">
-                                 <div class="panel box box-danger">
-                                   <a data-toggle="collapse" data-parent="#accordion2" href="#collapseThree">
-                                   <div class="box-header with-border">
+                               
+                                  
+                            <div class="box-header with-border">
                               <h4 class="box-title">
                                 
                                   License Details
-                                   <span class="caret"></span>
                               </h4>
                             </div>
-                          </a>
-                             <div id="collapseThree" class="panel-collapse collapse">
-                               <div class="box-body">
+                        
+                          
                             <table class="table table-hover">
    
-                              
+                              <input type="hidden" name="domainRes" id="domainRes" value={{$allowDomainStatus}}>
                                 <tbody><tr><td><b>License Code:</b></td><td>{{($order->serial_key)}}</td></tr>
                                     <tr>
                                         
@@ -203,10 +200,10 @@ Order Details
                               </td></tr>
 
                                 </tbody></table>
+                             
+                             
                               </div>
-                              </div>
-                              </div>
-                              </div>
+                            
                         </div>
                       </div>
                     </div>
@@ -229,7 +226,7 @@ Order Details
                     </h4>
                   </div>
                 </a>
-                    <div id="collapseFour" class="panel-collapse collapse">
+                    <div id="collapseFour" class="panel-collapse collapse in">
                        <div class="box-body">
                        <div class="col-md-12">
                          <table id="editorder-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
@@ -314,7 +311,7 @@ Order Details
                     </h4>
                   </div>
                 </a>
-                    <div id="collapseFive" class="panel-collapse collapse">
+                    <div id="collapseFive" class="panel-collapse collapse in">
                        <div class="box-body">
                        <div class="col-md-12">
                            <table id="order1-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
@@ -439,13 +436,43 @@ Order Details
 <!-----------------------------------For Reissuing License Domain------------------------------------------------------------->
 <script>
         $("#reissueLic").click(function(){
-            var oldDomainName = $(this).attr('data-name');
+          if ($('#domainRes').val() == 1) {
+            var oldDomainId = $(this).attr('data-id');
+            $("#orderId").val(oldDomainId);
+            $("#domainModal").modal();
+            $("#domainSave").on('click',function(){
+            var id = $('#orderId').val();
+            $.ajax ({
+                type: 'patch',
+                url : "{{url('reissue-license')}}",
+                data : {'id':id},
+                  beforeSend: function () {
+                 $('#response1').html( "<img id='blur-bg' class='backgroundfadein' style='top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
+
+                },
+          
+                success: function (data) {
+               if (data.message =='success'){
+                 var result =  '<div class="alert alert-success alert-dismissable"><strong><i class="fa fa-check"></i> Success! </strong> '+data.update+' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
+                  $('#response1').html(result);
+                     $('#response1').css('color', 'green');
+                setTimeout(function(){
+                    window.location.reload();
+                },3000);
+                  }
+               
+                }
+                
+             });
+            });
+
+          } else {
+             var oldDomainName = $(this).attr('data-name');
             var oldDomainId = $(this).attr('data-id');
             $("#licesnseModal").modal();
            $("#newDomain").val(oldDomainName);
            $("#orderId").val(oldDomainId);
-        });
-        $("#licenseSave").on('click',function(){
+           $("#licenseSave").on('click',function(){
       
             var domain = $('#newDomain').val();
             var id = $('#orderId').val();
@@ -471,8 +498,12 @@ Order Details
                
                 }
                 
+             });
             });
+          }
+           
         });
+
 
 
  

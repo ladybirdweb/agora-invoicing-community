@@ -332,6 +332,25 @@ class ExtendedOrderController extends Controller
         return ['message' => 'success', 'update'=>'Licensed Domain Updated'];
     }
 
+    public function reissueLicense(Request $request)
+    {
+        $order = Order::findorFail($request->input('id'));
+        $order->domain = '';
+        $licenseCode = $order->serial_key;
+        $order->save();
+        $licenseStatus = StatusSetting::pluck('license_status')->first();
+        if ($licenseStatus == 1) {
+            $licenseExpiry = $order->subscription->ends_at;
+            $updatesExpiry = $order->subscription->update_ends_at;
+            $supportExpiry = $order->subscription->support_ends_at;
+            $cont = new \App\Http\Controllers\License\LicenseController();
+            $updateLicensedDomain = $cont->updateLicensedDomain($licenseCode, $order->domain, $order->product, $licenseExpiry, $updatesExpiry, $supportExpiry, $order->number);
+            //Now make Installation status as inactive
+            $updateInstallStatus = $cont->updateInstalledDomain($licenseCode, $order->product);
+        }
+        return ['message' => 'success', 'update'=>'License Reissued'];
+    }
+
     public function getAllowedDomains($seperateDomains)
     {
         $needle = 'www';

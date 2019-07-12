@@ -160,6 +160,7 @@
              Route::get('updatepipedriveDetails', 'Common\BaseSettingsController@updatepipedriveDetails')->name('updatepipedriveDetails');
               Route::get('mailchimp-prod-status', 'Common\BaseSettingsController@updateMailchimpProductStatus')->name('mailchimp-prod-status');
                Route::get('mailchimp-paid-status', 'Common\BaseSettingsController@updateMailchimpIsPaidStatus')->name('mailchimp-paid-status');
+               Route::get('updatedomainCheckDetails', 'Common\BaseSettingsController@updatedomainCheckDetails')->name('updatedomainCheckDetails');
 
         /*
          * Client
@@ -313,6 +314,7 @@
         Route::get('orders-delete', 'Order\OrderController@destroy')->name('orders-delete');
         Route::get('order/execute', 'Order\OrderController@orderExecute');
         Route::patch('change-domain', 'Order\ExtendedOrderController@changeDomain');
+        Route::patch('reissue-license', 'Order\ExtendedOrderController@reissueLicense');
         Route::get('orders/{id}/delete', 'Order\OrderController@deleleById');
         Route::get('edit-update-expiry', 'Order\BaseOrderController@editUpdateExpiry');
         Route::get('edit-license-expiry', 'Order\BaseOrderController@editLicenseExpiry');

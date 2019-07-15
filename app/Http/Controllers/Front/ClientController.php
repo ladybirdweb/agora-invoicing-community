@@ -13,7 +13,6 @@ use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
 use App\Model\Product\Subscription;
 use App\User;
-use Auth;
 use Bugsnag;
 use DateTime;
 use DateTimeZone;
@@ -375,11 +374,12 @@ class ClientController extends BaseClientController
             $product = $order->product()->first();
             $price = $product->price()->first();
             $licenseStatus = StatusSetting::pluck('license_status')->first();
+            $allowDomainStatus = StatusSetting::pluck('domain_check')->first();
             $user = \Auth::user();
 
             return view(
                 'themes.default1.front.clients.show-order',
-                compact('invoice', 'order', 'user', 'plan', 'product', 'subscription', 'licenseStatus', 'installationDetails')
+                compact('invoice', 'order', 'user', 'plan', 'product', 'subscription', 'licenseStatus', 'installationDetails', 'allowDomainStatus')
             );
         } catch (Exception $ex) {
             Bugsnag::notifyException($ex);

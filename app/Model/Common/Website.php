@@ -3,7 +3,6 @@
 namespace App\Model\Common;
 
 use App\BaseModel;
-use App\User;
 use LinkThrow\Billing\SubscriptionBillableTrait;
 
 class Website extends BaseModel

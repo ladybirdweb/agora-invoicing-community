@@ -24,7 +24,6 @@ use App\User;
 use Bugsnag;
 use Illuminate\Http\Request;
 use Input;
-use Log;
 
 class InvoiceController extends TaxRatesAndCodeExpiryController
 {
@@ -247,7 +246,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             } else {
                 $user = '';
             }
-            $products = $this->product->where('id', '!=', 1)->pluck('name', 'id')->toArray();
+            $products = $this->product->pluck('name', 'id')->toArray();
             $currency = $this->currency->pluck('name', 'code')->toArray();
 
             return view('themes.default1.invoice.generate', compact('user', 'products', 'currency'));

@@ -76,6 +76,17 @@ trait ApiKeySettings
     }
 
     /*
+     * Update Domain Check status In Database
+     */
+    public function updatedomainCheckDetails(Request $request)
+    {
+        $status = $request->input('status');
+        StatusSetting::find(1)->update(['domain_check'=>$status]);
+
+        return ['message' => 'success', 'update'=>'Domain Check Status Updated'];
+    }
+
+    /*
     * Update Twitter Details In Database
     */
     public function updatetwitterDetails(Request $request)

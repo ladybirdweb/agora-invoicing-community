@@ -138,6 +138,27 @@ API Keys
                   <td style="padding-left: 230px;"><button type="submit" class="form-group btn btn-primary"  onclick="licenseDetails()" id="submit"><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
                 </tr>
 
+                <tr>
+                 
+                  <td class="col-md-2">Don't Allow Domin/Ip based Restriction</td>
+                  <td class="col-md-2">
+                    <label class="switch toggle_event_editing">
+                          
+                         <input type="checkbox" value="{{$domainCheckStatus}}"  name="domain_settings" 
+                          class="checkbox15" id="domain">
+                          <span class="slider round"></span>
+                    </label>
+ 
+                  </td>
+                      <td class="col-md-4 domainverify">
+                    
+                      <b>Not Available</b>
+                  
+                   
+                  </td>
+                  <td class="col-md-4" style="padding-left: 230px;"><button type="submit" class="form-group btn btn-primary"  id="submit14"><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
+                </tr>
+
 
                 <tr>
                 
@@ -1323,6 +1344,44 @@ if ($('#update').prop("checked")) {
     })
   });
  <!--------------------------------------------------------------------------------------------->
+
+ /*
+ * Domain Check Setting
+ */
+   $(document).ready(function (){
+  var domainstatus =  $('.checkbox15').val();
+    if(domainstatus ==1)
+     {
+        $('#domain').prop('checked',true);
+     } else if(domainstatus ==0){
+      $('#domain').prop('checked',false);
+     }
+  });
+   //Validate and pass value through ajax
+  $("#submit14").on('click',function (){ //When Submit button is checked
+    if ($('#domain').prop('checked')) {//if button is on
+       var domainstatus = 1;
+      } else {
+         var domainstatus = 0;
+     }
+      $("#submit14").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");   
+     $.ajax ({
+      url: '{{url("updatedomainCheckDetails")}}',
+      type : 'get',
+      data: {
+       "status": domainstatus,
+      },
+       success: function (data) {
+            $('#alertMessage').show();
+            var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>'+data.update+'.</div>';
+            $('#alertMessage').html(result+ ".");
+            $("#submit14").html("<i class='fa fa-floppy-o'>&nbsp;&nbsp;</i>Save");
+              setInterval(function(){ 
+                $('#alertMessage').slideUp(3000); 
+            }, 1000);
+          },
+    });
+   });
 
 </script>
 @stop

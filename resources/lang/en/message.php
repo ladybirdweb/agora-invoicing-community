@@ -631,5 +631,6 @@ return [
      'license-type-name'   => 'License Type Name',
      'add-permissions'     => 'Add Permissions',
      'permissions'         => 'Permissions',
+     'installation_limit'  => 'Installation Limit',
 
 ];

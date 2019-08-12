@@ -319,6 +319,8 @@
         Route::get('edit-update-expiry', 'Order\BaseOrderController@editUpdateExpiry');
         Route::get('edit-license-expiry', 'Order\BaseOrderController@editLicenseExpiry');
         Route::get('edit-support-expiry', 'Order\BaseOrderController@editSupportExpiry');
+        Route::get('edit-installation-limit', 'Order\BaseOrderController@editInstallationLimit');
+        Route::post('ip-or-domain', 'Order\BaseOrderController@installOnIpOrDomain');
         /*
          * Groups
          */

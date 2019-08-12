@@ -225,17 +225,22 @@ class OrderController extends BaseOrderController
             $invoiceItems = $this->invoice_items->where('invoice_id', $invoiceid)->get();
             $user = $this->user->find($invoice->user_id);
             $licenseStatus = StatusSetting::pluck('license_status')->first();
+            $installationDetails = [];
+            $noOfAllowedInstallation = '';
+            $getInstallPreference = '';
             if ($licenseStatus == 1) {
                 $cont = new \App\Http\Controllers\License\LicenseController();
                 $installationDetails = $cont->searchInstallationPath($order->serial_key, $order->product);
+                $noOfAllowedInstallation = $cont->getNoOfAllowedInstallation($order->serial_key, $order->product);
+                $getInstallPreference = $cont->getInstallPreference($order->serial_key, $order->product);
             }
+
             $allowDomainStatus = StatusSetting::pluck('domain_check')->first();
 
             return view('themes.default1.order.show',
-                compact('invoiceItems', 'invoice', 'user', 'order', 'subscription', 'licenseStatus', 'installationDetails', 'allowDomainStatus'));
+                compact('invoiceItems', 'invoice', 'user', 'order', 'subscription', 'licenseStatus', 'installationDetails', 'allowDomainStatus','noOfAllowedInstallation','getInstallPreference'));
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

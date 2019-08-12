@@ -118,8 +118,12 @@ class RenewController extends BaseRenewController
         $expiryDate = $updatesExpiry ? Carbon::parse($updatesExpiry)->format('Y-m-d') : '';
         $licenseExpiry = $licenseExpiry ? Carbon::parse($licenseExpiry)->format('Y-m-d') : '';
         $supportExpiry = $supportExpiry ? Carbon::parse($supportExpiry)->format('Y-m-d') : '';
+        $noOfAllowedInstallation = '';
+        $getInstallPreference = '';
         $cont = new \App\Http\Controllers\License\LicenseController();
-        $updateLicensedDomain = $cont->updateExpirationDate($licenseCode, $expiryDate, $productId, $domain, $orderNo, $licenseExpiry, $supportExpiry);
+        $noOfAllowedInstallation = $cont->getNoOfAllowedInstallation($licenseCode, $productId);
+        $getInstallPreference = $cont->getInstallPreference($licenseCode, $productId);
+        $updateLicensedDomain = $cont->updateExpirationDate($licenseCode, $expiryDate, $productId, $domain, $orderNo, $licenseExpiry, $supportExpiry, $noOfAllowedInstallation, $getInstallPreference);
     }
 
     //Tuesday, June 13, 2017 08:06 AM

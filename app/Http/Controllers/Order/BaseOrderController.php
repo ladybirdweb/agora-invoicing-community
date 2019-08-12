@@ -7,12 +7,12 @@ use App\Model\Common\StatusSetting;
 use App\Model\Order\Order;
 use App\Model\Product\Product;
 use App\Traits\Order\UpdateDates;
-use Illuminate\Http\Request;
 use App\User;
 use Bugsnag;
 use Crypt;
 use DateTime;
 use DateTimeZone;
+use Illuminate\Http\Request;
 
 class BaseOrderController extends ExtendedOrderController
 {
@@ -366,9 +366,10 @@ class BaseOrderController extends ExtendedOrderController
             $supportExpiry = $order->subscription->support_ends_at;
             $cont = new \App\Http\Controllers\License\LicenseController();
             $noOfAllowedInstallation = $cont->getNoOfAllowedInstallation($order->serial_key, $order->product);
-            $updateLicensedDomain = $cont->updateLicensedDomain($licenseCode, $order->domain, $order->product, $licenseExpiry, $updatesExpiry, $supportExpiry, $order->number,$license_limit=$noOfAllowedInstallation, $requiredomain=$request->input('domain'));
+            $updateLicensedDomain = $cont->updateLicensedDomain($licenseCode, $order->domain, $order->product, $licenseExpiry, $updatesExpiry, $supportExpiry, $order->number, $license_limit = $noOfAllowedInstallation, $requiredomain = $request->input('domain'));
             //Now make Installation status as inactive
         }
-        return redirect()->back()->with('success','Installation Preference set successfully');
+
+        return redirect()->back()->with('success', 'Installation Preference set successfully');
     }
 }

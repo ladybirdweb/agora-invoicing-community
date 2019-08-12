@@ -14,7 +14,7 @@ class ApiController extends Controller
     {
         try {
             // $result = 'fails';
-            $result = "success";
+            $result = 'success';
             // $url = $request->input('url');
             // $url2 = preg_replace('#^https?://#', '', $url);
 

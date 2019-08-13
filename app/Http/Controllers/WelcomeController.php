@@ -40,27 +40,27 @@ class WelcomeController extends Controller
 
     public function getCountry()
     {
-        return view('themes.default1.common.country-count'); 
+        return view('themes.default1.common.country-count');
     }
 
     public function countryCount()
     {
         $users = \App\User::leftJoin('countries', 'users.country', '=', 'countries.country_code_char2')
-                ->select('countries.nicename as country','countries.country_code_char2 as code', \DB::raw('COUNT(users.id) as count'))
+                ->select('countries.nicename as country', 'countries.country_code_char2 as code', \DB::raw('COUNT(users.id) as count'))
                 ->groupBy('users.country')
                 ->get()
                 ->sortByDesc('count');
-                            return\ DataTables::of($users)
+
+        return\ DataTables::of($users)
                             ->addColumn('country', function ($model) {
                                 return ucfirst($model->country);
                             })
                               ->addColumn('count', function ($model) {
-                                return '<a href='.url('clients/'.$model->id.'?country='.$model->code).'>'
+                                  return '<a href='.url('clients/'.$model->id.'?country='.$model->code).'>'
                             .($model->count).'</a>';
                               })
 
                             ->rawColumns(['country', 'count'])
                             ->make(true);
-
     }
 }

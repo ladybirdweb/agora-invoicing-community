@@ -373,7 +373,18 @@ Application Settings
                     </div>
                 </div>
                 <!--/.col-md-2-->
-
+                 <div class="col-md-2 col-sm-6">
+                    <div class="settingiconblue">
+                        <div class="settingdivblue">
+                            <a href="{{url('get-country')}}">
+                                <span class="fa-stack fa-2x">
+                                    <i class="fa fa-flag-checkered"></i>
+                                </span>
+                            </a>
+                        </div>
+                        <p class="box-title" >Country List</p>
+                    </div>
+                </div>
                 
                 
 

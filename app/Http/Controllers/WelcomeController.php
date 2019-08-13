@@ -38,35 +38,29 @@ class WelcomeController extends Controller
         return $currency;
     }
 
+    public function getCountry()
+    {
+        return view('themes.default1.common.country-count'); 
+    }
+
     public function countryCount()
     {
         $users = \App\User::leftJoin('countries', 'users.country', '=', 'countries.country_code_char2')
-                ->select('countries.nicename as Country', \DB::raw('COUNT(users.id) as count'))
+                ->select('countries.nicename as country','countries.country_code_char2 as code', \DB::raw('COUNT(users.id) as count'))
                 ->groupBy('users.country')
                 ->get()
                 ->sortByDesc('count');
-        echo '<style>
-table {
-    font-family: arial, sans-serif;
-    border-collapse: collapse;
-    width: 100%;
-}
+                            return\ DataTables::of($users)
+                            ->addColumn('country', function ($model) {
+                                return ucfirst($model->country);
+                            })
+                              ->addColumn('count', function ($model) {
+                                return '<a href='.url('clients/'.$model->id.'?country='.$model->code).'>'
+                            .($model->count).'</a>';
+                              })
 
-td, th {
-    border: 1px solid #dddddd;
-    text-align: left;
-    padding: 8px;
-}
+                            ->rawColumns(['country', 'count'])
+                            ->make(true);
 
-tr:nth-child(even) {
-    background-color: #dddddd;
-}
-</style>';
-        echo '<table>';
-        echo '<tr><th>Country</th><th>Count</th><tr>';
-        foreach ($users as $user) {
-            echo '<tr><td>'.$user->Country.'</td><td>'.$user->count.'</td></tr>';
-        }
-        echo '</table>';
     }
 }

@@ -500,8 +500,8 @@
 
         Route::get('get-code', 'WelcomeController@getCode');
         Route::get('get-currency', 'WelcomeController@getCurrency');
-
-        Route::get('country-count', 'WelcomeController@countryCount');
+         Route::get('get-country', 'WelcomeController@getCountry');
+        Route::get('country-count', 'WelcomeController@countryCount')->name('country-count');
 
         /*
          * Api

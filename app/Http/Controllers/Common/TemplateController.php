@@ -268,7 +268,7 @@ class TemplateController extends BaseTemplateController
     }
 
     public function mailing($from, $to, $data, $subject, $replace = [],
-     $type = '', $bcc= [] , $fromname = '', $toname = '', $cc = [], $attach = [])
+     $type = '', $bcc = [], $fromname = '', $toname = '', $cc = [], $attach = [])
     {
         try {
             $transform = [];

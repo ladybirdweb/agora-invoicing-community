@@ -333,11 +333,13 @@ class SettingsController extends BaseSettingsController
                                ->addColumn('new', function ($model) {
                                    $properties = ($model->properties);
                                    $newEntry = $this->getNewEntry($properties, $model);
+
                                    return $newEntry;
                                })
                                 ->addColumn('old', function ($model) {
                                     $data = ($model->properties);
                                     $oldEntry = $this->getOldEntry($data, $model);
+
                                     return $oldEntry;
                                 })
                                 ->addColumn('created_at', function ($model) {

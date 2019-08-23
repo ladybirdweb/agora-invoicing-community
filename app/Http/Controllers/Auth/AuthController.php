@@ -317,7 +317,6 @@ class AuthController extends BaseAuthController
         return $check;
     }
 
-
     public function getState(Request $request, $state)
     {
         try {
@@ -341,7 +340,7 @@ class AuthController extends BaseAuthController
         }
     }
 
-    public function salesManagerMail($user, $bcc=[])
+    public function salesManagerMail($user, $bcc = [])
     {
         $manager = $user->manager()
 
@@ -371,14 +370,14 @@ class AuthController extends BaseAuthController
                 'manager_mobile'     => $manager->mobile,
                 'manager_skype'      => $manager->skype,
             ];
-            $job = new \App\Jobs\SendEmail($from, $to, $template_data, $template_name, $replace, 'sales_manager_email',$bcc);
+            $job = new \App\Jobs\SendEmail($from, $to, $template_data, $template_name, $replace, 'sales_manager_email', $bcc);
             dispatch($job);
             //dd($from, $to, $template_data, $template_name, $replace);
             // $template_controller->mailing($from, $to, $template_data, $template_name, $replace, 'sales_manager_email');
         }
     }
 
-    public function accountManagerMail($user,$bcc=[])
+    public function accountManagerMail($user, $bcc = [])
     {
         $manager = $user->accountManager()
 
@@ -408,7 +407,7 @@ class AuthController extends BaseAuthController
                 'manager_mobile'     => $manager->mobile,
                 'manager_skype'      => $manager->skype,
             ];
-            $job = new \App\Jobs\SendEmail($from, $to, $template_data, $template_name, $replace, 'account_manager_email',$bcc);
+            $job = new \App\Jobs\SendEmail($from, $to, $template_data, $template_name, $replace, 'account_manager_email', $bcc);
             dispatch($job);
             //dd($from, $to, $template_data, $template_name, $replace);
             // $template_controller->mailing($from, $to, $template_data, $template_name, $replace, 'account__manager_email',$bcc);

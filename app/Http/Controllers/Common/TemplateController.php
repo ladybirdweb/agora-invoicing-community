@@ -268,17 +268,16 @@ class TemplateController extends BaseTemplateController
     }
 
     public function mailing($from, $to, $data, $subject, $replace = [],
-     $type = '', $fromname = '', $toname = '', $cc = [], $attach = [])
+     $type = '', $bcc= [] , $fromname = '', $toname = '', $cc = [], $attach = [])
     {
         try {
             $transform = [];
             $page_controller = new \App\Http\Controllers\Front\PageController();
             $transform[0] = $replace;
             $data = $page_controller->transform($type, $data, $transform);
-
             $settings = \App\Model\Common\Setting::find(1);
             $fromname = $settings->company;
-            \Mail::send('emails.mail', ['data' => $data], function ($m) use ($from, $to, $subject, $fromname, $toname, $cc, $attach) {
+            \Mail::send('emails.mail', ['data' => $data], function ($m) use ($from, $to, $subject, $fromname, $toname, $cc, $attach, $bcc) {
                 $m->from($from, $fromname);
 
                 $m->to($to, $toname)->subject($subject);
@@ -287,6 +286,12 @@ class TemplateController extends BaseTemplateController
                 if (!empty($cc)) {
                     foreach ($cc as $address) {
                         $m->cc($address['address'], $address['name']);
+                    }
+                }
+
+                if (!empty($bcc)) {
+                    foreach ($bcc as $address) {
+                        $m->bcc($address);
                     }
                 }
 

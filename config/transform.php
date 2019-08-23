@@ -78,7 +78,17 @@ return[
         'url'     => '{{url}}',
     ],
 
-    'manager_email' => [
+    'sales_manager_email' => [
+        'name'               => '{{name}}',
+        'manager_first_name' => '{{manager_first_name}}',
+        'manager_last_name'  => '{{manager_last_name}}',
+        'manager_email'      => '{{manager_email}}',
+        'manager_code'       => '{{manager_code}}',
+        'manager_mobile'     => '{{manager_mobile}}',
+        'manager_skype'      => '{{manager_skype}}',
+    ],
+
+    'account_manager_email' => [
         'name'               => '{{name}}',
         'manager_first_name' => '{{manager_first_name}}',
         'manager_last_name'  => '{{manager_last_name}}',

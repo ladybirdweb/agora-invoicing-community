@@ -242,7 +242,8 @@ class TemplateTypeTableSeeder extends Seeder
         TemplateType::create(['id' => 6, 'name' => 'invoice_mail']);
         TemplateType::create(['id' => 7, 'name' => 'order_mail']);
         TemplateType::create(['id' => 8, 'name' => 'download_mail']);
-        TemplateType::create(['id' => 9, 'name' => 'manager_email']);
+        TemplateType::create(['id' => 9, 'name' => 'sales_manager_email']);
+        TemplateType::create(['id' => 10, 'name' => 'account_manager_email']);
     }
 }
 
@@ -720,7 +721,15 @@ class TemplateTableSeeder extends Seeder
 </table>
 <p>&nbsp;</p>']);
 
-        Template::create(['id' => 9, 'name' => '[Faveo Helpdesk] Your New Account Manager', 'type' => 9, 'url'=>'null', 'data' =>'<p>Dear {{name}},</p>
+        Template::create(['id' => 9, 'name' => '[Faveo Helpdesk] Your New Sales Manager', 'type' => 9, 'url'=>'null', 'data' =>'<p>Dear {{name}},</p>
+<p>This is {{manager_first_name}} {{manager_last_name}}.</p>
+<p>From now onwards I will be your one point of contact. I will followup with you as well as with our team. Please feel free to get in touch with me anytime if you have any issues with regards to your account. You can also add me on Skype. My ID is mentioned in my signature. It is a pleasure to have you on board and I look forward to effective conversations with you in future.</p>
+<p>Hope you have a great day.</p>
+<p>Regards,</p>
+<p>{{manager_first_name}}{{manager_last_name}}</p>
+<p>Sales Manager,<br /> Faveo Helpdesk<br /> Mobile :{{manager_code}} {{manager_mobile}}<br /> Skype ID : {{manager_skype}}<br /> Email : {{manager_email}}</p>']);
+
+        Template::create(['id' => 10, 'name' => '[Faveo Helpdesk] Your New Account Manager', 'type' => 10, 'url'=>'null', 'data' =>'<p>Dear {{name}},</p>
 <p>This is {{manager_first_name}} {{manager_last_name}}.</p>
 <p>From now onwards I will be your one point of contact. I will followup with you as well as with our team. Please feel free to get in touch with me anytime if you have any issues with regards to your account. You can also add me on Skype. My ID is mentioned in my signature. It is a pleasure to have you on board and I look forward to effective conversations with you in future.</p>
 <p>Hope you have a great day.</p>

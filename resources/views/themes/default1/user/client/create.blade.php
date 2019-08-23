@@ -179,7 +179,7 @@ select.form-control{
                     <div class="col-md-3 form-group {{ $errors->has('position') ? 'has-error' : '' }}">
                         <!-- email -->
                         {!! Form::label('position','Position') !!}
-                        {!! Form::select('position',[''=>'Choose','manager'=>'Manager'],null,['class' => 'form-control']) !!}
+                        {!! Form::select('position',[''=>'Choose','manager'=>'Sales Manager','acc_manager'=>'Account Manager'],null,['class' => 'form-control']) !!}
 
                     </div>
                     <?php
@@ -349,7 +349,7 @@ select.form-control{
                     
                     <div class="col-md-3 form-group {{ $errors->has('manager') ? 'has-error' : '' }}">
                         <!-- mobile -->
-                        {!! Form::label('manager','Manager') !!}
+                        {!! Form::label('manager','Sales Manager') !!}
                  <!-- {!! Form::select('manager',[''=>'Select','Managers'=>$managers],null,['class' => 'form-control']) !!} -->
                          <select name="manager" value= "Choose" class="form-control">
                              <option value="">Choose</option>
@@ -359,6 +359,17 @@ select.form-control{
                           </select>
                     </div>
 
+                      <div class="col-md-3 form-group {{ $errors->has('manager') ? 'has-error' : '' }}">
+                        <!-- mobile -->
+                        {!! Form::label('manager','Account Manager') !!}
+                 <!-- {!! Form::select('manager',[''=>'Select','Managers'=>$managers],null,['class' => 'form-control']) !!} -->
+                         <select name="accounts_manager" value= "Choose" class="form-control">
+                             <option value="">Choose</option>
+                           @foreach($accountManager as $key=>$manager)
+                             <option value={{$key}}>{{$manager}}</option>
+                          @endforeach
+                          </select>
+                    </div>
 
                 </div>
                

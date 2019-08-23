@@ -350,7 +350,9 @@ All Users
                 success: function (data) {
                 $('#gif').html('');
                 $('#response').html(data);
-                location.reload();
+                 setTimeout(function(){
+                    window.location.reload();
+                },5000);
                 }
                })
             }

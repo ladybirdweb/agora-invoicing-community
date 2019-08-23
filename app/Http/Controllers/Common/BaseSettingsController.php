@@ -24,7 +24,6 @@ class BaseSettingsController extends PaymentSettingsController
         ? ($model->properties['attributes']) : null;
 
         $display = [];
-
         if ($properties != null) {
             if (array_key_exists('parent', $properties)) {
                 unset($properties['parent']);
@@ -53,6 +52,7 @@ class BaseSettingsController extends PaymentSettingsController
                     $display[] = '<strong>'.'ucfirst'($key).'</strong>'.' : '.$value.'<br/>';
                 }
             }
+
             $old = (count($oldData) > 0) ? implode('', $display) : '--';
 
             return $old;

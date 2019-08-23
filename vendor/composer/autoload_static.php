@@ -757,6 +757,7 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
 
     public static $classMap = array (
         'ActivityLogDelSeeder' => __DIR__ . '/../..' . '/database/seeds/DatabaseSeeder.php',
+        'AddAccountManagerToUsersTable' => __DIR__ . '/../..' . '/database/migrations/2019_08_14_080250_add_account_manager_to_users_table.php',
         'AddAgentsToInvoiceItems' => __DIR__ . '/../..' . '/database/migrations/2019_01_18_045523_add_agents_to_invoice_items.php',
         'AddAllowDomainCheckToStatusSettings' => __DIR__ . '/../..' . '/database/migrations/2019_07_08_095503_add_allow_domain_check_to_status_settings.php',
         'AddAmtToCreditToPayments' => __DIR__ . '/../..' . '/database/migrations/2018_08_21_094543_add_amt_to_credit_to_payments.php',

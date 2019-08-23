@@ -7,6 +7,7 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'ActivityLogDelSeeder' => $baseDir . '/database/seeds/DatabaseSeeder.php',
+    'AddAccountManagerToUsersTable' => $baseDir . '/database/migrations/2019_08_14_080250_add_account_manager_to_users_table.php',
     'AddAgentsToInvoiceItems' => $baseDir . '/database/migrations/2019_01_18_045523_add_agents_to_invoice_items.php',
     'AddAllowDomainCheckToStatusSettings' => $baseDir . '/database/migrations/2019_07_08_095503_add_allow_domain_check_to_status_settings.php',
     'AddAmtToCreditToPayments' => $baseDir . '/database/migrations/2018_08_21_094543_add_amt_to_credit_to_payments.php',

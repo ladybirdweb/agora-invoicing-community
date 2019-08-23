@@ -131,6 +131,19 @@ Application Settings
                     </div>
                 </div>
 
+                 <div class="col-md-2 col-sm-6">
+                    <div class="settingiconblue">
+                        <div class="settingdivblue">
+                            <a href="{{url('system-managers')}}">
+                                <span class="fa-stack fa-2x">
+                                    <i class="fa fa-flag-checkered"></i>
+                                </span>
+                            </a>
+                        </div>
+                        <p class="box-title" >System Managers</p>
+                    </div>
+                </div>
+
                  <!--/.col-md-2-->
                   
             </div>
@@ -386,8 +399,7 @@ Application Settings
                     </div>
                 </div>
                 
-                
-
+               
             </div>
         </div>
         <!-- /.row -->

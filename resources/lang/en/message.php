@@ -632,5 +632,10 @@ return [
      'add-permissions'     => 'Add Permissions',
      'permissions'         => 'Permissions',
      'installation_limit'  => 'Installation Limit',
-
+     'system_account_manager' => 'System Account Manager(s)',
+     'replace_with'         => 'Replace with...',
+     'account_man_replaced_success' => 'Account Manager replaced successfully',
+     'replace' => 'Replace',
+     'system_sales_manager'=> 'System Sales Manager(s)',
+     'sales_man_replaced_success' => 'Sales Manager replaced successfully',
 ];

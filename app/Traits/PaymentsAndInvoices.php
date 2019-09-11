@@ -185,6 +185,7 @@ use Illuminate\Http\Request;
             } catch (\Exception $ex) {
                 app('log')->info($ex->getMessage());
                 Bugsnag::notifyException($ex);
+
                 throw new \Exception($ex->getMessage());
             }
         }

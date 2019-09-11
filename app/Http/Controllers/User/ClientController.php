@@ -200,7 +200,7 @@ class ClientController extends AdvanceSearchController
         }
         $timezones = array_column($display, 'name', 'id');
 
-        return view('themes.default1.user.client.create', compact('timezones', 'bussinesses', 'managers','accountManager'));
+        return view('themes.default1.user.client.create', compact('timezones', 'bussinesses', 'managers', 'accountManager'));
     }
 
     /**
@@ -350,7 +350,7 @@ class ClientController extends AdvanceSearchController
             $acc_managers = User::where('role', 'admin')
             ->where('position', 'account_manager')
             ->pluck('first_name', 'id')->toArray();
-             $selectedCurrency = Currency::where('code', $user->currency)
+            $selectedCurrency = Currency::where('code', $user->currency)
             ->pluck('name', 'code')->toArray();
             $selectedCompany = \DB::table('company_types')->where('name', $user->company_type)
             ->pluck('name', 'short')->toArray();
@@ -418,24 +418,24 @@ class ClientController extends AdvanceSearchController
      */
     public function destroy(Request $request)
     {
-        try{
+        try {
             $ids = $request->input('select');
             if (!empty($ids)) {
-            foreach ($ids as $id) {
-                $user = $this->user->where('id', $id)->first();
-                //Check if this admin  is account manager and is assigned as account manager to other clients 
-                $isAccountManager = User::where('account_manager', $id)->get();
-                $isSalesManager = User::where('manager', $id)->get();
-                if(count($isSalesManager) > 0) {
-                     throw new \Exception('Admin'.' '.$user->first_name.' '.$user->last_name.' '.'cannot be deleted as he/she is existing sales manager for certain clients. Please replace Sales Manager from settings and then try deleting.');
-                }
-                if(count($isAccountManager) > 0) {
-                  throw new \Exception('Admin'.' '.$user->first_name.' '.$user->last_name.' '.'cannot be deleted as he/she is existing account manager for certain clients. Please replace Account Manager from settings and then try deleting.');
-                }
-                if ($user) {
-                    $user->delete();
-                } else {
-                    echo "<div class='alert alert-success alert-dismissable'>
+                foreach ($ids as $id) {
+                    $user = $this->user->where('id', $id)->first();
+                    //Check if this admin  is account manager and is assigned as account manager to other clients
+                    $isAccountManager = User::where('account_manager', $id)->get();
+                    $isSalesManager = User::where('manager', $id)->get();
+                    if (count($isSalesManager) > 0) {
+                        throw new \Exception('Admin'.' '.$user->first_name.' '.$user->last_name.' '.'cannot be deleted as he/she is existing sales manager for certain clients. Please replace Sales Manager from settings and then try deleting.');
+                    }
+                    if (count($isAccountManager) > 0) {
+                        throw new \Exception('Admin'.' '.$user->first_name.' '.$user->last_name.' '.'cannot be deleted as he/she is existing account manager for certain clients. Please replace Account Manager from settings and then try deleting.');
+                    }
+                    if ($user) {
+                        $user->delete();
+                    } else {
+                        echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
                     <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
                     /* @scrutinizer ignore-type */
@@ -443,10 +443,10 @@ class ClientController extends AdvanceSearchController
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         './* @scrutinizer ignore-type */\Lang::get('message.no-record').'
                 </div>';
-                    //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
+                        //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
+                    }
                 }
-            }
-            echo "<div class='alert alert-success alert-dismissable'>
+                echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
                     <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert')
                     .'!</b> './* @scrutinizer ignore-type */
@@ -454,15 +454,15 @@ class ClientController extends AdvanceSearchController
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         './* @scrutinizer ignore-type */\Lang::get('message.deleted-successfully').'
                 </div>';
-        } else {
-            echo "<div class='alert alert-success alert-dismissable'>
+            } else {
+                echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
                     <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '
                     ./* @scrutinizer ignore-type */\Lang::get('message.success').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         './* @scrutinizer ignore-type */\Lang::get('message.select-a-row').'
                 </div>';
-        }
+            }
         } catch (\Exception $e) {
             echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>

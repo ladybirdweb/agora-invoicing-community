@@ -39,14 +39,14 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         'state', 'town', 'mobile',
         'email', 'password', 'role', 'active', 'profile_pic',
         'address', 'country', 'currency', 'currency_symbol', 'timezone_id', 'mobile_code', 'bussiness',
-        'company_type', 'company_size', 'ip', 'mobile_verified', 'position', 'skype', 'manager', 'currency_symbol', 'account_manager'];
+        'company_type', 'company_size', 'ip', 'mobile_verified', 'position', 'skype', 'manager', 'currency_symbol', 'account_manager', ];
 
     protected static $logName = 'User';
     protected static $logAttributes = ['first_name', 'last_name', 'user_name', 'company', 'zip',
         'state', 'town', 'mobile',
         'email', 'password', 'role', 'active', 'profile_pic',
         'address', 'country', 'currency', 'timezone_id', 'mobile_code', 'bussiness',
-        'company_type', 'company_size', 'ip', 'mobile_verified', 'position', 'skype', 'manager', 'account_manager'];
+        'company_type', 'company_size', 'ip', 'mobile_verified', 'position', 'skype', 'manager', 'account_manager', ];
 
     protected static $logOnlyDirty = true;
 
@@ -199,20 +199,19 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     public function assignSalesManager()
     {
         $managers = $this->where('role', 'admin')->where('position', 'manager')->pluck('id', 'first_name')->toArray();
-        if (count($managers)>0) {
+        if (count($managers) > 0) {
             $randomized[] = array_rand($managers);
             shuffle($randomized);
             $manager = $managers[$randomized[0]];
         } else {
             $manager = '';
         }
-        
-       return $manager;
+
+        return $manager;
     }
 
     public function save(array $options = [])
     {
-
         $changed = $this->isDirty() ? $this->getDirty() : false;
         parent::save($options);
         $role = $this->role;

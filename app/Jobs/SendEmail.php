@@ -2,12 +2,12 @@
 
 namespace App\Jobs;
 
+use App\Http\Controllers\Common\TemplateController;
 use Illuminate\Bus\Queueable;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use App\Http\Controllers\Common\TemplateController;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 
 class SendEmail implements ShouldQueue
 {
@@ -21,12 +21,13 @@ class SendEmail implements ShouldQueue
     protected $replace;
     protected $type;
     protected $bcc;
+
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($from, $to, $template_data, $template_name, $replace,$type,$bcc)
+    public function __construct($from, $to, $template_data, $template_name, $replace, $type, $bcc)
     {
         $this->from = $from;
         $this->to = $to;
@@ -53,6 +54,7 @@ class SendEmail implements ShouldQueue
            $this->type,
            $this->bcc
          );
-         return $p;
+
+        return $p;
     }
 }

@@ -89,7 +89,6 @@ class SystemManagerController extends Controller
             $cont = new AuthController();
             $sendMail = $cont->accountManagerMail($user,$arrayOfBccEmails);
          }
-        
         return ['message' => 'success', 'update'=>\Lang::get('message.account_man_replaced_success')];
         } catch (\Exception $ex) {
             return ['message'=>'fails', 'update'=>$ex->getMessage()];

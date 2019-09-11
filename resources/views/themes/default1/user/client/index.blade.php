@@ -140,7 +140,8 @@ All Users
                 {!! Form::label('Position','Position') !!}
                  <select name="position"  class="form-control">
                   <option value="">Choose</option>
-                  <option value="manager">Manager</option>
+                  <option value="manager">Sales Manager</option>
+                  <option value="account_manager">Account Manager</option>
                   </select>
              </div>
 

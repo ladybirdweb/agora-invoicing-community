@@ -89,25 +89,25 @@ class SystemManagerController extends Controller
                 $sendMail = $cont->accountManagerMail($user, $arrayOfBccEmails);
             }
 
-        $existingAccManager = $request->input('existingAccManager');
-        $newAccountManager = $request->input('newAccManager')[0];
-        if($existingAccManager == $newAccountManager) {
-             return ['message'=>'fails', 'update'=>'Existing and the new account manager cannot be same'];
-        }
-        //First make the selected Admin as account Manager-
-        User::where('id',$newAccountManager)->update(['position'=>'account_manager']);
-        $accManagers = User::where('account_manager',$existingAccManager)->get();
-         foreach ($accManagers as $accManager) {
-            User::where('id',$accManager->id)->update(['account_manager'=>$newAccountManager]);
-        }
-         $arrayOfBccEmails = User::where('account_manager',$newAccountManager)->pluck('email')->toArray();
-         if(count($arrayOfBccEmails) > 0) {
-            $user = User::where('email',$arrayOfBccEmails[0])->first();
-            $cont = new AuthController();
-            $sendMail = $cont->accountManagerMail($user,$arrayOfBccEmails);
-         }
-        return ['message' => 'success', 'update'=>\Lang::get('message.account_man_replaced_success')];
+            $existingAccManager = $request->input('existingAccManager');
+            $newAccountManager = $request->input('newAccManager')[0];
+            if ($existingAccManager == $newAccountManager) {
+                return ['message'=>'fails', 'update'=>'Existing and the new account manager cannot be same'];
+            }
+            //First make the selected Admin as account Manager-
+            User::where('id', $newAccountManager)->update(['position'=>'account_manager']);
+            $accManagers = User::where('account_manager', $existingAccManager)->get();
+            foreach ($accManagers as $accManager) {
+                User::where('id', $accManager->id)->update(['account_manager'=>$newAccountManager]);
+            }
+            $arrayOfBccEmails = User::where('account_manager', $newAccountManager)->pluck('email')->toArray();
+            if (count($arrayOfBccEmails) > 0) {
+                $user = User::where('email', $arrayOfBccEmails[0])->first();
+                $cont = new AuthController();
+                $sendMail = $cont->accountManagerMail($user, $arrayOfBccEmails);
+            }
 
+            return ['message' => 'success', 'update'=>\Lang::get('message.account_man_replaced_success')];
         } catch (\Exception $ex) {
             return ['message'=>'fails', 'update'=>$ex->getMessage()];
         }

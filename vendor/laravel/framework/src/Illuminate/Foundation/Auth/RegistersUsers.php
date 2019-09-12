@@ -12,6 +12,7 @@ use App\Model\Common\Setting;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\ProfileRequest;
 use App\Model\User\AccountActivate;
+use Facades\Spatie\Referer\Referer;
 use App\User;
 use Bugsnag;
 // use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
@@ -109,6 +110,7 @@ trait RegistersUsers
                     $response = ['type' => 'success', 'user_id' => $user->id, 'message' => 'Your Submission has been received successfully. Verify your Email and Mobile to log into the Website.'];
                 }
             }
+          $referer = Referer::get(); // 'google.com'
             activity()->log('User <strong>' . $request->input('first_name'). ' '.$request->input('last_name').  '</strong> was created');
             // $this->accountManagerMail($user);
              

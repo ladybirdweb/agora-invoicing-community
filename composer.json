@@ -28,6 +28,7 @@
         "razorpay/razorpay": "^2.2",
         "shvetsgroup/laravel-email-database-log": "^1.2",
         "spatie/laravel-activitylog": "^3.5.0",
+        "spatie/laravel-referer": "^1.5",
         "symfony/polyfill-iconv": "^1.8",
         "thomaswelton/laravel-gravatar": "~1.0",
         "torann/currency": "^1.0",

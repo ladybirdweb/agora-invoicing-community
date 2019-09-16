@@ -136,7 +136,7 @@ Application Settings
                         <div class="settingdivblue">
                             <a href="{{url('system-managers')}}">
                                 <span class="fa-stack fa-2x">
-                                    <i class="fa fa-flag-checkered"></i>
+                                    <i class="fa fa-users"></i>
                                 </span>
                             </a>
                         </div>

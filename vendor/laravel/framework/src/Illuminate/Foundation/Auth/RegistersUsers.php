@@ -87,6 +87,8 @@ trait RegistersUsers
             $user->manager = $user->assignSalesManager();
             $user->ip = $location['ip'];
             $user->currency = $currency;
+            $referer = Referer::get(); // 'google.com'
+            $user->referrer = 'dfdffd';
             $user->timezone_id = \App\Http\Controllers\Front\CartController::getTimezoneByName($location['timezone']);
             $emailMobileSetting = StatusSetting::select('emailverification_status', 'msg91_status')->first();
             if ($emailMobileSetting->emailverification_status == 0 && $emailMobileSetting->msg91_status ==1) {
@@ -110,7 +112,7 @@ trait RegistersUsers
                     $response = ['type' => 'success', 'user_id' => $user->id, 'message' => 'Your Submission has been received successfully. Verify your Email and Mobile to log into the Website.'];
                 }
             }
-          $referer = Referer::get(); // 'google.com'
+           
             activity()->log('User <strong>' . $request->input('first_name'). ' '.$request->input('last_name').  '</strong> was created');
             // $this->accountManagerMail($user);
              

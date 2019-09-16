@@ -229,6 +229,7 @@ System Managers
     $('#replace').click(function(){
       var existingManagerId = $('#existingManager').val();
       var newManagerId = $('#users').val();
+      $("#replace").attr('disabled',true);
       $("#replace").html("<i class='fa fa-refresh fa-spin fa-1x fa-fw'></i>Please Wait...");
       $.ajax ({
                 type: 'post',
@@ -237,6 +238,7 @@ System Managers
           
                 success: function (data) {
                if (data.message =='success'){
+                $("#replace").attr('disabled',false);
                  var result =  '<div class="alert alert-success alert-dismissable"><strong><i class="fa fa-check"></i> Success! </strong> '+data.update+' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
                  $("#replace").html("<i class='fa fa-refresh'>&nbsp;&nbsp;</i>Replace");
                   $('#replaceMessage').html(result);
@@ -245,6 +247,7 @@ System Managers
                     window.location.reload();
                 },3000);
                 } else {
+                  $("#replace").attr('disabled',false);
                   var html = '<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong>Whoops! </strong>Something went wrong<br><br><ul><li>'+data.update+'</li>';
                    html += '</ul></div>';
                    $('#replaceMessage').hide();
@@ -253,6 +256,7 @@ System Managers
                     $("#replace").html("<i class='fa fa-refresh'>&nbsp;&nbsp;</i>Replace");
                 }
                 }, error: function(data)  {
+                  $("#replace").attr('disabled',false);
                     var html = '<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong>Whoops! </strong>Something went wrong<br><br><ul>';
                     for (key in data.responseJSON.errors) {
                       html += '<li>'+ data.responseJSON.errors[key][0] + '</li>'
@@ -272,6 +276,7 @@ System Managers
         $('#replaceSales').click(function(){
       var existingManagerId = $('#existingSalesManager').val();
       var newManagerId = $('#sales').val();
+      $("#replaceSales").attr('disabled',true);
       $("#replaceSales").html("<i class='fa fa-refresh fa-spin fa-1x fa-fw'></i>Please Wait...");
       $.ajax ({
                 type: 'post',
@@ -280,6 +285,7 @@ System Managers
           
               success: function (data) {
                if (data.message =='success'){
+                 $("#replaceSales").attr('disabled',false);
                  var result =  '<div class="alert alert-success alert-dismissable"><strong><i class="fa fa-check"></i> Success! </strong> '+data.update+' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
                  $("#replaceSales").html("<i class='fa fa-refresh'>&nbsp;&nbsp;</i>Replace");
                   $('#replaceMessage1').html(result);
@@ -288,6 +294,7 @@ System Managers
                     window.location.reload();
                 },3000);
                 } else {
+                  $("#replaceSales").attr('disabled',false);
                   var html = '<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong>Whoops! </strong>Something went wrong<br><br><ul><li>'+data.update+'</li>';
                    html += '</ul></div>';
                    $('#replaceMessage1').hide();
@@ -296,6 +303,7 @@ System Managers
                     $("#replaceSales").html("<i class='fa fa-refresh'>&nbsp;&nbsp;</i>Replace");
                 }
                 }, error: function(data)  {
+                  $("#replaceSales").attr('disabled',false);
                     var html = '<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong>Whoops! </strong>Something went wrong<br><br><ul>';
                     for (key in data.responseJSON.errors) {
                       html += '<li>'+ data.responseJSON.errors[key][0] + '</li>'

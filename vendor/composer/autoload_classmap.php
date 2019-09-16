@@ -45,6 +45,7 @@ return array(
     'AddPerpetualLicenseToProductsTable' => $baseDir . '/database/migrations/2018_11_19_190929_add_perpetual_license_to_products_table.php',
     'AddProductQuantityToPlanPrices' => $baseDir . '/database/migrations/2019_01_08_060351_add_product_quantity_to_plan_prices.php',
     'AddProductSkuToProducts' => $baseDir . '/database/migrations/2018_10_26_151347_add_product_sku_to_products.php',
+    'AddReferrerToUsersTable' => $baseDir . '/database/migrations/2019_09_13_103243_add_referrer_to_users_table.php',
     'AddShowTweetsToWidgetsTable' => $baseDir . '/database/migrations/2019_01_27_075045_add_show_tweets_to_widgets_table.php',
     'AddStateCodeColumnsToTaxByStatesTable' => $baseDir . '/database/migrations/2018_04_13_130552_add_state_code_columns_to_tax_by_states_table.php',
     'AddStateColumsToSettingsTable' => $baseDir . '/database/migrations/2018_04_13_092417_add_state_colums_to_settings_table.php',

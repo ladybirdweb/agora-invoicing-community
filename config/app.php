@@ -204,6 +204,7 @@ return [
          Spatie\Activitylog\ActivitylogServiceProvider::class,
           \Torann\Currency\CurrencyServiceProvider::class,
            Devio\Pipedrive\PipedriveServiceProvider::class,
+           Spatie\Referer\RefererServiceProvider::class,
           // Voerro\Laravel\VisitorTracker\VisitorTrackerServiceProvider::class,
 
     ],

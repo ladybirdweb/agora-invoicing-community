@@ -559,6 +559,11 @@ User Details
                                         </a>
                                     </li>
                                     @endif
+                                     <li>
+                                        <a href="#">
+                                            <strong>Referrer :</strong> <span class="pull-right referrer"></span>
+                                        </a>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
@@ -961,6 +966,7 @@ User Details
                $('.clientcompany').html((response.client).company_type);
                $('.clientcomsize').html((response.client).company_size);
                $('.clientip').html((response.client).ip);
+               $('.referrer').html((response.client).referrer);
                $('.clientskype').html((response.client).skype);
                $('.clientmanager').val((response.client).clientmanager);
          }

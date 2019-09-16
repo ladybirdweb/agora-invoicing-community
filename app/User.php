@@ -39,7 +39,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         'state', 'town', 'mobile',
         'email', 'password', 'role', 'active', 'profile_pic',
         'address', 'country', 'currency', 'currency_symbol', 'timezone_id', 'mobile_code', 'bussiness',
-        'company_type', 'company_size', 'ip', 'mobile_verified', 'position', 'skype', 'manager', 'currency_symbol', 'account_manager', ];
+        'company_type', 'company_size', 'ip', 'mobile_verified', 'position', 'skype', 'manager', 'currency_symbol', 'account_manager', 'referrer', ];
 
     protected static $logName = 'User';
     protected static $logAttributes = ['first_name', 'last_name', 'user_name', 'company', 'zip',

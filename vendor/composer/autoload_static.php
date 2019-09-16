@@ -151,6 +151,7 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
             'Symfony\\Component\\CssSelector\\' => 30,
             'Symfony\\Component\\Console\\' => 26,
             'Spatie\\String\\' => 14,
+            'Spatie\\Referer\\' => 15,
             'Spatie\\Activitylog\\' => 19,
             'Seld\\PharUtils\\' => 15,
             'Seld\\JsonLint\\' => 14,
@@ -397,6 +398,10 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
         'Spatie\\String\\' => 
         array (
             0 => __DIR__ . '/..' . '/spatie/string/src',
+        ),
+        'Spatie\\Referer\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/spatie/laravel-referer/src',
         ),
         'Spatie\\Activitylog\\' => 
         array (
@@ -795,6 +800,7 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
         'AddPerpetualLicenseToProductsTable' => __DIR__ . '/../..' . '/database/migrations/2018_11_19_190929_add_perpetual_license_to_products_table.php',
         'AddProductQuantityToPlanPrices' => __DIR__ . '/../..' . '/database/migrations/2019_01_08_060351_add_product_quantity_to_plan_prices.php',
         'AddProductSkuToProducts' => __DIR__ . '/../..' . '/database/migrations/2018_10_26_151347_add_product_sku_to_products.php',
+        'AddReferrerToUsersTable' => __DIR__ . '/../..' . '/database/migrations/2019_09_13_103243_add_referrer_to_users_table.php',
         'AddShowTweetsToWidgetsTable' => __DIR__ . '/../..' . '/database/migrations/2019_01_27_075045_add_show_tweets_to_widgets_table.php',
         'AddStateCodeColumnsToTaxByStatesTable' => __DIR__ . '/../..' . '/database/migrations/2018_04_13_130552_add_state_code_columns_to_tax_by_states_table.php',
         'AddStateColumsToSettingsTable' => __DIR__ . '/../..' . '/database/migrations/2018_04_13_092417_add_state_colums_to_settings_table.php',
@@ -846,6 +852,7 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
         'App\\Http\\Controllers\\Common\\PaymentSettingsController' => __DIR__ . '/../..' . '/app/Http/Controllers/Common/PaymentSettingsController.php',
         'App\\Http\\Controllers\\Common\\SettingsController' => __DIR__ . '/../..' . '/app/Http/Controllers/Common/SettingsController.php',
         'App\\Http\\Controllers\\Common\\SocialMediaController' => __DIR__ . '/../..' . '/app/Http/Controllers/Common/SocialMediaController.php',
+        'App\\Http\\Controllers\\Common\\SystemManagerController' => __DIR__ . '/../..' . '/app/Http/Controllers/Common/SystemManagerController.php',
         'App\\Http\\Controllers\\Common\\TemplateController' => __DIR__ . '/../..' . '/app/Http/Controllers/Common/TemplateController.php',
         'App\\Http\\Controllers\\Common\\TrackerController' => __DIR__ . '/../..' . '/app/Http/Controllers/Common/TrackerController.php',
         'App\\Http\\Controllers\\Common\\Twitter\\Config' => __DIR__ . '/../..' . '/app/Http/Controllers/Common/Twitter/Config.php',
@@ -933,6 +940,7 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
         'App\\Http\\Requests\\Request' => __DIR__ . '/../..' . '/app/Http/Requests/Request.php',
         'App\\Http\\Requests\\User\\ClientRequest' => __DIR__ . '/../..' . '/app/Http/Requests/User/ClientRequest.php',
         'App\\Http\\Requests\\User\\ProfileRequest' => __DIR__ . '/../..' . '/app/Http/Requests/User/ProfileRequest.php',
+        'App\\Jobs\\SendEmail' => __DIR__ . '/../..' . '/app/Jobs/SendEmail.php',
         'App\\Model\\Common\\Bussiness' => __DIR__ . '/../..' . '/app/Model/Common/Bussiness.php',
         'App\\Model\\Common\\ChatScript' => __DIR__ . '/../..' . '/app/Model/Common/ChatScript.php',
         'App\\Model\\Common\\Country' => __DIR__ . '/../..' . '/app/Model/Common/Country.php',
@@ -6061,6 +6069,14 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
         'Spatie\\Activitylog\\Traits\\CausesActivity' => __DIR__ . '/..' . '/spatie/laravel-activitylog/src/Traits/CausesActivity.php',
         'Spatie\\Activitylog\\Traits\\DetectsChanges' => __DIR__ . '/..' . '/spatie/laravel-activitylog/src/Traits/DetectsChanges.php',
         'Spatie\\Activitylog\\Traits\\LogsActivity' => __DIR__ . '/..' . '/spatie/laravel-activitylog/src/Traits/LogsActivity.php',
+        'Spatie\\Referer\\CaptureReferer' => __DIR__ . '/..' . '/spatie/laravel-referer/src/CaptureReferer.php',
+        'Spatie\\Referer\\Exceptions\\InvalidConfiguration' => __DIR__ . '/..' . '/spatie/laravel-referer/src/Exceptions/InvalidConfiguration.php',
+        'Spatie\\Referer\\Helpers\\Url' => __DIR__ . '/..' . '/spatie/laravel-referer/src/Helpers/Url.php',
+        'Spatie\\Referer\\Referer' => __DIR__ . '/..' . '/spatie/laravel-referer/src/Referer.php',
+        'Spatie\\Referer\\RefererServiceProvider' => __DIR__ . '/..' . '/spatie/laravel-referer/src/RefererServiceProvider.php',
+        'Spatie\\Referer\\Source' => __DIR__ . '/..' . '/spatie/laravel-referer/src/Source.php',
+        'Spatie\\Referer\\Sources\\RequestHeader' => __DIR__ . '/..' . '/spatie/laravel-referer/src/Sources/RequestHeader.php',
+        'Spatie\\Referer\\Sources\\UtmSource' => __DIR__ . '/..' . '/spatie/laravel-referer/src/Sources/UtmSource.php',
         'Spatie\\String\\Exceptions\\ErrorCreatingStringException' => __DIR__ . '/..' . '/spatie/string/src/Exceptions/ErrorCreatingStringException.php',
         'Spatie\\String\\Exceptions\\UnknownFunctionException' => __DIR__ . '/..' . '/spatie/string/src/Exceptions/UnknownFunctionException.php',
         'Spatie\\String\\Exceptions\\UnsetOffsetException' => __DIR__ . '/..' . '/spatie/string/src/Exceptions/UnsetOffsetException.php',

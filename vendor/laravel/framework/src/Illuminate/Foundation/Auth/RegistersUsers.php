@@ -88,7 +88,7 @@ trait RegistersUsers
             $user->ip = $location['ip'];
             $user->currency = $currency;
             $referer = Referer::get(); // 'google.com'
-            $user->referrer = 'dfdffd';
+            $user->referrer = $referer;
             $user->timezone_id = \App\Http\Controllers\Front\CartController::getTimezoneByName($location['timezone']);
             $emailMobileSetting = StatusSetting::select('emailverification_status', 'msg91_status')->first();
             if ($emailMobileSetting->emailverification_status == 0 && $emailMobileSetting->msg91_status ==1) {

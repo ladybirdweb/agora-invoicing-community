@@ -6344,6 +6344,65 @@
         ]
     },
     {
+        "name": "spatie/laravel-referer",
+        "version": "1.5.0",
+        "version_normalized": "1.5.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/spatie/laravel-referer.git",
+            "reference": "ce5845acc922ddc54cacc42f9beba2f37c725a31"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/spatie/laravel-referer/zipball/ce5845acc922ddc54cacc42f9beba2f37c725a31",
+            "reference": "ce5845acc922ddc54cacc42f9beba2f37c725a31",
+            "shasum": ""
+        },
+        "require": {
+            "illuminate/contracts": "~5.8.0|^6.0",
+            "illuminate/http": "~5.8.0|^6.0",
+            "illuminate/support": "~5.8.0|^6.0",
+            "php": "^7.2"
+        },
+        "require-dev": {
+            "orchestra/testbench": "~3.8.0|^4.0",
+            "phpunit/phpunit": "^8.0"
+        },
+        "time": "2019-09-04T09:17:01+00:00",
+        "type": "library",
+        "extra": {
+            "laravel": {
+                "providers": [
+                    "Spatie\\Referer\\RefererServiceProvider"
+                ]
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Spatie\\Referer\\": "src"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Sebastian De Deyne",
+                "email": "sebastian@spatie.be",
+                "homepage": "https://spatie.be",
+                "role": "Developer"
+            }
+        ],
+        "description": "Keep a visitor's original referer in session",
+        "homepage": "https://github.com/spatie/laravel-referer",
+        "keywords": [
+            "laravel-referer",
+            "spatie"
+        ]
+    },
+    {
         "name": "spatie/string",
         "version": "2.2.2",
         "version_normalized": "2.2.2.0",

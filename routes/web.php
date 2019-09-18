@@ -161,6 +161,10 @@
               Route::get('mailchimp-prod-status', 'Common\BaseSettingsController@updateMailchimpProductStatus')->name('mailchimp-prod-status');
                Route::get('mailchimp-paid-status', 'Common\BaseSettingsController@updateMailchimpIsPaidStatus')->name('mailchimp-paid-status');
                Route::get('updatedomainCheckDetails', 'Common\BaseSettingsController@updatedomainCheckDetails')->name('updatedomainCheckDetails');
+            Route::get('system-managers', 'Common\SystemManagerController@getSystemManagers')->name('system-managers');
+            Route::get('search-admins', 'Common\SystemManagerController@searchAdmin')->name('search-admins');
+            Route::post('replace-acc-manager', 'Common\SystemManagerController@replaceAccountManager')->name('replace-acc-manager');
+            Route::post('replace-sales-manager', 'Common\SystemManagerController@replaceSalesManager')->name('replace-sales-manager');
 
         /*
          * Client
@@ -319,6 +323,8 @@
         Route::get('edit-update-expiry', 'Order\BaseOrderController@editUpdateExpiry');
         Route::get('edit-license-expiry', 'Order\BaseOrderController@editLicenseExpiry');
         Route::get('edit-support-expiry', 'Order\BaseOrderController@editSupportExpiry');
+        Route::get('edit-installation-limit', 'Order\BaseOrderController@editInstallationLimit');
+        Route::post('ip-or-domain', 'Order\BaseOrderController@installOnIpOrDomain');
         /*
          * Groups
          */
@@ -498,8 +504,8 @@
 
         Route::get('get-code', 'WelcomeController@getCode');
         Route::get('get-currency', 'WelcomeController@getCurrency');
-
-        Route::get('country-count', 'WelcomeController@countryCount');
+         Route::get('get-country', 'WelcomeController@getCountry');
+        Route::get('country-count', 'WelcomeController@countryCount')->name('country-count');
 
         /*
          * Api

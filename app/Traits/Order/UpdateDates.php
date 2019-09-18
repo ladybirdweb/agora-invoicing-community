@@ -56,8 +56,15 @@ trait UpdateDates
         $licenseExpiry = strtotime($licenseSupportExpiry->ends_at) > 1 ? date('Y-m-d', strtotime($licenseSupportExpiry->ends_at)) : '';
         $supportExpiry = strtotime($licenseSupportExpiry->support_ends_at) > 1 ? date('Y-m-d', strtotime($licenseSupportExpiry->support_ends_at)) : '';
         $expiryDate = strtotime($expiryDate) > 1 ? date('Y-m-d', strtotime($expiryDate)) : '';
-        $cont = new \App\Http\Controllers\License\LicenseController();
-        $updateLicensedDomain = $cont->updateExpirationDate($order->serial_key, $expiryDate, $order->product, $order->domain, $order->number, $licenseExpiry, $supportExpiry);
+        $noOfAllowedInstallation = '';
+        $getInstallPreference = '';
+        $licenseStatus = StatusSetting::pluck('license_status')->first();
+        if ($licenseStatus == 1) {
+            $cont = new \App\Http\Controllers\License\LicenseController();
+            $noOfAllowedInstallation = $cont->getNoOfAllowedInstallation($order->serial_key, $order->product);
+            $getInstallPreference = $cont->getInstallPreference($order->serial_key, $order->product);
+        }
+        $updateLicensedDomain = $cont->updateExpirationDate($order->serial_key, $expiryDate, $order->product, $order->domain, $order->number, $licenseExpiry, $supportExpiry, $noOfAllowedInstallation, $getInstallPreference);
     }
 
     /*
@@ -101,8 +108,15 @@ trait UpdateDates
         $expiryDate = strtotime($updatesSupportExpiry->update_ends_at) > 1 ? date('Y-m-d', strtotime($updatesSupportExpiry->update_ends_at)) : '';
         $supportExpiry = strtotime($updatesSupportExpiry->support_ends_at) > 1 ? date('Y-m-d', strtotime($updatesSupportExpiry->support_ends_at)) : '';
         $licenseExpiry = strtotime($date) > 1 ? date('Y-m-d', strtotime($date)) : '';
-        $cont = new \App\Http\Controllers\License\LicenseController();
-        $updateLicensedDomain = $cont->updateExpirationDate($order->serial_key, $expiryDate, $order->product, $order->domain, $order->number, $licenseExpiry, $supportExpiry);
+        $noOfAllowedInstallation = '';
+        $getInstallPreference = '';
+        $licenseStatus = StatusSetting::pluck('license_status')->first();
+        if ($licenseStatus == 1) {
+            $cont = new \App\Http\Controllers\License\LicenseController();
+            $noOfAllowedInstallation = $cont->getNoOfAllowedInstallation($order->serial_key, $order->product);
+            $getInstallPreference = $cont->getInstallPreference($order->serial_key, $order->product);
+        }
+        $updateLicensedDomain = $cont->updateExpirationDate($order->serial_key, $expiryDate, $order->product, $order->domain, $order->number, $licenseExpiry, $supportExpiry, $noOfAllowedInstallation, $getInstallPreference);
     }
 
     /*
@@ -146,7 +160,44 @@ trait UpdateDates
         $expiryDate = strtotime($updatesLicenseExpiry->update_ends_at) > 1 ? date('Y-m-d', strtotime($updatesLicenseExpiry->update_ends_at)) : '';
         $licenseExpiry = strtotime($updatesLicenseExpiry->ends_at) > 1 ? date('Y-m-d', strtotime($updatesLicenseExpiry->ends_at)) : '';
         $supportExpiry = strtotime($date) > 1 ? date('Y-m-d', strtotime($date)) : '';
+        $noOfAllowedInstallation = '';
+        $getInstallPreference = '';
+        $licenseStatus = StatusSetting::pluck('license_status')->first();
+        if ($licenseStatus == 1) {
+            $cont = new \App\Http\Controllers\License\LicenseController();
+            $noOfAllowedInstallation = $cont->getNoOfAllowedInstallation($order->serial_key, $order->product);
+            $getInstallPreference = $cont->getInstallPreference($order->serial_key, $order->product);
+        }
+        $updateLicensedDomain = $cont->updateExpirationDate($order->serial_key, $expiryDate, $order->product, $order->domain, $order->number, $licenseExpiry, $supportExpiry, $noOfAllowedInstallation, $getInstallPreference);
+    }
+
+    /**
+     * Update Installation Limit in licensing.
+     *
+     * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
+     *
+     * @date   2019-08-08T11:02:50+0530
+     *
+     * @param  Request
+     *
+     * @return [type]
+     */
+    public function editInstallationLimit(Request $request)
+    {
+        $this->validate($request, [
+            'limit' => 'required|numeric',
+        ]);
+        $order = Order::find($request->input('orderid'));
+        $productId = Subscription::where('order_id', $request->input('orderid'))->pluck('product_id')->first();
+        $updatesLicenseExpiry = Subscription::where('order_id', $request->input('orderid'))
+            ->select('update_ends_at', 'ends_at', 'support_ends_at')->first();
+        $expiryDate = $updatesLicenseExpiry->update_ends_at;
+        $licenseExpiry = $updatesLicenseExpiry->ends_at;
+        $supportExpiry = $updatesLicenseExpiry->support_ends_at;
         $cont = new \App\Http\Controllers\License\LicenseController();
-        $updateLicensedDomain = $cont->updateExpirationDate($order->serial_key, $expiryDate, $order->product, $order->domain, $order->number, $licenseExpiry, $supportExpiry);
+        $getInstallPreference = $cont->getInstallPreference($order->serial_key, $order->product);
+        $updateLicensedDomain = $cont->updateLicensedDomain($order->serial_key, $order->domain, $order->product, $licenseExpiry, $expiryDate, $supportExpiry, $order->number, $request->input('limit'), $getInstallPreference);
+
+        return ['message'=>'success', 'update'=>'Installation Limit Updated'];
     }
 }

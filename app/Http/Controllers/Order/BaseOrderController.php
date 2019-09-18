@@ -12,6 +12,7 @@ use Bugsnag;
 use Crypt;
 use DateTime;
 use DateTimeZone;
+use Illuminate\Http\Request;
 
 class BaseOrderController extends ExtendedOrderController
 {
@@ -352,5 +353,23 @@ class BaseOrderController extends ExtendedOrderController
         $url = url('download/'.$userid.'/'.$number);
 
         return $url;
+    }
+
+    public function installOnIpOrDomain(Request $request)
+    {
+        $order = Order::findorFail($request->input('order'));
+        $licenseCode = $order->serial_key;
+        $licenseStatus = StatusSetting::pluck('license_status')->first();
+        if ($licenseStatus == 1) {
+            $licenseExpiry = $order->subscription->ends_at;
+            $updatesExpiry = $order->subscription->update_ends_at;
+            $supportExpiry = $order->subscription->support_ends_at;
+            $cont = new \App\Http\Controllers\License\LicenseController();
+            $noOfAllowedInstallation = $cont->getNoOfAllowedInstallation($order->serial_key, $order->product);
+            $updateLicensedDomain = $cont->updateLicensedDomain($licenseCode, $order->domain, $order->product, $licenseExpiry, $updatesExpiry, $supportExpiry, $order->number, $license_limit = $noOfAllowedInstallation, $requiredomain = $request->input('domain'));
+            //Now make Installation status as inactive
+        }
+
+        return redirect()->back()->with('success', 'Installation Preference set successfully');
     }
 }

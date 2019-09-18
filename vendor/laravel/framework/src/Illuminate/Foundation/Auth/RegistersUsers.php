@@ -12,6 +12,7 @@ use App\Model\Common\Setting;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\ProfileRequest;
 use App\Model\User\AccountActivate;
+use Facades\Spatie\Referer\Referer;
 use App\User;
 use Bugsnag;
 // use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
@@ -65,13 +66,7 @@ trait RegistersUsers
                 $currency = $userCountry->currency->code;
                 $currency_symbol = $userCountry->currency->symbol;
             }
-            // if (\Session::has('currency')) {
-            //     $currency = \Session::get('currency');
-            // }
-            // dd($currency);
-            $manager=$this->accountManager();
-            $account_manager =$manager;
-     
+          
             $password = \Hash::make($pass);
             $user->password = $password;
             $user->town=$location['city'];
@@ -89,9 +84,11 @@ trait RegistersUsers
             $user->zip = $zip;
             $user->user_name = $user_name;
 
-            $user->manager = $account_manager;
+            $user->manager = $user->assignSalesManager();
             $user->ip = $location['ip'];
             $user->currency = $currency;
+            $referer = Referer::get(); // 'google.com'
+            $user->referrer = $referer;
             $user->timezone_id = \App\Http\Controllers\Front\CartController::getTimezoneByName($location['timezone']);
             $emailMobileSetting = StatusSetting::select('emailverification_status', 'msg91_status')->first();
             if ($emailMobileSetting->emailverification_status == 0 && $emailMobileSetting->msg91_status ==1) {
@@ -115,8 +112,9 @@ trait RegistersUsers
                     $response = ['type' => 'success', 'user_id' => $user->id, 'message' => 'Your Submission has been received successfully. Verify your Email and Mobile to log into the Website.'];
                 }
             }
+           
             activity()->log('User <strong>' . $request->input('first_name'). ' '.$request->input('last_name').  '</strong> was created');
-            $this->accountManagerMail($user);
+            // $this->accountManagerMail($user);
              
            
             return response()->json($response);
@@ -419,40 +417,6 @@ trait RegistersUsers
         return $manager;
     }
 
-    public function accountManagerMail($user)
-    {
-        $manager = $user->manager()
-
-                ->where('position', 'manager')
-                ->select('first_name', 'last_name', 'email', 'mobile_code', 'mobile', 'skype')
-                ->first();
-        if ($user && $user->role == 'user' && $manager) {
-            $settings = new \App\Model\Common\Setting();
-            $setting = $settings->first();
-            $from = $setting->email;
-            $to = $user->email;
-            $templates = new \App\Model\Common\Template();
-            $template = $templates
-                    ->join('template_types', 'templates.type', '=', 'template_types.id')
-                    ->where('template_types.name', '=', 'manager_email')
-                    ->select('templates.data', 'templates.name')
-                    ->first();
-            $template_data = $template->data;
-            $template_name = $template->name;
-            $template_controller = new \App\Http\Controllers\Common\TemplateController();
-            $replace = [
-                'name'               => $user->first_name.' '.$user->last_name,
-                'manager_first_name' => $manager->first_name,
-                'manager_last_name'  => $manager->last_name,
-                'manager_email'      => $manager->email,
-                'manager_code'       => $manager->mobile_code,
-                'manager_mobile'     => $manager->mobile,
-                'manager_skype'      => $manager->skype,
-            ];
-            //dd($from, $to, $template_data, $template_name, $replace);
-            $template_controller->mailing($from, $to, $template_data, $template_name, $replace, 'manager_email');
-        }
-    }
 
     /**
      * Handle a registration request for the application.

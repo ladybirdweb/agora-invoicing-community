@@ -14,7 +14,7 @@ return [
 
     'name'      => env('APP_NAME', 'Laravel'),
 
-    'version'   => 'v1.0.28',
+    'version'   => 'v1.0.30',
 
     /*
     |--------------------------------------------------------------------------
@@ -204,6 +204,7 @@ return [
          Spatie\Activitylog\ActivitylogServiceProvider::class,
           \Torann\Currency\CurrencyServiceProvider::class,
            Devio\Pipedrive\PipedriveServiceProvider::class,
+           Spatie\Referer\RefererServiceProvider::class,
           // Voerro\Laravel\VisitorTracker\VisitorTrackerServiceProvider::class,
 
     ],

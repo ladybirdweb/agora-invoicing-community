@@ -317,22 +317,6 @@ class AuthController extends BaseAuthController
         return $check;
     }
 
-    public function accountManager()
-    {
-        $manager = '';
-        $users = new User();
-        $account_count = $users->select(\DB::raw("count('manager') as count"), 'manager')
-                ->whereNotNull('manager')
-                ->groupBy('manager')
-                ->pluck('count', 'manager')
-                ->toArray();
-        if ($account_count) {
-            $manager = array_keys($account_count, min($account_count))[0];
-        }
-
-        return $manager;
-    }
-
     public function getState(Request $request, $state)
     {
         try {
@@ -356,7 +340,7 @@ class AuthController extends BaseAuthController
         }
     }
 
-    public function accountManagerMail($user)
+    public function salesManagerMail($user, $bcc = [])
     {
         $manager = $user->manager()
 
@@ -371,7 +355,7 @@ class AuthController extends BaseAuthController
             $templates = new \App\Model\Common\Template();
             $template = $templates
                     ->join('template_types', 'templates.type', '=', 'template_types.id')
-                    ->where('template_types.name', '=', 'manager_email')
+                    ->where('template_types.name', '=', 'sales_manager_email')
                     ->select('templates.data', 'templates.name')
                     ->first();
             $template_data = $template->data;
@@ -386,8 +370,47 @@ class AuthController extends BaseAuthController
                 'manager_mobile'     => $manager->mobile,
                 'manager_skype'      => $manager->skype,
             ];
+            $job = new \App\Jobs\SendEmail($from, $to, $template_data, $template_name, $replace, 'sales_manager_email', $bcc);
+            dispatch($job);
             //dd($from, $to, $template_data, $template_name, $replace);
-            $template_controller->mailing($from, $to, $template_data, $template_name, $replace, 'manager_email');
+            // $template_controller->mailing($from, $to, $template_data, $template_name, $replace, 'sales_manager_email');
+        }
+    }
+
+    public function accountManagerMail($user, $bcc = [])
+    {
+        $manager = $user->accountManager()
+
+                ->where('position', 'account_manager')
+                ->select('first_name', 'last_name', 'email', 'mobile_code', 'mobile', 'skype')
+                ->first();
+        if ($user && $user->role == 'user' && $manager) {
+            $settings = new \App\Model\Common\Setting();
+            $setting = $settings->first();
+            $from = $setting->email;
+            $to = $user->email;
+            $templates = new \App\Model\Common\Template();
+            $template = $templates
+                    ->join('template_types', 'templates.type', '=', 'template_types.id')
+                    ->where('template_types.name', '=', 'account_manager_email')
+                    ->select('templates.data', 'templates.name')
+                    ->first();
+            $template_data = $template->data;
+            $template_name = $template->name;
+            $template_controller = new \App\Http\Controllers\Common\TemplateController();
+            $replace = [
+                'name'               => $user->first_name.' '.$user->last_name,
+                'manager_first_name' => $manager->first_name,
+                'manager_last_name'  => $manager->last_name,
+                'manager_email'      => $manager->email,
+                'manager_code'       => $manager->mobile_code,
+                'manager_mobile'     => $manager->mobile,
+                'manager_skype'      => $manager->skype,
+            ];
+            $job = new \App\Jobs\SendEmail($from, $to, $template_data, $template_name, $replace, 'account_manager_email', $bcc);
+            dispatch($job);
+            //dd($from, $to, $template_data, $template_name, $replace);
+            // $template_controller->mailing($from, $to, $template_data, $template_name, $replace, 'account__manager_email',$bcc);
         }
     }
 

@@ -95,15 +95,15 @@ Order Details
                             <div class="box-body">
                                @include('themes.default1.front.clients.reissue-licenseModal')
                                @include('themes.default1.front.clients.domainRestriction')
+                               @include('themes.default1.order.installationLimit')
                                @include('themes.default1.order.update_ends-modal')
-                                @include('themes.default1.order.license_end-modal')
-                                 @include('themes.default1.order.support_end-modal')
+                               @include('themes.default1.order.license_end-modal')
+                               @include('themes.default1.order.support_end-modal')
                                
                                   
                             <div class="box-header with-border">
                               <h4 class="box-title">
-                                
-                                  License Details
+                                License Details
                               </h4>
                             </div>
                         
@@ -146,7 +146,36 @@ Order Details
                                       </td>
                                         @endif
                                        </tr>
+                                  <tr><td><b>Installation Limit:</b></td> 
+                                          <td>
+                                              {{$noOfAllowedInstallation}}
+                                               <a class='class="btn btn-sm btn-primary btn-xs pull-right' id="installlimit" limit-id="{{$order->id}}" install-limit="{{$noOfAllowedInstallation}}" style='color:white;border-radius:0px;'><i class="fa fa-edit">&nbsp;</i>
+                                                Edit</a>
+                                              
+                                          </td>
+                                       
+                                 </tr>
+
+                                  <tr><td><b>Installation Preference:</b></td>
+                                            @if(Session::has('success'))
+                                            <div class="alert alert-success">
+                                                 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                   <strong><i class="fa fa-check"></i> Success!</strong>
+                                               
+                                                {!!Session::get('success')!!}
+                                            </div>
+                                            @endif
+                                    <td>
+                                      {!! Form::open(['url' => url('ip-or-domain'),'method'=>'post']) !!}
+                                      <input type="hidden" name="order" value="{{$order->id}}">
+                                        {{ Form::radio('domain', 0 , ($getInstallPreference == '0')) }} IP &nbsp;&nbsp;&nbsp;&nbsp;
+                                        {{ Form::radio('domain', 1 , ($getInstallPreference == '1')) }} Domain
+                                          <button type="submit" class="btn btn-primary btn-xs pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button>
+                                            {!! Form::close() !!}
+                                       </td> 
+                                 </tr>
                                 @endif
+                           
                             </td></tr>
                                     <?php
                                     $date = "--";
@@ -655,6 +684,58 @@ Order Details
                          $('#error3').show(); 
                          $('#response4').html(''); 
                           document.getElementById('error3').innerHTML = html;
+                }
+            })
+        });
+
+      <!-------------------------------------------------------------------------------------------------------------------------->  
+  
+
+/*
+* Update Support Expiry date 
+ */
+
+ $("#installlimit").click(function(){
+        var oldlimit = $(this).attr('install-limit');
+        var orderId = $(this).attr('limit-id');
+        $("#limitModel").modal();
+        $("#order5").val(orderId);
+        $("#limitnumber").val(oldlimit);
+        });
+
+ //When Submit Button is Clicked in Modal Popup, passvalue through Ajax
+    $("#installLimitSave").on('click',function(){
+        var newlimit = $("#limitnumber").val();
+        var orderId = $("#order5").val();
+        $.ajax({
+            type: "get",
+            data: {'orderid': orderId , 'limit': newlimit},
+            url: "{{url('edit-installation-limit')}}",
+             beforeSend: function () {
+                 $('#response5').html( "<img id='blur-bg' class='backgroundfadein' style='top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
+
+            },
+            success: function (response) {
+                if (response.message =='success') {
+                var result =  '<div class="alert alert-success alert-dismissable"><strong><i class="fa fa-check"></i> Success! </strong> '+response.update+' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
+                     $('#response5').html(result);
+                     $('#response5').css('color', 'green');
+                 setTimeout(function(){
+                    window.location.reload();
+                },3000);
+                }
+            },
+            error: function(response) {
+                  var myJSON = JSON.parse(response.responseText).errors;
+                       var html = '<div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<br><br><ul>';
+                          for (var key in myJSON)
+                          {
+                              html += '<li>' + myJSON[key][0] + '</li>'
+                          }
+                         html += '</ul></div>';
+                         $('#error5').show(); 
+                         $('#response5').html(''); 
+                          document.getElementById('error5').innerHTML = html;
                 }
             })
         });

@@ -173,7 +173,7 @@ Edit User
                     <div class="col-md-3 form-group {{ $errors->has('position') ? 'has-error' : '' }}">
                         <!-- email -->
                         {!! Form::label('position','Position') !!}
-                        {!! Form::select('position',['Choose'=>'Choose','manager'=>'Manager'],null,['class' => 'form-control']) !!}
+                        {!! Form::select('position',['Choose'=>'Choose','manager'=>'Sales Manager','account_manager'=>'Account Manager'],null,['class' => 'form-control']) !!}
 
                     </div>
                     <?php
@@ -296,8 +296,15 @@ Edit User
                     @if($user->role=='user')
                     <div class="col-md-3 form-group {{ $errors->has('manager') ? 'has-error' : '' }}">
                         <!-- mobile -->
-                        {!! Form::label('manager','Manager') !!}
+                        {!! Form::label('manager','Sales Manager') !!}
                         {!! Form::select('manager',[''=>'Select','Managers'=>$managers],null,['class' => 'form-control']) !!}
+
+                    </div>
+
+                     <div class="col-md-3 form-group {{ $errors->has('manager') ? 'has-error' : '' }}">
+                        <!-- mobile -->
+                        {!! Form::label('account_manager','Account Manager') !!}
+                        {!! Form::select('account_manager',[''=>'Select','Managers'=>$acc_managers],null,['class' => 'form-control']) !!}
 
                     </div>
                     @endif

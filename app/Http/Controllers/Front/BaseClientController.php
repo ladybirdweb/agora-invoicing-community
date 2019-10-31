@@ -125,7 +125,7 @@ class BaseClientController extends Controller
     /**
      * Update Profile.
      */
-    public function postProfile(ProfileRequest  $request)
+    public function postProfile(ProfileRequest $request)
     {
         try {
             $user = \Auth::user();

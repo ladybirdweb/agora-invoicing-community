@@ -217,6 +217,8 @@ class OrderController extends BaseOrderController
         try {
             $order = $this->order->findOrFail($id);
             $subscription = $order->subscription()->first();
+            $currenctVersion = $subscription->version;
+            $lastActivity = $subscription->updated_at;
             $invoiceid = $order->invoice_id;
             $invoice = $this->invoice->where('id', $invoiceid)->first();
             if (!$invoice) {
@@ -238,7 +240,7 @@ class OrderController extends BaseOrderController
             $allowDomainStatus = StatusSetting::pluck('domain_check')->first();
 
             return view('themes.default1.order.show',
-                compact('invoiceItems', 'invoice', 'user', 'order', 'subscription', 'licenseStatus', 'installationDetails', 'allowDomainStatus', 'noOfAllowedInstallation', 'getInstallPreference'));
+                compact('invoiceItems', 'invoice', 'user', 'order', 'subscription', 'licenseStatus', 'installationDetails', 'allowDomainStatus', 'noOfAllowedInstallation', 'getInstallPreference','currenctVersion','lastActivity'));
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
 

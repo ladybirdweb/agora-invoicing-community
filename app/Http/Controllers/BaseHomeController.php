@@ -171,4 +171,22 @@ class BaseHomeController extends Controller
             return $result;
         }
     }
+
+    public function updateLatestVersion(Request $request)
+    {
+        try {
+            $order_number = $request->input('orderNo');
+            $orderId = Order::where('number', 'LIKE', $order_number)->pluck('id')->first();
+             if ($orderId) {
+                $latestVerison = Subscription::where('order_id', $orderId)->update(['version'=>$request->input('version')]);
+                return ['status' => 'success', 'message' => 'version-updated-successfully'];
+            }
+
+            return ['status' => 'fails', 'message' => 'version-not updated'];
+        } catch (\Exception $e) {
+            $result = ['status'=>'fails', 'error' => $e->getMessage()];
+
+            return $result;
+        }
+    }
 }

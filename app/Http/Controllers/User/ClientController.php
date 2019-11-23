@@ -399,7 +399,7 @@ class ClientController extends AdvanceSearchController
             $symbol = Currency::where('code', $request->input('currency'))->pluck('symbol')->first();
             $user->currency_symbol = $symbol;
             $user->fill($request->input())->save();
-
+            // \Session::put('test', 1000);
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());

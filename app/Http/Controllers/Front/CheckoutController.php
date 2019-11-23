@@ -194,14 +194,14 @@ class CheckoutController extends InfoController
         $paynow = $this->checkregularPaymentOrRenewal($request->input('invoice_id'));
         $cost = $request->input('cost');
         $state = $this->getState();
-         if (Cart::getSubTotal() != 0 || $cost > 0) {
-             $this->validate($request, [
+        if (Cart::getSubTotal() != 0 || $cost > 0) {
+            $this->validate($request, [
                     'payment_gateway'=> 'required',
                     ], [
                         'payment_gateway.required'=> 'Please Select a Payment Gateway',
                     ]);
-         }
-        
+        }
+
         try {
             if ($paynow === false) {
                 /*
@@ -240,7 +240,6 @@ class CheckoutController extends InfoController
                 $attributes = $this->getAttributes($content);
             }
             if (Cart::getSubTotal() != 0 || $cost > 0) {
-               
                 if ($payment_method == 'razorpay') {
                     $rzp_key = ApiKey::where('id', 1)->value('rzp_key');
                     $rzp_secret = ApiKey::where('id', 1)->value('rzp_secret');

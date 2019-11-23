@@ -177,8 +177,9 @@ class BaseHomeController extends Controller
         try {
             $order_number = $request->input('orderNo');
             $orderId = Order::where('number', 'LIKE', $order_number)->pluck('id')->first();
-             if ($orderId) {
+            if ($orderId) {
                 $latestVerison = Subscription::where('order_id', $orderId)->update(['version'=>$request->input('version')]);
+
                 return ['status' => 'success', 'message' => 'version-updated-successfully'];
             }
 

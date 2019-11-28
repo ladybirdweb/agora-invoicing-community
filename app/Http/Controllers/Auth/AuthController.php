@@ -163,13 +163,13 @@ class AuthController extends BaseAuthController
             'mobile' => 'required|numeric',
         ]);
 
-        $number = $request->oldnumber;
-        $newNumber = $request->newnumber;
+        $number = ltrim($request->oldnumber, '0');
+        $newNumber = ltrim($request->newnumber, '0') ;
         User::where('mobile', $number)->update(['mobile'=>$newNumber]);
 
         try {
             $code = $request->input('code');
-            $mobile = $request->input('mobile');
+            $mobile =ltrim($request->input('mobile'), '0') ;
             $number = '(+'.$code.') '.$mobile;
             $result = $this->sendOtp($mobile, $code);
             $response = ['type' => 'success', 'message' => 'OTP has been sent to '.$number.'.Please Verify to Login'];
@@ -191,7 +191,7 @@ class AuthController extends BaseAuthController
 
         try {
             $code = $request->input('code');
-            $mobile = $request->input('mobile');
+            $mobile = ltrim($request->input('mobile'), '0');
             $otp = $request->input('otp');
             $number = '(+'.$code.') '.$mobile;
             $result = $this->sendForReOtp($mobile, $code, $request->input('type'));
@@ -231,10 +231,10 @@ class AuthController extends BaseAuthController
         $client = new \GuzzleHttp\Client();
         $key = ApiKey::where('id', 1)->value('msg91_auth_key');
         $number = $code.$mobile;
-        $response = $client->request('GET', 'https://control.msg91.com/api/verifyRequestOTP.php', [
+        $response = $client->request('GET', 'https://api.msg91.com/api/v5/otp/verify', [
             'query' => ['authkey' => $key, 'mobile' => $number, 'otp' => $otp],
         ]);
-
+        
         return $response->getBody()->getContents();
     }
 
@@ -246,7 +246,7 @@ class AuthController extends BaseAuthController
 
         try {
             $code = $request->input('code');
-            $mobile = $request->input('mobile');
+            $mobile = ltrim($request->input('mobile'), '0');
             $otp = $request->input('otp');
             $userid = $request->input('id');
             $verify = $this->verifyOtp($mobile, $code, $otp);

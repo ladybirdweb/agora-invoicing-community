@@ -51,7 +51,6 @@ Edit User
             </ul>
         </div>
         @endif
-        <?php var_dump(Session::all()); ?>
         @if(Session::has('success'))
         <div class="alert alert-success alert-dismissable">
               <i class="fa fa-check"></i>

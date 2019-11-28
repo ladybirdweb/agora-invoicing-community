@@ -53,7 +53,8 @@ class BaseAuthController extends Controller
         $client = new \GuzzleHttp\Client();
         $number = $code.$mobile;
         $key = ApiKey::where('id', 1)->select('msg91_auth_key', 'msg91_sender')->first();
-        $response = $client->request('GET', 'https://control.msg91.com/api/sendotp.php', [
+
+        $response = $client->request('GET', 'https://api.msg91.com/api/v5/otp', [
             'query' => ['authkey' => $key->msg91_auth_key, 'mobile' => $number, 'sender'=>$key->msg91_sender],
         ]);
         $send = $response->getBody()->getContents();
@@ -73,7 +74,9 @@ class BaseAuthController extends Controller
         $client = new \GuzzleHttp\Client();
         $number = $code.$mobile;
         $key = ApiKey::where('id', 1)->value('msg91_auth_key');
-        $response = $client->request('GET', 'https://control.msg91.com/api/retryotp.php', [
+
+
+        $response = $client->request('GET', 'https://api.msg91.com/api/v5/otp/retry', [
             'query' => ['authkey' => $key, 'mobile' => $number, 'retrytype'=>$type],
         ]);
         $send = $response->getBody()->getContents();
@@ -97,13 +100,13 @@ class BaseAuthController extends Controller
         ]);
         $email = $request->oldemail;
         $newEmail = $request->newemail;
-        $number = $request->oldnumber;
-        $newNumber = $request->newnumber;
+        $number = ltrim($request->oldnumber, '0');
+        $newNumber = ltrim($request->newnumber, '0');
         User::where('email', $email)->update(['email'=>$newEmail, 'mobile'=>$newNumber]);
 
         try {
             $code = $request->input('code');
-            $mobile = $request->input('mobile');
+            $mobile = ltrim($request->input('mobile'), '0');
             $userid = $request->input('id');
             $email = $request->input('email');
             $pass = $request->input('password');

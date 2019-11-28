@@ -75,7 +75,6 @@ class BaseAuthController extends Controller
         $number = $code.$mobile;
         $key = ApiKey::where('id', 1)->value('msg91_auth_key');
 
-
         $response = $client->request('GET', 'https://api.msg91.com/api/v5/otp/retry', [
             'query' => ['authkey' => $key, 'mobile' => $number, 'retrytype'=>$type],
         ]);

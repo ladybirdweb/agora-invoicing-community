@@ -164,12 +164,12 @@ class AuthController extends BaseAuthController
         ]);
 
         $number = ltrim($request->oldnumber, '0');
-        $newNumber = ltrim($request->newnumber, '0') ;
+        $newNumber = ltrim($request->newnumber, '0');
         User::where('mobile', $number)->update(['mobile'=>$newNumber]);
 
         try {
             $code = $request->input('code');
-            $mobile =ltrim($request->input('mobile'), '0') ;
+            $mobile = ltrim($request->input('mobile'), '0');
             $number = '(+'.$code.') '.$mobile;
             $result = $this->sendOtp($mobile, $code);
             $response = ['type' => 'success', 'message' => 'OTP has been sent to '.$number.'.Please Verify to Login'];
@@ -234,7 +234,7 @@ class AuthController extends BaseAuthController
         $response = $client->request('GET', 'https://api.msg91.com/api/v5/otp/verify', [
             'query' => ['authkey' => $key, 'mobile' => $number, 'otp' => $otp],
         ]);
-        
+
         return $response->getBody()->getContents();
     }
 

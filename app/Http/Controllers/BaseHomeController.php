@@ -171,14 +171,14 @@ class BaseHomeController extends Controller
             return $result;
         }
     }
-    
+
     public function updateLatestVersion(Request $request)
     {
         try {
             $orderId = null;
             $licenseCode = $request->input('licenseCode');
-            $orderForLicense = Order::all()->filter(function($order) use($licenseCode){
-                if($order->serial_key == $licenseCode) {
+            $orderForLicense = Order::all()->filter(function ($order) use ($licenseCode) {
+                if ($order->serial_key == $licenseCode) {
                     return $order;
                 }
             });

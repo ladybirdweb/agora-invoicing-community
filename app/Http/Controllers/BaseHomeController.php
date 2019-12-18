@@ -171,14 +171,19 @@ class BaseHomeController extends Controller
             return $result;
         }
     }
-
+    
     public function updateLatestVersion(Request $request)
     {
         try {
-            $order_number = $request->input('orderNo');
-            $orderId = Order::where('number', 'LIKE', $order_number)->pluck('id')->first();
-            if ($orderId) {
-                $latestVerison = Subscription::where('order_id', $orderId)->update(['version'=>$request->input('version')]);
+            $orderId = null;
+            $licenseCode = $request->input('licenseCode');
+            $orderForLicense = Order::all()->filter(function($order) use($licenseCode){
+                if($order->serial_key == $licenseCode) {
+                    return $order;
+                }
+            });
+            if (count($orderForLicense) > 0) {
+                $latestVerison = Subscription::where('order_id', $orderForLicense->first()->id)->update(['version'=>$request->input('version')]);
 
                 return ['status' => 'success', 'message' => 'version-updated-successfully'];
             }

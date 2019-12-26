@@ -1,0 +1,44 @@
+{
+    "name": "jeremykenedy/laravel-logger",
+    "description": "Laravel Logger Package",
+    "keywords": [
+            "Laravel activity",
+            "Laravel activity logger",
+            "Laravel activity log",
+            "Laravel logger",
+            "Laravel log"
+        ],
+    "license": "MIT",
+    "type": "package",
+    "authors": [
+        {
+            "name": "jeremykenedy",
+            "email": "jeremykenedy@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=7.0.0",
+        "jaybizzle/laravel-crawler-detect": "1.*",
+        "laravelcollective/html": "^5.4|^5.5|^5.6|^5.7|^5.8|^6.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "jeremykenedy\\LaravelLogger\\": "src/"
+        },
+        "files": [
+            "src/app/Logic/helpers.php"
+        ]
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "jeremykenedy\\LaravelLogger\\LaravelLoggerServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "stable"
+}

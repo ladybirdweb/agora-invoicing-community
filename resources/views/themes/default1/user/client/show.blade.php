@@ -158,6 +158,8 @@ User Details
 <div class="margintop20">
     <div class="nav-tabs-custom">
         <ul class="nav nav-tabs" id="myTab">
+             <li><a data-toggle="tab" href="#log" id="userlog" data-toggle="tab" >{{Lang::get('message.user_log')}} </a>
+            </li>
             <li><a data-toggle="tab" href="#activity" id="invoice" data-toggle="tab">{{Lang::get('message.transation_detail')}}</a>
             </li>
             <li><a data-toggle="tab" href="#settings" id="customer_detail" data-toggle="tab">{{Lang::get('message.customer_detail')}}</a>
@@ -168,6 +170,7 @@ User Details
             </li>
             <li><a data-toggle="tab" href="#comment" data-toggle="tab" >{{Lang::get('message.comments')}} <span class="badge bg-red">{{count($comments)}}</span></a>
             </li>
+            
         </ul>
         <div class="tab-content">
             <div id="response"></div>
@@ -576,7 +579,120 @@ User Details
             <!-- order !-->
 
 
+     <div class="active tab-pane" id="log">
+              
 
+                    <div class="box-header">
+
+                        <h4>User Log </h4>
+                    </div>
+                <div class="box-body">
+                    <div class="row">
+
+                        <div class="col-md-12">
+                            <table id="log-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
+                             <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_invoice_delete"><i class= "fa fa-trash"></i>&nbsp;&nbsp;Delete Selected</button><br /><br />
+                                <thead><tr>
+                                    <th class="no-sort" style="width:1px;"><input type="checkbox" name="select_all" onchange="checkinginvoice(this)"></th>
+                                        <th style="width:150px;">Time</th>
+                                        <th style="width:50px;">Description</th>
+                                           <th style="width:50px;">Ip Address</th>
+                                        <th style="width:150px;">User Agent</th>
+                                    </tr></thead>
+                                 </table>
+                           
+
+                        </div>
+                    </div>
+
+                </div>
+
+            
+
+        <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
+        <script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+        <script type="text/javascript">
+       $("#userlog").on('click',function(){
+         // $('#orderdetail-table').DataTable().clear().destroy();
+         // $('#invoice-table').DataTable().clear().destroy();
+        $('#log-table').DataTable({
+   
+            processing: true,
+             "bDestroy": true,
+            serverSide: true,
+             stateSave: false,
+            order: [[ 0, "desc" ]],
+            ajax: '{!! url("user-activity") !!}',
+             
+
+            "oLanguage": {
+                "sLengthMenu": "_MENU_ Records per page",
+                "sSearch"    : "Search: ",
+                "sProcessing": '<img id="blur-bg" class="backgroundfadein" style="top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;" src="{!! asset("lb-faveo/media/images/gifloader3.gif") !!}">'
+            },
+                columnDefs: [
+                { 
+                    targets: 'no-sort', 
+                    orderable: false,
+                    order: []
+                }
+            ],
+            columns: [
+                {data: 'checkbox', name: 'checkbox'},
+                {data: 'time', name: 'time'},
+                {data: 'description', name: 'description'},
+                {data: 'ip', name: 'ip'},
+                {data: 'agent', name: 'agent'},
+            ],
+            "fnDrawCallback": function( oSettings ) {
+                $('.loader').css('display', 'none');
+            },
+            "fnPreDrawCallback": function(oSettings, json) {
+                $('.loader').css('display', 'block');
+            },
+        });
+    });
+      </script>
+           <script>
+             function checkinginvoice(e){
+              
+              $('#log-table').find("td input[type='checkbox']").prop('checked', $(e).prop('checked'));
+             }
+     
+
+         $(document).on('click','#bulk_invoice_delete',function(){
+          var id=[];
+          if (confirm("Are you sure you want to delete this?"))
+            {
+                $('.invoice_checkbox:checked').each(function(){
+                  id.push($(this).val())
+                });
+                if(id.length >0)
+                {
+                   $.ajax({
+                          url:"{!! Url('invoice-delete') !!}",
+                          method:"get",
+                          data: $('#check:checked').serialize(),
+                          beforeSend: function () {
+                    $('#gif').show();
+                    },
+                    success: function (data) {
+                    $('#gif').hide();
+                    $('#response').html(data);
+                    location.reload();
+                    }
+                   })
+                }
+                else
+                {
+                    alert("Please select at least one checkbox");
+                }
+                }  
+
+                 });
+                
+                </script>
+           </div>
 
 
 

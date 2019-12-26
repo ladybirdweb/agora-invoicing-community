@@ -134,7 +134,9 @@ if($script){
                                                 <ul class="nav nav-pills" id="mainNav">
                                               <?php 
                                                 $groups = \App\Model\Product\ProductGroup::where('hidden','!=', 1)->get();
-                                              
+                                                $cont = new \App\Http\Controllers\Front\PageController();
+                                              $location = $cont->getLocation();
+                                              // dd($location);
                                               ?>
                                                     
                                                      <li class="dropdown">

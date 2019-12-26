@@ -2269,6 +2269,180 @@
         "description": "Highlight PHP code in terminal"
     },
     {
+        "name": "jaybizzle/crawler-detect",
+        "version": "v1.2.90",
+        "version_normalized": "1.2.90.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/JayBizzle/Crawler-Detect.git",
+            "reference": "35f963386e6a189697fe4b14dc91fb42b17fda4b"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/JayBizzle/Crawler-Detect/zipball/35f963386e6a189697fe4b14dc91fb42b17fda4b",
+            "reference": "35f963386e6a189697fe4b14dc91fb42b17fda4b",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.0"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "^4.8|^5.5|^6.5",
+            "satooshi/php-coveralls": "1.*"
+        },
+        "time": "2019-12-08T20:03:27+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Jaybizzle\\CrawlerDetect\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Mark Beech",
+                "email": "m@rkbee.ch",
+                "role": "Developer"
+            }
+        ],
+        "description": "CrawlerDetect is a PHP class for detecting bots/crawlers/spiders via the user agent",
+        "homepage": "https://github.com/JayBizzle/Crawler-Detect/",
+        "keywords": [
+            "crawler",
+            "crawler detect",
+            "crawler detector",
+            "crawlerdetect",
+            "php crawler detect"
+        ]
+    },
+    {
+        "name": "jaybizzle/laravel-crawler-detect",
+        "version": "v1.2.0",
+        "version_normalized": "1.2.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/JayBizzle/Laravel-Crawler-Detect.git",
+            "reference": "e39b536fb5e4f21a49328e83a2ab26f0b64b06f7"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/JayBizzle/Laravel-Crawler-Detect/zipball/e39b536fb5e4f21a49328e83a2ab26f0b64b06f7",
+            "reference": "e39b536fb5e4f21a49328e83a2ab26f0b64b06f7",
+            "shasum": ""
+        },
+        "require": {
+            "jaybizzle/crawler-detect": "1.*",
+            "php": ">=5.4.0"
+        },
+        "require-dev": {
+            "orchestra/testbench": "3.1.*",
+            "phpunit/phpunit": "4.*"
+        },
+        "time": "2017-06-01T20:29:30+00:00",
+        "type": "library",
+        "extra": {
+            "laravel": {
+                "providers": [
+                    "Jaybizzle\\LaravelCrawlerDetect\\LaravelCrawlerDetectServiceProvider"
+                ],
+                "aliases": {
+                    "Crawler": "Jaybizzle\\LaravelCrawlerDetect\\Facades\\LaravelCrawlerDetect"
+                }
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Jaybizzle\\LaravelCrawlerDetect\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Mark Beech",
+                "email": "mbeech@mark-beech.co.uk"
+            }
+        ],
+        "description": "A Laravel package to detect web crawlers via the user agent",
+        "homepage": "http://github.com/JayBizzle/Laravel-Crawler-Detect",
+        "keywords": [
+            "bot",
+            "crawler",
+            "crawler detect",
+            "crawler detector",
+            "crawlerdetect",
+            "detect",
+            "laravel",
+            "php crawler detect",
+            "spider",
+            "user-agent"
+        ]
+    },
+    {
+        "name": "jeremykenedy/laravel-logger",
+        "version": "v3.2.0",
+        "version_normalized": "3.2.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/jeremykenedy/laravel-logger.git",
+            "reference": "1747e4c1ca55a733503570fac4d9b6c7249a5cf7"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/jeremykenedy/laravel-logger/zipball/1747e4c1ca55a733503570fac4d9b6c7249a5cf7",
+            "reference": "1747e4c1ca55a733503570fac4d9b6c7249a5cf7",
+            "shasum": ""
+        },
+        "require": {
+            "jaybizzle/laravel-crawler-detect": "1.*",
+            "laravelcollective/html": "^5.4|^5.5|^5.6|^5.7|^5.8|^6.0",
+            "php": ">=7.0.0"
+        },
+        "time": "2019-11-20T18:35:44+00:00",
+        "type": "package",
+        "extra": {
+            "laravel": {
+                "providers": [
+                    "jeremykenedy\\LaravelLogger\\LaravelLoggerServiceProvider"
+                ]
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "jeremykenedy\\LaravelLogger\\": "src/"
+            },
+            "files": [
+                "src/app/Logic/helpers.php"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "jeremykenedy",
+                "email": "jeremykenedy@gmail.com"
+            }
+        ],
+        "description": "Laravel Logger Package",
+        "keywords": [
+            "Laravel activity",
+            "Laravel activity log",
+            "Laravel activity logger",
+            "Laravel log",
+            "laravel logger"
+        ]
+    },
+    {
         "name": "justinrainbow/json-schema",
         "version": "5.2.8",
         "version_normalized": "5.2.8.0",

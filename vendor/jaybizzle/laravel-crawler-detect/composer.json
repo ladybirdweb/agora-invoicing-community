@@ -1,0 +1,37 @@
+{
+    "name": "jaybizzle/laravel-crawler-detect",
+    "description": "A Laravel package to detect web crawlers via the user agent",
+    "keywords": ["laravel", "spider", "bot", "detect", "user-agent", "crawler", "crawler detect", "crawler detector", "crawlerdetect", "php crawler detect"],
+    "homepage": "http://github.com/JayBizzle/Laravel-Crawler-Detect",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Mark Beech",
+            "email": "mbeech@mark-beech.co.uk"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "jaybizzle/crawler-detect": "1.*"
+    },
+    "require-dev": {
+        "orchestra/testbench": "3.1.*",
+        "phpunit/phpunit": "4.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Jaybizzle\\LaravelCrawlerDetect\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Jaybizzle\\LaravelCrawlerDetect\\LaravelCrawlerDetectServiceProvider"
+            ],
+            "aliases": {
+                "Crawler": "Jaybizzle\\LaravelCrawlerDetect\\Facades\\LaravelCrawlerDetect"
+            }
+        }
+    },
+    "minimum-stability": "stable"
+}

@@ -638,4 +638,5 @@ return [
      'replace'                      => 'Replace',
      'system_sales_manager'         => 'System Sales Manager(s)',
      'sales_man_replaced_success'   => 'Sales Manager replaced successfully',
+     'user_log'                     => 'User Log',
 ];

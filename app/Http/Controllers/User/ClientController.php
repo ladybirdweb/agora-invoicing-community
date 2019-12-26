@@ -17,9 +17,9 @@ use Carbon\Carbon;
 use DateTime;
 use DateTimeZone;
 use Illuminate\Http\Request;
-use jeremykenedy\LaravelLogger\App\Models\Activity;
 use jeremykenedy\LaravelLogger\App\Http\Traits\IpAddressDetails;
 use jeremykenedy\LaravelLogger\App\Http\Traits\UserAgentDetails;
+use jeremykenedy\LaravelLogger\App\Models\Activity;
 
 class ClientController extends AdvanceSearchController
 {
@@ -43,15 +43,15 @@ class ClientController extends AdvanceSearchController
         $this->licensing = $license;
     }
 
-
     public function showAccessLog()
     {
         try {
             $query = config('LaravelLogger.defaultUserModel')::all();
-        // $activity = Activity::orderBy('created_at', 'desc');
-        $id = \Auth::user()->id;
-        $activity = Activity::get();
-        return \DataTables::of($activity->take(100))
+            // $activity = Activity::orderBy('created_at', 'desc');
+            $id = \Auth::user()->id;
+            $activity = Activity::get();
+
+            return \DataTables::of($activity->take(100))
          ->setTotalRecords($activity->count())
 
          ->addColumn('checkbox', function ($activity) {
@@ -61,27 +61,28 @@ class ClientController extends AdvanceSearchController
                         ->addColumn('time', function ($activity) {
                             $eventTime = Carbon::parse($activity->updated_at);
                             $time = $eventTime->diffForHumans();
-                            return $time;
 
+                            return $time;
                         })
                          ->addColumn('description', function ($activity) {
-                           return $activity->description;
+                             return $activity->description;
                          })
 
-                          ->addColumn('ip', function ($activity){
+                          ->addColumn('ip', function ($activity) {
                               $ip = $activity->ipAddress;
+
                               return $ip;
                           })
 
                          ->addColumn('agent', function ($activity) {
                              $userAgentDetails = UserAgentDetails::details($activity->useragent);
-                             $platform       = $userAgentDetails['platform'];
-                            $browser        = $userAgentDetails['browser'];
-                            $browserVersion = $userAgentDetails['version'];
-                            switch ($platform) {
+                             $platform = $userAgentDetails['platform'];
+                             $browser = $userAgentDetails['browser'];
+                             $browserVersion = $userAgentDetails['version'];
+                             switch ($platform) {
 
                                 case 'Windows':
-                                    $platformIcon = "fa-windows";
+                                    $platformIcon = 'fa-windows';
                                     break;
 
                                 case 'iPad':
@@ -114,45 +115,43 @@ class ClientController extends AdvanceSearchController
                                     break;
                             }
 
-                            switch ($browser) {
+                             switch ($browser) {
 
                                 case 'Chrome':
-                                    $browserIcon  = 'fa-chrome';
+                                    $browserIcon = 'fa-chrome';
                                     break;
 
                                 case 'Firefox':
-                                    $browserIcon  = 'fa-';
+                                    $browserIcon = 'fa-';
                                     break;
 
                                 case 'Opera':
-                                    $browserIcon  = 'fa-opera';
+                                    $browserIcon = 'fa-opera';
                                     break;
 
                                 case 'Safari':
-                                    $browserIcon  = 'fa-safari';
+                                    $browserIcon = 'fa-safari';
                                     break;
 
                                 case 'Internet Explorer':
-                                    $browserIcon  = 'fa-edge';
+                                    $browserIcon = 'fa-edge';
                                     break;
 
                                 default:
-                                    $browserIcon  = 'fa-';
+                                    $browserIcon = 'fa-';
                                     break;
                             }
-                            return "<i class=fa ".$platformIcon."> </i>";    
-                            // return htmlspecialchars($a);
+
+                             return '<i class=fa '.$platformIcon.'> </i>';
+                             // return htmlspecialchars($a);
                               // dd($browser,$browserVersion,$platform);
-                                
-                          })
+                         })
 
                          ->rawColumns(['checkbox', 'time', 'description', 'user', 'method', 'route', 'ip', 'agent'])
                         ->make(true);
-            
         } catch (Exception $e) {
             dd($e);
         }
-        
     }
 
     /**
@@ -412,38 +411,32 @@ class ClientController extends AdvanceSearchController
             $orders = $order->where('client', $id)->get();
             $comments = $client->comments()->where('user_id', $client->id)->get();
 
-
             if (config('LaravelLogger.loggerPaginationEnabled')) {
-            $activities = Activity::orderBy('created_at', 'desc');
-            if (config('LaravelLogger.enableSearch')) {
-                $activities = $this->searchActivityLog($activities, $request);
+                $activities = Activity::orderBy('created_at', 'desc');
+                if (config('LaravelLogger.enableSearch')) {
+                    $activities = $this->searchActivityLog($activities, $request);
+                }
+                $activities = $activities->paginate(config('LaravelLogger.loggerPaginationPerPage'));
+                $totalActivities = $activities->total();
+            } else {
+                $activities = Activity::orderBy('created_at', 'desc');
+
+                if (config('LaravelLogger.enableSearch')) {
+                    $activities = $this->searchActivityLog($activities, $request);
+                }
+                $activities = $activities->get();
+                $totalActivities = $activities->count();
             }
-            $activities = $activities->paginate(config('LaravelLogger.loggerPaginationPerPage'));
-            $totalActivities = $activities->total();
-        } else {
-            $activities = Activity::orderBy('created_at', 'desc');
 
-            if (config('LaravelLogger.enableSearch')) {
-                $activities = $this->searchActivityLog($activities, $request);
-            }
-            $activities = $activities->get();
-            $totalActivities = $activities->count();
-        }
+            self::mapAdditionalDetails($activities);
 
-        self::mapAdditionalDetails($activities);
+            $users = config('LaravelLogger.defaultUserModel')::all();
 
-        $users = config('LaravelLogger.defaultUserModel')::all();
-
-        $data = [
+            $data = [
             'activities'        => $activities,
             'totalActivities'   => $totalActivities,
             'users'             => $users,
         ];
-
-
-
-
-
 
             return view(
                 'themes.default1.user.client.show',
@@ -519,18 +512,6 @@ class ClientController extends AdvanceSearchController
 
         return $query;
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
     /**
      * Show the form for editing the specified resource.

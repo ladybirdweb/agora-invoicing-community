@@ -104,6 +104,23 @@ class AdvanceSearchController extends AdminOrderInvoiceController
         return $join;
     }
 
+    /*
+     * Search for users having a sales/acct manager 
+     */
+    
+    public function getSalesAcctManager($join, $acc_manager, $sales_manager)
+    {
+        if($acc_manager) {
+            $join = $join->where('account_manager', $acc_manager);
+        }
+
+         if($sales_manager) {
+            $join = $join->where('manager', $sales_manager);
+        }
+        
+        return $join;
+    }
+
     public function advanceSearch(
         $name = '',
         $username = '',
@@ -117,7 +134,9 @@ class AdvanceSearchController extends AdminOrderInvoiceController
         $role = '',
         $position = '',
         $reg_from = '',
-        $reg_till = ''
+        $reg_till = '',
+        $acc_manager = '',
+        $sales_manager
     ) {
         $join = \DB::table('users');
         $join = $this->getNamUserCom($join, $name, $username, $company);
@@ -125,6 +144,7 @@ class AdvanceSearchController extends AdminOrderInvoiceController
         $join = $this->getInCtCs($join, $industry, $company_type, $company_size);
         $join = $this->getRolPos($join, $role, $position);
         $join = $this->getregFromTill($join, $reg_from, $reg_till);
+        $join = $this->getSalesAcctManager($join, $acc_manager, $sales_manager);
 
         $join = $join->orderBy('created_at', 'desc')
         ->select(

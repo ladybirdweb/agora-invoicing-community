@@ -89,15 +89,6 @@ class BaseHomeController extends Controller
         }
     }
 
-    public function hook(Request $request)
-    {
-        try {
-            \Log::info('requests', $request->all());
-        } catch (\Exception $ex) {
-            dd($ex);
-        }
-    }
-
     public function index()
     {
         $totalSales = $this->getTotalSales();

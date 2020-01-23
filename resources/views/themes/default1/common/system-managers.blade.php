@@ -1,6 +1,6 @@
 @extends('themes.default1.layouts.master')
 @section('title')
-Api Key
+System Managers
 @stop
 @section('content-header')
 
@@ -14,7 +14,7 @@ System Managers
   <ol class="breadcrumb">
         <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
         <li><a href="{{url('settings')}}">Settings</a></li>
-         <li class="active">Api Key</li>
+         <li class="active">System Managers</li>
       </ol>
 @stop
 @section('content')

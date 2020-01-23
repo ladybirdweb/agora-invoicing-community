@@ -28,7 +28,7 @@ class ClientController extends AdvanceSearchController
     public function __construct()
     {
         $this->middleware('auth');
-        // $this->middleware('admin');
+        $this->middleware('admin');
         $user = new User();
         $this->user = $user;
         $activate = new AccountActivate();

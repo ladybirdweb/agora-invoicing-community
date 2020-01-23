@@ -267,13 +267,7 @@
         Route::get('get-promotions', 'Payment\PromotionController@getPromotion')->name('get-promotions');
         Route::get('promotions-delete', 'Payment\PromotionController@destroy')->name('promotions-delete');
 
-        /*
-         * Bundle
-         */
 
-        Route::resource('bundles', 'Product\BundleController');
-        Route::get('get-bundles', 'Product\BundleController@getBundles');
-        Route::get('bundles-delete', 'Product\BundleController@destroy');
 
         /*
          * Category
@@ -398,18 +392,7 @@
         Route::resource('licences', 'Licence\LicenceController');
         Route::get('get-licences', 'Licence\LicenceController@getLicences');
 
-        /*
-         * Slas
-         */
-        Route::resource('slas', 'Licence\SlaController');
-        Route::get('get-slas', 'Licence\SlaController@getSlas');
 
-        /*
-         * Services
-         */
-
-        Route::resource('services', 'Licence\ServiceController');
-        Route::get('get-services', 'Licence\ServiceController@getServices');
 
         /*
          * Pages
@@ -447,11 +430,6 @@
         Route::get('download/{uploadid}/{userid}/{invoice_number}/{versionid}', 'Product\ProductController@userDownload');
         Route::get('product/download/{id}/{invoice?}', 'Product\ProductController@adminDownload');
 
-        /*
-         * testings
-         */
-        Route::get('test-curl', 'Github\GithubApiController@testCurl');
-        Route::get('test-curl-result', 'Github\GithubApiController@testCurlResult');
 
         /*
          * check version
@@ -459,14 +437,10 @@
 
         Route::post('version', 'HomeController@version');
         Route::get('version', 'HomeController@getVersion');
-        Route::get('version-test', 'HomeController@versionTest');
-        Route::post('version-result', 'HomeController@versionResult');
         Route::post('verification', 'HomeController@faveoVerification');
         Route::post('download-url', 'Github\GithubController@getlatestReleaseForUpdate');
         Route::get('create-keys', 'HomeController@createEncryptionKeys');
         Route::get('encryption', 'HomeController@getEncryptedData');
-
-        Route::post('faveo-hook', 'HomeController@hook');
 
         /*
          * plugins

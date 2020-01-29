@@ -39,7 +39,7 @@ $lastLoggedActivity->description; //returns 'Look, I logged something'
 ```
 
 
-Here's an example on [event logging](https://docs.spatie.be/laravel-activitylog/v2/advanced-usage/logging-model-events).
+Here's an example on [event logging](https://docs.spatie.be/laravel-activitylog/v3/advanced-usage/logging-model-events).
 
 ```php
 $newsItem->name = 'updated name';
@@ -49,7 +49,7 @@ $newsItem->save();
 $activity = Activity::all()->last();
 
 $activity->description; //returns 'updated'
-$activity->subject; //returns the instance of NewsItem that was created
+$activity->subject; //returns the instance of NewsItem that was saved
 ```
 
 Calling `$activity->changes()` will return this array:
@@ -150,6 +150,13 @@ return [
      * used by the Activity model shipped with this package.
      */
     'table_name' => 'activity_log',
+
+     /*
+      * This is the database connection that will be used by the migration and
+      * the Activity model shipped with this package. In case it's not set
+      * Laravel database.default will be used instead.
+      */
+    'database_connection' => env('ACTIVITY_LOGGER_DB_CONNECTION'),
 ];
 ```
 

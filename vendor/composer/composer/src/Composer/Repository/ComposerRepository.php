@@ -206,8 +206,8 @@ class ComposerRepository extends ArrayRepository implements ConfigurableReposito
         if ($this->searchUrl && $mode === self::SEARCH_FULLTEXT) {
             $url = str_replace(array('%query%', '%type%'), array($query, $type), $this->searchUrl);
 
-            $hostname = parse_url($url, PHP_URL_HOST) ?: $url;
-            $json = $this->rfs->getContents($hostname, $url, false);
+            $origin = RemoteFilesystem::getOrigin($url);
+            $json = $this->rfs->getContents($origin, $url, false);
             $search = JsonFile::parseJson($json, $url);
 
             if (empty($search['results'])) {
@@ -247,6 +247,14 @@ class ComposerRepository extends ArrayRepository implements ConfigurableReposito
 
         if (null === $this->providerListing) {
             $this->loadProviderListings($this->loadRootServerFile());
+        }
+
+        if ($this->hasPartialPackages) {
+            if (null === $this->partialPackagesByName) {
+                $this->initializePartialPackages();
+            }
+
+            return array_keys($this->partialPackagesByName);
         }
 
         if ($this->lazyProvidersUrl) {
@@ -562,7 +570,11 @@ class ComposerRepository extends ArrayRepository implements ConfigurableReposito
     protected function canonicalizeUrl($url)
     {
         if ('/' === $url[0]) {
-            return preg_replace('{(https?://[^/]+).*}i', '$1' . $url, $this->url);
+            if (preg_match('{^[^:]++://[^/]*+}', $this->url, $matches)) {
+                return $matches[0] . $url;
+            }
+
+            return $this->url;
         }
 
         return $url;
@@ -677,10 +689,10 @@ class ComposerRepository extends ArrayRepository implements ConfigurableReposito
                     $this->eventDispatcher->dispatch($preFileDownloadEvent->getName(), $preFileDownloadEvent);
                 }
 
-                $hostname = parse_url($filename, PHP_URL_HOST) ?: $filename;
+                $origin = RemoteFilesystem::getOrigin($filename);
                 $rfs = $preFileDownloadEvent->getRemoteFilesystem();
 
-                $json = $rfs->getContents($hostname, $filename, false);
+                $json = $rfs->getContents($origin, $filename, false);
                 if ($sha256 && $sha256 !== hash('sha256', $json)) {
                     // undo downgrade before trying again if http seems to be hijacked or modifying content somehow
                     if ($this->allowSslDowngrade) {
@@ -756,10 +768,10 @@ class ComposerRepository extends ArrayRepository implements ConfigurableReposito
                     $this->eventDispatcher->dispatch($preFileDownloadEvent->getName(), $preFileDownloadEvent);
                 }
 
-                $hostname = parse_url($filename, PHP_URL_HOST) ?: $filename;
+                $origin = RemoteFilesystem::getOrigin($filename);
                 $rfs = $preFileDownloadEvent->getRemoteFilesystem();
                 $options = array('http' => array('header' => array('If-Modified-Since: '.$lastModifiedTime)));
-                $json = $rfs->getContents($hostname, $filename, false, $options);
+                $json = $rfs->getContents($origin, $filename, false, $options);
                 if ($json === '' && $rfs->findStatusCode($rfs->getLastHeaders()) === 304) {
                     return true;
                 }

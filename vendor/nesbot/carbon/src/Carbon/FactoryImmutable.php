@@ -10,6 +10,8 @@
  */
 namespace Carbon;
 
+use Closure;
+
 /**
  * A factory to generate CarbonImmutable instances with common settings.
  *
@@ -61,23 +63,25 @@ namespace Carbon;
  * @method array                                              getIsoUnits()                                                                                                                      Returns list of locale units for ISO formatting.
  * @method CarbonImmutable                                    getLastErrors()                                                                                                                    {@inheritdoc}
  * @method string                                             getLocale()                                                                                                                        Get the current translator locale.
+ * @method callable|null                                      getMacro($name)                                                                                                                    Get the raw callable macro registered globally for a given name.
  * @method int                                                getMidDayAt()                                                                                                                      get midday/noon hour
- * @method CarbonImmutable                                    getTestNow()                                                                                                                       Get the Carbon instance (real or mock) to be returned when a "now"
+ * @method Closure|CarbonImmutable                            getTestNow()                                                                                                                       Get the Carbon instance (real or mock) to be returned when a "now"
  *                                                                                                                                                                                               instance is created.
+ * @method string                                             getTimeFormatByPrecision($unitPrecision)                                                                                           Return a format from H:i to H:i:s.u according to given unit precision.
  * @method string                                             getTranslationMessageWith($translator, string $key, string $locale = null, string $default = null)                                 Returns raw translation message for a given key.
  * @method \Symfony\Component\Translation\TranslatorInterface getTranslator()                                                                                                                    Get the default translator instance in use.
  * @method int                                                getWeekEndsAt()                                                                                                                    Get the last day of week
  * @method int                                                getWeekStartsAt()                                                                                                                  Get the first day of week
  * @method array                                              getWeekendDays()                                                                                                                   Get weekend days
  * @method bool                                               hasFormat($date, $format)                                                                                                          Checks if the (date)time string is in a given format.
- * @method bool                                               hasMacro($name)                                                                                                                    Checks if macro is registered.
+ * @method bool                                               hasMacro($name)                                                                                                                    Checks if macro is registered globally.
  * @method bool                                               hasRelativeKeywords($time)                                                                                                         Determine if a time string will produce a relative date.
  * @method bool                                               hasTestNow()                                                                                                                       Determine if there is a valid test instance set. A valid test instance
  *                                                                                                                                                                                               is anything that is not null.
  * @method CarbonImmutable                                    instance($date)                                                                                                                    Create a Carbon instance from a DateTime one.
  * @method bool                                               isImmutable()                                                                                                                      Returns true if the current class/instance is immutable.
  * @method bool                                               isModifiableUnit($unit)                                                                                                            Returns true if a property can be changed via setter.
- * @method CarbonImmutable                                    isMutable()
+ * @method bool                                               isMutable()                                                                                                                        Returns true if the current class/instance is mutable.
  * @method bool                                               isStrictModeEnabled()                                                                                                              Returns true if the strict mode is globally in use, false else.
  *                                                                                                                                                                                               (It can be overridden in specific instances.)
  * @method bool                                               localeHasDiffOneDayWords($locale)                                                                                                  Returns true if the given locale is internally supported and has words for 1-day diff (just now, yesterday, tomorrow).

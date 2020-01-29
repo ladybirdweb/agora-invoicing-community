@@ -93,7 +93,7 @@ class EnvironmentManager
         $results = trans('installer_messages.environment.success');
 
         $envFileData =
-        'APP_NAME=' . $request->app_name . "\n" .
+        'APP_NAME=\'' . $request->app_name . "'\n" .
         'APP_ENV=' . $request->environment . "\n" .
         'APP_KEY=' . 'base64:bODi8VtmENqnjklBmNJzQcTTSC8jNjBysfnjQN59btE=' . "\n" .
         'APP_DEBUG=' . $request->app_debug . "\n" .
@@ -104,9 +104,7 @@ class EnvironmentManager
         'DB_PORT=' . $request->database_port . "\n" .
         'DB_DATABASE=' . $request->database_name . "\n" .
         'DB_USERNAME=' . $request->database_username . "\n" .
-
         'DB_PASSWORD=' . $request->database_password . "\n\n" .
-        'DB_INSTALL='  ."0". "\n".
         'BROADCAST_DRIVER=' . $request->broadcast_driver . "\n" .
         'CACHE_DRIVER=' . $request->cache_driver . "\n" .
         'SESSION_DRIVER=' . $request->session_driver . "\n" .
@@ -122,9 +120,7 @@ class EnvironmentManager
         'MAIL_ENCRYPTION=' . $request->mail_encryption . "\n\n" .
         'PUSHER_APP_ID=' . $request->pusher_app_id . "\n" .
         'PUSHER_APP_KEY=' . $request->pusher_app_key . "\n" .
-        'PUSHER_APP_SECRET=' . $request->pusher_app_secret. "\n" .
-        'NOCAPTCHA_SECRET=' ."00". "\n".
-        'NOCAPTCHA_SITEKEY=' ."00";     
+        'PUSHER_APP_SECRET=' . $request->pusher_app_secret;
 
         try {
             file_put_contents($this->envPath, $envFileData);

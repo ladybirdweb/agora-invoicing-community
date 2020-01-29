@@ -103,7 +103,7 @@ class Builder
     {
         $instance = new self();
 
-        $instance->base = 'https://api-proxy.pipedrive.com/{endpoint}';
+        $instance->base = 'https://api.pipedrive.com/{endpoint}';
         $instance->isOauth = true;
 
         return $instance;

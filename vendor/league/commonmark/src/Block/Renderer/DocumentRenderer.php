@@ -18,7 +18,7 @@ use League\CommonMark\Block\Element\AbstractBlock;
 use League\CommonMark\Block\Element\Document;
 use League\CommonMark\ElementRendererInterface;
 
-class DocumentRenderer implements BlockRendererInterface
+final class DocumentRenderer implements BlockRendererInterface
 {
     /**
      * @param AbstractBlock|Document   $block
@@ -27,10 +27,10 @@ class DocumentRenderer implements BlockRendererInterface
      *
      * @return string
      */
-    public function render(AbstractBlock $block, ElementRendererInterface $htmlRenderer, $inTightList = false)
+    public function render(AbstractBlock $block, ElementRendererInterface $htmlRenderer, bool $inTightList = false)
     {
         if (!($block instanceof Document)) {
-            throw new \InvalidArgumentException('Incompatible block type: ' . get_class($block));
+            throw new \InvalidArgumentException('Incompatible block type: ' . \get_class($block));
         }
 
         $wholeDoc = $htmlRenderer->renderBlocks($block->children());

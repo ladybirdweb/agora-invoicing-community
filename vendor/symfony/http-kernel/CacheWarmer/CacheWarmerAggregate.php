@@ -50,10 +50,9 @@ class CacheWarmerAggregate implements CacheWarmerInterface
      */
     public function warmUp($cacheDir)
     {
-        if ($this->debug) {
+        if ($collectDeprecations = $this->debug && !\defined('PHPUNIT_COMPOSER_INSTALL')) {
             $collectedLogs = [];
-            $previousHandler = \defined('PHPUNIT_COMPOSER_INSTALL');
-            $previousHandler = $previousHandler ?: set_error_handler(function ($type, $message, $file, $line) use (&$collectedLogs, &$previousHandler) {
+            $previousHandler = set_error_handler(function ($type, $message, $file, $line) use (&$collectedLogs, &$previousHandler) {
                 if (E_USER_DEPRECATED !== $type && E_DEPRECATED !== $type) {
                     return $previousHandler ? $previousHandler($type, $message, $file, $line) : false;
                 }
@@ -61,7 +60,7 @@ class CacheWarmerAggregate implements CacheWarmerInterface
                 if (isset($collectedLogs[$message])) {
                     ++$collectedLogs[$message]['count'];
 
-                    return;
+                    return null;
                 }
 
                 $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3);
@@ -81,6 +80,8 @@ class CacheWarmerAggregate implements CacheWarmerInterface
                     'trace' => $backtrace,
                     'count' => 1,
                 ];
+
+                return null;
             });
         }
 
@@ -96,7 +97,7 @@ class CacheWarmerAggregate implements CacheWarmerInterface
                 $warmer->warmUp($cacheDir);
             }
         } finally {
-            if ($this->debug && true !== $previousHandler) {
+            if ($collectDeprecations) {
                 restore_error_handler();
 
                 if (file_exists($this->deprecationLogsFilepath)) {
@@ -114,7 +115,7 @@ class CacheWarmerAggregate implements CacheWarmerInterface
      *
      * @return bool always false
      */
-    public function isOptional()
+    public function isOptional(): bool
     {
         return false;
     }

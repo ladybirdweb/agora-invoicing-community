@@ -18,10 +18,10 @@ return [
         'chunk_size'             => 1000,
 
         /*
-       |--------------------------------------------------------------------------
-       | Pre-calculate formulas during export
-       |--------------------------------------------------------------------------
-       */
+        |--------------------------------------------------------------------------
+        | Pre-calculate formulas during export
+        |--------------------------------------------------------------------------
+        */
         'pre_calculate_formulas' => false,
 
         /*
@@ -71,10 +71,9 @@ return [
         'csv'         => [
             'delimiter'              => ',',
             'enclosure'              => '"',
-            'line_ending'            => PHP_EOL,
-            'use_bom'                => false,
-            'include_separator_line' => false,
-            'excel_compatibility'    => false,
+            'escape_character'       => '\\',
+            'contiguous'             => false,
+            'input_encoding'         => 'UTF-8',
         ],
     ],
 

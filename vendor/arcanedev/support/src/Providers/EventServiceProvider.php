@@ -1,7 +1,6 @@
 <?php namespace Arcanedev\Support\Providers;
 
 use Illuminate\Support\Facades\Event;
-use Illuminate\Support\ServiceProvider;
 
 /**
  * Class     EventServiceProvider

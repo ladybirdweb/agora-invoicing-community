@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-/**
+/*
  * Authors:
  * - abhimanyu003
  * - Josh Soref
@@ -34,6 +34,7 @@ return [
     'from_now' => ':time में',
     'after' => ':time के बाद',
     'before' => ':time के पहले',
+    'diff_now' => 'अब',
     'diff_yesterday' => 'कल',
     'diff_tomorrow' => 'कल',
     'formats' => [

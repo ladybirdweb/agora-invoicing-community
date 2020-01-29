@@ -3,12 +3,12 @@
 // Include Requests only if not already defined
 if (class_exists('Requests') === false)
 {
-    require_once __DIR__.'/libs/Requests-1.6.1/library/Requests.php';
+    require_once __DIR__.'/libs/Requests-1.7.0/library/Requests.php';
 }
 
 try
 {
-    Requests::register_autoloader();  
+    Requests::register_autoloader();
 
     if (version_compare(Requests::VERSION, '1.6.0') === -1)
     {

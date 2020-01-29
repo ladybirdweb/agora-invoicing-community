@@ -63,7 +63,7 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td>Log entries : </td>
+                                <td>Log entries :</td>
                                 <td>
                                     <span class="label label-primary">{{ $entries->total() }}</span>
                                 </td>
@@ -88,7 +88,7 @@
                     <form action="{{ route('log-viewer::logs.search', [$log->date, $level]) }}" method="GET">
                         <div class=form-group">
                             <div class="input-group">
-                                <input id="query" name="query" class="form-control"  value="{!! $query !!}" placeholder="Type here to search">
+                                <input id="query" name="query" class="form-control" value="{{ $query }}" placeholder="Type here to search">
                                 <span class="input-group-btn">
                                     @unless (is_null($query))
                                         <a href="{{ route('log-viewer::logs.show', [$log->date]) }}" class="btn btn-default">
@@ -148,18 +148,34 @@
                                     </td>
                                     <td class="text-right">
                                         @if ($entry->hasStack())
-                                            <a class="btn btn-xs btn-default" role="button" data-toggle="collapse" href="#log-stack-{{ $key }}" aria-expanded="false" aria-controls="log-stack-{{ $key }}">
-                                                <i class="fa fa-toggle-on"></i> Stack
-                                            </a>
+                                        <a class="btn btn-xs btn-default" role="button" data-toggle="collapse"
+                                           href="#log-stack-{{ $key }}" aria-expanded="false" aria-controls="log-stack-{{ $key }}">
+                                            <i class="fa fa-toggle-on"></i> Stack
+                                        </a>
+                                        @endif
+
+                                        @if ($entry->hasContext())
+                                        <a class="btn btn-xs btn-default" role="button" data-toggle="collapse"
+                                           href="#log-context-{{ $key }}" aria-expanded="false" aria-controls="log-context-{{ $key }}">
+                                            <i class="fa fa-toggle-on"></i> Context
+                                        </a>
                                         @endif
                                     </td>
                                 </tr>
-                                @if ($entry->hasStack())
+                                @if ($entry->hasStack() || $entry->hasContext())
                                     <tr>
                                         <td colspan="5" class="stack">
+                                            @if ($entry->hasStack())
                                             <div class="stack-content collapse" id="log-stack-{{ $key }}">
                                                 {!! $entry->stack() !!}
                                             </div>
+                                            @endif
+
+                                            @if ($entry->hasContext())
+                                            <div class="stack-content collapse" id="log-context-{{ $key }}">
+                                                <pre>{{ $entry->context() }}</pre>
+                                            </div>
+                                            @endif
                                         </td>
                                     </tr>
                                 @endif
@@ -253,13 +269,18 @@
             });
 
             @unless (empty(log_styler()->toHighlight()))
-            $('.stack-content').each(function() {
-                var $this = $(this);
-                var html = $this.html().trim()
-                    .replace(/({!! join(log_styler()->toHighlight(), '|') !!})/gm, '<strong>$1</strong>');
+                @php
+                    $htmlHighlight = version_compare(PHP_VERSION, '7.4.0') >= 0
+                        ? join('|', log_styler()->toHighlight())
+                        : join(log_styler()->toHighlight(), '|');
+                @endphp
+                $('.stack-content').each(function() {
+                    var $this = $(this);
+                    var html = $this.html().trim()
+                        .replace(/({!! $htmlHighlight !!})/gm, '<strong>$1</strong>');
 
-                $this.html(html);
-            });
+                    $this.html(html);
+                });
             @endunless
         });
     </script>

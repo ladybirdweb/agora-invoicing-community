@@ -8,9 +8,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-\Symfony\Component\Translation\PluralizationRules::set(function ($number) {
-    return $number === 1 ? 0 : 1;
-}, 'si');
 
 /*
  * Authors:
@@ -19,15 +16,22 @@
  * - JD Isaacks
  */
 return [
-    'year' => 'වසර|වසර :count',
-    'month' => 'මාසය|මාස :count',
-    'week' => 'සතියක්|සති :count යි',
-    'day' => 'දිනය|දින :count',
-    'hour' => 'පැය|පැය :count',
-    'minute' => 'මිනිත්තුව|මිනිත්තු :count',
-    'second' => 'තත්පර කිහිපය|තත්පර :count',
+    'year' => '{1}වසර|වසර :count',
+    'month' => '{1}මාසය|මාස :count',
+    'week' => '{1}සතියක්|සති :count',
+    'day' => '{1}දිනය|දින :count',
+    'hour' => '{1}පැය|පැය :count',
+    'minute' => '{1}මිනිත්තුව|මිනිත්තු :count',
+    'second' => '{1}තත්පර කිහිපය|තත්පර :count',
     'ago' => ':timeකට පෙර',
-    'from_now' => ':timeකින්',
+    'from_now' => function ($time) {
+        if (preg_match('/දින \d+/', $time)) {
+            return $time.'න්';
+        }
+
+        return $time.'කින්';
+    },
+    'diff_now' => 'දැන්',
     'diff_yesterday' => 'ඊයේ',
     'diff_tomorrow' => 'හෙට',
     'formats' => [

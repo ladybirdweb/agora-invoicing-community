@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "illuminate/support": "~5.0",
+        "illuminate/support": "~5.0|~6.0",
         "doctrine/dbal": "*"
     },
     "autoload": {

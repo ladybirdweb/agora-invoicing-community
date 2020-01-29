@@ -18,7 +18,6 @@ class AddMoreMailColumnsEmailLog extends Migration
                 $table->string('cc')->after('to')->nullable();
                 $table->text('headers')->after('body')->nullable();
                 $table->text('attachments')->after('headers')->nullable();
-                $table->text('status')->after('attachments')->nullable();
             }
         });
     }

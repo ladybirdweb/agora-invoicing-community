@@ -17,6 +17,8 @@ use Composer\Util\Platform;
 use Composer\Util\Silencer;
 use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Console\Exception\CommandNotFoundException;
+use Symfony\Component\Console\Helper\HelperSet;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -111,8 +113,19 @@ class Application extends BaseApplication
     {
         $this->disablePluginsByDefault = $input->hasParameterOption('--no-plugins');
 
-        $io = $this->io = new ConsoleIO($input, $output, $this->getHelperSet());
+        if (getenv('COMPOSER_NO_INTERACTION')) {
+            $input->setInteractive(false);
+        }
+
+        $io = $this->io = new ConsoleIO($input, $output, new HelperSet(array(
+            new QuestionHelper(),
+        )));
         ErrorHandler::register($io);
+
+        if ($input->hasParameterOption('--no-cache')) {
+            $io->writeError('Disabling cache usage', true, IOInterface::DEBUG);
+            putenv('COMPOSER_CACHE_DIR='.(Platform::isWindows() ? 'nul' : '/dev/null'));
+        }
 
         // switch working dir
         if ($newWorkDir = $this->getNewWorkingDir($input)) {
@@ -199,11 +212,7 @@ class Application extends BaseApplication
                 $io->writeError(sprintf('<warning>Warning: This development build of composer is over 60 days old. It is recommended to update it by running "%s self-update" to get the latest version.</warning>', $_SERVER['PHP_SELF']));
             }
 
-            if (getenv('COMPOSER_NO_INTERACTION')) {
-                $input->setInteractive(false);
-            }
-
-            if (!Platform::isWindows() && function_exists('exec') && !getenv('COMPOSER_ALLOW_SUPERUSER')) {
+            if (!Platform::isWindows() && function_exists('exec') && !getenv('COMPOSER_ALLOW_SUPERUSER') && !file_exists('/.dockerenv')) {
                 if (function_exists('posix_getuid') && posix_getuid() === 0) {
                     if ($commandName !== 'self-update' && $commandName !== 'selfupdate') {
                         $io->writeError('<warning>Do not run Composer as root/super user! See https://getcomposer.org/root for details</warning>');
@@ -364,6 +373,9 @@ class Application extends BaseApplication
     public function resetComposer()
     {
         $this->composer = null;
+        if ($this->getIO() && method_exists($this->getIO(), 'resetAuthentications')) {
+            $this->getIO()->resetAuthentications();
+        }
     }
 
     /**
@@ -447,6 +459,7 @@ class Application extends BaseApplication
         $definition->addOption(new InputOption('--profile', null, InputOption::VALUE_NONE, 'Display timing and memory usage information'));
         $definition->addOption(new InputOption('--no-plugins', null, InputOption::VALUE_NONE, 'Whether to disable plugins.'));
         $definition->addOption(new InputOption('--working-dir', '-d', InputOption::VALUE_REQUIRED, 'If specified, use the given directory as working directory.'));
+        $definition->addOption(new InputOption('--no-cache', null, InputOption::VALUE_NONE, 'Prevent use of the cache'));
 
         return $definition;
     }

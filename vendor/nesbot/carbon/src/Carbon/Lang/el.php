@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-/**
+/*
  * Authors:
  * - Alessandro Di Felice
  * - François B
@@ -17,11 +17,12 @@
  * - Gabriel Monteagudo
  * - JD Isaacks
  * - yiannisdesp
+ * - Ilias Kasmeridis (iliaskasm)
  */
 return [
     'year' => ':count χρόνος|:count χρόνια',
     'a_year' => 'ένας χρόνος|:count χρόνια',
-    'y' => ':count χρό.',
+    'y' => ':count χρ.',
     'month' => ':count μήνας|:count μήνες',
     'a_month' => 'ένας μήνας|:count μήνες',
     'm' => ':count μήν.',
@@ -40,10 +41,13 @@ return [
     'second' => ':count δευτερόλεπτο|:count δευτερόλεπτα',
     'a_second' => 'λίγα δευτερόλεπτα|:count δευτερόλεπτα',
     's' => ':count δευ.',
-    'ago' => ':time πριν',
+    'ago' => 'πριν :time',
     'from_now' => 'σε :time',
     'after' => ':time μετά',
     'before' => ':time πριν',
+    'diff_now' => 'τώρα',
+    'diff_yesterday' => 'χθες',
+    'diff_tomorrow' => 'αύριο',
     'formats' => [
         'LT' => 'h:mm A',
         'LTS' => 'h:mm:ss A',

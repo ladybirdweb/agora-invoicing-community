@@ -18,7 +18,7 @@ namespace Symfony\Component\HttpFoundation;
  * object. It is however recommended that you do return an object as it
  * protects yourself against XSSI and JSON-JavaScript Hijacking.
  *
- * @see https://www.owasp.org/index.php/OWASP_AJAX_Security_Guidelines#Always_return_JSON_with_an_Object_on_the_outside
+ * @see https://github.com/OWASP/CheatSheetSeries/blob/master/cheatsheets/AJAX_Security_Cheat_Sheet.md#always-return-json-with-an-object-on-the-outside
  *
  * @author Igor Wiedler <igor@wiedler.ch>
  */
@@ -55,10 +55,10 @@ class JsonResponse extends Response
      *
      * Example:
      *
-     *     return JsonResponse::create($data, 200)
+     *     return JsonResponse::create(['key' => 'value'])
      *         ->setSharedMaxAge(300);
      *
-     * @param mixed $data    The json response data
+     * @param mixed $data    The JSON response data
      * @param int   $status  The response status code
      * @param array $headers An array of response headers
      *
@@ -70,7 +70,18 @@ class JsonResponse extends Response
     }
 
     /**
-     * Make easier the creation of JsonResponse from raw json.
+     * Factory method for chainability.
+     *
+     * Example:
+     *
+     *     return JsonResponse::fromJsonString('{"key": "value"}')
+     *         ->setSharedMaxAge(300);
+     *
+     * @param string|null $data    The JSON response string
+     * @param int         $status  The response status code
+     * @param array       $headers An array of response headers
+     *
+     * @return static
      */
     public static function fromJsonString($data = null, $status = 200, $headers = [])
     {
@@ -89,7 +100,7 @@ class JsonResponse extends Response
     public function setCallback($callback = null)
     {
         if (null !== $callback) {
-            // partially taken from http://www.geekality.net/2011/08/03/valid-javascript-identifier/
+            // partially taken from https://geekality.net/2011/08/03/valid-javascript-identifier/
             // partially taken from https://github.com/willdurand/JsonpCallbackValidator
             //      JsonpCallbackValidator is released under the MIT License. See https://github.com/willdurand/JsonpCallbackValidator/blob/v1.1.0/LICENSE for details.
             //      (c) William Durand <william.durand1@gmail.com>
@@ -146,6 +157,10 @@ class JsonResponse extends Response
                 throw $e->getPrevious() ?: $e;
             }
             throw $e;
+        }
+
+        if (\PHP_VERSION_ID >= 70300 && (JSON_THROW_ON_ERROR & $this->encodingOptions)) {
+            return $this->setJson($data);
         }
 
         if (JSON_ERROR_NONE !== json_last_error()) {

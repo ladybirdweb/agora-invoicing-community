@@ -2,12 +2,12 @@
 
 namespace Illuminate\Foundation\Auth;
 
-use Illuminate\Support\Str;
+use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
-use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Support\Str;
 
 trait ResetsPasswords
 {
@@ -24,9 +24,9 @@ trait ResetsPasswords
      */
     public function showResetForm(Request $request, $token = null)
     {
-       return view('themes.default1.front.auth.reset')->with(
-                ['token' => $token, 'email' => $request->email]
-            );
+        return view('auth.passwords.reset')->with(
+            ['token' => $token, 'email' => $request->email]
+        );
     }
 
     /**
@@ -35,62 +35,26 @@ trait ResetsPasswords
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
      */
-        public function reset(Request $request)
-        {
+    public function reset(Request $request)
+    {
+        $request->validate($this->rules(), $this->validationErrorMessages());
 
-
-
-                $this->validate($request, [
-                'token' => 'required',
-                //'email' => 'required|email',
-                'password' => 'required|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$/|
-               confirmed',
-            ]);
-            $token = $request->input('token');
-            $pass = $request->input('password');
-            $password = new \App\Model\User\Password();
-            $password = $password->where('token', $token)->first();
-            if ($password) {
-                $user = new \App\User();
-                $user = $user->where('email', $password->email)->first();
-                if ($user) {
-                    $user->password = \Hash::make($pass);
-                    $user->save();
-
-                    return redirect('auth/login')->with('success', 'You have successfully changed your password');
-                } else {
-                    return redirect()->back()
-                                    ->withInput($request->only('email'))
-                                    ->withErrors([
-                                        'email' => 'Invalid email', ]);
-                }
-            } else {
-                return redirect()->back()
-                                ->withInput($request->only('email'))
-                                ->withErrors([
-                                    'email' => 'Invalid email', ]);
+        // Here we will attempt to reset the user's password. If it is successful we
+        // will update the password on an actual user model and persist it to the
+        // database. Otherwise we will parse the error and return the response.
+        $response = $this->broker()->reset(
+            $this->credentials($request), function ($user, $password) {
+                $this->resetPassword($user, $password);
             }
+        );
 
-
-
-            // $this->validate($request, $this->rules(), $this->validationErrorMessages());
-
-            // // Here we will attempt to reset the user's password. If it is successful we
-            // // will update the password on an actual user model and persist it to the
-            // // database. Otherwise we will parse the error and return the response.
-            // $response = $this->broker()->reset(
-            //     $this->credentials($request), function ($user, $password) {
-            //         $this->resetPassword($user, $password);
-            //     }
-            // );
-
-            // // If the password was successfully reset, we will redirect the user back to
-            // // the application's home authenticated view. If there is an error we can
-            // // redirect them back to where they came from with their error message.
-            // return $response == Password::PASSWORD_RESET
-            //             ? $this->sendResetResponse($response)
-            //             : $this->sendResetFailedResponse($request, $response);
-        }
+        // If the password was successfully reset, we will redirect the user back to
+        // the application's home authenticated view. If there is an error we can
+        // redirect them back to where they came from with their error message.
+        return $response == Password::PASSWORD_RESET
+                    ? $this->sendResetResponse($request, $response)
+                    : $this->sendResetFailedResponse($request, $response);
+    }
 
     /**
      * Get the password reset validation rules.
@@ -102,7 +66,7 @@ trait ResetsPasswords
         return [
             'token' => 'required',
             'email' => 'required|email',
-            'password' => 'required|confirmed|min:6',
+            'password' => 'required|confirmed|min:8',
         ];
     }
 
@@ -138,7 +102,7 @@ trait ResetsPasswords
      */
     protected function resetPassword($user, $password)
     {
-        $user->password = Hash::make($password);
+        $this->setUserPassword($user, $password);
 
         $user->setRememberToken(Str::random(60));
 
@@ -147,6 +111,18 @@ trait ResetsPasswords
         event(new PasswordReset($user));
 
         $this->guard()->login($user);
+    }
+
+    /**
+     * Set the user's password.
+     *
+     * @param  \Illuminate\Contracts\Auth\CanResetPassword  $user
+     * @param  string  $password
+     * @return void
+     */
+    protected function setUserPassword($user, $password)
+    {
+        $user->password = Hash::make($password);
     }
 
     /**

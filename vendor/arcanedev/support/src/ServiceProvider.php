@@ -2,15 +2,17 @@
 
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Foundation\AliasLoader;
-use Illuminate\Support\ServiceProvider as IlluminateServiceProvider;
+use Arcanedev\Support\Providers\ServiceProvider as BaseServiceProvider;
 
 /**
  * Class     ServiceProvider
  *
  * @package  Arcanedev\Support\Laravel
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
+ *
+ * @deprecated Use `Arcanedev\Support\Providers\ServiceProvider` instead.
  */
-abstract class ServiceProvider extends IlluminateServiceProvider
+abstract class ServiceProvider extends BaseServiceProvider
 {
     /* -----------------------------------------------------------------
      |  Properties
@@ -74,72 +76,6 @@ abstract class ServiceProvider extends IlluminateServiceProvider
     public function boot()
     {
         //
-    }
-
-    /**
-     * Register a binding with the container.
-     *
-     * @param  string|array          $abstract
-     * @param  \Closure|string|null  $concrete
-     * @param  bool                  $shared
-     */
-    public function bind($abstract, $concrete = null, $shared = false)
-    {
-        $this->app->bind($abstract, $concrete, $shared);
-    }
-
-    /**
-     * Register a shared binding in the container.
-     *
-     * @param  string|array          $abstract
-     * @param  \Closure|string|null  $concrete
-     */
-    protected function singleton($abstract, $concrete = null)
-    {
-        $this->app->singleton($abstract, $concrete);
-    }
-
-    /**
-     * Register a service provider.
-     *
-     * @param  \Illuminate\Support\ServiceProvider|string  $provider
-     * @param  array                                       $options
-     * @param  bool                                        $force
-     *
-     * @return \Illuminate\Support\ServiceProvider
-     */
-    protected function registerProvider($provider, array $options = [], $force = false)
-    {
-        return $this->app->register($provider, $options, $force);
-    }
-
-    /**
-     * Register multiple service providers.
-     *
-     * @param  array  $providers
-     */
-    protected function registerProviders(array $providers)
-    {
-        foreach ($providers as $provider) {
-            $this->registerProvider($provider);
-        }
-    }
-
-    /**
-     * Register a console service provider.
-     *
-     * @param  \Illuminate\Support\ServiceProvider|string  $provider
-     * @param  array                                       $options
-     * @param  bool                                        $force
-     *
-     * @return \Illuminate\Support\ServiceProvider|null
-     */
-    protected function registerConsoleServiceProvider($provider, array $options = [], $force = false)
-    {
-        if ($this->app->runningInConsole())
-            return $this->registerProvider($provider, $options, $force);
-
-        return null;
     }
 
     /**

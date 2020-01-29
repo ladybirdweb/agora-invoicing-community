@@ -76,7 +76,7 @@ class Configuration
      */
     protected $notifier = [
         'name' => 'Bugsnag PHP (Official)',
-        'version' => '3.16.0',
+        'version' => '3.19.0',
         'url' => 'https://bugsnag.com',
     ];
 
@@ -160,6 +160,9 @@ class Configuration
 
         $this->apiKey = $apiKey;
         $this->fallbackType = php_sapi_name();
+
+        // Add PHP runtime version to device data
+        $this->mergeDeviceData(['runtimeVersions' => ['php' => phpversion()]]);
     }
 
     /**
@@ -474,6 +477,20 @@ class Configuration
     }
 
     /**
+     * Adds new data fields to the device data collection.
+     *
+     * @param array $data an associative array containing the new data to be added
+     *
+     * @return this
+     */
+    public function mergeDeviceData($data)
+    {
+        $this->deviceData = array_merge_recursive($this->deviceData, $data);
+
+        return $this;
+    }
+
+    /**
      * Get the device data.
      *
      * @return array
@@ -557,11 +574,19 @@ class Configuration
      */
     public function shouldIgnoreErrorCode($code)
     {
+        $defaultReportingLevel = error_reporting();
+
+        if ($defaultReportingLevel === 0) {
+            // The error has been suppressed using the error control operator ('@')
+            // Ignore the error in all cases.
+            return true;
+        }
+
         if (isset($this->errorReportingLevel)) {
             return !($this->errorReportingLevel & $code);
         }
 
-        return !(error_reporting() & $code);
+        return !($defaultReportingLevel & $code);
     }
 
     /**

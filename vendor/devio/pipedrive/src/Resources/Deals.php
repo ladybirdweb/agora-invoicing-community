@@ -66,7 +66,7 @@ class Deals extends Entity
      */
     public function deleteParticipant($id, $deal_participant_id)
     {
-        return $this->request->delete(':id/participants', compact('id', 'deal_participant_id'));
+        return $this->request->delete(':id/participants/:deal_participant_id', compact('id', 'deal_participant_id'));
     }
 
     /**

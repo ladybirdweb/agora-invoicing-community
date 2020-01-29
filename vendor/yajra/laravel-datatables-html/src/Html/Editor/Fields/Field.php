@@ -2,15 +2,18 @@
 
 namespace Yajra\DataTables\Html\Editor\Fields;
 
-use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Support\Fluent;
 use Illuminate\Support\Str;
+use Illuminate\Support\Fluent;
+use Illuminate\Contracts\Support\Arrayable;
+use Yajra\DataTables\Html\HasAuthorizations;
 
 /**
  * @see https://editor.datatables.net/reference/option/
  */
 class Field extends Fluent
 {
+    use HasAuthorizations;
+
     /**
      * Field type.
      *
@@ -20,6 +23,8 @@ class Field extends Fluent
 
     /**
      * Password constructor.
+     *
+     * @param array $attributes
      */
     public function __construct($attributes = [])
     {
@@ -33,7 +38,7 @@ class Field extends Fluent
      *
      * @param string $name
      * @param string $label
-     * @return Field
+     * @return static|\Yajra\DataTables\Html\Editor\Fields\Field
      */
     public static function make($name, $label = '')
     {
@@ -42,7 +47,7 @@ class Field extends Fluent
         }
 
         $data = [
-            'name' => $name,
+            'name'  => $name,
             'label' => $label ?: Str::title(str_replace('_', ' ', $name)),
         ];
 
@@ -103,7 +108,7 @@ class Field extends Fluent
      * @param mixed $model
      * @param string $value
      * @param string $key
-     * @return Field
+     * @return $this
      */
     public function modelOptions($model, $value, $key = 'id')
     {
@@ -137,7 +142,7 @@ class Field extends Fluent
      * @param string $key
      * @param \Closure $whereCallback
      * @param string|null $key
-     * @return Field
+     * @return $this
      */
     public function tableOptions($table, $value, $key = 'id', \Closure $whereCallback = null, $connection = null)
     {
@@ -295,6 +300,33 @@ class Field extends Fluent
     public function compare($value)
     {
         $this->attributes['compare'] = $value;
+
+        return $this;
+    }
+
+    /**
+     * Set field opts value.
+     *
+     * @param bool $value
+     * @return $this
+     */
+    public function opts(array $value)
+    {
+        $this->attributes['opts'] = $value;
+
+        return $this;
+    }
+
+    /**
+     * Set field attr option.
+     *
+     * @param string $attribute
+     * @param string $value
+     * @return $this
+     */
+    public function attr($attribute, $value)
+    {
+        $this->attributes['attr'][$attribute] = $value;
 
         return $this;
     }

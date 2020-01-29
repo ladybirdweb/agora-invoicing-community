@@ -77,6 +77,19 @@ class ActivityLogger
         return $this->causedBy($modelOrId);
     }
 
+    public function causedByAnonymous()
+    {
+        $this->activity->causer_id = null;
+        $this->activity->causer_type = null;
+
+        return $this;
+    }
+
+    public function byAnonymous()
+    {
+        return $this->causedByAnonymous();
+    }
+
     public function withProperties($properties)
     {
         $this->getActivity()->properties = collect($properties);
@@ -132,7 +145,10 @@ class ActivityLogger
 
         $activity = $this->activity;
 
-        $activity->description = $this->replacePlaceholders($description, $activity);
+        $activity->description = $this->replacePlaceholders(
+            $activity->description ?? $description,
+            $activity
+        );
 
         $activity->save();
 

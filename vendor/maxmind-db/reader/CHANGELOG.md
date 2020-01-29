@@ -1,6 +1,37 @@
 CHANGELOG
 =========
 
+1.6.0 (2019-12-19)
+------------------
+
+* 1.5.0 and 1.5.1 contained a possible memory corruptions when using
+  `getWithPrefixLen`. This has been fixed. Reported by proton-ab.
+  GitHub #96.
+* The `composer.json` file now conflicts with all versions of the
+  `maxminddb` C extension less than the Composer version. This is to
+  reduce the chance of having an older, conflicting version of the
+  extension installed. You will need to upgrade the extension before
+  running `composer update`. Pull request by Benoît Burnichon. GitHub
+  #97.
+
+1.5.1 (2019-12-12)
+------------------
+
+* Minor performance improvements.
+* Make tests pass with older versions of libmaxminddb. PR by Remi
+  Collet. GitHub #90.
+* Test enhancements. PR by Chun-Sheng, Li. GitHub #91.
+
+1.5.0 (2019-09-30)
+------------------
+
+* PHP 5.6 or greater is now required.
+* The C extension now supports PHP 8. Pull request by John Boehr.
+  GitHub #87.
+* A new method, `getWithPrefixLen`, was added to the `Reader` class.
+  This method returns an array containing the record and the prefix
+  length for that record. GitHub #89.
+
 1.4.1 (2019-01-04)
 ------------------
 

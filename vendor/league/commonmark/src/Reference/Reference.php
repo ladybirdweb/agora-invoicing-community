@@ -14,10 +14,7 @@
 
 namespace League\CommonMark\Reference;
 
-/**
- * Link reference
- */
-class Reference
+final class Reference implements ReferenceInterface
 {
     /**
      * @var string
@@ -35,13 +32,23 @@ class Reference
     protected $title;
 
     /**
+     * @var array
+     *
+     * Source: https://github.com/symfony/polyfill-mbstring/blob/master/Mbstring.php
+     */
+    private static $caseFold = [
+        ['µ', 'ſ', "\xCD\x85", 'ς', "\xCF\x90", "\xCF\x91", "\xCF\x95", "\xCF\x96", "\xCF\xB0", "\xCF\xB1", "\xCF\xB5", "\xE1\xBA\x9B", "\xE1\xBE\xBE", "\xC3\x9F", "\xE1\xBA\x9E"],
+        ['μ', 's', 'ι',        'σ', 'β',        'θ',        'φ',        'π',        'κ',        'ρ',        'ε',        "\xE1\xB9\xA1", 'ι',            'ss',       'ss'],
+    ];
+
+    /**
      * Constructor
      *
      * @param string $label
      * @param string $destination
      * @param string $title
      */
-    public function __construct($label, $destination, $title)
+    public function __construct(string $label, string $destination, string $title)
     {
         $this->label = self::normalizeReference($label);
         $this->destination = $destination;
@@ -49,25 +56,25 @@ class Reference
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
-    public function getLabel()
+    public function getLabel(): string
     {
         return $this->label;
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
-    public function getDestination()
+    public function getDestination(): string
     {
         return $this->destination;
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
@@ -81,12 +88,19 @@ class Reference
      *
      * @return string
      */
-    public static function normalizeReference($string)
+    public static function normalizeReference(string $string): string
     {
         // Collapse internal whitespace to single space and remove
         // leading/trailing whitespace
-        $string = preg_replace('/\s+/', ' ', trim($string));
+        $string = \preg_replace('/\s+/', ' ', \trim($string));
 
-        return mb_strtoupper($string, 'UTF-8');
+        if (!\defined('MB_CASE_FOLD')) {
+            // We're not on a version of PHP (7.3+) which has this feature
+            $string = \str_replace(self::$caseFold[0], self::$caseFold[1], $string);
+
+            return \mb_strtoupper($string, 'UTF-8');
+        }
+
+        return \mb_convert_case($string, \MB_CASE_FOLD, 'UTF-8');
     }
 }

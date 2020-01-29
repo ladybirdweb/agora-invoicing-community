@@ -2,6 +2,7 @@
 
 use Arcanedev\Support\Exceptions\MissingPolicyException;
 use Illuminate\Support\Str;
+use ReflectionClass;
 
 /**
  * Class     Policy
@@ -24,7 +25,7 @@ abstract class Policy
     public static function policies()
     {
         $abilities = array_values(
-            (new \ReflectionClass($instance = new static))->getConstants()
+            (new ReflectionClass($instance = new static))->getConstants()
         );
 
         return array_map(function ($constant) use ($instance) {

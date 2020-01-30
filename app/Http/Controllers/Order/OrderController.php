@@ -81,10 +81,12 @@ class OrderController extends BaseOrderController
             $from = $request->input('from');
             $till = $request->input('till');
             $domain = $request->input('domain');
-
+            $paidUnpaid = $request->input('p_un');
+            $paidUnpaid = $request->input('p_un');
+            $allInstallation = $request->input('act_ins');
             return view('themes.default1.order.index',
                 compact('products', 'order_no', 'product_id',
-                    'expiry', 'from', 'till', 'domain', 'expiryTill'));
+                    'expiry', 'from', 'till', 'domain', 'expiryTill', 'paidUnpaid', 'allInstallation'));
         } catch (\Exception $e) {
             Bugsnag::notifyExeption($e);
 
@@ -101,7 +103,9 @@ class OrderController extends BaseOrderController
         $from = $request->input('from');
         $till = $request->input('till');
         $domain = $request->input('domain');
-        $query = $this->advanceSearch($order_no, $product_id, $expiry, $expiryTill, $from, $till, $domain);
+        $paidUnpaid = $request->input('p_un');
+        $allInstallation = $request->input('act_ins');
+        $query = $this->advanceSearch($order_no, $product_id, $expiry, $expiryTill, $from, $till, $domain, $paidUnpaid, $allInstallation);
 
         return \DataTables::of($query->take(50))
                         ->setTotalRecords($query->count())
@@ -242,6 +246,7 @@ class OrderController extends BaseOrderController
             return view('themes.default1.order.show',
                 compact('invoiceItems', 'invoice', 'user', 'order', 'subscription', 'licenseStatus', 'installationDetails', 'allowDomainStatus', 'noOfAllowedInstallation', 'getInstallPreference', 'currenctVersion', 'lastActivity'));
         } catch (\Exception $ex) {
+            dd($ex);
             Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());

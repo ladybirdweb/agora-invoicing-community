@@ -36,6 +36,7 @@ trait Units
         switch ($unit) {
             // @call addRealUnit
             case 'micro':
+
             // @call addRealUnit
             case 'microsecond':
                 /* @var CarbonInterface $this */
@@ -44,59 +45,83 @@ trait Units
                 $seconds = (int) floor($diff / static::MICROSECONDS_PER_SECOND);
                 $time += $seconds;
                 $diff -= $seconds * static::MICROSECONDS_PER_SECOND;
-                $microtime = str_pad($diff, 6, '0', STR_PAD_LEFT);
+                $microtime = str_pad("$diff", 6, '0', STR_PAD_LEFT);
                 $tz = $this->tz;
 
                 return $this->tz('UTC')->modify("@$time.$microtime")->tz($tz);
+
             // @call addRealUnit
             case 'milli':
             // @call addRealUnit
             case 'millisecond':
                 return $this->addRealUnit('microsecond', $value * static::MICROSECONDS_PER_MILLISECOND);
+
                 break;
+
             // @call addRealUnit
             case 'second':
                 break;
+
             // @call addRealUnit
             case 'minute':
                 $value *= static::SECONDS_PER_MINUTE;
+
                 break;
+
             // @call addRealUnit
             case 'hour':
                 $value *= static::MINUTES_PER_HOUR * static::SECONDS_PER_MINUTE;
+
                 break;
+
             // @call addRealUnit
             case 'day':
                 $value *= static::HOURS_PER_DAY * static::MINUTES_PER_HOUR * static::SECONDS_PER_MINUTE;
+
                 break;
+
             // @call addRealUnit
             case 'week':
                 $value *= static::DAYS_PER_WEEK * static::HOURS_PER_DAY * static::MINUTES_PER_HOUR * static::SECONDS_PER_MINUTE;
+
                 break;
+
             // @call addRealUnit
             case 'month':
                 $value *= 30 * static::HOURS_PER_DAY * static::MINUTES_PER_HOUR * static::SECONDS_PER_MINUTE;
+
                 break;
+
             // @call addRealUnit
             case 'quarter':
                 $value *= static::MONTHS_PER_QUARTER * 30 * static::HOURS_PER_DAY * static::MINUTES_PER_HOUR * static::SECONDS_PER_MINUTE;
+
                 break;
+
             // @call addRealUnit
             case 'year':
                 $value *= 365 * static::HOURS_PER_DAY * static::MINUTES_PER_HOUR * static::SECONDS_PER_MINUTE;
+
                 break;
+
             // @call addRealUnit
             case 'decade':
                 $value *= static::YEARS_PER_DECADE * 365 * static::HOURS_PER_DAY * static::MINUTES_PER_HOUR * static::SECONDS_PER_MINUTE;
+
                 break;
+
             // @call addRealUnit
             case 'century':
                 $value *= static::YEARS_PER_CENTURY * 365 * static::HOURS_PER_DAY * static::MINUTES_PER_HOUR * static::SECONDS_PER_MINUTE;
+
                 break;
+
             // @call addRealUnit
             case 'millennium':
                 $value *= static::YEARS_PER_MILLENNIUM * 365 * static::HOURS_PER_DAY * static::MINUTES_PER_HOUR * static::SECONDS_PER_MINUTE;
+
                 break;
+
             default:
                 if ($this->localStrictModeEnabled ?? static::isStrictModeEnabled()) {
                     throw new InvalidArgumentException("Invalid unit for real timestamp add/sub: '$unit'");
@@ -106,7 +131,7 @@ trait Units
         }
 
         /* @var CarbonInterface $this */
-        return $this->setTimestamp($this->getTimestamp() + $value);
+        return $this->setTimestamp((int) ($this->getTimestamp() + $value));
     }
 
     public function subRealUnit($unit, $value = 1)
@@ -152,7 +177,7 @@ trait Units
      * @param int                 $value
      * @param bool|null           $overflow
      *
-     * @return CarbonInterface
+     * @return static
      */
     public function add($unit, $value = 1, $overflow = null)
     {
@@ -165,9 +190,7 @@ trait Units
         }
 
         if (is_numeric($unit)) {
-            $tempUnit = $value;
-            $value = $unit;
-            $unit = $tempUnit;
+            [$value, $unit] = [$unit, $value];
         }
 
         return $this->addUnit($unit, $value, $overflow);
@@ -180,11 +203,10 @@ trait Units
      * @param int       $value
      * @param bool|null $overflow
      *
-     * @return CarbonInterface
+     * @return static
      */
     public function addUnit($unit, $value = 1, $overflow = null)
     {
-        /** @var CarbonInterface $date */
         $date = $this;
 
         if (!is_numeric($value) || !floatval($value)) {
@@ -210,6 +232,7 @@ trait Units
                 $weekDaysCount = 7 - min(6, count(array_unique($weekendDays)));
                 $weeks = floor($absoluteValue / $weekDaysCount);
                 for ($diff = $absoluteValue % $weekDaysCount; $diff; $diff--) {
+                    /** @var static $date */
                     $date = $date->addDays($sign);
                     while (in_array($date->dayOfWeek, $weekendDays)) {
                         $date = $date->addDays($sign);
@@ -271,7 +294,7 @@ trait Units
      * @param int       $value
      * @param bool|null $overflow
      *
-     * @return CarbonInterface
+     * @return static
      */
     public function subUnit($unit, $value = 1, $overflow = null)
     {
@@ -289,7 +312,7 @@ trait Units
      * @param int                 $value
      * @param bool|null           $overflow
      *
-     * @return CarbonInterface
+     * @return static
      */
     public function sub($unit, $value = 1, $overflow = null)
     {
@@ -302,10 +325,7 @@ trait Units
         }
 
         if (is_numeric($unit)) {
-            $_unit = $value;
-            $value = $unit;
-            $unit = $_unit;
-            unset($_unit);
+            [$value, $unit] = [$unit, $value];
         }
 
         return $this->addUnit($unit, -floatval($value), $overflow);
@@ -320,7 +340,7 @@ trait Units
      * @param int                 $value
      * @param bool|null           $overflow
      *
-     * @return CarbonInterface
+     * @return static
      */
     public function subtract($unit, $value = 1, $overflow = null)
     {

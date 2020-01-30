@@ -440,7 +440,7 @@ class Filesystem
      */
     public function isAbsolutePath($path)
     {
-        return substr($path, 0, 1) === '/' || substr($path, 1, 1) === ':';
+        return substr($path, 0, 1) === '/' || substr($path, 1, 1) === ':' || substr($path, 0, 2) === '\\\\';
     }
 
     /**
@@ -682,12 +682,14 @@ class Filesystem
         if (!Platform::isWindows()) {
             return false;
         }
+
+        // Important to clear all caches first
+        clearstatcache(true, $junction);
+
         if (!is_dir($junction) || is_link($junction)) {
             return false;
         }
 
-        // Important to clear all caches first
-        clearstatcache(true, $junction);
         $stat = lstat($junction);
 
         // S_ISDIR test (S_IFDIR is 0x4000, S_IFMT is 0xF000 bitmask)

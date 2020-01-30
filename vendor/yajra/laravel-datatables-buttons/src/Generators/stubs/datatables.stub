@@ -3,7 +3,11 @@
 namespace DummyNamespace;
 
 use DummyModel;
+use Yajra\DataTables\Html\Button;
+use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Services\DataTable;
+use Yajra\DataTables\Html\Editor\Fields;
+use Yajra\DataTables\Html\Editor\Editor;
 
 class DummyClass extends DataTable
 {
@@ -15,7 +19,8 @@ class DummyClass extends DataTable
      */
     public function dataTable($query)
     {
-        return datatables($query)
+        return datatables()
+            ->eloquent($query)
             ->addColumn('action', 'DummyAction');
     }
 
@@ -27,7 +32,7 @@ class DummyClass extends DataTable
      */
     public function query(ModelName $model)
     {
-        return $model->newQuery()->select('id', 'add-your-columns-here', 'created_at', 'updated_at');
+        return $model->newQuery();
     }
 
     /**
@@ -38,10 +43,14 @@ class DummyClass extends DataTable
     public function html()
     {
         return $this->builder()
+                    ->setTableId('DummyTableId')
                     ->columns($this->getColumns())
                     ->minifiedAjax()
-                    ->addAction(['width' => '80px'])
-                    ->parameters($this->getBuilderParameters());
+                    ->dom('DummyDOM')
+                    ->orderBy(1)
+                    ->buttons(
+                        DummyButtons
+                    );
     }
 
     /**
@@ -52,7 +61,12 @@ class DummyClass extends DataTable
     protected function getColumns()
     {
         return [
-            'DummyColumns'
+            Column::computed('action')
+                  ->exportable(false)
+                  ->printable(false)
+                  ->width(60)
+                  ->addClass('text-center'),
+            DummyColumns
         ];
     }
 

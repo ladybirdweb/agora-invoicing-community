@@ -23,6 +23,8 @@ use Symfony\Component\Debug\FatalErrorHandler\FatalErrorHandlerInterface;
 use Symfony\Component\Debug\FatalErrorHandler\UndefinedFunctionFatalErrorHandler;
 use Symfony\Component\Debug\FatalErrorHandler\UndefinedMethodFatalErrorHandler;
 
+@trigger_error(sprintf('The "%s" class is deprecated since Symfony 4.4, use "%s" instead.', ErrorHandler::class, \Symfony\Component\ErrorHandler\ErrorHandler::class), E_USER_DEPRECATED);
+
 /**
  * A generic ErrorHandler for the PHP engine.
  *
@@ -45,6 +47,10 @@ use Symfony\Component\Debug\FatalErrorHandler\UndefinedMethodFatalErrorHandler;
  *
  * @author Nicolas Grekas <p@tchwork.com>
  * @author Grégoire Pineau <lyrixx@lyrixx.info>
+ *
+ * @final since Symfony 4.3
+ *
+ * @deprecated since Symfony 4.4, use Symfony\Component\ErrorHandler\ErrorHandler instead.
  */
 class ErrorHandler
 {
@@ -170,9 +176,8 @@ class ErrorHandler
     /**
      * Sets a logger to non assigned errors levels.
      *
-     * @param LoggerInterface $logger  A PSR-3 logger to put as default for the given levels
-     * @param array|int       $levels  An array map of E_* to LogLevel::* or an integer bit field of E_* constants
-     * @param bool            $replace Whether to replace or not any existing logger
+     * @param array|int $levels  An array map of E_* to LogLevel::* or an integer bit field of E_* constants
+     * @param bool      $replace Whether to replace or not any existing logger
      */
     public function setDefaultLogger(LoggerInterface $logger, $levels = E_ALL, $replace = false)
     {
@@ -347,7 +352,7 @@ class ErrorHandler
     /**
      * Re-registers as a PHP error handler if levels changed.
      */
-    private function reRegister($prev)
+    private function reRegister(int $prev)
     {
         if ($prev !== $this->thrownErrors | $this->loggedErrors) {
             $handler = set_error_handler('var_dump');
@@ -380,6 +385,10 @@ class ErrorHandler
      */
     public function handleError($type, $message, $file, $line)
     {
+        if (\PHP_VERSION_ID >= 70300 && E_WARNING === $type && '"' === $message[0] && false !== strpos($message, '" targeting switch is equivalent to "break')) {
+            $type = E_DEPRECATED;
+        }
+
         // Level is the current error reporting level to manage silent error.
         $level = error_reporting();
         $silenced = 0 === ($level & $type);
@@ -436,7 +445,7 @@ class ErrorHandler
                 self::$silencedErrorCache[$id][$message] = $errorAsException;
             }
             if (null === $lightTrace) {
-                return;
+                return true;
             }
         } else {
             $errorAsException = new \ErrorException($logMessage, 0, $type, $file, $line);
@@ -452,7 +461,7 @@ class ErrorHandler
         }
 
         if ($throw) {
-            if (E_USER_ERROR & $type) {
+            if (\PHP_VERSION_ID < 70400 && E_USER_ERROR & $type) {
                 for ($i = 1; isset($backtrace[$i]); ++$i) {
                     if (isset($backtrace[$i]['function'], $backtrace[$i]['type'], $backtrace[$i - 1]['function'])
                         && '__toString' === $backtrace[$i]['function']
@@ -569,7 +578,9 @@ class ErrorHandler
         $this->exceptionHandler = null;
         try {
             if (null !== $exceptionHandler) {
-                return $exceptionHandler($exception);
+                $exceptionHandler($exception);
+
+                return;
             }
             $handlerException = $handlerException ?: $exception;
         } catch (\Throwable $handlerException) {
@@ -680,7 +691,7 @@ class ErrorHandler
     /**
      * Cleans the trace by removing function arguments and the frames added by the error handler and DebugClassLoader.
      */
-    private function cleanTrace($backtrace, $type, $file, $line, $throw)
+    private function cleanTrace(array $backtrace, int $type, string $file, int $line, bool $throw): array
     {
         $lightTrace = $backtrace;
 

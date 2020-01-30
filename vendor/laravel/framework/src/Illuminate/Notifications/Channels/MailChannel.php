@@ -2,13 +2,13 @@
 
 namespace Illuminate\Notifications\Channels;
 
+use Illuminate\Contracts\Mail\Mailable;
+use Illuminate\Contracts\Mail\Mailer;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Mail\Markdown;
+use Illuminate\Notifications\Notification;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use Illuminate\Mail\Markdown;
-use Illuminate\Contracts\Mail\Mailer;
-use Illuminate\Contracts\Mail\Mailable;
-use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class MailChannel
 {
@@ -93,6 +93,10 @@ class MailChannel
             return $message->view;
         }
 
+        if (property_exists($message, 'theme') && ! is_null($message->theme)) {
+            $this->markdown->theme($message->theme);
+        }
+
         return [
             'html' => $this->markdown->render($message->markdown, $message->data()),
             'text' => $this->markdown->renderText($message->markdown, $message->data()),
@@ -137,6 +141,8 @@ class MailChannel
         if (! is_null($message->priority)) {
             $mailMessage->setPriority($message->priority);
         }
+
+        $this->runCallbacks($mailMessage, $message);
     }
 
     /**
@@ -224,5 +230,21 @@ class MailChannel
         foreach ($message->rawAttachments as $attachment) {
             $mailMessage->attachData($attachment['data'], $attachment['name'], $attachment['options']);
         }
+    }
+
+    /**
+     * Run the callbacks for the message.
+     *
+     * @param  \Illuminate\Mail\Message  $mailMessage
+     * @param  \Illuminate\Notifications\Messages\MailMessage  $message
+     * @return $this
+     */
+    protected function runCallbacks($mailMessage, $message)
+    {
+        foreach ($message->callbacks as $callback) {
+            $callback($mailMessage->getSwiftMessage());
+        }
+
+        return $this;
     }
 }

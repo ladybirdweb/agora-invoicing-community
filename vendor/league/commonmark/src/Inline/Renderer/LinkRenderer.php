@@ -18,15 +18,14 @@ use League\CommonMark\ElementRendererInterface;
 use League\CommonMark\HtmlElement;
 use League\CommonMark\Inline\Element\AbstractInline;
 use League\CommonMark\Inline\Element\Link;
-use League\CommonMark\Util\Configuration;
 use League\CommonMark\Util\ConfigurationAwareInterface;
+use League\CommonMark\Util\ConfigurationInterface;
 use League\CommonMark\Util\RegexHelper;
-use League\CommonMark\Util\Xml;
 
-class LinkRenderer implements InlineRendererInterface, ConfigurationAwareInterface
+final class LinkRenderer implements InlineRendererInterface, ConfigurationAwareInterface
 {
     /**
-     * @var Configuration
+     * @var ConfigurationInterface
      */
     protected $config;
 
@@ -39,21 +38,18 @@ class LinkRenderer implements InlineRendererInterface, ConfigurationAwareInterfa
     public function render(AbstractInline $inline, ElementRendererInterface $htmlRenderer)
     {
         if (!($inline instanceof Link)) {
-            throw new \InvalidArgumentException('Incompatible inline type: ' . get_class($inline));
+            throw new \InvalidArgumentException('Incompatible inline type: ' . \get_class($inline));
         }
 
-        $attrs = [];
-        foreach ($inline->getData('attributes', []) as $key => $value) {
-            $attrs[$key] = Xml::escape($value);
-        }
+        $attrs = $inline->getData('attributes', []);
 
-        $forbidUnsafeLinks = $this->config->getConfig('safe') || !$this->config->getConfig('allow_unsafe_links');
+        $forbidUnsafeLinks = !$this->config->get('allow_unsafe_links');
         if (!($forbidUnsafeLinks && RegexHelper::isLinkPotentiallyUnsafe($inline->getUrl()))) {
-            $attrs['href'] = Xml::escape($inline->getUrl());
+            $attrs['href'] = $inline->getUrl();
         }
 
         if (isset($inline->data['title'])) {
-            $attrs['title'] = Xml::escape($inline->data['title']);
+            $attrs['title'] = $inline->data['title'];
         }
 
         if (isset($attrs['target']) && $attrs['target'] === '_blank' && !isset($attrs['rel'])) {
@@ -64,9 +60,9 @@ class LinkRenderer implements InlineRendererInterface, ConfigurationAwareInterfa
     }
 
     /**
-     * @param Configuration $configuration
+     * @param ConfigurationInterface $configuration
      */
-    public function setConfiguration(Configuration $configuration)
+    public function setConfiguration(ConfigurationInterface $configuration)
     {
         $this->config = $configuration;
     }

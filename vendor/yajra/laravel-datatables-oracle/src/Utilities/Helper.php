@@ -3,6 +3,7 @@
 namespace Yajra\DataTables\Utilities;
 
 use DateTime;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Contracts\Support\Arrayable;
 
@@ -151,10 +152,13 @@ class Helper
      * Converts array object values to associative array.
      *
      * @param mixed $row
+     * @param array $filters
      * @return array
      */
-    public static function convertToArray($row)
+    public static function convertToArray($row, $filters = [])
     {
+        $row  = method_exists($row, 'makeHidden') ? $row->makeHidden(Arr::get($filters, 'hidden', [])) : $row;
+        $row  = method_exists($row, 'makeVisible') ? $row->makeVisible(Arr::get($filters, 'visible', [])) : $row;
         $data = $row instanceof Arrayable ? $row->toArray() : (array) $row;
 
         foreach ($data as &$value) {

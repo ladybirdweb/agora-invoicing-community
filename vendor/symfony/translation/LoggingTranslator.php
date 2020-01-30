@@ -31,7 +31,6 @@ class LoggingTranslator implements TranslatorInterface, LegacyTranslatorInterfac
 
     /**
      * @param TranslatorInterface $translator The translator must implement TranslatorBagInterface
-     * @param LoggerInterface     $logger
      */
     public function __construct($translator, LoggerInterface $logger)
     {
@@ -82,7 +81,13 @@ class LoggingTranslator implements TranslatorInterface, LegacyTranslatorInterfac
      */
     public function setLocale($locale)
     {
+        $prev = $this->translator->getLocale();
         $this->translator->setLocale($locale);
+        if ($prev === $locale) {
+            return;
+        }
+
+        $this->logger->debug(sprintf('The locale of the translator has changed from "%s" to "%s".', $prev, $locale));
     }
 
     /**
@@ -125,12 +130,8 @@ class LoggingTranslator implements TranslatorInterface, LegacyTranslatorInterfac
 
     /**
      * Logs for missing translations.
-     *
-     * @param string      $id
-     * @param string|null $domain
-     * @param string|null $locale
      */
-    private function log($id, $domain, $locale)
+    private function log(?string $id, ?string $domain, ?string $locale)
     {
         if (null === $domain) {
             $domain = 'messages';

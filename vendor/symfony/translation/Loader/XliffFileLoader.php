@@ -48,7 +48,7 @@ class XliffFileLoader implements LoaderInterface
         return $catalogue;
     }
 
-    private function extract($resource, MessageCatalogue $catalogue, $domain)
+    private function extract($resource, MessageCatalogue $catalogue, string $domain)
     {
         try {
             $dom = XmlUtils::loadFile($resource);
@@ -72,48 +72,57 @@ class XliffFileLoader implements LoaderInterface
 
     /**
      * Extract messages and metadata from DOMDocument into a MessageCatalogue.
-     *
-     * @param \DOMDocument     $dom       Source to extract messages and metadata
-     * @param MessageCatalogue $catalogue Catalogue where we'll collect messages and metadata
-     * @param string           $domain    The domain
      */
     private function extractXliff1(\DOMDocument $dom, MessageCatalogue $catalogue, string $domain)
     {
         $xml = simplexml_import_dom($dom);
         $encoding = strtoupper($dom->encoding);
 
-        $xml->registerXPathNamespace('xliff', 'urn:oasis:names:tc:xliff:document:1.2');
-        foreach ($xml->xpath('//xliff:trans-unit') as $translation) {
-            $attributes = $translation->attributes();
+        $namespace = 'urn:oasis:names:tc:xliff:document:1.2';
+        $xml->registerXPathNamespace('xliff', $namespace);
 
-            if (!(isset($attributes['resname']) || isset($translation->source))) {
-                continue;
-            }
+        foreach ($xml->xpath('//xliff:file') as $file) {
+            $fileAttributes = $file->attributes();
 
-            $source = isset($attributes['resname']) && $attributes['resname'] ? $attributes['resname'] : $translation->source;
-            // If the xlf file has another encoding specified, try to convert it because
-            // simple_xml will always return utf-8 encoded values
-            $target = $this->utf8ToCharset((string) (isset($translation->target) ? $translation->target : $translation->source), $encoding);
+            $file->registerXPathNamespace('xliff', $namespace);
 
-            $catalogue->set((string) $source, $target, $domain);
+            foreach ($file->xpath('.//xliff:trans-unit') as $translation) {
+                $attributes = $translation->attributes();
 
-            $metadata = [];
-            if ($notes = $this->parseNotesMetadata($translation->note, $encoding)) {
-                $metadata['notes'] = $notes;
-            }
-
-            if (isset($translation->target) && $translation->target->attributes()) {
-                $metadata['target-attributes'] = [];
-                foreach ($translation->target->attributes() as $key => $value) {
-                    $metadata['target-attributes'][$key] = (string) $value;
+                if (!(isset($attributes['resname']) || isset($translation->source))) {
+                    continue;
                 }
-            }
 
-            if (isset($attributes['id'])) {
-                $metadata['id'] = (string) $attributes['id'];
-            }
+                $source = isset($attributes['resname']) && $attributes['resname'] ? $attributes['resname'] : $translation->source;
+                // If the xlf file has another encoding specified, try to convert it because
+                // simple_xml will always return utf-8 encoded values
+                $target = $this->utf8ToCharset((string) ($translation->target ?? $translation->source), $encoding);
 
-            $catalogue->setMetadata((string) $source, $metadata, $domain);
+                $catalogue->set((string) $source, $target, $domain);
+
+                $metadata = [
+                    'source' => (string) $translation->source,
+                    'file' => [
+                        'original' => (string) $fileAttributes['original'],
+                    ],
+                ];
+                if ($notes = $this->parseNotesMetadata($translation->note, $encoding)) {
+                    $metadata['notes'] = $notes;
+                }
+
+                if (isset($translation->target) && $translation->target->attributes()) {
+                    $metadata['target-attributes'] = [];
+                    foreach ($translation->target->attributes() as $key => $value) {
+                        $metadata['target-attributes'][$key] = (string) $value;
+                    }
+                }
+
+                if (isset($attributes['id'])) {
+                    $metadata['id'] = (string) $attributes['id'];
+                }
+
+                $catalogue->setMetadata((string) $source, $metadata, $domain);
+            }
         }
     }
 

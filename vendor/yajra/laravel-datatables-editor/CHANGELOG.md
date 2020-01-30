@@ -2,6 +2,101 @@
 
 ## [Unreleased]
 
+## [v1.17.1] - 2019-09-21
+
+- Log exception for further debugging and error tracking.
+
+## [v1.17.0] - 2019-09-21
+
+- Add server error handler for all actions.
+- Change toJson method signature to: `toJson(array $data, array $errors = [], $error = '')`.
+- Remove unused method `displayValidationErrors`.
+
+## [v1.16.0] - 2019-09-20
+
+- Add tracker for current data that is being processed by editor.
+- Useful when validation requires value from another data.
+
+```php
+Rule::unique($model->getTable())
+    ->where('employee_id', $this->currentData['employee_id'])
+    ->ignore($model->getKey()),
+```
+
+## [v1.15.0] - 2019-09-17
+
+- Add support for `restore` action.
+- Requires https://github.com/yajra/laravel-datatables-assets/blob/master/js/buttons/restore.js.
+
+## [v1.14.1] - 2019-09-14
+
+- Fix unknown column DT_RowId error when doing batch insert.
+
+## [v1.14.0] - 2019-09-13
+
+- Add support for `forceDelete` action.
+- Requires https://github.com/yajra/laravel-datatables-assets/blob/master/js/buttons/forceDelete.js.
+
+## [v1.13.1] - 2019-09-12
+
+- Fix stub for getting table name.
+
+## [v1.13.0] - 2019-09-12
+
+- Allow setting of custom stub path from buttons package config.
+- Update stub to resolve table name from model for create rules.
+
+## [v1.12.2] - 2019-09-10
+
+- Fix response to match the demo json structure.
+
+## [v1.12.1] - 2019-09-10
+
+- Fix upload messages.
+
+## [v1.12.0] - 2019-09-10
+
+- Add support for handling field type upload and uploadMany. [#38]
+- Fix [#17].
+- Deprecated the following methods: createMessages(), editMessages(), removeMessages() and refactor it to one method messages().
+
+## [v1.11.1] - 2019-09-06
+
+- Change type to `DataTableEditor` from `DataTablesEditor` to match core library naming convention.
+- ex: `UsersDataTable`, `UsersDataTableEditor`.
+
+## [v1.11.0] - 2019-09-04
+
+- Add support for Laravel 6.
+
+## [v1.10.1] - 2019-08-31
+
+- Fix creating and saving hooks are not saving the $data changes. [#36], credits to @karmendra.
+
+## [v1.10.0] - 2019-08-27
+
+- Add unguarded property to allow mass assignment on model.
+
+## [v1.9.1] - 2019-08-24
+
+- Fix bulk edit and remove.
+
+## [v1.9.0] - 2019-08-24
+
+- Add initial support for SoftDeletes.
+- Fill model before firing updating event.
+- Clone model before deleting to record affected models.
+
+## [v1.8.1] - 2019-08-24
+
+- Fill model before triggering the creating event.
+
+## [v1.8.0] - 2019-06-06
+
+- Get some new attributes when calling hooks [#27], credits to @aminprox
+- Add model fluent getter and setter. [#29], fix [#24].
+- Fix and added tests [#31].
+
 ## [v1.7.0] - 2019-02-27
 
 - Add support for Laravel 5.8.
@@ -67,7 +162,27 @@
 - CRUD pre / post events hooks.
 - Artisan command for DataTables Editor generation.
 
-[Unreleased]: https://github.com/yajra/laravel-datatables-editor/compare/v1.5.0...master
+[Unreleased]: https://github.com/yajra/laravel-datatables-editor/compare/v1.17.1...master
+[v1.17.1]: https://github.com/yajra/laravel-datatables-editor/compare/v1.17.0...v1.17.1
+[v1.17.0]: https://github.com/yajra/laravel-datatables-editor/compare/v1.16.0...v1.17.0
+[v1.16.0]: https://github.com/yajra/laravel-datatables-editor/compare/v1.15.0...v1.16.0
+[v1.15.0]: https://github.com/yajra/laravel-datatables-editor/compare/v1.14.1...v1.15.0
+[v1.14.1]: https://github.com/yajra/laravel-datatables-editor/compare/v1.14.0...v1.14.1
+[v1.14.0]: https://github.com/yajra/laravel-datatables-editor/compare/v1.13.1...v1.14.0
+[v1.13.1]: https://github.com/yajra/laravel-datatables-editor/compare/v1.13.0...v1.13.1
+[v1.13.0]: https://github.com/yajra/laravel-datatables-editor/compare/v1.12.1...v1.13.0
+[v1.12.1]: https://github.com/yajra/laravel-datatables-editor/compare/v1.12.0...v1.12.1
+[v1.12.0]: https://github.com/yajra/laravel-datatables-editor/compare/v1.11.1...v1.12.0
+[v1.11.1]: https://github.com/yajra/laravel-datatables-editor/compare/v1.11.0...v1.11.1
+[v1.11.0]: https://github.com/yajra/laravel-datatables-editor/compare/v1.10.1...v1.11.0
+[v1.10.1]: https://github.com/yajra/laravel-datatables-editor/compare/v1.10.0...v1.10.1
+[v1.10.0]: https://github.com/yajra/laravel-datatables-editor/compare/v1.9.1...v1.10.0
+[v1.9.1]: https://github.com/yajra/laravel-datatables-editor/compare/v1.9.0...v1.9.1
+[v1.9.0]: https://github.com/yajra/laravel-datatables-editor/compare/v1.8.0...v1.9.0
+[v1.8.0]: https://github.com/yajra/laravel-datatables-editor/compare/v1.7.0...v1.8.0
+[v1.7.0]: https://github.com/yajra/laravel-datatables-editor/compare/v1.6.1...v1.7.0
+[v1.6.1]: https://github.com/yajra/laravel-datatables-editor/compare/v1.6.0...v1.6.1
+[v1.6.0]: https://github.com/yajra/laravel-datatables-editor/compare/v1.5.0...v1.6.0
 [v1.5.0]: https://github.com/yajra/laravel-datatables-editor/compare/v1.4.0...v1.5.0
 [v1.4.0]: https://github.com/yajra/laravel-datatables-editor/compare/v1.3.0...v1.4.0
 [v1.3.0]: https://github.com/yajra/laravel-datatables-editor/compare/v1.2.0...v1.3.0
@@ -81,5 +196,11 @@
 
 [#9]: https://github.com/yajra/laravel-datatables-editor/pull/9
 [#14]: https://github.com/yajra/laravel-datatables-editor/pull/14
+[#27]: https://github.com/yajra/laravel-datatables-editor/pull/27
+[#29]: https://github.com/yajra/laravel-datatables-editor/pull/29
+[#31]: https://github.com/yajra/laravel-datatables-editor/pull/31
+[#38]: https://github.com/yajra/laravel-datatables-editor/pull/38
 
 [#13]: https://github.com/yajra/laravel-datatables-editor/issues/13
+[#24]: https://github.com/yajra/laravel-datatables-editor/issues/24
+[#17]: https://github.com/yajra/laravel-datatables-editor/issues/17

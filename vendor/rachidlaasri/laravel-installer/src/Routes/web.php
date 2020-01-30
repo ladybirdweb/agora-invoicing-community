@@ -1,13 +1,10 @@
 <?php
 
-Route::group(['prefix' => 'install','as' => 'LaravelInstaller::','namespace' => 'RachidLaasri\LaravelInstaller\Controllers'], function() {
-
- 
+Route::group(['prefix' => 'install','as' => 'LaravelInstaller::','namespace' => 'RachidLaasri\LaravelInstaller\Controllers','middleware' => ['web', 'install']], function() {
     Route::get('/', [
         'as' => 'welcome',
         'uses' => 'WelcomeController@welcome'
     ]);
-
 
     Route::get('environment', [
         'as' => 'environment',

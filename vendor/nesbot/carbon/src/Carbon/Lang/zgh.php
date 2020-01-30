@@ -9,14 +9,14 @@
  * file that was distributed with this source code.
  */
 
-/**
+/*
  * Authors:
  * - BAKTETE Miloud
  */
 return [
     'year' => ':count ⵓⵙⴳⴳⵯⴰⵙ|:count ⵉⵙⴳⴳⵓⵙⴰ',
-    'a_year' => 'un an|:count ⵉⵙⴳⴳⵓⵙⴰ',
-    'y' => ':count an|:count ⵉⵙⴳⴳⵓⵙⴰ',
+    'a_year' => 'ⵓⵙⴳⴳⵯⴰⵙ|:count ⵉⵙⴳⴳⵓⵙⴰ',
+    'y' => ':count ⵓⵙⴳⴳⵯⴰⵙ|:count ⵉⵙⴳⴳⵓⵙⴰ',
     'month' => ':count ⵡⴰⵢⵢⵓⵔ|:count ⴰⵢⵢⵓⵔⵏ',
     'a_month' => 'ⵉⴷⵊ ⵡⴰⵢⵢⵓⵔ|:count ⴰⵢⵢⵓⵔⵏ',
     'm' => ':count ⴰⵢⵢⵓⵔⵏ',

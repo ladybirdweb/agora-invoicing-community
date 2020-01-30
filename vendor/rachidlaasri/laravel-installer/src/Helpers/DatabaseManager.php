@@ -6,7 +6,6 @@ use Exception;
 use Illuminate\Database\SQLiteConnection;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\Console\Output\BufferedOutput;
 
@@ -19,17 +18,11 @@ class DatabaseManager
      */
     public function migrateAndSeed()
     {
-        try {
-             $outputLog = new BufferedOutput;
+        $outputLog = new BufferedOutput;
 
-        ($this->sqlite($outputLog));
+        $this->sqlite($outputLog);
 
         return $this->migrate($outputLog);
-    } catch (\Exception $ex) {
-       throw new \Exception($ex->getMessage());
-       
-    }
-       
     }
 
     /**
@@ -44,8 +37,7 @@ class DatabaseManager
             Artisan::call('migrate', ["--force"=> true], $outputLog);
         }
         catch(Exception $e){
-             throw new Exception('Cannot Establish Database Conection.Check Details');
-            // return $this->response($e->getMessage());
+            return $this->response($e->getMessage(), 'error', $outputLog);
         }
 
         return $this->seed($outputLog);
@@ -60,10 +52,10 @@ class DatabaseManager
     private function seed($outputLog)
     {
         try{
-               Artisan::call('db:seed', [], $outputLog);
+            Artisan::call('db:seed', ['--force' => true], $outputLog);
         }
         catch(Exception $e){
-            return $this->response($e->getMessage());
+            return $this->response($e->getMessage(), 'error', $outputLog);
         }
 
         return $this->response(trans('installer_messages.final.finished'), 'success', $outputLog);
@@ -93,15 +85,13 @@ class DatabaseManager
      */
     private function sqlite($outputLog)
     {
-       if(DB::connection() instanceof SQLiteConnection) {
+        if(DB::connection() instanceof SQLiteConnection) {
             $database = DB::connection()->getDatabaseName();
             if(!file_exists($database)) {
                 touch($database);
                 DB::reconnect(Config::get('database.default'));
             }
             $outputLog->write('Using SqlLite database: ' . $database, 1);
-        }  else {
-              return ;
-          }
+        }
     }
 }

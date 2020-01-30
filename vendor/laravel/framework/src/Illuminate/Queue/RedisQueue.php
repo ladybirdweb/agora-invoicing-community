@@ -2,10 +2,10 @@
 
 namespace Illuminate\Queue;
 
-use Illuminate\Support\Str;
-use Illuminate\Queue\Jobs\RedisJob;
-use Illuminate\Contracts\Redis\Factory as Redis;
 use Illuminate\Contracts\Queue\Queue as QueueContract;
+use Illuminate\Contracts\Redis\Factory as Redis;
+use Illuminate\Queue\Jobs\RedisJob;
+use Illuminate\Support\Str;
 
 class RedisQueue extends Queue implements QueueContract
 {
@@ -49,7 +49,7 @@ class RedisQueue extends Queue implements QueueContract
      *
      * @param  \Illuminate\Contracts\Redis\Factory  $redis
      * @param  string  $default
-     * @param  string  $connection
+     * @param  string|null  $connection
      * @param  int  $retryAfter
      * @param  int|null  $blockFor
      * @return void
@@ -66,7 +66,7 @@ class RedisQueue extends Queue implements QueueContract
     /**
      * Get the size of the queue.
      *
-     * @param  string  $queue
+     * @param  string|null  $queue
      * @return int
      */
     public function size($queue = null)
@@ -82,8 +82,8 @@ class RedisQueue extends Queue implements QueueContract
      * Push a new job onto the queue.
      *
      * @param  object|string  $job
-     * @param  mixed   $data
-     * @param  string  $queue
+     * @param  mixed  $data
+     * @param  string|null  $queue
      * @return mixed
      */
     public function push($job, $data = '', $queue = null)
@@ -95,8 +95,8 @@ class RedisQueue extends Queue implements QueueContract
      * Push a raw payload onto the queue.
      *
      * @param  string  $payload
-     * @param  string  $queue
-     * @param  array   $options
+     * @param  string|null  $queue
+     * @param  array  $options
      * @return mixed
      */
     public function pushRaw($payload, $queue = null, array $options = [])
@@ -114,8 +114,8 @@ class RedisQueue extends Queue implements QueueContract
      *
      * @param  \DateTimeInterface|\DateInterval|int  $delay
      * @param  object|string  $job
-     * @param  mixed   $data
-     * @param  string  $queue
+     * @param  mixed  $data
+     * @param  string|null  $queue
      * @return mixed
      */
     public function later($delay, $job, $data = '', $queue = null)
@@ -128,7 +128,7 @@ class RedisQueue extends Queue implements QueueContract
      *
      * @param  \DateTimeInterface|\DateInterval|int  $delay
      * @param  string  $payload
-     * @param  string  $queue
+     * @param  string|null  $queue
      * @return mixed
      */
     protected function laterRaw($delay, $payload, $queue = null)
@@ -144,9 +144,9 @@ class RedisQueue extends Queue implements QueueContract
      * Create a payload string from the given job and data.
      *
      * @param  string  $job
-     * @param  string   $queue
-     * @param  mixed   $data
-     * @return string
+     * @param  string  $queue
+     * @param  mixed  $data
+     * @return array
      */
     protected function createPayloadArray($job, $queue, $data = '')
     {
@@ -159,7 +159,7 @@ class RedisQueue extends Queue implements QueueContract
     /**
      * Pop the next job off of the queue.
      *
-     * @param  string  $queue
+     * @param  string|null  $queue
      * @return \Illuminate\Contracts\Queue\Job|null
      */
     public function pop($queue = null)
@@ -293,7 +293,7 @@ class RedisQueue extends Queue implements QueueContract
      *
      * @return \Illuminate\Redis\Connections\Connection
      */
-    protected function getConnection()
+    public function getConnection()
     {
         return $this->redis->connection($this->connection);
     }

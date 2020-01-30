@@ -46,7 +46,7 @@ abstract class BitbucketDriver extends VcsDriver
      */
     public function initialize()
     {
-        preg_match('#^https?://bitbucket\.org/([^/]+)/([^/]+?)(\.git|/?)$#', $this->url, $match);
+        preg_match('#^https?://bitbucket\.org/([^/]+)/([^/]+?)(\.git|/?)$#i', $this->url, $match);
         $this->owner = $match[1];
         $this->repository = $match[2];
         $this->originUrl = 'bitbucket.org';
@@ -216,6 +216,13 @@ abstract class BitbucketDriver extends VcsDriver
     {
         if ($this->fallbackDriver) {
             return $this->fallbackDriver->getChangeDate($identifier);
+        }
+
+        if (strpos($identifier, '/') !== false) {
+            $branches = $this->getBranches();
+            if (isset($branches[$identifier])) {
+                $identifier = $branches[$identifier];
+            }
         }
 
         $resource = sprintf(

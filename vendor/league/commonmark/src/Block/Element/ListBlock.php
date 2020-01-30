@@ -17,6 +17,9 @@ namespace League\CommonMark\Block\Element;
 use League\CommonMark\ContextInterface;
 use League\CommonMark\Cursor;
 
+/**
+ * @method children() AbstractBlock[]
+ */
 class ListBlock extends AbstractBlock
 {
     const TYPE_UNORDERED = 'Bullet';
@@ -34,15 +37,13 @@ class ListBlock extends AbstractBlock
 
     public function __construct(ListData $listData)
     {
-        parent::__construct();
-
         $this->listData = $listData;
     }
 
     /**
      * @return ListData
      */
-    public function getListData()
+    public function getListData(): ListData
     {
         return $this->listData;
     }
@@ -50,7 +51,7 @@ class ListBlock extends AbstractBlock
     /**
      * @return bool
      */
-    public function endsWithBlankLine()
+    public function endsWithBlankLine(): bool
     {
         if ($this->lastLineBlank) {
             return true;
@@ -70,19 +71,9 @@ class ListBlock extends AbstractBlock
      *
      * @return bool
      */
-    public function canContain(AbstractBlock $block)
+    public function canContain(AbstractBlock $block): bool
     {
         return $block instanceof ListItem;
-    }
-
-    /**
-     * Returns true if block type can accept lines of text
-     *
-     * @return bool
-     */
-    public function acceptsLines()
-    {
-        return false;
     }
 
     /**
@@ -90,17 +81,17 @@ class ListBlock extends AbstractBlock
      *
      * @return bool
      */
-    public function isCode()
+    public function isCode(): bool
     {
         return false;
     }
 
-    public function matchesNextLine(Cursor $cursor)
+    public function matchesNextLine(Cursor $cursor): bool
     {
         return true;
     }
 
-    public function finalize(ContextInterface $context, $endLineNumber)
+    public function finalize(ContextInterface $context, int $endLineNumber)
     {
         parent::finalize($context, $endLineNumber);
 
@@ -131,7 +122,7 @@ class ListBlock extends AbstractBlock
     /**
      * @return bool
      */
-    public function isTight()
+    public function isTight(): bool
     {
         return $this->tight;
     }
@@ -141,7 +132,7 @@ class ListBlock extends AbstractBlock
      *
      * @return $this
      */
-    public function setTight($tight)
+    public function setTight(bool $tight): self
     {
         $this->tight = $tight;
 

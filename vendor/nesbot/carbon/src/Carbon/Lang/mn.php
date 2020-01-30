@@ -70,6 +70,7 @@ return [
     'hour_after' => ':count цагий',
     'minute_after' => ':count минуты',
     'second_after' => ':count секунды',
+
     'before' => ':timeн өмнө',
     'year_before' => ':count жилий',
     'month_before' => ':count сары',
@@ -77,7 +78,11 @@ return [
     'hour_before' => ':count цагий',
     'minute_before' => ':count минуты',
     'second_before' => ':count секунды',
+
     'list' => ', ',
+    'diff_now' => 'одоо',
+    'diff_yesterday' => 'өчигдөр',
+    'diff_tomorrow' => 'маргааш',
     'formats' => [
         'LT' => 'HH:mm',
         'LTS' => 'HH:mm:ss',

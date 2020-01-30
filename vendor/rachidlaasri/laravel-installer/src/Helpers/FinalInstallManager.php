@@ -37,7 +37,7 @@ class FinalInstallManager
             }
         }
         catch(Exception $e){
-            return $this->response($e->getMessage());
+            return static::response($e->getMessage(), $outputLog);
         }
 
         return $outputLog;
@@ -57,9 +57,25 @@ class FinalInstallManager
             }
         }
         catch(Exception $e){
-            return $this->response($e->getMessage());
+            return static::response($e->getMessage(), $outputLog);
         }
 
         return $outputLog;
+    }
+    
+    /**
+     * Return a formatted error messages.
+     *
+     * @param $message
+     * @param collection $outputLog
+     * @return array
+     */
+    private static function response($message, $outputLog)
+    {
+        return [
+            'status' => 'error',
+            'message' => $message,
+            'dbOutputLog' => $outputLog->fetch()
+        ];
     }
 }

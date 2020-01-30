@@ -15,6 +15,8 @@ namespace League\CommonMark\Util;
  * Array collection
  *
  * Provides a wrapper around a standard PHP array.
+ *
+ * @internal
  */
 class ArrayCollection implements \IteratorAggregate, \Countable, \ArrayAccess
 {
@@ -34,11 +36,11 @@ class ArrayCollection implements \IteratorAggregate, \Countable, \ArrayAccess
     }
 
     /**
-     * @return string
+     * @return mixed
      */
     public function first()
     {
-        return reset($this->elements);
+        return \reset($this->elements);
     }
 
     /**
@@ -46,7 +48,7 @@ class ArrayCollection implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function last()
     {
-        return end($this->elements);
+        return \end($this->elements);
     }
 
     /**
@@ -64,7 +66,7 @@ class ArrayCollection implements \IteratorAggregate, \Countable, \ArrayAccess
      *
      * @return bool
      */
-    public function add($element)
+    public function add($element): bool
     {
         $this->elements[] = $element;
 
@@ -97,7 +99,7 @@ class ArrayCollection implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function remove($key)
     {
-        if (!array_key_exists($key, $this->elements)) {
+        if (!\array_key_exists($key, $this->elements)) {
             return;
         }
 
@@ -110,7 +112,7 @@ class ArrayCollection implements \IteratorAggregate, \Countable, \ArrayAccess
     /**
      * @return bool
      */
-    public function isEmpty()
+    public function isEmpty(): bool
     {
         return empty($this->elements);
     }
@@ -120,9 +122,9 @@ class ArrayCollection implements \IteratorAggregate, \Countable, \ArrayAccess
      *
      * @return bool
      */
-    public function contains($element)
+    public function contains($element): bool
     {
-        return in_array($element, $this->elements, true);
+        return \in_array($element, $this->elements, true);
     }
 
     /**
@@ -132,7 +134,7 @@ class ArrayCollection implements \IteratorAggregate, \Countable, \ArrayAccess
      */
     public function indexOf($element)
     {
-        return array_search($element, $this->elements, true);
+        return \array_search($element, $this->elements, true);
     }
 
     /**
@@ -140,9 +142,9 @@ class ArrayCollection implements \IteratorAggregate, \Countable, \ArrayAccess
      *
      * @return bool
      */
-    public function containsKey($key)
+    public function containsKey($key): bool
     {
-        return array_key_exists($key, $this->elements);
+        return \array_key_exists($key, $this->elements);
     }
 
     /**
@@ -150,9 +152,9 @@ class ArrayCollection implements \IteratorAggregate, \Countable, \ArrayAccess
      *
      * @return int The count as an integer.
      */
-    public function count()
+    public function count(): int
     {
-        return count($this->elements);
+        return \count($this->elements);
     }
 
     /**
@@ -162,7 +164,7 @@ class ArrayCollection implements \IteratorAggregate, \Countable, \ArrayAccess
      *
      * @return bool true on success or false on failure.
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return $this->containsKey($offset);
     }
@@ -216,15 +218,15 @@ class ArrayCollection implements \IteratorAggregate, \Countable, \ArrayAccess
      *
      * @return array
      */
-    public function slice($offset, $length = null)
+    public function slice(int $offset, ?int $length = null): array
     {
-        return array_slice($this->elements, $offset, $length, true);
+        return \array_slice($this->elements, $offset, $length, true);
     }
 
     /**
      * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
         return $this->elements;
     }
@@ -243,6 +245,6 @@ class ArrayCollection implements \IteratorAggregate, \Countable, \ArrayAccess
 
     public function removeGaps()
     {
-        $this->elements = array_filter($this->elements);
+        $this->elements = \array_filter($this->elements);
     }
 }

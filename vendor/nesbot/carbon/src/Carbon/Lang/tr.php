@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-/**
+/*
  * Authors:
  * - Josh Soref
  * - Alan Agius
@@ -19,11 +19,12 @@
  * - Murat Yüksel
  * - Baran Şengül
  * - Selami (selamialtin)
+ * - TeomanBey
  */
 return [
     'year' => ':count yıl',
     'a_year' => '{1}bir yıl|]1,Inf[:count yıl',
-    'y' => ':countyıl',
+    'y' => ':county',
     'month' => ':count ay',
     'a_month' => '{1}bir ay|]1,Inf[:count ay',
     'm' => ':countay',
@@ -46,6 +47,11 @@ return [
     'from_now' => ':time sonra',
     'after' => ':time sonra',
     'before' => ':time önce',
+    'diff_now' => 'şimdi',
+    'diff_yesterday' => 'dün',
+    'diff_tomorrow' => 'yarın',
+    'diff_before_yesterday' => 'evvelsi gün',
+    'diff_after_tomorrow' => 'öbür gün',
     'formats' => [
         'LT' => 'HH:mm',
         'LTS' => 'HH:mm:ss',

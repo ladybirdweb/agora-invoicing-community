@@ -2,6 +2,7 @@
 
 use Arcanedev\LogViewer\Contracts\LogViewer as LogViewerContract;
 use Arcanedev\LogViewer\Entities\LogEntry;
+use Arcanedev\LogViewer\Entities\LogEntryCollection;
 use Arcanedev\LogViewer\Exceptions\LogNotFoundException;
 use Arcanedev\LogViewer\Tables\StatsTable;
 use Illuminate\Http\Request;
@@ -91,12 +92,12 @@ class LogViewerController extends Controller
     /**
      * Show the log.
      *
-     * @param  string                    $date
      * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $date
      *
      * @return \Illuminate\View\View
      */
-    public function show($date, Request $request)
+    public function show(Request $request, $date)
     {
         $level   = 'all';
         $log     = $this->getLogOrFail($date);
@@ -110,13 +111,13 @@ class LogViewerController extends Controller
     /**
      * Filter the log entries by level.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @param  string                    $date
      * @param  string                    $level
-     * @param  \Illuminate\Http\Request  $request
      *
      * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
      */
-    public function showByLevel($date, $level, Request $request)
+    public function showByLevel(Request $request, $date, $level)
     {
         if ($level === 'all')
             return redirect()->route($this->showRoute, [$date]);
@@ -132,13 +133,13 @@ class LogViewerController extends Controller
     /**
      * Show the log with the search query.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @param  string                    $date
      * @param  string                    $level
-     * @param  \Illuminate\Http\Request  $request
      *
      * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
      */
-    public function search($date, $level = 'all', Request $request)
+    public function search(Request $request, $date, $level = 'all')
     {
         $query   = $request->get('query');
 
@@ -147,9 +148,16 @@ class LogViewerController extends Controller
 
         $log     = $this->getLogOrFail($date);
         $levels  = $this->logViewer->levelsNames();
-        $entries = $log->entries($level)->filter(function (LogEntry $value) use ($query) {
-            return Str::contains($value->header, $query);
-        })->paginate($this->perPage);
+        $needles = array_map(function ($needle) {
+            return Str::lower($needle);
+        }, array_filter(explode(' ', $query)));
+        $entries = $log->entries($level)
+            ->unless(empty($needles), function (LogEntryCollection $entries) use ($needles) {
+                return $entries->filter(function (LogEntry $entry) use ($needles) {
+                    return Str::containsAll(Str::lower($entry->header), $needles);
+                });
+            })
+            ->paginate($this->perPage);
 
         return $this->view('show', compact('level', 'log', 'query', 'levels', 'entries'));
     }

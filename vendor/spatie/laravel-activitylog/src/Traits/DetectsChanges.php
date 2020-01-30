@@ -2,6 +2,7 @@
 
 namespace Spatie\Activitylog\Traits;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Exceptions\CouldNotLogChanges;
@@ -17,7 +18,7 @@ trait DetectsChanges
 
                 //temporary hold the original attributes on the model
                 //as we'll need these in the updating event
-                $oldValues = $model->replicate()->setRawAttributes($model->getOriginal());
+                $oldValues = (new static)->setRawAttributes($model->getOriginal());
 
                 $model->oldAttributes = static::logChanges($oldValues);
             });
@@ -93,6 +94,8 @@ trait DetectsChanges
             $nullProperties = array_fill_keys(array_keys($properties['attributes']), null);
 
             $properties['old'] = array_merge($nullProperties, $this->oldAttributes);
+
+            $this->oldAttributes = [];
         }
 
         if ($this->shouldLogOnlyDirty() && isset($properties['old'])) {
@@ -100,6 +103,10 @@ trait DetectsChanges
                 $properties['attributes'],
                 $properties['old'],
                 function ($new, $old) {
+                    if ($old === null || $new === null) {
+                        return $new === $old ? 0 : 1;
+                    }
+
                     return $new <=> $old;
                 }
             );
@@ -115,18 +122,27 @@ trait DetectsChanges
     {
         $changes = [];
         $attributes = $model->attributesToBeLogged();
-        $model = clone $model;
-        $model->append(array_filter($attributes, function ($key) use ($model) {
-            return ! array_key_exists($key, $model->getAttributes()) && $model->hasGetMutator($key);
-        }));
-        $model->setHidden(array_diff($model->getHidden(), $attributes));
-        $collection = collect($model);
 
         foreach ($attributes as $attribute) {
             if (Str::contains($attribute, '.')) {
                 $changes += self::getRelatedModelAttributeValue($model, $attribute);
+            } elseif (Str::contains($attribute, '->')) {
+                Arr::set(
+                    $changes,
+                    str_replace('->', '.', $attribute),
+                    static::getModelAttributeJsonValue($model, $attribute)
+                );
             } else {
-                $changes += $collection->only($attribute)->toArray();
+                $changes[$attribute] = $model->getAttribute($attribute);
+
+                if (
+                    in_array($attribute, $model->getDates())
+                    && ! is_null($changes[$attribute])
+                ) {
+                    $changes[$attribute] = $model->serializeDate(
+                        $model->asDateTime($changes[$attribute])
+                    );
+                }
             }
         }
 
@@ -139,10 +155,21 @@ trait DetectsChanges
             throw CouldNotLogChanges::invalidAttribute($attribute);
         }
 
-        list($relatedModelName, $relatedAttribute) = explode('.', $attribute);
+        [$relatedModelName, $relatedAttribute] = explode('.', $attribute);
+
+        $relatedModelName = Str::camel($relatedModelName);
 
         $relatedModel = $model->$relatedModelName ?? $model->$relatedModelName();
 
         return ["{$relatedModelName}.{$relatedAttribute}" => $relatedModel->$relatedAttribute ?? null];
+    }
+
+    protected static function getModelAttributeJsonValue(Model $model, string $attribute)
+    {
+        $path = explode('->', $attribute);
+        $modelAttribute = array_shift($path);
+        $modelAttribute = collect($model->getAttribute($modelAttribute));
+
+        return data_get($modelAttribute, implode('.', $path));
     }
 }

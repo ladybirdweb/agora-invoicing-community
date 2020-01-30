@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Gate;
  * @package  Arcanedev\Support\Providers
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
-class AuthorizationServiceProvider extends AuthServiceProvider
+abstract class AuthorizationServiceProvider extends AuthServiceProvider
 {
     /* -----------------------------------------------------------------
      |  Main Methods

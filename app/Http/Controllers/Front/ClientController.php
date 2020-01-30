@@ -18,6 +18,7 @@ use DateTime;
 use DateTimeZone;
 use Exception;
 use GrahamCampbell\Markdown\Facades\Markdown;
+use Illuminate\Http\Request;
 
 class ClientController extends BaseClientController
 {
@@ -405,10 +406,10 @@ class ClientController extends BaseClientController
 
             return \DataTables::of($payments->get())
                             ->addColumn('checkbox', function ($model) {
-                                if (\Input::get('client') != 'true') {
+                                
                                     return "<input type='checkbox' class='payment_checkbox' 
                                     value=".$model->id.' name=select[] id=check>';
-                                }
+                                
                             })
                             ->addColumn('number', function ($model) {
                                 return $model->invoice()->first()->number;

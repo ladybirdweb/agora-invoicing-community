@@ -2,32 +2,31 @@
 
 namespace Illuminate\Routing;
 
-use ArrayObject;
 use Closure;
-use Illuminate\Container\Container;
-use Illuminate\Contracts\Events\Dispatcher;
-use Illuminate\Contracts\Routing\BindingRegistrar;
-use Illuminate\Contracts\Routing\Registrar as RegistrarContract;
-use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Contracts\Support\Jsonable;
-use Illuminate\Contracts\Support\Responsable;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\JsonResponse;
+use ArrayObject;
+use JsonSerializable;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Routing\Events\RouteMatched;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
+use Illuminate\Container\Container;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Traits\Macroable;
-use JsonSerializable;
+use Illuminate\Contracts\Support\Jsonable;
+use Illuminate\Contracts\Events\Dispatcher;
+use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Contracts\Support\Responsable;
+use Illuminate\Contracts\Routing\BindingRegistrar;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
+use Illuminate\Contracts\Routing\Registrar as RegistrarContract;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 /**
  * @mixin \Illuminate\Routing\RouteRegistrar
  */
-class Router implements BindingRegistrar, RegistrarContract
+class Router implements RegistrarContract, BindingRegistrar
 {
     use Macroable {
         __call as macroCall;
@@ -123,7 +122,7 @@ class Router implements BindingRegistrar, RegistrarContract
      * Create a new Router instance.
      *
      * @param  \Illuminate\Contracts\Events\Dispatcher  $events
-     * @param  \Illuminate\Container\Container|null  $container
+     * @param  \Illuminate\Container\Container  $container
      * @return void
      */
     public function __construct(Dispatcher $events, Container $container = null)
@@ -413,7 +412,9 @@ class Router implements BindingRegistrar, RegistrarContract
         if ($routes instanceof Closure) {
             $routes($this);
         } else {
-            (new RouteFileRegistrar($this))->register($routes);
+            $router = $this;
+
+            require $routes;
         }
     }
 
@@ -591,7 +592,7 @@ class Router implements BindingRegistrar, RegistrarContract
      * Return the response returned by the given route.
      *
      * @param  string  $name
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return mixed
      */
     public function respondWithRoute($name)
     {
@@ -604,7 +605,7 @@ class Router implements BindingRegistrar, RegistrarContract
      * Dispatch the request to the application.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return \Illuminate\Http\Response|\Illuminate\Http\JsonResponse
      */
     public function dispatch(Request $request)
     {
@@ -617,7 +618,7 @@ class Router implements BindingRegistrar, RegistrarContract
      * Dispatch the request to a route and return the response.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return mixed
      */
     public function dispatchToRoute(Request $request)
     {
@@ -644,7 +645,7 @@ class Router implements BindingRegistrar, RegistrarContract
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Illuminate\Routing\Route  $route
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return mixed
      */
     protected function runRoute(Request $request, Route $route)
     {
@@ -652,7 +653,7 @@ class Router implements BindingRegistrar, RegistrarContract
             return $route;
         });
 
-        $this->events->dispatch(new RouteMatched($route, $request));
+        $this->events->dispatch(new Events\RouteMatched($route, $request));
 
         return $this->prepareResponse($request,
             $this->runRouteWithinStack($route, $request)
@@ -714,7 +715,7 @@ class Router implements BindingRegistrar, RegistrarContract
      *
      * @param  \Symfony\Component\HttpFoundation\Request  $request
      * @param  mixed  $response
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return \Illuminate\Http\Response|\Illuminate\Http\JsonResponse
      */
     public function prepareResponse($request, $response)
     {
@@ -726,7 +727,7 @@ class Router implements BindingRegistrar, RegistrarContract
      *
      * @param  \Symfony\Component\HttpFoundation\Request  $request
      * @param  mixed  $response
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return \Illuminate\Http\Response|\Illuminate\Http\JsonResponse
      */
     public static function toResponse($request, $response)
     {
@@ -761,8 +762,6 @@ class Router implements BindingRegistrar, RegistrarContract
      *
      * @param  \Illuminate\Routing\Route  $route
      * @return \Illuminate\Routing\Route
-     *
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function substituteBindings($route)
     {
@@ -780,8 +779,6 @@ class Router implements BindingRegistrar, RegistrarContract
      *
      * @param  \Illuminate\Routing\Route  $route
      * @return void
-     *
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function substituteImplicitBindings($route)
     {
@@ -795,8 +792,6 @@ class Router implements BindingRegistrar, RegistrarContract
      * @param  string  $value
      * @param  \Illuminate\Routing\Route  $route
      * @return mixed
-     *
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     protected function performBinding($key, $value, $route)
     {
@@ -934,6 +929,8 @@ class Router implements BindingRegistrar, RegistrarContract
      * @param  string  $class
      * @param  \Closure|null  $callback
      * @return void
+     *
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function model($key, $class, Closure $callback = null)
     {
@@ -1012,7 +1009,7 @@ class Router implements BindingRegistrar, RegistrarContract
      * Get a route parameter for the current route.
      *
      * @param  string  $key
-     * @param  string|null  $default
+     * @param  string  $default
      * @return mixed
      */
     public function input($key, $default = null)
@@ -1150,9 +1147,23 @@ class Router implements BindingRegistrar, RegistrarContract
     public function auth(array $options = [])
     {
         // Authentication Routes...
+        $this->get('auth/login', 'Auth\LoginController@showLoginForm')->name('login');
+        // Authentication Routes...
         $this->get('login', 'Auth\LoginController@showLoginForm')->name('login');
-        $this->post('login', 'Auth\LoginController@login');
-        $this->post('logout', 'Auth\LoginController@logout')->name('logout');
+        $this->post('login', 'Auth\LoginController@postLogin');
+        $this->get('auth/logout', 'Auth\LoginController@logout');
+
+        // Registration Routes...
+        $this->get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
+        $this->post('auth/register', 'Auth\RegisterController@postRegister');
+
+        // Password Reset Routes...
+        // $this->get('password/reset', 'Auth\ForgotPasswordController@showLinkRequestForm')->name('password.request');
+
+        // $this->get('password/email', 'Auth\ForgotPasswordController@showLinkRequestForm');
+        // $this->post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail');
+        // $this->post('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
+        // $this->post('password/reset', 'Auth\ResetPasswordController@reset');
 
         // Registration Routes...
         if ($options['register'] ?? true) {
@@ -1163,12 +1174,6 @@ class Router implements BindingRegistrar, RegistrarContract
         // Password Reset Routes...
         if ($options['reset'] ?? true) {
             $this->resetPassword();
-        }
-
-        // Password Confirmation Routes...
-        if ($options['confirm'] ??
-            class_exists($this->prependGroupNamespace('Auth\ConfirmPasswordController'))) {
-            $this->confirmPassword();
         }
 
         // Email Verification Routes...
@@ -1184,21 +1189,10 @@ class Router implements BindingRegistrar, RegistrarContract
      */
     public function resetPassword()
     {
-        $this->get('password/reset', 'Auth\ForgotPasswordController@showLinkRequestForm')->name('password.request');
+        $this->get('password/email', 'Auth\ForgotPasswordController@showLinkRequestForm')->name('password.request');
         $this->post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
         $this->get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
         $this->post('password/reset', 'Auth\ResetPasswordController@reset')->name('password.update');
-    }
-
-    /**
-     * Register the typical confirm password routes for an application.
-     *
-     * @return void
-     */
-    public function confirmPassword()
-    {
-        $this->get('password/confirm', 'Auth\ConfirmPasswordController@showConfirmForm')->name('password.confirm');
-        $this->post('password/confirm', 'Auth\ConfirmPasswordController@confirm');
     }
 
     /**
@@ -1209,8 +1203,8 @@ class Router implements BindingRegistrar, RegistrarContract
     public function emailVerification()
     {
         $this->get('email/verify', 'Auth\VerificationController@show')->name('verification.notice');
-        $this->get('email/verify/{id}/{hash}', 'Auth\VerificationController@verify')->name('verification.verify');
-        $this->post('email/resend', 'Auth\VerificationController@resend')->name('verification.resend');
+        $this->get('email/verify/{id}', 'Auth\VerificationController@verify')->name('verification.verify');
+        $this->get('email/resend', 'Auth\VerificationController@resend')->name('verification.resend');
     }
 
     /**

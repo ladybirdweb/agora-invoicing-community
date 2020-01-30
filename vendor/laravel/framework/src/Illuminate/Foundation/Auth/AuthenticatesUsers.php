@@ -4,7 +4,16 @@ namespace Illuminate\Foundation\Auth;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Model\Common\StatusSetting;
+use App\ApiKey;
 use Illuminate\Validation\ValidationException;
+use Bugsnag;
+use App\User;
+use Hash;
+use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
+use Spatie\Activitylog\Models\Activity;
+
+use Validator;
 
 trait AuthenticatesUsers
 {
@@ -17,7 +26,78 @@ trait AuthenticatesUsers
      */
     public function showLoginForm()
     {
-        return view('auth.login');
+       try{
+           $bussinesses = \App\Model\Common\Bussiness::pluck('name', 'short')->toArray();
+           $cont = new \App\Http\Controllers\Front\PageController();
+           $captchaStatus = StatusSetting::pluck('recaptcha_status')->first();
+           $captchaSiteKey = ApiKey::pluck('nocaptcha_sitekey')->first();
+           $captchaSecretKey = ApiKey::pluck('captcha_secretCheck')->first();
+           $mobileStatus = StatusSetting::pluck('msg91_status')->first();
+           $msg91Key = ApiKey::pluck('msg91_auth_key')->first(); 
+           $emailStatus = StatusSetting::pluck('emailverification_status')->first();
+           $termsStatus = StatusSetting::pluck('terms')->first();
+           $termsUrl = ApiKey::pluck('terms_url')->first(); 
+            $location = $cont->getLocation();
+         return view('themes.default1.front.auth.login-register', compact('bussinesses','location','captchaStatus','captchaSiteKey','captchaSecretKey','mobileStatus','msg91Key','emailStatus','termsStatus','termsUrl'));
+
+          }catch(\Exception $ex){
+            app('log')->error($ex->getMessage());
+            Bugsnag::notifyException($ex);
+        
+             $error = $ex->getMessage();
+
+         }
+    }
+
+
+         /**
+     * Handle a login request to the application.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function postLogin(Request $request)
+    {//here
+          $this->validate($request, [
+            'email1' => 'required', 'password1' => 'required',
+            'g-recaptcha-response' => 'sometimes|required|captcha'
+                ], [
+            'g-recaptcha-response.required' => 'Robot Verification Failed. Please Try Again.',
+            'email1.required'    => 'Username/Email is required',
+            'password1.required' => 'Password is required',
+        ]);
+       $usernameinput = $request->input('email1');
+        $password = $request->input('password1');
+        $credentialsForEmail = ['email' => $usernameinput, 'password' => $password,'active' => '1' , 'mobile_verified' => '1'];
+         $auth = \Auth::attempt($credentialsForEmail, $request->has('remember'));
+           if (!$auth) {
+            $credentialsForusername = ['user_name' => $usernameinput, 'password' => $password,'active' => '1' , 'mobile_verified' => '1'];
+            $auth = \Auth::attempt($credentialsForusername, $request->has('remember'));
+        } if(!$auth){
+            $user = User::where('email', $usernameinput)->orWhere('user_name', $usernameinput)->first();
+           if($user==null){
+                        return redirect()->back()
+                            ->withInput($request->only('email1', 'remember'))
+                            ->withErrors([
+                                'email1' => 'Invalid Email and/or Password',
+            ]);  
+            } 
+            if(!Hash::check($password ,$user->password)){
+         return redirect()->back()
+                            ->withInput($request->only('email1', 'remember'))
+                            ->withErrors([
+                            'email1' => 'Invalid Email and/or Password',
+                    ]);   
+              }
+          if ($user && ($user->active !== 1 || $user->mobile_verified !== 1)) {
+                  return redirect('verify')->with('user', $user);
+             
+         }
+           } else{
+                 activity()->log('Logged In');
+                 return redirect()->intended($this->redirectPath());
+         }
     }
 
     /**
@@ -35,8 +115,7 @@ trait AuthenticatesUsers
         // If the class is using the ThrottlesLogins trait, we can automatically throttle
         // the login attempts for this application. We'll key this by the username and
         // the IP address of the client making these requests into this application.
-        if (method_exists($this, 'hasTooManyLoginAttempts') &&
-            $this->hasTooManyLoginAttempts($request)) {
+        if ($this->hasTooManyLoginAttempts($request)) {
             $this->fireLockoutEvent($request);
 
             return $this->sendLockoutResponse($request);
@@ -158,8 +237,6 @@ trait AuthenticatesUsers
         $this->guard()->logout();
 
         $request->session()->invalidate();
-
-        $request->session()->regenerateToken();
 
         return $this->loggedOut($request) ?: redirect('/');
     }

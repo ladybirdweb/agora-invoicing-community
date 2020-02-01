@@ -84,9 +84,10 @@ class OrderController extends BaseOrderController
             $paidUnpaid = $request->input('p_un');
             $paidUnpaid = $request->input('p_un');
             $allInstallation = $request->input('act_ins');
+            $version = $request->input('version');
             return view('themes.default1.order.index',
                 compact('products', 'order_no', 'product_id',
-                    'expiry', 'from', 'till', 'domain', 'expiryTill', 'paidUnpaid', 'allInstallation'));
+                    'expiry', 'from', 'till', 'domain', 'expiryTill', 'paidUnpaid', 'allInstallation','version'));
         } catch (\Exception $e) {
             Bugsnag::notifyExeption($e);
 
@@ -105,9 +106,10 @@ class OrderController extends BaseOrderController
         $domain = $request->input('domain');
         $paidUnpaid = $request->input('p_un');
         $allInstallation = $request->input('act_ins');
-        $query = $this->advanceSearch($order_no, $product_id, $expiry, $expiryTill, $from, $till, $domain, $paidUnpaid, $allInstallation);
+        $version = $request->input('version');
+        $query = $this->advanceSearch($order_no, $product_id, $expiry, $expiryTill, $from, $till, $domain, $paidUnpaid, $allInstallation, $version);
 
-        return \DataTables::of($query->take(50))
+        return \DataTables::of($query)
                         ->setTotalRecords($query->count())
                         ->addColumn('checkbox', function ($model) {
                             return "<input type='checkbox' class='order_checkbox' value=".

@@ -134,10 +134,10 @@ Generate An Invoice
                     {!! Form::text('code',null,['class'=>'form-control']) !!}
                 </div>
            
-                <div class="col-md-6 form-group">
+                <!-- <div class="col-md-6 form-group">
                     {!! Form::label('send_mail',Lang::get('message.send-mail')) !!}
                     <p>{!! Form::checkbox('client',1) !!} To Client&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{!! Form::checkbox('agent',1) !!} To Agent</p>
-                </div>
+                </div> -->
 
 
 

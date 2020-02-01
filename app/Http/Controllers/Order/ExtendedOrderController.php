@@ -39,7 +39,8 @@ class ExtendedOrderController extends Controller
         $till = '',
         $domain = '',
         $paidUnpaid = '',
-        $allInstallation = ''
+        $allInstallation = '',
+        $version = ''
     ) {
         try {
             $join = Order::leftJoin('subscriptions', 'orders.id', '=', 'subscriptions.order_id');
@@ -52,6 +53,7 @@ class ExtendedOrderController extends Controller
             $this->domain($domain, $join);
             $this->paidOrUnpaid($paidUnpaid,$join);
             $this->allInstallations($allInstallation,$join);
+            $this->getSelectedVersionOrders($version,$join);
             $join = $join->orderBy('created_at', 'desc')
            ->select(
                'orders.id',
@@ -68,6 +70,29 @@ class ExtendedOrderController extends Controller
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
+    }
+
+
+     /**
+     * Searches for order for selected versions
+     *
+     * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
+     *
+     *
+     * @param  string $version
+     * @param  App\Model\Order $join The order instance
+     *
+     * @return $join
+     */
+    private function getSelectedVersionOrders($version,$join)
+    {
+        if($version) {
+            $currentVer = ($version[0] == 'v') ? $version : 'v'.$version;
+            $join = $join->whereHas('subscription', function($query) use($currentVer) {
+                    $query->where('version', '=', $currentVer);
+            });
+        }
+        return $join;
     }
 
     /**

@@ -1,6 +1,5 @@
 <?php namespace Arcanedev\Support\Http;
 
-use Arcanedev\Support\Traits\Abortable;
 use Illuminate\Routing\Controller as IlluminateController;
 
 /**
@@ -11,13 +10,6 @@ use Illuminate\Routing\Controller as IlluminateController;
  */
 abstract class Controller extends IlluminateController
 {
-    /* -----------------------------------------------------------------
-     |  Traits
-     | -----------------------------------------------------------------
-     */
-
-    use Abortable;
-
     /* -----------------------------------------------------------------
      |  Properties
      | -----------------------------------------------------------------

@@ -194,6 +194,13 @@ class CheckoutController extends InfoController
         $paynow = $this->checkregularPaymentOrRenewal($request->input('invoice_id'));
         $cost = $request->input('cost');
         $state = $this->getState();
+        if (Cart::getSubTotal() != 0 || $cost > 0) {
+            $this->validate($request, [
+                    'payment_gateway'=> 'required',
+                    ], [
+                        'payment_gateway.required'=> 'Please Select a Payment Gateway',
+                    ]);
+        }
 
         try {
             if ($paynow === false) {
@@ -233,11 +240,6 @@ class CheckoutController extends InfoController
                 $attributes = $this->getAttributes($content);
             }
             if (Cart::getSubTotal() != 0 || $cost > 0) {
-                $this->validate($request, [
-                    'payment_gateway'=> 'required',
-                    ], [
-                        'payment_gateway.required'=> 'Please Select a Payment Gateway',
-                    ]);
                 if ($payment_method == 'razorpay') {
                     $rzp_key = ApiKey::where('id', 1)->value('rzp_key');
                     $rzp_secret = ApiKey::where('id', 1)->value('rzp_secret');
@@ -262,7 +264,7 @@ class CheckoutController extends InfoController
                         )
                     );
                 } else {
-                    \Event::fire(new \App\Events\PaymentGateway(['request' => $request, 'cart' => Cart::getContent(), 'order' => $invoice]));
+                    \Event::dispatch(new \App\Events\PaymentGateway(['request' => $request, 'cart' => Cart::getContent(), 'order' => $invoice]));
                 }
             } else {
                 if ($paynow == false) {//Regular Payment for free Product

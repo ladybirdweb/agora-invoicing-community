@@ -28,7 +28,7 @@ class ClientController extends AdvanceSearchController
     public function __construct()
     {
         $this->middleware('auth');
-        // $this->middleware('admin');
+        $this->middleware('admin');
         $user = new User();
         $this->user = $user;
         $activate = new AccountActivate();
@@ -59,7 +59,9 @@ class ClientController extends AdvanceSearchController
         $position = $request->input('position');
         $reg_from = $request->input('reg_from');
         $reg_till = $request->input('reg_till');
-
+        $clientForSalesMan = $request->input('sales_man');
+        $clientForAccMan = $request->input('actmanager');
+        $clientForSalesMan = $request->input('salesmanager');
         return view(
             'themes.default1.user.client.index',
             compact(
@@ -75,7 +77,9 @@ class ClientController extends AdvanceSearchController
                 'role',
                 'position',
                 'reg_from',
-                'reg_till'
+                'reg_till',
+                'clientForSalesMan',
+                'clientForAccMan'
             )
         );
     }
@@ -98,6 +102,8 @@ class ClientController extends AdvanceSearchController
         $position = $request->input('position');
         $reg_from = $request->input('reg_from');
         $reg_till = $request->input('reg_till');
+        $acc_manager = $request->input('actmanager');
+        $sales_manager = $request->input('salesmanager');
         $user = $this->advanceSearch(
             $name,
             $username,
@@ -111,9 +117,10 @@ class ClientController extends AdvanceSearchController
             $role,
             $position,
             $reg_from,
-            $reg_till
+            $reg_till,
+            $acc_manager,
+            $sales_manager
         );
-
         return\ DataTables::of($user->get())
                          ->addColumn('checkbox', function ($model) {
                              return "<input type='checkbox' class='user_checkbox' 
@@ -399,7 +406,7 @@ class ClientController extends AdvanceSearchController
             $symbol = Currency::where('code', $request->input('currency'))->pluck('symbol')->first();
             $user->currency_symbol = $symbol;
             $user->fill($request->input())->save();
-
+            // \Session::put('test', 1000);
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());

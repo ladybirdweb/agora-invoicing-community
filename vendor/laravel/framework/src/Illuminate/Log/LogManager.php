@@ -3,19 +3,20 @@
 namespace Illuminate\Log;
 
 use Closure;
-use Throwable;
 use Illuminate\Support\Str;
-use Psr\Log\LoggerInterface;
 use InvalidArgumentException;
-use Monolog\Logger as Monolog;
-use Monolog\Handler\StreamHandler;
-use Monolog\Handler\SyslogHandler;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\ErrorLogHandler;
+use Monolog\Handler\FormattableHandlerInterface;
 use Monolog\Handler\HandlerInterface;
 use Monolog\Handler\RotatingFileHandler;
 use Monolog\Handler\SlackWebhookHandler;
+use Monolog\Handler\StreamHandler;
+use Monolog\Handler\SyslogHandler;
 use Monolog\Handler\WhatFailureGroupHandler;
+use Monolog\Logger as Monolog;
+use Psr\Log\LoggerInterface;
+use Throwable;
 
 class LogManager implements LoggerInterface
 {
@@ -41,6 +42,13 @@ class LogManager implements LoggerInterface
      * @var array
      */
     protected $customCreators = [];
+
+    /**
+     * The standard date format to use when writing logs.
+     *
+     * @var string
+     */
+    protected $dateFormat = 'Y-m-d H:i:s';
 
     /**
      * Create a new Log manager instance.
@@ -88,6 +96,14 @@ class LogManager implements LoggerInterface
     public function driver($driver = null)
     {
         return $this->get($driver ?? $this->getDefaultDriver());
+    }
+
+    /**
+     * @return array
+     */
+    public function getChannels()
+    {
+        return $this->channels;
     }
 
     /**
@@ -147,9 +163,17 @@ class LogManager implements LoggerInterface
      */
     protected function createEmergencyLogger()
     {
-        return new Logger(new Monolog('laravel', $this->prepareHandlers([new StreamHandler(
-                $this->app->storagePath().'/logs/laravel.log', $this->level(['level' => 'debug'])
-        )])), $this->app['events']);
+        $config = $this->configurationFor('emergency');
+
+        $handler = new StreamHandler(
+            $config['path'] ?? $this->app->storagePath().'/logs/laravel.log',
+            $this->level(['level' => 'debug'])
+        );
+
+        return new Logger(
+            new Monolog('laravel', $this->prepareHandlers([$handler])),
+            $this->app['events']
+        );
     }
 
     /**
@@ -365,9 +389,17 @@ class LogManager implements LoggerInterface
      */
     protected function prepareHandler(HandlerInterface $handler, array $config = [])
     {
-        if (! isset($config['formatter'])) {
+        $isHandlerFormattable = false;
+
+        if (Monolog::API === 1) {
+            $isHandlerFormattable = true;
+        } elseif (Monolog::API === 2 && $handler instanceof FormattableHandlerInterface) {
+            $isHandlerFormattable = true;
+        }
+
+        if ($isHandlerFormattable && ! isset($config['formatter'])) {
             $handler->setFormatter($this->formatter());
-        } elseif ($config['formatter'] !== 'default') {
+        } elseif ($isHandlerFormattable && $config['formatter'] !== 'default') {
             $handler->setFormatter($this->app->make($config['formatter'], $config['formatter_with'] ?? []));
         }
 
@@ -381,7 +413,7 @@ class LogManager implements LoggerInterface
      */
     protected function formatter()
     {
-        return tap(new LineFormatter(null, null, true, true), function ($formatter) {
+        return tap(new LineFormatter(null, $this->dateFormat, true, true), function ($formatter) {
             $formatter->includeStacktraces();
         });
     }
@@ -431,7 +463,7 @@ class LogManager implements LoggerInterface
     /**
      * Register a custom driver creator Closure.
      *
-     * @param  string    $driver
+     * @param  string  $driver
      * @param  \Closure  $callback
      * @return $this
      */
@@ -443,10 +475,25 @@ class LogManager implements LoggerInterface
     }
 
     /**
+     * Unset the given channel instance.
+     *
+     * @param  string|null  $name
+     * @return $this
+     */
+    public function forgetChannel($driver = null)
+    {
+        $driver = $driver ?? $this->getDefaultDriver();
+
+        if (isset($this->channels[$driver])) {
+            unset($this->channels[$driver]);
+        }
+    }
+
+    /**
      * System is unusable.
      *
-     * @param string $message
-     * @param array  $context
+     * @param  string  $message
+     * @param  array  $context
      *
      * @return void
      */
@@ -461,8 +508,8 @@ class LogManager implements LoggerInterface
      * Example: Entire website down, database unavailable, etc. This should
      * trigger the SMS alerts and wake you up.
      *
-     * @param string $message
-     * @param array  $context
+     * @param  string  $message
+     * @param  array  $context
      *
      * @return void
      */
@@ -476,8 +523,8 @@ class LogManager implements LoggerInterface
      *
      * Example: Application component unavailable, unexpected exception.
      *
-     * @param string $message
-     * @param array  $context
+     * @param  string  $message
+     * @param  array  $context
      *
      * @return void
      */
@@ -490,8 +537,8 @@ class LogManager implements LoggerInterface
      * Runtime errors that do not require immediate action but should typically
      * be logged and monitored.
      *
-     * @param string $message
-     * @param array  $context
+     * @param  string  $message
+     * @param  array  $context
      *
      * @return void
      */
@@ -506,8 +553,8 @@ class LogManager implements LoggerInterface
      * Example: Use of deprecated APIs, poor use of an API, undesirable things
      * that are not necessarily wrong.
      *
-     * @param string $message
-     * @param array  $context
+     * @param  string  $message
+     * @param  array  $context
      *
      * @return void
      */
@@ -519,8 +566,8 @@ class LogManager implements LoggerInterface
     /**
      * Normal but significant events.
      *
-     * @param string $message
-     * @param array  $context
+     * @param  string  $message
+     * @param  array  $context
      *
      * @return void
      */
@@ -534,8 +581,8 @@ class LogManager implements LoggerInterface
      *
      * Example: User logs in, SQL logs.
      *
-     * @param string $message
-     * @param array  $context
+     * @param  string  $message
+     * @param  array  $context
      *
      * @return void
      */
@@ -547,8 +594,8 @@ class LogManager implements LoggerInterface
     /**
      * Detailed debug information.
      *
-     * @param string $message
-     * @param array  $context
+     * @param  string  $message
+     * @param  array  $context
      *
      * @return void
      */
@@ -560,9 +607,9 @@ class LogManager implements LoggerInterface
     /**
      * Logs with an arbitrary level.
      *
-     * @param mixed  $level
-     * @param string $message
-     * @param array  $context
+     * @param  mixed  $level
+     * @param  string  $message
+     * @param  array  $context
      *
      * @return void
      */
@@ -575,7 +622,7 @@ class LogManager implements LoggerInterface
      * Dynamically call the default driver instance.
      *
      * @param  string  $method
-     * @param  array   $parameters
+     * @param  array  $parameters
      * @return mixed
      */
     public function __call($method, $parameters)

@@ -16,15 +16,15 @@ namespace League\CommonMark\Inline\Parser;
 
 use League\CommonMark\Inline\Element\Text;
 use League\CommonMark\InlineParserContext;
-use League\CommonMark\Util\Html5Entities;
+use League\CommonMark\Util\Html5EntityDecoder;
 use League\CommonMark\Util\RegexHelper;
 
-class EntityParser extends AbstractInlineParser
+final class EntityParser implements InlineParserInterface
 {
     /**
      * @return string[]
      */
-    public function getCharacters()
+    public function getCharacters(): array
     {
         return ['&'];
     }
@@ -34,10 +34,14 @@ class EntityParser extends AbstractInlineParser
      *
      * @return bool
      */
-    public function parse(InlineParserContext $inlineContext)
+    public function parse(InlineParserContext $inlineContext): bool
     {
+        if ($inlineContext->getCursor()->getCharacter() !== '&') {
+            return false;
+        }
+
         if ($m = $inlineContext->getCursor()->match('/^' . RegexHelper::PARTIAL_ENTITY . '/i')) {
-            $inlineContext->getContainer()->appendChild(new Text(Html5Entities::decodeEntity($m)));
+            $inlineContext->getContainer()->appendChild(new Text(Html5EntityDecoder::decode($m)));
 
             return true;
         }

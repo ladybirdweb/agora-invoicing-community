@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-/**
+/*
  * Authors:
  * - Kruy Vanna
  * - Sereysethy Touch
@@ -35,6 +35,9 @@ return [
     'from_now' => ':timeទៀត',
     'after' => 'នៅ​ក្រោយ :time',
     'before' => 'នៅ​មុន :time',
+    'diff_now' => 'ឥឡូវ',
+    'diff_yesterday' => 'ម្សិលមិញ',
+    'diff_tomorrow' => 'ថ្ងៃ​ស្អែក',
     'formats' => [
         'LT' => 'HH:mm',
         'LTS' => 'HH:mm:ss',

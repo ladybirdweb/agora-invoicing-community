@@ -283,7 +283,7 @@ Dashboard
          	<div class="col-md-6">
          	   <div class="box box-primary">
             <div class="box-header with-border">
-              <h3 class="box-title">Orders Expiring Soon (Next 30 Days)</h3>
+              <h3 class="box-title">Paid Orders Expiring Soon (Next 30 Days)</h3>
 
               <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
@@ -351,7 +351,7 @@ Dashboard
             </div>
              <div class="box-footer clearfix">
            
-              <a href="{{url('orders?expiry='.$startSubscriptionDate.'&expiryTill='.$endSubscriptionDate)}}" class="btn btn-sm btn-default btn-flat pull-right">View Orders Expiring Soon</a>
+              <a href="{{url('orders?expiry='.$startSubscriptionDate.'&expiryTill='.$endSubscriptionDate.'&p_un=paid')}}" class="btn btn-sm btn-default btn-flat pull-right">View Orders Expiring Soon</a>
               <!-- <a href="{{url('orders?expiryTill='.$endSubscriptionDate)}}" class="btn btn-sm btn-default btn-flat pull-right">View All Orders</a> -->
                <a href="{{url('invoice/generate')}}" class="btn btn-sm btn-info btn-flat pull-left">Place New Order</a>
             </div>

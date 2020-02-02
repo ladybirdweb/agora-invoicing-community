@@ -93,6 +93,36 @@ View All Orders
                 {!! Form::text('domain',null,['class' => 'form-control','id'=>'domain']) !!}
 
             </div>
+
+            <div class="col-md-3 form-group">
+                <!-- first name -->
+                {!! Form::label('p_un','Paid/Unpaid Products') !!}
+                 <select name="p_un"  class="form-control">
+                    <option value="">Choose</option>
+                   <option value="paid">Paid Products</option>
+                  <option value="unpaid">Unpaid Products</option>
+                 </select>
+
+            </div>
+
+            <div class="col-md-3 form-group">
+                <!-- first name -->
+                {!! Form::label('act_inst','Active Installations') !!}
+                 <select name="act_ins"  class="form-control">
+                    <option value="">Choose</option>
+                   <option value="paid_ins">For Paid Products</option>
+                  <option value="unpaid_ins">For Unpaid Products</option>
+                  <option value="all_ins">All Products</option>
+                 </select>
+
+            </div>
+
+             <div class="col-md-3 form-group">
+                <!-- first name -->
+                {!! Form::label('version','Version') !!}
+                 {!! Form::text('version',null,['class' => 'form-control','placeholder'=>'v3.0.0', 'id'=>'ver']) !!}
+
+            </div>
         </div>
 
            <div class='row'>
@@ -119,7 +149,7 @@ View All Orders
                         $('.payment_date').val('');
                         $('.payment_till').val('');
                         $('#domain').val('');
-                    
+                        $('#ver').val('');
                           
                     });
                 });
@@ -202,7 +232,7 @@ View All Orders
             serverSide: true,
              stateSave: false,
             order: [[ 0, "desc" ]],
-             ajax: '{!! route('get-orders',"order_no=$order_no&product_id=$product_id&expiry=$expiry&expiryTill=$expiryTill&from=$from&till=$till&domain=$domain" ) !!}',
+             ajax: '{!! route('get-orders',"order_no=$order_no&product_id=$product_id&expiry=$expiry&expiryTill=$expiryTill&from=$from&till=$till&domain=$domain&p_un=$paidUnpaid&act_ins=$allInstallation&version=$version" ) !!}',
             "oLanguage": {
                 "sLengthMenu": "_MENU_ Records per page",
                 "sSearch"    : "Search: ",

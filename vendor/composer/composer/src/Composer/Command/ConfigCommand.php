@@ -305,6 +305,7 @@ EOT
         $uniqueConfigValues = array(
             'process-timeout' => array('is_numeric', 'intval'),
             'use-include-path' => array($booleanValidator, $booleanNormalizer),
+            'use-github-api' => array($booleanValidator, $booleanNormalizer),
             'preferred-install' => array(
                 function ($val) {
                     return in_array($val, array('auto', 'source', 'dist'), true);
@@ -458,13 +459,23 @@ EOT
         );
 
         if ($input->getOption('unset') && (isset($uniqueConfigValues[$settingKey]) || isset($multiConfigValues[$settingKey]))) {
-            return $this->configSource->removeConfigSetting($settingKey);
+            if ($settingKey === 'disable-tls' && $this->config->get('disable-tls')) {
+                $this->getIO()->writeError('<info>You are now running Composer with SSL/TLS protection enabled.</info>');
+            }
+
+            $this->configSource->removeConfigSetting($settingKey);
+
+            return 0;
         }
         if (isset($uniqueConfigValues[$settingKey])) {
-            return $this->handleSingleValue($settingKey, $uniqueConfigValues[$settingKey], $values, 'addConfigSetting');
+            $this->handleSingleValue($settingKey, $uniqueConfigValues[$settingKey], $values, 'addConfigSetting');
+
+            return 0;
         }
         if (isset($multiConfigValues[$settingKey])) {
-            return $this->handleMultiValue($settingKey, $multiConfigValues[$settingKey], $values, 'addConfigSetting');
+            $this->handleMultiValue($settingKey, $multiConfigValues[$settingKey], $values, 'addConfigSetting');
+
+            return 0;
         }
 
         // handle properties
@@ -525,38 +536,51 @@ EOT
             throw new \InvalidArgumentException('The '.$settingKey.' property can not be set in the global config.json file. Use `composer global config` to apply changes to the global composer.json');
         }
         if ($input->getOption('unset') && (isset($uniqueProps[$settingKey]) || isset($multiProps[$settingKey]))) {
-            return $this->configSource->removeProperty($settingKey);
+            $this->configSource->removeProperty($settingKey);
+
+            return 0;
         }
         if (isset($uniqueProps[$settingKey])) {
-            return $this->handleSingleValue($settingKey, $uniqueProps[$settingKey], $values, 'addProperty');
+            $this->handleSingleValue($settingKey, $uniqueProps[$settingKey], $values, 'addProperty');
+
+            return 0;
         }
         if (isset($multiProps[$settingKey])) {
-            return $this->handleMultiValue($settingKey, $multiProps[$settingKey], $values, 'addProperty');
+            $this->handleMultiValue($settingKey, $multiProps[$settingKey], $values, 'addProperty');
+
+            return 0;
         }
 
         // handle repositories
         if (preg_match('/^repos?(?:itories)?\.(.+)/', $settingKey, $matches)) {
             if ($input->getOption('unset')) {
-                return $this->configSource->removeRepository($matches[1]);
+                $this->configSource->removeRepository($matches[1]);
+
+                return 0;
             }
 
             if (2 === count($values)) {
-                return $this->configSource->addRepository($matches[1], array(
+                $this->configSource->addRepository($matches[1], array(
                     'type' => $values[0],
                     'url' => $values[1],
                 ));
+
+                return 0;
             }
 
             if (1 === count($values)) {
                 $value = strtolower($values[0]);
                 if (true === $booleanValidator($value)) {
                     if (false === $booleanNormalizer($value)) {
-                        return $this->configSource->addRepository($matches[1], false);
+                        $this->configSource->addRepository($matches[1], false);
+
+                        return 0;
                     }
                 } else {
                     $value = JsonFile::parseJson($values[0]);
+                    $this->configSource->addRepository($matches[1], $value);
 
-                    return $this->configSource->addRepository($matches[1], $value);
+                    return 0;
                 }
             }
 
@@ -566,22 +590,32 @@ EOT
         // handle extra
         if (preg_match('/^extra\.(.+)/', $settingKey, $matches)) {
             if ($input->getOption('unset')) {
-                return $this->configSource->removeProperty($settingKey);
+                $this->configSource->removeProperty($settingKey);
+
+                return 0;
             }
 
-            return $this->configSource->addProperty($settingKey, $values[0]);
+            $this->configSource->addProperty($settingKey, $values[0]);
+
+            return 0;
         }
 
         // handle platform
         if (preg_match('/^platform\.(.+)/', $settingKey, $matches)) {
             if ($input->getOption('unset')) {
-                return $this->configSource->removeConfigSetting($settingKey);
+                $this->configSource->removeConfigSetting($settingKey);
+
+                return 0;
             }
 
-            return $this->configSource->addConfigSetting($settingKey, $values[0]);
+            $this->configSource->addConfigSetting($settingKey, $values[0]);
+
+            return 0;
         }
         if ($settingKey === 'platform' && $input->getOption('unset')) {
-            return $this->configSource->removeConfigSetting($settingKey);
+            $this->configSource->removeConfigSetting($settingKey);
+
+            return 0;
         }
 
         // handle auth
@@ -590,7 +624,7 @@ EOT
                 $this->authConfigSource->removeConfigSetting($matches[1].'.'.$matches[2]);
                 $this->configSource->removeConfigSetting($matches[1].'.'.$matches[2]);
 
-                return;
+                return 0;
             }
 
             if ($matches[1] === 'bitbucket-oauth') {
@@ -613,16 +647,20 @@ EOT
                 $this->authConfigSource->addConfigSetting($matches[1].'.'.$matches[2], array('username' => $values[0], 'password' => $values[1]));
             }
 
-            return;
+            return 0;
         }
 
         // handle script
         if (preg_match('/^scripts\.(.+)/', $settingKey, $matches)) {
             if ($input->getOption('unset')) {
-                return $this->configSource->removeProperty($settingKey);
+                $this->configSource->removeProperty($settingKey);
+
+                return 0;
             }
 
-            return $this->configSource->addProperty($settingKey, count($values) > 1 ? $values : $values[0]);
+            $this->configSource->addProperty($settingKey, count($values) > 1 ? $values : $values[0]);
+
+            return 0;
         }
 
         throw new \InvalidArgumentException('Setting '.$settingKey.' does not exist or is not supported by this command');
@@ -642,7 +680,17 @@ EOT
             ));
         }
 
-        return call_user_func(array($this->configSource, $method), $key, $normalizer($values[0]));
+        $normalizedValue = $normalizer($values[0]);
+
+        if ($key === 'disable-tls') {
+            if (!$normalizedValue && $this->config->get('disable-tls')) {
+                $this->getIO()->writeError('<info>You are now running Composer with SSL/TLS protection enabled.</info>');
+            } elseif ($normalizedValue && !$this->config->get('disable-tls')) {
+                $this->getIO()->writeError('<warning>You are now running Composer with SSL/TLS protection disabled.</warning>');
+            }
+        }
+
+        return call_user_func(array($this->configSource, $method), $key, $normalizedValue);
     }
 
     protected function handleMultiValue($key, array $callbacks, array $values, $method)

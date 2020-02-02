@@ -69,8 +69,9 @@ class Invoice extends Entity
     public function notifyBy($medium)
     {
         $url = $this->getEntityUrl() . $this->id . '/notify_by/' . $medium;
+        $r = new Request();
 
-        return (new Request())->request(Requests::POST, $url);
+        return $r->request(Requests::POST, $url);
     }
 
     /**
@@ -107,7 +108,8 @@ class Invoice extends Entity
     public function delete()
     {
         $url = $this->getEntityUrl() . $this->id;
+        $r = new Request();
 
-        return (new Request())->request(Requests::DELETE, $url);
+        return $r->request(Requests::DELETE, $url);
     }
 }

@@ -2,21 +2,21 @@
 
 namespace Maatwebsite\Excel\Jobs;
 
-use Throwable;
-use Maatwebsite\Excel\Sheet;
 use Illuminate\Bus\Queueable;
-use Maatwebsite\Excel\HasEventBus;
-use PhpOffice\PhpSpreadsheet\Cell\Cell;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
+use Maatwebsite\Excel\Concerns\WithCustomValueBinder;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\ImportFailed;
 use Maatwebsite\Excel\Files\TemporaryFile;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use PhpOffice\PhpSpreadsheet\Reader\IReader;
 use Maatwebsite\Excel\Filters\ChunkReadFilter;
-use Maatwebsite\Excel\Concerns\WithChunkReading;
+use Maatwebsite\Excel\HasEventBus;
 use Maatwebsite\Excel\Imports\HeadingRowExtractor;
-use Maatwebsite\Excel\Concerns\WithCustomValueBinder;
+use Maatwebsite\Excel\Sheet;
 use Maatwebsite\Excel\Transactions\TransactionHandler;
+use PhpOffice\PhpSpreadsheet\Cell\Cell;
+use PhpOffice\PhpSpreadsheet\Reader\IReader;
+use Throwable;
 
 class ReadChunk implements ShouldQueue
 {
@@ -135,6 +135,10 @@ class ReadChunk implements ShouldQueue
         if ($this->import instanceof WithEvents) {
             $this->registerListeners($this->import->registerEvents());
             $this->raise(new ImportFailed($e));
+
+            if (method_exists($this->import, 'failed')) {
+                $this->import->failed($e);
+            }
         }
     }
 }

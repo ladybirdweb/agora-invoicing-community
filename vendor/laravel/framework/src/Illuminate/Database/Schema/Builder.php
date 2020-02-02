@@ -3,9 +3,10 @@
 namespace Illuminate\Database\Schema;
 
 use Closure;
-use LogicException;
 use Doctrine\DBAL\Types\Type;
 use Illuminate\Database\Connection;
+use LogicException;
+use RuntimeException;
 
 class Builder
 {
@@ -93,7 +94,7 @@ class Builder
      * Determine if the given table has given columns.
      *
      * @param  string  $table
-     * @param  array   $columns
+     * @param  array  $columns
      * @return bool
      */
     public function hasColumns($table, array $columns)
@@ -141,7 +142,7 @@ class Builder
     /**
      * Modify a table on the schema.
      *
-     * @param  string    $table
+     * @param  string  $table
      * @param  \Closure  $callback
      * @return void
      */
@@ -153,7 +154,7 @@ class Builder
     /**
      * Create a new table on the schema.
      *
-     * @param  string    $table
+     * @param  string  $table
      * @param  \Closure  $callback
      * @return void
      */
@@ -214,6 +215,30 @@ class Builder
     public function dropAllViews()
     {
         throw new LogicException('This database driver does not support dropping all views.');
+    }
+
+    /**
+     * Drop all types from the database.
+     *
+     * @return void
+     *
+     * @throws \LogicException
+     */
+    public function dropAllTypes()
+    {
+        throw new LogicException('This database driver does not support dropping all types.');
+    }
+
+    /**
+     * Get all of the table names for the database.
+     *
+     * @return void
+     *
+     * @throws \LogicException
+     */
+    public function getAllTables()
+    {
+        throw new LogicException('This database driver does not support getting all tables.');
     }
 
     /**
@@ -294,19 +319,24 @@ class Builder
      * @return void
      *
      * @throws \Doctrine\DBAL\DBALException
+     * @throws \RuntimeException
      */
     public function registerCustomDoctrineType($class, $name, $type)
     {
-        if (Type::hasType($name)) {
-            return;
+        if (! $this->connection->isDoctrineAvailable()) {
+            throw new RuntimeException(
+                'Registering a custom Doctrine type requires Doctrine DBAL (doctrine/dbal).'
+            );
         }
 
-        Type::addType($name, $class);
+        if (! Type::hasType($name)) {
+            Type::addType($name, $class);
 
-        $this->connection
-            ->getDoctrineSchemaManager()
-            ->getDatabasePlatform()
-            ->registerDoctrineTypeMapping($type, $name);
+            $this->connection
+                ->getDoctrineSchemaManager()
+                ->getDatabasePlatform()
+                ->registerDoctrineTypeMapping($type, $name);
+        }
     }
 
     /**

@@ -1,6 +1,26 @@
 CHANGELOG
 =========
 
+2.10.0 (2019-12-12)
+-------------------
+
+* PHP 5.6 or greater is now required.
+* The `network` property was added to `GeoIp2\Record\Traits`,
+  `GeoIp2\Model\AnonymousIp`, `GeoIp2\Model\Asn`,
+  `GeoIp2\Model\ConnectionType`, `Geoip2\Model\Domain`,
+  and `GeoIp2\Model\Isp`. This is a string in CIDR format representing the
+  largest network where all of the properties besides `ipAddress` have the
+  same value.
+* Updated documentation of anonymizer properties - `isAnonymousVpn`
+  and `isHostingProvider` - to be more descriptive.
+* The `userCount` property was added to `GeoIp2\Record\Traits`. This is an
+  integer which indicates the estimated number of users sharing the
+  IP/network during the past 24 hours. This output is available from GeoIP2
+  Precision Insights.
+* The `staticIpScore` property was added to `GeoIp2\Record\Traits`. This is
+  a float which indicates how static or dynamic an IP address is. This
+  output is available from GeoIP2 Precision Insights.
+
 2.9.0 (2018-04-10)
 ------------------
 

@@ -14,10 +14,12 @@ declare(strict_types=1);
 namespace GrahamCampbell\Markdown;
 
 use GrahamCampbell\Markdown\Compilers\MarkdownCompiler;
+use GrahamCampbell\Markdown\Directives\MarkdownDirective;
 use GrahamCampbell\Markdown\Engines\BladeMarkdownEngine;
 use GrahamCampbell\Markdown\Engines\PhpMarkdownEngine;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Foundation\Application as LaravelApplication;
+use Illuminate\Support\Arr;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\View\Engines\CompilerEngine;
 use Laravel\Lumen\Application as LumenApplication;
@@ -137,7 +139,7 @@ class MarkdownServiceProvider extends ServiceProvider
         });
 
         $app['blade.compiler']->directive('endmarkdown', function () {
-            return "<?php echo app('markdown')->convertToHtml(ob_get_clean()); ?>";
+            return "<?php echo app('markdown.directive')->render(ob_get_clean()); ?>";
         });
     }
 
@@ -151,6 +153,7 @@ class MarkdownServiceProvider extends ServiceProvider
         $this->registerEnvironment();
         $this->registerMarkdown();
         $this->registerCompiler();
+        $this->registerDirective();
     }
 
     /**
@@ -165,9 +168,9 @@ class MarkdownServiceProvider extends ServiceProvider
 
             $config = $app->config->get('markdown');
 
-            $environment->mergeConfig(array_except($config, ['extensions', 'views']));
+            $environment->mergeConfig(Arr::except($config, ['extensions', 'views']));
 
-            foreach ((array) array_get($config, 'extensions') as $extension) {
+            foreach ((array) Arr::get($config, 'extensions') as $extension) {
                 $environment->addExtension($app->make($extension));
             }
 
@@ -215,6 +218,22 @@ class MarkdownServiceProvider extends ServiceProvider
     }
 
     /**
+     * Register the markdown directive class.
+     *
+     * @return void
+     */
+    protected function registerDirective()
+    {
+        $this->app->singleton('markdown.directive', function (Container $app) {
+            $markdown = $app['markdown'];
+
+            return new MarkdownDirective($markdown);
+        });
+
+        $this->app->alias('markdown.directive', MarkdownDirective::class);
+    }
+
+    /**
      * Get the services provided by the provider.
      *
      * @return string[]
@@ -225,6 +244,7 @@ class MarkdownServiceProvider extends ServiceProvider
             'markdown.environment',
             'markdown',
             'markdown.compiler',
+            'markdown.directive',
         ];
     }
 }

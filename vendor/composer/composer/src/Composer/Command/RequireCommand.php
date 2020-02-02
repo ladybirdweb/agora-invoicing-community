@@ -26,6 +26,7 @@ use Composer\Plugin\PluginEvents;
 use Composer\Repository\CompositeRepository;
 use Composer\Repository\PlatformRepository;
 use Composer\IO\IOInterface;
+use Composer\Util\Silencer;
 
 /**
  * @author Jérémy Romey <jeremy@free-agent.fr>
@@ -98,13 +99,10 @@ EOT
 
             return 1;
         }
-        if (!is_readable($this->file)) {
+        // check for readability by reading the file as is_readable can not be trusted on network-mounts
+        // see https://github.com/composer/composer/issues/8231 and https://bugs.php.net/bug.php?id=68926
+        if (!is_readable($this->file) && false === Silencer::call('file_get_contents', $this->file)) {
             $io->writeError('<error>'.$this->file.' is not readable.</error>');
-
-            return 1;
-        }
-        if (!is_writable($this->file)) {
-            $io->writeError('<error>'.$this->file.' is not writable.</error>');
 
             return 1;
         }
@@ -115,6 +113,14 @@ EOT
 
         $this->json = new JsonFile($this->file);
         $this->composerBackup = file_get_contents($this->json->getPath());
+
+        // check for writability by writing to the file as is_writable can not be trusted on network-mounts
+        // see https://github.com/composer/composer/issues/8231 and https://bugs.php.net/bug.php?id=68926
+        if (!is_writable($this->file) && !Silencer::call('file_put_contents', $this->file, $this->composerBackup)) {
+            $io->writeError('<error>'.$this->file.' is not writable.</error>');
+
+            return 1;
+        }
 
         $composer = $this->getComposer(true, $input->getOption('no-plugins'));
         $repos = $composer->getRepositoryManager()->getRepositories();
@@ -133,7 +139,15 @@ EOT
         }
 
         $phpVersion = $this->repos->findPackage('php', '*')->getPrettyVersion();
-        $requirements = $this->determineRequirements($input, $output, $input->getArgument('packages'), $phpVersion, $preferredStability, !$input->getOption('no-update'));
+        try {
+            $requirements = $this->determineRequirements($input, $output, $input->getArgument('packages'), $phpVersion, $preferredStability, !$input->getOption('no-update'));
+        } catch (\Exception $e) {
+            if ($this->newlyCreated) {
+                throw new \RuntimeException('No composer.json present in the current directory, this may be the cause of the following exception.', 0, $e);
+            }
+
+            throw $e;
+        }
 
         $requireKey = $input->getOption('dev') ? 'require-dev' : 'require';
         $removeKey = $input->getOption('dev') ? 'require' : 'require-dev';
@@ -141,7 +155,12 @@ EOT
 
         // validate requirements format
         $versionParser = new VersionParser();
-        foreach ($requirements as $constraint) {
+        foreach ($requirements as $package => $constraint) {
+            if (strtolower($package) === $composer->getPackage()->getName()) {
+                $io->writeError(sprintf('<error>Root package \'%s\' cannot require itself in its composer.json</error>', $package));
+
+                return 1;
+            }
             $versionParser->parseConstraints($constraint);
         }
 

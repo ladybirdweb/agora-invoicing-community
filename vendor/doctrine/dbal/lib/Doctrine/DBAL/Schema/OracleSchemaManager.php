@@ -6,12 +6,14 @@ use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Driver\DriverException;
 use Doctrine\DBAL\Platforms\OraclePlatform;
 use Doctrine\DBAL\Types\Type;
+use Throwable;
 use const CASE_LOWER;
 use function array_change_key_case;
 use function array_values;
 use function assert;
 use function preg_match;
 use function sprintf;
+use function str_replace;
 use function strpos;
 use function strtolower;
 use function strtoupper;
@@ -31,6 +33,7 @@ class OracleSchemaManager extends AbstractSchemaManager
             parent::dropDatabase($database);
         } catch (DBALException $exception) {
             $exception = $exception->getPrevious();
+            assert($exception instanceof Throwable);
 
             if (! $exception instanceof DriverException) {
                 throw $exception;
@@ -142,8 +145,10 @@ class OracleSchemaManager extends AbstractSchemaManager
         }
 
         if ($tableColumn['data_default'] !== null) {
-            // Default values returned from database are enclosed in single quotes.
-            $tableColumn['data_default'] = trim($tableColumn['data_default'], "'");
+            // Default values returned from database are represented as literal expressions
+            if (preg_match('/^\'(.*)\'$/s', $tableColumn['data_default'], $matches)) {
+                $tableColumn['data_default'] = str_replace("''", "'", $matches[1]);
+            }
         }
 
         if ($tableColumn['data_precision'] !== null) {
@@ -259,6 +264,8 @@ class OracleSchemaManager extends AbstractSchemaManager
 
     /**
      * {@inheritdoc}
+     *
+     * @deprecated
      */
     protected function _getPortableFunctionDefinition($function)
     {
@@ -279,6 +286,8 @@ class OracleSchemaManager extends AbstractSchemaManager
 
     /**
      * {@inheritdoc}
+     *
+     * Calling this method without an argument or by passing NULL is deprecated.
      */
     public function createDatabase($database = null)
     {
@@ -379,5 +388,19 @@ SQL;
                 )
             );
         }
+    }
+
+    public function listTableDetails($tableName) : Table
+    {
+        $table = parent::listTableDetails($tableName);
+
+        /** @var OraclePlatform $platform */
+        $platform = $this->_platform;
+        $sql      = $platform->getListTableCommentsSQL($tableName);
+
+        $tableOptions = $this->_conn->fetchAssoc($sql);
+        $table->addOption('comment', $tableOptions['COMMENTS']);
+
+        return $table;
     }
 }

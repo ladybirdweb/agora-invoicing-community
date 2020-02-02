@@ -1,5 +1,0 @@
-{
-    "require": {
-        "bugsnag/bugsnag-psr-logger": "^1.2"
-    }
-}

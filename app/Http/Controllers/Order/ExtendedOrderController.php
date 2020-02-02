@@ -6,6 +6,7 @@ use App\Http\Controllers\Common\BaseSettingsController;
 use App\Http\Controllers\Controller;
 use App\Model\Common\StatusSetting;
 use App\Model\Order\Order;
+use Carbon\Carbon;
 use App\Model\Product\Subscription;
 use Bugsnag;
 use Illuminate\Http\Request;
@@ -36,7 +37,10 @@ class ExtendedOrderController extends Controller
         $expiryTill = '',
         $from = '',
         $till = '',
-        $domain = ''
+        $domain = '',
+        $paidUnpaid = '',
+        $allInstallation = '',
+        $version = ''
     ) {
         try {
             $join = Order::leftJoin('subscriptions', 'orders.id', '=', 'subscriptions.order_id');
@@ -47,7 +51,9 @@ class ExtendedOrderController extends Controller
             $this->orderFrom($till, $from, $join);
             $this->orderTill($from, $till, $join);
             $this->domain($domain, $join);
-
+            $this->paidOrUnpaid($paidUnpaid,$join);
+            $this->allInstallations($allInstallation,$join);
+            $this->getSelectedVersionOrders($version,$join);
             $join = $join->orderBy('created_at', 'desc')
            ->select(
                'orders.id',
@@ -64,6 +70,88 @@ class ExtendedOrderController extends Controller
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
+    }
+
+
+     /**
+     * Searches for order for selected versions
+     *
+     * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
+     *
+     *
+     * @param  string $version
+     * @param  App\Model\Order $join The order instance
+     *
+     * @return $join
+     */
+    private function getSelectedVersionOrders($version,$join)
+    {
+        if($version) {
+            $currentVer = ($version[0] == 'v') ? $version : 'v'.$version;
+            $join = $join->whereHas('subscription', function($query) use($currentVer) {
+                    $query->where('version', '=', $currentVer);
+            });
+        }
+        return $join;
+    }
+
+    /**
+     * Searches for Active/Inactive Installation
+     *
+     * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
+     *
+     * @date   2020-01-29T17:35:05+0530
+     *
+     * @param  string $allInstallation
+     * @param  App\Model\Order $join The order instance
+     *
+     * @return $join
+     */
+    public function allInstallations($allInstallation,$join)
+    {
+        if($allInstallation) {
+            $dayUtc = new Carbon('-30 days');
+            $minus30Day = $dayUtc->toDateTimeString();
+            if($allInstallation == 'paid_ins') {
+                $join = $join->where('price_override', '>', 0)->whereHas('subscription', function($query) use($minus30Day) {
+                    $query->where('updated_at', '>', $minus30Day);
+                });
+            } elseif($allInstallation == 'unpaid_ins') {
+                $join = $join->where('price_override', '=', 0)->whereHas('subscription', function($query) use($minus30Day) {
+                    $query->where('updated_at', '>', $minus30Day);
+                });
+            } elseif ($allInstallation == 'all_ins') {
+                $join = $join->whereHas('subscription', function($query) use($minus30Day) {
+                    $query->where('updated_at', '>', $minus30Day);
+                });
+            }
+        }
+        return $join;
+    }
+
+    /**
+     * Searches for Paid/Unpaid Products
+     *
+     * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
+     *
+     * @date   2020-01-29T17:35:05+0530
+     *
+     * @param  string $paidUnpaid
+     * @param  App\Model\Order $join The order instance
+     *
+     * @return $join
+     */
+    private function paidOrUnpaid($paidUnpaid,$join) 
+    {
+        if($paidUnpaid) {
+            if($paidUnpaid == 'paid') {
+                $join = $join->where('price_override', '>', 0);
+            } elseif($paidUnpaid == 'unpaid') {
+                $join = $join->where('price_override', '=', 0);
+            }
+
+        }
+        return $join;
     }
 
     /**

@@ -69,7 +69,7 @@ class Process implements \IteratorAggregate
     private $status = self::STATUS_READY;
     private $incrementalOutputOffset = 0;
     private $incrementalErrorOutputOffset = 0;
-    private $tty;
+    private $tty = false;
     private $pty;
 
     private $useFileHandles = false;
@@ -135,7 +135,7 @@ class Process implements \IteratorAggregate
      * @param mixed|null     $input   The input as stream resource, scalar or \Traversable, or null for no input
      * @param int|float|null $timeout The timeout in seconds or null to disable
      *
-     * @throws RuntimeException When proc_open is not installed
+     * @throws LogicException When proc_open is not installed
      */
     public function __construct($command, string $cwd = null, array $env = null, $input = null, ?float $timeout = 60)
     {
@@ -152,8 +152,8 @@ class Process implements \IteratorAggregate
 
         // on Windows, if the cwd changed via chdir(), proc_open defaults to the dir where PHP was started
         // on Gnu/Linux, PHP builds with --enable-maintainer-zts are also affected
-        // @see : https://bugs.php.net/bug.php?id=51800
-        // @see : https://bugs.php.net/bug.php?id=50524
+        // @see : https://bugs.php.net/51800
+        // @see : https://bugs.php.net/50524
         if (null === $this->cwd && (\defined('ZEND_THREAD_SAFE') || '\\' === \DIRECTORY_SEPARATOR)) {
             $this->cwd = getcwd();
         }
@@ -186,7 +186,9 @@ class Process implements \IteratorAggregate
      * @param mixed|null     $input   The input as stream resource, scalar or \Traversable, or null for no input
      * @param int|float|null $timeout The timeout in seconds or null to disable
      *
-     * @throws RuntimeException When proc_open is not installed
+     * @return static
+     *
+     * @throws LogicException When proc_open is not installed
      */
     public static function fromShellCommandline(string $command, string $cwd = null, array $env = null, $input = null, ?float $timeout = 60)
     {
@@ -218,13 +220,14 @@ class Process implements \IteratorAggregate
      *
      * @param callable|null $callback A PHP callback to run whenever there is some
      *                                output available on STDOUT or STDERR
-     * @param array         $env      An array of additional env vars to set when running the process
      *
      * @return int The exit status code
      *
-     * @throws RuntimeException When process can't be launched
-     * @throws RuntimeException When process stopped after receiving signal
-     * @throws LogicException   In case a callback is provided and output has been disabled
+     * @throws RuntimeException         When process can't be launched
+     * @throws RuntimeException         When process is already running
+     * @throws ProcessTimedOutException When process timed out
+     * @throws ProcessSignaledException When process stopped after receiving signal
+     * @throws LogicException           In case a callback is provided and output has been disabled
      *
      * @final
      */
@@ -241,16 +244,13 @@ class Process implements \IteratorAggregate
      * This is identical to run() except that an exception is thrown if the process
      * exits with a non-zero exit code.
      *
-     * @param callable|null $callback
-     * @param array         $env      An array of additional env vars to set when running the process
-     *
-     * @return self
+     * @return $this
      *
      * @throws ProcessFailedException if the process didn't terminate successfully
      *
      * @final
      */
-    public function mustRun(callable $callback = null, array $env = [])
+    public function mustRun(callable $callback = null, array $env = []): self
     {
         if (0 !== $this->run($callback, $env)) {
             throw new ProcessFailedException($this);
@@ -273,7 +273,6 @@ class Process implements \IteratorAggregate
      *
      * @param callable|null $callback A PHP callback to run whenever there is some
      *                                output available on STDOUT or STDERR
-     * @param array         $env      An array of additional env vars to set when running the process
      *
      * @throws RuntimeException When process can't be launched
      * @throws RuntimeException When process is already running
@@ -291,6 +290,12 @@ class Process implements \IteratorAggregate
         $this->hasCallback = null !== $callback;
         $descriptors = $this->getDescriptors();
 
+        if ($this->env) {
+            $env += $this->env;
+        }
+
+        $env += $this->getDefaultEnv();
+
         if (\is_array($commandline = $this->commandline)) {
             $commandline = implode(' ', array_map([$this, 'escapeArgument'], $commandline));
 
@@ -298,12 +303,9 @@ class Process implements \IteratorAggregate
                 // exec is mandatory to deal with sending a signal to the process
                 $commandline = 'exec '.$commandline;
             }
+        } else {
+            $commandline = $this->replacePlaceholders($commandline, $env);
         }
-
-        if ($this->env) {
-            $env += $this->env;
-        }
-        $env += $this->getDefaultEnv();
 
         $options = ['suppress_errors' => true];
 
@@ -331,7 +333,7 @@ class Process implements \IteratorAggregate
         }
 
         if (!is_dir($this->cwd)) {
-            throw new RuntimeException('The provided cwd does not exist.');
+            throw new RuntimeException(sprintf('The provided cwd "%s" does not exist.', $this->cwd));
         }
 
         $this->process = proc_open($commandline, $descriptors, $this->processPipes->pipes, $this->cwd, $envPairs, $options);
@@ -360,9 +362,8 @@ class Process implements \IteratorAggregate
      *
      * @param callable|null $callback A PHP callback to run whenever there is some
      *                                output available on STDOUT or STDERR
-     * @param array         $env      An array of additional env vars to set when running the process
      *
-     * @return $this
+     * @return static
      *
      * @throws RuntimeException When process can't be launched
      * @throws RuntimeException When process is already running
@@ -371,7 +372,7 @@ class Process implements \IteratorAggregate
      *
      * @final
      */
-    public function restart(callable $callback = null, array $env = [])
+    public function restart(callable $callback = null, array $env = []): self
     {
         if ($this->isRunning()) {
             throw new RuntimeException('Process is already running');
@@ -394,9 +395,9 @@ class Process implements \IteratorAggregate
      *
      * @return int The exitcode of the process
      *
-     * @throws RuntimeException When process timed out
-     * @throws RuntimeException When process stopped after receiving signal
-     * @throws LogicException   When process is not yet started
+     * @throws ProcessTimedOutException When process timed out
+     * @throws ProcessSignaledException When process stopped after receiving signal
+     * @throws LogicException           When process is not yet started
      */
     public function wait(callable $callback = null)
     {
@@ -407,7 +408,7 @@ class Process implements \IteratorAggregate
         if (null !== $callback) {
             if (!$this->processPipes->haveReadSupport()) {
                 $this->stop(0);
-                throw new \LogicException('Pass the callback to the "Process::start" method or call enableOutput to use a callback with "Process::wait"');
+                throw new LogicException('Pass the callback to the "Process::start" method or call enableOutput to use a callback with "Process::wait"');
             }
             $this->callback = $this->buildCallback($callback);
         }
@@ -419,6 +420,7 @@ class Process implements \IteratorAggregate
         } while ($running);
 
         while ($this->isRunning()) {
+            $this->checkTimeout();
             usleep(1000);
         }
 
@@ -436,8 +438,9 @@ class Process implements \IteratorAggregate
      * from the output in real-time while writing the standard input to the process.
      * It allows to have feedback from the independent process during execution.
      *
-     * @throws RuntimeException When process timed out
-     * @throws LogicException   When process is not yet started
+     * @throws RuntimeException         When process timed out
+     * @throws LogicException           When process is not yet started
+     * @throws ProcessTimedOutException In case the timeout was reached
      */
     public function waitUntil(callable $callback): bool
     {
@@ -446,7 +449,7 @@ class Process implements \IteratorAggregate
 
         if (!$this->processPipes->haveReadSupport()) {
             $this->stop(0);
-            throw new \LogicException('Pass the callback to the "Process::start" method or call enableOutput to use a callback with "Process::waitUntil".');
+            throw new LogicException('Pass the callback to the "Process::start" method or call enableOutput to use a callback with "Process::waitUntil".');
         }
         $callback = $this->buildCallback($callback);
 
@@ -487,7 +490,7 @@ class Process implements \IteratorAggregate
     /**
      * Sends a POSIX signal to the process.
      *
-     * @param int $signal A valid POSIX signal (see http://www.php.net/manual/en/pcntl.constants.php)
+     * @param int $signal A valid POSIX signal (see https://php.net/pcntl.constants)
      *
      * @return $this
      *
@@ -752,7 +755,7 @@ class Process implements \IteratorAggregate
     public function getExitCodeText()
     {
         if (null === $exitcode = $this->getExitCode()) {
-            return;
+            return null;
         }
 
         return isset(self::$exitCodes[$exitcode]) ? self::$exitCodes[$exitcode] : 'Unknown error';
@@ -895,7 +898,7 @@ class Process implements \IteratorAggregate
      * @param int|float $timeout The timeout in seconds
      * @param int       $signal  A POSIX signal to send in case the process has not stop at timeout, default is SIGKILL (9)
      *
-     * @return int The exit-code of the process
+     * @return int|null The exit-code of the process or null if it's not running
      */
     public function stop($timeout = 10, $signal = null)
     {
@@ -955,6 +958,16 @@ class Process implements \IteratorAggregate
     }
 
     /**
+     * Gets the last output time in seconds.
+     *
+     * @return float|null The last output time in seconds or null if it isn't started
+     */
+    public function getLastOutputTime(): ?float
+    {
+        return $this->lastOutputTime;
+    }
+
+    /**
      * Gets the command line to be executed.
      *
      * @return string The command to execute
@@ -969,7 +982,7 @@ class Process implements \IteratorAggregate
      *
      * @param string|array $commandline The command to execute
      *
-     * @return self The current Process instance
+     * @return $this
      *
      * @deprecated since Symfony 4.2.
      */
@@ -1003,13 +1016,13 @@ class Process implements \IteratorAggregate
     }
 
     /**
-     * Sets the process timeout (max. runtime).
+     * Sets the process timeout (max. runtime) in seconds.
      *
      * To disable the timeout, set this value to null.
      *
      * @param int|float|null $timeout The timeout in seconds
      *
-     * @return self The current Process instance
+     * @return $this
      *
      * @throws InvalidArgumentException if the timeout is negative
      */
@@ -1027,7 +1040,7 @@ class Process implements \IteratorAggregate
      *
      * @param int|float|null $timeout The timeout in seconds
      *
-     * @return self The current Process instance
+     * @return $this
      *
      * @throws LogicException           if the output is disabled
      * @throws InvalidArgumentException if the timeout is negative
@@ -1048,7 +1061,7 @@ class Process implements \IteratorAggregate
      *
      * @param bool $tty True to enabled and false to disable
      *
-     * @return self The current Process instance
+     * @return $this
      *
      * @throws RuntimeException In case the TTY mode is not supported
      */
@@ -1082,7 +1095,7 @@ class Process implements \IteratorAggregate
      *
      * @param bool $bool
      *
-     * @return self
+     * @return $this
      */
     public function setPty($bool)
     {
@@ -1122,7 +1135,7 @@ class Process implements \IteratorAggregate
      *
      * @param string $cwd The new working directory
      *
-     * @return self The current Process instance
+     * @return $this
      */
     public function setWorkingDirectory($cwd)
     {
@@ -1154,7 +1167,7 @@ class Process implements \IteratorAggregate
      *
      * @param array $env The new environment variables
      *
-     * @return self The current Process instance
+     * @return $this
      */
     public function setEnv(array $env)
     {
@@ -1185,7 +1198,7 @@ class Process implements \IteratorAggregate
      *
      * @param string|int|float|bool|resource|\Traversable|null $input The content
      *
-     * @return self The current Process instance
+     * @return $this
      *
      * @throws LogicException In case the process is running
      */
@@ -1205,10 +1218,14 @@ class Process implements \IteratorAggregate
      *
      * @param bool $inheritEnv
      *
-     * @return self The current Process instance
+     * @return $this
+     *
+     * @deprecated since Symfony 4.4, env variables are always inherited
      */
     public function inheritEnvironmentVariables($inheritEnv = true)
     {
+        @trigger_error(sprintf('The "%s()" method is deprecated since Symfony 4.4, env variables are always inherited.', __METHOD__), E_USER_DEPRECATED);
+
         if (!$inheritEnv) {
             throw new InvalidArgumentException('Not inheriting environment variables is not supported.');
         }
@@ -1307,25 +1324,21 @@ class Process implements \IteratorAggregate
     protected function buildCallback(callable $callback = null)
     {
         if ($this->outputDisabled) {
-            return function ($type, $data) use ($callback) {
-                if (null !== $callback) {
-                    return $callback($type, $data);
-                }
+            return function ($type, $data) use ($callback): bool {
+                return null !== $callback && $callback($type, $data);
             };
         }
 
         $out = self::OUT;
 
-        return function ($type, $data) use ($callback, $out) {
+        return function ($type, $data) use ($callback, $out): bool {
             if ($out == $type) {
                 $this->addOutput($data);
             } else {
                 $this->addErrorOutput($data);
             }
 
-            if (null !== $callback) {
-                return $callback($type, $data);
-            }
+            return null !== $callback && $callback($type, $data);
         };
     }
 
@@ -1486,7 +1499,7 @@ class Process implements \IteratorAggregate
     /**
      * Sends a POSIX signal to the process.
      *
-     * @param int  $signal         A valid POSIX signal (see http://www.php.net/manual/en/pcntl.constants.php)
+     * @param int  $signal         A valid POSIX signal (see https://php.net/pcntl.constants)
      * @param bool $throwException Whether to throw exception in case signal failed
      *
      * @return bool True if the signal was sent successfully, false otherwise
@@ -1539,7 +1552,7 @@ class Process implements \IteratorAggregate
         return true;
     }
 
-    private function prepareWindowsCommandLine(string $cmd, array &$env)
+    private function prepareWindowsCommandLine(string $cmd, array &$env): string
     {
         $uid = uniqid('', true);
         $varCount = 0;
@@ -1631,7 +1644,18 @@ class Process implements \IteratorAggregate
         return '"'.str_replace(['"', '^', '%', '!', "\n"], ['""', '"^^"', '"^%"', '"^!"', '!LF!'], $argument).'"';
     }
 
-    private function getDefaultEnv()
+    private function replacePlaceholders(string $commandline, array $env)
+    {
+        return preg_replace_callback('/"\$\{:([_a-zA-Z]++[_a-zA-Z0-9]*+)\}"/', function ($matches) use ($commandline, $env) {
+            if (!isset($env[$matches[1]]) || false === $env[$matches[1]]) {
+                throw new InvalidArgumentException(sprintf('Command line is missing a value for parameter "%s": %s.', $matches[1], $commandline));
+            }
+
+            return $this->escapeArgument($env[$matches[1]]);
+        }, $commandline);
+    }
+
+    private function getDefaultEnv(): array
     {
         $env = [];
 

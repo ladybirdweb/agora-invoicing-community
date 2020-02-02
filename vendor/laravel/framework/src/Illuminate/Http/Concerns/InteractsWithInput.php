@@ -2,18 +2,18 @@
 
 namespace Illuminate\Http\Concerns;
 
-use stdClass;
-use SplFileInfo;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use Illuminate\Http\UploadedFile;
+use SplFileInfo;
+use stdClass;
 
 trait InteractsWithInput
 {
     /**
      * Retrieve a server variable from the request.
      *
-     * @param  string  $key
+     * @param  string|null  $key
      * @param  string|array|null  $default
      * @return string|array|null
      */
@@ -36,7 +36,7 @@ trait InteractsWithInput
     /**
      * Retrieve a header from the request.
      *
-     * @param  string  $key
+     * @param  string|null  $key
      * @param  string|array|null  $default
      * @return string|array|null
      */
@@ -151,6 +151,19 @@ trait InteractsWithInput
     }
 
     /**
+     * Determine if the request is missing a given input item key.
+     *
+     * @param  string|array  $key
+     * @return bool
+     */
+    public function missing($key)
+    {
+        $keys = is_array($key) ? $key : func_get_args();
+
+        return ! $this->has($keys);
+    }
+
+    /**
      * Determine if the given input key is an empty string for "has".
      *
      * @param  string  $key
@@ -176,7 +189,7 @@ trait InteractsWithInput
     /**
      * Get all of the input and files for the request.
      *
-     * @param  array|mixed  $keys
+     * @param  array|mixed|null  $keys
      * @return array
      */
     public function all($keys = null)
@@ -200,14 +213,28 @@ trait InteractsWithInput
      * Retrieve an input item from the request.
      *
      * @param  string|null  $key
-     * @param  string|array|null  $default
-     * @return string|array|null
+     * @param  mixed  $default
+     * @return mixed
      */
     public function input($key = null, $default = null)
     {
         return data_get(
             $this->getInputSource()->all() + $this->query->all(), $key, $default
         );
+    }
+
+    /**
+     * Retrieve input as a boolean value.
+     *
+     * Returns true when value is "1", "true", "on", and "yes". Otherwise, returns false.
+     *
+     * @param  string|null  $key
+     * @param  bool  $default
+     * @return bool
+     */
+    public function boolean($key = null, $default = false)
+    {
+        return filter_var($this->input($key, $default), FILTER_VALIDATE_BOOLEAN);
     }
 
     /**
@@ -255,7 +282,7 @@ trait InteractsWithInput
     /**
      * Retrieve a query string item from the request.
      *
-     * @param  string  $key
+     * @param  string|null  $key
      * @param  string|array|null  $default
      * @return string|array|null
      */
@@ -267,9 +294,8 @@ trait InteractsWithInput
     /**
      * Retrieve a request payload item from the request.
      *
-     * @param  string  $key
+     * @param  string|null  $key
      * @param  string|array|null  $default
-     *
      * @return string|array|null
      */
     public function post($key = null, $default = null)
@@ -291,7 +317,7 @@ trait InteractsWithInput
     /**
      * Retrieve a cookie from the request.
      *
-     * @param  string  $key
+     * @param  string|null  $key
      * @param  string|array|null  $default
      * @return string|array|null
      */
@@ -366,7 +392,7 @@ trait InteractsWithInput
     /**
      * Retrieve a file from the request.
      *
-     * @param  string  $key
+     * @param  string|null  $key
      * @param  mixed  $default
      * @return \Illuminate\Http\UploadedFile|\Illuminate\Http\UploadedFile[]|array|null
      */

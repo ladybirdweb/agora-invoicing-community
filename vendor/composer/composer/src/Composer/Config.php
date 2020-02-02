@@ -16,6 +16,7 @@ use Composer\Config\ConfigSourceInterface;
 use Composer\Downloader\TransportException;
 use Composer\IO\IOInterface;
 use Composer\Util\Platform;
+use Composer\Util\ProcessExecutor;
 
 /**
  * @author Jordi Boggiano <j.boggiano@seld.be>
@@ -61,6 +62,7 @@ class Config
         'archive-format' => 'tar',
         'archive-dir' => '.',
         'htaccess-protect' => true,
+        'use-github-api' => true,
         // valid keys without defaults (auth config stuff):
         // bitbucket-oauth
         // github-oauth
@@ -323,10 +325,10 @@ class Config
 
             case 'disable-tls':
                 return $this->config[$key] !== 'false' && (bool) $this->config[$key];
-
             case 'secure-http':
                 return $this->config[$key] !== 'false' && (bool) $this->config[$key];
-
+            case 'use-github-api':
+                return $this->config[$key] !== 'false' && (bool) $this->config[$key];
             default:
                 if (!isset($this->config[$key])) {
                     return null;
@@ -457,5 +459,21 @@ class Config
                 $this->warnedHosts[$host] = true;
             }
         }
+    }
+
+    /**
+     * Used by long-running custom scripts in composer.json
+     *
+     * "scripts": {
+     *   "watch": [
+     *     "Composer\\Config::disableProcessTimeout",
+     *     "vendor/bin/long-running-script --watch"
+     *   ]
+     * }
+     */
+    public static function disableProcessTimeout()
+    {
+        // Override global timeout set earlier by environment or config
+        ProcessExecutor::setTimeout(0);
     }
 }

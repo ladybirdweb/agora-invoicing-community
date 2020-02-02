@@ -37,6 +37,10 @@ class Standard extends PrettyPrinterAbstract
         return '?' . $this->p($node->type);
     }
 
+    protected function pUnionType(Node\UnionType $node) {
+        return $this->pImplode($node->types, '|');
+    }
+
     protected function pIdentifier(Node\Identifier $node) {
         return $node->name;
     }
@@ -159,8 +163,13 @@ class Standard extends PrettyPrinterAbstract
             return (string) $node->value;
         }
 
-        $sign = $node->value < 0 ? '-' : '';
-        $str = (string) $node->value;
+        if ($node->value < 0) {
+            $sign = '-';
+            $str = (string) -$node->value;
+        } else {
+            $sign = '';
+            $str = (string) $node->value;
+        }
         switch ($kind) {
             case Scalar\LNumber::KIND_BIN:
                 return $sign . '0b' . base_convert($str, 10, 2);
@@ -545,7 +554,9 @@ class Standard extends PrettyPrinterAbstract
 
     protected function pExpr_ArrayItem(Expr\ArrayItem $node) {
         return (null !== $node->key ? $this->p($node->key) . ' => ' : '')
-             . ($node->byRef ? '&' : '') . $this->p($node->value);
+             . ($node->byRef ? '&' : '')
+             . ($node->unpack ? '...' : '')
+             . $this->p($node->value);
     }
 
     protected function pExpr_ArrayDimFetch(Expr\ArrayDimFetch $node) {
@@ -580,6 +591,15 @@ class Standard extends PrettyPrinterAbstract
              . (!empty($node->uses) ? ' use(' . $this->pCommaSeparated($node->uses) . ')' : '')
              . (null !== $node->returnType ? ' : ' . $this->p($node->returnType) : '')
              . ' {' . $this->pStmts($node->stmts) . $this->nl . '}';
+    }
+
+    protected function pExpr_ArrowFunction(Expr\ArrowFunction $node) {
+        return ($node->static ? 'static ' : '')
+            . 'fn' . ($node->byRef ? '&' : '')
+            . '(' . $this->pCommaSeparated($node->params) . ')'
+            . (null !== $node->returnType ? ': ' . $this->p($node->returnType) : '')
+            . ' => '
+            . $this->p($node->expr);
     }
 
     protected function pExpr_ClosureUse(Expr\ClosureUse $node) {

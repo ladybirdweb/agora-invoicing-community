@@ -16,6 +16,9 @@ namespace League\CommonMark\Inline\Element;
 
 use League\CommonMark\Node\Node;
 
+/**
+ * @method children() AbstractInline[]
+ */
 abstract class AbstractInline extends Node
 {
     /**
@@ -28,7 +31,7 @@ abstract class AbstractInline extends Node
     /**
      * @return bool
      */
-    public function isContainer()
+    public function isContainer(): bool
     {
         return false;
     }
@@ -39,7 +42,7 @@ abstract class AbstractInline extends Node
      *
      * @return mixed
      */
-    public function getData($key, $default = null)
+    public function getData(string $key, $default = null)
     {
         return isset($this->data[$key]) ? $this->data[$key] : $default;
     }

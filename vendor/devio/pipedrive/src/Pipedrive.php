@@ -21,7 +21,7 @@ use Devio\Pipedrive\Resources\Notes;
 use Devio\Pipedrive\Resources\OrganizationFields;
 use Devio\Pipedrive\Resources\OrganizationRelationships;
 use Devio\Pipedrive\Resources\Organizations;
-use Devio\Pipedrive\Resources\PermissionsSets;
+use Devio\Pipedrive\Resources\PermissionSets;
 use Devio\Pipedrive\Resources\PersonFields;
 use Devio\Pipedrive\Resources\Persons;
 use Devio\Pipedrive\Resources\Pipelines;
@@ -35,6 +35,7 @@ use Devio\Pipedrive\Resources\Stages;
 use Devio\Pipedrive\Resources\UserConnections;
 use Devio\Pipedrive\Resources\Users;
 use Devio\Pipedrive\Resources\UserSettings;
+use Devio\Pipedrive\Resources\Webhooks;
 use Illuminate\Support\Str;
 use Devio\Pipedrive\Http\Request;
 use Devio\Pipedrive\Http\PipedriveClient;
@@ -59,7 +60,7 @@ use GuzzleHttp\Client as GuzzleClient;
  * @method OrganizationFields organizationFields()
  * @method OrganizationRelationships organizationRelationships()
  * @method Organizations organizations()
- * @method PermissionsSets permissionsSets()
+ * @method PermissionSets permissionSets()
  * @method PersonFields personFields()
  * @method Persons persons()
  * @method Pipelines pipelines()
@@ -73,8 +74,8 @@ use GuzzleHttp\Client as GuzzleClient;
  * @method UserConnections userConnections()
  * @method Users users()
  * @method UserSettings userSettings()
+ * @method Webhooks webhooks()
  */
-
 class Pipedrive
 {
     /**
@@ -157,7 +158,7 @@ class Pipedrive
     {
         $guzzleVersion = isset($config['guzzleVersion']) ? $config['guzzleVersion'] : 6;
 
-        $new = new self('oauth', 'https://api-proxy.pipedrive.com/', $guzzleVersion);
+        $new = new self('oauth', 'https://api.pipedrive.com/', $guzzleVersion);
 
         $new->isOauth = true;
 

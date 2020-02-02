@@ -23,7 +23,6 @@ use App\Traits\PaymentsAndInvoices;
 use App\User;
 use Bugsnag;
 use Illuminate\Http\Request;
-use Input;
 
 class InvoiceController extends TaxRatesAndCodeExpiryController
 {

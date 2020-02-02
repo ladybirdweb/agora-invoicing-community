@@ -10,7 +10,7 @@ Usage
 use Seld\JsonLint\JsonParser;
 
 $parser = new JsonParser();
-    
+
 // returns null if it's valid json, or a ParsingException object.
 $parser->lint($json);
 
@@ -37,10 +37,10 @@ You can also pass additional flags to `JsonParser::lint/parse` that tweak the fu
 
 Example:
 
-```
+```php
 $parser = new JsonParser;
 try {
-    $jsonParser->parse(file_get_contents($jsonFile), JsonParser::DETECT_KEY_CONFLICTS);
+    $parser->parse(file_get_contents($jsonFile), JsonParser::DETECT_KEY_CONFLICTS);
 } catch (DuplicateKeyException $e) {
     $details = $e->getDetails();
     echo 'Key '.$details['key'].' is a duplicate in '.$jsonFile.' at line '.$details['line'];

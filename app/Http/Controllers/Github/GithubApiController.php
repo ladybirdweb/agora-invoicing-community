@@ -111,40 +111,5 @@ class GithubApiController extends Controller
         }
     }
 
-    public function testCurl()
-    {
-        $url = 'http://www.faveohelpdesk.com/billing/test-curl-result';
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        $content = curl_exec($ch);
-        curl_close($ch);
-        echo $content;
-    }
 
-    public function testCurlResult()
-    {
-        return 'success';
-    }
-
-    public function getCurl12($url)
-    {
-        try {
-            if (str_contains($url, ' ')) {
-                $url = str_replace(' ', '', $url);
-            }
-            $context = stream_context_create([
-                'http' => [
-                    'method' => 'GET',
-                    'header' => [
-                        "User-Agent:$this->username",
-                        'Authorization: Basic '.base64_encode("$this->username:$this->password"),
-                    ],
-                ],
-            ]);
-            $data = file_get_contents($url, false, $context);
-            dd($data);
-        } catch (\Exception $e) {
-            dd($e);
-        }
-    }
 }

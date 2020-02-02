@@ -81,10 +81,13 @@ class OrderController extends BaseOrderController
             $from = $request->input('from');
             $till = $request->input('till');
             $domain = $request->input('domain');
-
+            $paidUnpaid = $request->input('p_un');
+            $paidUnpaid = $request->input('p_un');
+            $allInstallation = $request->input('act_ins');
+            $version = $request->input('version');
             return view('themes.default1.order.index',
                 compact('products', 'order_no', 'product_id',
-                    'expiry', 'from', 'till', 'domain', 'expiryTill'));
+                    'expiry', 'from', 'till', 'domain', 'expiryTill', 'paidUnpaid', 'allInstallation','version'));
         } catch (\Exception $e) {
             Bugsnag::notifyExeption($e);
 
@@ -101,9 +104,12 @@ class OrderController extends BaseOrderController
         $from = $request->input('from');
         $till = $request->input('till');
         $domain = $request->input('domain');
-        $query = $this->advanceSearch($order_no, $product_id, $expiry, $expiryTill, $from, $till, $domain);
+        $paidUnpaid = $request->input('p_un');
+        $allInstallation = $request->input('act_ins');
+        $version = $request->input('version');
+        $query = $this->advanceSearch($order_no, $product_id, $expiry, $expiryTill, $from, $till, $domain, $paidUnpaid, $allInstallation, $version);
 
-        return \DataTables::of($query->take(50))
+        return \DataTables::of($query)
                         ->setTotalRecords($query->count())
                         ->addColumn('checkbox', function ($model) {
                             return "<input type='checkbox' class='order_checkbox' value=".
@@ -217,6 +223,8 @@ class OrderController extends BaseOrderController
         try {
             $order = $this->order->findOrFail($id);
             $subscription = $order->subscription()->first();
+            $currenctVersion = $subscription->version;
+            $lastActivity = $subscription->updated_at;
             $invoiceid = $order->invoice_id;
             $invoice = $this->invoice->where('id', $invoiceid)->first();
             if (!$invoice) {
@@ -238,8 +246,9 @@ class OrderController extends BaseOrderController
             $allowDomainStatus = StatusSetting::pluck('domain_check')->first();
 
             return view('themes.default1.order.show',
-                compact('invoiceItems', 'invoice', 'user', 'order', 'subscription', 'licenseStatus', 'installationDetails', 'allowDomainStatus', 'noOfAllowedInstallation', 'getInstallPreference'));
+                compact('invoiceItems', 'invoice', 'user', 'order', 'subscription', 'licenseStatus', 'installationDetails', 'allowDomainStatus', 'noOfAllowedInstallation', 'getInstallPreference', 'currenctVersion', 'lastActivity'));
         } catch (\Exception $ex) {
+            dd($ex);
             Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());

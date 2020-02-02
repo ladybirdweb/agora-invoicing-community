@@ -63,7 +63,7 @@ $sum = 0;
                     <strong><i class="fas fa-exclamation-triangle"></i>Oh snap!</strong> Change a few things up and try submitting again.
                    {{Lang::get('message.alert')}}! {{Lang::get('message.failed')}}.
                   
-                    {{Session::get('fails')}}
+                   <li> {{Session::get('fails')}} </li>
                 </div>
                 @endif
                 @if (count($errors) > 0)

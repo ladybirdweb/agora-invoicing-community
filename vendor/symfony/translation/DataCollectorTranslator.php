@@ -68,9 +68,9 @@ class DataCollectorTranslator implements LegacyTranslatorInterface, TranslatorIn
     {
         if ($this->translator instanceof TranslatorInterface) {
             $trans = $this->translator->trans($id, ['%count%' => $number] + $parameters, $domain, $locale);
+        } else {
+            $trans = $this->translator->transChoice($id, $number, $parameters, $domain, $locale);
         }
-
-        $trans = $this->translator->transChoice($id, $number, $parameters, $domain, $locale);
 
         $this->collectMessage($locale, $domain, $id, $trans, ['%count%' => $number] + $parameters);
 
@@ -141,14 +141,7 @@ class DataCollectorTranslator implements LegacyTranslatorInterface, TranslatorIn
         return $this->messages;
     }
 
-    /**
-     * @param string|null $locale
-     * @param string|null $domain
-     * @param string      $id
-     * @param string      $translation
-     * @param array|null  $parameters
-     */
-    private function collectMessage($locale, $domain, $id, $translation, $parameters = [])
+    private function collectMessage(?string $locale, ?string $domain, ?string $id, string $translation, ?array $parameters = [])
     {
         if (null === $domain) {
             $domain = 'messages';
@@ -157,6 +150,7 @@ class DataCollectorTranslator implements LegacyTranslatorInterface, TranslatorIn
         $id = (string) $id;
         $catalogue = $this->translator->getCatalogue($locale);
         $locale = $catalogue->getLocale();
+        $fallbackLocale = null;
         if ($catalogue->defines($id, $domain)) {
             $state = self::MESSAGE_DEFINED;
         } elseif ($catalogue->has($id, $domain)) {
@@ -165,10 +159,9 @@ class DataCollectorTranslator implements LegacyTranslatorInterface, TranslatorIn
             $fallbackCatalogue = $catalogue->getFallbackCatalogue();
             while ($fallbackCatalogue) {
                 if ($fallbackCatalogue->defines($id, $domain)) {
-                    $locale = $fallbackCatalogue->getLocale();
+                    $fallbackLocale = $fallbackCatalogue->getLocale();
                     break;
                 }
-
                 $fallbackCatalogue = $fallbackCatalogue->getFallbackCatalogue();
             }
         } else {
@@ -177,6 +170,7 @@ class DataCollectorTranslator implements LegacyTranslatorInterface, TranslatorIn
 
         $this->messages[] = [
             'locale' => $locale,
+            'fallbackLocale' => $fallbackLocale,
             'domain' => $domain,
             'id' => $id,
             'translation' => $translation,

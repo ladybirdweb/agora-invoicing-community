@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-/**
+/*
  * Authors:
  * - Wacław Jacek
  * - François B
@@ -21,24 +21,33 @@
  * - Jan
  * - Paul
  * - damlys
- * - Marek marast78
+ * - Marek (marast78)
+ * - Peter (UnrulyNatives)
+ * - Qrzysio
+ * - Jan (aso824)
  */
 return [
     'year' => ':count rok|:count lata|:count lat',
-    'y' => ':countr|:countl',
+    'a_year' => 'rok|:count lata|:count lat',
+    'y' => ':count r|:count l',
     'month' => ':count miesiąc|:count miesiące|:count miesięcy',
-    'm' => ':countmies',
+    'a_month' => 'miesiąc|:count miesiące|:count miesięcy',
+    'm' => ':count mies.',
     'week' => ':count tydzień|:count tygodnie|:count tygodni',
-    'w' => ':counttyg',
+    'a_week' => 'tydzień|:count tygodnie|:count tygodni',
+    'w' => ':count tyg.',
     'day' => ':count dzień|:count dni|:count dni',
-    'd' => ':countd',
+    'a_day' => 'dzień|:count dni|:count dni',
+    'd' => ':count d',
     'hour' => ':count godzina|:count godziny|:count godzin',
-    'h' => ':countg',
+    'a_hour' => 'godzina|:count godziny|:count godzin',
+    'h' => ':count godz.',
     'minute' => ':count minuta|:count minuty|:count minut',
-    'min' => ':countm',
+    'a_minute' => 'minuta|:count minuty|:count minut',
+    'min' => ':count min.',
     'second' => ':count sekunda|:count sekundy|:count sekund',
     'a_second' => '{1}kilka sekund|:count sekunda|:count sekundy|:count sekund',
-    's' => ':counts',
+    's' => ':count sek.',
     'ago' => ':time temu',
     'from_now' => 'za :time',
     'after' => ':time po',
@@ -89,8 +98,10 @@ return [
         'sameElse' => 'L',
     ],
     'ordinal' => ':number.',
-    'months' => ['styczeń', 'luty', 'marzec', 'kwiecień', 'maj', 'czerwiec', 'lipiec', 'sierpień', 'wrzesień', 'październik', 'listopad', 'grudzień'],
+    'months' => ['stycznia', 'lutego', 'marca', 'kwietnia', 'maja', 'czerwca', 'lipca', 'sierpnia', 'września', 'października', 'listopada', 'grudnia'],
+    'months_standalone' => ['styczeń', 'luty', 'marzec', 'kwiecień', 'maj', 'czerwiec', 'lipiec', 'sierpień', 'wrzesień', 'październik', 'listopad', 'grudzień'],
     'months_short' => ['sty', 'lut', 'mar', 'kwi', 'maj', 'cze', 'lip', 'sie', 'wrz', 'paź', 'lis', 'gru'],
+    'months_regexp' => '/DD?o?\.?(\[[^\[\]]*\]|\s)+MMMM?/',
     'weekdays' => ['niedziela', 'poniedziałek', 'wtorek', 'środa', 'czwartek', 'piątek', 'sobota'],
     'weekdays_short' => ['ndz', 'pon', 'wt', 'śr', 'czw', 'pt', 'sob'],
     'weekdays_min' => ['Nd', 'Pn', 'Wt', 'Śr', 'Cz', 'Pt', 'So'],

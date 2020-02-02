@@ -89,15 +89,6 @@ class BaseHomeController extends Controller
         }
     }
 
-    public function hook(Request $request)
-    {
-        try {
-            \Log::info('requests', $request->all());
-        } catch (\Exception $ex) {
-            dd($ex);
-        }
-    }
-
     public function index()
     {
         $totalSales = $this->getTotalSales();
@@ -165,6 +156,30 @@ class BaseHomeController extends Controller
             }
 
             return ['status' => 'fails', 'message' => 'do-not-allow-auto-update'];
+        } catch (\Exception $e) {
+            $result = ['status'=>'fails', 'error' => $e->getMessage()];
+
+            return $result;
+        }
+    }
+
+    public function updateLatestVersion(Request $request)
+    {
+        try {
+            $orderId = null;
+            $licenseCode = $request->input('licenseCode');
+            $orderForLicense = Order::all()->filter(function ($order) use ($licenseCode) {
+                if ($order->serial_key == $licenseCode) {
+                    return $order;
+                }
+            });
+            if (count($orderForLicense) > 0) {
+                $latestVerison = Subscription::where('order_id', $orderForLicense->first()->id)->update(['version'=>$request->input('version')]);
+
+                return ['status' => 'success', 'message' => 'version-updated-successfully'];
+            }
+
+            return ['status' => 'fails', 'message' => 'version-not updated'];
         } catch (\Exception $e) {
             $result = ['status'=>'fails', 'error' => $e->getMessage()];
 

@@ -12,6 +12,7 @@ use Bugsnag\Configuration;
 use Bugsnag\PsrLogger\BugsnagLogger;
 use Bugsnag\PsrLogger\MultiLogger as BaseMultiLogger;
 use Bugsnag\Report;
+use DateTime;
 use Illuminate\Auth\GenericUser;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Contracts\Events\Dispatcher;
@@ -35,7 +36,7 @@ class BugsnagServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    const VERSION = '2.15.2';
+    const VERSION = '2.17.1';
 
     /**
      * Boot the service provider.
@@ -81,7 +82,7 @@ class BugsnagServiceProvider extends ServiceProvider
      */
     protected function setupEvents(Dispatcher $events, array $config)
     {
-        if (isset($config['auto_capture_sessions']) && $config['auto_capture_sessions']) {
+        if ($this->isSessionTrackingAllowed($config)) {
             $events->listen(RouteMatched::class, function ($event) {
                 $this->app->bugsnag->getSessionTracker()->startSession();
             });
@@ -189,6 +190,7 @@ class BugsnagServiceProvider extends ServiceProvider
 
             $client->setReleaseStage(isset($config['release_stage']) ? $config['release_stage'] : $app->environment());
             $client->setHostname(isset($config['hostname']) ? $config['hostname'] : null);
+            $client->getConfig()->mergeDeviceData(['runtimeVersions' => $this->getRuntimeVersion()]);
 
             $client->setFallbackType($app->runningInConsole() ? 'Console' : 'HTTP');
             $client->setAppType(isset($config['app_type']) ? $config['app_type'] : null);
@@ -211,7 +213,7 @@ class BugsnagServiceProvider extends ServiceProvider
                 $client->setFilters($config['filters']);
             }
 
-            if (isset($config['auto_capture_sessions']) && $config['auto_capture_sessions']) {
+            if ($this->isSessionTrackingAllowed($config)) {
                 $endpoint = isset($config['session_endpoint']) ? $config['session_endpoint'] : null;
                 $this->setupSessionTracking($client, $endpoint, $this->app->events);
             }
@@ -392,11 +394,46 @@ class BugsnagServiceProvider extends ServiceProvider
             if (is_null($value)) {
                 return $cache->get($key, null);
             } else {
-                $cache->put($key, $value, 60);
+                $cache->put($key, $value, new DateTime('+ 1 hour'));
             }
         };
 
         $sessionTracker->setStorageFunction($genericStorage);
+    }
+
+    /**
+     * Returns the framework name and version to add to the device data.
+     *
+     * Attempt to parse a semantic framework version from $app or else return
+     * the full version string.
+     * e.g. Lumen: "Lumen (x.x.x) (Laravel Components y.y.*)" => "x.x.x"
+     *
+     * @return array
+     */
+    protected function getRuntimeVersion()
+    {
+        $version = $this->app->version();
+        if (preg_match('/(\d+\.\d+\.\d+)/', $version, $versionMatches)) {
+            $version = $versionMatches[0];
+        }
+
+        return [($this->app instanceof LumenApplication ? 'lumen' : 'laravel') => $version];
+    }
+
+    /**
+     * Tests whether session tracking can/should be enabled.
+     *
+     * @param array $config The configuration array
+     *
+     * @return bool true if session tracking should be enabled.
+     */
+    protected function isSessionTrackingAllowed($config)
+    {
+        // Session support removed in Lumen 5.3 - only setup automatic session
+        // tracking if the session function is avaiable
+        return isset($config['auto_capture_sessions'])
+               && $config['auto_capture_sessions']
+               && function_exists('session');
     }
 
     /**

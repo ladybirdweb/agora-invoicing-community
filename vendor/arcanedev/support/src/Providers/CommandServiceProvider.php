@@ -1,7 +1,5 @@
 <?php namespace Arcanedev\Support\Providers;
 
-use Arcanedev\Support\ServiceProvider;
-
 /**
  * Class     CommandServiceProvider
  *

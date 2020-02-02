@@ -1,9 +1,11 @@
 <?php namespace Arcanedev\Support\Exceptions;
 
+use Exception;
+
 /**
  * Class     RouteNamespaceUndefinedException
  *
  * @package  Arcanedev\Support\Exceptions
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
-class RouteNamespaceUndefinedException extends \Exception {}
+class RouteNamespaceUndefinedException extends Exception {}

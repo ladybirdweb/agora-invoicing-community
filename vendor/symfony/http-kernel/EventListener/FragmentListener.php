@@ -24,10 +24,12 @@ use Symfony\Component\HttpKernel\UriSigner;
  * All URL paths starting with /_fragment are handled as
  * content fragments by this listener.
  *
- * If throws an AccessDeniedHttpException exception if the request
+ * Throws an AccessDeniedHttpException exception if the request
  * is not signed or if it is not an internal sub-request.
  *
  * @author Fabien Potencier <fabien@symfony.com>
+ *
+ * @final since Symfony 4.3
  */
 class FragmentListener implements EventSubscriberInterface
 {
@@ -35,8 +37,7 @@ class FragmentListener implements EventSubscriberInterface
     private $fragmentPath;
 
     /**
-     * @param UriSigner $signer       A UriSigner instance
-     * @param string    $fragmentPath The path that triggers this listener
+     * @param string $fragmentPath The path that triggers this listener
      */
     public function __construct(UriSigner $signer, string $fragmentPath = '/_fragment')
     {
@@ -77,7 +78,7 @@ class FragmentListener implements EventSubscriberInterface
     protected function validateRequest(Request $request)
     {
         // is the Request safe?
-        if (!$request->isMethodSafe(false)) {
+        if (!$request->isMethodSafe()) {
             throw new AccessDeniedHttpException();
         }
 

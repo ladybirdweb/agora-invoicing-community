@@ -26,6 +26,8 @@ use Symfony\Component\HttpKernel\KernelEvents;
  *
  * @author Bulat Shakirzyanov <mallluhuct@gmail.com>
  * @author Fabien Potencier <fabien@symfony.com>
+ *
+ * @internal since Symfony 4.3
  */
 abstract class AbstractTestSessionListener implements EventSubscriberInterface
 {
@@ -44,8 +46,7 @@ abstract class AbstractTestSessionListener implements EventSubscriberInterface
         }
 
         // bootstrap the session
-        $session = $this->getSession();
-        if (!$session) {
+        if (!$session = $this->getSession()) {
             return;
         }
 

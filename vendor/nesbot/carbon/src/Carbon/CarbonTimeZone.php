@@ -21,16 +21,27 @@ class CarbonTimeZone extends DateTimeZone
         parent::__construct(static::getDateTimeZoneNameFromMixed($timezone));
     }
 
+    protected static function parseNumericTimezone($timezone)
+    {
+        if ($timezone <= -100 || $timezone >= 100) {
+            throw new InvalidArgumentException('Absolute timezone offset cannot be greater than 100.');
+        }
+
+        return ($timezone >= 0 ? '+' : '').$timezone.':00';
+    }
+
     protected static function getDateTimeZoneNameFromMixed($timezone)
     {
         if (is_null($timezone)) {
-            $timezone = date_default_timezone_get();
-        } elseif (is_numeric($timezone)) {
-            if ($timezone <= -100 || $timezone >= 100) {
-                throw new InvalidArgumentException('Absolute timezone offset cannot be greater than 100.');
-            }
+            return date_default_timezone_get();
+        }
 
-            $timezone = ($timezone >= 0 ? '+' : '').$timezone.':00';
+        if (is_string($timezone)) {
+            $timezone = preg_replace('/^\s*([+-]\d+)(\d{2})\s*$/', '$1:$2', $timezone);
+        }
+
+        if (is_numeric($timezone)) {
+            return static::parseNumericTimezone($timezone);
         }
 
         return $timezone;
@@ -39,6 +50,26 @@ class CarbonTimeZone extends DateTimeZone
     protected static function getDateTimeZoneFromName(&$name)
     {
         return @timezone_open($name = (string) static::getDateTimeZoneNameFromMixed($name));
+    }
+
+    /**
+     * Cast the current instance into the given class.
+     *
+     * @param string $className The $className::instance() method will be called to cast the current object.
+     *
+     * @return DateTimeZone
+     */
+    public function cast(string $className)
+    {
+        if (!method_exists($className, 'instance')) {
+            if (is_a($className, DateTimeZone::class, true)) {
+                return new $className($this->getName());
+            }
+
+            throw new InvalidArgumentException("$className has not the instance() method needed to cast the date.");
+        }
+
+        return $className::instance($this);
     }
 
     /**
@@ -125,9 +156,9 @@ class CarbonTimeZone extends DateTimeZone
 
         $hours = floor($minutes / 60);
 
-        $minutes = str_pad(abs($minutes) % 60, 2, '0', STR_PAD_LEFT);
+        $minutes = str_pad((string) (abs($minutes) % 60), 2, '0', STR_PAD_LEFT);
 
-        return ($hours < 0 ? '-' : '+').str_pad(abs($hours), 2, '0', STR_PAD_LEFT).":$minutes";
+        return ($hours < 0 ? '-' : '+').str_pad((string) abs($hours), 2, '0', STR_PAD_LEFT).":$minutes";
     }
 
     /**
@@ -161,7 +192,16 @@ class CarbonTimeZone extends DateTimeZone
             return $name;
         }
 
-        return @timezone_name_from_abbr(null, $this->getOffset($date ?: Carbon::now($this)), $isDst);
+        // Integer construction no longer supported since PHP 8
+        // @codeCoverageIgnoreStart
+        try {
+            $offset = @$this->getOffset($date ?: Carbon::now($this)) ?: 0;
+        } catch (\Throwable $e) {
+            $offset = 0;
+        }
+        // @codeCoverageIgnoreEnd
+
+        return @timezone_name_from_abbr('', $offset, $isDst);
     }
 
     /**

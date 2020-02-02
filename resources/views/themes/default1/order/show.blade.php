@@ -156,6 +156,29 @@ Order Details
                                        
                                  </tr>
 
+                                  <tr><td><b>Current Version:</b></td> 
+                                          <td>
+                                              {{$currenctVersion}}
+              
+                                          </td>
+                                       
+                                 </tr>
+
+                                  <tr><td><b>Last Connection with License Manager:</b></td> 
+                                          <td>
+                                            <?php
+                                             $date2 = new DateTime($lastActivity);
+                                                $tz = \Auth::user()->timezone()->first()->name;
+                                                $date2->setTimezone(new DateTimeZone($tz));
+                                                $licdate = $date2->format('M j, Y, g:i a ');
+                                                // $licenseEnd =  date('d/m/Y', strtotime($lastActivity));
+                                                ?>
+                                              {{$licdate}}
+              
+                                          </td>
+                                       
+                                 </tr>
+
                                   <tr><td><b>Installation Preference:</b></td>
                                             @if(Session::has('success'))
                                             <div class="alert alert-success">

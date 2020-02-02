@@ -85,7 +85,7 @@ class ResponseCacheStrategy implements ResponseCacheStrategyInterface
         $this->storeRelativeAgeDirective('s-maxage', $response->headers->getCacheControlDirective('s-maxage') ?: $response->headers->getCacheControlDirective('max-age'), $age);
 
         $expires = $response->getExpires();
-        $expires = null !== $expires ? $expires->format('U') - $response->getDate()->format('U') : null;
+        $expires = null !== $expires ? (int) $expires->format('U') - (int) $response->getDate()->format('U') : null;
         $this->storeRelativeAgeDirective('expires', $expires >= 0 ? $expires : null, 0);
     }
 
@@ -110,8 +110,6 @@ class ResponseCacheStrategy implements ResponseCacheStrategyInterface
         $response->headers->set('Age', $this->age);
 
         if ($this->isNotCacheableResponseEmbedded) {
-            $response->setExpires($response->getDate());
-
             if ($this->flagDirectives['no-store']) {
                 $response->headers->set('Cache-Control', 'no-cache, no-store, must-revalidate');
             } else {
@@ -130,14 +128,13 @@ class ResponseCacheStrategy implements ResponseCacheStrategyInterface
         $response->headers->set('Cache-Control', implode(', ', array_keys($flags)));
 
         $maxAge = null;
-        $sMaxage = null;
 
-        if (\is_numeric($this->ageDirectives['max-age'])) {
+        if (is_numeric($this->ageDirectives['max-age'])) {
             $maxAge = $this->ageDirectives['max-age'] + $this->age;
             $response->headers->addCacheControlDirective('max-age', $maxAge);
         }
 
-        if (\is_numeric($this->ageDirectives['s-maxage'])) {
+        if (is_numeric($this->ageDirectives['s-maxage'])) {
             $sMaxage = $this->ageDirectives['s-maxage'] + $this->age;
 
             if ($maxAge !== $sMaxage) {
@@ -145,7 +142,7 @@ class ResponseCacheStrategy implements ResponseCacheStrategyInterface
             }
         }
 
-        if (\is_numeric($this->ageDirectives['expires'])) {
+        if (is_numeric($this->ageDirectives['expires'])) {
             $date = clone $response->getDate();
             $date->modify('+'.($this->ageDirectives['expires'] + $this->age).' seconds');
             $response->setExpires($date);
@@ -156,10 +153,8 @@ class ResponseCacheStrategy implements ResponseCacheStrategyInterface
      * RFC2616, Section 13.4.
      *
      * @see https://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html#sec13.4
-     *
-     * @return bool
      */
-    private function willMakeFinalResponseUncacheable(Response $response)
+    private function willMakeFinalResponseUncacheable(Response $response): bool
     {
         // RFC2616: A response received with a status code of 200, 203, 300, 301 or 410
         // MAY be stored by a cache […] unless a cache-control directive prohibits caching.
@@ -203,12 +198,8 @@ class ResponseCacheStrategy implements ResponseCacheStrategyInterface
      *
      * If the value is lower than the currently stored value, we update the value, to keep a rolling
      * minimal value of each instruction. If the value is NULL, the directive will not be set on the final response.
-     *
-     * @param string   $directive
-     * @param int|null $value
-     * @param int      $age
      */
-    private function storeRelativeAgeDirective($directive, $value, $age)
+    private function storeRelativeAgeDirective(string $directive, ?int $value, int $age)
     {
         if (null === $value) {
             $this->ageDirectives[$directive] = false;

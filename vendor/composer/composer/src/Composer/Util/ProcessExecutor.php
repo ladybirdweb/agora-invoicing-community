@@ -51,6 +51,7 @@ class ProcessExecutor
 
                 return '://'.$m['user'].':***@';
             }, $command);
+            $safeCommand = preg_replace("{--password (.*[^\\\\]\') }", '--password \'***\' ', $safeCommand);
             $this->io->writeError('Executing command ('.($cwd ?: 'CWD').'): '.$safeCommand);
         }
 
@@ -111,10 +112,18 @@ class ProcessExecutor
             return;
         }
 
-        if (Process::ERR === $type) {
-            $this->io->writeError($buffer, false);
+        if (method_exists($this->io, 'writeRaw')) {
+            if (Process::ERR === $type) {
+                $this->io->writeErrorRaw($buffer, false);
+            } else {
+                $this->io->writeRaw($buffer, false);
+            }
         } else {
-            $this->io->write($buffer, false);
+            if (Process::ERR === $type) {
+                $this->io->writeError($buffer, false);
+            } else {
+                $this->io->write($buffer, false);
+            }
         }
     }
 
@@ -154,7 +163,7 @@ class ProcessExecutor
         //@see https://bugs.php.net/bug.php?id=43784
         //@see https://bugs.php.net/bug.php?id=49446
         if ('\\' === DIRECTORY_SEPARATOR) {
-            if ('' === $argument) {
+            if ((string) $argument === '') {
                 return escapeshellarg($argument);
             }
 

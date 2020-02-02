@@ -2,6 +2,54 @@
 
 All notable changes to `spatie/laravel-activitylog` will be documented in this file
 
+## 3.9.1 - 2019-10-15
+
+- fix default database connection - [#616](https://github.com/spatie/laravel-activitylog/pull/616)
+
+## 3.9.0 - 2019-10-06
+
+- add anonymous causer with `null` value - [#605](https://github.com/spatie/laravel-activitylog/pull/605)
+- fix relationships to allow snake case keys - [#602](https://github.com/spatie/laravel-activitylog/pull/602)
+- add JOSN sub-key attribute logging - [#601](https://github.com/spatie/laravel-activitylog/pull/601)
+
+## 3.8.0 - 2019-09-04
+
+- add support for Laravel 6
+- change fields with value `null` to be strictly compared when logging dirty fields [#453](https://github.com/spatie/laravel-activitylog/pull/453)
+- add composite indexes for subject and causer to migration
+
+## 3.7.2 - 2019-08-28
+
+- do not export docs folder
+
+## 3.7.1 - 2019-07-24
+
+- fix default database connection env var
+
+## 3.7.0 - 2019-07-23
+
+- add database connection to configuration `activitylog.database_connection` and `ACTIVITY_LOGGER_DB_CONNECTION` env var [#568](https://github.com/spatie/laravel-activitylog/pull/568)
+
+## 3.6.3 - 2019-07-23
+
+- fix deprecated `array_` helper [#569](https://github.com/spatie/laravel-activitylog/pull/569)
+
+## 3.6.2 - 2019-07-16
+
+- fix existing description [#563](https://github.com/spatie/laravel-activitylog/pull/563)
+
+## 3.6.1 - 2019-05-29
+
+- fix nullable date attributes [#546](https://github.com/spatie/laravel-activitylog/pull/546)
+
+## 3.6.0 - 2019-05-28
+
+- update `properties` column type from `text` to `json` [#525](https://github.com/spatie/laravel-activitylog/pull/525)
+- update `subject_id` and `causer_id` column type from `integer` to `big_integer` and `unsigned` [#527](https://github.com/spatie/laravel-activitylog/pull/527)
+- fix attribute getter support in `DetectsChanges` trait [#534](https://github.com/spatie/laravel-activitylog/pull/534)
+- fix old attributes retrieval in `DetectsChanges` trait [#537](https://github.com/spatie/laravel-activitylog/pull/537)
+- clean up old attributes in `DetectsChanges` trait [#538](https://github.com/spatie/laravel-activitylog/pull/538)
+
 ## 3.5.0 - 2019-04-15
 
 - add days option to clean command [#497](https://github.com/spatie/laravel-activitylog/pull/497)

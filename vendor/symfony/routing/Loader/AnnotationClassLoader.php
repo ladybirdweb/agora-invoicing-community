@@ -15,6 +15,7 @@ use Doctrine\Common\Annotations\Reader;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\Config\Loader\LoaderResolverInterface;
 use Symfony\Component\Config\Resource\FileResource;
+use Symfony\Component\Routing\Annotation\Route as RouteAnnotation;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 
@@ -32,7 +33,6 @@ use Symfony\Component\Routing\RouteCollection;
  * recognizes several parameters: requirements, options, defaults, schemes,
  * methods, host, and name. The name parameter is mandatory.
  * Here is an example of how you should be able to use it:
- *
  *     /**
  *      * @Route("/Blog")
  *      * /
@@ -44,7 +44,6 @@ use Symfony\Component\Routing\RouteCollection;
  *         public function index()
  *         {
  *         }
- *
  *         /**
  *          * @Route("/{id}", name="blog_post", requirements = {"id" = "\d+"})
  *          * /
@@ -131,6 +130,10 @@ abstract class AnnotationClassLoader implements LoaderInterface
         return $collection;
     }
 
+    /**
+     * @param RouteAnnotation $annot   or an object that exposes a similar interface
+     * @param array           $globals
+     */
     protected function addRoute(RouteCollection $collection, $annot, $globals, \ReflectionClass $class, \ReflectionMethod $method)
     {
         $name = $annot->getName();
@@ -241,14 +244,12 @@ abstract class AnnotationClassLoader implements LoaderInterface
     /**
      * Gets the default route name for a class method.
      *
-     * @param \ReflectionClass  $class
-     * @param \ReflectionMethod $method
-     *
      * @return string
      */
     protected function getDefaultRouteName(\ReflectionClass $class, \ReflectionMethod $method)
     {
-        $name = strtolower(str_replace('\\', '_', $class->name).'_'.$method->name);
+        $name = str_replace('\\', '_', $class->name).'_'.$method->name;
+        $name = \function_exists('mb_strtolower') && preg_match('//u', $name) ? mb_strtolower($name, 'UTF-8') : strtolower($name);
         if ($this->defaultRouteIndex > 0) {
             $name .= '_'.$this->defaultRouteIndex;
         }

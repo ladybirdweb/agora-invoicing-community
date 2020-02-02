@@ -19,6 +19,8 @@ Do you like this package? Did you find it useful? Donate and support its develop
 
 This package provides a complete **framework agnostic** Pipedrive CRM API client library for PHP. It includes all the resources listed on Pipedrive's documentation.
 
+**IMPORTANT:** If you are using Laravel >= 5.8 make sure your version is > 2.1.0.
+
 Feel free to drop me a message at [israel@devio.es](mailto:israel@devio.es) or tweet me at [@IsraelOrtuno](https://twitter.com/IsraelOrtuno).
 
 ## Quick start using API token (read below for OAuth)

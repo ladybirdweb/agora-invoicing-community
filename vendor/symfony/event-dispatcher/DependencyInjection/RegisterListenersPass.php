@@ -16,8 +16,10 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\EventDispatcher\Event as LegacyEvent;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Contracts\EventDispatcher\Event;
 
 /**
  * Compiler pass to register tagged services for an event dispatcher.
@@ -27,15 +29,17 @@ class RegisterListenersPass implements CompilerPassInterface
     protected $dispatcherService;
     protected $listenerTag;
     protected $subscriberTag;
+    protected $eventAliasesParameter;
 
     private $hotPathEvents = [];
     private $hotPathTagName;
 
-    public function __construct(string $dispatcherService = 'event_dispatcher', string $listenerTag = 'kernel.event_listener', string $subscriberTag = 'kernel.event_subscriber')
+    public function __construct(string $dispatcherService = 'event_dispatcher', string $listenerTag = 'kernel.event_listener', string $subscriberTag = 'kernel.event_subscriber', string $eventAliasesParameter = 'event_dispatcher.event_aliases')
     {
         $this->dispatcherService = $dispatcherService;
         $this->listenerTag = $listenerTag;
         $this->subscriberTag = $subscriberTag;
+        $this->eventAliasesParameter = $eventAliasesParameter;
     }
 
     public function setHotPathEvents(array $hotPathEvents, $tagName = 'container.hot_path')
@@ -52,6 +56,12 @@ class RegisterListenersPass implements CompilerPassInterface
             return;
         }
 
+        if ($container->hasParameter($this->eventAliasesParameter)) {
+            $aliases = $container->getParameter($this->eventAliasesParameter);
+            $container->getParameterBag()->remove($this->eventAliasesParameter);
+        } else {
+            $aliases = [];
+        }
         $definition = $container->findDefinition($this->dispatcherService);
 
         foreach ($container->findTaggedServiceIds($this->listenerTag, true) as $id => $events) {
@@ -59,8 +69,15 @@ class RegisterListenersPass implements CompilerPassInterface
                 $priority = isset($event['priority']) ? $event['priority'] : 0;
 
                 if (!isset($event['event'])) {
-                    throw new InvalidArgumentException(sprintf('Service "%s" must define the "event" attribute on "%s" tags.', $id, $this->listenerTag));
+                    if ($container->getDefinition($id)->hasTag($this->subscriberTag)) {
+                        continue;
+                    }
+
+                    $event['method'] = $event['method'] ?? '__invoke';
+                    $event['event'] = $this->getEventFromTypeDeclaration($container, $id, $event['method']);
                 }
+
+                $event['event'] = $aliases[$event['event']] ?? $event['event'];
 
                 if (!isset($event['method'])) {
                     $event['method'] = 'on'.preg_replace_callback([
@@ -98,6 +115,7 @@ class RegisterListenersPass implements CompilerPassInterface
             }
             $class = $r->name;
 
+            ExtractingEventDispatcher::$aliases = $aliases;
             ExtractingEventDispatcher::$subscriber = $class;
             $extractingDispatcher->addSubscriber($extractingDispatcher);
             foreach ($extractingDispatcher->listeners as $args) {
@@ -109,7 +127,26 @@ class RegisterListenersPass implements CompilerPassInterface
                 }
             }
             $extractingDispatcher->listeners = [];
+            ExtractingEventDispatcher::$aliases = [];
         }
+    }
+
+    private function getEventFromTypeDeclaration(ContainerBuilder $container, string $id, string $method): string
+    {
+        if (
+            null === ($class = $container->getDefinition($id)->getClass())
+            || !($r = $container->getReflectionClass($class, false))
+            || !$r->hasMethod($method)
+            || 1 > ($m = $r->getMethod($method))->getNumberOfParameters()
+            || !($type = $m->getParameters()[0]->getType())
+            || $type->isBuiltin()
+            || Event::class === ($name = $type->getName())
+            || LegacyEvent::class === $name
+        ) {
+            throw new InvalidArgumentException(sprintf('Service "%s" must define the "event" attribute on "%s" tags.', $id, $this->listenerTag));
+        }
+
+        return $name;
     }
 }
 
@@ -120,6 +157,7 @@ class ExtractingEventDispatcher extends EventDispatcher implements EventSubscrib
 {
     public $listeners = [];
 
+    public static $aliases = [];
     public static $subscriber;
 
     public function addListener($eventName, $listener, $priority = 0)
@@ -127,10 +165,14 @@ class ExtractingEventDispatcher extends EventDispatcher implements EventSubscrib
         $this->listeners[] = [$eventName, $listener[1], $priority];
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
-        $callback = [self::$subscriber, 'getSubscribedEvents'];
+        $events = [];
 
-        return $callback();
+        foreach ([self::$subscriber, 'getSubscribedEvents']() as $eventName => $params) {
+            $events[self::$aliases[$eventName] ?? $eventName] = $params;
+        }
+
+        return $events;
     }
 }

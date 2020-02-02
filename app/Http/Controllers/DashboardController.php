@@ -267,7 +267,9 @@ class DashboardController extends Controller
         $dayUtc = new Carbon('+30 days');
         $today = Carbon::now()->toDateTimeString();
         $plus30Day = $dayUtc->toDateTimeString();
-        $subsEnds = Subscription::where('update_ends_at', '>', $today)->where('update_ends_at', '<=', $plus30Day)
+        $subsEnds = Subscription::where('update_ends_at', '>', $today)->where('update_ends_at', '<=', $plus30Day)->whereHas('order', function($query) {
+                    $query->where('price_override', '>', 0);
+                })
         ->orderBy('update_ends_at', 'ASC')->get();
 
         return $subsEnds;

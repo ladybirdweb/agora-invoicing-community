@@ -18,7 +18,7 @@ use League\CommonMark\Block\Element\FencedCode;
 use League\CommonMark\ContextInterface;
 use League\CommonMark\Cursor;
 
-class FencedCodeParser extends AbstractBlockParser
+final class FencedCodeParser implements BlockParserInterface
 {
     /**
      * @param ContextInterface $context
@@ -26,21 +26,26 @@ class FencedCodeParser extends AbstractBlockParser
      *
      * @return bool
      */
-    public function parse(ContextInterface $context, Cursor $cursor)
+    public function parse(ContextInterface $context, Cursor $cursor): bool
     {
         if ($cursor->isIndented()) {
             return false;
         }
 
+        $c = $cursor->getCharacter();
+        if ($c !== ' ' && $c !== "\t" && $c !== '`' && $c !== '~') {
+            return false;
+        }
+
         $indent = $cursor->getIndent();
-        $fence = $cursor->match('/^[ \t]*(?:`{3,}(?!.*`)|^~{3,}(?!.*~))/');
+        $fence = $cursor->match('/^[ \t]*(?:`{3,}(?!.*`)|^~{3,})/');
         if ($fence === null) {
             return false;
         }
 
         // fenced code block
-        $fence = ltrim($fence, " \t");
-        $fenceLength = strlen($fence);
+        $fence = \ltrim($fence, " \t");
+        $fenceLength = \strlen($fence);
         $context->addBlock(new FencedCode($fenceLength, $fence[0], $indent));
 
         return true;

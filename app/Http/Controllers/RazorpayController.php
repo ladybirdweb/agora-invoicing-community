@@ -46,13 +46,14 @@ class RazorpayController extends Controller
     public function payment($invoice, Request $request)
     {
         //Input items of form
-        $input = Input::all();
+        $input = $request->all();
         $success = true;
         $error = 'Payment Failed';
         $rzp_key = ApiKey::where('id', 1)->value('rzp_key');
         $rzp_secret = ApiKey::where('id', 1)->value('rzp_secret');
 
         $api = new Api($rzp_key, $rzp_secret);
+        dd($api->payment->fetch($input['razorpay_payment_id']));
         $payment = $api->payment->fetch($input['razorpay_payment_id']);
         if (count($input) && !empty($input['razorpay_payment_id'])) { //Verify Razorpay Payment Id and Signature
 

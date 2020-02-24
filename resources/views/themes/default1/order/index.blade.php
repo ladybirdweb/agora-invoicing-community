@@ -209,7 +209,7 @@ View All Orders
                           <th>Client</th>
                            
                             <th>Order No</th>
-                            <th>Product</th>
+                            <th>Product with Current version</th>
                             <th>Total</th>
                             
                              <th>Status</th>

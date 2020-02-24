@@ -130,9 +130,12 @@ class OrderController extends BaseOrderController
                         })
                         ->addColumn('productname', function ($model) {
                             $productid = ($model->product);
+                            $order = $this->order->findOrFail($model->id);
+                            $subscription = $order->subscription()->first();
+                            $currenctVersion = $subscription->version;
                             $productName = Product::where('id', $productid)->pluck('name')->first();
 
-                            return $productName;
+                            return $productName. ' ' .$currenctVersion;
                         })
                         ->addColumn('number', function ($model) {
                             return ucfirst($model->number);
@@ -248,7 +251,6 @@ class OrderController extends BaseOrderController
             return view('themes.default1.order.show',
                 compact('invoiceItems', 'invoice', 'user', 'order', 'subscription', 'licenseStatus', 'installationDetails', 'allowDomainStatus', 'noOfAllowedInstallation', 'getInstallPreference', 'currenctVersion', 'lastActivity'));
         } catch (\Exception $ex) {
-            dd($ex);
             Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());

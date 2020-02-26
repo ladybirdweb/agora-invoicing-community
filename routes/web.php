@@ -492,6 +492,11 @@
         });
 
         /*
+        * Stripe routes
+         */
+        Route::get('stripe', 'Stripe\StripePaymentController@stripe')->name('stripe');
+
+        /*
          * Api Keys
          */
         Route::get('apikeys', 'Common\SettingsController@getKeys');

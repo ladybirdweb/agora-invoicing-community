@@ -638,4 +638,6 @@ return [
      'replace'                      => 'Replace',
      'system_sales_manager'         => 'System Sales Manager(s)',
      'sales_man_replaced_success'   => 'Sales Manager replaced successfully',
+     'stripe_key'                   => 'Stripe Key',
+     'stripe_secret'                => 'Stripe Secret',
 ];

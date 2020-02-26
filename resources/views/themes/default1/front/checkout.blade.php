@@ -163,20 +163,25 @@ $sum = 0;
 
                 </div>
                 <h4 class="heading-primary">Payment</h4>
+             
+                       
                 {!! Form::open(['url'=>'checkout','method'=>'post']) !!}
+
                 @if(Cart::getTotal()>0)
-                
+                  
                  <?php 
                 $gateways = \App\Http\Controllers\Common\SettingsController::checkPaymentGateway($item['attributes']['currency']['currency']);
                 $total = Cart::getSubTotal();
                 $rzpstatus = \App\Model\Common\StatusSetting::first()->value('rzp_status');
                   // 
                 ?>
-                @if($gateways) 
+                @if(count($gateways)>0 ) 
                   <div class="form-group">
 
                     <div class="col-md-6">
-                        {{ucfirst($gateways)}} {!! Form::radio('payment_gateway',strtolower($gateways)) !!}<br><br>
+                        @foreach($gateways as $gateway)
+                        {{ucfirst($gateway)}} {!! Form::radio('payment_gateway',strtolower($gateway)) !!}<br><br>
+                        @endforeach
                     </div>
                 </div>
             
@@ -190,6 +195,8 @@ $sum = 0;
                         {!! Form::radio('payment_gateway',strtolower('Razorpay')) !!}
                        <img alt="Porto" width="111"  data-sticky-width="82" data-sticky-height="40" data-sticky-top="33" src="{{asset('client/images/Razorpay.png')}}"><br><br>
                     </div>
+
+                  
                 </div>
 
 

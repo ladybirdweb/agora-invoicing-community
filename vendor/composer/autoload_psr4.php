@@ -106,6 +106,8 @@ return array(
     'Composer\\' => array($vendorDir . '/composer/composer/src/Composer'),
     'Complex\\' => array($vendorDir . '/markbaker/complex/classes/src'),
     'Collective\\Html\\' => array($vendorDir . '/laravelcollective/html/src'),
+    'Cartalyst\\Stripe\\Laravel\\' => array($vendorDir . '/cartalyst/stripe-laravel/src'),
+    'Cartalyst\\Stripe\\' => array($vendorDir . '/cartalyst/stripe/src'),
     'Carbon\\' => array($vendorDir . '/nesbot/carbon/src/Carbon'),
     'Bugsnag\\PsrLogger\\' => array($vendorDir . '/bugsnag/bugsnag-psr-logger/src'),
     'Bugsnag\\BugsnagLaravel\\' => array($vendorDir . '/bugsnag/bugsnag-laravel/src'),

@@ -16,6 +16,7 @@
         "arcanedev/log-viewer": "^5.2",
         "barryvdh/laravel-dompdf": "^0.8.5",
         "bugsnag/bugsnag-laravel": "^2.17.1",
+        "cartalyst/stripe-laravel": "^11.0",
         "darryldecode/cart": "dev-master",
         "devio/pipedrive": "^2.4.2",
         "ezyang/htmlpurifier": "^4.12",

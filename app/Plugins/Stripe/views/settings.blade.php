@@ -65,7 +65,7 @@ Stripe
 
                             <?php
                             $status=0;
-                            $cont = new \App\Plugins\Stripe\Model\Stripe();
+                            $cont = new \App\Plugins\Stripe\Model\StripePayment();
                             ?>
                           
                           

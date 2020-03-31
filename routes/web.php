@@ -491,10 +491,6 @@
             Route::get('check-url', 'Api\ApiController@checkDomain');
         });
 
-        /*
-        * Stripe routes
-         */
-        Route::get('stripe', 'Stripe\StripePaymentController@stripe')->name('stripe');
 
         /*
          * Api Keys

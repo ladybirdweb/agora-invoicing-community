@@ -207,6 +207,7 @@ return [
           \Torann\Currency\CurrencyServiceProvider::class,
            Devio\Pipedrive\PipedriveServiceProvider::class,
            Spatie\Referer\RefererServiceProvider::class,
+           Cartalyst\Stripe\Laravel\StripeServiceProvider::class,
           // Voerro\Laravel\VisitorTracker\VisitorTrackerServiceProvider::class,
 
     ],
@@ -272,6 +273,7 @@ return [
           'GeoIP'      => \Torann\GeoIP\Facades\GeoIP::class,
           'Currency'   => \Torann\Currency\Facades\Currency::class,
           'Pipedrive'  => Devio\Pipedrive\PipedriveFacade::class,
+          'Stripe' => Cartalyst\Stripe\Laravel\Facades\Stripe::class,
           // 'VisitStats' => Voerro\Laravel\VisitorTracker\Facades\VisitStats::class,
 
     ],

@@ -53,7 +53,6 @@ class RazorpayController extends Controller
         $rzp_secret = ApiKey::where('id', 1)->value('rzp_secret');
 
         $api = new Api($rzp_key, $rzp_secret);
-        dd($api->payment->fetch($input['razorpay_payment_id']));
         $payment = $api->payment->fetch($input['razorpay_payment_id']);
         if (count($input) && !empty($input['razorpay_payment_id'])) { //Verify Razorpay Payment Id and Signature
 

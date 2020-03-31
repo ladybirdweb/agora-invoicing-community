@@ -153,7 +153,19 @@ Checkout
                   <div class="form-group">
 
                     <div class="col-md-6">
-                        {{ucfirst($gateways)}} {!! Form::radio('payment_gateway',strtolower($gateways)) !!}<br><br>
+                        @if(count($gateways)>0 ) 
+                  <div class="form-group">
+
+                    <div class="col-md-6">
+                        @foreach($gateways as $gateway)
+                        {{ucfirst($gateway)}} {!! Form::radio('payment_gateway',strtolower($gateway)) !!}<br><br>
+                        @endforeach
+                    </div>
+                </div>
+            
+            @endif
+
+
                     </div>
                 </div>
             

@@ -3,7 +3,7 @@
 namespace App\Plugins\Stripe\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Plugins\Stripe\Model\Stripe;
+use App\Plugins\Stripe\Model\StripePayment;
 use Illuminate\Http\Request;
 
 class ProcessController extends Controller
@@ -12,33 +12,43 @@ class ProcessController extends Controller
 
     public function __construct()
     {
-        $stripe = new Stripe();
+        $stripe = new StripePayment();
         $this->stripe = $stripe;
     }
+
+
+     public function payWithStripe(Request $request)
+    {
+        $path = app_path().'/Plugins/Stripe/views';
+            \View::addNamespace('plugins', $path);
+            echo view('plugins::middle-page');
+    }
+
 
     public function PassToPayment($requests)
     {
         try {
             $request = $requests['request'];
-            $order = $requests['order'];
+            $invoice = $requests['order'];
             $cart = $requests['cart'];
             if ($cart->count() > 0) {
                 $total = \Cart::getSubTotal();
             } else {
                 $total = $request->input('cost');
                 \Cart::clear();
-                \Session::put('invoiceid', $order->id);
+                \Session::put('invoiceid', $invoice->id);
             }
-
+            // dd(\Session::get('invoiceid');
             if ($request->input('payment_gateway') == 'stripe') {
                 if (!\Schema::hasTable('stripe')) {
-                    throw new \Exception('Paypal is not configured');
+                    throw new \Exception('Stripe is not configured');
                 }
                 $stripe = $this->stripe->where('id', 1)->first();
                 if (!$stripe) {
                     throw new \Exception('Paypal Fields not given');
                 }
-                $data = $this->getFields($order);
+                $data = $this->getFields($invoice);
+                \Session::put('invoice',$invoice);
                 $this->middlePage($data);
             }
         } catch (\Exception $ex) {
@@ -75,7 +85,7 @@ class ProcessController extends Controller
 
                 $data = [
                     'image_url'     => $image_url,
-                    'currency_code' => 'USD', //$currency_code,
+                    'currency_code' => $currency_code, //$currency_code,
                     'invoice'       => $invoice_id,
                     'first_name'    => $first_name,
                     'last_name'     => $last_name,
@@ -110,34 +120,14 @@ class ProcessController extends Controller
         }
     }
 
-    public function postCurl($data)
-    {
-        try {
-            $config = $this->paypal->where('id', 1)->first();
-            if (!$config) {
-                throw new \Exception('Paypal Fields not given');
-            }
-            $url = $config->paypal_url;
-            $post_data = http_build_query($data);
-            echo $url;
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            $output = curl_exec($ch);
-            curl_close($ch);
-        } catch (\Exception $ex) {
-            throw new \Exception($ex->getMessage(), $ex->getCode(), $ex->getPrevious());
-        }
-    }
-
+ 
 
 
     public function middlePage($data)
     {
         try {
             $path = app_path().'/Plugins/Stripe/views';
+            \Session::put('data',$data['amount']);
             \View::addNamespace('plugins', $path);
             echo view('plugins::middle-page', compact('data'));
         } catch (\Exception $ex) {

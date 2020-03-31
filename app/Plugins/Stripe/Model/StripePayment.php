@@ -4,7 +4,7 @@ namespace App\Plugins\Stripe\Model;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Stripe extends Model
+class StripePayment extends Model
 {
     protected $table = 'stripe';
 

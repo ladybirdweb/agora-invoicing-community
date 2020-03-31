@@ -258,7 +258,7 @@ Edit User
                         <!-- mobile -->
                         {!! Form::label('timezone_id',Lang::get('message.timezone')) !!}
                        
-                         {!! Form::select('timezone_id', ['Timezones'=>$timezones],null,['class' => 'form-control selectpicker','data-live-search'=>'true','required','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false','data-size'=>'10']) !!}
+                         {!! Form::select('timezone_id', ['Timezones'=>$timezones],$timezone,['class' => 'form-control chosen-select selectpicker','data-live-search'=>'true','required','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false','data-size'=>'10']) !!}
 
                     </div>
                     <?php 

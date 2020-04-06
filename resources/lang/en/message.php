@@ -649,4 +649,6 @@ return [
       'invalid_passcode'            => 'Passcode entered is invalid',
       '2fa_disabled'                => '2 Factor Authentication has been disabled',
      'no_permission_for_action'     => 'This user does not have permission for this action',
+     'product_not_found'            => 'Product Not Found',
+
 ];

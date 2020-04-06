@@ -456,6 +456,7 @@
         Route::get('version/latest', 'HomeController@latestVersion');
         Route::post('update-latest-version', 'HomeController@updateLatestVersion');
         Route::post('v1/checkUpdatesExpiry', 'HomeController@checkUpdatesExpiry');
+        Route::post('update-license-code', 'HomeController@updateLicenseCode');
 
         Route::get('404', ['as' => 'error404', function () {
             return view('errors.404');

@@ -1,7 +1,5 @@
 /nbproject/private/
 
-
-
 /node_modules
 /public/hot
 /public/storage
@@ -15,5 +13,6 @@ npm-debug.log
 yarn-error.log
 .env
 
-
 public/images.zip
+.env.testing
+storage/products

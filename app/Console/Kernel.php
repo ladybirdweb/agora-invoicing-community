@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Console\Commands\SetupTestEnv;
 use App\Model\Common\StatusSetting;
 use App\Model\Mailjob\ActivityLogDay;
 use Illuminate\Console\Scheduling\Schedule;
@@ -21,6 +22,7 @@ class Kernel extends ConsoleKernel
          \App\Console\Commands\Install::class,
           CurrencyManage::class,
         'App\Console\Commands\ExpiryCron',
+        SetupTestEnv::class,
     ];
 
     /**

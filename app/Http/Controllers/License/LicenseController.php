@@ -179,11 +179,10 @@ class LicenseController extends Controller
             $s_expiry = date('Y-m-d', strtotime($supportExpiry));
         }
         $url = $this->url;
-
         $ipAndDomain = $this->getIpAndDomain($domain);
         $ip = $ipAndDomain['ip'];
         $domain = $ipAndDomain['domain'];
-        $requiredomain = $domain == '' ? $requiredomain : $ipAndDomain['requiredomain'];
+        $requiredomain = $ipAndDomain['requiredomain'];
         $api_key_secret = $this->api_key_secret;
         $searchLicense = $this->searchLicenseId($licenseCode, $productId);
         $licenseId = $searchLicense['licenseId'];
@@ -205,17 +204,23 @@ class LicenseController extends Controller
      */
     protected function getIpAndDomain($domain)
     {
-        $isIP = (bool) ip2long($domain);
-        if ($isIP == true) {
-            $requiredomain = 0;
-            $ip = $domain;
-            $domain = '';
-        } else {
-            $requiredomain = 1;
-            $domain = $domain;
-            $ip = '';
-        }
 
+        $isIP = (bool) ip2long($domain);
+        if ($domain != '') {
+            if ($isIP == true) {
+                $requiredomain = 0;
+                $ip = $domain;
+                $domain = '';
+            } else {
+                $requiredomain = 1;
+                $domain = $domain;
+                $ip = '';
+            }
+        } else {
+            $ip = '';
+            $domain = '';
+            $requiredomain = 0;
+        }
         return ['ip'=>$ip, 'domain'=>$domain, 'requiredomain'=>$requiredomain];
     }
 
@@ -297,22 +302,11 @@ class LicenseController extends Controller
     public function updateExpirationDate($licenseCode, $expiryDate, $productId, $domain, $orderNo, $licenseExpiry, $supportExpiry, $license_limit = 2, $requiredomain = 1)
     {
         $url = $this->url;
-        $isIP = (bool) ip2long($domain);
-        if ($domain != '') {
-            if ($isIP == true) {
-                $requiredomain = 0;
-                $ip = $domain;
-                $domain = '';
-            } else {
-                $requiredomain = 1;
-                $domain = $domain;
-                $ip = '';
-            }
-        } else {
-            $ip = '';
-            $domain = '';
-        }
-
+        $ipAndDomain = $this->getIpAndDomain($domain);
+        $ip = $ipAndDomain['ip'];
+        $domain = $ipAndDomain['domain'];
+        $requiredomain = $ipAndDomain['requiredomain'];
+        
         $api_key_secret = $this->api_key_secret;
         $searchLicense = $this->searchLicenseId($licenseCode, $productId);
         $licenseId = $searchLicense['licenseId'];

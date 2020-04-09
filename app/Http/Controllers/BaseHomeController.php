@@ -208,31 +208,31 @@ class BaseHomeController extends Controller
         try {
             $licCode = $request->input('licenseCode');//The license code already existing for older client
             $lastFour = $this->getLastFourDigistsOfLicenseCode($request->input('product'));
-          
-            $existingLicense = Order::all()->filter(function ($order) use ($licCode,$lastFour) {
-            if ($order->serial_key == $licCode) {//Check in the orders table and get the row that matches with the license code sent in the request
-                    return $order;
-                }
-            });
-            if (count($existingLicense) > 0) {//If the license code that is sent in the request exists in billing 
-                $cont = new \App\Http\Controllers\License\LicenseController();
-                $cont->updateInstalledDomain($licCode,$existingLicense->first()->product);//Delete the installation first for the current license before updating license so that no Faveo installation exists on the user domain/IP path 
-                $orderId = $existingLicense->first()->id;
-                $user_id = $existingLicense->first()->client;
-                $product = $existingLicense->first()->product;
+            $existingLicense = Order::select("id", "client", "product","serial_key")->get()
+                ->filter(function ($order) use ($licCode) {
+                    return $order->serial_key == $licCode;
+                })->first();
 
-                $updatesExpiry = $this->getUpdatesExpiryDate($existingLicense);
-                $licenseExpiry = $this->getLicenseExpiryDate($existingLicense);
-                $supportExpiry = $this->getSupportExpiryDate($existingLicense);
+            if ($existingLicense) {//If the license code that is sent in the request exists in billing 
+                $cont = new \App\Http\Controllers\License\LicenseController();
+                $cont->updateInstalledDomain($licCode,$existingLicense->product);//Delete the installation first for the current license before updating license so that no Faveo installation exists on the user domain/IP path 
                 
                 $serial_key = substr($licCode, 0,12).$lastFour;//The new License Code
                 //Create new license in license manager with the new license code which has no. of agents in the last 4 digits.
-                $cont->createNewLicene($orderId, $product, $user_id, $licenseExpiry, $updatesExpiry, $supportExpiry, $serial_key);
+                $cont->createNewLicene(
+                    $existingLicense->id, 
+                    $existingLicense->product, 
+                    $existingLicense->client, 
+                    $this->getLicenseExpiryDate($existingLicense), 
+                    $this->getUpdatesExpiryDate($existingLicense), 
+                    $this->getSupportExpiryDate($existingLicense), 
+                    $serial_key
+                );
                 //Update the old license code with new one in billing. 
-                $existingLicense->first()->serial_key = \Crypt::encrypt(substr($licCode, 0,12).$lastFour);
-                $existingLicense->first()->save();
+                $existingLicense->serial_key = \Crypt::encrypt(substr($licCode, 0,12).$lastFour);
+                $existingLicense->save();
                 //send the newly updated license code in response
-                $result = ['status'=>'success', 'updatedLicenseCode'=>$existingLicense->first()->serial_key];
+                $result = ['status'=>'success', 'updatedLicenseCode'=>$existingLicense->serial_key];
                 return response()->json($result);
             }
         } catch (\Exception $ex) {
@@ -243,25 +243,29 @@ class BaseHomeController extends Controller
 
     public function getLastFourDigistsOfLicenseCode($productName)
     {
-        if(strpos($productName, 'Enterprise') || strpos($productName, 'Company')) {
-            $digits =  '0000';//Unlimited Agents
-        } elseif(strpos($productName, 'Freelancer')) {
-            $digits =  '0002'; //2 Agents
-        } elseif(strpos($productName, 'Startup')) {
-            $digits = '0005'; //5 Agents
-        } elseif(strpos($productName, 'SME')) {
-            $digits =  '0010';
-        } else {
-             throw new \Exception(\Lang::get('message.product_not_found'));
-        }
-    
-        return $digits;
+        switch($productName){
+            case strpos($productName, 'Enterprise') > 0:
+            case strpos($productName, 'Company') > 0:
+                return '0000';
 
+            case strpos($productName, 'Freelancer') > 0:
+                return '0002';
+
+            case strpos($productName, 'Startup') > 0:
+                return '0005';
+
+            case strpos($productName, 'SME') > 0:
+                return '0010';
+
+            default:
+                throw new \Exception(\Lang::get('message.product_not_found'));
+
+        }
     }
 
     public function getUpdatesExpiryDate($existingLicense)
     {
-       $updatesDate  = \Carbon\Carbon::parse(Subscription::where('order_id', $existingLicense->first()->id)->pluck('update_ends_at')->first());
+       $updatesDate  = \Carbon\Carbon::parse(Subscription::where('order_id', $existingLicense->id)->value('update_ends_at'));
        if(strtotime($updatesDate) < 0 ) {
                     $updatesDate = '';
                 }
@@ -270,7 +274,7 @@ class BaseHomeController extends Controller
 
     public function getLicenseExpiryDate($existingLicense)
     {
-        $licenseDate = \Carbon\Carbon::parse(Subscription::where('order_id', $existingLicense->first()->id)->pluck('ends_at')->first());
+        $licenseDate = \Carbon\Carbon::parse(Subscription::where('order_id', $existingLicense->id)->value('ends_at'));
         if(strtotime($licenseDate) < 0 ) {
                     $licenseDate = '';
                 }
@@ -279,7 +283,7 @@ class BaseHomeController extends Controller
 
     public function getSupportExpiryDate($existingLicense)
     {
-        $supportDate = \Carbon\Carbon::parse(Subscription::where('order_id', $existingLicense->first()->id)->pluck('support_ends_at')->first());
+        $supportDate = \Carbon\Carbon::parse(Subscription::where('order_id', $existingLicense->id)->value('support_ends_at'));
         if(strtotime($supportDate) < 0 ) {
                     $supportDate = '';
                 }

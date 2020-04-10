@@ -228,29 +228,14 @@ Dashboard
                   </tr>
                   </thead>
                   <tbody>
-                    @foreach($orders as $order)
-                    <?php
-                    $clientName = \App\User::where('id',$order->client)->select('first_name','last_name')->first();
-                    $productName = \App\Model\Product\Product::where('id',$order->product)->value('name');
-                    $dateUtc = $order->created_at;
-                     $date1 = new DateTime($dateUtc);
-                    $date = $date1->format('M j, Y, g:i a ');
-                    ?>
+                    @foreach($recentOrders as $element)
                    <tr>
-                       <td><a href="{{url('orders/'.$order->id)}}">{{$order->number}}</a></td>
-                    <td>{{$productName}}</td>
-                    <td>{{$date}}</td>
-                    @if($clientName)
-                    <td>
-                      <a href="{{url('clients/'.$order->client)}}" class="sparkbar" data-color="#00a65a" data-height="20">{{$clientName->first_name}}{{$clientName->last_name}}</a>
-                    </td>
-                    @endif
-                    <!-- <td><span class="label label-success">{{$order->price_override}}</span></td> -->
-                    
+                    <td><a href="{{url('orders/'.$element->order_id)}}">{{$element->order_number}}</a></td>
+                    <td>{{$element->product_name}}</td>
+                    <td>{{$element->order_created_at}}</td>
+                    <td><a href="{{$element->client_profile_link}}" target="_blank" class="sparkbar" data-color="#00a65a" data-height="20">{{$element->client_name}}</a></td>
                   </tr>
                    @endforeach
-
-
                    </tbody>
                 </table>
               </div>

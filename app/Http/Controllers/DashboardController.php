@@ -38,8 +38,8 @@ class DashboardController extends Controller
         $pendingPaymentCurrency1 = $this->getPendingPaymentsCur1($allowedCurrencies1);
         $users = $this->getAllUsers();
         $count_users = User::count();
-        $productSoldInLast30Days = $this->recentProductSold();
-        $orders = $this->getRecentOrders();
+        $productSoldInLast30Days = $this->getRecentProductSold();
+        $recentOrders = $this->getRecentOrders();
         $subscriptions = $this->expiringSubscription();
         $invoices = $this->getRecentInvoices();
         $products = $this->totalProductsSold();
@@ -56,7 +56,7 @@ class DashboardController extends Controller
         $endSubscriptionDate = date('Y-m-d', strtotime('+3 months'));
         $status = $request->input('status');
 
-        return view('themes.default1.common.dashboard', compact('allowedCurrencies1','allowedCurrencies2','currency1Symbol','currency2Symbol','totalSalesCurrency2', 'totalSalesCurrency1', 'yearlySalesCurrency2', 'yearlySalesCurrency1', 'monthlySalesCurrency2', 'monthlySalesCurrency1', 'users','count_users', 'productSoldInLast30Days','orders','subscriptions','invoices', 'products', 'arrayCountList', 'pendingPaymentCurrency2', 'pendingPaymentCurrency1', 'status','startSubscriptionDate',
+        return view('themes.default1.common.dashboard', compact('allowedCurrencies1','allowedCurrencies2','currency1Symbol','currency2Symbol','totalSalesCurrency2', 'totalSalesCurrency1', 'yearlySalesCurrency2', 'yearlySalesCurrency1', 'monthlySalesCurrency2', 'monthlySalesCurrency1', 'users','count_users', 'productSoldInLast30Days','recentOrders','subscriptions','invoices', 'products', 'arrayCountList', 'pendingPaymentCurrency2', 'pendingPaymentCurrency1', 'status','startSubscriptionDate',
                  'endSubscriptionDate'));
     }
 
@@ -207,13 +207,13 @@ class DashboardController extends Controller
      * List of products sold in past 30 days.
      * @return Collection
      */
-    public function recentProductSold()
+    public function getRecentProductSold()
     {
         $dateBefore = (new Carbon('-30 days'))->toDateTimeString();
 
         return Order::join("products", "products.id", "=", "orders.product")
-            ->select(\DB::raw("COUNT(*) as order_count"), "products.id as product_id", "products.name as product_name",
-                "orders.created_at as order_created_at", "products.image as product_image")
+            ->select(\DB::raw("COUNT(*) as order_count"), "products.id as product_id",
+                "orders.created_at as order_created_at", "products.image as product_image", "products.name as product_name")
             ->where('order_status', 'executed')
             ->where('orders.created_at', '>', $dateBefore)
             ->orderBy("order_count", "desc")
@@ -231,12 +231,22 @@ class DashboardController extends Controller
      */
     public function getRecentOrders()
     {
-        $dayUtc = new Carbon('-30 days');
-        $minus30Day = $dayUtc->toDateTimeString();
-        $recentOrders = Order::where('created_at', '>', $minus30Day)->orderBy('created_at', 'desc')
-                 ->where('price_override', '>', 0)->get();
+        $dateBefore = (new Carbon('-30 days'))->toDateTimeString();
 
-        return $recentOrders;
+        return Order::with("user:id,first_name,last_name,email,user_name")
+            ->join("products", "products.id", "=", "orders.product")
+            ->select("products.id as product_id", "orders.created_at as order_created_at", "number as order_number", "client", "orders.id as order_id"
+                , "products.name as product_name")
+            ->where('orders.created_at', '>', $dateBefore)
+            ->where('price_override', '>', 0)
+            ->orderBy("orders.id", "desc")
+            ->get()->map(function($element){
+                $element->order_created_at = (new DateTime($element->order_created_at))->format('M j, Y, g:i a ');
+                $element->client_name = $element->user->first_name . " ". $element->user->last_name;
+                $element->client_profile_link = \Config("app.url")."/clients/".$element->user->id;
+                unset($element->user);
+                return $element;
+            });
     }
 
     /**

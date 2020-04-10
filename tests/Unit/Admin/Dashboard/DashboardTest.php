@@ -86,8 +86,37 @@ class DashboardTest extends DBTestCase
         $this->assertCount(1, [$user]);
     }
 
+
     /** @group Dashboard */
-    public function test_recentProductSold_getsRecentlySoldProductInLast30DaysWithCorrespondingCount()
+    public function test_getRecentOrders_getsRecentlySoldProductInLast30DaysWithCorrespondingCount()
+    {
+        $this->getLoggedInUser("admin");
+        $productOne = Product::create(["name"=> "one"]);
+        $productTwo = Product::create(["name"=> "two"]);
+        $orderOne = $productOne->order()->create(["client"=>$this->user->id, "number"=> 1, "price_override"=>10]);
+        $orderTwo = $productOne->order()->create(["client"=>$this->user->id, "number"=> 2, "price_override"=>20]);
+
+        // creating one without price override
+        $productOne->order()->create(["client"=>$this->user->id, "number"=> 3]);
+        $orderFour = $productTwo->order()->create(["client"=>$this->user->id, "number"=> 4, "price_override"=>10]);
+        $response = $this->classObject->getRecentOrders();
+
+        $this->assertCount(3, $response);
+
+        $this->assertEquals($orderFour->number, $response[0]->order_number);
+        $this->assertEquals($productTwo->name, $response[0]->product_name);
+        $this->assertEquals($this->user->first_name . " ". $this->user->last_name, $response[0]->client_name);
+
+        $this->assertEquals($orderTwo->number, $response[1]->order_number);
+        $this->assertEquals($productOne->name, $response[1]->product_name);
+        $this->assertEquals($this->user->first_name . " ". $this->user->last_name, $response[1]->client_name);
+
+        $this->assertEquals($orderOne->number, $response[2]->order_number);
+        $this->assertEquals($productOne->name, $response[2]->product_name);
+        $this->assertEquals($this->user->first_name . " ". $this->user->last_name, $response[2]->client_name);
+    }
+
+    public function test_getRecentProductSold_getsRecentlySoldProductInLast30DaysWithCorrespondingCount()
     {
         $this->getLoggedInUser("admin");
         $productOne = Product::create(["name"=> "one"]);
@@ -96,13 +125,10 @@ class DashboardTest extends DBTestCase
         $productOne->order()->create(["client"=>$this->user->id, "number"=> 2, "order_status"=>"executed"]);
         $productOne->order()->create(["client"=>$this->user->id, "number"=> 3]);
         $productTwo->order()->create(["client"=>$this->user->id, "number"=> 4, "order_status"=>"executed"]);
-
-        $response = $this->classObject->recentProductSold();
-
+        $response = $this->classObject->getRecentProductSold();
         $this->assertEquals(2, $response[0]->order_count);
         $this->assertEquals($productOne->id, $response[0]->product_id);
         $this->assertEquals($productOne->name, $response[0]->product_name);
-
         $this->assertEquals(1, $response[1]->order_count);
         $this->assertEquals($productTwo->id, $response[1]->product_id);
         $this->assertEquals($productTwo->name, $response[1]->product_name);

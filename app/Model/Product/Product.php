@@ -44,7 +44,7 @@ class Product extends BaseModel
 
     public function order()
     {
-        return $this->hasMany('App\Model\Order\Order');
+        return $this->hasMany('App\Model\Order\Order', "product");
     }
 
     public function subscription()

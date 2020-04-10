@@ -2,9 +2,9 @@
 
 namespace Tests\Unit\Admin\Dashboard;
 
+use App\Http\Controllers\DashboardController;
 use App\Model\Order\Invoice;
-use App\Model\Order\InvoiceItem;
-use App\Model\Order\Order;
+use App\Model\Product\Product;
 use App\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\DBTestCase;
@@ -12,6 +12,15 @@ use Tests\DBTestCase;
 class DashboardTest extends DBTestCase
 {
     use DatabaseTransactions;
+
+    private $classObject;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->classObject = new DashboardController();
+    }
 
     /** @group Dashboard */
     public function test_getTotalSalesInInr_gettingTotalSalesInr()
@@ -78,18 +87,24 @@ class DashboardTest extends DBTestCase
     }
 
     /** @group Dashboard */
-    public function test_recentProductSold_getProductsRecentlySold()
+    public function test_recentProductSold_getsRecentlySoldProductInLast30DaysWithCorrespondingCount()
     {
-        $this->getLoggedInUser();
-        $user = $this->user;
-        $invoice = factory(Invoice::class)->create(['user_id'=>$user->id]);
-        $invoiceItem = InvoiceItem::create([
-            'invoice_id'=> $invoice->id,
-        ]);
-        $order = factory(Order::class)->create(['invoice_id'=> $invoice->id, 'invoice_item_id'=>$invoiceItem->id,
-            'client'                                        => $user->id, ]);
-        $controller = new \App\Http\Controllers\DashboardController();
-        $response = $controller->recentProductSold();
-        $this->assertCount(1, [$order]);
+        $this->getLoggedInUser("admin");
+        $productOne = Product::create(["name"=> "one"]);
+        $productTwo = Product::create(["name"=> "two"]);
+        $productOne->order()->create(["client"=>$this->user->id, "number"=> 1, "order_status"=>"executed"]);
+        $productOne->order()->create(["client"=>$this->user->id, "number"=> 2, "order_status"=>"executed"]);
+        $productOne->order()->create(["client"=>$this->user->id, "number"=> 3]);
+        $productTwo->order()->create(["client"=>$this->user->id, "number"=> 4, "order_status"=>"executed"]);
+
+        $response = $this->classObject->recentProductSold();
+
+        $this->assertEquals(2, $response[0]->order_count);
+        $this->assertEquals($productOne->id, $response[0]->product_id);
+        $this->assertEquals($productOne->name, $response[0]->product_name);
+
+        $this->assertEquals(1, $response[1]->order_count);
+        $this->assertEquals($productTwo->id, $response[1]->product_id);
+        $this->assertEquals($productTwo->name, $response[1]->product_name);
     }
 }

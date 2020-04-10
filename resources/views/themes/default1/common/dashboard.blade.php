@@ -166,28 +166,17 @@ Dashboard
            <div class="box-body">
               <div class="scrollit">
               <ul class="products-list product-list-in-box">
-                   @foreach($arraylists as $key => $value)
-                   <?php
-                   $dayUtc = Carbon\Carbon::now()->subMonth();
-                    $minus30Day = $dayUtc->toDateTimeString();
-                   $imgLink= \App\Model\Product\Product::where('name',$key)->value('image');
-                   $productId = \App\Model\Product\Product::where('name',$key)->value('id');
-                   $dateUtc = \App\Model\Order\Order::where('product',$productId)->orderBy('created_at','desc')->pluck('created_at')->first();
-                    $date1 = new DateTime($dateUtc);
-                    $date = $date1->format('M j, Y, g:i a ');
-                    // $orderPrice = \App\Model\Order\Order::where('product',$productId)->where('created_at', '>',$minus30Day )->orderBy('created_at','desc')->pluck('price_override')->all();
-                    // $orderSum = array_sum($orderPrice);
-                     ?>
+                   @foreach($productSoldInLast30Days as $element)
                     <li class="item">
                   <div class="product-img">
-                    <img src="{{$imgLink}}" alt="Product Image">
+                    <img src="{{$element->product_image}}" alt="Product Image">
                   </div>
                   <div class="product-info">
-                 <a href="#" class="product-title">{{$key}}<strong> &nbsp; &nbsp;  <td><span class="label label-success">{{$value}}</span></td></strong>
+                 <a href="#" class="product-title">{{$element->product_name}}<strong> &nbsp; &nbsp;  <td><span class="label label-success">{{$element->order_count}}</span></td></strong>
                     </a>
                        <span class="product-description">
                        	<strong> Last Purchase: </strong>
-                          {{$date}}
+                          {{$element->order_created_at}}
                         </span>
 
                   </div>

@@ -6,10 +6,13 @@ use App\Model\Common\Setting;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
 use App\Model\Payment\Currency;
+use App\Model\Product\Product;
 use App\Model\Product\Subscription;
 use App\User;
 use Carbon\Carbon;
+use DateTime;
 use Illuminate\Http\Request;
+use phpDocumentor\Reflection\Types\Collection;
 
 class DashboardController extends Controller
 {
@@ -34,14 +37,8 @@ class DashboardController extends Controller
         $pendingPaymentCurrency2 = $this->getPendingPaymentsCur2($allowedCurrencies2);
         $pendingPaymentCurrency1 = $this->getPendingPaymentsCur1($allowedCurrencies1);
         $users = $this->getAllUsers();
-        $count_users = User::get()->count();
-        $productNameList = [];
-        $productSoldlists = $this->recentProductSold();
-        if (count($productSoldlists) > 0) {
-            $productNameList = $this->getProductNameList($productSoldlists);
-        }
-
-        $arraylists = array_count_values($productNameList);
+        $count_users = User::count();
+        $productSoldInLast30Days = $this->recentProductSold();
         $orders = $this->getRecentOrders();
         $subscriptions = $this->expiringSubscription();
         $invoices = $this->getRecentInvoices();
@@ -59,7 +56,7 @@ class DashboardController extends Controller
         $endSubscriptionDate = date('Y-m-d', strtotime('+3 months'));
         $status = $request->input('status');
 
-        return view('themes.default1.common.dashboard', compact('allowedCurrencies1','allowedCurrencies2','currency1Symbol','currency2Symbol','totalSalesCurrency2', 'totalSalesCurrency1', 'yearlySalesCurrency2', 'yearlySalesCurrency1', 'monthlySalesCurrency2', 'monthlySalesCurrency1', 'users','count_users', 'arraylists', 'productSoldlists','orders','subscriptions','invoices', 'products', 'arrayCountList', 'pendingPaymentCurrency2', 'pendingPaymentCurrency1', 'status','startSubscriptionDate',
+        return view('themes.default1.common.dashboard', compact('allowedCurrencies1','allowedCurrencies2','currency1Symbol','currency2Symbol','totalSalesCurrency2', 'totalSalesCurrency1', 'yearlySalesCurrency2', 'yearlySalesCurrency1', 'monthlySalesCurrency2', 'monthlySalesCurrency1', 'users','count_users', 'productSoldInLast30Days','orders','subscriptions','invoices', 'products', 'arrayCountList', 'pendingPaymentCurrency2', 'pendingPaymentCurrency1', 'status','startSubscriptionDate',
                  'endSubscriptionDate'));
     }
 
@@ -194,43 +191,39 @@ class DashboardController extends Controller
         return $grandTotal;
     }
 
-    // getPendingPaymentsInInr
-
     /**
      * Get the list of previous 20 registered users.
-     *
-     * @return type
+     * @return Collection
      */
     public function getAllUsers()
     {
-        $allUsers = User::orderBy('created_at', 'desc')->where('active', 1)->where('mobile_verified', 1)
-              ->take(20)
-              ->get()
-              ->toArray();
-
-        return $allUsers;
+        return User::orderBy('created_at', 'desc')->where('active', 1)->where('mobile_verified', 1)
+            ->select("id", "first_name", "last_name", "user_name", "profile_pic", "email", "created_at")
+            ->take(20)
+            ->get();
     }
 
     /**
      * List of products sold in past 30 days.
-     *
-     * @return type
+     * @return Collection
      */
     public function recentProductSold()
     {
-        try {
-            $dayUtc = new Carbon('-30 days');
-            $minus30Day = $dayUtc->toDateTimeString();
-            $product = [];
-            $orders = Order::where('order_status', 'executed')->where('created_at', '>', $minus30Day)->get();
-            foreach ($orders as $order) {
-                $product[] = $order->product()->first();
-            }
+        $dateBefore = (new Carbon('-30 days'))->toDateTimeString();
 
-            return $product;
-        } catch (\Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
+        return Order::join("products", "products.id", "=", "orders.product")
+            ->select(\DB::raw("COUNT(*) as order_count"), "products.id as product_id", "products.name as product_name",
+                "orders.created_at as order_created_at", "products.image as product_image")
+            ->where('order_status', 'executed')
+            ->where('orders.created_at', '>', $dateBefore)
+            ->orderBy("order_count", "desc")
+            ->orderBy("orders.created_at", "desc")
+            ->groupBy("products.id")
+            ->get()->map(function($element){
+                $element->product_image = (new Product())->getImageAttribute($element->product_image);
+                $element->order_created_at = (new DateTime($element->order_created_at))->format('M j, Y, g:i a ');
+                return $element;
+            });
     }
 
     /**

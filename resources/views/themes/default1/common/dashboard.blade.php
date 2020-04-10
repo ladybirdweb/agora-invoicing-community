@@ -285,34 +285,19 @@ Dashboard
                     @if(count($subscriptions)==0)
                     <tr>
                       <td></td> <td></td>
-                  <td><h5>No Orders Expiring in Next 30 Days</h5></td>
+                        <td><h5>No Orders Expiring in Next 30 Days</h5></td>
                      <td></td>
                     </tr>
                    @else
                     
-                  @foreach($subscriptions as $subscription)
-
-
-                   <?php
-                  $todayDate = Carbon\Carbon::now();
-                  $clientName = \App\User::where('id', $subscription->user_id)->select('first_name','last_name')->first();
-                  $orderNo = \App\Model\Order\Order::where('id',$subscription->order_id)->value('number');
-                  $expiry = $subscription->update_ends_at;
-                  $date = new DateTime($expiry); 
-                  $tz = \Auth::user()->timezone()->first()->name;
-                  $date->setTimezone(new DateTimeZone($tz)); 
-                  $expDate = $date->format('M j, Y ');
-                  $product =  \App\Model\Product\Product::where('id',$subscription->product_id)->value('name');
-                  $daysLeft = date_diff($todayDate,$date)->format('%a days');
-                   
-                    ?>
+                  @foreach($subscriptions as $element)
 
                   <tr>
-                    <td><a href="{{url('clients/'.$subscription->user_id)}}">{{$clientName->first_name}} {{$clientName->last_name}}</a></td>
-                    <td><a href="{{url('orders/'.$subscription->order_id)}}">{{$orderNo}}</a></td>
-                    <td>{{$expDate}}</td>
-                    <td>{{$daysLeft}}</td>
-                     <td>{{$product}}</td>
+                    <td><a href="{{$element->client_profile_link}}">{{ $element->client_name }}</a></td>
+                    <td><a href="{{$element->order_link}}">{{$element->order_number}}</a></td>
+                    <td>{{$element->subscription_ends_at}}</td>
+                    <td>{{$element->remaining_days}}</td>
+                     <td>{{$element->product_name}}</td>
                   </tr>
                   @endforeach
                   @endif
@@ -372,33 +357,20 @@ Dashboard
                      <td></td>
                     </tr>
                    @endif
-                    @foreach($invoices as $invoice)
-                    <?php
-                   $currency  = \App\Model\Payment\Currency::where('code',$invoice->currency)->pluck('code')->first();
-                   $payment = \App\Model\Order\Payment::where('invoice_id',$invoice->id)->select('amount')->get();
-                   $c=count($payment);
-                   $sum= 0;
-                   for($i=0 ;  $i <= $c-1 ; $i++)
-                   {
-                     $sum = $sum + $payment[$i]->amount;
-                   }
-                    $pendingAmount = ($invoice->grand_total)-($sum);
-                    $status =($pendingAmount <= 0) ? 'Success' :'Pending';
-                    $clientName = \App\User::where('id',$invoice->user_id)->select('first_name','last_name')->first();
-                    ?>
+                    @foreach($invoices as $element)
                   <tr>
-                    <td><a href="{{url('invoices/show?invoiceid='.$invoice->id)}}">{{$invoice->number}}</a></td>
+                    <td><a href="{{url('invoices/show?invoiceid='.$element->invoice_id)}}">{{$element->invoice_number}}</a></td>
 
-                    <td>{{currency_format($invoice->grand_total,$code=$currency)}}  </td>
-                     <td>{{$clientName->first_name}} {{$clientName->last_name}}</td>
-                    <td>{{currency_format($sum,$code=$currency)}}  </td>
+                    <td>{{$element->grand_total}}</td>
+                     <td>{{$element->client_name}}</td>
+                    <td>{{$element->paid}}  </td>
                     <td>
-                      <div class="sparkbar" data-color="#00a65a" data-height="20">{{currency_format($pendingAmount,$code=$currency)}}</div>
+                      <div class="sparkbar" data-color="#00a65a" data-height="20">{{$element->balance}}</div>
                     </td>
-                   @if ($status == 'Success')
-                    <td><span class="label label-success">{{$status}}</span></td>
-                   @elseif ($status == 'Pending')
-                    <td><span class="label label-danger">{{$status}}</span></td>
+                   @if ($element->status == 'Success')
+                    <td><span class="label label-success">{{$element->status}}</span></td>
+                   @elseif ($element->status == 'Pending')
+                    <td><span class="label label-danger">{{$element->status}}</span></td>
                    @endif
                    
                   </tr>
@@ -433,30 +405,20 @@ Dashboard
             <div class="box-body">
               <div class="scrollit">
               <ul class="products-list product-list-in-box">
-                 @foreach($arrayCountList as $key => $value)
-                 <?php
-                 $imgLink= \App\Model\Product\Product::where('name',$key)->value('image');
-                  $productId = \App\Model\Product\Product::where('name',$key)->value('id');
-                  $dateUtc = \App\Model\Order\Order::where('product',$productId)->orderBy('created_at','desc')->pluck('created_at')->first();
-                  $date1 = new DateTime($dateUtc);
-                  $date = $date1->format('M j, Y, g:i a ');
-                 ?>
-                <li class="item">
-                  <div class="product-img">
-                    <img src="{{$imgLink}}" alt="Product Image">
-                  </div>
-                   <div class="product-info">
-
-                    <a href="#" class="product-title">{{$key}}<strong> &nbsp; &nbsp;  <td><span class="label label-success">{{$value}}</span></td></strong>
-
-                    </a>
-                       <span class="product-description">
-                        <strong> Last Purchase: </strong>
-                          {{$date}}
-                        </span>
-
-                  </div>
-                </li>
+                 @foreach($allSoldProducts as $element)
+                      <li class="item">
+                          <div class="product-img">
+                              <img src="{{$element->product_image}}" alt="Product Image">
+                          </div>
+                          <div class="product-info">
+                              <a href="#" class="product-title">{{$element->product_name}}<strong> &nbsp; &nbsp;  <td><span class="label label-success">{{$element->order_count}}</span></td></strong>
+                              </a>
+                              <span class="product-description">
+                            <strong> Last Purchase: </strong>
+                              {{$element->order_created_at}}
+                            </span>
+                          </div>
+                      </li>
                 @endforeach
               </ul>
             </div>

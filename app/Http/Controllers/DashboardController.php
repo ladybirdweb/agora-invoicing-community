@@ -36,27 +36,26 @@ class DashboardController extends Controller
         $monthlySalesCurrency1 = $this->getMonthlySalesInCur1($allowedCurrencies1);
         $pendingPaymentCurrency2 = $this->getPendingPaymentsCur2($allowedCurrencies2);
         $pendingPaymentCurrency1 = $this->getPendingPaymentsCur1($allowedCurrencies1);
+
         $users = $this->getAllUsers();
         $count_users = User::count();
-        $productSoldInLast30Days = $this->getRecentProductSold();
+        $productSoldInLast30Days = $this->getSoldProducts(30);
         $recentOrders = $this->getRecentOrders();
-        $subscriptions = $this->expiringSubscription();
+        $subscriptions = $this->getExpiringSubscriptions();
+
         $invoices = $this->getRecentInvoices();
-        $products = $this->totalProductsSold();
-        $productName = [];
-        if (!empty($products)) {
-            foreach ($products as $product) {
-                if ($product && $product->name) {
-                    $productName[] = $product->name;
-                }
-            }
-        }
-        $arrayCountList = array_count_values($productName);
+
+        $allSoldProducts = $this->getSoldProducts();
+
         $startSubscriptionDate = date('Y-m-d');
         $endSubscriptionDate = date('Y-m-d', strtotime('+3 months'));
         $status = $request->input('status');
 
-        return view('themes.default1.common.dashboard', compact('allowedCurrencies1','allowedCurrencies2','currency1Symbol','currency2Symbol','totalSalesCurrency2', 'totalSalesCurrency1', 'yearlySalesCurrency2', 'yearlySalesCurrency1', 'monthlySalesCurrency2', 'monthlySalesCurrency1', 'users','count_users', 'productSoldInLast30Days','recentOrders','subscriptions','invoices', 'products', 'arrayCountList', 'pendingPaymentCurrency2', 'pendingPaymentCurrency1', 'status','startSubscriptionDate',
+        return view('themes.default1.common.dashboard', compact('allowedCurrencies1','allowedCurrencies2',
+            'currency1Symbol','currency2Symbol','totalSalesCurrency2', 'totalSalesCurrency1', 'yearlySalesCurrency2',
+            'yearlySalesCurrency1', 'monthlySalesCurrency2', 'monthlySalesCurrency1', 'users','count_users',
+            'productSoldInLast30Days','recentOrders','subscriptions','invoices', 'allSoldProducts',
+            'pendingPaymentCurrency2', 'pendingPaymentCurrency1', 'status','startSubscriptionDate',
                  'endSubscriptionDate'));
     }
 
@@ -204,12 +203,15 @@ class DashboardController extends Controller
     }
 
     /**
-     * List of products sold in past 30 days.
-     * @return Collection
+     * List of products sold in past $noOfDays days. If no parameter is passed, it will give all products
+     * @param int $noOfDays
+     * @return \Illuminate\Database\Eloquent\Collection
+     * @throws \Exception
      */
-    public function getRecentProductSold()
+    public function getSoldProducts(int $noOfDays = null)
     {
-        $dateBefore = (new Carbon('-30 days'))->toDateTimeString();
+        // ASSUMING THIS CODE WON"T STAY ALIVE TILL year 3000
+        $dateBefore = $noOfDays ? (new Carbon("-$noOfDays days"))->toDateTimeString() : Carbon::now()->startOfMillennium()->toDateTimeString();
 
         return Order::join("products", "products.id", "=", "orders.product")
             ->select(\DB::raw("COUNT(*) as order_count"), "products.id as product_id",
@@ -250,61 +252,60 @@ class DashboardController extends Controller
     }
 
     /**
+     * List of orders expiring in next 30 days.
+     */
+    public function getExpiringSubscriptions()
+    {
+        $today = Carbon::now()->toDateTimeString();
+        $plus30Day = (new Carbon('+30 days'))->toDateTimeString();
+
+        return Subscription::with("user:id,first_name,last_name,email,user_name")
+            ->join("orders", "subscriptions.order_id", "=", "orders.id")
+            ->join("products", "products.id", "=", "orders.product")
+            ->select("subscriptions.id","products.id as product_id", "orders.number as order_number", "orders.id as order_id",
+                "products.name as product_name", "subscriptions.update_ends_at as subscription_ends_at", "user_id")
+            ->where('price_override', '>', 0)
+            ->where('update_ends_at', '>', $today)
+            ->where('update_ends_at', '<=', $plus30Day)
+            ->orderBy("subscription_ends_at", "asc")
+            ->groupBy("subscriptions.id")
+            ->get()->map(function($element) {
+                $element->subscription_ends_at = (new DateTime($element->subscription_ends_at))->format('M j, Y, g:i a ');
+                $element->client_name = $element->user->first_name . " ". $element->user->last_name;
+                $element->client_profile_link = \Config("app.url")."/clients/".$element->user->id;
+                $element->order_link = \Config("app.url")."/orders/".$element->order_id;
+                $element->remaining_days = date_diff(new DateTime(), new DateTime($element->subscription_ends_at))->format('%a days');
+                unset($element->user);
+                return $element;
+            });
+    }
+
+    /**
      * List of Invoices of past 30 ays.
      */
     public function getRecentInvoices()
     {
-        $dayUtc = new Carbon('-30 days');
-        $minus30Day = $dayUtc->toDateTimeString();
-        $recentInvoice = Invoice::where('created_at', '>', $minus30Day)->orderBy('created_at', 'desc')
-                        ->where('grand_total', '>', 0)->get();
+        $dateBefore = (new Carbon('-30 days'))->toDateTimeString();
 
-        return $recentInvoice;
-    }
-
-    /**
-     * List of orders expiring in next 30 days.
-     */
-    public function expiringSubscription()
-    {
-        $dayUtc = new Carbon('+30 days');
-        $today = Carbon::now()->toDateTimeString();
-        $plus30Day = $dayUtc->toDateTimeString();
-        $subsEnds = Subscription::where('update_ends_at', '>', $today)->where('update_ends_at', '<=', $plus30Day)->whereHas('order', function($query) {
-                    $query->where('price_override', '>', 0);
-                })
-        ->orderBy('update_ends_at', 'ASC')->get();
-
-        return $subsEnds;
-    }
-
-    /**
-     * List of the products sold.
-     */
-    public function totalProductsSold()
-    {
-        $product = [];
-        $orders = Order::where('order_status', 'executed')->get();
-        foreach ($orders as $order) {
-            $product[] = $order->product()->first();
-        }
-
-        return $product;
-    }
-
-    public function getProductNameList($productSoldlists)
-    {
-        try {
-            $productNameList = [];
-            foreach ($productSoldlists as $productSoldlist) {
-                if ($productSoldlist && $productSoldlist->name) {
-                    $productNameList[] = $productSoldlist->name;
-                }
-            }
-
-            return $productNameList;
-        } catch (\Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
+        return Invoice::with("user:id,first_name,last_name,email,user_name")
+            ->leftJoin("currencies", "invoices.currency", "=", "currencies.code")
+            ->leftJoin("payments", "invoices.id", "=", "payments.invoice_id")
+            ->select("invoices.id as invoice_id", "invoices.number as invoice_number", "invoices.grand_total",
+                \DB::raw("SUM(payments.amount) as paid"), "invoices.user_id", "currencies.code as currency_code")
+            ->where("invoices.created_at", ">", $dateBefore)
+            ->where("invoices.grand_total", ">", 0)
+            ->groupBy("invoices.id")
+            ->orderBy("invoices.created_at", "desc")
+            ->get()->map(function($element) {
+                $element->balance = (int)($element->grand_total - $element->paid);
+                $element->status = $element->balance > 0 ? "Pending": "Success";
+                $element->grand_total = currency_format((int)$element->grand_total, $element->currency_code);
+                $element->paid = currency_format((int)$element->paid, $element->currency_code);
+                $element->balance = currency_format((int)$element->balance, $element->currency_code);
+                $element->client_name = $element->user->first_name . " ". $element->user->last_name;
+                $element->client_profile_link = \Config("app.url")."/clients/".$element->user->id;
+                unset($element->user);
+                return $element;
+            });
     }
 }

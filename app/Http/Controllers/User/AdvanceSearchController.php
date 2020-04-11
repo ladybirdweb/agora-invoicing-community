@@ -91,8 +91,10 @@ class AdvanceSearchController extends AdminOrderInvoiceController
     public function getNamUserCom($join, $name, $username, $company)
     {
         if ($name) {
-            $join = $join->where('first_name', 'LIKE', '%'.$name.'%')
-                    ->orWhere('last_name', 'LIKE', '%'.$name.'%');
+            $join->where(function ($q) use ($name) {
+                $name = trim($name);
+                $q->whereRaw("concat(first_name, ' ', last_name) like ?", ["%$name%"]);
+            });
         }
         if ($username) {
             $join = $join->where('user_name', 'LIKE', '%'.$username.'%');

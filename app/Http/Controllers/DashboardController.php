@@ -12,7 +12,6 @@ use App\User;
 use Carbon\Carbon;
 use DateTime;
 use Illuminate\Http\Request;
-use phpDocumentor\Reflection\Types\Collection;
 
 class DashboardController extends Controller
 {
@@ -192,7 +191,7 @@ class DashboardController extends Controller
 
     /**
      * Get the list of previous 20 registered users.
-     * @return Collection
+     * @return \Illuminate\Database\Eloquent\Collection
      */
     public function getAllUsers()
     {
@@ -230,6 +229,7 @@ class DashboardController extends Controller
 
     /**
      * List of orders of past 30 days.
+     * @return \Illuminate\Database\Eloquent\Collection
      */
     public function getRecentOrders()
     {
@@ -253,6 +253,7 @@ class DashboardController extends Controller
 
     /**
      * List of orders expiring in next 30 days.
+     * @return \Illuminate\Database\Eloquent\Collection
      */
     public function getExpiringSubscriptions()
     {
@@ -282,6 +283,7 @@ class DashboardController extends Controller
 
     /**
      * List of Invoices of past 30 ays.
+     * @return \Illuminate\Database\Eloquent\Collection
      */
     public function getRecentInvoices()
     {

@@ -49,13 +49,12 @@ trait RegistersUsers
             $address = strip_tags($request->input('address'));
             $company =  strip_tags($request->input('company'));
             $zip = strip_tags($request->input('zip'));
-            $user_name = strip_tags($request->input('user_name'));
+            $user_name = strip_tags($request->input('email'));
             $country = $request->input('country');
             $currency = Setting::find(1)->default_currency;
             $currency_symbol = Setting::find(1)->default_symbol;
             $cont = new \App\Http\Controllers\Front\PageController();
             $location = $cont->getLocation();
-            
             $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['iso_code']);
             $states = \App\Model\Common\State::pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
             $state_code = $location['iso_code'] . "-" . $location['state'];

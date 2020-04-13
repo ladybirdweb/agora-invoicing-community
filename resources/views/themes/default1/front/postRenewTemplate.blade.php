@@ -90,20 +90,7 @@
                             </tfoot>
     </table>
     <br>
-    
-            <section class="woocommerce-customer-details">
 
-    
-    <h2 style="margin-bottom:20px;">Billing address</h2>
-
-    <strong>
-      {{\Auth::user()->first_name}} {{\Auth::user()->last_name}}<br>{{\Auth::user()->address}}<br>{{\Auth::user()->town}} - {{\Auth::user()->zip}}<br> {{$state}} <br>
-                   {{\Auth::user()->mobile}} <br><br>
-                 
-                   
-            </strong>
-
-</section>
     
 
 </section>

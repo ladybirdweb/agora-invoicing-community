@@ -62,7 +62,9 @@ active
                                 To
                                 <address>
                                     <strong>{{$user->first_name}} {{$user->last_name}}</strong><br>
+                                    @if($user->address)
                                     {{$user->address}}<br/>
+                                    @endif
                                     {{$user->town}}<br/>
                                     @if(key_exists('name',App\Http\Controllers\Front\CartController::getStateByCode($user->state)))
                                     {{App\Http\Controllers\Front\CartController::getStateByCode($user->state)['name']}}

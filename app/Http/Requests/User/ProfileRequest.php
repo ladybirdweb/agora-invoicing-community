@@ -33,8 +33,6 @@ class ProfileRequest extends Request
                     'email'                  => 'required',
                     'mobile'                 => 'required',
                     'mobile_code'            => 'required',
-                    'address'                => 'required',
-                    'zip'                    => 'required|numeric',
                     'user_name'              => 'required|unique:users,user_name,'.$userid,
                     'profile_pic'            => 'sometimes|mimes:jpeg,jpg,png,gif|max:100000',
 
@@ -51,8 +49,6 @@ class ProfileRequest extends Request
                      'email'                 => 'required',
                     'mobile_code'            => 'required',
                     'mobile'                 => 'required',
-                    'zip'                    => 'required|numeric',
-                    'address'                => 'required|max:300',
                     'country'                => 'required|exists:countries,country_code_char2',
                     'profile_pic'            => 'sometimes|mimes:jpeg,jpg,png,gif|max:100000',
 
@@ -73,16 +69,10 @@ class ProfileRequest extends Request
                     'email'                 => 'required|email|unique:users',
                     'company'               => 'required',
                     'mobile'                => 'required',
-                    'user_name'             => 'required|unique:users|min:3|max:50',
                     'terms'                 => 'accepted',
-                    'zip'                   => 'required',
                     'password'              => 'required|min:6',
                     'password_confirmation' => 'required|same:password',
-                    'address'               => 'required|max:300',
                     'country'               => 'required|exists:countries,country_code_char2',
-                    'bussiness'             => 'required',
-                    'company_type'          => 'required',
-                    'company_size'          => 'required',
                     'g-recaptcha-response-1'=> 'sometimes|required|captcha',
 
         ];
@@ -92,7 +82,6 @@ class ProfileRequest extends Request
     public function messages()
     {
         return[
-            'bussiness.required'             => 'Choose one Industry',
             'mobile_code.required'           => 'Enter Country code (mobile)',
             'g-recaptcha-response-1.required'=> 'Robot Verification Failed. Please Try Again',
         ];

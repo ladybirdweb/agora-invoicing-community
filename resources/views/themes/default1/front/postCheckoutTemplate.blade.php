@@ -83,21 +83,16 @@
                     </tr>
                             </tfoot>
     </table>
-    <br>
     
-            <section class="woocommerce-customer-details">
+          
 
-    
-    <h2 style="margin-bottom:20px;">Billing address</h2>
-
-    <strong>
-       {{\Auth::user()->first_name}} {{\Auth::user()->last_name}}<br>{{\Auth::user()->address}}<br>{{\Auth::user()->town}} - {{\Auth::user()->zip}}<br> {{$state}} <br>
+ 
                     <br><br>
                      <a href= product/download/{{$product->id}}/{{$invoice->number}} " class="btn btn-sm btn-primary btn-xs" style="margin-bottom:15px;"><i class="fa fa-download" style="color:white;"> </i>&nbsp;&nbsp;Download the Latest Version here</a>
-            </strong>
+          
 
     
-</section>
+
     
 
 </section>

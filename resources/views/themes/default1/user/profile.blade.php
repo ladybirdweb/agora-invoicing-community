@@ -196,7 +196,7 @@ Edit Profile
 
                 <div class="form-group {{ $errors->has('address') ? 'has-error' : '' }}">
                     <!-- phone number -->
-                    {!! Form::label('address',null,['class' => 'required'],Lang::get('message.address')) !!}
+                    {!! Form::label('address',null,Lang::get('message.address')) !!}
                     {!! Form::textarea('address',null,['class' => 'form-control']) !!}
 
                 </div>
@@ -253,7 +253,7 @@ Edit Profile
                 </div>
                 <div class="form-group {{ $errors->has('zip') ? 'has-error' : '' }}">
                     <!-- mobile -->
-                    {!! Form::label('zip',null,['class' => 'required'],Lang::get('message.zip')) !!}
+                    {!! Form::label('zip',null,Lang::get('message.zip')) !!}
                     {!! Form::text('zip',null,['class' => 'form-control']) !!}
 
                 </div>

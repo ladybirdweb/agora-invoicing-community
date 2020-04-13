@@ -177,7 +177,7 @@ input:checked + .slider:before {
                          <div class="form-row">
                         <div class="form-group {{ $errors->has('address') ? 'has-error' : '' }}">
                             <!-- phone number -->
-                            <label for"address" class="required">Address</label>
+                            <label for"address">Address</label>
                             {!! Form::textarea('address',null,['class' => 'form-control input-lg','id'=>'Address']) !!}
                                <h6 id="addressCheck"></h6>
                         </div>
@@ -232,7 +232,7 @@ input:checked + .slider:before {
                         </div>
                          <div class="form-row">
                         <div class="form-group col {{ $errors->has('zip') ? 'has-error' : '' }}">
-                            <label for"zip" class="required">Zip/Postal Code</label>
+                            <label for"zip">Zip/Postal Code</label>
                             {!! Form::text('zip',null,['class' => 'form-control input-lg','id'=>'Zip']) !!}
                              <h6 id="zipCheck"></h6>
                         </div>

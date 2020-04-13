@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Model\Common\StatusSetting;
 use App\Model\Payment\TaxProductRelation;
 use App\Model\Product\Product;
+use App\Model\Order\Invoice;
 use App\Model\Product\ProductUpload;
 use Bugsnag;
 use Illuminate\Http\Request;
@@ -133,12 +134,12 @@ class ExtendedBaseProductController extends Controller
         }
     }
 
-    public function adminDownload($id, $invoice = '', $api = false)
+    public function adminDownload($id, $invoice = '')
     {
         try {
-            // $release = $this->getLinkToDownload($role, $invoice, $id);
-            $release = $this->downloadProductAdmin($id);
-            $name = Product::where('id', $id)->value('name');
+            if ($this->downloadValidation($allowDownLoad=true,$id,$invoice)) {
+                $release = $this->downloadProductAdmin($id);
+                $name = Product::where('id', $id)->value('name');
             if (is_array($release) && array_key_exists('type', $release)) {
                 header('Location: '.$release['release']);
                 exit;
@@ -149,15 +150,33 @@ class ExtendedBaseProductController extends Controller
                 header('Content-Length: '.filesize($release));
                 readfile($release);
                 // ob_end_clean();
+                }
+            } else {
+               throw new \Exception(\Lang::get('message.no_permission_for_action'));
             }
-        } catch (\Exception $e) {
-            if ($api) {
-                return response()->json(['error'=>$e->getMessage()]);
-            }
+           } catch (\Exception $e) {
             Bugsnag::notifyException($e);
-
             return redirect()->back()->with('fails', $e->getMessage());
         }
+    }
+
+    /**
+     * Checks whether order exists or not for a product and invoice
+     *
+     * @date   2020-04-13T14:53:04+0530
+     *
+     * @param  int $id                  Product id
+     * @param  int $invoice             Invoice Number
+     * @param  boolean $allowDownload     
+     * @return boolean
+     */
+    private function downloadValidation(bool $allowDownload,$id,$invoice) 
+    {
+        if(\Auth::user()->role =='user') {
+        $invoice = Invoice::where('number', $invoice)->first();//If invoice number sent as parameter exists
+        $allowDownload = $invoice ? $invoice->order()->value('product') == $id ?:false : false; //If the order for the product sent in the parameter exists
+     }
+       return $allowDownload;
     }
 
     /**

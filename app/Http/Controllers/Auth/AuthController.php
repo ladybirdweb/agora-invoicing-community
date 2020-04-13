@@ -414,13 +414,4 @@ class AuthController extends BaseAuthController
         }
     }
 
-    public function updateUserEmail(Request $request)
-    {
-        $email = $request->oldemail;
-        $newEmail = $request->newemail;
-        User::where('email', $email)->update(['email'=>$newEmail]);
-        $message = 'User email updated successfully';
-
-        return $message;
-    }
 }

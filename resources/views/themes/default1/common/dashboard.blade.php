@@ -165,28 +165,31 @@ Dashboard
             <!-- /.box-header -->
            <div class="box-body">
               <div class="scrollit">
-              <ul class="products-list product-list-in-box">
+
+                  @if(!count($productSoldInLast30Days))
+                      <tr>
+                          <td><p class="text-center">No records found</p></td>
+                      </tr>
+                  @else
+                  <ul class="products-list product-list-in-box">
                    @foreach($productSoldInLast30Days as $element)
-                    <li class="item">
-                  <div class="product-img">
-                    <img src="{{$element->product_image}}" alt="Product Image">
-                  </div>
-                  <div class="product-info">
-                 <a href="#" class="product-title">{{$element->product_name}}<strong> &nbsp; &nbsp;  <td><span class="label label-success">{{$element->order_count}}</span></td></strong>
-                    </a>
-                       <span class="product-description">
-                       	<strong> Last Purchase: </strong>
-                          {{$element->order_created_at}}
-                        </span>
+                        <li class="item">
+                          <div class="product-img">
+                            <img src="{{$element->product_image}}" alt="Product Image">
+                          </div>
+                          <div class="product-info">
+                         <a href="#" class="product-title">{{$element->product_name}}<strong> &nbsp; &nbsp;  <td><span class="label label-success">{{$element->order_count}}</span></td></strong>
+                            </a>
+                               <span class="product-description">
+                                <strong> Last Purchase: </strong>
+                                  {{$element->order_created_at}}
+                                </span>
 
-                  </div>
-                </li>
-                  @endforeach
-
-                <!-- /.item -->
-
-                <!-- /.item -->
-              </ul>
+                          </div>
+                        </li>
+                          @endforeach
+                      </ul>
+                  @endif
             </div>
             </div>
             <!-- /.box-body -->
@@ -217,27 +220,34 @@ Dashboard
             <div class="box-body">
               <div class="table-responsive">
                 <div class="scrollit">
-                <table class="table no-margin">
-                  <thead>
-                  <tr>
-                    <th>Order No</th>
-                    <th>Item</th>
-                    <th>Date</th>
-                    <th>Client</th>
-                    <!-- <th>Total</th> -->
-                  </tr>
-                  </thead>
-                  <tbody>
-                    @foreach($recentOrders as $element)
-                   <tr>
-                    <td><a href="{{url('orders/'.$element->order_id)}}">{{$element->order_number}}</a></td>
-                    <td>{{$element->product_name}}</td>
-                    <td>{{$element->order_created_at}}</td>
-                    <td><a href="{{$element->client_profile_link}}" target="_blank" class="sparkbar" data-color="#00a65a" data-height="20">{{$element->client_name}}</a></td>
-                  </tr>
-                   @endforeach
-                   </tbody>
-                </table>
+
+                    @if(!count($recentOrders))
+                        <tr>
+                            <td><p class="text-center">No records found</p></td>
+                        </tr>
+                    @else
+                    <table class="table no-margin">
+                      <thead>
+                      <tr>
+                        <th>Order No</th>
+                        <th>Item</th>
+                        <th>Date</th>
+                        <th>Client</th>
+                        <!-- <th>Total</th> -->
+                      </tr>
+                      </thead>
+                      <tbody>
+                        @foreach($recentOrders as $element)
+                       <tr>
+                        <td><a href="{{url('orders/'.$element->order_id)}}">{{$element->order_number}}</a></td>
+                        <td>{{$element->product_name}}</td>
+                        <td>{{$element->order_created_at}}</td>
+                        <td><a href="{{$element->client_profile_link}}" target="_blank" class="sparkbar" data-color="#00a65a" data-height="20">{{$element->client_name}}</a></td>
+                      </tr>
+                       @endforeach
+                       </tbody>
+                    </table>
+                    @endif
               </div>
               </div>
               <!-- /.table-responsive -->
@@ -269,41 +279,39 @@ Dashboard
             <div class="box-body">
               <div class="table-responsive">
                  <div class="scrollit">
-                <table class="table no-margin">
-                  <thead>
-                  <tr>
-                  	<th>User</th>
-                    <th>Order No</th>
-                    <th>Expiry</th>
-                    <th>Days Left</th>
-                    <th>Product</th>
-                   </tr>
-                  </thead>
-                    
 
-                  <tbody>
-                    @if(count($subscriptions)==0)
-                    <tr>
-                      <td></td> <td></td>
-                        <td><h5>No Orders Expiring in Next 30 Days</h5></td>
-                     <td></td>
-                    </tr>
-                   @else
-                    
-                  @foreach($subscriptions as $element)
+                 @if(!count($subscriptions))
+                     <tr>
+                         <td><p class="text-center">No records found</p></td>
+                     </tr>
+                 @else
+                     <table class="table no-margin">
+                      <thead>
+                      <tr>
+                        <th>User</th>
+                        <th>Order No</th>
+                        <th>Expiry</th>
+                        <th>Days Left</th>
+                        <th>Product</th>
+                       </tr>
+                      </thead>
 
-                  <tr>
-                    <td><a href="{{$element->client_profile_link}}">{{ $element->client_name }}</a></td>
-                    <td><a href="{{$element->order_link}}">{{$element->order_number}}</a></td>
-                    <td>{{$element->subscription_ends_at}}</td>
-                    <td>{{$element->remaining_days}}</td>
-                     <td>{{$element->product_name}}</td>
-                  </tr>
-                  @endforeach
-                  @endif
-               
-				           </tbody>
-                </table>
+
+                      <tbody>
+
+                      @foreach($subscriptions as $element)
+
+                      <tr>
+                        <td><a href="{{$element->client_profile_link}}">{{ $element->client_name }}</a></td>
+                        <td><a href="{{$element->order_link}}">{{$element->order_number}}</a></td>
+                        <td>{{$element->subscription_ends_at}}</td>
+                        <td>{{$element->remaining_days}}</td>
+                         <td>{{$element->product_name}}</td>
+                      </tr>
+                      @endforeach
+                      </tbody>
+                    </table>
+                 @endif
               </div>
               </div>
               <!-- /.table-responsive -->
@@ -338,45 +346,45 @@ Dashboard
             <div class="box-body">
               <div class="table-responsive">
                  <div class="scrollit">
-                <table class="table no-margin">
-                  <thead>
-                  <tr>
-                    <th>Invoice No.</th>
-                    <th>Total</th>
-                    <th>Client</th>
-                    <th>Paid </th>
-                    <th>Balance</th>
-                    <th>Status</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                    @if(count($invoices)==0)
-                    <tr>
-                      <td></td> <td></td>
-                  <td><h5>No Paid Invoices in Last 30 Days</h5></td>
-                     <td></td>
-                    </tr>
-                   @endif
-                    @foreach($invoices as $element)
-                  <tr>
-                    <td><a href="{{url('invoices/show?invoiceid='.$element->invoice_id)}}">{{$element->invoice_number}}</a></td>
 
-                    <td>{{$element->grand_total}}</td>
-                     <td>{{$element->client_name}}</td>
-                    <td>{{$element->paid}}  </td>
-                    <td>
-                      <div class="sparkbar" data-color="#00a65a" data-height="20">{{$element->balance}}</div>
-                    </td>
-                   @if ($element->status == 'Success')
-                    <td><span class="label label-success">{{$element->status}}</span></td>
-                   @elseif ($element->status == 'Pending')
-                    <td><span class="label label-danger">{{$element->status}}</span></td>
-                   @endif
-                   
-                  </tr>
-                    @endforeach
-                  </tbody>
-                </table>
+                 @if(!count($invoices))
+                     <tr>
+                         <td><p class="text-center">No records found</p></td>
+                     </tr>
+                 @else
+                     <table class="table no-margin">
+                      <thead>
+                      <tr>
+                        <th>Invoice No.</th>
+                        <th>Total</th>
+                        <th>Client</th>
+                        <th>Paid </th>
+                        <th>Balance</th>
+                        <th>Status</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                        @foreach($invoices as $element)
+                      <tr>
+                        <td><a href="{{url('invoices/show?invoiceid='.$element->invoice_id)}}">{{$element->invoice_number}}</a></td>
+
+                        <td>{{$element->grand_total}}</td>
+                         <td>{{$element->client_name}}</td>
+                        <td>{{$element->paid}}  </td>
+                        <td>
+                          <div class="sparkbar" data-color="#00a65a" data-height="20">{{$element->balance}}</div>
+                        </td>
+                       @if ($element->status == 'Success')
+                        <td><span class="label label-success">{{$element->status}}</span></td>
+                       @elseif ($element->status == 'Pending')
+                        <td><span class="label label-danger">{{$element->status}}</span></td>
+                       @endif
+
+                      </tr>
+                        @endforeach
+                      </tbody>
+                    </table>
+                 @endif
               </div>
               </div>
               <!-- /.table-responsive -->
@@ -404,23 +412,30 @@ Dashboard
             <!-- /.box-header -->
             <div class="box-body">
               <div class="scrollit">
-              <ul class="products-list product-list-in-box">
-                 @foreach($allSoldProducts as $element)
-                      <li class="item">
-                          <div class="product-img">
-                              <img src="{{$element->product_image}}" alt="Product Image">
-                          </div>
-                          <div class="product-info">
-                              <a href="#" class="product-title">{{$element->product_name}}<strong> &nbsp; &nbsp;  <td><span class="label label-success">{{$element->order_count}}</span></td></strong>
-                              </a>
-                              <span class="product-description">
-                            <strong> Last Purchase: </strong>
-                              {{$element->order_created_at}}
-                            </span>
-                          </div>
-                      </li>
-                @endforeach
-              </ul>
+                  @if(!count($allSoldProducts))
+                      <tr>
+                          <td><p class="text-center">No records found</p></td>
+                      </tr>
+                  @else
+
+                  <ul class="products-list product-list-in-box">
+                     @foreach($allSoldProducts as $element)
+                          <li class="item">
+                              <div class="product-img">
+                                  <img src="{{$element->product_image}}" alt="Product Image">
+                              </div>
+                              <div class="product-info">
+                                  <a href="#" class="product-title">{{$element->product_name}}<strong> &nbsp; &nbsp;  <td><span class="label label-success">{{$element->order_count}}</span></td></strong>
+                                  </a>
+                                  <span class="product-description">
+                                <strong> Last Purchase: </strong>
+                                  {{$element->order_created_at}}
+                                </span>
+                              </div>
+                          </li>
+                      @endforeach
+                    </ul>
+                  @endif
             </div>
             </div>
             <!-- /.box-body -->

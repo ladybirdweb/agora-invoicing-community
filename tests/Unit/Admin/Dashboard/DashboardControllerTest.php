@@ -11,7 +11,7 @@ use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\DBTestCase;
 
-class DashboardTest extends DBTestCase
+class DashboardControllerTest extends DBTestCase
 {
     use DatabaseTransactions;
 

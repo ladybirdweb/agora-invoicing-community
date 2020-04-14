@@ -222,7 +222,7 @@ class DashboardController extends Controller
             ->groupBy("products.id")
             ->get()->map(function($element){
                 $element->product_image = (new Product())->getImageAttribute($element->product_image);
-                $element->order_created_at = (new DateTime($element->order_created_at))->format('M j, Y, g:i a ');
+                $element->order_created_at = getTimeInLoggedInUserTimeZone($element->order_created_at);
                 return $element;
             });
     }
@@ -243,7 +243,7 @@ class DashboardController extends Controller
             ->where('price_override', '>', 0)
             ->orderBy("orders.id", "desc")
             ->get()->map(function($element){
-                $element->order_created_at = (new DateTime($element->order_created_at))->format('M j, Y, g:i a ');
+                $element->order_created_at = getTimeInLoggedInUserTimeZone($element->order_created_at);
                 $element->client_name = $element->user->first_name . " ". $element->user->last_name;
                 $element->client_profile_link = \Config("app.url")."/clients/".$element->user->id;
                 unset($element->user);
@@ -271,11 +271,11 @@ class DashboardController extends Controller
             ->orderBy("subscription_ends_at", "asc")
             ->groupBy("subscriptions.id")
             ->get()->map(function($element) {
-                $element->subscription_ends_at = (new DateTime($element->subscription_ends_at))->format('M j, Y, g:i a ');
                 $element->client_name = $element->user->first_name . " ". $element->user->last_name;
                 $element->client_profile_link = \Config("app.url")."/clients/".$element->user->id;
                 $element->order_link = \Config("app.url")."/orders/".$element->order_id;
                 $element->remaining_days = date_diff(new DateTime(), new DateTime($element->subscription_ends_at))->format('%a days');
+                $element->subscription_ends_at = getTimeInLoggedInUserTimeZone($element->subscription_ends_at);
                 unset($element->user);
                 return $element;
             });

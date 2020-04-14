@@ -71,3 +71,22 @@ function successResponse($message = '', $data = '', $statusCode = 200)
 
     return response()->json($response, $statusCode);
 }
+
+
+/**
+ * Gets time in logged in user's timezone
+ * @param string $dateTimeString
+ * @param string $format
+ * @return string
+ * @throws Exception
+ */
+function getTimeInLoggedInUserTimeZone(string $dateTimeString, $format = 'M j, Y, g:i a')
+{
+    // caching for 4 seconds so for consecutive queries, it will be readily available. And even if someone updates their
+    // timezone, it will start showing the new timezone after 4 seconds
+    $timezone = Cache::remember('timezone_'.Auth::user()->id, 5, function(){
+        return isset(Auth::user()->timezone) ? Auth::user()->timezone->name : 'UTC';
+    });
+
+    return ((new DateTime($dateTimeString))->setTimezone(new DateTimeZone($timezone)))->format($format);
+}

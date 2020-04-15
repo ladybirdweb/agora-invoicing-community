@@ -85,7 +85,7 @@ function getTimeInLoggedInUserTimeZone(string $dateTimeString, $format = 'M j, Y
     // caching for 4 seconds so for consecutive queries, it will be readily available. And even if someone updates their
     // timezone, it will start showing the new timezone after 4 seconds
     $timezone = Cache::remember('timezone_'.Auth::user()->id, 5, function(){
-        return isset(Auth::user()->timezone) ? Auth::user()->timezone->name : 'UTC';
+        return Auth::user()->timezone->name;
     });
 
     return ((new DateTime($dateTimeString))->setTimezone(new DateTimeZone($timezone)))->format($format);

@@ -53,7 +53,7 @@ class ExtendedOrderController extends Controller
             $this->domain($domain, $join);
             $this->paidOrUnpaid($paidUnpaid,$join);
             $this->allInstallations($allInstallation,$join);
-            $this->getSelectedVersionOrders($version,$join);
+            $this->getSelectedVersionOrders($join);
             $join = $join->orderBy('created_at', 'desc')
            ->select(
                'orders.id',
@@ -73,26 +73,26 @@ class ExtendedOrderController extends Controller
     }
 
 
-     /**
+    /**
      * Searches for order for selected versions
      *
+     * @param $baseQuery
+     * @return  $join
      * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
-     *
-     *
-     * @param  string $version
-     * @param  App\Model\Order $join The order instance
-     *
-     * @return $join
      */
-    private function getSelectedVersionOrders($version,$join)
+    private function getSelectedVersionOrders($baseQuery)
     {
-        if($version) {
-            $currentVer = ($version[0] == 'v') ? $version : 'v'.$version;
-            $join = $join->whereHas('subscription', function($query) use($currentVer) {
-                    $query->where('version', '=', $currentVer);
-            });
+        $versionLessThanEqual = \Request::input("version_less_than_equal");
+
+        $versionGreaterThanEqual = \Request::input("version_greater_than_equal");
+        if($versionLessThanEqual){
+            $baseQuery->where("version", "<=", $versionLessThanEqual);
         }
-        return $join;
+
+        if($versionGreaterThanEqual){
+            $baseQuery->where("version", ">=", $versionGreaterThanEqual);
+        }
+        return $baseQuery;
     }
 
     /**

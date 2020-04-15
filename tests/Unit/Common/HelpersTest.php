@@ -10,13 +10,6 @@ use Cache;
 
 class HelpersTest extends DBTestCase
 {
-    public function test_getTimeInLoggedInUserTimeZone_whenUserTimezoneIsNull_shouldConsiderTimezoneAsUTC()
-    {
-        $this->getLoggedInUser("admin");
-        $this->user->timezone_id = null;
-        $this->assertEquals("Jan 1, 2001, 12:00 am", getTimeInLoggedInUserTimeZone(Carbon::now()->startOfMillennium()));
-    }
-
     public function test_getTimeInLoggedInUserTimeZone_whenUserTimezoneIsPresent_shouldConsiderTimezoneAsUserTimezone()
     {
         $this->getLoggedInUser("admin");

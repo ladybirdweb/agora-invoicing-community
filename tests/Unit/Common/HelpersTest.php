@@ -25,4 +25,29 @@ class HelpersTest extends DBTestCase
 
         getTimeInLoggedInUserTimeZone(Carbon::now()->startOfMillennium());
     }
+
+    public function test_getDateHtml_whenDateTimeStringIsPassedAsNull_shouldReturnDash()
+    {
+        $this->getLoggedInUser("admin");
+
+        $this->assertEquals("--", getDateHtml(null));
+    }
+
+    public function test_getDateHtml_whenValidDateTimeStringIsPassedAsNull_shouldReturnFormattedDateInHTMLForm()
+    {
+        $this->getLoggedInUser("admin");
+
+        $now = Carbon::now();
+
+        $expectedDateTime = $now->clone()->setTimezone("Asia/Kolkata")->format('M j, Y, g:i a');
+        $expectedDate = $now->clone()->setTimezone("Asia/Kolkata")->format('M j, Y');
+        $this->assertEquals("<span title='$expectedDateTime'>$expectedDate</span>", getDateHtml($now->toDateTimeString()));
+    }
+
+    public function test_getDateHtml_whenAnInValidAndNonEmptyDateIsPassed_shouldGiveReturnEmptyDate()
+    {
+        $this->getLoggedInUser("admin");
+
+        $this->assertEquals("--", getDateHtml("invalid_format"));
+    }
 }

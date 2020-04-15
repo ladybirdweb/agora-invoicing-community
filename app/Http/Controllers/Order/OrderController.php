@@ -94,16 +94,7 @@ class OrderController extends BaseOrderController
 
     public function getOrders(Request $request)
     {
-        $order_no = $request->input('order_no');
-        $product_id = $request->input('product_id');
-        $expiry = $request->input('expiry');
-        $expiryTill = $request->input('expiryTill');
-        $from = $request->input('from');
-        $till = $request->input('till');
-        $domain = $request->input('domain');
-        $paidUnpaid = $request->input('p_un');
-        $allInstallation = $request->input('act_ins');
-        $query = $this->advanceSearch($order_no, $product_id, $expiry, $expiryTill, $from, $till, $domain, $paidUnpaid, $allInstallation);
+        $query = $this->advanceSearch($request);
 
         return \DataTables::of($query)
             ->setTotalRecords($query->count())

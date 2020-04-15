@@ -78,7 +78,6 @@ function successResponse($message = '', $data = '', $statusCode = 200)
  * @param string $dateTimeString
  * @param string $format
  * @return string
- * @throws Exception
  */
 function getTimeInLoggedInUserTimeZone(string $dateTimeString, $format = 'M j, Y, g:i a')
 {
@@ -91,6 +90,11 @@ function getTimeInLoggedInUserTimeZone(string $dateTimeString, $format = 'M j, Y
     return ((new DateTime($dateTimeString))->setTimezone(new DateTimeZone($timezone)))->format($format);
 }
 
+/**
+ * Gets date in a formatted HTML
+ * @param string|null $dateTimeString
+ * @return string
+ */
 function getDateHtml(string $dateTimeString = null)
 {
     try {

@@ -221,7 +221,7 @@ View All Orders
             processing: true,
             serverSide: true,
              stateSave: false,
-            order: [[ 8, "asc" ]],
+            order: [[ 7, "desc" ]],
              ajax: '{!! route('get-orders',"order_no=$request->order_no&product_id=$request->product_id&expiry=$request->expiry&expiryTill=$request->expiryTill&from=$request->from&till=$request->till&domain=$request->domain&p_un=p_un&act_ins=$request->act_inst&version_less_than_equal=$request->version_less_than_equal&version_greater_than_equal=$request->version_greater_than_equal" ) !!}',
             "oLanguage": {
                 "sLengthMenu": "_MENU_ Records per page",

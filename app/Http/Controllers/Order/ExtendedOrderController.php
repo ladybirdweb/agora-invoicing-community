@@ -9,6 +9,7 @@ use App\Model\Order\Order;
 use Carbon\Carbon;
 use App\Model\Product\Subscription;
 use Bugsnag;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
 
 class ExtendedOrderController extends Controller
@@ -16,53 +17,27 @@ class ExtendedOrderController extends Controller
     /**
      * Perform Advance Search for Orders Page.
      *
+     * @param Request $request
+     * @return array
      * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
      *
      * @date   2019-01-19T01:35:08+0530
      *
-     * @param string $order_no
-     * @param string $product_id
-     * @param string $expiry
-     * @param string $expiryTill
-     * @param string $from
-     * @param string $till
-     * @param string $domain
-     *
-     * @return array
      */
-    public function advanceSearch(
-        $order_no = '',
-        $product_id = '',
-        $expiry = '',
-        $expiryTill = '',
-        $from = '',
-        $till = '',
-        $domain = '',
-        $paidUnpaid = '',
-        $allInstallation = ''
-    ) {
+    public function advanceSearch(Request $request) {
         try {
-            $join = Order::leftJoin('subscriptions', 'orders.id', '=', 'subscriptions.order_id')
-                ->leftJoin("users", 'orders.client', "=","users.id")
-                ->leftJoin("products", 'orders.product', "=","products.id");
-            ($this->orderNum($order_no, $join));
-            $this->product($product_id, $join);
-            $this->expiry($expiryTill, $expiry, $join);
-            $this->expiryTill($expiry, $expiryTill, $join);
-            $this->orderFrom($till, $from, $join);
-            $this->orderTill($from, $till, $join);
-            $this->domain($domain, $join);
-            $this->paidOrUnpaid($paidUnpaid,$join);
-            $this->allInstallations($allInstallation,$join);
-            $this->getSelectedVersionOrders($join);
-            $join = $join->select(
-                   'orders.id', 'orders.created_at', 'price_override', 'order_status', 'product', 'number', 'serial_key',
-                   'subscriptions.update_ends_at as subscription_ends_at', "subscriptions.id as subscription_id", "subscriptions.version as product_version",
-                   'products.name as product_name', \DB::raw("concat(first_name, ' ', last_name) as client_name"), "client as client_id",
-                   'users.currency'
-                   );
-
-            return $join;
+            $baseQuery = $this->getBaseQueryForOrders();
+            $this->orderNum($request->input('order_no'), $baseQuery);
+            $this->product($request->input('product_id'), $baseQuery);
+            $this->expiry($request->input('expiryTill'), $request->input('expiry'), $baseQuery);
+            $this->expiryTill($request->input('expiry'), $request->input('expiryTill'), $baseQuery);
+            $this->orderFrom($request->input('till'), $request->input('from'), $baseQuery);
+            $this->orderTill($request->input('from'), $request->input('till'), $baseQuery);
+            $this->domain($request->input('domain'), $baseQuery);
+            $this->paidOrUnpaid($request->input('p_un'),$baseQuery);
+            $this->allInstallations($request->input('act_ins'),$baseQuery);
+            $this->getSelectedVersionOrders($baseQuery, $request->input("version_less_than_equal"), $request->input("version_greater_than_equal"));
+            return $baseQuery;
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -70,17 +45,33 @@ class ExtendedOrderController extends Controller
 
 
     /**
+     * Gets base query for orders
+     * @return Builder
+     */
+    private function getBaseQueryForOrders()
+    {
+        return Order::leftJoin('subscriptions', 'orders.id', '=', 'subscriptions.order_id')
+            ->leftJoin("users", 'orders.client', "=","users.id")
+            ->leftJoin("products", 'orders.product', "=","products.id")
+            ->select(
+                'orders.id', 'orders.created_at', 'price_override', 'order_status', 'product', 'number', 'serial_key',
+                'subscriptions.update_ends_at as subscription_ends_at', "subscriptions.id as subscription_id", "subscriptions.version as product_version",
+                'products.name as product_name', \DB::raw("concat(first_name, ' ', last_name) as client_name"), "client as client_id",
+                'users.currency'
+            );
+    }
+
+    /**
      * Searches for order for selected versions
      *
      * @param $baseQuery
-     * @return  $join
+     * @param $versionLessThanEqual
+     * @param $versionGreaterThanEqual
+     * @return Builder
      * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
      */
-    private function getSelectedVersionOrders($baseQuery)
+    private function getSelectedVersionOrders($baseQuery, $versionLessThanEqual, $versionGreaterThanEqual)
     {
-        $versionLessThanEqual = \Request::input("version_less_than_equal");
-
-        $versionGreaterThanEqual = \Request::input("version_greater_than_equal");
         if($versionLessThanEqual){
             $baseQuery->where("subscriptions.version", "<=", $versionLessThanEqual);
         }
@@ -199,8 +190,7 @@ class ExtendedOrderController extends Controller
             $tills = (new BaseSettingsController())->getDateFormat();
 
             $tillDate = $this->getTillDate($expiryFrom, $expiryTill, $tills);
-            $join = $join->whereBetween('subscriptions.update_ends_at', [$expiryFrom, $tillDate])
-            ->orderBy('subscriptions.update_ends_at', 'asc');
+            $join = $join->whereBetween('subscriptions.update_ends_at', [$expiryFrom, $tillDate]);
 
             return $join;
         }
@@ -220,8 +210,7 @@ class ExtendedOrderController extends Controller
             $exptill = (new BaseSettingsController())->getDateFormat($expiryTill);
             $froms = Subscription::first()->ends_at;
             $fromDate = $this->getFromDate($expiry, $froms);
-            $join = $join->whereBetween('subscriptions.update_ends_at', [$fromDate, $exptill])
-            ->orderBy('subscriptions.update_ends_at', 'asc');
+            $join = $join->whereBetween('subscriptions.update_ends_at', [$fromDate, $exptill]);
 
             return $join;
         }

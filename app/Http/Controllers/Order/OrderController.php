@@ -68,26 +68,22 @@ class OrderController extends BaseOrderController
     /**
      * Display a listing of the resource.
      *
-     * @return \Response
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index(Request $request)
     {
         try {
             $products = $this->product->where('id', '!=', 1)->pluck('name', 'id')->toArray();
-            $order_no = $request->input('order_no');
-            $product_id = $request->input('product_id');
-            $expiry = $request->input('expiry');
-            $expiryTill = $request->input('expiryTill');
-            $from = $request->input('from');
-            $till = $request->input('till');
-            $domain = $request->input('domain');
-            $paidUnpaid = $request->input('p_un');
-            $paidUnpaid = $request->input('p_un');
-            $allInstallation = $request->input('act_ins');
-            $version = $request->input('version');
+            $paidUnpaidOptions = ["paid"=>"Paid Products", "unpaid"=>"Unpaid Products"];
+            $activeInstallationOptions = ["paid_ins"=>"For Paid Products", "unpaid_ins"=>"For Unpaid Products", "all_ins"=>"All Products"];
+            $allVersions = Subscription::where("version", "!=", "")->whereNotNull("version")
+                ->orderBy("version", "desc")->groupBy("version")
+                ->pluck("version")->toArray();
+
+
             return view('themes.default1.order.index',
-                compact('products', 'order_no', 'product_id',
-                    'expiry', 'from', 'till', 'domain', 'expiryTill', 'paidUnpaid', 'allInstallation','version'));
+                compact('request', 'products', 'allVersions', 'activeInstallationOptions','paidUnpaidOptions'));
+
         } catch (\Exception $e) {
             Bugsnag::notifyExeption($e);
 
@@ -109,90 +105,99 @@ class OrderController extends BaseOrderController
         $version = $request->input('version');
         $query = $this->advanceSearch($order_no, $product_id, $expiry, $expiryTill, $from, $till, $domain, $paidUnpaid, $allInstallation, $version);
 
-        return \DataTables::of($query)
-                        ->setTotalRecords($query->count())
-                        ->addColumn('checkbox', function ($model) {
-                            return "<input type='checkbox' class='order_checkbox' value=".
-                            $model->id.' name=select[] id=check>';
-                        })
-                        ->addColumn('date', function ($model) {
-                            $date = $model->created_at;
+        try{
+            return \DataTables::of($query)
+                ->setTotalRecords($query->count())
+                ->addColumn('checkbox', function ($model) {
+                    return "<input type='checkbox' class='order_checkbox' value=".
+                        $model->id.' name=select[] id=check>';
+                })
+                ->addColumn('date', function ($model) {
+                    $date = $model->created_at;
 
-                            return "<span style='display:none'>$model->id</span>".$date;
-                        })
-                        ->addColumn('client', function ($model) {
-                            $user = $this->user->where('id', $model->client)->first();
-                            $first = $user->first_name;
-                            $last = $user->last_name;
-                            $id = $user->id;
+                    return "<span style='display:none'>$model->id</span>".$date;
+                })
+                ->addColumn('client', function ($model) {
+                    $user = $this->user->where('id', $model->client)->first();
+                    $first = $user->first_name;
+                    $last = $user->last_name;
+                    $id = $user->id;
 
-                            return '<a href='.url('clients/'.$id).'>'.ucfirst($first).' '.ucfirst($last).'<a>';
-                        })
-                        ->addColumn('productname', function ($model) {
-                            $productid = ($model->product);
-                            $order = $this->order->findOrFail($model->id);
-                            $subscription = $order->subscription()->first();
-                            $currenctVersion = $subscription->version;
-                            $productName = Product::where('id', $productid)->pluck('name')->first();
+                    return '<a href='.url('clients/'.$id).'>'.ucfirst($first).' '.ucfirst($last).'<a>';
+                })
+                ->addColumn('productname', function ($model) {
+                    $productid = ($model->product);
+                    $order = $this->order->findOrFail($model->id);
+                    $subscription = $order->subscription()->first();
+                    $currenctVersion = "";
+                    if($subscription){
+                        $currenctVersion = $subscription->version;
+                    }
 
-                            return $productName. ' ' .$currenctVersion;
-                        })
-                        ->addColumn('number', function ($model) {
-                            return ucfirst($model->number);
-                        })
-                        ->addColumn('price_override', function ($model) {
-                            $currency = $model->user()->find($model->client)->currency;
+                    $productName = Product::where('id', $productid)->pluck('name')->first();
 
-                            return currency_format($model->price_override, $code = $currency);
-                        })
-                        ->addColumn('order_status', function ($model) {
-                            return ucfirst($model->order_status);
-                        })
-                        // ->showColumns('number', 'price_override', 'order_status')
-                        ->addColumn('update_ends_at', function ($model) {
-                            $end = $this->getEndDate($model);
+                    return $productName. ' ' .$currenctVersion;
+                })
+                ->addColumn('number', function ($model) {
+                    return ucfirst($model->number);
+                })
+                ->addColumn('price_override', function ($model) {
+                    $currency = $model->user()->find($model->client)->currency;
 
-                            return $end;
-                        })
-                        ->addColumn('action', function ($model) {
-                            $sub = $model->subscription()->first();
-                            $status = $this->checkInvoiceStatusByOrderId($model->id);
-                            $url = $this->getUrl($model, $status, $sub);
+                    return currency_format($model->price_override, $code = $currency);
+                })
+                ->addColumn('order_status', function ($model) {
+                    return ucfirst($model->order_status);
+                })
+                // ->showColumns('number', 'price_override', 'order_status')
+                ->addColumn('update_ends_at', function ($model) {
+                    $end = $this->getEndDate($model);
 
-                            return $url;
-                        })
+                    return $end;
+                })
+                ->addColumn('action', function ($model) {
+                    $sub = $model->subscription()->first();
+                    $status = $this->checkInvoiceStatusByOrderId($model->id);
+                    $url = $this->getUrl($model, $status, $sub);
 
-                         ->filterColumn('created_at', function ($query, $keyword) {
-                             $sql = 'created_at like ?';
-                             $query->whereRaw($sql, ["%{$keyword}%"]);
-                         })
+                    return $url;
+                })
 
-                          ->filterColumn('client', function ($query, $keyword) {
-                              $sql = 'client like ?';
-                              $query->whereRaw($sql, ["%{$keyword}%"]);
-                          })
+                ->filterColumn('created_at', function ($query, $keyword) {
+                    $sql = 'created_at like ?';
+                    $query->whereRaw($sql, ["%{$keyword}%"]);
+                })
 
-                           ->filterColumn('number', function ($query, $keyword) {
-                               $sql = 'number like ?';
-                               $query->whereRaw($sql, ["%{$keyword}%"]);
-                           })
-                            ->filterColumn('price_override', function ($query, $keyword) {
-                                $sql = 'price_override like ?';
-                                $query->whereRaw($sql, ["%{$keyword}%"]);
-                            })
-                             ->filterColumn('order_status', function ($query, $keyword) {
-                                 $sql = 'order_status like ?';
-                                 $query->whereRaw($sql, ["%{$keyword}%"]);
-                             })
+                ->filterColumn('client', function ($query, $keyword) {
+                    $sql = 'client like ?';
+                    $query->whereRaw($sql, ["%{$keyword}%"]);
+                })
 
-                              ->filterColumn('update_ends_at', function ($query, $keyword) {
-                                  $sql = 'update_ends_at like ?';
-                                  $query->whereRaw($sql, ["%{$keyword}%"]);
-                              })
+                ->filterColumn('number', function ($query, $keyword) {
+                    $sql = 'number like ?';
+                    $query->whereRaw($sql, ["%{$keyword}%"]);
+                })
+                ->filterColumn('price_override', function ($query, $keyword) {
+                    $sql = 'price_override like ?';
+                    $query->whereRaw($sql, ["%{$keyword}%"]);
+                })
+                ->filterColumn('order_status', function ($query, $keyword) {
+                    $sql = 'order_status like ?';
+                    $query->whereRaw($sql, ["%{$keyword}%"]);
+                })
 
-                         ->rawColumns(['checkbox', 'date', 'client', 'number',
-                          'price_override', 'order_status', 'productname', 'update_ends_at', 'action', ])
-                        ->make(true);
+                ->filterColumn('update_ends_at', function ($query, $keyword) {
+                    $sql = 'update_ends_at like ?';
+                    $query->whereRaw($sql, ["%{$keyword}%"]);
+                })
+
+                ->rawColumns(['checkbox', 'date', 'client', 'number',
+                    'price_override', 'order_status', 'productname', 'update_ends_at', 'action', ])
+                ->make(true);
+        } catch(\Exception $e){
+            dd($e);
+        }
+
     }
 
     /**

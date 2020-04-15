@@ -31,20 +31,13 @@ View All Orders
             <div class="col-md-3 form-group">
                 <!-- first name -->
                 {!! Form::label('order_no','Order No:') !!}
-                {!! Form::text('order_no',null,['class' => 'form-control','id'=>'order_no']) !!}
+                {!! Form::text('order_no',$request->order_no,['class' => 'form-control','id'=>'order_no']) !!}
 
             </div>
             <div class="col-md-3 form-group">
                 <!-- first name -->
                 {!! Form::label('product_id','Product') !!}
-               <!--  {!! Form::select('product_id',[''=>'Select','Products'=>$products],null,['class' => 'form-control','id'=>'product_id']) !!} -->
-                   <select name="product_id"  class="form-control" id ="product_id">
-                             <option value="">Choose</option>
-                           @foreach($products as $key=>$product)
-                             <option value={{$key}}>{{$product}}</option>
-                          @endforeach
-                          </select>
-
+                {!! Form::select('product_id',[null => 'Select']+ $products, $request->product_id, ['class' => 'form-control','id'=>'product_id']) !!}
             </div>
             <div class="col-md-3 form-group">
                 <!-- first name -->
@@ -53,7 +46,7 @@ View All Orders
                   <div class="input-group-addon">
                     <i class="fa fa-calendar"></i>
                   </div>
-                  <input type="text" name="expiry" class="form-control expary" id="datepicker1">
+                  <input type="text" name="expiry" value="{!! $request->expiry !!}" class="form-control expary" id="datepicker1">
                 </div>
             </div>
              <div class="col-md-3 form-group">
@@ -63,7 +56,7 @@ View All Orders
                   <div class="input-group-addon">
                     <i class="fa fa-calendar"></i>
                   </div>
-                  <input type="text" name="expiryTill" class="form-control exparytill" id="datepicker2">
+                  <input type="text" name="expiryTill" value="{!! $request->expiryTill !!}" class="form-control exparytill" id="datepicker2">
                 </div>
          
             </div>
@@ -74,7 +67,7 @@ View All Orders
                   <div class="input-group-addon">
                     <i class="fa fa-calendar"></i>
                   </div>
-                  <input type="text" name="from" class="form-control payment_date" id="datepicker3">
+                  <input type="text" name="from" value="{!! $request->from !!}" class="form-control payment_date" id="datepicker3">
                 </div>
             </div>
             <div class="col-md-3 form-group">
@@ -84,45 +77,41 @@ View All Orders
                   <div class="input-group-addon">
                     <i class="fa fa-calendar"></i>
                   </div>
-                  <input type="text" name="till" class="form-control payment_till" id="datepicker4">
+                  <input type="text" name="till" value="{!! $request->till !!}" class="form-control payment_till" id="datepicker4">
                 </div>
             </div>
             <div class="col-md-3 form-group">
                 <!-- first name -->
                 {!! Form::label('domain','Domain') !!}
-                {!! Form::text('domain',null,['class' => 'form-control','id'=>'domain']) !!}
+                {!! Form::text('domain',$request->domain,['class' => 'form-control','id'=>'domain']) !!}
 
             </div>
 
             <div class="col-md-3 form-group">
                 <!-- first name -->
                 {!! Form::label('p_un','Paid/Unpaid Products') !!}
-                 <select name="p_un"  class="form-control">
-                    <option value="">Choose</option>
-                   <option value="paid">Paid Products</option>
-                  <option value="unpaid">Unpaid Products</option>
-                 </select>
-
+                {!! Form::select('p_un',[null => 'Select']+ $paidUnpaidOptions, $request->p_un, ['class' => 'form-control','id'=>'p_un']) !!}
             </div>
 
             <div class="col-md-3 form-group">
                 <!-- first name -->
                 {!! Form::label('act_inst','Active Installations') !!}
-                 <select name="act_ins"  class="form-control">
-                    <option value="">Choose</option>
-                   <option value="paid_ins">For Paid Products</option>
-                  <option value="unpaid_ins">For Unpaid Products</option>
-                  <option value="all_ins">All Products</option>
-                 </select>
-
+                {!! Form::select('act_inst',[null => 'Select']+ $activeInstallationOptions, $request->act_inst, ['class' => 'form-control','id'=>'act_inst']) !!}
             </div>
 
              <div class="col-md-3 form-group">
-                <!-- first name -->
-                {!! Form::label('version','Version') !!}
-                 {!! Form::text('version',null,['class' => 'form-control','placeholder'=>'v3.0.0', 'id'=>'ver']) !!}
+                 {!! Form::label('version_less_than_equal','Version less than or equal to') !!}
+                 {!! Form::select('version_less_than_equal',[null => 'Select']+ array_combine($allVersions, $allVersions), $request->version_less_than_equal,
+                ['class' => 'form-control','id'=>'version_less_than_equal']) !!}
 
+             </div>
+
+            <div class="col-md-3 form-group">
+                {!! Form::label('version_greater_than_equal','Version greater than or equal to') !!}
+                {!! Form::select('version_greater_than_equal',[null => 'Select']+ array_combine($allVersions, $allVersions), $request->version_less_than_equal,
+                ['class' => 'form-control','id'=>'version_greater_than_equal']) !!}
             </div>
+
         </div>
 
            <div class='row'>
@@ -232,7 +221,7 @@ View All Orders
             serverSide: true,
              stateSave: false,
             order: [[ 0, "desc" ]],
-             ajax: '{!! route('get-orders',"order_no=$order_no&product_id=$product_id&expiry=$expiry&expiryTill=$expiryTill&from=$from&till=$till&domain=$domain&p_un=$paidUnpaid&act_ins=$allInstallation&version=$version" ) !!}',
+             ajax: '{!! route('get-orders',"order_no=$request->order_no&product_id=$request->product_id&expiry=$request->expiry&expiryTill=$request->expiryTill&from=$request->from&till=$request->till&domain=$request->domain&p_un=p_un&act_ins=$request->act_ins&version_less_than_equal=$request->version_less_than_equal&version_greater_than_equal=$request->version_greater_than_equal" ) !!}',
             "oLanguage": {
                 "sLengthMenu": "_MENU_ Records per page",
                 "sSearch"    : "Search: ",

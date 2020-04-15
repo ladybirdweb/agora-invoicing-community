@@ -39,11 +39,12 @@ class ExtendedOrderController extends Controller
         $till = '',
         $domain = '',
         $paidUnpaid = '',
-        $allInstallation = '',
-        $version = ''
+        $allInstallation = ''
     ) {
         try {
-            $join = Order::leftJoin('subscriptions', 'orders.id', '=', 'subscriptions.order_id');
+            $join = Order::leftJoin('subscriptions', 'orders.id', '=', 'subscriptions.order_id')
+                ->leftJoin("users", 'orders.client', "=","users.id")
+                ->leftJoin("products", 'orders.product', "=","products.id");
             ($this->orderNum($order_no, $join));
             $this->product($product_id, $join);
             $this->expiry($expiryTill, $expiry, $join);
@@ -54,17 +55,12 @@ class ExtendedOrderController extends Controller
             $this->paidOrUnpaid($paidUnpaid,$join);
             $this->allInstallations($allInstallation,$join);
             $this->getSelectedVersionOrders($join);
-            $join = $join->orderBy('created_at', 'desc')
-           ->select(
-               'orders.id',
-               'orders.created_at',
-               'client',
-               'price_override',
-               'order_status',
-               'product',
-               'number',
-               'serial_key'
-           );
+            $join = $join->select(
+                   'orders.id', 'orders.created_at', 'price_override', 'order_status', 'product', 'number', 'serial_key',
+                   'subscriptions.update_ends_at as subscription_ends_at', "subscriptions.id as subscription_id", "subscriptions.version as product_version",
+                   'products.name as product_name', \DB::raw("concat(first_name, ' ', last_name) as client_name"), "client as client_id",
+                   'users.currency'
+                   );
 
             return $join;
         } catch (\Exception $ex) {
@@ -86,11 +82,11 @@ class ExtendedOrderController extends Controller
 
         $versionGreaterThanEqual = \Request::input("version_greater_than_equal");
         if($versionLessThanEqual){
-            $baseQuery->where("version", "<=", $versionLessThanEqual);
+            $baseQuery->where("subscriptions.version", "<=", $versionLessThanEqual);
         }
 
         if($versionGreaterThanEqual){
-            $baseQuery->where("version", ">=", $versionGreaterThanEqual);
+            $baseQuery->where("subscriptions.version", ">=", $versionGreaterThanEqual);
         }
         return $baseQuery;
     }

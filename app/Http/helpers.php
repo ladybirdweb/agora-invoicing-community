@@ -90,3 +90,19 @@ function getTimeInLoggedInUserTimeZone(string $dateTimeString, $format = 'M j, Y
 
     return ((new DateTime($dateTimeString))->setTimezone(new DateTimeZone($timezone)))->format($format);
 }
+
+function getDateHtml(string $dateTimeString = null)
+{
+    try {
+        if(!$dateTimeString){
+            return "--";
+        }
+
+        $date = getTimeInLoggedInUserTimeZone($dateTimeString, "M j, Y");
+        $dateTime = getTimeInLoggedInUserTimeZone($dateTimeString);
+        return "<span title='$dateTime'>$date</span>";
+
+    } catch(Exception $e){
+        return "--";
+    }
+}

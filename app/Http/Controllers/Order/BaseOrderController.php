@@ -18,28 +18,12 @@ class BaseOrderController extends ExtendedOrderController
 {
     use UpdateDates;
 
-    public function getEndDate($model)
-    {
-        $end = '--';
-        $ends = $model->subscription()->first();
-        if ($ends) {
-            if (strtotime($ends->update_ends_at) > 1) {
-                $date1 = new DateTime($ends->update_ends_at);
-                $tz = \Auth::user()->timezone()->first()->name;
-                $date1->setTimezone(new DateTimeZone($tz));
-                $end = $date1->format('M j, Y');
-            }
-        }
-
-        return $end;
-    }
-
-    public function getUrl($model, $status, $sub)
+    public function getUrl($model, $status, $subscriptionId)
     {
         $url = '';
         if ($status == 'success') {
-            if ($sub) {
-                $url = '<a href='.url('renew/'.$sub->id)." 
+            if ($subscriptionId) {
+                $url = '<a href='.url('renew/'.$subscriptionId)." 
                 class='btn btn-sm btn-primary btn-xs'><i class='fa fa-refresh'
                  style='color:white;'> </i>&nbsp;&nbsp;Renew</a>";
             }

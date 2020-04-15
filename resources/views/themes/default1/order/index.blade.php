@@ -108,7 +108,7 @@ View All Orders
 
             <div class="col-md-3 form-group">
                 {!! Form::label('version_greater_than_equal','Version greater than or equal to') !!}
-                {!! Form::select('version_greater_than_equal',[null => 'Select']+ array_combine($allVersions, $allVersions), $request->version_less_than_equal,
+                {!! Form::select('version_greater_than_equal',[null => 'Select']+ array_combine($allVersions, $allVersions), $request->version_greater_than_equal,
                 ['class' => 'form-control','id'=>'version_greater_than_equal']) !!}
             </div>
 
@@ -194,14 +194,15 @@ View All Orders
                  <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_delete"><i class="fa fa-trash"></i>&nbsp;&nbsp;Delete Selected</button><br /><br />
                     <thead><tr>
                         <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
-                         <th>Date</th>
                           <th>Client</th>
                            
                             <th>Order No</th>
-                            <th>Product with Current version</th>
+                            <th>Product</th>
+                            <th>Version</th>
                             <th>Total</th>
                             
                              <th>Status</th>
+                              <th>Order Date</th>
                               <th>Expiry</th>
                             <th>Action</th>
                         </tr></thead>
@@ -220,8 +221,8 @@ View All Orders
             processing: true,
             serverSide: true,
              stateSave: false,
-            order: [[ 0, "desc" ]],
-             ajax: '{!! route('get-orders',"order_no=$request->order_no&product_id=$request->product_id&expiry=$request->expiry&expiryTill=$request->expiryTill&from=$request->from&till=$request->till&domain=$request->domain&p_un=p_un&act_ins=$request->act_ins&version_less_than_equal=$request->version_less_than_equal&version_greater_than_equal=$request->version_greater_than_equal" ) !!}',
+            order: [[ 8, "asc" ]],
+             ajax: '{!! route('get-orders',"order_no=$request->order_no&product_id=$request->product_id&expiry=$request->expiry&expiryTill=$request->expiryTill&from=$request->from&till=$request->till&domain=$request->domain&p_un=p_un&act_ins=$request->act_inst&version_less_than_equal=$request->version_less_than_equal&version_greater_than_equal=$request->version_greater_than_equal" ) !!}',
             "oLanguage": {
                 "sLengthMenu": "_MENU_ Records per page",
                 "sSearch"    : "Search: ",
@@ -235,15 +236,15 @@ View All Orders
                 }
             ],
             columns: [
-             {data: 'checkbox', name: 'checkbox'},
-                {data: 'date', name: 'date'},
+                {data: 'checkbox', name: 'checkbox'},
                 {data: 'client', name: 'client'},
                 {data: 'number', name: 'number'},
-                {data: 'productname', name: 'productname'},
+                {data: 'product_name', name: 'product_name'},
+                {data: 'version', name: 'version'},
                 {data: 'price_override', name: 'price_override'},
-                  {data: 'order_status', name: 'order_status'},
-                  {data: 'update_ends_at', name: 'update_ends_at'},
-
+                {data: 'order_status', name: 'order_status'},
+                {data: 'order_date', name: 'order_date'},
+                {data: 'update_ends_at', name: 'update_ends_at'},
                 {data: 'action', name: 'action'}
             ],
             "fnDrawCallback": function( oSettings ) {

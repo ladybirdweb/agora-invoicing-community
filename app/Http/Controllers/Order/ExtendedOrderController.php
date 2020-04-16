@@ -36,7 +36,7 @@ class ExtendedOrderController extends Controller
             $this->domain($request->input('domain'), $baseQuery);
             $this->paidOrUnpaid($request->input('p_un'),$baseQuery);
             $this->allInstallations($request->input('act_ins'),$baseQuery);
-            $this->getSelectedVersionOrders($baseQuery, $request->input("version_less_than_equal"), $request->input("version_greater_than_equal"));
+            $this->getSelectedVersionOrders($baseQuery, $request->input("version_from"), $request->input("version_till"));
             return $baseQuery;
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -65,19 +65,19 @@ class ExtendedOrderController extends Controller
      * Searches for order for selected versions
      *
      * @param $baseQuery
-     * @param $versionLessThanEqual
-     * @param $versionGreaterThanEqual
+     * @param $versionFrom
+     * @param $versionTill
      * @return Builder
      * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
      */
-    private function getSelectedVersionOrders($baseQuery, $versionLessThanEqual, $versionGreaterThanEqual)
+    private function getSelectedVersionOrders($baseQuery, $versionFrom, $versionTill)
     {
-        if($versionLessThanEqual){
-            $baseQuery->where("subscriptions.version", "<=", $versionLessThanEqual);
+        if($versionFrom){
+            $baseQuery->where("subscriptions.version", ">=", $versionFrom);
         }
 
-        if($versionGreaterThanEqual){
-            $baseQuery->where("subscriptions.version", ">=", $versionGreaterThanEqual);
+        if($versionTill){
+            $baseQuery->where("subscriptions.version", "<=", $versionTill);
         }
         return $baseQuery;
     }

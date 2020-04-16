@@ -99,53 +99,28 @@ View All Orders
                 {!! Form::select('act_inst',[null => 'Select']+ $activeInstallationOptions, $request->act_inst, ['class' => 'form-control','id'=>'act_inst']) !!}
             </div>
 
-             <div class="col-md-3 form-group">
-                 {!! Form::label('version_less_than_equal','Version less than or equal to') !!}
-                 {!! Form::select('version_less_than_equal',[null => 'Select']+ array_combine($allVersions, $allVersions), $request->version_less_than_equal,
-                ['class' => 'form-control','id'=>'version_less_than_equal']) !!}
-
-             </div>
+            <div class="col-md-3 form-group">
+                {!! Form::label('version_from','Version From') !!}
+                {!! Form::select('version_from',[null => 'Select']+ array_combine($allVersions, $allVersions), $request->version_from,
+                ['class' => 'form-control','id'=>'version_from']) !!}
+            </div>
 
             <div class="col-md-3 form-group">
-                {!! Form::label('version_greater_than_equal','Version greater than or equal to') !!}
-                {!! Form::select('version_greater_than_equal',[null => 'Select']+ array_combine($allVersions, $allVersions), $request->version_greater_than_equal,
-                ['class' => 'form-control','id'=>'version_greater_than_equal']) !!}
-            </div>
+                 {!! Form::label('version_till','Version Till') !!}
+                 {!! Form::select('version_till',[null => 'Select']+ array_combine($allVersions, $allVersions), $request->version_till,
+                ['class' => 'form-control','id'=>'version_till']) !!}
+
+             </div>
 
         </div>
 
            <div class='row'>
                 <div class="col-md-6">
-                    <!-- {!! Form::submit('Search',['class'=>'btn btn-primary']) !!} -->
                       <button name="Search" type="submit"  class="btn btn-primary" data-loading-text="<i class='fa fa-search fa-spin fa-1x fa-fw'>&nbsp;</i> updating..."><i class="fa fa-search">&nbsp;&nbsp;</i>{!!Lang::get('Search')!!}</button>
                       &nbsp;
-                    <!-- {!! Form::submit('Reset',['class'=>'btn btn-danger','id'=>'reset']) !!} -->
-                     <button name="Reset" type="submit" id="reset" class="btn btn-danger" data-loading-text="<i class='fa fa-refresh fa-spin fa-1x fa-fw'>&nbsp;</i> updating..."><i class="fa fa-refresh">&nbsp;&nbsp;</i>{!!Lang::get('Reset')!!}</button>
-
-
+                    <a class="btn btn-danger" href="{!! url('/orders') !!}"><i class="fa fa-refresh">&nbsp;{!!Lang::get('Reset')!!}</i></a>
                 </div>
-            
-
         </div>
-<script type="text/javascript">
-                    $(function () {
-                    $('#reset').on('click', function () {
-                      
-                        $('#order_no').val('');
-                        $('#product_id').val('');
-                        $('.expary').val('');
-                        $('.exparytill').val('');
-                        $('.payment_date').val('');
-                        $('.payment_till').val('');
-                        $('#domain').val('');
-                        $('#ver').val('');
-                          
-                    });
-                });
-                </script>
-
-
-        {!! Form::close() !!}
     </div>
 </div>
 <div class="box box-primary">
@@ -220,9 +195,11 @@ View All Orders
         $('#order-table').DataTable({
             processing: true,
             serverSide: true,
-             stateSave: false,
-            order: [[ 7, "desc" ]],
-             ajax: '{!! route('get-orders',"order_no=$request->order_no&product_id=$request->product_id&expiry=$request->expiry&expiryTill=$request->expiryTill&from=$request->from&till=$request->till&domain=$request->domain&p_un=p_un&act_ins=$request->act_inst&version_less_than_equal=$request->version_less_than_equal&version_greater_than_equal=$request->version_greater_than_equal" ) !!}',
+            stateSave: false,
+            // if in request sort field is present, it will take that else default order
+            // need to stringify the sort_order, else it will be considered as a javascript variable
+            order: [[ {!! $request->sort_field ?: 7 !!}, {!! "'".$request->sort_order."'" ?: "'desc'" !!} ]],
+             ajax: '{!! route('get-orders',"order_no=$request->order_no&product_id=$request->product_id&expiry=$request->expiry&expiryTill=$request->expiryTill&from=$request->from&till=$request->till&domain=$request->domain&p_un=$request->p_un&act_ins=$request->act_inst&version_from=$request->version_from&version_till=$request->version_till" ) !!}',
             "oLanguage": {
                 "sLengthMenu": "_MENU_ Records per page",
                 "sSearch"    : "Search: ",

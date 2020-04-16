@@ -4,6 +4,7 @@ namespace Tests\Unit\Admin\Dashboard;
 
 use App\Http\Controllers\DashboardController;
 use App\Model\Order\Invoice;
+use App\Model\Order\Order;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
 use App\User;
@@ -147,7 +148,7 @@ class DashboardControllerTest extends DBTestCase
         $this->assertEquals($productTwo->name, $response[1]->product_name);
     }
 
-    public function test_getExpiringSubscriptions_shouldGiveSubscriptionsWhichAreExpiringIn30Days()
+    public function test_getExpiringSubscriptions_whenLast30DaysIsFalse_shouldGiveSubscriptionsWhichAreExpiringIn30Days()
     {
         $this->getLoggedInUser("admin");
         $product = Product::create(["name"=> "one"]);
@@ -160,13 +161,13 @@ class DashboardControllerTest extends DBTestCase
         Subscription::create(["update_ends_at"=> Carbon::now()->subDays(5), "order_id"=> $orderTwo->id, "product_id"=>$product->id, 'user_id'=>$this->user->id]);
         Subscription::create(["update_ends_at"=> Carbon::now()->addDays(31), "order_id"=> $orderTwo->id, "product_id"=>$product->id, 'user_id'=>$this->user->id]);
 
-        $response = $this->classObject->getExpiringSubscriptions();
+        $response = $this->classObject->getExpiringSubscriptions(false);
 
         $this->assertCount(4, $response);
-        $this->assertEquals("1 days", $response[0]->remaining_days);
-        $this->assertEquals("2 days", $response[1]->remaining_days);
-        $this->assertEquals("3 days", $response[2]->remaining_days);
-        $this->assertEquals("4 days", $response[3]->remaining_days);
+        $this->assertEquals("2 days", $response[0]->days_difference);
+        $this->assertEquals("3 days", $response[1]->days_difference);
+        $this->assertEquals("4 days", $response[2]->days_difference);
+        $this->assertEquals("5 days", $response[3]->days_difference);
 
         $this->assertEquals($this->user->first_name." ".$this->user->last_name, $response[0]->client_name);
         $this->assertEquals($this->user->first_name." ".$this->user->last_name, $response[1]->client_name);
@@ -174,6 +175,32 @@ class DashboardControllerTest extends DBTestCase
         $this->assertEquals($this->user->first_name." ".$this->user->last_name, $response[3]->client_name);
     }
 
+    public function test_getExpiringSubscriptions_whenLast30DaysIsTrue_shouldGiveSubscriptionsWhichHasExpiredInLast30Days()
+    {
+        $this->getLoggedInUser("admin");
+        $product = Product::create(["name"=> "one"]);
+        $orderOne = $product->order()->create(["client"=>$this->user->id, "number"=> 1, "price_override"=>10]);
+        $orderTwo = $product->order()->create(["client"=>$this->user->id, "number"=> 2, "price_override"=>10]);
+        Subscription::create(["update_ends_at"=> Carbon::now()->subDays(2), "order_id"=> $orderOne->id, "product_id"=>$product->id, 'user_id'=>$this->user->id]);
+        Subscription::create(["update_ends_at"=> Carbon::now()->subDays(3), "order_id"=> $orderOne->id, "product_id"=>$product->id, 'user_id'=>$this->user->id]);
+        Subscription::create(["update_ends_at"=> Carbon::now()->subDays(4), "order_id"=> $orderTwo->id, "product_id"=>$product->id, 'user_id'=>$this->user->id]);
+        Subscription::create(["update_ends_at"=> Carbon::now()->subDays(5), "order_id"=> $orderTwo->id, "product_id"=>$product->id, 'user_id'=>$this->user->id]);
+        Subscription::create(["update_ends_at"=> Carbon::now()->addDays(5), "order_id"=> $orderTwo->id, "product_id"=>$product->id, 'user_id'=>$this->user->id]);
+        Subscription::create(["update_ends_at"=> Carbon::now()->subDays(31), "order_id"=> $orderTwo->id, "product_id"=>$product->id, 'user_id'=>$this->user->id]);
+
+        $response = $this->classObject->getExpiringSubscriptions(true);
+
+        $this->assertCount(4, $response);
+        $this->assertEquals("5 days", $response[0]->days_difference);
+        $this->assertEquals("4 days", $response[1]->days_difference);
+        $this->assertEquals("3 days", $response[2]->days_difference);
+        $this->assertEquals("2 days", $response[3]->days_difference);
+
+        $this->assertEquals($this->user->first_name." ".$this->user->last_name, $response[0]->client_name);
+        $this->assertEquals($this->user->first_name." ".$this->user->last_name, $response[1]->client_name);
+        $this->assertEquals($this->user->first_name." ".$this->user->last_name, $response[2]->client_name);
+        $this->assertEquals($this->user->first_name." ".$this->user->last_name, $response[3]->client_name);
+    }
 
     public function test_getRecentOrders_shouldGiveOrdersInLast30DaysOrderedByDescCreatedAt()
     {
@@ -192,5 +219,83 @@ class DashboardControllerTest extends DBTestCase
         $this->assertEquals($this->user->first_name." ".$this->user->last_name, $response[0]->client_name);
         $this->assertEquals($this->user->first_name." ".$this->user->last_name, $response[1]->client_name);
 
+    }
+
+    public function test_getClientsUsingOldVersions_shouldShowClientsWhichAreUsingOlderVersionInOrderOfTheirVersion()
+    {
+        $this->getLoggedInUser("admin");
+        $this->createOrder("v3.2.0");
+        $this->createOrder("v3.1.0");
+        $this->createOrder("v3.0.0");
+        $this->createOrder("v2.9.0");
+
+        $methodResponse = $this->getPrivateMethod($this->classObject, 'getClientsUsingOldVersions');
+
+        $this->assertCount(3, $methodResponse);
+        $this->assertEquals("v2.9.0", $methodResponse[0]->product_version);
+        $this->assertEquals("v3.0.0", $methodResponse[1]->product_version);
+        $this->assertEquals("v3.1.0", $methodResponse[2]->product_version);
+        $this->assertStringContainsString($this->user->first_name.' '.$this->user->last_name, $methodResponse[0]->client_name);
+        $this->assertStringContainsString($this->user->first_name.' '.$this->user->last_name, $methodResponse[1]->client_name);
+        $this->assertStringContainsString($this->user->first_name.' '.$this->user->last_name, $methodResponse[2]->client_name);
+
+        $this->assertEquals("Helpdesk v2.9.0", $methodResponse[0]->product_name);
+        $this->assertEquals("Helpdesk v3.0.0", $methodResponse[1]->product_name);
+        $this->assertEquals("Helpdesk v3.1.0", $methodResponse[2]->product_name);
+    }
+
+
+    public function test_getClientsUsingOldVersions_whenUnpaidOrderArePresent_shouldExcludeThoseOrders()
+    {
+        $this->getLoggedInUser("admin");
+        $this->createOrder("v3.2.0");
+        $this->createOrder("v3.1.0", 0);
+        $this->createOrder("v3.0.0");
+        $this->createOrder("v2.9.0");
+
+        $methodResponse = $this->getPrivateMethod($this->classObject, 'getClientsUsingOldVersions');
+
+        $this->assertCount(2, $methodResponse);
+        $this->assertEquals("v2.9.0", $methodResponse[0]->product_version);
+        $this->assertEquals("v3.0.0", $methodResponse[1]->product_version);
+        $this->assertStringContainsString($this->user->first_name.' '.$this->user->last_name, $methodResponse[0]->client_name);
+        $this->assertStringContainsString($this->user->first_name.' '.$this->user->last_name, $methodResponse[1]->client_name);
+
+        $this->assertEquals("Helpdesk v2.9.0", $methodResponse[0]->product_name);
+        $this->assertEquals("Helpdesk v3.0.0", $methodResponse[1]->product_name);
+    }
+
+
+    public function test_getClientsUsingOldVersions_whenSubscriptionUpdateOlderThan30DaysArePresent_shouldExcludeThoseOrders()
+    {
+        $this->getLoggedInUser("admin");
+        $this->createOrder("v3.2.0");
+        $this->createOrder("v3.1.0", 1000 ,new Carbon("-31 days"));
+        $this->createOrder("v3.0.0");
+        $this->createOrder("v2.9.0");
+
+        $methodResponse = $this->getPrivateMethod($this->classObject, 'getClientsUsingOldVersions');
+
+        $this->assertCount(2, $methodResponse);
+        $this->assertEquals("v2.9.0", $methodResponse[0]->product_version);
+        $this->assertEquals("v3.0.0", $methodResponse[1]->product_version);
+        $this->assertStringContainsString($this->user->first_name.' '.$this->user->last_name, $methodResponse[0]->client_name);
+        $this->assertStringContainsString($this->user->first_name.' '.$this->user->last_name, $methodResponse[1]->client_name);
+
+        $this->assertEquals("Helpdesk v2.9.0", $methodResponse[0]->product_name);
+        $this->assertEquals("Helpdesk v3.0.0", $methodResponse[1]->product_name);
+    }
+
+    private function createOrder($version = "v3.0.0", $price = 1000, $subscriptionUpdatedAt = null)
+    {
+        $product = Product::create(["name"=>"Helpdesk $version"]);
+        $order = Order::create(['client'=> $this->user->id, 'order_status' => 'executed',
+            'product'=> $product->id, "number"=> mt_rand(100000, 999999), 'price_override'=> $price]);
+        $subscriptionId = Subscription::create(["order_id"=>$order->id, 'product_id'=> $product->id, 'version'=>$version])->id;
+
+        if($subscriptionUpdatedAt){
+            \DB::table('subscriptions')->where('id', $subscriptionId)->update(['updated_at'=> $subscriptionUpdatedAt]);
+        }
+        return $order;
     }
 }

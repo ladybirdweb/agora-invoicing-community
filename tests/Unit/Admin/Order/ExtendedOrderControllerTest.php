@@ -36,7 +36,7 @@ class ExtendedOrderControllerTest extends DBTestCase
         $this->assertEquals($this->user->currency, $record->currency);
     }
 
-    public function test_getSelectedVersionOrders_whenVersionLessThanAndMoreThanAreNull_shouldNotChangeTheQuery()
+    public function test_getSelectedVersionOrders_whenVersionFromIsNullAndVersionTillIsNull_shouldNotChangeTheQuery()
     {
         $this->getLoggedInUser("admin");
         $this->createOrder("v3.0.0");
@@ -47,21 +47,7 @@ class ExtendedOrderControllerTest extends DBTestCase
         $this->assertEquals(3, $query->count());
     }
 
-    public function test_getSelectedVersionOrders_whenVersionLessThanNotNullAndMoreThanAreNull_shouldGiveResultWhichAreLessThanEqualPassedVersion()
-    {
-        $this->getLoggedInUser("admin");
-        $this->createOrder("v3.0.0");
-        $this->createOrder("v3.1.0");
-        $this->createOrder("v3.2.0");
-        $baseQuery = $this->getPrivateMethod($this->classObject, "getBaseQueryForOrders");
-        $query = $this->getPrivateMethod($this->classObject, "getSelectedVersionOrders", [$baseQuery, "v3.1.0", null]);
-        $records = $query->get();
-        $this->assertEquals(2, $records->count());
-        $this->assertEquals("v3.0.0", $records[0]->product_version);
-        $this->assertEquals("v3.1.0", $records[1]->product_version);
-    }
-
-    public function test_getSelectedVersionOrders_whenVersionLessThaIsNullAndMoreThanIsNotNull_shouldGiveResultWhichAreGreaterThanEqualToPassedVersion()
+    public function test_getSelectedVersionOrders_whenVersionFromIsNullButVersionTillIsNotNull_shouldGiveResultWhichAreLessThanEqualPassedVersion()
     {
         $this->getLoggedInUser("admin");
         $this->createOrder("v3.0.0");
@@ -71,11 +57,25 @@ class ExtendedOrderControllerTest extends DBTestCase
         $query = $this->getPrivateMethod($this->classObject, "getSelectedVersionOrders", [$baseQuery, null, "v3.1.0"]);
         $records = $query->get();
         $this->assertEquals(2, $records->count());
+        $this->assertEquals("v3.0.0", $records[0]->product_version);
+        $this->assertEquals("v3.1.0", $records[1]->product_version);
+    }
+
+    public function test_getSelectedVersionOrders_whenVersionFromIsNotNullButVersionTillIsNull_shouldGiveResultWhichAreGreaterThanEqualToPassedVersion()
+    {
+        $this->getLoggedInUser("admin");
+        $this->createOrder("v3.0.0");
+        $this->createOrder("v3.1.0");
+        $this->createOrder("v3.2.0");
+        $baseQuery = $this->getPrivateMethod($this->classObject, "getBaseQueryForOrders");
+        $query = $this->getPrivateMethod($this->classObject, "getSelectedVersionOrders", [$baseQuery, "v3.1.0", null]);
+        $records = $query->get();
+        $this->assertEquals(2, $records->count());
         $this->assertEquals("v3.1.0", $records[0]->product_version);
         $this->assertEquals("v3.2.0", $records[1]->product_version);
     }
 
-    public function test_getSelectedVersionOrders_whenVersionLessThaIsNotNullAndMoreThanIsNotNull_shouldGiveIntersectionOfBoth()
+    public function test_getSelectedVersionOrders_whenVersionFromIsNotNullAndVersionTillIsNotNull_shouldGiveIntersectionOfBoth()
     {
         $this->getLoggedInUser("admin");
         $this->createOrder("v3.0.0");

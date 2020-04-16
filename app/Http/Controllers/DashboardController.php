@@ -37,14 +37,17 @@ class DashboardController extends Controller
         $pendingPaymentCurrency1 = $this->getPendingPaymentsCur1($allowedCurrencies1);
 
         $users = $this->getAllUsers();
-        $count_users = User::count();
         $productSoldInLast30Days = $this->getSoldProducts(30);
         $recentOrders = $this->getRecentOrders();
         $subscriptions = $this->getExpiringSubscriptions();
 
+        $expiredSubscriptions = $this->getExpiringSubscriptions(true);
+
         $invoices = $this->getRecentInvoices();
 
         $allSoldProducts = $this->getSoldProducts();
+
+        $clientsUsingOldVersion = $this->getClientsUsingOldVersions();
 
         $startSubscriptionDate = date('Y-m-d');
         $endSubscriptionDate = date('Y-m-d', strtotime('+3 months'));
@@ -52,10 +55,9 @@ class DashboardController extends Controller
 
         return view('themes.default1.common.dashboard', compact('allowedCurrencies1','allowedCurrencies2',
             'currency1Symbol','currency2Symbol','totalSalesCurrency2', 'totalSalesCurrency1', 'yearlySalesCurrency2',
-            'yearlySalesCurrency1', 'monthlySalesCurrency2', 'monthlySalesCurrency1', 'users','count_users',
-            'productSoldInLast30Days','recentOrders','subscriptions','invoices', 'allSoldProducts',
-            'pendingPaymentCurrency2', 'pendingPaymentCurrency1', 'status','startSubscriptionDate',
-                 'endSubscriptionDate'));
+            'yearlySalesCurrency1', 'monthlySalesCurrency2', 'monthlySalesCurrency1', 'users', 'productSoldInLast30Days'
+            ,'recentOrders','subscriptions','expiredSubscriptions', 'invoices', 'allSoldProducts', 'pendingPaymentCurrency2',
+            'pendingPaymentCurrency1', 'status','startSubscriptionDate', 'endSubscriptionDate', 'clientsUsingOldVersion'));
     }
 
     /**
@@ -243,7 +245,7 @@ class DashboardController extends Controller
             ->where('price_override', '>', 0)
             ->orderBy("orders.id", "desc")
             ->get()->map(function($element){
-                $element->order_created_at = getTimeInLoggedInUserTimeZone($element->order_created_at);
+                $element->order_created_at = getDateHtml($element->order_created_at);
                 $element->client_name = $element->user->first_name . " ". $element->user->last_name;
                 $element->client_profile_link = \Config("app.url")."/clients/".$element->user->id;
                 unset($element->user);
@@ -253,29 +255,37 @@ class DashboardController extends Controller
 
     /**
      * List of orders expiring in next 30 days.
+     * @param bool $past30Days
      * @return \Illuminate\Database\Eloquent\Collection
+     * @throws \Exception
      */
-    public function getExpiringSubscriptions()
+    public function getExpiringSubscriptions($past30Days = false)
     {
         $today = Carbon::now()->toDateTimeString();
-        $plus30Day = (new Carbon('+30 days'))->toDateTimeString();
 
-        return Subscription::with("user:id,first_name,last_name,email,user_name")
+        $baseQuery = Subscription::with("user:id,first_name,last_name,email,user_name")
             ->join("orders", "subscriptions.order_id", "=", "orders.id")
             ->join("products", "products.id", "=", "orders.product")
             ->select("subscriptions.id","products.id as product_id", "orders.number as order_number", "orders.id as order_id",
                 "products.name as product_name", "subscriptions.update_ends_at as subscription_ends_at", "user_id")
             ->where('price_override', '>', 0)
-            ->where('update_ends_at', '>', $today)
-            ->where('update_ends_at', '<=', $plus30Day)
             ->orderBy("subscription_ends_at", "asc")
-            ->groupBy("subscriptions.id")
-            ->get()->map(function($element) {
+            ->groupBy("subscriptions.id");
+
+        if($past30Days){
+            $baseQuery->where('update_ends_at', '<', $today)
+                ->where('update_ends_at', '>=', (new Carbon('-30 days'))->toDateTimeString());
+        } else {
+            $baseQuery->where('update_ends_at', '>', $today)
+                ->where('update_ends_at', '<=', (new Carbon('+30 days'))->toDateTimeString());
+        }
+
+        return $baseQuery->get()->map(function($element) {
                 $element->client_name = $element->user->first_name . " ". $element->user->last_name;
                 $element->client_profile_link = \Config("app.url")."/clients/".$element->user->id;
                 $element->order_link = \Config("app.url")."/orders/".$element->order_id;
-                $element->remaining_days = date_diff(new DateTime(), new DateTime($element->subscription_ends_at))->format('%a days');
-                $element->subscription_ends_at = getTimeInLoggedInUserTimeZone($element->subscription_ends_at);
+                $element->days_difference = date_diff(new DateTime(), new DateTime($element->subscription_ends_at))->format('%a days');
+                $element->subscription_ends_at = getDateHtml($element->subscription_ends_at);
                 unset($element->user);
                 return $element;
             });
@@ -310,4 +320,37 @@ class DashboardController extends Controller
                 return $element;
             });
     }
+
+    /**
+     * Gets list of clients who are using older version of the latest release
+     * @return mixed
+     * @throws \Exception
+     */
+    private function getClientsUsingOldVersions()
+    {
+        $date = new Carbon('-30 days');
+        $latestVersion = Subscription::orderBy("version", "desc")->value("version");
+
+        // query the latest version and query for rest of the versions
+        return Order::leftJoin('subscriptions', 'orders.id', '=', 'subscriptions.order_id')
+            ->leftJoin("users", 'orders.client', "=","users.id")
+            ->leftJoin("products", 'orders.product', "=","products.id")
+            ->where('price_override', '>', 0)
+            ->where('subscriptions.updated_at', ">", $date)
+            ->where("subscriptions.version", "<", $latestVersion)
+            ->where("subscriptions.version", "!=", NULL)
+            ->where("subscriptions.version", "!=", "")
+            ->select('orders.id', \DB::raw("concat(first_name, ' ', last_name) as client_name"), 'products.name as product_name',
+                "subscriptions.version as product_version", "client as client_id", 'subscriptions.update_ends_at as subscription_ends_at')
+            ->orderBy('subscriptions.version', 'asc')
+            ->take(30)->get()->map(function($element){
+                $element->subscription_ends_at = getDateHtml($element->subscription_ends_at);
+                $appUrl = \Config::get("app.url");
+                $clientProfileUrl = $appUrl."/clients/".$element->client_id;
+                $element->client_name = "<a href=$clientProfileUrl>$element->client_name</a>";
+                return $element;
+            });
+    }
+
+
 }

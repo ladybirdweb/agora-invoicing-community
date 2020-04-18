@@ -14,14 +14,7 @@ All Users
 @stop
 
 <style>
- /*   .selectpicker {
-    text-align: left;
-    background-color: white !important;
-    margin: 11px;
-}*/
-/*    .bootstrap-select.btn-group .dropdown-menu li a {
-    margin-left: -10px !important;
-}*/
+
 .caret {
     border-top: 6px dashed;
     border-right: 3px solid transparent;
@@ -58,28 +51,8 @@ All Users
 
             <div class="col-md-3 form-group">
                 <!-- first name -->
-                {!! Form::label('name','Name') !!}
-                {!! Form::text('name',null,['class' => 'form-control','id'=>'name']) !!}
-
-            </div>
-            
-            <div class="col-md-3 form-group">
-                <!-- first name -->
-                {!! Form::label('username','Username') !!}
-                {!! Form::text('username',null,['class' => 'form-control','id'=>'username']) !!}
-
-            </div>
-            <div class="col-md-3 form-group">
-                <!-- first name -->
                 {!! Form::label('company','Company Name') !!}
-                {!! Form::text('company',null,['class' => 'form-control','id'=>'company']) !!}
-
-            </div>
-
-            <div class="col-md-3 form-group">
-                <!-- first name -->
-                {!! Form::label('mobile','Mobile') !!}
-                {!! Form::text('mobile',null,['class' => 'form-control','id'=>'mobile']) !!}
+                {!! Form::text('company',$request->company,['class' => 'form-control','id'=>'company']) !!}
 
             </div>
                          <?php
@@ -88,25 +61,18 @@ All Users
             <div class="col-md-3 form-group">
                 <!-- first name -->
                 {!! Form::label('country','Country') !!}
-                <!-- {!! Form::select('country',['Choose',''=>$countries],null,['class' => 'form-control selectpicker','data-live-search'=>'true','data-live-search-placeholder'=>'Search','data-size'=>'10','id'=>'country']) !!} -->
                  <select name="country" value= "Choose" onChange="getCountryAttr(this.value)" class="form-control selectpicker" data-live-search="true" data-live-search-placeholder="Search" data-dropup-auto="false" data-size="10">
-                             <option value="" style="">Choose</option>
-                           @foreach($countries as $key=>$coun)
-                              <option value={{$key}}>{{$coun}}</option>
-                          @endforeach
-                          </select>
-
-                
-
-
+                 <option value="" style="">Choose</option>
+                      @foreach($countries as $key=> $country)
+                         @if($key == $request->country)
+                            <option value={{$key}} selected>{{$country}}</option>
+                         @else
+                             <option value={{$key}}>{{$country}}</option>
+                         @endif
+                      @endforeach
+                  </select>
             </div>
-            <div class="col-md-3 form-group">
-                <!-- first name -->
-                {!! Form::label('email','Email') !!}
-                {!! Form::text('email',null,['class' => 'form-control','id'=>'email']) !!}
 
-            </div>
-           
           <div class="col-md-3 form-group">
                 <!-- first name -->
                 {!! Form::label('industry','Industries') !!}
@@ -123,9 +89,13 @@ All Users
 
                  <select name="industry"  class="form-control selectpicker" data-live-search="true",data-live-search-placeholder="Search" data-dropup-auto="false"  data-size="10" id="industry">
                              <option value="">Choose</option>
-                           @foreach($bussinesses as $key=>$bussines)
-                             <option value={{$key}}>{{$bussines}}</option>
-                          @endforeach
+                            @foreach($bussinesses as $key=>$bussines)
+                                @if($key == $request->industry)
+                                    <option value={{$key}} selected>{{$bussines}}</option>
+                                @else
+                                     <option value={{$key}}>{{$bussines}}</option>
+                                @endif
+                             @endforeach
                           </select>
              
             </div>
@@ -133,21 +103,13 @@ All Users
              <div class="col-md-3 form-group">
                 <!-- first name -->
                 {!! Form::label('Role','Role') !!}
-                 <select name="role"  class="form-control">
-                    <option value="">Choose</option>
-                   <option value="admin">Admin</option>
-                  <option value="user">User</option>
-                 </select>
+                {!! Form::select('role',[null => 'Choose']+ ['admin'=>'Admin', 'user'=>'user'], $request->role, ['class' => 'form-control','id'=>'role']) !!}
              </div>
              
              <div class="col-md-3 form-group">
                 <!-- first name -->
                 {!! Form::label('Position','Position') !!}
-                 <select name="position"  class="form-control">
-                  <option value="">Choose</option>
-                  <option value="manager">Sales Manager</option>
-                  <option value="account_manager">Account Manager</option>
-                  </select>
+                {!! Form::select('position',[null => 'Choose']+ ['manager'=>'Sales Manager', 'account_manager'=>'Account Manager'], $request->position, ['class' => 'form-control','id'=>'position']) !!}
              </div>
 
                <div class="col-md-3 form-group">
@@ -157,7 +119,7 @@ All Users
                   <div class="input-group-addon">
                     <i class="fa fa-calendar"></i>
                   </div>
-                  <input type="text" name="reg_from" class="form-control reg_from" id="datepicker">
+                  <input type="text" autocomplete="off" value="{!! $request->reg_from !!}" name="reg_from" class="form-control reg_from" id="datepicker">
                 </div>
 
             </div>
@@ -169,7 +131,7 @@ All Users
                   <div class="input-group-addon">
                     <i class="fa fa-calendar"></i>
                   </div>
-                  <input type="text" name="reg_till" class="form-control reg_till" id="datepicker1">
+                  <input type="text" autocomplete="off" value="{!! $request->reg_till !!}" name="reg_till" class="form-control reg_till" id="datepicker1">
                 </div>
             </div>
 
@@ -179,7 +141,11 @@ All Users
                   <select name="actmanager"  class="form-control selectpicker" data-live-search="true",data-live-search-placeholder="Search" data-dropup-auto="false"  data-size="10" id="actmanager" >
                              <option value="">Choose</option>
                            @foreach($acctManagers as $key=>$acct)
-                             <option value={{$key}}>{{$acct}}</option>
+                                @if($key == $request->actmanager)
+                                    <option value={{$key}} selected>{{$acct}}</option>
+                                @else
+                                    <option value={{$key}}>{{$acct}}</option>
+                                @endif
                           @endforeach
                           </select>
             </div>
@@ -190,7 +156,11 @@ All Users
                   <select name="salesmanager"  class="form-control selectpicker" data-live-search="true",data-live-search-placeholder="Search" data-dropup-auto="false"  data-size="10" id="salesmanager" >
                              <option value="">Choose</option>
                            @foreach($salesManagers as $key=>$sales)
-                             <option value={{$key}}>{{$sales}}</option>
+                                @if($key == $request->salesmanager)
+                                  <option value={{$key}} selected>{{$sales}}</option>
+                                @else
+                                  <option value={{$key}}>{{$sales}}</option>
+                                @endif
                           @endforeach
                           </select>
             </div>
@@ -206,41 +176,11 @@ All Users
                 <div class="col-md-6">
                     <button name="Search" type="submit"  class="btn btn-primary" data-loading-text="<i class='fa fa-search fa-spin fa-1x fa-fw'>&nbsp;</i> updating..."><i class="fa fa-search">&nbsp;</i>{!!Lang::get('Search')!!}</button>
                       &nbsp;
-                      <button name="Reset" type="submit" id="reset" class="btn btn-danger" data-loading-text="<i class='fa fa-refresh fa-spin fa-1x fa-fw'>&nbsp;</i> updating..."><i class="fa fa-refresh">&nbsp;</i>{!!Lang::get('Reset')!!}</button>
+                    <a href="{!! url('clients') !!}" id="reset" class="btn btn-danger"><i class="fa fa-refresh">&nbsp;</i>{!!Lang::get('Reset')!!}</a>
                 </div>
            
          
 </div>
-                <script type="text/javascript">
-                    $(function () {
-                    $('#reset').on('click', function () {
-                        $('#country').val('');
-                        $('#company').val('');
-                        $('#industry').val('');
-                        $('#name').val('');
-                        $('#email').val('');
-                        $('#mobile').val('');
-                        $('#username').val('');
-                        $('.reg_from').val('');
-                        $('.reg_till').val('');
-                        $('#acct_manager').val('');
-                        $('#salesmanager').val('');
-                        // $('#role').val('');
-                    //     var uri = window.location.toString();
-
-                    // if (uri.indexOf("?") > 0) {
-                    //     var clean_uri = uri.substring(0, uri.indexOf("?"));
-                     
-                    //     window.history.replaceState({}, document.title, clean_uri);
-                    //      window.location.href = clean_uri;
-
-                    // }
-                          
-                    });
-                });
-                </script>
-
-
         {!! Form::close() !!}
     </div>
 </div>
@@ -294,6 +234,8 @@ All Users
                          <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
                             <th>Name</th>
                             <th>Email</th>
+                            <th>Mobile</th>
+                            <th>Country</th>
                             <th>Registered on</th>
                              <th>Status</th>
                             <th>Action</th>
@@ -316,10 +258,12 @@ All Users
    
             processing: true,
             serverSide: true,
-             stateSave: false,
-            order: [[ 0, "desc" ]],
-            ajax: '{!! route('get-clients',"name=$name&username=$username&company=$company&mobile=$mobile&email=$email&country=$country&industry=$industry&role=$role&position=$position&reg_from=$reg_from&reg_till=$reg_till&actmanager=$clientForAccMan&salesmanager=$clientForSalesMan" ) !!}',
-             
+            stateSave: false,
+            // if in request sort field is present, it will take that else default order
+            // need to stringify the sort_order, else it will be considered as a javascript variable
+            order: [[ {!! $request->sort_field ?: 5 !!}, {!! "'".$request->sort_order."'" ?: "'desc'" !!} ]],
+
+            ajax: '{!! route('get-clients',"company=$request->company&country=$request->country&industry=$request->industry&role=$request->role&position=$request->position&reg_from=$request->reg_from&reg_till=$request->reg_till&actmanager=$request->actmanager&salesmanager=$request->salesmanager" ) !!}',
 
             "oLanguage": {
                 "sLengthMenu": "_MENU_ Records per page",
@@ -335,8 +279,10 @@ All Users
             ],
             columns: [
                 {data: 'checkbox', name: 'checkbox'},
-                {data: 'first_name', name: 'first_name'},
+                {data: 'name', name: 'name'},
                 {data: 'email', name: 'email'},
+                {data: 'mobile', name: 'mobile'},
+                {data: 'country', name: 'country'},
                 {data: 'created_at', name: 'created_at'},
                 {data: 'active', name: 'active'},
                 {data: 'action', name: 'action'}

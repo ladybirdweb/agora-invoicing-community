@@ -37,7 +37,7 @@ View All Orders
             <div class="col-md-3 form-group">
                 <!-- first name -->
                 {!! Form::label('product_id','Product') !!}
-                {!! Form::select('product_id',[null => 'Select']+ $products, $request->product_id, ['class' => 'form-control','id'=>'product_id']) !!}
+                {!! Form::select('product_id',[null => 'Choose']+ $products, $request->product_id, ['class' => 'form-control','id'=>'product_id']) !!}
             </div>
             <div class="col-md-3 form-group">
                 <!-- first name -->
@@ -46,7 +46,7 @@ View All Orders
                   <div class="input-group-addon">
                     <i class="fa fa-calendar"></i>
                   </div>
-                  <input type="text" name="expiry" value="{!! $request->expiry !!}" class="form-control expary" id="datepicker1">
+                  <input autocomplete="off" type="text" name="expiry" value="{!! $request->expiry !!}" class="form-control expary" id="datepicker1">
                 </div>
             </div>
              <div class="col-md-3 form-group">
@@ -56,7 +56,7 @@ View All Orders
                   <div class="input-group-addon">
                     <i class="fa fa-calendar"></i>
                   </div>
-                  <input type="text" name="expiryTill" value="{!! $request->expiryTill !!}" class="form-control exparytill" id="datepicker2">
+                  <input autocomplete="off" type="text" name="expiryTill" value="{!! $request->expiryTill !!}" class="form-control exparytill" id="datepicker2">
                 </div>
          
             </div>
@@ -67,7 +67,7 @@ View All Orders
                   <div class="input-group-addon">
                     <i class="fa fa-calendar"></i>
                   </div>
-                  <input type="text" name="from" value="{!! $request->from !!}" class="form-control payment_date" id="datepicker3">
+                  <input autocomplete="off" type="text" name="from" value="{!! $request->from !!}" class="form-control payment_date" id="datepicker3">
                 </div>
             </div>
             <div class="col-md-3 form-group">
@@ -77,7 +77,7 @@ View All Orders
                   <div class="input-group-addon">
                     <i class="fa fa-calendar"></i>
                   </div>
-                  <input type="text" name="till" value="{!! $request->till !!}" class="form-control payment_till" id="datepicker4">
+                  <input autocomplete="off" type="text" name="till" value="{!! $request->till !!}" class="form-control payment_till" id="datepicker4">
                 </div>
             </div>
             <div class="col-md-3 form-group">
@@ -90,24 +90,24 @@ View All Orders
             <div class="col-md-3 form-group">
                 <!-- first name -->
                 {!! Form::label('p_un','Paid/Unpaid Products') !!}
-                {!! Form::select('p_un',[null => 'Select']+ $paidUnpaidOptions, $request->p_un, ['class' => 'form-control','id'=>'p_un']) !!}
+                {!! Form::select('p_un',[null => 'Choose']+ $paidUnpaidOptions, $request->p_un, ['class' => 'form-control','id'=>'p_un']) !!}
             </div>
 
             <div class="col-md-3 form-group">
                 <!-- first name -->
                 {!! Form::label('act_inst','Active Installations') !!}
-                {!! Form::select('act_inst',[null => 'Select']+ $activeInstallationOptions, $request->act_inst, ['class' => 'form-control','id'=>'act_inst']) !!}
+                {!! Form::select('act_inst',[null => 'Choose']+ $activeInstallationOptions, $request->act_inst, ['class' => 'form-control','id'=>'act_inst']) !!}
             </div>
 
             <div class="col-md-3 form-group">
                 {!! Form::label('version_from','Version From') !!}
-                {!! Form::select('version_from',[null => 'Select']+ array_combine($allVersions, $allVersions), $request->version_from,
+                {!! Form::select('version_from',[null => 'Choose']+ array_combine($allVersions, $allVersions), $request->version_from,
                 ['class' => 'form-control','id'=>'version_from']) !!}
             </div>
 
             <div class="col-md-3 form-group">
                  {!! Form::label('version_till','Version Till') !!}
-                 {!! Form::select('version_till',[null => 'Select']+ array_combine($allVersions, $allVersions), $request->version_till,
+                 {!! Form::select('version_till',[null => 'Choose']+ array_combine($allVersions, $allVersions), $request->version_till,
                 ['class' => 'form-control','id'=>'version_till']) !!}
 
              </div>
@@ -116,9 +116,9 @@ View All Orders
 
            <div class='row'>
                 <div class="col-md-6">
-                      <button name="Search" type="submit"  class="btn btn-primary" data-loading-text="<i class='fa fa-search fa-spin fa-1x fa-fw'>&nbsp;</i> updating..."><i class="fa fa-search">&nbsp;&nbsp;</i>{!!Lang::get('Search')!!}</button>
+                      <button name="Search" type="submit"  class="btn btn-primary" data-loading-text="<i class='fa fa-search fa-spin fa-1x fa-fw'>&nbsp;</i> updating..."><i class="fa fa-search"></i>&nbsp;{!!Lang::get('Search')!!}</button>
                       &nbsp;
-                    <a class="btn btn-danger" href="{!! url('/orders') !!}"><i class="fa fa-refresh">&nbsp;{!!Lang::get('Reset')!!}</i></a>
+                    <a class="btn btn-danger" href="{!! url('/orders') !!}"><i class="fa fa-refresh"></i>&nbsp;{!!Lang::get('Reset')!!}</a>
                 </div>
         </div>
     </div>

@@ -228,9 +228,12 @@ class CheckoutController extends InfoController
                     $attributes = $this->getAttributes($content);
                 }
             } else {
+                
                 $items = new \Illuminate\Support\Collection();
                 $invoiceid = $request->input('invoice_id');
                 $invoice = $this->invoice->find($invoiceid);
+                $processingFee = $payment_method =="razorpay"? 0 : $request->input('process_fee');
+                $invoice->grand_total = intval($invoice->grand_total+($invoice->grand_total*$processingFee/100)) ;
                 $invoice_no = $invoice->number;
                 $date = $this->getDate($invoice);
                 $items = $invoice->invoiceItem()->get();

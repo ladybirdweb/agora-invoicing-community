@@ -40,6 +40,7 @@
 
         Route::get('ping', 'Front\CheckoutController@PingRecieve');
         Route::post('pricing/update', 'Front\CartController@addCouponUpdate');
+        Route::post('update-final-price', 'Front\CartController@updateFinalPrice');
         //Route::get('mail-chimp','Common\MailChimpController@getList');
         Route::get('mail-chimp/subcribe', 'Common\MailChimpController@addSubscriberByClientPanel');
         Route::get('mail-chimp/merge-fields', 'Common\MailChimpController@addFieldsToAgora');

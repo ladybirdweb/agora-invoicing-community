@@ -165,7 +165,7 @@ $sum = 0;
                 <h4 class="heading-primary">Payment</h4>
              
                        
-                {!! Form::open(['url'=>'checkout','method'=>'post']) !!}
+                {!! Form::open(['url'=>'checkout','method'=>'post','id' => 'checkoutsubmitform' ]) !!}
 
                 @if(Cart::getTotal()>0)
                   
@@ -173,41 +173,43 @@ $sum = 0;
                 $gateways = \App\Http\Controllers\Common\SettingsController::checkPaymentGateway($item['attributes']['currency']['currency']);
                 $total = Cart::getSubTotal();
                 $rzpstatus = \App\Model\Common\StatusSetting::first()->value('rzp_status');
+
                   // 
                 ?>
                 @if(count($gateways)>0 ) 
-                  <div class="form-group">
+                <div class="row">
+                  
 
                     <div class="col-md-6">
                         @foreach($gateways as $gateway)
-                        {{ucfirst($gateway)}} {!! Form::radio('payment_gateway',strtolower($gateway)) !!}<br><br>
+                        <?php
+                        $processingFee = \DB::table(strtolower($gateway))->where('currencies',$item['attributes']['currency']['currency'])->first()->processing_fee;
+                        ?>
+                         <input type="radio"  data-currency="{{$processingFee}}" id="allow_gateway" name='payment_gateway'  value={{$gateway}}>
+                         <img alt="{{$gateway}}" width="111"  src="{{asset('client/images/'.$gateway.'.png')}}">
+                          <br><br>
+                       <div id="fee" style="display:none"><p>An extra processing fee of <b>{{$processingFee}}%</b> will be charged on your Order Total during the time of payment</p></div>
                         @endforeach
                     </div>
-                </div>
-            
+
+                
+              </div>
+               
             @endif
                 @if($rzpstatus ==1)
-                <div class="form-group">
-
-
-                   <div class="form-row">
+                <div class="row">
                     <div class="col-md-6">
-                        {!! Form::radio('payment_gateway',strtolower('Razorpay')) !!}
+                        <input type="radio" id="rzp_selected" data-currency=0 name='payment_gateway' value="razorpay"> &nbsp;&nbsp;&nbsp;
                        <img alt="Porto" width="111"  data-sticky-width="82" data-sticky-height="40" data-sticky-top="33" src="{{asset('client/images/Razorpay.png')}}"><br><br>
                     </div>
 
-                  
-                </div>
-
-
-                    
-                </div>
+              </div>
                 @endif
                 @endif
 
-                <div class="form-group">
+                <div class="row">
                     <div class="col-md-6 col-md-offset-4">
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" id="proceed" class="btn btn-primary">
                             Proceed <i class="fa fa-forward"></i>
                         </button>
                     </div>
@@ -234,6 +236,7 @@ $sum = 0;
                    
 
                         <strong><span class="amount"> 
+
                                 {{currency_format(Cart::getSubTotalWithoutConditions(),$code = $currency)}}
                                            
                     </td>
@@ -371,17 +374,14 @@ $sum = 0;
                         <strong>Order Total</strong>
                     </th>
                     <td>
+                        <?php
+                          Cart::removeCartCondition('Processing fee');
+                          $total = \App\Http\Controllers\Front\CartController::rounding(Cart::getTotal());
+                          ?>
+                          <div id="total-price" value={{$total}} hidden></div>
 
-
-
-                                          <?php
-                                          $total = \App\Http\Controllers\Front\CartController::rounding(Cart::getTotal());
-                                          ?>
-                                          {{currency_format($total,$code = $currency)}}
+                          <div>{{currency_format($total,$code = $currency)}} </div>
                                         
-
-
-                       
                     </td>
                 </tr>
             </tbody>
@@ -434,4 +434,52 @@ $sum = 0;
     
 </div>
 @endif
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+<script>
+  $('#checkoutsubmitform').submit(function(){
+     $("#proceed").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...")
+    $("#proceed").prop('disabled', true);
+
+  });
+     $(document).ready(function(){
+            var finalPrice = $('#total-price').val();
+            console.log(finalPrice);
+        $("#rzp_selected").click(function(){
+            
+            var processingFee = $(this).attr('data-currency');
+            var totalPrice = finalPrice;
+            $('#fee').hide();
+            $.ajax({
+                type:'POST',
+                data: {'processing_fee':processingFee,'price':totalPrice},
+                 beforeSend: function () {
+                 $('#response').html( "<img id='blur-bg' class='backgroundfadein' style='width: 50px; height:50 px; display: block; position:    fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
+                },
+                 url: "{{url('update-final-price')}}",
+                 success: function () {
+              }
+            });
+        }); 
+        $("#allow_gateway").click(function(){
+            var processingFee = $(this).attr('data-currency');
+            var totalPrice = finalPrice;
+            $('#fee').show();
+            $.ajax({
+                type:'POST',
+                data: {'processing_fee':processingFee,'price':totalPrice},
+                 beforeSend: function () {
+                 $('#response').html( "<img id='blur-bg' class='backgroundfadein' style='width: 50px; height:50 px; display: block; position:    fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
+                },
+                 url: "{{url('update-final-price')}}",
+                 success: function () {
+                    // location.reload();
+                   
+              }
+
+              
+            });
+        });
+         
+    });
+</script>
 @endsection

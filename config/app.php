@@ -100,9 +100,8 @@ return [
     |--------------------------------------------------------------------------
     |
     | This key is used by the Illuminate encrypter service and should be set
-
-'App\Plugins\Paypal\ServiceProvider',
-'App\Plugins\Stripe\ServiceProvider',
+//
+'App\Plugins\Paypal\ServiceProvider',//
 'App\Plugins\Ccavenue\ServiceProvider',
 //
 'App\Plugins\Ccavenue\ServiceProvider',//
@@ -152,7 +151,7 @@ return [
             //
 
             // 'App\Plugins\Ccavanue\ServiceProvider',
-            'App\Plugins\Paypal\ServiceProvider',
+            // 'App\Plugins\Paypal\ServiceProvider',
             'App\Plugins\Stripe\ServiceProvider',
         /*
          * Laravel Framework Service Providers...

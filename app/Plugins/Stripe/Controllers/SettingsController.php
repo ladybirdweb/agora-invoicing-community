@@ -111,10 +111,8 @@ class SettingsController extends Controller
             'exp_month' => 'required',
             'exp_year' => 'required',
             'cvv' => 'required',
-            'amount' => 'required',
         ];
-
-        $this->validate($request, $validation);        
+       $amount = \Session::get('amount');
         $stripeSecretKey = ApiKey::pluck('stripe_secret')->first();   
         $stripe = Stripe::make($stripeSecretKey);
         try {
@@ -147,7 +145,7 @@ class SettingsController extends Controller
             $charge = $stripe->charges()->create([
                 'customer' => $customer['id'],
                 'currency' => $currency,
-                'amount'   => $request->get('amount'),
+                'amount'   =>$amount,
                 'description' => 'Add in wallet',
             ]);
             if($charge['status'] == 'succeeded') {
@@ -182,28 +180,27 @@ class SettingsController extends Controller
                     $message = $view['message'];
                 }
 
-                return redirect()->back()->with($status, $message);
+                return redirect('checkout')->with($status, $message);
             } catch (\Exception $ex) {
-                dd($ex);
                 throw new \Exception($ex->getMessage(), $ex->getCode(), $ex->getPrevious());
             }
 
-                /**
-                * Write Here Your Database insert logic.
-                */
                 \Session::put('success','Money add successfully in wallet');
                 return redirect()->route('stripform');
             } else {
-                \Session::put('error','Money not add in wallet!!');
-                return redirect()->route('stripform');
+                \Session::put('fails','Your Payment was declined. Do you want to try making payment with the other gateway?');
+                return redirect()->route('checkout');
             }
         } catch (Exception $e) {
+            \Session::put('amount',$request['amount']);
             \Session::put('error',$e->getMessage());
             return redirect()->route('stripform');
         } catch(\Cartalyst\Stripe\Exception\CardErrorException $e) {
+            \Session::put('amount',$request['amount']);
             \Session::put('error',$e->getMessage());
             return redirect()->route('stripform');
         } catch(\Cartalyst\Stripe\Exception\MissingParameterException $e) {
+            \Session::put('amount',$request['amount']);
             \Session::put('error',$e->getMessage());
             return redirect()->route('stripform');
         }

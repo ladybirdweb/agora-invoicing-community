@@ -32,27 +32,25 @@ class ProcessController extends Controller
             $invoice = $requests['order'];
             $cart = $requests['cart'];
             if ($cart->count() > 0) {
-                $total = \Cart::getSubTotal();
+                $invoice->grand_total = intval(\Cart::getTotal());
             } else {
-                $total = $request->input('cost');
-                \Cart::clear();
+                 \Cart::clear();
                 \Session::put('invoiceid', $invoice->id);
             }
-            // dd(\Session::get('invoiceid');
-            if ($request->input('payment_gateway') == 'stripe') {
+            if ($request->input('payment_gateway') == 'Stripe') {
                 if (!\Schema::hasTable('stripe')) {
                     throw new \Exception('Stripe is not configured');
                 }
                 $stripe = $this->stripe->where('id', 1)->first();
                 if (!$stripe) {
-                    throw new \Exception('Paypal Fields not given');
+                    throw new \Exception('Stripe Fields not given');
                 }
                 $data = $this->getFields($invoice);
                 \Session::put('invoice',$invoice);
+                \Session::put('amount',$data['amount']);
                 $this->middlePage($data);
             }
         } catch (\Exception $ex) {
-            dd($ex);
             throw new \Exception($ex->getMessage(), $ex->getCode(), $ex->getPrevious());
         }
     }
@@ -60,7 +58,6 @@ class ProcessController extends Controller
     public function getFields($invoice)
     {
         try {
-            //dd($invoice);
             $item = [];
             $data = [];
             $user = \Auth::user();
@@ -115,7 +112,6 @@ class ProcessController extends Controller
 
             return $data;
         } catch (\Exception $ex) {
-            dd($ex);
             throw new \Exception($ex->getMessage(), $ex->getCode(), $ex->getPrevious());
         }
     }

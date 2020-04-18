@@ -15,7 +15,7 @@ active
   <li><a href="{{url('login')}}">Home</a></li>
   @endif
 <li class="active">My Account</li>
-<li class="active">Invoices</li>
+<li class="active">Payment</li>
 @stop
 @section('content')
 
@@ -42,7 +42,7 @@ active
                     </div>
                     <?php Session::forget('error');?>
                     @endif
-                    <form method="POST" action="{{ route('paywithstripe') }}" >
+                    <form method="POST" id="submit_total" action="{{ route('paywithstripe') }}" >
                         @csrf
                         <div class="form-group row">
                             <div class="col-md-12">
@@ -84,7 +84,7 @@ active
                         </div>
                         <div class="form-group row">
                             <div class="col-md-12">
-                                <input id="amount" value="{{Session::get('data')}}" type="text" class="form-control @error('amount') is-invalid @enderror" name="amount" required autocomplete="current-password" placeholder="Amount">
+                                <input id="amount" type="text" value={{Session::get('amount')}} class="form-control @error('amount') is-invalid @enderror" required autocomplete="current-password" name="amount" placeholder="Amount" readonly>
                                 @error('amount')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -95,7 +95,7 @@ active
 
                         <div class="form-group row mb-0">
                             <div class="col-md-12">
-                                <button type="submit" class="btn btn-primary btn-block">
+                                <button type="submit" id="pay_now" class="btn btn-primary btn-block">
                                     {{ __('PAY NOW') }}
                                 </button>
                             </div>
@@ -110,8 +110,13 @@ active
 
   
 <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
-  
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
 <script type="text/javascript">
+    $('#submit_total').submit(function(){
+     $("#pay_now").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Processing...Please Wait..")
+    $("#pay_now").prop('disabled', true);
+
+  });
 $(function() {
     var $form         = $(".require-validation");
   $('form.require-validation').bind('submit', function(e) {

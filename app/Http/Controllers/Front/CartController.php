@@ -13,6 +13,7 @@ use App\Model\Payment\TaxOption;
 use App\Model\Payment\TaxProductRelation;
 use App\Model\Product\Product;
 use App\Traits\TaxCalculation;
+use Darryldecode\Cart\CartCondition;
 use Bugsnag;
 use Cart;
 use Illuminate\Http\Request;
@@ -451,5 +452,17 @@ class CartController extends BaseCartController
             Bugsnag::notifyException($ex->getMessage());
             app('log')->error($ex->getMessage());
         }
+    }
+
+    public function updateFinalPrice(Request $request)
+    {
+        $value = $request->input('processing_fee').'%';
+             $updateValue = new CartCondition([
+                'name'   => 'Processing fee',
+                'type'   => 'fee',
+                'target' => 'total',
+                'value'  => $value,
+            ]);
+            \Cart::condition($updateValue);
     }
 }

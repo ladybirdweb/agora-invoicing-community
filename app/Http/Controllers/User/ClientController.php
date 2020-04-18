@@ -42,109 +42,46 @@ class ClientController extends AdvanceSearchController
     /**
      * Display a listing of the resource.
      *
-     * @return \Response
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index(Request $request)
     {
-        $name = $request->input('name');
-        $username = $request->input('username');
-        $company = $request->input('company');
-        $mobile = $request->input('mobile');
-        $email = $request->input('email');
-        $country = $request->input('country');
-        $industry = $request->input('industry');
-        $company_type = $request->input('company_type');
-        $company_size = $request->input('company_size');
-        $role = $request->input('role');
-        $position = $request->input('position');
-        $reg_from = $request->input('reg_from');
-        $reg_till = $request->input('reg_till');
-        $clientForSalesMan = $request->input('sales_man');
-        $clientForAccMan = $request->input('actmanager');
-        $clientForSalesMan = $request->input('salesmanager');
-        return view(
-            'themes.default1.user.client.index',
-            compact(
-                'name',
-                'username',
-                'company',
-                'mobile',
-                'email',
-                'country',
-                'industry',
-                'company_type',
-                'company_size',
-                'role',
-                'position',
-                'reg_from',
-                'reg_till',
-                'clientForSalesMan',
-                'clientForAccMan'
-            )
-        );
+        return view('themes.default1.user.client.index', compact('request'));
     }
 
     /**
      * Get Clients for yajra datatable.
+     * @param Request $request
+     * @return
+     * @throws \Exception
      */
     public function getClients(Request $request)
     {
-        $name = $request->input('name');
-        $username = $request->input('username');
-        $company = $request->input('company');
-        $mobile = $request->input('mobile');
-        $email = $request->input('email');
-        $country = $request->input('country');
-        $industry = $request->input('industry');
-        $company_type = $request->input('company_type');
-        $company_size = $request->input('company_size');
-        $role = $request->input('role');
-        $position = $request->input('position');
-        $reg_from = $request->input('reg_from');
-        $reg_till = $request->input('reg_till');
-        $acc_manager = $request->input('actmanager');
-        $sales_manager = $request->input('salesmanager');
-        $user = $this->advanceSearch(
-            $name,
-            $username,
-            $company,
-            $mobile,
-            $email,
-            $country,
-            $industry,
-            $company_type,
-            $company_size,
-            $role,
-            $position,
-            $reg_from,
-            $reg_till,
-            $acc_manager,
-            $sales_manager
-        );
-        return\ DataTables::of($user->get())
-                         ->addColumn('checkbox', function ($model) {
-                             return "<input type='checkbox' class='user_checkbox' 
-                            value=".$model->id.' name=select[] id=check>';
+        $baseQuery = $this->getBaseQueryForUserSearch($request);
+
+        return\ DataTables::of($baseQuery)
+                        ->addColumn('checkbox', function ($model) {
+                             return "<input type='checkbox' class='user_checkbox' value=".$model->id.' name=select[] id=check>';
                          })
-                        ->addColumn('first_name', function ($model) {
-                            return '<a href='.url('clients/'.$model->id).'>'
-                            .ucfirst($model->first_name).' '.ucfirst($model->last_name).'</a>';
+                        ->addColumn('name', function ($model) {
+                            return '<a href='.url('clients/'.$model->id).'>'.ucfirst($model->name).'</a>';
                         })
                          ->addColumn('email', function ($model) {
                              return $model->email;
                          })
-                          ->addColumn('created_at', function ($model) {
-                              $ends = $model->created_at;
-                              if ($ends) {
-                                  $date1 = new DateTime($ends);
-                                  $tz = \Auth::user()->timezone()->first()->name;
-                                  $date1->setTimezone(new DateTimeZone($tz));
-                                  $end = $date1->format('M j, Y, g:i a ');
-                              }
-
-                              return $end;
-                          })
-                        // ->showColumns('email', 'created_at')
+                        ->addColumn('mobile', function ($model) {
+                            return $model->mobile;
+                        })
+                        ->addColumn('country', function ($model) {
+                            return ucfirst(strtolower($model->country));
+                        })
+                        ->addColumn('company', function ($model) {
+                            return $model->company;
+                        })
+                        ->addColumn('created_at', function ($model) {
+                              return getDateHtml($model->created_at);
+                        })
                         ->addColumn('active', function ($model) {
                             if ($model->active == 1) {
                                 $email = "<span class='glyphicon glyphicon-envelope'
@@ -170,14 +107,33 @@ class ClientController extends AdvanceSearchController
                                     .'  <a href='.url('clients/'.$model->id)
                                     ." class='btn btn-sm btn-primary btn-xs'>
                                     <i class='fa fa-eye' style='color:white;'> </i>&nbsp;&nbsp;View</a>";
-                            // return 'hhhh';
                         })
-                        ->rawColumns(['checkbox', 'first_name', 'email',  'created_at', 'active', 'action'])
-                        ->make(true);
 
-        // ->searchColumns('email', 'first_name')
-                        // ->orderColumns('email', 'first_name', 'created_at')
-                        // ->make();
+                        ->filterColumn('name', function($model, $keyword) {
+                            // removing all white spaces so that it can be searched irrespective of number of spaces
+                            $model->whereRaw("CONCAT(first_name, ' ',last_name) like ?", ["%$keyword%"]);
+                        })
+                        ->filterColumn('email', function($model, $keyword) {
+                            $model->whereRaw("email like ?", ["%$keyword%"]);
+                        })
+                        ->filterColumn('mobile', function($model, $keyword) {
+                            // removing all white spaces so that it can be searched in a single query
+                            $searchQuery = str_replace(' ', '', $keyword);
+                            $model->whereRaw("CONCAT('+', mobile_code, mobile) like ?", ["%$searchQuery%"]);
+                        })
+                        ->filterColumn('country', function($model, $keyword) {
+                            // removing all white spaces so that it can be searched in a single query
+                            $searchQuery = str_replace(' ', '', $keyword);
+                            $model->whereRaw("country_name like ?", ["%$searchQuery%"]);
+                        })
+                        ->orderColumn("name", "name $1")
+                        ->orderColumn("email", "email $1")
+                        ->orderColumn("mobile", "mobile $1")
+                        ->orderColumn("country", "country $1")
+                        ->orderColumn("created_at", "created_at $1")
+
+                        ->rawColumns(['checkbox', 'name', 'email',  'created_at', 'active', 'action'])
+                        ->make(true);
     }
 
     /**
@@ -512,5 +468,38 @@ class ClientController extends AdvanceSearchController
         $mail = $templateController->mailing($from, $to, $data, $subject, $replace, $type);
 
         return $mail;
+    }
+
+    /**
+     * Gets baseQuery for user search by appending all the allowed filters
+     * @param $request
+     * @return mixed
+     */
+    private function getBaseQueryForUserSearch(Request $request) {
+
+        $baseQuery = User::leftJoin('countries', 'users.country', '=', 'countries.country_code_char2')
+            ->select('id', 'first_name', 'last_name', 'email',
+                \DB::raw("CONCAT('+', mobile_code, ' ', mobile) as mobile"),
+                \DB::raw("CONCAT(first_name, ' ', last_name) as name"),
+                'country_name as country', 'created_at', 'active', 'mobile_verified', 'role', 'position'
+            )->when($request->company, function($query) use($request) {
+                $query->where('company', 'LIKE', '%'.$request->company.'%');
+            })->when($request->country, function($query) use($request) {
+                $query->where('country', $request->country);
+            })->when($request->industry, function($query) use($request){
+                $query->where('bussiness', $request->industry);
+            })->when($request->role, function($query) use($request){
+                $query->where('role', $request->role);
+            })->when($request->position, function($query) use($request){
+                $query->where('position', $request->position);
+            })->when($request->actmanager, function($query) use($request){
+                $query->where('account_manager', $request->actmanager);
+            })->when($request->salesmanager, function($query) use($request){
+                $query->where('manager', $request->salesmanager);
+            });
+
+        $baseQuery = $this->getregFromTill($baseQuery, $request->reg_from, $request->reg_till);
+
+        return $baseQuery;
     }
 }

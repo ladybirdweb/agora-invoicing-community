@@ -179,24 +179,6 @@ Order Details
                                        
                                  </tr>
 
-                                  <tr><td><b>Installation Preference:</b></td>
-                                            @if(Session::has('success'))
-                                            <div class="alert alert-success">
-                                                 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                                   <strong><i class="fa fa-check"></i> Success!</strong>
-                                               
-                                                {!!Session::get('success')!!}
-                                            </div>
-                                            @endif
-                                    <td>
-                                      {!! Form::open(['url' => url('ip-or-domain'),'method'=>'post']) !!}
-                                      <input type="hidden" name="order" value="{{$order->id}}">
-                                        {{ Form::radio('domain', 0 , ($getInstallPreference == '0')) }} IP &nbsp;&nbsp;&nbsp;&nbsp;
-                                        {{ Form::radio('domain', 1 , ($getInstallPreference == '1')) }} Domain
-                                          <button type="submit" class="btn btn-primary btn-xs pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button>
-                                            {!! Form::close() !!}
-                                       </td> 
-                                 </tr>
                                 @endif
                            
                             </td></tr>

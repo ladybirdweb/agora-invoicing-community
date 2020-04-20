@@ -127,8 +127,8 @@ if($script){
                                         </button>
                                       
  
-                                       <div class="header-nav-main header-nav-main-effect-1 header-nav-main-sub-effect-1">
-                                            <nav class="collapse">
+                                       <div class="collapse header-nav-main header-nav-main-effect-1 header-nav-main-sub-effect-1">
+                                            <nav>
                                                 <ul class="nav nav-pills" id="mainNav">
                                               <?php 
                                                 $groups = \App\Model\Product\ProductGroup::where('hidden','!=', 1)->get();
@@ -225,7 +225,7 @@ if($script){
 
                                                     <li class="dropdown dropdown-mega dropdown-mega-shop" id="headerShop">
                                                         <a class="dropdown-item dropdown-toggle" href="{{url('show/cart')}}">
-                                                            <i class="fa fa-user mr-1"></i> Cart ({{Cart::getTotalQuantity()}})
+                                                            <i class="fa fa-shopping-cart"></i> Cart ({{Cart::getTotalQuantity()}})
                                                         </a>
                                                         <ul class="dropdown-menu">
                                                             <li>

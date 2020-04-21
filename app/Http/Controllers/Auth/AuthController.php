@@ -3,6 +3,10 @@
 namespace App\Http\Controllers\Auth;
 
 use App\ApiKey;
+use Cache;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Contracts\Auth\Authenticatable;
+use App\Http\Requests\ValidateSecretRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\License\LicenseController;
 use App\Model\Common\StatusSetting;

@@ -93,6 +93,17 @@
         Route::post('payment/{invoice}', 'RazorpayController@payment')->name('payment');
 
         /*
+         * 2FA Routes
+         */
+
+        Route::get('/2fa/enable', 'Google2FAController@enableTwoFactor');
+        Route::get('/2fa/disable', 'Google2FAController@disableTwoFactor');
+        Route::get('/2fa/validate', 'Google2FAController@getValidateToken');
+        Route::get('verify-2fa', 'Google2FAController@verify2fa');
+        Route::post('2fa/loginValidate', 'Google2FAController@postLoginValidateToken');
+        Route::post('/2fa/validate', ['middleware' => 'throttle:5', 'uses' => 'Auth\AuthController@postValidateToken']);
+        Route::get('verify-password','Google2FAController@verifyPassword');
+        /*
          * Social Media
          */
 

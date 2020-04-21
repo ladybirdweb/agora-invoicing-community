@@ -4,6 +4,67 @@ User Profile
 @stop
 @section('content')
 @section('content-header')
+<style>
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input {display:none;}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+.scrollit {
+    overflow:scroll;
+    height:600px;
+}
+</style>
 <h1>
 Edit Profile
 </h1>
@@ -265,6 +326,31 @@ Edit Profile
             </div>
         </div>
     </div>
+    @include('themes.default1.user.2faModals')
+    <div class="col-md-6">
+
+
+
+        <div class="box box-primary">
+
+            <div class="box-body">
+                <!-- cofirm password -->
+                <h5><img src="{{asset('common/images/authenticator.png')}}" alt="Authenticator" class="img-responsive img-circle img-sm">&nbsp;&nbsp;Authenticator App</h5>
+                  <label class="switch toggle_event_editing">
+                          
+                         <input type="checkbox" value=""  name="modules_settings" 
+                          class="checkbox" id="2fa">
+                          <span class="slider round"></span>
+                    </label>
+              <!--   <div class="form-group has-feedback {{ $errors->has('confirm_password') ? 'has-error' : '' }}">
+                    {!! Form::label('confirm_password',null,['class' => 'required'],Lang::get('message.confirm_password')) !!}
+                    {!! Form::password('confirm_password',['placeholder'=>'Confirm Password','class' => 'form-control']) !!}
+                    <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                </div> -->
+
+            </div>
+        </div>
+    </div>
 </div>
 
 
@@ -309,9 +395,74 @@ Edit Profile
     $('form').on('submit', function (e) {
         $('input[name=country_code]').attr('value', $('.selected-dial-code').text());
     });
+
+
+     var status = $('.checkbox').val();
+     if(status ==1) {
+     
+     } else if(status ==0) {
+      
+              
+     }
 });
 </script>
 <script>
+        $('#2fa').change(function () {
+        if ($(this).prop("checked")) {
+            // checked
+            $('#2fa-modal1').modal('show');
+            $('#verify_password').on('click',function(){
+                $("verify_password").attr('disabled',true);
+                $("#verify_password").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Verifying...");
+                var password = $('#user_password').val();
+                $.ajax({
+                    url : '{{url("verify-password")}}',
+                    method : 'GET',
+                    data : {
+                        "user_password" : password,
+                    },
+                
+                success: function (response) {
+                    console.log(response,'sdf')
+                     $('#2fa-modal1').modal('hide');
+                     $.ajax({
+                        url : "{{url('2fa/enable')}}",
+                        method : 'get',
+                        
+                success: function(response) {
+                    console.log(response,'sfsd');
+                     $('#2fa-modal2').modal('show');
+
+                        }
+                    }) 
+                    
+                    // var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Well Done! </strong>'+response.message+'!</div>';
+                    // $('#alertMessage1').hide(); 
+                    // // $('#alertMessage2').html(result);
+                    // $("#verifyOtp").html("Verify OTP");
+                  
+                      // response.success("Success");
+                    
+                },
+                error: function (data) {
+                    $("#verify_password").html("Validate");
+                    $('#passerror').show();
+                    $('#passerror').html("Incorrect Password. Try again");
+                     $('#passerror').focus();
+                      $('#user_password').css("border-color","red");
+                     $('#passerror').css({"color":"red","margin-top":"1px"});
+                    },
+            });
+            });
+        }
+    })
+         // alert('sdf');
+           // $('#license_api_secret').val();
+           //      $('#license_api_url').val();
+           //  $('.LicenseField').removeClass("hide");
+       
+
+
        function getCountryAttr(val) {
         getState(val);
         getCode(val);

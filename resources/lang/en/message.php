@@ -640,4 +640,8 @@ return [
      'sales_man_replaced_success'   => 'Sales Manager replaced successfully',
      'stripe_key'                   => 'Stripe Key',
      'stripe_secret'                => 'Stripe Secret',
+     'setup_2fa'                    => 'Setup 2 Step Verification',
+     'varify_password'              => 'To continue, first verify it\'s you',
+     'password_verified'            => 'Password Verified',
+     'password_incorrect'           => 'Incorrct Password',
 ];

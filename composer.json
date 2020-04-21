@@ -14,7 +14,7 @@
         "php": ">=7.2",
         "anhskohbo/no-captcha": "^3.1",
         "arcanedev/log-viewer": "^5.2",
-        "bacon/bacon-qr-code": "^2.0",
+        "bacon/bacon-qr-code": "~1.0.3",
         "barryvdh/laravel-dompdf": "^0.8.5",
         "bugsnag/bugsnag-laravel": "^2.17.1",
         "cartalyst/stripe-laravel": "^11.0",

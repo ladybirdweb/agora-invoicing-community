@@ -244,38 +244,35 @@
     },
     {
         "name": "bacon/bacon-qr-code",
-        "version": "2.0.0",
-        "version_normalized": "2.0.0.0",
+        "version": "1.0.3",
+        "version_normalized": "1.0.3.0",
         "source": {
             "type": "git",
             "url": "https://github.com/Bacon/BaconQrCode.git",
-            "reference": "eaac909da3ccc32b748a65b127acd8918f58d9b0"
+            "reference": "5a91b62b9d37cee635bbf8d553f4546057250bee"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/Bacon/BaconQrCode/zipball/eaac909da3ccc32b748a65b127acd8918f58d9b0",
-            "reference": "eaac909da3ccc32b748a65b127acd8918f58d9b0",
+            "url": "https://api.github.com/repos/Bacon/BaconQrCode/zipball/5a91b62b9d37cee635bbf8d553f4546057250bee",
+            "reference": "5a91b62b9d37cee635bbf8d553f4546057250bee",
             "shasum": ""
         },
         "require": {
-            "dasprid/enum": "^1.0",
             "ext-iconv": "*",
-            "php": "^7.1"
+            "php": "^5.4|^7.0"
         },
         "require-dev": {
-            "phly/keep-a-changelog": "^1.4",
-            "phpunit/phpunit": "^6.4",
-            "squizlabs/php_codesniffer": "^3.1"
+            "phpunit/phpunit": "^4.8"
         },
         "suggest": {
-            "ext-imagick": "to generate QR code images"
+            "ext-gd": "to generate QR code images"
         },
-        "time": "2018-04-25T17:53:56+00:00",
+        "time": "2017-10-17T09:59:25+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
-            "psr-4": {
-                "BaconQrCode\\": "src/"
+            "psr-0": {
+                "BaconQrCode": "src/"
             }
         },
         "notification-url": "https://packagist.org/downloads/",

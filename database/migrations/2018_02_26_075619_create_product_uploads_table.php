@@ -13,17 +13,19 @@ class CreateProductUploadsTable extends Migration
      */
     public function up()
     {
-        Schema::create('product_uploads', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('product_id')->unsigned();
-            $table->foreign('product_id')->references('id')->on('products');
-            $table->string('title');
-            $table->string('description');
-            $table->string('version');
-            $table->string('file');
+        if(!Schema::hasTable('product_uploads')){
+            Schema::create('product_uploads', function (Blueprint $table) {
+                $table->increments('id');
+                $table->integer('product_id')->unsigned();
+                $table->foreign('product_id')->references('id')->on('products');
+                $table->string('title');
+                $table->string('description');
+                $table->string('version');
+                $table->string('file');
 
-            $table->timestamps();
-        });
+                $table->timestamps();
+            });
+        }
     }
 
     /**

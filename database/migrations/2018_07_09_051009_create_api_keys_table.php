@@ -13,15 +13,17 @@ class CreateApiKeysTable extends Migration
      */
     public function up()
     {
-        Schema::create('api_keys', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('rzp_key', 255)->nullable();
-            $table->string('rzp_secret', 255)->nullable();
-            $table->string('apilayer_key', 255)->nullable();
-            $table->string('bugsnag_api_key', 255)->nullable();
-            $table->string('zoho_api_key', 255)->nullable();
-            $table->timestamps();
-        });
+        if(!Schema::hasTable('api_keys')){
+            Schema::create('api_keys', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('rzp_key', 255)->nullable();
+                $table->string('rzp_secret', 255)->nullable();
+                $table->string('apilayer_key', 255)->nullable();
+                $table->string('bugsnag_api_key', 255)->nullable();
+                $table->string('zoho_api_key', 255)->nullable();
+                $table->timestamps();
+            });
+        }
     }
 
     /**

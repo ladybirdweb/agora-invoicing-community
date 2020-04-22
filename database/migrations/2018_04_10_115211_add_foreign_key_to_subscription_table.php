@@ -14,9 +14,12 @@ class AddForeignKeyToSubscriptionTable extends Migration
     public function up()
     {
         Schema::table('subscriptions', function (Blueprint $table) {
-            $table->integer('product_id')->unsigned();
+            if(!Schema::hasColumn('subscriptions','product_id')){
+                $table->bigInteger('product_id')->unsigned();
+                $table->foreign('product_id')->references('id')->on('products');
+            }
 
-            $table->foreign('product_id')->references('id')->on('products');
+
         });
     }
 

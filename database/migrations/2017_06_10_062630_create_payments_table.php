@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreatePaymentsTable extends Migration
 {
@@ -12,16 +13,18 @@ class CreatePaymentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('payments', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('parent_id');
-            $table->integer('invoice_id');
-            $table->integer('user_id');
-            $table->string('amount')->nullable();
-            $table->string('payment_method')->nullable();
-            $table->string('payment_status', 225)->nullable();
-            $table->timestamps();
-        });
+       if(!Schema::hasTable('payments')) {
+           Schema::create('payments', function (Blueprint $table) {
+               $table->increments('id');
+               $table->integer('parent_id');
+               $table->integer('invoice_id');
+               $table->integer('user_id');
+               $table->string('amount')->nullable();
+               $table->string('payment_method')->nullable();
+               $table->string('payment_status', 225)->nullable();
+               $table->timestamps();
+           });
+       }
     }
 
     /**

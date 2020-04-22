@@ -13,9 +13,11 @@ class AddAgentsToInvoiceItems extends Migration
      */
     public function up()
     {
-        Schema::table('invoice_items', function (Blueprint $table) {
-            $table->string('agents')->nullable();
-        });
+        if(!Schema::hasColumn('invoice_items','agents')){
+            Schema::table('invoice_items', function (Blueprint $table) {
+                $table->string('agents')->nullable();
+            });
+        }
     }
 
     /**
@@ -25,6 +27,8 @@ class AddAgentsToInvoiceItems extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('invoice_items');
+        Schema::table('invoice_items', function (Blueprint $table) {
+            $table->dropColumn('agents');
+        });
     }
 }

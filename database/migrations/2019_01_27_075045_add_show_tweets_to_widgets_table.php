@@ -14,8 +14,10 @@ class AddShowTweetsToWidgetsTable extends Migration
     public function up()
     {
         Schema::table('widgets', function (Blueprint $table) {
-            $table->boolean('allow_tweets')->nullable();
-            $table->boolean('allow_mailchimp')->nullable();
+            if(!Schema::hasColumn('widgets','allow_tweets'))
+                $table->boolean('allow_tweets')->nullable();
+            if(!Schema::hasColumn('widgets','allow_mailchimp'))
+                $table->boolean('allow_mailchimp')->nullable();
         });
     }
 
@@ -27,8 +29,10 @@ class AddShowTweetsToWidgetsTable extends Migration
     public function down()
     {
         Schema::table('widgets', function (Blueprint $table) {
-            $table->dropColumn('allow_tweets');
-            $table->dropColumn('allow_mailchimp');
+
+            $table->dropColumn([
+                'allow_tweets','allow_mailchimp'
+            ]);
         });
     }
 }

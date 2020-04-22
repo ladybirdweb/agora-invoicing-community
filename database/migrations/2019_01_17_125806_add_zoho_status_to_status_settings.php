@@ -14,12 +14,18 @@ class AddZohoStatusToStatusSettings extends Migration
     public function up()
     {
         Schema::table('status_settings', function (Blueprint $table) {
-            $table->boolean('zoho_status')->nullable();
-            $table->boolean('rzp_status')->nullable();
-            $table->boolean('mailchimp_product_status')->nullable();
-            $table->boolean('mailchimp_ispaid_status')->nullable();
-            $table->boolean('terms')->nullable();
-            $table->boolean('pipedrive_status')->nullable();
+            if(!Schema::hasColumn('status_settings','zoho_status'))
+                $table->boolean('zoho_status')->nullable();
+            if(!Schema::hasColumn('status_settings','rzp_status'))
+                $table->boolean('rzp_status')->nullable();
+            if(!Schema::hasColumn('status_settings','mailchimp_product_status'))
+                $table->boolean('mailchimp_product_status')->nullable();
+            if(!Schema::hasColumn('status_settings','mailchimp_ispaid_status'))
+                $table->boolean('mailchimp_ispaid_status')->nullable();
+            if(!Schema::hasColumn('status_settings','terms'))
+                $table->boolean('terms')->nullable();
+            if(!Schema::hasColumn('status_settings','pipedrive_status'))
+                $table->boolean('pipedrive_status')->nullable();
         });
     }
 
@@ -30,6 +36,15 @@ class AddZohoStatusToStatusSettings extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('status_settings');
+        Schema::table('status_settings',function (Blueprint $table){
+            $table->dropColumn([
+                'zoho_status',
+                'rzp_status',
+                'mailchimp_product_status',
+                'mailchimp_ispaid_status',
+                'terms',
+                'pipedrive_status'
+            ]);
+        });
     }
 }

@@ -13,11 +13,13 @@ class CreateExpiryMailDaysTable extends Migration
      */
     public function up()
     {
-        Schema::create('expiry_mail_days', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('days', 255)->nullable();
-            $table->timestamps();
-        });
+        if(!Schema::hasTable('expiry_mail_days')){
+            Schema::create('expiry_mail_days', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('days', 255)->nullable();
+                $table->timestamps();
+            });
+        }
     }
 
     /**

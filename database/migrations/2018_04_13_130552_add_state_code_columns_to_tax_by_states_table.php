@@ -13,9 +13,12 @@ class AddStateCodeColumnsToTaxByStatesTable extends Migration
      */
     public function up()
     {
-        Schema::table('tax_by_states', function (Blueprint $table) {
-            $table->string('state_code');
-        });
+        if(!Schema::hasColumn('tax_by_states','state_code')) {
+            Schema::table('tax_by_states', function (Blueprint $table) {
+                $table->string('state_code');
+            });
+        }
+
     }
 
     /**
@@ -26,7 +29,7 @@ class AddStateCodeColumnsToTaxByStatesTable extends Migration
     public function down()
     {
         Schema::table('tax_by_states', function (Blueprint $table) {
-            //
+            $table->dropColumn('state_code');
         });
     }
 }

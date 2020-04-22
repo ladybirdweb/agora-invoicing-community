@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateGroupFeaturesTable extends Migration
 {
@@ -12,12 +13,15 @@ class CreateGroupFeaturesTable extends Migration
      */
     public function up()
     {
-        Schema::create('group_features', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('group_id')->unsigned()->index('group_features_group_id_foreign');
-            $table->string('features');
-            $table->timestamps();
-        });
+        if(!Schema::hasTable('group_features')){
+            Schema::create('group_features', function (Blueprint $table) {
+                $table->increments('id');
+                $table->integer('group_id')->unsigned()->index('group_features_group_id_foreign');
+                $table->string('features');
+                $table->timestamps();
+            });
+        }
+
     }
 
     /**

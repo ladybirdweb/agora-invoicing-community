@@ -13,9 +13,12 @@ class AddCountryColumnsToTaxByStatesTable extends Migration
      */
     public function up()
     {
-        Schema::table('tax_by_states', function (Blueprint $table) {
-            $table->string('country');
-        });
+        if(!Schema::hasColumn('tax_by_states','country')){
+            Schema::table('tax_by_states', function (Blueprint $table) {
+                $table->string('country');
+            });
+        }
+
     }
 
     /**
@@ -26,7 +29,7 @@ class AddCountryColumnsToTaxByStatesTable extends Migration
     public function down()
     {
         Schema::table('tax_by_states', function (Blueprint $table) {
-            //
+            $table->dropColumn('country');
         });
     }
 }

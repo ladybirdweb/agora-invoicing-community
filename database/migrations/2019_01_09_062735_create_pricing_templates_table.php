@@ -13,13 +13,15 @@ class CreatePricingTemplatesTable extends Migration
      */
     public function up()
     {
-        Schema::create('pricing_templates', function (Blueprint $table) {
-            $table->increments('id');
-            $table->longText('data');
-            $table->string('image');
-            $table->string('name');
-            $table->timestamps();
-        });
+        if(!Schema::hasTable('pricing_templates')){
+            Schema::create('pricing_templates', function (Blueprint $table) {
+                $table->increments('id');
+                $table->longText('data');
+                $table->string('image');
+                $table->string('name');
+                $table->timestamps();
+            });
+        }
     }
 
     /**

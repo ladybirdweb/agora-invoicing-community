@@ -13,9 +13,11 @@ class AddProductSkuToProducts extends Migration
      */
     public function up()
     {
-        Schema::table('products', function (Blueprint $table) {
-            $table->string('product_sku', 255)->nullable();
-        });
+        if(!Schema::hasColumn('products','product_sku')){
+            Schema::table('products', function (Blueprint $table) {
+                $table->string('product_sku', 255)->nullable();
+            });
+        }
     }
 
     /**
@@ -26,7 +28,7 @@ class AddProductSkuToProducts extends Migration
     public function down()
     {
         Schema::table('products', function (Blueprint $table) {
-            //
+            $table->dropColumn('product_sku');
         });
     }
 }

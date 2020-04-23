@@ -221,7 +221,7 @@ Dashboard
      @endphp
 
      @component('mini_views.card', [
-            'title'=> 'Clients With outdated Product Version (Last 30)',
+            'title'=> 'Clients With outdated Product Version (Last 30 Clients)',
             'layout' => 'table',
             'collection'=> $clientsUsingOldVersion,
             'columns'=> ['Client', 'Version', 'Product', 'Expiry Date'],

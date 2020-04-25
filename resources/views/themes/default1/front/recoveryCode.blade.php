@@ -1,16 +1,16 @@
 @extends('themes.default1.layouts.front.master')
 @section('title')
-Two-factor authentication
+Two-factory recovery
 @stop
 @section('page-heading')
- <h1>Two-factor authentication</h1>
+ <h1>Two-factory recovery</h1>
 @stop
 @section('page-header')
 Forgot Password
 @stop
 @section('breadcrumb')
 <li><a href="{{url('login')}}">Login</a></li>
-<li class="active">Two-factor authentication</li>
+<li class="active">Two-factory recovery</li>
 @stop
 @section('main-class') 
 main
@@ -54,25 +54,20 @@ main
                       
                    <div class="featured-box featured-box-primary text-left mt-5">
                         <div class="box-content">
-                          {!!  Form::open(['route'=>'2fa/loginValidate', 'method'=>'post']) !!}
-                         <h2 style="text-align: center;">Two-Factor Authentication</h2>
+                          {!!  Form::open(['route'=>'verify-recovery-code', 'method'=>'post']) !!}
+                         <h2 style="text-align: center;">Two-factor recovery</h2>
                             <div class="form-row">
                                 <div class="form-group col">
-                                    <label>Enter Authentication Code <span style="color: red">*</span></label>
+                                    <label>Enter recovery code <span style="color: red">*</span></label>
                                           <div class="input-group">
-                                      <input type="text" name="totp"  id="2fa_code" class="form-control input-lg">
+                                      <input type="text" name="rec_code" class="form-control input-lg">
                                      
                                   </div>
-                                   <h6 id="codecheck"></h6>
                                
-                            
-                      
-                                <p>Open the two-factor authentication app on your device to view your authentication code and verify your identity.</p>
+                             <p>You recovery code can be used only once. Make sure to generate new recovery code from My Profile section once you successfully sign in using your current recovery code.</p>
                               <button type="submit" class="btn btn-primary float-right" >
                                             Verify
                                 </button>
-                                <b>Having problems?</b><br>
-                                 <a href="{{'recovery-code'}}" >Login using recovery code</a>
                                 
                                 {!! Form::close() !!}
                            

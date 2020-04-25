@@ -18,6 +18,8 @@ class ProfileController extends Controller
         try {
             $user = \Auth::user();
             $timezonesList = \App\Model\Common\Timezone::get();
+            $is2faEnabled = $user->is_2fa_enabled;
+            $dateSinceEnabled = $user->google2fa_activation_date;
             foreach ($timezonesList as $timezone) {
                 $location = $timezone->location;
                 if ($location) {
@@ -34,7 +36,7 @@ class ProfileController extends Controller
             $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($user->country);
             $bussinesses = \App\Model\Common\Bussiness::pluck('name', 'short')->toArray();
 
-            return view('themes.default1.user.profile', compact('bussinesses', 'user', 'timezones', 'state', 'states'));
+            return view('themes.default1.user.profile', compact('bussinesses', 'user', 'timezones', 'state', 'states','is2faEnabled','dateSinceEnabled'));
         } catch (\Exception $e) {
             return redirect()->back()->with('fails', $e->getMessage());
         }

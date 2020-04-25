@@ -122,7 +122,7 @@ Edit Profile
 
             <div class="content-header">
 
-                <h4>{{Lang::get('message.profile')}}	
+                <h4>{{Lang::get('message.profile')}}    
                 <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></h4>
 
 
@@ -282,7 +282,7 @@ Edit Profile
 
             <div class="content-header">
 
-                <h4>{{Lang::get('message.change-password')}}	<button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></h4>
+                <h4>{{Lang::get('message.change-password')}}    <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></h4>
 
             </div>
 
@@ -327,34 +327,53 @@ Edit Profile
         </div>
     </div>
     @include('themes.default1.user.2faModals')
+   
     <div class="col-md-6">
 
 
 
         <div class="box box-primary">
+            <div class="content-header">
 
-            <div class="box-body">
-                <!-- cofirm password -->
-                <h5><img src="{{asset('common/images/authenticator.png')}}" alt="Authenticator" class="img-responsive img-circle img-sm">&nbsp;&nbsp;Authenticator App</h5>
-                  <label class="switch toggle_event_editing">
+                <h4>{{Lang::get('message.setup_2fa')}}</h4>
+
+            </div>
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-10">
+                <h5>
+                    @if($is2faEnabled ==0)
+                    <img src="{{asset('common/images/authenticator.png')}}" alt="Authenticator" style="margin-top: -6px!important;" class="img-responsive img-circle img-sm">&nbsp;Authenticator App
+                    @else
+                    <img src="{{asset('common/images/authenticator.png')}}" alt="Authenticator" style="margin-top: -6px!important;" class="img-responsive img-circle img-sm">&nbsp;2-Step Verification is ON since {{getTimeInLoggedInUserTimeZone($dateSinceEnabled)}}
+                    <br><br><br>
+                    <div class="row">
+                 <div class="col-md-4">
+                     <button class="btn btn-primary" id="viewRecCode">View Recovery Code</button>
+                 </div>
+             </div>
+                    @endif
+                </h5>
+                </div>
+                <div class="col-md-2">
+                  <label class="switch toggle_event_editing pull-right">
                           
-                         <input type="checkbox" value=""  name="modules_settings" 
+                         <input type="checkbox" value="{{$is2faEnabled}}"  name="modules_settings" 
                           class="checkbox" id="2fa">
                           <span class="slider round"></span>
                     </label>
-              <!--   <div class="form-group has-feedback {{ $errors->has('confirm_password') ? 'has-error' : '' }}">
-                    {!! Form::label('confirm_password',null,['class' => 'required'],Lang::get('message.confirm_password')) !!}
-                    {!! Form::password('confirm_password',['placeholder'=>'Confirm Password','class' => 'form-control']) !!}
-                    <span class="glyphicon glyphicon-lock form-control-feedback"></span>
-                </div> -->
+                 </div>
 
             </div>
+        </div>  
         </div>
     </div>
+
 </div>
 
 
 {!! Form::close() !!}
+<script src="{{asset('common/js/2fa.js')}}"></script>
 <script>
 // get the country data from the plugin
      $(document).ready(function(){
@@ -397,70 +416,10 @@ Edit Profile
     });
 
 
-     var status = $('.checkbox').val();
-     if(status ==1) {
-     
-     } else if(status ==0) {
-      
-              
-     }
 });
 </script>
 <script>
-        $('#2fa').change(function () {
-        if ($(this).prop("checked")) {
-            // checked
-            $('#2fa-modal1').modal('show');
-            $('#verify_password').on('click',function(){
-                $("verify_password").attr('disabled',true);
-                $("#verify_password").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Verifying...");
-                var password = $('#user_password').val();
-                $.ajax({
-                    url : '{{url("verify-password")}}',
-                    method : 'GET',
-                    data : {
-                        "user_password" : password,
-                    },
-                
-                success: function (response) {
-                    console.log(response,'sdf')
-                     $('#2fa-modal1').modal('hide');
-                     $.ajax({
-                        url : "{{url('2fa/enable')}}",
-                        method : 'get',
-                        
-                success: function(response) {
-                    console.log(response,'sfsd');
-                     $('#2fa-modal2').modal('show');
 
-                        }
-                    }) 
-                    
-                    // var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Well Done! </strong>'+response.message+'!</div>';
-                    // $('#alertMessage1').hide(); 
-                    // // $('#alertMessage2').html(result);
-                    // $("#verifyOtp").html("Verify OTP");
-                  
-                      // response.success("Success");
-                    
-                },
-                error: function (data) {
-                    $("#verify_password").html("Validate");
-                    $('#passerror').show();
-                    $('#passerror').html("Incorrect Password. Try again");
-                     $('#passerror').focus();
-                      $('#user_password').css("border-color","red");
-                     $('#passerror').css({"color":"red","margin-top":"1px"});
-                    },
-            });
-            });
-        }
-    })
-         // alert('sdf');
-           // $('#license_api_secret').val();
-           //      $('#license_api_url').val();
-           //  $('.LicenseField').removeClass("hide");
-       
 
 
        function getCountryAttr(val) {

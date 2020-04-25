@@ -325,7 +325,8 @@ class ClientController extends BaseClientController
     {
         try {
             $user = $this->user->where('id', \Auth::user()->id)->first();
-            //dd($user);
+            $is2faEnabled = $user->is_2fa_enabled;
+            $dateSinceEnabled = $user->google2fa_activation_date;
             $timezonesList = \App\Model\Common\Timezone::get();
             foreach ($timezonesList as $timezone) {
                 $location = $timezone->location;
@@ -345,7 +346,7 @@ class ClientController extends BaseClientController
 
             return view(
                 'themes.default1.front.clients.profile',
-                compact('user', 'timezones', 'state', 'states', 'bussinesses')
+                compact('user', 'timezones', 'state', 'states', 'bussinesses','is2faEnabled','dateSinceEnabled')
             );
         } catch (Exception $ex) {
             Bugsnag::notifyException($ex);

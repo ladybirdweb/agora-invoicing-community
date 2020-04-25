@@ -96,15 +96,14 @@ trait AuthenticatesUsers
              
          }
            } 
-           if (Auth::user()->google2fa_secret && Auth::user()->is_2fa_enabled ==1) {
+           if (Auth::user()->is_2fa_enabled ==1) {
+                    $userId = Auth::user()->id;
                     Auth::logout();
-                    $request->session()->put('2fa:user:id', $user->id);
+                    $request->session()->put('2fa:user:id', $userId);
                     return redirect('2fa/validate');
                 }
-                else{
                  activity()->log('Logged In');
                  return redirect()->intended($this->redirectPath());
-         }
     }
 
 

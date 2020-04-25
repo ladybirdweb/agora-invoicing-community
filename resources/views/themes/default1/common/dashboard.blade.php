@@ -225,7 +225,7 @@ Dashboard
             'layout' => 'table',
             'collection'=> $clientsUsingOldVersion,
             'columns'=> ['Client', 'Version', 'Product', 'Expiry Date'],
-            'linkLeft'=> ['See All' => url('orders')."?version_from=$oldestVersion&version_till=$latestVersion&act_inst=paid_ins&sort_field=4&sort_order=asc"],
+            'linkLeft'=> ['View All' => url('orders')."?version_from=$oldestVersion&version_till=$latestVersion&act_inst=paid_ins&sort_field=4&sort_order=asc"],
             'linkRight'=> ['Create New Product' => url('products/create')]
      ])
          @foreach($clientsUsingOldVersion as $element)

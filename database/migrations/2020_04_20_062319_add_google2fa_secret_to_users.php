@@ -17,6 +17,8 @@ class AddGoogle2faSecretToUsers extends Migration
             $table->text('google2fa_secret')->nullable();
             $table->timestamp('google2fa_activation_date')->nullable();
             $table->boolean('is_2fa_enabled')->default(0);
+            $table->string('backup_code')->nullable();
+            $table->integer('code_usage_count')->default(0);
         });
     }
 
@@ -31,6 +33,8 @@ class AddGoogle2faSecretToUsers extends Migration
             $table->dropColumn('google2fa_secret');
             $table->dropColumn('google2fa_activation_date');
             $table->dropColumn('is_2fa_enabled');
+            $table->dropColumn('backup_code');
+            $table->dropColumn('code_usage_count');
         });
     }
 }

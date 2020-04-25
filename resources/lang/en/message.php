@@ -644,4 +644,8 @@ return [
      'varify_password'              => 'To continue, first verify it\'s you',
      'password_verified'            => 'Password Verified',
      'password_incorrect'           => 'Incorrct Password',
+     'enter_6_digit_code'           => 'Enter the 6-digit code you see in the app.',
+     'valid_passcode'               => 'Passcode is valid',
+      'invalid_passcode'            => 'Passcode entered is invalid',
+      '2fa_disabled'                => '2 Factor Authentication has been disabled',
 ];

@@ -254,6 +254,7 @@ class ClientController extends AdvanceSearchController
             // }
             $extraAmt = $this->getExtraAmt($id);
             $client = $this->user->where('id', $id)->first();
+            $is2faEnabled = $client->is_2fa_enabled;
             // $client = "";
             $currency = $client->currency;
             $orders = $order->where('client', $id)->get();
@@ -261,18 +262,8 @@ class ClientController extends AdvanceSearchController
 
             return view(
                 'themes.default1.user.client.show',
-                compact(
-                    'id',
-                    'client',
-                    'invoices',
-                    'orders',
-                    'invoiceSum',
-                    'amountReceived',
-                    'pendingAmount',
-                    'currency',
-                    'extraAmt',
-                    'comments'
-                )
+                compact('id','client','invoices','orders','invoiceSum','amountReceived','pendingAmount','currency','extraAmt','comments',
+                    'is2faEnabled')
             );
         } catch (\Exception $ex) {
             app('log')->info($ex->getMessage());

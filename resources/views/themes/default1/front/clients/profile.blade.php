@@ -19,6 +19,67 @@ active
 @stop
 @section('content')
 <style>
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input {display:none;}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+.scrollit {
+    overflow:scroll;
+    height:600px;
+}
+</style>
+<style>
   
     .required:after{ 
         content:'*'; 
@@ -239,11 +300,50 @@ active
                       
                     </div>
                 </div>
+                         @include('themes.default1.user.2faModals')
+   
+                 <div class="featured-box featured-box-primary text-left mt-3 mt-md-5">
+                   <div class="box-content">
+
+                        <h4>{{Lang::get('message.setup_2fa')}}</h4>
+
+                    <br>
+                    <div class="form-row">
+                        <div class="col-md-10">
+                        <h6>
+                              @if($is2faEnabled ==0)
+                                <img src="{{asset('common/images/authenticator.png')}}" alt="Authenticator" style="margin-top: -6px!important;height:26px;" class="img-responsive img-circle img-sm">&nbsp;Authenticator App
+                                @else
+                                <img src="{{asset('common/images/authenticator.png')}}" alt="Authenticator" style="margin-top: -6px!important;height:26px;" class="img-responsive img-circle img-sm">&nbsp;2-Step Verification is ON since {{getTimeInLoggedInUserTimeZone($dateSinceEnabled)}}
+                                <br><br><br>
+                                 <div class="row">
+                                     <div class="col-md-4">
+                                         <button class="btn btn-primary" id="viewRecCode">View Recovery Code</button>
+                                     </div>
+                                 </div>
+                                @endif
+                           
+                        </h6>
+                        </div>
+                        <div class="col-md-2">
+                          <label class="switch toggle_event_editing pull-right">
+                                  
+                                 <input type="checkbox" value="{{$is2faEnabled}}"  name="modules_settings" 
+                                  class="checkbox" id="2fa">
+                                  <span class="slider round"></span>
+                            </label>
+                         </div>
+                    </div>
+                </div>  
+                </div>
+    
             </div>
+
+
         </div>
 
     </div>
-
+<script src="{{asset('common/js/2fa.js')}}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
 
                     <script>
@@ -377,7 +477,6 @@ active
 <script src="{{asset('common/js/intlTelInput.js')}}"></script>
 <script type="text/javascript">
      $(document).ready(function(){
-
     var country = $('#country').val();
     var telInput = $('#mobile_code'),
      addressDropdown = $("#country");

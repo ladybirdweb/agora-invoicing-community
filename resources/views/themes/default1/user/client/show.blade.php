@@ -126,28 +126,16 @@ User Details
                 <li role="presentation">
                     <a role="menuitem" tabindex="-1" href="{{url('newPayment/receive?clientid='.$client->id)}}">{{Lang::get('message.create-payment')}}</a>
                 </li>
-<!--                <li role="presentation">
-                    <a role="menuitem" tabindex="-1" href="#">Estimate</a>
-                </li>
-                <li role="presentation" class="divider"></li>
-                <li role="presentation">
-                    <a role="menuitem" tabindex="-1" href="#">Sales recepit</a>
-                </li>
-                <li role="presentation">
-                    <a role="menuitem" tabindex="-1" href="#">Credit Note</a>
-                </li>
-                <li role="presentation">
-                    <a role="menuitem" tabindex="-1" href="#">Delayed Charge</a>
-                </li>
-                <li role="presentation">
-                    <a role="menuitem" tabindex="-1" href="#">Time Activity</a>
-                </li>
-                <li role="presentation">
-                    <a role="menuitem" tabindex="-1" href="#">Statement</a>
-                </li>-->
+
             </ul>
         </div>
-
+        <br>
+        @if($is2faEnabled)
+         <button id="disable2fa" value="{{$client->id}}" class="btn btn-block btn-default btn-sm btn-flat "><i class="fa fa-ban"></i>&nbsp;
+            Disable 2FA
+        </button>
+      
+        @endif
 
     </div>
 
@@ -824,14 +812,65 @@ User Details
         </div>
     </div>
 </div>
-
+  <div class="modal fade" id="disable2fa-modal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Turn off Two-Factor-Authentication</h4>
+             
+            </div>
+            
+            <div class="modal-body">
+               <div id="alertMessage"></div>
+              
+                  Turning off 2-Step Verification will remove the extra security on your account, and you’ll only use your password to sign in.
+           
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-danger pull-right float-right" id="turnoff2fa"><i class="fa fa-power-off"></i> TURN OFF</button>
+              <button type="button" class="btn btn-default pull-left closeandrefresh" data-dismiss="modal"><i class="fa fa-times">&nbsp;&nbsp;</i>Close</button>
+            </div>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+        </div>
 
 @stop
 
 @section('icheck')
 
 <script>
-      function delCommentFunction() {
+    $('.closeandrefresh').on('click',function(){
+            location.reload();
+        })
+    $('#disable2fa').on('click',function(){
+        $('#disable2fa-modal').modal('show');
+    })
+    $('#turnoff2fa').on('click',function(){
+                $("#turnoff2fa").attr('disabled',true);
+                $("#turnoff2fa").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait..");
+                var user = $('#disable2fa').val();
+                $.ajax({
+
+                    url : "{{url('2fa/disable')}}",
+                    method : 'get',
+                    data : {
+                        'userId' : user,
+                    },
+                    success: function(response){
+                        $("#turnoff2fa").attr('disabled',false);
+                        $("#turnoff2fa").html("<i class='fa fa-power-off'></i>TURNED OFF");
+                         var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong></strong>'+response.message+'.</div>';
+                            $('#alertMessage').html(result+ ".");
+                            setTimeout(function(){
+                                location.reload();
+                            },2000);
+                    },
+                })
+            })
+
+    function delCommentFunction() {
      if(!confirm("Are you sure you want to delete this comment?"))
         event.preventDefault();
   }

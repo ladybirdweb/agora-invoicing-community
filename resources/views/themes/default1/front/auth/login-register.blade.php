@@ -34,7 +34,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
     .required:after{ 
         content:'*'; 
         color:red; 
-        padding-left:5px;
+        padding-left:0px;
     }
 
    
@@ -285,7 +285,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                       <div class="form-group col {{ $errors->has('country') ? 'has-error' : '' }}">
                                                                 {!! Form::label('country',Lang::get('message.country'),['class'=>'required']) !!}
                                                                 <?php $countries = \App\Model\Common\Country::pluck('nicename', 'country_code_char2')->toArray(); ?>
-                                                                {!! Form::select('country',[''=>'','Choose'=>$countries],$country,['class' => 'form-control input-lg selectpicker','data-live-search-style'=>"startsWith",'data-live-search'=>'true','data-live-search-placeholder'=>'Search','data-dropup-auto'=>'false','data-size'=>'10','id'=>'country']) !!}
+                                                                {!! Form::select('country',[''=>'','Choose'=>$countries],$country,['class' => 'form-control input-lg selectpicker','data-live-search-style'=>"startsWith",'data-live-search'=>'true','data-live-search-placeholder'=>'Search','data-dropup-auto'=>'false','data-size'=>'10','onChange'=>'getCountryAttr(this.value);','id'=>'country']) !!}
                                                             <span id="countrycheck"></span>
 
                                                             </div>
@@ -1096,8 +1096,9 @@ function verify_otp_check(){
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////            
 //Registration Form Validation
+
  function first_namecheck(){
-    var firrstname_val = $('#first_name').val();
+   var firrstname_val = $('#first_name').val();
     if(firrstname_val.length == ''){
         $('#first_namecheck').show();
         $('#first_namecheck').html("Please Enter First Name");
@@ -1110,6 +1111,18 @@ function verify_otp_check(){
         scrollTop: $("#first_namecheck").offset().top -200
     }, 1000)
     }
+  
+    var pattern = new RegExp(/[^a-zA-Z0-9]/);
+    if(pattern.test(firrstname_val)) {
+      $('#first_namecheck').show();
+        $('#first_namecheck').html("Special characters not allowed");
+        $('#first_namecheck').focus();
+         $('#first_name').css("border-color","red");
+        $('#first_namecheck').css("color","red");
+          $('html, body').animate({
+        scrollTop: $("#first_namecheck").offset().top -200
+    }, 1000)
+  }
    
     else{
          $('#first_namecheck').hide();
@@ -1123,6 +1136,19 @@ function verify_otp_check(){
     if(lastname_val.length == ''){
         $('#last_namecheck').show();
         $('#last_namecheck').html("Please Enter Last Name");
+        $('#last_namecheck').focus();
+         $('#last_name').css("border-color","red");
+        $('#last_namecheck').css({"color":"red","margin-top":"5px"});
+        // userErr =false;
+         $('html, body').animate({
+         
+        scrollTop: $("#last_namecheck").offset().top - 200
+    }, 1000)
+    }
+    var pattern = new RegExp(/[^a-zA-Z0-9]/);
+    if(pattern.test(lastname_val)){
+        $('#last_namecheck').show();
+        $('#last_namecheck').html("Special characters not allowed");
         $('#last_namecheck').focus();
          $('#last_name').css("border-color","red");
         $('#last_namecheck').css({"color":"red","margin-top":"5px"});

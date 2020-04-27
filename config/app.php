@@ -208,6 +208,7 @@ return [
            Devio\Pipedrive\PipedriveServiceProvider::class,
            Spatie\Referer\RefererServiceProvider::class,
            Cartalyst\Stripe\Laravel\StripeServiceProvider::class,
+           PragmaRX\Google2FALaravel\ServiceProvider::class,
           // Voerro\Laravel\VisitorTracker\VisitorTrackerServiceProvider::class,
 
     ],
@@ -274,6 +275,7 @@ return [
           'Currency'   => \Torann\Currency\Facades\Currency::class,
           'Pipedrive'  => Devio\Pipedrive\PipedriveFacade::class,
           'Stripe' => Cartalyst\Stripe\Laravel\Facades\Stripe::class,
+          'Google2FA' => PragmaRX\Google2FALaravel\Facade::class,
           // 'VisitStats' => Voerro\Laravel\VisitorTracker\Facades\VisitStats::class,
 
     ],

@@ -22,7 +22,7 @@ active
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-4">
-            <div class="card">
+            <div class="card" style="margin-bottom:25px;">
                 <div class="card-header">Payment
                  <img class="img-responsive pull-right" src="http://i76.imgup.net/accepted_c22e0.png">
              </div>

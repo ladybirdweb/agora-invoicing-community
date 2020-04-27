@@ -232,8 +232,8 @@ class CheckoutController extends InfoController
                 $items = new \Illuminate\Support\Collection();
                 $invoiceid = $request->input('invoice_id');
                 $invoice = $this->invoice->find($invoiceid);
-                $processingFee = $payment_method =="razorpay"? 0 : $request->input('process_fee');
-                $invoice->grand_total = intval($invoice->grand_total+($invoice->grand_total*$processingFee/100)) ;
+                $processingFee = $payment_method =="razorpay"? 0 : \DB::table(strtolower($request->input('payment_gateway')))->where('currencies',$invoice->currency)->value('processing_fee');
+                $invoice->grand_total = intval($invoice->grand_total*(1+$processingFee/100));
                 $invoice_no = $invoice->number;
                 $date = $this->getDate($invoice);
                 $items = $invoice->invoiceItem()->get();

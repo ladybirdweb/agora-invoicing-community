@@ -150,8 +150,6 @@ return [
 
             //
 
-            // 'App\Plugins\Ccavanue\ServiceProvider',
-            // 'App\Plugins\Paypal\ServiceProvider',
             'App\Plugins\Stripe\ServiceProvider',
         /*
          * Laravel Framework Service Providers...

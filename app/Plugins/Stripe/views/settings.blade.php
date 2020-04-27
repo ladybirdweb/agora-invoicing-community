@@ -72,23 +72,6 @@ Stripe
                         </div>
                     </div>  
                     
-                    <tr>
-
-                        <td><b>{!! Form::label('base_currency','Base Currency',['class'=>'required']) !!}</b></td>
-                        <td>
-                        <select name="base_currency"  class="form-control" id="b_currency">
-                         @foreach($allCurrencies as $key=>$currencies)
-                         
-                        <option value="{{$key}}" <?php  if(in_array($currencies, $baseCurrency) ) 
-                        { echo "selected";} ?>>{{$currencies}}</option>
-                            @endforeach
-                         </select>
-                           
-                   
-                            
-                        </td>
-                    <td>{!! Form::submit(Lang::get('message.update'),['id'=>'b_currency_update','class'=>'btn btn-primary'])!!}</td>
-                    </tr>
                    
                     
                     <tr>

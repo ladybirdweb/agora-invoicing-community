@@ -116,6 +116,7 @@ class SettingsController extends BaseSettingsController
             $models = [];
             $gateways = '';
             $name = '';
+            $allAcivePluginName = [];
             $active_plugins = $plugins->where('status', 1)->get(); //get the plugins that are active
             if ($active_plugins->count() > 0) {
                 foreach ($active_plugins as $plugin) {

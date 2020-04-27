@@ -156,8 +156,6 @@ class SettingsController extends Controller
                 $state = $cont->getState($stateCode);
                 $currency = $cont->getCurrency();
                  $invoice = \Session::get('invoice');
-                // $invoice = Invoice::where('id', $invoice)->first();
-                // dd($invoice);
                 $control = new \App\Http\Controllers\Order\RenewController();
                 //After Regular Payment
                 if ($control->checkRenew() === false) {
@@ -192,14 +190,6 @@ class SettingsController extends Controller
                 return redirect()->route('checkout');
             }
         } catch (Exception $e) {
-            \Session::put('amount',$request['amount']);
-            \Session::put('error',$e->getMessage());
-            return redirect()->route('stripform');
-        } catch(\Cartalyst\Stripe\Exception\CardErrorException $e) {
-            \Session::put('amount',$request['amount']);
-            \Session::put('error',$e->getMessage());
-            return redirect()->route('stripform');
-        } catch(\Cartalyst\Stripe\Exception\MissingParameterException $e) {
             \Session::put('amount',$request['amount']);
             \Session::put('error',$e->getMessage());
             return redirect()->route('stripform');

@@ -131,7 +131,7 @@ Checkout
                        ?>
                     
                 
-                @if(count($gateways)>0 ) 
+                @if(count($gateways)) 
                   <div class="row">
 
                     <div class="col-md-6">
@@ -139,8 +139,7 @@ Checkout
                         <?php
                           $processingFee = \DB::table(strtolower($gateway))->where('currencies',$invoice->currency)->value('processing_fee');
                         ?>
-                        <input type="hidden" name="process_fee" value="{{$processingFee}}">
-                        <input type="radio"  data-currency="{{$processingFee}}" id="allow_gateway" name='payment_gateway'  value={{$gateway}}>
+                        {!! Form::radio('payment_gateway',$gateway,false,['id'=>'allow_gateway']) !!}
                          <img alt="Porto" width="111"  data-sticky-width="52" data-sticky-height="10" data-sticky-top="10" src="{{asset('client/images/'.$gateway.'.png')}}">
                           <br><br>
                          <div id="fee" style="display:none"><p>An extra processing fee of <b>{{$processingFee}}%</b> will be charged on your Order Total during the time of payment</p></div>
@@ -158,7 +157,7 @@ Checkout
                 <div class="row">
                     
                     <div class="col-md-6">
-                         <input type="radio" id="rzp_selected" data-currency=0 name='payment_gateway' value="razorpay"> 
+                        {!! Form::radio('payment_gateway','razorpay',false,['id'=>'rzp_selected']) !!}
                          <img alt="Porto" width="111" data-sticky-width="82" data-sticky-height="40" data-sticky-top="33" src="{{asset('client/images/Razorpay.png')}}"><br><br>
                   </div>
                   </div>
@@ -169,7 +168,7 @@ Checkout
                         {!! Form::hidden('invoice_id',$invoice->id) !!}
                         {!! Form::hidden('cost',$invoice->grand_total) !!}
                     </div>
-                <div class="form-group">
+                <div class="row">
                     <div class="col-md-6 col-md-offset-4">
                         <button type="submit" id="proceed" class="btn btn-primary">
 

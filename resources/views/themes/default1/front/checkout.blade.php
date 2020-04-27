@@ -183,9 +183,9 @@ $sum = 0;
                     <div class="col-md-6">
                         @foreach($gateways as $gateway)
                         <?php
-                        $processingFee = \DB::table(strtolower($gateway))->where('currencies',$item['attributes']['currency']['currency'])->first()->processing_fee;
+                        $processingFee = \DB::table(strtolower($gateway))->where('currencies',$item['attributes']['currency']['currency'])->value('processing_fee');
                         ?>
-                         <input type="radio"  data-currency="{{$processingFee}}" id="allow_gateway" name='payment_gateway'  value={{$gateway}}>
+                        {!! Form::radio('payment_gateway',$gateway,false,['id'=>'allow_gateway','data-currency'=>$processingFee]) !!}
                          <img alt="{{$gateway}}" width="111"  src="{{asset('client/images/'.$gateway.'.png')}}">
                           <br><br>
                        <div id="fee" style="display:none"><p>An extra processing fee of <b>{{$processingFee}}%</b> will be charged on your Order Total during the time of payment</p></div>
@@ -199,7 +199,7 @@ $sum = 0;
                 @if($rzpstatus ==1)
                 <div class="row">
                     <div class="col-md-6">
-                        <input type="radio" id="rzp_selected" data-currency=0 name='payment_gateway' value="razorpay"> &nbsp;&nbsp;&nbsp;
+                     {!! Form::radio('payment_gateway','razorpay',false,['id'=>'rzp_selected','data-currency'=>0]) !!}&nbsp;&nbsp;&nbsp;
                        <img alt="Porto" width="111"  data-sticky-width="82" data-sticky-height="40" data-sticky-top="33" src="{{asset('client/images/Razorpay.png')}}"><br><br>
                     </div>
 
@@ -443,8 +443,7 @@ $sum = 0;
   });
      $(document).ready(function(){
             var finalPrice = $('#total-price').val();
-            console.log(finalPrice);
-        $("#rzp_selected").click(function(){
+            $("#rzp_selected").click(function(){
             
             var processingFee = $(this).attr('data-currency');
             var totalPrice = finalPrice;
@@ -456,8 +455,6 @@ $sum = 0;
                  $('#response').html( "<img id='blur-bg' class='backgroundfadein' style='width: 50px; height:50 px; display: block; position:    fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
                 },
                  url: "{{url('update-final-price')}}",
-                 success: function () {
-              }
             });
         }); 
         $("#allow_gateway").click(function(){
@@ -471,12 +468,6 @@ $sum = 0;
                  $('#response').html( "<img id='blur-bg' class='backgroundfadein' style='width: 50px; height:50 px; display: block; position:    fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
                 },
                  url: "{{url('update-final-price')}}",
-                 success: function () {
-                    // location.reload();
-                   
-              }
-
-              
             });
         });
          

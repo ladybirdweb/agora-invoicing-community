@@ -137,7 +137,7 @@ class ExtendedBaseProductController extends Controller
     public function adminDownload($id, $invoice = '')
     {
         try {
-            if ($this->downloadValidation($allowDownLoad=true,$id,$invoice)) {
+            if ($this->downloadValidation(true,$id,$invoice)) {
                 $release = $this->downloadProductAdmin($id);
                 $name = Product::where('id', $id)->value('name');
             if (is_array($release) && array_key_exists('type', $release)) {
@@ -174,7 +174,7 @@ class ExtendedBaseProductController extends Controller
     {
         if(\Auth::user()->role =='user') {
         $invoice = Invoice::where('number', $invoice)->first();//If invoice number sent as parameter exists
-        $allowDownload = $invoice ? $invoice->order()->value('product') == $id ?:false : false; //If the order for the product sent in the parameter exists
+        $allowDownload = $invoice ? $invoice->order()->value('product') == $id  : false; //If the order for the product sent in the parameter exists
      }
        return $allowDownload;
     }

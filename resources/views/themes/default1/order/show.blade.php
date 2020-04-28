@@ -111,44 +111,65 @@ Order Details
                             <table class="table table-hover">
    
                               <input type="hidden" name="domainRes" id="domainRes" value={{$allowDomainStatus}}>
-                                <tbody><tr><td><b>License Code:</b></td><td>{{($order->serial_key)}}</td></tr>
+                                <tbody>
+                                  <tr><td><b>License Code:</b></td>
+                                  <td data-type="serialkey">{{($order->serial_key)}}</td>
+                                  
+                                  <td><span class="label label-success pull-right" id="copied" style="display:none;margin-top:-15px;margin-left:-20px;position: absolute;">Copied</span>
+                                    <span data-type="copy" style="font-size: 15px; pointer-events: initial; cursor: pointer; display: block;" id="copyBtn" title="Click to copy to clipboard"><i class="fa fa-clipboard"></i></span>
+                                  </td>
+                                    <!-- <button data-type="copy" class="btn btn-primary btn-sm">Copy</button> </td> -->
+                               </tr>
                                     <tr>
                                         
                                             <td>
                                                  <label name="domain">
-                                                    <b>Licensed Domain/IP:</b></td><td contenteditable="false" id="domain">{{$order->domain}}
+                                                    <b>Licensed Domain/IP:</b>
+                                                  </td>
+                                                    <td contenteditable="false" id="domain">{{$order->domain}}</td>
                                                        @if ($licenseStatus == 1)
-                                      <button class='class="btn btn-danger mb-2 pull-right' style="border:none;" id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}">
-                                Reissue Licesnse</button>
+                                                       <td>
+                                      <button class='class="btn btn-danger pull-right' style="width:max-content;border:none;" id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}">
+                                Reissue License</button></td>
+                              </tr>
                                 <tr><td><b>Installation Path:</b></td> 
+                                  
                                         @if(count($installationDetails['installed_path']) > 0)
-                                          <td>@foreach($installationDetails['installed_path'] as $paths)
-                                              <li>{{$paths}}</li>
+                                        <td>
+                                          @foreach($installationDetails['installed_path'] as $paths)
+                                              {{$paths}} <br>
                                               @endforeach
                                           </td>
                                         @else
                                         <td>
                                         No Active Installation
-                                      </td>
+                                      
+                                        
+                                        </td>
                                         @endif
+                                        <td></td>
                                       </tr>
 
                                       <tr><td><b>Installation IP:</b></td> 
                                       @if(count($installationDetails['installed_path']) > 0)  
                                           <td>
                                               @foreach($installationDetails['installed_ip'] as $paths)
-                                              <li>{{$paths}}</li>
+                                              {{$paths}}
                                               @endforeach
                                           </td>
                                          @else
                                           <td>
                                         --
                                       </td>
+                                      
                                         @endif
+                                        <td></td>
                                        </tr>
                                   <tr><td><b>Installation Limit:</b></td> 
                                           <td>
                                               {{$noOfAllowedInstallation}}
+                                            </td>
+                                            <td>
                                                <a class='class="btn btn-sm btn-primary btn-xs pull-right' id="installlimit" limit-id="{{$order->id}}" install-limit="{{$noOfAllowedInstallation}}" style='color:white;border-radius:0px;'><i class="fa fa-edit">&nbsp;</i>
                                                 Edit</a>
                                               
@@ -161,21 +182,15 @@ Order Details
                                               {{$currenctVersion}}
               
                                           </td>
+                                          <td></td>
                                        
                                  </tr>
 
                                   <tr><td><b>Last Connection with License Manager:</b></td> 
                                           <td>
-                                            <?php
-                                             $date2 = new DateTime($lastActivity);
-                                                $tz = \Auth::user()->timezone()->first()->name;
-                                                $date2->setTimezone(new DateTimeZone($tz));
-                                                $licdate = $date2->format('M j, Y, g:i a ');
-                                                // $licenseEnd =  date('d/m/Y', strtotime($lastActivity));
-                                                ?>
-                                              {{$licdate}}
-              
+                                           {!! getDateHtml($lastActivity) !!}
                                           </td>
+                                          <td></td>
                                        
                                  </tr>
 
@@ -183,52 +198,33 @@ Order Details
                            
                             </td></tr>
                                     <?php
-                                    $date = "--";
-                                    $licdate = "--";
-                                    $supdate= "--";
                                     if ($subscription) {
-                                        if (strtotime($subscription->update_ends_at) >1) {
-                                             $date1 = new DateTime($subscription->update_ends_at);
-                                                $tz = \Auth::user()->timezone()->first()->name;
-                                                $date1->setTimezone(new DateTimeZone($tz));
-                                                $date = $date1->format('M j, Y, g:i a ');
-                                                $updatesEnd = date('d/m/Y', strtotime($subscription->update_ends_at));
-                                                
-                                             }
-                                             if ((strtotime($subscription->ends_at) > 1)) {
-                                             $date2 = new DateTime($subscription->ends_at);
-                                                $tz = \Auth::user()->timezone()->first()->name;
-                                                $date2->setTimezone(new DateTimeZone($tz));
-                                                $licdate = $date2->format('M j, Y, g:i a ');
-                                                $licenseEnd =  date('d/m/Y', strtotime($subscription->ends_at));
-                                             }
-                                            if (strtotime($subscription->support_ends_at) > 1) {
-                                             $date3 = new DateTime($subscription->support_ends_at);
-                                                $tz = \Auth::user()->timezone()->first()->name;
-                                                $date3->setTimezone(new DateTimeZone($tz));
-                                                $supdate = $date3->format('M j, Y, g:i a ');
-                                                $supportEnd =  date('d/m/Y', strtotime($subscription->support_ends_at));
-                                                
-                                             }
+                                      $date =  strtotime($subscription->update_ends_at)>1 ? getDateHtml($subscription->update_ends_at): '--';
+                                      $licdate = strtotime($subscription->ends_at)>1 ? getDateHtml($subscription->ends_at):'--' ;
+                                      $supdate =  strtotime($subscription->update_ends_at)>1 ? getDateHtml($subscription->support_ends_at):'--' ;
+                                  
                                     }
                                     ?>
-                                    <tr><td><b>Updates Expiry Date:</b></td><td>{{$date}}
-                                      @if($date != '--')
-                                    <a class='class="btn btn-sm btn-primary btn-xs pull-right' id="updates_end" updates-id="{{$order->id}}" data-date="{{$updatesEnd}}" style='color:white;border-radius:0px;'><i class="fa fa-edit">&nbsp;</i>
+                                    <tr><td><b>Updates Expiry Date:</b></td><td>{!! $date !!}</td>
+                                   <td>
+                                      
+                                    <a class='class="btn btn-sm btn-primary btn-xs pull-right' id="updates_end" updates-id="{{$order->id}}" data-date="{{getTimeInLoggedInUserTimeZone($subscription->update_ends_at,'d/m/Y')}}" style='color:white;border-radius:0px;'><i class="fa fa-edit">&nbsp;</i>
                                 Edit</a>
-                                @endif
+                                
                               </td></tr>
 
-                                <tr><td><b>License Expiry Date:</b></td><td>{{$licdate}}
+                                <tr><td><b>License Expiry Date:</b></td><td>{!! $licdate !!}</td>
+                                 <td> 
                                   @if($licdate != '--')
-                                    <a class='class="btn btn-sm btn-primary btn-xs pull-right' id="license_end" license-id="{{$order->id}}" license-date="{{$licenseEnd}}" style='color:white;border-radius:0px;'><i class="fa fa-edit">&nbsp;</i>
+                                    <a class='class="btn btn-sm btn-primary btn-xs pull-right' id="license_end" license-id="{{$order->id}}" license-date="{{getTimeInLoggedInUserTimeZone($subscription->ends_at,'d/m/Y')}}" style='color:white;border-radius:0px;'><i class="fa fa-edit">&nbsp;</i>
                                 Edit</a>
                                 @endif
                               </td></tr>
 
-                              <tr><td><b>Support Expiry Date:</b></td><td>{{$supdate}}
+                              <tr><td><b>Support Expiry Date:</b></td><td>{!! $supdate !!}</td>
+                                <td>
                                 @if($supdate != '--')
-                                    <a class='class="btn btn-sm btn-primary btn-xs pull-right' id="support_end" support-id="{{$order->id}}" support-date="{{$supportEnd}}" style='color:white;border-radius:0px;'><i class="fa fa-edit">&nbsp;</i>
+                                    <a class='class="btn btn-sm btn-primary btn-xs pull-right' id="support_end" support-id="{{$order->id}}" support-date="{{getTimeInLoggedInUserTimeZone($subscription->support_ends_at,'d/m/Y')}}" style='color:white;border-radius:0px;'><i class="fa fa-edit">&nbsp;</i>
                                 Edit</a>
                                 @endif
                               </td></tr>
@@ -745,6 +741,28 @@ Order Details
             })
         });
 
+
+
+     document.querySelectorAll('span[data-type="copy"]')
+    .forEach(function(button){
+      button.addEventListener('click', function(){
+        let serialKey = this.parentNode.parentNode.querySelector('td[data-type="serialkey"]').innerText;
+
+      let tmp = document.createElement('textarea');
+      tmp.value= serialKey;
+      tmp.setAttribute('readonly', '');
+      tmp.style.position = 'absolute';
+      tmp.style.left = '-9999px';
+      document.body.appendChild(tmp);
+      tmp.select();
+      document.execCommand('copy');
+      document.body.removeChild(tmp);
+      $("#copied").css("display", "block");
+      
+      $('#copied').fadeIn("slow","swing");
+      $('#copied').fadeOut("slow","swing");
+      })
+    })
 
 </script>
 @stop

@@ -213,9 +213,7 @@ class BaseClientController extends Controller
                 return ucfirst(implode(',', $products));
             })
             ->addColumn('date', function ($model) {
-                $date = date_create($model->created_at);
-
-                return date_format($date, 'M j, Y, g:i a');
+                return getDateHtml($model->created_at);
             })
             ->addColumn('total', function ($model) {
                 return currency_format($model->grand_total, $code = $model->currency);

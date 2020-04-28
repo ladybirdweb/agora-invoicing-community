@@ -457,7 +457,6 @@ class ClientController extends BaseClientController
             }
             $payments = $this->payment->whereIn('invoice_id', $invoices)
                     ->select('id', 'invoice_id', 'user_id', 'payment_method', 'payment_status', 'created_at', 'amount');
-            //dd(\Input::all());
             return \DataTables::of($payments->get())
                             ->addColumn('number', function ($model) {
                                 return $model->invoice()->first()->number;
@@ -466,12 +465,7 @@ class ClientController extends BaseClientController
                                   return $model->amount;
                               })
                                ->addColumn('created_at', function ($model) {
-                                   $date1 = new DateTime($model->created_at);
-                                   $tz = \Auth::user()->timezone()->first()->name;
-                                   $date1->setTimezone(new DateTimeZone($tz));
-                                   $date = $date1->format('M j, Y, g:i a');
-
-                                   return $date;
+                                   return  getDateHtml($model->created_at);
                                })
 
                             ->addColumn('payment_method', 'payment_status', 'created_at')

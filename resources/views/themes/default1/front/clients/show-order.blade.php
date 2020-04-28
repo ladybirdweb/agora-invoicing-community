@@ -62,12 +62,8 @@ active
                                     <table class="table">
                                         <tr class="info">
                                            
-                                            <td><?php
-                                                $date1 = new DateTime($order->created_at);
-                                                // $tz = \Auth::user()->timezone()->first()->name;
-                                                // $date1->setTimezone(new DateTimeZone($tz));
-                                                $date = $date1->format('M j, Y, g:i a ');?>
-                                                Date: {{$date}}
+                                            <td>
+                                                Date: {!! getDateHtml($order->created_at) !!}
                                             </td>
                                             <td>
                                                 Invoice No: #{{$invoice->number}}
@@ -127,23 +123,27 @@ active
                                        
                                             <table class="table table-hover">
                                             <input type="hidden" name="domainRes" id="domainRes" value={{$allowDomainStatus}}>
-                                            <tbody><tr><td><b>License Code:</b></td>         <td>{{$order->serial_key}}</td></tr>
-                                                <tr><td><b>Licensed Domain/IP:</b></td>     <td>{{$order->domain}} 
+                                            <tbody><tr><td><b>License Code:</b></td>         <td data-type="serialkey">{{$order->serial_key}}</td>
+                                                <td><span class="badge badge-success badge-xs pull-right" id="copied" style="display:none;margin-top:-15px;margin-left:-20px;position: absolute;">Copied</span>
+                                    <span data-type="copy" style="font-size: 15px; pointer-events: initial; cursor: pointer; display: block;" id="copyBtn" title="Click to copy to clipboard"><i class="fa fa-clipboard"></i></span>
+                                  </td></tr>
+
+                                                <tr><td><b>Licensed Domain/IP:</b></td>     <td>{{$order->domain}} </td>
                                                     @if ($licenseStatus == 1)
+                                                    <td>
                                                      @include('themes.default1.front.clients.reissue-licenseModal')
                                                      @include('themes.default1.front.clients.domainRestriction')
                                                 <button class='class="btn btn-danger mb-2 pull-right' style="border:none;" id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}">
-                                               Reissue License</button>
+                                               Reissue License</button></td>
                                            
                                                @endif
-                                                </td>
                                                 
                                                 
                                             </tr>
                                                  <tr><td><b>Installation Path:</b></td> 
                                                     @if(count($installationDetails['installed_path']) > 0)
                                                     <td>@foreach($installationDetails['installed_path'] as $paths)
-                                                        <li>{{$paths}}</li>
+                                                        {{$paths}}
                                                         @endforeach
                                                     </td>
                                                     @else
@@ -151,13 +151,14 @@ active
                                                     No Active Installation
                                                   </td>
                                                    @endif
+                                                   <td></td>
                                                     </tr>
 
                                                 <tr><td><b>Installation IP:</b></td> 
                                                 @if(count($installationDetails['installed_path']) > 0)    
                                                     <td>
                                                         @foreach($installationDetails['installed_ip'] as $paths)
-                                                        <li>{{$paths}}</li>
+                                                       {$paths}}
                                                         @endforeach
                                                     </td>
                                                     @else
@@ -165,35 +166,20 @@ active
                                                     --
                                                   </td>
                                                   @endif
+                                                  <td></td>
                                                 </tr>
                                                   
 
                                                 <?php
 
-                                                if (!$subscription || strtotime($subscription->ends_at) < 1) {
-                                                    $sub = "--";
-                                                } else {
-                                                    $date = new DateTime($subscription->ends_at);
-                                                    $tz = \Auth::user()->timezone()->first()->name;
-                                                    $date->setTimezone(new DateTimeZone($tz));
-                                                      
-                                                    $sub = $date->format('M j, Y, g:i a ');
-                                                    // $sub = $sub2->setTimezone($tz);
-                                                }
-
-                                                if (!$subscription || strtotime($subscription->update_ends_at) < 1) {
-                                                    $update_sub = "--";
-                                                } else {
-                                                    $date1 = new DateTime($subscription->update_ends_at);
-                                                    $tz = \Auth::user()->timezone()->first()->name;
-                                                    $date1->setTimezone(new DateTimeZone($tz));
-                                                      
-                                                    $update_sub = $date1->format('M j, Y, g:i a ');
-                                                    // $sub = $sub2->setTimezone($tz);
+                                                if ($subscription) {
+                                                    $date =  strtotime($subscription->update_ends_at)>1 ? getDateHtml($subscription->update_ends_at): '--';
+                                                  $licdate = strtotime($subscription->ends_at)>1 ? getDateHtml($subscription->ends_at):'--' ;
+                                                  $supdate =  strtotime($subscription->update_ends_at)>1 ? getDateHtml($subscription->support_ends_at):'--' ;
                                                 }
                                                 ?>
-                                                <tr><td><b>License Expiry Date:</b></td>   <td>{{$sub}}</td></tr>
-                                                <tr><td><b>Update Expiry Date:</b></td>   <td>{{$update_sub}}</td></tr>
+                                                <tr><td><b>License Expiry Date:</b></td>   <td>{!! $licdate !!}</td><td></td></tr>
+                                                <tr><td><b>Update Expiry Date:</b></td>   <td>{!! $date !!}</td><td></td>   </tr>
 
                                             </tbody>
                                        
@@ -218,7 +204,7 @@ active
                         <div class="card-header">
                             <h4 class="card-title m-0">
                                 <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion9" href="#collapse9Two">
-                                    <i class="fas fa-film"></i>  Transaction list
+                                    <i class="fas fa-film"></i>  Invoice list
                                 </a>
                             </h4>
                         </div>
@@ -254,8 +240,6 @@ active
             processing: true,
             serverSide: true,
             ajax: '{!! Url('get-my-invoices/'.$order->id.'/'.$user->id) !!}',
-             // ajax: {{Url('get-my-invoices/'.$order->id.'/'.$user->id)}}
-             // url('service-desk/problems/attach/existing/'.$ticket->id
             "oLanguage": {
                 "sLengthMenu": "_MENU_ Records per page",
                 "sSearch"    : "Search: ",
@@ -429,6 +413,27 @@ active
         });
          }
          });
+
+    document.querySelectorAll('span[data-type="copy"]')
+    .forEach(function(button){
+      button.addEventListener('click', function(){
+        let serialKey = this.parentNode.parentNode.querySelector('td[data-type="serialkey"]').innerText;
+
+      let tmp = document.createElement('textarea');
+      tmp.value= serialKey;
+      tmp.setAttribute('readonly', '');
+      tmp.style.position = 'absolute';
+      tmp.style.left = '-9999px';
+      document.body.appendChild(tmp);
+      tmp.select();
+      document.execCommand('copy');
+      document.body.removeChild(tmp);
+      $("#copied").css("display", "block");
+      
+      $('#copied').fadeIn("slow","swing");
+      $('#copied').fadeOut("slow","swing");
+      })
+    })
     </script>
 
 

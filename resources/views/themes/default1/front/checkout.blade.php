@@ -450,7 +450,7 @@ $sum = 0;
             $('#fee').hide();
             $.ajax({
                 type:'POST',
-                data: {'processing_fee':processingFee,'price':totalPrice},
+                data: {'processing_fee':processingFee,'price':totalPrice,'_token':"{{csrf_token()}}"},
                  beforeSend: function () {
                  $('#response').html( "<img id='blur-bg' class='backgroundfadein' style='width: 50px; height:50 px; display: block; position:    fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
                 },
@@ -463,7 +463,7 @@ $sum = 0;
             $('#fee').show();
             $.ajax({
                 type:'POST',
-                data: {'processing_fee':processingFee,'price':totalPrice},
+                data: {'processing_fee':processingFee,'price':totalPrice,'_token':"{{csrf_token()}}"},
                  beforeSend: function () {
                  $('#response').html( "<img id='blur-bg' class='backgroundfadein' style='width: 50px; height:50 px; display: block; position:    fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
                 },

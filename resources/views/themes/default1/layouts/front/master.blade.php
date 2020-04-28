@@ -86,7 +86,7 @@ if($script){
         <div class="body">
             <header id="header" data-plugin-options="{'stickyEnabled': true, 'stickyEnableOnBoxed': true, 'stickyEnableOnMobile': true, 'stickyStartAt': 55, 'stickySetTop': '-55px', 'stickyChangeLogo': true}">
         <div class="header-body">
-                <div class="header-body">
+                <div>
                     <div class="header-container container">
                         <div class="header-row">
                             <div class="header-column">
@@ -105,18 +105,7 @@ if($script){
                              <div class="header-column justify-content-end">
                                 <div class="header-row pt-3">
                                     <nav class="header-nav-top">
-                                          <ul class="nav nav-pills">
-                                            @if($set->company_email != NULL)
-                                              <li class="nav-item d-none d-sm-block">
-                                                  <a class="nav-link" href="mailto:{{$set->company_email}}"><i class="fas fa-envelope"></i> {{$set->company_email}}</a>
-                                              </li>
-                                              @endif
-                                              @if($set->phone != NULL)
-                                              <li class="nav-item">
-                                                  <span class="ws-nowrap"><i class="fas fa-phone"></i>{{$set->phone}}</span>
-                                              </li>
-                                              @endif
-                                          </ul>
+
                                       </nav>
                                    
                                 </div>
@@ -125,8 +114,7 @@ if($script){
                                         <button class="btn header-btn-collapse-nav" data-toggle="collapse" data-target=".header-nav-main">
                                             <i class="fa fa-bars"></i>
                                         </button>
-                                      
- 
+
                                        <div class="collapse header-nav-main header-nav-main-effect-1 header-nav-main-sub-effect-1">
                                             <nav>
                                                 <ul class="nav nav-pills" id="mainNav">
@@ -208,17 +196,15 @@ if($script){
 
                                                     @else 
                                                     <li class="dropdown">
-                                                        <a class="nav-link" class="dropdown-toggle" href="#">
+                                                        <a class="dropdown-item dropdown-toggle" href="#">
                                                             {{Auth::user()->first_name}}
                                                             &nbsp;<i class="fas fa-caret-down"></i>
                                                         </a>
                                                         <ul class="dropdown-menu">
-                                                            @if(Auth::user()->role=='admin')
-                                                            <li><a class="nav-link" href="{{url('/')}}">My Account</a></li>
-                                                            @else 
-                                                            <li><a class="nav-link" href="{{url('my-invoices')}}">My Account</a></li>
-                                                            @endif
-                                                            <li><a class="nav-link" href="{{url('auth/logout')}}">Logout</a></li>
+                                                            <li><a class="dropdown-item" href="{{url('my-orders')}}">My Orders</a></li>
+                                                            <li><a class="dropdown-item" href="{{url('my-invoices')}}">My Invoices</a></li>
+                                                            <li><a class="dropdown-item" href="{{url('my-profile')}}">My Profile</a></li>
+                                                            <li><a class="dropdown-item" href="{{url('auth/logout')}}">Logout</a></li>
                                                         </ul>
                                                     </li>
                                                     @endif
@@ -311,14 +297,7 @@ if($script){
                                                 </ul>
                                             </nav>
                                         </div>
-                                          <ul class="header-social-icons social-icons hidden-xs">
-                                            <?php
-                                            $social = App\Model\Common\SocialMedia::get();
-                                            ?>
-                                            @foreach($social as $media)
-                                            <li class="{{$media->class}}"><a href="{{$media->link}}" target="_blank" title="{{ucfirst($media->name)}}"><i class="{{$media->fa_class}}"></i></a></li>
-                                            @endforeach
-                                        </ul>
+
                                     </div>
                                 </div>
                             </div>
@@ -401,151 +380,117 @@ if($script){
 
             <footer id="footer">
                 <div class="container">
-                    <div class="row">
+
+                    <div class="footer-ribbon"><span>Get in Touch</span></div>
+
+                    <div class="row py-5 my-4">
                          <?php
-                         
-                        
-                          $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer1')->select('name','content','allow_tweets','allow_mailchimp')->first(); 
+
+
+                          $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer1')->select('name','content','allow_tweets','allow_mailchimp')->first();
                           if ($widgets) {
-                            $tweetDetails = $widgets->allow_tweets ==1 ?  '<div id="tweets" class="twitter" >
+                              $tweetDetails = $widgets->allow_tweets ==1 ?  '<div id="tweets" class="twitter" >
                             </div>' : '';
                            }
                             $mailchimpKey = \App\Model\Common\Mailchimp\MailchimpSetting::find(1);
                             ?>
                            @if($widgets != null)
-                        <div class="col-md-3">
-                           
-                          <div class="newsletter">
-                                <h4>{{ucfirst($widgets->name)}}</h4>
-                                <p> {!! $widgets->content !!}</p>
-                                  {!! $tweetDetails !!}
-                                <div class="alert alert-success d-none" id="newsletterSuccess">
-                                    <strong>Success!</strong> You've been added to our email list.
-                                </div>
-                                <div class="alert alert-danger d-none" id="newsletterError"></div>
-                                @if($mailchimpKey != null && $widgets->allow_mailchimp ==1)
-                                {!! Form::open(['url'=>'mail-chimp/subcribe','method'=>'GET']) !!}
-                                <div class="input-group">
-                                    <input class="form-control" placeholder="Email Address" name="email" id="newsletterEmail" type="text">
-                                    <span class="input-group-btn">
-                                        <button class="btn btn-default" type="submit">Go!</button>
-                                    </span>
-                                </div>
-                                {!! Form::close() !!}
-                               
-                                @endif
-                            </div>
-                        </div>
-                        @endif
-                          <?php 
-                       
-                          $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer2')->select('name','content','allow_tweets','allow_mailchimp')->first(); 
+                                 @component('mini_views.footer_widget', ['title'=> $widgets->name, 'colClass'=>"col-md-6 col-lg-4 mb-4 mb-lg-0"])
+                                     <p class="pr-1"> {!! $widgets->content !!}</p>
+                                     {!! $tweetDetails !!}
+                                     <div class="alert alert-success d-none" id="newsletterSuccess">
+                                         <strong>Success!</strong> You've been added to our email list.
+                                     </div>
+                                     <div class="alert alert-danger d-none" id="newsletterError"></div>
+                                     @if($mailchimpKey != null && $widgets->allow_mailchimp ==1)
+                                         {!! Form::open(['url'=>'mail-chimp/subcribe','method'=>'GET']) !!}
+                                         <div class="input-group input-group-rounded">
+                                             <input class="form-control form-control-sm" placeholder="Email Address" name="email" id="newsletterEmail" type="text">
+                                             <span class="input-group-append">
+                                    <button class="btn btn-light text-color-dark" type="submit"><strong>Go!</strong></button>
+                                </span>
+                                         </div>
+                                         {!! Form::close() !!}
+                                     @endif
+                                 @endcomponent
+                            @endif
+                          <?php
+
+                          $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer2')->select('name','content','allow_tweets','allow_mailchimp')->first();
                           if ($widgets) {
                            $tweetDetails =  $widgets->allow_tweets ==1 ?  '<div id="tweets" class="twitter" >
                             </div>' : '';
                           }
                             ?>
-                           @if($widgets != null)
-                        <div class="col-md-3">
-                            <h4>{{ucfirst($widgets->name)}}</h4>
-                             <p> {!! $widgets->content !!}</p>
-                               {!! $tweetDetails !!}  
-                                   <div class="alert alert-success d-none" id="newsletterSuccess">
-                                    <strong>Success!</strong> You've been added to our email list.
-                                </div>
-                                <div class="alert alert-danger d-none" id="newsletterError"></div>
-                                @if($mailchimpKey != null && $widgets->allow_mailchimp ==1)
-                                {!! Form::open(['url'=>'mail-chimp/subcribe','method'=>'GET']) !!}
-                                <div class="input-group">
-                                    <input class="form-control" placeholder="Email Address" name="email" id="newsletterEmail" type="text">
-                                    <span class="input-group-btn">
-                                        <button class="btn btn-default" type="submit">Go!</button>
-                                    </span>
-                                </div>
-                                {!! Form::close() !!}
-                                 @endif
-                        </div>
-                        
-                        @endif
+                            @if($widgets != null)
+                                 @component('mini_views.footer_widget', ['title'=> $widgets->name])
+                                     {!! $tweetDetails !!}
+                                 @endcomponent
+                            @endif
                         <?php
-                         $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer3')->select('name','content','allow_tweets','allow_mailchimp')->first(); 
+                         $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer3')->select('name','content','allow_tweets','allow_mailchimp')->first();
                         if ($widgets) {
                            $tweetDetails = $widgets->allow_tweets   ==1 ?  '<div id="tweets" class="twitter" >
                             </div>' : '';
                         }
 
-                        
+
                             ?>
                        @if($widgets != null)
-                        <div class="col-md-3">
-                            <div class="contact-details">
-                                <h4>{{ucfirst($widgets->name)}}</h4>
-                                {!! $widgets->content !!}
-                                
-                                 {!! $tweetDetails !!}
-                                 <div class="alert alert-success d-none" id="newsletterSuccess">
-                                    <strong>Success!</strong> You've been added to our email list.
-                                </div>
-                                <div class="alert alert-danger d-none" id="newsletterError"></div>
-                                  @if($mailchimpKey != null && $widgets->allow_mailchimp ==1)
-                                {!! Form::open(['url'=>'mail-chimp/subcribe','method'=>'GET']) !!}
-                                <div class="input-group">
-                                    <input class="form-control" placeholder="Email Address" name="email" id="newsletterEmail" type="text">
-                                    <span class="input-group-btn">
-                                        <button class="btn btn-default" type="submit">Go!</button>
-                                    </span>
-                                </div>
-                                {!! Form::close() !!}
+                            @component('mini_views.footer_widget', ['title'=> $widgets->name, 'ulClass'=>'list list-icons list-icons-lg'])
+
+                                 @if($set->company_email != NULL)
+                                     <li class="mb-1">
+                                         <i class="fas fa-envelope"></i>
+                                         <p class="m-0">
+                                             <a href="mailto:{{$set->company_email}}">{{$set->company_email}}</a>
+                                         </p>
+                                     </li>
                                  @endif
-                            </div>
-                        </div>
-                        
-                         @endif
-                         <?php 
-                        
+                                 @if($set->phone != NULL)
+                                     <li class="mb-1">
+                                         <i class="fas fa-phone"></i>
+                                         <p class="m-0">
+                                             <a href="tel:{{$set->phone}}">{{$set->phone}}</a>
+                                         </p>
+                                     </li>
+                                 @endif
+                                 @if($set->address != NULL)
+                                     <li class="mb-1">
+                                        <i class="fas fa-address-card"></i>
+                                         <p>{!! nl2br($set->address) !!}</p>
+                                     </li>
+                                 @endif
+                            @endcomponent
+                        @endif
+
+                         <?php
+
                          $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer4')->select('name','content','allow_tweets','allow_mailchimp')->first();
                          if ($widgets) {
                           $tweetDetails = $widgets->allow_tweets   ==1 ?  '<div id="tweets" class="twitter" >
                             </div>' : '';
                           }
                             ?>
-                         
-                        <div class="col-md-2">
-                          @if($widgets != null)
-                            <h4>{{ucfirst($widgets->name)}}</h4>
-                             <p> {!! $widgets->content !!}</p>
-                               <p>{!! $tweetDetails !!}   </p>
-                               <div class="alert alert-success d-none" id="newsletterSuccess">
-                                    <strong>Success!</strong> You've been added to our email list.
-                                </div>
-                                <div class="alert alert-danger d-none" id="newsletterError"></div>
-                                @if($mailchimpKey != null && $widgets->allow_mailchimp ==1)
-                                {!! Form::open(['url'=>'mail-chimp/subcribe','method'=>'GET']) !!}
-                                <div class="input-group">
-                                    <input class="form-control" placeholder="Email Address" name="email" id="newsletterEmail" type="text">
-                                    <span class="input-group-btn">
-                                        <button class="btn btn-default" type="submit">Go!</button>
-                                    </span>
-                                </div>
-                                {!! Form::close() !!}
-                                 @endif
-                          @endif
-                            <br>
-                       
-                     
-                  </div>
-                  
+
+                      @if($widgets != null)
+                        @component('mini_views.footer_widget', ['title'=> $widgets->name, 'ulClass'=> 'social-icons', 'colClass'=>'col-md-6 col-lg-2'])
+                            @php
+                              $social = App\Model\Common\SocialMedia::get();
+                            @endphp
+                            @foreach($social as $media)
+                                <li class="{{$media->class}}"><a href="{{$media->link}}" target="_blank" title="{{ucfirst($media->name)}}"><i class="{{$media->fa_class}}"></i></a></li>
+                            @endforeach
+                        @endcomponent
+                      @endif
                 </div>
                 <div class="footer-copyright">
-                    <div class="container">
-                        <div class="row">
-
-
-                            <div class="col-md-12">
-                              <p>Copyright © <?php echo date('Y') ?> · <a href="{{$set->website}}" target="_blank">{{$set->company}}</a>. All Rights Reserved.Powered by 
+                    <div class="container py-2">
+                        <div class="row py-4">
+                            <div class="col-md-12 align-items-center justify-content-center justify-content-lg-start mb-2 mb-lg-0">
+                              <p>Copyright © <?php echo date('Y') ?> · <a href="{{$set->website}}" target="_blank">{{$set->company}}</a>. All Rights Reserved.Powered by
                                     <a href="https://www.ladybirdweb.com/" target="_blank"><img src="{{asset('common/images/Ladybird1.png')}}" alt="Ladybird"></a></p>
                             </div>
-
 
                         </div>
                     </div>
@@ -555,7 +500,7 @@ if($script){
 
         <!-- Vendor -->
     </script>
-     
+
         <script src="{{asset('client/js/jquery.min.js')}}"></script>
           <script src="{{asset('client/js/jquery.appear.min.js')}}"></script>
           <script src="{{asset('client/js/jquery.easing.min.js')}}"></script>

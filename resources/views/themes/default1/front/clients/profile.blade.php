@@ -1,4 +1,4 @@
-@extends('themes.default1.layouts.front.myaccount_master')
+@extends('themes.default1.layouts.front.master')
 @section('title')
 Profile
 @stop
@@ -6,16 +6,15 @@ Profile
 active
 @stop
 @section('page-heading')
- <h1>My Account </h1>
+ <h1>My Profile</h1>
 @stop
 @section('breadcrumb')
  @if(Auth::check())
-<li><a href="{{url('my-invoices')}}">Home</a></li>
+    <li><a href="{{url('my-invoices')}}">Home</a></li>
   @else
   <li><a href="{{url('login')}}">Home</a></li>
   @endif
-<li class="active">My Account</li>
-<li class="active">Profile</li>
+<li class="active">My Profile</li>
 @stop
 @section('content')
 <style>
@@ -113,7 +112,6 @@ input:checked + .slider:before {
 
      <div id= "alertMessage"></div>
      <div id= "error"></div>        
-    <h2 class="mb-none" style="margin-bottom:0px;"> My Profile</h2>
     <div class="featured-boxes">
 
         <div class="row">

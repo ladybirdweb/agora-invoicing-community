@@ -14,6 +14,7 @@ use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
 use App\Model\Product\Subscription;
 use App\User;
+use Carbon\Carbon;
 use Bugsnag;
 use Illuminate\Http\Request;
 
@@ -77,13 +78,15 @@ class OrderController extends BaseOrderController
             $products = $this->product->where('id', '!=', 1)->pluck('name', 'id')->toArray();
             $paidUnpaidOptions = ["paid"=>"Paid Products", "unpaid"=>"Unpaid Products"];
             $activeInstallationOptions = ["paid_ins"=>"For Paid Products", "unpaid_ins"=>"For Unpaid Products", "all_ins"=>"All Products"];
+            $inactiveInstallationOptions = ["paid_inactive_ins"=>"For Paid Products", "unpaid_inactive_ins"=>"For Unpaid Products", "all_inactive_ins"=>"All Products"];
+            $renewal = ["expired_subscription"=>"Expired Subscriptions","active_subscription"=> "Active Subscriptions"];
             $allVersions = Subscription::where("version", "!=", "")->whereNotNull("version")
                 ->orderBy("version", "desc")->groupBy("version")
                 ->pluck("version")->toArray();
 
 
             return view('themes.default1.order.index',
-                compact('request', 'products', 'allVersions', 'activeInstallationOptions','paidUnpaidOptions'));
+                compact('request', 'products', 'allVersions', 'activeInstallationOptions','paidUnpaidOptions', 'inactiveInstallationOptions','renewal'));
 
         } catch (\Exception $e) {
             Bugsnag::notifyExeption($e);
@@ -108,13 +111,10 @@ class OrderController extends BaseOrderController
                 return $model->product_name;
             })
             ->addColumn('version', function ($model) {
-                return $model->product_version;
+                return $this->getLatestVersionLabel($model->product_version,$model->product);
             })
             ->addColumn('number', function ($model) {
-                return ucfirst($model->number);
-            })
-            ->addColumn('price_override', function ($model) {
-                return currency_format($model->price_override, $code = $model->currency);
+                 return $model->number.$this->getConnectionLabel($model->updated_at);
             })
             ->addColumn('order_status', function ($model) {
                 return ucfirst($model->order_status);
@@ -123,7 +123,8 @@ class OrderController extends BaseOrderController
                 return getDateHtml($model->created_at);
             })
             ->addColumn('update_ends_at', function ($model) {
-                return getDateHtml($model->subscription_ends_at);
+                return $this->getExpiryLabel($model->subscription_ends_at);
+                
             })
             ->addColumn('action', function ($model) {
                 $status = $this->checkInvoiceStatusByOrderId($model->id);
@@ -158,7 +159,7 @@ class OrderController extends BaseOrderController
             ->orderColumn("order_status", "order_status $1")
             ->orderColumn("update_ends_at", "update_ends_at $1")
 
-            ->rawColumns(['checkbox', 'date', 'client', 'number', 'order_status', 'order_date', 'update_ends_at', 'action' ])
+            ->rawColumns(['checkbox', 'date', 'client', 'version', 'number', 'order_status', 'order_date', 'update_ends_at', 'action' ])
             ->make(true);
     }
 
@@ -193,14 +194,22 @@ class OrderController extends BaseOrderController
         try {
             $order = $this->order->findOrFail($id);
             $subscription = $order->subscription()->first();
-            $currenctVersion = $subscription->version;
-            $lastActivity = $subscription->updated_at;
-            $invoiceid = $order->invoice_id;
-            $invoice = $this->invoice->where('id', $invoiceid)->first();
+            $date = '--';
+            $licdate = '--';
+            $supdate = '--';
+            if($subscription) {
+              $date =  strtotime($subscription->update_ends_at)>1 ? $this->getExpiryLabel($subscription->update_ends_at): '--';
+              $licdate = strtotime($subscription->ends_at)>1 ? $this->getExpiryLabel($subscription->ends_at) :'--' ;
+              $supdate =  strtotime($subscription->support_ends_at)>1 ? $this->getExpiryLabel($subscription->support_ends_at):'--' ;
+            }
+            $lastActivity = getDateHtml($subscription->updated_at);
+            $versionLabel = $this->getLatestVersionLabel($subscription->version,$order->product);
+            $connectionLabel = $this->getConnectionLabel($subscription->updated_at);
+            $invoice = $this->invoice->where('id', $order->invoice_id)->first();
             if (!$invoice) {
                 return redirect()->back()->with('fails', 'no orders');
             }
-            $invoiceItems = $this->invoice_items->where('invoice_id', $invoiceid)->get();
+            $invoiceItems = $this->invoice_items->where('invoice_id', $order->invoice_id)->get();
             $user = $this->user->find($invoice->user_id);
             $licenseStatus = StatusSetting::pluck('license_status')->first();
             $installationDetails = [];
@@ -216,12 +225,46 @@ class OrderController extends BaseOrderController
             $allowDomainStatus = StatusSetting::pluck('domain_check')->first();
 
             return view('themes.default1.order.show',
-                compact('invoiceItems', 'invoice', 'user', 'order', 'subscription', 'licenseStatus', 'installationDetails', 'allowDomainStatus', 'noOfAllowedInstallation', 'getInstallPreference', 'currenctVersion', 'lastActivity'));
+                compact('invoiceItems', 'user', 'order', 'subscription', 'licenseStatus', 'installationDetails', 'allowDomainStatus', 'noOfAllowedInstallation', 'getInstallPreference', 'lastActivity','connectionLabel','versionLabel','date','licdate','supdate'));
         } catch (\Exception $ex) {
+            dd($ex);
             Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
+    }
+
+    public function getExpiryLabel($expiryDate)
+    {
+        if($expiryDate < (new Carbon())->toDateTimeString()) {
+             return getDateHtml($expiryDate)."<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class='label label-danger' style='padding-left:4px;' <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Order has Expired'>
+                         </label>
+             <i class='fa fa-exclamation'></i>&nbsp;Expired</span>";
+        } else{
+            return getDateHtml($expiryDate);
+        }
+    }
+
+
+    public function getConnectionLabel($lastConnectionDate) 
+    {
+       return $lastConnectionDate->toDateTimeString() > (new Carbon('-30 days'))->toDateTimeString() ? "<br><span class='label label-primary' <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Installation is Active'>
+                         </label><i class= 'fa fa-check'></i>&nbsp;Active</span>": "<br><span class='label label-info' <label data-toggle='tooltip' style='font-weight:500;background-color:crimson;' data-placement='top' title='Installation inactive for more than 30 days'>
+                        </label> <i class= 'fa fa-info-circle'></i>&nbsp;Inactive</span>";
+    }
+
+
+    public function getLatestVersionLabel($currenctVersion,$productId)
+    {
+        $latestVersion = ProductUpload::where('product_id', $productId)->latest()->value('version');
+                if($currenctVersion < $latestVersion ) {
+                    return "<span class='label label-warning' <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Outdated Version'>
+                         </label>".$currenctVersion."</span>";
+                } else{
+                    return "<span class='label label-success' <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Latest Version'>
+                         </label>".$currenctVersion."</span>";
+                }
+
     }
 
     /**

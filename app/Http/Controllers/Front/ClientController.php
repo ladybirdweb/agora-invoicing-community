@@ -83,7 +83,7 @@ class ClientController extends BaseClientController
                                 return $model->number;
                             })
                             ->addColumn('date', function ($model) {
-                                $date = $model->created_at;
+                                $date = getDateHtml($model->created_at);
 
                                 return $date;
                             })
@@ -101,7 +101,7 @@ class ClientController extends BaseClientController
                                 return '<p><a href='.url('my-invoice/'.$model->id).
                                 " class='btn btn-primary btn-xs'><i class='fa fa-eye'></i>&nbsp;View</a>".$payment.'</p>';
                             })
-                            ->rawColumns(['number', 'created_at', 'total', 'Action'])
+                            ->rawColumns(['number', 'date', 'created_at', 'total', 'Action'])
                             // ->orderColumns('number', 'created_at', 'total')
                             ->make(true);
         } catch (Exception $ex) {
@@ -287,10 +287,7 @@ class ClientController extends BaseClientController
                                 return $model->product()->first()->name;
                             })
                             ->addColumn('expiry', function ($model) {
-                                $tz = \Auth::user()->timezone()->first()->name;
-                                $end = $this->getExpiryDate($model);
-
-                                return $end;
+                                 return $this->getExpiryDate($model);
                             })
 
                             ->addColumn('Action', function ($model) {
@@ -312,7 +309,7 @@ class ClientController extends BaseClientController
                                 class='btn  btn-primary btn-xs' style='margin-right:5px;'>
                                 <i class='fa fa-eye' title='Details of order'></i>&nbsp;View $listUrl $url </a>";
                             })
-                            ->rawColumns(['id', 'created_at', 'ends_at', 'product', 'Action'])
+                            ->rawColumns(['id', 'created_at', 'expiry', 'ends_at', 'product', 'Action'])
                             ->make(true);
         } catch (Exception $ex) {
             app('log')->error($ex->getMessage());
@@ -462,7 +459,6 @@ class ClientController extends BaseClientController
             }
             $payments = $this->payment->whereIn('invoice_id', $invoices)
                     ->select('id', 'invoice_id', 'user_id', 'payment_method', 'payment_status', 'created_at', 'amount');
-            //dd(\Input::all());
             return \DataTables::of($payments->get())
                             ->addColumn('number', function ($model) {
                                 return $model->invoice()->first()->number;
@@ -471,12 +467,7 @@ class ClientController extends BaseClientController
                                   return $model->amount;
                               })
                                ->addColumn('created_at', function ($model) {
-                                   $date1 = new DateTime($model->created_at);
-                                   $tz = \Auth::user()->timezone()->first()->name;
-                                   $date1->setTimezone(new DateTimeZone($tz));
-                                   $date = $date1->format('M j, Y, g:i a');
-
-                                   return $date;
+                                   return  getDateHtml($model->created_at);
                                })
 
                             ->addColumn('payment_method', 'payment_status', 'created_at')

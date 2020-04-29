@@ -104,7 +104,9 @@ function getDateHtml(string $dateTimeString = null)
 
         $date = getTimeInLoggedInUserTimeZone($dateTimeString, "M j, Y");
         $dateTime = getTimeInLoggedInUserTimeZone($dateTimeString);
-        return "<span title='$dateTime'>$date</span>";
+       
+        return "<label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='$dateTime'>
+                         $date</label>";
 
     } catch(Exception $e){
         return "--";

@@ -34,9 +34,12 @@ class ExtendedOrderController extends Controller
             $this->orderFrom($request->input('till'), $request->input('from'), $baseQuery);
             $this->orderTill($request->input('from'), $request->input('till'), $baseQuery);
             $this->domain($request->input('domain'), $baseQuery);
-            $this->paidOrUnpaid($request->input('p_un'), $baseQuery);
-            $this->allInstallations($request->input('act_ins'), $baseQuery);
-            $this->getSelectedVersionOrders($baseQuery, $request->input('version_from'), $request->input('version_till'));
+
+            $this->paidOrUnpaid($request->input('p_un'),$baseQuery);
+            $this->allActiveInstallations($request->input('act_ins'),$baseQuery);
+            $this->allInActiveInstallations($request->input('inact_ins'),$baseQuery);
+            $this->allRenewals($request->input('renewal'),$baseQuery);
+            $this->getSelectedVersionOrders($baseQuery, $request->input("version_from"), $request->input("version_till"));
 
             return $baseQuery;
         } catch (\Exception $ex) {
@@ -55,8 +58,9 @@ class ExtendedOrderController extends Controller
             ->leftJoin('products', 'orders.product', '=', 'products.id')
             ->select(
                 'orders.id', 'orders.created_at', 'price_override', 'order_status', 'product', 'number', 'serial_key',
-                'subscriptions.update_ends_at as subscription_ends_at', 'subscriptions.id as subscription_id', 'subscriptions.version as product_version',
-                'products.name as product_name', \DB::raw("concat(first_name, ' ', last_name) as client_name"), 'client as client_id',
+                'subscriptions.update_ends_at as subscription_ends_at', "subscriptions.id as subscription_id", "subscriptions.version as product_version","subscriptions.updated_at as updated_at", 
+                'products.name as product_name', \DB::raw("concat(first_name, ' ', last_name) as client_name"), "client as client_id",
+
                 'users.currency'
             );
     }
@@ -84,7 +88,8 @@ class ExtendedOrderController extends Controller
     }
 
     /**
-     * Searches for Active/Inactive Installation.
+
+     * Searches for Activ Installation
      *
      * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
      *
@@ -95,7 +100,8 @@ class ExtendedOrderController extends Controller
      *
      * @return $join
      */
-    public function allInstallations($allInstallation, $join)
+
+    public function allActiveInstallations($allInstallation,$join)
     {
         if ($allInstallation) {
             $dayUtc = new Carbon('-30 days');
@@ -119,7 +125,63 @@ class ExtendedOrderController extends Controller
     }
 
     /**
-     * Searches for Paid/Unpaid Products.
+     * Searches for InActive Installation
+     *
+     * @param  string $allInstallation
+     * @param  App\Model\Order $join The order instance
+     *
+     * @return $join
+     */
+    public function allInactiveInstallations($allInstallation,$join)
+    {
+        if($allInstallation) {
+            $dayUtc = new Carbon('-30 days');
+            $minus30Day = $dayUtc->toDateTimeString();
+            if($allInstallation == 'paid_inactive_ins') {
+                $join = $join->where('price_override', '>', 0)->whereHas('subscription', function($query) use($minus30Day) {
+                    $query->where('updated_at', '<', $minus30Day);
+                });
+            } elseif($allInstallation == 'unpaid_inactive_ins') {
+                $join = $join->where('price_override', '=', 0)->whereHas('subscription', function($query) use($minus30Day) {
+                    $query->where('updated_at', '<', $minus30Day);
+                });
+            } elseif ($allInstallation == 'all_inactive_ins') {
+                $join = $join->whereHas('subscription', function($query) use($minus30Day) {
+                    $query->where('updated_at', '<', $minus30Day);
+                });
+            }
+        }
+        return $join;
+    }
+
+    /**
+     * Searches for Renewals
+     *
+     * @param  string $allInstallation
+     * @param  App\Model\Order $join The order instance
+     *
+     * @return $join
+     */
+    protected function allRenewals($allRenewal,$join)
+    {
+        if($allRenewal) {
+            $dayUtc = new Carbon();
+            $now = $dayUtc->toDateTimeString();
+            if($allRenewal == 'expired_subscription') {
+                $join = $join->whereHas('subscription', function($query) use($now){
+                    $query->where('update_ends_at', '<', $now);
+                });
+            } elseif($allRenewal == 'active_subscription') {
+               $join = $join->whereHas('subscription', function($query) use($now){
+                    $query->where('update_ends_at', '>', $now);
+                });
+            }
+        }
+        return $join;
+    }
+
+    /**
+     * Searches for Paid/Unpaid Products
      *
      * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
      *

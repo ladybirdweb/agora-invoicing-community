@@ -99,6 +99,18 @@ View All Orders
                 {!! Form::select('act_inst',[null => 'Choose']+ $activeInstallationOptions, $request->act_inst, ['class' => 'form-control','id'=>'act_inst']) !!}
             </div>
 
+             <div class="col-md-3 form-group">
+                <!-- first name -->
+                {!! Form::label('inact_inst','Inactive Installations') !!}
+                {!! Form::select('inact_inst',[null => 'Choose']+ $inactiveInstallationOptions, $request->inact_inst, ['class' => 'form-control','id'=>'inact_inst']) !!}
+            </div>
+
+            <div class="col-md-3 form-group">
+                <!-- first name -->
+                {!! Form::label('renewal','Subscriptions') !!}
+                {!! Form::select('renewal',[null => 'Choose']+ $renewal, $request->renewal, ['class' => 'form-control','id'=>'renewal']) !!}
+            </div>
+
             <div class="col-md-3 form-group">
                 {!! Form::label('version_from','Version From') !!}
                 {!! Form::select('version_from',[null => 'Choose']+ array_combine($allVersions, $allVersions), $request->version_from,
@@ -174,7 +186,6 @@ View All Orders
                             <th>Order No</th>
                             <th>Product</th>
                             <th>Version</th>
-                            <th>Total</th>
                             
                              <th>Status</th>
                               <th>Order Date</th>
@@ -199,7 +210,7 @@ View All Orders
             // if in request sort field is present, it will take that else default order
             // need to stringify the sort_order, else it will be considered as a javascript variable
             order: [[ {!! $request->sort_field ?: 7 !!}, {!! "'".$request->sort_order."'" ?: "'desc'" !!} ]],
-             ajax: '{!! route('get-orders',"order_no=$request->order_no&product_id=$request->product_id&expiry=$request->expiry&expiryTill=$request->expiryTill&from=$request->from&till=$request->till&domain=$request->domain&p_un=$request->p_un&act_ins=$request->act_inst&version_from=$request->version_from&version_till=$request->version_till" ) !!}',
+             ajax: '{!! route('get-orders',"order_no=$request->order_no&product_id=$request->product_id&expiry=$request->expiry&expiryTill=$request->expiryTill&from=$request->from&till=$request->till&domain=$request->domain&p_un=$request->p_un&act_ins=$request->act_inst&renewal=$request->renewal&inact_ins=$request->inact_inst&version_from=$request->version_from&version_till=$request->version_till" ) !!}',
             "oLanguage": {
                 "sLengthMenu": "_MENU_ Records per page",
                 "sSearch"    : "Search: ",
@@ -218,7 +229,6 @@ View All Orders
                 {data: 'number', name: 'number'},
                 {data: 'product_name', name: 'product_name'},
                 {data: 'version', name: 'version'},
-                {data: 'price_override', name: 'price_override'},
                 {data: 'order_status', name: 'order_status'},
                 {data: 'order_date', name: 'order_date'},
                 {data: 'update_ends_at', name: 'update_ends_at'},

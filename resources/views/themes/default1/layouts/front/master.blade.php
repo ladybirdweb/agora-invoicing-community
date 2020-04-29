@@ -21,7 +21,6 @@ if($script){
   
           <!-- Favicon -->
           <link rel="shortcut icon" href='{{asset("common/images/$setting->fav_icon")}}' type="image/x-icon" />
-          <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
   
           <!-- Mobile Metas -->
           <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1.0, shrink-to-fit=no">
@@ -84,56 +83,78 @@ if($script){
         $set = $set->findOrFail(1);
         ?>
         <div class="body">
-            <header id="header" data-plugin-options="{'stickyEnabled': true, 'stickyEnableOnBoxed': true, 'stickyEnableOnMobile': true, 'stickyStartAt': 55, 'stickySetTop': '-55px', 'stickyChangeLogo': true}">
-        <div class="header-body">
-                <div>
+            <header id="header" data-plugin-options="{'stickyEnabled': true, 'stickyEnableOnBoxed': true, 'stickyEnableOnMobile': true, 'stickyStartAt': 45, 'stickySetTop': '-45px', 'stickyChangeLogo': true}">
+            <div class="header-body"  style="top: -50px;">
                     <div class="header-container container">
                         <div class="header-row">
                             <div class="header-column">
                                 <div class="header-row">
-                                <div class="header-logo">
-                                  @if(Auth::check())
-                                    <a href="{{url('my-invoices')}}">
-                                      @else
-                                      <a href="{{url('login')}}">
-                                        @endif
-                                        <img alt="Logo" width="111" height="54" data-sticky-width="82" data-sticky-height="40" data-sticky-top="33" src="{{asset('common/images/'.$setting->logo)}}">
-                                    </a>
-                                </div>
+                                    <div class="header-logo">
+                                        <a href="{{Auth::check() ? url('my-invoices') : url('login')}}">
+                                            <img alt="Logo" width="100" height="51" data-sticky-width="70" data-sticky-height="36" data-sticky-top="30" src="{{asset('common/images/'.$setting->logo)}}">
+                                        </a>
+                                    </div>
                               </div>
                             </div>
                              <div class="header-column justify-content-end">
                                 <div class="header-row pt-3">
                                     <nav class="header-nav-top">
+                                        <ul class="nav nav-pills">
 
-                                      </nav>
-                                   
+                                            @if($set->company_email != NULL)
+                                                <li class="nav-item nav-item-anim-icon d-none d-md-block">
+                                                    <span class="ws-nowrap"><i class="fas fa-envelope"></i>
+                                                        <a style="color: inherit" href="mailto:{{$set->company_email}}">{{$set->company_email}}</a>
+                                                    </span>
+                                                </li>
+                                            @endif
+                                            @if($set->phone != NULL)
+                                                <li class="nav-item nav-item-left-border nav-item-left-border-remove nav-item-left-border-md-show">
+                                                    <span class="ws-nowrap"><i class="fas fa-phone"></i>
+                                                        <a style="color: inherit" href="tel:{{$set->phone}}">{{$set->phone}}</a>
+                                                    </span>
+                                                </li>
+                                            @endif
+
+                                        </ul>
+                                    </nav>
                                 </div>
+
+
                                   <div class="header-row">
-                                    <div class="header-nav">
-                                        <button class="btn header-btn-collapse-nav" data-toggle="collapse" data-target=".header-nav-main">
+                                    <div class="header-nav pt-1" style="margin-top: 0px; margin-bottom: -10px;">
+
+                                        <button class="btn btn-sm header-btn-collapse-nav" data-toggle="collapse" data-target=".header-nav-main nav">
                                             <i class="fa fa-bars"></i>
                                         </button>
 
-                                       <div class="collapse header-nav-main header-nav-main-effect-1 header-nav-main-sub-effect-1">
-                                            <nav>
+                                       <div class="header-nav-main header-nav-main-effect-1 header-nav-main-sub-effect-1">
+                                            <nav class="collapse">
                                                 <ul class="nav nav-pills" id="mainNav">
-                                              <?php 
+                                              <?php
                                                 $groups = \App\Model\Product\ProductGroup::where('hidden','!=', 1)->get();
-                                              
+
                                               ?>
-                                                    
+
                                                      <li class="dropdown">
                                                       <a class="dropdown-item dropdown-toggle" href="#">
                                                         Store
                                                       </a>
                                                       <ul class="dropdown-menu">
                                                         @if(count($groups)>0)
-                                                        @foreach($groups as $group)
-                                                        <li><a class="dropdown-item" href="{{url('group/'.$group->pricing_templates_id.'/'.$group->id)}}">{{$group->name}}</a></li>
-                                                        @endforeach
+                                                            @foreach($groups as $group)
+                                                            <li>
+                                                                <a class="dropdown-item" href="{{url('group/'.$group->pricing_templates_id.'/'.$group->id)}}">
+                                                                    {{$group->name}}
+                                                                </a>
+                                                            </li>
+                                                            @endforeach
                                                         @else
-                                                         <li><a class="dropdown-item">No Groups Added</a></li>
+                                                         <li>
+                                                             <a class="dropdown-item">
+                                                                 No Groups Added
+                                                             </a>
+                                                         </li>
                                                          @endif
                                                       </ul>
                                                     </li>
@@ -174,18 +195,14 @@ if($script){
                                                                 </a>
                                                             </li>
 
-                                                            @endforeach 
-
-
-
-
+                                                            @endforeach
                                                         </ul>
                                                         @endif
 
                                                     </li>
                                                     @endforeach
 
- 
+
 
                                                     @if(!Auth::user())
                                                     <li class="dropdown">
@@ -194,7 +211,7 @@ if($script){
                                                         </a>
                                                     </li>
 
-                                                    @else 
+                                                    @else
                                                     <li class="dropdown">
                                                         <a class="dropdown-item dropdown-toggle" href="#">
                                                             {{Auth::user()->first_name}}
@@ -218,9 +235,9 @@ if($script){
                                                                 <div class="dropdown-mega-content">
                                                                     <table class="cart">
                                                                         <tbody>
-                                                                         
+
                                                                         @forelse(Cart::getContent() as $key=>$item)
-                                                                             
+
                                                                             <?php
                                                                             $product = App\Model\Product\Product::where('id', $item->id)->first();
                                                                             if ($product->require_domain == 1) {
@@ -239,7 +256,7 @@ if($script){
 
                                                                                 <td class="product-name">
                                                                                <?php
-                                                                                $total = \App\Http\Controllers\Front\CartController::rounding($item->getPriceSumWithConditions()) 
+                                                                                $total = \App\Http\Controllers\Front\CartController::rounding($item->getPriceSumWithConditions())
                                                                                 ?>
                                                                                     <a>{{$item->name}}<br><span class="amount"><strong>{{currency_format($total,$code = $currency)}}</strong></span></a>
                                                                                 </td>
@@ -254,7 +271,7 @@ if($script){
                                                                                 </td>
 
                                                                             </tr>
-                                                                            @empty 
+                                                                            @empty
 
                                                                             <tr>
                                                                               <td>
@@ -298,6 +315,14 @@ if($script){
                                             </nav>
                                         </div>
 
+                                        <ul class="header-social-icons social-icons d-none d-sm-block">
+                                            @php
+                                                $social = App\Model\Common\SocialMedia::get();
+                                            @endphp
+                                            @foreach($social as $media)
+                                                <li class="{{$media->class}}"><a href="{{$media->link}}" target="_blank" title="{{ucfirst($media->name)}}"><i class="{{$media->fa_class}}"></i></a></li>
+                                            @endforeach
+                                        </ul>
                                     </div>
                                 </div>
                             </div>
@@ -443,7 +468,7 @@ if($script){
                                      <li class="mb-1">
                                          <i class="fas fa-envelope"></i>
                                          <p class="m-0">
-                                             <a href="mailto:{{$set->company_email}}">{{$set->company_email}}</a>
+                                             <a style="color: inherit" href="mailto:{{$set->company_email}}">{{$set->company_email}}</a>
                                          </p>
                                      </li>
                                  @endif
@@ -451,14 +476,14 @@ if($script){
                                      <li class="mb-1">
                                          <i class="fas fa-phone"></i>
                                          <p class="m-0">
-                                             <a href="tel:{{$set->phone}}">{{$set->phone}}</a>
+                                             <a style="color: inherit" href="tel:{{$set->phone}}">{{$set->phone}}</a>
                                          </p>
                                      </li>
                                  @endif
                                  @if($set->address != NULL)
                                      <li class="mb-1">
-                                        <i class="fas fa-address-card"></i>
-                                         <p>{!! nl2br($set->address) !!}</p>
+                                         <i class="fa fa-map-marker"></i>
+                                         <p class="m-0">{{$set->address}}</p>
                                      </li>
                                  @endif
                             @endcomponent
@@ -475,15 +500,14 @@ if($script){
 
                       @if($widgets != null)
                         @component('mini_views.footer_widget', ['title'=> $widgets->name, 'ulClass'=> 'social-icons', 'colClass'=>'col-md-6 col-lg-2'])
-                            @php
-                              $social = App\Model\Common\SocialMedia::get();
-                            @endphp
                             @foreach($social as $media)
                                 <li class="{{$media->class}}"><a href="{{$media->link}}" target="_blank" title="{{ucfirst($media->name)}}"><i class="{{$media->fa_class}}"></i></a></li>
                             @endforeach
                         @endcomponent
                       @endif
                 </div>
+                </div>
+
                 <div class="footer-copyright">
                     <div class="container py-2">
                         <div class="row py-4">
@@ -499,8 +523,6 @@ if($script){
         </div>
 
         <!-- Vendor -->
-    </script>
-
         <script src="{{asset('client/js/jquery.min.js')}}"></script>
           <script src="{{asset('client/js/jquery.appear.min.js')}}"></script>
           <script src="{{asset('client/js/jquery.easing.min.js')}}"></script>

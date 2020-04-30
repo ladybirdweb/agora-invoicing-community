@@ -387,9 +387,8 @@ class ClientController extends BaseClientController
                 $licdate = strtotime($subscription->ends_at) > 1 ? getExpiryLabel($subscription->ends_at, 'badge') : '--';
                 $versionLabel = getVersionAndLabel($subscription->version, $order->product, 'badge');
             }
-            $installationDetails = [];
-            $noOfAllowedInstallation = '';
-            $getInstallPreference = '';
+
+            $installationDetails = [];  
             $licenseStatus = StatusSetting::pluck('license_status')->first();
             if ($licenseStatus == 1) {
                 $cont = new \App\Http\Controllers\License\LicenseController();

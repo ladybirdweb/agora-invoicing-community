@@ -104,7 +104,7 @@ Payment
         
                         <div class="box-body">
                         <div class="row">
-                            @if(count($invoices)!=0)
+                            @if($invoices)
                             <div class="col-md-12">
                                 <table id="payment-table" class="table table-bordered table-hover">
                                     <thead>
@@ -132,20 +132,14 @@ Payment
                                            }
                                            $pendingAmount = ($invoice->grand_total)-($sum);
                                         ?>
-                                        @if ($invoice->status == 'Pending')
+                                        @if ($invoice->status != 'Success')
                                         <tr>
 
                                              <td class="selectedbox1">
                                                  <input type="checkbox"  id="check" class="selectedbox" name='selectedcheckbox' value="{{$invoice->id}}">
                                             </td>
                                             <td>
-                                                  <?php
-                                          $date1 = new DateTime($invoice->date);
-                                          $tz = $client->timezone()->first()->name;
-                                          $date1->setTimezone(new DateTimeZone($tz));
-                                          $date = $date1->format('M j, Y, g:i a ');
-                                            echo $date;
-                                            ?>
+                                                 {!! getDateHtml($invoice->date) !!}
                                             </td>
                                             <td class="invoice-number">
                                                 <a href="{{url('invoices/show?invoiceid='.$invoice->id)}}">{{$invoice->number}}</a>

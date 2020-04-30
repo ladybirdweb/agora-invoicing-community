@@ -21,6 +21,7 @@ use Illuminate\Http\Request;
 class OrderController extends BaseOrderController
 {
     // NOTE FROM AVINASH: utha le re deva
+    // NOTE: don't lose hope.
     public $order;
     public $user;
     public $promotion;

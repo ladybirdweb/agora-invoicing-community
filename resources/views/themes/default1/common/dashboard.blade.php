@@ -152,6 +152,8 @@ Dashboard
                     <td><span class="label label-success">{{$element->status}}</span></td>
                 @elseif ($element->status == 'Pending')
                     <td><span class="label label-danger">{{$element->status}}</span></td>
+                @else
+                <td><span class="label label-warning">{{$element->status}}</span></td>
                 @endif
             </tr>
         @endforeach

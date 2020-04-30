@@ -4,8 +4,6 @@
 $script = \App\Model\Common\ChatScript::where('id', 1)->first(); 
 if($script){
   $script = $script->script;
-}else{
-  $script = null;
 }
  ?>
 

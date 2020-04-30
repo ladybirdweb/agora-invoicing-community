@@ -34,7 +34,7 @@
             {{ trans('installer_messages.environment.wizard.tabs.application') }}
         </label>
 
-        <form method="post" action="{{ route('LaravelInstaller::environmentSaveWizard') }}" class="tabs-wrap">
+        <form method="post" action="{{ route('LaravelInstaller::environmentSaveWizard') }}" id="setup" class="tabs-wrap">
             <div class="tab" id="tab1content">
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
@@ -44,6 +44,7 @@
                     </label>
 
                     <input type="text" name="app_name" id="app_name" value="{{old('app_name')}}" placeholder="{{ trans('installer_messages.environment.wizard.form.app_name_placeholder') }}" />
+                    <div id="appnameerror"></div>
                     @if ($errors->has('app_name'))
                         <span class="error-block">
                             <i class="fa fa-fw fa-exclamation-triangle" aria-hidden="true"></i>
@@ -66,12 +67,6 @@
                     <div id="environment_text_input" style="display: none;">
                         <input type="text" name="environment_custom" id="environment_custom"  placeholder="{{ trans('installer_messages.environment.wizard.form.app_environment_placeholder_other') }}"/>
                     </div>
-                    @if ($errors->has('app_name'))
-                        <span class="error-block">
-                            <i class="fa fa-fw fa-exclamation-triangle" aria-hidden="true"></i>
-                            {{ $errors->first('app_name') }}
-                        </span>
-                    @endif
                 </div>
 
                 <div class="form-group {{ $errors->has('app_debug') ? ' has-error ' : '' }}">
@@ -130,7 +125,7 @@
                 </div>
 
                 <div class="buttons">
-                    <button class="button" onclick="showDatabaseSettings();return false">
+                    <button id="setupdatabase" class="button" onclick="showDatabaseSettings();return false">
                         {{ trans('installer_messages.environment.wizard.form.buttons.setup_database') }}
                         <i class="fa fa-angle-right fa-fw" aria-hidden="true"></i>
                     </button>
@@ -277,7 +272,7 @@
                                     </a>
                                 </sup>
                             </label>
-                            <input type="text" name="cache_driver" id="cache_driver" value="array" placeholder="{{ trans('installer_messages.environment.wizard.form.app_tabs.cache_placeholder') }}" />
+                            <input type="text" name="cache_driver" id="cache_driver" value="array" placeholder="{{ trans('installer_messages.environment.wizard.form.app_tabs.cache_placeholder') }}" readonly/>
                             @if ($errors->has('cache_driver'))
                                 <span class="error-block">
                                     <i class="fa fa-fw fa-exclamation-triangle" aria-hidden="true"></i>
@@ -500,10 +495,7 @@
                     </div>
                 </div> -->
                 <div class="buttons">
-                    <button class="button" type="submit">
-                        {{ trans('installer_messages.environment.wizard.form.buttons.install') }}
-                        <i class="fa fa-angle-right fa-fw" aria-hidden="true"></i>
-                    </button>
+                    <input id="submitme" class="button" style="margin:auto;margin-top: 15px;" value="Install" type="submit">
                 </div>
             </div>
         </form>
@@ -512,7 +504,31 @@
 @endsection
 
 @section('scripts')
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
     <script type="text/javascript">
+        $("#setup").on('submit',function(e) {
+        $("#submitme").attr("disabled", true);
+        $('#submitme').val('Installing, please wait...');
+        })
+
+
+        $('#app_name').keyup(function(e){
+            if(e.keyCode == 32) {
+                $('#setupdatabase').attr('disabled',true)
+                $('#appnameerror').show()
+                $('#appnameerror').html('Space is not allowedin App name');
+                $('#appnameerror').focus();
+                $('#app_name').css("border-color","red");
+                $('#appnameerror').css({"color":"red","margin-top":"-5px"});
+                 return false;
+            } else {
+                $('#setupdatabase').attr('disabled',false)
+                $('#appnameerror').hide();
+                $('#app_name').css("border-color","none");
+                 return false;
+            }
+        })
+
         function checkEnvironment(val) {
             var element=document.getElementById('environment_text_input');
             if(val=='other') {

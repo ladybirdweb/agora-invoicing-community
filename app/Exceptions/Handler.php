@@ -33,7 +33,7 @@ class Handler extends ExceptionHandler
      * @return void
      */
     public function report(Exception $exception)
-    {
+    {dd($exception);
         parent::report($exception);
     }
 

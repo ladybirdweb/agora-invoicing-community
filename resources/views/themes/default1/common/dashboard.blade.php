@@ -148,13 +148,7 @@ Dashboard
                 <td>
                     <div class="sparkbar" data-color="#00a65a" data-height="20">{{$element->balance}}</div>
                 </td>
-                @if ($element->status == 'Success')
-                    <td><span class="label label-success">{{$element->status}}</span></td>
-                @elseif ($element->status == 'Pending')
-                    <td><span class="label label-danger">{{$element->status}}</span></td>
-                @else
-                <td><span class="label label-warning">{{$element->status}}</span></td>
-                @endif
+               <td>{!! $element->status !!}</td>
             </tr>
         @endforeach
     @endcomponent

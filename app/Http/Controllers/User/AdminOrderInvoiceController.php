@@ -23,17 +23,16 @@ class AdminOrderInvoiceController extends Controller
                             return getDateHtml($model->date);
                         })
                         ->addColumn('invoice_no', function ($model) {
-                            return      '<a href='.url('invoices/show?invoiceid='.$model->id).'>'.$model->number.'</a>';
+                            if($model->is_renewed) {
+                                return '<a href='.url('invoices/show?invoiceid='.$model->id).'>'.$model->number.'</a><br>'.$this->getStatusLabel('renewed');
+                            } else{
+                                 return '<a href='.url('invoices/show?invoiceid='.$model->id).'>'.$model->number.'</a>';
+                            }
+                           
                         })
                          ->addColumn('order_no', function ($model) {
-                            $allInvoicesRelatedToOrder = $model->orderRelation()->pluck('order_id')->toArray();
-                            if($allInvoicesRelatedToOrder) {
-                            $orderid = ($allInvoicesRelatedToOrder[0]);
-                            $order = Order::find($allInvoicesRelatedToOrder[0]);
-                            return '<a href='.url('orders/'.$orderid).'>'. $order->number.'</a>';
-                           } else {
-                            return '--';
-                           }
+                            return $this->getOrderLink($model);
+                           
                             
                            
                         })
@@ -91,17 +90,32 @@ class AdminOrderInvoiceController extends Controller
                         ->make(true);
     }
 
+    public static function getOrderLink($invoice)
+    {
+        $allInvoicesRelatedToOrder = $invoice->orderRelation()->pluck('order_id')->toArray();
+        if($allInvoicesRelatedToOrder) {
+        $orderid = ($allInvoicesRelatedToOrder[0]);
+        $order = Order::find($allInvoicesRelatedToOrder[0]);
+        return '<a href='.url('orders/'.$orderid).'>'. $order->number.'</a>';
+       } else {
+        return '--';
+       }
+    }
+
     public static function getStatusLabel($status)
     {
         switch ($status) {
             case 'Success':
-                return '<span class="label label-success">'.$status.'</span>';
+                return '<span class="label label-success">Paid</span>';
 
                 case 'Pending':
-                return '<span class="label label-danger">'.$status.'</span>';
+                return '<span class="label label-danger">Unpaid</span>';
+
+                case 'renewed':
+                return '<span class="label label-primary">Renewed</span>';
 
                 default:
-                return '<span class="label label-warning">'.$status.'</span>';
+                return '<span class="label label-warning">Partially paid</span>';
         }
     }
 
@@ -156,7 +170,7 @@ class AdminOrderInvoiceController extends Controller
                             value=".$model->id.' name=select[] id=checkpayment>';
                         })
                         ->addColumn('invoice_no', function ($model) {
-                            return $model->invoice()->first() ? $model->invoice()->first()->number : '--';
+                            return $model->invoice()->first() ? '<a href='.url('invoices/show?invoiceid='.$model->invoice()->first()->id).'>'.$model->invoice()->first()->number.'</a><br>' : '--';
                         })
                         ->addColumn('date', function ($model) {
                             return getDateHtml( $model->created_at);

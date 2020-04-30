@@ -119,6 +119,7 @@ class BaseRenewController extends Controller
                 'date'        => $date,
                 'grand_total' => $cost,
                 'currency'    => $currency,
+                'is_renewed'  => 1, 
                 'status'      => 'pending',
             ]);
             $this->createOrderInvoiceRelation($orderid, $invoice->id);

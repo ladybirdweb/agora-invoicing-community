@@ -211,9 +211,10 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $invoiceItems = $this->invoiceItem->where('invoice_id', $request->input('invoiceid'))->get();
             $user = $this->user->find($invoice->user_id);
             $currency = CartController::currency($user->id);
+            $order = AdminOrderInvoiceController::getOrderLink($invoice);
             $symbol = $currency['symbol'];
 
-            return view('themes.default1.invoice.show', compact('invoiceItems', 'invoice', 'user', 'currency', 'symbol'));
+            return view('themes.default1.invoice.show', compact('invoiceItems', 'invoice', 'user', 'currency', 'symbol','order'));
         } catch (\Exception $ex) {
             app('log')->warning($ex->getMessage());
             Bugsnag::notifyException($ex);

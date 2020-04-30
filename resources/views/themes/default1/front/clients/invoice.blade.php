@@ -29,7 +29,7 @@ active
                             <th>Number</th>
                             <th>Date</th>
                             <th>Total</th>
-                           
+                            <th>Status</th>
                             <th>Action</th>
                         </tr></thead>
 
@@ -55,7 +55,7 @@ active
                 {data: 'number', name: 'number'},
                 {data: 'date', name: 'date'},
                 {data: 'total', name: 'total'},
-                
+                {data: 'status', name: 'status'},
                 {data: 'Action', name: 'Action'}
             ],
             "fnDrawCallback": function( oSettings ) {

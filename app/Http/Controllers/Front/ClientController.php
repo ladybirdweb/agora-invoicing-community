@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Github\GithubApiController;
+use App\Http\Controllers\User\AdminOrderInvoiceController;
 use App\Http\Controllers\License\LicensePermissionsController;
 use App\Model\Common\StatusSetting;
 use App\Model\Github\Github;
@@ -89,10 +90,13 @@ class ClientController extends BaseClientController
                             ->addColumn('total', function ($model) {
                                 return  currency_format($model->grand_total, $code = \Auth::user()->currency);
                             })
+                             ->addColumn('status', function ($model) {
+                                return  AdminOrderInvoiceController::getStatusLabel($model->status,'badge');
+                            })
                             ->addColumn('Action', function ($model) {
                                 $status = $model->status;
                                 $payment = '';
-                                if ($status == 'Pending' && $model->grand_total > 0) {
+                                if ($status != 'Success' && $model->grand_total > 0) {
                                     $payment = '  <a href='.url('paynow/'.$model->id).
                                     " class='btn btn-primary btn-xs'><i class='fa fa-credit-card'></i>&nbsp;Pay Now</a>";
                                 }
@@ -100,7 +104,8 @@ class ClientController extends BaseClientController
                                 return '<p><a href='.url('my-invoice/'.$model->id).
                                 " class='btn btn-primary btn-xs'><i class='fa fa-eye'></i>&nbsp;View</a>".$payment.'</p>';
                             })
-                            ->rawColumns(['number', 'date', 'created_at', 'total', 'Action'])
+
+                            ->rawColumns(['number', 'created_at', 'total', 'status', 'Action'])
                             // ->orderColumns('number', 'created_at', 'total')
                             ->make(true);
         } catch (Exception $ex) {

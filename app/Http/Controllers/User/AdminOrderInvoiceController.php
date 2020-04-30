@@ -102,20 +102,20 @@ class AdminOrderInvoiceController extends Controller
        }
     }
 
-    public static function getStatusLabel($status)
+    public static function getStatusLabel($status, $badge='label')
     {
         switch ($status) {
             case 'Success':
-                return '<span class="label label-success">Paid</span>';
-
+                return '<span class='.'"'.$badge.' '.$badge.'-success">Paid</span>';
+        
                 case 'Pending':
-                return '<span class="label label-danger">Unpaid</span>';
-
+                return '<span class='.'"'.$badge.' '.$badge.'-danger">Unpaid</span>';
+        
                 case 'renewed':
-                return '<span class="label label-primary">Renewed</span>';
-
+                return '<span class='.'"'.$badge.' '.$badge.'-primary">Renewed</span>';
+        
                 default:
-                return '<span class="label label-warning">Partially paid</span>';
+                return '<span class='.'"'.$badge.' '.$badge.'-warning">Partially paid</span>';
         }
     }
 

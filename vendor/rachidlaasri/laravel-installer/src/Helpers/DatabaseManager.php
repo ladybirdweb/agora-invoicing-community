@@ -44,8 +44,7 @@ class DatabaseManager
             Artisan::call('migrate', ["--force"=> true], $outputLog);
         }
         catch(Exception $e){
-             throw new Exception('Cannot Establish Database Conection.Check Details');
-            // return $this->response($e->getMessage());
+             throw new Exception($e->getMessage());
         }
 
         return $this->seed($outputLog);

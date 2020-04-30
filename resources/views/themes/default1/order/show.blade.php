@@ -245,7 +245,7 @@ Order Details
                    <div class="box-header with-border">
                     <h4 class="box-title">
                       <i class="fa fa-film"></i>
-                        Transaction List
+                        Invoice List
                     </h4>
                   </div>
                 </a>

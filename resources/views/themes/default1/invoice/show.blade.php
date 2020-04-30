@@ -109,12 +109,19 @@ View Invoice
                             </address>
                         </div><!-- /.col -->
                         <div class="col-sm-4 invoice-col">
-                            <b>Invoice   #{{$invoice->number}}</b><br/>
+                            <b>Invoice   #{{$invoice->number}}</b>
                             <br/>
 
                         </div><!-- /.col -->
+                        @if($invoice->order()->first())
                          <div class="col-sm-4 invoice-col">
-                            <b>GSTIN   &nbsp; #{{$gst->Gst_No}}</b><br/>
+                            <b>Order</b>   &nbsp; # <a href="{{ url('orders/'.$invoice->order()->first()->id) }}">{{$invoice->order()->first()->number}}</a>
+                            <br/>
+
+                        </div><!-- /.col -->
+                        @endif
+                         <div class="col-sm-4 invoice-col">
+                            <b>GSTIN   &nbsp; #{{$gst->Gst_No}}</b>
                             <br/>
 
                         </div><!-- /.col -->

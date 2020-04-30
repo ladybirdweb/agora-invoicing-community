@@ -25,7 +25,7 @@ class ExtendedBaseInvoiceController extends Controller
             $clientid = $request->input('clientid');
             $invoice = new Invoice();
             $order = new Order();
-            $invoices = $invoice->where('user_id', $clientid)->where('status', '=', 'pending')->orderBy('created_at', 'desc')->get();
+            $invoices = $invoice->where('user_id', $clientid)->where('status', '!=', 'Success')->orderBy('created_at', 'desc')->get();
             $cltCont = new \App\Http\Controllers\User\ClientController();
             $invoiceSum = $cltCont->getTotalInvoice($invoices);
             $amountReceived = $cltCont->getAmountPaid($clientid);
@@ -157,7 +157,9 @@ class ExtendedBaseInvoiceController extends Controller
                     if ($invoice) {
                         if ($total_paid >= $invoice->grand_total) {
                             $invoice_status = 'success';
-                        }
+                        } elseif($total_paid > 0) {
+                            $invoice_status = 'partially paid';
+                        } 
                         $invoice->status = $invoice_status;
                         $invoice->save();
                     }

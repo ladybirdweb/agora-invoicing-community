@@ -174,13 +174,14 @@ User Details
                              <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_invoice_delete"><i class= "fa fa-trash"></i>&nbsp;&nbsp;Delete Selected</button><br /><br />
                                 <thead><tr>
                                     <th class="no-sort" style="width:1px;"><input type="checkbox" name="select_all" onchange="checkinginvoice(this)"></th>
-                                        <th style="width:150px;">Date</th>
-                                        <th style="width:50px;">Invoice Number</th>
-                                        <th style="width:50px;">Total</th>
-                                         <th style="width:50px;">Paid</th>
-                                          <th style="width:50px;">Balance</th>
-                                           <th style="width:50px;">Status</th>
-                                        <th style="width:150px;">Action</th>
+                                        <th>Date</th>
+                                        <th>Invoice No</th>
+                                         <th>Order No</th>
+                                        <th>Total</th>
+                                         <th>Paid</th>
+                                          <th>Balance</th>
+                                           <th>Status</th>
+                                        <th>Action</th>
                                     </tr></thead>
                                  </table>
                            
@@ -246,6 +247,7 @@ User Details
                 {data: 'checkbox', name: 'checkbox'},
                 {data: 'date', name: 'date'},
                 {data: 'invoice_no', name: 'invoice_no'},
+                {data: 'order_no', name: 'order_no'},
                 {data: 'total', name: 'total'},
                 {data: 'paid', name: 'paid'},
                 {data: 'balance', name: 'balance'},
@@ -319,7 +321,7 @@ User Details
                              <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_payment_delete"><i class= "fa fa-trash"></i>&nbsp;&nbsp;Delete Selected</button><br /><br />
                                 <thead><tr>
                                     <th class="no-sort"><input type="checkbox" name="select_all" onchange="checkingpayment(this)"></th>
-                                        <th>Invoice Number</th>
+                                        <th>Invoice No</th>
                                         <th>Date</th>
                                         <th>Payment Method</th>
                                         <th>Total</th>
@@ -597,8 +599,7 @@ User Details
                          <th class="no-sort"><input type="checkbox" name="select_all" onchange="checkingorder(this)"></th>
                             <th>Date</th>
                             <th>Product</th>
-                            <th>Number</th>
-                             <th>Total</th>
+                            <th>Order No</th>
                              <th>Status</th>
                             <th>Action</th>
                         </tr></thead>
@@ -646,7 +647,6 @@ User Details
                 {data: 'date', name: 'date'},
                 {data: 'product', name: 'product'},
                 {data: 'number', name: 'number'},
-                {data: 'total', name: 'total'},
                 {data: 'status', name: 'status'},
                 {data: 'action', name: 'action'}
             ],

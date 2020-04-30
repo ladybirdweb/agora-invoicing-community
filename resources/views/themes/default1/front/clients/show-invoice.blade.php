@@ -77,7 +77,9 @@ active
                             </div><!-- /.col -->
                             <div class="col-sm-4 invoice-col">
                                 <b>Invoice   #{{$invoice->number}}</b><br/>
-                               
+                                @if($invoice->order()->first())
+                                <b>Order</b>   &nbsp; # <a href="{{ url('my-order/'.$invoice->order()->first()->id) }}">{{$invoice->order()->first()->number}}</a>
+                                 @endif<br>
                                  <b>GSTIN   #{{$gst->Gst_No}}</b><br/>
                                 <br/>
 

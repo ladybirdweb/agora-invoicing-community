@@ -288,18 +288,14 @@ class BaseProductController extends ExtendedBaseProductController
         }
     }
 
-    public function updateVersionFromGithub($productid)
+    public function updateVersionFromGithub($productid,$github_owner,$github_repository)
     {
         try {
-            if (\Input::has('github_owner') && \Input::has('github_repository')) {
-                $owner = \Input::get('github_owner');
-                $repo = \Input::get('github_repository');
-                $product = Product::find($productid);
-                $github_controller = new \App\Http\Controllers\Github\GithubController();
-                $version = $github_controller->findVersion($owner, $repo);
-                $product->version = $version;
-                $product->save();
-            }
+            $product = Product::find($productid);
+            $github_controller = new \App\Http\Controllers\Github\GithubController();
+            $version = $github_controller->findVersion($github_ownwr, $github_repository);
+            $product->version = $version;
+            $product->save();
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
 

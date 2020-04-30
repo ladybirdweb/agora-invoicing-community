@@ -547,17 +547,17 @@ Order Details
 
  //When Submit Button is Clicked in Modal Popup, passvalue through Ajax
     $("#updatesSave").on('click',function(){
+      $('#updatesSave').attr('disabled',true);
+      $('#updatesSave').html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
         var newdate = $("#newDate").val();
         var orderId = $("#order").val();
         $.ajax({
             type: "get",
             data: {'orderid': orderId , 'date': newdate},
             url: "{{url('edit-update-expiry')}}",
-             beforeSend: function () {
-                 $('#response2').html( "<img id='blur-bg' class='backgroundfadein' style='top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
-
-            },
             success: function (response) {
+              $("#updatesSave").attr('disabled',false);
+              $("#updatesSave").html("Save");
                 if (response.message =='success') {
 
                 var result =  '<div class="alert alert-success alert-dismissable"><strong><i class="fa fa-check"></i> Success! </strong> '+response.update+' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
@@ -569,6 +569,8 @@ Order Details
                 }
             },
             error: function(response) {
+              $("#updatesSave").attr('disabled',false);
+              $("#updatesSave").html("Save");
                 var myJSON = JSON.parse(response.responseText).errors;
                 var html = '<div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<br><br><ul>';
                   for (var key in myJSON)
@@ -598,17 +600,17 @@ Order Details
 
  //When Submit Button is Clicked in Modal Popup, passvalue through Ajax
     $("#licenseExpSave").on('click',function(){
+       $('#licenseExpSave').attr('disabled',true);
+      $('#licenseExpSave').html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
         var newdate = $("#newDate2").val();
         var orderId = $("#order2").val();
         $.ajax({
             type: "get",
             data: {'orderid': orderId , 'date': newdate},
             url: "{{url('edit-license-expiry')}}",
-             beforeSend: function () {
-                 $('#response3').html( "<img id='blur-bg' class='backgroundfadein' style='top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
-
-            },
             success: function (response) {
+              $("#licenseExpSave").attr('disabled',false);
+              $("#licenseExpSave").html("Save");
                 if (response.message =='success') {
                 var result =  '<div class="alert alert-success alert-dismissable"><strong><i class="fa fa-check"></i> Success! </strong> '+response.update+' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
                      $('#response3').html(result);
@@ -619,6 +621,8 @@ Order Details
                 }
             },
             error: function(response) {
+              $("#licenseExpSave").attr('disabled',false);
+              $("#licenseExpSave").html("Save");
                   var myJSON = JSON.parse(response.responseText).errors;
                        var html = '<div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<br><br><ul>';
                           for (var key in myJSON)
@@ -649,17 +653,17 @@ Order Details
 
  //When Submit Button is Clicked in Modal Popup, passvalue through Ajax
     $("#supportExpSave").on('click',function(){
+       $('#supportExpSave').attr('disabled',true);
+       $('#supportExpSave').html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
         var newdate = $("#newDate3").val();
         var orderId = $("#order3").val();
         $.ajax({
             type: "get",
             data: {'orderid': orderId , 'date': newdate},
             url: "{{url('edit-support-expiry')}}",
-             beforeSend: function () {
-                 $('#response4').html( "<img id='blur-bg' class='backgroundfadein' style='top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
-
-            },
             success: function (response) {
+               $("#supportExpSave").attr('disabled',false);
+              $("#supportExpSave").html("Save");
                 if (response.message =='success') {
                 var result =  '<div class="alert alert-success alert-dismissable"><strong><i class="fa fa-check"></i> Success! </strong> '+response.update+' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
                      $('#response4').html(result);
@@ -670,6 +674,8 @@ Order Details
                 }
             },
             error: function(response) {
+               $("#supportExpSave").attr('disabled',false);
+              $("#supportExpSave").html("Save");
                   var myJSON = JSON.parse(response.responseText).errors;
                        var html = '<div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<br><br><ul>';
                           for (var key in myJSON)

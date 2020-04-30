@@ -26,7 +26,7 @@
 		
 		  <div class="modal-footer">
                 <button type="button" id="close" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-                <input type="submit" id="supportExpSave" class="btn btn-primary" value="{{Lang::get('message.save')}}">
+                <button type="submit" id="supportExpSave" class="btn btn-primary">Save</button>
             </div>
 	</div>
 </div>

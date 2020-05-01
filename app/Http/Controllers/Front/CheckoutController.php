@@ -232,7 +232,7 @@ class CheckoutController extends InfoController
                 $items = new \Illuminate\Support\Collection();
                 $invoiceid = $request->input('invoice_id');
                 $invoice = $this->invoice->find($invoiceid);
-                $processingFee = $payment_method =="razorpay"? 0 : \DB::table(strtolower($request->input('payment_gateway')))->where('currencies',$invoice->currency)->value('processing_fee');
+                $processingFee = $this->getProcessingFee($payment_method,$invoice->currency);
                 $invoice->grand_total = intval($invoice->grand_total*(1+$processingFee/100));
                 $invoice_no = $invoice->number;
                 $date = $this->getDate($invoice);
@@ -301,6 +301,16 @@ class CheckoutController extends InfoController
             Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
+
+    private function getProcessingFee($paymentMethod,$currency)
+    {
+        try {
+             return $paymentMethod =="razorpay"? 0 : \DB::table(strtolower($paymentMethod))->where('currencies',$currency)->value('processing_fee');
+        } catch (\Exception $e) {
+            throw new \Exception("Invalid modification of data");
         }
     }
 

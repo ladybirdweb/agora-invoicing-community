@@ -184,7 +184,7 @@ class DashboardController extends Controller
     public function getPendingPaymentsCur1($allowedCurrencies1)
     {
         $total = Invoice::where('currency', $allowedCurrencies1)
-        ->where('status', '!=', 'success')
+        ->where('status', '=', 'pending')
         ->pluck('grand_total')->all();
         $grandTotal = array_sum($total);
 

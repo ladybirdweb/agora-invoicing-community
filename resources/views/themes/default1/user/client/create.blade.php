@@ -136,7 +136,7 @@ select.form-control{
                     </div>
                     <div class="col-md-3 form-group {{ $errors->has('bussiness') ? 'has-error' : '' }}">
                         <!-- company -->
-                        {!! Form::label('bussiness','Industry',['class'=>'required']) !!}
+                        {!! Form::label('bussiness','Industry') !!}
                          <!-- {!! Form::select('bussiness',['Choose'=>'Choose',''=>$bussinesses],null,['class' => 'form-control selectpicker','data-live-search'=>'true', 'data-live-search-placeholder'=>'Search' ,'data-dropup-auto'=>'false', 'data-size'=>'10']) !!} -->
                        <select name="bussiness"  class="form-control">
                              <option value="">Choose</option>
@@ -188,7 +188,7 @@ select.form-control{
                     ?>
                      <div class="col-md-3 form-group {{ $errors->has('role') ? 'has-error' : '' }}">
                         <!-- email -->
-                        {!! Form::label('company_type','Company Type',['class'=>'required']) !!}
+                        {!! Form::label('company_type','Company Type') !!}
                         <!-- {!! Form::select('company_type',['choose'=>'Choose',''=>$type],null,['class' => 'form-control']) !!} -->
 
                          <select name="company_type" value= "Choose" class="form-control">
@@ -205,7 +205,7 @@ select.form-control{
                     </div>
                      <div class="col-md-3 form-group {{ $errors->has('role') ? 'has-error' : '' }}">
                         <!-- email -->
-                        {!! Form::label('company_size','Company Size',['class'=>'required']) !!}
+                        {!! Form::label('company_size','Company Size') !!}
                 <!-- {!! Form::select('company_size',['choose'=>'Choose',''=>$size],null,['class' => 'form-control']) !!} -->
                           <select name="company_size" value= "Choose" class="form-control">
                              <option value="">Choose</option>
@@ -224,7 +224,7 @@ select.form-control{
 
                 <div class="form-group {{ $errors->has('address') ? 'has-error' : '' }}">
                     <!-- phone number -->
-                    {!! Form::label('address',Lang::get('message.address'),['class'=>'required']) !!}
+                    {!! Form::label('address',Lang::get('message.address')) !!}
                     {!! Form::textarea('address',null,['class' => 'form-control']) !!}
 
                 </div>
@@ -284,7 +284,7 @@ select.form-control{
                     </div>
                     <div class="col-md-3 form-group {{ $errors->has('zip') ? 'has-error' : '' }}">
                         <!-- mobile -->
-                        {!! Form::label('zip',Lang::get('message.zip'),['class'=>'required']) !!}
+                        {!! Form::label('zip',Lang::get('message.zip')) !!}
                         {!! Form::text('zip',null,['class' => 'form-control']) !!}
 
                     </div>

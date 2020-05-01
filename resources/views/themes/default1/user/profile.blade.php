@@ -212,7 +212,7 @@ Edit Profile
 
                     <div class="col-md-6 form-group {{ $errors->has('timezone_id') ? 'has-error' : '' }}">
                         <!-- mobile -->
-                        {!! Form::label('timezone_id',Lang::get('message.timezone')) !!}
+                        {!! Form::label('timezone_id',Lang::get('message.timezone'),['class' => 'required']) !!}
                         <!-- {!! Form::select('timezone_id',[''=>'Select','Timezones'=>$timezones],null,['class' => 'form-control']) !!} -->
                         {!! Form::select('timezone_id', [Lang::get('message.choose')=>$timezones],null,['class' => 'form-control selectpicker','data-live-search'=>'true','required','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false','data-size'=>'10']) !!}
 
@@ -224,7 +224,7 @@ Edit Profile
                 <div class="row">
                     <?php $countries = \App\Model\Common\Country::pluck('nicename', 'country_code_char2')->toArray(); ?>
                     <div class="col-md-6 form-group {{ $errors->has('country') ? 'has-error' : '' }}">
-                         {!! Form::label('country',Lang::get('message.country')) !!}
+                         {!! Form::label('country',Lang::get('message.country'),['class' => 'required']) !!}
 
                         {!! Form::select('country',[Lang::get('message.choose')=>$countries],null,['class' => 'form-control selectpicker','id'=>'country','onChange'=>'getCountryAttr(this.value)','data-live-search'=>'true','required','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false','data-size'=>'10']) !!}
                         <!-- name -->

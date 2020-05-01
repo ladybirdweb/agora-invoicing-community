@@ -84,7 +84,7 @@ input:checked + .slider:before {
     .required:after{ 
         content:'*'; 
         color:red; 
-        padding-left:5px;
+        padding:0px;
     }
 
 
@@ -131,17 +131,16 @@ input:checked + .slider:before {
                             {!! Form::text('first_name',null,['class' => 'form-control input-lg ','id'=>'firstName']) !!}
                            <h6 id="firstNameCheck"></h6>
                         </div>
-                    </div>
-                       <div class="form-row">
                         <div class="form-group col{{ $errors->has('last_name') ? 'has-error' : '' }}">
                             <!-- last name -->
                              <label for "last_name" class="required">Last Name</label>
                             {!! Form::text('last_name',null,['class' => 'form-control input-lg ','id'=>'lastName']) !!}
                              <h6 id="lastNameCheck"></h6>
                         </div>
-                    </div>
+                        </div>
                       
-                         <div class="form-row">
+                      
+                    <div class="form-row">
                        <div class="form-group col{{ $errors->has('email') ? 'has-error' : '' }}">
                              <label for "email" class="required">Email</label>
                             <!-- email -->
@@ -149,14 +148,64 @@ input:checked + .slider:before {
                             <h6 id="emailCheck"></h6>
                         </div>
                     </div>
-                          <div class="form-row">
+                    <div class="form-row">
                         <div class="form-group col {{ $errors->has('company') ? 'has-error' : '' }}">
                             <!-- company -->
-                            <label for "company" class="">Company</label>
+                            <label for "company" class="required">Company</label>
                             {!! Form::text('company',null,['class' => 'form-control input-lg','id'=>'Company']) !!}
                             <h6 id="companyCheck"></h6>
                         </div>
                     </div> 
+                     <div class="form-row">
+                        <div class="form-group col {{ $errors->has('bussiness') ? 'has-error' : '' }}">
+                            <!-- company -->
+                            <label for "industry" class="">Industry</label>
+                                <select name="bussiness"  class="form-control">
+                                <option value="">Choose</option>
+                             @foreach($bussinesses as $key=>$bussiness)
+                             
+                            <option value="{{$key}}" <?php  if(in_array($bussiness, $selectedIndustry) ) 
+                            { echo "selected";} ?>>{{$bussiness}}</option>
+                                @endforeach
+                             </select>
+                    </div> 
+                     <div class="form-group col{{ $errors->has('user_name') ? 'has-error' : '' }}">
+                             <label for "username">Username</label>
+                            <!-- email -->
+                            {!! Form::text('user_name',null,['class' => 'form-control input-lg ','id'=>'user_name']) !!}
+                            <h6 id="emailCheck"></h6>
+                        </div>
+                </div>
+                 <?php
+                   $types = DB::table('company_types')->pluck('name','short')->toArray();
+                    $sizes = DB::table('company_sizes')->pluck('name','short')->toArray();
+                    ?>
+                <div class="form-row">
+                    <div class="form-group col {{ $errors->has('company_type') ? 'has-error' : '' }}">
+                            <!-- company -->
+                            <label for "company_type" class="">Company Type</label>
+                            <select name="company_type"  class="form-control">
+                            <option value="">Choose</option>
+                         @foreach($types as $key=>$type)
+                                   <option value="{{$key}}" <?php  if(in_array($type, $selectedCompany) ) { echo "selected";} ?>>{{$type}}</option>
+                           
+                             @endforeach
+                              </select>
+                    </div> 
+
+                     <div class="form-group col {{ $errors->has('company_size') ? 'has-error' : '' }}">
+                            <!-- company -->
+                            <label for "company_size" class="">Company Size</label>
+                            <select name="company_size"  class="form-control">
+                            <option value="">Choose</option>
+                        @foreach($sizes as $key=>$size)
+                        <option value="{{$key}}" <?php  if(in_array($size, $selectedCompanySize) ) { echo "selected";} ?>>{{$size}}</option>
+                           
+                             @endforeach
+                              </select>
+                    </div> 
+                </div>
+
                     <div class="form-row">
                      <div class="form-group col {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
                       {!! Form::label('mobile',null,['class' => 'required'],Lang::get('message.mobile'),['class'=>'required']) !!}
@@ -193,7 +242,7 @@ input:checked + .slider:before {
                             </div>
                             <div class="form-group col-md-6 {{ $errors->has('timezone_id') ? 'has-error' : '' }}">
                                 <!-- mobile -->
-                                 <label for"timezone_id" class="">Timezone</label>
+                                 <label for"timezone_id" class="required">Timezone</label>
                                 {!! Form::select('timezone_id',[Lang::get('message.choose')=>$timezones],null,['class' => 'form-control input-lg','id'=>'timezone']) !!}
 
                                <!--  {!! Form::select('timezone_id', [Lang::get('message.choose')=>$timezones],null,['class' => 'form-control selectpicker','data-live-search'=>'true','required','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false','data-size'=>'10','id'=>'timezone']) !!}
@@ -495,8 +544,11 @@ input:checked + .slider:before {
             });
         },
           separateDialCode: true,
-          utilsScript: "js/intl/js/utils.js"
+         utilsScript: "{{asset('js/intl/js/utils.js')}}",
     });
+    setTimeout(()=>{
+         telInput.intlTelInput("setCountry", currentCountry);
+    },500)
       var reset = function() {
       errorMsg.innerHTML = "";
       errorMsg.classList.add("hide");

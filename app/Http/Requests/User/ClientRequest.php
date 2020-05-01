@@ -28,13 +28,12 @@ class ClientRequest extends Request
                     return [
                         'first_name'       => 'required',
                         'last_name'        => 'required',
+                        'company'          => 'required',
                         'email'            => 'required|email|unique:users',
                         'mobile'           => 'required',
-                        'bussiness'        => 'required',
+                        'country'          => 'required|exists:countries,country_code_char2',
                         'timezone_id'      => 'required',
-                        'address'          => 'required',
-                        'zip'              => 'required',
-                        'user_name'        => 'required|unique:users,user_name',
+                        'user_name'        => 'unique:users,user_name',
                         'currency'         => 'required',
                     ];
 
@@ -47,13 +46,11 @@ class ClientRequest extends Request
                         'email'            => 'required|email|unique:users,email,'.$this->getSegmentFromEnd().',id',
                         'company'          => 'required',
                         'mobile'           => 'required',
-                        'address'          => 'required',
-                        'zip'              => 'required',
                         'timezone_id'      => 'required',
-                        'user_name'        => 'required|unique:users,user_name,'.$id,
-                        'bussiness'        => 'required',
-                        'company_type'     => 'required',
-                        'company_size'     => 'required',
+                        'currency'         => 'required',
+                        'timezone_id'      => 'required',
+                        'country'                => 'required|exists:countries,country_code_char2',
+                        'user_name'        => 'unique:users,user_name,'.$id,
                     ];
 
             default:

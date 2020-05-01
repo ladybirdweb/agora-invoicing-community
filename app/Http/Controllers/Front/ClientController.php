@@ -343,10 +343,15 @@ class ClientController extends BaseClientController
             $state = \App\Http\Controllers\Front\CartController::getStateByCode($user->state);
             $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($user->country);
             $bussinesses = \App\Model\Common\Bussiness::pluck('name', 'short')->toArray();
-
+            $selectedIndustry = \App\Model\Common\Bussiness::where('name', $user->bussiness)
+            ->pluck('name', 'short')->toArray();
+            $selectedCompany = \DB::table('company_types')->where('name', $user->company_type)
+            ->pluck('name', 'short')->toArray();
+            $selectedCompanySize = \DB::table('company_sizes')->where('short', $user->company_size)
+            ->pluck('name', 'short')->toArray();
             return view(
                 'themes.default1.front.clients.profile',
-                compact('user', 'timezones', 'state', 'states', 'bussinesses','is2faEnabled','dateSinceEnabled')
+                compact('user', 'timezones', 'state', 'states', 'bussinesses','is2faEnabled','dateSinceEnabled','selectedIndustry','selectedCompany','selectedCompanySize')
             );
         } catch (Exception $ex) {
             Bugsnag::notifyException($ex);

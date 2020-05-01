@@ -346,7 +346,7 @@ class ClientController extends AdvanceSearchController
      *
      * @return \Response
      */
-    public function update($id, Request $request)
+    public function update($id, ClientRequest $request)
     {
         try {
             $user = $this->user->where('id', $id)->first();

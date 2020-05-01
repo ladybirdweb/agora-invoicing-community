@@ -33,7 +33,9 @@ class ProfileRequest extends Request
                     'email'                  => 'required',
                     'mobile'                 => 'required',
                     'mobile_code'            => 'required',
-                    'user_name'              => 'required|unique:users,user_name,'.$userid,
+                    'user_name'              => 'unique:users,user_name,'.$userid,
+                    'country'                => 'required|exists:countries,country_code_char2',
+                    'timezone_id'            => 'required',
                     'profile_pic'            => 'sometimes|mimes:jpeg,jpg,png,gif|max:100000',
 
         ];
@@ -47,6 +49,7 @@ class ProfileRequest extends Request
                     'last_name'              => 'required|max:30',
                      'mobile'                => 'required|regex:/[0-9]/|min:5|max:20',
                      'email'                 => 'required',
+                     'company'               => 'required',
                     'mobile_code'            => 'required',
                     'mobile'                 => 'required',
                     'country'                => 'required|exists:countries,country_code_char2',

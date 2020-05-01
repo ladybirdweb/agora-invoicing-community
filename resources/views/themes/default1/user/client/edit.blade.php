@@ -137,7 +137,7 @@ Edit User
                     </div>
                     <div class="col-md-3 form-group {{ $errors->has('bussiness') ? 'has-error' : '' }}">
                         <!-- company -->
-                        {!! Form::label('bussiness','Industry',['class'=>'required']) !!}
+                        {!! Form::label('bussiness','Industry') !!}
                         <select name="bussiness"  class="form-control">
                             <option value="">Choose</option>
                          @foreach($bussinesses as $key=>$bussiness)
@@ -152,7 +152,7 @@ Edit User
 
                     <div class="col-md-3 form-group {{ $errors->has('active') ? 'has-error' : '' }}">
                         <!-- mobile -->
-                        {!! Form::label('active',Lang::get('message.email')) !!}
+                        {!! Form::label('active',Lang::get('message.active')) !!}
                         <p>{!! Form::radio('active',1,true) !!}&nbsp;Active&nbsp;&nbsp;{!! Form::radio('active',0) !!}&nbsp;Inactive</p>
 
                     </div>
@@ -182,7 +182,7 @@ Edit User
                     ?>
                      <div class="col-md-3 form-group {{ $errors->has('company_type') ? 'has-error' : '' }}">
                         <!-- email -->
-                        {!! Form::label('company_type','Company Type',['class'=>'required']) !!}
+                        {!! Form::label('company_type','Company Type') !!}
                       
                           <select name="company_type"  class="form-control">
                             <option value="">Choose</option>
@@ -195,7 +195,7 @@ Edit User
                     </div>
                      <div class="col-md-3 form-group {{ $errors->has('company_size') ? 'has-error' : '' }}">
                         <!-- email -->
-                        {!! Form::label('company_size','Company Size',['class'=>'required']) !!}
+                        {!! Form::label('company_size','Company Size') !!}
                         <select name="company_size"  class="form-control">
                             <option value="">Choose</option>
                         @foreach($sizes as $key=>$size)
@@ -208,7 +208,7 @@ Edit User
                 </div>
                 <div class="form-group {{ $errors->has('address') ? 'has-error' : '' }}">
                     <!-- phone number -->
-                    {!! Form::label('address',Lang::get('message.address'),['class'=>'required']) !!}
+                    {!! Form::label('address',Lang::get('message.address')) !!}
                     {!! Form::textarea('address',null,['class' => 'form-control']) !!}
 
                 </div>
@@ -224,7 +224,7 @@ Edit User
 
                     <div class="col-md-3 form-group {{ $errors->has('country') ? 'has-error' : '' }}">
                         <!-- name -->
-                        {!! Form::label('country',Lang::get('message.country')) !!}
+                        {!! Form::label('country',Lang::get('message.country'),['class'=>'required']) !!}
                         <?php $countries = \App\Model\Common\Country::pluck('nicename', 'country_code_char2')->toArray(); ?>
 
                         {!! Form::select('country',[Lang::get('message.choose')=>$countries],null,['class' => 'form-control selectpicker','id'=>'country','onChange'=>'getCountryAttr(this.value)','data-live-search'=>'true','required','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false','data-size'=>'10']) !!}
@@ -250,13 +250,13 @@ Edit User
 
                     <div class="col-md-3 form-group {{ $errors->has('zip') ? 'has-error' : '' }}">
                         <!-- mobile -->
-                        {!! Form::label('zip',Lang::get('message.zip'),['class'=>'required']) !!}
+                        {!! Form::label('zip',Lang::get('message.zip')) !!}
                         {!! Form::text('zip',null,['class' => 'form-control']) !!}
 
                     </div>
                     <div class="col-md-3 form-group {{ $errors->has('timezone_id') ? 'has-error' : '' }}">
                         <!-- mobile -->
-                        {!! Form::label('timezone_id',Lang::get('message.timezone')) !!}
+                        {!! Form::label('timezone_id',Lang::get('message.timezone'),['class'=>'required']) !!}
 
                          {!! Form::select('timezone_id', ['Timezones'=>$timezones],null,['class' => 'form-control chosen-select selectpicker','data-live-search'=>'true','required','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false','data-size'=>'10']) !!}
 
@@ -266,7 +266,7 @@ Edit User
                     ?>
                     <div class="col-md-3 form-group {{ $errors->has('currency') ? 'has-error' : '' }}">
                         <!-- mobile -->
-                        {!! Form::label('currency',Lang::get('message.currency')) !!}
+                        {!! Form::label('currency',Lang::get('message.currency'),['class'=>'required']) !!}
                          <select name="currency" id="plan" class="form-control" onchange="myFunction()">
                             <option value="">Choose</option>
                          @foreach($currencies as $key=>$currency)

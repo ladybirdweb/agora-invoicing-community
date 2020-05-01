@@ -331,31 +331,39 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                   
                                                 <div class="form-row">
                                                    
-                                              <div class="form-group col-lg-6 {{ $errors->has('password') ? 'has-error' : '' }}">
+                                              <div class="form-group col {{ $errors->has('password') ? 'has-error' : '' }}">
                                                             <label class="required">Password</label>
                                                             {!! Form::password('password',['class'=>'form-control input-lg', 'id'=>'password']) !!}
                                                             <span id="password1check"></span>
                                                         </div>
                                                          
 
-                                                        <div class="form-group col-lg-6 {{ $errors->has('password_confirmation') ? 'has-error' : '' }}">
+
+                                                   
+                                                </div>
+                                                <div class="form-row">
+                                                  
+                                                        <div class="form-group col {{ $errors->has('password_confirmation') ? 'has-error' : '' }}">
                                                             <label class="required">Re-enter Password</label>
 
                                                             {!! Form::password('password_confirmation',['class'=>'form-control input-lg', 'id'=>'confirm_pass']) !!}
                                                              <span id="conpasscheck"></span>
                                                         </div>
                                                         
-
-                                                   
                                                 </div>
 
-                                              <!--   <input type="checkbox" name="checkbox" id="option" value="{{old('option')}}"><label for="option"><span></span> <p>I agree to the <a href="#">terms</a></p></label>
- -->                                            
-                                                 @if ($captchaStatus==1 && $captchaSiteKey != '00' && $captchaSecretKey != '00')  
+                                        <!--   <input type="checkbox" name="checkbox" id="option" value="{{old('option')}}"><label for="option"><span></span> <p>I agree to the <a href="#">terms</a></p></label>-->
+                                           <div class="form-row">
+                                           <div class="form-group col-lg-6"> 
+                                                 @if ($captchaStatus==1 && $captchaSiteKey != '00' && $captchaSecretKey != '00') 
+                                                 
                                                  {!! NoCaptcha::display() !!}
+                                                 
                                            <div class="robot-verification" id="captcha"></div>
                                            <span id="captchacheck"></span>
                                                 @endif
+                                                </div>
+                                              </div>
                                                <div class="form-row">
                                                 @if ($termsStatus ==0)
                                                  <div class="form-group col-lg-6">
@@ -371,9 +379,9 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                     </div>
                                                  @endif
                                                   
-                                                          <div class="form-group col-lg-6">
-                                                              <button type="button"  class="btn btn-primary pull-right marginright mb-xl next-step"  name="register" id="register" onclick="registerUser()">Submit</button>
-                                                          </div>
+                                                    <div class="form-group col-lg-6">
+                                                        <button type="button"  class="btn btn-primary pull-right marginright mb-xl next-step"  name="register" id="register" onclick="registerUser()">Submit</button>
+                                                    </div>
                                                    
                                                 </div>
 
@@ -1106,10 +1114,25 @@ function verify_otp_check(){
          $('#first_name').css("border-color","red");
         $('#first_namecheck').css("color","red");
         // userErr =false;
-        // return false;
+        
           $('html, body').animate({
         scrollTop: $("#first_namecheck").offset().top -200
     }, 1000)
+          return false;
+    }
+
+    if(firrstname_val.length > 30){
+        $('#first_namecheck').show();
+        $('#first_namecheck').html("Max 30 characters allowed ");
+        $('#first_namecheck').focus();
+         $('#first_name').css("border-color","red");
+        $('#first_namecheck').css("color","red");
+        // userErr =false;
+        
+          $('html, body').animate({
+        scrollTop: $("#first_namecheck").offset().top -200
+    }, 1000)
+          return false;
     }
   
     var pattern = new RegExp(/[^a-zA-Z0-9]/);
@@ -1119,9 +1142,11 @@ function verify_otp_check(){
         $('#first_namecheck').focus();
          $('#first_name').css("border-color","red");
         $('#first_namecheck').css("color","red");
+
           $('html, body').animate({
         scrollTop: $("#first_namecheck").offset().top -200
     }, 1000)
+           return false;
   }
    
     else{
@@ -1144,7 +1169,24 @@ function verify_otp_check(){
          
         scrollTop: $("#last_namecheck").offset().top - 200
     }, 1000)
+      return false;
     }
+
+    if(lastname_val.length > 30 ){
+        $('#last_namecheck').show();
+        $('#last_namecheck').html("Maximum 30 characters allowed");
+        $('#last_namecheck').focus();
+         $('#last_name').css("border-color","red");
+        $('#last_namecheck').css({"color":"red","margin-top":"5px"});
+        // userErr =false;
+         $('html, body').animate({
+         
+        scrollTop: $("#last_namecheck").offset().top - 200
+    }, 1000)
+      return false;
+    }
+
+
     var pattern = new RegExp(/[^a-zA-Z0-9]/);
     if(pattern.test(lastname_val)){
         $('#last_namecheck').show();
@@ -1157,6 +1199,7 @@ function verify_otp_check(){
          
         scrollTop: $("#last_namecheck").offset().top - 200
     }, 1000)
+    return false;
     }
    
     else{
@@ -1311,10 +1354,10 @@ function verify_otp_check(){
               }
               else{
                  $('#password1check').show();
-                $('#password1check').html("Password must contain Uppercase/Lowercase/Special Character and Number");
+                $('#password1check').html("Password must contain Upper/Lowercase/special Character and number");
                  $('#password1check').focus();
                 $('#password').css("border-color","red");
-                $('#password1check').css({"color":"red","margin-top":"5px"});
+                $('#password1check').css({"color":"red","margin-top":"0px"});
 
                    // mail_error = false;
                 return false;

@@ -82,21 +82,29 @@ class ClientController extends AdvanceSearchController
                         })
                         ->addColumn('active', function ($model) {
                             if ($model->active == 1) {
-                                $email = "<span class='glyphicon glyphicon-envelope'
-                                 style='color:green' title='verified email'></span>";
+
+                                $email = "<span class='glyphicon glyphicon-envelope'  style='color:green'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Email verified'>
+                                    </label></span>";
                             } else {
-                                $email = "<span class='glyphicon glyphicon-envelope'
-                                 style='color:red' title='unverified email'></span>";
+                                $email =  "<span class='glyphicon glyphicon-envelope'  style='color:red'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Unverified email'>
+                                    </label></span>";
                             }
                             if ($model->mobile_verified == 1) {
-                                $mobile = "<span class='glyphicon glyphicon-phone' 
-                                style='color:green' title='verified mobile'></span>";
+                                $mobile = "<span class='glyphicon glyphicon-phone'  style='color:green'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Unverified mobile'>
+                                    </label></span>";
                             } else {
-                                $mobile = "<span class='glyphicon glyphicon-phone'
-                                 style='color:red' title='unverified mobile'></span>";
+                                $mobile ="<span class='glyphicon glyphicon-phone'  style='color:red'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Mobile verified'>
+                                    </label></span>";
+                            }
+                             if ($model->is_2fa_enabled == 1) {
+                                $twoFa = "<span class='glyphicon glyphicon-qrcode'  style='color:green'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='2FA Enabled'>
+                                    </label></span>";
+                            } else {
+                                $twoFa ="<span class='glyphicon glyphicon-qrcode'  style='color:red'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='2FA not enabled'>
+                                    </label></span>";
                             }
 
-                            return $email.'&nbsp;&nbsp;'.$mobile;
+                            return $email.'&nbsp;&nbsp;'.$mobile.'&nbsp;&nbsp;'.$twoFa;
                         })
                         ->addColumn('action', function ($model) {
                             return '<a href='.url('clients/'.$model->id.'/edit')
@@ -470,8 +478,8 @@ class ClientController extends AdvanceSearchController
             ->select('id', 'first_name', 'last_name', 'email',
                 \DB::raw("CONCAT('+', mobile_code, ' ', mobile) as mobile"),
                 \DB::raw("CONCAT(first_name, ' ', last_name) as name"),
-                'country_name as country', 'created_at', 'active', 'mobile_verified', 'role', 'position'
-            )->when($request->company, function ($query) use ($request) {
+                'country_name as country', 'created_at', 'active', 'mobile_verified', 'is_2fa_enabled', 'role', 'position'
+            )->when($request->company, function($query) use($request) {
                 $query->where('company', 'LIKE', '%'.$request->company.'%');
             })->when($request->country, function ($query) use ($request) {
                 $query->where('country', $request->country);

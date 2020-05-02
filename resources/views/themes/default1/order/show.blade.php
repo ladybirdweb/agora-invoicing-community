@@ -20,9 +20,7 @@ Order Details
   a {
     color: currentColor;!important;
   }
-  .brtags br {
-  display: none;
-}
+
 </style>
 <div class="row">
     <div class="col-md-12">
@@ -117,6 +115,7 @@ Order Details
                                     <span data-type="copy" style="font-size: 15px; pointer-events: initial; cursor: pointer; display: block;" id="copyBtn" title="Click to copy to clipboard"><i class="fa fa-clipboard"></i></span>
                                   </td>
                                 </tr>
+                                 @if ($licenseStatus == 1)
                                     <tr>
                                         
                                           <td>
@@ -124,7 +123,7 @@ Order Details
                                             <b>Licensed Domain:</b>
                                           </td>
                                           <td contenteditable="false" id="domain">{{$order->domain}}</td>
-                                          @if ($licenseStatus == 1)
+                                         
                                           <td>
                                                <button class='class="btn btn-danger pull-right' style="width:max-content;border:none;" id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}">
                                            Reissue License</button>
@@ -157,7 +156,7 @@ Order Details
                                           <td>
                                         --
                                       </td>
-                                        @endif
+                                        
                                         <td></td>
                                        </tr>
                                   <tr>
@@ -172,7 +171,7 @@ Order Details
                                     </td>
                                        
                                   </tr>
-
+                                  @endif
                                   <tr>
                                     <td><b>Current Version:</b></td> 
                                     <td>{!! $versionLabel !!} </td>
@@ -181,9 +180,8 @@ Order Details
 
                                   <tr>
                                     <td><b><label data-toggle="tooltip" data-placement="top" title="" data-original-title="Last connection with License Manager">Last Active:</label></b></td> 
-                                    <td class="brtags">
-                                      {!! $lastActivity !!}&nbsp;&nbsp;
-                                        {!! $connectionLabel !!}
+                                    <td>
+                                      {!! $lastActivity !!}
                                     </td>
                                     <td></td> 
                                   </tr>
@@ -367,6 +365,7 @@ Order Details
 
 
 <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
+ <script src="{{asset('common/js/licCode.js')}}"></script>
 <script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript">
         $('#order1-table').DataTable({
@@ -413,11 +412,6 @@ Order Details
 
 @section('icheck')
 <script>
-  $(document).ready(function(){
-    let ele = document.getElementById("s_key").textContent;
-     let finalele = ele.match(/.{1,4}/g).join('-');
-        document.getElementById("s_key").textContent = finalele;
-  })
 
     function checking(e){
           
@@ -743,26 +737,6 @@ Order Details
         });
 
 
-    document.querySelectorAll('span[data-type="copy"]')
-    .forEach(function(button){
-      button.addEventListener('click', function(){
-        let serialKey = this.parentNode.parentNode.querySelector('td[data-type="serialkey"]').innerText;
-
-      let tmp = document.createElement('textarea');
-      tmp.value= serialKey.replace(/\-/g, '');
-      tmp.setAttribute('readonly', '');
-      tmp.style.position = 'absolute';
-      tmp.style.left = '-9999px';
-      document.body.appendChild(tmp);
-      tmp.select();
-      document.execCommand('copy');
-      document.body.removeChild(tmp);
-      $("#copied").css("display", "block");
-      
-      $('#copied').fadeIn("slow","swing");
-      $('#copied').fadeOut("slow","swing");
-      })
-    })
-
+   
 </script>
 @stop

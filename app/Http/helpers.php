@@ -1,4 +1,7 @@
 <?php
+use Carbon\Carbon;
+use App\Model\Product\ProductUpload;
+
 
 function checkArray($key, $array)
 {
@@ -112,3 +115,32 @@ function getDateHtml(string $dateTimeString = null)
         return '--';
     }
 }
+
+
+function getExpiryLabel($expiryDate, $badge='label') 
+{
+       if($expiryDate < (new Carbon())->toDateTimeString()) {
+             return getDateHtml($expiryDate).'<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class='.'"'.$badge.' '.$badge.'-danger" style="padding-left:4px;" <label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="Order has Expired">
+                         </label>
+             <i class="fa fa-exclamation"></i>&nbsp;Expired</span>';
+        } else{
+            return getDateHtml($expiryDate);
+        }
+}
+
+
+function getVersionAndLabel($productVersion, $productId, $badge='label')
+{
+    $latestVersion = \Cache::remember('latest_'.$productId, 10, function() use($productId){
+    return ProductUpload::where('product_id', $productId)->latest()->value('version');
+    });
+      if($productVersion < $latestVersion ) {
+            return '<span class='.'"'.$badge.' '.$badge.'-warning" <label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="Outdated Version">
+                 </label>'.$productVersion.'</span>';
+        } else{
+            return '<span class='.'"'.$badge.' '.$badge.'-success" <label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="Latest Version">
+                 </label>'.$productVersion.'</span>';
+        }
+
+}
+

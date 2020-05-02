@@ -106,22 +106,16 @@ class ExtendedOrderController extends Controller
         if ($allInstallation) {
             $dayUtc = new Carbon('-30 days');
             $minus30Day = $dayUtc->toDateTimeString();
-            if ($allInstallation == 'paid_ins') {
-                $join = $join->where('price_override', '>', 0)->whereHas('subscription', function ($query) use ($minus30Day) {
-                    $query->where('updated_at', '>', $minus30Day);
-                });
-            } elseif ($allInstallation == 'unpaid_ins') {
-                $join = $join->where('price_override', '=', 0)->whereHas('subscription', function ($query) use ($minus30Day) {
-                    $query->where('updated_at', '>', $minus30Day);
-                });
-            } elseif ($allInstallation == 'all_ins') {
-                $join = $join->whereHas('subscription', function ($query) use ($minus30Day) {
-                    $query->where('updated_at', '>', $minus30Day);
-                });
-            }
-        }
 
-        return $join;
+            $baseQuery = $join->whereHas('subscription', function($q) use($minus30Day) {
+                $q->where('updated_at', '>', $minus30Day);
+            });
+            return $baseQuery->when($allInstallation == 'paid_ins', function($q){
+                $q->where('price_override', '>', 0);
+            })->when($allInstallation == 'unpaid_ins', function($q){
+                $q->where('price_override', '=', 0);
+            });
+        }
     }
 
     /**
@@ -137,21 +131,15 @@ class ExtendedOrderController extends Controller
         if($allInstallation) {
             $dayUtc = new Carbon('-30 days');
             $minus30Day = $dayUtc->toDateTimeString();
-            if($allInstallation == 'paid_inactive_ins') {
-                $join = $join->where('price_override', '>', 0)->whereHas('subscription', function($query) use($minus30Day) {
-                    $query->where('updated_at', '<', $minus30Day);
+            $baseQuery = $join->whereHas('subscription', function($q) use($minus30Day) {
+                    $q->where('updated_at', '<', $minus30Day);
                 });
-            } elseif($allInstallation == 'unpaid_inactive_ins') {
-                $join = $join->where('price_override', '=', 0)->whereHas('subscription', function($query) use($minus30Day) {
-                    $query->where('updated_at', '<', $minus30Day);
-                });
-            } elseif ($allInstallation == 'all_inactive_ins') {
-                $join = $join->whereHas('subscription', function($query) use($minus30Day) {
-                    $query->where('updated_at', '<', $minus30Day);
-                });
-            }
+            return $baseQuery->when($allInstallation == 'paid_inactive_ins', function($q){
+                $q->where('price_override', '>', 0);
+            })->when($allInstallation == 'unpaid_inactive_ins', function($q){
+                $q->where('price_override', '=', 0);
+            });
         }
-        return $join;
     }
 
     /**
@@ -167,17 +155,14 @@ class ExtendedOrderController extends Controller
         if($allRenewal) {
             $dayUtc = new Carbon();
             $now = $dayUtc->toDateTimeString();
-            if($allRenewal == 'expired_subscription') {
-                $join = $join->whereHas('subscription', function($query) use($now){
-                    $query->where('update_ends_at', '<', $now);
-                });
-            } elseif($allRenewal == 'active_subscription') {
-               $join = $join->whereHas('subscription', function($query) use($now){
-                    $query->where('update_ends_at', '>', $now);
-                });
-            }
+            return $join->whereHas('subscription', function($query) use($now,$allRenewal){
+                if($allRenewal == 'expired_subscription'){
+                    return $query->where('update_ends_at', '<', $now);
+                }
+             return $query->where('update_ends_at', '>', $now);
+            }); 
         }
-        return $join;
+      
     }
 
     /**

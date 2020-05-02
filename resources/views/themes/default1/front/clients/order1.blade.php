@@ -36,6 +36,8 @@ active
 
                     <thead><tr>
                             <th>Product Name</th>
+                            <th>Order No</th>
+                            <th>Version</th>
                             <th>Updates Expiry Date</th>
                             
                             <th>Action</th>
@@ -62,6 +64,8 @@ active
     
             columns: [
                 {data: 'product_name', name: 'product_name'},
+                 {data: 'number', name: 'number'},
+                 {data: 'version', name: 'version'},
                 {data: 'expiry', name: 'expiry'},
               
                 // {data: 'group', name: 'Group'},

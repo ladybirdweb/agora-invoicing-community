@@ -128,24 +128,25 @@ active
                                                     <span data-type="copy" style="font-size: 15px; pointer-events: initial; cursor: pointer; display: block;" id="copyBtn" title="Click to copy to clipboard"><i class="fa fa-clipboard"></i></span>
                                                      </td>
                                                  </tr>
-
+                                                 @if ($licenseStatus == 1)
                                                 <tr>
+
                                                     <td><b>Licensed Domain/IP:</b></td>     
                                                     <td>{{$order->domain}} </td>
-                                                    @if ($licenseStatus == 1)
+                                                    
                                                     <td>
                                                      @include('themes.default1.front.clients.reissue-licenseModal')
                                                      @include('themes.default1.front.clients.domainRestriction')
                                                     <button class='class="btn btn-danger mb-2' style="border:none;" id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}">
                                                    Reissue License</button></td>
                                                
-                                                   @endif
+                                                   
                                                 
                                                 
                                                  </tr>
                                                  <tr>
                                                     <td><b>Installation Path:</b></td> 
-                                                    @if(count($installationDetails['installed_path']) > 0)
+                                                    @if($installationDetails['installed_path'])
                                                     <td>@foreach($installationDetails['installed_path'] as $paths)
                                                         {{$paths}}<br>
                                                         @endforeach
@@ -171,20 +172,15 @@ active
                                                     --
                                                     </td>
                                                   @endif
+                                                  
                                                   <td></td>
                                                 </tr>
-                                                  
-
-                                                <?php
-                                                $date= '--';
-                                                $licdate = '--';
-                                                $supdate = '--';
-                                                if ($subscription) {
-                                                    $date =  strtotime($subscription->update_ends_at)>1 ? getDateHtml($subscription->update_ends_at): '--';
-                                                  $licdate = strtotime($subscription->ends_at)>1 ? getDateHtml($subscription->ends_at):'--' ;
-                                                  $supdate =  strtotime($subscription->update_ends_at)>1 ? getDateHtml($subscription->support_ends_at):'--' ;
-                                                }
-                                                ?>
+                                                @endif
+                                                  <tr>
+                                                    <td><b>Version:</b></td>  
+                                                     <td>{!! $versionLabel !!}</td>
+                                                     <td></td>
+                                                 </tr>
                                                 <tr>
                                                     <td><b>License Expiry Date:</b></td>  
                                                      <td>{!! $licdate !!}</td>
@@ -232,7 +228,7 @@ active
 
                         <thead><tr>
                             <th>Number</th>
-                            <th>Products</th>
+                            <th>Product</th>
                             
                             <th>Date</th>
                             <th>Total</th>
@@ -248,7 +244,7 @@ active
              </div>
  
         </div>  
-       
+         <script src="{{asset('common/js/licCode.js')}}"></script>
            <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
 <script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript">
@@ -294,7 +290,7 @@ active
                         <table id="showpayment-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
 
                     <thead><tr>
-                            <th>InvoiceNumber</th>
+                            <th>Invoice No</th>
                             <th>Total</th>
                             
                             <th>Method</th>
@@ -316,14 +312,7 @@ active
          <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
         <script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
         <script type="text/javascript">
-              $(document).ready(function(){
-                let ele = document.getElementById("s_key").textContent;
-                 let finalele = ele.match(/.{1,4}/g).join('-');
-                    document.getElementById("s_key").textContent = finalele;
-            })
-
-
-                $('#showpayment-table').DataTable({
+             $('#showpayment-table').DataTable({
                     processing: true,
                     serverSide: true,
                      ajax: '{!! Url('get-my-payment-client/'.$order->id.'/'.$user->id) !!}',
@@ -436,28 +425,6 @@ active
         });
          }
          });
-
-
-    document.querySelectorAll('span[data-type="copy"]')
-    .forEach(function(button){
-      button.addEventListener('click', function(){
-        let serialKey = this.parentNode.parentNode.querySelector('td[data-type="serialkey"]').innerText;
-
-      let tmp = document.createElement('textarea');
-      tmp.value= serialKey.replace(/\-/g, '');
-      tmp.setAttribute('readonly', '');
-      tmp.style.position = 'absolute';
-      tmp.style.left = '-9999px';
-      document.body.appendChild(tmp);
-      tmp.select();
-      document.execCommand('copy');
-      document.body.removeChild(tmp);
-      $("#copied").css("display", "block");
-      
-      $('#copied').fadeIn("slow","swing");
-      $('#copied').fadeOut("slow","swing");
-      })
-    })
     </script>
 
 

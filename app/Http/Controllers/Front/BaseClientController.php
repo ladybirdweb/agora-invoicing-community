@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Order\OrderController;
 use App\Http\Controllers\License\LicensePermissionsController;
 use App\Http\Requests\User\ProfileRequest;
 use App\Model\Order\Invoice;
@@ -58,7 +59,7 @@ class BaseClientController extends Controller
         $end = '--';
         if ($orders->subscription()->first()) {
             if (strtotime($orders->subscription()->first()->update_ends_at) > 1) {
-                $end = getDateHtml($orders->subscription()->first()->update_ends_at);
+                $end = getExpiryLabel($orders->subscription()->first()->update_ends_at,'badge');
             }
         }
 
@@ -199,7 +200,8 @@ class BaseClientController extends Controller
 
             return \DataTables::of($invoices->get())
              ->addColumn('number', function ($model) {
-                 return $model->number;
+                $url = $this->getInvoiceLinkUrl($model->id);
+                return '<a href='.url($url).'>'.$model->number.'</a>';
              })
             ->addColumn('products', function ($model) {
                 $invoice = $this->invoice->find($model->id);
@@ -217,13 +219,8 @@ class BaseClientController extends Controller
                 return ucfirst($model->status);
             })
             ->addColumn('action', function ($model) {
-                if (\Auth::user()->role == 'admin') {
-                    $url = '/invoices/show?invoiceid='.$model->id;
-                } else {
-                    $url = 'my-invoice';
-                }
-
-                return '<a href='.url($url.'/'.$model->id)." 
+                $url = $this->getInvoiceLinkUrl($model->id);
+                return '<a href='.url($url)." 
                 class='btn btn-sm btn-primary btn-xs'><i class='fa fa-eye' 
                 style='color:white;'> </i>&nbsp;&nbsp;View</a>";
             })
@@ -234,6 +231,15 @@ class BaseClientController extends Controller
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
+    }
+
+    public function getInvoiceLinkUrl($invoiceId) 
+    {
+        $link = 'my-invoice/'.$invoiceId ;
+        if (\Auth::user()->role == 'admin') {
+           $link= '/invoices/show?invoiceid='.$invoiceId;
+        }
+        return $link;
     }
 
     public function getInvoice($id)

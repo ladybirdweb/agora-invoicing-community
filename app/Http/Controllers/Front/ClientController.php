@@ -285,6 +285,12 @@ class ClientController extends BaseClientController
                             ->addColumn('product_name', function ($model) {
                                 return $model->product()->first()->name;
                             })
+                            ->addColumn('number', function ($model) {
+                              return '<a href='.url('my-order/'.$model->id).'>'.$model->number.'</a>';
+                            })
+                            ->addColumn('version', function ($model) {
+                              return getVersionAndLabel($model->subscription()->first()->version,$model->product,'badge');
+                            })
                             ->addColumn('expiry', function ($model) {
                                  return $this->getExpiryDate($model);
                             })
@@ -308,7 +314,7 @@ class ClientController extends BaseClientController
                                 class='btn  btn-primary btn-xs' style='margin-right:5px;'>
                                 <i class='fa fa-eye' title='Details of order'></i>&nbsp;View $listUrl $url </a>";
                             })
-                            ->rawColumns(['id', 'created_at', 'expiry', 'ends_at', 'product', 'Action'])
+                            ->rawColumns(['id', 'product_name', 'number','version', 'expiry', 'Action'])
                             ->make(true);
         } catch (Exception $ex) {
             app('log')->error($ex->getMessage());
@@ -363,13 +369,18 @@ class ClientController extends BaseClientController
             $order = $this->order->findOrFail($id);
             $invoice = $order->invoice()->first();
             $items = $order->invoice()->first()->invoiceItem()->get();
-            $subscription = '';
-            $plan = '';
-            if ($order->subscription) {
-                $subscription = $order->subscription;
-
-                $plan = $subscription->plan()->first();
+            $subscription = $order->subscription()->first();
+            $date = '--';
+            $licdate = '--';
+            $versionLabel = '--';
+            if ($subscription) {
+                $date =  strtotime($subscription->update_ends_at)>1 ? getExpiryLabel($subscription->update_ends_at,'badge'): '--';
+                $licdate = strtotime($subscription->ends_at)>1 ? getExpiryLabel($subscription->ends_at,'badge') :'--' ;
+                $versionLabel = getVersionAndLabel($subscription->version,$order->product,'badge');
             }
+            $installationDetails = [];
+            $noOfAllowedInstallation = '';
+            $getInstallPreference = '';
             $licenseStatus = StatusSetting::pluck('license_status')->first();
             if ($licenseStatus == 1) {
                 $cont = new \App\Http\Controllers\License\LicenseController();
@@ -383,9 +394,10 @@ class ClientController extends BaseClientController
 
             return view(
                 'themes.default1.front.clients.show-order',
-                compact('invoice', 'order', 'user', 'plan', 'product', 'subscription', 'licenseStatus', 'installationDetails', 'allowDomainStatus')
+                compact('invoice', 'order', 'user',  'product', 'subscription', 'licenseStatus', 'installationDetails', 'allowDomainStatus','date','licdate','versionLabel')
             );
         } catch (Exception $ex) {
+            dd($ex);
             Bugsnag::notifyException($ex);
 
             return redirect('/')->with('fails', $ex->getMessage());
@@ -459,7 +471,7 @@ class ClientController extends BaseClientController
                     ->select('id', 'invoice_id', 'user_id', 'payment_method', 'payment_status', 'created_at', 'amount');
             return \DataTables::of($payments->get())
                             ->addColumn('number', function ($model) {
-                                return $model->invoice()->first()->number;
+                                return '<a href='.url('my-invoice/'.$model->invoice()->first()->id).'>'.$model->invoice()->first()->number.'</a>';
                             })
                               ->addColumn('total', function ($model) {
                                   return $model->amount;

@@ -303,14 +303,14 @@ class DashboardController extends Controller
         return Invoice::with("user:id,first_name,last_name,email,user_name")
             ->leftJoin("currencies", "invoices.currency", "=", "currencies.code")
             ->leftJoin("payments", "invoices.id", "=", "payments.invoice_id")
-            ->select("invoices.id as invoice_id", "invoices.number as invoice_number", "invoices.grand_total", "invoices.status as status",
+            ->select("invoices.id as invoice_id", "invoices.number as invoice_number", "invoices.grand_total", "invoices.status",
                 \DB::raw("SUM(payments.amount) as paid"), "invoices.user_id", "currencies.code as currency_code")
             ->where("invoices.created_at", ">", $dateBefore)
             ->where("invoices.grand_total", ">", 0)
             ->groupBy("invoices.id")
             ->orderBy("invoices.created_at", "desc")
             ->get()->map(function($element) {
-                $element->status = AdminOrderInvoiceController::getStatusLabel($element->status);
+                $element->status = getStatusLabel($element->status);
                 $element->grand_total = currency_format((int)$element->grand_total, $element->currency_code);
                 $element->paid = currency_format((int)$element->paid, $element->currency_code);
                 $element->balance = currency_format((int)$element->balance, $element->currency_code);

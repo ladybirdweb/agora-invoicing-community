@@ -291,7 +291,7 @@ class BaseProductController extends ExtendedBaseProductController
     public function updateVersionFromGithub($productid,$github_owner,$github_repository)
     {
         try {
-            $product = Product::find($productid);
+            $product = Product::find($productid)->select('version')->first();
             $github_controller = new \App\Http\Controllers\Github\GithubController();
             $version = $github_controller->findVersion($github_ownwr, $github_repository);
             $product->version = $version;

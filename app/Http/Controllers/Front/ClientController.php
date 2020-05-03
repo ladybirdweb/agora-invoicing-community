@@ -75,23 +75,31 @@ class ClientController extends BaseClientController
     public function getInvoices()
     {
         try {
-            $invoices = Invoice::where('user_id', \Auth::user()->id)
-                    ->select('number', 'created_at', 'grand_total', 'id', 'status');
+             $invoices = Invoice::leftJoin('order_invoice_relations',"invoices.id",'=','order_invoice_relations.invoice_id')
+            ->select('invoices.id','invoices.user_id','invoices.date','invoices.number','invoices.grand_total','order_invoice_relations.order_id','invoices.is_renewed','invoices.status')
+            ->where('invoices.user_id','=',\Auth::user()->id)
+            ->orderBy('invoices.created_at', 'desc')
+            ->get();
 
-            return \DataTables::of($invoices->get())
+            return \DataTables::of($invoices)
                             ->addColumn('number', function ($model) {
-                                return $model->number;
+                                if($model->is_renewed) {
+                                return '<a href='.url('my-invoice/'.$model->id).'>'.$model->number.'</a><br>'.getStatusLabel('renewed','badge');
+                            } else{
+                                 return '<a href='.url('my-invoice/'.$model->id).'>'.$model->number.'</a>';
+                            }
+                            })
+                            ->addColumn('orderNo', function ($model) {
+                            return getOrderLink($model->order_id,'my-order');
                             })
                             ->addColumn('date', function ($model) {
-                                $date = getDateHtml($model->created_at);
-
-                                return $date;
-                            })
+                                return  $model->date;
+                             })
                             ->addColumn('total', function ($model) {
                                 return  currency_format($model->grand_total, $code = \Auth::user()->currency);
                             })
                              ->addColumn('status', function ($model) {
-                                return  AdminOrderInvoiceController::getStatusLabel($model->status,'badge');
+                                return  getStatusLabel($model->status,'badge');
                             })
                             ->addColumn('Action', function ($model) {
                                 $status = $model->status;
@@ -105,7 +113,7 @@ class ClientController extends BaseClientController
                                 " class='btn btn-primary btn-xs'><i class='fa fa-eye'></i>&nbsp;View</a>".$payment.'</p>';
                             })
 
-                            ->rawColumns(['number', 'created_at', 'total', 'status', 'Action'])
+                            ->rawColumns(['number', 'orderNo', 'date', 'total', 'status', 'Action'])
                             // ->orderColumns('number', 'created_at', 'total')
                             ->make(true);
         } catch (Exception $ex) {
@@ -113,6 +121,7 @@ class ClientController extends BaseClientController
             echo $ex->getMessage();
         }
     }
+
 
     /**
      * Get list of all the versions from Filesystem.
@@ -410,7 +419,6 @@ class ClientController extends BaseClientController
                 compact('invoice', 'order', 'user', 'product', 'subscription', 'licenseStatus', 'installationDetails', 'allowDomainStatus', 'date', 'licdate', 'versionLabel')
             );
         } catch (Exception $ex) {
-            dd($ex);
             Bugsnag::notifyException($ex);
 
             return redirect('/')->with('fails', $ex->getMessage());

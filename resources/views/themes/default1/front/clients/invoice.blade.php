@@ -26,8 +26,9 @@ active
 	 <table id="invoice-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
 	 	
                     <thead><tr>
-                            <th>Number</th>
+                            <th>Invoice No</th>
                             <th>Date</th>
+                            <th>Order No</th>
                             <th>Total</th>
                             <th>Status</th>
                             <th>Action</th>
@@ -54,6 +55,7 @@ active
             columns: [
                 {data: 'number', name: 'number'},
                 {data: 'date', name: 'date'},
+                {data: 'orderNo', name: 'orderNo'},
                 {data: 'total', name: 'total'},
                 {data: 'status', name: 'status'},
                 {data: 'Action', name: 'Action'}

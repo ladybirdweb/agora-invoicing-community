@@ -153,7 +153,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                              return currency_format($model->grand_total, $code = $model->currency);
                          })
                           ->addColumn('status', function ($model) {
-                           return AdminOrderInvoiceController::getStatusLabel($model->status);
+                           return getStatusLabel($model->status);
                           })
 
                         ->addColumn('action', function ($model) {
@@ -207,15 +207,21 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
     public function show(Request $request)
     {
         try {
-            $invoice = $this->invoice->where('id', $request->input('invoiceid'))->first();
-            $invoiceItems = $this->invoiceItem->where('invoice_id', $request->input('invoiceid'))->get();
+            $invoice =Invoice::leftJoin('order_invoice_relations',"invoices.id",'=','order_invoice_relations.invoice_id')
+                ->select('invoices.id','invoices.user_id','invoices.date','invoices.currency','invoices.number','invoices.discount','invoices.grand_total','order_invoice_relations.order_id')
+                ->where('invoices.id','=', $request->input('invoiceid'))
+                ->first();
+            $invoiceItems = $this->invoiceItem->where('invoice_id', $request->input('invoiceid'))
+            ->select('product_name','quantity','regular_price','tax_name','tax_percentage','subtotal')
+            ->get();
             $user = $this->user->find($invoice->user_id);
             $currency = CartController::currency($user->id);
-            $order = AdminOrderInvoiceController::getOrderLink($invoice);
+            $order = getOrderLink($invoice->order_id);
             $symbol = $currency['symbol'];
 
             return view('themes.default1.invoice.show', compact('invoiceItems', 'invoice', 'user', 'currency', 'symbol','order'));
         } catch (\Exception $ex) {
+            dd($ex);
             app('log')->warning($ex->getMessage());
             Bugsnag::notifyException($ex);
 

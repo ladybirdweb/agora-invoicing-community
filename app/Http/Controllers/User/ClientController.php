@@ -81,30 +81,10 @@ class ClientController extends AdvanceSearchController
                             return getDateHtml($model->created_at);
                         })
                         ->addColumn('active', function ($model) {
-                            if ($model->active == 1) {
-
-                                $email = "<span class='glyphicon glyphicon-envelope'  style='color:green'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Email verified'>
-                                    </label></span>";
-                            } else {
-                                $email =  "<span class='glyphicon glyphicon-envelope'  style='color:red'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Unverified email'>
-                                    </label></span>";
-                            }
-                            if ($model->mobile_verified == 1) {
-                                $mobile = "<span class='glyphicon glyphicon-phone'  style='color:green'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Unverified mobile'>
-                                    </label></span>";
-                            } else {
-                                $mobile ="<span class='glyphicon glyphicon-phone'  style='color:red'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Mobile verified'>
-                                    </label></span>";
-                            }
-                             if ($model->is_2fa_enabled == 1) {
-                                $twoFa = "<span class='glyphicon glyphicon-qrcode'  style='color:green'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='2FA Enabled'>
-                                    </label></span>";
-                            } else {
-                                $twoFa ="<span class='glyphicon glyphicon-qrcode'  style='color:red'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='2FA not enabled'>
-                                    </label></span>";
-                            }
-
-                            return $email.'&nbsp;&nbsp;'.$mobile.'&nbsp;&nbsp;'.$twoFa;
+                                $email = $this->getEmailLabel($model->active);
+                                $mobile = $this->getMobileLabel($model->mobile_verified);
+                                $twoFa = $this->get2faLabel($model->is_2fa_enabled);
+                             return $email.'&nbsp;&nbsp;'.$mobile.'&nbsp;&nbsp;'.$twoFa;
                         })
                         ->addColumn('action', function ($model) {
                             return '<a href='.url('clients/'.$model->id.'/edit')
@@ -140,6 +120,33 @@ class ClientController extends AdvanceSearchController
 
                         ->rawColumns(['checkbox', 'name', 'email',  'created_at', 'active', 'action'])
                         ->make(true);
+    }
+
+    public function get2faLabel($active)
+    {
+        $label ="<span class='glyphicon glyphicon-qrcode'  style='color:red'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='2FA not enabled'> </label></span>";
+        if($active) {
+            $label = "<span class='glyphicon glyphicon-qrcode'  style='color:green'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='2FA Enabled'> </label></span>";
+        }
+        return $label;
+    }
+
+    public function getMobileLabel($active)
+    {
+        $label = "<span class='glyphicon glyphicon-phone'  style='color:red'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Unverified mobile'>  </label></span>";
+        if($active) {
+             $label ="<span class='glyphicon glyphicon-phone'  style='color:green'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Mobile verified'></label></span>";
+        }
+        return $label;
+    }
+
+    public function getEmailLabel($active) 
+    {
+        $label =  "<span class='glyphicon glyphicon-envelope'  style='color:red'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Unverified email'> </label></span>";
+        if($active) {
+            $label = "<span class='glyphicon glyphicon-envelope'  style='color:green'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Email verified'> </label></span>";
+        }
+        return $label;
     }
 
     /**

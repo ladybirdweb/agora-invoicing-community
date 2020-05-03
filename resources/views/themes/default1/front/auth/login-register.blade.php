@@ -34,7 +34,7 @@
         .required:after{
             content:'*';
             color:red;
-            padding-left:5px;
+            padding-left:0px;
         }
 
 
@@ -267,48 +267,20 @@
 
                                                     <div class="row">
 
-                                                        <div class="form-group col-lg-6 {{ $errors->has('company') ? 'has-error' : '' }}">
+                                                        <div class="form-group col{{ $errors->has('company') ? 'has-error' : '' }}">
                                                             <label  class="required">Company Name</label>
                                                             {!! Form::text('company',null,['class'=>'form-control input-lg', 'id'=>'company']) !!}
                                                             <span id="companycheck"></span>
                                                         </div>
 
 
-                                                        <div class="form-group col-lg-6 {{ $errors->has('bussiness') ? 'has-error' : '' }}">
-                                                            <label class="required">Industry</label>
-                                                            {!! Form::select('bussiness',[''=>'Choose','Industry'=>$bussinesses],null,['class'=>'form-control input-lg', 'id'=>'business']) !!}
 
-                                                            <span id="bussinesscheck"></span>
-                                                        </div>
 
 
 
                                                     </div>
 
-                                                    <div class='row'>
-                                                        <?php
-                                                        $type = DB::table('company_types')->pluck('name', 'short')->toArray();;
 
-                                                        $size = DB::table('company_sizes')->pluck('name', 'short')->toArray();;
-
-                                                        ?>
-                                                        <div class="col-md-6 form-group {{ $errors->has('role') ? 'has-error' : '' }}">
-                                                            <!-- email -->
-                                                            {!! Form::label('company_type','Company Type',['class'=>'required']) !!}
-                                                            {!! Form::select('company_type',[''=>'Choose','Company Types'=>$type],null,['class' => 'form-control input-lg', 'id'=>'company_type']) !!}
-                                                            <span id="company_typecheck"></span>
-                                                        </div>
-
-
-                                                        <div class="col-md-6 form-group {{ $errors->has('role') ? 'has-error' : '' }}">
-                                                            <!-- email -->
-                                                            {!! Form::label('company_size','Company Size',['class'=>'required']) !!}
-                                                            {!! Form::select('company_size',[''=>'Choose','Company Sizes'=>$size],null,['class' => 'form-control input-lg', 'id'=>'company_size']) !!}
-                                                            <span id="company_sizecheck"></span>
-                                                        </div>
-
-
-                                                    </div>
                                                     <div class="form-row">
                                                         <div class="form-group col {{ $errors->has('country') ? 'has-error' : '' }}">
                                                             {!! Form::label('country',Lang::get('message.country'),['class'=>'required']) !!}
@@ -333,28 +305,9 @@
 
 
                                                     </div>
-                                                    <div class="form-row">
 
-                                                        <div class="form-group col {{ $errors->has('address') ? 'has-error' : '' }}">
-                                                            <label class="required">Address</label>
-                                                            {!! Form::textarea('address',null,['class'=>'form-control','rows'=>4, 'id'=>'address']) !!}
-
-                                                            <span id="addresscheck"></span>
-                                                        </div>
-
-
-                                                    </div>
-                                                    <div class="form-row">
-
-                                                        <div class="form-group col-lg-6 {{ $errors->has('town') ? 'has-error' : '' }}">
-                                                            <label>City/Town</label>
-                                                            {!! Form::text('town',$location['city'],['class'=>'form-control input-lg', 'id'=>'city']) !!}
-                                                            <span id="towncheck"></span>
-                                                        </div>
-
-
-
-                                                        <div class="form-group col-lg-6 {{ $errors->has('state') ? 'has-error' : '' }}">
+                                                    <div class="form-row hidden">
+                                                        <div class="form-group col{{ $errors->has('state') ? 'has-error' : '' }}">
                                                             {!! Form::label('state',Lang::get('message.state')) !!}
                                                             <?php
                                                             $value = "";
@@ -375,54 +328,42 @@
 
 
                                                     </div>
+
                                                     <div class="form-row">
 
-
-                                                        <div class="form-group col-lg-6 {{ $errors->has('zip') ? 'has-error' : '' }}">
-                                                            <label class="required">Zip/Postal Code</label>
-                                                            {!! Form::text('zip',$location['zip'],['class'=>'form-control input-lg', 'id'=>'zip']) !!}
-                                                            <span id="zipcheck"></span>
-                                                        </div>
-
-
-
-                                                        <div class="form-group col-md-6 {{ $errors->has('user_name') ? 'has-error' : '' }}">
-                                                            <label class="required">User Name/E-mail Id</label>
-                                                            {!! Form::text('user_name',null,['class'=>'form-control input-lg', 'id'=>'user_name']) !!}
-                                                            <span id="user_namecheck"></span>
-                                                        </div>
-
-
-
-
-                                                    </div>
-                                                    <div class="form-row">
-
-                                                        <div class="form-group col-lg-6 {{ $errors->has('password') ? 'has-error' : '' }}">
+                                                        <div class="form-group col {{ $errors->has('password') ? 'has-error' : '' }}">
                                                             <label class="required">Password</label>
                                                             {!! Form::password('password',['class'=>'form-control input-lg', 'id'=>'password']) !!}
                                                             <span id="password1check"></span>
                                                         </div>
 
 
-                                                        <div class="form-group col-lg-6 {{ $errors->has('password_confirmation') ? 'has-error' : '' }}">
+
+
+                                                    </div>
+                                                    <div class="form-row">
+
+                                                        <div class="form-group col {{ $errors->has('password_confirmation') ? 'has-error' : '' }}">
                                                             <label class="required">Re-enter Password</label>
 
                                                             {!! Form::password('password_confirmation',['class'=>'form-control input-lg', 'id'=>'confirm_pass']) !!}
                                                             <span id="conpasscheck"></span>
                                                         </div>
 
-
-
                                                     </div>
 
-                                                <!--   <input type="checkbox" name="checkbox" id="option" value="{{old('option')}}"><label for="option"><span></span> <p>I agree to the <a href="#">terms</a></p></label>
- -->
-                                                    @if ($captchaStatus==1 && $captchaSiteKey != '00' && $captchaSecretKey != '00')
-                                                        {!! NoCaptcha::display() !!}
-                                                        <div class="robot-verification" id="captcha"></div>
-                                                        <span id="captchacheck"></span>
-                                                    @endif
+                                                <!--   <input type="checkbox" name="checkbox" id="option" value="{{old('option')}}"><label for="option"><span></span> <p>I agree to the <a href="#">terms</a></p></label>-->
+                                                    <div class="form-row">
+                                                        <div class="form-group col-lg-6">
+                                                            @if ($captchaStatus==1 && $captchaSiteKey != '00' && $captchaSecretKey != '00')
+
+                                                                {!! NoCaptcha::display() !!}
+
+                                                                <div class="robot-verification" id="captcha"></div>
+                                                                <span id="captchacheck"></span>
+                                                            @endif
+                                                        </div>
+                                                    </div>
                                                     <div class="form-row">
                                                         @if ($termsStatus ==0)
                                                             <div class="form-group col-lg-6">
@@ -1163,6 +1104,7 @@
 
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //Registration Form Validation
+
         function first_namecheck(){
             var firrstname_val = $('#first_name').val();
             if(firrstname_val.length == ''){
@@ -1172,10 +1114,39 @@
                 $('#first_name').css("border-color","red");
                 $('#first_namecheck').css("color","red");
                 // userErr =false;
-                // return false;
+
                 $('html, body').animate({
                     scrollTop: $("#first_namecheck").offset().top -200
                 }, 1000)
+                return false;
+            }
+
+            if(firrstname_val.length > 30){
+                $('#first_namecheck').show();
+                $('#first_namecheck').html("Max 30 characters allowed ");
+                $('#first_namecheck').focus();
+                $('#first_name').css("border-color","red");
+                $('#first_namecheck').css("color","red");
+                // userErr =false;
+
+                $('html, body').animate({
+                    scrollTop: $("#first_namecheck").offset().top -200
+                }, 1000)
+                return false;
+            }
+
+            var pattern = new RegExp(/[^a-zA-Z0-9]/);
+            if(pattern.test(firrstname_val)) {
+                $('#first_namecheck').show();
+                $('#first_namecheck').html("Special characters not allowed");
+                $('#first_namecheck').focus();
+                $('#first_name').css("border-color","red");
+                $('#first_namecheck').css("color","red");
+
+                $('html, body').animate({
+                    scrollTop: $("#first_namecheck").offset().top -200
+                }, 1000)
+                return false;
             }
 
             else{
@@ -1198,6 +1169,37 @@
 
                     scrollTop: $("#last_namecheck").offset().top - 200
                 }, 1000)
+                return false;
+            }
+
+            if(lastname_val.length > 30 ){
+                $('#last_namecheck').show();
+                $('#last_namecheck').html("Maximum 30 characters allowed");
+                $('#last_namecheck').focus();
+                $('#last_name').css("border-color","red");
+                $('#last_namecheck').css({"color":"red","margin-top":"5px"});
+                // userErr =false;
+                $('html, body').animate({
+
+                    scrollTop: $("#last_namecheck").offset().top - 200
+                }, 1000)
+                return false;
+            }
+
+
+            var pattern = new RegExp(/[^a-zA-Z0-9]/);
+            if(pattern.test(lastname_val)){
+                $('#last_namecheck').show();
+                $('#last_namecheck').html("Special characters not allowed");
+                $('#last_namecheck').focus();
+                $('#last_name').css("border-color","red");
+                $('#last_namecheck').css({"color":"red","margin-top":"5px"});
+                // userErr =false;
+                $('html, body').animate({
+
+                    scrollTop: $("#last_namecheck").offset().top - 200
+                }, 1000)
+                return false;
             }
 
             else{
@@ -1251,68 +1253,9 @@
             }
         }
 
-        function bussinesscheck(){
-            var business_val = $('#business').val();
-            if(business_val== ''){
-                $('#bussinesscheck').show();
-                $('#bussinesscheck').html("Please Select One Industry");
-                $('#bussinesscheck').focus();
-                $('#business').css("border-color","red");
-                $('#bussinesscheck').css({"color":"red","margin-top":"5px"});
-                // userErr =false;
-                $('html, body').animate({
-                    scrollTop: $("#companycheck").offset().top - 200
-                }, 1000)
-            }
 
-            else{
-                $('#bussinesscheck').hide();
-                $('#business').css("border-color","");
-                return true;
-            }
-        }
 
-        function company_typecheck(){
-            var companytype_val = $('#company_type').val();
-            if(companytype_val == ''){
-                $('#company_typecheck').show();
-                $('#company_typecheck').html("Please Select Company Type");
-                $('#company_typecheck').focus();
-                $('#company_type').css("border-color","red");
-                $('#company_typecheck').css({"color":"red","margin-top":"5px"});
-                // userErr =false;
-                $('html, body').animate({
-                    scrollTop: $("#company_typecheck").offset().top - 200
-                }, 1000)
-            }
 
-            else{
-                $('#company_typecheck').hide();
-                $('#company_type').css("border-color","");
-                return true;
-            }
-        }
-
-        function company_sizecheck(){
-            var companysize_val = $('#company_size').val();
-            if(companysize_val == ''){
-                $('#company_sizecheck').show();
-                $('#company_sizecheck').html("Please Select Company Size");
-                $('#company_sizecheck').focus();
-                $('#company_size').css("border-color","red");
-                $('#company_sizecheck').css({"color":"red","margin-top":"5px"});
-                // userErr =false;
-                $('html, body').animate({
-                    scrollTop: $("#company_sizecheck").offset().top - 200
-                }, 1000)
-            }
-
-            else{
-                $('#company_sizecheck').hide();
-                $('#company_size').css("border-color","");
-                return true;
-            }
-        }
 
         function countrycheck(){
             var country_val = $('#country').val();
@@ -1354,25 +1297,7 @@
             }
         }
 
-        function addresscheck(){
-            var address_val = $('#address').val();
-            if(address_val.length == ''){
-                $('#addresscheck').show();
-                $('#addresscheck').html("Please Enter Address ");
-                $('#addresscheck').focus();
-                $('#address').css("border-color","red");
-                $('#addresscheck').css({"color":"red","margin-top":"5px"});
-                // userErr =false;
-                $('html, body').animate({
-                    scrollTop: $("#addresscheck").offset().top -200
-                }, 1000)
-            }
-            else{
-                $('#addresscheck').hide();
-                $('#address').css("border-color","");
-                return true;
-            }
-        }
+
 
         function towncheck(){
             var town_val = $('#city').val();
@@ -1415,48 +1340,8 @@
             }
         }
 
-        function zipcheck(){
-            var zip_val = $('#zip').val();
-            if(zip_val.length == ''){
-                $('#zipcheck').show();
-                $('#zipcheck').html("Please Enter Zip Code ");
-                $('#zipcheck').focus();
-                $('#zip').css("border-color","red");
-                $('#zipcheck').css({"color":"red","margin-top":"5px"});
-                // userErr =false;
-                $('html, body').animate({
-                    scrollTop: $("#zipcheck").offset().top -200
-                }, 1000)
-            }
 
-            else{
-                $('#zipcheck').hide();
-                $('#zip').css("border-color","");
-                return true;
-            }
-        }
-        function user_namecheck(){
-            var username_val = $('#user_name').val();
-            if(username_val.length == ''){
-                $('#user_namecheck').show();
-                $('#user_namecheck').html("Please Enter Username ");
-                $('#user_namecheck').focus();
-                $('#user_name').css("border-color","red");
-                $('#user_namecheck').css({"color":"red","margin-top":"5px"});
-                // userErr =false;
 
-                $('html, body').animate({
-                    scrollTop: $("#user_namecheck").offset().top -200
-                }, 1000)
-
-            }
-
-            else{
-                $('#user_namecheck').hide();
-                $('#user_name').css("border-color","");
-                return true;
-            }
-        }
 
 
         function password1check(){
@@ -1469,10 +1354,10 @@
             }
             else{
                 $('#password1check').show();
-                $('#password1check').html("Password must contain Uppercase/Lowercase/Special Character and Number");
+                $('#password1check').html("Password must contain Upper/Lowercase/special Character and number");
                 $('#password1check').focus();
                 $('#password').css("border-color","red");
-                $('#password1check').css({"color":"red","margin-top":"5px"});
+                $('#password1check').css({"color":"red","margin-top":"0px"});
 
                 // mail_error = false;
                 return false;
@@ -1578,16 +1463,10 @@
             $('#last_namecheck').hide();
             $('#emailcheck').hide();
             $('#companycheck').hide();
-            $('#bussinesscheck').hide();
-            $('#company_typecheck').hide();
-            $('#company_sizecheck').hide();
             $('#countrycheck').hide();
             $('#mobile_codecheck').hide();
-            $('#addresscheck').hide();
             $('#towncheck').hide();
             $('#statecheck').hide();
-            $('#zipcheck').hide();
-            $('#user_namecheck').hide();
             $('#password1check').hide();
             $('#conpasscheck').hide();
             $('#termscheck').hide();
@@ -1597,22 +1476,14 @@
             var last_nameErr = true;
             var emailErr = true;
             var companyeErr = true;
-            var bussinessErr = true;
-            var company_typeErr = true;
-            var company_sizeErr = true;
             var countryErr = true;
             var mobile_codeErr = true;
-            var addressErr = true;
-            var townErr = true;
-            var stateErr = true;
-            var zipErr = true;
-            var user_nameErr = true;
             var password1Err = true;
             var conPassErr = true;
             var termsErr = true;
             // con_password_check();
 
-            if(first_namecheck() && last_namecheck() && emailcheck() && companycheck()  && mobile_codecheck() && addresscheck() && towncheck()  && zipcheck() && bussinesscheck() && company_typecheck() && company_sizecheck() && countrycheck() && user_namecheck() && password1check() && conpasscheck()  && terms() && gcaptcha())
+            if(first_namecheck() && last_namecheck() && emailcheck() && companycheck()  && mobile_codecheck()  && countrycheck()  && password1check() && conpasscheck()  && terms() && gcaptcha())
             {
                 // gtag_report_conversion();
                 $("#register").attr('disabled',true);

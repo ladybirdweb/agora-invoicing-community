@@ -207,7 +207,7 @@ class BaseAuthController extends Controller
 
             return property_exists($this, 'redirectTo') ? $this->redirectTo : '/'.$url;
         } else {
-            return property_exists($this, 'redirectTo') ? $this->redirectTo : '/home';
+            return property_exists($this, 'redirectTo') ? $this->redirectTo : '/';
         }
     }
 

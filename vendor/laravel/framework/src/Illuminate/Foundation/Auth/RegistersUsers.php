@@ -273,23 +273,6 @@ trait RegistersUsers
     }
 
 
-
-    public function sendForReOtp($mobile, $code)
-    {
-        $client = new \GuzzleHttp\Client();
-        $number = $code.$mobile;
-        $response = $client->request('GET', 'https://control.msg91.com/api/retryotp.php', [
-            'query' => ['authkey' => '54870AO9t5ZB1IEY5913f8e2', 'mobile' => $number],
-        ]);
-        $send = $response->getBody()->getContents();
-        $array = json_decode($send, true);
-        if ($array['type'] == 'error') {
-            throw new \Exception($array['message']);
-        }
-
-        return $array['type'];
-    }
-
     public function requestOtp(Request $request)
     {
         $this->validate($request, [

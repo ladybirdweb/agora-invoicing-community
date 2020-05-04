@@ -1,9 +1,9 @@
-@extends('themes.default1.layouts.front.myaccount_master')
+@extends('themes.default1.layouts.front.master')
 @section('title')
 Invoice
 @stop
 @section('page-heading')
- <h1>View Invoice </h1>
+ View Invoice
 @stop
 @section('breadcrumb')
  @if(Auth::check())

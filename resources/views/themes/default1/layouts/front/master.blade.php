@@ -313,27 +313,22 @@ if($script){
 
             <div role="main" class=@yield('main-class')>
 
-                    <section class="page-header page-header-light page-header-more-padding">
+                    <section class="page-header page-header-modern bg-color-light-scale-1 page-header-md">
                     <div class="container">
-                         <div class="row align-items-center">
-                            <div class="col-lg-6">
-                              
-                                    @yield('page-heading')
-                                    <!--<li><a href="#">Home</a></li>
-                                    <li class="active">Pages</li>-->
-                               
+                         <div class="row">
+                            <div class="col-md-12 align-self-center p-static order-2 text-center">
+                                <h1 class="text-dark text-dark">
+                                    <strong>
+                                        @yield('page-heading')
+                                    </strong>
+                                </h1>
                             </div>
-                            <div class="col-lg-6">
-                                  <ul class="breadcrumb">
-                                        @yield('breadcrumb')
-                                  </ul>
-                              </div>
+                            <div class="col-md-12 align-self-center order-1">
+                              <ul class="breadcrumb d-block text-center" style="font-weight: initial;">
+                                    @yield('breadcrumb')
+                              </ul>
+                            </div>
                         </div>
-                       <!--  <div class="row">
-                            <div class="col-md-12">
-                                <h1>@yield('page-heading')</h1>
-                            </div>
-                        </div> -->
                     </div>
                 </section>
 

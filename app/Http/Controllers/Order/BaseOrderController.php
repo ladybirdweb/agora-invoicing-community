@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Order;
 
 use App\Http\Controllers\License\LicensePermissionsController;
+use App\Plugins\Stripe\Controllers\SettingsController;
 use App\Model\Common\StatusSetting;
 use App\Model\Order\Order;
 use App\Model\Product\Product;
@@ -98,6 +99,7 @@ class BaseOrderController extends ExtendedOrderController
             }
 
             $this->sendOrderMail($user_id, $order->id, $item->id);
+
             //Update Subscriber To Mailchimp
             $mailchimpStatus = StatusSetting::pluck('mailchimp_status')->first();
             if ($mailchimpStatus == 1) {
@@ -262,40 +264,51 @@ class BaseOrderController extends ExtendedOrderController
         $invoiceurl = $this->invoiceUrl($orderid);
         //template
         $mail = $this->getMail($setting, $user, $downloadurl, $invoiceurl, $order, $product, $orderid, $myaccounturl);
+
     }
 
     public function getMail($setting, $user, $downloadurl, $invoiceurl, $order, $product, $orderid, $myaccounturl)
     {
-        $templates = new \App\Model\Common\Template();
-        $temp_id = $setting->order_mail;
-        $template = $templates->where('id', $temp_id)->first();
-        $knowledgeBaseUrl = $setting->company_url;
-        $from = $setting->email;
-        $to = $user->email;
-        $subject = $template->name;
-        $data = $template->data;
-        $replace = [
-            'name'          => $user->first_name.' '.$user->last_name,
-             'serialkeyurl' => $myaccounturl,
-            'downloadurl'   => $downloadurl,
-            'invoiceurl'    => $invoiceurl,
-            'product'       => $product,
-            'number'        => $order->number,
-            'expiry'        => $this->expiry($orderid),
-            'url'           => $this->renew($orderid),
-            'knowledge_base'=> $knowledgeBaseUrl,
+        try {
+            $templates = new \App\Model\Common\Template();
+            $temp_id = $setting->order_mail;
+            $template = $templates->where('id', $temp_id)->first();
+            $knowledgeBaseUrl = $setting->company_url;
+            $from = $setting->email;
+            $to = $user->email;
+            $adminEmail = $setting->company_email;
+            $subject = $template->name;
+            $data = $template->data;
+            $replace = [
+                'name'          => $user->first_name.' '.$user->last_name,
+                 'serialkeyurl' => $myaccounturl,
+                'downloadurl'   => $downloadurl,
+                'invoiceurl'    => $invoiceurl,
+                'product'       => $product,
+                'number'        => $order->number,
+                'expiry'        => $this->expiry($orderid),
+                'url'           => $this->renew($orderid),
+                'knowledge_base'=> $knowledgeBaseUrl,
 
-            ];
-        $type = '';
-        if ($template) {
-            $type_id = $template->type;
-            $temp_type = new \App\Model\Common\TemplateType();
-            $type = $temp_type->where('id', $type_id)->first()->name;
+                ];
+            $type = '';
+            if ($template) {
+                $type_id = $template->type;
+                $temp_type = new \App\Model\Common\TemplateType();
+                $type = $temp_type->where('id', $type_id)->first()->name;
+            }
+            $templateController = new \App\Http\Controllers\Common\TemplateController();
+            $mail = $templateController->mailing($from, $to, $data, $subject, $replace, $type);
+            if($order->invoice->grand_total) {
+                SettingsController::sendPaymentSuccessMailtoAdmin($order->invoice->currency,$order->invoice->grand_total,$user,$product);
+            }
+            return $mail;
+        } catch(\Exception $ex) {
+            dd($ex);
+            throw new Exception($ex->getMessage());
+            
         }
-        $templateController = new \App\Http\Controllers\Common\TemplateController();
-        $mail = $templateController->mailing($from, $to, $data, $subject, $replace, $type);
-
-        return $mail;
+    
     }
 
     public function invoiceUrl($orderid)

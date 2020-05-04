@@ -29,7 +29,7 @@
                         <!-- last name -->
                         {!! Form::label('payment_method',Lang::get('message.payment-method'),['class'=>'required']) !!}
 
-                        {!! Form::select('payment_method',[''=>'Select','razorpay'=>'Razorpay'],null,['class' => 'form-control']) !!}
+                        {!! Form::select('payment_method',[''=>'Select','razorpay'=>'Razorpay','stripe'=>'Stripe'],null,['class' => 'form-control']) !!}
 
 
 

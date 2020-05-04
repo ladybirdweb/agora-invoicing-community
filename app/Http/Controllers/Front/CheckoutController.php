@@ -276,7 +276,7 @@ class CheckoutController extends InfoController
                     $control = new \App\Http\Controllers\Order\RenewController();
                     $control->successRenew($invoice);
                     $payment = new \App\Http\Controllers\Order\InvoiceController();
-                    $payment->postRazorpayPayment($invoice->id, $invoice->grand_total);
+                    $payment->postRazorpayPayment($invoice);
                 }
 
                 // $check_product_category = $this->product($invoiceid);
@@ -338,7 +338,7 @@ class CheckoutController extends InfoController
 
             $url = url("download/$user_id/$invoice->number");
             $payment = new \App\Http\Controllers\Order\InvoiceController();
-            $payment->postRazorpayPayment($invoice_id, $invoice->grand_total);
+            $payment->postRazorpayPayment($invoice);
             //execute the order
             $order = new \App\Http\Controllers\Order\OrderController();
             $order->executeOrder($invoice->id, $order_status = 'executed');

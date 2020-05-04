@@ -101,9 +101,9 @@ class ExtendedBaseInvoiceController extends Controller
     public function postNewMultiplePayment($clientid, Request $request)
     {
         $this->validate($request, [
-            'payment_date'  => 'required',
-            'payment_method'=> 'required',
-            'totalAmt'      => 'required|numeric',
+        'payment_date'  => 'required',
+        'payment_method'=> 'required',
+        'totalAmt'      => 'required|numeric|not_in:0',
         ]);
 
         try {

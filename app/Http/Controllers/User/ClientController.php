@@ -81,11 +81,8 @@ class ClientController extends AdvanceSearchController
                             return getDateHtml($model->created_at);
                         })
                         ->addColumn('active', function ($model) {
-                                $email = $this->getEmailLabel($model->active);
-                                $mobile = $this->getMobileLabel($model->mobile_verified);
-                                $twoFa = $this->get2faLabel($model->is_2fa_enabled);
-                             return $email.'&nbsp;&nbsp;'.$mobile.'&nbsp;&nbsp;'.$twoFa;
-                        })
+                            return $this->getActiveLabel($model->mobile_verified, $model->active, $model->is_2fa_enabled);
+                         })
                         ->addColumn('action', function ($model) {
                             return '<a href='.url('clients/'.$model->id.'/edit')
                             ." class='btn btn-sm btn-primary btn-xs'>
@@ -122,13 +119,21 @@ class ClientController extends AdvanceSearchController
                         ->make(true);
     }
 
-    public function get2faLabel($active)
+    public function getActiveLabel($mobileActive, $emailActive, $twoFaActive)
     {
-        $label ="<span class='glyphicon glyphicon-qrcode'  style='color:red'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='2FA not enabled'> </label></span>";
-        if($active) {
-            $label = "<span class='glyphicon glyphicon-qrcode'  style='color:green'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='2FA Enabled'> </label></span>";
+        $emailLabel = "<span class='glyphicon glyphicon-envelope'  style='color:red'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Unverified email'> </label></span>";
+        $mobileLabel = "<span class='glyphicon glyphicon-phone'  style='color:red'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Unverified mobile'>  </label></span>";
+        $twoFalabel ="<span class='glyphicon glyphicon-qrcode'  style='color:red'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='2FA not enabled'> </label></span>";
+        if($mobileActive) {
+            $mobileLabel ="<span class='glyphicon glyphicon-phone'  style='color:green'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Mobile verified'></label></span>";
         }
-        return $label;
+        if($emailActive) {
+            $emailLabel = "<span class='glyphicon glyphicon-envelope'  style='color:green'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Email verified'> </label></span>";
+        }
+        if($twoFaActive) {
+            $twoFalabel = "<span class='glyphicon glyphicon-qrcode'  style='color:green'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='2FA Enabled'> </label></span>";
+        }
+        return $emailLabel.'&nbsp;&nbsp;'.$mobileLabel.'&nbsp;&nbsp;'.$twoFalabel;
     }
 
     public function getMobileLabel($active)

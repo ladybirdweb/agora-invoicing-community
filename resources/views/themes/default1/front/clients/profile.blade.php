@@ -6,7 +6,7 @@ Profile
 active
 @stop
 @section('page-heading')
- <h1>My Profile</h1>
+ My Profile
 @stop
 @section('breadcrumb')
  @if(Auth::check())

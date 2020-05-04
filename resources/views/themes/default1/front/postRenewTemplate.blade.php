@@ -41,10 +41,7 @@
                 <li class="woocommerce-order-overview__total total">
                     Total:                    <strong><span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol"></span>{{currency_format($invoiceItem->subtotal,$code = $currency)}}</span></strong>
                 </li>
-
-                                    <li class="woocommerce-order-overview__payment-method method">
-                        Payment method: <strong>Razorpay</strong>
-                    </li>
+                
                 
             </ul>
 

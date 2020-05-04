@@ -78,18 +78,12 @@ Stripe
 
                         <td><b>{!! Form::label('api_key','Api Keys',['class'=>'required']) !!}</b></td>
                         <td>
-                     {!! Form::label('stripe_key',Lang::get('message.stripe_key')) !!}
-                        {!! Form::text('stripe_key',$stripeKeys->stripe_key,['class' => 'form-control rzp_key','id'=>'stripe_key']) !!}
-                         <h6 id="stripe_keycheck"></h6>
-                        
-                  
-                        <!-- last name -->
-                        {!! Form::label('stripe_secret',Lang::get('message.stripe_secret')) !!} 
+                          <!-- last name -->
+                        {!! Form::label('stripe_secret','Stripe Secret Key') !!} 
                         {!! Form::text('stripe_secret',$stripeKeys->stripe_secret,['class' => 'form-control rzp_secret','id'=>'stripe_secret']) !!}
-                           <h6 id="stripe_secretcheck"></h6>
-                   
-                            
-                        </td>
+                           <span id="stripe_keycheck"></span>
+                         </td>
+                       
                     <td>{!! Form::submit(Lang::get('message.update'),['id'=>'key_update','style'=>'margin-top:24px','class'=>'btn btn-primary'])!!}</td>
                     </tr>       
                    
@@ -136,7 +130,7 @@ Stripe
 
                //Validate and pass value through ajax
         $("#key_update").on('click',function (){ //When Submit button is checked
-        $("#key_update").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");  
+        $('#key_update').html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait..."); 
         $("#key_update").attr('disabled',true);  
              var rzpstatus = 1;
            if ($('#stripe_key').val() == "") { //if value is not entered
@@ -162,15 +156,28 @@ Stripe
        "status": rzpstatus,
        "stripe_key": $('#stripe_key').val(),"stripe_secret" : $('#stripe_secret').val() },
        success: function (data) {
-            $("#key_update").attr('disabled',false);  
+        $("#key_update").attr('disabled',false); 
+        $('#stripe_keycheck').hide();
+         $('#stripe_secret').css("border-color","");
+           $('#key_update').html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Update"); 
+             
             $('#alertMessage').show();
-            var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>'+data.update+'.</div>';
+            var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>'+data.message.message+'.</div>';
             $('#alertMessage').html(result+ ".");
             $("#key_update").html("<i class='fa fa-floppy-o'>&nbsp;&nbsp;</i>Save");
               setInterval(function(){ 
                 $('#alertMessage').slideUp(3000); 
             }, 1000);
-          },
+          }, error: function(data) {
+            $("#key_update").attr('disabled',false);  
+            $('#key_update').html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Update"); 
+              
+                $('#stripe_keycheck').show();
+                $('#stripe_keycheck').html(data.responseJSON.message);
+                 $('#stripe_keycheck').focus();
+                $('#stripe_secret').css("border-color","red");
+                $('#stripe_keycheck').css({"color":"red","margin-top":"5px"});
+          }
     })
   });
              

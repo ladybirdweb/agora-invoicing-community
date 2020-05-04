@@ -16,10 +16,7 @@
             @foreach($invoiceItems as $invoiceItem)
             <?php 
             $currency = \Auth::user()->currency;
-             $date1 = new DateTime($invoiceItem->created_at);
-            $tz = \Auth::user()->timezone()->first()->name;
-            $date1->setTimezone(new DateTimeZone($tz));
-            $date = $date1->format('M j, Y, g:i a ');   
+            $date = getDateHtml($invoiceItem->created_at);   
             ?>
             <ul>
                 <li class="">
@@ -30,7 +27,7 @@
                 </li>
 
                 <li class="woocommerce-order-overview__date date">
-                    Date: <strong>{{$date}}</strong>
+                    Date: <strong>{!! $date !!}</strong>
                 </li>
 
                 <li class="woocommerce-order-overview__email email">
@@ -44,10 +41,7 @@
                 </span></strong>
                 </li>
 
-                <li class="woocommerce-order-overview__payment-method method">
-                     Payment method: <strong>Razorpay</strong>
-                    </li>
-                
+               
             </ul>
             @endforeach
         

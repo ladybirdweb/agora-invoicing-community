@@ -149,22 +149,21 @@ use Illuminate\Http\Request;
             }
         }
 
-        public function postRazorpayPayment($invoiceid, $grand_total)
+        public function postRazorpayPayment($invoice)
         {
             try {
                 $payment_method = \Session::get('payment_method');
                 $payment_status = 'success';
                 $payment_date = \Carbon\Carbon::now()->toDateTimeString();
-                $amount = $grand_total;
                 $paymentRenewal = $this->updateInvoicePayment(
-                $invoiceid,
+                $invoice->id,
                 $payment_method,
                 $payment_status,
                 $payment_date,
-                $amount
+                $invoice->grand_total
             );
-
-                return redirect()->back()->with('success', 'Payment Accepted Successfully');
+           
+           return redirect()->back()->with('success', 'Payment Accepted Successfully');
             } catch (\Exception $ex) {
                 return redirect()->back()->with('fails', $ex->getMessage());
             }

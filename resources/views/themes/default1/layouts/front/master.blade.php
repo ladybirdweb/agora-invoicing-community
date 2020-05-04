@@ -27,44 +27,24 @@ if($script){
   
           <!-- Web Fonts  -->
           <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800%7CShadows+Into+Light" rel="stylesheet" type="text/css">
-          
-  
 
 
-         <!-- <link href="https://netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet"> -->
-        
            <link rel="stylesheet" href="{{asset('client/css/bootstrap.min.css')}}">
           <link rel="stylesheet" href="{{asset('client/css/fontawesome-all.min.css')}}">
           <link rel="stylesheet" href="{{asset('client/css/font-awesome.min.css')}}">
           <link rel="stylesheet" href="{{asset('client/css/animate.min.css')}}">
-          <link rel="stylesheet" href="{{asset('client/css/simple-line-icons.min.css')}}">
-          <link rel="stylesheet" href="{{asset('client/css/owl.carousel.min.css')}}">
-          <link rel="stylesheet" href="{{asset('client/css/owl.theme.default.min.css')}}">
           <link rel="stylesheet" href="{{asset('client/css/magnific-popup.min.css')}}">
-  
 
+          <link rel="stylesheet" href="{{asset('client/porto/css/theme.css')}}">
+          <link rel="stylesheet" href="{{asset('client/porto/css/theme-elements.css')}}">
 
-
-           <link rel="stylesheet" href="{{asset('client/css/theme.css')}}">
-          <link rel="stylesheet" href="{{asset('client/css/theme-elements.css')}}">
-          <link rel="stylesheet" href="{{asset('client/css/theme-blog.css')}}">
-          <link rel="stylesheet" href="{{asset('client/css/theme-shop.css')}}">
-          
-          <!-- Demo CSS -->
-       
-          <link rel="stylesheet" href="{{asset('client/css/demo-construction.css')}}">
-  
-          <!-- Skin CSS -->
-
-             <link rel="stylesheet" href="{{asset('client/css/skin-construction.css')}}"> 
            <link rel="stylesheet" href="{{asset('common/css/intlTelInput.css')}}">
-          <link rel="stylesheet" href="{{asset('client/css/default.css')}}">
 
-  
-          <!-- Theme Custom CSS -->
-  
-          <link rel="stylesheet" href="{{asset('client/css/custom.css')}}">
-  
+        {{-- this can be customised to any skin available --}}
+        <link rel="stylesheet" href="{{asset('client/porto/css/skins/default.css')}}">
+        {{--  any custom css can be defined in this  --}}
+        <link rel="stylesheet" href="{{asset('client/porto/css/custom.css')}}">
+
           <!-- Head Libs -->
           <script src="{{asset('client/js/modernizr.min.js')}}"></script>
 
@@ -507,13 +487,15 @@ if($script){
           <script src="{{asset('client/js/owl.carousel.min.js')}}"></script>
           <script src="{{asset('client/js/jquery.magnific-popup.min.js')}}"></script>
           <script src="{{asset('client/js/vide.min.js')}}"></script>
-          <!-- Theme Base, Components and Settings -->
-          <script src="{{asset('client/js/theme.js')}}"></script>
-          <!-- Theme Custom -->
-          <script src="{{asset('client/js/custom.js')}}"></script>
+
+         <!-- Theme Base, Components and Settings -->
+          <script src="{{asset('client/porto/js/theme.js')}}"></script>
+
+          <!-- any custom js/effects can be defined in this -->
+          <script src="{{asset('client/porto/js/custom.js')}}"></script>
           
           <!-- Theme Initialization Files -->
-          <script src="{{asset('common/js/theme.init.js')}}"></script>
+          <script src="{{asset('client/porto/js/theme.init.js')}}"></script>
           <script src="{{asset('common/js/intlTelInput.js')}}"></script>
 
         <script>

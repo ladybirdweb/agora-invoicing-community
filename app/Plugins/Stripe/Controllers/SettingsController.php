@@ -189,7 +189,7 @@ class SettingsController extends Controller
                 \Session::put('fails','Your Payment was declined. Do you want to try making payment with the other gateway?');
                 return redirect()->route('checkout');
             }
-        } catch (Exception $e) {
+        } catch (\Cartalyst\Stripe\Exception\CardErrorException $e) {
             \Session::put('amount',$request['amount']);
             \Session::put('error',$e->getMessage());
             return redirect()->route('stripform');

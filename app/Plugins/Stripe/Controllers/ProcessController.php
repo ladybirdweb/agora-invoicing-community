@@ -127,7 +127,6 @@ class ProcessController extends Controller
             \View::addNamespace('plugins', $path);
             echo view('plugins::middle-page', compact('data'));
         } catch (\Exception $ex) {
-            dd($ex);
         }
     }
 

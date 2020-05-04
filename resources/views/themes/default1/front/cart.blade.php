@@ -7,7 +7,7 @@ Cart
 Cart
 @stop
 @section('page-heading')
- <h1>Cart</h1>
+ Items in the shopping cart
 @stop
 @section('breadcrumb')
  @if(Auth::check())

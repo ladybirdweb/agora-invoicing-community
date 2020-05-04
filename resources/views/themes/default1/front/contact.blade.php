@@ -6,7 +6,7 @@ Contact Us
 Cart
 @stop
 @section('page-heading')
-<h1>Contact <span>What can we help you with?</span></h1>
+What can we help you with?
 @stop
 @section('breadcrumb')
  @if(Auth::check())
@@ -104,12 +104,9 @@ $set = $set->findOrFail(1);
     </div>
     <div class="col-md-6">
 
-        <h4 class="heading-primary mt-4">Get in <strong>Touch</strong></h4>
-                            <p>What can we help you with?</p>
-
         <hr>
 
-        <h4 class="heading-primary">The <strong>Office</strong></h4>
+        <h4 class="heading-primary">Our Office</h4>
        <ul class="list list-icons list-icons-style-3 mt-4">
                                 <li><i class="fas fa-map-marker-alt"></i> <strong>Address:</strong> {{$set->address}}</li>
                                 <li><i class="fas fa-phone"></i> <strong>Phone:</strong> {{$set->phone}}</li>

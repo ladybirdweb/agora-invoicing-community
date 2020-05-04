@@ -6,7 +6,7 @@
     Login | Register
 @stop
 @section('page-heading')
- <h1>Login <span>Sign in or register</span></h1>
+Sign in or register
 @stop
 @section('breadcrumb')
     @if(Auth::check())

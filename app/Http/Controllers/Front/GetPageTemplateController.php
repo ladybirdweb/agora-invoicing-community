@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Front;
 
+use App\Http\Controllers\Common\TemplateController;
 use App\Http\Controllers\Controller;
 use App\Model\Product\Product;
 use Bugsnag;
@@ -10,27 +11,35 @@ class GetPageTemplateController extends Controller
 {
     /**
      * Get  Template For Products.
+     * @param $helpdesk_products
+     * @param $data
+     * @param $trasform
+     * @return string
      */
     public function getTemplateOne($helpdesk_products, $data, $trasform)
     {
-        $temp_controller = new \App\Http\Controllers\Common\TemplateController();
+        $template = '';
+        $temp_controller = new TemplateController();
         if (count($helpdesk_products) > 0) {
-            foreach ($helpdesk_products as $key => $value) {
+            foreach ($helpdesk_products as $product) {
                 //Store all the values in $trasform variable for shortcodes to read from
-                $trasform[$value['id']]['price'] = $temp_controller->leastAmount($value['id']);
-                $trasform[$value['id']]['price-description'] = self::getPriceDescription($value['id']);
-                $trasform[$value['id']]['name'] = $value['name'];
-                $trasform[$value['id']]['feature'] = $value['description'];
-                $trasform[$value['id']]['subscription'] = $temp_controller
-                ->plans($value['shoping_cart_link'], $value['id']);
-                $trasform[$value['id']]['url'] = "<input type='submit' 
+                $trasform[$product['id']]['price'] = $temp_controller->leastAmount($product['id']);
+                $trasform[$product['id']]['price-description'] = self::getPriceDescription($product['id']);
+                $trasform[$product['id']]['name'] = $product['name'];
+                $trasform[$product['id']]['feature'] = $product['description'];
+                $form = \Form::open(['method' => 'get', 'url' => $product['shoping_cart_link']]);
+                $form .= \Form::select(
+                    'subscription', ['Plans' => [
+                        $trasform[$product['id']]['price'].' '.$trasform[$product['id']]['price-description']]
+                    ], null
+                );
+                $form .= \Form::hidden('id', $product['id']);
+                $trasform[$product['id']]['subscription'] = $form;
+                $trasform[$product['id']]['url'] = "<input type='submit' 
                 value='Order Now' class='btn btn-dark btn-modern btn-outline py-2 px-4'></form>";
             }
             $template = $this->transform('cart', $data, $trasform);
-        } else {
-            $template = '';
         }
-
         return $template;
     }
 

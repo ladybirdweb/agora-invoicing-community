@@ -3,8 +3,12 @@
 namespace App\Http\Controllers\Common;
 
 use App\Http\Controllers\Product\ProductController;
+
+use App\Model\Common\Country;
+use App\Model\Common\Setting;
 use App\Model\Common\Template;
 use App\Model\Common\TemplateType;
+use App\Model\Order\Invoice;
 use App\Model\Payment\Currency;
 use App\Model\Payment\Plan;
 use App\Model\Payment\Tax;
@@ -14,6 +18,7 @@ use App\Model\Payment\TaxProductRelation;
 use App\Model\Product\Price;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
+use App\User;
 use Bugsnag;
 use Illuminate\Http\Request;
 
@@ -304,6 +309,7 @@ class TemplateController extends BaseTemplateController
         $plan_form = 'Free'; //No Subscription
         $plans = $plan->where('product', '=', $id)->pluck('name', 'id')->toArray();
         $plans = $this->prices($id);
+        dump($plans);
         if ($plans) {
             $plan_form = \Form::select('subscription', ['Plans' => $plans], null);
         }
@@ -314,29 +320,60 @@ class TemplateController extends BaseTemplateController
         return $form;
     }
 
+    private function getCountryAndCurrencySymbol($countryName)
+    {
+        $country = Country::where('country_code_char2',$countryName)->first();
+        $currency = Currency::where('id',$country->currency_id)->first();
+        $currencySymbol = $currency->symbol;
+        $currencyCode = $currency->code;
+        return compact('country','currencySymbol','currencyCode');
+    }
+
     public function leastAmount($id)
     {
+        $countryCheck = true;
         try {
             $cost = 'Free';
-            $price = '';
-            $plan = new Plan();
-            $plans = $plan->where('product', $id)->get();
-            $currencyAndSymbol = userCurrency();
+
+            $plans = Plan::where('product', $id)->get();
+            if(\Auth::check()) {
+                $currencyInInvoiceModel = Invoice::where('user_id',\Auth::user()->id)->first();
+                if($currencyInInvoiceModel) {
+                    $currency = $currencyInInvoiceModel->currency;
+                    $countryCheck = false;
+                } else {
+                    $countryName = User::where('id',\Auth::user()->id)->first()->country;
+                    $countryInfo = $this->getCountryAndCurrencySymbol($countryName);
+                    $country = $countryInfo['country'];
+                    $currencySymbol = $countryInfo['currencySymbol'];
+                    $currency = $countryInfo['currencyCode'];
+                }
+
+            } else {
+                $ipLocation = \GeoIP::getLocation()['iso_code'];
+                $countryInfo = $this->getCountryAndCurrencySymbol($ipLocation);
+                $country = $countryInfo['country'];
+                $currencySymbol = $countryInfo['currencySymbol'];
+                $currency = $countryInfo['currencyCode'];
+            }
             $prices = [];
             if ($plans->count() > 0) {
-                foreach ($plans as $value) {
-                    $prices[] = $value->planPrice()->where('currency', $currencyAndSymbol['currency'])->min('add_price');
+                foreach ($plans as $plan) {
+                    $prices[] = ($countryCheck)
+                        ? $plan->planPrice()->where(function($q) use ($country){
+                            return $q->where('country_id',$country->country_id)->orWhere('country_id',0);
+                        })->min('add_price')
+                        : $plan->planPrice()->where('currency', $currency)->min('add_price');
                 }
-                $price = min($prices);
-                $format = currencyFormat($price, $code = $currencyAndSymbol['currency']);
-                $finalPrice = str_replace($currencyAndSymbol['symbol'], '', $format);
-                $cost = '<span class="price-unit">'.$currencyAndSymbol['symbol'].'</span>'.$finalPrice;
+
+                $format = currency_format(min($prices), $code=$currency);
+                $finalPrice = str_replace($currencySymbol, '', $format);
+                $cost = '<span class="price-unit">'.$currencySymbol.'</span>'.$finalPrice;
             }
 
             return $cost;
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

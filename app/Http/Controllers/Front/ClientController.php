@@ -277,39 +277,33 @@ class ClientController extends BaseClientController
     public function getOrders()
     {
         try {
-            $orders = Order::where('client', \Auth::user()->id);
-
-            return \DataTables::of($orders->get())
+            $orders = $this->getClientPanelOrdersData();
+            return \DataTables::of($orders)
                             ->addColumn('id', function ($model) {
                                 return $model->id;
                             })
                             ->addColumn('product_name', function ($model) {
-                                return $model->product()->first()->name;
+                                return $model->product_name;
                             })
                             ->addColumn('number', function ($model) {
                               return '<a href='.url('my-order/'.$model->id).'>'.$model->number.'</a>';
                             })
                             ->addColumn('version', function ($model) {
-                              return getVersionAndLabel($model->subscription()->first()->version,$model->product,'badge');
+                              return getVersionAndLabel($model->version,$model->product_name,'badge');
                             })
                             ->addColumn('expiry', function ($model) {
-                                 return $this->getExpiryDate($model);
+                              return getExpiryLabel($model->update_ends_at,'badge');
                             })
 
                             ->addColumn('Action', function ($model) {
-                                $sub = $model->subscription()->first();
-                                $order = Order::where('id', $model->id)->select('product')->first();
-                                $productid = $order->product;
                                 $order_cont = new \App\Http\Controllers\Order\OrderController();
                                 $status = $order_cont->checkInvoiceStatusByOrderId($model->id);
                                 $url = '';
                                 if ($status == 'success') {
-                                    if ($sub) {
-                                        $url = $this->renewPopup($sub->id, $productid);
-                                    }
+                                        $url = $this->renewPopup($model->sub_id, $model->product_id);
                                 }
 
-                                $listUrl = $this->getPopup($model, $productid);
+                                $listUrl = $this->getPopup($model, $model->product_id);
 
                                 return '<a href='.url('my-order/'.$model->id)." 
                                 class='btn  btn-primary btn-xs' style='margin-right:5px;'>
@@ -322,6 +316,19 @@ class ClientController extends BaseClientController
             Bugsnag::notifyException($ex);
             echo $ex->getMessage();
         }
+    }
+
+    public function getClientPanelOrdersData()
+    {
+        return Order::leftJoin('products','products.id','=','orders.product')
+            ->leftJoin('subscriptions','orders.id','=','subscriptions.order_id')
+            ->leftJoin('invoices','orders.invoice_id','invoices.id')
+            ->select('products.name as product_name','products.github_owner','products.github_repository','products.type','products.id as product_id','orders.id','orders.number','orders.client','subscriptions.id as sub_id','subscriptions.version','subscriptions.update_ends_at','products.name','orders.client','invoices.id as invoice_id','invoices.number as invoice_number')
+            ->where('orders.client',\Auth::user()->id)
+            ->get()->map(function($element){
+                $element->update_ends_at = strtotime($element->update_ends_at)>1 ? $element->update_ends_at:'--';
+                return $element;
+            });
     }
 
     public function profile()
@@ -463,23 +470,25 @@ class ClientController extends BaseClientController
     {
         try {
             $order = $this->order->where('id', $orderid)->where('client', $userid)->first();
-            $relation = $order->invoiceRelation()->pluck('invoice_id')->toArray();
-            if (count($relation) > 0) {
+            $relation = $order->invoiceRelation()->value('invoice_id');
+            if ($relation) {
                 $invoices = $relation;
             } else {
-                $invoices = $order->invoice()->pluck('id')->toArray();
+                $invoices = $order->invoice()->value('id');
             }
-            $payments = $this->payment->whereIn('invoice_id', $invoices)
-                    ->select('id', 'invoice_id', 'user_id', 'payment_method', 'payment_status', 'created_at', 'amount');
-            return \DataTables::of($payments->get())
-                            ->addColumn('number', function ($model) {
-                                return '<a href='.url('my-invoice/'.$model->invoice()->first()->id).'>'.$model->invoice()->first()->number.'</a>';
+            $payments = Payment::leftJoin('invoices','payments.invoice_id','=', 'invoices.id')
+            ->select('payments.id', 'payments.invoice_id', 'payments.user_id', 'payments.payment_method', 'payments.payment_status', 'payments.created_at', 'payments.amount','invoices.id as invoice_id','invoices.number as invoice_number')
+            ->where('invoices.id',$invoices)
+            ->get();
+            return \DataTables::of($payments)
+                            ->addColumn('number', function ($payments) {
+                                return '<a href='.url('my-invoice/'.$payments->id).'>'.$payments->invoice_number.'</a>';
                             })
-                              ->addColumn('total', function ($model) {
-                                  return $model->amount;
+                              ->addColumn('total', function ($payments) {
+                                  return $payments->amount;
                               })
-                               ->addColumn('created_at', function ($model) {
-                                   return  getDateHtml($model->created_at);
+                               ->addColumn('created_at', function ($payments) {
+                                   return  getDateHtml($payments->created_at);
                                })
 
                             ->addColumn('payment_method', 'payment_status', 'created_at')

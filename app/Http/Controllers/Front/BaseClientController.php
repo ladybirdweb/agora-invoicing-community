@@ -29,18 +29,15 @@ class BaseClientController extends Controller
      *
      * @return array Show Modal Popup if Condition Satisfies
      */
-    public function getPopup(Order $orders, int $productid)
+    public function getPopup($query , int $productid)
     {
         $listUrl = '';
         $permissions = LicensePermissionsController::getPermissionsForProduct($productid);
-        $productCheck = $orders->product()
-        ->select('github_owner', 'github_repository', 'type')
-        ->where('id', $orders->product)->first();
         if ($permissions['downloadPermission'] == 1) { //If the Product has doownlaod permission
-            if (!$productCheck->github_owner == '' && !$productCheck->github_repository == '') {
-                $listUrl = $this->downloadGithubPopup($orders->client, $orders->invoice()->first()->id, $productid);
+            if ($query->github_owner && $query->github_repository) {
+                $listUrl = $this->downloadGithubPopup($query->client, $orders->invoice_id, $productid);
             } else {
-                $listUrl = $this->downloadPopup($orders->client, $orders->invoice()->first()->number, $productid);
+                $listUrl = $this->downloadPopup($query->client, $query->invoice_number, $productid);
             }
         }
 

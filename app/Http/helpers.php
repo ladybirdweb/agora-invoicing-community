@@ -133,12 +133,15 @@ function getVersionAndLabel($productVersion, $productId, $badge='label')
     $latestVersion = \Cache::remember('latest_'.$productId, 10, function() use($productId){
     return ProductUpload::where('product_id', $productId)->latest()->value('version');
     });
-      if($productVersion < $latestVersion ) {
+    if($productVersion) {
+         if($productVersion < $latestVersion ) {
             return '<span class='.'"'.$badge.' '.$badge.'-warning" <label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="Outdated Version">
                  </label>'.$productVersion.'</span>';
         } else{
             return '<span class='.'"'.$badge.' '.$badge.'-success" <label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="Latest Version">
                  </label>'.$productVersion.'</span>';
         }
+    }
+     
 
 }

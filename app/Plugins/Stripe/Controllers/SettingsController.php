@@ -5,6 +5,8 @@ namespace App\Plugins\Stripe\Controllers;
 use App\ApiKey;
 use App\Http\Controllers\Controller;
 use App\Model\Common\Setting;
+use App\Model\Order\Invoice;
+
 use App\Plugins\Stripe\Model\StripePayment;
 use Cartalyst\Stripe\Laravel\Facades\Stripe;
 use Illuminate\Http\Request;
@@ -89,6 +91,7 @@ class SettingsController extends Controller
 
     public function updateApiKey(Request $request)
     {
+
         try {
             $stripe = Stripe::make($request->input('stripe_secret'));
             $response = $stripe->customers()->create(['description' => 'Test Customer to Validate Secret Key']);
@@ -99,6 +102,7 @@ class SettingsController extends Controller
         } catch (\Cartalyst\Stripe\Exception\UnauthorizedException  $e) {
             return errorResponse($e->getMessage());
         }
+
     }
 
     /**
@@ -118,6 +122,10 @@ class SettingsController extends Controller
             'cvv' => 'required',
         ];
 
+
+        $this->validate($request, $validation);
+        $stripeSecretKey = ApiKey::pluck('stripe_secret')->first();
+        $stripe = Stripe::make($stripeSecretKey);
         try {
             $amount = \Session::get('amount');
             $stripeSecretKey = ApiKey::pluck('stripe_secret')->first();
@@ -202,8 +210,6 @@ class SettingsController extends Controller
 
             return redirect()->route('stripform');
         } catch (\Exception $e) {
-            dd($e);
-
             return redirect('checkout')->with('fails', 'Your payment was declined. '.$e->getMessage().'. Please try again or try the other gateway.');
         }
     }

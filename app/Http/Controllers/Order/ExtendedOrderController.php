@@ -35,11 +35,12 @@ class ExtendedOrderController extends Controller
             $this->orderTill($request->input('from'), $request->input('till'), $baseQuery);
             $this->domain($request->input('domain'), $baseQuery);
 
-            $this->paidOrUnpaid($request->input('p_un'),$baseQuery);
-            $this->allActiveInstallations($request->input('act_ins'),$baseQuery);
-            $this->allInActiveInstallations($request->input('inact_ins'),$baseQuery);
-            $this->allRenewals($request->input('renewal'),$baseQuery);
-            $this->getSelectedVersionOrders($baseQuery, $request->input("version_from"), $request->input("version_till"));
+            $this->paidOrUnpaid($request->input('p_un'), $baseQuery);
+            $this->allActiveInstallations($request->input('act_ins'), $baseQuery);
+            $this->allInActiveInstallations($request->input('inact_ins'), $baseQuery);
+            $this->allRenewals($request->input('renewal'), $baseQuery);
+            $this->getSelectedVersionOrders($baseQuery, $request->input('version_from'), $request->input('version_till'));
+
 
             return $baseQuery;
         } catch (\Exception $ex) {
@@ -58,9 +59,8 @@ class ExtendedOrderController extends Controller
             ->leftJoin('products', 'orders.product', '=', 'products.id')
             ->select(
                 'orders.id', 'orders.created_at', 'price_override', 'order_status', 'product', 'number', 'serial_key',
-                'subscriptions.update_ends_at as subscription_ends_at', "subscriptions.id as subscription_id", "subscriptions.version as product_version","subscriptions.updated_at", 
-                'products.name as product_name', \DB::raw("concat(first_name, ' ', last_name) as client_name"), "client as client_id",
-
+                'subscriptions.update_ends_at as subscription_ends_at', 'subscriptions.id as subscription_id', 'subscriptions.version as product_version', 'subscriptions.updated_at',
+                'products.name as product_name', \DB::raw("concat(first_name, ' ', last_name) as client_name"), 'client as client_id',
                 'users.currency'
             );
     }
@@ -89,7 +89,7 @@ class ExtendedOrderController extends Controller
 
     /**
 
-     * Searches for Activ Installation
+     * Searches for Activ Installation.
      *
      * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
      *
@@ -101,72 +101,75 @@ class ExtendedOrderController extends Controller
      * @return $join
      */
 
-    public function allActiveInstallations($allInstallation,$join)
+    public function allActiveInstallations($allInstallation, $join)
     {
         if ($allInstallation) {
             $dayUtc = new Carbon('-30 days');
             $minus30Day = $dayUtc->toDateTimeString();
 
-            $baseQuery = $join->whereHas('subscription', function($q) use($minus30Day) {
+            $baseQuery = $join->whereHas('subscription', function ($q) use ($minus30Day) {
                 $q->where('updated_at', '>', $minus30Day);
             });
-            return $baseQuery->when($allInstallation == 'paid_ins', function($q){
+
+            return $baseQuery->when($allInstallation == 'paid_ins', function ($q) {
                 $q->where('price_override', '>', 0);
-            })->when($allInstallation == 'unpaid_ins', function($q){
+            })->when($allInstallation == 'unpaid_ins', function ($q) {
                 $q->where('price_override', '=', 0);
             });
         }
     }
 
     /**
-     * Searches for InActive Installation
+     * Searches for InActive Installation.
      *
      * @param  string $allInstallation
      * @param  App\Model\Order $join The order instance
      *
      * @return $join
      */
-    public function allInactiveInstallations($allInstallation,$join)
+    public function allInactiveInstallations($allInstallation, $join)
     {
-        if($allInstallation) {
+        if ($allInstallation) {
             $dayUtc = new Carbon('-30 days');
             $minus30Day = $dayUtc->toDateTimeString();
-            $baseQuery = $join->whereHas('subscription', function($q) use($minus30Day) {
-                    $q->where('updated_at', '<', $minus30Day);
-                });
-            return $baseQuery->when($allInstallation == 'paid_inactive_ins', function($q){
+            $baseQuery = $join->whereHas('subscription', function ($q) use ($minus30Day) {
+                $q->where('updated_at', '<', $minus30Day);
+            });
+
+            return $baseQuery->when($allInstallation == 'paid_inactive_ins', function ($q) {
                 $q->where('price_override', '>', 0);
-            })->when($allInstallation == 'unpaid_inactive_ins', function($q){
+            })->when($allInstallation == 'unpaid_inactive_ins', function ($q) {
                 $q->where('price_override', '=', 0);
             });
         }
     }
 
     /**
-     * Searches for Renewals
+     * Searches for Renewals.
      *
      * @param  string $allInstallation
      * @param  App\Model\Order $join The order instance
      *
      * @return $join
      */
-    protected function allRenewals($allRenewal,$join)
+    protected function allRenewals($allRenewal, $join)
     {
-        if($allRenewal) {
+        if ($allRenewal) {
             $dayUtc = new Carbon();
             $now = $dayUtc->toDateTimeString();
-            return $join->whereHas('subscription', function($query) use($now,$allRenewal){
-                if($allRenewal == 'expired_subscription'){
+
+            return $join->whereHas('subscription', function ($query) use ($now,$allRenewal) {
+                if ($allRenewal == 'expired_subscription') {
                     return $query->where('update_ends_at', '<', $now);
                 }
-             return $query->where('update_ends_at', '>', $now);
-            }); 
+
+                return $query->where('update_ends_at', '>', $now);
+            });
         }
-      
     }
 
     /**
-     * Searches for Paid/Unpaid Products
+     * Searches for Paid/Unpaid Products.
      *
      * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
      *

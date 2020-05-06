@@ -14,8 +14,8 @@ use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
 use App\Model\Product\Subscription;
 use App\User;
-use Carbon\Carbon;
 use Bugsnag;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class OrderController extends BaseOrderController
@@ -77,18 +77,16 @@ class OrderController extends BaseOrderController
         try {
             $products = $this->product->where('id', '!=', 1)->pluck('name', 'id')->toArray();
 
-            $paidUnpaidOptions = ["paid"=>"Paid Products", "unpaid"=>"Unpaid Products"];
-            $activeInstallationOptions = ["paid_ins"=>"For Paid Products", "unpaid_ins"=>"For Unpaid Products", "all_ins"=>"All Products"];
-            $inactiveInstallationOptions = ["paid_inactive_ins"=>"For Paid Products", "unpaid_inactive_ins"=>"For Unpaid Products", "all_inactive_ins"=>"All Products"];
-            $renewal = ["expired_subscription"=>"Expired Subscriptions","active_subscription"=> "Active Subscriptions"];
-            $allVersions = Subscription::where("version", "!=", "")->whereNotNull("version")
-                ->orderBy("version", "desc")->groupBy("version")
-                ->pluck("version")->toArray();
-
+            $paidUnpaidOptions = ['paid'=>'Paid Products', 'unpaid'=>'Unpaid Products'];
+            $activeInstallationOptions = ['paid_ins'=>'For Paid Products', 'unpaid_ins'=>'For Unpaid Products', 'all_ins'=>'All Products'];
+            $inactiveInstallationOptions = ['paid_inactive_ins'=>'For Paid Products', 'unpaid_inactive_ins'=>'For Unpaid Products', 'all_inactive_ins'=>'All Products'];
+            $renewal = ['expired_subscription'=>'Expired Subscriptions', 'active_subscription'=> 'Active Subscriptions'];
+            $allVersions = Subscription::where('version', '!=', '')->whereNotNull('version')
+                ->orderBy('version', 'desc')->groupBy('version')
+                ->pluck('version')->toArray();
 
             return view('themes.default1.order.index',
-                compact('request', 'products', 'allVersions', 'activeInstallationOptions','paidUnpaidOptions', 'inactiveInstallationOptions','renewal'));
-
+                compact('request', 'products', 'allVersions', 'activeInstallationOptions', 'paidUnpaidOptions', 'inactiveInstallationOptions', 'renewal'));
         } catch (\Exception $e) {
             Bugsnag::notifyExeption($e);
 
@@ -98,9 +96,9 @@ class OrderController extends BaseOrderController
 
     public function getOrders(Request $request)
     {
-            $query = $this->advanceSearch($request);
+        $query = $this->advanceSearch($request);
 
-            return \DataTables::of($query)
+        return \DataTables::of($query)
             ->setTotalRecords($query->count())
             ->addColumn('checkbox', function ($model) {
                 return "<input type='checkbox' class='order_checkbox' value=".$model->id.' name=select[] id=check>';
@@ -112,17 +110,17 @@ class OrderController extends BaseOrderController
                 return $model->product_name;
             })
             ->addColumn('version', function ($model) {
-                return getVersionAndLabel($model->product_version,$model->product);
+                return getVersionAndLabel($model->product_version, $model->product);
             })
             ->addColumn('number', function ($model) {
                 $orderLink = '<a href='.url('orders/'.$model->id).'>'.$model->number.'</a>';
 
-                if($model->updated_at) {//For few older clients subscription was not generated, so no updated_at column exists
-                    $orderLink =  '<a href='.url('orders/'.$model->id).'>'.$model->number.'</a>'.$this->installationStatusLabel($model->updated_at);
+                if ($model->updated_at) {//For few older clients subscription was not generated, so no updated_at column exists
+                    $orderLink = '<a href='.url('orders/'.$model->id).'>'.$model->number.'</a>'.$this->installationStatusLabel($model->updated_at);
                 }
+
                 return $orderLink;
-                
-             })
+            })
             ->addColumn('order_status', function ($model) {
                 return ucfirst($model->order_status);
             })
@@ -130,9 +128,9 @@ class OrderController extends BaseOrderController
                 return getDateHtml($model->created_at);
             })
             ->addColumn('update_ends_at', function ($model) {
-                $ends_at = strtotime($model->subscription_ends_at)>1 ? $model->subscription_ends_at: '--';
+                $ends_at = strtotime($model->subscription_ends_at) > 1 ? $model->subscription_ends_at : '--';
+
                 return getExpiryLabel($ends_at);
-                
             })
             ->addColumn('action', function ($model) {
                 $status = $this->checkInvoiceStatusByOrderId($model->id);
@@ -169,11 +167,9 @@ class OrderController extends BaseOrderController
             ->orderColumn('update_ends_at', 'update_ends_at $1')
 
 
-            ->rawColumns(['checkbox', 'date', 'client', 'version', 'number', 'order_status', 'order_date', 'update_ends_at', 'action' ])
-
+            ->rawColumns(['checkbox', 'date', 'client', 'version', 'number', 'order_status', 'order_date', 'update_ends_at', 'action'])
             ->make(true);
-        }
-    
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -213,14 +209,15 @@ class OrderController extends BaseOrderController
             $connectionLabel = '--';
             $lastActivity = '--';
             $versionLabel = '--';
-            if($subscription) {
-              $date =  strtotime($subscription->update_ends_at)>1 ? getExpiryLabel($subscription->update_ends_at): '--';
-              $licdate = strtotime($subscription->ends_at)>1 ? getExpiryLabel($subscription->ends_at) :'--' ;
-              $supdate =  strtotime($subscription->support_ends_at)>1 ? getExpiryLabel($subscription->support_ends_at):'--' ;
-              $lastActivity = getDateHtml($subscription->updated_at).'&nbsp&nbsp;'.$this->installationStatusLabel($subscription->updated_at);
-              $versionLabel = getVersionAndLabel($subscription->version,$order->product);
+            if ($subscription) {
+                $date = strtotime($subscription->update_ends_at) > 1 ? getExpiryLabel($subscription->update_ends_at) : '--';
+                $licdate = strtotime($subscription->ends_at) > 1 ? getExpiryLabel($subscription->ends_at) : '--';
+                $supdate = strtotime($subscription->support_ends_at) > 1 ? getExpiryLabel($subscription->support_ends_at) : '--';
+                $lastActivity = getDateHtml($subscription->updated_at).'&nbsp&nbsp;'.$this->installationStatusLabel($subscription->updated_at);
+                $versionLabel = getVersionAndLabel($subscription->version, $order->product);
             }
             $invoice = $this->invoice->where('id', $order->invoice_id)->first();
+
             if (!$invoice) {
 
                 return redirect()->back()->with('fails', 'no orders');
@@ -240,22 +237,20 @@ class OrderController extends BaseOrderController
             $allowDomainStatus = StatusSetting::pluck('domain_check')->first();
 
             return view('themes.default1.order.show',
-                compact('user', 'order', 'subscription', 'licenseStatus', 'installationDetails', 'allowDomainStatus', 'noOfAllowedInstallation', 'getInstallPreference', 'lastActivity','versionLabel','date','licdate','supdate'));
+                compact('user', 'order', 'subscription', 'licenseStatus', 'installationDetails', 'allowDomainStatus', 'noOfAllowedInstallation', 'getInstallPreference', 'lastActivity', 'versionLabel', 'date', 'licdate', 'supdate'));
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 
-
-
-    public function installationStatusLabel($lastConnectionDate) 
+    public function installationStatusLabel($lastConnectionDate)
     {
         return $lastConnectionDate->toDateTimeString() > (new Carbon('-30 days'))->toDateTimeString() ? "<span class='label label-primary' <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Installation is Active'>
-                     </label><i class= 'fa fa-check'></i>&nbsp;Active</span>": "<br><span class='label label-info' <label data-toggle='tooltip' style='font-weight:500;background-color:crimson;' data-placement='top' title='Installation inactive for more than 30 days'>
+                     </label><i class= 'fa fa-check'></i>&nbsp;Active</span>" : "<br><span class='label label-info' <label data-toggle='tooltip' style='font-weight:500;background-color:crimson;' data-placement='top' title='Installation inactive for more than 30 days'>
                     </label> <i class= 'fa fa-info-circle'></i>&nbsp;Inactive</span>";
-     }
-
+    }
 
     /**
      * Show the form for editing the specified resource.

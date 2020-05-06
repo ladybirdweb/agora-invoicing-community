@@ -39,7 +39,7 @@ class BaseHomeController extends Controller
         try {
             $order = new Order();
             $this_order = $order->where('domain', $request_url)->first();
-            if (!$this_order) {
+            if (! $this_order) {
                 return;
             } else {
                 return $this_order->domain;
@@ -55,7 +55,7 @@ class BaseHomeController extends Controller
             $order = new Order();
             //$faveo_decrypted_key = self::decryptByFaveoPrivateKey($faveo_encrypted_key);
             $this_order = $order->where('number', $order_number)->first();
-            if (!$this_order) {
+            if (! $this_order) {
                 return;
             } else {
                 if ($this_order->serial_key == $faveo_encrypted_key) {
@@ -114,7 +114,7 @@ class BaseHomeController extends Controller
                 $order = $this->verifyOrder($order_number, $serial_key);
                 if ($order) {
                     return ['status' => 'success', 'message' => 'this-is-a-valid-request',
-                    'order_number'   => $order_number, 'serial' => $serial_key, ];
+                        'order_number'   => $order_number, 'serial' => $serial_key, ];
                 } else {
                     return ['status' => 'fails', 'message' => 'this-is-an-invalid-request'];
                 }
@@ -148,29 +148,27 @@ class BaseHomeController extends Controller
         try {
             $order_number = $request->input('order_number');
             $licenseCode = $request->input('license_code');
-            if($order_number) {
+            if ($order_number) {
                 $orderId = Order::where('number', 'LIKE', $order_number)->pluck('id')->first();
-            if ($orderId) {
-                $expiryDate = Subscription::where('order_id', $orderId)->pluck('update_ends_at')->first();
-                if (\Carbon\Carbon::now()->toDateTimeString() < $expiryDate) {
-                    return ['status' => 'success', 'message' => 'allow-auto-update'];
+                if ($orderId) {
+                    $expiryDate = Subscription::where('order_id', $orderId)->pluck('update_ends_at')->first();
+                    if (\Carbon\Carbon::now()->toDateTimeString() < $expiryDate) {
+                        return ['status' => 'success', 'message' => 'allow-auto-update'];
+                    }
                 }
-            }
-
-            } elseif($licenseCode) {
+            } elseif ($licenseCode) {
                 $orderForLicense = Order::all()->filter(function ($order) use ($licenseCode) {
-                if ($order->serial_key == $licenseCode) {
-                    return $order;
-                }
-            });
-            if (count($orderForLicense) > 0) {
-                $expiryDate = Subscription::where('order_id', $orderForLicense->first()->id)->pluck('update_ends_at')->first();
-                if (\Carbon\Carbon::now()->toDateTimeString() < $expiryDate) {
-                return ['status' => 'success', 'message' => 'allow-auto-update'];
+                    if ($order->serial_key == $licenseCode) {
+                        return $order;
+                    }
+                });
+                if (count($orderForLicense) > 0) {
+                    $expiryDate = Subscription::where('order_id', $orderForLicense->first()->id)->pluck('update_ends_at')->first();
+                    if (\Carbon\Carbon::now()->toDateTimeString() < $expiryDate) {
+                        return ['status' => 'success', 'message' => 'allow-auto-update'];
+                    }
                 }
             }
-            }
-            
 
             return ['status' => 'fails', 'message' => 'do-not-allow-auto-update'];
         } catch (\Exception $e) {

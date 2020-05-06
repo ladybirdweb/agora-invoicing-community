@@ -16,7 +16,7 @@ class IsInstalled
      */
     public function handle($request, Closure $next)
     {
-        if (!isInstall()) {
+        if (! isInstall()) {
             return $next($request);
         } else {
             if ($request->isJson()) {

@@ -100,7 +100,7 @@ class CategoryController extends Controller
     {
         try {
             $ids = $request->input('select');
-            if (!empty($ids)) {
+            if (! empty($ids)) {
                 foreach ($ids as $id) {
                     if ($id != 1) {
                         $category = $this->productCategory->where('id', $id)->first();

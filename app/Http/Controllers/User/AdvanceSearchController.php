@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 
 class AdvanceSearchController extends AdminOrderInvoiceController
 {
-
     /**
      * Serach for Registered From,tILL.
      */
@@ -50,7 +49,7 @@ class AdvanceSearchController extends AdminOrderInvoiceController
 
             foreach ($users as $user) {
                 $formatted_users[] = ['id'     => $user->id, 'text' => $user->email, 'profile_pic' => $user->profile_pic,
-                'first_name'                   => $user->first_name, 'last_name' => $user->last_name, ];
+                    'first_name'                   => $user->first_name, 'last_name' => $user->last_name, ];
             }
 
             return \Response::json($formatted_users);

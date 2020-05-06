@@ -6,9 +6,9 @@ use App\Http\Controllers\Common\BaseSettingsController;
 use App\Http\Controllers\Controller;
 use App\Model\Common\StatusSetting;
 use App\Model\Order\Order;
-use Carbon\Carbon;
 use App\Model\Product\Subscription;
 use Bugsnag;
+use Carbon\Carbon;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
 
@@ -22,9 +22,9 @@ class ExtendedOrderController extends Controller
      * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
      *
      * @date   2019-01-19T01:35:08+0530
-     *
      */
-    public function advanceSearch(Request $request) {
+    public function advanceSearch(Request $request)
+    {
         try {
             $baseQuery = $this->getBaseQueryForOrders();
             $this->orderNum($request->input('order_no'), $baseQuery);
@@ -34,35 +34,35 @@ class ExtendedOrderController extends Controller
             $this->orderFrom($request->input('till'), $request->input('from'), $baseQuery);
             $this->orderTill($request->input('from'), $request->input('till'), $baseQuery);
             $this->domain($request->input('domain'), $baseQuery);
-            $this->paidOrUnpaid($request->input('p_un'),$baseQuery);
-            $this->allInstallations($request->input('act_ins'),$baseQuery);
-            $this->getSelectedVersionOrders($baseQuery, $request->input("version_from"), $request->input("version_till"));
+            $this->paidOrUnpaid($request->input('p_un'), $baseQuery);
+            $this->allInstallations($request->input('act_ins'), $baseQuery);
+            $this->getSelectedVersionOrders($baseQuery, $request->input('version_from'), $request->input('version_till'));
+
             return $baseQuery;
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 
-
     /**
-     * Gets base query for orders
+     * Gets base query for orders.
      * @return Builder
      */
     private function getBaseQueryForOrders()
     {
         return Order::leftJoin('subscriptions', 'orders.id', '=', 'subscriptions.order_id')
-            ->leftJoin("users", 'orders.client', "=","users.id")
-            ->leftJoin("products", 'orders.product', "=","products.id")
+            ->leftJoin('users', 'orders.client', '=', 'users.id')
+            ->leftJoin('products', 'orders.product', '=', 'products.id')
             ->select(
                 'orders.id', 'orders.created_at', 'price_override', 'order_status', 'product', 'number', 'serial_key',
-                'subscriptions.update_ends_at as subscription_ends_at', "subscriptions.id as subscription_id", "subscriptions.version as product_version",
-                'products.name as product_name', \DB::raw("concat(first_name, ' ', last_name) as client_name"), "client as client_id",
+                'subscriptions.update_ends_at as subscription_ends_at', 'subscriptions.id as subscription_id', 'subscriptions.version as product_version',
+                'products.name as product_name', \DB::raw("concat(first_name, ' ', last_name) as client_name"), 'client as client_id',
                 'users.currency'
             );
     }
 
     /**
-     * Searches for order for selected versions
+     * Searches for order for selected versions.
      *
      * @param $baseQuery
      * @param $versionFrom
@@ -72,18 +72,19 @@ class ExtendedOrderController extends Controller
      */
     private function getSelectedVersionOrders($baseQuery, $versionFrom, $versionTill)
     {
-        if($versionFrom){
-            $baseQuery->where("subscriptions.version", ">=", $versionFrom);
+        if ($versionFrom) {
+            $baseQuery->where('subscriptions.version', '>=', $versionFrom);
         }
 
-        if($versionTill){
-            $baseQuery->where("subscriptions.version", "<=", $versionTill);
+        if ($versionTill) {
+            $baseQuery->where('subscriptions.version', '<=', $versionTill);
         }
+
         return $baseQuery;
     }
 
     /**
-     * Searches for Active/Inactive Installation
+     * Searches for Active/Inactive Installation.
      *
      * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
      *
@@ -94,30 +95,31 @@ class ExtendedOrderController extends Controller
      *
      * @return $join
      */
-    public function allInstallations($allInstallation,$join)
+    public function allInstallations($allInstallation, $join)
     {
-        if($allInstallation) {
+        if ($allInstallation) {
             $dayUtc = new Carbon('-30 days');
             $minus30Day = $dayUtc->toDateTimeString();
-            if($allInstallation == 'paid_ins') {
-                $join = $join->where('price_override', '>', 0)->whereHas('subscription', function($query) use($minus30Day) {
+            if ($allInstallation == 'paid_ins') {
+                $join = $join->where('price_override', '>', 0)->whereHas('subscription', function ($query) use ($minus30Day) {
                     $query->where('updated_at', '>', $minus30Day);
                 });
-            } elseif($allInstallation == 'unpaid_ins') {
-                $join = $join->where('price_override', '=', 0)->whereHas('subscription', function($query) use($minus30Day) {
+            } elseif ($allInstallation == 'unpaid_ins') {
+                $join = $join->where('price_override', '=', 0)->whereHas('subscription', function ($query) use ($minus30Day) {
                     $query->where('updated_at', '>', $minus30Day);
                 });
             } elseif ($allInstallation == 'all_ins') {
-                $join = $join->whereHas('subscription', function($query) use($minus30Day) {
+                $join = $join->whereHas('subscription', function ($query) use ($minus30Day) {
                     $query->where('updated_at', '>', $minus30Day);
                 });
             }
         }
+
         return $join;
     }
 
     /**
-     * Searches for Paid/Unpaid Products
+     * Searches for Paid/Unpaid Products.
      *
      * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
      *
@@ -128,16 +130,16 @@ class ExtendedOrderController extends Controller
      *
      * @return $join
      */
-    private function paidOrUnpaid($paidUnpaid,$join) 
+    private function paidOrUnpaid($paidUnpaid, $join)
     {
-        if($paidUnpaid) {
-            if($paidUnpaid == 'paid') {
+        if ($paidUnpaid) {
+            if ($paidUnpaid == 'paid') {
                 $join = $join->where('price_override', '>', 0);
-            } elseif($paidUnpaid == 'unpaid') {
+            } elseif ($paidUnpaid == 'unpaid') {
                 $join = $join->where('price_override', '=', 0);
             }
-
         }
+
         return $join;
     }
 

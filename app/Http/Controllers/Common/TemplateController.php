@@ -224,7 +224,7 @@ class TemplateController extends BaseTemplateController
     {
         try {
             $ids = $request->input('select');
-            if (!empty($ids)) {
+            if (! empty($ids)) {
                 foreach ($ids as $id) {
                     $template = $this->template->where('id', $id)->first();
                     if ($template) {
@@ -283,44 +283,44 @@ class TemplateController extends BaseTemplateController
                 $m->to($to, $toname)->subject($subject);
 
                 /* if cc is need  */
-                if (!empty($cc)) {
+                if (! empty($cc)) {
                     foreach ($cc as $address) {
                         $m->cc($address['address'], $address['name']);
                     }
                 }
 
-                if (!empty($bcc)) {
+                if (! empty($bcc)) {
                     foreach ($bcc as $address) {
                         $m->bcc($address);
                     }
                 }
 
                 /*  if attachment is need */
-                if (!empty($attach)) {
+                if (! empty($attach)) {
                     foreach ($attach as $file) {
                         $m->attach($file['path'], $options = []);
                     }
                 }
             });
             \DB::table('email_log')->insert([
-            'date'       => date('Y-m-d H:i:s'),
-            'from'       => $from,
-            'to'         => $to,
-             'subject'   => $subject,
-            'body'       => $data,
-            'status'     => 'success',
-          ]);
+                'date'       => date('Y-m-d H:i:s'),
+                'from'       => $from,
+                'to'         => $to,
+                'subject'   => $subject,
+                'body'       => $data,
+                'status'     => 'success',
+            ]);
 
             return 'success';
         } catch (\Exception $ex) {
             \DB::table('email_log')->insert([
-            'date'     => date('Y-m-d H:i:s'),
-            'from'     => $from,
-            'to'       => $to,
-             'subject' => $subject,
-            'body'     => $data,
-            'status'   => 'failed',
-        ]);
+                'date'     => date('Y-m-d H:i:s'),
+                'from'     => $from,
+                'to'       => $to,
+                'subject' => $subject,
+                'body'     => $data,
+                'status'   => 'failed',
+            ]);
             Bugsnag::notifyException($ex);
             if ($ex instanceof \Swift_TransportException) {
                 throw new \Exception('We can not reach to this email address');
@@ -339,7 +339,7 @@ class TemplateController extends BaseTemplateController
                 $price = $this->checkTax($product->id, $currency);
             } else {
                 $price = $product->price()->where('currency', $currency)->first()->sales_price;
-                if (!$price) {
+                if (! $price) {
                     $price = $product->price()->where('currency', $currency)->first()->price;
                 }
             }

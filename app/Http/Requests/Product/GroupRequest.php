@@ -38,12 +38,12 @@ class GroupRequest extends Request
     public function messages()
     {
         return[
-                'name.required'                => 'Name is required',
-                'features.*.name.required'     => 'All Features Field Required',
-                'price.*.name.required_unless' => 'Price is required',
-                'value.*.name.required_unless' => 'Value is required',
-                'type.required_with'           => 'Type is required',
-                'title.required_with'          => 'Title is required',
+            'name.required'                => 'Name is required',
+            'features.*.name.required'     => 'All Features Field Required',
+            'price.*.name.required_unless' => 'Price is required',
+            'value.*.name.required_unless' => 'Value is required',
+            'type.required_with'           => 'Type is required',
+            'title.required_with'          => 'Title is required',
 
         ];
     }

@@ -79,7 +79,7 @@ class CheckoutController extends InfoController
      */
     public function checkoutForm(Request $request)
     {
-        if (!\Auth::user()) {//If User is not Logged in then send him to login Page
+        if (! \Auth::user()) {//If User is not Logged in then send him to login Page
             $url = $request->segments(); //The requested url (chekout).Save it in Session
             \Session::put('session-url', $url[0]);
             $content = Cart::getContent();
@@ -150,8 +150,8 @@ class CheckoutController extends InfoController
 
                     //Return array of Product Details,attributes and their conditions
                     $items[] = ['id' => $item->id, 'name' => $item->name, 'price' => $item->price,
-                    'quantity'       => $item->quantity, 'attributes' => ['currency'=> $attributes[0]['currency'],
-                    'agents'                                                        => $attributes[0]['agents'], 'tax'=>$taxConditions['tax_attributes'], ], 'conditions'=>$taxConditions['conditions'], ];
+                        'quantity'       => $item->quantity, 'attributes' => ['currency'=> $attributes[0]['currency'],
+                            'agents'                                                        => $attributes[0]['agents'], 'tax'=>$taxConditions['tax_attributes'], ], 'conditions'=>$taxConditions['conditions'], ];
                 }
                 Cart::add($items);
             }
@@ -196,10 +196,10 @@ class CheckoutController extends InfoController
         $state = $this->getState();
         if (Cart::getSubTotal() != 0 || $cost > 0) {
             $this->validate($request, [
-                    'payment_gateway'=> 'required',
-                    ], [
-                        'payment_gateway.required'=> 'Please Select a Payment Gateway',
-                    ]);
+                'payment_gateway'=> 'required',
+            ], [
+                'payment_gateway.required'=> 'Please Select a Payment Gateway',
+            ]);
         }
 
         try {
@@ -228,12 +228,11 @@ class CheckoutController extends InfoController
                     $attributes = $this->getAttributes($content);
                 }
             } else {
-                
                 $items = new \Illuminate\Support\Collection();
                 $invoiceid = $request->input('invoice_id');
                 $invoice = $this->invoice->find($invoiceid);
-                $processingFee = $this->getProcessingFee($payment_method,$invoice->currency);
-                $invoice->grand_total = intval($invoice->grand_total*(1+$processingFee/100));
+                $processingFee = $this->getProcessingFee($payment_method, $invoice->currency);
+                $invoice->grand_total = intval($invoice->grand_total * (1 + $processingFee / 100));
                 $invoice_no = $invoice->number;
                 $date = $this->getDate($invoice);
                 $items = $invoice->invoiceItem()->get();
@@ -304,13 +303,12 @@ class CheckoutController extends InfoController
         }
     }
 
-
-    private function getProcessingFee($paymentMethod,$currency)
+    private function getProcessingFee($paymentMethod, $currency)
     {
         try {
-             return $paymentMethod =="razorpay"? 0 : \DB::table(strtolower($paymentMethod))->where('currencies',$currency)->value('processing_fee');
+            return $paymentMethod == 'razorpay' ? 0 : \DB::table(strtolower($paymentMethod))->where('currencies', $currency)->value('processing_fee');
         } catch (\Exception $e) {
-            throw new \Exception("Invalid modification of data");
+            throw new \Exception('Invalid modification of data');
         }
     }
 

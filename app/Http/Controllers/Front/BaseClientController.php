@@ -36,7 +36,7 @@ class BaseClientController extends Controller
         ->select('github_owner', 'github_repository', 'type')
         ->where('id', $orders->product)->first();
         if ($permissions['downloadPermission'] == 1) { //If the Product has doownlaod permission
-            if (!$productCheck->github_owner == '' && !$productCheck->github_repository == '') {
+            if (! $productCheck->github_owner == '' && ! $productCheck->github_repository == '') {
                 $listUrl = $this->downloadGithubPopup($orders->client, $orders->invoice()->first()->id, $productid);
             } else {
                 $listUrl = $this->downloadPopup($orders->client, $orders->invoice()->first()->number, $productid);

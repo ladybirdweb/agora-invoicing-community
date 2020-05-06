@@ -247,7 +247,7 @@ class PageController extends GetPageTemplateController
         try {
             $ids = $request->input('select');
             $defaultPageId = DefaultPage::pluck('page_id')->first();
-            if (!empty($ids)) {
+            if (! empty($ids)) {
                 foreach ($ids as $id) {
                     if ($id != $defaultPageId) {
                         $page = $this->page->where('id', $id)->first();
@@ -362,7 +362,7 @@ class PageController extends GetPageTemplateController
             $cont = new CartController();
             $currency = $cont->currency();
             \Session::put('currency', $currency);
-            if (!\Session::has('currency')) {
+            if (! \Session::has('currency')) {
                 \Session::put('currency', 'INR');
             }
             $data = PricingTemplate::find($templateid)->data;

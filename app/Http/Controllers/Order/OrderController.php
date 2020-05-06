@@ -75,16 +75,14 @@ class OrderController extends BaseOrderController
     {
         try {
             $products = $this->product->where('id', '!=', 1)->pluck('name', 'id')->toArray();
-            $paidUnpaidOptions = ["paid"=>"Paid Products", "unpaid"=>"Unpaid Products"];
-            $activeInstallationOptions = ["paid_ins"=>"For Paid Products", "unpaid_ins"=>"For Unpaid Products", "all_ins"=>"All Products"];
-            $allVersions = Subscription::where("version", "!=", "")->whereNotNull("version")
-                ->orderBy("version", "desc")->groupBy("version")
-                ->pluck("version")->toArray();
-
+            $paidUnpaidOptions = ['paid'=>'Paid Products', 'unpaid'=>'Unpaid Products'];
+            $activeInstallationOptions = ['paid_ins'=>'For Paid Products', 'unpaid_ins'=>'For Unpaid Products', 'all_ins'=>'All Products'];
+            $allVersions = Subscription::where('version', '!=', '')->whereNotNull('version')
+                ->orderBy('version', 'desc')->groupBy('version')
+                ->pluck('version')->toArray();
 
             return view('themes.default1.order.index',
-                compact('request', 'products', 'allVersions', 'activeInstallationOptions','paidUnpaidOptions'));
-
+                compact('request', 'products', 'allVersions', 'activeInstallationOptions', 'paidUnpaidOptions'));
         } catch (\Exception $e) {
             Bugsnag::notifyExeption($e);
 
@@ -99,7 +97,7 @@ class OrderController extends BaseOrderController
         return \DataTables::of($query)
             ->setTotalRecords($query->count())
             ->addColumn('checkbox', function ($model) {
-                return "<input type='checkbox' class='order_checkbox' value=". $model->id.' name=select[] id=check>';
+                return "<input type='checkbox' class='order_checkbox' value=".$model->id.' name=select[] id=check>';
             })
             ->addColumn('client', function ($model) {
                 return '<a href='.url('clients/'.$model->client_id).'>'.ucfirst($model->client_name).'<a>';
@@ -127,6 +125,7 @@ class OrderController extends BaseOrderController
             })
             ->addColumn('action', function ($model) {
                 $status = $this->checkInvoiceStatusByOrderId($model->id);
+
                 return $this->getUrl($model, $status, $model->subscription_id);
             })
 
@@ -134,10 +133,10 @@ class OrderController extends BaseOrderController
                 $query->whereRaw("concat(first_name, ' ', last_name) like ?", ["%$keyword%"]);
             })
             ->filterColumn('product_name', function ($query, $keyword) {
-                $query->whereRaw("products.name like ?", ["%$keyword%"]);
+                $query->whereRaw('products.name like ?', ["%$keyword%"]);
             })
             ->filterColumn('version', function ($query, $keyword) {
-                $query->whereRaw("subscriptions.version like ?", ["%$keyword%"]);
+                $query->whereRaw('subscriptions.version like ?', ["%$keyword%"]);
             })
             ->filterColumn('number', function ($query, $keyword) {
                 $query->whereRaw('number like ?', ["%{$keyword}%"]);
@@ -149,16 +148,16 @@ class OrderController extends BaseOrderController
                 $query->whereRaw('order_status like ?', ["%{$keyword}%"]);
             })
 
-            ->orderColumn("order_date", "orders.created_at $1")
-            ->orderColumn("client", "client_name $1")
-            ->orderColumn("product_name", "product_name $1")
-            ->orderColumn("version", "product_version $1")
-            ->orderColumn("number", "number $1")
-            ->orderColumn("price_override", "price_override $1")
-            ->orderColumn("order_status", "order_status $1")
-            ->orderColumn("update_ends_at", "update_ends_at $1")
+            ->orderColumn('order_date', 'orders.created_at $1')
+            ->orderColumn('client', 'client_name $1')
+            ->orderColumn('product_name', 'product_name $1')
+            ->orderColumn('version', 'product_version $1')
+            ->orderColumn('number', 'number $1')
+            ->orderColumn('price_override', 'price_override $1')
+            ->orderColumn('order_status', 'order_status $1')
+            ->orderColumn('update_ends_at', 'update_ends_at $1')
 
-            ->rawColumns(['checkbox', 'date', 'client', 'number', 'order_status', 'order_date', 'update_ends_at', 'action' ])
+            ->rawColumns(['checkbox', 'date', 'client', 'number', 'order_status', 'order_date', 'update_ends_at', 'action'])
             ->make(true);
     }
 
@@ -197,7 +196,7 @@ class OrderController extends BaseOrderController
             $lastActivity = $subscription->updated_at;
             $invoiceid = $order->invoice_id;
             $invoice = $this->invoice->where('id', $invoiceid)->first();
-            if (!$invoice) {
+            if (! $invoice) {
                 return redirect()->back()->with('fails', 'no orders');
             }
             $invoiceItems = $this->invoice_items->where('invoice_id', $invoiceid)->get();
@@ -282,7 +281,7 @@ class OrderController extends BaseOrderController
         try {
             // dd('df');
             $ids = $request->input('select');
-            if (!empty($ids)) {
+            if (! empty($ids)) {
                 foreach ($ids as $id) {
                     $order = $this->order->where('id', $id)->first();
                     if ($order) {

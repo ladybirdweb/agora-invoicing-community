@@ -68,8 +68,8 @@ class ExtendedBaseProductController extends Controller
     public function uploadUpdate($id, Request $request)
     {
         $this->validate($request, [
-        'title'        => 'required',
-        'version'      => 'required',
+            'title'        => 'required',
+            'version'      => 'required',
         ]);
 
         try {

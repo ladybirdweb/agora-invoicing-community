@@ -45,9 +45,9 @@ class ExtendedBaseInvoiceController extends Controller
     public function postNewPayment($clientid, Request $request)
     {
         $this->validate($request, [
-           'payment_date'  => 'required',
-           'payment_method'=> 'required',
-           'amount'        => 'required',
+            'payment_date'  => 'required',
+            'payment_method'=> 'required',
+            'amount'        => 'required',
         ]);
 
         try {
@@ -79,9 +79,9 @@ class ExtendedBaseInvoiceController extends Controller
     public function postEdit($invoiceid, Request $request)
     {
         $this->validate($request, [
-        'date'  => 'required',
-        'total' => 'required',
-        'status'=> 'required',
+            'date'  => 'required',
+            'total' => 'required',
+            'status'=> 'required',
         ]);
 
         try {
@@ -101,9 +101,9 @@ class ExtendedBaseInvoiceController extends Controller
     public function postNewMultiplePayment($clientid, Request $request)
     {
         $this->validate($request, [
-        'payment_date'  => 'required',
-        'payment_method'=> 'required',
-        'totalAmt'      => 'required|numeric',
+            'payment_date'  => 'required',
+            'payment_method'=> 'required',
+            'totalAmt'      => 'required|numeric',
         ]);
 
         try {
@@ -140,14 +140,14 @@ class ExtendedBaseInvoiceController extends Controller
                     $invoice = Invoice::find($value);
                     $invoice_status = 'pending';
                     $payment = Payment::where('invoice_id', $value)->create([
-                'invoice_id'     => $value,
-                'user_id'        => $clientid,
-                'amount'         => $invoicAmount[$key],
-                'amt_to_credit'  => $amtToCredit,
-                'payment_method' => $payment_method,
-                'payment_status' => $payment_status,
-                'created_at'     => $payment_date,
-            ]);
+                        'invoice_id'     => $value,
+                        'user_id'        => $clientid,
+                        'amount'         => $invoicAmount[$key],
+                        'amt_to_credit'  => $amtToCredit,
+                        'payment_method' => $payment_method,
+                        'payment_status' => $payment_status,
+                        'created_at'     => $payment_date,
+                    ]);
                     $totalPayments = $this->payment
             ->where('invoice_id', $value)
             ->where('payment_status', 'success')
@@ -169,13 +169,13 @@ class ExtendedBaseInvoiceController extends Controller
                         Payment::where('user_id', $clientid)->delete();
                     }
                     $payment = Payment::updateOrCreate([
-                'invoice_id'     => $value,
-                'user_id'        => $clientid,
-                'amt_to_credit'  => $amtToCredit,
-                'payment_method' => $payment_method,
-                'payment_status' => $payment_status,
-                'created_at'     => $payment_date,
-            ]);
+                        'invoice_id'     => $value,
+                        'user_id'        => $clientid,
+                        'amt_to_credit'  => $amtToCredit,
+                        'payment_method' => $payment_method,
+                        'payment_status' => $payment_status,
+                        'created_at'     => $payment_date,
+                    ]);
                 }
             }
 
@@ -194,13 +194,13 @@ class ExtendedBaseInvoiceController extends Controller
     public function updateNewMultiplePayment($clientid, Request $request)
     {
         $this->validate($request, [
-        'payment_date'  => 'required',
-        'payment_method'=> 'required',
-        'totalAmt'      => 'required|numeric',
-        'invoiceChecked'=> 'required',
+            'payment_date'  => 'required',
+            'payment_method'=> 'required',
+            'totalAmt'      => 'required|numeric',
+            'invoiceChecked'=> 'required',
         ],
         [
-        'invoiceChecked.required' => 'Please link the amount with at least one Invoice',
+            'invoiceChecked.required' => 'Please link the amount with at least one Invoice',
         ]
         );
 
@@ -238,13 +238,13 @@ class ExtendedBaseInvoiceController extends Controller
                      ->update(['amt_to_credit'=>$amtToCredit]);
                     $invoice_status = 'pending';
                     $payment = Payment::create([
-                'invoice_id'     => $value,
-                'user_id'        => $clientid,
-                'amount'         => $invoicAmount[$key],
-                'payment_method' => $payment_method,
-                'payment_status' => $payment_status,
-                'created_at'     => $payment_date,
-            ]);
+                        'invoice_id'     => $value,
+                        'user_id'        => $clientid,
+                        'amount'         => $invoicAmount[$key],
+                        'payment_method' => $payment_method,
+                        'payment_status' => $payment_status,
+                        'created_at'     => $payment_date,
+                    ]);
                     $totalPayments = $this->payment
             ->where('invoice_id', $value)
             ->where('payment_status', 'success')

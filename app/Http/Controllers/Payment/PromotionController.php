@@ -76,7 +76,7 @@ class PromotionController extends BasePromotionController
                             foreach ($selected as $key => $select) {
                                 $result[$key] = $this->product->where('id', $select->product_id)->first()->name;
                             }
-                            if (!empty($result)) {
+                            if (! empty($result)) {
                                 return implode(',', $result);
                             } else {
                                 return 'None';
@@ -183,12 +183,12 @@ class PromotionController extends BasePromotionController
             $expiry = date_format($enddate, 'Y-m-d H:m:i');
 
             $promotion = $this->promotion->where('id', $id)->update([
-            'code'   => $request->input('code'),
-            'type'   => $request->input('type'),
-            'value'  => $request->input('value'),
-            'uses'   => $request->input('uses'),
-            'start'  => $start,
-            'expiry' => $expiry,
+                'code'   => $request->input('code'),
+                'type'   => $request->input('type'),
+                'value'  => $request->input('value'),
+                'uses'   => $request->input('uses'),
+                'start'  => $start,
+                'expiry' => $expiry,
             ]);
             /* Delete the products has this id */
             $deletes = $this->promoRelation->where('promotion_id', $id)->get();
@@ -220,7 +220,7 @@ class PromotionController extends BasePromotionController
     {
         try {
             $ids = $request->input('select');
-            if (!empty($ids)) {
+            if (! empty($ids)) {
                 foreach ($ids as $id) {
                     $promotion = $this->promotion->where('id', $id)->first();
                     if ($promotion) {
@@ -279,11 +279,11 @@ class PromotionController extends BasePromotionController
             if (\Session::get('usage') == null || \Session::get('usage') != 1) {
                 $userId = \Auth::user()->id;
                 \Cart::update($productid, [
-                'id'         => $productid,
-                'price'      => $value,
-                'conditions' => $coupon,
+                    'id'         => $productid,
+                    'price'      => $value,
+                    'conditions' => $coupon,
 
-           // new item price, price can also be a string format like so: '98.67'
+                    // new item price, price can also be a string format like so: '98.67'
                 ]);
                 \Session::put('usage', 1);
                 \Session::put('code', $promo->code);
@@ -301,7 +301,7 @@ class PromotionController extends BasePromotionController
 
             return 'success';
         } catch (\Exception $ex) {
-            if (!\Auth::user()) {
+            if (! \Auth::user()) {
                 throw new \Exception('Please Login');
             } else {
                 throw new \Exception($ex->getMessage());

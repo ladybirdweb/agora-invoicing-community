@@ -2,17 +2,14 @@
 
 namespace App\Plugins\Stripe\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Plugins\Stripe\Model\StripePayment;
-use Illuminate\Http\Request;
-use App\Model\Common\Setting;
 use App\ApiKey;
-use Validator;
-use Cartalyst\Stripe\Api\Charges;
-use App\Model\Order\Invoice;
+use App\Http\Controllers\Controller;
+use App\Model\Common\Setting;
+use App\Plugins\Stripe\Model\StripePayment;
 use Cartalyst\Stripe\Laravel\Facades\Stripe;
-use Stripe\Error\Card;
+use Illuminate\Http\Request;
 use Schema;
+use Validator;
 
 class SettingsController extends Controller
 {
@@ -25,7 +22,7 @@ class SettingsController extends Controller
     public function Settings()
     {
         try {
-            if (!Schema::hasTable('stripe')) {
+            if (! Schema::hasTable('stripe')) {
                 Schema::create('stripe', function ($table) {
                     $table->increments('id');
                     $table->string('image_url');
@@ -40,16 +37,17 @@ class SettingsController extends Controller
             // //dd($ccavanue);
             $stripe = $stripe1->where('id', '1')->first();
 
-            if (!$stripe) {
-                \Artisan::call('db:seed',['--class' => 'database\\seeds\\StripeSupportedCurrencySeeder', '--force' => true]);
+            if (! $stripe) {
+                \Artisan::call('db:seed', ['--class' => 'database\\seeds\\StripeSupportedCurrencySeeder', '--force' => true]);
             }
-            $allCurrencies = StripePayment::pluck('currencies','id')->toArray();
-             $apikey = new ApiKey();
+            $allCurrencies = StripePayment::pluck('currencies', 'id')->toArray();
+            $apikey = new ApiKey();
             $stripeKeys = $apikey->select('stripe_key', 'stripe_secret')->first();
             $baseCurrency = StripePayment::pluck('base_currency')->toArray();
             $path = app_path().'/Plugins/Stripe/views';
             \View::addNamespace('plugins', $path);
-            return view('plugins::settings', compact('stripe','baseCurrency','allCurrencies','stripeKeys'));
+
+            return view('plugins::settings', compact('stripe', 'baseCurrency', 'allCurrencies', 'stripeKeys'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -80,31 +78,30 @@ class SettingsController extends Controller
 
     public function changeBaseCurrency(Request $request)
     {
-        $baseCurrency = Stripe::where('id',$request->input('b_currency'))->pluck('currencies')->first();
-        $allCurrencies = Stripe::select('base_currency','id')->get();
+        $baseCurrency = Stripe::where('id', $request->input('b_currency'))->pluck('currencies')->first();
+        $allCurrencies = Stripe::select('base_currency', 'id')->get();
         foreach ($allCurrencies as $currencies) {
-           Stripe::where('id',$currencies->id)->update(['base_currency'=>$baseCurrency]);
+            Stripe::where('id', $currencies->id)->update(['base_currency'=>$baseCurrency]);
         }
+
         return ['message' => 'success', 'update'=>'Base Currency Updated'];
     }
-
-
 
     public function updateApiKey(Request $request)
     {
         try {
-        $stripe = Stripe::make($request->input('stripe_secret'));
-        $response = $stripe->customers()->create(["description" => "Test Customer to Validate Secret Key"]);
-        $stripe_secret = $request->input('stripe_secret');
-        ApiKey::find(1)->update(['stripe_secret'=>$stripe_secret]);
-        return successResponse(['success'=>'true','message'=>'Secret key updated successfully']);
-        } catch (\Cartalyst\Stripe\Exception\UnauthorizedException  $e) {;
+            $stripe = Stripe::make($request->input('stripe_secret'));
+            $response = $stripe->customers()->create(['description' => 'Test Customer to Validate Secret Key']);
+            $stripe_secret = $request->input('stripe_secret');
+            ApiKey::find(1)->update(['stripe_secret'=>$stripe_secret]);
+
+            return successResponse(['success'=>'true', 'message'=>'Secret key updated successfully']);
+        } catch (\Cartalyst\Stripe\Exception\UnauthorizedException  $e) {
             return errorResponse($e->getMessage());
         }
-        
     }
 
-          /**
+    /**
      * success response method.
      *
      * @return \Illuminate\Http\Response
@@ -120,10 +117,10 @@ class SettingsController extends Controller
             'exp_year' => 'required',
             'cvv' => 'required',
         ];
-       
+
         try {
             $amount = \Session::get('amount');
-            $stripeSecretKey = ApiKey::pluck('stripe_secret')->first();   
+            $stripeSecretKey = ApiKey::pluck('stripe_secret')->first();
             $stripe = Stripe::make($stripeSecretKey);
             $token = $stripe->tokens()->create([
                 'card' => [
@@ -133,37 +130,38 @@ class SettingsController extends Controller
                     'cvc'       => $request->get('cvv'),
                 ],
             ]);
-            if (!isset($token['id'])) {
-                \Session::put('error','The Stripe Token was not generated correctly');
+            if (! isset($token['id'])) {
+                \Session::put('error', 'The Stripe Token was not generated correctly');
+
                 return redirect()->route('stripform');
             }
             $customer = $stripe->customers()->create([
-              'name' => \Auth::user()->first_name.' '.\Auth::user()->last_name,
-              'email' => \Auth::user()->email,
-              'address' => [
-                'line1' => \Auth::user()->address,
-                'postal_code' => \Auth::user()->zip,
-                'city' => \Auth::user()->town,
-                'state' => \Auth::user()->state,
-                'country' => \Auth::user()->country,
-              ],
+                'name' => \Auth::user()->first_name.' '.\Auth::user()->last_name,
+                'email' => \Auth::user()->email,
+                'address' => [
+                    'line1' => \Auth::user()->address,
+                    'postal_code' => \Auth::user()->zip,
+                    'city' => \Auth::user()->town,
+                    'state' => \Auth::user()->state,
+                    'country' => \Auth::user()->country,
+                ],
             ]);
-            $stripeCustomerId= $customer['id'];
+            $stripeCustomerId = $customer['id'];
             $currency = strtolower(\Auth::user()->currency);
-            $card = $stripe->cards()->create($stripeCustomerId, $token['id']); 
+            $card = $stripe->cards()->create($stripeCustomerId, $token['id']);
             $charge = $stripe->charges()->create([
                 'customer' => $customer['id'],
                 'currency' => $currency,
                 'amount'   =>$amount,
                 'description' => 'Add in wallet',
             ]);
-            if($charge['status'] == 'succeeded') {
+            if ($charge['status'] == 'succeeded') {
                 //Change order Status as Success if payment is Successful
                 $stateCode = \Auth::user()->state;
                 $cont = new \App\Http\Controllers\RazorpayController();
                 $state = $cont->getState($stateCode);
                 $currency = $cont->getCurrency();
-                 $invoice = \Session::get('invoice');
+                $invoice = \Session::get('invoice');
                 $control = new \App\Http\Controllers\Order\RenewController();
                 //After Regular Payment
                 if ($control->checkRenew() === false) {
@@ -181,48 +179,48 @@ class SettingsController extends Controller
                     $control->successRenew($invoice);
                     $payment = new \App\Http\Controllers\Order\InvoiceController();
                     $payment->postRazorpayPayment($invoice->id, $invoice->grand_total);
-                     if($invoice->grand_total) {
-                    $this->sendPaymentSuccessMailtoAdmin($invoice->currency,$invoice->grand_total,\Auth::user(),$invoice->invoiceItem()->first()->product_name);
-                }
+                    if ($invoice->grand_total) {
+                        $this->sendPaymentSuccessMailtoAdmin($invoice->currency, $invoice->grand_total, \Auth::user(), $invoice->invoiceItem()->first()->product_name);
+                    }
                     $view = $cont->getViewMessageAfterRenew($invoice, $state, $currency);
                     $status = $view['status'];
                     $message = $view['message'];
                 }
 
                 return redirect('checkout')->with($status, $message);
-             } else {
-               return redirect('checkout')->with('fails','Your Payment was declined. Please try making payment with other gateway');
+            } else {
+                return redirect('checkout')->with('fails', 'Your Payment was declined. Please try making payment with other gateway');
             }
-        } catch (\Cartalyst\Stripe\Exception\ApiLimitExceededException|\Cartalyst\Stripe\Exception\BadRequestException|\Cartalyst\Stripe\Exception\MissingParameterException|\Cartalyst\Stripe\Exception\NotFoundException|\Cartalyst\Stripe\Exception\ServerErrorException|\Cartalyst\Stripe\Exception\StripeException|\Cartalyst\Stripe\Exception\UnauthorizedException $e) {
-            $this->sendFailedPaymenttoAdmin($request['amount'],$e->getMessage());
-           return redirect('checkout')->with('fails','Your Payment was declined. '.$e->getMessage().'. Please try again or try the other gateway');
-        } catch(\Cartalyst\Stripe\Exception\CardErrorException $e) {
-            $this->sendFailedPaymenttoAdmin($request['amount'],$e->getMessage());
-            \Session::put('amount',$request['amount']);
-            \Session::put('error',$e->getMessage());
+        } catch (\Cartalyst\Stripe\Exception\ApiLimitExceededException | \Cartalyst\Stripe\Exception\BadRequestException | \Cartalyst\Stripe\Exception\MissingParameterException | \Cartalyst\Stripe\Exception\NotFoundException | \Cartalyst\Stripe\Exception\ServerErrorException | \Cartalyst\Stripe\Exception\StripeException | \Cartalyst\Stripe\Exception\UnauthorizedException $e) {
+            $this->sendFailedPaymenttoAdmin($request['amount'], $e->getMessage());
+
+            return redirect('checkout')->with('fails', 'Your Payment was declined. '.$e->getMessage().'. Please try again or try the other gateway');
+        } catch (\Cartalyst\Stripe\Exception\CardErrorException $e) {
+            $this->sendFailedPaymenttoAdmin($request['amount'], $e->getMessage());
+            \Session::put('amount', $request['amount']);
+            \Session::put('error', $e->getMessage());
+
             return redirect()->route('stripform');
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             dd($e);
-            return redirect('checkout')->with('fails','Your payment was declined. '.$e->getMessage().'. Please try again or try the other gateway.');
+
+            return redirect('checkout')->with('fails', 'Your payment was declined. '.$e->getMessage().'. Please try again or try the other gateway.');
         }
     }
 
-
-    public static function sendFailedPaymenttoAdmin($amount,$exceptionMessage)
-    {
-         $setting = Setting::find(1);
-        $paymentFailData= 'Payment for'.' '.'of'.' '.\Auth::user()->currency.' '.$amount.' '.'failed by'.' '.\Auth::user()->first_name.' '. \Auth::user()->last_name.' '.'. User Email:'.' '.\Auth::user()->email.'<br>'.'Reason:'.$exceptionMessage;
-         $templateController = new \App\Http\Controllers\Common\TemplateController();
-          $templateController->mailing($setting->email, $setting->company_email, $paymentFailData, 'Paymemt failed');
-    } 
-           
-    
-
-    public static function sendPaymentSuccessMailtoAdmin($currency,$total,$user,$productName)
+    public static function sendFailedPaymenttoAdmin($amount, $exceptionMessage)
     {
         $setting = Setting::find(1);
-         $templateController = new \App\Http\Controllers\Common\TemplateController();
-         $paymentSuccessdata= 'Payment for'.' '.$productName.' '.'of'.' '.$currency.' '.$total.' '.'successful by'.' '.$user->first_name.' '. $user->last_name.' '.'Email:'.' '.$user->email;
+        $paymentFailData = 'Payment for'.' '.'of'.' '.\Auth::user()->currency.' '.$amount.' '.'failed by'.' '.\Auth::user()->first_name.' '.\Auth::user()->last_name.' '.'. User Email:'.' '.\Auth::user()->email.'<br>'.'Reason:'.$exceptionMessage;
+        $templateController = new \App\Http\Controllers\Common\TemplateController();
+        $templateController->mailing($setting->email, $setting->company_email, $paymentFailData, 'Paymemt failed');
+    }
+
+    public static function sendPaymentSuccessMailtoAdmin($currency, $total, $user, $productName)
+    {
+        $setting = Setting::find(1);
+        $templateController = new \App\Http\Controllers\Common\TemplateController();
+        $paymentSuccessdata = 'Payment for'.' '.$productName.' '.'of'.' '.$currency.' '.$total.' '.'successful by'.' '.$user->first_name.' '.$user->last_name.' '.'Email:'.' '.$user->email;
         $templateController->mailing($setting->email, $setting->company_email, $paymentSuccessdata, 'Payment Successful ');
     }
 }

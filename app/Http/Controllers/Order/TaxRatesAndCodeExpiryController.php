@@ -172,7 +172,7 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
         $currency = Currency::where('code', $currency_code)->first();
         if ($currency) {
             $cur = $currency->symbol;
-            if (!$cur) {
+            if (! $cur) {
                 $cur = $currency->code;
             }
         }
@@ -283,7 +283,7 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
     {
         $promo = Promotion::where('code', $code)->first();
         //check promotion code is valid
-        if (!$promo) {
+        if (! $promo) {
             throw new \Exception(\Lang::get('message.no-such-code'));
         }
         $relation = $promo->relation()->get();

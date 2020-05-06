@@ -65,7 +65,7 @@ class BaseSettingsController extends PaymentSettingsController
     {
         try {
             $ids = $request->input('select');
-            if (!empty($ids)) {
+            if (! empty($ids)) {
                 foreach ($ids as $id) {
                     $email = \DB::table('email_log')->where('id', $id)->delete();
                     if ($email) {
@@ -198,7 +198,7 @@ class BaseSettingsController extends PaymentSettingsController
             }
         }
         $delLogDays = ['720' => '720 Days', '365'=>'365 days', '180'=>'180 Days',
-        '150'                => '150 Days', '60'=>'60 Days', '30'=>'30 Days', '15'=>'15 Days', '5'=>'5 Days', '2'=>'2 Days', '0'=>'Delete All Logs', ];
+            '150'                => '150 Days', '60'=>'60 Days', '30'=>'30 Days', '15'=>'15 Days', '5'=>'5 Days', '2'=>'2 Days', '0'=>'Delete All Logs', ];
         $beforeLogDay[] = ActivityLogDay::first()->days;
 
         return view('themes.default1.common.cron.cron', compact(
@@ -244,7 +244,7 @@ class BaseSettingsController extends PaymentSettingsController
     {
         try {
             // make a small test
-            return function_exists('exec') && !in_array('exec', array_map('trim', explode(', ', ini_get('disable_functions'))));
+            return function_exists('exec') && ! in_array('exec', array_map('trim', explode(', ', ini_get('disable_functions'))));
         } catch (\Exception $ex) {
             return false;
         }
@@ -284,7 +284,7 @@ class BaseSettingsController extends PaymentSettingsController
     {
         $path = $request->get('path');
         $version = '5.6';
-        if (!file_exists($path) || !is_executable($path)) {
+        if (! file_exists($path) || ! is_executable($path)) {
             return errorResponse(\Lang::get('message.invalid-php-path'));
         }
 
@@ -311,7 +311,7 @@ class BaseSettingsController extends PaymentSettingsController
         if ($request['expiryday'] != null) {
             foreach ($request['expiryday'] as $key => $value) {
                 $daysList->create([
-                'days'=> $value,
+                    'days'=> $value,
                 ]);
             }
         }
@@ -346,7 +346,7 @@ class BaseSettingsController extends PaymentSettingsController
 
         StatusSetting::where('id', 1)->update(['recaptcha_status'=>$status]);
         ApiKey::where('id', 1)->update(['nocaptcha_sitekey'=> $nocaptcha_sitekey,
-         'captcha_secretCheck'                             => $captcha_secretCheck, ]);
+            'captcha_secretCheck'                             => $captcha_secretCheck, ]);
 
         return ['message' => 'success', 'update'=>'Recaptcha Settings Updated'];
     }

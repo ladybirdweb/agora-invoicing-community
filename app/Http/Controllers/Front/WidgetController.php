@@ -128,7 +128,7 @@ class WidgetController extends Controller
     {
         try {
             $ids = $request->input('select');
-            if (!empty($ids)) {
+            if (! empty($ids)) {
                 foreach ($ids as $id) {
                     $widget = $this->widget->where('id', $id)->first();
                     if ($widget) {

@@ -114,7 +114,7 @@ class MailChimpController extends BaseMailChimpController
             $country = Country::where('country_code_char2', $user->country)->pluck('nicename')->first();
             if ($user) {
                 $fields = ['first_name', 'last_name', 'company', 'mobile',
-                 'address', 'town', 'country', 'state', 'zip', 'active', 'role', 'source', ];
+                    'address', 'town', 'country', 'state', 'zip', 'active', 'role', 'source', ];
                 $relation = $this->relation;
                 $merge_fields = [];
                 foreach ($fields as $field) {
@@ -216,10 +216,10 @@ class MailChimpController extends BaseMailChimpController
         if (count($groupInterests) > 0) {
             foreach ($groupInterests['interests'] as $key=>$value) {
                 $fields[] = (['category_id' => $value->category_id,
-                'list_id'                   => $value->list_id,
-                'category_option_id'        => $value->id,
-                'category_option_name'      => $value->name,
-            ]);
+                    'list_id'                   => $value->list_id,
+                    'category_option_id'        => $value->id,
+                    'category_option_name'      => $value->name,
+                ]);
             }
             foreach ($fields as $field) {
                 $selectedCategory = MailchimpGroupAgoraRelation::where('mailchimp_group_cat_id', $field['category_option_id'])->pluck('mailchimp_group_cat_id')->first();
@@ -241,11 +241,11 @@ class MailChimpController extends BaseMailChimpController
                         $category_option_id = $value->id;
                         $category_option_name = $value->name;
                         $this->groups->updateOrCreate([
-                'category_id'        => $category_id,
-                'list_id'            => $list_id,
-                'category_option_id' => $category_option_id,
-                'category_name'      => $category_option_name,
-            ]);
+                            'category_id'        => $category_id,
+                            'list_id'            => $list_id,
+                            'category_option_id' => $category_option_id,
+                            'category_name'      => $category_option_name,
+                        ]);
                     }
                 }
             }
@@ -269,7 +269,7 @@ class MailChimpController extends BaseMailChimpController
             MailchimpGroupAgoraRelation::where('id', '!=', 0)->delete();
             foreach ($request->row as $key => $value) {
                 MailchimpGroupAgoraRelation::create(['agora_product_id'=> $value[0],
-             'mailchimp_group_cat_id'                                  => $value[1], ]);
+                    'mailchimp_group_cat_id'                                  => $value[1], ]);
             }
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));

@@ -103,11 +103,11 @@
         Route::get('verify-2fa', 'Google2FAController@verify2fa');
         Route::post('2fa/loginValidate', 'Google2FAController@postLoginValidateToken')->name('2fa/loginValidate');
         Route::post('2fa/setupValidate', 'Google2FAController@postSetupValidateToken');
-        Route::get('verify-password','Google2FAController@verifyPassword');
-        Route::get('2fa-recovery-code','Google2FAController@generateRecoveryCode');
-        Route::get('get-recovery-code','Google2FAController@getRecoveryCode');
-        Route::get('recovery-code','Google2FAController@showRecoveryCode');
-        Route::post('verify-recovery-code','Google2FAController@verifyRecoveryCode')->name('verify-recovery-code');
+        Route::get('verify-password', 'Google2FAController@verifyPassword');
+        Route::get('2fa-recovery-code', 'Google2FAController@generateRecoveryCode');
+        Route::get('get-recovery-code', 'Google2FAController@getRecoveryCode');
+        Route::get('recovery-code', 'Google2FAController@showRecoveryCode');
+        Route::post('verify-recovery-code', 'Google2FAController@verifyRecoveryCode')->name('verify-recovery-code');
         /*
          * Social Media
          */
@@ -283,8 +283,6 @@
         Route::get('get-promotions', 'Payment\PromotionController@getPromotion')->name('get-promotions');
         Route::get('promotions-delete', 'Payment\PromotionController@destroy')->name('promotions-delete');
 
-
-
         /*
          * Category
          */
@@ -408,8 +406,6 @@
         Route::resource('licences', 'Licence\LicenceController');
         Route::get('get-licences', 'Licence\LicenceController@getLicences');
 
-
-
         /*
          * Pages
          */
@@ -445,7 +441,6 @@
          */
         Route::get('download/{uploadid}/{userid}/{invoice_number}/{versionid}', 'Product\ProductController@userDownload');
         Route::get('product/download/{id}/{invoice?}', 'Product\ProductController@adminDownload');
-
 
         /*
          * check version
@@ -506,7 +501,6 @@
              */
             Route::get('check-url', 'Api\ApiController@checkDomain');
         });
-
 
         /*
          * Api Keys

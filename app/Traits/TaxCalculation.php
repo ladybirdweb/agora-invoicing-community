@@ -51,7 +51,7 @@ trait TaxCalculation
         }
 
         return ['taxes'=> $taxes, 'status'=>$status, 'value'=>$value,
-        'rate'         => $value, 'cgst'=>$c_gst, 'sgst'=>$s_gst, 'igst'=>$i_gst, 'utgst'=>$ut_gst, 'statecode'=>$state_code, ];
+            'rate'         => $value, 'cgst'=>$c_gst, 'sgst'=>$s_gst, 'igst'=>$i_gst, 'utgst'=>$ut_gst, 'statecode'=>$state_code, ];
     }
 
     public function getDetailsWhenUserFromOtherCountry($user_state, $geoip_state, $geoip_country, $productid, $status = 1)

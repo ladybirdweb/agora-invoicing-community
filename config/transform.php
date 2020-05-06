@@ -71,7 +71,7 @@ return[
     ],
 
     'subscription_over_mail' => [
-         'name'   => '{{name}}',
+        'name'   => '{{name}}',
         'number'  => '{{number}}',
         'product' => '{{product}}',
         'expiry'  => '{{expiry}}',

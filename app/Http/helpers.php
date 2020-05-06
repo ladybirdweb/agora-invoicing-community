@@ -60,21 +60,20 @@ function successResponse($message = '', $data = '', $statusCode = 200)
     $response = ['success' => true];
 
     // if message given
-    if (!empty($message)) {
+    if (! empty($message)) {
         $response['message'] = $message;
     }
 
     // If data given
-    if (!empty($data)) {
+    if (! empty($data)) {
         $response['data'] = $data;
     }
 
     return response()->json($response, $statusCode);
 }
 
-
 /**
- * Gets time in logged in user's timezone
+ * Gets time in logged in user's timezone.
  * @param string $dateTimeString
  * @param string $format
  * @return string
@@ -83,7 +82,7 @@ function getTimeInLoggedInUserTimeZone(string $dateTimeString, $format = 'M j, Y
 {
     // caching for 4 seconds so for consecutive queries, it will be readily available. And even if someone updates their
     // timezone, it will start showing the new timezone after 4 seconds
-    $timezone = Cache::remember('timezone_'.Auth::user()->id, 5, function(){
+    $timezone = Cache::remember('timezone_'.Auth::user()->id, 5, function () {
         return Auth::user()->timezone->name;
     });
 
@@ -91,22 +90,22 @@ function getTimeInLoggedInUserTimeZone(string $dateTimeString, $format = 'M j, Y
 }
 
 /**
- * Gets date in a formatted HTML
+ * Gets date in a formatted HTML.
  * @param string|null $dateTimeString
  * @return string
  */
 function getDateHtml(string $dateTimeString = null)
 {
     try {
-        if(!$dateTimeString){
-            return "--";
+        if (! $dateTimeString) {
+            return '--';
         }
 
-        $date = getTimeInLoggedInUserTimeZone($dateTimeString, "M j, Y");
+        $date = getTimeInLoggedInUserTimeZone($dateTimeString, 'M j, Y');
         $dateTime = getTimeInLoggedInUserTimeZone($dateTimeString);
-        return "<span title='$dateTime'>$date</span>";
 
-    } catch(Exception $e){
-        return "--";
+        return "<span title='$dateTime'>$date</span>";
+    } catch (Exception $e) {
+        return '--';
     }
 }

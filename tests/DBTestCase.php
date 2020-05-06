@@ -127,12 +127,12 @@ class DBTestCase extends TestCase
     {
         $notFoundKeys = [];
         foreach ($arrayOfKeys as $key) {
-            if (!array_key_exists($key, $targetArray)) {
+            if (! array_key_exists($key, $targetArray)) {
                 array_push($notFoundKeys, $key);
             }
         }
         //if not found key is empty, it means all the keys are found. else not
-        $hasKeys = !$notFoundKeys ? true : false;
+        $hasKeys = ! $notFoundKeys ? true : false;
         $notFoundKeysJson = json_encode($notFoundKeys);
         $message = "$notFoundKeysJson not found in target array";
         self::assertThat($hasKeys, self::isTrue(), $message);

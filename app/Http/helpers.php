@@ -1,7 +1,7 @@
 <?php
-use Carbon\Carbon;
-use App\Model\Product\ProductUpload;
 
+use App\Model\Product\ProductUpload;
+use Carbon\Carbon;
 
 function checkArray($key, $array)
 {
@@ -107,7 +107,6 @@ function getDateHtml(string $dateTimeString = null)
         $date = getTimeInLoggedInUserTimeZone($dateTimeString, 'M j, Y');
         $dateTime = getTimeInLoggedInUserTimeZone($dateTimeString);
 
-       
         return "<label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='$dateTime'>
                          $date</label>";
 
@@ -117,33 +116,31 @@ function getDateHtml(string $dateTimeString = null)
 }
 
 
-function getExpiryLabel($expiryDate, $badge='label') 
+function getExpiryLabel($expiryDate, $badge = 'label')
 {
-       if($expiryDate < (new Carbon())->toDateTimeString()) {
-             return getDateHtml($expiryDate).'<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class='.'"'.$badge.' '.$badge.'-danger" style="padding-left:4px;" <label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="Order has Expired">
+    if ($expiryDate < (new Carbon())->toDateTimeString()) {
+        return getDateHtml($expiryDate).'<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class='.'"'.$badge.' '.$badge.'-danger" style="padding-left:4px;" <label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="Order has Expired">
                          </label>
              <i class="fa fa-exclamation"></i>&nbsp;Expired</span>';
-        } else{
-            return getDateHtml($expiryDate);
-        }
+    } else {
+        return getDateHtml($expiryDate);
+    }
 }
 
-
-function getVersionAndLabel($productVersion, $productId, $badge='label')
+function getVersionAndLabel($productVersion, $productId, $badge = 'label')
 {
-    $latestVersion = \Cache::remember('latest_'.$productId, 10, function() use($productId){
-    return ProductUpload::where('product_id', $productId)->latest()->value('version');
+    $latestVersion = \Cache::remember('latest_'.$productId, 10, function () use ($productId) {
+        return ProductUpload::where('product_id', $productId)->latest()->value('version');
     });
-    if($productVersion) {
-         if($productVersion < $latestVersion ) {
+    if ($productVersion) {
+        if ($productVersion < $latestVersion) {
             return '<span class='.'"'.$badge.' '.$badge.'-warning" <label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="Outdated Version">
                  </label>'.$productVersion.'</span>';
-        } else{
+        } else {
             return '<span class='.'"'.$badge.' '.$badge.'-success" <label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="Latest Version">
                  </label>'.$productVersion.'</span>';
         }
     }
-     
 
 }
 

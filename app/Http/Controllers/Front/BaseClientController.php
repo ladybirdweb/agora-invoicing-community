@@ -3,15 +3,12 @@
 namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Order\OrderController;
 use App\Http\Controllers\License\LicensePermissionsController;
 use App\Http\Requests\User\ProfileRequest;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
 use App\Model\Product\Product;
 use Bugsnag;
-use DateTime;
-use DateTimeZone;
 use Exception;
 use Hash;
 
@@ -29,7 +26,7 @@ class BaseClientController extends Controller
      *
      * @return array Show Modal Popup if Condition Satisfies
      */
-    public function getPopup($query , int $productid)
+    public function getPopup($query, int $productid)
     {
         $listUrl = '';
         $permissions = LicensePermissionsController::getPermissionsForProduct($productid);
@@ -44,7 +41,6 @@ class BaseClientController extends Controller
 
         return $listUrl;
     }
-
 
     public function downloadPopup($clientid, $invoiceid, $productid)
     {
@@ -180,8 +176,9 @@ class BaseClientController extends Controller
 
             return \DataTables::of($invoices->get())
              ->addColumn('number', function ($model) {
-                $url = $this->getInvoiceLinkUrl($model->id);
-                return '<a href='.url($url).'>'.$model->number.'</a>';
+                 $url = $this->getInvoiceLinkUrl($model->id);
+
+                 return '<a href='.url($url).'>'.$model->number.'</a>';
              })
             ->addColumn('products', function ($model) {
                 $invoice = $this->invoice->find($model->id);
@@ -200,6 +197,7 @@ class BaseClientController extends Controller
             })
             ->addColumn('action', function ($model) {
                 $url = $this->getInvoiceLinkUrl($model->id);
+
                 return '<a href='.url($url)." 
                 class='btn btn-sm btn-primary btn-xs'><i class='fa fa-eye' 
                 style='color:white;'> </i>&nbsp;&nbsp;View</a>";
@@ -213,12 +211,13 @@ class BaseClientController extends Controller
         }
     }
 
-    public function getInvoiceLinkUrl($invoiceId) 
+    public function getInvoiceLinkUrl($invoiceId)
     {
-        $link = 'my-invoice/'.$invoiceId ;
+        $link = 'my-invoice/'.$invoiceId;
         if (\Auth::user()->role == 'admin') {
-           $link= '/invoices/show?invoiceid='.$invoiceId;
+            $link = '/invoices/show?invoiceid='.$invoiceId;
         }
+
         return $link;
     }
 

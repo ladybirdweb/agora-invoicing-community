@@ -97,9 +97,9 @@ class GroupController extends Controller
         $this->validate($request, [
             'name'                 => 'required',
             'pricing_templates_id' => 'required',
-            ], [
-                'pricing_templates_id.required'=> 'Please Select a Template',
-          ]);
+        ], [
+            'pricing_templates_id.required'=> 'Please Select a Template',
+        ]);
 
         try {
             $this->group->fill($request->input())->save();
@@ -159,7 +159,7 @@ class GroupController extends Controller
     {
         try {
             $ids = $request->input('select');
-            if (!empty($ids)) {
+            if (! empty($ids)) {
                 foreach ($ids as $id) {
                     $group = $this->group->where('id', $id)->first();
 

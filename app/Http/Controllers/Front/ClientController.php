@@ -18,7 +18,6 @@ use DateTime;
 use DateTimeZone;
 use Exception;
 use GrahamCampbell\Markdown\Facades\Markdown;
-use Illuminate\Http\Request;
 
 class ClientController extends BaseClientController
 {
@@ -253,7 +252,7 @@ class ClientController extends BaseClientController
                                     $actionButton = $this->getActionButton($countExpiry, $countVersions, $link, $orderEndDate, $productid);
 
                                     return $actionButton;
-                                } elseif (!$orderEndDate) {
+                                } elseif (! $orderEndDate) {
                                     $link = $this->github_api->getCurl1($link['zipball_url']);
 
                                     return '<p><a href='.$link['header']['Location']
@@ -349,9 +348,10 @@ class ClientController extends BaseClientController
             ->pluck('name', 'short')->toArray();
             $selectedCompanySize = \DB::table('company_sizes')->where('short', $user->company_size)
             ->pluck('name', 'short')->toArray();
+
             return view(
                 'themes.default1.front.clients.profile',
-                compact('user', 'timezones', 'state', 'states', 'bussinesses','is2faEnabled','dateSinceEnabled','selectedIndustry','selectedCompany','selectedCompanySize')
+                compact('user', 'timezones', 'state', 'states', 'bussinesses', 'is2faEnabled', 'dateSinceEnabled', 'selectedIndustry', 'selectedCompany', 'selectedCompanySize')
             );
         } catch (Exception $ex) {
             Bugsnag::notifyException($ex);
@@ -412,10 +412,8 @@ class ClientController extends BaseClientController
 
             return \DataTables::of($payments->get())
                             ->addColumn('checkbox', function ($model) {
-                                
-                                    return "<input type='checkbox' class='payment_checkbox' 
+                                return "<input type='checkbox' class='payment_checkbox' 
                                     value=".$model->id.' name=select[] id=check>';
-                                
                             })
                             ->addColumn('number', function ($model) {
                                 return $model->invoice()->first()->number;
@@ -441,7 +439,7 @@ class ClientController extends BaseClientController
                                 return $date;
                             })
                             ->rawColumns(['checkbox', 'number', 'amount',
-                             'payment_method', 'payment_status', 'created_at', ])
+                                'payment_method', 'payment_status', 'created_at', ])
                             ->make(true);
         } catch (Exception $ex) {
             Bugsnag::notifyException($ex);

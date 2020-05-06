@@ -169,16 +169,16 @@ class RenewController extends BaseRenewController
     {
         try {
             $product = $this->getProductById($productid);
-            if (!$product) {
+            if (! $product) {
                 throw new Exception('Product has removed from database');
             }
             $currency = $this->getUserCurrencyById($userid);
             $price = $product->price()->where('currency', $currency)->first();
-            if (!$price) {
+            if (! $price) {
                 throw new Exception('Price has removed from database');
             }
             $cost = $price->sales_price;
-            if (!$cost) {
+            if (! $cost) {
                 $cost = $price->regular_price;
             }
 
@@ -192,7 +192,7 @@ class RenewController extends BaseRenewController
     {
         try {
             $user = $this->user->find($userid);
-            if (!$user) {
+            if (! $user) {
                 throw new Exception('User has removed from database');
             }
 
@@ -209,7 +209,7 @@ class RenewController extends BaseRenewController
             $tax = $controller->checkTax($product->id, $userid);
             $tax_name = '';
             $tax_rate = '';
-            if (!empty($tax)) {
+            if (! empty($tax)) {
 
                     //dd($value);
                 $tax_name .= $tax[0].',';

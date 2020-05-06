@@ -16,14 +16,12 @@ class ProcessController extends Controller
         $this->stripe = $stripe;
     }
 
-
-     public function payWithStripe(Request $request)
+    public function payWithStripe(Request $request)
     {
         $path = app_path().'/Plugins/Stripe/views';
-            \View::addNamespace('plugins', $path);
-            echo view('plugins::middle-page');
+        \View::addNamespace('plugins', $path);
+        echo view('plugins::middle-page');
     }
-
 
     public function PassToPayment($requests)
     {
@@ -34,20 +32,20 @@ class ProcessController extends Controller
             if ($cart->count() > 0) {
                 $invoice->grand_total = intval(\Cart::getTotal());
             } else {
-                 \Cart::clear();
+                \Cart::clear();
                 \Session::put('invoiceid', $invoice->id);
             }
             if ($request->input('payment_gateway') == 'Stripe') {
-                if (!\Schema::hasTable('stripe')) {
+                if (! \Schema::hasTable('stripe')) {
                     throw new \Exception('Stripe is not configured');
                 }
                 $stripe = $this->stripe->where('id', 1)->first();
-                if (!$stripe) {
+                if (! $stripe) {
                     throw new \Exception('Stripe Fields not given');
                 }
                 $data = $this->getFields($invoice);
-                \Session::put('invoice',$invoice);
-                \Session::put('amount',$data['amount']);
+                \Session::put('invoice', $invoice);
+                \Session::put('amount', $data['amount']);
                 $this->middlePage($data);
             }
         } catch (\Exception $ex) {
@@ -61,7 +59,7 @@ class ProcessController extends Controller
             $item = [];
             $data = [];
             $user = \Auth::user();
-            if (!$user) {
+            if (! $user) {
                 throw new \Exception('No autherized user');
             }
             $config = $this->stripe->where('id', 1)->first();
@@ -116,14 +114,11 @@ class ProcessController extends Controller
         }
     }
 
- 
-
-
     public function middlePage($data)
     {
         try {
             $path = app_path().'/Plugins/Stripe/views';
-            \Session::put('data',$data['amount']);
+            \Session::put('data', $data['amount']);
             \View::addNamespace('plugins', $path);
             echo view('plugins::middle-page', compact('data'));
         } catch (\Exception $ex) {
@@ -176,8 +171,6 @@ class ProcessController extends Controller
             \Cart::clear();
         }
     }
-
-
 
     public function cancel(Request $request)
     {

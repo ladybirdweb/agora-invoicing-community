@@ -46,7 +46,7 @@ class Util
      */
     public static function parseParameters($input)
     {
-        if (!isset($input) || !$input) {
+        if (! isset($input) || ! $input) {
             return [];
         }
 
@@ -84,7 +84,7 @@ class Util
      */
     public static function buildHttpQuery($params)
     {
-        if (!$params) {
+        if (! $params) {
             return '';
         }
 

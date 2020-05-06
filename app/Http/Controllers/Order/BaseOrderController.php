@@ -3,17 +3,14 @@
 namespace App\Http\Controllers\Order;
 
 use App\Http\Controllers\License\LicensePermissionsController;
-use App\Plugins\Stripe\Controllers\SettingsController;
 use App\Model\Common\StatusSetting;
 use App\Model\Order\Order;
 use App\Model\Product\Product;
+use App\Plugins\Stripe\Controllers\SettingsController;
 use App\Traits\Order\UpdateDates;
 use App\User;
 use Bugsnag;
 use Crypt;
-use DateTime;
-use DateTimeZone;
-use Illuminate\Http\Request;
 
 class BaseOrderController extends ExtendedOrderController
 {
@@ -81,16 +78,16 @@ class BaseOrderController extends ExtendedOrderController
             $plan_id = $this->plan($item->id);
             $order = $this->order->create([
 
-            'invoice_id'      => $invoiceid,
-            'invoice_item_id' => $item->id,
-            'client'          => $user_id,
-            'order_status'    => $order_status,
-            'serial_key'      => Crypt::encrypt($serial_key),
-            'product'         => $product,
-            'price_override'  => $item->subtotal,
-            'qty'             => $item->quantity,
-            'domain'          => $domain,
-            'number'          => $this->generateNumber(),
+                'invoice_id'      => $invoiceid,
+                'invoice_item_id' => $item->id,
+                'client'          => $user_id,
+                'order_status'    => $order_status,
+                'serial_key'      => Crypt::encrypt($serial_key),
+                'product'         => $product,
+                'price_override'  => $item->subtotal,
+                'qty'             => $item->quantity,
+                'domain'          => $domain,
+                'number'          => $this->generateNumber(),
             ]);
             $this->addOrderInvoiceRelation($invoiceid, $order->id);
 
@@ -264,7 +261,6 @@ class BaseOrderController extends ExtendedOrderController
         $invoiceurl = $this->invoiceUrl($orderid);
         //template
         $mail = $this->getMail($setting, $user, $downloadurl, $invoiceurl, $order, $product, $orderid, $myaccounturl);
-
     }
 
     public function getMail($setting, $user, $downloadurl, $invoiceurl, $order, $product, $orderid, $myaccounturl)
@@ -281,7 +277,7 @@ class BaseOrderController extends ExtendedOrderController
             $data = $template->data;
             $replace = [
                 'name'          => $user->first_name.' '.$user->last_name,
-                 'serialkeyurl' => $myaccounturl,
+                'serialkeyurl' => $myaccounturl,
                 'downloadurl'   => $downloadurl,
                 'invoiceurl'    => $invoiceurl,
                 'product'       => $product,
@@ -290,7 +286,7 @@ class BaseOrderController extends ExtendedOrderController
                 'url'           => $this->renew($orderid),
                 'knowledge_base'=> $knowledgeBaseUrl,
 
-                ];
+            ];
             $type = '';
             if ($template) {
                 $type_id = $template->type;
@@ -299,16 +295,15 @@ class BaseOrderController extends ExtendedOrderController
             }
             $templateController = new \App\Http\Controllers\Common\TemplateController();
             $mail = $templateController->mailing($from, $to, $data, $subject, $replace, $type);
-            if($order->invoice->grand_total) {
-                SettingsController::sendPaymentSuccessMailtoAdmin($order->invoice->currency,$order->invoice->grand_total,$user,$product);
+            if ($order->invoice->grand_total) {
+                SettingsController::sendPaymentSuccessMailtoAdmin($order->invoice->currency, $order->invoice->grand_total, $user, $product);
             }
+
             return $mail;
-        } catch(\Exception $ex) {
+        } catch (\Exception $ex) {
             dd($ex);
             throw new Exception($ex->getMessage());
-            
         }
-    
     }
 
     public function invoiceUrl($orderid)

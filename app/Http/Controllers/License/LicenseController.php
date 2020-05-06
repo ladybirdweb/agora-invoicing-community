@@ -297,7 +297,7 @@ class LicenseController extends Controller
         $ip = $ipAndDomain['ip'];
         $domain = $ipAndDomain['domain'];
         $requireDomain = $ipAndDomain['requireDomain'];
-        
+
         $api_key_secret = $this->api_key_secret;
         $searchLicense = $this->searchLicenseId($licenseCode, $productId);
         $licenseId = $searchLicense['licenseId'];

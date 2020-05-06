@@ -247,8 +247,8 @@ class PlanController extends ExtendedPlanController
             'name'                => 'required',
             'add_price.*'         => 'required',
             'product'             => 'required',
-              'days'              => $days_rule.'numeric',
-               'product_quantity' => 'required_without:no_of_agents|integer|min:0',
+            'days'              => $days_rule.'numeric',
+            'product_quantity' => 'required_without:no_of_agents|integer|min:0',
             'no_of_agents'        => 'required_without:product_quantity|integer|min:0',
         ]);
         $product_quantity = $request->input('product_quantity');
@@ -299,7 +299,7 @@ class PlanController extends ExtendedPlanController
     public function destroy(Request $request)
     {
         $ids = $request->input('select');
-        if (!empty($ids)) {
+        if (! empty($ids)) {
             foreach ($ids as $id) {
                 $plan = $this->plan->where('id', $id)->first();
                 if ($plan) {

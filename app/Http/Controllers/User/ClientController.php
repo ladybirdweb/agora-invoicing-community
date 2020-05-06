@@ -13,8 +13,6 @@ use App\Model\User\AccountActivate;
 use App\Traits\PaymentsAndInvoices;
 use App\User;
 use Bugsnag;
-use DateTime;
-use DateTimeZone;
 use Illuminate\Http\Request;
 
 class ClientController extends AdvanceSearchController
@@ -62,8 +60,8 @@ class ClientController extends AdvanceSearchController
 
         return\ DataTables::of($baseQuery)
                         ->addColumn('checkbox', function ($model) {
-                             return "<input type='checkbox' class='user_checkbox' value=".$model->id.' name=select[] id=check>';
-                         })
+                            return "<input type='checkbox' class='user_checkbox' value=".$model->id.' name=select[] id=check>';
+                        })
                         ->addColumn('name', function ($model) {
                             return '<a href='.url('clients/'.$model->id).'>'.ucfirst($model->name).'</a>';
                         })
@@ -80,7 +78,7 @@ class ClientController extends AdvanceSearchController
                             return $model->company;
                         })
                         ->addColumn('created_at', function ($model) {
-                              return getDateHtml($model->created_at);
+                            return getDateHtml($model->created_at);
                         })
                         ->addColumn('active', function ($model) {
                             if ($model->active == 1) {
@@ -109,28 +107,28 @@ class ClientController extends AdvanceSearchController
                                     <i class='fa fa-eye' style='color:white;'> </i>&nbsp;&nbsp;View</a>";
                         })
 
-                        ->filterColumn('name', function($model, $keyword) {
+                        ->filterColumn('name', function ($model, $keyword) {
                             // removing all white spaces so that it can be searched irrespective of number of spaces
                             $model->whereRaw("CONCAT(first_name, ' ',last_name) like ?", ["%$keyword%"]);
                         })
-                        ->filterColumn('email', function($model, $keyword) {
-                            $model->whereRaw("email like ?", ["%$keyword%"]);
+                        ->filterColumn('email', function ($model, $keyword) {
+                            $model->whereRaw('email like ?', ["%$keyword%"]);
                         })
-                        ->filterColumn('mobile', function($model, $keyword) {
+                        ->filterColumn('mobile', function ($model, $keyword) {
                             // removing all white spaces so that it can be searched in a single query
                             $searchQuery = str_replace(' ', '', $keyword);
                             $model->whereRaw("CONCAT('+', mobile_code, mobile) like ?", ["%$searchQuery%"]);
                         })
-                        ->filterColumn('country', function($model, $keyword) {
+                        ->filterColumn('country', function ($model, $keyword) {
                             // removing all white spaces so that it can be searched in a single query
                             $searchQuery = str_replace(' ', '', $keyword);
-                            $model->whereRaw("country_name like ?", ["%$searchQuery%"]);
+                            $model->whereRaw('country_name like ?', ["%$searchQuery%"]);
                         })
-                        ->orderColumn("name", "name $1")
-                        ->orderColumn("email", "email $1")
-                        ->orderColumn("mobile", "mobile $1")
-                        ->orderColumn("country", "country $1")
-                        ->orderColumn("created_at", "created_at $1")
+                        ->orderColumn('name', 'name $1')
+                        ->orderColumn('email', 'email $1')
+                        ->orderColumn('mobile', 'mobile $1')
+                        ->orderColumn('country', 'country $1')
+                        ->orderColumn('created_at', 'created_at $1')
 
                         ->rawColumns(['checkbox', 'name', 'email',  'created_at', 'active', 'action'])
                         ->make(true);
@@ -374,7 +372,7 @@ class ClientController extends AdvanceSearchController
     {
         try {
             $ids = $request->input('select');
-            if (!empty($ids)) {
+            if (! empty($ids)) {
                 foreach ($ids as $id) {
                     $user = $this->user->where('id', $id)->first();
                     //Check if this admin  is account manager and is assigned as account manager to other clients
@@ -447,7 +445,7 @@ class ClientController extends AdvanceSearchController
         $subject = $template->name;
         $data = $template->data;
         $replace = ['name' => $user->first_name.' '.$user->last_name,
-        'username'         => $user->email, 'password' => $str, 'url' => $url, ];
+            'username'         => $user->email, 'password' => $str, 'url' => $url, ];
         $type = '';
         if ($template) {
             $type_id = $template->type;
@@ -462,30 +460,30 @@ class ClientController extends AdvanceSearchController
     }
 
     /**
-     * Gets baseQuery for user search by appending all the allowed filters
+     * Gets baseQuery for user search by appending all the allowed filters.
      * @param $request
      * @return mixed
      */
-    private function getBaseQueryForUserSearch(Request $request) {
-
+    private function getBaseQueryForUserSearch(Request $request)
+    {
         $baseQuery = User::leftJoin('countries', 'users.country', '=', 'countries.country_code_char2')
             ->select('id', 'first_name', 'last_name', 'email',
                 \DB::raw("CONCAT('+', mobile_code, ' ', mobile) as mobile"),
                 \DB::raw("CONCAT(first_name, ' ', last_name) as name"),
                 'country_name as country', 'created_at', 'active', 'mobile_verified', 'role', 'position'
-            )->when($request->company, function($query) use($request) {
+            )->when($request->company, function ($query) use ($request) {
                 $query->where('company', 'LIKE', '%'.$request->company.'%');
-            })->when($request->country, function($query) use($request) {
+            })->when($request->country, function ($query) use ($request) {
                 $query->where('country', $request->country);
-            })->when($request->industry, function($query) use($request){
+            })->when($request->industry, function ($query) use ($request) {
                 $query->where('bussiness', $request->industry);
-            })->when($request->role, function($query) use($request){
+            })->when($request->role, function ($query) use ($request) {
                 $query->where('role', $request->role);
-            })->when($request->position, function($query) use($request){
+            })->when($request->position, function ($query) use ($request) {
                 $query->where('position', $request->position);
-            })->when($request->actmanager, function($query) use($request){
+            })->when($request->actmanager, function ($query) use ($request) {
                 $query->where('account_manager', $request->actmanager);
-            })->when($request->salesmanager, function($query) use($request){
+            })->when($request->salesmanager, function ($query) use ($request) {
                 $query->where('manager', $request->salesmanager);
             });
 

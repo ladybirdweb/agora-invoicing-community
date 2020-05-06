@@ -149,7 +149,7 @@ class PaymentSettingsController extends Controller
     {
         $plugs = new Plugin();
         $plug = $plugs->where('name', $slug)->first();
-        if (!$plug) {
+        if (! $plug) {
             $app = base_path().DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'app.php';
             $str = "\n'App\\Plugins\\$slug"."\\ServiceProvider',";
             $line_i_am_looking_for = 102;
@@ -268,10 +268,10 @@ class PaymentSettingsController extends Controller
      */
     public function deleteDirectory($dir)
     {
-        if (!file_exists($dir)) {
+        if (! file_exists($dir)) {
             return true;
         }
-        if (!is_dir($dir)) {
+        if (! is_dir($dir)) {
             return unlink($dir);
         }
         foreach (scandir($dir) as $item) {
@@ -279,7 +279,7 @@ class PaymentSettingsController extends Controller
                 continue;
             }
             chmod($dir.DIRECTORY_SEPARATOR.$item, 0777);
-            if (!$this->deleteDirectory($dir.DIRECTORY_SEPARATOR.$item)) {
+            if (! $this->deleteDirectory($dir.DIRECTORY_SEPARATOR.$item)) {
                 return false;
             }
         }

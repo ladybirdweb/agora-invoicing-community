@@ -8,7 +8,6 @@ use App\Model\Payment\Plan;
 use App\Model\Product\Addon;
 use App\Model\Product\Product;
 use App\Model\Product\ProductAddonRelation;
-use App\Model\Product\Subscription;
 use Illuminate\Http\Request;
 
 class AddonController extends Controller
@@ -161,7 +160,7 @@ class AddonController extends Controller
     {
         try {
             $ids = $request->input('select');
-            if (!empty($ids)) {
+            if (! empty($ids)) {
                 foreach ($ids as $id) {
                     $addon = $this->addon->where('id', $id)->first();
                     if ($addon) {

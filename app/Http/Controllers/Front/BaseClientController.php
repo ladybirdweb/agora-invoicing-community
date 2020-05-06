@@ -45,24 +45,6 @@ class BaseClientController extends Controller
         return $listUrl;
     }
 
-    /**
-     * Get expiry Date for order.
-     *
-     * @param type $orders
-     *
-     * @return type
-     */
-    public function getExpiryDate($orders)
-    {
-        $end = '--';
-        if ($orders->subscription()->first()) {
-            if (strtotime($orders->subscription()->first()->update_ends_at) > 1) {
-                $end = getExpiryLabel($orders->subscription()->first()->update_ends_at,'badge');
-            }
-        }
-
-        return $end;
-    }
 
     public function downloadPopup($clientid, $invoiceid, $productid)
     {

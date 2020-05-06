@@ -79,7 +79,7 @@ class CheckoutController extends InfoController
      */
     public function checkoutForm(Request $request)
     {
-        if (!\Auth::user()) {//If User is not Logged in then send him to login Page
+        if (! \Auth::user()) {//If User is not Logged in then send him to login Page
             $url = $request->segments(); //The requested url (chekout).Save it in Session
             \Session::put('session-url', $url[0]);
             $content = Cart::getContent();
@@ -150,8 +150,8 @@ class CheckoutController extends InfoController
 
                     //Return array of Product Details,attributes and their conditions
                     $items[] = ['id' => $item->id, 'name' => $item->name, 'price' => $item->price,
-                    'quantity'       => $item->quantity, 'attributes' => ['currency'=> $attributes[0]['currency'],
-                    'agents'                                                        => $attributes[0]['agents'], 'tax'=>$taxConditions['tax_attributes'], ], 'conditions'=>$taxConditions['conditions'], ];
+                        'quantity'       => $item->quantity, 'attributes' => ['currency'=> $attributes[0]['currency'],
+                            'agents'                                                        => $attributes[0]['agents'], 'tax'=>$taxConditions['tax_attributes'], ], 'conditions'=>$taxConditions['conditions'], ];
                 }
                 Cart::add($items);
             }
@@ -196,10 +196,10 @@ class CheckoutController extends InfoController
         $state = $this->getState();
         if (Cart::getSubTotal() != 0 || $cost > 0) {
             $this->validate($request, [
-                    'payment_gateway'=> 'required',
-                    ], [
-                        'payment_gateway.required'=> 'Please Select a Payment Gateway',
-                    ]);
+                'payment_gateway'=> 'required',
+            ], [
+                'payment_gateway.required'=> 'Please Select a Payment Gateway',
+            ]);
         }
 
         try {

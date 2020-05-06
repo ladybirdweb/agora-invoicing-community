@@ -18,9 +18,9 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         //
-         'App\Console\Commands\Inspire',
-         \App\Console\Commands\Install::class,
-          CurrencyManage::class,
+        'App\Console\Commands\Inspire',
+        \App\Console\Commands\Install::class,
+        CurrencyManage::class,
         'App\Console\Commands\ExpiryCron',
         SetupTestEnv::class,
     ];

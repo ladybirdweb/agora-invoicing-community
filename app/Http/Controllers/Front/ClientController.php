@@ -18,7 +18,6 @@ use DateTime;
 use DateTimeZone;
 use Exception;
 use GrahamCampbell\Markdown\Facades\Markdown;
-use Illuminate\Http\Request;
 
 class ClientController extends BaseClientController
 {
@@ -253,7 +252,7 @@ class ClientController extends BaseClientController
                                     $actionButton = $this->getActionButton($countExpiry, $countVersions, $link, $orderEndDate, $productid);
 
                                     return $actionButton;
-                                } elseif (!$orderEndDate) {
+                                } elseif (! $orderEndDate) {
                                     $link = $this->github_api->getCurl1($link['zipball_url']);
 
                                     return '<p><a href='.$link['header']['Location']
@@ -278,6 +277,7 @@ class ClientController extends BaseClientController
     {
         try {
             $orders = $this->getClientPanelOrdersData();
+
             return \DataTables::of($orders)
                             ->addColumn('id', function ($model) {
                                 return $model->id;
@@ -286,13 +286,13 @@ class ClientController extends BaseClientController
                                 return $model->product_name;
                             })
                             ->addColumn('number', function ($model) {
-                              return '<a href='.url('my-order/'.$model->id).'>'.$model->number.'</a>';
+                                return '<a href='.url('my-order/'.$model->id).'>'.$model->number.'</a>';
                             })
                             ->addColumn('version', function ($model) {
-                              return getVersionAndLabel($model->version,$model->product_name,'badge');
+                                return getVersionAndLabel($model->version, $model->product_name, 'badge');
                             })
                             ->addColumn('expiry', function ($model) {
-                              return getExpiryLabel($model->update_ends_at,'badge');
+                                return getExpiryLabel($model->update_ends_at, 'badge');
                             })
 
                             ->addColumn('Action', function ($model) {
@@ -300,7 +300,7 @@ class ClientController extends BaseClientController
                                 $status = $order_cont->checkInvoiceStatusByOrderId($model->id);
                                 $url = '';
                                 if ($status == 'success') {
-                                        $url = $this->renewPopup($model->sub_id, $model->product_id);
+                                    $url = $this->renewPopup($model->sub_id, $model->product_id);
                                 }
 
                                 $listUrl = $this->getPopup($model, $model->product_id);
@@ -309,7 +309,7 @@ class ClientController extends BaseClientController
                                 class='btn  btn-primary btn-xs' style='margin-right:5px;'>
                                 <i class='fa fa-eye' title='Details of order'></i>&nbsp;View $listUrl $url </a>";
                             })
-                            ->rawColumns(['id', 'product_name', 'number','version', 'expiry', 'Action'])
+                            ->rawColumns(['id', 'product_name', 'number', 'version', 'expiry', 'Action'])
                             ->make(true);
         } catch (Exception $ex) {
             app('log')->error($ex->getMessage());
@@ -320,13 +320,14 @@ class ClientController extends BaseClientController
 
     public function getClientPanelOrdersData()
     {
-        return Order::leftJoin('products','products.id','=','orders.product')
-            ->leftJoin('subscriptions','orders.id','=','subscriptions.order_id')
-            ->leftJoin('invoices','orders.invoice_id','invoices.id')
-            ->select('products.name as product_name','products.github_owner','products.github_repository','products.type','products.id as product_id','orders.id','orders.number','orders.client','subscriptions.id as sub_id','subscriptions.version','subscriptions.update_ends_at','products.name','orders.client','invoices.id as invoice_id','invoices.number as invoice_number')
-            ->where('orders.client',\Auth::user()->id)
-            ->get()->map(function($element){
-                $element->update_ends_at = strtotime($element->update_ends_at)>1 ? $element->update_ends_at:'--';
+        return Order::leftJoin('products', 'products.id', '=', 'orders.product')
+            ->leftJoin('subscriptions', 'orders.id', '=', 'subscriptions.order_id')
+            ->leftJoin('invoices', 'orders.invoice_id', 'invoices.id')
+            ->select('products.name as product_name', 'products.github_owner', 'products.github_repository', 'products.type', 'products.id as product_id', 'orders.id', 'orders.number', 'orders.client', 'subscriptions.id as sub_id', 'subscriptions.version', 'subscriptions.update_ends_at', 'products.name', 'orders.client', 'invoices.id as invoice_id', 'invoices.number as invoice_number')
+            ->where('orders.client', \Auth::user()->id)
+            ->get()->map(function ($element) {
+                $element->update_ends_at = strtotime($element->update_ends_at) > 1 ? $element->update_ends_at : '--';
+
                 return $element;
             });
     }
@@ -359,9 +360,10 @@ class ClientController extends BaseClientController
             ->pluck('name', 'short')->toArray();
             $selectedCompanySize = \DB::table('company_sizes')->where('short', $user->company_size)
             ->pluck('name', 'short')->toArray();
+
             return view(
                 'themes.default1.front.clients.profile',
-                compact('user', 'timezones', 'state', 'states', 'bussinesses','is2faEnabled','dateSinceEnabled','selectedIndustry','selectedCompany','selectedCompanySize')
+                compact('user', 'timezones', 'state', 'states', 'bussinesses', 'is2faEnabled', 'dateSinceEnabled', 'selectedIndustry', 'selectedCompany', 'selectedCompanySize')
             );
         } catch (Exception $ex) {
             Bugsnag::notifyException($ex);
@@ -381,9 +383,9 @@ class ClientController extends BaseClientController
             $licdate = '--';
             $versionLabel = '--';
             if ($subscription) {
-                $date =  strtotime($subscription->update_ends_at)>1 ? getExpiryLabel($subscription->update_ends_at,'badge'): '--';
-                $licdate = strtotime($subscription->ends_at)>1 ? getExpiryLabel($subscription->ends_at,'badge') :'--' ;
-                $versionLabel = getVersionAndLabel($subscription->version,$order->product,'badge');
+                $date = strtotime($subscription->update_ends_at) > 1 ? getExpiryLabel($subscription->update_ends_at, 'badge') : '--';
+                $licdate = strtotime($subscription->ends_at) > 1 ? getExpiryLabel($subscription->ends_at, 'badge') : '--';
+                $versionLabel = getVersionAndLabel($subscription->version, $order->product, 'badge');
             }
             $installationDetails = [];
             $noOfAllowedInstallation = '';
@@ -401,7 +403,7 @@ class ClientController extends BaseClientController
 
             return view(
                 'themes.default1.front.clients.show-order',
-                compact('invoice', 'order', 'user',  'product', 'subscription', 'licenseStatus', 'installationDetails', 'allowDomainStatus','date','licdate','versionLabel')
+                compact('invoice', 'order', 'user', 'product', 'subscription', 'licenseStatus', 'installationDetails', 'allowDomainStatus', 'date', 'licdate', 'versionLabel')
             );
         } catch (Exception $ex) {
             dd($ex);
@@ -428,10 +430,8 @@ class ClientController extends BaseClientController
 
             return \DataTables::of($payments->get())
                             ->addColumn('checkbox', function ($model) {
-                                
-                                    return "<input type='checkbox' class='payment_checkbox' 
+                                return "<input type='checkbox' class='payment_checkbox' 
                                     value=".$model->id.' name=select[] id=check>';
-                                
                             })
                             ->addColumn('number', function ($model) {
                                 return $model->invoice()->first()->number;
@@ -457,7 +457,7 @@ class ClientController extends BaseClientController
                                 return $date;
                             })
                             ->rawColumns(['checkbox', 'number', 'amount',
-                             'payment_method', 'payment_status', 'created_at', ])
+                                'payment_method', 'payment_status', 'created_at', ])
                             ->make(true);
         } catch (Exception $ex) {
             Bugsnag::notifyException($ex);
@@ -476,10 +476,11 @@ class ClientController extends BaseClientController
             } else {
                 $invoices = $order->invoice()->value('id');
             }
-            $payments = Payment::leftJoin('invoices','payments.invoice_id','=', 'invoices.id')
-            ->select('payments.id', 'payments.invoice_id', 'payments.user_id', 'payments.payment_method', 'payments.payment_status', 'payments.created_at', 'payments.amount','invoices.id as invoice_id','invoices.number as invoice_number')
-            ->where('invoices.id',$invoices)
+            $payments = Payment::leftJoin('invoices', 'payments.invoice_id', '=', 'invoices.id')
+            ->select('payments.id', 'payments.invoice_id', 'payments.user_id', 'payments.payment_method', 'payments.payment_status', 'payments.created_at', 'payments.amount', 'invoices.id as invoice_id', 'invoices.number as invoice_number')
+            ->where('invoices.id', $invoices)
             ->get();
+
             return \DataTables::of($payments)
                             ->addColumn('number', function ($payments) {
                                 return '<a href='.url('my-invoice/'.$payments->id).'>'.$payments->invoice_number.'</a>';

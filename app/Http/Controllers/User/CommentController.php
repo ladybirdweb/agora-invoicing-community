@@ -75,7 +75,7 @@ class CommentController extends Controller
     {
         try {
             $comment = $this->comment->where('id', $id)->update(['user_id'=> $request->input('user_id'),
-            'updated_by_user_id'                                          => $request->input('updated_by_user_id'), 'description'=>$request->input('description'), ]);
+                'updated_by_user_id'                                          => $request->input('updated_by_user_id'), 'description'=>$request->input('description'), ]);
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (Exception $ex) {

@@ -40,7 +40,7 @@ return [
             'prefix'   => '',
         ],
 
-         'mysql' => [
+        'mysql' => [
             'driver'      => 'mysql',
             'host'        => env('DB_HOST', 'localhost'),
             'port'        => env('DB_PORT', ''),
@@ -55,7 +55,7 @@ return [
             'engine'      => env('DB_ENGINE', null),
         ],
 
-      'testing' => [
+        'testing' => [
             'driver'      => 'mysql',
             'host'        => env('DB_HOST', 'localhost'),
             'database'    => env('DB_DATABASE', 'db_testing'),

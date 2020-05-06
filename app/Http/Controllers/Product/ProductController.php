@@ -173,12 +173,12 @@ class ProductController extends BaseProductController
         $this->validate(
             $request,
             [
-       'producttitle'  => 'required',
-        'version'      => 'required',
-       'filename'      => 'required',
-       ],
+                'producttitle'  => 'required',
+                'version'      => 'required',
+                'filename'      => 'required',
+            ],
        ['filename.required' => 'Please Uplaod A file',
-        ]
+       ]
         );
 
         try {
@@ -261,18 +261,18 @@ class ProductController extends BaseProductController
     {
         $input = $request->all();
         $v = \Validator::make($input, [
-                        'name'       => 'required|unique:products,name',
-                        'type'       => 'required',
-                        'description'=> 'required',
-                        'category'   => 'required',
-                        'image'      => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
-                        'product_sku'=> 'required|unique:products,product_sku',
-                        'group'      => 'required',
-                        'show_agent' => 'required',
-                        // 'version' => 'required',
-            ], [
+            'name'       => 'required|unique:products,name',
+            'type'       => 'required',
+            'description'=> 'required',
+            'category'   => 'required',
+            'image'      => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
+            'product_sku'=> 'required|unique:products,product_sku',
+            'group'      => 'required',
+            'show_agent' => 'required',
+            // 'version' => 'required',
+        ], [
             'show_agent.required' => 'Select you Cart Page Preference',
-            ]);
+        ]);
 
         if ($v->fails()) {
             //     $currency = $input['currency'];
@@ -399,12 +399,12 @@ class ProductController extends BaseProductController
     {
         $input = $request->all();
         $v = \Validator::make($input, [
-                        'name'       => 'required',
-                        'type'       => 'required',
-                        'description'=> 'required',
-                        'image'      => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
-                        'product_sku'=> 'required',
-                        'group'      => 'required',
+            'name'       => 'required',
+            'type'       => 'required',
+            'description'=> 'required',
+            'image'      => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
+            'product_sku'=> 'required',
+            'group'      => 'required',
         ]);
 
         if ($v->fails()) {
@@ -464,7 +464,7 @@ class ProductController extends BaseProductController
     {
         try {
             $ids = $request->input('select');
-            if (!empty($ids)) {
+            if (! empty($ids)) {
                 foreach ($ids as $id) {
                     $product = $this->product->where('id', $id)->first();
                     if ($product) {
@@ -525,7 +525,7 @@ class ProductController extends BaseProductController
         try {
             $ids = $request->input('select');
             $storagePath = Setting::find(1)->value('file_storage');
-            if (!empty($ids)) {
+            if (! empty($ids)) {
                 foreach ($ids as $id) {
                     $product = $this->product_upload->where('id', $id)->first();
                     if ($product) {

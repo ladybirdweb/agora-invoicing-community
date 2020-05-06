@@ -227,7 +227,7 @@ class CurrencyController extends Controller
     {
         try {
             $ids = $request->input('select');
-            if (!empty($ids)) {
+            if (! empty($ids)) {
                 foreach ($ids as $id) {
                     if ($id != 1) {
                         $currency = $this->currency->where('id', $id)->first();
@@ -288,7 +288,7 @@ class CurrencyController extends Controller
     {
         $countryDetails = Country::where('country_id', $request->id)->select('currency_code', 'currency_symbol', 'currency_name')->first();
         $data = (['code'=> $countryDetails->currency_code,
-          'symbol'      => $countryDetails->currency_symbol, 'currency'=>$countryDetails->currency_name, ]);
+            'symbol'      => $countryDetails->currency_symbol, 'currency'=>$countryDetails->currency_name, ]);
 
         return $data;
     }

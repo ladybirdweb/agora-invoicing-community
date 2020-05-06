@@ -49,7 +49,7 @@ class TaxController extends Controller
     {
         try {
             $options = $this->tax_option->find(1);
-            if (!$options) {
+            if (! $options) {
                 $options = '';
             }
             $classes = $this->tax_class->pluck('name', 'id')->toArray();
@@ -216,7 +216,7 @@ class TaxController extends Controller
     {
         try {
             $ids = $request->input('select');
-            if (!empty($ids)) {
+            if (! empty($ids)) {
                 foreach ($ids as $id) {
                     $tax = $this->tax->where('id', $id)->first();
                     $taxClassId = $tax->tax_classes_id;
@@ -307,15 +307,15 @@ class TaxController extends Controller
         if ($request->input('name') == 'Others') {
             // if($request->)
             $this->validate($request, [
-            'rate'        => 'required',
-        ]);
+                'rate'        => 'required',
+            ]);
         }
 
         try {
             $method = $request->method();
             if ($method == 'PATCH') {
                 $rules = $this->tax_option->find(1);
-                if (!$rules) {
+                if (! $rules) {
                     $this->tax_option->create($request->input());
                 } else {
                     $rules->fill($request->input())->save();

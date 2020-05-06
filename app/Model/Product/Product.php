@@ -19,7 +19,7 @@ class Product extends BaseModel
     protected static $logName = 'Product';
 
     protected static $logAttributes = ['name', 'description', 'type', 'file', 'category',
-         'github_owner', 'github_repository', 'version',  'subscription', 'hidden', 'product_sku', ];
+        'github_owner', 'github_repository', 'version',  'subscription', 'hidden', 'product_sku', ];
 
     protected static $logOnlyDirty = true;
 
@@ -44,7 +44,7 @@ class Product extends BaseModel
 
     public function order()
     {
-        return $this->hasMany('App\Model\Order\Order', "product");
+        return $this->hasMany('App\Model\Order\Order', 'product');
     }
 
     public function subscription()
@@ -88,7 +88,7 @@ class Product extends BaseModel
 
     public function getImageAttribute($value)
     {
-        if (!$value) {
+        if (! $value) {
             $image = asset('common/images/No-image-found.jpg');
         } else {
             $image = asset("common/images/$value");

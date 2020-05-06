@@ -1,10 +1,11 @@
 <?php
+
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
+use Artisan;
 use Config;
 use DB;
-use Artisan;
+use Illuminate\Console\Command;
 
 class SetupTestEnv extends Command
 {
@@ -33,8 +34,8 @@ class SetupTestEnv extends Command
         $dbPassword = $this->option('password') ? $this->option('password') : env('DB_PASSWORD');
         $dbName = $this->option('database') ? $this->option('database') : 'billing_testing_db';
 
-        $dbPassword = !$dbPassword ? "" : $dbPassword;
-        $this->setupConfig($dbUsername, $dbPassword,'','Innodb');
+        $dbPassword = ! $dbPassword ? '' : $dbPassword;
+        $this->setupConfig($dbUsername, $dbPassword, '', 'Innodb');
 
         echo "\nCreating database...\n";
 
@@ -76,7 +77,7 @@ class SetupTestEnv extends Command
     }
 
     /**
-     * Creates an env file if not exists already
+     * Creates an env file if not exists already.
      * @param  string $dbUsername
      * @param  string $dbPassword
      * @return null
@@ -94,21 +95,21 @@ class SetupTestEnv extends Command
             $config .= "{$key}={$val}\n";
         }
 
-        $envLocation = base_path() . DIRECTORY_SEPARATOR . '.env.testing';
+        $envLocation = base_path().DIRECTORY_SEPARATOR.'.env.testing';
 
         // Write environment file
-        $fp = fopen(base_path() . DIRECTORY_SEPARATOR . '.env.testing', 'w');
+        $fp = fopen(base_path().DIRECTORY_SEPARATOR.'.env.testing', 'w');
         fwrite($fp, $config);
         fclose($fp);
     }
 
     /**
-     * Sets up DB config for testing
+     * Sets up DB config for testing.
      * @param  string $dbUsername  mysql username
      * @param  string $dbPassword  mysql password
      * @return null
      */
-    private function setupConfig($dbUsername, $dbPassword, $port='', $dbengine='')
+    private function setupConfig($dbUsername, $dbPassword, $port = '', $dbengine = '')
     {
         Config::set('app.env', 'development');
         Config::set('database.connections.mysql.port', '');
@@ -119,9 +120,8 @@ class SetupTestEnv extends Command
         Config::set('database.install', 0);
     }
 
-
     /**
-     * Creates an empty DB with given name
+     * Creates an empty DB with given name.
      * @param string $dbName    name of the DB
      * @return null
      */
@@ -137,5 +137,4 @@ class SetupTestEnv extends Command
         // populated
         \DB::disconnect('mysql');
     }
-
 }

@@ -18,7 +18,7 @@ class SettingsController extends Controller
     public function Settings()
     {
         try {
-            if (!Schema::hasTable('paypal')) {
+            if (! Schema::hasTable('paypal')) {
                 Schema::create('paypal', function ($table) {
                     $table->increments('id');
                     $table->string('business');
@@ -37,7 +37,7 @@ class SettingsController extends Controller
             //dd($ccavanue);
             $paypal = $paypal1->where('id', '1')->first();
 
-            if (!$paypal) {
+            if (! $paypal) {
                 $paypal1->create(['id' => '1']);
             }
             $path = app_path().'/Plugins/Paypal/views';

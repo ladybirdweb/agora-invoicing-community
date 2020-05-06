@@ -125,7 +125,7 @@ class PasswordController extends Controller
         $url = url("password/reset/$token");
         $user = new \App\User();
         $user = $user->where('email', $email)->first();
-        if (!$user) {
+        if (! $user) {
             return redirect()->back()->with('fails', 'Invalid Email');
         }
         //check in the settings

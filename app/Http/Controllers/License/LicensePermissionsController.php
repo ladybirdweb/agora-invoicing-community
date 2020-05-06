@@ -173,8 +173,8 @@ class LicensePermissionsController extends Controller
             }
 
             return ['generateUpdatesxpiryDate'=> $generateUpdatesxpiryDate, 'generateLicenseExpiryDate'=>$generateLicenseExpiryDate,
-            'generateSupportExpiryDate'       => $generateSupportExpiryDate, 'downloadPermission'=>$downloadPermission, 'noPermissions'=>$noPermissions,
-            'allowDownloadTillExpiry'         => $allowDownloadTillExpiry, ];
+                'generateSupportExpiryDate'       => $generateSupportExpiryDate, 'downloadPermission'=>$downloadPermission, 'noPermissions'=>$noPermissions,
+                'allowDownloadTillExpiry'         => $allowDownloadTillExpiry, ];
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex->getMessage());
             app('log')->error($ex->getMessage());

@@ -10,9 +10,6 @@ use App\Traits\Order\UpdateDates;
 use App\User;
 use Bugsnag;
 use Crypt;
-use DateTime;
-use DateTimeZone;
-use Illuminate\Http\Request;
 
 class BaseOrderController extends ExtendedOrderController
 {
@@ -80,16 +77,16 @@ class BaseOrderController extends ExtendedOrderController
             $plan_id = $this->plan($item->id);
             $order = $this->order->create([
 
-            'invoice_id'      => $invoiceid,
-            'invoice_item_id' => $item->id,
-            'client'          => $user_id,
-            'order_status'    => $order_status,
-            'serial_key'      => Crypt::encrypt($serial_key),
-            'product'         => $product,
-            'price_override'  => $item->subtotal,
-            'qty'             => $item->quantity,
-            'domain'          => $domain,
-            'number'          => $this->generateNumber(),
+                'invoice_id'      => $invoiceid,
+                'invoice_item_id' => $item->id,
+                'client'          => $user_id,
+                'order_status'    => $order_status,
+                'serial_key'      => Crypt::encrypt($serial_key),
+                'product'         => $product,
+                'price_override'  => $item->subtotal,
+                'qty'             => $item->quantity,
+                'domain'          => $domain,
+                'number'          => $this->generateNumber(),
             ]);
             $this->addOrderInvoiceRelation($invoiceid, $order->id);
 
@@ -276,7 +273,7 @@ class BaseOrderController extends ExtendedOrderController
         $data = $template->data;
         $replace = [
             'name'          => $user->first_name.' '.$user->last_name,
-             'serialkeyurl' => $myaccounturl,
+            'serialkeyurl' => $myaccounturl,
             'downloadurl'   => $downloadurl,
             'invoiceurl'    => $invoiceurl,
             'product'       => $product,
@@ -285,7 +282,7 @@ class BaseOrderController extends ExtendedOrderController
             'url'           => $this->renew($orderid),
             'knowledge_base'=> $knowledgeBaseUrl,
 
-            ];
+        ];
         $type = '';
         if ($template) {
             $type_id = $template->type;

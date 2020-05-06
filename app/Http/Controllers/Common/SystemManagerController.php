@@ -38,7 +38,7 @@ class SystemManagerController extends Controller
             foreach ($users as $user) {
                 if ($user->role == 'admin') {
                     $formatted_users[] = ['id'     => $user->id, 'text' => $user->email, 'profile_pic' => $user->profile_pic,
-                'first_name'                       => $user->first_name, 'last_name' => $user->last_name, ];
+                        'first_name'                       => $user->first_name, 'last_name' => $user->last_name, ];
                 }
             }
 

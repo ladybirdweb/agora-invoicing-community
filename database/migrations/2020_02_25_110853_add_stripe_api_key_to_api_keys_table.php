@@ -27,7 +27,7 @@ class AddStripeApiKeyToApiKeysTable extends Migration
     public function down()
     {
         Schema::table('api_keys', function (Blueprint $table) {
-           $table->dropColumn('stripe_key');
+            $table->dropColumn('stripe_key');
             $table->dropColumn('stripe_secret');
         });
     }

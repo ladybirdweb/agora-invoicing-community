@@ -31,11 +31,11 @@ class ProcessController extends Controller
             }
 
             if ($request->input('payment_gateway') == 'paypal') {
-                if (!\Schema::hasTable('paypal')) {
+                if (! \Schema::hasTable('paypal')) {
                     throw new \Exception('Paypal is not configured');
                 }
                 $paypal = $this->paypal->where('id', 1)->first();
-                if (!$paypal) {
+                if (! $paypal) {
                     throw new \Exception('Paypal Fields not given');
                 }
                 $data = $this->getFields($order);
@@ -53,7 +53,7 @@ class ProcessController extends Controller
             $item = [];
             $data = [];
             $user = \Auth::user();
-            if (!$user) {
+            if (! $user) {
                 throw new \Exception('No autherized user');
             }
             $config = $this->paypal->where('id', 1)->first();
@@ -124,7 +124,7 @@ class ProcessController extends Controller
     {
         try {
             $config = $this->paypal->where('id', 1)->first();
-            if (!$config) {
+            if (! $config) {
                 throw new \Exception('Paypal Fields not given');
             }
             $url = $config->paypal_url;
@@ -146,7 +146,7 @@ class ProcessController extends Controller
     {
         try {
             $config = $this->paypal->where('id', 1)->first();
-            if (!$config) {
+            if (! $config) {
                 throw new \Exception('Paypal Fields not given');
             }
             \Session::put('invoiceid', $data['invoice']);

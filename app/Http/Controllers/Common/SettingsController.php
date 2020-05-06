@@ -34,7 +34,7 @@ class SettingsController extends BaseSettingsController
 
     public function settings(Setting $settings)
     {
-        if (!$settings->where('id', '1')->first()) {
+        if (! $settings->where('id', '1')->first()) {
             $settings->create(['company' => '']);
         }
 
@@ -120,7 +120,7 @@ class SettingsController extends BaseSettingsController
             if ($active_plugins->count() > 0) {
                 foreach ($active_plugins as $plugin) {
                     $models[] = \DB::table(strtolower($plugin->name))->first(); //get the table of the active plugin
-                    $allCurrencies[] =  \DB::table(strtolower($plugin->name))->pluck('currencies')->toArray(); //get the table of the active plugin
+                    $allCurrencies[] = \DB::table(strtolower($plugin->name))->pluck('currencies')->toArray(); //get the table of the active plugin
                     $pluginName[] = $plugin->name; //get the name of active plugin
                 }
                 if (count($models) > 0) {//If more than 1 plugin is active it will check the currencies allowed for that plugin.If the currencies allowed matches the passed arguement(currency),that plugin name is returned
@@ -129,11 +129,12 @@ class SettingsController extends BaseSettingsController
                         $currencies = explode(',', $curr);
                         if (in_array($currency, $currencies)) {
                             $name = $pluginName[$i];
-                            $allAcivePluginName[] = $name; 
+                            $allAcivePluginName[] = $name;
                         }
                     }
                 }
             }
+
             return $allAcivePluginName;
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -163,17 +164,17 @@ class SettingsController extends BaseSettingsController
     public function postSettingsSystem(Setting $settings, Request $request)
     {
         $this->validate($request, [
-                'company'         => 'required',
-                'company_email'   => 'required',
-                'website'         => 'required',
-                'phone'           => 'required',
-                'address'         => 'required',
-                'country'         => 'required',
-                'default_currency'=> 'required',
-                'admin-logo'      => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
-                'fav-icon'        => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
-                'logo'            => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
-            ]);
+            'company'         => 'required',
+            'company_email'   => 'required',
+            'website'         => 'required',
+            'phone'           => 'required',
+            'address'         => 'required',
+            'country'         => 'required',
+            'default_currency'=> 'required',
+            'admin-logo'      => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
+            'fav-icon'        => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
+            'logo'            => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
+        ]);
 
         try {
             $setting = $settings->find(1);
@@ -219,13 +220,13 @@ class SettingsController extends BaseSettingsController
     public function postSettingsEmail(Setting $settings, Request $request)
     {
         $this->validate($request, [
-                'email'     => 'required',
-                'password'  => 'required',
-                'driver'    => 'required',
-                'port'      => 'required',
-                'encryption'=> 'required',
-                'host'      => 'required',
-            ]);
+            'email'     => 'required',
+            'password'  => 'required',
+            'driver'    => 'required',
+            'port'      => 'required',
+            'encryption'=> 'required',
+            'host'      => 'required',
+        ]);
 
         try {
             $setting = $settings->find(1);
@@ -431,7 +432,7 @@ class SettingsController extends BaseSettingsController
     {
         try {
             $ids = $request->input('select');
-            if (!empty($ids)) {
+            if (! empty($ids)) {
                 foreach ($ids as $id) {
                     $activity = Activity::where('id', $id)->first();
                     if ($activity) {

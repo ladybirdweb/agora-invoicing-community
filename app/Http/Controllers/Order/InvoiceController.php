@@ -239,7 +239,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $user = new User();
             if ($clientid) {
                 $user = $user->where('id', $clientid)->first();
-                if (!$user) {
+                if (! $user) {
                     return redirect()->back()->with('fails', 'Invalid user');
                 }
             } else {
@@ -290,8 +290,8 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 $attributes[] = $item->attributes;
             }
             $invoice = $this->invoice->create(['user_id' => $user_id, 'number' => $number,
-             'date'                                      => $date, 'discount'=>$codevalue, 'grand_total' => $grand_total, 'coupon_code'=>$code, 'status' => 'pending',
-             'currency'                                  => \Auth::user()->currency, ]);
+                'date'                                      => $date, 'discount'=>$codevalue, 'grand_total' => $grand_total, 'coupon_code'=>$code, 'status' => 'pending',
+                'currency'                                  => \Auth::user()->currency, ]);
 
             foreach (\Cart::getContent() as $cart) {
                 $this->createInvoiceItems($invoice->id, $cart, $codevalue);
@@ -359,13 +359,13 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
     public function invoiceGenerateByForm(Request $request, $user_id = '')
     {
         $this->validate($request, [
-                'date'      => 'required',
-                'domain'    => 'sometimes|nullable|regex:/^(?!:\/\/)(?=.{1,255}$)((.{1,63}\.){1,127}(?![0-9]*$)[a-z0-9-]+\.?)$/i',
-                'plan'      => 'required_if:subscription,true',
-                'price'     => 'required',
-            ], [
-                'plan.required_if' => 'Select a Plan',
-            ]);
+            'date'      => 'required',
+            'domain'    => 'sometimes|nullable|regex:/^(?!:\/\/)(?=.{1,255}$)((.{1,63}\.){1,127}(?![0-9]*$)[a-z0-9-]+\.?)$/i',
+            'plan'      => 'required_if:subscription,true',
+            'price'     => 'required',
+        ], [
+            'plan.required_if' => 'Select a Plan',
+        ]);
 
         try {
             $agents = $request->input('agents');
@@ -404,7 +404,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $tax = $this->checkTax($product->id, $user_id);
             $tax_name = '';
             $tax_rate = '';
-            if (!empty($tax)) {
+            if (! empty($tax)) {
                 $tax_name = $tax[0];
                 $tax_rate = $tax[1];
             }
@@ -413,7 +413,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $grand_total = \App\Http\Controllers\Front\CartController::rounding($grand_total);
 
             $invoice = Invoice::create(['user_id' => $user_id, 'number' => $number, 'date' => $date,
-             'coupon_code'                        => $code, 'discount'=>$codeValue,
+                'coupon_code'                        => $code, 'discount'=>$codeValue,
                 'grand_total'                     => $grand_total,  'currency'  => $currency, 'status' => $status, 'description' => $description, ]);
 
             $items = $this->createInvoiceItemsByAdmin($invoice->id, $productid,
@@ -447,7 +447,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 $tax = $this->checkTax($product->id, $userid);
                 $tax_name = '';
                 $tax_rate = '';
-                if (!empty($tax)) {
+                if (! empty($tax)) {
                     $tax_name = $tax[0];
                     $tax_rate = $tax[1];
                 }
@@ -564,10 +564,10 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         foreach ($taxes as $key => $tax) {
             if ($taxes[0]) {
                 $tax_attribute[$key] = ['name' => $tax->name, 'name1' => $name1,
-                 'name2'                       => $name2, 'name3' => $name3, 'name4' => $name4,
-                 'rate'                        => $value, 'rate1'=>$c_gst, 'rate2'=>$s_gst,
-                 'rate3'                       => $i_gst, 'rate4'=>$ut_gst, 'state'=>$state_code,
-                  'origin_state'               => $origin_state, ];
+                    'name2'                       => $name2, 'name3' => $name3, 'name4' => $name4,
+                    'rate'                        => $value, 'rate1'=>$c_gst, 'rate2'=>$s_gst,
+                    'rate3'                       => $i_gst, 'rate4'=>$ut_gst, 'state'=>$state_code,
+                    'origin_state'               => $origin_state, ];
 
                 $rate = $tax->rate;
 

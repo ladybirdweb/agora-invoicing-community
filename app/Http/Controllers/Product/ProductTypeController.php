@@ -104,7 +104,7 @@ class ProductTypeController extends Controller
     {
         try {
             $ids = $request->input('select');
-            if (!empty($ids)) {
+            if (! empty($ids)) {
                 foreach ($ids as $id) {
                     if ($id != 1) {
                         $type = $this->productType->where('id', $id)->first();

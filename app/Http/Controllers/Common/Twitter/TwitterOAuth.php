@@ -45,10 +45,10 @@ class TwitterOAuth extends Config
         $this->resetLastResponse();
         $this->signatureMethod = new HmacSha1();
         $this->consumer = new Consumer($consumerKey, $consumerSecret);
-        if (!empty($oauthToken) && !empty($oauthTokenSecret)) {
+        if (! empty($oauthToken) && ! empty($oauthTokenSecret)) {
             $this->token = new Token($oauthToken, $oauthTokenSecret);
         }
-        if (empty($oauthToken) && !empty($oauthTokenSecret)) {
+        if (empty($oauthToken) && ! empty($oauthTokenSecret)) {
             $this->bearer = $oauthTokenSecret;
         }
     }
@@ -276,7 +276,7 @@ class TwitterOAuth extends Config
         // Append
         $segment_index = 0;
         $media = fopen($parameters['media'], 'rb');
-        while (!feof($media)) {
+        while (! feof($media)) {
             $this->http('POST', self::UPLOAD_HOST, 'media/upload', [
                 'command'       => 'APPEND',
                 'media_id'      => $init->media_id_string,
@@ -375,7 +375,7 @@ class TwitterOAuth extends Config
             $options[CURLOPT_ENCODING] = 'gzip';
         }
 
-        if (!empty($this->proxy)) {
+        if (! empty($this->proxy)) {
             $options[CURLOPT_PROXY] = $this->proxy['CURLOPT_PROXY'];
             $options[CURLOPT_PROXYUSERPWD] = $this->proxy['CURLOPT_PROXYUSERPWD'];
             $options[CURLOPT_PROXYPORT] = $this->proxy['CURLOPT_PROXYPORT'];
@@ -398,7 +398,7 @@ class TwitterOAuth extends Config
                 break;
         }
 
-        if (in_array($method, ['GET', 'PUT', 'DELETE']) && !empty($postfields)) {
+        if (in_array($method, ['GET', 'PUT', 'DELETE']) && ! empty($postfields)) {
             $options[CURLOPT_URL] .= '?'.Util::buildHttpQuery($postfields);
         }
 
@@ -434,7 +434,7 @@ class TwitterOAuth extends Config
         $headers = [];
         foreach (explode("\r\n", $header) as $line) {
             if (strpos($line, ':') !== false) {
-                list($key, $value) = explode(': ', $line);
+                [$key, $value] = explode(': ', $line);
                 $key = str_replace('-', '_', strtolower($key));
                 $headers[$key] = trim($value);
             }

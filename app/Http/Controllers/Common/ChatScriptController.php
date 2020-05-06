@@ -73,8 +73,8 @@ class ChatScriptController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-        'name'  => 'required',
-        'script'=> 'required',
+            'name'  => 'required',
+            'script'=> 'required',
         ]);
 
         try {
@@ -142,7 +142,7 @@ class ChatScriptController extends Controller
     {
         try {
             $ids = $request->input('select');
-            if (!empty($ids)) {
+            if (! empty($ids)) {
                 foreach ($ids as $id) {
                     $script = $this->script->where('id', $id)->first();
                     if ($script) {

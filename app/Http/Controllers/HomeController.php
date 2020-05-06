@@ -95,7 +95,7 @@ class HomeController extends BaseHomeController
             $serial_key = $this->checkSerialKey($faveo_encrypted_key, $order_number);
 
             \Log::emergency(json_encode(['domain' => $request->input('domain'),
-             'serial'                             => $serial_key, 'order' => $order_number, ]));
+                'serial'                             => $serial_key, 'order' => $order_number, ]));
             $result = [];
             if ($request_type == 'install') {
                 $result = $this->verificationResult($order_number, $serial_key);
@@ -154,7 +154,7 @@ class HomeController extends BaseHomeController
             // Get the private Key
             $path = storage_path('app'.DIRECTORY_SEPARATOR.'private.key');
             $key_content = file_get_contents($path);
-            if (!$privateKey = openssl_pkey_get_private($key_content)) {
+            if (! $privateKey = openssl_pkey_get_private($key_content)) {
                 dd('Private Key failed');
             }
             $a_key = openssl_pkey_get_details($privateKey);
@@ -167,7 +167,7 @@ class HomeController extends BaseHomeController
                 $chunk = substr($encrypted, 0, $chunkSize);
                 $encrypted = substr($encrypted, $chunkSize);
                 $decrypted = '';
-                if (!openssl_private_decrypt($chunk, $decrypted, $privateKey)) {
+                if (! openssl_private_decrypt($chunk, $decrypted, $privateKey)) {
                     dd('Failed to decrypt data');
                 }
                 $output .= $decrypted;
@@ -214,7 +214,7 @@ class HomeController extends BaseHomeController
 //            $faveo_decrypted_order = self::decryptByFaveoPrivateKey($faveo_encrypted_order_number);
 
             $this_order = $order->where('number', 'LIKE', $faveo_decrypted_order)->first();
-            if (!$this_order) {
+            if (! $this_order) {
                 return;
             } else {
                 return $this_order->number;
@@ -365,7 +365,7 @@ class HomeController extends BaseHomeController
     public function latestVersion(Request $request, Product $product)
     {
         $v = \Validator::make($request->all(), [
-                    'title' => 'required',
+            'title' => 'required',
         ]);
         if ($v->fails()) {
             $error = $v->errors();

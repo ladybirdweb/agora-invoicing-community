@@ -21,7 +21,7 @@ trait UpdateDates
     public function editUpdateExpiry(Request $request)
     {
         $this->validate($request, [
-         'date' => 'required',
+            'date' => 'required',
         ]);
 
         try {
@@ -73,7 +73,7 @@ trait UpdateDates
     public function editLicenseExpiry(Request $request)
     {
         $this->validate($request, [
-         'date' => 'required',
+            'date' => 'required',
         ]);
 
         try {
@@ -125,7 +125,7 @@ trait UpdateDates
     public function editSupportExpiry(Request $request)
     {
         $this->validate($request, [
-         'date' => 'required',
+            'date' => 'required',
         ]);
 
         try {

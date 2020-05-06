@@ -1,7 +1,8 @@
 <?php
-Event::listen('App\Events\PaymentGateway', function($event){
-	$controller = new App\Plugins\Stripe\Controllers\ProcessController();
-	echo $controller->PassToPayment($event->para);
+
+Event::listen('App\Events\PaymentGateway', function ($event) {
+    $controller = new App\Plugins\Stripe\Controllers\ProcessController();
+    echo $controller->PassToPayment($event->para);
 });
 Route::get('payment-gateway/stripe', 'App\Plugins\Stripe\Controllers\SettingsController@Settings');
 Route::patch('payment-gateway/stripe', 'App\Plugins\Stripe\Controllers\SettingsController@postSettings');

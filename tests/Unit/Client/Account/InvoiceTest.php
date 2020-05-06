@@ -33,11 +33,11 @@ class InvoiceTest extends DBTestCase
             'subtotal'           => 11800,
             'domain'             => 'faveo.com',
             'plan_id'            => 1,
-                ]);
+        ]);
         $response = $this->call('GET', 'my-invoice/'.$invoice->id, [
-         'invoice' => $invoice,
-         'items'   => $invoiceItem,
-         'user'    => $user,
+            'invoice' => $invoice,
+            'items'   => $invoiceItem,
+            'user'    => $user,
         ]);
         $response->setExpectedException(\Exception::class);
     }

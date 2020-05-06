@@ -43,15 +43,15 @@ return [
           |
          */
         'options' => [
-//            "dom" => "Bfrtip",
-//            "buttons" => [
-//                [
-//                    "text" => "My button",
-//                    "action" => "function ( e, dt, node, config ) {
-//                    alert( 'Button activated' );
-//                }"
-//                ]
-//            ],
+            //            "dom" => "Bfrtip",
+            //            "buttons" => [
+            //                [
+            //                    "text" => "My button",
+            //                    "action" => "function ( e, dt, node, config ) {
+            //                    alert( 'Button activated' );
+            //                }"
+            //                ]
+            //            ],
             'pagingType'  => 'simple_numbers',
             'bProcessing' => true,
             'columnDefs'  => [['targets' => 0, 'orderable' => false]],
@@ -72,14 +72,14 @@ return [
           |
          */
         'callbacks' => [
-'fnDrawCallback' => 'function( oSettings ) {
+            'fnDrawCallback' => 'function( oSettings ) {
                     $(".box-body").css({"opacity": "1"});
                     $("#blur-bg").css({"opacity": "1", "z-index": "99999"});
                 }',
-                'fnPreDrawCallback' => 'function(oSettings, json) {
+            'fnPreDrawCallback' => 'function(oSettings, json) {
                     $(".box-body").css({"opacity":"0.3"});
                 }',
-],
+        ],
         /*
           |--------------------------------------------------------------------------
           | Skip javascript in table template

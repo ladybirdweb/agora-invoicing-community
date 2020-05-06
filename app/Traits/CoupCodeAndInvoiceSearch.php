@@ -22,7 +22,7 @@ trait CoupCodeAndInvoiceSearch
             if ($code != '') {
                 $promo = $this->promotion->where('code', $code)->first();
                 //check promotion code is valid
-                if (!$promo) {
+                if (! $promo) {
                     throw new \Exception(\Lang::get('message.no-such-code'));
                 }
                 $relation = $promo->relation()->get();
@@ -273,7 +273,7 @@ trait CoupCodeAndInvoiceSearch
     {
         try {
             $ids = $request->input('select');
-            if (!empty($ids)) {
+            if (! empty($ids)) {
                 foreach ($ids as $id) {
                     $invoice = $this->invoice->where('id', $id)->first();
                     if ($invoice) {
@@ -323,7 +323,7 @@ trait CoupCodeAndInvoiceSearch
     {
         try {
             $ids = $request->input('select');
-            if (!empty($ids)) {
+            if (! empty($ids)) {
                 foreach ($ids as $id) {
                     $payment = $this->payment->where('id', $id)->first();
                     if ($payment) {

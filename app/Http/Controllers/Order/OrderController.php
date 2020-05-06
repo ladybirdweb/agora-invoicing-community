@@ -219,7 +219,6 @@ class OrderController extends BaseOrderController
             if (!$invoice) {
                 return redirect()->back()->with('fails', 'no orders');
             }
-            $invoiceItems = $this->invoice_items->where('invoice_id', $order->invoice_id)->get();
             $user = $this->user->find($invoice->user_id);
             $licenseStatus = StatusSetting::pluck('license_status')->first();
             $installationDetails = [];
@@ -235,7 +234,7 @@ class OrderController extends BaseOrderController
             $allowDomainStatus = StatusSetting::pluck('domain_check')->first();
 
             return view('themes.default1.order.show',
-                compact('invoiceItems', 'user', 'order', 'subscription', 'licenseStatus', 'installationDetails', 'allowDomainStatus', 'noOfAllowedInstallation', 'getInstallPreference', 'lastActivity','versionLabel','date','licdate','supdate'));
+                compact('user', 'order', 'subscription', 'licenseStatus', 'installationDetails', 'allowDomainStatus', 'noOfAllowedInstallation', 'getInstallPreference', 'lastActivity','versionLabel','date','licdate','supdate'));
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
             return redirect()->back()->with('fails', $ex->getMessage());

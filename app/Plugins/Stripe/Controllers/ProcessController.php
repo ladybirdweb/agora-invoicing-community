@@ -43,7 +43,7 @@ class ProcessController extends Controller
                 }
                 $stripe = $this->stripe->where('id', 1)->first();
                 if (! $stripe) {
-                 throw new \Exception('Stripe Fields not given');
+                    throw new \Exception('Stripe Fields not given');
                 }
                 $data = $this->getFields($invoice);
                 \Session::put('invoice', $invoice);

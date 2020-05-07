@@ -109,12 +109,10 @@ function getDateHtml(string $dateTimeString = null)
 
         return "<label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='$dateTime'>
                          $date</label>";
-
     } catch (Exception $e) {
         return '--';
     }
 }
-
 
 function getExpiryLabel($expiryDate, $badge = 'label')
 {
@@ -141,6 +139,4 @@ function getVersionAndLabel($productVersion, $productId, $badge = 'label')
                  </label>'.$productVersion.'</span>';
         }
     }
-
 }
-

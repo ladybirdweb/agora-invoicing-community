@@ -41,7 +41,6 @@ class ExtendedOrderController extends Controller
             $this->allRenewals($request->input('renewal'), $baseQuery);
             $this->getSelectedVersionOrders($baseQuery, $request->input('version_from'), $request->input('version_till'));
 
-
             return $baseQuery;
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -88,7 +87,6 @@ class ExtendedOrderController extends Controller
     }
 
     /**
-
      * Searches for Activ Installation.
      *
      * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
@@ -100,7 +98,6 @@ class ExtendedOrderController extends Controller
      *
      * @return $join
      */
-
     public function allActiveInstallations($allInstallation, $join)
     {
         if ($allInstallation) {

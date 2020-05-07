@@ -37,7 +37,7 @@ class ProcessController extends Controller
             }
 
             // dd(\Session::get('invoiceid');
-            if ($request->input('payment_gateway') == 'stripe') {
+            if ($request->input('payment_gateway') == 'Stripe') {
                 if (! \Schema::hasTable('stripe')) {
                     throw new \Exception('Stripe is not configured');
                 }

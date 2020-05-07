@@ -150,7 +150,6 @@ return [
 
         //
 
-
         'App\Plugins\Stripe\ServiceProvider',
         /*
          * Laravel Framework Service Providers...

@@ -413,5 +413,4 @@ class AuthController extends BaseAuthController
             // $template_controller->mailing($from, $to, $template_data, $template_name, $replace, 'account__manager_email',$bcc);
         }
     }
-
 }

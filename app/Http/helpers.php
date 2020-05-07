@@ -1,6 +1,6 @@
 <?php
-use App\Model\Order\Order;
 
+use App\Model\Order\Order;
 use App\Model\Product\ProductUpload;
 use Carbon\Carbon;
 
@@ -115,7 +115,6 @@ function getDateHtml(string $dateTimeString = null)
     }
 }
 
-
 function getExpiryLabel($expiryDate, $badge = 'label')
 {
     if ($expiryDate < (new Carbon())->toDateTimeString()) {
@@ -143,30 +142,30 @@ function getVersionAndLabel($productVersion, $productId, $badge = 'label')
     }
 }
 
-function getOrderLink($orderId, $url='orders')
+function getOrderLink($orderId, $url = 'orders')
 {
     $link = '--';
-    if($orderId) {
-    $order = Order::where('id',$orderId)->select('id','number')->first();
-     $link = '<a href='.url($url.'/'.$order->id).'>'. $order->number.'</a>';
-    } 
+    if ($orderId) {
+        $order = Order::where('id', $orderId)->select('id', 'number')->first();
+        $link = '<a href='.url($url.'/'.$order->id).'>'.$order->number.'</a>';
+    }
+
     return $link;
 }
 
-function getStatusLabel($status, $badge='label')
+function getStatusLabel($status, $badge = 'label')
 {
     switch ($status) {
         case 'Success':
             return '<span class='.'"'.$badge.' '.$badge.'-success">Paid</span>';
-    
+
             case 'Pending':
             return '<span class='.'"'.$badge.' '.$badge.'-danger">Unpaid</span>';
-    
+
             case 'renewed':
             return '<span class='.'"'.$badge.' '.$badge.'-primary">Renewed</span>';
-    
+
             default:
             return '<span class='.'"'.$badge.' '.$badge.'-warning">Partially paid</span>';
     }
 }
-

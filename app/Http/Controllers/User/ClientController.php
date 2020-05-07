@@ -82,7 +82,7 @@ class ClientController extends AdvanceSearchController
                         })
                         ->addColumn('active', function ($model) {
                             return $this->getActiveLabel($model->mobile_verified, $model->active, $model->is_2fa_enabled);
-                         })
+                        })
                         ->addColumn('action', function ($model) {
                             return '<a href='.url('clients/'.$model->id.'/edit')
                             ." class='btn btn-sm btn-primary btn-xs'>
@@ -123,34 +123,37 @@ class ClientController extends AdvanceSearchController
     {
         $emailLabel = "<span class='glyphicon glyphicon-envelope'  style='color:red'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Unverified email'> </label></span>";
         $mobileLabel = "<span class='glyphicon glyphicon-phone'  style='color:red'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Unverified mobile'>  </label></span>";
-        $twoFalabel ="<span class='glyphicon glyphicon-qrcode'  style='color:red'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='2FA not enabled'> </label></span>";
-        if($mobileActive) {
-            $mobileLabel ="<span class='glyphicon glyphicon-phone'  style='color:green'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Mobile verified'></label></span>";
+        $twoFalabel = "<span class='glyphicon glyphicon-qrcode'  style='color:red'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='2FA not enabled'> </label></span>";
+        if ($mobileActive) {
+            $mobileLabel = "<span class='glyphicon glyphicon-phone'  style='color:green'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Mobile verified'></label></span>";
         }
-        if($emailActive) {
+        if ($emailActive) {
             $emailLabel = "<span class='glyphicon glyphicon-envelope'  style='color:green'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Email verified'> </label></span>";
         }
-        if($twoFaActive) {
+        if ($twoFaActive) {
             $twoFalabel = "<span class='glyphicon glyphicon-qrcode'  style='color:green'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='2FA Enabled'> </label></span>";
         }
+
         return $emailLabel.'&nbsp;&nbsp;'.$mobileLabel.'&nbsp;&nbsp;'.$twoFalabel;
     }
 
     public function getMobileLabel($active)
     {
         $label = "<span class='glyphicon glyphicon-phone'  style='color:red'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Unverified mobile'>  </label></span>";
-        if($active) {
-             $label ="<span class='glyphicon glyphicon-phone'  style='color:green'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Mobile verified'></label></span>";
+        if ($active) {
+            $label = "<span class='glyphicon glyphicon-phone'  style='color:green'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Mobile verified'></label></span>";
         }
+
         return $label;
     }
 
-    public function getEmailLabel($active) 
+    public function getEmailLabel($active)
     {
-        $label =  "<span class='glyphicon glyphicon-envelope'  style='color:red'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Unverified email'> </label></span>";
-        if($active) {
+        $label = "<span class='glyphicon glyphicon-envelope'  style='color:red'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Unverified email'> </label></span>";
+        if ($active) {
             $label = "<span class='glyphicon glyphicon-envelope'  style='color:green'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Email verified'> </label></span>";
         }
+
         return $label;
     }
 
@@ -491,7 +494,7 @@ class ClientController extends AdvanceSearchController
                 \DB::raw("CONCAT('+', mobile_code, ' ', mobile) as mobile"),
                 \DB::raw("CONCAT(first_name, ' ', last_name) as name"),
                 'country_name as country', 'created_at', 'active', 'mobile_verified', 'is_2fa_enabled', 'role', 'position'
-            )->when($request->company, function($query) use($request) {
+            )->when($request->company, function ($query) use ($request) {
                 $query->where('company', 'LIKE', '%'.$request->company.'%');
             })->when($request->country, function ($query) use ($request) {
                 $query->where('country', $request->country);

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Github\GithubApiController;
-use App\Http\Controllers\User\AdminOrderInvoiceController;
 use App\Http\Controllers\License\LicensePermissionsController;
 use App\Model\Common\StatusSetting;
 use App\Model\Github\Github;
@@ -75,32 +74,32 @@ class ClientController extends BaseClientController
     public function getInvoices()
     {
         try {
-             $invoices = Invoice::leftJoin('order_invoice_relations',"invoices.id",'=','order_invoice_relations.invoice_id')
-            ->select('invoices.id','invoices.user_id','invoices.date','invoices.number','invoices.grand_total','order_invoice_relations.order_id','invoices.is_renewed','invoices.status')
-            ->where('invoices.user_id','=',\Auth::user()->id)
+            $invoices = Invoice::leftJoin('order_invoice_relations', 'invoices.id', '=', 'order_invoice_relations.invoice_id')
+            ->select('invoices.id', 'invoices.user_id', 'invoices.date', 'invoices.number', 'invoices.grand_total', 'order_invoice_relations.order_id', 'invoices.is_renewed', 'invoices.status')
+            ->where('invoices.user_id', '=', \Auth::user()->id)
             ->orderBy('invoices.created_at', 'desc')
             ->get();
 
             return \DataTables::of($invoices)
                             ->addColumn('number', function ($model) {
-                                if($model->is_renewed) {
-                                return '<a href='.url('my-invoice/'.$model->id).'>'.$model->number.'</a><br>'.getStatusLabel('renewed','badge');
-                            } else{
-                                 return '<a href='.url('my-invoice/'.$model->id).'>'.$model->number.'</a>';
-                            }
+                                if ($model->is_renewed) {
+                                    return '<a href='.url('my-invoice/'.$model->id).'>'.$model->number.'</a><br>'.getStatusLabel('renewed', 'badge');
+                                } else {
+                                    return '<a href='.url('my-invoice/'.$model->id).'>'.$model->number.'</a>';
+                                }
                             })
                             ->addColumn('orderNo', function ($model) {
-                            return getOrderLink($model->order_id,'my-order');
+                                return getOrderLink($model->order_id, 'my-order');
                             })
                             ->addColumn('date', function ($model) {
                                 return  $model->date;
-                             })
+                            })
                             ->addColumn('total', function ($model) {
                                 return  currency_format($model->grand_total, $code = \Auth::user()->currency);
                             })
                              ->addColumn('status', function ($model) {
-                                return  getStatusLabel($model->status,'badge');
-                            })
+                                 return  getStatusLabel($model->status, 'badge');
+                             })
                             ->addColumn('Action', function ($model) {
                                 $status = $model->status;
                                 $payment = '';
@@ -121,7 +120,6 @@ class ClientController extends BaseClientController
             echo $ex->getMessage();
         }
     }
-
 
     /**
      * Get list of all the versions from Filesystem.
@@ -402,7 +400,7 @@ class ClientController extends BaseClientController
                 $versionLabel = getVersionAndLabel($subscription->version, $order->product, 'badge');
             }
 
-            $installationDetails = [];  
+            $installationDetails = [];
             $licenseStatus = StatusSetting::pluck('license_status')->first();
             if ($licenseStatus == 1) {
                 $cont = new \App\Http\Controllers\License\LicenseController();

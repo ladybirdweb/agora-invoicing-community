@@ -101,9 +101,9 @@ class ExtendedBaseInvoiceController extends Controller
     public function postNewMultiplePayment($clientid, Request $request)
     {
         $this->validate($request, [
-        'payment_date'  => 'required',
-        'payment_method'=> 'required',
-        'totalAmt'      => 'required|numeric|not_in:0',
+            'payment_date'  => 'required',
+            'payment_method'=> 'required',
+            'totalAmt'      => 'required|numeric|not_in:0',
         ]);
 
         try {
@@ -157,9 +157,9 @@ class ExtendedBaseInvoiceController extends Controller
                     if ($invoice) {
                         if ($total_paid >= $invoice->grand_total) {
                             $invoice_status = 'success';
-                        } elseif($total_paid > 0) {
+                        } elseif ($total_paid > 0) {
                             $invoice_status = 'partially paid';
-                        } 
+                        }
                         $invoice->status = $invoice_status;
                         $invoice->save();
                     }

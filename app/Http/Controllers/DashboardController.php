@@ -12,7 +12,6 @@ use App\User;
 use Carbon\Carbon;
 use DateTime;
 use Illuminate\Http\Request;
-use App\Http\Controllers\User\AdminOrderInvoiceController;
 
 class DashboardController extends Controller
 {
@@ -300,22 +299,23 @@ class DashboardController extends Controller
     public function getRecentInvoices()
     {
         $dateBefore = (new Carbon('-30 days'))->toDateTimeString();
-        return Invoice::with("user:id,first_name,last_name,email,user_name")
-            ->leftJoin("currencies", "invoices.currency", "=", "currencies.code")
-            ->leftJoin("payments", "invoices.id", "=", "payments.invoice_id")
-            ->select("invoices.id as invoice_id", "invoices.number as invoice_number", "invoices.grand_total", "invoices.status",
-                \DB::raw("SUM(payments.amount) as paid"), "invoices.user_id", "currencies.code as currency_code")
-            ->where("invoices.created_at", ">", $dateBefore)
-            ->where("invoices.grand_total", ">", 0)
-            ->groupBy("invoices.id")
-            ->orderBy("invoices.created_at", "desc")
-            ->get()->map(function($element) {
+
+        return Invoice::with('user:id,first_name,last_name,email,user_name')
+            ->leftJoin('currencies', 'invoices.currency', '=', 'currencies.code')
+            ->leftJoin('payments', 'invoices.id', '=', 'payments.invoice_id')
+            ->select('invoices.id as invoice_id', 'invoices.number as invoice_number', 'invoices.grand_total', 'invoices.status',
+                \DB::raw('SUM(payments.amount) as paid'), 'invoices.user_id', 'currencies.code as currency_code')
+            ->where('invoices.created_at', '>', $dateBefore)
+            ->where('invoices.grand_total', '>', 0)
+            ->groupBy('invoices.id')
+            ->orderBy('invoices.created_at', 'desc')
+            ->get()->map(function ($element) {
                 $element->status = getStatusLabel($element->status);
-                $element->grand_total = currency_format((int)$element->grand_total, $element->currency_code);
-                $element->paid = currency_format((int)$element->paid, $element->currency_code);
-                $element->balance = currency_format((int)$element->balance, $element->currency_code);
-                $element->client_name = $element->user->first_name . " ". $element->user->last_name;
-                $element->client_profile_link = \Config("app.url")."/clients/".$element->user->id;
+                $element->grand_total = currency_format((int) $element->grand_total, $element->currency_code);
+                $element->paid = currency_format((int) $element->paid, $element->currency_code);
+                $element->balance = currency_format((int) $element->balance, $element->currency_code);
+                $element->client_name = $element->user->first_name.' '.$element->user->last_name;
+                $element->client_profile_link = \Config('app.url').'/clients/'.$element->user->id;
                 unset($element->user);
 
                 return $element;

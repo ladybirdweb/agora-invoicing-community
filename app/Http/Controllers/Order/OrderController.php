@@ -166,7 +166,6 @@ class OrderController extends BaseOrderController
             ->orderColumn('order_status', 'order_status $1')
             ->orderColumn('update_ends_at', 'update_ends_at $1')
 
-
             ->rawColumns(['checkbox', 'date', 'client', 'version', 'number', 'order_status', 'order_date', 'update_ends_at', 'action'])
             ->make(true);
     }
@@ -218,8 +217,7 @@ class OrderController extends BaseOrderController
             }
             $invoice = $this->invoice->where('id', $order->invoice_id)->first();
 
-            if (!$invoice) {
-
+            if (! $invoice) {
                 return redirect()->back()->with('fails', 'no orders');
             }
             $user = $this->user->find($invoice->user_id);

@@ -298,9 +298,10 @@ class BaseOrderController extends ExtendedOrderController
             if ($order->invoice->grand_total) {
                 SettingsController::sendPaymentSuccessMailtoAdmin($order->invoice->currency, $order->invoice->grand_total, $user, $product);
             }
-             return $mail;
+
+            return $mail;
         } catch (\Exception $ex) {
-           throw new Exception($ex->getMessage());
+            throw new Exception($ex->getMessage());
         }
     }
 

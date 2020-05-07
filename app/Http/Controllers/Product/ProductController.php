@@ -429,8 +429,8 @@ class ProductController extends BaseProductController
             $product->fill($request->except('image', 'file'))->save();
             $this->saveCartDetailsWhileUpdating($input, $request, $product);
 
-            if($request->input('github_owner') && $request->input('github_repository')) {
-                $this->updateVersionFromGithub($product->id,$request->input('github_owner'), $request->input('github_repository'));
+            if ($request->input('github_owner') && $request->input('github_repository')) {
+                $this->updateVersionFromGithub($product->id, $request->input('github_owner'), $request->input('github_repository'));
             }
             //add tax class to tax_product_relation table
             $newTax = $this->saveTax($request->input('tax'), $product->id);

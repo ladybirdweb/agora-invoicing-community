@@ -12,8 +12,8 @@ class Invoice extends BaseModel
     use LogsActivity;
     protected $table = 'invoices';
     protected $fillable = ['user_id', 'number', 'date', 'coupon_code', 'discount',
-    'grand_total', 'currency', 'status', 'description','is_renewed' ];
-    
+        'grand_total', 'currency', 'status', 'description', 'is_renewed', ];
+
     protected $dates = ['date'];
     protected static $logName = 'Invoice';
 

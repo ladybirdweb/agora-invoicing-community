@@ -20,7 +20,6 @@ use App\Model\Product\Price;
 use App\Model\Product\Product;
 use App\Traits\CoupCodeAndInvoiceSearch;
 use App\Traits\PaymentsAndInvoices;
-use App\Http\Controllers\User\AdminOrderInvoiceController;
 use App\User;
 use Bugsnag;
 use Illuminate\Http\Request;
@@ -153,7 +152,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                              return currency_format($model->grand_total, $code = $model->currency);
                          })
                           ->addColumn('status', function ($model) {
-                           return getStatusLabel($model->status);
+                              return getStatusLabel($model->status);
                           })
 
                         ->addColumn('action', function ($model) {
@@ -207,19 +206,19 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
     public function show(Request $request)
     {
         try {
-            $invoice =Invoice::leftJoin('order_invoice_relations',"invoices.id",'=','order_invoice_relations.invoice_id')
-                ->select('invoices.id','invoices.user_id','invoices.date','invoices.currency','invoices.number','invoices.discount','invoices.grand_total','order_invoice_relations.order_id')
-                ->where('invoices.id','=', $request->input('invoiceid'))
+            $invoice = Invoice::leftJoin('order_invoice_relations', 'invoices.id', '=', 'order_invoice_relations.invoice_id')
+                ->select('invoices.id', 'invoices.user_id', 'invoices.date', 'invoices.currency', 'invoices.number', 'invoices.discount', 'invoices.grand_total', 'order_invoice_relations.order_id')
+                ->where('invoices.id', '=', $request->input('invoiceid'))
                 ->first();
             $invoiceItems = $this->invoiceItem->where('invoice_id', $request->input('invoiceid'))
-            ->select('product_name','quantity','regular_price','tax_name','tax_percentage','subtotal')
+            ->select('product_name', 'quantity', 'regular_price', 'tax_name', 'tax_percentage', 'subtotal')
             ->get();
             $user = $this->user->find($invoice->user_id);
             $currency = CartController::currency($user->id);
             $order = getOrderLink($invoice->order_id);
             $symbol = $currency['symbol'];
 
-            return view('themes.default1.invoice.show', compact('invoiceItems', 'invoice', 'user', 'currency', 'symbol','order'));
+            return view('themes.default1.invoice.show', compact('invoiceItems', 'invoice', 'user', 'currency', 'symbol', 'order'));
         } catch (\Exception $ex) {
             app('log')->warning($ex->getMessage());
             Bugsnag::notifyException($ex);
@@ -292,9 +291,8 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             foreach ($content as $key => $item) {
                 $attributes[] = $item->attributes;
             }
-            $invoice = $this->invoice->create(['user_id' => $user_id, 'number' => $number,'date'=> $date, 'discount'=>$codevalue, 'grand_total' => $grand_total, 'coupon_code'=>$code, 'status' => 'pending',
-             'currency' => \Auth::user()->currency, ]);
-
+            $invoice = $this->invoice->create(['user_id' => $user_id, 'number' => $number, 'date'=> $date, 'discount'=>$codevalue, 'grand_total' => $grand_total, 'coupon_code'=>$code, 'status' => 'pending',
+                'currency' => \Auth::user()->currency, ]);
 
             foreach (\Cart::getContent() as $cart) {
                 $this->createInvoiceItems($invoice->id, $cart, $codevalue);
@@ -417,9 +415,8 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
             $invoice = Invoice::create(['user_id' => $user_id, 'number' => $number, 'date' => $date,
 
-             'coupon_code'  => $code, 'discount'=>$codeValue,
+                'coupon_code'  => $code, 'discount'=>$codeValue,
                 'grand_total'  => $grand_total,  'currency'  => $currency, 'status' => $status, 'description' => $description, ]);
-
 
             $items = $this->createInvoiceItemsByAdmin($invoice->id, $productid,
              $code, $total, $currency, $qty, $agents, $plan, $user_id, $tax_name, $tax_rate);

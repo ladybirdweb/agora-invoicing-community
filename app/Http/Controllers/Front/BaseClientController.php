@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\User\AdminOrderInvoiceController;
 use App\Http\Controllers\License\LicensePermissionsController;
 use App\Http\Requests\User\ProfileRequest;
 use App\Model\Order\Invoice;
@@ -193,7 +192,7 @@ class BaseClientController extends Controller
                 return currency_format($model->grand_total, $code = $model->currency);
             })
             ->addColumn('status', function ($model) {
-                return getStatusLabel($model->status,'badge');
+                return getStatusLabel($model->status, 'badge');
             })
             ->addColumn('action', function ($model) {
                 $url = $this->getInvoiceLinkUrl($model->id);
@@ -226,14 +225,15 @@ class BaseClientController extends Controller
         try {
             $invoice = $this->invoice->findOrFail($id);
             $items = $invoice->invoiceItem()->get();
-            $order = getOrderLink($invoice->orderRelation()->value('order_id'),'my-order');
+            $order = getOrderLink($invoice->orderRelation()->value('order_id'), 'my-order');
             $user = \Auth::user();
             $currency = CartController::currency($user->id);
             $symbol = $currency['symbol'];
 
-            return view('themes.default1.front.clients.show-invoice', compact('invoice', 'items', 'user', 'currency', 'symbol','order'));
+            return view('themes.default1.front.clients.show-invoice', compact('invoice', 'items', 'user', 'currency', 'symbol', 'order'));
         } catch (Exception $ex) {
             Bugsnag::notifyException($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

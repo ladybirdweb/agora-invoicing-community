@@ -134,7 +134,6 @@
 
         Route::get('activate/{token}', 'Auth\AuthController@activate');
 
-
         /*
          * Profile Process
          */

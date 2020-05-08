@@ -459,12 +459,7 @@ class ClientController extends BaseClientController
                                  return $model->payment_status;
                              })
                             ->addColumn('created_at', function ($model) {
-                                $date1 = new DateTime($model->created_at);
-                                $tz = \Auth::user()->timezone()->first()->name;
-                                $date1->setTimezone(new DateTimeZone($tz));
-                                $date = $date1->format('M j, Y, g:i a');
-
-                                return $date;
+                                return getDateHtml($model->created_at);
                             })
                             ->rawColumns(['checkbox', 'number', 'amount',
                                 'payment_method', 'payment_status', 'created_at', ])
@@ -480,20 +475,22 @@ class ClientController extends BaseClientController
     {
         try {
             $order = $this->order->where('id', $orderid)->where('client', $userid)->first();
-            $relation = $order->invoiceRelation()->value('invoice_id');
-            if ($relation) {
+            // dd($order);
+            $relation = $order->invoiceRelation()->pluck('invoice_id')->toArray();
+            if (count($relation) > 0) {
                 $invoices = $relation;
             } else {
-                $invoices = $order->invoice()->value('id');
+                $invoices = $order->invoice()->pluck('id')->toArray();
             }
-            $payments = Payment::leftJoin('invoices', 'payments.invoice_id', '=', 'invoices.id')
-            ->select('payments.id', 'payments.invoice_id', 'payments.user_id', 'payments.payment_method', 'payments.payment_status', 'payments.created_at', 'payments.amount', 'invoices.id as invoice_id', 'invoices.number as invoice_number')
-            ->where('invoices.id', $invoices)
-            ->get();
-
-            return \DataTables::of($payments)
+            // $payments = Payment::leftJoin('invoices', 'payments.invoice_id', '=', 'invoices.id')
+            // ->select('payments.id', 'payments.invoice_id', 'payments.user_id', 'payments.payment_method', 'payments.payment_status', 'payments.created_at', 'payments.amount', 'invoices.id as invoice_id', 'invoices.number as invoice_number')
+            // ->where('invoices.id', $invoices)
+            // ->get();
+            $payments = $this->payment->whereIn('invoice_id', $invoices)
+                    ->select('id', 'invoice_id', 'user_id', 'amount', 'payment_method', 'payment_status', 'created_at');
+            return \DataTables::of($payments->get())
                             ->addColumn('number', function ($payments) {
-                                return '<a href='.url('my-invoice/'.$payments->id).'>'.$payments->invoice_number.'</a>';
+                                return '<a href='.url('my-invoice/'.$payments->invoice()->first()->id).'>'.$payments->invoice()->first()->number.'</a>';
                             })
                               ->addColumn('total', function ($payments) {
                                   return $payments->amount;

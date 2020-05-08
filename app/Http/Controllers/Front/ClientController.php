@@ -14,8 +14,6 @@ use App\Model\Product\ProductUpload;
 use App\Model\Product\Subscription;
 use App\User;
 use Bugsnag;
-use DateTime;
-use DateTimeZone;
 use Exception;
 use GrahamCampbell\Markdown\Facades\Markdown;
 
@@ -488,6 +486,7 @@ class ClientController extends BaseClientController
             // ->get();
             $payments = $this->payment->whereIn('invoice_id', $invoices)
                     ->select('id', 'invoice_id', 'user_id', 'amount', 'payment_method', 'payment_status', 'created_at');
+
             return \DataTables::of($payments->get())
                             ->addColumn('number', function ($payments) {
                                 return '<a href='.url('my-invoice/'.$payments->invoice()->first()->id).'>'.$payments->invoice()->first()->number.'</a>';

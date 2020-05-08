@@ -68,6 +68,7 @@ class RazorpayController extends Controller
                 //After Regular Payment
                 if ($control->checkRenew() === false) {
                     $checkout_controller = new \App\Http\Controllers\Front\CheckoutController();
+                    $invoice = Invoice::where('id',$invoice)->first();
                     $checkout_controller->checkoutAction($invoice);
                     $view = $this->getViewMessageAfterPayment($invoice, $state, $currency);
                     $status = $view['status'];

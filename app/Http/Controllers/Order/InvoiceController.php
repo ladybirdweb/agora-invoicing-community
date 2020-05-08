@@ -303,7 +303,8 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
-            return redirect()->back()->with('fails',$ex->gegtMeaasge());
+
+            return redirect()->back()->with('fails', $ex->gegtMeaasge());
             throw new \Exception('Can not Generate Invoice');
         }
     }

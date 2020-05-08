@@ -310,6 +310,7 @@ class DashboardController extends Controller
             ->groupBy('invoices.id')
             ->orderBy('invoices.created_at', 'desc')
             ->get()->map(function ($element) {
+                $element->balance = (int)($element->grand_total - $element->paid);
                 $element->status = getStatusLabel($element->status);
                 $element->grand_total = currency_format((int) $element->grand_total, $element->currency_code);
                 $element->paid = currency_format((int) $element->paid, $element->currency_code);

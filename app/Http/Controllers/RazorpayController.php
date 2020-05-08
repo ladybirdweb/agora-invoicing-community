@@ -51,7 +51,7 @@ class RazorpayController extends Controller
         $error = 'Payment Failed';
         $rzp_key = ApiKey::where('id', 1)->value('rzp_key');
         $rzp_secret = ApiKey::where('id', 1)->value('rzp_secret');
-        $invoice = Invoice::where('id',$invoice)->first();
+        $invoice = Invoice::where('id', $invoice)->first();
         if (count($input) && ! empty($input['razorpay_payment_id'])) { //Verify Razorpay Payment Id and Signature
 
             //Fetch payment information by razorpay_payment_id

@@ -51,6 +51,7 @@ class RazorpayController extends Controller
         $error = 'Payment Failed';
         $rzp_key = ApiKey::where('id', 1)->value('rzp_key');
         $rzp_secret = ApiKey::where('id', 1)->value('rzp_secret');
+        $invoice = Invoice::where('id',$invoice)->first();
         if (count($input) && ! empty($input['razorpay_payment_id'])) { //Verify Razorpay Payment Id and Signature
 
             //Fetch payment information by razorpay_payment_id
@@ -68,7 +69,6 @@ class RazorpayController extends Controller
                 //After Regular Payment
                 if ($control->checkRenew() === false) {
                     $checkout_controller = new \App\Http\Controllers\Front\CheckoutController();
-                    $invoice = Invoice::where('id',$invoice)->first();
                     $checkout_controller->checkoutAction($invoice);
                     $view = $this->getViewMessageAfterPayment($invoice, $state, $currency);
                     $status = $view['status'];

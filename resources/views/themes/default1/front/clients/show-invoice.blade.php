@@ -77,7 +77,7 @@ active
                             </div><!-- /.col -->
                             <div class="col-sm-4 invoice-col">
                                 <b>Invoice   #{{$invoice->number}}</b><br/>
-                                <b>Order</b>   &nbsp; # {!! $order !!}</a><br>
+                                <b>Order</b>   &nbsp; #{!! $order !!}</a><br>
                                  <b>GSTIN   #{{$gst->Gst_No}}</b><br/>
                                 <br/>
 

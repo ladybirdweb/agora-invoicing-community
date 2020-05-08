@@ -92,7 +92,7 @@ class ClientController extends BaseClientController
                                 return getOrderLink($model->order_id, 'my-order');
                             })
                             ->addColumn('date', function ($model) {
-                                return  $model->date;
+                                return getDateHtml($model->created_at);
                             })
                             ->addColumn('total', function ($model) {
                                 return  currency_format($model->grand_total, $code = \Auth::user()->currency);

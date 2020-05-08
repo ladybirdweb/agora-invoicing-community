@@ -109,7 +109,7 @@ View Invoice
 
                         </div><!-- /.col -->
                          <div class="col-sm-4 invoice-col">
-                            <b>Order</b>   # &nbsp;&nbsp;{!! $order !!}
+                            <b>Order</b>   #{!! $order !!}
                             <br/>
 
                         </div><!-- /.col -->

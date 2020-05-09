@@ -35,7 +35,7 @@
                
 
                                     <li class="woocommerce-order-overview__payment-method method">
-                        Payment method:                        <strong>Razorpay</strong>
+                        Payment method:                        <strong>{{Session::get('payment_method')}}</strong>
                     </li>
                 
             </ul>
@@ -75,7 +75,7 @@
                     </tr>
                                         <tr>
                         <th scope="row">Payment method:</th>
-                        <td>Razorpay</td>
+                        <td>Session::get('payment_method')</td>
                     </tr>
                                         <tr>
                         <th scope="row">Total:</th>

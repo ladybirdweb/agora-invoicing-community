@@ -77,7 +77,7 @@
                                
                                         <tr>
                         <th scope="row">Payment method:</th>
-                        <td>Razorpay</td>
+                        <td>{{Session::get('payment_method')}}</td>
                     </tr>
 
                                         <tr>

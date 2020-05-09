@@ -5,6 +5,7 @@ namespace App\Plugins\Stripe\Controllers;
 use App\ApiKey;
 use App\Http\Controllers\Controller;
 use App\Model\Common\Setting;
+use App\Model\Order\Invoice;
 use App\Plugins\Stripe\Model\StripePayment;
 use Cartalyst\Stripe\Laravel\Facades\Stripe;
 use Illuminate\Http\Request;
@@ -181,7 +182,7 @@ class SettingsController extends Controller
                     //Afer Renew
                     $control->successRenew($invoice);
                     $payment = new \App\Http\Controllers\Order\InvoiceController();
-                    $payment->postRazorpayPayment($invoice->id, $invoice->grand_total);
+                    $payment->postRazorpayPayment($invoice);
                     if ($invoice->grand_total) {
                         $this->sendPaymentSuccessMailtoAdmin($invoice->currency, $invoice->grand_total, \Auth::user(), $invoice->invoiceItem()->first()->product_name);
                     }
@@ -205,6 +206,7 @@ class SettingsController extends Controller
 
             return redirect()->route('stripform');
         } catch (\Exception $e) {
+            dd($e);
             return redirect('checkout')->with('fails', 'Your payment was declined. '.$e->getMessage().'. Please try again or try the other gateway.');
         }
     }

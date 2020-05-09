@@ -30,12 +30,11 @@ class ProcessController extends Controller
             $invoice = $requests['order'];
             $cart = $requests['cart'];
             if ($cart->count() > 0) {
-                $invoice->grand_total = intval(\Cart::getTotal());
+                $invoice->grand_total = $invoice->grand_total;
             } else {
                 \Cart::clear();
                 \Session::put('invoiceid', $invoice->id);
             }
-
             // dd(\Session::get('invoiceid');
             if ($request->input('payment_gateway') == 'Stripe') {
                 if (! \Schema::hasTable('stripe')) {

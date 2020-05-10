@@ -2,7 +2,7 @@
 @section('title')
 Checkout
 @stop
-@section('page-header')
+@section('page-heading')
 Checkout
 @stop
 @section('breadcrumb')

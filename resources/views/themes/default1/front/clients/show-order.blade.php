@@ -34,25 +34,13 @@ active
     </style>
     <div class="row pb-4">
         <div class="col-lg-12 mb-12 mb-lg-0">
-
-
-          <h2>Order No #{{$order->number}}</h2>
-
-            <table class="table">
-                <tr class="info">
-
-                    <td>
-                        Date: {!! getDateHtml($order->created_at) !!}
-                    </td>
-                    <td>
-                        Order No: #{{$order->number}}
-                    </td>
-                    <td>
-                        Status: {{$order->order_status}}
-                    </td>
-                </tr>
-            </table>
-
+            <div class="alert alert-tertiary" style="padding-bottom: 5px; background-color: #49b1bf">
+                <div class="row">
+                    <div class="col col-md-4">Order No: #{{$order->number}}</div>
+                    <div class="col col-md-4">Date: {!! getDateHtml($order->created_at) !!}</div>
+                    <div class="col col-md-4">Status: {{$order->order_status}}</div>
+                </div>
+            </div>
 
         <div class="row">
             <div class="col-lg-12">

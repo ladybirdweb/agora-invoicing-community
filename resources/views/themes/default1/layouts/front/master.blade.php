@@ -37,6 +37,7 @@ if($script){
 
           <link rel="stylesheet" href="{{asset('client/porto/css/theme.css')}}">
           <link rel="stylesheet" href="{{asset('client/porto/css/theme-elements.css')}}">
+        <link rel="stylesheet" href="{{asset('client/porto/css/theme-shop.css')}}">
 
            <link rel="stylesheet" href="{{asset('common/css/intlTelInput.css')}}">
 
@@ -48,6 +49,8 @@ if($script){
           <!-- Head Libs -->
           <script src="{{asset('client/js/modernizr.min.js')}}"></script>
 
+        <script src="{{asset("common/js/jquery-2.1.4.js")}}" type="text/javascript"></script>
+        <script src="{{asset("common/js/jquery2.1.1.min.js")}}" type="text/javascript"></script>
 
    </head>
    <style>
@@ -118,7 +121,7 @@ if($script){
 
                                                      <li class="dropdown">
                                                       <a class="dropdown-item dropdown-toggle" href="#">
-                                                        Store
+                                                        Store&nbsp;
                                                       </a>
                                                       <ul class="dropdown-menu">
                                                         @if(count($groups)>0)
@@ -195,7 +198,6 @@ if($script){
                                                     <li class="dropdown">
                                                         <a class="dropdown-item dropdown-toggle" href="#">
                                                             {{Auth::user()->first_name}}
-                                                            &nbsp;<i class="fas fa-caret-down"></i>
                                                         </a>
                                                         <ul class="dropdown-menu">
                                                             <li><a class="dropdown-item" href="{{url('my-orders')}}">My Orders</a></li>

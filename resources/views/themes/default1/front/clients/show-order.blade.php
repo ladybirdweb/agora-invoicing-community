@@ -70,7 +70,7 @@ active
                                 <tr>
                                     <td><b>License Code:</b></td>
                                     <td id="s_key" data-type="serialkey">{{$order->serial_key}}</td>
-                                    <td><span class="badge badge-lg badge-success badge-xs pull-right" id="copied" style="display:none;margin-top:-15px;margin-left:-20px;position: absolute;">Copied</span>
+                                    <td><span class="badge badge-lg badge-success badge-xs pull-right" id="copied" style="display:none;margin-top:-50px;margin-left:-20px;position: absolute;">Copied</span>
                                         <span data-type="copy" style="font-size: 15px; pointer-events: initial; cursor: pointer; display: block;" id="copyBtn" title="Click to copy to clipboard"><i class="fa fa-clipboard"></i></span>
                                     </td>
                                 </tr>
@@ -199,9 +199,9 @@ active
     </div>
 
 
-         <script src="{{asset('common/js/licCode.js')}}"></script>
-           <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
 <script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+<script src="{{asset('common/js/licCode.js')}}"></script>
 <script type="text/javascript">
         $('#showorder-table').DataTable({
             processing: true,

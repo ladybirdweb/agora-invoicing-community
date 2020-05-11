@@ -82,15 +82,13 @@ if (count($attributes) > 0) {
                            <div class="featured-box featured-box-primary align-left mt-sm">
 
                                 <div class="box-content">
-                                   
+
                                         <table class="shop_table cart">
                                         @forelse($cartCollection as $key=>$item)
                                           <?php
                                             $product = App\Model\Product\Product::where('id', $item->id)->first();
                                             $domain = [];
-                                  
-                                            
-                                          
+
                                             if ($product->require_domain == 1) {
                                                 $domain[$key] = $product->id;
                                                 $productName = $product->name;
@@ -99,23 +97,22 @@ if (count($attributes) > 0) {
                                             $cont = new \App\Http\Controllers\Product\ProductController();
                                             $isAgentAllowed = $cont->allowQuantityOrAgent($item->id);
                                             $isAllowedtoEdit = $cont->isAllowedtoEdit($item->id);
-
                                             ?>
 
                                             <thead>
 
                                                 <tr>
-                                                    <th class="product-price">
+                                                    <th class="product-remove">
                                                         &nbsp;
                                                     </th>
-                                                    <th class="product-price">
+                                                    <th class="product-thumbnail">
                                                         &nbsp;
                                                     </th>
-                                                    <th class="product-price">
+                                                    <th class="product-name">
                                                         Product
                                                     </th>
 
-                                                    <th class="product-subtotal">
+                                                    <th class="product-price">
                                                         Price
                                                     </th>
                                                     @if( $isAgentAllowed ==false)
@@ -136,8 +133,7 @@ if (count($attributes) > 0) {
                                           
                                             <tbody>
                                                  
-                                             
-                                               
+
                                                 <tr class="cart_table_item">
                                                   
                                                     <td class="product-remove">
@@ -145,18 +141,14 @@ if (count($attributes) > 0) {
                                                             <i class="fa fa-times"></i>
                                                         </a>
                                                     </td>
-                                                    <td class="product-price">
+                                                    <td class="product-thumbnail">
                                                       <img width="100" height="100" alt="" class="img-responsive" src="{{$product->image}}">
                                                     </td>
-                                                    <td class="product-subtotal">
+                                                    <td class="product-name">
                                                         {{$item->name}}
                                                     </td>
-
                                                     <td class="product-price">
-
-
-                                                         <span class="amount">&nbsp;
-                                                           
+                                                         <span class="amount">
                                                             {{currency_format($item->price,$code = $attributes[0]['currency']['currency'])}}
                                                          <!-- {{\App\Http\Controllers\Front\CartController::rounding($item->getPriceSumWithConditions())}} -->
                                                      </span>
@@ -180,7 +172,7 @@ if (count($attributes) > 0) {
                                                         @endif
                                                     </td>
                                                      @else
-                                                     <td class="product-agent">
+                                                     <td class="product-agents">
                                                         @if ($item->attributes->agents == 0)
                                                          {{'Unlimited Agents'}}
                                                          @else

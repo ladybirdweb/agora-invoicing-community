@@ -212,7 +212,7 @@ class SocialMediaController extends Controller
                 }
             }
 
-            echo "<ul>".$twitter."</ul>";
+            echo '<ul>'.$twitter.'</ul>';
         } catch (Exception $ex) {
             throw new Exception($ex->getMessage());
             // $ex->getMessage();

@@ -65,7 +65,7 @@ active
                 </div>
             </div>
             <div class="col col-md-9">
-                <div class="tab-content">
+                <div class="tab-content" style="overflow-x: auto">
                         <div id="license-details" class="tab-pane active">
                             <h4>License Details</h4>
                             <table class="table">

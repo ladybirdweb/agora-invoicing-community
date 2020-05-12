@@ -196,9 +196,7 @@ if (count($attributes) > 0) {
                                                      @endif
                                                          
                                                     <td class="product-subtotal">
-
-
-                                                      <span class="amount">&nbsp;
+                                                      <span class="amount">
                                                         {{currency_format($item->getPriceSum(),$code = $attributes[0]['currency']['currency'])}}
                                                     </span>
 
@@ -278,17 +276,16 @@ if (count($attributes) > 0) {
                         </div>
                          <!-- </div> -->
                            <div class="row">
-                        <div class=" col-md-6">
-                            <a href="{{url('cart/clear')}}"><button class="btn btn-danger btn-sm" style="margin-bottom: 20px;">Clear My Cart&nbsp;<i class="fa fa-angle-right ml-xs"></i></button></a>
-                        
+                        <div class="col col-md-5">
+                            <a href="{{url('cart/clear')}}"><button class="btn btn-danger btn-modern" style="margin-bottom: 20px;"><i class="fa fa-angle-left ml-xs"></i>&nbsp;Clear My Cart</button></a>
                        </div>
-                        <div class=" col-md-6">
+                        <div class="col col-md-7">
                             @if(count($domain)>0)
 
                             <a href="#domain" data-toggle="modal" data-target="#domain"><button class="btn btn-primary btn-sm "style="margin-bottom: 20px;"> Proceed to Checkout&nbsp;<i class="fa fa-angle-right ml-xs"></i></button></a>
 
                             @else
-                            <a href="{{url('checkout')}}"><button class="btn btn-primary btn-sm" style="margin-bottom: 20px;">Proceed to Checkout&nbsp;<i class="fa fa-angle-right ml-xs"></i></button></a>
+                            <a href="{{url('checkout')}}"><button class="btn btn-primary btn-modern" style="margin-bottom: 20px;">Proceed to Checkout&nbsp;<i class="fa fa-angle-right ml-xs"></i></button></a>
                             @endif
                           
 

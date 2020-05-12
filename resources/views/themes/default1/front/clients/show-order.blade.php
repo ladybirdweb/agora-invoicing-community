@@ -26,11 +26,12 @@ active
     .accordion .card-header a{
         color:currentColor;
     }
-        .table td, .table th {
-    padding: 0.5rem;
-    vertical-align: top;
-    border-top: 1px solid #dee2e6;
-}
+    .table td, .table th {
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+    }
     </style>
     <div class="row pb-4">
         <div class="col-lg-12 mb-12 mb-lg-0">
@@ -43,7 +44,7 @@ active
             </div>
 
         <div class="row">
-            <div class="col-lg-12">
+            <div class="col col-md-3">
                 <div class="tabs tabs-vertical tabs-left">
                     <ul class="nav nav-tabs">
                         <li class="nav-item active">
@@ -61,7 +62,10 @@ active
                             <a class="nav-link" href="#payment-receipts" data-toggle="tab">Payment Receipts</a>
                         </li>
                     </ul>
-                    <div class="tab-content">
+                </div>
+            </div>
+            <div class="col col-md-9">
+                <div class="tab-content">
                         <div id="license-details" class="tab-pane active">
                             <h4>License Details</h4>
                             <table class="table">
@@ -192,16 +196,15 @@ active
                         </div>
 
                     </div>
-                </div>
             </div>
         </div>
         </div>
     </div>
 
 
+<script src="{{asset('common/js/licCode.js')}}"></script>
 <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
 <script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
-<script src="{{asset('common/js/licCode.js')}}"></script>
 <script type="text/javascript">
         $('#showorder-table').DataTable({
             processing: true,
@@ -231,8 +234,6 @@ active
         </script>
 
          <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
-        <script src="{{asset("common/js/jquery-2.1.4.js")}}" type="text/javascript"></script>
-        <script src="{{asset("common/js/jquery2.1.1.min.js")}}" type="text/javascript"></script>
         <script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
         <script type="text/javascript">
              $('#showpayment-table').DataTable({

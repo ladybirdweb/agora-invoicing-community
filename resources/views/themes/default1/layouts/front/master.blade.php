@@ -7,8 +7,13 @@ if($script){
 }
  ?>
 
+<style type="text/css">
+    {{-- for making datatable side scrollable whenever it has way too many columns for screen to accomodate   --}}
+    .dataTables_wrapper {
+        overflow-x: auto;
+    }
+</style>
     <head>
-  
           <!-- Basic -->
           <meta charset="utf-8">
           <meta http-equiv="X-UA-Compatible" content="IE=edge">  
@@ -46,8 +51,8 @@ if($script){
         {{--  any custom css can be defined in this  --}}
         <link rel="stylesheet" href="{{asset('client/porto/css/custom.css')}}">
 
-          <!-- Head Libs -->
-          <script src="{{asset('client/js/modernizr.min.js')}}"></script>
+        <!-- Head Libs -->
+        <script src="{{asset('client/js/modernizr.min.js')}}"></script>
 
         <script src="{{asset("common/js/jquery-2.1.4.js")}}" type="text/javascript"></script>
         <script src="{{asset("common/js/jquery2.1.1.min.js")}}" type="text/javascript"></script>

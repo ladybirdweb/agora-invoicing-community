@@ -19,9 +19,9 @@ active
 @stop
 
 @section('content')
-    <div class="featured-box featured-box-primary text-left mt-5">
+    <div class="featured-box featured-box-primary text-left mt-5" style="max-width: 900px">
 
-    <section class="card box-content">
+    <section class="box-content">
         @php
             $set = App\Model\Common\Setting::where('id', '1')->first();
             $gst =  App\Model\Payment\TaxOption::where('id', '1')->first();
@@ -29,7 +29,7 @@ active
             $logo = \App\Model\Common\Setting::where('id', 1)->value('logo');
         @endphp
 
-        <div class="card-body">
+        <div>
             @if($logo)
                 <img alt="Logo" width="100" height="50" src="{{asset('common/images/'.$logo)}}" style="margin-top: -2px">
             @endif

@@ -138,11 +138,7 @@ $json = json_encode($data);
          <div class="card card-default" style="margin-bottom: 40px;">
             <div class="card-header">
                 <h4 class="card-title m-0">
-                   
                         Payment
-                   
-
-
                 </h4>
             </div>
 
@@ -200,17 +196,17 @@ $json = json_encode($data);
                                 <th class="product-name">
                                     Product
                                 </th>
-                                <th class="product-name">
+                                <th class="product-invoice">
                                     Invoice No.
                                 </th>
-                                <th class="product-quantity">
+                                <th class="product-version">
                                     Version
                                 </th>
 
                                 <th class="product-quantity">
                                     Quantity
                                 </th>
-                                <th class="product-name">
+                                <th class="product-total">
                                     Total
                                 </th>
                             </tr>
@@ -245,9 +241,7 @@ $json = json_encode($data);
                                 <td class="product-quantity">
                                     {{$item->quantity}}
                                 </td>
-                                <td class="product-name">
-
-                                        
+                                <td class="product-total">
                                     <span class="amount">{{currency_format(intval($item->regular_price),$code = $currency)}}</span>
                                 </td>
                             </tr>

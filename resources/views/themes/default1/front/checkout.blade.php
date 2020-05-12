@@ -6,7 +6,7 @@ Checkout
 Checkout
 @stop
 @section('page-heading')
- <h1>Checkout</h1>
+ Checkout
 @stop
 @section('breadcrumb')
  @if(Auth::check())
@@ -36,14 +36,10 @@ $sum = 0;
     <div class="col-lg-8">
          <div class="card card-default" style="margin-bottom: 40px;">
              <div class="card-header">
-              <h4 class="card-title m-0">
-                           
-                        Review Your Order
-                                            
-               </h4>
-                
+                 <h4 class="card-title m-0">
+                     Review Your Order
+                 </h4>
             </div>
-
 
             <div class="card-body">
 
@@ -51,7 +47,7 @@ $sum = 0;
                 <div class="alert alert-success">
                      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                        <strong><i class="far fa-thumbs-up"></i> Well done!</strong>
-                    
+
                     {!!Session::get('success')!!}
                 </div>
                 @endif
@@ -85,14 +81,14 @@ $sum = 0;
                                 <th class="product-name">
                                     Product
                                 </th>
-                                <th class="product-quantity">
+                                <th class="product-version">
                                     Version
                                 </th>
 
                                 <th class="product-quantity">
                                     Quantity
                                 </th>
-                                <th class="product-name">
+                                <th class="product-subtotal">
                                     Total
                                 </th>
                             </tr>
@@ -119,10 +115,10 @@ $sum = 0;
                                     {{$item->name}}
                                 </td>
 
-                                <td class="product-quantity">
+                                <td class="product-version">
                                     @if($product->version)
                                     {{$product->version}}
-                                    @else 
+                                    @else
                                     Not available
                                     @endif
                                 </td>
@@ -131,51 +127,41 @@ $sum = 0;
                                     {{$item->quantity}}
                                 </td>
 
-                                <td class="product-price">
-                                  
-                                   
+                                <td class="product-subtotal">
                                     <span class="amount">
-                                     {{currency_format($item->getPriceSum(),$code = $currency)}}    
-                                       
-
-
+                                     {{currency_format($item->getPriceSum(),$code = $currency)}}
                                 </td>
                             </tr>
-                            @empty 
+                            @empty
                         <p>Your Cart is void</p>
                         @endforelse
 
 
                     </table>
-                    
-                  
+
+
                     <div class="col-md-12">
-
-
-                       
-
-
                         <hr class="tall">
                     </div>
 
                 </div>
                 <h4 class="heading-primary">Payment</h4>
-             
-                       
+
+
                 {!! Form::open(['url'=>'checkout','method'=>'post','id' => 'checkoutsubmitform' ]) !!}
 
                 @if(Cart::getTotal()>0)
-                  
-                 <?php 
+
+                 <?php
                 $gateways = \App\Http\Controllers\Common\SettingsController::checkPaymentGateway($item['attributes']['currency']['currency']);
                 $total = Cart::getSubTotal();
                 $rzpstatus = \App\Model\Common\StatusSetting::first()->value('rzp_status');
 
-                  // 
+                  //
                 ?>
-                @if(count($gateways)>0 ) 
+                @if(count($gateways)>0 )
                 <div class="row">
-                  
+
 
                     <div class="col-md-6">
                         @foreach($gateways as $gateway)
@@ -189,9 +175,9 @@ $sum = 0;
                         @endforeach
                     </div>
 
-                
+
               </div>
-               
+
             @endif
                 @if($rzpstatus ==1)
                 <div class="row">
@@ -212,7 +198,7 @@ $sum = 0;
                     </div>
                 </div>
                 {!! Form::close() !!}
-                
+
 
 
 
@@ -230,12 +216,12 @@ $sum = 0;
                         <strong>Cart Subtotal</strong>
                     </th>
                     <td>
-                   
 
-                        <strong><span class="amount"> 
+
+                        <strong><span class="amount">
 
                                 {{currency_format(Cart::getSubTotalWithoutConditions(),$code = $currency)}}
-                                           
+
                     </td>
                 </tr>
                 @foreach($item->attributes['tax'] as $attribute)
@@ -246,7 +232,7 @@ $sum = 0;
                     <th>
                         <strong>CGST<span>@</span>{{$attribute['c_gst']}}%</strong><br/>
                         <strong>SGST<span>@</span>{{$attribute['s_gst']}}%</strong><br/>
-                       
+
                     </th>
                     <td>
                      <?php
@@ -255,29 +241,29 @@ $sum = 0;
                      ?>
                        {{currency_format($cgst,$code = $currency)}}<br/>
                        {{currency_format($sgst,$code = $currency)}} <br/>
-                       
-                       
+
+
 
                     </td>
 
 
                 </tr>
                 @endif
-                
+
                 @if ($attribute['state']!=$attribute['origin_state'] && $attribute['ut_gst']=='NULL' &&$attribute['status'] ==1)
-               
+
 
                 <tr class="Taxes">
                     <th>
                         <strong>{{$attribute['name']}}<span>@</span>{{$attribute['i_gst']}}%</strong>
-                     
+
                     </th>
                     <td>
-                     <?php 
+                     <?php
                     $igst = \App\Http\Controllers\Front\CartController::taxValue($attribute['i_gst'],Cart::getSubTotalWithoutConditions());
                      ?>
                        {{currency_format($igst,$code = $currency)}} <br/><br/>
-                      
+
 
                     </td>
 
@@ -286,12 +272,12 @@ $sum = 0;
                 @endif
 
                 @if ($attribute['state']!=$attribute['origin_state'] && $attribute['ut_gst']!='NULL' &&$attribute['status'] ==1)
-              
+
                 <tr class="Taxes">
                     <th>
                        <strong>CGST<span>@</span>{{$attribute['c_gst']}}%</strong><br/>
                         <strong>UTGST<span>@</span>{{$attribute['ut_gst']}}%</strong>
-                       
+
                     </th>
                     <td>
                         <?php
@@ -300,7 +286,7 @@ $sum = 0;
                         ?>
                          {{currency_format($cgst,$code = $currency)}} <br/>
                          {{currency_format($utgst,$code = $currency)}} <br/>
-                       
+
                     </td>
 
 
@@ -319,50 +305,50 @@ $sum = 0;
                        $value = \App\Http\Controllers\Front\CartController::taxValue($attribute['rate'],Cart::getSubTotalWithoutConditions())
                        ?>
                         {{currency_format($value,$code = $currency)}} <br/>
-                         
-                       
+
+
                     </td>
                   </tr>
                  @endif
-           
+
                 @if($attribute['name']!='null' && ($currency != "INR" && $attribute['tax_enable'] ==1 && $attribute['status'] ==1))
 
                   <tr class="Taxes">
                     <th>
                         <strong>{{$attribute['name']}}<span>@</span>{{$attribute['rate']}}</strong><br/>
-                       
-                         
+
+
                     </th>
                     <td>
                      <?php
                      $value = \App\Http\Controllers\Front\CartController::taxValue($attribute['rate'],Cart::getSubTotalWithoutConditions())
                      ?>
-                      
+
                         {{currency_format($value,$code = $currency)}} <br/>
-                         
-                       
+
+
                     </td>
                   </tr>
                  @endif
                  @if($attribute['name']!='null' && ($currency != "INR" && $attribute['tax_enable'] ==0 && $attribute['status'] ==1))
 
                   <tr class="Taxes">
-                  
+
                     <th>
                         <strong>{{$attribute['name']}}<span>@</span>{{$attribute['rate']}}</strong><br/>
-                       
-                         
+
+
                     </th>
                     <td>
                         <?php
                         $value = \App\Http\Controllers\Front\CartController::taxValue($attribute['rate'],Cart::getSubTotalWithoutConditions())
                         ?>
-                       
+
                          {{currency_format($value,$code = $currency)}} <br/>
-                         
-                       
+
+
                     </td>
-                  
+
                   </tr>
                  @endif
                 @endforeach
@@ -371,14 +357,17 @@ $sum = 0;
                         <strong>Order Total</strong>
                     </th>
                     <td>
-                        <?php
-                          Cart::removeCartCondition('Processing fee');
-                          $total = \App\Http\Controllers\Front\CartController::rounding(Cart::getTotal());
-                          ?>
-                          <div id="total-price" value={{$total}} hidden></div>
+                        <strong class="text-dark">
+                            <span class="amount">
+                                <?php
+                                    Cart::removeCartCondition('Processing fee');
+                                    $total = \App\Http\Controllers\Front\CartController::rounding(Cart::getTotal());
+                                ?>
+                                  <div id="total-price" value={{$total}} hidden></div>
+                                  <div>{{currency_format($total,$code = $currency)}} </div>
+                            </span>
+                        </strong>
 
-                          <div>{{currency_format($total,$code = $currency)}} </div>
-                                        
                     </td>
                 </tr>
             </tbody>
@@ -386,16 +375,16 @@ $sum = 0;
     </div>
 </div>
 </div>
-@else 
+@else
 <div class="row">
 
     <div class="col-md-12">
-       
+
             <div class="panel-heading">
                 <h4 class="panel-title">
-                
+
                         Order
-                    
+
                 </h4>
             </div>
 
@@ -428,7 +417,7 @@ $sum = 0;
                 @endif
             </div>
         </div>
-    
+
 </div>
 @endif
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
@@ -441,7 +430,7 @@ $sum = 0;
      $(document).ready(function(){
             var finalPrice = $('#total-price').val();
             $("#rzp_selected").click(function(){
-            
+
             var processingFee = $(this).attr('data-currency');
             var totalPrice = finalPrice;
             $('#fee').hide();
@@ -453,7 +442,7 @@ $sum = 0;
                 },
                  url: "{{url('update-final-price')}}",
             });
-        }); 
+        });
         $("#allow_gateway").click(function(){
             var processingFee = $(this).attr('data-currency');
             var totalPrice = finalPrice;
@@ -467,7 +456,6 @@ $sum = 0;
                  url: "{{url('update-final-price')}}",
             });
         });
-         
     });
 </script>
 @endsection

@@ -4,7 +4,7 @@
      display:none;
 }
 </style>
-<div class="modal fade" id="list">
+<div class="modal fade" id="list" style="overflow-x: auto">
     <div class="modal-dialog">
         <div class="modal-content" style="width:700px;">
              <div class="modal-body" >
@@ -16,35 +16,31 @@
                 $endDate = \App\Model\Product\Subscription::select('ends_at')->where('product_id', $productid)->first();
                 ?>
 
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="box">
-                            <div class="box-header with-border">
-                                <h3 class="box-title">Product Versions</h3>
+                <div class="box">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Product Versions</h3>
 
-                            </div>
-                            <div class="box-body">
-                                <div class="row">
+                    </div>
+                    <div class="box-body">
+                        <div class="row">
 
-                                    <div class="col-md-12">
+                            <div class="col-md-12">
 
-                                        <table id="version-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
+                                <table id="version-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
 
-                                            <thead><tr>
+                                    <thead><tr>
 
-                                                    <th>Version</th>
-                                                    <th>Title</th>
-                                                    <th>Description</th>
-                                                    <th>File</th>
+                                            <th>Version</th>
+                                            <th>Title</th>
+                                            <th>Description</th>
+                                            <th>File</th>
 
-                                                </tr></thead>
+                                        </tr></thead>
 
-                                        </table>
-                                    </div>
-                                </div>
-
+                                </table>
                             </div>
                         </div>
+
                     </div>
                 </div>
 

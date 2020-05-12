@@ -157,7 +157,7 @@ Checkout
                 <div class="row">
                     
                     <div class="col-md-6">
-                        {!! Form::radio('payment_gateway','razorpay',false,['id'=>'rzp_selected']) !!}
+                        {!! Form::radio('payment_gateway','razorpay',false,['id'=>'rzp_selected']) !!}&nbsp;&nbsp;&nbsp;
                          <img alt="Porto" width="111" data-sticky-width="82" data-sticky-height="40" data-sticky-top="33" src="{{asset('client/images/Razorpay.png')}}"><br><br>
                   </div>
                   </div>
@@ -195,7 +195,7 @@ Checkout
                         <strong>Cart Subtotal</strong>
                     </th>
                     <td>
-                        <strong><span class="amount">{{currency_format($subtotal,$code = $currency)}}</span></strong>
+                       <span class="amount">{{currency_format($subtotal,$code = $currency)}}</span>
                     </td>
                 </tr>
                   @foreach($items->toArray() as $attribute)

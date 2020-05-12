@@ -14,8 +14,8 @@ active
   @else
   <li><a href="{{url('login')}}">Home</a></li>
   @endif
-<li class="active">My Account</li>
-<li class="active">Orders</li>
+<li><a href= "{{url('my-orders')}}">My Orders</a></li>
+<li class="active">View Order</li>
 @stop
 
 @section('content')
@@ -74,7 +74,7 @@ active
                                 <tr>
                                     <td><b>License Code:</b></td>
                                     <td id="s_key" data-type="serialkey">{{$order->serial_key}}</td>
-                                    <td><span class="badge badge-lg badge-success badge-xs pull-right" id="copied" style="display:none;margin-top:-50px;margin-left:-20px;position: absolute;">Copied</span>
+                                    <td><span class="badge badge-success badge-xs pull-right" id="copied" style="display:none;margin-top:-15px;margin-left:-20px;position: absolute;">Copied</span>
                                         <span data-type="copy" style="font-size: 15px; pointer-events: initial; cursor: pointer; display: block;" id="copyBtn" title="Click to copy to clipboard"><i class="fa fa-clipboard"></i></span>
                                     </td>
                                 </tr>

@@ -18,8 +18,7 @@ active
   @else
   <li><a href="{{url('login')}}">Home</a></li>
   @endif
-<li class="active">My Account</li>
-<li class="active">Orders</li>
+<li class="active">My Orders</li>
 @stop
 
 @section('content')

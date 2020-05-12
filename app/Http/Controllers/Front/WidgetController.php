@@ -42,7 +42,7 @@ class WidgetController extends Controller
                                 return $model->type;
                             })
                               ->addColumn('created_at', function ($model) {
-                                  return $model->created_at;
+                                  return getDateHtml($model->created_at);
                               })
                         // ->showColumns('name', 'type', 'created_at')
                         ->addColumn('content', function ($model) {

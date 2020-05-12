@@ -211,14 +211,7 @@ if (count($attributes) > 0) {
                                         </td>
                                     </tr>
 
-                                    <tr>
-                                        <th>
-
-                                        </th>
-                                        <td>
-
-                                        </td>
-                                    </tr>
+                                  
 
 
 

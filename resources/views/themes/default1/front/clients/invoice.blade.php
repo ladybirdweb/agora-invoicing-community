@@ -9,13 +9,7 @@ active
  My Invoices
 @stop
 @section('breadcrumb')
- @if(Auth::check())
-<li><a href="{{url('my-invoices')}}">Home</a></li>
-  @else
-  <li><a href="{{url('login')}}">Home</a></li>
-  @endif
-<li class="active">My Account</li>
-<li class="active">Invoices</li>
+<li class="active">My Invoices</li>
 @stop
 
 @section('content')

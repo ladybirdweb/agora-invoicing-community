@@ -60,15 +60,7 @@ class PageController extends GetPageTemplateController
                             return $model->url;
                         })
                         ->addColumn('created_at', function ($model) {
-                            $created = $model->created_at;
-                            if ($created) {
-                                $date1 = new \DateTime($created);
-                                $tz = \Auth::user()->timezone()->first()->name;
-                                $date1->setTimezone(new \DateTimeZone($tz));
-                                $createdate = $date1->format('M j, Y, g:i a ');
-                            }
-
-                            return $createdate;
+                          return getDateHtml($model->created_at);
                         })
 
                         ->addColumn('action', function ($model) {

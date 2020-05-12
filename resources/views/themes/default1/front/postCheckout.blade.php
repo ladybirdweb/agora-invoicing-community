@@ -302,7 +302,7 @@ $json = json_encode($data);
                         <strong>Cart Subtotal</strong>
                     </th>
                     <td>
-                        <strong><span class="amount">{{currency_format($subtotal,$code = $currency)}}</span></strong>
+                        <span class="amount">{{currency_format($subtotal,$code = $currency)}}</span>
                     </td>
                 </tr>
                 @foreach($content as $attributes)

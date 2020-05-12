@@ -34,7 +34,7 @@ input[type=number] {
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-4">
-            <div class="card" style="margin-bottom:25px;">
+            <div class="card">
                 <div class="card-header">Payment
                  <img class="img-responsive pull-right" src="http://i76.imgup.net/accepted_c22e0.png">
              </div>
@@ -68,7 +68,7 @@ input[type=number] {
                         </div>
                         <div class="form-group row">
                             <div class="col-md-6">
-                                <input id="exp_month" type="number" class="form-control @error('exp_month') is-invalid @enderror" name="exp_month" value="{{ old('exp_month') }}" required autocomplete="exp_month" placeholder="Exp. Month (Eg. 02)" autofocus>
+                                <input id="exp_month" type="number" class="form-control @error('exp_month') is-invalid @enderror" name="exp_month" value="{{ old('exp_month') }}" required autocomplete="exp_month" placeholder="Exp. Month(02)" autofocus>
                                 @error('exp_month')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -76,7 +76,7 @@ input[type=number] {
                                 @enderror
                             </div>
                             <div class="col-md-6">
-                                <input id="exp_year" type="number" class="form-control @error('exp_year') is-invalid @enderror" name="exp_year" value="{{ old('exp_year') }}" required autocomplete="exp_year" placeholder="Exp. Year (Eg. 2020)" autofocus>
+                                <input id="exp_year" type="number" class="form-control @error('exp_year') is-invalid @enderror" name="exp_year" value="{{ old('exp_year') }}" required autocomplete="exp_year" placeholder="Exp. Year(2020)" autofocus>
                                 @error('exp_year')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>

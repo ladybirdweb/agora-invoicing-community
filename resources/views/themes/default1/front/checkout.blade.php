@@ -191,7 +191,7 @@ $sum = 0;
                     <td>
 
 
-                        <strong><span class="amount">
+                        <span class="amount">
 
                                 {{currency_format(Cart::getSubTotalWithoutConditions(),$code = $currency)}}
 
@@ -348,50 +348,7 @@ $sum = 0;
     </div>
 </div>
 </div>
-@else
-<div class="row">
 
-    <div class="col-md-12">
-
-            <div class="panel-heading">
-                <h4 class="panel-title">
-
-                        Order
-
-                </h4>
-            </div>
-
-
-            <div class="panel-body">
-
-                @if(Session::has('success'))
-                <div>
-                  {!!Session::get('success')!!}
-                </div>
-                @endif
-                <!-- fail message -->
-                @if(Session::has('fails'))
-                <div class="alert alert-danger alert-dismissable">
-                    <i class="fa fa-ban"></i>
-                    <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.failed')}}.
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    {{Session::get('fails')}}
-                </div>
-                @endif
-                @if (count($errors) > 0)
-                <div class="alert alert-danger">
-                    <strong>Whoops!</strong> There were some problems with your input.<br><br>
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-                @endif
-            </div>
-        </div>
-
-</div>
 @endif
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
 <script>

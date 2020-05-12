@@ -6,7 +6,7 @@ Login | Register
 Login | Register
 @stop
 @section('page-heading')
- <h1>Login <span>Sign in or register to use Faveo</span></h1>
+ <h1>Login <span>Sign in or register</span></h1>
 @stop
 @section('breadcrumb')
  @if(Auth::check())

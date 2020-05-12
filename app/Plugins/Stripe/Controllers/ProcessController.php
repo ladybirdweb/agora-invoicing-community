@@ -30,7 +30,7 @@ class ProcessController extends Controller
             $invoice = $requests['order'];
             $cart = $requests['cart'];
             if ($cart->count() > 0) {
-                $invoice->grand_total = $invoice->grand_total;
+                $invoice->grand_total = intval(\Cart::getTotal());
             } else {
                 \Cart::clear();
                 \Session::put('invoiceid', $invoice->id);

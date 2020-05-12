@@ -121,20 +121,20 @@ input:checked + .slider:before {
 
                         <h4 class="heading-primary text-uppercase mb-3">Edit Profile</h4>
                       {!! Form::model($user,['url'=>'my-profile', 'method' => 'PATCH','files'=>true]) !!}
-                        <div class="form-row">
-                        <div class="form-group col{{ $errors->has('first_name') ? 'has-error' : '' }}">
-                            <!-- first name -->
-                            <label for "first_name" class="required">First Name</label>
-                            <!-- <b>{!! Form::label('first_name',Lang::get('message.first_name')) !!}</b> -->
-                            {!! Form::text('first_name',null,['class' => 'form-control input-lg ','id'=>'firstName']) !!}
-                           <h6 id="firstNameCheck"></h6>
-                        </div>
-                        <div class="form-group col{{ $errors->has('last_name') ? 'has-error' : '' }}">
-                            <!-- last name -->
-                             <label for "last_name" class="required">Last Name</label>
-                            {!! Form::text('last_name',null,['class' => 'form-control input-lg ','id'=>'lastName']) !!}
-                             <h6 id="lastNameCheck"></h6>
-                        </div>
+                        <div class="row">
+                            <div class="col col-md-12 col-xs-12 {{ $errors->has('first_name') ? 'has-error' : '' }}">
+                                <!-- first name -->
+                                <label for="first_name" class="required">First Name</label>
+                                <!-- <b>{!! Form::label('first_name',Lang::get('message.first_name')) !!}</b> -->
+                                {!! Form::text('first_name',null,['class' => 'form-control input-lg ','id'=>'firstName']) !!}
+                               <h6 id="firstNameCheck"></h6>
+                            </div>
+                            <div class="col col-md-12 col-xs-12 {{ $errors->has('last_name') ? 'has-error' : '' }}">
+                                <!-- last name -->
+                                 <label for="last_name" class="required">Last Name</label>
+                                {!! Form::text('last_name',null,['class' => 'form-control input-lg ','id'=>'lastName']) !!}
+                                 <h6 id="lastNameCheck"></h6>
+                            </div>
                         </div>
                       
                       

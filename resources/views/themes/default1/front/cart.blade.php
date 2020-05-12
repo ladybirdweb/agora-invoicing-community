@@ -259,19 +259,14 @@ if (count($attributes) > 0) {
 
                                 </tbody>
                             </table>
-                            <div class="row">
-                                {!! Form::open(['url'=>'pricing/update','method'=>'post']) !!}
-                                <div class="form-group col-md-12">
 
-                                    <label for="coupon"><b>{{Lang::get('message.coupon-code')}}</b></label>
-                                    <input type="text" name="coupon" class="form-control input-lg">
-
+                            {!! Form::open(['url'=>'pricing/update','method'=>'post']) !!}
+                                <div class="input-group" style="margin-top: 10px">
+                                    <input type="text" name="coupon" class="form-control input-lg" placeholder="{{Lang::get('message.coupon-code')}}">
+                                    &nbsp;&nbsp;
+                                    <input type="submit" value="Apply" class="btn btn-primary">
                                 </div>
-                                <div class="form-group col-md-4-5">
-                                    <input type="submit" value="Update">
-                                </div>
-                                {!! Form::close() !!}
-                                </div>
+                            {!! Form::close() !!}
                             </div>
                         </div>
                          <!-- </div> -->

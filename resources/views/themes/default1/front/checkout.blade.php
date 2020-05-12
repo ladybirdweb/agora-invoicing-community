@@ -262,7 +262,7 @@ $sum = 0;
                      <?php
                     $igst = \App\Http\Controllers\Front\CartController::taxValue($attribute['i_gst'],Cart::getSubTotalWithoutConditions());
                      ?>
-                       {{currency_format($igst,$code = $currency)}} <br/><br/>
+                       {{currency_format($igst,$code = $currency)}}
 
 
                     </td>

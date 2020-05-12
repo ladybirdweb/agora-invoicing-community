@@ -6,7 +6,7 @@ Invoice
 active
 @stop
 @section('page-heading')
- <h1>Stripe Payment</h1>
+ Stripe Payment
 @stop
 @section('breadcrumb')
  @if(Auth::check())

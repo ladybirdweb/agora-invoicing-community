@@ -1,17 +1,18 @@
 @extends('themes.default1.layouts.front.master')
 @section('title')
-Checkout
+    Razorpay
 @stop
-@section('page-header')
-Checkout
+@section('page-heading')
+    Razorpay
 @stop
 @section('breadcrumb')
  @if(Auth::check())
-<li><a href="{{url('my-invoices')}}">Home</a></li>
-  @else
-  <li><a href="{{url('login')}}">Home</a></li>
-  @endif
-<li class="active">Checkout</li>
+     <li><a href="{{url('my-invoices')}}">Home</a></li>
+ @else
+     <li><a href="{{url('login')}}">Home</a></li>
+ @endif
+ <li><a href="{{url('checkout')}}">Checkout</a></li>
+ <li class="active">Razorpay</li>
 @stop
 @section('main-class') "main shop" @stop
 @section('content')

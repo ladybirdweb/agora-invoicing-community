@@ -6,7 +6,7 @@ Invoice
 active
 @stop
 @section('page-heading')
- <h1>Payment </h1>
+ <h1>Stripe Payment</h1>
 @stop
 @section('breadcrumb')
  @if(Auth::check())
@@ -14,8 +14,8 @@ active
   @else
   <li><a href="{{url('login')}}">Home</a></li>
   @endif
-<li class="active">My Account</li>
-<li class="active">Payment</li>
+<li><a href="{{url('checkout')}}">Checkout</a></li>
+<li class="active">Stripe Payment</li>
 @stop
 @section('content')
 

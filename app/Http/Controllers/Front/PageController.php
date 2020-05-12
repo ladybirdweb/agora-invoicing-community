@@ -60,7 +60,7 @@ class PageController extends GetPageTemplateController
                             return $model->url;
                         })
                         ->addColumn('created_at', function ($model) {
-                          return getDateHtml($model->created_at);
+                            return getDateHtml($model->created_at);
                         })
 
                         ->addColumn('action', function ($model) {

@@ -43,33 +43,6 @@ $sum = 0;
 
             <div class="card-body">
 
-                @if(Session::has('success'))
-                <div class="alert alert-success">
-                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                       <strong><i class="far fa-thumbs-up"></i> Well done!</strong>
-
-                    {!!Session::get('success')!!}
-                </div>
-                @endif
-                <!-- fail message -->
-                @if(Session::has('fails'))
-              <div class="alert alert-danger alert-dismissable" role="alert">
-                   <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <strong><i class="fas fa-exclamation-triangle"></i>Oh snap!</strong> Change a few things up and try submitting again.
-                   <li> {{Session::get('fails')}} </li>
-                </div>
-                @endif
-                @if (count($errors) > 0)
-                <div class="alert alert-danger">
-                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <strong><i class="fas fa-exclamation-triangle"></i>Oh snap!</strong> Change a few things up and try submitting again.
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-                @endif
                 <div>
                     <table class="shop_table cart">
                         <thead>

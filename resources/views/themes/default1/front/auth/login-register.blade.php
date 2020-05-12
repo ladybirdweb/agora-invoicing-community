@@ -123,36 +123,7 @@ Sign in or register
                                 <!-- <div id="error2">
                                 </div>
                                 <div id="alertMessage2" class="-text" ></div> -->
-                                @if(Session::has('success'))
-                                    <div class="alert alert-success">
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                        <strong><i class="far fa-thumbs-up"></i> Well done!</strong>
-                                        {{Session::get('success')}}
-                                    </div>
-                                @endif
-                            <!-- fail message -->
-                                @if(Session::has('fails'))
-                                    <div class="alert alert-danger alert-dismissable" role="alert">
-
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                        <strong><i class="fas fa-exclamation-triangle"></i>Oh snap!</strong> Change a few things up and try submitting again.
-                                        <ul>
-                                            <li>  {{Session::get('fails')}} </li>
-                                        </ul>
-                                    </div>
-                                @endif
-                                @if (count($errors) > 0)
-                                    <div class="alert alert-danger alert-dismissable" role="alert">
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                        <strong><i class="fas fa-exclamation-triangle"></i>Oh snap!</strong> Change a few things up and try submitting again.
-
-                                        <ul>
-                                            @foreach ($errors->all() as $error)
-                                                <li>{!! $error !!}</li>
-                                            @endforeach
-                                        </ul>
-                                    </div>
-                                @endif
+              
                                 <div class="row">
                                     <div class="col-sm-6">
                                         <div class="featured-box featured-box-primary text-left mt-5">

@@ -360,8 +360,6 @@ if($script){
                  <div class="alert alert-danger alert-dismissable" role="alert">
                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <strong><i class="fas fa-exclamation-triangle"></i>Oh snap!</strong> Change a few things up and try submitting again.
-                   {{Lang::get('message.alert')}}! {{Lang::get('message.failed')}}.
-                  
                     {{Session::get('fails')}}
                 </div>
                 @endif

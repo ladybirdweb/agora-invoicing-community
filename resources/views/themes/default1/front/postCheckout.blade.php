@@ -5,6 +5,9 @@
 @section('page-heading')
     Razorpay
 @stop
+@section('page-heading')
+ Checkout
+@stop
 @section('breadcrumb')
  @if(Auth::check())
      <li><a href="{{url('my-invoices')}}">Home</a></li>

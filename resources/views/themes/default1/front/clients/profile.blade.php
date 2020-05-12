@@ -105,21 +105,35 @@ input:checked + .slider:before {
  <link rel="stylesheet" href="{{asset('client/css/selectpicker.css')}}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/css/bootstrap-select.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/js/bootstrap-select.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 
 
      <div id= "alertMessage"></div>
      <div id= "error"></div>        
-    <div class="featured-boxes">
+     
+          <div class="row">
+            <div class="col col-md-3">
+                <div class="tabs tabs-vertical tabs-left">
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item active">
+                            <a class="nav-link" href="#edit-profile" data-toggle="tab">Edit Profile</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#change-password" data-toggle="tab">Change Password</a>
+                        </li>
 
-        <div class="row">
-            <div class="col-md-6">
-                <div class="featured-box featured-box-primary text-left mt-3 mt-md-5">
-                    <div class="box-content">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#setup-2fa" data-toggle="tab">Setup 2FA</a>
+                        </li>
 
-                        <h4 class="heading-primary text-uppercase mb-3">Edit Profile</h4>
+                    </ul>
+                </div>
+            </div>
+            <div class="col col-md-9">
+                <div class="tab-content" style="overflow-x: auto">
+                    <div id="edit-profile" class="tab-pane active">
+                      <h4>Edit Profile</h4>
+                        
                       {!! Form::model($user,['url'=>'my-profile', 'method' => 'PATCH','files'=>true]) !!}
                         <div class="row">
                             <div class="col col-md-12 col-xs-12 {{ $errors->has('first_name') ? 'has-error' : '' }}">
@@ -222,7 +236,7 @@ input:checked + .slider:before {
                         
                         
                          <div class="form-row">
-                        <div class="form-group {{ $errors->has('address') ? 'has-error' : '' }}">
+                        <div class="form-group col{{ $errors->has('address') ? 'has-error' : '' }}">
                             <!-- phone number -->
                             <label for"address">Address</label>
                             {!! Form::textarea('address',null,['class' => 'form-control input-lg','id'=>'Address']) !!}
@@ -302,13 +316,11 @@ input:checked + .slider:before {
                         </div>
                          {!! Form::close() !!}
                       
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="featured-box featured-box-primary text-left mt-3 mt-md-5">
-                    <div class="box-content">
-                            <h4 class="heading-primary text-uppercase mb-3">Change Password</h4>
+                    
+                        </div>
+
+                        <div id="change-password" class="tab-pane">
+                          <h4>Change Password</h4>
                         {!! Form::model($user,['url'=>'my-password' , 'method' => 'PATCH']) !!}
                         
                         <!-- old password -->
@@ -345,16 +357,13 @@ input:checked + .slider:before {
                             </div>
                         </div>
                       
-                    </div>
-                </div>
-                         @include('themes.default1.user.2faModals')
-   
-                 <div class="featured-box featured-box-primary text-left mt-3 mt-md-5">
-                   <div class="box-content">
+                     </div>
 
+
+                    <div id="setup-2fa" class="tab-pane">
+                        @include('themes.default1.user.2faModals')
                         <h4>{{Lang::get('message.setup_2fa')}}</h4>
 
-                    <br>
                     <div class="form-row">
                         <div class="col-md-10">
                         <h6>
@@ -381,15 +390,13 @@ input:checked + .slider:before {
                             </label>
                          </div>
                     </div>
-                </div>  
                 </div>
-    
+
+                    </div>
             </div>
-
-
         </div>
+     
 
-    </div>
 <script src="{{asset('common/js/2fa.js')}}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
 
@@ -497,7 +504,6 @@ input:checked + .slider:before {
                                            }  
                                         },
                                         error: function (data) {
-                                          console.log(data,'sd')
                                              var html = '<div class="alert alert-warning alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="fas fa-exclamation-triangle"></i>Oh Snap! </strong>'+data.responseJSON.message+' <br><ul>';
                                             $("#password").html("Update");
                                               $('html, body').animate({scrollTop:0}, 500);

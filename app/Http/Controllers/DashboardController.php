@@ -57,16 +57,17 @@ class DashboardController extends Controller
             'currency1Symbol','currency2Symbol','totalSalesCurrency2', 'totalSalesCurrency1', 'yearlySalesCurrency2',
             'yearlySalesCurrency1', 'monthlySalesCurrency2', 'monthlySalesCurrency1', 'users', 'productSoldInLast30Days'
             ,'recentOrders','subscriptions','expiredSubscriptions', 'invoices', 'allSoldProducts', 'pendingPaymentCurrency2',
-            'pendingPaymentCurrency1', 'status', 'startSubscriptionDate', 'endSubscriptionDate', 'clientsUsingOldVersion','getLast30DaysInstallation'));
+            'pendingPaymentCurrency1', 'status', 'startSubscriptionDate', 'endSubscriptionDate', 'clientsUsingOldVersion', 'getLast30DaysInstallation'));
     }
 
     public function getLast30DaysInstallation()
     {
         $dayUtc = new Carbon('-30 days');
         $now = Carbon::now()->subDays(1);
-        $totalSubscriptionInLast30Days = Subscription::whereBetween('created_at',[$dayUtc,$now])->count();
-        $inactiveInstallation = Subscription::whereColumn('created_at','=','updated_at')->whereBetween('created_at',[$dayUtc,$now])->count();
-        return ['total_subscription'=>$totalSubscriptionInLast30Days,'inactive_subscription'=>$inactiveInstallation];
+        $totalSubscriptionInLast30Days = Subscription::whereBetween('created_at', [$dayUtc, $now])->count();
+        $inactiveInstallation = Subscription::whereColumn('created_at', '=', 'updated_at')->whereBetween('created_at', [$dayUtc, $now])->count();
+
+        return ['total_subscription'=>$totalSubscriptionInLast30Days, 'inactive_subscription'=>$inactiveInstallation];
     }
 
     /**

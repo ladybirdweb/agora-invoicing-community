@@ -114,7 +114,7 @@ input:checked + .slider:before {
     @component('mini_views.navigational_view', [
                     'navigations'=>[
                         ['id'=>'edit-profile', 'name'=>'Edit Profile', 'active'=>1, 'slot'=>'edit'],
-                        ['id'=>'change-password', 'name'=>'User Details', 'slot'=>'password'],
+                        ['id'=>'change-password', 'name'=>'Change Password', 'slot'=>'password'],
                         ['id'=>'setup-2fa', 'name'=> Lang::get('message.setup_2fa'), 'slot'=>'twoFactor'],
                     ]
                 ])

@@ -205,14 +205,14 @@ class SocialMediaController extends Controller
             //dd($tweets[0]->text);
             if (! empty($tweets)) {
                 foreach ($tweets as $tweet) {
-                    $twitter .= '<article>
-           
-            <p><i class="fa fa-twitter"></i> '.$tweet->text.'</p>
-                <p><b>'.date('d-m-Y', strtotime($tweet->created_at)).'</p></b>
-        </article>';
+                    $twitter .= '<li>
+                        <span class="status"><i class="fa fa-twitter"></i> '.$tweet->text.'</span>
+                        <span class="meta">'.date('g:i a M j', strtotime($tweet->created_at)).'</span>
+                     </li>';
                 }
             }
-            echo $twitter;
+
+            echo '<ul>'.$twitter.'</ul>';
         } catch (Exception $ex) {
             throw new Exception($ex->getMessage());
             // $ex->getMessage();

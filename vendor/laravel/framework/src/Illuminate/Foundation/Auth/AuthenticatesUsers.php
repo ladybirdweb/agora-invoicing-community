@@ -103,6 +103,7 @@ trait AuthenticatesUsers
                     return redirect('2fa/validate');
                 }
                  activity()->log('Logged In');
+
                  return redirect()->intended($this->redirectPath());
     }
 

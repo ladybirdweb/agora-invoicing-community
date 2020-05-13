@@ -1,4 +1,4 @@
-@extends('themes.default1.layouts.front.myaccount_master')
+@extends('themes.default1.layouts.front.master')
 @section('title')
 Invoice
 @stop
@@ -6,22 +6,15 @@ Invoice
 active
 @stop
 @section('page-heading')
- <h1>My Account </h1>
+ My Invoices
 @stop
 @section('breadcrumb')
- @if(Auth::check())
-<li><a href="{{url('my-invoices')}}">Home</a></li>
-  @else
-  <li><a href="{{url('login')}}">Home</a></li>
-  @endif
-<li class="active">My Account</li>
-<li class="active">Invoices</li>
+<li class="active">My Invoices</li>
 @stop
 
 @section('content')
 
 <div class="col-md-12 pull-center">
-    <h2 class="mb-none"> My Invoices</h2>
 
 	 <table id="invoice-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
 	 	
@@ -39,6 +32,9 @@ active
 
             </div>
             <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
+
+<script src="{{asset("common/js/jquery-2.1.4.js")}}" type="text/javascript"></script>
+<script src="{{asset("common/js/jquery2.1.1.min.js")}}" type="text/javascript"></script>
 <script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript">
         $('#invoice-table').DataTable({

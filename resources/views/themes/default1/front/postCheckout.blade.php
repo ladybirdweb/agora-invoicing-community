@@ -1,17 +1,21 @@
 @extends('themes.default1.layouts.front.master')
 @section('title')
-Checkout
+    Razorpay
 @stop
-@section('page-header')
-Checkout
+@section('page-heading')
+    Razorpay
+@stop
+@section('page-heading')
+ Checkout
 @stop
 @section('breadcrumb')
  @if(Auth::check())
-<li><a href="{{url('my-invoices')}}">Home</a></li>
-  @else
-  <li><a href="{{url('login')}}">Home</a></li>
-  @endif
-<li class="active">Checkout</li>
+     <li><a href="{{url('my-invoices')}}">Home</a></li>
+ @else
+     <li><a href="{{url('login')}}">Home</a></li>
+ @endif
+ <li><a href="{{url('checkout')}}">Checkout</a></li>
+ <li class="active">Razorpay</li>
 @stop
 @section('main-class') "main shop" @stop
 @section('content')
@@ -138,11 +142,7 @@ $json = json_encode($data);
          <div class="card card-default" style="margin-bottom: 40px;">
             <div class="card-header">
                 <h4 class="card-title m-0">
-                   
                         Payment
-                   
-
-
                 </h4>
             </div>
 
@@ -200,17 +200,17 @@ $json = json_encode($data);
                                 <th class="product-name">
                                     Product
                                 </th>
-                                <th class="product-name">
+                                <th class="product-invoice">
                                     Invoice No.
                                 </th>
-                                <th class="product-quantity">
+                                <th class="product-version">
                                     Version
                                 </th>
 
                                 <th class="product-quantity">
                                     Quantity
                                 </th>
-                                <th class="product-name">
+                                <th class="product-total">
                                     Total
                                 </th>
                             </tr>
@@ -245,9 +245,7 @@ $json = json_encode($data);
                                 <td class="product-quantity">
                                     {{$item->quantity}}
                                 </td>
-                                <td class="product-name">
-
-                                        
+                                <td class="product-total">
                                     <span class="amount">{{currency_format(intval($item->regular_price),$code = $currency)}}</span>
                                 </td>
                             </tr>
@@ -304,7 +302,7 @@ $json = json_encode($data);
                         <strong>Cart Subtotal</strong>
                     </th>
                     <td>
-                        <strong><span class="amount">{{currency_format($subtotal,$code = $currency)}}</span></strong>
+                        <span class="amount">{{currency_format($subtotal,$code = $currency)}}</span>
                     </td>
                 </tr>
                 @foreach($content as $attributes)

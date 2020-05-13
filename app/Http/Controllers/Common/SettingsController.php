@@ -346,9 +346,7 @@ class SettingsController extends BaseSettingsController
                                     return $oldEntry;
                                 })
                                 ->addColumn('created_at', function ($model) {
-                                    $newDate = $this->getDate($model->created_at);
-
-                                    return $newDate;
+                                    return getDateHtml($model->created_at);
                                 })
 
                                     ->filterColumn('log_name', function ($query, $keyword) {

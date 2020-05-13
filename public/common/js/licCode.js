@@ -1,7 +1,10 @@
  $(document).ready(function(){
-    let ele = document.getElementById("s_key").textContent;
-     let finalele = ele.match(/.{1,4}/g).join('-');
-        document.getElementById("s_key").textContent = finalele;
+     // if not a mobile device. Mobile screens do not have enough space to accomodate "-"
+     if(!window.matchMedia("(max-width: 767px)").matches){
+         let ele = document.getElementById("s_key").textContent;
+         let finalele = ele.match(/.{1,4}/g).join('-');
+         document.getElementById("s_key").textContent = finalele;
+     }
 })
 
 document.querySelectorAll('span[data-type="copy"]')

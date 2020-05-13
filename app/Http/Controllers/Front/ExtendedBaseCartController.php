@@ -19,7 +19,7 @@ class ExtendedBaseCartController extends Controller
     public function addCouponUpdate()
     {
         try {
-            $code = \Input::get('coupon');
+            $code = \Request::get('coupon');
             $cart = Cart::getContent();
             $id = '';
             foreach ($cart as $item) {

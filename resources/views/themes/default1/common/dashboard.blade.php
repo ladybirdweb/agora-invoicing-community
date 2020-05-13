@@ -33,7 +33,7 @@ Dashboard
           <!-- small box -->
           <div class="small-box bg-green">
             <div class="inner">
-            	<h4>Yearly Sales</h4>
+              <h4>Yearly Sales</h4>
                 <?php
               $startingDateOfYear = (date('Y-01-01'));
               
@@ -54,7 +54,7 @@ Dashboard
           <!-- small box -->
           <div class="small-box bg-yellow">
             <div class="inner">
-            	<h4>Monthly Sales</h4>
+              <h4>Monthly Sales</h4>
                <?php
               $startMonthDate = date('Y-m-01');
               $endMonthDate = date('Y-m-t');
@@ -86,6 +86,22 @@ Dashboard
              <i class="ion ion-ios-cart-outline"></i>
             </div>
              <a href="{{url('invoices?status=pending')}}" class="small-box-footer">More info 
+              <i class="fa fa-arrow-circle-right"></i></a>
+             </div>
+        </div>
+
+         <div class="col-lg-3 col-xs-6">
+          <!-- small box -->
+          <div class="small-box bg-yellow">
+            <div class="inner">
+              <h4>Subscriptions(Last 30 days)</h4>
+              <span>Total: &nbsp;  {{$getLast30DaysInstallation['total_subscription']}}</span><br/>
+              <span>Inactive: &nbsp;  {{$getLast30DaysInstallation['inactive_subscription']}}</span><br/>
+            </div>
+            <div class="icon">
+             <span class="fa fa-bookmark-o"></span>
+            </div>
+              <a href="{{url('orders?inact_inst=all_inactive_ins')}}" class="small-box-footer">More info 
               <i class="fa fa-arrow-circle-right"></i></a>
              </div>
         </div>

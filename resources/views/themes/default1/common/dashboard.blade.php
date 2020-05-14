@@ -89,7 +89,10 @@ Dashboard
               <i class="fa fa-arrow-circle-right"></i></a>
              </div>
         </div>
-
+         @php
+        $startDate = new Carbon\Carbon('-30 days');
+        $endDate = Carbon\Carbon::now()->subDays(1);
+     @endphp
          <div class="col-lg-3 col-xs-6">
           <!-- small box -->
           <div class="small-box bg-yellow">
@@ -101,8 +104,7 @@ Dashboard
             <div class="icon">
              <span class="fa fa-bookmark-o"></span>
             </div>
-              <a href="{{url('orders?inact_inst=all_inactive_ins')}}" class="small-box-footer">More info 
-              <i class="fa fa-arrow-circle-right"></i></a>
+              <a href="{{url('orders?ins_not_ins=not_installed&sub_from='.$startDate.'&sub_till='.$endDate)}}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
              </div>
         </div>
 </div>

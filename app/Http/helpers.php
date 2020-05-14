@@ -147,7 +147,6 @@ function getOrderLink($orderId, $url = 'orders')
     $link = '--';
     $order = Order::where('id', $orderId)->select('id', 'number')->first();
     if ($order) {
-       
         $link = '<a href='.url($url.'/'.$order->id).'>'.$order->number.'</a>';
     }
 

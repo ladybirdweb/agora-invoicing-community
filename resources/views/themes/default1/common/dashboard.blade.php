@@ -96,7 +96,7 @@ Dashboard
             <div class="inner">
               <h4>Subscriptions(Last 30 days)</h4>
               <span>Total: &nbsp;  {{$getLast30DaysInstallation['total_subscription']}}</span><br/>
-              <span>Inactive: &nbsp;  {{$getLast30DaysInstallation['inactive_subscription']}}</span><br/>
+              <span>Not Installed: &nbsp;  {{$getLast30DaysInstallation['inactive_subscription']}}</span><br/>
             </div>
             <div class="icon">
              <span class="fa fa-bookmark-o"></span>

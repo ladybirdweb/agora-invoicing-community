@@ -33,6 +33,9 @@ class ExtendedOrderController extends Controller
             $this->expiryTill($request->input('expiry'), $request->input('expiryTill'), $baseQuery);
             $this->orderFrom($request->input('till'), $request->input('from'), $baseQuery);
             $this->orderTill($request->input('from'), $request->input('till'), $baseQuery);
+            $this->subFrom($request->input('sub_till'), $request->input('sub_from'), $baseQuery);
+            $this->subTill($request->input('sub_from'), $request->input('sub_till'), $baseQuery);
+            $this->installedNotInstalled($request->input('ins_not_ins'), $baseQuery);
             $this->domain($request->input('domain'), $baseQuery);
 
             $this->paidOrUnpaid($request->input('p_un'), $baseQuery);
@@ -58,10 +61,23 @@ class ExtendedOrderController extends Controller
             ->leftJoin('products', 'orders.product', '=', 'products.id')
             ->select(
                 'orders.id', 'orders.created_at', 'price_override', 'order_status', 'product', 'number', 'serial_key',
-                'subscriptions.update_ends_at as subscription_ends_at', 'subscriptions.id as subscription_id', 'subscriptions.version as product_version', 'subscriptions.updated_at',
+                'subscriptions.update_ends_at as subscription_ends_at', 'subscriptions.id as subscription_id', 'subscriptions.version as product_version', 'subscriptions.created_at','subscriptions.updated_at',
                 'products.name as product_name', \DB::raw("concat(first_name, ' ', last_name) as client_name"), 'client as client_id',
                 'users.currency'
             );
+    }
+
+    private function installedNotInstalled($installedNotInstalled,$join)
+    {
+        if ($installedNotInstalled) {
+            if ($installedNotInstalled == 'installed') {
+                $join = $join->whereColumn('subscriptions.created_at', '!=', 'subscriptions.updated_at');
+            } elseif ($installedNotInstalled == 'not_installed') {
+                $join = $join->whereColumn('subscriptions.created_at', '=', 'subscriptions.updated_at');
+            }
+        }
+
+        return $join;
     }
 
     /**
@@ -265,6 +281,49 @@ class ExtendedOrderController extends Controller
         }
     }
 
+     /**
+     * Searches for Subcription From Date.
+     *
+     * @param string $expiry The Subcription From Date
+     * @param object $join
+     *
+     * @return Query
+     */
+    private function subFrom($till, $from, $join)
+    {
+         if ($from) {
+            $fromdate = date_create($from);
+
+            $from = date_format($fromdate, 'Y-m-d H:m:i');
+            $tills = date('Y-m-d H:m:i');
+
+            $tillDate = $this->getTillDate($from, $till, $tills);
+            $join = $join->whereBetween('subscriptions.created_at', [$from, $tillDate]);
+
+            return $join;
+        }
+    }
+
+    /**
+     * Searches for Order Till Date.
+     *
+     * @param string $expiry The Order Till Date
+     * @param object $join
+     *
+     * @return Query
+     */
+    private function subTill($from, $till, $join)
+    {
+        if ($till) {
+            $tilldate = date_create($till);
+            $till = date_format($tilldate, 'Y-m-d H:m:i');
+            $froms = Order::first()->created_at;
+            $fromDate = $this->getFromDate($from, $froms);
+            $join = $join->whereBetween('subscriptions.created_at', [$fromDate, $till]);
+
+            return $join;
+        }
+    }
     /**
      * Searches for Order From Date.
      *

@@ -61,13 +61,13 @@ class ExtendedOrderController extends Controller
             ->leftJoin('products', 'orders.product', '=', 'products.id')
             ->select(
                 'orders.id', 'orders.created_at', 'price_override', 'order_status', 'product', 'number', 'serial_key',
-                'subscriptions.update_ends_at as subscription_ends_at', 'subscriptions.id as subscription_id', 'subscriptions.version as product_version', 'subscriptions.created_at','subscriptions.updated_at',
+                'subscriptions.update_ends_at as subscription_ends_at', 'subscriptions.id as subscription_id', 'subscriptions.version as product_version', 'subscriptions.created_at', 'subscriptions.updated_at',
                 'products.name as product_name', \DB::raw("concat(first_name, ' ', last_name) as client_name"), 'client as client_id',
                 'users.currency'
             );
     }
 
-    private function installedNotInstalled($installedNotInstalled,$join)
+    private function installedNotInstalled($installedNotInstalled, $join)
     {
         if ($installedNotInstalled) {
             if ($installedNotInstalled == 'installed') {
@@ -281,7 +281,7 @@ class ExtendedOrderController extends Controller
         }
     }
 
-     /**
+    /**
      * Searches for Subcription From Date.
      *
      * @param string $expiry The Subcription From Date
@@ -291,7 +291,7 @@ class ExtendedOrderController extends Controller
      */
     private function subFrom($till, $from, $join)
     {
-         if ($from) {
+        if ($from) {
             $fromdate = date_create($from);
 
             $from = date_format($fromdate, 'Y-m-d H:m:i');
@@ -324,6 +324,7 @@ class ExtendedOrderController extends Controller
             return $join;
         }
     }
+
     /**
      * Searches for Order From Date.
      *

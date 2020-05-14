@@ -79,7 +79,7 @@ class OrderController extends BaseOrderController
             $products = $this->product->where('id', '!=', 1)->pluck('name', 'id')->toArray();
 
             $paidUnpaidOptions = ['paid'=>'Paid Products', 'unpaid'=>'Unpaid Products'];
-            $insNotIns =  ['installed'=>'Installed', 'not_installed'=>'Not Installed'];
+            $insNotIns = ['installed'=>'Installed', 'not_installed'=>'Not Installed'];
             $activeInstallationOptions = ['paid_ins'=>'For Paid Products', 'unpaid_ins'=>'For Unpaid Products', 'all_ins'=>'All Products'];
             $inactiveInstallationOptions = ['paid_inactive_ins'=>'For Paid Products', 'unpaid_inactive_ins'=>'For Unpaid Products', 'all_inactive_ins'=>'All Products'];
             $renewal = ['expired_subscription'=>'Expired Subscriptions', 'active_subscription'=> 'Active Subscriptions'];

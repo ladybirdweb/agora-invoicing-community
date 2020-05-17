@@ -91,17 +91,15 @@ class MailChimpController extends BaseMailChimpController
                 'email_address' => $email,
 
             ]);
-
-            return redirect()->back()->with('success', 'email added to mailchimp');
+            return successResponse('Email added to mailchimp');
         } catch (Exception $ex) {
             $exe = json_decode($ex->getMessage(), true);
+            // dd($exe);
             if ($exe['status'] == 400) {
-                $error = "$email is already subscribed to newsletter";
-
-                return redirect()->back()->with('warning', $error);
+                $error = $exe['detail'];
+                return errorResponse($error,400);
             }
-
-            return redirect()->back()->with('fails', $ex->getMessage());
+            return errorResponse($ex->getMessage());
         }
     }
 

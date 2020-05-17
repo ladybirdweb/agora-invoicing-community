@@ -110,12 +110,12 @@ input:checked + .slider:before {
 
      <div id= "alertMessage"></div>
      <div id= "error"></div>
-
+  @include('themes.default1.user.2faModals')
     @component('mini_views.navigational_view', [
                     'navigations'=>[
-                        ['id'=>'edit-profile', 'name'=>'Edit Profile', 'active'=>1, 'slot'=>'edit'],
-                        ['id'=>'change-password', 'name'=>'Change Password', 'slot'=>'password'],
-                        ['id'=>'setup-2fa', 'name'=> Lang::get('message.setup_2fa'), 'slot'=>'twoFactor'],
+                        ['id'=>'edit-profile', 'name'=>'Edit Profile', 'active'=>1, 'slot'=>'edit','icon'=>'fas fa-user'],
+                        ['id'=>'change-password', 'name'=>'Change Password', 'slot'=>'password','icon'=>'fas fa-key'],
+                        ['id'=>'setup-2fa', 'name'=> Lang::get('message.setup_2fa'), 'slot'=>'twoFactor','icon'=>'fas fa-lock'],
                     ]
                 ])
 
@@ -300,7 +300,6 @@ input:checked + .slider:before {
         @endslot
         @slot('password')
 
-            {!! Form::model($user,['url'=>'my-password' , 'method' => 'PATCH']) !!}
 
             <!-- old password -->
                 <div class="form-row">
@@ -331,14 +330,14 @@ input:checked + .slider:before {
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <button type="button"  class="btn btn-primary float-right" data-loading-text="Loading..." name="update" id="password" onclick="updatePassword()" > <i class="fa fa-refresh"></i>&nbsp;Update</button>
+                        <button class="btn btn-primary float-right" data-loading-text="Loading..." name="update" id="password" onclick="updatePassword()" > <i class="fa fa-refresh"></i>&nbsp;Update</button>
 
                     </div>
                 </div>
         @endslot
         @slot('twoFactor')
-            @include('themes.default1.user.2faModals')
-            <div class="form-row">
+        <br>
+           <div class="form-row">
                 <div class="col-md-10">
                     <h6>
                         @if($is2faEnabled ==0)
@@ -498,6 +497,7 @@ input:checked + .slider:before {
 
                                 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+<script src="{{asset('common/js/licCode.js')}}"></script>
 <script src="{{asset('common/js/intlTelInput.js')}}"></script>
 <script type="text/javascript">
      $(document).ready(function(){

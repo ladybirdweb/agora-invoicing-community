@@ -229,9 +229,8 @@ $json = json_encode($data);
                                 <td class="product-name">
                                     {{$item->product_name}}
                                 </td>
-
                                 <td class="product-invoice">
-                                    {{$invoice->number}}
+                                    <a href="{{url('my-invoice/'.$invoice->id)}}" target="_blank">{{$invoice->number}}</a>
                                 </td>
                                 <td class="product-version">
                                     @if($product->version)

@@ -81,7 +81,7 @@ class ClientController extends BaseClientController
             return \DataTables::of($invoices)
                             ->addColumn('number', function ($model) {
                                 if ($model->is_renewed) {
-                                    return '<a href='.url('my-invoice/'.$model->id).'>'.$model->number.'</a><br>'.getStatusLabel('renewed', 'badge');
+                                    return '<a href='.url('my-invoice/'.$model->id).'>'.$model->number.'</a>&nbsp;'.getStatusLabel('renewed', 'badge');
                                 } else {
                                     return '<a href='.url('my-invoice/'.$model->id).'>'.$model->number.'</a>';
                                 }
@@ -299,7 +299,7 @@ class ClientController extends BaseClientController
                                 return '<a href='.url('my-order/'.$model->id).'>'.$model->number.'</a>';
                             })
                             ->addColumn('version', function ($model) {
-                                return getVersionAndLabel($model->version, $model->product_name, 'badge');
+                                return getVersionAndLabel($model->version, $model->product_id, 'badge');
                             })
                             ->addColumn('expiry', function ($model) {
                                 return getExpiryLabel($model->update_ends_at, 'badge');

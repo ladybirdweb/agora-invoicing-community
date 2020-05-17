@@ -382,17 +382,16 @@ if($script){
                 </div>
 
             </div>
-
+          
             <footer id="footer">
+              
                 <div class="container">
 
                     <div class="footer-ribbon"><span>Get in Touch</span></div>
-
+                     
                     <div class="row py-5 my-4">
                          <?php
-
-
-                          $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer1')->select('name','content','allow_tweets','allow_mailchimp')->first();
+                       $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer1')->select('name','content','allow_tweets','allow_mailchimp')->first();
                           if ($widgets) {
                               $tweetDetails = $widgets->allow_tweets ==1 ?  '<div id="tweets" class="twitter" >
                             </div>' : '';
@@ -403,19 +402,16 @@ if($script){
                                  @component('mini_views.footer_widget', ['title'=> $widgets->name, 'colClass'=>"col-md-6 col-lg-4 mb-4 mb-lg-0"])
                                      <p class="pr-1"> {!! $widgets->content !!}</p>
                                      {!! $tweetDetails !!}
-                                     <div class="alert alert-success d-none" id="newsletterSuccess">
-                                         <strong>Success!</strong> You've been added to our email list.
-                                     </div>
+                                     <div id="mailchimp-meesage"></div>
+                                    
                                      <div class="alert alert-danger d-none" id="newsletterError"></div>
                                      @if($mailchimpKey != null && $widgets->allow_mailchimp ==1)
-                                         {!! Form::open(['url'=>'mail-chimp/subcribe','method'=>'GET']) !!}
                                          <div class="input-group input-group-rounded">
                                              <input class="form-control form-control-sm" placeholder="Email Address" name="email" id="newsletterEmail" type="text">
                                              <span class="input-group-append">
-                                    <button class="btn btn-light text-color-dark" type="submit"><strong>Go!</strong></button>
+                                    <button class="btn btn-light text-color-dark" id="mailchimp-subscription" type="submit"><strong>Go!</strong></button>
                                 </span>
                                          </div>
-                                         {!! Form::close() !!}
                                      @endif
                                  @endcomponent
                             @endif
@@ -485,6 +481,7 @@ if($script){
                             @endforeach
                         @endcomponent
                       @endif
+
                 </div>
                 </div>
 
@@ -530,31 +527,75 @@ if($script){
           <script src="{{asset('common/js/intlTelInput.js')}}"></script>
 
         <script>
-         
+
+    $('#mailchimp-subscription').click(function(){
+      var email = $('#newsletterEmail').val();
+      $('#mailchimp-subscription').html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
+      $.ajax({
+        type: 'GET',
+        url: '{{url("mail-chimp/subcribe")}}',
+        data: {'email' : email},
+        success: function(data){
+          $("#mailchimp-subscription").html("Go");
+           $('#mailchimp-meesage').show();
+            var result =  '<br><div class="alert alert-success "><strong><i class="fa fa-check"></i> Success! </strong>'+data.message+'.</div>';
+            $('#mailchimp-meesage').show();
+            $('#mailchimp-meesage').html(result+ ".");
+              setInterval(function(){ 
+                $('#mailchimp-meesage').slideUp(5000); 
+            }, 2000);
+        },
+         error: function(response) {
+          if(response.status == 400) {
+            var myJSON = response.responseJSON.message
+              $("#mailchimp-subscription").html("Go");
+               var html =  '<br><div class="alert alert-warning"><strong> Whoops! </strong>'+myJSON+'.</div>';
+                $('#mailchimp-meesage').show();
+                document.getElementById('mailchimp-meesage').innerHTML = html;
+                 setInterval(function(){ 
+                $('#mailchimp-meesage').slideUp(5000); 
+                 }, 2000);
+               } else {
+                  var myJSON = response.responseJSON.errors;
+                  console.log(myJSON);
+                      $("#mailchimp-subscription").html("Go");
+                        var html = '<br><div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<ul>';
+                                  for (var key in myJSON)
+                                  {
+                                      html += '<li>' + myJSON[key][0] + '</li>'
+                                  }
+                                 html += '</ul></div>';
+                        $('#mailchimp-meesage').show();
+                        document.getElementById('mailchimp-meesage').innerHTML = html;
+                         setInterval(function(){ 
+                        $('#mailchimp-meesage').slideUp(5000); 
+                 }, 1000);
+               }
+       
+        }
+      })
+    })     
     
-                         $.ajax({
-                          type: 'GET',
-                           url: "{{route('twitter')}}",
-                           dataType: "html",
-                             success: function (returnHTML) {
-                                   $('#tweets').html(returnHTML);
-                                    
-                                }
-                          });
-                      
+   $.ajax({
+    type: 'GET',
+     url: "{{route('twitter')}}",
+     dataType: "html",
+       success: function (returnHTML) {
+             $('#tweets').html(returnHTML);
+              
+          }
+    });
 
-        
-                             function removeItem(id) {
-
-                                             $.ajax({
-                                            type: "GET",
-                                         data:"id=" + id,
-                                    url: "{{url('cart/remove/')}}",
-                                            success: function (data) {
-                                                location.reload();
-                                                                     }
-                                                    });
-                                                    }
+     function removeItem(id) {
+            $.ajax({
+              type: "GET",
+              data:"id=" + id,
+              url: "{{url('cart/remove/')}}",
+              success: function (data) {
+                  location.reload();
+                        }
+                    });
+                  }
 
 
         </script>

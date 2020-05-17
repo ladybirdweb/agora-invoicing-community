@@ -247,9 +247,9 @@ class OrderController extends BaseOrderController
 
     public function installationStatusLabel($lastConnectionDate)
     {
-        return $lastConnectionDate->toDateTimeString() > (new Carbon('-30 days'))->toDateTimeString() ? "<span class='label label-primary' <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Installation is Active'>
-                     </label><i class= 'fa fa-check'></i>&nbsp;Active</span>" : "<br><span class='label label-info' <label data-toggle='tooltip' style='font-weight:500;background-color:crimson;' data-placement='top' title='Installation inactive for more than 30 days'>
-                    </label> <i class= 'fa fa-info-circle'></i>&nbsp;Inactive</span>";
+        return $lastConnectionDate->toDateTimeString() > (new Carbon('-30 days'))->toDateTimeString() ? "&nbsp;<span class='label label-primary' style='background-color:darkcyan !important;' <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Installation is Active'>
+                     </label>Active</span>" : "&nbsp;<span class='label label-info' <label data-toggle='tooltip' style='font-weight:500;background-color:crimson;' data-placement='top' title='Installation inactive for more than 30 days'>
+                    </label>Inactive</span>";
     }
 
     /**

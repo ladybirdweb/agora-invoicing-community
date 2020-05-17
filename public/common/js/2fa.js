@@ -22,9 +22,10 @@
               document.execCommand("copy");
                $("#copyBtn").css('display', 'block');
                 $("#loader").css("display", "none");
-             $('#alertMessagecopied').show();
-             var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>Recovery code copied to clipboard</div>';
-             $('#alertMessagecopied').html(result);
+              $("#copied").css("display", "block");
+      
+              $('#copied').fadeIn("slow","swing");
+              $('#copied').fadeOut("slow","swing");
              
          }
 
@@ -221,8 +222,8 @@
               document.execCommand("copy");
                $("#copyNewCodeBtn").css('display', 'block');
                 $("#newloader").css("display", "none");
-                $('#alertMessage3').hide();
-             $('#alertMessage4').show();
-             var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>Recovery code copied to clipboard</div>';
-             $('#alertMessage4').html(result);
+                 $("#copied-new").css("display", "block");
+      
+              $('#copied-new').fadeIn("slow","swing");
+              $('#copied-new').fadeOut("slow","swing");
      }

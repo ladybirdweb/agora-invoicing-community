@@ -402,7 +402,7 @@ if($script){
                                  @component('mini_views.footer_widget', ['title'=> $widgets->name, 'colClass'=>"col-md-6 col-lg-4 mb-4 mb-lg-0"])
                                      <p class="pr-1"> {!! $widgets->content !!}</p>
                                      {!! $tweetDetails !!}
-                                     <div id="mailchimp-meesage"></div>
+                                     <div id="mailchimp-message"></div>
                                     
                                      <div class="alert alert-danger d-none" id="newsletterError"></div>
                                      @if($mailchimpKey != null && $widgets->allow_mailchimp ==1)
@@ -534,15 +534,15 @@ if($script){
       $.ajax({
         type: 'GET',
         url: '{{url("mail-chimp/subcribe")}}',
-        data: {'email' : email},
+        data: {'email' : email,'_token':"{{csrf_token()}}"},
         success: function(data){
           $("#mailchimp-subscription").html("Go");
-           $('#mailchimp-meesage').show();
+           $('#mailchimp-message').show();
             var result =  '<br><div class="alert alert-success "><strong><i class="fa fa-check"></i> Success! </strong>'+data.message+'.</div>';
-            $('#mailchimp-meesage').show();
-            $('#mailchimp-meesage').html(result+ ".");
+            $('#mailchimp-message').show();
+            $('#mailchimp-message').html(result+ ".");
               setInterval(function(){ 
-                $('#mailchimp-meesage').slideUp(5000); 
+                $('#mailchimp-message').slideUp(5000); 
             }, 2000);
         },
          error: function(response) {
@@ -550,10 +550,10 @@ if($script){
             var myJSON = response.responseJSON.message
               $("#mailchimp-subscription").html("Go");
                var html =  '<br><div class="alert alert-warning"><strong> Whoops! </strong>'+myJSON+'.</div>';
-                $('#mailchimp-meesage').show();
-                document.getElementById('mailchimp-meesage').innerHTML = html;
+                $('#mailchimp-message').show();
+                document.getElementById('mailchimp-message').innerHTML = html;
                  setInterval(function(){ 
-                $('#mailchimp-meesage').slideUp(5000); 
+                $('#mailchimp-message').slideUp(5000); 
                  }, 2000);
                } else {
                   var myJSON = response.responseJSON.errors;
@@ -565,10 +565,10 @@ if($script){
                                       html += '<li>' + myJSON[key][0] + '</li>'
                                   }
                                  html += '</ul></div>';
-                        $('#mailchimp-meesage').show();
-                        document.getElementById('mailchimp-meesage').innerHTML = html;
+                        $('#mailchimp-message').show();
+                        document.getElementById('mailchimp-message').innerHTML = html;
                          setInterval(function(){ 
-                        $('#mailchimp-meesage').slideUp(5000); 
+                        $('#mailchimp-message').slideUp(5000); 
                  }, 1000);
                }
        

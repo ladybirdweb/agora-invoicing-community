@@ -43,8 +43,18 @@
 
           </div>
             <div class="col-md-2">
-              <span class="badge badge-success badge-xs pull-right" id="copied" style="display:none;margin-top:-15px;margin-left:-20px;position: absolute;">Copied</span>
-                    <span style="pointer-events: initial; cursor: pointer; display: block;" id="copyBtn" title="Click to copy to clipboard" onclick="copyRecoveryCode()"><i class="fa fa-clipboard"></i></span>
+                     @component('mini_views.copied_flash_text',[
+                                 'navigations'=>[
+                                    [ 'btnName'=>'rec_code','slot'=>'recovery','style'=>'<span style="pointer-events: initial; cursor: pointer; display: block;" id="copyBtn" title="Click to copy to clipboard" onclick="copyRecoveryCode()"><i class="fa fa-clipboard"></i></span>'],
+                                    ]
+                                    
+                                ])
+                               
+                                @slot('recovery')
+                                <span class="badge badge-success badge-xs pull-right" id="copied" style="display:none;margin-top:-15px;margin-left:-20px;position: absolute;">Copied</span>
+                              
+                                @endslot
+                                @endcomponent
                     <span style="font-size: 20px; display: none;" id="loader"><i class="fa fa-circle-o-notch fa-spin"></i></span>
                 </div>
          
@@ -226,7 +236,16 @@
           </div>
             <div class="col-md-2">
                 <span class="badge badge-success badge-xs pull-right" id="copied-new" style="margin-left:20px;display:none;margin-top:-15px;position: absolute;">Copied</span>
-                    <span style="margin-left:50px;margin-top:5px; pointer-events: initial; cursor: pointer; display: block;" id="copyNewCodeBtn" title="Click to copy to clipboard" onclick="copyNewRecoveryCode()"><i class="fa fa-clipboard"></i></span>
+
+                 @component('mini_views.copied_flash_text',[
+                                 'navigations'=>[
+                                    [ 'btnName'=>'rec_code','slot'=>'recovery','style'=>' <span style="margin-left:50px;margin-top:5px; pointer-events: initial; cursor: pointer; display: block;" id="copyNewCodeBtn" title="Click to copy to clipboard" onclick="copyNewRecoveryCode()"><i class="fa fa-clipboard"></i></span>'],
+                                    ]
+                                    
+                                ])
+                                @endcomponent
+
+                   
                     <span style="font-size: 20px; display: none;" id="newloader"><i class="fa fa-circle-o-notch fa-spin"></i></span>
             </div>
          

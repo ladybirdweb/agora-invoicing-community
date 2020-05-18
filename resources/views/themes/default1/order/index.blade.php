@@ -46,7 +46,7 @@ View All Orders
                   <div class="input-group-addon">
                     <i class="fa fa-calendar"></i>
                   </div>
-                  <input autocomplete="off" type="text" name="expiry" value="{!! $request->expiry !!}" class="form-control expary" id="datepicker1">
+                  <input autocomplete="off" type="text" name="expiry" value="{!! $request->expiry !!}" class="form-control datepicker" id="datepicker1">
                 </div>
             </div>
              <div class="col-md-3 form-group">
@@ -56,7 +56,7 @@ View All Orders
                   <div class="input-group-addon">
                     <i class="fa fa-calendar"></i>
                   </div>
-                  <input autocomplete="off" type="text" name="expiryTill" value="{!! $request->expiryTill !!}" class="form-control exparytill" id="datepicker2">
+                  <input autocomplete="off" type="text" name="expiryTill" value="{!! $request->expiryTill !!}" class="form-control datepicker" id="datepicker2">
                 </div>
          
             </div>
@@ -68,7 +68,7 @@ View All Orders
                   <div class="input-group-addon">
                     <i class="fa fa-calendar"></i>
                   </div>
-                  <input autocomplete="off" type="text" name="sub_from" value="{!! $request->sub_from !!}" class="form-control sub_forom" id="datepicker5">
+                  <input autocomplete="off" type="text" name="sub_from" value="{!! $request->sub_from !!}" class="form-control datepicker" id="datepicker5">
                 </div>
             </div>
 
@@ -79,7 +79,7 @@ View All Orders
                   <div class="input-group-addon">
                     <i class="fa fa-calendar"></i>
                   </div>
-                  <input autocomplete="off" type="text" name="sub_till" value="{!! $request->sub_till !!}" class="form-control sub_till" id="datepicker6">
+                  <input autocomplete="off" type="text" name="sub_till" value="{!! $request->sub_till !!}" class="form-control datepicker" id="datepicker6">
                 </div>
             </div>
 
@@ -96,7 +96,7 @@ View All Orders
                   <div class="input-group-addon">
                     <i class="fa fa-calendar"></i>
                   </div>
-                  <input autocomplete="off" type="text" name="from" value="{!! $request->from !!}" class="form-control payment_date" id="datepicker3">
+                  <input autocomplete="off" type="text" name="from" value="{!! $request->from !!}" class="form-control datepicker" id="datepicker3">
                 </div>
             </div>
             <div class="col-md-3 form-group">
@@ -106,7 +106,7 @@ View All Orders
                   <div class="input-group-addon">
                     <i class="fa fa-calendar"></i>
                   </div>
-                  <input autocomplete="off" type="text" name="till" value="{!! $request->till !!}" class="form-control payment_till" id="datepicker4">
+                  <input autocomplete="off" type="text" name="till" value="{!! $request->till !!}" class="form-control datepicker" id="datepicker4">
                 </div>
             </div>
             <div class="col-md-3 form-group">
@@ -313,23 +313,8 @@ View All Orders
         }  
 
      });
-     $('#datepicker1').datepicker({
+     $('.datepicker').datepicker({
       autoclose: true
     });
-    $('#datepicker2').datepicker({
-      autoclose: true
-    })
-    $('#datepicker3').datepicker({
-      autoclose: true
-    })
-    $('#datepicker4').datepicker({
-      autoclose: true
-    })
-    $('#datepicker5').datepicker({
-      autoclose: true
-    })
-    $('#datepicker6').datepicker({
-      autoclose: true
-    })
 </script>
 @stop

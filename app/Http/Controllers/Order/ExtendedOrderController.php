@@ -61,7 +61,7 @@ class ExtendedOrderController extends Controller
             ->leftJoin('products', 'orders.product', '=', 'products.id')
             ->select(
                 'orders.id', 'orders.created_at', 'price_override', 'order_status', 'product', 'number', 'serial_key',
-                'subscriptions.update_ends_at as subscription_ends_at', 'subscriptions.id as subscription_id', 'subscriptions.version as product_version', 'subscriptions.created_at', 'subscriptions.updated_at',
+                'subscriptions.update_ends_at as subscription_ends_at', 'subscriptions.id as subscription_id', 'subscriptions.version as product_version', 'subscriptions.created_at as sub_created_at', 'subscriptions.updated_at as sub_updated_at',
                 'products.name as product_name', \DB::raw("concat(first_name, ' ', last_name) as client_name"), 'client as client_id',
                 'users.currency'
             );
@@ -71,13 +71,10 @@ class ExtendedOrderController extends Controller
     {
         if ($installedNotInstalled) {
             if ($installedNotInstalled == 'installed') {
-                $join = $join->whereColumn('subscriptions.created_at', '!=', 'subscriptions.updated_at');
-            } elseif ($installedNotInstalled == 'not_installed') {
-                $join = $join->whereColumn('subscriptions.created_at', '=', 'subscriptions.updated_at');
+                return $join->whereColumn('subscriptions.created_at', '!=', 'subscriptions.updated_at');
+            }   
+            return $join->whereColumn('subscriptions.created_at', '=', 'subscriptions.updated_at');
             }
-        }
-
-        return $join;
     }
 
     /**
@@ -317,7 +314,7 @@ class ExtendedOrderController extends Controller
         if ($till) {
             $tilldate = date_create($till);
             $till = date_format($tilldate, 'Y-m-d H:m:i');
-            $froms = Order::first()->created_at;
+            $froms = date_format(Subscription::first()->created_at,'Y-m-d H:m:i');
             $fromDate = $this->getFromDate($from, $froms);
             $join = $join->whereBetween('subscriptions.created_at', [$fromDate, $till]);
 

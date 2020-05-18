@@ -72,9 +72,10 @@ class ExtendedOrderController extends Controller
         if ($installedNotInstalled) {
             if ($installedNotInstalled == 'installed') {
                 return $join->whereColumn('subscriptions.created_at', '!=', 'subscriptions.updated_at');
-            }   
-            return $join->whereColumn('subscriptions.created_at', '=', 'subscriptions.updated_at');
             }
+
+            return $join->whereColumn('subscriptions.created_at', '=', 'subscriptions.updated_at');
+        }
     }
 
     /**
@@ -314,7 +315,7 @@ class ExtendedOrderController extends Controller
         if ($till) {
             $tilldate = date_create($till);
             $till = date_format($tilldate, 'Y-m-d H:m:i');
-            $froms = date_format(Subscription::first()->created_at,'Y-m-d H:m:i');
+            $froms = date_format(Subscription::first()->created_at, 'Y-m-d H:m:i');
             $fromDate = $this->getFromDate($from, $froms);
             $join = $join->whereBetween('subscriptions.created_at', [$fromDate, $till]);
 

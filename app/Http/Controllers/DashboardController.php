@@ -58,14 +58,15 @@ class DashboardController extends Controller
             'currency1Symbol','currency2Symbol','totalSalesCurrency2', 'totalSalesCurrency1', 'yearlySalesCurrency2',
             'yearlySalesCurrency1', 'monthlySalesCurrency2', 'monthlySalesCurrency1', 'users', 'productSoldInLast30Days'
             ,'recentOrders','subscriptions','expiredSubscriptions', 'invoices', 'allSoldProducts', 'pendingPaymentCurrency2',
-            'pendingPaymentCurrency1', 'status', 'startSubscriptionDate', 'endSubscriptionDate', 'clientsUsingOldVersion', 'getLast30DaysInstallation','conversionRate'));
+            'pendingPaymentCurrency1', 'status', 'startSubscriptionDate', 'endSubscriptionDate', 'clientsUsingOldVersion', 'getLast30DaysInstallation', 'conversionRate'));
     }
 
     private function getConversionRate()
     {
         $allOrders = Order::count();
-        $paidOrders = Order::where('price_override','>',0)->count();
-        $rate  = ($paidOrders/$allOrders)*100;
+        $paidOrders = Order::where('price_override', '>', 0)->count();
+        $rate = ($paidOrders / $allOrders) * 100;
+
         return ['all_orders'=>$allOrders, 'paid_orders'=>$paidOrders, 'rate'=>$rate];
     }
 
@@ -75,8 +76,9 @@ class DashboardController extends Controller
         $now = Carbon::now()->subDays(1);
         $totalSubscriptionInLast30Days = Subscription::whereBetween('created_at', [$dayUtc, $now])->count();
         $inactiveInstallation = Subscription::whereColumn('created_at', '=', 'updated_at')->whereBetween('created_at', [$dayUtc, $now])->count();
-        $rate = (($totalSubscriptionInLast30Days-$inactiveInstallation)/$totalSubscriptionInLast30Days *100);
-        return ['total_subscription'=>$totalSubscriptionInLast30Days, 'inactive_subscription'=>$inactiveInstallation,'rate'=>$rate];
+        $rate = (($totalSubscriptionInLast30Days - $inactiveInstallation) / $totalSubscriptionInLast30Days * 100);
+
+        return ['total_subscription'=>$totalSubscriptionInLast30Days, 'inactive_subscription'=>$inactiveInstallation, 'rate'=>$rate];
     }
 
     /**

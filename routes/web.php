@@ -102,7 +102,7 @@
         Route::get('/2fa/validate', 'Google2FAController@getValidateToken');
         Route::get('verify-2fa', 'Google2FAController@verify2fa');
         Route::post('2fa/loginValidate', 'Google2FAController@postLoginValidateToken')->name('2fa/loginValidate');
-        Route::get('2fa/setupValidate', 'Google2FAController@postSetupValidateToken');
+        Route::post('2fa/setupValidate', 'Google2FAController@postSetupValidateToken');
         Route::get('verify-password', 'Google2FAController@verifyPassword');
         Route::get('2fa-recovery-code', 'Google2FAController@generateRecoveryCode');
         Route::get('get-recovery-code', 'Google2FAController@getRecoveryCode');

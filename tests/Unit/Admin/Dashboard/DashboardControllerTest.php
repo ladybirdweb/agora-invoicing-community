@@ -220,6 +220,15 @@ class DashboardControllerTest extends DBTestCase
         $this->assertEquals($this->user->first_name.' '.$this->user->last_name, $response[1]->client_name);
     }
 
+    public function test_getClientsUsingOldVersions_whenNoSubscriptionIsPresentInTheDB_shouldGiveEmptyArray()
+    {
+        $this->getLoggedInUser('admin');
+
+        $methodResponse = $this->getPrivateMethod($this->classObject, 'getClientsUsingOldVersions');
+
+        $this->assertCount(0, $methodResponse);
+    }
+
     public function test_getClientsUsingOldVersions_shouldShowClientsWhichAreUsingOlderVersionInOrderOfTheirVersion()
     {
         $this->getLoggedInUser('admin');

@@ -361,7 +361,7 @@ class DashboardController extends Controller
     private function getClientsUsingOldVersions()
     {
         $date = new Carbon('-30 days');
-        $latestVersion = Subscription::orderBy('version', 'desc')->value('version');
+        $latestVersion = (string) Subscription::orderBy('version', 'desc')->value('version');
 
         // query the latest version and query for rest of the versions
         return Order::leftJoin('subscriptions', 'orders.id', '=', 'subscriptions.order_id')

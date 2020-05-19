@@ -68,10 +68,9 @@ class DashboardController extends Controller
         $now = Carbon::now();
         $allOrders = Order::whereBetween('created_at', [$dayUtc, $now])->count();
         $paidOrders = Order::where('price_override', '>', 0)->whereBetween('created_at', [$dayUtc, $now])->count();
-        if($paidOrders) {
+        if ($paidOrders) {
             $rate = ($paidOrders / $allOrders) * 100;
         }
-        
 
         return ['all_orders'=>$allOrders, 'paid_orders'=>$paidOrders, 'rate'=>$rate];
     }
@@ -83,10 +82,9 @@ class DashboardController extends Controller
         $rate = 0;
         $totalSubscriptionInLast30Days = Subscription::whereBetween('created_at', [$dayUtc, $now])->count();
         $inactiveInstallation = Subscription::whereColumn('created_at', '=', 'updated_at')->whereBetween('created_at', [$dayUtc, $now])->count();
-        if($totalSubscriptionInLast30Days) {
-         $rate = (($totalSubscriptionInLast30Days - $inactiveInstallation) / $totalSubscriptionInLast30Days * 100);
+        if ($totalSubscriptionInLast30Days) {
+            $rate = (($totalSubscriptionInLast30Days - $inactiveInstallation) / $totalSubscriptionInLast30Days * 100);
         }
-        
 
         return ['total_subscription'=>$totalSubscriptionInLast30Days, 'inactive_subscription'=>$inactiveInstallation, 'rate'=>$rate];
     }

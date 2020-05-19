@@ -3,7 +3,7 @@
 Email/Mobile Verification | Faveo Helpdesk
 @stop
 @section('page-heading')
- <h1>Email/Mobile Verification</h1>
+ Email/Mobile Verification
 @stop
 @section('page-header')
 Reset Password

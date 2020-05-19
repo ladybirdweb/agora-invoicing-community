@@ -106,7 +106,7 @@
                                                     $("#pass_btn").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Verifying...");
                                                     $.ajax({
                                                         url : "2fa/setupValidate",
-                                                        method : 'POST',
+                                                        method : 'GET',
                                                         data : {
                                                             'totp' : code,
                                                         },

@@ -29,7 +29,7 @@ if($script){
   
           <!-- Mobile Metas -->
           <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1.0, shrink-to-fit=no">
-  
+          <meta name="csrf-token" content="{{ csrf_token() }}" />
           <!-- Web Fonts  -->
           <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800%7CShadows+Into+Light" rel="stylesheet" type="text/css">
 
@@ -525,7 +525,13 @@ if($script){
           <!-- Theme Initialization Files -->
           <script src="{{asset('client/porto/js/theme.init.js')}}"></script>
           <script src="{{asset('common/js/intlTelInput.js')}}"></script>
-
+          <script type="text/javascript">
+          $.ajaxSetup({
+              headers: {
+                  'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+              }
+          });
+          </script>
         <script>
 
     $('#mailchimp-subscription').click(function(){

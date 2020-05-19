@@ -33,37 +33,6 @@ $set = $set->findOrFail(1);
 <div class="row">
     <div class="col-md-6">
 
-        @if (count($errors) > 0)
-                <div class="alert alert-danger">
-                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <strong><i class="fas fa-exclamation-triangle"></i>Oh snap!</strong> Change a few things up and try submitting again.
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-                @endif
-
-                @if(Session::has('success'))
-                 <div class="alert alert-success">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <strong><i class="far fa-thumbs-up"></i> Well done!</strong>
-
-
-                {{Session::get('success')}}
-        </div>
-                @endif
-                <!-- fail message -->
-                @if(Session::has('fails'))
-                <div class="alert alert-danger alert-dismissable">
-                    <i class="fa fa-ban"></i>
-                    <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.failed')}}.
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    {{Session::get('fails')}}
-                </div>
-                @endif
-
        <h2 class="mb-3 mt-2"><strong>Contact</strong> Us</h2>
         {!! Form::open(['url'=>'contact-us']) !!}
             <div class="form-row">

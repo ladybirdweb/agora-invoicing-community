@@ -97,7 +97,7 @@ Dashboard
           <!-- small box -->
           <div class="small-box bg-yellow">
             <div class="inner">
-              <h4>Installed Subscription Conversion:&nbsp; {{number_format($getLast30DaysInstallation['rate'], 2, '.', '')}}%</h4>
+              <h4>Products Installed Conversion:&nbsp; {{number_format($getLast30DaysInstallation['rate'], 2, '.', '')}}%</h4>
               <span>Total Subscription (Last 30 days): &nbsp;  {{$getLast30DaysInstallation['total_subscription']}}</span><br/>
               <span>Not Installed (Last 30 days): &nbsp;  {{$getLast30DaysInstallation['inactive_subscription']}}</span><br/>
             </div>
@@ -107,19 +107,23 @@ Dashboard
                <a href="{{url('orders?ins_not_ins=not_installed&sub_from='.$startDate.'&sub_till='.$endDate)}}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
              </div>
         </div>
+        @php
+        $startDate = new Carbon\Carbon('-30 days');
+        $endDate = Carbon\Carbon::now();
+        @endphp
 
         <div class="col-lg-4 col-xs-6">
           <!-- small box -->
           <div class="small-box bg-aqua">
             <div class="inner">
               <h4>Paid Orders Conversion:&nbsp; {{number_format($conversionRate['rate'], 2, '.', '')}}%</h4>
-              <span>Total Orders: &nbsp;  {{$conversionRate['all_orders']}}</span><br/>
-              <span>Paid Orders: &nbsp;  {{$conversionRate['paid_orders']}}</span><br/>
+              <span>Total Orders (Last 30 days): &nbsp;  {{$conversionRate['all_orders']}}</span><br/>
+              <span>Paid Orders (Last 30 days): &nbsp;  {{$conversionRate['paid_orders']}}</span><br/>
             </div>
             <div class="icon">
              <span class="ion ion-ios-cart-outline"></span>
             </div>
-              <a href="{{url('orders?p_un=unpaid')}}" class="small-box-footer">More info 
+              <a href="{{url('orders?p_un=unpaid&from='.$startDate.'&till='.$endDate)}}" class="small-box-footer">More info 
               <i class="fa fa-arrow-circle-right"></i></a>
              </div>
         </div>

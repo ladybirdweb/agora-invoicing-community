@@ -63,9 +63,15 @@ class DashboardController extends Controller
 
     private function getConversionRate()
     {
-        $allOrders = Order::count();
-        $paidOrders = Order::where('price_override', '>', 0)->count();
-        $rate = ($paidOrders / $allOrders) * 100;
+        $dayUtc = new Carbon('-30 days');
+        $rate = 0;
+        $now = Carbon::now();
+        $allOrders = Order::whereBetween('created_at', [$dayUtc, $now])->count();
+        $paidOrders = Order::where('price_override', '>', 0)->whereBetween('created_at', [$dayUtc, $now])->count();
+        if($paidOrders) {
+            $rate = ($paidOrders / $allOrders) * 100;
+        }
+        
 
         return ['all_orders'=>$allOrders, 'paid_orders'=>$paidOrders, 'rate'=>$rate];
     }
@@ -74,9 +80,13 @@ class DashboardController extends Controller
     {
         $dayUtc = new Carbon('-30 days');
         $now = Carbon::now()->subDays(1);
+        $rate = 0;
         $totalSubscriptionInLast30Days = Subscription::whereBetween('created_at', [$dayUtc, $now])->count();
         $inactiveInstallation = Subscription::whereColumn('created_at', '=', 'updated_at')->whereBetween('created_at', [$dayUtc, $now])->count();
-        $rate = (($totalSubscriptionInLast30Days - $inactiveInstallation) / $totalSubscriptionInLast30Days * 100);
+        if($totalSubscriptionInLast30Days) {
+         $rate = (($totalSubscriptionInLast30Days - $inactiveInstallation) / $totalSubscriptionInLast30Days * 100);
+        }
+        
 
         return ['total_subscription'=>$totalSubscriptionInLast30Days, 'inactive_subscription'=>$inactiveInstallation, 'rate'=>$rate];
     }

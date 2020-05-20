@@ -192,6 +192,10 @@ class BaseClientController extends Controller
                 return currency_format($model->grand_total, $code = $model->currency);
             })
             ->addColumn('status', function ($model) {
+                if (\Auth::user()->role == 'admin') {
+                    return getStatusLabel($model->status);
+                }
+
                 return getStatusLabel($model->status, 'badge');
             })
             ->addColumn('action', function ($model) {

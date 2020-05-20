@@ -52,22 +52,41 @@ class DashboardController extends Controller
         $startSubscriptionDate = date('Y-m-d');
         $endSubscriptionDate = date('Y-m-d', strtotime('+3 months'));
         $status = $request->input('status');
+        $conversionRate = $this->getConversionRate();
 
         return view('themes.default1.common.dashboard', compact('allowedCurrencies1','allowedCurrencies2',
             'currency1Symbol','currency2Symbol','totalSalesCurrency2', 'totalSalesCurrency1', 'yearlySalesCurrency2',
             'yearlySalesCurrency1', 'monthlySalesCurrency2', 'monthlySalesCurrency1', 'users', 'productSoldInLast30Days'
             ,'recentOrders','subscriptions','expiredSubscriptions', 'invoices', 'allSoldProducts', 'pendingPaymentCurrency2',
-            'pendingPaymentCurrency1', 'status', 'startSubscriptionDate', 'endSubscriptionDate', 'clientsUsingOldVersion', 'getLast30DaysInstallation'));
+            'pendingPaymentCurrency1', 'status', 'startSubscriptionDate', 'endSubscriptionDate', 'clientsUsingOldVersion', 'getLast30DaysInstallation', 'conversionRate'));
+    }
+
+    private function getConversionRate()
+    {
+        $dayUtc = new Carbon('-30 days');
+        $rate = 0;
+        $now = Carbon::now();
+        $allOrders = Order::whereBetween('created_at', [$dayUtc, $now])->count();
+        $paidOrders = Order::where('price_override', '>', 0)->whereBetween('created_at', [$dayUtc, $now])->count();
+        if ($paidOrders) {
+            $rate = ($paidOrders / $allOrders) * 100;
+        }
+
+        return ['all_orders'=>$allOrders, 'paid_orders'=>$paidOrders, 'rate'=>$rate];
     }
 
     public function getLast30DaysInstallation()
     {
         $dayUtc = new Carbon('-30 days');
         $now = Carbon::now()->subDays(1);
+        $rate = 0;
         $totalSubscriptionInLast30Days = Subscription::whereBetween('created_at', [$dayUtc, $now])->count();
         $inactiveInstallation = Subscription::whereColumn('created_at', '=', 'updated_at')->whereBetween('created_at', [$dayUtc, $now])->count();
+        if ($totalSubscriptionInLast30Days) {
+            $rate = (($totalSubscriptionInLast30Days - $inactiveInstallation) / $totalSubscriptionInLast30Days * 100);
+        }
 
-        return ['total_subscription'=>$totalSubscriptionInLast30Days, 'inactive_subscription'=>$inactiveInstallation];
+        return ['total_subscription'=>$totalSubscriptionInLast30Days, 'inactive_subscription'=>$inactiveInstallation, 'rate'=>$rate];
     }
 
     /**

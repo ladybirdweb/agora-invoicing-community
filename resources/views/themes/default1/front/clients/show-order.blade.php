@@ -50,7 +50,7 @@ active
                             <td>  @component('mini_views.copied_flash_text',[
                                  'navigations'=>[
                                    
-                                    ['btnName'=>'lic_btn','slot'=>'license','style'=>'<span data-type="copy" style="font-size: 15px; pointer-events: initial; cursor: pointer; display: block;" id="copyBtn" title="Click to copy to clipboard"><i class="fa fa-clipboard"></i></span>'],
+                                    ['btnName'=>'lic_btn','slot'=>'license','style'=>'<span data-type="copy" style="font-size: 15px; pointer-events: initial; cursor: pointer; display: block;" id="copyBtn" title="Click to copy to clipboard"><i class="fa fa-clipboard"></i></span><span class="badge badge-success badge-xs pull-right" id="copied" style="display:none;margin-top:-40px;margin-left:-20px;position: absolute;">Copied</span>'],
                                     ]
                                 ])
                               
@@ -192,6 +192,11 @@ active
                 {data: 'action', name: 'action'}
             ],
             "fnDrawCallback": function( oSettings ) {
+                 $(function () {
+                  $('[data-toggle="tooltip"]').tooltip({
+                    container : 'body'
+                  });
+                });
                 $('.loader').css('display', 'none');
             },
             "fnPreDrawCallback": function(oSettings, json) {
@@ -222,6 +227,11 @@ active
                         {data: 'created_at', name: 'created_at'},
                     ],
                     "fnDrawCallback": function( oSettings ) {
+                         $(function () {
+                          $('[data-toggle="tooltip"]').tooltip({
+                            container : 'body'
+                          });
+                        });
                         $('.loader').css('display', 'none');
                     },
                     "fnPreDrawCallback": function(oSettings, json) {

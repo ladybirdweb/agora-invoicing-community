@@ -6,7 +6,7 @@
     Login | Register
 @stop
 @section('page-heading')
-Sign in or register
+Sign in or Register
 @stop
 @section('breadcrumb')
     @if(Auth::check())

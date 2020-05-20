@@ -73,6 +73,31 @@ class ExtendedOrderControllerTest extends DBTestCase
         $this->assertEquals('v3.2.0', $records[1]->product_version);
     }
 
+    public function test_subFrom_whenSubscriptionFromIsNotNullButVersionTillIsNull_shouldGiveResultFromDatePassed()
+    {
+        $this->getLoggedInUser('admin');
+        $this->createOrder('v3.0.0');
+        $this->createOrder('v3.1.0');
+        $this->createOrder('v3.2.0');
+        $baseQuery = $this->getPrivateMethod($this->classObject, 'getBaseQueryForOrders');
+        $query = $this->getPrivateMethod($this->classObject, 'subFrom', ['19-05-2030', '05-01-2019', $baseQuery]);
+        $records = $query->get();
+        $this->assertEquals(3, $records->count());
+    }
+
+    public function test_subTill_whenSubscriptionFromIsNullButVersionTillIsNotNull_shouldGiveResultTillDatePassed()
+    {
+        $this->getLoggedInUser('admin');
+        $this->createOrder('v3.0.0');
+        $this->createOrder('v3.1.0');
+        $this->createOrder('v3.2.0');
+        $today = date('Y-m-d H:m:i');
+        $baseQuery = $this->getPrivateMethod($this->classObject, 'getBaseQueryForOrders');
+        $query = $this->getPrivateMethod($this->classObject, 'subTill', [null, $today, $baseQuery]);
+        $records = $query->get();
+        $this->assertEquals(0, $records->count());
+    }
+
     public function test_getSelectedVersionOrders_whenVersionFromIsNotNullAndVersionTillIsNotNull_shouldGiveIntersectionOfBoth()
     {
         $this->getLoggedInUser('admin');
@@ -84,6 +109,30 @@ class ExtendedOrderControllerTest extends DBTestCase
         $records = $query->get();
         $this->assertEquals(1, $records->count());
         $this->assertEquals('v3.1.0', $records[0]->product_version);
+    }
+
+    public function test_installedNotInstalled_whenCreatedUpdatedAtDiffers_shouldGiveInstalledSubscripion()
+    {
+        $this->getLoggedInUser('admin');
+        $this->createOrder('v3.0.0');
+        $this->createOrder('v3.1.0');
+        $this->createOrder('v3.2.0');
+        $baseQuery = $this->getPrivateMethod($this->classObject, 'getBaseQueryForOrders');
+        $query = $this->getPrivateMethod($this->classObject, 'installedNotInstalled', ['installed', $baseQuery]);
+        $records = $query->get();
+        $this->assertEquals(0, $records->count());
+    }
+
+    public function test_installedNotInstalled_whenCreatedUpdatedAtSame_shouldGiveUninstalledProducts()
+    {
+        $this->getLoggedInUser('admin');
+        $this->createOrder('v3.0.0');
+        $this->createOrder('v3.1.0');
+        $this->createOrder('v3.2.0');
+        $baseQuery = $this->getPrivateMethod($this->classObject, 'getBaseQueryForOrders');
+        $query = $this->getPrivateMethod($this->classObject, 'installedNotInstalled', ['not_installed', $baseQuery]);
+        $records = $query->get();
+        $this->assertEquals(3, $records->count());
     }
 
     private function createOrder($version = 'v3.0.0')

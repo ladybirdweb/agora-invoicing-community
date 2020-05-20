@@ -46,7 +46,7 @@ View All Orders
                   <div class="input-group-addon">
                     <i class="fa fa-calendar"></i>
                   </div>
-                  <input autocomplete="off" type="text" name="expiry" value="{!! $request->expiry !!}" class="form-control expary" id="datepicker1">
+                  <input autocomplete="off" type="text" name="expiry" value="{!! $request->expiry !!}" class="form-control datepicker" id="datepicker1">
                 </div>
             </div>
              <div class="col-md-3 form-group">
@@ -56,10 +56,39 @@ View All Orders
                   <div class="input-group-addon">
                     <i class="fa fa-calendar"></i>
                   </div>
-                  <input autocomplete="off" type="text" name="expiryTill" value="{!! $request->expiryTill !!}" class="form-control exparytill" id="datepicker2">
+                  <input autocomplete="off" type="text" name="expiryTill" value="{!! $request->expiryTill !!}" class="form-control datepicker" id="datepicker2">
                 </div>
          
             </div>
+
+             <div class="col-md-3 form-group">
+                <!-- first name -->
+                {!! Form::label('from','Subscription From') !!}
+                 <div class="input-group date">
+                  <div class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                  </div>
+                  <input autocomplete="off" type="text" name="sub_from" value="{!! $request->sub_from !!}" class="form-control datepicker" id="datepicker5">
+                </div>
+            </div>
+
+            <div class="col-md-3 form-group">
+                <!-- first name -->
+                {!! Form::label('till','Subcription Till') !!}
+                <div class="input-group date">
+                  <div class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                  </div>
+                  <input autocomplete="off" type="text" name="sub_till" value="{!! $request->sub_till !!}" class="form-control datepicker" id="datepicker6">
+                </div>
+            </div>
+
+              <div class="col-md-3 form-group">
+                <!-- first name -->
+                {!! Form::label('ins_not_ins','Installed/Not Installed') !!}
+                {!! Form::select('ins_not_ins',[null => 'Choose']+ $insNotIns, $request->ins_not_ins, ['class' => 'form-control','id'=>'ins_not_ins']) !!}
+            </div>
+
             <div class="col-md-3 form-group">
                 <!-- first name -->
                 {!! Form::label('from','Order From') !!}
@@ -67,7 +96,7 @@ View All Orders
                   <div class="input-group-addon">
                     <i class="fa fa-calendar"></i>
                   </div>
-                  <input autocomplete="off" type="text" name="from" value="{!! $request->from !!}" class="form-control payment_date" id="datepicker3">
+                  <input autocomplete="off" type="text" name="from" value="{!! $request->from !!}" class="form-control datepicker" id="datepicker3">
                 </div>
             </div>
             <div class="col-md-3 form-group">
@@ -77,7 +106,7 @@ View All Orders
                   <div class="input-group-addon">
                     <i class="fa fa-calendar"></i>
                   </div>
-                  <input autocomplete="off" type="text" name="till" value="{!! $request->till !!}" class="form-control payment_till" id="datepicker4">
+                  <input autocomplete="off" type="text" name="till" value="{!! $request->till !!}" class="form-control datepicker" id="datepicker4">
                 </div>
             </div>
             <div class="col-md-3 form-group">
@@ -210,7 +239,7 @@ View All Orders
             // if in request sort field is present, it will take that else default order
             // need to stringify the sort_order, else it will be considered as a javascript variable
             order: [[ {!! $request->sort_field ?: 7 !!}, {!! "'".$request->sort_order."'" ?: "'desc'" !!} ]],
-             ajax: '{!! route('get-orders',"order_no=$request->order_no&product_id=$request->product_id&expiry=$request->expiry&expiryTill=$request->expiryTill&from=$request->from&till=$request->till&domain=$request->domain&p_un=$request->p_un&act_ins=$request->act_inst&renewal=$request->renewal&inact_ins=$request->inact_inst&version_from=$request->version_from&version_till=$request->version_till" ) !!}',
+             ajax: '{!! route('get-orders',"order_no=$request->order_no&product_id=$request->product_id&expiry=$request->expiry&expiryTill=$request->expiryTill&from=$request->from&till=$request->till&sub_from=$request->sub_from&sub_till=$request->sub_till&ins_not_ins=$request->ins_not_ins&domain=$request->domain&p_un=$request->p_un&act_ins=$request->act_inst&renewal=$request->renewal&inact_ins=$request->inact_inst&version_from=$request->version_from&version_till=$request->version_till" ) !!}',
             "oLanguage": {
                 "sLengthMenu": "_MENU_ Records per page",
                 "sSearch"    : "Search: ",
@@ -284,17 +313,8 @@ View All Orders
         }  
 
      });
-     $('#datepicker1').datepicker({
+     $('.datepicker').datepicker({
       autoclose: true
     });
-    $('#datepicker2').datepicker({
-      autoclose: true
-    })
-    $('#datepicker3').datepicker({
-      autoclose: true
-    })
-    $('#datepicker4').datepicker({
-      autoclose: true
-    })
 </script>
 @stop

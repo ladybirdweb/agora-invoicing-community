@@ -79,6 +79,7 @@ class OrderController extends BaseOrderController
             $products = $this->product->where('id', '!=', 1)->pluck('name', 'id')->toArray();
 
             $paidUnpaidOptions = ['paid'=>'Paid Products', 'unpaid'=>'Unpaid Products'];
+            $insNotIns = ['installed'=>'Installed', 'not_installed'=>'Not Installed'];
             $activeInstallationOptions = ['paid_ins'=>'For Paid Products', 'unpaid_ins'=>'For Unpaid Products', 'all_ins'=>'All Products'];
             $inactiveInstallationOptions = ['paid_inactive_ins'=>'For Paid Products', 'unpaid_inactive_ins'=>'For Unpaid Products', 'all_inactive_ins'=>'All Products'];
             $renewal = ['expired_subscription'=>'Expired Subscriptions', 'active_subscription'=> 'Active Subscriptions'];
@@ -87,7 +88,7 @@ class OrderController extends BaseOrderController
                 ->pluck('version')->toArray();
 
             return view('themes.default1.order.index',
-                compact('request', 'products', 'allVersions', 'activeInstallationOptions', 'paidUnpaidOptions', 'inactiveInstallationOptions', 'renewal'));
+                compact('request', 'products', 'allVersions', 'activeInstallationOptions', 'paidUnpaidOptions', 'inactiveInstallationOptions', 'renewal', 'insNotIns'));
         } catch (\Exception $e) {
             Bugsnag::notifyExeption($e);
 
@@ -213,7 +214,7 @@ class OrderController extends BaseOrderController
                 $date = strtotime($subscription->update_ends_at) > 1 ? getExpiryLabel($subscription->update_ends_at) : '--';
                 $licdate = strtotime($subscription->ends_at) > 1 ? getExpiryLabel($subscription->ends_at) : '--';
                 $supdate = strtotime($subscription->support_ends_at) > 1 ? getExpiryLabel($subscription->support_ends_at) : '--';
-                $lastActivity = getDateHtml($subscription->updated_at).'&nbsp&nbsp;'.$this->installationStatusLabel($subscription->updated_at);
+                $lastActivity = getDateHtml($subscription->updated_at).'&nbsp;'.$this->installationStatusLabel($subscription->updated_at);
                 $versionLabel = getVersionAndLabel($subscription->version, $order->product);
             }
             $invoice = $this->invoice->where('id', $order->invoice_id)->first();

@@ -11,7 +11,7 @@ Dashboard
 </style>
  {!! Form::open(['url'=>'my-profile,"status=$status' ,'method'=>'get']) !!}
    <div class="row">
-        <div class="col-lg-3 col-xs-6">
+        <div class="col-lg-4 col-xs-6">
           <!-- small box -->
           <div class="small-box bg-aqua">
             <div class="inner">
@@ -29,7 +29,7 @@ Dashboard
             </div>
         </div>
         <!-- ./col -->
-        <div class="col-lg-3 col-xs-6">
+        <div class="col-lg-4 col-xs-6">
           <!-- small box -->
           <div class="small-box bg-green">
             <div class="inner">
@@ -50,7 +50,7 @@ Dashboard
              </div>
         </div>
         <!-- ./col -->
-        <div class="col-lg-3 col-xs-6">
+        <div class="col-lg-4 col-xs-6">
           <!-- small box -->
           <div class="small-box bg-yellow">
             <div class="inner">
@@ -72,7 +72,7 @@ Dashboard
              </div>
         </div>
 
-         <div class="col-lg-3 col-xs-6">
+         <div class="col-lg-4 col-xs-6">
           <!-- small box -->
           <div class="small-box bg-red">
             <div class="inner">
@@ -83,25 +83,47 @@ Dashboard
                <span>{{$allowedCurrencies1}}: &nbsp; {{currency_format($pendingPaymentCurrency1,$code=$allowedCurrencies1)}} </span>
             </div>
             <div class="icon">
-             <i class="ion ion-ios-cart-outline"></i>
+             <i class="ion ion-ios-pricetag-outline"></i>
             </div>
              <a href="{{url('invoices?status=pending')}}" class="small-box-footer">More info 
               <i class="fa fa-arrow-circle-right"></i></a>
              </div>
         </div>
-
-         <div class="col-lg-3 col-xs-6">
+        @php
+        $startDate = new Carbon\Carbon('-30 days');
+        $endDate = Carbon\Carbon::now()->subDay();
+        @endphp
+         <div class="col-lg-4 col-xs-6">
           <!-- small box -->
           <div class="small-box bg-yellow">
             <div class="inner">
-              <h4>Subscriptions(Last 30 days)</h4>
-              <span>Total: &nbsp;  {{$getLast30DaysInstallation['total_subscription']}}</span><br/>
-              <span>Not Installed: &nbsp;  {{$getLast30DaysInstallation['inactive_subscription']}}</span><br/>
+              <h4>Products Installed Conversion:&nbsp; {{number_format($getLast30DaysInstallation['rate'], 2, '.', '')}}%</h4>
+              <span>Total Subscription (Last 30 days): &nbsp;  {{$getLast30DaysInstallation['total_subscription']}}</span><br/>
+              <span>Not Installed (Last 30 days): &nbsp;  {{$getLast30DaysInstallation['inactive_subscription']}}</span><br/>
             </div>
             <div class="icon">
-             <span class="fa fa-bookmark-o"></span>
+             <span class="ion ion-ios-cloud-download-outline"></span>
             </div>
-              <a href="{{url('orders?inact_inst=all_inactive_ins')}}" class="small-box-footer">More info 
+               <a href="{{url('orders?ins_not_ins=not_installed&sub_from='.$startDate.'&sub_till='.$endDate)}}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+             </div>
+        </div>
+        @php
+        $startDate = new Carbon\Carbon('-30 days');
+        $endDate = Carbon\Carbon::now();
+        @endphp
+
+        <div class="col-lg-4 col-xs-6">
+          <!-- small box -->
+          <div class="small-box bg-aqua">
+            <div class="inner">
+              <h4>Paid Orders Conversion:&nbsp; {{number_format($conversionRate['rate'], 2, '.', '')}}%</h4>
+              <span>Total Orders (Last 30 days): &nbsp;  {{$conversionRate['all_orders']}}</span><br/>
+              <span>Paid Orders (Last 30 days): &nbsp;  {{$conversionRate['paid_orders']}}</span><br/>
+            </div>
+            <div class="icon">
+             <span class="ion ion-ios-cart-outline"></span>
+            </div>
+              <a href="{{url('orders?p_un=unpaid&from='.$startDate.'&till='.$endDate)}}" class="small-box-footer">More info 
               <i class="fa fa-arrow-circle-right"></i></a>
              </div>
         </div>

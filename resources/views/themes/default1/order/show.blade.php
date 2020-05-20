@@ -113,7 +113,7 @@ Order Details
                                   <td id="s_key" data-type="serialkey">{{($order->serial_key)}}</td>
                                   <td> @component('mini_views.copied_flash_text',[
                                  'navigations'=>[
-                                   ['btnName'=>'lic_btn','slot'=>'license','style'=>'<span data-type="copy" style="font-size: 15px; pointer-events: initial; cursor: pointer; display: block;" id="copyBtn" title="Click to copy to clipboard"><i class="fa fa-clipboard"></i></span>'],
+                                   ['btnName'=>'lic_btn','slot'=>'license','style'=>'<span data-type="copy" style="font-size: 15px; pointer-events: initial; cursor: pointer; display: block;" id="copyBtn" title="Click to copy to clipboard"><i class="fa fa-clipboard"></i></span><span class="label label-success label-xs pull-right" id="copied" style="display:none;margin-top:-15px;margin-left:-20px;position: absolute;">Copied</span>'],
                                     ]
                                 ])
                                 

@@ -62,6 +62,11 @@ active
                 {data: 'Action', name: 'Action'}
             ],
             "fnDrawCallback": function( oSettings ) {
+                 $(function () {
+                  $('[data-toggle="tooltip"]').tooltip({
+                    container : 'body'
+                  });
+                });
                 $('.loader').css('display', 'none');
             },
             "fnPreDrawCallback": function(oSettings, json) {

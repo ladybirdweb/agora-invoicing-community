@@ -45,7 +45,7 @@
             <div class="col-md-2">
                      @component('mini_views.copied_flash_text',[
                                  'navigations'=>[
-                                    [ 'btnName'=>'rec_code','slot'=>'recovery','style'=>'<span style="pointer-events: initial; cursor: pointer; display: block;" id="copyBtn" title="Click to copy to clipboard" onclick="copyRecoveryCode()"><i class="fa fa-clipboard"></i></span>'],
+                                    [ 'btnName'=>'rec_code','slot'=>'recovery','style'=>'<span style="pointer-events: initial; cursor: pointer; display: block;" id="copyBtn" title="Click to copy to clipboard" onclick="copyRecoveryCode()"><i class="fa fa-clipboard"></i></span><span class="badge badge-success badge-xs pull-right" id="copied" style="display:none;margin-top:-40px;margin-left:-20px;position: absolute;">Copied</span>'],
                                     ]
                                     
                                 ])
@@ -239,7 +239,7 @@
 
                  @component('mini_views.copied_flash_text',[
                                  'navigations'=>[
-                                    [ 'btnName'=>'rec_code','slot'=>'recovery','style'=>' <span style="margin-left:50px;margin-top:5px; pointer-events: initial; cursor: pointer; display: block;" id="copyNewCodeBtn" title="Click to copy to clipboard" onclick="copyNewRecoveryCode()"><i class="fa fa-clipboard"></i></span>'],
+                                    [ 'btnName'=>'rec_code','slot'=>'recovery','style'=>' <span style="margin-left:50px;margin-top:5px; pointer-events: initial; cursor: pointer; display: block;" id="copyNewCodeBtn" title="Click to copy to clipboard" onclick="copyNewRecoveryCode()"><i class="fa fa-clipboard"></i></span><span class="badge badge-success badge-xs pull-right" id="copied" style="display:none;margin-top:-40px;margin-left:-20px;position: absolute;">Copied</span>'],
                                     ]
                                     
                                 ])

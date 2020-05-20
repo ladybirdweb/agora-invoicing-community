@@ -9,6 +9,7 @@ use App\Model\Order\InvoiceItem;
 use App\Model\Order\Order;
 use App\Model\Payment\TaxByState;
 use App\Model\Product\Product;
+use App\Plugins\Stripe\Controllers\SettingsController;
 use DateTime;
 use DateTimeZone;
 use Illuminate\Http\Request;
@@ -47,38 +48,28 @@ class RazorpayController extends Controller
     {
         //Input items of form
         $input = $request->all();
-        $success = true;
         $error = 'Payment Failed';
         $rzp_key = ApiKey::where('id', 1)->value('rzp_key');
         $rzp_secret = ApiKey::where('id', 1)->value('rzp_secret');
-
-        $api = new Api($rzp_key, $rzp_secret);
-        dd($api->payment->fetch($input['razorpay_payment_id']));
-        $payment = $api->payment->fetch($input['razorpay_payment_id']);
-        if (count($input) && !empty($input['razorpay_payment_id'])) { //Verify Razorpay Payment Id and Signature
+        $invoice = Invoice::where('id', $invoice)->first();
+        if (count($input) && ! empty($input['razorpay_payment_id'])) { //Verify Razorpay Payment Id and Signature
 
             //Fetch payment information by razorpay_payment_id
             try {
+                $api = new Api($rzp_key, $rzp_secret);
+                $payment = $api->payment->fetch($input['razorpay_payment_id']);
                 $response = $api->payment->fetch($input['razorpay_payment_id']);
-            } catch (SignatureVerificationError $e) {
-                $success = false;
-                $error = 'Razorpay Error : '.$e->getMessage();
-            }
-        }
-        $stateCode = \Auth::user()->state;
-        $state = $this->getState($stateCode);
-        $currency = $this->getCurrency();
-        $invoice = Invoice::where('id', $invoice)->first();
 
-        if ($success === true) {
-            try {
+                $stateCode = \Auth::user()->state;
+                $state = $this->getState($stateCode);
+                $currency = $this->getCurrency();
+
                 //Change order Status as Success if payment is Successful
                 $control = new \App\Http\Controllers\Order\RenewController();
                 //After Regular Payment
                 if ($control->checkRenew() === false) {
                     $checkout_controller = new \App\Http\Controllers\Front\CheckoutController();
                     $checkout_controller->checkoutAction($invoice);
-
                     $view = $this->getViewMessageAfterPayment($invoice, $state, $currency);
                     $status = $view['status'];
                     $message = $view['message'];
@@ -89,15 +80,23 @@ class RazorpayController extends Controller
                     //Afer Renew
                     $control->successRenew($invoice);
                     $payment = new \App\Http\Controllers\Order\InvoiceController();
-                    $payment->postRazorpayPayment($invoice->id, $invoice->grand_total);
+                    $payment->postRazorpayPayment($invoice);
+                    if ($invoice->grand_total) {
+                        SettingsController::sendPaymentSuccessMailtoAdmin($invoice->currency, $invoice->grand_total, \Auth::user(), $invoice->invoiceItem()->first()->product_name);
+                    }
+
                     $view = $this->getViewMessageAfterRenew($invoice, $state, $currency);
                     $status = $view['status'];
                     $message = $view['message'];
                 }
 
                 return redirect()->back()->with($status, $message);
-            } catch (\Exception $ex) {
-                throw new \Exception($ex->getMessage(), $ex->getCode(), $ex->getPrevious());
+            } catch (\Razorpay\Api\Errors\SignatureVerificationError | \Razorpay\Api\Errors\BadRequestError | \Razorpay\Api\Errors\GatewayError | \Razorpay\Api\Errors\ServerError $e) {
+                SettingsController::sendFailedPaymenttoAdmin($invoice->grand_total, $e->getMessage());
+
+                return redirect('checkout')->with('fails', 'Your Payment was declined. '.$e->getMessage().'. Please try again or try the other gateway');
+            } catch (\Exception $e) {
+                return redirect('checkout')->with('fails', 'Your Payment was declined. '.$e->getMessage().'. Please try again or try the other gateway');
             }
         }
     }

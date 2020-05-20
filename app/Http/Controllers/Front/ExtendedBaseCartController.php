@@ -19,7 +19,7 @@ class ExtendedBaseCartController extends Controller
     public function addCouponUpdate()
     {
         try {
-            $code = \Input::get('coupon');
+            $code = \Request::get('coupon');
             $cart = Cart::getContent();
             $id = '';
             foreach ($cart as $item) {
@@ -135,7 +135,7 @@ class ExtendedBaseCartController extends Controller
             if ($this->checkPlanSession() === true) {
                 $planid = Session::get('plan');
             }
-            if (!$planid) {//When Product Is Added from Cart
+            if (! $planid) {//When Product Is Added from Cart
                 $planid = Plan::where('product', $productid)->pluck('id')->first();
             }
             $plan = Plan::where('id', $planid)->where('product', $productid)->first();

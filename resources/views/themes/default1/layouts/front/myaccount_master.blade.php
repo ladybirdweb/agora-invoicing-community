@@ -431,7 +431,6 @@ if($script){
 
                                     <li class="@yield('nav-invoice')"><a class="nav-link" href="{{url('my-invoices')}}">My Invoices</a></li>
                                     <li class="@yield('nav-profile')"><a class="nav-link" href="{{url('my-profile')}}">Profile</a></li>
-                                    <!-- <li class="@yield('nav-profile')"><a class="nav-link" href="https://support.faveohelpdesk.com/category-list/installation-and-upgrade-guide" target="_blank">Faveo Installation Instructions</a></li> -->
                                     <li><a class="nav-link" href="{{url('auth/logout')}}">Logout</a></li>
                                 </ul>
 

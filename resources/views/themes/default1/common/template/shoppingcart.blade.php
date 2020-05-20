@@ -2,11 +2,8 @@
 @section('title')
 Pricing | Faveo Helpdesk
 @stop
-@section('page-header')
-Pricing
-@stop
 @section('page-heading')
- <h1>Pricing</h1>
+ {{$headline}}
 @stop
 @section('breadcrumb')
  @if(Auth::check())
@@ -70,7 +67,6 @@ main
         
       
          <div class="col-md-12">
-          <h1 style="text-align: center;"> <b>{{($headline)}} </b> </h1>
            <h4 style="text-align: center;">{{$tagline}} </h4>
         <div class="pricing-table mb-4">
           

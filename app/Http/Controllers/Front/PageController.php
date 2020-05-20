@@ -60,15 +60,7 @@ class PageController extends GetPageTemplateController
                             return $model->url;
                         })
                         ->addColumn('created_at', function ($model) {
-                            $created = $model->created_at;
-                            if ($created) {
-                                $date1 = new \DateTime($created);
-                                $tz = \Auth::user()->timezone()->first()->name;
-                                $date1->setTimezone(new \DateTimeZone($tz));
-                                $createdate = $date1->format('M j, Y, g:i a ');
-                            }
-
-                            return $createdate;
+                            return getDateHtml($model->created_at);
                         })
 
                         ->addColumn('action', function ($model) {
@@ -247,7 +239,7 @@ class PageController extends GetPageTemplateController
         try {
             $ids = $request->input('select');
             $defaultPageId = DefaultPage::pluck('page_id')->first();
-            if (!empty($ids)) {
+            if (! empty($ids)) {
                 foreach ($ids as $id) {
                     if ($id != $defaultPageId) {
                         $page = $this->page->where('id', $id)->first();
@@ -362,7 +354,7 @@ class PageController extends GetPageTemplateController
             $cont = new CartController();
             $currency = $cont->currency();
             \Session::put('currency', $currency);
-            if (!\Session::has('currency')) {
+            if (! \Session::has('currency')) {
                 \Session::put('currency', 'INR');
             }
             $data = PricingTemplate::find($templateid)->data;

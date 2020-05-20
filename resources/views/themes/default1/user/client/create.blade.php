@@ -136,12 +136,12 @@ select.form-control{
                     </div>
                     <div class="col-md-3 form-group {{ $errors->has('bussiness') ? 'has-error' : '' }}">
                         <!-- company -->
-                        {!! Form::label('bussiness','Industry',['class'=>'required']) !!}
+                        {!! Form::label('bussiness','Industry') !!}
                          <!-- {!! Form::select('bussiness',['Choose'=>'Choose',''=>$bussinesses],null,['class' => 'form-control selectpicker','data-live-search'=>'true', 'data-live-search-placeholder'=>'Search' ,'data-dropup-auto'=>'false', 'data-size'=>'10']) !!} -->
                        <select name="bussiness"  class="form-control">
                              <option value="">Choose</option>
                            @foreach($bussinesses as $key=>$bussines)
-                           @if (Input::old('bussiness') == $key)
+                           @if (Request::old('bussiness') == $key)
                              <option value={{$key}} selected>{{$bussines}}</option>
                              @else
                             <option value="{{ $key }}">{{ $bussines }}</option>
@@ -188,13 +188,13 @@ select.form-control{
                     ?>
                      <div class="col-md-3 form-group {{ $errors->has('role') ? 'has-error' : '' }}">
                         <!-- email -->
-                        {!! Form::label('company_type','Company Type',['class'=>'required']) !!}
+                        {!! Form::label('company_type','Company Type') !!}
                         <!-- {!! Form::select('company_type',['choose'=>'Choose',''=>$type],null,['class' => 'form-control']) !!} -->
 
                          <select name="company_type" value= "Choose" class="form-control">
                              <option value="">Choose</option>
                            @foreach($type as $key=>$types)
-                              @if (Input::old('company_type') == $key)
+                              @if (Request::old('company_type') == $key)
                              <option value={{$key}} selected>{{$types}}</option>
                              @else
                              <option value={{$key}}>{{$types}}</option>
@@ -205,12 +205,12 @@ select.form-control{
                     </div>
                      <div class="col-md-3 form-group {{ $errors->has('role') ? 'has-error' : '' }}">
                         <!-- email -->
-                        {!! Form::label('company_size','Company Size',['class'=>'required']) !!}
+                        {!! Form::label('company_size','Company Size') !!}
                 <!-- {!! Form::select('company_size',['choose'=>'Choose',''=>$size],null,['class' => 'form-control']) !!} -->
                           <select name="company_size" value= "Choose" class="form-control">
                              <option value="">Choose</option>
                            @foreach($size as $key=>$sizes)
-                              @if (Input::old('company_size') == $key)
+                              @if (Request::old('company_size') == $key)
                              <option value={{$key}} selected>{{$sizes}}</option>
                              @else
                              <option value={{$key}}>{{$sizes}}</option>
@@ -224,7 +224,7 @@ select.form-control{
 
                 <div class="form-group {{ $errors->has('address') ? 'has-error' : '' }}">
                     <!-- phone number -->
-                    {!! Form::label('address',Lang::get('message.address'),['class'=>'required']) !!}
+                    {!! Form::label('address',Lang::get('message.address')) !!}
                     {!! Form::textarea('address',null,['class' => 'form-control']) !!}
 
                 </div>
@@ -250,7 +250,7 @@ select.form-control{
                           <select name="country" value= "Choose" id="country" onChange="getCountryAttr(this.value)" class="form-control selectpicker" data-live-search="true" data-live-search-placeholder="Search" data-dropup-auto="false" data-size="10">
                              <option value="">Choose</option>
                            @foreach($countries as $key=>$country)
-                            @if (Input::old('country') == strtolower($key) || Input::old('country') == $key)
+                            @if (Request::old('country') == strtolower($key) || Request::old('country') == $key)
 
                             <option value={{$key}} selected>{{$country}}</option>
                              @else
@@ -270,7 +270,7 @@ select.form-control{
                           <select name="state" id="state-list" class="form-control">
                         @if(old('state') != null)
                              @foreach($selectedstate as $key=>$state)
-                             @if (Input::old('state') == $state->state_subdivision_code)
+                             @if (Request::old('state') == $state->state_subdivision_code)
                              <option value="{{old('state')}}" selected>{{$state->state_subdivision_name}}</option>
                              @endif
                              @endforeach
@@ -284,7 +284,7 @@ select.form-control{
                     </div>
                     <div class="col-md-3 form-group {{ $errors->has('zip') ? 'has-error' : '' }}">
                         <!-- mobile -->
-                        {!! Form::label('zip',Lang::get('message.zip'),['class'=>'required']) !!}
+                        {!! Form::label('zip',Lang::get('message.zip')) !!}
                         {!! Form::text('zip',null,['class' => 'form-control']) !!}
 
                     </div>
@@ -310,7 +310,7 @@ select.form-control{
                         <select name="currency" value= "Choose" class="form-control" id ="currency">
                              <option value="">Choose</option>
                            @foreach($currencies as $key=>$currency)
-                              @if (Input::old('currency') == $key)
+                              @if (Request::old('currency') == $key)
                             <option value={{$key}} selected>{{$currency}}</option>
                              @else
                              <option value={{$key}}>{{$currency}}</option>

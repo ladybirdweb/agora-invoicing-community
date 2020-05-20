@@ -9,9 +9,12 @@ class AdminOrderInvoiceController extends Controller
 {
     public function getClientInvoice($id)
     {
-        $invoice = new Invoice();
-        $client = $this->user->where('id', $id)->first();
-        $invoices = $invoice->where('user_id', $id)->orderBy('created_at', 'desc')->get();
+        $client = $this->user->where('id', $id)->select('currency')->first();
+        $invoices = Invoice::leftJoin('order_invoice_relations', 'invoices.id', '=', 'order_invoice_relations.invoice_id')
+        ->select('invoices.id', 'invoices.user_id', 'invoices.date', 'invoices.number', 'invoices.grand_total', 'order_invoice_relations.order_id', 'invoices.is_renewed', 'invoices.status')
+        ->where('invoices.user_id', '=', $id)
+        ->orderBy('invoices.created_at', 'desc')
+        ->get();
 
         return\ DataTables::of($invoices)
                         ->addColumn('checkbox', function ($model) {
@@ -19,16 +22,19 @@ class AdminOrderInvoiceController extends Controller
                             value=".$model->id.' name=select[] id=check>';
                         })
                         ->addColumn('date', function ($model) use ($client) {
-                            $date1 = new \DateTime($model->date);
-                            $tz = \Auth::user()->timezone()->first()->name;
-                            $date1->setTimezone(new \DateTimeZone($tz));
-                            $date = $date1->format('M j, Y, g:i a ');
-
-                            return $date;
+                            return getDateHtml($model->date);
                         })
                         ->addColumn('invoice_no', function ($model) {
-                            return      '<a href='.url('invoices/show?invoiceid='.$model->id).'>'.$model->number.'</a>';
+                            $label = '<a href='.url('invoices/show?invoiceid='.$model->id).'>'.$model->number.'</a>';
+                            if ($model->is_renewed) {
+                                return $label.'&nbsp;'.getStatusLabel('renewed');
+                            }
+
+                            return $label;
                         })
+                         ->addColumn('order_no', function ($model) {
+                             return getOrderLink($model->order_id);
+                         })
                         ->addColumn('total', function ($model) use ($client) {
                             return currency_format($model->grand_total, $code = $client->currency);
                         })
@@ -56,7 +62,7 @@ class AdminOrderInvoiceController extends Controller
                              return currency_format($pendingAmount, $code = $client->currency);
                          })
                           ->addColumn('status', function ($model) {
-                              return $model->status;
+                              return getStatusLabel($model->status);
                           })
                         ->addColumn('action', function ($model) {
                             $action = '';
@@ -78,7 +84,7 @@ class AdminOrderInvoiceController extends Controller
                             style='color:white;'> </i>&nbsp;&nbsp;View</a>"
                                     ."   $editAction $action";
                         })
-                         ->rawColumns(['checkbox', 'date', 'invoice_no', 'total', 'paid', 'balance', 'status', 'action'])
+                         ->rawColumns(['checkbox', 'date', 'invoice_no', 'order_no', 'total', 'paid', 'balance', 'status', 'action'])
                         ->make(true);
     }
 
@@ -93,7 +99,7 @@ class AdminOrderInvoiceController extends Controller
                             value=".$model->id.' name=select[] id=checkorder>';
                         })
                         ->addColumn('date', function ($model) {
-                            return ucfirst($model->created_at);
+                            return getDateHtml($model->created_at);
                         })
                         ->addColumn('product', function ($model) {
                             $productName = $model->product()->first() && $model->product()->first()->name ?
@@ -106,11 +112,6 @@ class AdminOrderInvoiceController extends Controller
 
                             return $number;
                         })
-                         ->addColumn('total', function ($model) use ($client) {
-                             $price = currency_format($model->price_override, $code = $client->currency);
-
-                             return $price;
-                         })
                          ->addColumn('status', function ($model) {
                              $status = $model->order_status;
 
@@ -138,14 +139,10 @@ class AdminOrderInvoiceController extends Controller
                             value=".$model->id.' name=select[] id=checkpayment>';
                         })
                         ->addColumn('invoice_no', function ($model) {
-                            return $model->invoice()->first() ? $model->invoice()->first()->number : '--';
+                            return $model->invoice()->count() ? '<a href='.url('invoices/show?invoiceid='.$model->invoice()->first()->id).'>'.$model->invoice()->first()->number.'</a><br>' : '--';
                         })
                         ->addColumn('date', function ($model) {
-                            $date = $model->created_at;
-                            $date1 = new \DateTime($date);
-                            $date = $date1->format('M j, Y, g:i a ');
-
-                            return $date;
+                            return getDateHtml($model->created_at);
                         })
                         ->addColumn('payment_method', function ($model) {
                             return $model->payment_method;

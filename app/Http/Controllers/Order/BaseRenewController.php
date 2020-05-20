@@ -46,10 +46,10 @@ class BaseRenewController extends Controller
             $item = InvoiceItem::find($invoice_item_id);
             $product = $this->getProductByName($item->product_name, $order);
             $user = $this->getUserById($order->client);
-            if (!$user) {
+            if (! $user) {
                 throw new Exception('User has removed from database');
             }
-            if (!$product) {
+            if (! $product) {
                 throw new Exception('Product has removed from database');
             }
 
@@ -119,6 +119,7 @@ class BaseRenewController extends Controller
                 'date'        => $date,
                 'grand_total' => $cost,
                 'currency'    => $currency,
+                'is_renewed'  => 1,
                 'status'      => 'pending',
             ]);
             $this->createOrderInvoiceRelation($orderid, $invoice->id);

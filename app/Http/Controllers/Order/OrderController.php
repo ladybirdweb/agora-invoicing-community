@@ -15,10 +15,13 @@ use App\Model\Product\ProductUpload;
 use App\Model\Product\Subscription;
 use App\User;
 use Bugsnag;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class OrderController extends BaseOrderController
 {
+    // NOTE FROM AVINASH: utha le re deva
+    // NOTE: don't lose hope.
     public $order;
     public $user;
     public $promotion;
@@ -67,27 +70,25 @@ class OrderController extends BaseOrderController
 
     /**
      * Display a listing of the resource.
-     *
-     * @return \Response
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index(Request $request)
     {
         try {
             $products = $this->product->where('id', '!=', 1)->pluck('name', 'id')->toArray();
-            $order_no = $request->input('order_no');
-            $product_id = $request->input('product_id');
-            $expiry = $request->input('expiry');
-            $expiryTill = $request->input('expiryTill');
-            $from = $request->input('from');
-            $till = $request->input('till');
-            $domain = $request->input('domain');
-            $paidUnpaid = $request->input('p_un');
-            $paidUnpaid = $request->input('p_un');
-            $allInstallation = $request->input('act_ins');
-            $version = $request->input('version');
+
+            $paidUnpaidOptions = ['paid'=>'Paid Products', 'unpaid'=>'Unpaid Products'];
+            $insNotIns = ['installed'=>'Installed', 'not_installed'=>'Not Installed'];
+            $activeInstallationOptions = ['paid_ins'=>'For Paid Products', 'unpaid_ins'=>'For Unpaid Products', 'all_ins'=>'All Products'];
+            $inactiveInstallationOptions = ['paid_inactive_ins'=>'For Paid Products', 'unpaid_inactive_ins'=>'For Unpaid Products', 'all_inactive_ins'=>'All Products'];
+            $renewal = ['expired_subscription'=>'Expired Subscriptions', 'active_subscription'=> 'Active Subscriptions'];
+            $allVersions = Subscription::where('version', '!=', '')->whereNotNull('version')
+                ->orderBy('version', 'desc')->groupBy('version')
+                ->pluck('version')->toArray();
+
             return view('themes.default1.order.index',
-                compact('products', 'order_no', 'product_id',
-                    'expiry', 'from', 'till', 'domain', 'expiryTill', 'paidUnpaid', 'allInstallation','version'));
+                compact('request', 'products', 'allVersions', 'activeInstallationOptions', 'paidUnpaidOptions', 'inactiveInstallationOptions', 'renewal', 'insNotIns'));
         } catch (\Exception $e) {
             Bugsnag::notifyExeption($e);
 
@@ -97,99 +98,78 @@ class OrderController extends BaseOrderController
 
     public function getOrders(Request $request)
     {
-        $order_no = $request->input('order_no');
-        $product_id = $request->input('product_id');
-        $expiry = $request->input('expiry');
-        $expiryTill = $request->input('expiryTill');
-        $from = $request->input('from');
-        $till = $request->input('till');
-        $domain = $request->input('domain');
-        $paidUnpaid = $request->input('p_un');
-        $allInstallation = $request->input('act_ins');
-        $version = $request->input('version');
-        $query = $this->advanceSearch($order_no, $product_id, $expiry, $expiryTill, $from, $till, $domain, $paidUnpaid, $allInstallation, $version);
+        $query = $this->advanceSearch($request);
 
         return \DataTables::of($query)
-                        ->setTotalRecords($query->count())
-                        ->addColumn('checkbox', function ($model) {
-                            return "<input type='checkbox' class='order_checkbox' value=".
-                            $model->id.' name=select[] id=check>';
-                        })
-                        ->addColumn('date', function ($model) {
-                            $date = $model->created_at;
+            ->setTotalRecords($query->count())
+            ->addColumn('checkbox', function ($model) {
+                return "<input type='checkbox' class='order_checkbox' value=".$model->id.' name=select[] id=check>';
+            })
+            ->addColumn('client', function ($model) {
+                return '<a href='.url('clients/'.$model->client_id).'>'.ucfirst($model->client_name).'<a>';
+            })
+            ->addColumn('product_name', function ($model) {
+                return $model->product_name;
+            })
+            ->addColumn('version', function ($model) {
+                return getVersionAndLabel($model->product_version, $model->product);
+            })
+            ->addColumn('number', function ($model) {
+                $orderLink = '<a href='.url('orders/'.$model->id).'>'.$model->number.'</a>';
 
-                            return "<span style='display:none'>$model->id</span>".$date;
-                        })
-                        ->addColumn('client', function ($model) {
-                            $user = $this->user->where('id', $model->client)->first();
-                            $first = $user->first_name;
-                            $last = $user->last_name;
-                            $id = $user->id;
+                if ($model->updated_at) {//For few older clients subscription was not generated, so no updated_at column exists
+                    $orderLink = '<a href='.url('orders/'.$model->id).'>'.$model->number.'</a>'.$this->installationStatusLabel($model->updated_at);
+                }
 
-                            return '<a href='.url('clients/'.$id).'>'.ucfirst($first).' '.ucfirst($last).'<a>';
-                        })
-                        ->addColumn('productname', function ($model) {
-                            $productid = ($model->product);
-                            $productName = Product::where('id', $productid)->pluck('name')->first();
+                return $orderLink;
+            })
+            ->addColumn('order_status', function ($model) {
+                return ucfirst($model->order_status);
+            })
+            ->addColumn('order_date', function ($model) {
+                return getDateHtml($model->created_at);
+            })
+            ->addColumn('update_ends_at', function ($model) {
+                $ends_at = strtotime($model->subscription_ends_at) > 1 ? $model->subscription_ends_at : '--';
 
-                            return $productName;
-                        })
-                        ->addColumn('number', function ($model) {
-                            return ucfirst($model->number);
-                        })
-                        ->addColumn('price_override', function ($model) {
-                            $currency = $model->user()->find($model->client)->currency;
+                return getExpiryLabel($ends_at);
+            })
+            ->addColumn('action', function ($model) {
+                $status = $this->checkInvoiceStatusByOrderId($model->id);
 
-                            return currency_format($model->price_override, $code = $currency);
-                        })
-                        ->addColumn('order_status', function ($model) {
-                            return ucfirst($model->order_status);
-                        })
-                        // ->showColumns('number', 'price_override', 'order_status')
-                        ->addColumn('update_ends_at', function ($model) {
-                            $end = $this->getEndDate($model);
+                return $this->getUrl($model, $status, $model->subscription_id);
+            })
 
-                            return $end;
-                        })
-                        ->addColumn('action', function ($model) {
-                            $sub = $model->subscription()->first();
-                            $status = $this->checkInvoiceStatusByOrderId($model->id);
-                            $url = $this->getUrl($model, $status, $sub);
+            ->filterColumn('client', function ($query, $keyword) {
+                $query->whereRaw("concat(first_name, ' ', last_name) like ?", ["%$keyword%"]);
+            })
+            ->filterColumn('product_name', function ($query, $keyword) {
+                $query->whereRaw('products.name like ?', ["%$keyword%"]);
+            })
+            ->filterColumn('version', function ($query, $keyword) {
+                $query->whereRaw('subscriptions.version like ?', ["%$keyword%"]);
+            })
+            ->filterColumn('number', function ($query, $keyword) {
+                $query->whereRaw('number like ?', ["%{$keyword}%"]);
+            })
+            ->filterColumn('price_override', function ($query, $keyword) {
+                $query->whereRaw('price_override like ?', ["%{$keyword}%"]);
+            })
+            ->filterColumn('order_status', function ($query, $keyword) {
+                $query->whereRaw('order_status like ?', ["%{$keyword}%"]);
+            })
 
-                            return $url;
-                        })
+            ->orderColumn('order_date', 'orders.created_at $1')
+            ->orderColumn('client', 'client_name $1')
+            ->orderColumn('product_name', 'product_name $1')
+            ->orderColumn('version', 'product_version $1')
+            ->orderColumn('number', 'number $1')
+            ->orderColumn('price_override', 'price_override $1')
+            ->orderColumn('order_status', 'order_status $1')
+            ->orderColumn('update_ends_at', 'update_ends_at $1')
 
-                         ->filterColumn('created_at', function ($query, $keyword) {
-                             $sql = 'created_at like ?';
-                             $query->whereRaw($sql, ["%{$keyword}%"]);
-                         })
-
-                          ->filterColumn('client', function ($query, $keyword) {
-                              $sql = 'client like ?';
-                              $query->whereRaw($sql, ["%{$keyword}%"]);
-                          })
-
-                           ->filterColumn('number', function ($query, $keyword) {
-                               $sql = 'number like ?';
-                               $query->whereRaw($sql, ["%{$keyword}%"]);
-                           })
-                            ->filterColumn('price_override', function ($query, $keyword) {
-                                $sql = 'price_override like ?';
-                                $query->whereRaw($sql, ["%{$keyword}%"]);
-                            })
-                             ->filterColumn('order_status', function ($query, $keyword) {
-                                 $sql = 'order_status like ?';
-                                 $query->whereRaw($sql, ["%{$keyword}%"]);
-                             })
-
-                              ->filterColumn('update_ends_at', function ($query, $keyword) {
-                                  $sql = 'update_ends_at like ?';
-                                  $query->whereRaw($sql, ["%{$keyword}%"]);
-                              })
-
-                         ->rawColumns(['checkbox', 'date', 'client', 'number',
-                          'price_override', 'order_status', 'productname', 'update_ends_at', 'action', ])
-                        ->make(true);
+            ->rawColumns(['checkbox', 'date', 'client', 'version', 'number', 'order_status', 'order_date', 'update_ends_at', 'action'])
+            ->make(true);
     }
 
     /**
@@ -223,14 +203,25 @@ class OrderController extends BaseOrderController
         try {
             $order = $this->order->findOrFail($id);
             $subscription = $order->subscription()->first();
-            $currenctVersion = $subscription->version;
-            $lastActivity = $subscription->updated_at;
-            $invoiceid = $order->invoice_id;
-            $invoice = $this->invoice->where('id', $invoiceid)->first();
-            if (!$invoice) {
+
+            $date = '--';
+            $licdate = '--';
+            $supdate = '--';
+            $connectionLabel = '--';
+            $lastActivity = '--';
+            $versionLabel = '--';
+            if ($subscription) {
+                $date = strtotime($subscription->update_ends_at) > 1 ? getExpiryLabel($subscription->update_ends_at) : '--';
+                $licdate = strtotime($subscription->ends_at) > 1 ? getExpiryLabel($subscription->ends_at) : '--';
+                $supdate = strtotime($subscription->support_ends_at) > 1 ? getExpiryLabel($subscription->support_ends_at) : '--';
+                $lastActivity = getDateHtml($subscription->updated_at).'&nbsp;'.$this->installationStatusLabel($subscription->updated_at);
+                $versionLabel = getVersionAndLabel($subscription->version, $order->product);
+            }
+            $invoice = $this->invoice->where('id', $order->invoice_id)->first();
+
+            if (! $invoice) {
                 return redirect()->back()->with('fails', 'no orders');
             }
-            $invoiceItems = $this->invoice_items->where('invoice_id', $invoiceid)->get();
             $user = $this->user->find($invoice->user_id);
             $licenseStatus = StatusSetting::pluck('license_status')->first();
             $installationDetails = [];
@@ -246,13 +237,19 @@ class OrderController extends BaseOrderController
             $allowDomainStatus = StatusSetting::pluck('domain_check')->first();
 
             return view('themes.default1.order.show',
-                compact('invoiceItems', 'invoice', 'user', 'order', 'subscription', 'licenseStatus', 'installationDetails', 'allowDomainStatus', 'noOfAllowedInstallation', 'getInstallPreference', 'currenctVersion', 'lastActivity'));
+                compact('user', 'order', 'subscription', 'licenseStatus', 'installationDetails', 'allowDomainStatus', 'noOfAllowedInstallation', 'getInstallPreference', 'lastActivity', 'versionLabel', 'date', 'licdate', 'supdate'));
         } catch (\Exception $ex) {
-            dd($ex);
             Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
+    }
+
+    public function installationStatusLabel($lastConnectionDate)
+    {
+        return $lastConnectionDate->toDateTimeString() > (new Carbon('-30 days'))->toDateTimeString() ? "&nbsp;<span class='label label-primary' style='background-color:darkcyan !important;' <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Installation is Active'>
+                     </label>Active</span>" : "&nbsp;<span class='label label-info' <label data-toggle='tooltip' style='font-weight:500;background-color:crimson;' data-placement='top' title='Installation inactive for more than 30 days'>
+                    </label>Inactive</span>";
     }
 
     /**
@@ -313,7 +310,7 @@ class OrderController extends BaseOrderController
         try {
             // dd('df');
             $ids = $request->input('select');
-            if (!empty($ids)) {
+            if (! empty($ids)) {
                 foreach ($ids as $id) {
                     $order = $this->order->where('id', $id)->first();
                     if ($order) {

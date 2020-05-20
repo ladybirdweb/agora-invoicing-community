@@ -31,20 +31,13 @@ View All Orders
             <div class="col-md-3 form-group">
                 <!-- first name -->
                 {!! Form::label('order_no','Order No:') !!}
-                {!! Form::text('order_no',null,['class' => 'form-control','id'=>'order_no']) !!}
+                {!! Form::text('order_no',$request->order_no,['class' => 'form-control','id'=>'order_no']) !!}
 
             </div>
             <div class="col-md-3 form-group">
                 <!-- first name -->
                 {!! Form::label('product_id','Product') !!}
-               <!--  {!! Form::select('product_id',[''=>'Select','Products'=>$products],null,['class' => 'form-control','id'=>'product_id']) !!} -->
-                   <select name="product_id"  class="form-control" id ="product_id">
-                             <option value="">Choose</option>
-                           @foreach($products as $key=>$product)
-                             <option value={{$key}}>{{$product}}</option>
-                          @endforeach
-                          </select>
-
+                {!! Form::select('product_id',[null => 'Choose']+ $products, $request->product_id, ['class' => 'form-control','id'=>'product_id']) !!}
             </div>
             <div class="col-md-3 form-group">
                 <!-- first name -->
@@ -53,7 +46,7 @@ View All Orders
                   <div class="input-group-addon">
                     <i class="fa fa-calendar"></i>
                   </div>
-                  <input type="text" name="expiry" class="form-control expary" id="datepicker1">
+                  <input autocomplete="off" type="text" name="expiry" value="{!! $request->expiry !!}" class="form-control datepicker" id="datepicker1">
                 </div>
             </div>
              <div class="col-md-3 form-group">
@@ -63,10 +56,39 @@ View All Orders
                   <div class="input-group-addon">
                     <i class="fa fa-calendar"></i>
                   </div>
-                  <input type="text" name="expiryTill" class="form-control exparytill" id="datepicker2">
+                  <input autocomplete="off" type="text" name="expiryTill" value="{!! $request->expiryTill !!}" class="form-control datepicker" id="datepicker2">
                 </div>
          
             </div>
+
+             <div class="col-md-3 form-group">
+                <!-- first name -->
+                {!! Form::label('from','Subscription From') !!}
+                 <div class="input-group date">
+                  <div class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                  </div>
+                  <input autocomplete="off" type="text" name="sub_from" value="{!! $request->sub_from !!}" class="form-control datepicker" id="datepicker5">
+                </div>
+            </div>
+
+            <div class="col-md-3 form-group">
+                <!-- first name -->
+                {!! Form::label('till','Subcription Till') !!}
+                <div class="input-group date">
+                  <div class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                  </div>
+                  <input autocomplete="off" type="text" name="sub_till" value="{!! $request->sub_till !!}" class="form-control datepicker" id="datepicker6">
+                </div>
+            </div>
+
+              <div class="col-md-3 form-group">
+                <!-- first name -->
+                {!! Form::label('ins_not_ins','Installed/Not Installed') !!}
+                {!! Form::select('ins_not_ins',[null => 'Choose']+ $insNotIns, $request->ins_not_ins, ['class' => 'form-control','id'=>'ins_not_ins']) !!}
+            </div>
+
             <div class="col-md-3 form-group">
                 <!-- first name -->
                 {!! Form::label('from','Order From') !!}
@@ -74,7 +96,7 @@ View All Orders
                   <div class="input-group-addon">
                     <i class="fa fa-calendar"></i>
                   </div>
-                  <input type="text" name="from" class="form-control payment_date" id="datepicker3">
+                  <input autocomplete="off" type="text" name="from" value="{!! $request->from !!}" class="form-control datepicker" id="datepicker3">
                 </div>
             </div>
             <div class="col-md-3 form-group">
@@ -84,79 +106,62 @@ View All Orders
                   <div class="input-group-addon">
                     <i class="fa fa-calendar"></i>
                   </div>
-                  <input type="text" name="till" class="form-control payment_till" id="datepicker4">
+                  <input autocomplete="off" type="text" name="till" value="{!! $request->till !!}" class="form-control datepicker" id="datepicker4">
                 </div>
             </div>
             <div class="col-md-3 form-group">
                 <!-- first name -->
                 {!! Form::label('domain','Domain') !!}
-                {!! Form::text('domain',null,['class' => 'form-control','id'=>'domain']) !!}
+                {!! Form::text('domain',$request->domain,['class' => 'form-control','id'=>'domain']) !!}
 
             </div>
 
             <div class="col-md-3 form-group">
                 <!-- first name -->
                 {!! Form::label('p_un','Paid/Unpaid Products') !!}
-                 <select name="p_un"  class="form-control">
-                    <option value="">Choose</option>
-                   <option value="paid">Paid Products</option>
-                  <option value="unpaid">Unpaid Products</option>
-                 </select>
-
+                {!! Form::select('p_un',[null => 'Choose']+ $paidUnpaidOptions, $request->p_un, ['class' => 'form-control','id'=>'p_un']) !!}
             </div>
 
             <div class="col-md-3 form-group">
                 <!-- first name -->
                 {!! Form::label('act_inst','Active Installations') !!}
-                 <select name="act_ins"  class="form-control">
-                    <option value="">Choose</option>
-                   <option value="paid_ins">For Paid Products</option>
-                  <option value="unpaid_ins">For Unpaid Products</option>
-                  <option value="all_ins">All Products</option>
-                 </select>
-
+                {!! Form::select('act_inst',[null => 'Choose']+ $activeInstallationOptions, $request->act_inst, ['class' => 'form-control','id'=>'act_inst']) !!}
             </div>
 
              <div class="col-md-3 form-group">
                 <!-- first name -->
-                {!! Form::label('version','Version') !!}
-                 {!! Form::text('version',null,['class' => 'form-control','placeholder'=>'v3.0.0', 'id'=>'ver']) !!}
-
+                {!! Form::label('inact_inst','Inactive Installations') !!}
+                {!! Form::select('inact_inst',[null => 'Choose']+ $inactiveInstallationOptions, $request->inact_inst, ['class' => 'form-control','id'=>'inact_inst']) !!}
             </div>
+
+            <div class="col-md-3 form-group">
+                <!-- first name -->
+                {!! Form::label('renewal','Subscriptions') !!}
+                {!! Form::select('renewal',[null => 'Choose']+ $renewal, $request->renewal, ['class' => 'form-control','id'=>'renewal']) !!}
+            </div>
+
+            <div class="col-md-3 form-group">
+                {!! Form::label('version_from','Version From') !!}
+                {!! Form::select('version_from',[null => 'Choose']+ array_combine($allVersions, $allVersions), $request->version_from,
+                ['class' => 'form-control','id'=>'version_from']) !!}
+            </div>
+
+            <div class="col-md-3 form-group">
+                 {!! Form::label('version_till','Version Till') !!}
+                 {!! Form::select('version_till',[null => 'Choose']+ array_combine($allVersions, $allVersions), $request->version_till,
+                ['class' => 'form-control','id'=>'version_till']) !!}
+
+             </div>
+
         </div>
 
            <div class='row'>
                 <div class="col-md-6">
-                    <!-- {!! Form::submit('Search',['class'=>'btn btn-primary']) !!} -->
-                      <button name="Search" type="submit"  class="btn btn-primary" data-loading-text="<i class='fa fa-search fa-spin fa-1x fa-fw'>&nbsp;</i> updating..."><i class="fa fa-search">&nbsp;&nbsp;</i>{!!Lang::get('Search')!!}</button>
+                      <button name="Search" type="submit"  class="btn btn-primary" data-loading-text="<i class='fa fa-search fa-spin fa-1x fa-fw'>&nbsp;</i> updating..."><i class="fa fa-search"></i>&nbsp;{!!Lang::get('Search')!!}</button>
                       &nbsp;
-                    <!-- {!! Form::submit('Reset',['class'=>'btn btn-danger','id'=>'reset']) !!} -->
-                     <button name="Reset" type="submit" id="reset" class="btn btn-danger" data-loading-text="<i class='fa fa-refresh fa-spin fa-1x fa-fw'>&nbsp;</i> updating..."><i class="fa fa-refresh">&nbsp;&nbsp;</i>{!!Lang::get('Reset')!!}</button>
-
-
+                    <a class="btn btn-danger" href="{!! url('/orders') !!}"><i class="fa fa-refresh"></i>&nbsp;{!!Lang::get('Reset')!!}</a>
                 </div>
-            
-
         </div>
-<script type="text/javascript">
-                    $(function () {
-                    $('#reset').on('click', function () {
-                      
-                        $('#order_no').val('');
-                        $('#product_id').val('');
-                        $('.expary').val('');
-                        $('.exparytill').val('');
-                        $('.payment_date').val('');
-                        $('.payment_till').val('');
-                        $('#domain').val('');
-                        $('#ver').val('');
-                          
-                    });
-                });
-                </script>
-
-
-        {!! Form::close() !!}
     </div>
 </div>
 <div class="box box-primary">
@@ -205,14 +210,14 @@ View All Orders
                  <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_delete"><i class="fa fa-trash"></i>&nbsp;&nbsp;Delete Selected</button><br /><br />
                     <thead><tr>
                         <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
-                         <th>Date</th>
                           <th>Client</th>
                            
                             <th>Order No</th>
                             <th>Product</th>
-                            <th>Total</th>
+                            <th>Version</th>
                             
                              <th>Status</th>
+                              <th>Order Date</th>
                               <th>Expiry</th>
                             <th>Action</th>
                         </tr></thead>
@@ -230,9 +235,11 @@ View All Orders
         $('#order-table').DataTable({
             processing: true,
             serverSide: true,
-             stateSave: false,
-            order: [[ 0, "desc" ]],
-             ajax: '{!! route('get-orders',"order_no=$order_no&product_id=$product_id&expiry=$expiry&expiryTill=$expiryTill&from=$from&till=$till&domain=$domain&p_un=$paidUnpaid&act_ins=$allInstallation&version=$version" ) !!}',
+            stateSave: false,
+            // if in request sort field is present, it will take that else default order
+            // need to stringify the sort_order, else it will be considered as a javascript variable
+            order: [[ {!! $request->sort_field ?: 7 !!}, {!! "'".$request->sort_order."'" ?: "'desc'" !!} ]],
+             ajax: '{!! route('get-orders',"order_no=$request->order_no&product_id=$request->product_id&expiry=$request->expiry&expiryTill=$request->expiryTill&from=$request->from&till=$request->till&sub_from=$request->sub_from&sub_till=$request->sub_till&ins_not_ins=$request->ins_not_ins&domain=$request->domain&p_un=$request->p_un&act_ins=$request->act_inst&renewal=$request->renewal&inact_ins=$request->inact_inst&version_from=$request->version_from&version_till=$request->version_till" ) !!}',
             "oLanguage": {
                 "sLengthMenu": "_MENU_ Records per page",
                 "sSearch"    : "Search: ",
@@ -246,15 +253,14 @@ View All Orders
                 }
             ],
             columns: [
-             {data: 'checkbox', name: 'checkbox'},
-                {data: 'date', name: 'date'},
+                {data: 'checkbox', name: 'checkbox'},
                 {data: 'client', name: 'client'},
                 {data: 'number', name: 'number'},
-                {data: 'productname', name: 'productname'},
-                {data: 'price_override', name: 'price_override'},
-                  {data: 'order_status', name: 'order_status'},
-                  {data: 'update_ends_at', name: 'update_ends_at'},
-
+                {data: 'product_name', name: 'product_name'},
+                {data: 'version', name: 'version'},
+                {data: 'order_status', name: 'order_status'},
+                {data: 'order_date', name: 'order_date'},
+                {data: 'update_ends_at', name: 'update_ends_at'},
                 {data: 'action', name: 'action'}
             ],
             "fnDrawCallback": function( oSettings ) {
@@ -307,17 +313,8 @@ View All Orders
         }  
 
      });
-     $('#datepicker1').datepicker({
+     $('.datepicker').datepicker({
       autoclose: true
     });
-    $('#datepicker2').datepicker({
-      autoclose: true
-    })
-    $('#datepicker3').datepicker({
-      autoclose: true
-    })
-    $('#datepicker4').datepicker({
-      autoclose: true
-    })
 </script>
 @stop

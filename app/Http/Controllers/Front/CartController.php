@@ -15,6 +15,7 @@ use App\Model\Product\Product;
 use App\Traits\TaxCalculation;
 use Bugsnag;
 use Cart;
+use Darryldecode\Cart\CartCondition;
 use Illuminate\Http\Request;
 use Session;
 
@@ -101,7 +102,7 @@ class CartController extends BaseCartController
                 Session::put('plan', $plan);
             }
             $id = $request->input('id');
-            if (!array_key_exists($id, Cart::getContent())) {
+            if (! array_key_exists($id, Cart::getContent())) {
                 $items = $this->addProduct($id);
                 \Cart::add($items); //Add Items To the Cart Collection
             }
@@ -202,21 +203,21 @@ class CartController extends BaseCartController
                             if ($taxes[0]) {
                                 $tax_attribute[$key] = ['name' => $tax->name, 'c_gst'=>$c_gst,
 
-                               's_gst'         => $s_gst, 'i_gst'=>$i_gst, 'ut_gst'=>$ut_gst,
-                                'state'        => $state_code, 'origin_state'=>$origin_state,
-                                 'tax_enable'  => $tax_enable, 'rate'=>$value, 'status'=>$status, ];
+                                    's_gst'         => $s_gst, 'i_gst'=>$i_gst, 'ut_gst'=>$ut_gst,
+                                    'state'        => $state_code, 'origin_state'=>$origin_state,
+                                    'tax_enable'  => $tax_enable, 'rate'=>$value, 'status'=>$status, ];
 
                                 $taxCondition[0] = new \Darryldecode\Cart\CartCondition([
-                                            'name'   => 'no compound', 'type'   => 'tax',
-                                            'target' => 'item', 'value'  => $value,
-                                          ]);
+                                    'name'   => 'no compound', 'type'   => 'tax',
+                                    'target' => 'item', 'value'  => $value,
+                                ]);
                             } else {
                                 $tax_attribute[0] = ['name' => 'null', 'rate' => 0, 'tax_enable' =>0];
                                 $taxCondition[0] = new \Darryldecode\Cart\CartCondition([
-                                           'name'   => 'null', 'type'   => 'tax',
-                                           'target' => 'item', 'value'  => '0%',
-                                           'rate'   => 0, 'tax_enable' =>0,
-                                         ]);
+                                    'name'   => 'null', 'type'   => 'tax',
+                                    'target' => 'item', 'value'  => '0%',
+                                    'rate'   => 0, 'tax_enable' =>0,
+                                ]);
                             }
                         }
                     } elseif ($tax_enable == 0) {//If Tax enable is 0 and other tax is available
@@ -228,7 +229,7 @@ class CartController extends BaseCartController
                         $status = $details['status'];
                         foreach ($taxes as $key => $tax) {
                             $tax_attribute[$key] = ['name' => $tax->name,
-                            'rate'                         => $value, 'tax_enable'=>0, 'status' => $status, ];
+                                'rate'                         => $value, 'tax_enable'=>0, 'status' => $status, ];
                             $taxCondition[$key] = new \Darryldecode\Cart\CartCondition([
                                 'name'   => $tax->name,
                                 'type'   => 'tax',
@@ -352,7 +353,7 @@ class CartController extends BaseCartController
             $subregion = \App\Model\Common\State::where('state_subdivision_code', $code)->first();
             if ($subregion) {
                 $result = ['id' => $subregion->state_subdivision_code,
-                 'name'         => $subregion->state_subdivision_name, ];
+                    'name'         => $subregion->state_subdivision_name, ];
             }
 
             return $result;
@@ -395,7 +396,7 @@ class CartController extends BaseCartController
         try {
             $currency = Setting::find(1)->default_currency;
             $currency_symbol = Setting::find(1)->default_symbol;
-            if (!\Auth::user()) {//When user is not logged in
+            if (! \Auth::user()) {//When user is not logged in
                 $cont = new \App\Http\Controllers\Front\PageController();
                 $location = $cont->getLocation();
                 $country = self::findCountryByGeoip($location['iso_code']);
@@ -451,5 +452,17 @@ class CartController extends BaseCartController
             Bugsnag::notifyException($ex->getMessage());
             app('log')->error($ex->getMessage());
         }
+    }
+
+    public function updateFinalPrice(Request $request)
+    {
+        $value = $request->input('processing_fee').'%';
+        $updateValue = new CartCondition([
+            'name'   => 'Processing fee',
+            'type'   => 'fee',
+            'target' => 'total',
+            'value'  => $value,
+        ]);
+        \Cart::condition($updateValue);
     }
 }

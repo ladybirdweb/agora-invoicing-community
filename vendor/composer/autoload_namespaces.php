@@ -13,4 +13,5 @@ return array(
     'Mockery' => array($vendorDir . '/mockery/mockery/library'),
     'HTMLPurifier' => array($vendorDir . '/ezyang/htmlpurifier/library'),
     'Barryvdh' => array($vendorDir . '/barryvdh/reflection-docblock/src'),
+    'BaconQrCode' => array($vendorDir . '/bacon/bacon-qr-code/src'),
 );

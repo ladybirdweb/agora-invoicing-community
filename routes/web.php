@@ -40,6 +40,7 @@
 
         Route::get('ping', 'Front\CheckoutController@PingRecieve');
         Route::post('pricing/update', 'Front\CartController@addCouponUpdate');
+        Route::post('update-final-price', 'Front\CartController@updateFinalPrice');
         //Route::get('mail-chimp','Common\MailChimpController@getList');
         Route::get('mail-chimp/subcribe', 'Common\MailChimpController@addSubscriberByClientPanel');
         Route::get('mail-chimp/merge-fields', 'Common\MailChimpController@addFieldsToAgora');
@@ -92,6 +93,21 @@
         // Post Route For Make Razorpay Payment Request
         Route::post('payment/{invoice}', 'RazorpayController@payment')->name('payment');
 
+        /*
+         * 2FA Routes
+         */
+
+        Route::get('/2fa/enable', 'Google2FAController@enableTwoFactor');
+        Route::get('2fa/disable/{userId?}', 'Google2FAController@disableTwoFactor');
+        Route::get('/2fa/validate', 'Google2FAController@getValidateToken');
+        Route::get('verify-2fa', 'Google2FAController@verify2fa');
+        Route::post('2fa/loginValidate', 'Google2FAController@postLoginValidateToken')->name('2fa/loginValidate');
+        Route::post('2fa/setupValidate', 'Google2FAController@postSetupValidateToken');
+        Route::get('verify-password', 'Google2FAController@verifyPassword');
+        Route::get('2fa-recovery-code', 'Google2FAController@generateRecoveryCode');
+        Route::get('get-recovery-code', 'Google2FAController@getRecoveryCode');
+        Route::get('recovery-code', 'Google2FAController@showRecoveryCode');
+        Route::post('verify-recovery-code', 'Google2FAController@verifyRecoveryCode')->name('verify-recovery-code');
         /*
          * Social Media
          */
@@ -267,8 +283,6 @@
         Route::get('get-promotions', 'Payment\PromotionController@getPromotion')->name('get-promotions');
         Route::get('promotions-delete', 'Payment\PromotionController@destroy')->name('promotions-delete');
 
-
-
         /*
          * Category
          */
@@ -392,8 +406,6 @@
         Route::resource('licences', 'Licence\LicenceController');
         Route::get('get-licences', 'Licence\LicenceController@getLicences');
 
-
-
         /*
          * Pages
          */
@@ -429,7 +441,6 @@
          */
         Route::get('download/{uploadid}/{userid}/{invoice_number}/{versionid}', 'Product\ProductController@userDownload');
         Route::get('product/download/{id}/{invoice?}', 'Product\ProductController@adminDownload');
-
 
         /*
          * check version

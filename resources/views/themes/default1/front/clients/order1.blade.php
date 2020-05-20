@@ -1,4 +1,4 @@
-@extends('themes.default1.layouts.front.myaccount_master')
+@extends('themes.default1.layouts.front.master')
 @section('title')
 Orders
 @stop
@@ -10,7 +10,7 @@ Cart
 active
 @stop
 @section('page-heading')
- <h1>My Account </h1>
+ My Orders
 @stop
 @section('breadcrumb')
  @if(Auth::check())
@@ -18,16 +18,12 @@ active
   @else
   <li><a href="{{url('login')}}">Home</a></li>
   @endif
-<li class="active">My Account</li>
-<li class="active">Orders</li>
+<li class="active">My Orders</li>
 @stop
 
 @section('content')
 
-
-
-<div class="col-md-12 pull-center">
-    <h2 class="mb-none"> My Orders</h2>
+    <div class="col-md-12 pull-center">
 
                 <table id="order-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
 
@@ -36,6 +32,8 @@ active
 
                     <thead><tr>
                             <th>Product Name</th>
+                            <th>Order No</th>
+                            <th>Version</th>
                             <th>Updates Expiry Date</th>
                             
                             <th>Action</th>
@@ -45,8 +43,10 @@ active
                 </table>
                 </div>   
      <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
-<script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
-<script type="text/javascript">
+    <script src="{{asset("common/js/jquery-2.1.4.js")}}" type="text/javascript"></script>
+    <script src="{{asset("common/js/jquery2.1.1.min.js")}}" type="text/javascript"></script>
+    <script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript">
         $('#order-table').DataTable({
             destroy:true,
             processing: true,
@@ -62,6 +62,8 @@ active
     
             columns: [
                 {data: 'product_name', name: 'product_name'},
+                 {data: 'number', name: 'number'},
+                 {data: 'version', name: 'version'},
                 {data: 'expiry', name: 'expiry'},
               
                 // {data: 'group', name: 'Group'},
@@ -69,6 +71,11 @@ active
                 {data: 'Action', name: 'Action'}
             ],
             "fnDrawCallback": function( oSettings ) {
+                 $(function () {
+                  $('[data-toggle="tooltip"]').tooltip({
+                    container : 'body'
+                  });
+                });
                 $('.loader').css('display', 'none');
             },
             "fnPreDrawCallback": function(oSettings, json) {

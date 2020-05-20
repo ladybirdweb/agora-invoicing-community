@@ -10,6 +10,7 @@ use Illuminate\Validation\ValidationException;
 use Bugsnag;
 use App\User;
 use Hash;
+use Illuminate\Support\Str;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 use Spatie\Activitylog\Models\Activity;
 
@@ -94,11 +95,18 @@ trait AuthenticatesUsers
                   return redirect('verify')->with('user', $user);
              
          }
-           } else{
+           } 
+           if (Auth::user()->is_2fa_enabled ==1) {
+                    $userId = Auth::user()->id;
+                    Auth::logout();
+                    $request->session()->put('2fa:user:id', $userId);
+                    return redirect('2fa/validate');
+                }
                  activity()->log('Logged In');
+
                  return redirect()->intended($this->redirectPath());
-         }
     }
+
 
     /**
      * Handle a login request to the application.

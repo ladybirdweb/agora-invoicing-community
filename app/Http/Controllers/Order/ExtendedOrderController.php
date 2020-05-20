@@ -6,9 +6,10 @@ use App\Http\Controllers\Common\BaseSettingsController;
 use App\Http\Controllers\Controller;
 use App\Model\Common\StatusSetting;
 use App\Model\Order\Order;
-use Carbon\Carbon;
 use App\Model\Product\Subscription;
 use Bugsnag;
+use Carbon\Carbon;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
 
 class ExtendedOrderController extends Controller
@@ -16,87 +17,91 @@ class ExtendedOrderController extends Controller
     /**
      * Perform Advance Search for Orders Page.
      *
+     * @param Request $request
+     * @return array
      * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
      *
      * @date   2019-01-19T01:35:08+0530
-     *
-     * @param string $order_no
-     * @param string $product_id
-     * @param string $expiry
-     * @param string $expiryTill
-     * @param string $from
-     * @param string $till
-     * @param string $domain
-     *
-     * @return array
      */
-    public function advanceSearch(
-        $order_no = '',
-        $product_id = '',
-        $expiry = '',
-        $expiryTill = '',
-        $from = '',
-        $till = '',
-        $domain = '',
-        $paidUnpaid = '',
-        $allInstallation = '',
-        $version = ''
-    ) {
+    public function advanceSearch(Request $request)
+    {
         try {
-            $join = Order::leftJoin('subscriptions', 'orders.id', '=', 'subscriptions.order_id');
-            ($this->orderNum($order_no, $join));
-            $this->product($product_id, $join);
-            $this->expiry($expiryTill, $expiry, $join);
-            $this->expiryTill($expiry, $expiryTill, $join);
-            $this->orderFrom($till, $from, $join);
-            $this->orderTill($from, $till, $join);
-            $this->domain($domain, $join);
-            $this->paidOrUnpaid($paidUnpaid,$join);
-            $this->allInstallations($allInstallation,$join);
-            $this->getSelectedVersionOrders($version,$join);
-            $join = $join->orderBy('created_at', 'desc')
-           ->select(
-               'orders.id',
-               'orders.created_at',
-               'client',
-               'price_override',
-               'order_status',
-               'product',
-               'number',
-               'serial_key'
-           );
+            $baseQuery = $this->getBaseQueryForOrders();
+            $this->orderNum($request->input('order_no'), $baseQuery);
+            $this->product($request->input('product_id'), $baseQuery);
+            $this->expiry($request->input('expiryTill'), $request->input('expiry'), $baseQuery);
+            $this->expiryTill($request->input('expiry'), $request->input('expiryTill'), $baseQuery);
+            $this->orderFrom($request->input('till'), $request->input('from'), $baseQuery);
+            $this->orderTill($request->input('from'), $request->input('till'), $baseQuery);
+            $this->subFrom($request->input('sub_till'), $request->input('sub_from'), $baseQuery);
+            $this->subTill($request->input('sub_from'), $request->input('sub_till'), $baseQuery);
+            $this->installedNotInstalled($request->input('ins_not_ins'), $baseQuery);
+            $this->domain($request->input('domain'), $baseQuery);
 
-            return $join;
+            $this->paidOrUnpaid($request->input('p_un'), $baseQuery);
+            $this->allActiveInstallations($request->input('act_ins'), $baseQuery);
+            $this->allInActiveInstallations($request->input('inact_ins'), $baseQuery);
+            $this->allRenewals($request->input('renewal'), $baseQuery);
+            $this->getSelectedVersionOrders($baseQuery, $request->input('version_from'), $request->input('version_till'));
+
+            return $baseQuery;
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 
-
-     /**
-     * Searches for order for selected versions
-     *
-     * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
-     *
-     *
-     * @param  string $version
-     * @param  App\Model\Order $join The order instance
-     *
-     * @return $join
+    /**
+     * Gets base query for orders.
+     * @return Builder
      */
-    private function getSelectedVersionOrders($version,$join)
+    private function getBaseQueryForOrders()
     {
-        if($version) {
-            $currentVer = ($version[0] == 'v') ? $version : 'v'.$version;
-            $join = $join->whereHas('subscription', function($query) use($currentVer) {
-                    $query->where('version', '=', $currentVer);
-            });
+        return Order::leftJoin('subscriptions', 'orders.id', '=', 'subscriptions.order_id')
+            ->leftJoin('users', 'orders.client', '=', 'users.id')
+            ->leftJoin('products', 'orders.product', '=', 'products.id')
+            ->select(
+                'orders.id', 'orders.created_at', 'price_override', 'order_status', 'product', 'number', 'serial_key',
+                'subscriptions.update_ends_at as subscription_ends_at', 'subscriptions.id as subscription_id', 'subscriptions.version as product_version', 'subscriptions.created_at', 'subscriptions.updated_at',
+                'products.name as product_name', \DB::raw("concat(first_name, ' ', last_name) as client_name"), 'client as client_id',
+                'users.currency'
+            );
+    }
+
+    private function installedNotInstalled($installedNotInstalled, $join)
+    {
+        if ($installedNotInstalled) {
+            if ($installedNotInstalled == 'installed') {
+                return $join->whereColumn('subscriptions.created_at', '!=', 'subscriptions.updated_at');
+            }
+
+            return $join->whereColumn('subscriptions.created_at', '=', 'subscriptions.updated_at');
         }
-        return $join;
     }
 
     /**
-     * Searches for Active/Inactive Installation
+     * Searches for order for selected versions.
+     *
+     * @param $baseQuery
+     * @param $versionFrom
+     * @param $versionTill
+     * @return Builder
+     * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
+     */
+    private function getSelectedVersionOrders($baseQuery, $versionFrom, $versionTill)
+    {
+        if ($versionFrom) {
+            $baseQuery->where('subscriptions.version', '>=', $versionFrom);
+        }
+
+        if ($versionTill) {
+            $baseQuery->where('subscriptions.version', '<=', $versionTill);
+        }
+
+        return $baseQuery;
+    }
+
+    /**
+     * Searches for Activ Installation.
      *
      * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
      *
@@ -107,30 +112,75 @@ class ExtendedOrderController extends Controller
      *
      * @return $join
      */
-    public function allInstallations($allInstallation,$join)
+    public function allActiveInstallations($allInstallation, $join)
     {
-        if($allInstallation) {
+        if ($allInstallation) {
             $dayUtc = new Carbon('-30 days');
             $minus30Day = $dayUtc->toDateTimeString();
-            if($allInstallation == 'paid_ins') {
-                $join = $join->where('price_override', '>', 0)->whereHas('subscription', function($query) use($minus30Day) {
-                    $query->where('updated_at', '>', $minus30Day);
-                });
-            } elseif($allInstallation == 'unpaid_ins') {
-                $join = $join->where('price_override', '=', 0)->whereHas('subscription', function($query) use($minus30Day) {
-                    $query->where('updated_at', '>', $minus30Day);
-                });
-            } elseif ($allInstallation == 'all_ins') {
-                $join = $join->whereHas('subscription', function($query) use($minus30Day) {
-                    $query->where('updated_at', '>', $minus30Day);
-                });
-            }
+
+            $baseQuery = $join->whereHas('subscription', function ($q) use ($minus30Day) {
+                $q->where('updated_at', '>', $minus30Day);
+            });
+
+            return $baseQuery->when($allInstallation == 'paid_ins', function ($q) {
+                $q->where('price_override', '>', 0);
+            })->when($allInstallation == 'unpaid_ins', function ($q) {
+                $q->where('price_override', '=', 0);
+            });
         }
-        return $join;
     }
 
     /**
-     * Searches for Paid/Unpaid Products
+     * Searches for InActive Installation.
+     *
+     * @param  string $allInstallation
+     * @param  App\Model\Order $join The order instance
+     *
+     * @return $join
+     */
+    public function allInactiveInstallations($allInstallation, $join)
+    {
+        if ($allInstallation) {
+            $dayUtc = new Carbon('-30 days');
+            $minus30Day = $dayUtc->toDateTimeString();
+            $baseQuery = $join->whereHas('subscription', function ($q) use ($minus30Day) {
+                $q->where('updated_at', '<', $minus30Day);
+            });
+
+            return $baseQuery->when($allInstallation == 'paid_inactive_ins', function ($q) {
+                $q->where('price_override', '>', 0);
+            })->when($allInstallation == 'unpaid_inactive_ins', function ($q) {
+                $q->where('price_override', '=', 0);
+            });
+        }
+    }
+
+    /**
+     * Searches for Renewals.
+     *
+     * @param  string $allInstallation
+     * @param  App\Model\Order $join The order instance
+     *
+     * @return $join
+     */
+    protected function allRenewals($allRenewal, $join)
+    {
+        if ($allRenewal) {
+            $dayUtc = new Carbon();
+            $now = $dayUtc->toDateTimeString();
+
+            return $join->whereHas('subscription', function ($query) use ($now,$allRenewal) {
+                if ($allRenewal == 'expired_subscription') {
+                    return $query->where('update_ends_at', '<', $now);
+                }
+
+                return $query->where('update_ends_at', '>', $now);
+            });
+        }
+    }
+
+    /**
+     * Searches for Paid/Unpaid Products.
      *
      * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
      *
@@ -141,16 +191,16 @@ class ExtendedOrderController extends Controller
      *
      * @return $join
      */
-    private function paidOrUnpaid($paidUnpaid,$join) 
+    private function paidOrUnpaid($paidUnpaid, $join)
     {
-        if($paidUnpaid) {
-            if($paidUnpaid == 'paid') {
+        if ($paidUnpaid) {
+            if ($paidUnpaid == 'paid') {
                 $join = $join->where('price_override', '>', 0);
-            } elseif($paidUnpaid == 'unpaid') {
+            } elseif ($paidUnpaid == 'unpaid') {
                 $join = $join->where('price_override', '=', 0);
             }
-
         }
+
         return $join;
     }
 
@@ -203,8 +253,7 @@ class ExtendedOrderController extends Controller
             $tills = (new BaseSettingsController())->getDateFormat();
 
             $tillDate = $this->getTillDate($expiryFrom, $expiryTill, $tills);
-            $join = $join->whereBetween('subscriptions.update_ends_at', [$expiryFrom, $tillDate])
-            ->orderBy('subscriptions.update_ends_at', 'asc');
+            $join = $join->whereBetween('subscriptions.update_ends_at', [$expiryFrom, $tillDate]);
 
             return $join;
         }
@@ -224,8 +273,51 @@ class ExtendedOrderController extends Controller
             $exptill = (new BaseSettingsController())->getDateFormat($expiryTill);
             $froms = Subscription::first()->ends_at;
             $fromDate = $this->getFromDate($expiry, $froms);
-            $join = $join->whereBetween('subscriptions.update_ends_at', [$fromDate, $exptill])
-            ->orderBy('subscriptions.update_ends_at', 'asc');
+            $join = $join->whereBetween('subscriptions.update_ends_at', [$fromDate, $exptill]);
+
+            return $join;
+        }
+    }
+
+    /**
+     * Searches for Subcription From Date.
+     *
+     * @param string $expiry The Subcription From Date
+     * @param object $join
+     *
+     * @return Query
+     */
+    private function subFrom($till, $from, $join)
+    {
+        if ($from) {
+            $fromdate = date_create($from);
+
+            $from = date_format($fromdate, 'Y-m-d H:m:i');
+            $tills = date('Y-m-d H:m:i');
+
+            $tillDate = $this->getTillDate($from, $till, $tills);
+            $join = $join->whereBetween('subscriptions.created_at', [$from, $tillDate]);
+
+            return $join;
+        }
+    }
+
+    /**
+     * Searches for Order Till Date.
+     *
+     * @param string $expiry The Order Till Date
+     * @param object $join
+     *
+     * @return Query
+     */
+    private function subTill($from, $till, $join)
+    {
+        if ($till) {
+            $tilldate = date_create($till);
+            $till = date_format($tilldate, 'Y-m-d H:m:i');
+            $froms = date_format(Subscription::first()->created_at, 'Y-m-d H:m:i');
+            $fromDate = $this->getFromDate($from, $froms);
+            $join = $join->whereBetween('subscriptions.created_at', [$fromDate, $till]);
 
             return $join;
         }

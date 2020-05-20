@@ -261,7 +261,7 @@ main
                       
                         <script src="{{asset('dist/js/angular.min.js')}}"></script>
 
-          <script src="{{asset('js/intl/js/intlTelInput.js')}}"></script>
+         
           
         <script>
              //validation when both email and moble are not verified
@@ -398,13 +398,14 @@ main
          }
         </script>
 
-
+    <script src="{{asset('js/intl/js/intlTelInput.js')}}"></script>
 
     <script type="text/javascript">
      $(document).ready(function(){
           var telInput = $(".phonecode");
     let currentCountry="";
      telInput.intlTelInput({
+         initialCountry: "auto",
         geoIpLookup: function (callback) {
             $.get("https://ipinfo.io", function () {}, "jsonp").always(function (resp) {
                 var countryCode = (resp && resp.country) ? resp.country : "";
@@ -412,13 +413,12 @@ main
                 callback(countryCode);
             });
         },
-        initialCountry: "auto",
         separateDialCode: true,
-         utilsScript: "{{asset('js/intl/js/utils.js')}}"
+        utilsScript: "{{asset('js/intl/js/utils.js')}}",
     }); 
     setTimeout(()=>{
          telInput.intlTelInput("setCountry", currentCountry);
-    },50)
+    },500)
     $('.intl-tel-input').css('width', '100%');
 
     // telInput.on('blur', function () {
@@ -428,13 +428,13 @@ main
     //         }
     //     }
     // });
-    $('input').on('focus', function () {
-        $(this).parent().removeClass('has-error');
-    });
+    // $('input').on('focus', function () {
+    //     $(this).parent().removeClass('has-error');
+    // });
 
-    $('form').on('submit', function (e) {
-        $('input[name=country_code]').attr('value', $('.selected-dial-code').text());
-    });
+    // $('form').on('submit', function (e) {
+    //     $('input[name=country_code]').attr('value', $('.selected-dial-code').text());
+    // });
 
     });
 

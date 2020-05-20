@@ -98,7 +98,7 @@ Generate An Invoice
                             <div class="input-group-addon">
                                 <i class="fa fa-calendar"></i>
                             </div>
-                            {!! Form::text('date',null,['class' => 'form-control','id'=>'datepicker']) !!}
+                            {!! Form::text('date',null,['class' => 'form-control','id'=>'datepicker','autocomplete'=>'off']) !!}
                         </div>
 
                 </div>

@@ -4,6 +4,67 @@ User Profile
 @stop
 @section('content')
 @section('content-header')
+<style>
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input {display:none;}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+.scrollit {
+    overflow:scroll;
+    height:600px;
+}
+</style>
 <h1>
 Edit Profile
 </h1>
@@ -61,7 +122,7 @@ Edit Profile
 
             <div class="content-header">
 
-                <h4>{{Lang::get('message.profile')}}	
+                <h4>{{Lang::get('message.profile')}}    
                 <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></h4>
 
 
@@ -135,7 +196,7 @@ Edit Profile
 
                 <div class="form-group {{ $errors->has('address') ? 'has-error' : '' }}">
                     <!-- phone number -->
-                    {!! Form::label('address',null,['class' => 'required'],Lang::get('message.address')) !!}
+                    {!! Form::label('address',null,Lang::get('message.address')) !!}
                     {!! Form::textarea('address',null,['class' => 'form-control']) !!}
 
                 </div>
@@ -151,7 +212,7 @@ Edit Profile
 
                     <div class="col-md-6 form-group {{ $errors->has('timezone_id') ? 'has-error' : '' }}">
                         <!-- mobile -->
-                        {!! Form::label('timezone_id',Lang::get('message.timezone')) !!}
+                        {!! Form::label('timezone_id',Lang::get('message.timezone'),['class' => 'required']) !!}
                         <!-- {!! Form::select('timezone_id',[''=>'Select','Timezones'=>$timezones],null,['class' => 'form-control']) !!} -->
                         {!! Form::select('timezone_id', [Lang::get('message.choose')=>$timezones],null,['class' => 'form-control selectpicker','data-live-search'=>'true','required','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false','data-size'=>'10']) !!}
 
@@ -163,7 +224,7 @@ Edit Profile
                 <div class="row">
                     <?php $countries = \App\Model\Common\Country::pluck('nicename', 'country_code_char2')->toArray(); ?>
                     <div class="col-md-6 form-group {{ $errors->has('country') ? 'has-error' : '' }}">
-                         {!! Form::label('country',Lang::get('message.country')) !!}
+                         {!! Form::label('country',Lang::get('message.country'),['class' => 'required']) !!}
 
                         {!! Form::select('country',[Lang::get('message.choose')=>$countries],null,['class' => 'form-control selectpicker','id'=>'country','onChange'=>'getCountryAttr(this.value)','data-live-search'=>'true','required','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false','data-size'=>'10']) !!}
                         <!-- name -->
@@ -192,7 +253,7 @@ Edit Profile
                 </div>
                 <div class="form-group {{ $errors->has('zip') ? 'has-error' : '' }}">
                     <!-- mobile -->
-                    {!! Form::label('zip',null,['class' => 'required'],Lang::get('message.zip')) !!}
+                    {!! Form::label('zip',null,Lang::get('message.zip')) !!}
                     {!! Form::text('zip',null,['class' => 'form-control']) !!}
 
                 </div>
@@ -221,7 +282,7 @@ Edit Profile
 
             <div class="content-header">
 
-                <h4>{{Lang::get('message.change-password')}}	<button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></h4>
+                <h4>{{Lang::get('message.change-password')}}    <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></h4>
 
             </div>
 
@@ -265,10 +326,54 @@ Edit Profile
             </div>
         </div>
     </div>
+    @include('themes.default1.user.2faModals')
+   
+    <div class="col-md-6">
+
+
+
+        <div class="box box-primary">
+            <div class="content-header">
+
+                <h4>{{Lang::get('message.setup_2fa')}}</h4>
+
+            </div>
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-10">
+                <h5>
+                    @if($is2faEnabled ==0)
+                    <img src="{{asset('common/images/authenticator.png')}}" alt="Authenticator" style="margin-top: -6px!important;" class="img-responsive img-circle img-sm">&nbsp;Authenticator App
+                    @else
+                    <img src="{{asset('common/images/authenticator.png')}}" alt="Authenticator" style="margin-top: -6px!important;" class="img-responsive img-circle img-sm">&nbsp;2-Step Verification is ON since {{getTimeInLoggedInUserTimeZone($dateSinceEnabled)}}
+                    <br><br><br>
+                    <div class="row">
+                 <div class="col-md-4">
+                     <button class="btn btn-primary" id="viewRecCode">View Recovery Code</button>
+                 </div>
+             </div>
+                    @endif
+                </h5>
+                </div>
+                <div class="col-md-2">
+                  <label class="switch toggle_event_editing pull-right">
+                          
+                         <input type="checkbox" value="{{$is2faEnabled}}"  name="modules_settings" 
+                          class="checkbox" id="2fa">
+                          <span class="slider round"></span>
+                    </label>
+                 </div>
+
+            </div>
+        </div>  
+        </div>
+    </div>
+
 </div>
 
 
 {!! Form::close() !!}
+<script src="{{asset('common/js/2fa.js')}}"></script>
 <script>
 // get the country data from the plugin
      $(document).ready(function(){
@@ -309,9 +414,14 @@ Edit Profile
     $('form').on('submit', function (e) {
         $('input[name=country_code]').attr('value', $('.selected-dial-code').text());
     });
+
+
 });
 </script>
 <script>
+
+
+
        function getCountryAttr(val) {
         getState(val);
         getCode(val);

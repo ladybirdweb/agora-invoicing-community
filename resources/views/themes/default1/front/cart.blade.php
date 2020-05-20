@@ -7,7 +7,7 @@ Cart
 Cart
 @stop
 @section('page-heading')
- <h1>Cart</h1>
+ Items in the shopping cart
 @stop
 @section('breadcrumb')
  @if(Auth::check())
@@ -34,42 +34,7 @@ if (count($attributes) > 0) {
 ?>
 <div class="row">
     <div class="col-md-12">
-        @if (count($errors) > 0)
-        <div class="alert alert-danger alert-dismissable" role="alert">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-             <strong><i class="fas fa-exclamation-triangle"></i>Oh snap!</strong>There were some problems with your input.<br><br>
-            <ul>
-                @foreach ($errors->all() as $error)
-                
-                <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-        @endif
 
-        @if(Session::has('success'))
-    </br>
-</br>
-
-
-         <div class="alert alert-success">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <strong><i class="far fa-thumbs-up"></i> Well done!</strong>
-
-
-            {{Session::get('success')}}
-        </div>
-        @endif
-        <!-- fail message -->
-        @if(Session::has('fails'))
-        <div class="alert alert-danger alert-dismissable">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            <strong><i class="fas fa-exclamation-triangle"></i>Oh snap!</strong> There were some problems with your input.
-            <ul>
-           <li> {{Session::get('fails')}} </li>
-        </ul>
-        </div>
-        @endif
 
         
         @if(!Cart::isEmpty())
@@ -82,15 +47,13 @@ if (count($attributes) > 0) {
                            <div class="featured-box featured-box-primary align-left mt-sm">
 
                                 <div class="box-content">
-                                   
+
                                         <table class="shop_table cart">
                                         @forelse($cartCollection as $key=>$item)
                                           <?php
                                             $product = App\Model\Product\Product::where('id', $item->id)->first();
                                             $domain = [];
-                                  
-                                            
-                                          
+
                                             if ($product->require_domain == 1) {
                                                 $domain[$key] = $product->id;
                                                 $productName = $product->name;
@@ -99,23 +62,22 @@ if (count($attributes) > 0) {
                                             $cont = new \App\Http\Controllers\Product\ProductController();
                                             $isAgentAllowed = $cont->allowQuantityOrAgent($item->id);
                                             $isAllowedtoEdit = $cont->isAllowedtoEdit($item->id);
-
                                             ?>
 
                                             <thead>
 
                                                 <tr>
-                                                    <th class="product-price">
+                                                    <th class="product-remove">
                                                         &nbsp;
                                                     </th>
-                                                    <th class="product-price">
+                                                    <th class="product-thumbnail">
                                                         &nbsp;
                                                     </th>
-                                                    <th class="product-price">
+                                                    <th class="product-name">
                                                         Product
                                                     </th>
 
-                                                    <th class="product-subtotal">
+                                                    <th class="product-price">
                                                         Price
                                                     </th>
                                                     @if( $isAgentAllowed ==false)
@@ -136,8 +98,7 @@ if (count($attributes) > 0) {
                                           
                                             <tbody>
                                                  
-                                             
-                                               
+
                                                 <tr class="cart_table_item">
                                                   
                                                     <td class="product-remove">
@@ -145,18 +106,14 @@ if (count($attributes) > 0) {
                                                             <i class="fa fa-times"></i>
                                                         </a>
                                                     </td>
-                                                    <td class="product-price">
+                                                    <td class="product-thumbnail">
                                                       <img width="100" height="100" alt="" class="img-responsive" src="{{$product->image}}">
                                                     </td>
-                                                    <td class="product-subtotal">
+                                                    <td class="product-name">
                                                         {{$item->name}}
                                                     </td>
-
                                                     <td class="product-price">
-
-
-                                                         <span class="amount">&nbsp;
-                                                           
+                                                         <span class="amount">
                                                             {{currency_format($item->price,$code = $attributes[0]['currency']['currency'])}}
                                                          <!-- {{\App\Http\Controllers\Front\CartController::rounding($item->getPriceSumWithConditions())}} -->
                                                      </span>
@@ -180,7 +137,7 @@ if (count($attributes) > 0) {
                                                         @endif
                                                     </td>
                                                      @else
-                                                     <td class="product-agent">
+                                                     <td class="product-agents">
                                                         @if ($item->attributes->agents == 0)
                                                          {{'Unlimited Agents'}}
                                                          @else
@@ -204,9 +161,7 @@ if (count($attributes) > 0) {
                                                      @endif
                                                          
                                                     <td class="product-subtotal">
-
-
-                                                      <span class="amount">&nbsp;
+                                                      <span class="amount">
                                                         {{currency_format($item->getPriceSum(),$code = $attributes[0]['currency']['currency'])}}
                                                     </span>
 
@@ -256,47 +211,34 @@ if (count($attributes) > 0) {
                                         </td>
                                     </tr>
 
-                                    <tr>
-                                        <th>
-
-                                        </th>
-                                        <td>
-
-                                        </td>
-                                    </tr>
+                                  
 
 
 
                                 </tbody>
                             </table>
-                            <div class="row">
-                                {!! Form::open(['url'=>'pricing/update','method'=>'post']) !!}
-                                <div class="form-group col-md-12">
 
-                                    <label for="coupon"><b>{{Lang::get('message.coupon-code')}}</b></label>
-                                    <input type="text" name="coupon" class="form-control input-lg">
-
+                            {!! Form::open(['url'=>'pricing/update','method'=>'post']) !!}
+                                <div class="input-group" style="margin-top: 10px">
+                                    <input type="text" name="coupon" class="form-control input-lg" placeholder="{{Lang::get('message.coupon-code')}}">
+                                    &nbsp;&nbsp;
+                                    <input type="submit" value="Apply" class="btn btn-primary">
                                 </div>
-                                <div class="form-group col-md-4-5">
-                                    <input type="submit" value="Update">
-                                </div>
-                                {!! Form::close() !!}
-                                </div>
+                            {!! Form::close() !!}
                             </div>
                         </div>
                          <!-- </div> -->
                            <div class="row">
-                        <div class=" col-md-6">
-                            <a href="{{url('cart/clear')}}"><button class="btn btn-danger btn-sm" style="margin-bottom: 20px;">Clear My Cart&nbsp;<i class="fa fa-angle-right ml-xs"></i></button></a>
-                        
+                        <div class="col col-md-5">
+                            <a href="{{url('cart/clear')}}"><button class="btn btn-danger btn-modern" style="margin-bottom: 20px;"><i class="fa fa-angle-left ml-xs"></i>&nbsp;Clear My Cart</button></a>
                        </div>
-                        <div class=" col-md-6">
+                        <div class="col col-md-7">
                             @if(count($domain)>0)
 
                             <a href="#domain" data-toggle="modal" data-target="#domain"><button class="btn btn-primary btn-sm "style="margin-bottom: 20px;"> Proceed to Checkout&nbsp;<i class="fa fa-angle-right ml-xs"></i></button></a>
 
                             @else
-                            <a href="{{url('checkout')}}"><button class="btn btn-primary btn-sm" style="margin-bottom: 20px;">Proceed to Checkout&nbsp;<i class="fa fa-angle-right ml-xs"></i></button></a>
+                            <a href="{{url('checkout')}}"><button class="btn btn-primary btn-modern" style="margin-bottom: 20px;">Proceed to Checkout&nbsp;<i class="fa fa-angle-right ml-xs"></i></button></a>
                             @endif
                           
 

@@ -9,8 +9,6 @@ use App\Model\Order\Invoice;
 use App\Model\Order\Order;
 use App\Model\Product\Product;
 use Bugsnag;
-use DateTime;
-use DateTimeZone;
 use Exception;
 use Hash;
 
@@ -28,46 +26,19 @@ class BaseClientController extends Controller
      *
      * @return array Show Modal Popup if Condition Satisfies
      */
-    public function getPopup(Order $orders, int $productid)
+    public function getPopup($query, int $productid)
     {
         $listUrl = '';
         $permissions = LicensePermissionsController::getPermissionsForProduct($productid);
-        $productCheck = $orders->product()
-        ->select('github_owner', 'github_repository', 'type')
-        ->where('id', $orders->product)->first();
         if ($permissions['downloadPermission'] == 1) { //If the Product has doownlaod permission
-            if (!$productCheck->github_owner == '' && !$productCheck->github_repository == '') {
-                $listUrl = $this->downloadGithubPopup($orders->client, $orders->invoice()->first()->id, $productid);
+            if ($query->github_owner && $query->github_repository) {
+                $listUrl = $this->downloadGithubPopup($query->client, $orders->invoice_id, $productid);
             } else {
-                $listUrl = $this->downloadPopup($orders->client, $orders->invoice()->first()->number, $productid);
+                $listUrl = $this->downloadPopup($query->client, $query->invoice_number, $productid);
             }
         }
 
         return $listUrl;
-    }
-
-    /**
-     * Get expiry Date for order.
-     *
-     * @param type $orders
-     *
-     * @return type
-     */
-    public function getExpiryDate($orders)
-    {
-        $end = '--';
-        if ($orders->subscription()->first()) {
-            if (strtotime($orders->subscription()->first()->update_ends_at) > 1) {
-                $ends = new DateTime($orders->subscription()->first()->update_ends_at);
-                $tz = \Auth::user()->timezone()->first()->name;
-                $ends->setTimezone(new DateTimeZone($tz));
-                $date = $ends->format('M j, Y, g:i a ');
-                $end = $date;
-                // dd($end);
-            }
-        }
-
-        return $end;
     }
 
     public function downloadPopup($clientid, $invoiceid, $productid)
@@ -131,7 +102,7 @@ class BaseClientController extends Controller
             $user = \Auth::user();
             if ($request->hasFile('profile_pic')) {
                 $file = $request->file('profile_pic');
-                $name = \Input::file('profile_pic')->getClientOriginalName();
+                $name = \Request::file('profile_pic')->getClientOriginalName();
                 $destinationPath = public_path('common/images/users');
                 $fileName = rand(0000, 9999).'.'.$name;
                 $file->move($destinationPath, $fileName);
@@ -204,7 +175,9 @@ class BaseClientController extends Controller
 
             return \DataTables::of($invoices->get())
              ->addColumn('number', function ($model) {
-                 return $model->number;
+                 $url = $this->getInvoiceLinkUrl($model->id);
+
+                 return '<a href='.url($url).'>'.$model->number.'</a>';
              })
             ->addColumn('products', function ($model) {
                 $invoice = $this->invoice->find($model->id);
@@ -213,24 +186,22 @@ class BaseClientController extends Controller
                 return ucfirst(implode(',', $products));
             })
             ->addColumn('date', function ($model) {
-                $date = date_create($model->created_at);
-
-                return date_format($date, 'M j, Y, g:i a');
+                return getDateHtml($model->created_at);
             })
             ->addColumn('total', function ($model) {
                 return currency_format($model->grand_total, $code = $model->currency);
             })
             ->addColumn('status', function ($model) {
-                return ucfirst($model->status);
-            })
-            ->addColumn('action', function ($model) {
                 if (\Auth::user()->role == 'admin') {
-                    $url = '/invoices/show?invoiceid='.$model->id;
-                } else {
-                    $url = 'my-invoice';
+                    return getStatusLabel($model->status);
                 }
 
-                return '<a href='.url($url.'/'.$model->id)." 
+                return getStatusLabel($model->status, 'badge');
+            })
+            ->addColumn('action', function ($model) {
+                $url = $this->getInvoiceLinkUrl($model->id);
+
+                return '<a href='.url($url)." 
                 class='btn btn-sm btn-primary btn-xs'><i class='fa fa-eye' 
                 style='color:white;'> </i>&nbsp;&nbsp;View</a>";
             })
@@ -243,17 +214,27 @@ class BaseClientController extends Controller
         }
     }
 
+    public function getInvoiceLinkUrl($invoiceId)
+    {
+        $link = 'my-invoice/'.$invoiceId;
+        if (\Auth::user()->role == 'admin') {
+            $link = '/invoices/show?invoiceid='.$invoiceId;
+        }
+
+        return $link;
+    }
+
     public function getInvoice($id)
     {
         try {
             $invoice = $this->invoice->findOrFail($id);
             $items = $invoice->invoiceItem()->get();
-
+            $order = getOrderLink($invoice->orderRelation()->value('order_id'), 'my-order');
             $user = \Auth::user();
             $currency = CartController::currency($user->id);
             $symbol = $currency['symbol'];
 
-            return view('themes.default1.front.clients.show-invoice', compact('invoice', 'items', 'user', 'currency', 'symbol'));
+            return view('themes.default1.front.clients.show-invoice', compact('invoice', 'items', 'user', 'currency', 'symbol', 'order'));
         } catch (Exception $ex) {
             Bugsnag::notifyException($ex);
 

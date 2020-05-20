@@ -6,40 +6,22 @@ use App\Http\Controllers\License\LicensePermissionsController;
 use App\Model\Common\StatusSetting;
 use App\Model\Order\Order;
 use App\Model\Product\Product;
+use App\Plugins\Stripe\Controllers\SettingsController;
 use App\Traits\Order\UpdateDates;
 use App\User;
 use Bugsnag;
 use Crypt;
-use DateTime;
-use DateTimeZone;
-use Illuminate\Http\Request;
 
 class BaseOrderController extends ExtendedOrderController
 {
     use UpdateDates;
 
-    public function getEndDate($model)
-    {
-        $end = '--';
-        $ends = $model->subscription()->first();
-        if ($ends) {
-            if (strtotime($ends->update_ends_at) > 1) {
-                $date1 = new DateTime($ends->update_ends_at);
-                $tz = \Auth::user()->timezone()->first()->name;
-                $date1->setTimezone(new DateTimeZone($tz));
-                $end = $date1->format('M j, Y');
-            }
-        }
-
-        return $end;
-    }
-
-    public function getUrl($model, $status, $sub)
+    public function getUrl($model, $status, $subscriptionId)
     {
         $url = '';
         if ($status == 'success') {
-            if ($sub) {
-                $url = '<a href='.url('renew/'.$sub->id)." 
+            if ($subscriptionId) {
+                $url = '<a href='.url('renew/'.$subscriptionId)." 
                 class='btn btn-sm btn-primary btn-xs'><i class='fa fa-refresh'
                  style='color:white;'> </i>&nbsp;&nbsp;Renew</a>";
             }
@@ -96,16 +78,16 @@ class BaseOrderController extends ExtendedOrderController
             $plan_id = $this->plan($item->id);
             $order = $this->order->create([
 
-            'invoice_id'      => $invoiceid,
-            'invoice_item_id' => $item->id,
-            'client'          => $user_id,
-            'order_status'    => $order_status,
-            'serial_key'      => Crypt::encrypt($serial_key),
-            'product'         => $product,
-            'price_override'  => $item->subtotal,
-            'qty'             => $item->quantity,
-            'domain'          => $domain,
-            'number'          => $this->generateNumber(),
+                'invoice_id'      => $invoiceid,
+                'invoice_item_id' => $item->id,
+                'client'          => $user_id,
+                'order_status'    => $order_status,
+                'serial_key'      => Crypt::encrypt($serial_key),
+                'product'         => $product,
+                'price_override'  => $item->subtotal,
+                'qty'             => $item->quantity,
+                'domain'          => $domain,
+                'number'          => $this->generateNumber(),
             ]);
             $this->addOrderInvoiceRelation($invoiceid, $order->id);
 
@@ -114,6 +96,7 @@ class BaseOrderController extends ExtendedOrderController
             }
 
             $this->sendOrderMail($user_id, $order->id, $item->id);
+
             //Update Subscriber To Mailchimp
             $mailchimpStatus = StatusSetting::pluck('mailchimp_status')->first();
             if ($mailchimpStatus == 1) {
@@ -168,7 +151,7 @@ class BaseOrderController extends ExtendedOrderController
             $supportExpiry = $this->getSupportExpiryDate($permissions['generateSupportExpiryDate'], $days);
             $user_id = $this->order->find($orderid)->client;
             $this->subscription->create(['user_id'     => $user_id,
-                'plan_id'                              => $planid, 'order_id' => $orderid, 'update_ends_at' =>$updatesExpiry, 'ends_at' => $licenseExpiry, 'support_ends_at'=>$supportExpiry, 'version'=> $version, 'product_id' =>$product, ]);
+                'plan_id' => $planid, 'order_id' => $orderid, 'update_ends_at' =>$updatesExpiry, 'ends_at' => $licenseExpiry, 'support_ends_at'=>$supportExpiry, 'version'=> $version, 'product_id' =>$product, ]);
 
             $licenseStatus = StatusSetting::pluck('license_status')->first();
             if ($licenseStatus == 1) {
@@ -282,36 +265,44 @@ class BaseOrderController extends ExtendedOrderController
 
     public function getMail($setting, $user, $downloadurl, $invoiceurl, $order, $product, $orderid, $myaccounturl)
     {
-        $templates = new \App\Model\Common\Template();
-        $temp_id = $setting->order_mail;
-        $template = $templates->where('id', $temp_id)->first();
-        $knowledgeBaseUrl = $setting->company_url;
-        $from = $setting->email;
-        $to = $user->email;
-        $subject = $template->name;
-        $data = $template->data;
-        $replace = [
-            'name'          => $user->first_name.' '.$user->last_name,
-             'serialkeyurl' => $myaccounturl,
-            'downloadurl'   => $downloadurl,
-            'invoiceurl'    => $invoiceurl,
-            'product'       => $product,
-            'number'        => $order->number,
-            'expiry'        => $this->expiry($orderid),
-            'url'           => $this->renew($orderid),
-            'knowledge_base'=> $knowledgeBaseUrl,
+        try {
+            $templates = new \App\Model\Common\Template();
+            $temp_id = $setting->order_mail;
+            $template = $templates->where('id', $temp_id)->first();
+            $knowledgeBaseUrl = $setting->company_url;
+            $from = $setting->email;
+            $to = $user->email;
+            $adminEmail = $setting->company_email;
+            $subject = $template->name;
+            $data = $template->data;
+            $replace = [
+                'name'          => $user->first_name.' '.$user->last_name,
+                'serialkeyurl' => $myaccounturl,
+                'downloadurl'   => $downloadurl,
+                'invoiceurl'    => $invoiceurl,
+                'product'       => $product,
+                'number'        => $order->number,
+                'expiry'        => $this->expiry($orderid),
+                'url'           => $this->renew($orderid),
+                'knowledge_base'=> $knowledgeBaseUrl,
 
             ];
-        $type = '';
-        if ($template) {
-            $type_id = $template->type;
-            $temp_type = new \App\Model\Common\TemplateType();
-            $type = $temp_type->where('id', $type_id)->first()->name;
-        }
-        $templateController = new \App\Http\Controllers\Common\TemplateController();
-        $mail = $templateController->mailing($from, $to, $data, $subject, $replace, $type);
+            $type = '';
+            if ($template) {
+                $type_id = $template->type;
+                $temp_type = new \App\Model\Common\TemplateType();
+                $type = $temp_type->where('id', $type_id)->first()->name;
+            }
+            $templateController = new \App\Http\Controllers\Common\TemplateController();
+            $mail = $templateController->mailing($from, $to, $data, $subject, $replace, $type);
+            if ($order->invoice->grand_total) {
+                SettingsController::sendPaymentSuccessMailtoAdmin($order->invoice->currency, $order->invoice->grand_total, $user, $product);
+            }
 
-        return $mail;
+            return $mail;
+        } catch (\Exception $ex) {
+            throw new Exception($ex->getMessage());
+        }
     }
 
     public function invoiceUrl($orderid)
@@ -353,23 +344,5 @@ class BaseOrderController extends ExtendedOrderController
         $url = url('download/'.$userid.'/'.$number);
 
         return $url;
-    }
-
-    public function installOnIpOrDomain(Request $request)
-    {
-        $order = Order::findorFail($request->input('order'));
-        $licenseCode = $order->serial_key;
-        $licenseStatus = StatusSetting::pluck('license_status')->first();
-        if ($licenseStatus == 1) {
-            $licenseExpiry = $order->subscription->ends_at;
-            $updatesExpiry = $order->subscription->update_ends_at;
-            $supportExpiry = $order->subscription->support_ends_at;
-            $cont = new \App\Http\Controllers\License\LicenseController();
-            $noOfAllowedInstallation = $cont->getNoOfAllowedInstallation($order->serial_key, $order->product);
-            $updateLicensedDomain = $cont->updateLicensedDomain($licenseCode, $order->domain, $order->product, $licenseExpiry, $updatesExpiry, $supportExpiry, $order->number, $license_limit = $noOfAllowedInstallation, $requiredomain = $request->input('domain'));
-            //Now make Installation status as inactive
-        }
-
-        return redirect()->back()->with('success', 'Installation Preference set successfully');
     }
 }

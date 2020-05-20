@@ -2,7 +2,7 @@
 @section('title')
 Checkout
 @stop
-@section('page-header')
+@section('page-heading')
 Checkout
 @stop
 @section('breadcrumb')
@@ -32,33 +32,6 @@ Checkout
 
 
             <div class="card-body">
-
-                @if(Session::has('success'))
-                <div class="alert alert-success alert-dismissable">
-                    {{Lang::get('message.success')}}.
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    {!!Session::get('success')!!}
-                </div>
-                @endif
-                <!-- fail message -->
-                @if(Session::has('fails'))
-                <div class="alert alert-danger alert-dismissable">
-                    <i class="fa fa-ban"></i>
-                    <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.failed')}}.
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    {{Session::get('fails')}}
-                </div>
-                @endif
-                @if (count($errors) > 0)
-                <div class="alert alert-danger">
-                    <strong>Whoops!</strong> There were some problems with your input.<br><br>
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-                @endif
                 <div>
                     <table class="shop_table cart">
                         <thead>
@@ -121,56 +94,46 @@ Checkout
 
 
                     </table>
-                    <hr class="tall">
-                    <!-- <h4 class="heading-primary">Cart Totals</h4> -->
-                   <!--  <div class="col-md-12">
-                        <table class="cart-totals">
-                            <tbody>
-
-
-                                <tr class="total">
-                                    <th>
-                                        <strong>Order Total</strong>
-                                    </th>
-                                    <td>
-                                        <strong><span class="amount"><small>{!! $symbol !!} </small> {{$invoice->grand_total}}</span></strong>
-                                    </td>
-                                </tr>
-
-                            </tbody>
-                        </table>
-                        <hr class="tall">
-                    </div> -->
 
                 </div>
-                {!! Form::open(['url'=>'checkout','method'=>'post']) !!}
+                {!! Form::open(['url'=>'checkout','method'=>'post','id' => 'checkoutsubmitform']) !!}
                   @if($invoice->grand_total > 0)
                 <h4 class="heading-primary">Payment</h4>
                     <?php $gateways = \App\Http\Controllers\Common\SettingsController::checkPaymentGateway($invoice->currency);
                       $rzpstatus = \App\Model\Common\StatusSetting::first()->value('rzp_status');
                        ?>
-                     @if($gateways) 
-                  <div class="form-group">
+                    
+                
+                @if(count($gateways)) 
+                  <div class="row">
 
                     <div class="col-md-6">
-                        {{ucfirst($gateways)}} {!! Form::radio('payment_gateway',strtolower($gateways)) !!}<br><br>
+                        @foreach($gateways as $gateway)
+                        <?php
+                          $processingFee = \DB::table(strtolower($gateway))->where('currencies',$invoice->currency)->value('processing_fee');
+                        ?>
+                        {!! Form::radio('payment_gateway',$gateway,false,['id'=>'allow_gateway']) !!}
+                         <img alt="Porto" width="111"  data-sticky-width="52" data-sticky-height="10" data-sticky-top="10" src="{{asset('client/images/'.$gateway.'.png')}}">
+                          <br><br>
+                         <div id="fee" style="display:none"><p>An extra processing fee of <b>{{$processingFee}}%</b> will be charged on your Order Total during the time of payment</p></div>
+                        @endforeach
                     </div>
                 </div>
             
             @endif
+
+
+                 
+            
+            
              @if($rzpstatus ==1)
-                <div class="form-group">
+                <div class="row">
                     
                     <div class="col-md-6">
-                         {!! Form::radio('payment_gateway',strtolower('Razorpay')) !!}
-
+                        {!! Form::radio('payment_gateway','razorpay',false,['id'=>'rzp_selected']) !!}&nbsp;&nbsp;&nbsp;
                          <img alt="Porto" width="111" data-sticky-width="82" data-sticky-height="40" data-sticky-top="33" src="{{asset('client/images/Razorpay.png')}}"><br><br>
-
-
-                    </div>
-                    
-                   
-                </div>
+                  </div>
+                  </div>
                 @endif
                   @endif
                    <div class="col-md-6">
@@ -178,9 +141,9 @@ Checkout
                         {!! Form::hidden('invoice_id',$invoice->id) !!}
                         {!! Form::hidden('cost',$invoice->grand_total) !!}
                     </div>
-                <div class="form-group">
+                <div class="row">
                     <div class="col-md-6 col-md-offset-4">
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" id="proceed" class="btn btn-primary">
 
                             Proceed
                              <i class= "fa fa-forward"></i>
@@ -205,7 +168,7 @@ Checkout
                         <strong>Cart Subtotal</strong>
                     </th>
                     <td>
-                        <strong><span class="amount">{{currency_format($subtotal,$code = $currency)}}</span></strong>
+                       <span class="amount">{{currency_format($subtotal,$code = $currency)}}</span>
                     </td>
                 </tr>
                   @foreach($items->toArray() as $attribute)
@@ -253,5 +216,21 @@ Checkout
     </div>
 </div>
 </div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+<script>
+  $('#checkoutsubmitform').submit(function(){
+     $("#proceed").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...")
+    $("#proceed").prop('disabled', true);
 
+  });
+     $(document).ready(function(){
+        $("#rzp_selected").click(function(){
+                $('#fee').hide();
+        }); 
+        $("#allow_gateway").click(function(){
+           $('#fee').show();
+        });
+         
+    });
+</script>
 @endsection

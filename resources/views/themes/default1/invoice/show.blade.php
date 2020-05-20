@@ -58,14 +58,9 @@ View Invoice
 
                 <?php $set = App\Model\Common\Setting::where('id', '1')->first(); 
                  $gst =  App\Model\Payment\TaxOption::where('id', '1')->first(); 
-                  $date1 = new DateTime($invoice->date);
-                $tz = \Auth::user()->timezone()->first()->name;
-                $date1->setTimezone(new DateTimeZone($tz));
-                $date = $date1->format('M j, Y, g:i a ');
+                $date = getDateHtml($invoice->date);
 
-                
-           
-                $symbol = $invoice->currency;
+                 $symbol = $invoice->currency;
             
                 ?>
 
@@ -76,7 +71,7 @@ View Invoice
                         <div class="col-xs-12">
                             <h2 class="page-header">
                                 <i class="fa fa-globe"></i> {{ucfirst($set->company)}}
-                                <small class="pull-right">Date: {{$date}}</small>
+                                <small class="pull-right">Date: {!! $date !!}</small>
                             </h2>
                         </div><!-- /.col -->
                     </div>
@@ -109,12 +104,17 @@ View Invoice
                             </address>
                         </div><!-- /.col -->
                         <div class="col-sm-4 invoice-col">
-                            <b>Invoice   #{{$invoice->number}}</b><br/>
+                            <b>Invoice   #{{$invoice->number}}</b>
                             <br/>
 
                         </div><!-- /.col -->
                          <div class="col-sm-4 invoice-col">
-                            <b>GSTIN   &nbsp; #{{$gst->Gst_No}}</b><br/>
+                            <b>Order</b>   #{!! $order !!}
+                            <br/>
+
+                        </div><!-- /.col -->
+                         <div class="col-sm-4 invoice-col">
+                            <b>GSTIN   &nbsp; #{{$gst->Gst_No}}</b>
                             <br/>
 
                         </div><!-- /.col -->

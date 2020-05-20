@@ -129,12 +129,12 @@ class BaseAuthController extends Controller
             }
 
             $response = ['type' => 'success',
-            'message'           => $msg1.'<br><br>'.$msg2, ];
+                'message'           => $msg1.'<br><br>'.$msg2, ];
 
             return response()->json($response);
         } catch (\Exception $ex) {
             $response = ['type' => 'fail',
-            'message'           => $ex->getMessage(), ];
+                'message'           => $ex->getMessage(), ];
             $result = [$ex->getMessage()];
 
             return response()->json(compact('response'), 500);
@@ -148,7 +148,7 @@ class BaseAuthController extends Controller
 
             $activate_model = new AccountActivate();
             $user = $user->where('email', $email)->first();
-            if (!$user) {
+            if (! $user) {
                 return redirect()->back()->with('fails', 'Invalid Email');
             }
 
@@ -176,7 +176,7 @@ class BaseAuthController extends Controller
             $subject = $template->name;
             $data = $template->data;
             $replace = ['name' => $user->first_name.' '.$user->last_name,
-            'username'         => $user->email, 'password' => $str, 'url' => $url, 'website_url'=>$website_url, ];
+                'username'         => $user->email, 'password' => $str, 'url' => $url, 'website_url'=>$website_url, ];
             $type = '';
 
             if ($template) {
@@ -207,23 +207,41 @@ class BaseAuthController extends Controller
 
             return property_exists($this, 'redirectTo') ? $this->redirectTo : '/'.$url;
         } else {
-            return property_exists($this, 'redirectTo') ? $this->redirectTo : '/home';
+            return property_exists($this, 'redirectTo') ? $this->redirectTo : '/';
         }
     }
 
     protected function addToPipedrive($user)
     {
         $token = ApiKey::pluck('pipedrive_api_key')->first();
-        $countryFullName = Country::where('country_code_char2', $user->country)->pluck('nicename')->first();
-        $pipedrive = new \Devio\Pipedrive\Pipedrive($token);
+        $result = $this->searchUserPresenceInPipedrive($user->email, $token);
+        if (! $result) {
+            $countryFullName = Country::where('country_code_char2', $user->country)->pluck('nicename')->first();
+            $pipedrive = new \Devio\Pipedrive\Pipedrive($token);
+            $orgId = $pipedrive->organizations->add(['name'=>$user->company])->getContent()->data->id;
+            $person = $pipedrive->persons()->add(['name' => $user->first_name.' '.$user->last_name, 'email'=>$user->email,
+                'phone'                                  => '+'.$user->mobile_code.$user->mobile, 'org_id'=>$orgId, ]);
 
-        $orgId = $pipedrive->organizations->add(['name'=>$user->company])->getContent()->data->id;
-        $person = $pipedrive->persons()->add(['name' => $user->first_name.' '.$user->last_name, 'email'=>$user->email,
-            'phone'                                  => '+'.$user->mobile_code.$user->mobile, 'org_id'=>$orgId, ]);
+            // $person = $pipedrive->persons()->add(['name' => $user->first_name .' '. $user->last_name,'email'=>$user->email,
+            //     'phone'=>'+'.$user->mobile_code.$user->mobile,'org_id'=>$orgId,'af1c1908b70a61f2baf8b33a975a185cce1aefe5'=>$countryFullName]);
+            $personId = $person->getContent()->data->id;
+            $organization = $pipedrive->deals()->add(['title'=>$user->company.' '.'deal', 'person_id'=>$personId, 'org_id'=>$orgId]);
+        }
+    }
 
-        // $person = $pipedrive->persons()->add(['name' => $user->first_name .' '. $user->last_name,'email'=>$user->email,
-        //     'phone'=>'+'.$user->mobile_code.$user->mobile,'org_id'=>$orgId,'af1c1908b70a61f2baf8b33a975a185cce1aefe5'=>$countryFullName]);
-        $personId = $person->getContent()->data->id;
-        $organization = $pipedrive->deals()->add(['title'=>$user->company.' '.'deal', 'person_id'=>$personId, 'org_id'=>$orgId]);
+    private function searchUserPresenceInPipedrive($email, $token)
+    {
+        $pipedriveUrl = 'https://api.pipedrive.com/v1/persons/search?term='.$email.'&api_token='.$token;
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $pipedriveUrl);
+        curl_setopt($ch, CURLOPT_POST, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+        $result = curl_exec($ch);
+        curl_close($ch);
+
+        return json_decode($result)->data->items;
     }
 }

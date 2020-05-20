@@ -103,7 +103,7 @@ class LicenseSettingsController extends LicensePermissionsController
     {
         try {
             $ids = $request->input('select');
-            if (!empty($ids)) {
+            if (! empty($ids)) {
                 foreach ($ids as $id) {
                     $type = $this->licenseType->where('id', $id)->first();
                     if ($type) {

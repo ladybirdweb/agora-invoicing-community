@@ -5,8 +5,6 @@
             {!! Form::open(['url'=>'client/renew/'.$id]) !!}
             <div class="modal-header">
                  <h4 class="modal-title">Renew</h4>
-               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-               
             </div>
             <div class="modal-body">
                 <!-- Form  -->
@@ -23,17 +21,7 @@
                         {!! Form::hidden('user',$userid) !!}
                     </div>
 
-                   
-
-                   <div class="form-group {{ $errors->has('payment_method') ? 'has-error' : '' }}">
-                        <!-- last name -->
-                        {!! Form::label('payment_method',Lang::get('message.payment-method'),['class'=>'required']) !!}
-
-                        {!! Form::select('payment_method',[''=>'Select','razorpay'=>'Razorpay'],null,['class' => 'form-control']) !!}
-
-
-
-                    </div>
+                
                      <div class="form-group {{ $errors->has('cost') ? 'has-error' : '' }}">
                         <!-- last name -->
                         {!! Form::label('cost',Lang::get('message.price'),['class'=>'required']) !!}
@@ -44,8 +32,8 @@
 
             </div>
             <div class="modal-footer">
-                <button type="button" id="close" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-                <input type="submit" class="btn btn-primary" value="{{Lang::get('message.save')}}">
+                <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="fa fa-times">&nbsp;&nbsp;</i>Close</button>
+                 <button type="submit"  class="btn btn-primary"><i class="fa fa-check">&nbsp;&nbsp;</i>Save</button>
                 {!! Form::close()  !!}
             </div>
             <!-- /Form -->

@@ -42,7 +42,7 @@ class WidgetController extends Controller
                                 return $model->type;
                             })
                               ->addColumn('created_at', function ($model) {
-                                  return $model->created_at;
+                                  return getDateHtml($model->created_at);
                               })
                         // ->showColumns('name', 'type', 'created_at')
                         ->addColumn('content', function ($model) {
@@ -128,7 +128,7 @@ class WidgetController extends Controller
     {
         try {
             $ids = $request->input('select');
-            if (!empty($ids)) {
+            if (! empty($ids)) {
                 foreach ($ids as $id) {
                     $widget = $this->widget->where('id', $id)->first();
                     if ($widget) {

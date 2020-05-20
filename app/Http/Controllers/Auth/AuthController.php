@@ -134,9 +134,9 @@ class AuthController extends BaseAuthController
     public function validator(array $data)
     {
         return Validator::make($data, [
-                    'name'     => 'required|max:255',
-                    'email'    => 'required|email|max:255|unique:users',
-                    'password' => 'required|confirmed|min:6',
+            'name'     => 'required|max:255',
+            'email'    => 'required|email|max:255|unique:users',
+            'password' => 'required|confirmed|min:6',
         ]);
     }
 
@@ -150,9 +150,9 @@ class AuthController extends BaseAuthController
     public function create(array $data)
     {
         return User::create([
-                    'name'     => $data['name'],
-                    'email'    => $data['email'],
-                    'password' => bcrypt($data['password']),
+            'name'     => $data['name'],
+            'email'    => $data['email'],
+            'password' => bcrypt($data['password']),
         ]);
     }
 
@@ -200,20 +200,20 @@ class AuthController extends BaseAuthController
                 case 'text':
                    $array = json_decode($result, true);
                    $response = ['type' => 'success',
-                   'message'           => 'OTP has been resent to '.$number.'.Please Enter the OTP to login!!', ];
+                       'message'           => 'OTP has been resent to '.$number.'.Please Enter the OTP to login!!', ];
 
                     break;
 
                     case 'voice':
                     $array = json_decode($result, true);
                     $response = ['type' => 'success',
-                   'message'            => 'Voice call has been sent to '.$number.'.Please Enter the OTP received on the call to login!!', ];
+                        'message'            => 'Voice call has been sent to '.$number.'.Please Enter the OTP received on the call to login!!', ];
                     break;
 
                 default:
                     $array = json_decode($result, true);
                     $response = ['type' => 'success',
-                   'message'            => 'Voice call has been sent to '.$number.'.Please Enter the OTP received on the call to login!!', ];
+                        'message'            => 'Voice call has been sent to '.$number.'.Please Enter the OTP received on the call to login!!', ];
                     break;
 
             }
@@ -264,7 +264,7 @@ class AuthController extends BaseAuthController
             }
             $check = $this->checkVerify($user);
             $response = ['type' => 'success', 'proceed' => $check,
-            'user_id'           => $userid, 'message' =>'Mobile verified..', ];
+                'user_id'           => $userid, 'message' =>'Mobile verified..', ];
 
             return response()->json($response);
             // return redirect('/login');
@@ -296,7 +296,7 @@ class AuthController extends BaseAuthController
             //$this->sendActivation($email, $request->method());
             $this->sendActivation($email, $method);
             $response = ['type' => 'success', 'proceed' => $check,
-            'email'             => $email, 'message' => 'Activation link has been sent to '.$email, ];
+                'email'             => $email, 'message' => 'Activation link has been sent to '.$email, ];
 
             return response()->json($response);
         } catch (\Exception $ex) {

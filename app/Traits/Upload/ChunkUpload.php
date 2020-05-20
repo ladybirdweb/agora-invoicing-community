@@ -32,9 +32,9 @@ trait ChunkUpload
             $handler = $save->handler();
 
             return response()->json([
-            'done'   => $handler->getPercentageDone(),
-            'status' => true,
-        ]);
+                'done'   => $handler->getPercentageDone(),
+                'status' => true,
+            ]);
         } catch (Exception $ex) {
             dd($ex);
         }

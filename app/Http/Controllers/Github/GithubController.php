@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Model\Common\StatusSetting;
 use App\Model\Github\Github;
 use App\Model\Product\Subscription;
-use Auth;
 use Bugsnag;
 use Exception;
 use Illuminate\Http\Request;
@@ -279,7 +278,7 @@ class GithubController extends Controller
             StatusSetting::find(1)->update(['github_status'=>$status]);
             Github::find(1)->update(['username'=> $request->input('git_username'),
                 'password'                     => $request->input('git_password'), 'client_id'=>$request->input('git_client'),
-                 'client_secret'               => $request->input('git_secret'), ]);
+                'client_secret'               => $request->input('git_secret'), ]);
 
             return ['message' => 'success', 'update'=>'Github Settings Updated'];
         } catch (Exception $ex) {

@@ -100,7 +100,8 @@ return [
     |--------------------------------------------------------------------------
     |
     | This key is used by the Illuminate encrypter service and should be set
-////
+//
+'App\Plugins\Paypal\ServiceProvider',//
 'App\Plugins\Ccavenue\ServiceProvider',
 //
 'App\Plugins\Ccavenue\ServiceProvider',//
@@ -114,7 +115,7 @@ return [
 //
     */
 
-     'key'   => 'SomeRandomString',
+    'key'   => 'SomeRandomString',
     'cipher' => 'AES-128-CBC',
 
     /*
@@ -147,10 +148,9 @@ return [
 
     'providers' => [
 
-            //
+        //
 
-            // 'App\Plugins\Ccavanue\ServiceProvider',
-            'App\Plugins\Paypal\ServiceProvider',
+        'App\Plugins\Stripe\ServiceProvider',
         /*
          * Laravel Framework Service Providers...
          */
@@ -193,18 +193,20 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
-          Collective\Html\HtmlServiceProvider::class,
-           Barryvdh\DomPDF\ServiceProvider::class,
+        Collective\Html\HtmlServiceProvider::class,
+        Barryvdh\DomPDF\ServiceProvider::class,
         // Illuminate\Support\Facades\Input::class,
 
-         Yajra\DataTables\HtmlServiceProvider::class,
-         Yajra\DataTables\DataTablesServiceProvider::class,
-         GrahamCampbell\Markdown\MarkdownServiceProvider::class,
-         Spatie\Activitylog\ActivitylogServiceProvider::class,
-          \Torann\Currency\CurrencyServiceProvider::class,
-           Devio\Pipedrive\PipedriveServiceProvider::class,
-           Spatie\Referer\RefererServiceProvider::class,
-          // Voerro\Laravel\VisitorTracker\VisitorTrackerServiceProvider::class,
+        Yajra\DataTables\HtmlServiceProvider::class,
+        Yajra\DataTables\DataTablesServiceProvider::class,
+        GrahamCampbell\Markdown\MarkdownServiceProvider::class,
+        Spatie\Activitylog\ActivitylogServiceProvider::class,
+        \Torann\Currency\CurrencyServiceProvider::class,
+        Devio\Pipedrive\PipedriveServiceProvider::class,
+        Spatie\Referer\RefererServiceProvider::class,
+        Cartalyst\Stripe\Laravel\StripeServiceProvider::class,
+        PragmaRX\Google2FALaravel\ServiceProvider::class,
+        // Voerro\Laravel\VisitorTracker\VisitorTrackerServiceProvider::class,
 
     ],
 
@@ -263,13 +265,15 @@ return [
         'Input'        => Illuminate\Support\Facades\Input::class,
 
         'Datatable'    => 'Chumper\Datatable\Facades\DatatableFacade',
-          'DataTables' => Yajra\DataTables\Facades\DataTables::class,
-          'PDF'        => Barryvdh\DomPDF\Facade::class,
-          'Markdown'   => GrahamCampbell\Markdown\Facades\Markdown::class,
-          'GeoIP'      => \Torann\GeoIP\Facades\GeoIP::class,
-          'Currency'   => \Torann\Currency\Facades\Currency::class,
-          'Pipedrive'  => Devio\Pipedrive\PipedriveFacade::class,
-          // 'VisitStats' => Voerro\Laravel\VisitorTracker\Facades\VisitStats::class,
+        'DataTables' => Yajra\DataTables\Facades\DataTables::class,
+        'PDF'        => Barryvdh\DomPDF\Facade::class,
+        'Markdown'   => GrahamCampbell\Markdown\Facades\Markdown::class,
+        'GeoIP'      => \Torann\GeoIP\Facades\GeoIP::class,
+        'Currency'   => \Torann\Currency\Facades\Currency::class,
+        'Pipedrive'  => Devio\Pipedrive\PipedriveFacade::class,
+        'Stripe' => Cartalyst\Stripe\Laravel\Facades\Stripe::class,
+        'Google2FA' => PragmaRX\Google2FALaravel\Facade::class,
+        // 'VisitStats' => Voerro\Laravel\VisitorTracker\Facades\VisitStats::class,
 
     ],
 

@@ -1,4 +1,4 @@
-@extends('themes.default1.layouts.front.myaccount_master')
+@extends('themes.default1.layouts.front.master')
 @section('title')
 Orders
 @stop
@@ -6,7 +6,7 @@ Orders
 active
 @stop
 @section('page-heading')
- <h1>My Account </h1>
+ View Order
 @stop
 @section('breadcrumb')
  @if(Auth::check())
@@ -14,254 +14,175 @@ active
   @else
   <li><a href="{{url('login')}}">Home</a></li>
   @endif
-<li class="active">My Account</li>
-<li class="active">Orders</li>
+<li><a href= "{{url('my-orders')}}">My Orders</a></li>
+<li class="active">View Order</li>
 @stop
 
 @section('content')
-
-
-
-<style>
-    .accordion .card-header a{
-        color:currentColor;
-    }
-        .table td, .table th {
-    padding: 0.5rem;
-    vertical-align: top;
-    border-top: 1px solid #dee2e6;
-}
-    </style>
+ @include('themes.default1.front.clients.reissue-licenseModal')
+ @include('themes.default1.front.clients.domainRestriction')
     <div class="row pb-4">
-    <div class="col-lg-12 mb-12 mb-lg-0">
-  
-    
+        <div class="col-lg-12 mb-12 mb-lg-0">
+            <div class="alert alert-tertiary" style="padding-bottom: 5px; background-color: #49b1bf">
+                <div class="row">
+                    <div class="col col-md-4">Order No: #{{$order->number}}</div>
+                    <div class="col col-md-4">Date: {!! getDateHtml($order->created_at) !!}</div>
+                    <div class="col col-md-4">Status: {{$order->order_status}}</div>
+                </div>
+            </div>
 
-          <h2>My Orders</h2>
+            @component('mini_views.navigational_view', [
+                'navigations'=>[
+                    ['id'=>'license-details', 'name'=>'License Details', 'active'=>1, 'slot'=>'license','icon'=>'fas fa-file'],
+                    ['id'=>'user-details', 'name'=>'User Details', 'slot'=>'user','icon'=>'fas fa-users'],
+                    ['id'=>'invoice-list', 'name'=>'Invoice List', 'slot'=>'invoice','icon'=>'fas fa-credit-card'],
+                    ['id'=>'payment-receipts', 'name'=>'Payment Receipts', 'slot'=>'payment','icon'=>'fas fa-briefcase']
+                ]
+            ])
 
-           
-                
-                    <!-- <div class="content-wrapper"> -->
-                        <div class="accordion accordion-modern" id="accordion9">
-                        <!-- Content Header (Page header) -->
-                        <!-- <section class="content-header"> -->
-                        <div class="card card-default">
-                            <div class="card-header">
-                                        <h4 class="card-title m-0">
-                                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion9" href="#collapse9One">
-                                                <i class="fas fa-users"></i> Overview
-                                            </a>
-                                        </h4>
-                            </div>
-                        
-                          
-                        <!-- </section> -->
-                       <div id="collapse9One" class="collapse show">
-                           <div class="card-body">
-                                
-                                    <table class="table">
-                                        <tr class="info">
-                                           
-                                            <td><?php
-                                                $date1 = new DateTime($order->created_at);
-                                                // $tz = \Auth::user()->timezone()->first()->name;
-                                                // $date1->setTimezone(new DateTimeZone($tz));
-                                                $date = $date1->format('M j, Y, g:i a ');?>
-                                                Date: {{$date}}
-                                            </td>
-                                            <td>
-                                                Invoice No: #{{$invoice->number}}
-                                            </td>
-                                            <td>
-                                                Order No: #{{$order->number}}
-                                            </td>
-                                            <td>
-                                                Status: {{$order->order_status}}
-                                            </td>
-                                        </tr>
-                                       
-                                    </table>  
+                @slot('license')
+                    <table class="table">
+                        <input type="hidden" name="domainRes" id="domainRes" value={{$allowDomainStatus}}>
+                        <tbody>
+                        <tr>
+                            <td><b>License Code:</b></td>
+                            <td id="s_key" data-type="serialkey">{{$order->serial_key}}</td>
+                            <td>  @component('mini_views.copied_flash_text',[
+                                 'navigations'=>[
+                                   
+                                    ['btnName'=>'lic_btn','slot'=>'license','style'=>'<span data-type="copy" style="font-size: 15px; pointer-events: initial; cursor: pointer; display: block;" id="copyBtn" title="Click to copy to clipboard"><i class="fa fa-clipboard"></i></span><span class="badge badge-success badge-xs pull-right" id="copied" style="display:none;margin-top:-40px;margin-left:-20px;position: absolute;">Copied</span>'],
+                                    ]
+                                ])
                               
-
-                                 
-                                <div class="col">
-                                  <div class="card card-default">
-                                    <div class="card-header">
-                                        <h4 class="card-title m-0">
-                                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2Primary" href="#collapse2PrimaryTwo" style="background-color: lightblue;">
-                                                User Details
-                                            </a>
-                                        </h4>
-                                    </div>
-                                    <div id="collapse2PrimaryTwo" class="collapse">
-                                      <table class="table table-hover">
-                                            <div class="col-md-6">
-                                            <tbody><tr><td><b>Name:</b></td>   <td>{{ucfirst($user->first_name)}}</td></tr>
-                                                <tr><td><b>Email:</b></td>     <td>{{$user->email}}</td></tr>
-                                                <tr><td><b>Mobile:</b></td><td>@if($user->mobile_code)(<b>+</b>{{$user->mobile_code}})@endif&nbsp;{{$user->mobile}}</td></tr>
-                                                <tr><td><b>Address:</b></td>   <td>{{$user->address}}</td></tr>
-                                                <tr><td><b>Country:</b></td>   <td>{{\App\Http\Controllers\Front\CartController::getCountryByCode($user->country)}}</td></tr>
-
-                                            </tbody> </div>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-
-
-
-                                       
-                                   
-                        <div class="col">
-                            <div class="accordion accordion-secondary" id="accordion2Secondary">
-                                <div class="card card-default">
-                                    <div class="card-header">
-                                        <h4 class="card-title m-0">
-                                           <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2Secondary" href="#collapse2SecondaryTwo">
-                                               License Details
-                                            </a>
-                                        </h4>
-                                    </div>
-
-                                   <div id="collapse2SecondaryTwo" class="collapse">
-                                       
-                                            <table class="table table-hover">
-                                            <input type="hidden" name="domainRes" id="domainRes" value={{$allowDomainStatus}}>
-                                            <tbody><tr><td><b>License Code:</b></td>         <td>{{$order->serial_key}}</td></tr>
-                                                <tr><td><b>Licensed Domain/IP:</b></td>     <td>{{$order->domain}} 
-                                                    @if ($licenseStatus == 1)
-                                                     @include('themes.default1.front.clients.reissue-licenseModal')
-                                                     @include('themes.default1.front.clients.domainRestriction')
-                                                <button class='class="btn btn-danger mb-2 pull-right' style="border:none;" id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}">
-                                               Reissue License</button>
-                                           
-                                               @endif
-                                                </td>
-                                                
-                                                
-                                            </tr>
-                                                 <tr><td><b>Installation Path:</b></td> 
-                                                    @if(count($installationDetails['installed_path']) > 0)
-                                                    <td>@foreach($installationDetails['installed_path'] as $paths)
-                                                        <li>{{$paths}}</li>
-                                                        @endforeach
-                                                    </td>
-                                                    @else
-                                                    <td>
-                                                    No Active Installation
-                                                  </td>
-                                                   @endif
-                                                    </tr>
-
-                                                <tr><td><b>Installation IP:</b></td> 
-                                                @if(count($installationDetails['installed_path']) > 0)    
-                                                    <td>
-                                                        @foreach($installationDetails['installed_ip'] as $paths)
-                                                        <li>{{$paths}}</li>
-                                                        @endforeach
-                                                    </td>
-                                                    @else
-                                                     <td>
-                                                    --
-                                                  </td>
-                                                  @endif
-                                                </tr>
-                                                  
-
-                                                <?php
-
-                                                if (!$subscription || strtotime($subscription->ends_at) < 1) {
-                                                    $sub = "--";
-                                                } else {
-                                                    $date = new DateTime($subscription->ends_at);
-                                                    $tz = \Auth::user()->timezone()->first()->name;
-                                                    $date->setTimezone(new DateTimeZone($tz));
-                                                      
-                                                    $sub = $date->format('M j, Y, g:i a ');
-                                                    // $sub = $sub2->setTimezone($tz);
-                                                }
-
-                                                if (!$subscription || strtotime($subscription->update_ends_at) < 1) {
-                                                    $update_sub = "--";
-                                                } else {
-                                                    $date1 = new DateTime($subscription->update_ends_at);
-                                                    $tz = \Auth::user()->timezone()->first()->name;
-                                                    $date1->setTimezone(new DateTimeZone($tz));
-                                                      
-                                                    $update_sub = $date1->format('M j, Y, g:i a ');
-                                                    // $sub = $sub2->setTimezone($tz);
-                                                }
-                                                ?>
-                                                <tr><td><b>License Expiry Date:</b></td>   <td>{{$sub}}</td></tr>
-                                                <tr><td><b>Update Expiry Date:</b></td>   <td>{{$update_sub}}</td></tr>
-
-                                            </tbody>
-                                       
-                                        
-                                     </table>
-                                       
-                                    
-               
-                                 </div>
-                             </div>
-                         </div>
-                                   
-                                </div>
-                            
-                            </div>
-                            </div>
-                        </div>
-
-                   
-
-                    <div class="card card-default">
-                        <div class="card-header">
-                            <h4 class="card-title m-0">
-                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion9" href="#collapse9Two">
-                                    <i class="fas fa-film"></i>  Transaction list
-                                </a>
-                            </h4>
-                        </div>
-                        
-                        <div id="collapse9Two" class="collapse">
-                            <div class="card-body">
+                                @endcomponent
                                 
-                 <table id="showorder-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
+                            </td>
+                        </tr>
+                        @if ($licenseStatus == 1)
+                            <tr>
 
-                        <thead><tr>
+                                <td><b>Licensed Domain/IP:</b></td>
+                                <td>{{$order->domain}} </td>
+
+                                <td>
+                                   
+                                    <button class="btn btn-danger mb-2 btn-sm"  id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}">
+                                        Reissue License</button></td>
+                            </tr>
+                            <tr><td><b>Installation Path:</b></td>
+                                @if($installationDetails)
+
+                                    <td>@foreach($installationDetails['installed_path'] as $paths)
+                                            {{$paths}}<br>
+                                        @endforeach
+                                    </td>
+                                @else
+                                    <td>
+                                        No Active Installation
+                                    </td>
+                                @endif
+                                <td></td>
+                            </tr>
+
+
+                            <tr><td><b>Installation IP:</b></td>
+                                @if($installationDetails)
+                                    <td>
+                                        @foreach($installationDetails['installed_ip'] as $paths)
+                                            {{$paths}}<br>
+                                        @endforeach
+                                    </td>
+                                @else
+                                    <td>
+                                        --
+                                    </td>
+                                @endif
+
+                                <td></td>
+                            </tr>
+                        @endif
+                        <tr>
+                            <td><b>Version:</b></td>
+                            <td>{!! $versionLabel !!}</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><b>License Expiry Date:</b></td>
+                            <td>{!! $licdate !!}</td>
+                            <td></td>
+                        </tr>
+
+                        <tr>
+                            <td><b>Update Expiry Date:</b></td>
+                            <td>{!! $date !!}</td>
+                            <td></td>
+                        </tr>
+
+                        </tbody>
+
+
+                    </table>
+                @endslot
+                @slot('user')
+                    <table class="table">
+                        <div class="col-md-6">
+                            <tbody>
+                            <tr><td><b>Name:</b></td>   <td>{{ucfirst($user->first_name)}}</td></tr>
+                            <tr><td><b>Email:</b></td>     <td>{{$user->email}}</td></tr>
+                            <tr><td><b>Mobile:</b></td><td>@if($user->mobile_code)(<b>+</b>{{$user->mobile_code}})@endif&nbsp;{{$user->mobile}}</td></tr>
+                            <tr><td><b>Address:</b></td>   <td>{{$user->address}}</td></tr>
+                            <tr><td><b>Country:</b></td>   <td>{{\App\Http\Controllers\Front\CartController::getCountryByCode($user->country)}}</td></tr>
+                            </tbody>
+                        </div>
+                    </table>
+                @endslot
+                @slot('invoice')
+                    <table id="showorder-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
+                        <thead>
+                        <tr>
                             <th>Number</th>
-                            <th>Products</th>
-                            
+                            <th>Product</th>
                             <th>Date</th>
                             <th>Total</th>
                             <th>Status</th>
                             <th>Action</th>
+                        </tr>
+                        </thead>
+                    </table>
+                @endslot
+                @slot('payment')
+                    <table id="showpayment-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
+                        <thead>
+                        <tr>
+                            <th>Invoice No</th>
+                            <th>Total</th>
+                            <th>Method</th>
+                            <th>Status</th>
+                            <th>Created At</th>
+                        </tr>
+                        </thead>
+                    </table>
+                @endslot
 
-                        </tr></thead>
+            @endcomponent
+        </div>
+    </div>
 
 
-                </table>
-
-                 </div>
-             </div>
- 
-        </div>	
-       
-           <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
+<script src="{{asset('common/js/licCode.js')}}"></script>
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
 <script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript">
         $('#showorder-table').DataTable({
             processing: true,
             serverSide: true,
             ajax: '{!! Url('get-my-invoices/'.$order->id.'/'.$user->id) !!}',
-             // ajax: {{Url('get-my-invoices/'.$order->id.'/'.$user->id)}}
-             // url('service-desk/problems/attach/existing/'.$ticket->id
             "oLanguage": {
                 "sLengthMenu": "_MENU_ Records per page",
                 "sSearch"    : "Search: ",
                 "sProcessing": '<img id="blur-bg" class="backgroundfadein" style="top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;" src="{!! asset("lb-faveo/media/images/gifloader3.gif") !!}">'
             },
-    
+
             columns: [
                 {data: 'number', name: 'number'},
                 {data: 'products', name: 'products'},
@@ -271,6 +192,11 @@ active
                 {data: 'action', name: 'action'}
             ],
             "fnDrawCallback": function( oSettings ) {
+                 $(function () {
+                  $('[data-toggle="tooltip"]').tooltip({
+                    container : 'body'
+                  });
+                });
                 $('.loader').css('display', 'none');
             },
             "fnPreDrawCallback": function(oSettings, json) {
@@ -279,66 +205,33 @@ active
         });
         </script>
 
-
-                  <div class="card card-default">
-                    <div class="card-header">
-                        <h4 class="card-title m-0">
-                        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion9" href="#collapse9Three">
-                            <i class="fas fa-bars"></i> Payment receipts
-                        </a>
-                        </h4>
-                    </div>
-                        <!-- Content Header (Page header) -->
-                       <div id="collapse9Three" class="collapse">
-                            <div class="card-body">
-                        <table id="showpayment-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
-
-                    <thead><tr>
-                            <th>InvoiceNumber</th>
-                            <th>Total</th>
-                            
-                            <th>Method</th>
-                            
-                            <th>Status</th>
-                            <th>Created At</th>
-
-                        </tr></thead>
-
-
-                </table>
-            </div>
-            </div>
-            </div>
-
-        </div>
-    </div>  
-        
          <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
         <script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
         <script type="text/javascript">
-                $('#showpayment-table').DataTable({
+             $('#showpayment-table').DataTable({
                     processing: true,
                     serverSide: true,
                      ajax: '{!! Url('get-my-payment-client/'.$order->id.'/'.$user->id) !!}',
-              
+
                     "oLanguage": {
                         "sLengthMenu": "_MENU_ Records per page",
                         "sSearch"    : "Search: ",
                         "sProcessing": '<img id="blur-bg" class="backgroundfadein" style="top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;" src="{!! asset("lb-faveo/media/images/gifloader3.gif") !!}">'
                     },
-            
+
                     columns: [
                         {data: 'number', name: 'number'},
                         {data: 'total', name: 'total'},
                         {data: 'payment_method', name: 'payment_method'},
                         {data: 'payment_status', name: 'payment_status'},
                         {data: 'created_at', name: 'created_at'},
-                        
-                      
-                        
-                       
                     ],
                     "fnDrawCallback": function( oSettings ) {
+                         $(function () {
+                          $('[data-toggle="tooltip"]').tooltip({
+                            container : 'body'
+                          });
+                        });
                         $('.loader').css('display', 'none');
                     },
                     "fnPreDrawCallback": function(oSettings, json) {
@@ -361,7 +254,7 @@ active
                  $('#response1').html( "<img id='blur-bg' class='backgroundfadein' style='top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
 
                 },
-          
+
                 success: function (data) {
                 if (data.message =='success'){
                  var result =  '<div class="alert alert-success alert-dismissable"><strong><i class="fa fa-check"></i> Success! </strong> '+data.update+' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
@@ -371,9 +264,9 @@ active
                     window.location.reload();
                 },3000);
                   }
-               
+
                 }
-                
+
              });
             });
              } else {
@@ -382,7 +275,7 @@ active
             $("#licesnseModal").modal();
            $("#newDomain").val(oldDomainName);
            $("#orderId").val(oldDomainId);
-    
+
         $("#licenseSave").on('click',function(){
       var pattern = new RegExp(/^((?!-))(xn--)?[a-z0-9][a-z0-9-_]{0,61}[a-z0-9]{0,1}\.(xn--)?([a-z0-9\-]{1,61}|[a-z0-9-]{1,30}\.[a-z]{2,})$/);
       var ip_pattern = new RegExp(/^\b((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.|$)){4}\b/);
@@ -398,11 +291,11 @@ active
                  $('#domaincheck').css({"color":"red","margin-top":"5px"});
                    domErr = false;
                     return false;
-              
+
       }
             var domain = $('#newDomain').val();
             var id = $('#orderId').val();
-             
+
             $.ajax ({
                 type: 'patch',
                 url : "{{url('change-domain')}}",
@@ -420,11 +313,11 @@ active
                     window.location.reload();
                 },3000);
                   }
-               
+
                 }, error: function(err) {
                     console.log(err);
                 }
-                
+
             });
         });
          }

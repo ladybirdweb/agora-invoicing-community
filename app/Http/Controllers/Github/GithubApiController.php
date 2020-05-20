@@ -99,7 +99,7 @@ class GithubApiController extends Controller
                 if ($i === 0) {
                     $headers['http_code'] = $line;
                 } else {
-                    list($key, $value) = explode(': ', $line);
+                    [$key, $value] = explode(': ', $line);
 
                     $headers[$key] = $value;
                 }
@@ -110,6 +110,4 @@ class GithubApiController extends Controller
             dd($e);
         }
     }
-
-
 }

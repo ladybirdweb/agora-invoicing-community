@@ -173,12 +173,12 @@ class ProductController extends BaseProductController
         $this->validate(
             $request,
             [
-       'producttitle'  => 'required',
-        'version'      => 'required',
-       'filename'      => 'required',
-       ],
+                'producttitle'  => 'required',
+                'version'      => 'required',
+                'filename'      => 'required',
+            ],
        ['filename.required' => 'Please Uplaod A file',
-        ]
+       ]
         );
 
         try {
@@ -261,18 +261,18 @@ class ProductController extends BaseProductController
     {
         $input = $request->all();
         $v = \Validator::make($input, [
-                        'name'       => 'required|unique:products,name',
-                        'type'       => 'required',
-                        'description'=> 'required',
-                        'category'   => 'required',
-                        'image'      => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
-                        'product_sku'=> 'required|unique:products,product_sku',
-                        'group'      => 'required',
-                        'show_agent' => 'required',
-                        // 'version' => 'required',
-            ], [
+            'name'       => 'required|unique:products,name',
+            'type'       => 'required',
+            'description'=> 'required',
+            'category'   => 'required',
+            'image'      => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
+            'product_sku'=> 'required|unique:products,product_sku',
+            'group'      => 'required',
+            'show_agent' => 'required',
+            // 'version' => 'required',
+        ], [
             'show_agent.required' => 'Select you Cart Page Preference',
-            ]);
+        ]);
 
         if ($v->fails()) {
             //     $currency = $input['currency'];
@@ -284,7 +284,7 @@ class ProductController extends BaseProductController
 
         try {
             $licenseStatus = StatusSetting::pluck('license_status')->first();
-            if ($licenseStatus == 1) { //If License Setting Status is on,Add Product to the License Manager
+            if ($licenseStatus) { //If License Setting Status is on,Add Product to the License Manager
                 $addProductToLicensing = $this->licensing->addNewProduct($input['name'], $input['product_sku']);
             }
             $updateCont = new \App\Http\Controllers\AutoUpdate\AutoUpdateController();
@@ -297,16 +297,13 @@ class ProductController extends BaseProductController
             }
             $can_modify_agent = $request->input('can_modify_agent');
             $can_modify_quantity = $request->input('can_modify_quantity');
-            $product = $this->product;
-            $product->fill($request->except('image', 'file', 'cartquantity', 'can_modify_agent', 'can_modify_quantity'))->save();
             $this->saveCartValues($input, $can_modify_agent, $can_modify_quantity);
-            $product_id = $product->id;
-            $subscription = $request->input('subscription');
+            $this->product->fill($request->except('image', 'file'))->save();
             $taxes = $request->input('tax');
             if ($taxes) {
                 foreach ($taxes as $key => $value) {
                     $newtax = new TaxProductRelation();
-                    $newtax->product_id = $product_id;
+                    $newtax->product_id = $this->product->id;
                     $newtax->tax_class_id = $value;
                     $newtax->save();
                 }
@@ -399,12 +396,12 @@ class ProductController extends BaseProductController
     {
         $input = $request->all();
         $v = \Validator::make($input, [
-                        'name'       => 'required',
-                        'type'       => 'required',
-                        'description'=> 'required',
-                        'image'      => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
-                        'product_sku'=> 'required',
-                        'group'      => 'required',
+            'name'       => 'required',
+            'type'       => 'required',
+            'description'=> 'required',
+            'image'      => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
+            'product_sku'=> 'required',
+            'group'      => 'required',
         ]);
 
         if ($v->fails()) {
@@ -413,7 +410,7 @@ class ProductController extends BaseProductController
 
         try {
             $licenseStatus = StatusSetting::pluck('license_status')->first();
-            if ($licenseStatus == 1) {
+            if ($licenseStatus) {
                 $addProductInLicensing = $this->licensing->editProduct($input['name'], $input['product_sku']);
             }
             $product = $this->product->where('id', $id)->first();
@@ -429,21 +426,14 @@ class ProductController extends BaseProductController
                 $request->file('file')->move($filedestinationPath, $file);
                 $product->file = $file;
             }
-            $product->fill($request->except('image', 'file', 'cartquantity', 'product_multiple_qty', 'agent_multiple_qty'))->save();
+            $product->fill($request->except('image', 'file'))->save();
             $this->saveCartDetailsWhileUpdating($input, $request, $product);
 
-            //$this->saveCartValues($input,$can_modify_agent,$can_modify_quantity);
-            $this->updateVersionFromGithub($product->id);
-
-            $product_id = $product->id;
-            $subscription = $request->input('subscription');
-            $cost = $request->input('price');
-            $sales_price = $request->input('sales_price');
-            $currencies = $request->input('currency');
-
+            if ($request->input('github_owner') && $request->input('github_repository')) {
+                $this->updateVersionFromGithub($product->id, $request->input('github_owner'), $request->input('github_repository'));
+            }
             //add tax class to tax_product_relation table
-            $taxes = $request->input('tax');
-            $newTax = $this->saveTax($taxes, $product_id);
+            $newTax = $this->saveTax($request->input('tax'), $product->id);
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $e) {
@@ -464,7 +454,7 @@ class ProductController extends BaseProductController
     {
         try {
             $ids = $request->input('select');
-            if (!empty($ids)) {
+            if (! empty($ids)) {
                 foreach ($ids as $id) {
                     $product = $this->product->where('id', $id)->first();
                     if ($product) {
@@ -525,7 +515,7 @@ class ProductController extends BaseProductController
         try {
             $ids = $request->input('select');
             $storagePath = Setting::find(1)->value('file_storage');
-            if (!empty($ids)) {
+            if (! empty($ids)) {
                 foreach ($ids as $id) {
                     $product = $this->product_upload->where('id', $id)->first();
                     if ($product) {

@@ -68,8 +68,8 @@ class ExtendedBaseProductController extends Controller
     public function uploadUpdate($id, Request $request)
     {
         $this->validate($request, [
-        'title'        => 'required',
-        'version'      => 'required',
+            'title'        => 'required',
+            'version'      => 'required',
         ]);
 
         try {
@@ -175,10 +175,9 @@ class ExtendedBaseProductController extends Controller
      */
     public function saveCartValues($input, bool $can_modify_agent, bool $can_modify_quantity)
     {
-        $this->product->show_agent = $input['show_agent'] == 1 ? 1 : 0; //if Show Agents Selected
+        $this->product->show_agent = $input['show_agent'] == 1; //if Show Agents Selected
         $this->product->can_modify_agent = $can_modify_agent;
         $this->product->can_modify_quantity = $can_modify_quantity;
-        $this->product->save();
     }
 
     /**

@@ -21,9 +21,9 @@ class InvoiceAndPaymentCalculationTest extends DBTestCase
         $user_id = $user->id;
         $invoice = factory(Invoice::class)->create(['user_id'=>$user_id, 'grand_total'=>'10000']);
         $response = $this->call('GET', 'change-invoiceTotal', [
-        'total'   => '12000',
-        'number'  => $invoice->number,
-        'user_id' => $user_id,
+            'total'   => '12000',
+            'number'  => $invoice->number,
+            'user_id' => $user_id,
         ]);
 
         $response->assertStatus(200);
@@ -48,14 +48,14 @@ class InvoiceAndPaymentCalculationTest extends DBTestCase
             'subtotal'           => 11800,
             'domain'             => 'faveo.com',
             'plan_id'            => 1,
-                ]);
+        ]);
         $order = factory(Order::class)->create(['invoice_id'=> $invoice->id,
             'invoice_item_id'                               => $invoiceItem->id, 'client'=>$user_id, ]);
 
         $response = $this->call('GET', 'clients/'.$user_id, [
-        'total'   => '12000',
-        'number'  => $invoice->number,
-        'user_id' => $user_id,
+            'total'   => '12000',
+            'number'  => $invoice->number,
+            'user_id' => $user_id,
         ]);
         $this->assertStringContainsSubstring($response->content(), '<!DOCTYPE html>');
         $response->setExpectedException(\Exception::class);

@@ -13,8 +13,6 @@ use App\Model\User\AccountActivate;
 use App\Traits\PaymentsAndInvoices;
 use App\User;
 use Bugsnag;
-use DateTime;
-use DateTimeZone;
 use Illuminate\Http\Request;
 
 class ClientController extends AdvanceSearchController
@@ -42,126 +40,48 @@ class ClientController extends AdvanceSearchController
     /**
      * Display a listing of the resource.
      *
-     * @return \Response
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index(Request $request)
     {
-        $name = $request->input('name');
-        $username = $request->input('username');
-        $company = $request->input('company');
-        $mobile = $request->input('mobile');
-        $email = $request->input('email');
-        $country = $request->input('country');
-        $industry = $request->input('industry');
-        $company_type = $request->input('company_type');
-        $company_size = $request->input('company_size');
-        $role = $request->input('role');
-        $position = $request->input('position');
-        $reg_from = $request->input('reg_from');
-        $reg_till = $request->input('reg_till');
-        $clientForSalesMan = $request->input('sales_man');
-        $clientForAccMan = $request->input('actmanager');
-        $clientForSalesMan = $request->input('salesmanager');
-        return view(
-            'themes.default1.user.client.index',
-            compact(
-                'name',
-                'username',
-                'company',
-                'mobile',
-                'email',
-                'country',
-                'industry',
-                'company_type',
-                'company_size',
-                'role',
-                'position',
-                'reg_from',
-                'reg_till',
-                'clientForSalesMan',
-                'clientForAccMan'
-            )
-        );
+        return view('themes.default1.user.client.index', compact('request'));
     }
 
     /**
      * Get Clients for yajra datatable.
+     * @param Request $request
+     * @return
+     * @throws \Exception
      */
     public function getClients(Request $request)
     {
-        $name = $request->input('name');
-        $username = $request->input('username');
-        $company = $request->input('company');
-        $mobile = $request->input('mobile');
-        $email = $request->input('email');
-        $country = $request->input('country');
-        $industry = $request->input('industry');
-        $company_type = $request->input('company_type');
-        $company_size = $request->input('company_size');
-        $role = $request->input('role');
-        $position = $request->input('position');
-        $reg_from = $request->input('reg_from');
-        $reg_till = $request->input('reg_till');
-        $acc_manager = $request->input('actmanager');
-        $sales_manager = $request->input('salesmanager');
-        $user = $this->advanceSearch(
-            $name,
-            $username,
-            $company,
-            $mobile,
-            $email,
-            $country,
-            $industry,
-            $company_type,
-            $company_size,
-            $role,
-            $position,
-            $reg_from,
-            $reg_till,
-            $acc_manager,
-            $sales_manager
-        );
-        return\ DataTables::of($user->get())
-                         ->addColumn('checkbox', function ($model) {
-                             return "<input type='checkbox' class='user_checkbox' 
-                            value=".$model->id.' name=select[] id=check>';
-                         })
-                        ->addColumn('first_name', function ($model) {
-                            return '<a href='.url('clients/'.$model->id).'>'
-                            .ucfirst($model->first_name).' '.ucfirst($model->last_name).'</a>';
+        $baseQuery = $this->getBaseQueryForUserSearch($request);
+
+        return\ DataTables::of($baseQuery)
+                        ->addColumn('checkbox', function ($model) {
+                            return "<input type='checkbox' class='user_checkbox' value=".$model->id.' name=select[] id=check>';
+                        })
+                        ->addColumn('name', function ($model) {
+                            return '<a href='.url('clients/'.$model->id).'>'.ucfirst($model->name).'</a>';
                         })
                          ->addColumn('email', function ($model) {
                              return $model->email;
                          })
-                          ->addColumn('created_at', function ($model) {
-                              $ends = $model->created_at;
-                              if ($ends) {
-                                  $date1 = new DateTime($ends);
-                                  $tz = \Auth::user()->timezone()->first()->name;
-                                  $date1->setTimezone(new DateTimeZone($tz));
-                                  $end = $date1->format('M j, Y, g:i a ');
-                              }
-
-                              return $end;
-                          })
-                        // ->showColumns('email', 'created_at')
+                        ->addColumn('mobile', function ($model) {
+                            return $model->mobile;
+                        })
+                        ->addColumn('country', function ($model) {
+                            return ucfirst(strtolower($model->country));
+                        })
+                        ->addColumn('company', function ($model) {
+                            return $model->company;
+                        })
+                        ->addColumn('created_at', function ($model) {
+                            return getDateHtml($model->created_at);
+                        })
                         ->addColumn('active', function ($model) {
-                            if ($model->active == 1) {
-                                $email = "<span class='glyphicon glyphicon-envelope'
-                                 style='color:green' title='verified email'></span>";
-                            } else {
-                                $email = "<span class='glyphicon glyphicon-envelope'
-                                 style='color:red' title='unverified email'></span>";
-                            }
-                            if ($model->mobile_verified == 1) {
-                                $mobile = "<span class='glyphicon glyphicon-phone' 
-                                style='color:green' title='verified mobile'></span>";
-                            } else {
-                                $mobile = "<span class='glyphicon glyphicon-phone'
-                                 style='color:red' title='unverified mobile'></span>";
-                            }
-
-                            return $email.'&nbsp;&nbsp;'.$mobile;
+                            return $this->getActiveLabel($model->mobile_verified, $model->active, $model->is_2fa_enabled);
                         })
                         ->addColumn('action', function ($model) {
                             return '<a href='.url('clients/'.$model->id.'/edit')
@@ -170,14 +90,71 @@ class ClientController extends AdvanceSearchController
                                     .'  <a href='.url('clients/'.$model->id)
                                     ." class='btn btn-sm btn-primary btn-xs'>
                                     <i class='fa fa-eye' style='color:white;'> </i>&nbsp;&nbsp;View</a>";
-                            // return 'hhhh';
                         })
-                        ->rawColumns(['checkbox', 'first_name', 'email',  'created_at', 'active', 'action'])
-                        ->make(true);
 
-        // ->searchColumns('email', 'first_name')
-                        // ->orderColumns('email', 'first_name', 'created_at')
-                        // ->make();
+                        ->filterColumn('name', function ($model, $keyword) {
+                            // removing all white spaces so that it can be searched irrespective of number of spaces
+                            $model->whereRaw("CONCAT(first_name, ' ',last_name) like ?", ["%$keyword%"]);
+                        })
+                        ->filterColumn('email', function ($model, $keyword) {
+                            $model->whereRaw('email like ?', ["%$keyword%"]);
+                        })
+                        ->filterColumn('mobile', function ($model, $keyword) {
+                            // removing all white spaces so that it can be searched in a single query
+                            $searchQuery = str_replace(' ', '', $keyword);
+                            $model->whereRaw("CONCAT('+', mobile_code, mobile) like ?", ["%$searchQuery%"]);
+                        })
+                        ->filterColumn('country', function ($model, $keyword) {
+                            // removing all white spaces so that it can be searched in a single query
+                            $searchQuery = str_replace(' ', '', $keyword);
+                            $model->whereRaw('country_name like ?', ["%$searchQuery%"]);
+                        })
+                        ->orderColumn('name', 'name $1')
+                        ->orderColumn('email', 'email $1')
+                        ->orderColumn('mobile', 'mobile $1')
+                        ->orderColumn('country', 'country $1')
+                        ->orderColumn('created_at', 'created_at $1')
+
+                        ->rawColumns(['checkbox', 'name', 'email',  'created_at', 'active', 'action'])
+                        ->make(true);
+    }
+
+    public function getActiveLabel($mobileActive, $emailActive, $twoFaActive)
+    {
+        $emailLabel = "<span class='glyphicon glyphicon-envelope'  style='color:red'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Unverified email'> </label></span>";
+        $mobileLabel = "<span class='glyphicon glyphicon-phone'  style='color:red'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Unverified mobile'>  </label></span>";
+        $twoFalabel = "<span class='glyphicon glyphicon-qrcode'  style='color:red'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='2FA not enabled'> </label></span>";
+        if ($mobileActive) {
+            $mobileLabel = "<span class='glyphicon glyphicon-phone'  style='color:green'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Mobile verified'></label></span>";
+        }
+        if ($emailActive) {
+            $emailLabel = "<span class='glyphicon glyphicon-envelope'  style='color:green'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Email verified'> </label></span>";
+        }
+        if ($twoFaActive) {
+            $twoFalabel = "<span class='glyphicon glyphicon-qrcode'  style='color:green'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='2FA Enabled'> </label></span>";
+        }
+
+        return $emailLabel.'&nbsp;&nbsp;'.$mobileLabel.'&nbsp;&nbsp;'.$twoFalabel;
+    }
+
+    public function getMobileLabel($active)
+    {
+        $label = "<span class='glyphicon glyphicon-phone'  style='color:red'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Unverified mobile'>  </label></span>";
+        if ($active) {
+            $label = "<span class='glyphicon glyphicon-phone'  style='color:green'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Mobile verified'></label></span>";
+        }
+
+        return $label;
+    }
+
+    public function getEmailLabel($active)
+    {
+        $label = "<span class='glyphicon glyphicon-envelope'  style='color:red'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Unverified email'> </label></span>";
+        if ($active) {
+            $label = "<span class='glyphicon glyphicon-envelope'  style='color:green'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Email verified'> </label></span>";
+        }
+
+        return $label;
     }
 
     /**
@@ -298,6 +275,7 @@ class ClientController extends AdvanceSearchController
             // }
             $extraAmt = $this->getExtraAmt($id);
             $client = $this->user->where('id', $id)->first();
+            $is2faEnabled = $client->is_2fa_enabled;
             // $client = "";
             $currency = $client->currency;
             $orders = $order->where('client', $id)->get();
@@ -305,18 +283,8 @@ class ClientController extends AdvanceSearchController
 
             return view(
                 'themes.default1.user.client.show',
-                compact(
-                    'id',
-                    'client',
-                    'invoices',
-                    'orders',
-                    'invoiceSum',
-                    'amountReceived',
-                    'pendingAmount',
-                    'currency',
-                    'extraAmt',
-                    'comments'
-                )
+                compact('id','client','invoices','orders','invoiceSum','amountReceived','pendingAmount','currency','extraAmt','comments',
+                    'is2faEnabled')
             );
         } catch (\Exception $ex) {
             app('log')->info($ex->getMessage());
@@ -399,7 +367,7 @@ class ClientController extends AdvanceSearchController
      *
      * @return \Response
      */
-    public function update($id, Request $request)
+    public function update($id, ClientRequest $request)
     {
         try {
             $user = $this->user->where('id', $id)->first();
@@ -427,7 +395,7 @@ class ClientController extends AdvanceSearchController
     {
         try {
             $ids = $request->input('select');
-            if (!empty($ids)) {
+            if (! empty($ids)) {
                 foreach ($ids as $id) {
                     $user = $this->user->where('id', $id)->first();
                     //Check if this admin  is account manager and is assigned as account manager to other clients
@@ -500,7 +468,7 @@ class ClientController extends AdvanceSearchController
         $subject = $template->name;
         $data = $template->data;
         $replace = ['name' => $user->first_name.' '.$user->last_name,
-        'username'         => $user->email, 'password' => $str, 'url' => $url, ];
+            'username'         => $user->email, 'password' => $str, 'url' => $url, ];
         $type = '';
         if ($template) {
             $type_id = $template->type;
@@ -512,5 +480,38 @@ class ClientController extends AdvanceSearchController
         $mail = $templateController->mailing($from, $to, $data, $subject, $replace, $type);
 
         return $mail;
+    }
+
+    /**
+     * Gets baseQuery for user search by appending all the allowed filters.
+     * @param $request
+     * @return mixed
+     */
+    private function getBaseQueryForUserSearch(Request $request)
+    {
+        $baseQuery = User::leftJoin('countries', 'users.country', '=', 'countries.country_code_char2')
+            ->select('id', 'first_name', 'last_name', 'email',
+                \DB::raw("CONCAT('+', mobile_code, ' ', mobile) as mobile"),
+                \DB::raw("CONCAT(first_name, ' ', last_name) as name"),
+                'country_name as country', 'created_at', 'active', 'mobile_verified', 'is_2fa_enabled', 'role', 'position'
+            )->when($request->company, function ($query) use ($request) {
+                $query->where('company', 'LIKE', '%'.$request->company.'%');
+            })->when($request->country, function ($query) use ($request) {
+                $query->where('country', $request->country);
+            })->when($request->industry, function ($query) use ($request) {
+                $query->where('bussiness', $request->industry);
+            })->when($request->role, function ($query) use ($request) {
+                $query->where('role', $request->role);
+            })->when($request->position, function ($query) use ($request) {
+                $query->where('position', $request->position);
+            })->when($request->actmanager, function ($query) use ($request) {
+                $query->where('account_manager', $request->actmanager);
+            })->when($request->salesmanager, function ($query) use ($request) {
+                $query->where('manager', $request->salesmanager);
+            });
+
+        $baseQuery = $this->getregFromTill($baseQuery, $request->reg_from, $request->reg_till);
+
+        return $baseQuery;
     }
 }

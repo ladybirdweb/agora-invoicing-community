@@ -3639,11 +3639,11 @@ html.dark .text-muted {
 
 /* #Footer */
 #footer {
-	background: #0e0e0e;
+	background: #212529;
 	border-top: 4px solid #0e0e0e;
 	font-size: 0.9em;
 	margin-top: 50px;
-	padding: 70px 0 0;
+	padding: 0;
 	position: relative;
 	clear: both;
 }
@@ -3711,7 +3711,7 @@ html.dark .text-muted {
 #footer .footer-ribbon {
 	background: #999;
 	position: absolute;
-	margin: -90px 0 0 14px;
+	margin: -44px 0 0 0px;
 	padding: 10px 20px 6px 20px;
 }
 
@@ -3821,10 +3821,7 @@ html.dark .text-muted {
 }
 
 #footer .footer-copyright {
-	background: #060606;
-	border-top: 4px solid #060606;
-	margin-top: 40px;
-	padding: 30px 0 10px;
+	background: #1c2023;
 }
 
 #footer .footer-copyright nav {

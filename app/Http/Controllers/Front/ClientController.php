@@ -14,11 +14,8 @@ use App\Model\Product\ProductUpload;
 use App\Model\Product\Subscription;
 use App\User;
 use Bugsnag;
-use DateTime;
-use DateTimeZone;
 use Exception;
 use GrahamCampbell\Markdown\Facades\Markdown;
-use Illuminate\Http\Request;
 
 class ClientController extends BaseClientController
 {
@@ -75,25 +72,36 @@ class ClientController extends BaseClientController
     public function getInvoices()
     {
         try {
-            $invoices = Invoice::where('user_id', \Auth::user()->id)
-                    ->select('number', 'created_at', 'grand_total', 'id', 'status');
+            $invoices = Invoice::leftJoin('order_invoice_relations', 'invoices.id', '=', 'order_invoice_relations.invoice_id')
+            ->select('invoices.id', 'invoices.user_id', 'invoices.date', 'invoices.number', 'invoices.grand_total', 'order_invoice_relations.order_id', 'invoices.is_renewed', 'invoices.status')
+            ->where('invoices.user_id', '=', \Auth::user()->id)
+            ->orderBy('invoices.created_at', 'desc')
+            ->get();
 
-            return \DataTables::of($invoices->get())
+            return \DataTables::of($invoices)
                             ->addColumn('number', function ($model) {
-                                return $model->number;
+                                if ($model->is_renewed) {
+                                    return '<a href='.url('my-invoice/'.$model->id).'>'.$model->number.'</a>&nbsp;'.getStatusLabel('renewed', 'badge');
+                                } else {
+                                    return '<a href='.url('my-invoice/'.$model->id).'>'.$model->number.'</a>';
+                                }
+                            })
+                            ->addColumn('orderNo', function ($model) {
+                                return getOrderLink($model->order_id, 'my-order');
                             })
                             ->addColumn('date', function ($model) {
-                                $date = $model->created_at;
-
-                                return $date;
+                                return getDateHtml($model->created_at);
                             })
                             ->addColumn('total', function ($model) {
                                 return  currency_format($model->grand_total, $code = \Auth::user()->currency);
                             })
+                             ->addColumn('status', function ($model) {
+                                 return  getStatusLabel($model->status, 'badge');
+                             })
                             ->addColumn('Action', function ($model) {
                                 $status = $model->status;
                                 $payment = '';
-                                if ($status == 'Pending' && $model->grand_total > 0) {
+                                if ($status != 'Success' && $model->grand_total > 0) {
                                     $payment = '  <a href='.url('paynow/'.$model->id).
                                     " class='btn btn-primary btn-xs'><i class='fa fa-credit-card'></i>&nbsp;Pay Now</a>";
                                 }
@@ -101,7 +109,8 @@ class ClientController extends BaseClientController
                                 return '<p><a href='.url('my-invoice/'.$model->id).
                                 " class='btn btn-primary btn-xs'><i class='fa fa-eye'></i>&nbsp;View</a>".$payment.'</p>';
                             })
-                            ->rawColumns(['number', 'created_at', 'total', 'Action'])
+
+                            ->rawColumns(['number', 'orderNo', 'date', 'total', 'status', 'Action'])
                             // ->orderColumns('number', 'created_at', 'total')
                             ->make(true);
         } catch (Exception $ex) {
@@ -253,7 +262,7 @@ class ClientController extends BaseClientController
                                     $actionButton = $this->getActionButton($countExpiry, $countVersions, $link, $orderEndDate, $productid);
 
                                     return $actionButton;
-                                } elseif (!$orderEndDate) {
+                                } elseif (! $orderEndDate) {
                                     $link = $this->github_api->getCurl1($link['zipball_url']);
 
                                     return '<p><a href='.$link['header']['Location']
@@ -277,42 +286,40 @@ class ClientController extends BaseClientController
     public function getOrders()
     {
         try {
-            $orders = Order::where('client', \Auth::user()->id);
+            $orders = $this->getClientPanelOrdersData();
 
-            return \DataTables::of($orders->get())
+            return \DataTables::of($orders)
                             ->addColumn('id', function ($model) {
                                 return $model->id;
                             })
                             ->addColumn('product_name', function ($model) {
-                                return $model->product()->first()->name;
+                                return $model->product_name;
+                            })
+                            ->addColumn('number', function ($model) {
+                                return '<a href='.url('my-order/'.$model->id).'>'.$model->number.'</a>';
+                            })
+                            ->addColumn('version', function ($model) {
+                                return getVersionAndLabel($model->version, $model->product_id, 'badge');
                             })
                             ->addColumn('expiry', function ($model) {
-                                $tz = \Auth::user()->timezone()->first()->name;
-                                $end = $this->getExpiryDate($model);
-
-                                return $end;
+                                return getExpiryLabel($model->update_ends_at, 'badge');
                             })
 
                             ->addColumn('Action', function ($model) {
-                                $sub = $model->subscription()->first();
-                                $order = Order::where('id', $model->id)->select('product')->first();
-                                $productid = $order->product;
                                 $order_cont = new \App\Http\Controllers\Order\OrderController();
                                 $status = $order_cont->checkInvoiceStatusByOrderId($model->id);
                                 $url = '';
                                 if ($status == 'success') {
-                                    if ($sub) {
-                                        $url = $this->renewPopup($sub->id, $productid);
-                                    }
+                                    $url = $this->renewPopup($model->sub_id, $model->product_id);
                                 }
 
-                                $listUrl = $this->getPopup($model, $productid);
+                                $listUrl = $this->getPopup($model, $model->product_id);
 
                                 return '<a href='.url('my-order/'.$model->id)." 
                                 class='btn  btn-primary btn-xs' style='margin-right:5px;'>
                                 <i class='fa fa-eye' title='Details of order'></i>&nbsp;View $listUrl $url </a>";
                             })
-                            ->rawColumns(['id', 'created_at', 'ends_at', 'product', 'Action'])
+                            ->rawColumns(['id', 'product_name', 'number', 'version', 'expiry', 'Action'])
                             ->make(true);
         } catch (Exception $ex) {
             app('log')->error($ex->getMessage());
@@ -321,11 +328,26 @@ class ClientController extends BaseClientController
         }
     }
 
+    public function getClientPanelOrdersData()
+    {
+        return Order::leftJoin('products', 'products.id', '=', 'orders.product')
+            ->leftJoin('subscriptions', 'orders.id', '=', 'subscriptions.order_id')
+            ->leftJoin('invoices', 'orders.invoice_id', 'invoices.id')
+            ->select('products.name as product_name', 'products.github_owner', 'products.github_repository', 'products.type', 'products.id as product_id', 'orders.id', 'orders.number', 'orders.client', 'subscriptions.id as sub_id', 'subscriptions.version', 'subscriptions.update_ends_at', 'products.name', 'orders.client', 'invoices.id as invoice_id', 'invoices.number as invoice_number')
+            ->where('orders.client', \Auth::user()->id)
+            ->get()->map(function ($element) {
+                $element->update_ends_at = strtotime($element->update_ends_at) > 1 ? $element->update_ends_at : '--';
+
+                return $element;
+            });
+    }
+
     public function profile()
     {
         try {
             $user = $this->user->where('id', \Auth::user()->id)->first();
-            //dd($user);
+            $is2faEnabled = $user->is_2fa_enabled;
+            $dateSinceEnabled = $user->google2fa_activation_date;
             $timezonesList = \App\Model\Common\Timezone::get();
             foreach ($timezonesList as $timezone) {
                 $location = $timezone->location;
@@ -342,10 +364,16 @@ class ClientController extends BaseClientController
             $state = \App\Http\Controllers\Front\CartController::getStateByCode($user->state);
             $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($user->country);
             $bussinesses = \App\Model\Common\Bussiness::pluck('name', 'short')->toArray();
+            $selectedIndustry = \App\Model\Common\Bussiness::where('name', $user->bussiness)
+            ->pluck('name', 'short')->toArray();
+            $selectedCompany = \DB::table('company_types')->where('name', $user->company_type)
+            ->pluck('name', 'short')->toArray();
+            $selectedCompanySize = \DB::table('company_sizes')->where('short', $user->company_size)
+            ->pluck('name', 'short')->toArray();
 
             return view(
                 'themes.default1.front.clients.profile',
-                compact('user', 'timezones', 'state', 'states', 'bussinesses')
+                compact('user', 'timezones', 'state', 'states', 'bussinesses', 'is2faEnabled', 'dateSinceEnabled', 'selectedIndustry', 'selectedCompany', 'selectedCompanySize')
             );
         } catch (Exception $ex) {
             Bugsnag::notifyException($ex);
@@ -360,13 +388,17 @@ class ClientController extends BaseClientController
             $order = $this->order->findOrFail($id);
             $invoice = $order->invoice()->first();
             $items = $order->invoice()->first()->invoiceItem()->get();
-            $subscription = '';
-            $plan = '';
-            if ($order->subscription) {
-                $subscription = $order->subscription;
-
-                $plan = $subscription->plan()->first();
+            $subscription = $order->subscription()->first();
+            $date = '--';
+            $licdate = '--';
+            $versionLabel = '--';
+            if ($subscription) {
+                $date = strtotime($subscription->update_ends_at) > 1 ? getExpiryLabel($subscription->update_ends_at, 'badge') : '--';
+                $licdate = strtotime($subscription->ends_at) > 1 ? getExpiryLabel($subscription->ends_at, 'badge') : '--';
+                $versionLabel = getVersionAndLabel($subscription->version, $order->product, 'badge');
             }
+
+            $installationDetails = [];
             $licenseStatus = StatusSetting::pluck('license_status')->first();
             if ($licenseStatus == 1) {
                 $cont = new \App\Http\Controllers\License\LicenseController();
@@ -380,7 +412,7 @@ class ClientController extends BaseClientController
 
             return view(
                 'themes.default1.front.clients.show-order',
-                compact('invoice', 'order', 'user', 'plan', 'product', 'subscription', 'licenseStatus', 'installationDetails', 'allowDomainStatus')
+                compact('invoice', 'order', 'user', 'product', 'subscription', 'licenseStatus', 'installationDetails', 'allowDomainStatus', 'date', 'licdate', 'versionLabel')
             );
         } catch (Exception $ex) {
             Bugsnag::notifyException($ex);
@@ -406,10 +438,8 @@ class ClientController extends BaseClientController
 
             return \DataTables::of($payments->get())
                             ->addColumn('checkbox', function ($model) {
-                                
-                                    return "<input type='checkbox' class='payment_checkbox' 
+                                return "<input type='checkbox' class='payment_checkbox' 
                                     value=".$model->id.' name=select[] id=check>';
-                                
                             })
                             ->addColumn('number', function ($model) {
                                 return $model->invoice()->first()->number;
@@ -427,15 +457,10 @@ class ClientController extends BaseClientController
                                  return $model->payment_status;
                              })
                             ->addColumn('created_at', function ($model) {
-                                $date1 = new DateTime($model->created_at);
-                                $tz = \Auth::user()->timezone()->first()->name;
-                                $date1->setTimezone(new DateTimeZone($tz));
-                                $date = $date1->format('M j, Y, g:i a');
-
-                                return $date;
+                                return getDateHtml($model->created_at);
                             })
                             ->rawColumns(['checkbox', 'number', 'amount',
-                             'payment_method', 'payment_status', 'created_at', ])
+                                'payment_method', 'payment_status', 'created_at', ])
                             ->make(true);
         } catch (Exception $ex) {
             Bugsnag::notifyException($ex);
@@ -448,29 +473,29 @@ class ClientController extends BaseClientController
     {
         try {
             $order = $this->order->where('id', $orderid)->where('client', $userid)->first();
+            // dd($order);
             $relation = $order->invoiceRelation()->pluck('invoice_id')->toArray();
             if (count($relation) > 0) {
                 $invoices = $relation;
             } else {
                 $invoices = $order->invoice()->pluck('id')->toArray();
             }
+            // $payments = Payment::leftJoin('invoices', 'payments.invoice_id', '=', 'invoices.id')
+            // ->select('payments.id', 'payments.invoice_id', 'payments.user_id', 'payments.payment_method', 'payments.payment_status', 'payments.created_at', 'payments.amount', 'invoices.id as invoice_id', 'invoices.number as invoice_number')
+            // ->where('invoices.id', $invoices)
+            // ->get();
             $payments = $this->payment->whereIn('invoice_id', $invoices)
-                    ->select('id', 'invoice_id', 'user_id', 'payment_method', 'payment_status', 'created_at', 'amount');
-            //dd(\Input::all());
-            return \DataTables::of($payments->get())
-                            ->addColumn('number', function ($model) {
-                                return $model->invoice()->first()->number;
-                            })
-                              ->addColumn('total', function ($model) {
-                                  return $model->amount;
-                              })
-                               ->addColumn('created_at', function ($model) {
-                                   $date1 = new DateTime($model->created_at);
-                                   $tz = \Auth::user()->timezone()->first()->name;
-                                   $date1->setTimezone(new DateTimeZone($tz));
-                                   $date = $date1->format('M j, Y, g:i a');
+                    ->select('id', 'invoice_id', 'user_id', 'amount', 'payment_method', 'payment_status', 'created_at');
 
-                                   return $date;
+            return \DataTables::of($payments->get())
+                            ->addColumn('number', function ($payments) {
+                                return '<a href='.url('my-invoice/'.$payments->invoice()->first()->id).'>'.$payments->invoice()->first()->number.'</a>';
+                            })
+                              ->addColumn('total', function ($payments) {
+                                  return $payments->amount;
+                              })
+                               ->addColumn('created_at', function ($payments) {
+                                   return  getDateHtml($payments->created_at);
                                })
 
                             ->addColumn('payment_method', 'payment_status', 'created_at')

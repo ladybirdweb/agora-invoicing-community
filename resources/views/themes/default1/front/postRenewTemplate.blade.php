@@ -41,10 +41,7 @@
                 <li class="woocommerce-order-overview__total total">
                     Total:                    <strong><span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol"></span>{{currency_format($invoiceItem->subtotal,$code = $currency)}}</span></strong>
                 </li>
-
-                                    <li class="woocommerce-order-overview__payment-method method">
-                        Payment method: <strong>Razorpay</strong>
-                    </li>
+                
                 
             </ul>
 
@@ -80,7 +77,7 @@
                                
                                         <tr>
                         <th scope="row">Payment method:</th>
-                        <td>Razorpay</td>
+                        <td>{{Session::get('payment_method')}}</td>
                     </tr>
 
                                         <tr>
@@ -90,20 +87,7 @@
                             </tfoot>
     </table>
     <br>
-    
-            <section class="woocommerce-customer-details">
 
-    
-    <h2 style="margin-bottom:20px;">Billing address</h2>
-
-    <strong>
-      {{\Auth::user()->first_name}} {{\Auth::user()->last_name}}<br>{{\Auth::user()->address}}<br>{{\Auth::user()->town}} - {{\Auth::user()->zip}}<br> {{$state}} <br>
-                   {{\Auth::user()->mobile}} <br><br>
-                 
-                   
-            </strong>
-
-</section>
     
 
 </section>

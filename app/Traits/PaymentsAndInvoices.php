@@ -74,13 +74,13 @@ use Illuminate\Http\Request;
                         $payment_status = 'success';
                     }
                     $this->payment->create([
-                    'parent_id'      => $parent_id,
-                    'invoice_id'     => $invoiceid,
-                    'user_id'        => $userid,
-                    'amount'         => $amount,
-                    'payment_method' => $payment_method,
-                    'payment_status' => $payment_status,
-                ]);
+                        'parent_id'      => $parent_id,
+                        'invoice_id'     => $invoiceid,
+                        'user_id'        => $userid,
+                        'amount'         => $amount,
+                        'payment_method' => $payment_method,
+                        'payment_status' => $payment_status,
+                    ]);
                     $this->updateInvoice($invoiceid);
                 }
             } catch (\Exception $ex) {
@@ -92,7 +92,7 @@ use Illuminate\Http\Request;
 
         public function getAgents($agents, $productid, $plan)
         {
-            if (!$agents) {//If agents is not received in the request in the case when
+            if (! $agents) {//If agents is not received in the request in the case when
                 // 'modify agent' is not allowed for the Product,get the no of Agents from the Plan Table.
                 $planForAgent = Product::find($productid)->planRelation->find($plan);
                 if ($planForAgent) {//If Plan Exists For the Product ie not a Product without Plan
@@ -108,7 +108,7 @@ use Illuminate\Http\Request;
 
         public function getQuantity($qty, $productid, $plan)
         {
-            if (!$qty) {//If quantity is not received in the request in the case when 'modify quantity' is not allowed for the Product,get the Product qUANTITY from the Plan Table.
+            if (! $qty) {//If quantity is not received in the request in the case when 'modify quantity' is not allowed for the Product,get the Product qUANTITY from the Plan Table.
                 $planForQty = Product::find($productid)->planRelation->find($plan);
                 if ($planForQty) {
                     $quantity = Product::find($productid)->planRelation->find($plan)->planPrice->first()->product_quantity;
@@ -149,19 +149,18 @@ use Illuminate\Http\Request;
             }
         }
 
-        public function postRazorpayPayment($invoiceid, $grand_total)
+        public function postRazorpayPayment($invoice)
         {
             try {
                 $payment_method = \Session::get('payment_method');
                 $payment_status = 'success';
                 $payment_date = \Carbon\Carbon::now()->toDateTimeString();
-                $amount = $grand_total;
                 $paymentRenewal = $this->updateInvoicePayment(
-                $invoiceid,
+                $invoice->id,
                 $payment_method,
                 $payment_status,
                 $payment_date,
-                $amount
+                $invoice->grand_total
             );
 
                 return redirect()->back()->with('success', 'Payment Accepted Successfully');
@@ -241,11 +240,11 @@ use Illuminate\Http\Request;
         {
             try {
                 $id = $request->input('invoiceid');
-                if (!$id) {
+                if (! $id) {
                     return redirect()->back()->with('fails', \Lang::get('message.no-invoice-id'));
                 }
                 $invoice = $this->invoice->where('id', $id)->first();
-                if (!$invoice) {
+                if (! $invoice) {
                     return redirect()->back()->with('fails', \Lang::get('message.invalid-invoice-id'));
                 }
                 $invoiceItems = $this->invoiceItem->where('invoice_id', $id)->get();
@@ -253,7 +252,7 @@ use Illuminate\Http\Request;
                     return redirect()->back()->with('fails', \Lang::get('message.invalid-invoice-id'));
                 }
                 $user = $this->user->find($invoice->user_id);
-                if (!$user) {
+                if (! $user) {
                     return redirect()->back()->with('fails', 'No User');
                 }
                 $cont = new \App\Http\Controllers\Front\CartController();

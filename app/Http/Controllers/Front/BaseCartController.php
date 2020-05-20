@@ -193,8 +193,8 @@ class BaseCartController extends ExtendedBaseCartController
         $currency = $request->input('currency');
         $symbol = $request->input('symbol');
         Cart::update($id, [
-             'price'    => $price,
-           'attributes' => ['agents' => $agtqty, 'currency'=>['currency'=>$currency, 'symbol'=>$symbol]],
+            'price'    => $price,
+            'attributes' => ['agents' => $agtqty, 'currency'=>['currency'=>$currency, 'symbol'=>$symbol]],
         ]);
 
         return 'success';
@@ -215,8 +215,8 @@ class BaseCartController extends ExtendedBaseCartController
         $currency = $request->input('currency');
         $symbol = $request->input('symbol');
         Cart::update($id, [
-           'price'      => $price,
-           'attributes' => ['agents' =>  $agtqty, 'currency'=>['currency'=>$currency, 'symbol'=>$symbol]],
+            'price'      => $price,
+            'attributes' => ['agents' =>  $agtqty, 'currency'=>['currency'=>$currency, 'symbol'=>$symbol]],
         ]);
 
         return 'success';
@@ -235,8 +235,8 @@ class BaseCartController extends ExtendedBaseCartController
         $qty = $request->input('qty');
         $price = $request->input('actualprice');
         Cart::update($id, [
-                'quantity' => -1,
-                'price'    => $price,
+            'quantity' => -1,
+            'price'    => $price,
         ]);
 
         return 'success';
@@ -255,11 +255,11 @@ class BaseCartController extends ExtendedBaseCartController
         $qty = $request->input('qty');
         $price = $request->input('actualprice');
         Cart::update($id, [
-                'quantity' => [
+            'quantity' => [
                 'relative' => false,
                 'value'    => $qty,
             ],
-           'price'  => $price,
+            'price'  => $price,
         ]);
 
         return 'success';
@@ -296,7 +296,7 @@ class BaseCartController extends ExtendedBaseCartController
             $actualPrice = $this->cost($product->id);
             // $taxConditions = $this->checkTax($id);
             $items = ['id'     => $id, 'name' => $product->name, 'price' => $actualPrice,
-                 'quantity'    => $qty, 'attributes' => ['currency' => $currency, 'agents'=> $agents], ];
+                'quantity'    => $qty, 'attributes' => ['currency' => $currency, 'agents'=> $agents], ];
 
             return $items;
         } catch (\Exception $e) {
@@ -317,7 +317,7 @@ class BaseCartController extends ExtendedBaseCartController
         try {
             Cart::update(
                     $id, [
-                $key => $value, // new item name
+                        $key => $value, // new item name
                     ]
             );
         } catch (\Exception $ex) {

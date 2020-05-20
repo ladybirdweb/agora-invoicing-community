@@ -132,7 +132,7 @@ class SocialMediaController extends Controller
     {
         try {
             $ids = $request->input('select');
-            if (!empty($ids)) {
+            if (! empty($ids)) {
                 foreach ($ids as $id) {
                     $social = $this->social->where('id', $id)->first();
                     if ($social) {
@@ -195,7 +195,7 @@ class SocialMediaController extends Controller
             // Load the Tweets
             $tweets = $twitter->get('statuses/user_timeline',
                 ['screen_name' => $username, 'exclude_replies' => 'true',
-                'include_rts'  => 'false', 'count' => $tweet_limit, ]);
+                    'include_rts'  => 'false', 'count' => $tweet_limit, ]);
 
             //dd($tweets);
             // Example output
@@ -203,16 +203,16 @@ class SocialMediaController extends Controller
             $twitter = '';
             // Create the HTML output
             //dd($tweets[0]->text);
-            if (!empty($tweets)) {
+            if (! empty($tweets)) {
                 foreach ($tweets as $tweet) {
-                    $twitter .= '<article>
-           
-            <p><i class="fa fa-twitter"></i> '.$tweet->text.'</p>
-                <p><b>'.date('d-m-Y', strtotime($tweet->created_at)).'</p></b>
-        </article>';
+                    $twitter .= '<li>
+                        <span class="status"><i class="fa fa-twitter"></i> '.$tweet->text.'</span>
+                        <span class="meta">'.date('g:i a M j', strtotime($tweet->created_at)).'</span>
+                     </li>';
                 }
             }
-            echo $twitter;
+
+            echo '<ul>'.$twitter.'</ul>';
         } catch (Exception $ex) {
             throw new Exception($ex->getMessage());
             // $ex->getMessage();

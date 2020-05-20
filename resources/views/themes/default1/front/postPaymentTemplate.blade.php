@@ -16,10 +16,7 @@
             @foreach($invoiceItems as $invoiceItem)
             <?php 
             $currency = \Auth::user()->currency;
-             $date1 = new DateTime($invoiceItem->created_at);
-            $tz = \Auth::user()->timezone()->first()->name;
-            $date1->setTimezone(new DateTimeZone($tz));
-            $date = $date1->format('M j, Y, g:i a ');   
+            $date = getDateHtml($invoiceItem->created_at);   
             ?>
             <ul>
                 <li class="">
@@ -30,7 +27,7 @@
                 </li>
 
                 <li class="woocommerce-order-overview__date date">
-                    Date: <strong>{{$date}}</strong>
+                    Date: <strong>{!! $date !!}</strong>
                 </li>
 
                 <li class="woocommerce-order-overview__email email">
@@ -44,10 +41,7 @@
                 </span></strong>
                 </li>
 
-                <li class="woocommerce-order-overview__payment-method method">
-                     Payment method: <strong>Razorpay</strong>
-                    </li>
-                
+               
             </ul>
             @endforeach
         
@@ -94,7 +88,7 @@
                     </tr>
                                         <tr>
                         <th scope="row">Payment method:</th>
-                        <td>Razorpay</td>
+                        <td>{{Session::get('payment_method')}}</td>
                     </tr>
                      <tr>
                         <th scope="row">Total:</th>
@@ -111,22 +105,7 @@
     @endforeach
     <br>
     
-            <section class="woocommerce-customer-details">
-
-    
-    <h2 style="margin-bottom:20px;">Billing address</h2>
-
-    <strong>
-       {{\Auth::user()->first_name}} {{\Auth::user()->last_name}}<br>{{\Auth::user()->address}}<br>{{\Auth::user()->town}} - {{\Auth::user()->zip}}<br> {{$state}} <br>
-                   {{\Auth::user()->mobile}} <br><br>
-                   
-            </strong>
-
-    
-</section>
-    
-
-</section>
+    </section>
 
     
 

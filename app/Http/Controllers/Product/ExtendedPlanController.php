@@ -25,8 +25,8 @@ class ExtendedPlanController extends Controller
     public function postInsertPeriod(Request $request)
     {
         $this->validate($request, [
-        'name' => 'required',
-        'days' => 'required|numeric',
+            'name' => 'required',
+            'days' => 'required|numeric',
         ]);
 
         try {

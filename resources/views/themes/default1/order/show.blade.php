@@ -20,6 +20,7 @@ Order Details
   a {
     color: currentColor;!important;
   }
+
 </style>
 <div class="row">
     <div class="col-md-12">
@@ -40,17 +41,14 @@ Order Details
                        <div class="box-body">
                         <div class="callout callout-info">
                             <div class="row">
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                     <b>Date: </b>{{$order->created_at}} 
                                 </div>
-                                <div class="col-md-3">
-                                    <b>Invoice No: </b> #{{$invoice->number}}
-                                </div>
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                     <b>Order No: </b>  #{{$order->number}} 
 
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                     <b>Status: </b>{{$order->order_status}}
                                 </div>
                             </div>
@@ -108,22 +106,39 @@ Order Details
                             </div>
                         
                           
-                            <table class="table table-hover">
+                            <table id="lic_details" class="table table-hover">
    
                               <input type="hidden" name="domainRes" id="domainRes" value={{$allowDomainStatus}}>
-                                <tbody><tr><td><b>License Code:</b></td><td>{{($order->serial_key)}}</td></tr>
+                                <tbody><tr><td><b>License Code:</b></td>
+                                  <td id="s_key" data-type="serialkey">{{($order->serial_key)}}</td>
+                                  <td> @component('mini_views.copied_flash_text',[
+                                 'navigations'=>[
+                                   ['btnName'=>'lic_btn','slot'=>'license','style'=>'<span data-type="copy" style="font-size: 15px; pointer-events: initial; cursor: pointer; display: block;" id="copyBtn" title="Click to copy to clipboard"><i class="fa fa-clipboard"></i></span><span class="label label-success label-xs pull-right" id="copied" style="display:none;margin-top:-40px;margin-left:-20px;position: absolute;">Copied</span>'],
+                                    ]
+                                ])
+                                
+                                @endcomponent
+                                  </td>
+                                </tr>
+                                 @if ($licenseStatus == 1)
                                     <tr>
                                         
-                                            <td>
-                                                 <label name="domain">
-                                                    <b>Licensed Domain/IP:</b></td><td contenteditable="false" id="domain">{{$order->domain}}
-                                                       @if ($licenseStatus == 1)
-                                      <button class='class="btn btn-danger mb-2 pull-right' style="border:none;" id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}">
-                                Reissue Licesnse</button>
-                                <tr><td><b>Installation Path:</b></td> 
+                                          <td>
+                                              <label name="domain">
+                                            <b>Licensed Domain:</b>
+                                          </td>
+                                          <td contenteditable="false" id="domain">{{$order->domain}}</td>
+                                         
+                                          <td>
+                                               <button class='class="btn btn-danger' style="width:max-content;border:none;" id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}">
+                                           Reissue License</button>
+                                          </td>
+                                      </tr>
+                                      <tr>
+                                        <td><b>Installation Path:</b></td> 
                                         @if(count($installationDetails['installed_path']) > 0)
                                           <td>@foreach($installationDetails['installed_path'] as $paths)
-                                              <li>{{$paths}}</li>
+                                              {{$paths}}<br>
                                               @endforeach
                                           </td>
                                         @else
@@ -131,127 +146,88 @@ Order Details
                                         No Active Installation
                                       </td>
                                         @endif
+                                        <td></td>
                                       </tr>
 
-                                      <tr><td><b>Installation IP:</b></td> 
+                                      <tr>
+                                        <td><b>Installation IP:</b></td> 
                                       @if(count($installationDetails['installed_path']) > 0)  
                                           <td>
                                               @foreach($installationDetails['installed_ip'] as $paths)
-                                              <li>{{$paths}}</li>
+                                              {{$paths}}
                                               @endforeach
                                           </td>
                                          @else
                                           <td>
                                         --
                                       </td>
-                                        @endif
+                                        
+                                        <td></td>
                                        </tr>
-                                  <tr><td><b>Installation Limit:</b></td> 
-                                          <td>
-                                              {{$noOfAllowedInstallation}}
-                                               <a class='class="btn btn-sm btn-primary btn-xs pull-right' id="installlimit" limit-id="{{$order->id}}" install-limit="{{$noOfAllowedInstallation}}" style='color:white;border-radius:0px;'><i class="fa fa-edit">&nbsp;</i>
-                                                Edit</a>
-                                              
-                                          </td>
-                                       
-                                 </tr>
-
-                                  <tr><td><b>Current Version:</b></td> 
-                                          <td>
-                                              {{$currenctVersion}}
-              
-                                          </td>
-                                       
-                                 </tr>
-
-                                  <tr><td><b>Last Connection with License Manager:</b></td> 
-                                          <td>
-                                            <?php
-                                             $date2 = new DateTime($lastActivity);
-                                                $tz = \Auth::user()->timezone()->first()->name;
-                                                $date2->setTimezone(new DateTimeZone($tz));
-                                                $licdate = $date2->format('M j, Y, g:i a ');
-                                                // $licenseEnd =  date('d/m/Y', strtotime($lastActivity));
-                                                ?>
-                                              {{$licdate}}
-              
-                                          </td>
-                                       
-                                 </tr>
-
-                                  <tr><td><b>Installation Preference:</b></td>
-                                            @if(Session::has('success'))
-                                            <div class="alert alert-success">
-                                                 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                                   <strong><i class="fa fa-check"></i> Success!</strong>
-                                               
-                                                {!!Session::get('success')!!}
-                                            </div>
-                                            @endif
+                                  <tr>
+                                    <td><b>Installation Limit:</b></td> 
                                     <td>
-                                      {!! Form::open(['url' => url('ip-or-domain'),'method'=>'post']) !!}
-                                      <input type="hidden" name="order" value="{{$order->id}}">
-                                        {{ Form::radio('domain', 0 , ($getInstallPreference == '0')) }} IP &nbsp;&nbsp;&nbsp;&nbsp;
-                                        {{ Form::radio('domain', 1 , ($getInstallPreference == '1')) }} Domain
-                                          <button type="submit" class="btn btn-primary btn-xs pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button>
-                                            {!! Form::close() !!}
-                                       </td> 
+                                        {{$noOfAllowedInstallation}}
+                                      </td>
+                                      <td>
+                                         <a class="btn btn-sm btn-primary btn-xs" id="installlimit" limit-id="{{$order->id}}" install-limit="{{$noOfAllowedInstallation}}" style='color:white;border-radius:0px;'><i class="fa fa-edit">&nbsp;</i>
+                                          Edit</a>
+                                        
+                                    </td>
+                                       
+                                  </tr>
+                                  @endif
+                                  <tr>
+                                    <td><b>Current Version:</b></td> 
+                                    <td>{!! $versionLabel !!} </td>
+                                    <td></td>
                                  </tr>
-                                @endif
-                           
-                            </td></tr>
-                                    <?php
-                                    $date = "--";
-                                    $licdate = "--";
-                                    $supdate= "--";
-                                    if ($subscription) {
-                                        if (strtotime($subscription->update_ends_at) >1) {
-                                             $date1 = new DateTime($subscription->update_ends_at);
-                                                $tz = \Auth::user()->timezone()->first()->name;
-                                                $date1->setTimezone(new DateTimeZone($tz));
-                                                $date = $date1->format('M j, Y, g:i a ');
-                                                $updatesEnd = date('d/m/Y', strtotime($subscription->update_ends_at));
-                                                
-                                             }
-                                             if ((strtotime($subscription->ends_at) > 1)) {
-                                             $date2 = new DateTime($subscription->ends_at);
-                                                $tz = \Auth::user()->timezone()->first()->name;
-                                                $date2->setTimezone(new DateTimeZone($tz));
-                                                $licdate = $date2->format('M j, Y, g:i a ');
-                                                $licenseEnd =  date('d/m/Y', strtotime($subscription->ends_at));
-                                             }
-                                            if (strtotime($subscription->support_ends_at) > 1) {
-                                             $date3 = new DateTime($subscription->support_ends_at);
-                                                $tz = \Auth::user()->timezone()->first()->name;
-                                                $date3->setTimezone(new DateTimeZone($tz));
-                                                $supdate = $date3->format('M j, Y, g:i a ');
-                                                $supportEnd =  date('d/m/Y', strtotime($subscription->support_ends_at));
-                                                
-                                             }
-                                    }
-                                    ?>
-                                    <tr><td><b>Updates Expiry Date:</b></td><td>{{$date}}
+
+                                  <tr>
+                                    <td><b><label data-toggle="tooltip" data-placement="top" title="" data-original-title="Last connection with License Manager">Last Active:</label></b></td> 
+                                    <td>
+                                      {!! $lastActivity !!}
+                                    </td>
+                                    <td></td> 
+                                  </tr>
+                                   @endif
+                                
+                                   
+                                  <tr>
+                                    <td><b>Updates Expiry:</b></td>
+                                    <td class="brtags"> {!! $date !!} </td>
+                                    <td>
                                       @if($date != '--')
-                                    <a class='class="btn btn-sm btn-primary btn-xs pull-right' id="updates_end" updates-id="{{$order->id}}" data-date="{{$updatesEnd}}" style='color:white;border-radius:0px;'><i class="fa fa-edit">&nbsp;</i>
+                                     <a class="btn btn-sm btn-primary btn-xs" id="updates_end" updates-id="{{$order->id}}" data-date="{{getTimeInLoggedInUserTimeZone($subscription->update_ends_at,'d/m/Y')}}" style='color:white;border-radius:0px;'><i class="fa fa-edit">&nbsp;</i>
                                 Edit</a>
                                 @endif
-                              </td></tr>
+                                    </td>
+                                    </tr>
 
-                                <tr><td><b>License Expiry Date:</b></td><td>{{$licdate}}
+                                <tr>
+                                  <td><b>License Expiry:</b></td>
+                                  <td class="brtags">{!! $licdate !!} </td>
+                                  <td>
                                   @if($licdate != '--')
-                                    <a class='class="btn btn-sm btn-primary btn-xs pull-right' id="license_end" license-id="{{$order->id}}" license-date="{{$licenseEnd}}" style='color:white;border-radius:0px;'><i class="fa fa-edit">&nbsp;</i>
+                                    <a class="btn btn-sm btn-primary btn-xs" id="license_end" license-id="{{$order->id}}" license-date="{{getTimeInLoggedInUserTimeZone($subscription->ends_at,'d/m/Y')}}" style='color:white;border-radius:0px;'><i class="fa fa-edit">&nbsp;</i>
                                 Edit</a>
                                 @endif
-                              </td></tr>
+                                  </td>
+                                </tr>
 
-                              <tr><td><b>Support Expiry Date:</b></td><td>{{$supdate}}
+                              <tr>
+                                <td><b>Support Expiry:</b></td>
+                                <td class="brtags">{!! $supdate !!}</td>
+                                <td>
                                 @if($supdate != '--')
-                                    <a class='class="btn btn-sm btn-primary btn-xs pull-right' id="support_end" support-id="{{$order->id}}" support-date="{{$supportEnd}}" style='color:white;border-radius:0px;'><i class="fa fa-edit">&nbsp;</i>
+                                    <a class="btn btn-sm btn-primary btn-xs" id="support_end" support-id="{{$order->id}}" support-date="{{getTimeInLoggedInUserTimeZone($subscription->support_ends_at,'d/m/Y')}}" style='color:white;border-radius:0px;'><i class="fa fa-edit">&nbsp;</i>
                                 Edit</a>
                                 @endif
-                              </td></tr>
+                                  </td>
+                                </tr>
 
-                                </tbody></table>
+                                </tbody>
+                              </table>
                              
                              
                               </div>
@@ -273,8 +249,8 @@ Order Details
                      <a data-toggle="collapse" data-parent="#accordion3" href="#collapseFour">
                    <div class="box-header with-border">
                     <h4 class="box-title">
-                      <i class="fa fa-film"></i>
-                        Transaction List
+                      <i class="fa fa-credit-card"></i>
+                        Invoice List
                     </h4>
                   </div>
                 </a>
@@ -394,6 +370,7 @@ Order Details
 
 
 <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
+ <script src="{{asset('common/js/licCode.js')}}"></script>
 <script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript">
         $('#order1-table').DataTable({
@@ -440,6 +417,7 @@ Order Details
 
 @section('icheck')
 <script>
+
     function checking(e){
           
           $('#order1-table').find("td input[type='checkbox']").prop('checked', $(e).prop('checked'));
@@ -574,17 +552,17 @@ Order Details
 
  //When Submit Button is Clicked in Modal Popup, passvalue through Ajax
     $("#updatesSave").on('click',function(){
+      $('#updatesSave').attr('disabled',true);
+      $('#updatesSave').html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
         var newdate = $("#newDate").val();
         var orderId = $("#order").val();
         $.ajax({
             type: "get",
             data: {'orderid': orderId , 'date': newdate},
             url: "{{url('edit-update-expiry')}}",
-             beforeSend: function () {
-                 $('#response2').html( "<img id='blur-bg' class='backgroundfadein' style='top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
-
-            },
             success: function (response) {
+              $("#updatesSave").attr('disabled',false);
+              $("#updatesSave").html("Save");
                 if (response.message =='success') {
 
                 var result =  '<div class="alert alert-success alert-dismissable"><strong><i class="fa fa-check"></i> Success! </strong> '+response.update+' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
@@ -596,6 +574,8 @@ Order Details
                 }
             },
             error: function(response) {
+              $("#updatesSave").attr('disabled',false);
+              $("#updatesSave").html("Save");
                 var myJSON = JSON.parse(response.responseText).errors;
                 var html = '<div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<br><br><ul>';
                   for (var key in myJSON)
@@ -625,17 +605,17 @@ Order Details
 
  //When Submit Button is Clicked in Modal Popup, passvalue through Ajax
     $("#licenseExpSave").on('click',function(){
+       $('#licenseExpSave').attr('disabled',true);
+      $('#licenseExpSave').html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
         var newdate = $("#newDate2").val();
         var orderId = $("#order2").val();
         $.ajax({
             type: "get",
             data: {'orderid': orderId , 'date': newdate},
             url: "{{url('edit-license-expiry')}}",
-             beforeSend: function () {
-                 $('#response3').html( "<img id='blur-bg' class='backgroundfadein' style='top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
-
-            },
             success: function (response) {
+              $("#licenseExpSave").attr('disabled',false);
+              $("#licenseExpSave").html("Save");
                 if (response.message =='success') {
                 var result =  '<div class="alert alert-success alert-dismissable"><strong><i class="fa fa-check"></i> Success! </strong> '+response.update+' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
                      $('#response3').html(result);
@@ -646,6 +626,8 @@ Order Details
                 }
             },
             error: function(response) {
+              $("#licenseExpSave").attr('disabled',false);
+              $("#licenseExpSave").html("Save");
                   var myJSON = JSON.parse(response.responseText).errors;
                        var html = '<div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<br><br><ul>';
                           for (var key in myJSON)
@@ -676,17 +658,17 @@ Order Details
 
  //When Submit Button is Clicked in Modal Popup, passvalue through Ajax
     $("#supportExpSave").on('click',function(){
+       $('#supportExpSave').attr('disabled',true);
+       $('#supportExpSave').html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
         var newdate = $("#newDate3").val();
         var orderId = $("#order3").val();
         $.ajax({
             type: "get",
             data: {'orderid': orderId , 'date': newdate},
             url: "{{url('edit-support-expiry')}}",
-             beforeSend: function () {
-                 $('#response4').html( "<img id='blur-bg' class='backgroundfadein' style='top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
-
-            },
             success: function (response) {
+               $("#supportExpSave").attr('disabled',false);
+              $("#supportExpSave").html("Save");
                 if (response.message =='success') {
                 var result =  '<div class="alert alert-success alert-dismissable"><strong><i class="fa fa-check"></i> Success! </strong> '+response.update+' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
                      $('#response4').html(result);
@@ -697,6 +679,8 @@ Order Details
                 }
             },
             error: function(response) {
+               $("#supportExpSave").attr('disabled',false);
+              $("#supportExpSave").html("Save");
                   var myJSON = JSON.parse(response.responseText).errors;
                        var html = '<div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<br><br><ul>';
                           for (var key in myJSON)
@@ -764,5 +748,6 @@ Order Details
         });
 
 
+   
 </script>
 @stop

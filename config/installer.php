@@ -15,7 +15,7 @@ return [
     |
     */
     'core' => [
-        'minPhpVersion' => '7.0.0',
+        'minPhpVersion' => '7.3.0',
     ],
     'requirements' => [
         'php' => [
@@ -58,7 +58,7 @@ return [
     'environment' => [
         'form' => [
             'rules' => [
-                'app_name'              => 'required|string|max:50',
+                'app_name'              => 'required|string|regex:/^\S*$/u|max:50',
                 'environment'           => 'required|string|max:50',
                 'environment_custom'    => 'required_if:environment,other|max:50',
                 'app_debug'             => [

@@ -111,8 +111,13 @@ Order Details
                               <input type="hidden" name="domainRes" id="domainRes" value={{$allowDomainStatus}}>
                                 <tbody><tr><td><b>License Code:</b></td>
                                   <td id="s_key" data-type="serialkey">{{($order->serial_key)}}</td>
-                                  <td><span class="label label-success pull-right" id="copied" style="display:none;margin-top:-15px;margin-left:-20px;position: absolute;">Copied</span>
-                                    <span data-type="copy" style="font-size: 15px; pointer-events: initial; cursor: pointer; display: block;" id="copyBtn" title="Click to copy to clipboard"><i class="fa fa-clipboard"></i></span>
+                                  <td> @component('mini_views.copied_flash_text',[
+                                 'navigations'=>[
+                                   ['btnName'=>'lic_btn','slot'=>'license','style'=>'<span data-type="copy" style="font-size: 15px; pointer-events: initial; cursor: pointer; display: block;" id="copyBtn" title="Click to copy to clipboard"><i class="fa fa-clipboard"></i></span>'],
+                                    ]
+                                ])
+                                
+                                @endcomponent
                                   </td>
                                 </tr>
                                  @if ($licenseStatus == 1)
@@ -125,7 +130,7 @@ Order Details
                                           <td contenteditable="false" id="domain">{{$order->domain}}</td>
                                          
                                           <td>
-                                               <button class='class="btn btn-danger pull-right' style="width:max-content;border:none;" id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}">
+                                               <button class='class="btn btn-danger' style="width:max-content;border:none;" id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}">
                                            Reissue License</button>
                                           </td>
                                       </tr>
@@ -165,7 +170,7 @@ Order Details
                                         {{$noOfAllowedInstallation}}
                                       </td>
                                       <td>
-                                         <a class='class="btn btn-sm btn-primary btn-xs pull-right' id="installlimit" limit-id="{{$order->id}}" install-limit="{{$noOfAllowedInstallation}}" style='color:white;border-radius:0px;'><i class="fa fa-edit">&nbsp;</i>
+                                         <a class="btn btn-sm btn-primary btn-xs" id="installlimit" limit-id="{{$order->id}}" install-limit="{{$noOfAllowedInstallation}}" style='color:white;border-radius:0px;'><i class="fa fa-edit">&nbsp;</i>
                                           Edit</a>
                                         
                                     </td>
@@ -193,7 +198,7 @@ Order Details
                                     <td class="brtags"> {!! $date !!} </td>
                                     <td>
                                       @if($date != '--')
-                                     <a class='class="btn btn-sm btn-primary btn-xs pull-right' id="updates_end" updates-id="{{$order->id}}" data-date="{{getTimeInLoggedInUserTimeZone($subscription->update_ends_at,'d/m/Y')}}" style='color:white;border-radius:0px;'><i class="fa fa-edit">&nbsp;</i>
+                                     <a class="btn btn-sm btn-primary btn-xs" id="updates_end" updates-id="{{$order->id}}" data-date="{{getTimeInLoggedInUserTimeZone($subscription->update_ends_at,'d/m/Y')}}" style='color:white;border-radius:0px;'><i class="fa fa-edit">&nbsp;</i>
                                 Edit</a>
                                 @endif
                                     </td>
@@ -204,7 +209,7 @@ Order Details
                                   <td class="brtags">{!! $licdate !!} </td>
                                   <td>
                                   @if($licdate != '--')
-                                    <a class='class="btn btn-sm btn-primary btn-xs pull-right' id="license_end" license-id="{{$order->id}}" license-date="{{getTimeInLoggedInUserTimeZone($subscription->ends_at,'d/m/Y')}}" style='color:white;border-radius:0px;'><i class="fa fa-edit">&nbsp;</i>
+                                    <a class="btn btn-sm btn-primary btn-xs" id="license_end" license-id="{{$order->id}}" license-date="{{getTimeInLoggedInUserTimeZone($subscription->ends_at,'d/m/Y')}}" style='color:white;border-radius:0px;'><i class="fa fa-edit">&nbsp;</i>
                                 Edit</a>
                                 @endif
                                   </td>
@@ -215,7 +220,7 @@ Order Details
                                 <td class="brtags">{!! $supdate !!}</td>
                                 <td>
                                 @if($supdate != '--')
-                                    <a class='class="btn btn-sm btn-primary btn-xs pull-right' id="support_end" support-id="{{$order->id}}" support-date="{{getTimeInLoggedInUserTimeZone($subscription->support_ends_at,'d/m/Y')}}" style='color:white;border-radius:0px;'><i class="fa fa-edit">&nbsp;</i>
+                                    <a class="btn btn-sm btn-primary btn-xs" id="support_end" support-id="{{$order->id}}" support-date="{{getTimeInLoggedInUserTimeZone($subscription->support_ends_at,'d/m/Y')}}" style='color:white;border-radius:0px;'><i class="fa fa-edit">&nbsp;</i>
                                 Edit</a>
                                 @endif
                                   </td>
@@ -244,7 +249,7 @@ Order Details
                      <a data-toggle="collapse" data-parent="#accordion3" href="#collapseFour">
                    <div class="box-header with-border">
                     <h4 class="box-title">
-                      <i class="fa fa-film"></i>
+                      <i class="fa fa-credit-card"></i>
                         Invoice List
                     </h4>
                   </div>

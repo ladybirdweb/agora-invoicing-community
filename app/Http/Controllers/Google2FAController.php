@@ -171,7 +171,7 @@ class Google2FAController extends Controller
 
     public function generateRecoveryCode()
     {
-        $code = str_random(32);
+        $code = str_random(20);
         User::where('id', \Auth::user()->id)->update(['backup_code'=>$code, 'code_usage_count'=>0]);
 
         return successResponse(['code'=>$code]);

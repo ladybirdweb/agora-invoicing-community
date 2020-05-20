@@ -275,14 +275,12 @@ class RenewController extends BaseRenewController
     {
         $this->validate($request, [
             'plan'           => 'required',
-            'payment_method' => 'required',
             'cost'           => 'required',
             'code'           => 'exists:promotions,code',
         ]);
 
         try {
             $planid = $request->input('plan');
-            $payment_method = $request->input('payment_method');
             $code = $request->input('code');
             $cost = $request->input('cost');
             $items = $this->invoiceBySubscriptionId($id, $planid, $cost);

@@ -27,7 +27,7 @@ class AdminOrderInvoiceController extends Controller
                         ->addColumn('invoice_no', function ($model) {
                             $label = '<a href='.url('invoices/show?invoiceid='.$model->id).'>'.$model->number.'</a>';
                             if ($model->is_renewed) {
-                                return $label.'<br>'.getStatusLabel('renewed');
+                                return $label.'&nbsp;'.getStatusLabel('renewed');
                             }
 
                             return $label;

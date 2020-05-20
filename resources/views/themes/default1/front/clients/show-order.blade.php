@@ -19,21 +19,8 @@ active
 @stop
 
 @section('content')
-
-
-
-<style>
-    .accordion .card-header a{
-        color:currentColor;
-    }
-    .table td, .table th {
-        padding-top: 0.5rem;
-        padding-bottom: 0.5rem;
-        vertical-align: top;
-        border-top: 1px solid #dee2e6;
-    }
-    </style>
-
+ @include('themes.default1.front.clients.reissue-licenseModal')
+ @include('themes.default1.front.clients.domainRestriction')
     <div class="row pb-4">
         <div class="col-lg-12 mb-12 mb-lg-0">
             <div class="alert alert-tertiary" style="padding-bottom: 5px; background-color: #49b1bf">
@@ -46,10 +33,10 @@ active
 
             @component('mini_views.navigational_view', [
                 'navigations'=>[
-                    ['id'=>'license-details', 'name'=>'License Details', 'active'=>1, 'slot'=>'license'],
-                    ['id'=>'user-details', 'name'=>'User Details', 'slot'=>'user'],
-                    ['id'=>'invoice-list', 'name'=>'Invoice List', 'slot'=>'invoice'],
-                    ['id'=>'payment-receipts', 'name'=>'Payment Receipts', 'slot'=>'payment']
+                    ['id'=>'license-details', 'name'=>'License Details', 'active'=>1, 'slot'=>'license','icon'=>'fas fa-file'],
+                    ['id'=>'user-details', 'name'=>'User Details', 'slot'=>'user','icon'=>'fas fa-users'],
+                    ['id'=>'invoice-list', 'name'=>'Invoice List', 'slot'=>'invoice','icon'=>'fas fa-credit-card'],
+                    ['id'=>'payment-receipts', 'name'=>'Payment Receipts', 'slot'=>'payment','icon'=>'fas fa-briefcase']
                 ]
             ])
 
@@ -60,8 +47,15 @@ active
                         <tr>
                             <td><b>License Code:</b></td>
                             <td id="s_key" data-type="serialkey">{{$order->serial_key}}</td>
-                            <td><span class="badge badge-success badge-xs pull-right" id="copied" style="display:none;margin-top:-15px;margin-left:-20px;position: absolute;">Copied</span>
-                                <span data-type="copy" style="font-size: 15px; pointer-events: initial; cursor: pointer; display: block;" id="copyBtn" title="Click to copy to clipboard"><i class="fa fa-clipboard"></i></span>
+                            <td>  @component('mini_views.copied_flash_text',[
+                                 'navigations'=>[
+                                   
+                                    ['btnName'=>'lic_btn','slot'=>'license','style'=>'<span data-type="copy" style="font-size: 15px; pointer-events: initial; cursor: pointer; display: block;" id="copyBtn" title="Click to copy to clipboard"><i class="fa fa-clipboard"></i></span>'],
+                                    ]
+                                ])
+                              
+                                @endcomponent
+                                
                             </td>
                         </tr>
                         @if ($licenseStatus == 1)
@@ -71,9 +65,8 @@ active
                                 <td>{{$order->domain}} </td>
 
                                 <td>
-                                    @include('themes.default1.front.clients.reissue-licenseModal')
-                                    @include('themes.default1.front.clients.domainRestriction')
-                                    <button class='class="btn btn-danger mb-2' style="border:none;" id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}">
+                                   
+                                    <button class="btn btn-danger mb-2 btn-sm"  id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}">
                                         Reissue License</button></td>
                             </tr>
                             <tr><td><b>Installation Path:</b></td>

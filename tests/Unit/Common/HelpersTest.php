@@ -39,7 +39,7 @@ class HelpersTest extends DBTestCase
 
         $expectedDateTime = $now->clone()->setTimezone('Asia/Kolkata')->format('M j, Y, g:i a');
         $expectedDate = $now->clone()->setTimezone('Asia/Kolkata')->format('M j, Y');
-        $this->assertEquals("<span title='$expectedDateTime'>$expectedDate</span>", getDateHtml($now->toDateTimeString()));
+         $this->assertEquals("<label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='$expectedDateTime'>$expectedDate</label>", getDateHtml($now->toDateTimeString()));
     }
 
     public function test_getDateHtml_whenAnInValidAndNonEmptyDateIsPassed_shouldGiveReturnEmptyDate()

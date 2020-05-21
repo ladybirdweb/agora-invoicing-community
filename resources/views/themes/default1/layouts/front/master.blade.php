@@ -402,7 +402,9 @@ if($script){
                                  @component('mini_views.footer_widget', ['title'=> $widgets->name, 'colClass'=>"col-md-6 col-lg-4 mb-4 mb-lg-0"])
                                      <p class="pr-1"> {!! $widgets->content !!}</p>
                                      {!! $tweetDetails !!}
+
                                      <div id="mailchimp-message"></div>
+
                                     
                                      <div class="alert alert-danger d-none" id="newsletterError"></div>
                                      @if($mailchimpKey != null && $widgets->allow_mailchimp ==1)
@@ -549,6 +551,7 @@ if($script){
             $('#mailchimp-message').html(result+ ".");
               setInterval(function(){ 
                 $('#mailchimp-message').slideUp(5000); 
+
             }, 2000);
         },
          error: function(response) {
@@ -560,6 +563,7 @@ if($script){
                 document.getElementById('mailchimp-message').innerHTML = html;
                  setInterval(function(){ 
                 $('#mailchimp-message').slideUp(5000); 
+
                  }, 2000);
                } else {
                   var myJSON = response.responseJSON.errors;
@@ -571,10 +575,12 @@ if($script){
                                       html += '<li>' + myJSON[key][0] + '</li>'
                                   }
                                  html += '</ul></div>';
+
                         $('#mailchimp-message').show();
                         document.getElementById('mailchimp-message').innerHTML = html;
                          setInterval(function(){ 
                         $('#mailchimp-message').slideUp(5000); 
+
                  }, 1000);
                }
        

@@ -140,7 +140,7 @@ All Promotions
             {
                $.ajax({
                       url:"{!! route('promotions-delete') !!}",
-                      method:"get",
+                      method:"delete",
                       data: $('#check:checked').serialize(),
                       beforeSend: function () {
                 $('#gif').show();

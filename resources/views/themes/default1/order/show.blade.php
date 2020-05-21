@@ -437,7 +437,7 @@ Order Details
             {
                $.ajax({
                       url:"{!! route('payment-delete') !!}",
-                      method:"get",
+                      method:"delete",
                       data: $('#check:checked').serialize(),
                       beforeSend: function () {
                 $('#gif').show();

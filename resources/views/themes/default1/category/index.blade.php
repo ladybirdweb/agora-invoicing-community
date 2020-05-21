@@ -136,7 +136,7 @@ All Categories
             {
                $.ajax({
                       url:"{!! route('category-delete') !!}",
-                      method:"get",
+                      method:"delete",
                       data: $('#check:checked').serialize(),
                       beforeSend: function () {
                 $('#gif').show();

@@ -96,7 +96,8 @@ class CommentController extends Controller
     public function destroy(Request $request)
     {
         try {
-            $delComment = $this->comment->where('id',$request->input('comment-id'))->delete();
+            $delComment = $this->comment->where('id', $request->input('comment-id'))->delete();
+
             return successResponse('Comment deleted successfully');
             // return redirect()->back()->with('success', \Lang::get('message.deleted-successfully'));
         } catch (Exception $e) {

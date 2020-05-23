@@ -191,7 +191,7 @@ return [
         'console' => 'Application Console Output:',
         'log' => 'Installation Log Entry:',
         'env' => 'Final .env File:',
-        'exit' => 'Click here to exit',
+        'exit' => 'Click here to login',
     ],
 
     /**

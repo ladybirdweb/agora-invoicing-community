@@ -282,7 +282,7 @@ class RenewController extends BaseRenewController
         try {
             $planid = $request->input('plan');
             $code = $request->input('code');
-            $cost = $this->planCost($planid, $request->input('user'));
+            $cost = $request->input('cost');
             $items = $this->invoiceBySubscriptionId($id, $planid, $cost);
             $invoiceid = $items->invoice_id;
             $this->setSession($id, $planid);

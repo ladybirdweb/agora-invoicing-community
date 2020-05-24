@@ -130,7 +130,7 @@ All Widgets
             {
                $.ajax({
                       url:"{!! Url('widgets-delete') !!}",
-                      method:"delete",
+                      method:"get",
                       data: $('#check:checked').serialize(),
                       beforeSend: function () {
                 $('#gif').show();

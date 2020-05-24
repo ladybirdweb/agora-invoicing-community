@@ -141,7 +141,7 @@ All Plans
             {
                $.ajax({
                       url:"{!! route('plans-delete') !!}",
-                      method:"delete",
+                      method:"get",
                       data: $('#check:checked').serialize(),
                       beforeSend: function () {
                 $('#gif').show();

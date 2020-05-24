@@ -1,8 +1,3 @@
-<style>
-    .tab-content {
-    border:none;
-}
-</style>
 <div class="row">
     <div class="col col-md-3">
         <div class="featured-box-primary text-left mt-5">
@@ -19,12 +14,10 @@
 </div>
     </div>
     <div class="col col-md-9">
-
       
               <div class="featured-box featured-box-primary text-left mt-5">
                 <div class="box-content">
                     <div class="tab-content" style="overflow-x: auto;border:none;">
-
             @foreach($navigations as $index => $navigation)
                 <div id="{{$navigation['id']}}" class="tab-pane {{isset($navigation['active'])? 'active': ''}}">
                     <h4>{{$navigation['name']}}</h4>
@@ -36,10 +29,8 @@
                     {{$$slotVariableName}}
                 </div>
             @endforeach
-
         </div>
         </div>
-
     </div>
     </div>
 </div>

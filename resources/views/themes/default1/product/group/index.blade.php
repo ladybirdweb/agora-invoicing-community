@@ -130,7 +130,7 @@ Product Groups
             {
                $.ajax({
                       url:"{!! route('groups-delete') !!}",
-                      method:"delete",
+                      method:"get",
                       data: $('#check:checked').serialize(),
                       beforeSend: function () {
                 $('#gif').show();

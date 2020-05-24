@@ -93,18 +93,17 @@ class CommentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request)
+    public function destroy($id)
     {
         try {
-            $delComment = $this->comment->where('id', $request->input('comment-id'))->delete();
+            $delComment = $this->comment->where('id', $id)->delete();
 
-            return successResponse('Comment deleted successfully');
-            // return redirect()->back()->with('success', \Lang::get('message.deleted-successfully'));
+            return redirect()->back()->with('success', \Lang::get('message.deleted-successfully'));
         } catch (Exception $e) {
             app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
 
-            return errorResponse($ex->getMessage());
+            return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 }

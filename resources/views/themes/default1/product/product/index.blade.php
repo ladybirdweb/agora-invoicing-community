@@ -138,7 +138,7 @@ All Products
             {
                $.ajax({
                       url:"{!! route('products-delete') !!}",
-                      method:"delete",
+                      method:"get",
                       data: $('#check:checked').serialize(),
                       beforeSend: function () {
                   $('#gif').html( "<img id='blur-bg' class='backgroundfadein' style='top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");

@@ -282,7 +282,7 @@ User Details
                 {
                    $.ajax({
                           url:"{!! Url('invoice-delete') !!}",
-                          method:"delete",
+                          method:"get",
                           data: $('#check:checked').serialize(),
                           beforeSend: function () {
                     $('#gif').show();
@@ -401,7 +401,7 @@ User Details
             {
                $.ajax({
                       url:"{!! Url('payment-delete') !!}",
-                      method:"delete",
+                      method:"get",
                       data: $('#checkpayment:checked').serialize(),
                       beforeSend: function () {
                 $('#gif').show();
@@ -677,7 +677,7 @@ User Details
             {
                $.ajax({
                       url:"{!! Url('orders-delete') !!}",
-                      method:"delete",
+                      method:"get",
                       data: $('#checkorder:checked').serialize(),
                       beforeSend: function () {
                 $('#gif').show();
@@ -769,12 +769,10 @@ User Details
                         
                     </div>
                     <br/>
-                   <div id="response"></div>
+                  
                       <div class="timeline-footer">
                         <button type="submit" class="btn btn-primary btn-xs edit-comment" data-description="{{$comment->description}}" data-comment-id="{{$comment->id}}" data-user_id="{{$comment->user_id}}" data-admin_id="{{$comment->updated_by_user_id}}"><i class='fa fa-edit' style='color:white;'> </i>&nbsp;{{Lang::get('message.edit')}}</button>
-
-                         <button type="submit" class="btn btn-danger btn-xs"  id="deleteComment" data-id="{{$comment->id}}"><i class='fa fa-trash' style='color:white;'> </i>&nbsp;Delete</button>
-
+                        <a href="{{url('comment/'.$comment->id.'/delete')}}" class="btn btn-danger btn-xs" onclick="return delCommentFunction()"><i class='fa fa-trash' style='color:white;'> </i>&nbsp;Delete</a>
                       </div>
                     </div>
                     
@@ -872,30 +870,10 @@ User Details
                 })
             })
 
-    $('#deleteComment').on('click',function(){
-            var id=[];
-      if (confirm("Are you sure you want to delete this?"))
-        {
-          var id = $(this).attr('data-id');
-          $.ajax({
-                      url:"{!! route('comment-delete') !!}",
-                      method:"delete",
-                      data: {'comment-id':id},
-                success: function (data) {
-                $('#response').show();
-                  var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>Success! </strong>'+data.message+'!</div>';
-                  document.getElementById('response').innerHTML = result;
-                location.reload();
-                },error: function(data) {
-                  $('#response').show();
-                  var result =  '<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>Whoops! </strong>'+data.message+'!</div>';
-                  document.getElementById('response').innerHTML = result;
-                location.reload();
-                }
-               })
-        }  
-    })
-  
+    function delCommentFunction() {
+     if(!confirm("Are you sure you want to delete this comment?"))
+        event.preventDefault();
+  }
 
 
     $(function () {

@@ -307,7 +307,7 @@ $('.btn-off-3').addClass('active');
                 {
                    $.ajax({
                           url:"{!! route('tax-delete') !!}",
-                          method:"delete",
+                          method:"get",
                           data: $('#check:checked').serialize(),
                           beforeSend: function () {
                     $('#gif').show();

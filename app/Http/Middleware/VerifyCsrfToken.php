@@ -12,9 +12,6 @@ class VerifyCsrfToken extends BaseVerifier
      * @var array
      */
     protected $except = [
-        'serial',
-        'update-latest-version',
-        'v1/checkUpdatesExpiry',
-        'v2/serial',
+        //
     ];
 }

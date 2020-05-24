@@ -185,11 +185,11 @@ trait ApiKeySettings
 
     public function saveConditions()
     {
-        if (\Request::get('expiry-commands') && \Request::get('activity-commands')) {
-            $expiry_commands = \Request::get('expiry-commands');
-            $expiry_dailyAt = \Request::get('expiry-dailyAt');
-            $activity_commands = \Request::get('activity-commands');
-            $activity_dailyAt = \Request::get('activity-dailyAt');
+        if (\Input::get('expiry-commands') && \Input::get('activity-commands')) {
+            $expiry_commands = \Input::get('expiry-commands');
+            $expiry_dailyAt = \Input::get('expiry-dailyAt');
+            $activity_commands = \Input::get('activity-commands');
+            $activity_dailyAt = \Input::get('activity-dailyAt');
             $activity_command = $this->getCommand($activity_commands, $activity_dailyAt);
             $expiry_command = $this->getCommand($expiry_commands, $expiry_dailyAt);
             $jobs = ['expiryMail' => $expiry_command, 'deleteLogs' =>  $activity_command];

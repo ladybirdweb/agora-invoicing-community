@@ -491,7 +491,6 @@ $json = json_encode($data);
 </div>
  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
                                              <form name='razorpayform' action="{!!url('payment/'.$invoice->id)!!}" method="POST">     
-                                                  {{ csrf_field() }}
                                              <!--<button id="rzp-button1" class="btn btn-primary pull-right mb-xl" data-loading-text="Loading...">Pay Now</button>-->
                                             <!--<form name='razorpayform' action="verify.php" method="POST">                                -->
                                             <input type="hidden" name="razorpay_payment_id" id="razorpay_payment_id">

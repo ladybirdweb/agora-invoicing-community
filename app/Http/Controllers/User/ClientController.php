@@ -137,6 +137,26 @@ class ClientController extends AdvanceSearchController
         return $emailLabel.'&nbsp;&nbsp;'.$mobileLabel.'&nbsp;&nbsp;'.$twoFalabel;
     }
 
+    public function getMobileLabel($active)
+    {
+        $label = "<span class='glyphicon glyphicon-phone'  style='color:red'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Unverified mobile'>  </label></span>";
+        if ($active) {
+            $label = "<span class='glyphicon glyphicon-phone'  style='color:green'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Mobile verified'></label></span>";
+        }
+
+        return $label;
+    }
+
+    public function getEmailLabel($active)
+    {
+        $label = "<span class='glyphicon glyphicon-envelope'  style='color:red'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Unverified email'> </label></span>";
+        if ($active) {
+            $label = "<span class='glyphicon glyphicon-envelope'  style='color:green'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Email verified'> </label></span>";
+        }
+
+        return $label;
+    }
+
     /**
      * Show the form for creating a new resource.
      *

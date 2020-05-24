@@ -59,7 +59,7 @@ class DatabaseManager
     private function seed($outputLog)
     {
         try{
-               Artisan::call('db:seed', ["--force"=> true], $outputLog);
+               Artisan::call('db:seed', [], $outputLog);
         }
         catch(Exception $e){
             return $this->response($e->getMessage());

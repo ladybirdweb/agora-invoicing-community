@@ -191,7 +191,7 @@ return [
         'console' => 'Application Console Output:',
         'log' => 'Installation Log Entry:',
         'env' => 'Final .env File:',
-        'exit' => 'Click here to login',
+        'exit' => 'Click here to exit',
     ],
 
     /**
@@ -236,7 +236,7 @@ return [
         'final' => [
             'title' => 'Finished',
             'finished' => 'Application\'s database has been successfully updated.',
-            'exit' => 'Click here to login',
+            'exit' => 'Click here to exit',
         ],
 
         'log' => [

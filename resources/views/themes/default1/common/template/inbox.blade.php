@@ -146,7 +146,7 @@ Templates
             {
                $.ajax({
                       url:"{!! route('templates-delete') !!}",
-                      method:"delete",
+                      method:"get",
                       data: $('#check:checked').serialize(),
                       beforeSend: function () {
                 $('#gif').show();

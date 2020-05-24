@@ -271,6 +271,12 @@ function move() {
                                 <i class="fa fa-gears"></i> <span>{{Lang::get('message.settings')}}</span>
                             </a>
                         </li>
+
+                        <li>
+                            <a href="{{url('my-invoices')}}">
+                                <i class="fa fa-external-link"></i> <span>Goto Client Panel</span>
+                            </a>
+                        </li>
                         
 <!--                        <li class="treeview">
                             <a href="#">

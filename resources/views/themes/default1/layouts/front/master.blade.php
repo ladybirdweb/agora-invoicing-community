@@ -202,9 +202,12 @@ if($script){
                                                     @else
                                                     <li class="dropdown">
                                                         <a class="dropdown-item dropdown-toggle" href="#">
-                                                            {{Auth::user()->first_name}}
+                                                            My Account
                                                         </a>
                                                         <ul class="dropdown-menu">
+                                                          @if(Auth::user()->role == 'admin')
+                                                          <li><a class="dropdown-item" href="{{url('/')}}">Goto Admin Panel</a></li>
+                                                          @endif
                                                             <li><a class="dropdown-item" href="{{url('my-orders')}}">My Orders</a></li>
                                                             <li><a class="dropdown-item" href="{{url('my-invoices')}}">My Invoices</a></li>
                                                             <li><a class="dropdown-item" href="{{url('my-profile')}}">My Profile</a></li>

@@ -272,7 +272,7 @@ Activity Log
                 { 
                    $.ajax({
                           url:"{!! route('activity-delete') !!}",
-                          method:"get",
+                          method:"delete",
                           data: $('#check:checked').serialize(),
                           beforeSend: function () {
                     $('#gif').show();

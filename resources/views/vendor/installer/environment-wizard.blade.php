@@ -111,18 +111,6 @@
                     @endif
                 </div>
 
-                <div class="form-group {{ $errors->has('app_url') ? ' has-error ' : '' }}">
-                    <label for="app_url">
-                        {{ trans('installer_messages.environment.wizard.form.app_url_label') }}
-                    </label>
-                    <input type="url" name="app_url" id="app_url" value="http://localhost" placeholder="{{ trans('installer_messages.environment.wizard.form.app_url_placeholder') }}" />
-                    @if ($errors->has('app_url'))
-                        <span class="error-block">
-                            <i class="fa fa-fw fa-exclamation-triangle" aria-hidden="true"></i>
-                            {{ $errors->first('app_url') }}
-                        </span>
-                    @endif
-                </div>
 
                 <div class="buttons">
                     <button id="setupdatabase" class="button" onclick="showDatabaseSettings();return false">

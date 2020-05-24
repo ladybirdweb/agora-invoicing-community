@@ -129,7 +129,7 @@ Google Analytics And Javascript Codes
             {
                $.ajax({
                       url:"{!! route('script-delete') !!}",
-                      method:"get",
+                      method:"delete",
                       data: $('#check:checked').serialize(),
                       beforeSend: function () {
                 $('#gif').show();

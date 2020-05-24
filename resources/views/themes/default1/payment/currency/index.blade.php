@@ -189,44 +189,7 @@ All Currencies
 
 @section('icheck')
 <script>
-    function checking(e){
-          
-          $('#currency-table').find("td input[type='checkbox']").prop('checked', $(e).prop('checked'));
-     }
-     
-
-     $(document).on('click','#bulk_delete',function(){
-      var id=[];
-      if (confirm("Are you sure you want to delete this?"))
-        {
-            $('.currency_checkbox:checked').each(function(){
-              id.push($(this).val())
-            });
-            if(id.length >0)
-            {
-               $.ajax({
-                      url:"{!! route('currency-delete') !!}",
-                      method:"get",
-                      data: $('#check:checked').serialize(),
-                      beforeSend: function () {
-                $('#gif').show();
-                },
-                success: function (data) {
-                $('#gif').hide();
-                $('#response').html(data);
-                location.reload();
-                }
-               })
-            }
-            else
-            {
-                alert("Please select at least one checkbox");
-            }
-        }  
-
-     });
-
-
+    
      function bindChangeStatusEvent() {
         $('.toggle_event_editing').change(function(){
             var current_id = $(this).children('.module_id');

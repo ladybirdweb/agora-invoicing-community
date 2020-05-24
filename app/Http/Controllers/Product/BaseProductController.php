@@ -293,7 +293,7 @@ class BaseProductController extends ExtendedBaseProductController
         try {
             $product = Product::find($productid)->select('version')->first();
             $github_controller = new \App\Http\Controllers\Github\GithubController();
-            $version = $github_controller->findVersion($github_ownwr, $github_repository);
+            $version = $github_controller->findVersion($github_owner, $github_repository);
             $product->version = $version;
             $product->save();
         } catch (\Exception $ex) {

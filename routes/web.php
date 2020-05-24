@@ -114,8 +114,6 @@
 
         Route::resource('social-media', 'Common\SocialMediaController');
         Route::get('get-social-media', ['as' => 'get-social-media', 'uses' => 'Common\SocialMediaController@getSocials']);
-        // Route::get('get-social-media', 'Common\SocialMediaController@getSocials');
-        Route::get('social-media-delete', 'Common\SocialMediaController@destroy');
         /*
          * Tweeter api
          */
@@ -161,8 +159,8 @@
          Route::get('settings/maillog', 'Common\SettingsController@settingsMail');
          Route::get('get-activity', ['as' => 'get-activity', 'uses' => 'Common\SettingsController@getActivity']);
           Route::get('get-email', ['as' => 'get-email', 'uses' => 'Common\SettingsController@getMails']);
-         Route::get('activity-delete', 'Common\SettingsController@destroy')->name('activity-delete');
-          Route::get('email-delete', 'Common\SettingsController@destroyEmail')->name('email-delete');
+         Route::delete('activity-delete', 'Common\SettingsController@destroy')->name('activity-delete');
+          Route::delete('email-delete', 'Common\SettingsController@destroyEmail')->name('email-delete');
            Route::get('licenseDetails', 'Common\BaseSettingsController@licenseDetails')->name('licenseDetails');
             Route::get('updateDetails', 'Common\BaseSettingsController@updateDetails')->name('updateDetails');
             Route::get('captchaDetails', 'Common\BaseSettingsController@captchaDetails')->name('captchaDetails');
@@ -192,7 +190,7 @@
           Route::get('getOrderDetail/{id}', 'User\ClientController@getOrderDetail');
         // Route::get('get-clients', 'User\ClientController@GetClients');
          Route::get('get-clients', ['as' => 'get-clients', 'uses' => 'User\ClientController@getClients']);
-        Route::get('clients-delete', 'User\ClientController@destroy');
+        Route::delete('clients-delete', 'User\ClientController@destroy');
         Route::get('get-users', 'User\ClientController@getUsers');
          Route::get('search-email', 'User\ClientController@search')->name('search-email');
 
@@ -203,7 +201,7 @@
         Route::resource('products', 'Product\ProductController');
         Route::get('get-products', ['as' => 'get-products', 'uses' => 'Product\ProductController@getProducts']);
         // Route::get('get-products', 'Product\ProductController@GetProducts');
-        Route::get('products-delete', 'Product\ProductController@destroy')->name('products-delete');
+        Route::delete('products-delete', 'Product\ProductController@destroy')->name('products-delete');
         Route::get('uploads-delete', 'Product\ProductController@fileDestroy')->name('uploads-delete');
 
         Route::post('get-price', 'Product\ProductController@getPrice');
@@ -223,7 +221,7 @@
         Route::resource('plans', 'Product\PlanController');
          Route::get('get-plans', ['as' => 'get-plans', 'uses' => 'Product\PlanController@getPlans']);
         // Route::get('get-plans', 'Product\PlanController@GetPlans');
-        Route::get('plans-delete', 'Product\PlanController@destroy')->name('plans-delete');
+        Route::delete('plans-delete', 'Product\PlanController@destroy')->name('plans-delete');
         Route::get('get-period', 'Product\PlanController@checkSubscription')->name('get-period');
         Route::post('postInsertPeriod', 'Product\PlanController@postInsertPeriod');
 
@@ -236,21 +234,12 @@
           Route::get('addons-delete','Product\AddonController@destroy');
          */
         /*
-         * Services
-         */
-
-        Route::resource('services', 'Product\ServiceController');
-        Route::get('get-services', 'Product\ServiceController@getServices');
-        Route::get('services-delete', 'Product\ServiceController@destroy');
-
-        /*
          * Currency
          */
 
         Route::resource('currency', 'Payment\CurrencyController');
          Route::get('get-currency/datatable', ['as' => 'get-currency.datatable', 'uses' => 'Payment\CurrencyController@getCurrency']);
         // Route::get('get-currency', 'Payment\CurrencyController@GetCurrency');
-        Route::get('currency-delete', 'Payment\CurrencyController@destroy')->name('currency-delete');
 
           Route::post('change/currency/status', ['as' => 'change.currency.status', 'uses' => 'Payment\CurrencyController@updatecurrency']);
         Route::get('dashboard-currency/{id}', 'Payment\CurrencyController@setDashboardCurrency');
@@ -269,7 +258,7 @@
 
         // Route::get('get-tax', 'Payment\TaxController@GetTax');
 
-        Route::get('tax-delete', 'Payment\TaxController@destroy')->name('tax-delete');
+        Route::delete('tax-delete', 'Payment\TaxController@destroy')->name('tax-delete');
         Route::patch('taxes/option', 'Payment\TaxController@options')->name('taxes/option');
         Route::post('taxes/option', 'Payment\TaxController@options');
 
@@ -281,7 +270,7 @@
 
         Route::post('get-code', 'Payment\PromotionController@getCode')->name('get-code');
         Route::get('get-promotions', 'Payment\PromotionController@getPromotion')->name('get-promotions');
-        Route::get('promotions-delete', 'Payment\PromotionController@destroy')->name('promotions-delete');
+        Route::delete('promotions-delete', 'Payment\PromotionController@destroy')->name('promotions-delete');
 
         /*
          * Category
@@ -289,27 +278,20 @@
 
          Route::resource('category', 'Product\CategoryController');
          Route::get('get-category', 'Product\CategoryController@getCategory')->name('get-category');
-         Route::get('category-delete', 'Product\CategoryController@destroy')->name('category-delete');
+         Route::delete('category-delete', 'Product\CategoryController@destroy')->name('category-delete');
 
         /*
          * Comment
          */
          Route::resource('comment', 'User\CommentController');
-         Route::get('comment/{id}/delete', 'User\CommentController@destroy');
-
-         /*
-         * Product-type
-         */
-         Route::resource('product-type', 'Product\ProductTypeController');
-         Route::get('get-type', 'Product\ProductTypeController@getTypes')->name('get-type');
-         Route::get('type-delete', 'Product\ProductTypeController@destroy')->name('type-delete');
+         Route::delete('comment-delete', 'User\CommentController@destroy')->name('comment-delete');
 
           /*
          * License
          */
          Route::resource('license-type', 'License\LicenseSettingsController');
          Route::get('get-license-type', 'License\LicenseSettingsController@getLicenseTypes')->name('get-license-type');
-         Route::get('license-type-delete', 'License\LicenseSettingsController@destroy')->name('license-type-delete');
+         Route::delete('license-type-delete', 'License\LicenseSettingsController@destroy')->name('license-type-delete');
          Route::get('license-permissions', 'License\LicensePermissionsController@index');
          Route::get('get-license-permission', 'License\LicensePermissionsController@getPermissions')->name('get-license-permission');
          Route::get('add-permission', 'License\LicensePermissionsController@addPermission')->name('add-permission');
@@ -323,11 +305,10 @@
           Route::resource('orders', 'Order\OrderController');
          // Route::get('get-orders', ['as' => 'get-orders', 'uses' => 'Order\OrderController@getOrders'])->name('get-orders');
         Route::get('get-orders', 'Order\OrderController@getOrders')->name('get-orders');
-        Route::get('orders-delete', 'Order\OrderController@destroy')->name('orders-delete');
+        Route::delete('orders-delete', 'Order\OrderController@destroy')->name('orders-delete');
         Route::get('order/execute', 'Order\OrderController@orderExecute');
         Route::patch('change-domain', 'Order\ExtendedOrderController@changeDomain');
         Route::patch('reissue-license', 'Order\ExtendedOrderController@reissueLicense');
-        Route::get('orders/{id}/delete', 'Order\OrderController@deleleById');
         Route::get('edit-update-expiry', 'Order\BaseOrderController@editUpdateExpiry');
         Route::get('edit-license-expiry', 'Order\BaseOrderController@editLicenseExpiry');
         Route::get('edit-support-expiry', 'Order\BaseOrderController@editSupportExpiry');
@@ -339,7 +320,7 @@
 
         Route::resource('groups', 'Product\GroupController');
         Route::get('get-groups', 'Product\GroupController@getGroups')->name('get-groups');
-        Route::get('groups-delete', 'Product\GroupController@destroy')->name('groups-delete');
+        Route::delete('groups-delete', 'Product\GroupController@destroy')->name('groups-delete');
 
         /*
          * Templates
@@ -348,7 +329,7 @@
         Route::resource('templates', 'Common\TemplateController');
          Route::get('get-templates', ['as' => 'get-templates', 'uses' => 'Common\TemplateController@getTemplates']);
         // Route::get('get-templates', 'Common\TemplateController@GetTemplates');
-        Route::get('templates-delete', 'Common\TemplateController@destroy')->name('templates-delete');
+        Route::delete('templates-delete', 'Common\TemplateController@destroy')->name('templates-delete');
         Route::get('testmail/{id}', 'Common\TemplateController@mailtest');
         Route::get('testcart', 'Common\TemplateController@cartesting');
 
@@ -357,7 +338,7 @@
          */
          Route::resource('chat', 'Common\ChatScriptController');
           Route::get('get-script', ['as' => 'get-script', 'uses' => 'Common\ChatScriptController@getScript']);
-          Route::get('script-delete', 'Common\ChatScriptController@destroy')->name('script-delete');
+          Route::delete('script-delete', 'Common\ChatScriptController@destroy')->name('script-delete');
         /*
          * Invoices
          */
@@ -370,7 +351,7 @@
         Route::get('get-invoices', ['as' => 'get-invoices', 'uses' => 'Order\InvoiceController@getInvoices']);
         // Route::get('get-invoices', 'Order\InvoiceController@GetInvoices');
         Route::get('pdf', 'Order\InvoiceController@pdf');
-        Route::get('invoice-delete', 'Order\InvoiceController@destroy')->name('invoice-delete');
+        Route::delete('invoice-delete', 'Order\InvoiceController@destroy')->name('invoice-delete');
         Route::get('invoice/generate', 'Order\InvoiceController@generateById');
         Route::post('generate/invoice/{user_id?}', 'Order\InvoiceController@invoiceGenerateByForm');
         Route::get('invoices/{id}/delete', 'Order\InvoiceController@deleleById');
@@ -387,8 +368,7 @@
         Route::post('newPayment/receive/{clientid}', 'Order\InvoiceController@postNewPayment');
         Route::get('payment/receive', 'Order\InvoiceController@payment');
         Route::post('payment/receive/{id}', 'Order\InvoiceController@postPayment');
-        Route::get('payment-delete', 'Order\InvoiceController@deletePayment')->name('payment-delete');
-        Route::get('payments/{id}/delete', 'Order\InvoiceController@paymentDeleleById');
+        Route::delete('payment-delete', 'Order\InvoiceController@deletePayment')->name('payment-delete');
         Route::get('payments/{payment_id}/edit', 'Order\InvoiceController@paymentEditById');
         Route::post('newMultiplePayment/receive/{clientid}', 'Order\InvoiceController@postNewMultiplePayment');
          Route::post('newMultiplePayment/update/{clientid}', 'Order\InvoiceController@updateNewMultiplePayment');
@@ -414,7 +394,7 @@
         Route::get('page/search', 'Front\PageController@search');
         Route::get('get-pages', ['as' => 'get-pages', 'uses' => 'Front\PageController@getPages']);
         // Route::get('get-pages', 'Front\PageController@GetPages');
-        Route::get('pages-delete', 'Front\PageController@destroy')->name('pages-delete');
+        Route::delete('pages-delete', 'Front\PageController@destroy')->name('pages-delete');
         Route::get('get-url', 'Front\PageController@generate');
 
         /*
@@ -423,7 +403,7 @@
         Route::resource('widgets', 'Front\WidgetController');
         Route::get('get-widgets', ['as' => 'get-widgets', 'uses' => 'Front\WidgetController@getPages']);
         // Route::get('get-widgets', 'Front\WidgetController@GetPages');
-        Route::get('widgets-delete', 'Front\WidgetController@destroy');
+        Route::delete('widgets-delete', 'Front\WidgetController@destroy');
 
         /*
          * github

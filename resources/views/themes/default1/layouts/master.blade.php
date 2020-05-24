@@ -7,6 +7,7 @@
     <head>
         <meta charset="UTF-8">
         <title>@yield('title') | {{$set->favicon_title}}</title>
+        <meta name="csrf-token" content="{{ csrf_token() }}" />
         <link rel="shortcut icon" href='{{asset("common/images/$set->fav_icon")}}' type="image/x-icon" />
         <!-- Tell the browser to be responsive to screen width -->
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
@@ -339,6 +340,13 @@ function move() {
         </div><!-- ./wrapper -->
        
         <!-- Bootstrap 3.3.2 JS -->
+        <script type="text/javascript">
+          $.ajaxSetup({
+              headers: {
+                  'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+              }
+          });
+          </script>
         <script src="{{asset('common/js/theme.init.js')}}"></script>
         <script src="{{asset('common/js/intlTelInput.js')}}"></script>
 

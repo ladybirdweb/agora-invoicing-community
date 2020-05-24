@@ -136,7 +136,7 @@ License Types
             {
                $.ajax({
                       url:"{!! route('license-type-delete') !!}",
-                      method:"get",
+                      method:"delete",
                       data: $('#check:checked').serialize(),
                       beforeSend: function () {
                 $('#gif').show();

@@ -15,7 +15,6 @@ class SystemManagerController extends Controller
         $this->middleware('admin');
     }
 
-
     public function getSystemManagers()
     {
         $accountManagers = User::where('role', 'admin')

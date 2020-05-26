@@ -16,7 +16,6 @@ class PageController extends GetPageTemplateController
     public function __construct()
     {
         $this->middleware('auth');
-        
 
         $page = new FrontendPage();
         $this->page = $page;

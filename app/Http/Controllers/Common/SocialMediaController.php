@@ -16,7 +16,7 @@ class SocialMediaController extends Controller
     public function __construct()
     {
         $this->middleware('auth', ['except' => 'getTweets']);
-        $this->middleware('admin',['except' => 'getTweets']);
+        $this->middleware('admin', ['except' => 'getTweets']);
 
         $social = new SocialMedia();
         $this->social = $social;

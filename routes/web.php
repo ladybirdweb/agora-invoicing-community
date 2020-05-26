@@ -45,9 +45,9 @@
         Route::get('mail-chimp/subcribe', 'Common\MailChimpController@addSubscriberByClientPanel');
         Route::get('mail-chimp/merge-fields', 'Common\MailChimpController@addFieldsToAgora');
         Route::get('mail-chimp/add-lists', 'Common\MailChimpController@addListsToAgora');
-        Route::get('mailchimp', 'Common\MailChimpController@mailChimpSettings');
+        Route::get('mailchimp', 'Common\MailChimpController@mailChimpSettings')->middleware('admin');
         Route::patch('mailchimp', 'Common\MailChimpController@postMailChimpSettings');
-        Route::get('mail-chimp/mapping', 'Common\MailChimpController@mapField');
+        Route::get('mail-chimp/mapping', 'Common\MailChimpController@mapField')->middleware('admin');
         Route::patch('mail-chimp/mapping', 'Common\MailChimpController@postMapField');
         Route::patch('mailchimp-ispaid/mapping', 'Common\MailChimpController@postIsPaidMapField');
         Route::patch('mailchimp-group/mapping', 'Common\MailChimpController@postGroupMapField');
@@ -389,7 +389,7 @@
         /*
          * Pages
          */
-        Route::resource('pages', 'Front\PageController');
+        Route::resource('pages', 'Front\PageController')->middleware('admin');
         Route::get('pages/{slug}', 'Front\PageController@show');
         Route::get('page/search', 'Front\PageController@search');
         Route::get('get-pages', ['as' => 'get-pages', 'uses' => 'Front\PageController@getPages']);
@@ -469,8 +469,8 @@
 
         Route::get('get-code', 'WelcomeController@getCode');
         Route::get('get-currency', 'WelcomeController@getCurrency');
-         Route::get('get-country', 'WelcomeController@getCountry');
-        Route::get('country-count', 'WelcomeController@countryCount')->name('country-count');
+         Route::get('get-country', 'WelcomeController@getCountry')->middleware('admin');
+        Route::get('country-count', 'WelcomeController@countryCount')->name('country-count')->middleware('admin');
 
         /*
          * Api

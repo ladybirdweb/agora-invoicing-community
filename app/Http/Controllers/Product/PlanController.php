@@ -23,7 +23,7 @@ class PlanController extends ExtendedPlanController
     public function __construct()
     {
         $this->middleware('auth');
-        // $this->middleware('admin');
+        $this->middleware('admin');
         $plan = new Plan();
         $this->plan = $plan;
         $subscription = new Subscription();

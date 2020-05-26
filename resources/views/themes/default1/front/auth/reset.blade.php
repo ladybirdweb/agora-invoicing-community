@@ -3,7 +3,7 @@
 Reset Paswword| Faveo Helpdesk
 @stop
 @section('page-heading')
- <h1>Reset Your Password</h1>
+Reset Your Password
 @stop
 @section('page-header')
 Reset Password

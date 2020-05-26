@@ -158,7 +158,7 @@ Email Log
                 { 
                    $.ajax({
                           url:"{!! route('email-delete') !!}",
-                          method:"get",
+                          method:"delete",
                           data: $('#check:checked').serialize(),
                           beforeSend: function () {
                     $('#gif').show();

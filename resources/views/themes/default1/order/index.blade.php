@@ -294,7 +294,7 @@ View All Orders
             {
                $.ajax({
                       url:"{!! route('orders-delete') !!}",
-                      method:"get",
+                      method:"delete",
                       data: $('#check:checked').serialize(),
                       beforeSend: function () {
                 $('#gif').show();

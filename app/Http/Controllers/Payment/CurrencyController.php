@@ -18,7 +18,7 @@ class CurrencyController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        // $this->middleware('admin');
+        $this->middleware('admin');
         $currency = new Currency();
         $this->currency = $currency;
     }

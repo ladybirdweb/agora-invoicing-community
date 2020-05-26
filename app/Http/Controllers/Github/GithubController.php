@@ -20,7 +20,7 @@ class GithubController extends Controller
     public function __construct()
     {
         $this->middleware('auth', ['except' => 'getlatestReleaseForUpdate']);
-
+        $this->middleware('admin');
         $github_controller = new GithubApiController();
         $this->github_api = $github_controller;
 
@@ -380,7 +380,7 @@ class GithubController extends Controller
 
     public function getlatestReleaseForUpdate()
     {
-        $name = \Input::get('name');
+        $name = \Request::get('name');
         $product = \App\Model\Product\Product::where('name', $name)->first();
         $owner = $product->github_owner;
         $repo = $product->github_repository;

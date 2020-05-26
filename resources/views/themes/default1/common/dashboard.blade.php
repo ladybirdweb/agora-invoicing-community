@@ -97,7 +97,7 @@ Dashboard
           <!-- small box -->
           <div class="small-box bg-yellow">
             <div class="inner">
-              <h4>Products Installed Conversion:&nbsp; {{number_format($getLast30DaysInstallation['rate'], 2, '.', '')}}%</h4>
+              <h4>Products Installation Rate:&nbsp; {{number_format($getLast30DaysInstallation['rate'], 2, '.', '')}}%</h4>
               <span>Total Subscription (Last 30 days): &nbsp;  {{$getLast30DaysInstallation['total_subscription']}}</span><br/>
               <span>Not Installed (Last 30 days): &nbsp;  {{$getLast30DaysInstallation['inactive_subscription']}}</span><br/>
             </div>
@@ -116,7 +116,7 @@ Dashboard
           <!-- small box -->
           <div class="small-box bg-aqua">
             <div class="inner">
-              <h4>Paid Orders Conversion:&nbsp; {{number_format($conversionRate['rate'], 2, '.', '')}}%</h4>
+              <h4>Paid Orders Rate:&nbsp; {{number_format($conversionRate['rate'], 2, '.', '')}}%</h4>
               <span>Total Orders (Last 30 days): &nbsp;  {{$conversionRate['all_orders']}}</span><br/>
               <span>Paid Orders (Last 30 days): &nbsp;  {{$conversionRate['paid_orders']}}</span><br/>
             </div>
@@ -172,7 +172,7 @@ Dashboard
            'title'=> 'Recent Invoices(Past 30 Days)',
            'layout' => 'table',
            'collection'=> $invoices,
-           'columns'=> ['Invoice no.', 'Total', 'Client', 'Paid', 'Balance', 'Status'],
+           'columns'=> ['Invoice No', 'Total', 'User', 'Paid', 'Balance', 'Status'],
             'linkLeft'=> ['View All Invoice' => url('invoices')],
            'linkRight'=> ['Generate New Invoice' => url('invoice/generate')]
     ])
@@ -181,7 +181,7 @@ Dashboard
             <tr>
                 <td><a href="{{url('invoices/show?invoiceid='.$element->invoice_id)}}">{{$element->invoice_number}}</a></td>
                 <td>{{$element->grand_total}}</td>
-                <td>{{$element->client_name}}</td>
+                <td><a href="{{'clients/'.$element->user_id}}">{{ $element->client_name }}</a></td>
                 <td>{{$element->paid}}  </td>
                 <td>
                     <div class="sparkbar" data-color="#00a65a" data-height="20">{{$element->balance}}</div>
@@ -255,10 +255,10 @@ Dashboard
      @endphp
 
      @component('mini_views.card', [
-            'title'=> 'Clients With outdated Product Version (Last 30 Clients)',
+            'title'=> 'Clients With outdated Product Version',
             'layout' => 'table',
             'collection'=> $clientsUsingOldVersion,
-            'columns'=> ['Client', 'Version', 'Product', 'Expiry Date'],
+            'columns'=> ['User', 'Version', 'Product', 'Expiry'],
             'linkLeft'=> ['View All' => url('orders')."?version_from=$oldestVersion&version_till=$latestVersion&act_inst=paid_ins&sort_field=4&sort_order=asc"],
             'linkRight'=> ['Create New Product' => url('products/create')]
      ])
@@ -278,7 +278,7 @@ Dashboard
             'title'=> 'Recent Paid Orders (Last 30 Days)',
             'layout' => 'table',
             'collection'=> $recentOrders,
-            'columns'=> ['Order No', 'Item', 'Date', 'Client'],
+            'columns'=> ['Order No', 'Product', 'Date', 'User'],
              'linkLeft'=> ['View All Orders' => url('orders')],
             'linkRight'=> ['Place New Order' => url('invoice/generate')]
      ])

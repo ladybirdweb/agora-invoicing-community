@@ -3,7 +3,7 @@
 Two-factory recovery
 @stop
 @section('page-heading')
- <h1>Two-factory recovery</h1>
+Two-factory recovery
 @stop
 @section('page-header')
 Forgot Password

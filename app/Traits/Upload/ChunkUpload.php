@@ -36,7 +36,9 @@ trait ChunkUpload
                 'status' => true,
             ]);
         } catch (Exception $ex) {
-            dd($ex);
+            $response = ['success'=>'false', 'message'=>$ex->getMessage()];
+
+            return response()->json(compact('response'), 500);
         }
     }
 

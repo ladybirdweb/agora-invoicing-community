@@ -16,7 +16,7 @@ class SettingsController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('admin',['except'=>['postPaymentWithStripe']]);
+        $this->middleware('admin', ['except'=>['postPaymentWithStripe']]);
     }
 
     public function Settings()

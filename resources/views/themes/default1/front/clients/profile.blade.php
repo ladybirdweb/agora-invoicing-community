@@ -497,7 +497,6 @@ input:checked + .slider:before {
 
                                 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
-<script src="{{asset('common/js/licCode.js')}}"></script>
 <script src="{{asset('common/js/intlTelInput.js')}}"></script>
 <script type="text/javascript">
      $(document).ready(function(){
@@ -612,6 +611,8 @@ input:checked + .slider:before {
 
 
 </script>
+<script src="{{asset('common/js/licCode.js')}}"></script>
+
 @stop
 
 

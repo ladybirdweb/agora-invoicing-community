@@ -118,7 +118,6 @@ trait RegistersUsers
            
             return response()->json($response);
         } catch (\Exception $ex) {
-            dd($ex);
             Bugsnag::notifyException($ex);
             app('log')->error($ex->getMessage());
             $result = [$ex->getMessage()];

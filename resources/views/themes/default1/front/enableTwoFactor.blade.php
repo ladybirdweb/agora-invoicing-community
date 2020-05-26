@@ -3,7 +3,7 @@
 Two-factor authentication
 @stop
 @section('page-heading')
- <h1>Two-factor authentication</h1>
+Two-factor authentication
 @stop
 @section('page-header')
 Forgot Password

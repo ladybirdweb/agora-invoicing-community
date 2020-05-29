@@ -559,7 +559,7 @@ if ($('#License').prop("checked")) {
   $.ajax({
     
     url : '{{url("licenseDetails")}}',
-    type : 'get',
+    type : 'post',
     data: {
        "status": checkboxvalue,
        "license_api_secret": $('#license_api_secret').val(),
@@ -641,7 +641,7 @@ if ($('#update').prop("checked")) {
   $.ajax({
     
     url : '{{url("updateDetails")}}',
-    type : 'get',
+    type : 'post',
     data: {
        "status": checkboxvalue,
        "update_api_secret": $('#update_api_secret').val(),
@@ -726,7 +726,7 @@ if ($('#update').prop("checked")) {
   $.ajax({
     
     url : '{{url("captchaDetails")}}',
-    type : 'get',
+    type : 'post',
     data: {
        "status": checkboxvalue,
        "nocaptcha_sitekey": $('#nocaptcha_sitekey').val(),
@@ -816,7 +816,7 @@ if ($('#update').prop("checked")) {
     $("#submit3").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");   
     $.ajax ({
       url: '{{url("updatemobileDetails")}}',
-      type : 'get',
+      type : 'post',
       data: {
        "status": mobilestatus,
        "msg91_auth_key": $('#mobile_authkey').val(),
@@ -859,7 +859,7 @@ if ($('#update').prop("checked")) {
       $("#submit4").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");   
      $.ajax ({
       url: '{{url("updateemailDetails")}}',
-      type : 'get',
+      type : 'post',
       data: {
        "status": emailstatus,
       },
@@ -970,7 +970,7 @@ if ($('#update').prop("checked")) {
     $("#submit5").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");   
     $.ajax ({
       url: '{{url("updatetwitterDetails")}}',
-      type : 'get',
+      type : 'post',
       data: {
        "status": twitterstatus,
        "consumer_key": $('#consumer_key').val(),"consumer_secret" : $('#consumer_secret').val() ,
@@ -1067,7 +1067,7 @@ if ($('#update').prop("checked")) {
     $("#submit6").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");   
     $.ajax ({
       url: '{{url("updaterzpDetails")}}',
-      type : 'get',
+      type : 'post',
       data: {
        "status": rzpstatus,
        "rzp_key": $('#rzp_key').val(),"rzp_secret" : $('#rzp_secret').val() ,
@@ -1133,7 +1133,7 @@ if ($('#update').prop("checked")) {
     $("#submit7").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");   
     $.ajax ({
       url: '{{url("updatezohoDetails")}}',
-      type : 'get',
+      type : 'post',
       data: {
        "status": zohostatus,
        "zoho_key": $('#zoho_key').val(),
@@ -1197,7 +1197,7 @@ if ($('#update').prop("checked")) {
     $("#submit9").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");   
     $.ajax ({
       url: '{{url("updateMailchimpDetails")}}',
-      type : 'get',
+      type : 'post',
       data: {
        "status": chimpstatus,
        "mailchimp_auth_key": $('#mailchimp_authkey').val(),
@@ -1262,7 +1262,7 @@ if ($('#update').prop("checked")) {
     $("#submit10").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");   
     $.ajax ({
       url: '{{url("updateTermsDetails")}}',
-      type : 'get',
+      type : 'post',
       data: {
        "status": termsstatus,
        "terms_url": $('#terms_url').val(),
@@ -1327,7 +1327,7 @@ if ($('#update').prop("checked")) {
     $("#submit13").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");   
     $.ajax ({
       url: '{{url("updatepipedriveDetails")}}',
-      type : 'get',
+      type : 'post',
       data: {
        "status": pipedrivestatus,
        "pipedrive_key": $('#pipedrive_key').val(),
@@ -1367,7 +1367,7 @@ if ($('#update').prop("checked")) {
       $("#submit14").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");   
      $.ajax ({
       url: '{{url("updatedomainCheckDetails")}}',
-      type : 'get',
+      type : 'post',
       data: {
        "status": domainstatus,
       },

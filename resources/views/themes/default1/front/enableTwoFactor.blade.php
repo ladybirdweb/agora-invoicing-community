@@ -23,38 +23,13 @@ main
          
             <div class="row">
               <div class="col-lg-6 offset-lg-3">
-                    @if(Session::has('success'))
-                    <div class="alert alert-success alert-dismissable">
-                       <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <strong><i class="fa fa-thumbs-up"></i> Well done!</strong>
-                        {{Session::get('success')}}
-                    </div>
-                    @endif
-                    <!-- fail message -->
-                    @if(Session::has('fails'))
-                    <div class="alert alert-danger alert-dismissable">
-                        <b><i class="fa fa-exclamation-triangle"></i>Whoops!</b>
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                        {{Session::get('fails')}}
-                    </div>
-                    @endif
-                    @if (count($errors) > 0)
-                    <div class="alert alert-danger alert-dismissable" role="alert">
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                       <strong><i class="fa fa-exclamation-triangle"></i>Oh snap!</strong> Change a few things up and try submitting again.
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                            <li>{!! $error !!}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                    @endif
+                    
                      <div id="alertMessage"></div>
                      <div id="error"></div>
                       
                    <div class="featured-box featured-box-primary text-left mt-5">
                         <div class="box-content">
-                          {!!  Form::open(['route'=>'2fa/loginValidate', 'method'=>'post']) !!}
+                          {!!  Form::open(['route'=>'2fa/loginValidate', 'method'=>'get']) !!}
                          <h2 style="text-align: center;">Two-Factor Authentication</h2>
                             <div class="form-row">
                                 <div class="form-group col">

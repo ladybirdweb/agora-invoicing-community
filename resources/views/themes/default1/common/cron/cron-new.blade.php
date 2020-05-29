@@ -284,10 +284,9 @@ $('#tab2url').click(function(){
         copyToClipboard(text);
 
         $.ajax({
-            'method': 'POST',
+            'method': 'get',
             'url': "{{route('verify-cron')}}",
             data: {
-                "_token": "{{ csrf_token() }}",
                 "path": path
             },
             beforeSend: function() {

@@ -300,7 +300,7 @@ input:checked + .slider:before {
         @endslot
         @slot('password')
 
-
+         {!! Form::model($user,['url'=>'my-password' , 'method' => 'PATCH']) !!}
             <!-- old password -->
                 <div class="form-row">
                     <div class="form-group col {{ $errors->has('old_password') ? 'has-error' : '' }}">
@@ -330,10 +330,11 @@ input:checked + .slider:before {
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <button class="btn btn-primary float-right" data-loading-text="Loading..." name="update" id="password" onclick="updatePassword()" > <i class="fa fa-refresh"></i>&nbsp;Update</button>
+                        <button class="btn btn-primary float-right" data-loading-text="Loading..." name="update" id="password" > <i class="fa fa-refresh"></i>&nbsp;Update</button>
 
                     </div>
                 </div>
+                {!! Form::close() !!}
         @endslot
         @slot('twoFactor')
         <br>

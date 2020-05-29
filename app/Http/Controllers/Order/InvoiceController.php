@@ -160,7 +160,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
                             $check = $this->checkExecution($model->id);
                             if ($check == false) {
-                               $action = '<form method="post" action='.url("order/execute?invoiceid=".$model->id).'>'.'<input type="hidden" name="_token" value='.\Session::token().'>'.'
+                                $action = '<form method="post" action='.url('order/execute?invoiceid='.$model->id).'>'.'<input type="hidden" name="_token" value='.\Session::token().'>'.'
                                     <button type="submit" class="btn btn-sm btn-primary btn-xs"><i class="fa fa-tasks" style="color:white;"></i>&nbsp;&nbsp; Execute Order</button></form>';
                             }
 

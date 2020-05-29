@@ -31,7 +31,6 @@ class GithubController extends Controller
         $this->client_secret = $this->github->client_secret;
     }
 
-
     public function createNewAuth($note)
     {
         try {
@@ -319,5 +318,4 @@ class GithubController extends Controller
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-
 }

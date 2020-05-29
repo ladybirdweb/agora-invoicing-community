@@ -18,12 +18,12 @@ class PaymentSettingsController extends Controller
                         ->addColumn('name', function ($model) {
                             if (array_has($model, 'path')) {
                                 if ($model['status'] == 0) {
-                                    $activate =  '<form method="post" action='.url("plugin/status/".$model["name"]).'>'.'<input type="hidden" name="_token" value='.\Session::token().'>'.'
+                                    $activate = '<form method="post" action='.url('plugin/status/'.$model['name']).'>'.'<input type="hidden" name="_token" value='.\Session::token().'>'.'
                                     <button type="submit" class="btn btn-primary btn-sm">Activate</button></form>';
                                     $settings = ' ';
                                 } else {
                                     $settings = '<a href='.url($model['settings']).' class="btn btn-primary btn-sm">Settings</a> <br> ';
-                                    $activate = '<form method="post" action='.url("plugin/status/".$model["name"]).'>'.'<input type="hidden" name="_token" value='.\Session::token().'>'.'
+                                    $activate = '<form method="post" action='.url('plugin/status/'.$model['name']).'>'.'<input type="hidden" name="_token" value='.\Session::token().'>'.'
                                     <button type="submit" class="btn btn-primary btn-sm">Deactivate</button></form>';
                                 }
 
@@ -38,7 +38,7 @@ class PaymentSettingsController extends Controller
                                                        <p>Are you Sure ?</p>
                                                         <div class=modal-footer>
                                                             <button type=button class='btn btn-default pull-left' data-dismiss=modal id=dismis>".\Lang::get('lang.close').'</button>
-                                                            <form method="delete" action='.url("plugin/delete/".$model["name"]).'>'.'<input type="hidden" name="_token" value='.\Session::token().'>'.'
+                                                            <form method="delete" action='.url('plugin/delete/'.$model['name']).'>'.'<input type="hidden" name="_token" value='.\Session::token().'>'.'
                                     <button type="submit" class="btn btn-danger">Delete</button></form>
                                                             
                                                         </div>

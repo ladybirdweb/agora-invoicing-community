@@ -8,9 +8,9 @@ use App\Http\Controllers\License\LicenseController;
 use App\Model\Common\StatusSetting;
 use App\Model\User\AccountActivate;
 use App\User;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Validator;
 
 class AuthController extends BaseAuthController
@@ -45,7 +45,6 @@ class AuthController extends BaseAuthController
         $this->licensing = $license;
     }
 
-
     public function activate($token, AccountActivate $activate, Request $request, User $user)
     {
         try {
@@ -56,23 +55,25 @@ class AuthController extends BaseAuthController
             } else {
                 throw new NotFoundHttpException('Token mismatch. Account cannot be activated.');
             }
-           $user = $user->where('email', $email)->first();
+            $user = $user->where('email', $email)->first();
             if ($user) {
-                if($user->active == 0) {
-                $user->active = 1;
-                $user->save();
-                $status = StatusSetting::select('mailchimp_status','pipedrive_status','zoho_status')->first();
-                $this->addUserToPipedrive($user,$status->pipedrive_status); //Add user to pipedrive
-                $this->addUserToZoho($user,$status->zoho_status); //Add user to zoho
-                $this->addUserToMailchimp($user,$status->mailchimp_status); // Add user to mailchimp
+                if ($user->active == 0) {
+                    $user->active = 1;
+                    $user->save();
+                    $status = StatusSetting::select('mailchimp_status', 'pipedrive_status', 'zoho_status')->first();
+                    $this->addUserToPipedrive($user, $status->pipedrive_status); //Add user to pipedrive
+                $this->addUserToZoho($user, $status->zoho_status); //Add user to zoho
+                $this->addUserToMailchimp($user, $status->mailchimp_status); // Add user to mailchimp
                 if (\Session::has('session-url')) {
                     $url = \Session::get('session-url');
+
                     return redirect($url);
                 }
-                return redirect($url)->with('success', 'Email verification successful.
+
+                    return redirect($url)->with('success', 'Email verification successful.
                     Please login to access your account !!');
                 } else {
-                     return redirect($url)->with('warning', 'This email is already verified');
+                    return redirect($url)->with('warning', 'This email is already verified');
                 }
             } else {
                 throw new NotFoundHttpException('User with this email not found.');
@@ -82,6 +83,7 @@ class AuthController extends BaseAuthController
                 return redirect($url)->with('success', 'Email verification successful,
                  Please login to access your account');
             }
+
             return redirect($url)->with('fails', $ex->getMessage());
         }
     }
@@ -371,5 +373,4 @@ class AuthController extends BaseAuthController
             // $template_controller->mailing($from, $to, $template_data, $template_name, $replace, 'account__manager_email',$bcc);
         }
     }
-
 }

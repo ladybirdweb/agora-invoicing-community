@@ -31,9 +31,6 @@ class HomeController extends BaseHomeController
         $this->middleware('admin', ['only' => ['index']]);
     }
 
-
-
-
     public function getVersion(Request $request, Product $product)
     {
         $this->validate($request, [

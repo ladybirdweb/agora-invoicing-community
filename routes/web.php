@@ -210,7 +210,6 @@
         Route::get('get-period', 'Product\PlanController@checkSubscription')->name('get-period');
         Route::post('postInsertPeriod', 'Product\PlanController@postInsertPeriod');
 
-      
         /*
          * Currency
          */
@@ -338,7 +337,6 @@
         Route::get('payments/{payment_id}/edit', 'Order\InvoiceController@paymentEditById');
         Route::post('newMultiplePayment/receive/{clientid}', 'Order\InvoiceController@postNewMultiplePayment');
         Route::post('newMultiplePayment/update/{clientid}', 'Order\InvoiceController@updateNewMultiplePayment');
-
 
         /*
          * Pages

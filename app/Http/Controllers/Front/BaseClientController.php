@@ -141,12 +141,12 @@ class BaseClientController extends Controller
             if (\Hash::check($oldpassword, $currentpassword)) {
                 $user->password = Hash::make($newpassword);
                 $user->save();
+
                 return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
 
                 return $response;
             } else {
                 return redirect()->back()->with('fails', 'Incorrect old password');
-
             }
         } catch (\Exception $e) {
             app('log')->error($e->getMessage());

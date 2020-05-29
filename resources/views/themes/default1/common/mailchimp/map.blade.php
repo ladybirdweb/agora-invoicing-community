@@ -628,7 +628,7 @@ input:checked + .slider:before {
     }
      $.ajax ({
       url: '{{url("mailchimp-prod-status")}}',
-      type : 'get',
+      type : 'post',
       data: {
        "status": status,
       },
@@ -671,7 +671,7 @@ input:checked + .slider:before {
     }
      $.ajax ({
       url: '{{url("mailchimp-paid-status")}}',
-      type : 'get',
+      type : 'post',
       data: {
        "status": status,
       },

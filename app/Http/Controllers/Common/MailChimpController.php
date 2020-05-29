@@ -134,38 +134,6 @@ class MailChimpController extends BaseMailChimpController
         }
     }
 
-    public function addFieldsToAgora()
-    {
-        try {
-            /** @scrutinizer ignore-call */
-            $fields = $this->getMergeFields($this->list_id);
-            $mailchimp_field_in_agora = $this->mailchimp_field_model->get();
-            if (count($mailchimp_field_in_agora) > 0) {
-                foreach ($mailchimp_field_in_agora as $field) {
-                    $field->delete();
-                }
-            }
-            foreach ($fields['merge_fields'] as $key => $value) {
-                $merge_id = $value->merge_id;
-                $name = $value->name;
-                $type = $value->type;
-                $required = $value->required;
-                $list_id = $value->list_id;
-                $tag = $value->tag;
-
-                $this->mailchimp_field_model->create([
-                    'merge_id' => $merge_id,
-                    'tag'      => $tag,
-                    'name'     => $name,
-                    'type'     => $type,
-                    'required' => $required,
-                    'list_id'  => $list_id,
-                ]);
-            }
-        } catch (Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
 
     public function mapField()
     {

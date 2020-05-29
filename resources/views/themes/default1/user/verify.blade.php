@@ -480,7 +480,7 @@ main
                                     };
                                     $.ajax({
                                         url: '{{url('otp/verify')}}',
-                                        type: 'GET',
+                                        type: 'post',
                                         data: data,
                                         success: function (response) {
                                           $("#verifyOtp").attr('disabled',false)
@@ -697,8 +697,6 @@ main
                                     var newmail = $('#u_email').val();
                                         $("#sendEmail").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Sending...");
                                         $scope.newObj1 = {};
-                                         $scope.newObj1['oldmail'] = oldmail;
-                                        $scope.newObj1['newmail'] = newmail;
                                         $scope.newObj1['id'] = $('#u_id').val();
                                         $scope.newObj1['email'] = $('#u_email').val();
                                         $http({
@@ -719,8 +717,9 @@ main
                                             var res = "";
                                             $('#email1').css('color', 'red');
                                             $.each(data, function (idx, topic) {
-                                                res += "<li style='list-style-type:none'>" + topic + "</li>";
+                                                res += '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="fas fa-exclamation-triangle"></i>Oh Snap! </strong>' + topic + '</div>';
                                             });
+                                             $('#snap1').hide();
                                             $('#email1').html(res);
                                         })
                                       }
@@ -755,7 +754,7 @@ main
                                            // alert('ok');
                                         $.ajax({
                                           url: '{{url("otp/sendByAjax")}}',
-                                          type: 'GET',
+                                          type: 'POST',
                                           data: data,
                                           success: function (response) {
                                             $('.otp-field').show();

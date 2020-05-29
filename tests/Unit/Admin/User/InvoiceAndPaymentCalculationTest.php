@@ -20,7 +20,7 @@ class InvoiceAndPaymentCalculationTest extends DBTestCase
         $user = $this->user;
         $user_id = $user->id;
         $invoice = factory(Invoice::class)->create(['user_id'=>$user_id, 'grand_total'=>'10000']);
-        $response = $this->call('GET', 'change-invoiceTotal', [
+        $response = $this->call('POST', 'change-invoiceTotal', [
             'total'   => '12000',
             'number'  => $invoice->number,
             'user_id' => $user_id,

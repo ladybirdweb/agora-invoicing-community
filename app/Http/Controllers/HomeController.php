@@ -31,36 +31,8 @@ class HomeController extends BaseHomeController
         $this->middleware('admin', ['only' => ['index']]);
     }
 
-    /**
-     * Show the application dashboard to the user.
-     *
-     * @return \Response
-     */
-    public function version(Request $request, Product $product)
-    {
-        $url = $request->input('response_url');
 
-        $title = $request->input('title');
-        //dd($title);
-        $id = $request->input('id');
-        if ($id) {
-            $product = $product->where('id', $id)->first();
-        } else {
-            $product = $product->where('name', $title)->first();
-        }
 
-        if ($product) {
-            $version = str_replace('v', '', $product->version);
-        } else {
-            $version = 'Not-Available';
-        }
-
-        echo "<form action=$url method=post name=redirect >";
-        echo '<input type=hidden name=_token value='.csrf_token().'>';
-        echo "<input type=hidden name=value value=$version />";
-        echo '</form>';
-        echo"<script language='javascript'>document.redirect.submit();</script>";
-    }
 
     public function getVersion(Request $request, Product $product)
     {
@@ -72,7 +44,7 @@ class HomeController extends BaseHomeController
         if ($product) {
             $version = $product->version;
         } else {
-            return 0;
+            return json_encode(['message'=>'Product not found']);
         }
 
         return str_replace('v', '', $product->version);

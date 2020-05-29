@@ -120,9 +120,7 @@ User Details
                 <li role="presentation">
                     <a role="menuitem" tabindex="-1" href="{{url('invoice/generate?clientid='.$client->id)}}">{{Lang::get('message.create-invoice')}}</a>
                 </li>
-               <!--  <li role="presentation">
-                    <a role="menuitem" tabindex="-1" href="{{url('order/execute?clientid='.$client->id)}}">{{Lang::get('message.order_execute')}}</a>
-                </li> -->
+               
                 <li role="presentation">
                     <a role="menuitem" tabindex="-1" href="{{url('newPayment/receive?clientid='.$client->id)}}">{{Lang::get('message.create-payment')}}</a>
                 </li>
@@ -856,7 +854,7 @@ User Details
                 $.ajax({
 
                     url : "{{url('2fa/disable')}}",
-                    method : 'get',
+                    method : 'post',
                     data : {
                         'userId' : user,
                     },
@@ -927,7 +925,7 @@ User Details
 
 
         $.ajax({
-        type: "GET",
+        type: "POST",
                 url: "{{route('change-invoiceTotal')}}",
                 data: {'total':data,'number':number},
                 success: function () {
@@ -946,7 +944,7 @@ User Details
         var data = $(this).text().trim();
 
         $.ajax({
-        type: "GET",
+        type: "POST",
                 url: "{{route('change-paymentTotal')}}",
                 data: {'total':data,'id':id},
                 success: function () {

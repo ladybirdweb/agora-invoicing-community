@@ -8,6 +8,7 @@ use App\Http\Controllers\License\LicenseController;
 use App\Model\Common\StatusSetting;
 use App\Model\User\AccountActivate;
 use App\User;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 use Illuminate\Http\Request;
 use Validator;
@@ -44,82 +45,43 @@ class AuthController extends BaseAuthController
         $this->licensing = $license;
     }
 
-    public function sendActivationByGet($email, Request $request)
-    {
-        try {
-            $mail = $this->sendActivation($email, $request->method());
-            if ($mail == 'success') {
-                return redirect()->back()->with('success', 'Activation link has sent to your email address');
-            }
-        } catch (\Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
 
     public function activate($token, AccountActivate $activate, Request $request, User $user)
     {
         try {
-            if ($activate->where('token', $token)->first()) {
-                $email = $activate->where('token', $token)->first()->email;
-            } else {
-                throw new NotFoundHttpException();
-            }
+            $activate = $activate->where('token', $token)->first();
             $url = 'auth/login';
-            $user = $user->where('email', $email)->first();
-            if ($user->where('email', $email)->first()) {
+            if ($activate) {
+                $email = $activate->email;
+            } else {
+                throw new NotFoundHttpException('Token mismatch. Account cannot be activated.');
+            }
+           $user = $user->where('email', $email)->first();
+            if ($user) {
+                if($user->active == 0) {
                 $user->active = 1;
                 $user->save();
-                $pipedriveStatus = StatusSetting::pluck('pipedrive_status')->first();
-                $zohoStatus = StatusSetting::pluck('zoho_status')->first();
-                $mailchimpStatus = StatusSetting::pluck('mailchimp_status')->first();
-                if ($pipedriveStatus == 1) {//Add to Pipedrive
-                    $this->addToPipedrive($user);
-                }
-                if ($zohoStatus) {//Add to Zoho
-                    $zoho = $this->reqFields($user, $email);
-                    $auth = ApiKey::where('id', 1)->value('zoho_api_key');
-                    $zohoUrl = 'https://crm.zoho.com/crm/private/xml/Leads/insertRecords??duplicateCheck=1&';
-                    $query = 'authtoken='.$auth.'&scope=crmapi&xmlData='.$zoho;
-                    $ch = curl_init();
-                    curl_setopt($ch, CURLOPT_URL, $zohoUrl);
-                    /* allow redirects */
-                    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-                    /* return a response into a variable */
-                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-                    /* times out after 30s */
-                    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-                    /* set POST method */
-                    curl_setopt($ch, CURLOPT_POST, 1);
-                    /* add POST fields parameters */
-                    curl_setopt($ch, CURLOPT_POSTFIELDS, $query); // Set the request as a POST FIELD for curl.
-
-                    //Execute cUrl session
-                    $response = curl_exec($ch);
-                    curl_close($ch);
-                }
-
-                if ($mailchimpStatus == 1) {//Add to Mailchimp
-                    $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
-                    $r = $mailchimp->addSubscriber($user->email);
-                }
-
+                $status = StatusSetting::select('mailchimp_status','pipedrive_status','zoho_status')->first();
+                $this->addUserToPipedrive($user,$status->pipedrive_status); //Add user to pipedrive
+                $this->addUserToZoho($user,$status->zoho_status); //Add user to zoho
+                $this->addUserToMailchimp($user,$status->mailchimp_status); // Add user to mailchimp
                 if (\Session::has('session-url')) {
                     $url = \Session::get('session-url');
-
                     return redirect($url);
                 }
-
                 return redirect($url)->with('success', 'Email verification successful.
                     Please login to access your account !!');
+                } else {
+                     return redirect($url)->with('warning', 'This email is already verified');
+                }
             } else {
-                throw new NotFoundHttpException();
+                throw new NotFoundHttpException('User with this email not found.');
             }
         } catch (\Exception $ex) {
             if ($ex->getCode() == 400) {
                 return redirect($url)->with('success', 'Email verification successful,
                  Please login to access your account');
             }
-
             return redirect($url)->with('fails', $ex->getMessage());
         }
     }
@@ -283,16 +245,12 @@ class AuthController extends BaseAuthController
         $this->validate($request, [
             'email' => 'required|email',
         ]);
-        $email = $request->oldmail;
-        $newMail = $request->newmail;
-        User::where('mobile', $email)->update(['mobile'=>$newMail]);
-
         try {
             $email = $request->input('email');
             $userid = $request->input('id');
             $user = User::find($userid);
             $check = $this->checkVerify($user);
-            $method = 'POST';
+            $method = 'GET';
             //$this->sendActivation($email, $request->method());
             $this->sendActivation($email, $method);
             $response = ['type' => 'success', 'proceed' => $check,
@@ -413,4 +371,5 @@ class AuthController extends BaseAuthController
             // $template_controller->mailing($from, $to, $template_data, $template_name, $replace, 'account__manager_email',$bcc);
         }
     }
+
 }

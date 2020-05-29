@@ -46,7 +46,7 @@
         
         var user = document.getElementsByName('user')[0].value;
         $.ajax({
-            type: "POST",
+            type: "get",
             url: "{{url('get-renew-cost')}}",
             data: {'user': user, 'plan': val},
             success: function (data) {

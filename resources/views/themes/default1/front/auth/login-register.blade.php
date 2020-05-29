@@ -669,7 +669,7 @@ Sign in or Register
                 };
                 $.ajax({
                     url: '{{url('otp/verify')}}',
-                    type: 'GET',
+                    type: 'post',
                     data: data,
                     success: function (response) {
                         $("#verifyOtp").attr('disabled',false);
@@ -926,7 +926,7 @@ Sign in or Register
                 };
                 $.ajax({
                     url: '{{url('otp/sendByAjax')}}',
-                    type: 'GET',
+                    type: 'POST',
                     data: data,
                     success: function (response) {
                         // window.history.replaceState(response.type, "TitleTest", "login");

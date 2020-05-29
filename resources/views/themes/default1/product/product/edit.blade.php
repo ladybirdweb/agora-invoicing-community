@@ -675,7 +675,7 @@ Edit Product
             {
                $.ajax({
                       url:"{!! Url('uploads-delete') !!}",
-                      method:"get",
+                      method:"delete",
                       data: $('#checks:checked').serialize(),
                       beforeSend: function () {
                 $('#gif').show();

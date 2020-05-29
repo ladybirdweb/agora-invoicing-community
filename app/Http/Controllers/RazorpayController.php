@@ -34,13 +34,6 @@ class RazorpayController extends Controller
         // $this->mailchimp = $mailchimp;
     }
 
-    public function payWithRazorpay()
-    {
-        $api = new Api(config('custom.razor_key'), config('custom.razor_secret'));
-
-        return view('themes.default1.front.checkout', compact('api'));
-    }
-
     /*
     * Create Order And Payment for invoice paid with Razorpay
      */

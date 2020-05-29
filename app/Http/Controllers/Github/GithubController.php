@@ -19,7 +19,7 @@ class GithubController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth', ['except' => 'getlatestReleaseForUpdate']);
+        $this->middleware('auth');
         $this->middleware('admin');
         $github_controller = new GithubApiController();
         $this->github_api = $github_controller;
@@ -31,25 +31,6 @@ class GithubController extends Controller
         $this->client_secret = $this->github->client_secret;
     }
 
-    /**
-     * Authenticate a user entirly.
-     *
-     * @return type
-     */
-    public function authenticate()
-    {
-        try {
-            $url = 'https://api.github.com/user';
-            $data = ['bio' => 'This is my bio'];
-            $data_string = json_encode($data);
-            $auth = $this->github_api->postCurl($url, $data_string);
-            dd($auth);
-
-            return $auth;
-        } catch (Exception $ex) {
-            return redirect('/')->with('fails', $ex->getMessage());
-        }
-    }
 
     public function createNewAuth($note)
     {
@@ -129,8 +110,6 @@ class GithubController extends Controller
             return $release;
             //echo "Your download will begin in a moment. If it doesn't, <a href=$release>Click here to download</a>";
         } catch (Exception $ex) {
-            dd($ex);
-
             return redirect('/')->with('fails', $ex->getMessage());
         }
     }
@@ -165,43 +144,6 @@ class GithubController extends Controller
             return redirect('/')->with('fails', $ex->getMessage());
         }
     }
-
-    /**
-     * List only one release by tag.
-     *
-     * @param Request $request
-     *
-     * @return type
-     */
-    // public function getReleaseByTag($owner, $repo)
-    // {
-    //     try {
-    //         $tag = \Input::get('tag');
-    //         $all_releases = $this->listRepositories($owner, $repo);
-
-    //         $this->download($result['header']['Location']);
-    //         if ($tag) {
-    //             foreach ($all_releases as $key => $release) {
-    //                 //dd($release);
-    //                 if (in_array($tag, $release)) {
-    //                     $version[$tag] = $this->getReleaseById($release['id']);
-    //                 }
-    //             }
-    //         } else {
-    //             $version[0] = $all_releases[0];
-    //         }
-    //         //            dd($version);
-    //         //execute download
-
-    //         if ($this->download($version) == 'success') {
-    //             return 'success';
-    //         }
-    //         //return redirect()->back()->with('success', \Lang::get('message.downloaded-successfully'));
-    //     } catch (Exception $ex) {
-    //         //dd($ex);
-    //         return redirect('/')->with('fails', $ex->getMessage());
-    //     }
-    // }
 
     /**
      * List only one release by id.
@@ -378,14 +320,4 @@ class GithubController extends Controller
         }
     }
 
-    public function getlatestReleaseForUpdate()
-    {
-        $name = \Request::get('name');
-        $product = \App\Model\Product\Product::where('name', $name)->first();
-        $owner = $product->github_owner;
-        $repo = $product->github_repository;
-        $release = $this->latestRelese($owner, $repo);
-
-        return json_encode($release);
-    }
 }

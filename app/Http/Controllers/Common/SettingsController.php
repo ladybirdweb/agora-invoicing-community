@@ -408,11 +408,6 @@ class SettingsController extends BaseSettingsController
                                ->addColumn('subject', function ($model) {
                                    return ucfirst($model->subject);
                                })
-                                // ->addColumn('headers', function ($model) {
-                                //     $headers = Markdown::convertToHtml(ucfirst($model->headers));
-
-                                //     return $headers;
-                                // })
                               ->addColumn('status', function ($model) {
                                   return ucfirst($model->status);
                               })

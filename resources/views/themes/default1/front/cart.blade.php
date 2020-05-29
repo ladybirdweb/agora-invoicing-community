@@ -230,7 +230,10 @@ if (count($attributes) > 0) {
                          <!-- </div> -->
                            <div class="row">
                         <div class="col col-md-5">
+                            <form action="{{url('cart/clear')}}" method="post">
+                                {{ csrf_field() }}
                             <a href="{{url('cart/clear')}}"><button class="btn btn-danger btn-modern" style="margin-bottom: 20px;"><i class="fa fa-angle-left ml-xs"></i>&nbsp;Clear My Cart</button></a>
+                        </form>
                        </div>
                         <div class="col col-md-7">
                             @if(count($domain)>0)
@@ -305,7 +308,7 @@ if (count($attributes) > 0) {
          var finalAgtprice = $('#agentprice').val(actualAgentPrice * 2 ).val(); //Final Price aftr increasing qty
            }
                $.ajax({
-               type: "GET",
+               type: "POST",
             data:{'symbol':symbol,'currency':currency,'agtQty':finalAgtqty,'productid':productid,'actualAgentprice':finalAgtprice},
              beforeSend: function () {
                  $('#response').html( "<img id='blur-bg' class='backgroundfadein' style='width: 50px; height:50 px; display: block; position:    fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
@@ -344,7 +347,7 @@ if (count($attributes) > 0) {
          var finalAgtprice = $('#agentprice').val(actualAgentPrice / 2 ).val(); //Final Price aftr decresing  qty
            }
                $.ajax({
-               type: "GET",
+               type: "POST",
             data:{'symbol':symbol,'currency':currency,'agtQty':finalAgtqty,'productid':productid,'actualAgentprice':finalAgtprice},
             beforeSend: function () {
                  $('#response').html( "<img id='blur-bg' class='backgroundfadein' style='top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
@@ -380,7 +383,7 @@ if (count($attributes) > 0) {
          var finalprice = $('#quatprice').val(incraesePrice).val(); //Final Price aftr increasing qty
            }
                $.ajax({
-               type: "GET",
+               type: "POST",
             data: {'qty':finalqty,'productid':productid,'actualprice':finalprice},
             beforeSend: function () {
                  $('#response').html( "<img id='blur-bg' class='backgroundfadein' style='width: 50px; height:50 px; display: block; position:    fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
@@ -409,7 +412,7 @@ if (count($attributes) > 0) {
           var finalprice = $('#quatprice').val(incraesePrice).val(); //Final Price aftr increasing qty
            }
                $.ajax({
-               type: "GET",
+               type: "POST",
             data: {'qty':finalqty,'productid':productid,'actualprice':finalprice},
             beforeSend: function () {
                  $('#response').html( "<img id='blur-bg' class='backgroundfadein' style='width: 50px; height:50 px; display: block; position:    fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");

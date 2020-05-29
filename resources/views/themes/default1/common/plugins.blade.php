@@ -140,5 +140,14 @@ Payment Gateway
                 $('.loader').css('display', 'block');
             },
         });
+
+      
+    </script>
+    <script>
+           $(document).ready(function(){
+              $('#deactivate').click(function(){
+            alert('dsf');
+        })
+        })
     </script>
 @stop

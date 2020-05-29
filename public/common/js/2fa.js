@@ -59,7 +59,7 @@
                         $('#2fa-modal1').modal('hide');
                         $.ajax({
                             url : "2fa-recovery-code",
-                            method : 'get',
+                            method : 'post',
                             success: function(response){
                                 $('#next_rec_code').attr('disabled',true);
                                 $('#alertMessage').hide(); 
@@ -69,7 +69,7 @@
                                     $('#2fa-recover-code-modal').modal('hide');
                                     $.ajax({
                                         url : "2fa/enable",
-                                        method : 'get',
+                                        method : 'post',
                                         success: function(response) {
                                                $('#2fa-modal2').modal('show');
                                              $(".bar-code").attr("hidden",false);
@@ -163,7 +163,7 @@
                 $("#turnoff2fa").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait..");
                 $.ajax({
                     url : "2fa/disable",
-                    method : 'get',
+                    method : 'post',
                     success: function(response){
                         $("#turnoff2fa").attr('disabled',false);
                         $("#turnoff2fa").html("<i class='fa fa-power-off'></i>TURNED OFF");
@@ -195,7 +195,7 @@
             $("#generateNewCode").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
             $.ajax({
                 url: "2fa-recovery-code",
-                method: 'get',
+                method: 'post',
                 success: function(response){
                     $('#newrecoverycode').val(response.message.code)
                     $('#alertMessage4').hide();

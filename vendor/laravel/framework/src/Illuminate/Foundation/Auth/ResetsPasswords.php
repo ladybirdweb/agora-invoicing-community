@@ -2,6 +2,7 @@
 
 namespace Illuminate\Foundation\Auth;
 
+use App\User;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -24,9 +25,20 @@ trait ResetsPasswords
      */
     public function showResetForm(Request $request, $token = null)
     {
-       return view('themes.default1.front.auth.reset')->with(
-                ['token' => $token, 'email' => $request->email]
+        try {
+            $userId = \Session::get('2fa:user:id');
+            $user = User::find($userId);
+            if ($user && $user->is_2fa_enabled) {
+                \Session::put('reset_token',$token);
+                return redirect('verify-2fa');
+            }
+            return view('themes.default1.front.auth.reset')->with(
+                ['reset_token' => $token, 'email' => $request->email]
             );
+        } catch (\Exception $ex) {
+            return redirect('auth/login')->with('fails',$ex->getMessage());
+        }
+
     }
 
     /**
@@ -45,7 +57,8 @@ trait ResetsPasswords
                 //'email' => 'required|email',
                 'password' => 'required|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$/|
                confirmed',
-            ]);
+            ],
+                ['password.regex'=>'Your password must be more than 6 characters long, should contain at-least 1 Uppercase, 1 Lowercase, 1 Numeric and 1 special character.']);
             $token = $request->input('token');
             $pass = $request->input('password');
             $password = new \App\Model\User\Password();
@@ -62,13 +75,13 @@ trait ResetsPasswords
                     return redirect()->back()
                                     ->withInput($request->only('email'))
                                     ->withErrors([
-                                        'email' => 'Invalid email', ]);
+                                        'email' => 'User cannot be identified', ]);
                 }
             } else {
                 return redirect()->back()
                                 ->withInput($request->only('email'))
                                 ->withErrors([
-                                    'email' => 'Invalid email', ]);
+                                    'email' => 'Invalid token', ]);
             }
 
 

@@ -23,7 +23,7 @@ main
          
             <div class="row">
               <div class="col-lg-6 offset-lg-3">
-                    
+
                      <div id="alertMessage"></div>
                      <div id="error"></div>
                       
@@ -46,9 +46,10 @@ main
                               <button type="submit" class="btn btn-primary float-right" >
                                             Verify
                                 </button>
+                                    @if(!Session::has('reset_token'))
                                 <b>Having problems?</b><br>
                                  <a href="{{'recovery-code'}}" >Login using recovery code</a>
-                                
+                                @endif
                                 {!! Form::close() !!}
                            
                             </div>

@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
+use App\ApiKey;
+use App\Model\Common\StatusSetting;
 use Illuminate\Auth\Events\PasswordReset;
 
 trait ResetsPasswords
@@ -26,13 +28,16 @@ trait ResetsPasswords
     public function showResetForm(Request $request, $token = null)
     {
         try {
+            $captchaStatus = StatusSetting::pluck('recaptcha_status')->first();
+            $captchaKeys = ApiKey::select('nocaptcha_sitekey','captcha_secretCheck')->first();
+            $captchaSecretKey = ApiKey::pluck('captcha_secretCheck')->first();
             $userId = \Session::get('2fa:user:id');
             $user = User::find($userId);
             if ($user && $user->is_2fa_enabled) {
                 \Session::put('reset_token',$token);
                 return redirect('verify-2fa');
             }
-            return view('themes.default1.front.auth.reset')->with(
+            return view('themes.default1.front.auth.reset',compact('captchaKeys','captchaStatus'))->with(
                 ['reset_token' => $token, 'email' => $request->email]
             );
         } catch (\Exception $ex) {
@@ -49,16 +54,16 @@ trait ResetsPasswords
      */
         public function reset(Request $request)
         {
-
-
-
-                $this->validate($request, [
+            \Session::forget('reset_token');
+            $this->validate($request, [
                 'token' => 'required',
                 //'email' => 'required|email',
                 'password' => 'required|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$/|
-               confirmed',
-            ],
-                ['password.regex'=>'Your password must be more than 6 characters long, should contain at-least 1 Uppercase, 1 Lowercase, 1 Numeric and 1 special character.']);
+               confirmed', 'g-recaptcha-response' => 'sometimes|required|captcha'
+            ], ['password.regex'=>'Your password must be more than 6 characters long, should contain at-least 1 Uppercase, 1 Lowercase, 1 Numeric and 1 special character.'
+            ,'g-recaptcha-response.required'=>'Please verify that you are not a robot.',
+            'g-recaptcha-response.captcha' => 'Captcha error! try again later or contact site admin.'
+        ]);
             $token = $request->input('token');
             $pass = $request->input('password');
             $password = new \App\Model\User\Password();

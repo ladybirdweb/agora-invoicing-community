@@ -16,6 +16,7 @@ Reset Password
 main
 @stop
 @section('content')
+
 <div class="row">
     <div class="col-md-12">
 
@@ -55,6 +56,10 @@ main
                                 </div>
                             
                     </div>
+                            @if ($captchaStatus==1 && $captchaKeys->nocaptcha_sitekey != '00' && $captchaKeys->captcha_secretCheck != '00')
+                                {!! NoCaptcha::renderJs() !!}
+                                {!! NoCaptcha::display() !!}
+                            @endif
                             <div class="row">
                                 
                                

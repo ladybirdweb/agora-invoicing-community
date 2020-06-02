@@ -115,7 +115,7 @@ trait SendsPasswordResetEmails {
             $template = $templates->where('id', $temp_id)->first();
 
         $from = $setting->email;
-        
+        \Session::put('2fa:user:id', $user->id);
         $to = $user->email;
         $contactUs = $setting->website;
         $subject = $template->name;

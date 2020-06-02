@@ -95,8 +95,14 @@ class Google2FAController extends Controller
         $this->user = User::findorFail($userId);
         $secret = Crypt::decrypt($this->user->google2fa_secret);
         $checkValidPasscode = Google2FA::verifyKey($secret, $request->totp);
+
         //login and redirect user
         if ($checkValidPasscode) {
+            if(\Session::has('reset_token')){
+                $token = \Session::get('reset_token');
+                \Session::forget('2fa:user:id');
+                return redirect('password/reset/'.$token);
+            }
             \Auth::loginUsingId($userId);
 
             return redirect()->intended($this->redirectPath());

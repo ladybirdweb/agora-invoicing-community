@@ -143,11 +143,4 @@ Payment Gateway
 
       
     </script>
-    <script>
-           $(document).ready(function(){
-              $('#deactivate').click(function(){
-            alert('dsf');
-        })
-        })
-    </script>
 @stop

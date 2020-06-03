@@ -132,7 +132,7 @@ $sum = 0;
 
                   //
                 ?>
-                @if(count($gateways)>0 )
+                @if($gateways)
                 <div class="row">
 
 

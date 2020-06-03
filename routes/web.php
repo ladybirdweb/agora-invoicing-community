@@ -414,7 +414,8 @@
         Route::get('generate-keys', 'HomeController@createEncryptionKeys');
 
         Route::get('get-code', 'WelcomeController@getCode');
-        Route::get('get-currency', 'WelcomeController@getCurrency');
+        Route::get('get-currency', 'WelcomeController@getCurrency')->middleware('admin');
+        Route::post('dashboard-currency/{id}', 'Payment\CurrencyController@setDashboardCurrency');
          Route::get('get-country', 'WelcomeController@getCountry')->middleware('admin');
         Route::get('country-count', 'WelcomeController@countryCount')->name('country-count')->middleware('admin');
 

@@ -118,13 +118,13 @@ class SettingsController extends BaseSettingsController
             $name = '';
             $allAcivePluginName = [];
             $active_plugins = $plugins->where('status', 1)->get(); //get the plugins that are active
-            if ($active_plugins->count() > 0) {
+            if ($active_plugins) {
                 foreach ($active_plugins as $plugin) {
                     $models[] = \DB::table(strtolower($plugin->name))->first(); //get the table of the active plugin
                     $allCurrencies[] = \DB::table(strtolower($plugin->name))->pluck('currencies')->toArray(); //get the table of the active plugin
                     $pluginName[] = $plugin->name; //get the name of active plugin
                 }
-                if (count($models) > 0) {//If more than 1 plugin is active it will check the currencies allowed for that plugin.If the currencies allowed matches the passed arguement(currency),that plugin name is returned
+                if ($models) {//If more than 1 plugin is active it will check the currencies allowed for that plugin.If the currencies allowed matches the passed arguement(currency),that plugin name is returned
                     for ($i = 0; $i < count($pluginName); $i++) {
                         $curr = implode(',', $allCurrencies[$i]);
                         $currencies = explode(',', $curr);

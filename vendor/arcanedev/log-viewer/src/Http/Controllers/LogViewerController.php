@@ -50,6 +50,7 @@ class LogViewerController extends Controller
      */
     public function __construct(LogViewerContract $logViewer)
     {
+        $this->middleware('auth');
         $this->middleware('admin');
         $this->logViewer = $logViewer;
         $this->perPage = config('log-viewer.per-page', $this->perPage);

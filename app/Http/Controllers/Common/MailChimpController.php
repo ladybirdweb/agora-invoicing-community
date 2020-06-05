@@ -28,6 +28,7 @@ class MailChimpController extends BaseMailChimpController
 
     public function __construct()
     {
+        $this->middleware('auth');
         $mailchimp_set = new MailchimpSetting();
         $this->mailchimp_set = $mailchimp_set->firstOrFail();
         $this->mail_api_key = $this->mailchimp_set->api_key;

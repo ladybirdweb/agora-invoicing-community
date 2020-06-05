@@ -308,8 +308,8 @@ if (count($attributes) > 0) {
          var finalAgtprice = $('#agentprice').val(actualAgentPrice * 2 ).val(); //Final Price aftr increasing qty
            }
                $.ajax({
-               type: "POST",
-            data:{'symbol':symbol,'currency':currency,'agtQty':finalAgtqty,'productid':productid,'actualAgentprice':finalAgtprice},
+                type: "POST",
+                data:{'productid':productid},
              beforeSend: function () {
                  $('#response').html( "<img id='blur-bg' class='backgroundfadein' style='width: 50px; height:50 px; display: block; position:    fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
 
@@ -348,7 +348,7 @@ if (count($attributes) > 0) {
            }
                $.ajax({
                type: "POST",
-            data:{'symbol':symbol,'currency':currency,'agtQty':finalAgtqty,'productid':productid,'actualAgentprice':finalAgtprice},
+            data:{'productid':productid},
             beforeSend: function () {
                  $('#response').html( "<img id='blur-bg' class='backgroundfadein' style='top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
                 },
@@ -371,20 +371,12 @@ if (count($attributes) > 0) {
         *Increse Product Quantity
          */  
         $('#quantityplus').on('click',function(){
-        var $qty=$(this).parents('.quantity').find('.qty');
         var $productid = $(this).parents('.quantity').find('.productid');
-        var $price = $(this).parents('.quantity').find('.quatprice');
         var productid = parseInt($productid.val()); //get Product Id
-        var currentQty = parseInt($qty.val()); //Get Current Quantity of Prduct
-        var incraesePrice = parseInt($price.val()); //Get Initial Price of Prduct
         // console.log(productid,currentVal,actualprice);
-        if (!isNaN(currentQty)) {
-         var finalqty = $('#qty').val(currentQty +1 ).val() ; //Quantity After Increasing
-         var finalprice = $('#quatprice').val(incraesePrice).val(); //Final Price aftr increasing qty
-           }
                $.ajax({
                type: "POST",
-            data: {'qty':finalqty,'productid':productid,'actualprice':finalprice},
+            data: {'productid':productid},
             beforeSend: function () {
                  $('#response').html( "<img id='blur-bg' class='backgroundfadein' style='width: 50px; height:50 px; display: block; position:    fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
             },
@@ -406,14 +398,13 @@ if (count($attributes) > 0) {
         var productid = parseInt($productid.val()); //get Product Id
         var currentQty = parseInt($qty.val()); //Get Current Quantity of Prduct
         var incraesePrice = parseInt($price.val()); //Get Initial Price of Prduct
-        // console.log(productid,currentVal,actualprice);
         if (!isNaN(currentQty)) {
          var finalqty = $('#qty').val(currentQty -1 ).val() ; //Quantity After Increasing
           var finalprice = $('#quatprice').val(incraesePrice).val(); //Final Price aftr increasing qty
            }
                $.ajax({
                type: "POST",
-            data: {'qty':finalqty,'productid':productid,'actualprice':finalprice},
+            data: {'productid':productid},
             beforeSend: function () {
                  $('#response').html( "<img id='blur-bg' class='backgroundfadein' style='width: 50px; height:50 px; display: block; position:    fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
             },

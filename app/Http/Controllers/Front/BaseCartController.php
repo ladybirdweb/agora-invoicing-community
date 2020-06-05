@@ -188,10 +188,11 @@ class BaseCartController extends ExtendedBaseCartController
     public function reduceAgentQty(Request $request)
     {
         $id = $request->input('productid');
-        $agtqty = $request->input('agtQty');
-        $price = $request->input('actualAgentprice');
-        $currency = $request->input('currency');
-        $symbol = $request->input('symbol');
+        $cart = \Cart::get($id);
+        $agtqty = $cart->attributes->agents / 2;
+        $price = \Cart::getTotal() / 2;
+        $currency = $cart->attributes->currency['currency'];
+        $symbol = $cart->attributes->currency['symbol'];
         Cart::update($id, [
             'price'    => $price,
             'attributes' => ['agents' => $agtqty, 'currency'=>['currency'=>$currency, 'symbol'=>$symbol]],
@@ -210,10 +211,11 @@ class BaseCartController extends ExtendedBaseCartController
     public function updateAgentQty(Request $request)
     {
         $id = $request->input('productid');
-        $agtqty = $request->input('agtQty');
-        $price = $request->input('actualAgentprice');
-        $currency = $request->input('currency');
-        $symbol = $request->input('symbol');
+        $cart = \Cart::get($id);
+        $agtqty = $cart->attributes->agents * 2;
+        $price = \Cart::getTotal() *2;
+        $currency = $cart->attributes->currency['currency'];
+        $symbol = $cart->attributes->currency['symbol'];
         Cart::update($id, [
             'price'      => $price,
             'attributes' => ['agents' =>  $agtqty, 'currency'=>['currency'=>$currency, 'symbol'=>$symbol]],
@@ -232,8 +234,9 @@ class BaseCartController extends ExtendedBaseCartController
     public function reduceProductQty(Request $request)
     {
         $id = $request->input('productid');
-        $qty = $request->input('qty');
-        $price = $request->input('actualprice');
+        $cart = \Cart::get($id);
+        $qty = $cart->quantity - 1;
+        $price = $this->cost($id);
         Cart::update($id, [
             'quantity' => -1,
             'price'    => $price,
@@ -252,9 +255,10 @@ class BaseCartController extends ExtendedBaseCartController
     public function updateProductQty(Request $request)
     {
         $id = $request->input('productid');
-        $qty = $request->input('qty');
-        $price = $request->input('actualprice');
-        Cart::update($id, [
+        $cart = \Cart::get($id);
+        $qty = $cart->quantity + 1;
+        $price = $this->cost($id) ;
+         Cart::update($id, [
             'quantity' => [
                 'relative' => false,
                 'value'    => $qty,

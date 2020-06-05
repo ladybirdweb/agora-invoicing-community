@@ -14,6 +14,11 @@ use Crypt;
 
 class BaseOrderController extends ExtendedOrderController
 {
+    public function __construct(){
+        $this->middleware('auth');
+        $this->middleware('admin');
+    }
+
     use UpdateDates;
 
     public function getUrl($model, $status, $subscriptionId)

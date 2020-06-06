@@ -9,6 +9,7 @@ use App\Model\Payment\TaxProductRelation;
 use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
 use Bugsnag;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class ExtendedBaseProductController extends Controller
@@ -134,10 +135,10 @@ class ExtendedBaseProductController extends Controller
         }
     }
 
-    public function adminDownload($id, $invoice = '')
+    public function adminDownload($id, $invoice = '',  $api= false)
     {
         try {
-            if ($this->downloadValidation(true, $id, $invoice)) {
+            if ($this->downloadValidation(true, $id, $invoice, $api)) {
                 $release = $this->downloadProductAdmin($id);
                 $name = Product::where('id', $id)->value('name');
                 if (is_array($release) && array_key_exists('type', $release)) {
@@ -171,11 +172,23 @@ class ExtendedBaseProductController extends Controller
      * @param  bool $allowDownload
      * @return bool
      */
-    private function downloadValidation(bool $allowDownload, $id, $invoice)
+    private function downloadValidation(bool $allowDownload, $id, $invoice, $api)
     {
-        if (\Auth::user()->role == 'user') {
-            $invoice = Invoice::where('number', $invoice)->first(); //If invoice number sent as parameter exists
-        $allowDownload = $invoice ? $invoice->order()->value('product') == $id : false; //If the order for the product sent in the parameter exists
+        if($api == false) {
+            if (\Auth::user()->role == 'user') {
+                $invoice = Invoice::where('number', $invoice)->first(); //If invoice number sent as parameter exists
+                $checkSubscription = $invoice->order()->first()->subscription;
+                if($checkSubscription) {
+
+                    if (strtotime($checkSubscription->update_ends_at) > 1) {
+
+                        if ($checkSubscription->update_ends_at < (new Carbon())->toDateTimeString()) {
+                            throw new \Exception('Please renew your subscription to download');
+                        }
+                    }
+                }
+                $allowDownload = $invoice ? $invoice->order()->value('product') == $id : false; //If the order for the product sent in the parameter exists
+            }
         }
 
         return $allowDownload;

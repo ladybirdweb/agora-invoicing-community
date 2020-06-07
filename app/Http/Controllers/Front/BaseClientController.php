@@ -227,9 +227,12 @@ class BaseClientController extends Controller
     {
         try {
             $invoice = $this->invoice->findOrFail($id);
+            $user = \Auth::user();
+            if($invoice->user_id != $user->id) {
+                throw new \Exception('Cannot view invoice. Invalid modification of data.');
+            }
             $items = $invoice->invoiceItem()->get();
             $order = getOrderLink($invoice->orderRelation()->value('order_id'), 'my-order');
-            $user = \Auth::user();
             $currency = CartController::currency($user->id);
             $symbol = $currency['symbol'];
 

@@ -273,6 +273,10 @@ class RenewController extends BaseRenewController
 
     public function renewByClient($id, Request $request)
     {
+        $userId = Subscription::find($id)->user_id;
+        if(\Auth::user()->role != 'admin' && $userId != \Auth::user()->id) {
+            throw new \Exception('Permission denied. Invalid modification of data');
+        }
         $this->validate($request, [
             'plan'           => 'required',
             'cost'           => 'required',

@@ -233,7 +233,6 @@ if($script){
                                                                             if ($product->require_domain == 1) {
                                                                                 $domain[$key] = $item->id;
                                                                             }
-                                                                            // dd('sads')
                                                                             $cart_controller = new \App\Http\Controllers\Front\CartController();
                                                                             $currency = $cart_controller->currency();
                                                                             $currency =  $currency['currency'];

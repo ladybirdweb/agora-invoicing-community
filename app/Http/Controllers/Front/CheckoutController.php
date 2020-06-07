@@ -167,6 +167,9 @@ class CheckoutController extends InfoController
     {
         try {
             $invoice = $this->invoice->find($invoiceid);
+            if($invoice->user_id != \Auth::user()->id) {
+                throw new \Exception('Cannot initiate payment. Invalid modification of data');
+            }
             $items = new \Illuminate\Support\Collection();
             // dd($items);
             if ($invoice) {

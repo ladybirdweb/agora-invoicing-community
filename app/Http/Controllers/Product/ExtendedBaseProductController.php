@@ -157,7 +157,6 @@ class ExtendedBaseProductController extends Controller
             }
         } catch (\Exception $e) {
             Bugsnag::notifyException($e);
-
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
@@ -176,23 +175,32 @@ class ExtendedBaseProductController extends Controller
     {
         if($api == false) {
             if (\Auth::user()->role == 'user') {
+                $checkSubscription = false;
                 $invoice = Invoice::where('number', $invoice)->first(); //If invoice number sent as parameter exists
-                $checkSubscription = $invoice->order()->first()->subscription;
-                if($checkSubscription) {
-
-                    if (strtotime($checkSubscription->update_ends_at) > 1) {
-
-                        if ($checkSubscription->update_ends_at < (new Carbon())->toDateTimeString()) {
-                            throw new \Exception('Please renew your subscription to download');
-                        }
-                    }
-                }
+                $this->checkSubscriptionExpiry($invoice);
                 $allowDownload = $invoice ? $invoice->order()->value('product') == $id : false; //If the order for the product sent in the parameter exists
             }
         }
-
         return $allowDownload;
     }
+
+    public function checkSubscriptionExpiry($invoice)
+    {
+        $checkSubscription = false;
+        if($invoice) {
+            $checkSubscription = $invoice->order()->first() ? $invoice->order()->first()->subscription : false;
+        }
+        if($checkSubscription) {
+
+            if (strtotime($checkSubscription->update_ends_at) > 1) {
+
+                if ($checkSubscription->update_ends_at < (new Carbon())->toDateTimeString()) {
+                    throw new \Exception('Please renew your subscription to download');
+                }
+            }
+        }
+    }
+
 
     /**
      * Save Values Related to Cart(eg: whether show Agents or Quantity in Cart etc).

@@ -244,7 +244,7 @@ class CheckoutController extends InfoController
                 $content = Cart::getContent();
                 $attributes = $this->getAttributes($content);
             }
-            if (Cart::getSubTotal() != 0 || $cost > 0) {
+            if (Cart::getSubTotal() != 0 || $amount > 0) {
                 if ($payment_method == 'razorpay') {
                     $rzp_key = ApiKey::where('id', 1)->value('rzp_key');
                     $rzp_secret = ApiKey::where('id', 1)->value('rzp_secret');
@@ -317,12 +317,21 @@ class CheckoutController extends InfoController
 
     public function checkregularPaymentOrRenewal($invoiceid)
     {
-        $paynow = false;
-        if ($invoiceid) {
-            $paynow = true;
+        try {
+            $paynow = false;
+
+            if ($invoiceid) {
+                if(Invoice::find($invoiceid)->user_id != \Auth::user()->id) {
+                    throw new \Exception('Invalid modification of data');
+                }
+                $paynow = true;
+            }
+
+            return $paynow;
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails',$ex->getMessage());
         }
 
-        return $paynow;
     }
 
     public function checkoutAction($invoice)

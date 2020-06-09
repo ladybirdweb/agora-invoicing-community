@@ -544,7 +544,7 @@ if($script){
       $.ajax({
         type: 'POST',
         url: '{{url("mail-chimp/subcribe")}}',
-        data: {'email' : email},
+        data: {'email' : email,'_token': "{!! csrf_token() !!}"},
         success: function(data){
           $("#mailchimp-subscription").html("Go");
            $('#mailchimp-message').show();

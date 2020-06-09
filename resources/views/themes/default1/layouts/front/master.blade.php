@@ -603,7 +603,10 @@ if($script){
      function removeItem(id) {
             $.ajax({
               type: "POST",
-              data:"id=" + id,
+                data:{
+                    "id": id,
+                    "_token": "{!! csrf_token() !!}",
+                },
               url: "{{url('cart/remove/')}}",
               success: function (data) {
                   location.reload();

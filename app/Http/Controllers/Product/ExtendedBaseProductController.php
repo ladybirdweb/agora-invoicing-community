@@ -198,6 +198,8 @@ class ExtendedBaseProductController extends Controller
                     throw new \Exception('Please renew your subscription to download');
                 }
             }
+        } else {
+            throw new \Exception('No order exists for this invoice.');
         }
     }
 

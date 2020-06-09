@@ -167,8 +167,8 @@ class BaseProductController extends ExtendedBaseProductController
             $this->checkSubscriptionExpiry($invoice);
             if ($user && $invoice) {
                 if ($user->active == 1) {
-                    $order = $invoice->order()->orderBy('id', 'desc')->select('product')->first();
-                    $product_id = $order->product;
+                    dd($invoice->order->product);
+                    $product_id = $invoice->order()->value('product');
                     $name = Product::where('id', $product_id)->value('name');
                     $invoice_id = $invoice->id;
                     $release = $this->downloadProduct($uploadid, $userid, $invoice_id, $version_id);

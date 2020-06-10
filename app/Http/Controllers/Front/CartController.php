@@ -102,7 +102,7 @@ class CartController extends BaseCartController
                 Session::put('plan', $plan);
             }
             $id = $request->input('id');
-            if (! array_key_exists($id, Cart::getContent())) {
+            if (! property_exists($id, Cart::getContent())) {
                 $items = $this->addProduct($id);
                 \Cart::add($items); //Add Items To the Cart Collection
             }

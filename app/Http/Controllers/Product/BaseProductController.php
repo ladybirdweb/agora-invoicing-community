@@ -164,11 +164,10 @@ class BaseProductController extends ExtendedBaseProductController
 
             $invoice = new \App\Model\Order\Invoice();
             $invoice = $invoice->where('number', $invoice_number)->first();
-
+            $this->checkSubscriptionExpiry($invoice);
             if ($user && $invoice) {
                 if ($user->active == 1) {
-                    $order = $invoice->order()->orderBy('id', 'desc')->select('product')->first();
-                    $product_id = $order->product;
+                    $product_id = $invoice->order()->value('product');
                     $name = Product::where('id', $product_id)->value('name');
                     $invoice_id = $invoice->id;
                     $release = $this->downloadProduct($uploadid, $userid, $invoice_id, $version_id);
@@ -187,16 +186,16 @@ class BaseProductController extends ExtendedBaseProductController
                         // flush();
                     }
                 } else {
-                    return redirect('auth/login')->with('fails', \Lang::get('activate-your-account'));
+                    return redirect()->back()->with('fails', \Lang::get('activate-your-account'));
                 }
             } else {
-                return redirect('auth/login')->with('fails', \Lang::get('please-purcahse-a-product'));
+                throw new \Exception(\Lang::get('message.no_permission_for_action'));
             }
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
 
-            return redirect('auth/login')->with('fails', $ex->getMessage());
+            return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 

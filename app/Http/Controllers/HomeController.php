@@ -355,7 +355,9 @@ class HomeController extends BaseHomeController
                 $product_id = $this_order->product;
                 $product_controller = new \App\Http\Controllers\Product\ProductController();
 
-                return $product_controller->adminDownload($product_id, true);
+                return $product_controller->adminDownload($product_id, '', true);
+            } else {
+                return response()->json(['Invalid Credentials']);
             }
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage(), 'line' => $e->getFile()], 500);

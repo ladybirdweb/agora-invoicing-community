@@ -413,14 +413,4 @@ class AuthController extends BaseAuthController
             // $template_controller->mailing($from, $to, $template_data, $template_name, $replace, 'account__manager_email',$bcc);
         }
     }
-
-    public function updateUserEmail(Request $request)
-    {
-        $email = $request->oldemail;
-        $newEmail = $request->newemail;
-        User::where('email', $email)->update(['email'=>$newEmail]);
-        $message = 'User email updated successfully';
-
-        return $message;
-    }
 }

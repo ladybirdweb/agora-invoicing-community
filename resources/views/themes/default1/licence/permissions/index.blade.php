@@ -154,7 +154,7 @@ License Permissions
                 if(permissionid.length > 0) {
                  $.ajax({
                         url:"{!! route('add-permission') !!}",
-                         method: "get",
+                         method: "delete",
                          data: { 'licenseId': licenseTypeId ,'permissionid' : permissionid },
                         beforeSend: function () {
                        $('#permissionresponse').html( "<img id='blur-bg' class='backgroundfadein' style='top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");

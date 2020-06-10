@@ -274,7 +274,7 @@ function move() {
 
                         <li>
                             <a href="{{url('my-invoices')}}">
-                                <i class="fa fa-external-link"></i> <span>Goto Client Panel</span>
+                                <i class="fa fa-external-link"></i> <span>Go to Client Panel</span>
                             </a>
                         </li>
                         

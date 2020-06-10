@@ -149,7 +149,7 @@ class BaseAuthController extends Controller
             $activate_model = new AccountActivate();
             $user = $user->where('email', $email)->first();
             if (! $user) {
-                return redirect()->back()->with('fails', 'Invalid Email');
+                throw new \Exception('User with this email does not exist');
             }
 
             if ($method == 'GET') {
@@ -211,21 +211,23 @@ class BaseAuthController extends Controller
         }
     }
 
-    protected function addToPipedrive($user)
+    protected function addUserToPipedrive($user, $pipeDriveStatus)
     {
-        $token = ApiKey::pluck('pipedrive_api_key')->first();
-        $result = $this->searchUserPresenceInPipedrive($user->email, $token);
-        if (! $result) {
-            $countryFullName = Country::where('country_code_char2', $user->country)->pluck('nicename')->first();
-            $pipedrive = new \Devio\Pipedrive\Pipedrive($token);
-            $orgId = $pipedrive->organizations->add(['name'=>$user->company])->getContent()->data->id;
-            $person = $pipedrive->persons()->add(['name' => $user->first_name.' '.$user->last_name, 'email'=>$user->email,
-                'phone'                                  => '+'.$user->mobile_code.$user->mobile, 'org_id'=>$orgId, ]);
+        if ($pipeDriveStatus) {
+            $token = ApiKey::pluck('pipedrive_api_key')->first();
+            $result = $this->searchUserPresenceInPipedrive($user->email, $token);
+            if (! $result) {
+                $countryFullName = Country::where('country_code_char2', $user->country)->pluck('nicename')->first();
+                $pipedrive = new \Devio\Pipedrive\Pipedrive($token);
+                $orgId = $pipedrive->organizations->add(['name'=>$user->company])->getContent()->data->id;
+                $person = $pipedrive->persons()->add(['name' => $user->first_name.' '.$user->last_name, 'email'=>$user->email,
+                    'phone'                                  => '+'.$user->mobile_code.$user->mobile, 'org_id'=>$orgId, ]);
 
-            // $person = $pipedrive->persons()->add(['name' => $user->first_name .' '. $user->last_name,'email'=>$user->email,
-            //     'phone'=>'+'.$user->mobile_code.$user->mobile,'org_id'=>$orgId,'af1c1908b70a61f2baf8b33a975a185cce1aefe5'=>$countryFullName]);
-            $personId = $person->getContent()->data->id;
-            $organization = $pipedrive->deals()->add(['title'=>$user->company.' '.'deal', 'person_id'=>$personId, 'org_id'=>$orgId]);
+                // $person = $pipedrive->persons()->add(['name' => $user->first_name .' '. $user->last_name,'email'=>$user->email,
+                //     'phone'=>'+'.$user->mobile_code.$user->mobile,'org_id'=>$orgId,'af1c1908b70a61f2baf8b33a975a185cce1aefe5'=>$countryFullName]);
+                $personId = $person->getContent()->data->id;
+                $organization = $pipedrive->deals()->add(['title'=>$user->company.' '.'deal', 'person_id'=>$personId, 'org_id'=>$orgId]);
+            }
         }
     }
 
@@ -243,5 +245,39 @@ class BaseAuthController extends Controller
         curl_close($ch);
 
         return json_decode($result)->data->items;
+    }
+
+    protected function addUserToZoho($user, $zohoStatus)
+    {
+        if ($zohoStatus) {
+            $zoho = $this->reqFields($user, $user->email);
+            $auth = ApiKey::where('id', 1)->value('zoho_api_key');
+            $zohoUrl = 'https://crm.zoho.com/crm/private/xml/Leads/insertRecords??duplicateCheck=1&';
+            $query = 'authtoken='.$auth.'&scope=crmapi&xmlData='.$zoho;
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $zohoUrl);
+            /* allow redirects */
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+            /* return a response into a variable */
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            /* times out after 30s */
+            curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+            /* set POST method */
+            curl_setopt($ch, CURLOPT_POST, 1);
+            /* add POST fields parameters */
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $query); // Set the request as a POST FIELD for curl.
+
+            //Execute cUrl session
+            $response = curl_exec($ch);
+            curl_close($ch);
+        }
+    }
+
+    protected function addUserToMailchimp($user, $mailchimpStatus)
+    {
+        if ($mailchimpStatus) {
+            $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
+            $mailchimp->addSubscriber($user->email);
+        }
     }
 }

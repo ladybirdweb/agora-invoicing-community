@@ -669,7 +669,7 @@ Sign in or Register
                 };
                 $.ajax({
                     url: '{{url('otp/verify')}}',
-                    type: 'GET',
+                    type: 'POST',
                     data: data,
                     success: function (response) {
                         $("#verifyOtp").attr('disabled',false);
@@ -926,7 +926,7 @@ Sign in or Register
                 };
                 $.ajax({
                     url: '{{url('otp/sendByAjax')}}',
-                    type: 'GET',
+                    type: 'POST',
                     data: data,
                     success: function (response) {
                         // window.history.replaceState(response.type, "TitleTest", "login");
@@ -1461,7 +1461,7 @@ Sign in or Register
                 $("#register").html("<i class='fas fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
                 $.ajax({
                     url: '{{url("auth/register")}}',
-                    type: 'post',
+                    type: 'POST',
                     data: {
                         "first_name": $('#first_name').val(),
                         "last_name": $('#last_name').val(),

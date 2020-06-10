@@ -325,6 +325,7 @@ Edit Profile
 
             </div>
         </div>
+         {!! Form::close() !!}
     </div>
     @include('themes.default1.user.2faModals')
    

@@ -234,7 +234,7 @@ $(document).ready(function (){
              var githubstatus = 1;
            if ($('#git_username').val() == "") { //if value is not entered
             $('#user').show();
-            $('#user').html("Please Enter ithub Username");
+            $('#user').html("Please Enter github Username");
             $('#git_username').css("border-color","red");
             $('#user').css({"color":"red","margin-top":"5px"});
             return false;
@@ -271,7 +271,7 @@ $(document).ready(function (){
     $("#submit").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");   
     $.ajax ({
       url: '{{url("github-setting")}}',
-      type : 'get',
+      type : 'post',
       data: {
        "status": githubstatus,
        "git_username": $('#git_username').val(),"git_password" : $('#git_password').val() ,

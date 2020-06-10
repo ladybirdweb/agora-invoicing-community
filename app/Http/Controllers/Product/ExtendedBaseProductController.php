@@ -175,7 +175,6 @@ class ExtendedBaseProductController extends Controller
     {
         if($api == false) {
             if (\Auth::user()->role == 'user') {
-                $checkSubscription = false;
                 $invoice = Invoice::where('number', $invoice)->first(); //If invoice number sent as parameter exists
                 $this->checkSubscriptionExpiry($invoice);
                 $allowDownload = $invoice ? $invoice->order()->value('product') == $id : false; //If the order for the product sent in the parameter exists
@@ -186,21 +185,23 @@ class ExtendedBaseProductController extends Controller
 
     public function checkSubscriptionExpiry($invoice)
     {
-        $checkSubscription = false;
-        if($invoice) {
-            $checkSubscription = $invoice->order()->first() ? $invoice->order()->first()->subscription : false;
-        }
-        if($checkSubscription) {
-
-            if (strtotime($checkSubscription->update_ends_at) > 1) {
-
-                if ($checkSubscription->update_ends_at < (new Carbon())->toDateTimeString()) {
-                    throw new \Exception('Please renew your subscription to download');
+            $checkSubscription = false;
+            if($invoice) {
+                if($invoice->user_id != \Auth::user()->id) {
+                    throw new \Exception('Invalid modification of data. This user does not have permission for this action.');
                 }
+                $checkSubscription = $invoice->order()->first() ? $invoice->order()->first()->subscription : false;
             }
-        } else {
-            throw new \Exception('No order exists for this invoice.');
-        }
+            if($checkSubscription) {
+                if (strtotime($checkSubscription->update_ends_at) > 1) {
+                    if ($checkSubscription->update_ends_at < (new Carbon())->toDateTimeString()) {
+                        throw new \Exception('Please renew your subscription to download');
+                    }
+                }
+            } else {
+                throw new \Exception('No order exists for this invoice.');
+            }
+
     }
 
 

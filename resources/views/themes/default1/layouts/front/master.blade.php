@@ -206,7 +206,7 @@ if($script){
                                                         </a>
                                                         <ul class="dropdown-menu">
                                                           @if(Auth::user()->role == 'admin')
-                                                          <li><a class="dropdown-item" href="{{url('/')}}">Goto Admin Panel</a></li>
+                                                          <li><a class="dropdown-item" href="{{url('/')}}">Go to Admin Panel</a></li>
                                                           @endif
                                                             <li><a class="dropdown-item" href="{{url('my-orders')}}">My Orders</a></li>
                                                             <li><a class="dropdown-item" href="{{url('my-invoices')}}">My Invoices</a></li>
@@ -233,7 +233,6 @@ if($script){
                                                                             if ($product->require_domain == 1) {
                                                                                 $domain[$key] = $item->id;
                                                                             }
-                                                                            // dd('sads')
                                                                             $cart_controller = new \App\Http\Controllers\Front\CartController();
                                                                             $currency = $cart_controller->currency();
                                                                             $currency =  $currency['currency'];
@@ -362,7 +361,7 @@ if($script){
                 @if(Session::has('fails'))
                  <div class="alert alert-danger alert-dismissable" role="alert">
                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <strong><i class="fas fa-exclamation-triangle"></i>Oh snap!</strong> Change a few things up and try submitting again.
+                    <strong><i class="fas fa-exclamation-triangle"></i>Oh snap!</strong>
                     {{Session::get('fails')}}
                 </div>
                 @endif
@@ -543,9 +542,9 @@ if($script){
       var email = $('#newsletterEmail').val();
       $('#mailchimp-subscription').html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
       $.ajax({
-        type: 'GET',
+        type: 'POST',
         url: '{{url("mail-chimp/subcribe")}}',
-        data: {'email' : email,'_token':"{{csrf_token()}}"},
+        data: {'email' : email,'_token': "{!! csrf_token() !!}"},
         success: function(data){
           $("#mailchimp-subscription").html("Go");
            $('#mailchimp-message').show();
@@ -603,8 +602,11 @@ if($script){
 
      function removeItem(id) {
             $.ajax({
-              type: "GET",
-              data:"id=" + id,
+              type: "POST",
+                data:{
+                    "id": id,
+                    "_token": "{!! csrf_token() !!}",
+                },
               url: "{{url('cart/remove/')}}",
               success: function (data) {
                   location.reload();

@@ -139,17 +139,17 @@
       <h4 class="modal-title">Set up Authenticator</h4>
     </div>
     <div class="modal-body modal-body-spacing">
+        {!! Form::label('name',Lang::get('message.enter_6_digit_code'),['class'=>'required']) !!}
        <div class="row">         
     
         <div class="col-sm-8 text-left form-group form-field-template">
-          {!! Form::label('name',Lang::get('message.enter_6_digit_code'),['class'=>'required']) !!}
-          <div>
-          <input type="text" name="password" style="margin-top: 3px;" id="passcode"  placeholder="Enter Passcode..." class="form-control" required="required">
-        </div>
+        
+          <input type="text" name="password" id="passcode"  placeholder="Enter Passcode..." class="form-control" required="required">
         <span id="passcodeerror"></span>
         </div>
-          <div class="col-sm-3">
-          <button type="button" id="pass_btn" style="margin-top:30px" class="btn btn-primary pull-right float-right">
+          <div class="col-sm-4">
+           
+          <button type="button" id="pass_btn" class="btn btn-primary pull-right float-right">
             <i class="fa fa-check"></i> Verify 
           </button>
         </div>

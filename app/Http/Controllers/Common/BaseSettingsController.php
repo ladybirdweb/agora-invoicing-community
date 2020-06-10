@@ -15,6 +15,11 @@ class BaseSettingsController extends PaymentSettingsController
 {
     use ApiKeySettings;
 
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('admin');
+    }
     /**
      * Get the logged activity.
      */

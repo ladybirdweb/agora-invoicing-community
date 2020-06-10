@@ -559,7 +559,7 @@ Order Details
         var newdate = $("#newDate").val();
         var orderId = $("#order").val();
         $.ajax({
-            type: "get",
+            type: "post",
             data: {'orderid': orderId , 'date': newdate},
             url: "{{url('edit-update-expiry')}}",
             success: function (response) {
@@ -612,7 +612,7 @@ Order Details
         var newdate = $("#newDate2").val();
         var orderId = $("#order2").val();
         $.ajax({
-            type: "get",
+            type: "post",
             data: {'orderid': orderId , 'date': newdate},
             url: "{{url('edit-license-expiry')}}",
             success: function (response) {
@@ -665,7 +665,7 @@ Order Details
         var newdate = $("#newDate3").val();
         var orderId = $("#order3").val();
         $.ajax({
-            type: "get",
+            type: "post",
             data: {'orderid': orderId , 'date': newdate},
             url: "{{url('edit-support-expiry')}}",
             success: function (response) {
@@ -717,7 +717,7 @@ Order Details
         var newlimit = $("#limitnumber").val();
         var orderId = $("#order5").val();
         $.ajax({
-            type: "get",
+            type: "post",
             data: {'orderid': orderId , 'limit': newlimit},
             url: "{{url('edit-installation-limit')}}",
              beforeSend: function () {

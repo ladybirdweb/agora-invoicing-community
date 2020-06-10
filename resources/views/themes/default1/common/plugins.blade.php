@@ -140,5 +140,7 @@ Payment Gateway
                 $('.loader').css('display', 'block');
             },
         });
+
+      
     </script>
 @stop

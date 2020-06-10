@@ -187,17 +187,19 @@ class BaseCartController extends ExtendedBaseCartController
      */
     public function reduceAgentQty(Request $request)
     {
-        $id = $request->input('productid');
-        $agtqty = $request->input('agtQty');
-        $price = $request->input('actualAgentprice');
-        $currency = $request->input('currency');
-        $symbol = $request->input('symbol');
-        Cart::update($id, [
-            'price'    => $price,
-            'attributes' => ['agents' => $agtqty, 'currency'=>['currency'=>$currency, 'symbol'=>$symbol]],
-        ]);
+        try {
+            $id = $request->input('productid');
+            $cartValues = $this->getCartValues($id, true);
+            Cart::update($id, [
+                'price'      => $cartValues['price'],
+                'attributes' => ['agents' =>  $cartValues['agtqty'], 'currency'=> ['currency'=>$cartValues['currency'], 'symbol'=>$cartValues['symbol']]],
+            ]);
 
-        return 'success';
+            return successResponse('Cart updated successfully');
+        } catch (\Exception $ex) {
+            return errorResponse($ex->getMessage());
+        }
+
     }
 
     /**
@@ -209,17 +211,44 @@ class BaseCartController extends ExtendedBaseCartController
      */
     public function updateAgentQty(Request $request)
     {
-        $id = $request->input('productid');
-        $agtqty = $request->input('agtQty');
-        $price = $request->input('actualAgentprice');
-        $currency = $request->input('currency');
-        $symbol = $request->input('symbol');
-        Cart::update($id, [
-            'price'      => $price,
-            'attributes' => ['agents' =>  $agtqty, 'currency'=>['currency'=>$currency, 'symbol'=>$symbol]],
-        ]);
+        try {
+            $id = $request->input('productid');
+            $cartValues = $this->getCartValues($id);
+            Cart::update($id, [
+                'price'      => $cartValues['price'],
+                'attributes' => ['agents' =>  $cartValues['agtqty'], 'currency'=> ['currency'=>$cartValues['currency'], 'symbol'=>$cartValues['symbol']]],
+            ]);
 
-        return 'success';
+            return successResponse('Cart updated successfully');
+        } catch (\Exception $ex) {
+            return errorResponse($ex->getMessage());
+        }
+    }
+
+    private function getCartValues($productId, $canReduceAgent= false)
+    {
+        $cart = \Cart::get($productId);
+        $hasPermissionToModifyAgent = Product::find($productId)->can_modify_agent;
+        if ($cart) {
+            $agtqty = $cart->attributes->agents;
+            $price = \Cart::getTotal();
+            $currency = $cart->attributes->currency['currency'];
+            $symbol = $cart->attributes->currency['symbol'];
+        } else {
+            throw new \Exception('Product not present in cart.');
+        }
+
+        if($hasPermissionToModifyAgent) {
+            if($canReduceAgent) {
+                $agtqty = $agtqty / 2;
+                $price = \Cart::getTotal() /2;
+            } else {
+                $agtqty = $agtqty * 2;
+                $price = \Cart::getTotal() * 2;
+            }
+
+        }
+        return (['agtqty'=>$agtqty, 'price'=>$price, 'currency'=>$currency, 'symbol'=>$symbol]);
     }
 
     /**
@@ -232,8 +261,9 @@ class BaseCartController extends ExtendedBaseCartController
     public function reduceProductQty(Request $request)
     {
         $id = $request->input('productid');
-        $qty = $request->input('qty');
-        $price = $request->input('actualprice');
+        $cart = \Cart::get($id);
+        $qty = $cart->quantity - 1;
+        $price = $this->cost($id);
         Cart::update($id, [
             'quantity' => -1,
             'price'    => $price,
@@ -252,9 +282,10 @@ class BaseCartController extends ExtendedBaseCartController
     public function updateProductQty(Request $request)
     {
         $id = $request->input('productid');
-        $qty = $request->input('qty');
-        $price = $request->input('actualprice');
-        Cart::update($id, [
+        $cart = \Cart::get($id);
+        $qty = $cart->quantity + 1;
+        $price = $this->cost($id) ;
+         Cart::update($id, [
             'quantity' => [
                 'relative' => false,
                 'value'    => $qty,

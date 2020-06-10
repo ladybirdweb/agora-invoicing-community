@@ -90,9 +90,6 @@ Mailchimp Settings
 
 
                                 </div>
-                                <!--                                <div class="col-md-6">
-                                                                    <a href="{{url('mail-chimp/add-lists')}}" class="btn btn-primary">{{Lang::get('message.add-mailchimp-lists-to-agora')}}</a>
-                                                                </div>-->
                             </div>
                         </td>
 

@@ -18,14 +18,16 @@ class PaymentSettingsController extends Controller
                         ->addColumn('name', function ($model) {
                             if (array_has($model, 'path')) {
                                 if ($model['status'] == 0) {
-                                    $activate = '<a href='.url('plugin/status/'.$model['name']).'>Activate</a>';
+                                    $activate = '<form method="post" action='.url('plugin/status/'.$model['name']).'>'.'<input type="hidden" name="_token" value='.\Session::token().'>'.'
+                                    <button type="submit" class="btn btn-primary btn-sm">Activate</button></form>';
                                     $settings = ' ';
                                 } else {
-                                    $settings = '<a href='.url($model['settings']).'>Settings</a> | ';
-                                    $activate = '<a href='.url('plugin/status/'.$model['name']).'>Deactivate</a>';
+                                    $settings = '<a href='.url($model['settings']).' class="btn btn-primary btn-sm">Settings</a> <br> ';
+                                    $activate = '<form method="post" action='.url('plugin/status/'.$model['name']).'>'.'<input type="hidden" name="_token" value='.\Session::token().'>'.'
+                                    <button type="submit" class="btn btn-primary btn-sm">Deactivate</button></form>';
                                 }
 
-                                $delete = '<a href=  id=delete'.$model['name'].' data-toggle=modal data-target=#del'.$model['name']."><span style='color:red'>Delete</span></a>"
+                                $delete = '<a href=  id=delete'.$model['name'].' class="btn btn-danger btn-sm" data-toggle=modal data-target=#del'.$model['name']."><span style='color:white'>Delete</span></a>"
                                         ."<div class='modal fade' id=del".$model['name'].">
                                             <div class='modal-dialog'>
                                                 <div class=modal-content>  
@@ -36,15 +38,17 @@ class PaymentSettingsController extends Controller
                                                        <p>Are you Sure ?</p>
                                                         <div class=modal-footer>
                                                             <button type=button class='btn btn-default pull-left' data-dismiss=modal id=dismis>".\Lang::get('lang.close').'</button>
-                                                            <a href='.url('plugin/delete/'.$model['name'])."><button class='btn btn-danger'>Delete</button></a>
+                                                            <form method="delete" action='.url('plugin/delete/'.$model['name']).'>'.'<input type="hidden" name="_token" value='.\Session::token().'>'.'
+                                    <button type="submit" class="btn btn-danger">Delete</button></form>
+                                                            
                                                         </div>
 
 
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>";
-                                $action = '<br><br>'.$delete.' | '.$settings.$activate;
+                                        </div>';
+                                $action = '<br><br>'.$delete.'<br> <br>'.$settings.'<br>'.$activate;
                             } else {
                                 $action = '';
                             }

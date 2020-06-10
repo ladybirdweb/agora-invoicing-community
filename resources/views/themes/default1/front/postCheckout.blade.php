@@ -437,7 +437,7 @@ $json = json_encode($data);
                 $items=$invoice->invoiceItem()->get();
                 ?>
                      
-                @if ($attributes['attributes']['tax'][0]['name'] == null)
+                @if ($attributes == null)
                  
                 @foreach ($items as $item)
                  @if($item->tax_name !='null' )

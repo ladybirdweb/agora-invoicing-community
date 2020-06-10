@@ -190,7 +190,7 @@ Edit Promotion
 
 
         $.ajax({
-            type: "POST",
+            type: "GET",
             url: "{{url('get-code')}}",
             success: function (data) {
                 $("#code").val(data)

@@ -40,7 +40,7 @@ class RazorpayController extends Controller
     public function payment($invoice, Request $request)
     {
         $userId = Invoice::find($invoice)->user_id;
-        if(\Auth::user()->role != 'admin' && $userId != \Auth::user()->id) {
+        if (\Auth::user()->role != 'admin' && $userId != \Auth::user()->id) {
             return errorResponse('Payment cannot be initiated. Invalid modification of data');
         }
         //Input items of form

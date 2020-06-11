@@ -20,6 +20,7 @@ class BaseSettingsController extends PaymentSettingsController
         $this->middleware('auth');
         $this->middleware('admin');
     }
+
     /**
      * Get the logged activity.
      */

@@ -158,7 +158,7 @@ class Google2FAController extends Controller
     public function disableTwoFactor(Request $request)
     {
         $user = $request->userId ? User::where('id', $request->userId)->first() : $request->user();
-        if(\Auth::user()->role != 'admin' && $user->id != \Auth::user()->id) {
+        if (\Auth::user()->role != 'admin' && $user->id != \Auth::user()->id) {
             return errorResponse('Cannot disable 2FA. Invalid modification of data');
         }
         //make secret column blank

@@ -33,20 +33,6 @@ class ProfileTest extends DBTestCase
         $response->assertStatus(302);
     }
 
-    /** @group my-profile */
-    public function test_profile_whenClientUpdatesPassword()
-    {
-        $this->withoutMiddleware();
-        $this->getLoggedInUser();
-        $user = $this->user;
-        $response = $this->call('PATCH', 'my-password', [
-            'old_password'    => $user->password,
-            'new_password'    => 'Faveo@123',
-            'confirm_password'=> 'Faveo@123',
-
-        ]);
-        $response->assertStatus(200);
-    }
 
     /** @group my-profile */
     public function test_profile_whenOldAndNewPasswordDoesNotMatch()

@@ -228,7 +228,7 @@ class BaseClientController extends Controller
         try {
             $invoice = $this->invoice->findOrFail($id);
             $user = \Auth::user();
-            if($invoice->user_id != $user->id) {
+            if ($invoice->user_id != $user->id) {
                 throw new \Exception('Cannot view invoice. Invalid modification of data.');
             }
             $items = $invoice->invoiceItem()->get();

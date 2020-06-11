@@ -11,7 +11,7 @@ class WelcomeController extends Controller
 
     public function __construct(Request $request)
     {
-        $this->middleware('auth');
+        $this->middleware('auth', ['except'=>['getCode']]);
         $this->request = $request;
     }
 

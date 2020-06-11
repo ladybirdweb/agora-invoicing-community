@@ -199,7 +199,6 @@ class BaseCartController extends ExtendedBaseCartController
         } catch (\Exception $ex) {
             return errorResponse($ex->getMessage());
         }
-
     }
 
     /**
@@ -225,7 +224,7 @@ class BaseCartController extends ExtendedBaseCartController
         }
     }
 
-    private function getCartValues($productId, $canReduceAgent= false)
+    private function getCartValues($productId, $canReduceAgent = false)
     {
         $cart = \Cart::get($productId);
         $hasPermissionToModifyAgent = Product::find($productId)->can_modify_agent;
@@ -238,17 +237,17 @@ class BaseCartController extends ExtendedBaseCartController
             throw new \Exception('Product not present in cart.');
         }
 
-        if($hasPermissionToModifyAgent) {
-            if($canReduceAgent) {
+        if ($hasPermissionToModifyAgent) {
+            if ($canReduceAgent) {
                 $agtqty = $agtqty / 2;
-                $price = \Cart::getTotal() /2;
+                $price = \Cart::getTotal() / 2;
             } else {
                 $agtqty = $agtqty * 2;
                 $price = \Cart::getTotal() * 2;
             }
-
         }
-        return (['agtqty'=>$agtqty, 'price'=>$price, 'currency'=>$currency, 'symbol'=>$symbol]);
+
+        return ['agtqty'=>$agtqty, 'price'=>$price, 'currency'=>$currency, 'symbol'=>$symbol];
     }
 
     /**
@@ -284,8 +283,8 @@ class BaseCartController extends ExtendedBaseCartController
         $id = $request->input('productid');
         $cart = \Cart::get($id);
         $qty = $cart->quantity + 1;
-        $price = $this->cost($id) ;
-         Cart::update($id, [
+        $price = $this->cost($id);
+        Cart::update($id, [
             'quantity' => [
                 'relative' => false,
                 'value'    => $qty,

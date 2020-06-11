@@ -515,8 +515,8 @@ class ExtendedOrderController extends Controller
     public function reissueLicense(Request $request)
     {
         $order = Order::findorFail($request->input('id'));
-        if(\Auth::user()->role != 'admin' && $order->client != \Auth::user()->id) {
-        return errorResponse('Cannot reissue license. Invalid modification of data');
+        if (\Auth::user()->role != 'admin' && $order->client != \Auth::user()->id) {
+            return errorResponse('Cannot reissue license. Invalid modification of data');
         }
         $order->domain = '';
         $licenseCode = $order->serial_key;

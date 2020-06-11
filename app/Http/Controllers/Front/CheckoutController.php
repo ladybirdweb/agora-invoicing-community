@@ -167,7 +167,7 @@ class CheckoutController extends InfoController
     {
         try {
             $invoice = $this->invoice->find($invoiceid);
-            if($invoice->user_id != \Auth::user()->id) {
+            if ($invoice->user_id != \Auth::user()->id) {
                 throw new \Exception('Cannot initiate payment. Invalid modification of data');
             }
             $items = new \Illuminate\Support\Collection();
@@ -321,7 +321,7 @@ class CheckoutController extends InfoController
             $paynow = false;
 
             if ($invoiceid) {
-                if(Invoice::find($invoiceid)->user_id != \Auth::user()->id) {
+                if (Invoice::find($invoiceid)->user_id != \Auth::user()->id) {
                     throw new \Exception('Invalid modification of data');
                 }
                 $paynow = true;
@@ -329,9 +329,8 @@ class CheckoutController extends InfoController
 
             return $paynow;
         } catch (\Exception $ex) {
-            return redirect()->back()->with('fails',$ex->getMessage());
+            return redirect()->back()->with('fails', $ex->getMessage());
         }
-
     }
 
     public function checkoutAction($invoice)

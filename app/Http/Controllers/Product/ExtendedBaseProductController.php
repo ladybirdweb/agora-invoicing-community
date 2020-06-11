@@ -135,7 +135,7 @@ class ExtendedBaseProductController extends Controller
         }
     }
 
-    public function adminDownload($id, $invoice = '',  $api= false)
+    public function adminDownload($id, $invoice = '', $api = false)
     {
         try {
             if ($this->downloadValidation(true, $id, $invoice, $api)) {
@@ -157,6 +157,7 @@ class ExtendedBaseProductController extends Controller
             }
         } catch (\Exception $e) {
             Bugsnag::notifyException($e);
+
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
@@ -173,37 +174,36 @@ class ExtendedBaseProductController extends Controller
      */
     private function downloadValidation(bool $allowDownload, $id, $invoice, $api)
     {
-        if($api == false) {
+        if ($api == false) {
             if (\Auth::user()->role == 'user') {
                 $invoice = Invoice::where('number', $invoice)->first(); //If invoice number sent as parameter exists
                 $this->checkSubscriptionExpiry($invoice);
                 $allowDownload = $invoice ? $invoice->order()->value('product') == $id : false; //If the order for the product sent in the parameter exists
             }
         }
+
         return $allowDownload;
     }
 
     public function checkSubscriptionExpiry($invoice)
     {
-            $checkSubscription = false;
-            if($invoice) {
-                if($invoice->user_id != \Auth::user()->id) {
-                    throw new \Exception('Invalid modification of data. This user does not have permission for this action.');
-                }
-                $checkSubscription = $invoice->order()->first() ? $invoice->order()->first()->subscription : false;
+        $checkSubscription = false;
+        if ($invoice) {
+            if ($invoice->user_id != \Auth::user()->id) {
+                throw new \Exception('Invalid modification of data. This user does not have permission for this action.');
             }
-            if($checkSubscription) {
-                if (strtotime($checkSubscription->update_ends_at) > 1) {
-                    if ($checkSubscription->update_ends_at < (new Carbon())->toDateTimeString()) {
-                        throw new \Exception('Please renew your subscription to download');
-                    }
+            $checkSubscription = $invoice->order()->first() ? $invoice->order()->first()->subscription : false;
+        }
+        if ($checkSubscription) {
+            if (strtotime($checkSubscription->update_ends_at) > 1) {
+                if ($checkSubscription->update_ends_at < (new Carbon())->toDateTimeString()) {
+                    throw new \Exception('Please renew your subscription to download');
                 }
-            } else {
-                throw new \Exception('No order exists for this invoice.');
             }
-
+        } else {
+            throw new \Exception('No order exists for this invoice.');
+        }
     }
-
 
     /**
      * Save Values Related to Cart(eg: whether show Agents or Quantity in Cart etc).

@@ -387,7 +387,7 @@ class ClientController extends BaseClientController
         try {
             $user = \Auth::user();
             $order = $this->order->findOrFail($id);
-            if($order->client != $user->id) {
+            if ($order->client != $user->id) {
                 throw new \Exception('Cannot view order. Invalid modification of data.');
             }
             $invoice = $order->invoice()->first();
@@ -412,7 +412,6 @@ class ClientController extends BaseClientController
             $price = $product->price()->first();
             $licenseStatus = StatusSetting::pluck('license_status')->first();
             $allowDomainStatus = StatusSetting::pluck('domain_check')->first();
-
 
             return view(
                 'themes.default1.front.clients.show-order',

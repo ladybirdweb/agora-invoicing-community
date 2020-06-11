@@ -33,7 +33,6 @@ class ProfileTest extends DBTestCase
         $response->assertStatus(302);
     }
 
-
     /** @group my-profile */
     public function test_profile_whenOldAndNewPasswordDoesNotMatch()
     {

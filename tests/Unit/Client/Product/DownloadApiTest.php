@@ -24,7 +24,7 @@ class DownloadApiTest extends DBTestCase
         $order = factory(Order::class)->create(['client'=> $user_id, 'invoice_id'=>$invoice->id, 'product'=>$product->id]);
         $subscription = factory(Subscription::class)->create(['user_id'=>$user_id, 'order_id'=>$order->id]);
         $cont = new \App\Http\Controllers\Product\ExtendedBaseProductController();
-        $response = $this->getPrivateMethod($cont, 'downloadValidation', ['true', $product->id, $invoice->number,false]);
+        $response = $this->getPrivateMethod($cont, 'downloadValidation', ['true', $product->id, $invoice->number, false]);
         $this->assertEquals($response, true);
     }
 
@@ -39,7 +39,7 @@ class DownloadApiTest extends DBTestCase
         $order = factory(Order::class)->create(['client'=> $user_id, 'invoice_id'=>$invoice->id, 'product'=>$product->id]);
         $subscription = factory(Subscription::class)->create(['user_id'=>$user_id, 'order_id'=>$order->id]);
         $cont = new \App\Http\Controllers\Product\ExtendedBaseProductController();
-        $response = $this->getPrivateMethod($cont, 'downloadValidation', ['true', '1223434', $invoice->number,false]);
+        $response = $this->getPrivateMethod($cont, 'downloadValidation', ['true', '1223434', $invoice->number, false]);
         $this->assertEquals($response, false);
     }
 
@@ -55,7 +55,7 @@ class DownloadApiTest extends DBTestCase
         $order = factory(Order::class)->create(['client'=> $user_id, 'invoice_id'=>$invoice->id, 'product'=>$product->id]);
         $subscription = factory(Subscription::class)->create(['user_id'=>$user_id, 'order_id'=>$order->id]);
         $cont = new \App\Http\Controllers\Product\ExtendedBaseProductController();
-        $response = $this->getPrivateMethod($cont, 'downloadValidation', ['true', $product->id, '2222',false]);
+        $response = $this->getPrivateMethod($cont, 'downloadValidation', ['true', $product->id, '2222', false]);
     }
 
     /** @group product-download */
@@ -68,7 +68,7 @@ class DownloadApiTest extends DBTestCase
         $product = factory(Product::class)->create();
         $invoice = factory(Invoice::class)->create(['user_id'=> $user_id]);
         $cont = new \App\Http\Controllers\Product\ExtendedBaseProductController();
-        $response = $this->getPrivateMethod($cont, 'downloadValidation', ['true', $product->id, $invoice->number,false]);
+        $response = $this->getPrivateMethod($cont, 'downloadValidation', ['true', $product->id, $invoice->number, false]);
     }
 
     /** @group product-download */
@@ -80,7 +80,7 @@ class DownloadApiTest extends DBTestCase
         $product = factory(Product::class)->create();
         $invoice = factory(Invoice::class)->create(['user_id'=> $user_id]);
         $cont = new \App\Http\Controllers\Product\ExtendedBaseProductController();
-        $response = $this->getPrivateMethod($cont, 'downloadValidation', ['true', $product->id, $invoice->number,false]);
+        $response = $this->getPrivateMethod($cont, 'downloadValidation', ['true', $product->id, $invoice->number, false]);
         $this->assertEquals($response, true);
     }
 }

@@ -3,91 +3,30 @@
 Create User
 @stop
 @section('content-header')
-<h1>
-Create New User
-</h1>
-  <ol class="breadcrumb">
-        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-         <li><a href="{{url('clients')}}">All Users</a></li>
-        <li class="active">Create User</li>
-      </ol>
+    <div class="col-sm-6">
+        <h1>Create New User</h1>
+    </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="breadcrumb-item active">Create User</li>
+        </ol>
+    </div><!-- /.col -->
+
+
 @stop
 @section('content')
-<style>
 
-.bootstrap-select>.dropdown-toggle {
-    background-color: white;
-}
-
-select.form-control{
-    padding-left: 2px;
-}
-.caret {
-    border-top: 6px dashed;
-    border-right: 3px solid transparent;
-    border-left: 3px solid transparent;
-}
-.text{
-    margin-left: -10px!important;
-}
-.bootstrap-select.btn-group .dropdown-toggle .filter-option {
-    color:#555;
-}
-
-</style>
-<div class="box box-primary">
-
-    <div class="box-header">
-        @if (count($errors) > 0)
-      
-        <div class="alert alert-danger alert-dismissable">
-            <strong>Whoops!</strong> There were some problems with your input.
-             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            <ul>
-                @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
+<div class="card card-primary card-outline">
 
 
-  
-        @endif
 
-        @if(Session::has('success'))
-        <div class="alert alert-success alert-dismissable">
-           <i class="fa fa-check"></i>
-           <b>{{Lang::get('message.success')}}!</b>
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            {{Session::get('success')}}
-        </div>
-        @endif
-
-        @if(Session::has('warning'))
-        <div class="alert alert-warning alert-dismissable">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            {{Session::get('warning')}}
-        </div>
-        @endif
-        <!-- fail message -->
-        @if(Session::has('fails'))
-        <div class="alert alert-danger alert-dismissable">
-            <i class="fa fa-ban"></i>
-            <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.failed')}}.
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            {{Session::get('fails')}}
-        </div>
-        @endif
-      
-      
-    </div>
-
-    <div class="box-body">
-        {!! Form::open(['url'=>'clients','method'=>'post']) !!}
-        <h4><button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></h4>
+        <div class="card-body">
+            {!! Form::open(['url'=>'clients','method'=>'post']) !!}
 
 
-        <div class="row">
+
+            <div class="row">
 
             <div class="col-md-12">
 
@@ -372,10 +311,12 @@ select.form-control{
                     </div>
 
                 </div>
-               
+
             </div>
         </div>
-          {!! Form::close() !!}
+            <h4><button type="submit" class="btn btn-primary pull-right" id="submit"><i class="fas fa-save">&nbsp;</i>{!!Lang::get('message.save')!!}</button></h4>
+
+            {!! Form::close() !!}
     </div>
 </div>
 

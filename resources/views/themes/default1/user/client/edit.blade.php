@@ -3,88 +3,24 @@
 Edit User
 @stop
 @section('content-header')
-<h1>
-Edit User
-</h1>
-  <ol class="breadcrumb">
-        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-         <li><a href="{{url('clients')}}">All Users</a></li>
-        <li class="active">Edit User</li>
-      </ol>
+    <div class="col-sm-6">
+        <h1>Edit User</h1>
+    </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="breadcrumb-item active">Edit User</li>
+        </ol>
+    </div><!-- /.col -->
 @stop
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
-<style>
-    .bootstrap-select.btn-group .dropdown-menu li a {
-    margin-left: -10px !important;
-}
- .btn-group>.btn:first-child {
-    margin-left: 0;
-    background-color: white;
 
-    select {
-  -webkit-appearance: none;
-  -webkit-border-radius: -6px;
-}
-.bootstrap-select.btn-group .dropdown-toggle .filter-option {
-    color:#555;
-}
-.caret {
-    border-top: 6px dashed;
-    border-right: 3px solid transparent;
-    border-left: 3px solid transparent;
-}
-
-
-</style>
 @section('content')
-<div class="box box-primary">
+<div class="card card-primary card-outline">
 
-    <div class="box-header">
+    <div class="card-body">
 
-        @if (count($errors) > 0)
-        <div class="alert alert-danger">
-            <strong>Whoops!</strong> There were some problems with your input.<br><br>
-            <ul>
-                @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-        @endif
-        @if(Session::has('success'))
-        <div class="alert alert-success alert-dismissable">
-              <i class="fa fa-check"></i>
-            <b>{{Lang::get('message.success')}}!</b>
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            {{Session::get('success')}}
-        </div>
-        @endif
-        
-        @if(Session::has('warning'))
-        <div class="alert alert-warning alert-dismissable">
-           <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            {{Session::get('warning')}}
-        </div>
-        @endif
-        
-        <!-- fail message -->
-        @if(Session::has('fails'))
-        <div class="alert alert-danger alert-dismissable">
-            <i class="fa fa-ban"></i>
-            <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.failed')}}.
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            {{Session::get('fails')}}
-        </div>
-        @endif
-       
-
-    </div>
-    
-
-    <div class="box-body">
          {!! Form::model($user,['url'=>'clients/'.$user->id,'method'=>'PATCH']) !!}
-
-        <h4>{{Lang::get('message.client')}}<button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-refresh">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button></h4>
 
         <div class="row">
 
@@ -312,7 +248,9 @@ Edit User
               
             </div>
         </div>
- {!! Form::close() !!}
+        <h4><button type="submit" class="btn btn-primary pull-right" id="submit"><i class="fas fa-sync-alt">&nbsp;</i>{!!Lang::get('message.update')!!}</button></h4>
+
+        {!! Form::close() !!}
     </div>
      
 </div>

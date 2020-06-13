@@ -153,7 +153,7 @@ function getOrderLink($orderId, $url = 'orders')
     return $link;
 }
 
-function getStatusLabel($status, $badge = 'label')
+function getStatusLabel($status, $badge = 'badge')
 {
     switch ($status) {
         case 'Success':

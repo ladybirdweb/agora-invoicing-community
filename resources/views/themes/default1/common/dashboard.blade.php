@@ -3,6 +3,17 @@
 Dashboard
 @endsection
 @section('content')
+@section('content-header')
+    <div class="col-sm-6">
+        <h1 class="m-0 text-dark">Dashboard</h1>
+    </div><!-- /.col -->
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="{{url('/')}}">Home</a></li>
+            <li class="breadcrumb-item active">Dashboard</li>
+        </ol>
+    </div><!-- /.col -->
+@stop
 <style>
 .scrollit {
     overflow:scroll;
@@ -13,7 +24,7 @@ Dashboard
    <div class="row">
         <div class="col-lg-4 col-xs-6">
           <!-- small box -->
-          <div class="small-box bg-aqua">
+          <div class="small-box bg-info">
             <div class="inner">
               <h4>Total Sales</h4>
               @if(($allowedCurrencies2) != null)
@@ -22,10 +33,10 @@ Dashboard
                <span>{{$allowedCurrencies1}}: &nbsp;  {{currencyFormat($totalSalesCurrency1,$code=$allowedCurrencies1)}} </span>
             </div>
 
-            <div class="icon">
-              <i class="ion ion-bag"></i>
-            </div>
-             <a href="{{url('invoices?status=success')}}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+              <div class="icon">
+                  <i class="ion ion-bag"></i>
+              </div>
+              <a href="{{url('invoices?status=success')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
         </div>
         <!-- ./col -->
@@ -98,11 +109,11 @@ Dashboard
           <div class="small-box bg-yellow">
             <div class="inner">
               <h4>Products Installation Rate:&nbsp; {{number_format($getLast30DaysInstallation['rate'], 2, '.', '')}}%</h4>
-              <span>Total Subscription (Last 30 days): &nbsp;  {{$getLast30DaysInstallation['total_subscription']}}</span><br/>
-              <span>Not Installed (Last 30 days): &nbsp;  {{$getLast30DaysInstallation['inactive_subscription']}}</span><br/>
+              <span>Total Subscription (Last 30 days): &nbsp;  {{$getLast30DaysInstallation['total_subscription']}}</span></br>
+              <span>Not Installed (Last 30 days): &nbsp;  {{$getLast30DaysInstallation['inactive_subscription']}}</span>
             </div>
             <div class="icon">
-             <span class="ion ion-ios-cloud-download-outline"></span>
+             <i class="ion ion-ios-download-outline"></i>
             </div>
                <a href="{{url('orders?ins_not_ins=not_installed&sub_from='.$startDate.'&sub_till='.$endDate)}}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
              </div>
@@ -114,17 +125,16 @@ Dashboard
 
         <div class="col-lg-4 col-xs-6">
           <!-- small box -->
-          <div class="small-box bg-aqua">
+          <div class="small-box bg-info">
             <div class="inner">
               <h4>Paid Orders Rate:&nbsp; {{number_format($conversionRate['rate'], 2, '.', '')}}%</h4>
-              <span>Total Orders (Last 30 days): &nbsp;  {{$conversionRate['all_orders']}}</span><br/>
-              <span>Paid Orders (Last 30 days): &nbsp;  {{$conversionRate['paid_orders']}}</span><br/>
+              <span>Total Orders (Last 30 days): &nbsp;  {{$conversionRate['all_orders']}}</span></br>
+              <span>Paid Orders (Last 30 days): &nbsp;  {{$conversionRate['paid_orders']}}</span>
             </div>
             <div class="icon">
-             <span class="ion ion-ios-cart-outline"></span>
+             <i class="ion ion-ios-cart-outline"></i>
             </div>
-              <a href="{{url('orders?p_un=unpaid&from='.$startDate.'&till='.$endDate)}}" class="small-box-footer">More info 
-              <i class="fa fa-arrow-circle-right"></i></a>
+              <a href="{{url('orders?p_un=unpaid&from='.$startDate.'&till='.$endDate)}}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
              </div>
         </div>
 </div>

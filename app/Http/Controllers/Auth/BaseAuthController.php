@@ -104,6 +104,7 @@ class BaseAuthController extends Controller
         User::where('email', $email)->update(['email'=>$newEmail, 'mobile'=>$newNumber]);
 
         try {
+            dd($request->input('code'));
             $code = $request->input('code');
             $mobile = ltrim($request->input('mobile'), '0');
             $userid = $request->input('id');

@@ -301,7 +301,7 @@ class BaseOrderController extends ExtendedOrderController
 
             return $mail;
         } catch (\Exception $ex) {
-            throw new Exception($ex->getMessage());
+            throw new \Exception($ex->getMessage());
         }
     }
 

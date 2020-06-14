@@ -153,14 +153,11 @@ function getOrderLink($orderId, $url = 'orders')
     return $link;
 }
 
-
-function tooltip($tootipText='')
+function tooltip($tootipText = '')
 {
-   return '<label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title='.$tootipText.'>
+    return '<label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title='.$tootipText.'>
              </label>';
 }
-
-
 
 function getStatusLabel($status, $badge = 'badge')
 {
@@ -177,6 +174,4 @@ function getStatusLabel($status, $badge = 'badge')
             default:
             return '<span class='.'"'.$badge.' '.$badge.'-warning">Partially paid</span>';
     }
-
-
 }

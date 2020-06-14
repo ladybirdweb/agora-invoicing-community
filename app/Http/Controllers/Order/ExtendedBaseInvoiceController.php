@@ -107,7 +107,7 @@ class ExtendedBaseInvoiceController extends Controller
         ]);
 
         try {
-            $payment_date = $request->payment_date;
+            $payment_date = \Carbon\Carbon::parse($request->payment_date);
             $payment_method = $request->payment_method;
             $totalAmt = $request->totalAmt;
             $invoiceChecked = $request->invoiceChecked;
@@ -207,7 +207,7 @@ class ExtendedBaseInvoiceController extends Controller
         );
 
         try {
-            $payment_date = $request->payment_date;
+            $payment_date = \Carbon\Carbon::parse($request->payment_date);
             $payment_method = $request->payment_method;
             $totalAmt = $request->totalAmt;
             $invoiceChecked = $request->invoiceChecked;

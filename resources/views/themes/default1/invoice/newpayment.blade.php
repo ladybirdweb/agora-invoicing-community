@@ -2,58 +2,32 @@
  @section('title')
 Payment
 @stop
-    @section('content-header')
-    <h1>
-    Create New Payment
-    </h1>
-      <ol class="breadcrumb">
-            <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-            <li><a href="{{url('clients')}}">All Users</a></li>
-            <li><a href="{{url('clients/'.$clientid)}}">View User</a></li>
-            <li class="active">New Payment</li>
-          </ol>
-    @stop
-    @section('content')
-    <div class="box box-primary">
-    	 <div class="box-header">
-          
-            @if (count($errors) > 0)
-                    <div class="alert alert-danger">
-                         <i class="fa fa-alert"></i>
-                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                        <strong>Whoops!</strong> There were some problems with your input.<br>
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                    @endif
+@section('content-header')
+    <div class="col-sm-6">
+        <h1> Create New Payment</h1>
+    </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="breadcrumb-item"><a href="{{url('clients')}}"> All Users</a></li>
+            <li class="breadcrumb-item"><a href="{{url('clients/'.$clientid)}}">View User</a></li>
+            <li class="breadcrumb-item active">New Payment</li>
+        </ol>
+    </div><!-- /.col -->
 
-                    @if(Session::has('success'))
-                    <div class="alert alert-success alert-dismissable">
-                         <i class="fa fa-check"></i>
-                         <b>{{Lang::get('message.success')}}!</b>
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                        {{Session::get('success')}}
-                    </div>
-                    @endif
-                    <!-- fail message -->
-                    @if(Session::has('fails'))
-                    <div class="alert alert-danger alert-dismissable">
-                        <i class="fa fa-ban"></i>
-                        <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.failed')}}.
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                        {{Session::get('fails')}}
-                    </div>
-                    @endif
+@stop
+  
+    @section('content')
+    <div class="card card-primary card-outline">
+    	 <div class="card-header">
+
            <div id="alertMessage"></div>
            <div id="error1"></div>
-            <h4>{{Lang::get('message.new-payment')}} <button type="submit" class="form-group btn btn-primary pull-right" onclick="multiplePayment()" id="submit"><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></h4>
+            <h5>New Payment</h5>
 
         </div>
 
-    	<div class="box-body">
+    	<div class="card-body">
 
             <div class="row">
 
@@ -66,7 +40,15 @@ Payment
                         <div class="col-md-4 form-group {{ $errors->has('invoice_status') ? 'has-error' : '' }}">
                             <!-- first name -->
                             {!! Form::label('payment_date',Lang::get('message.date-of-payment'),['class'=>'required']) !!}
-                            {!! Form::text('payment_date',null,['class' => 'form-control','id'=>'payment_date']) !!}
+                              <div class="input-group date" id="payment" data-target-input="nearest">
+                                 <input type="text" id="payment_date" name="payment_date" class="form-control datetimepicker-input" autocomplete="off"  data-target="#payment"/>
+                                <div class="input-group-append" data-target="#payment" data-toggle="datetimepicker">
+                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+
+                                </div>
+                              
+
+                            </div>
 
                         </div>
 
@@ -89,7 +71,7 @@ Payment
 
 
                     </div>
-
+                     <button type="submit" class="btn btn-primary pull-right" onclick="multiplePayment()" id="submit"><i class="fas fa-save">&nbsp;</i>{!!Lang::get('message.save')!!}</button>
 
                 </div>
 
@@ -100,9 +82,9 @@ Payment
 
 
     </div>
-    <div class= "box box-primary">
+    <div class= "card card-primary">
         
-                        <div class="box-body">
+                        <div class="card-body">
                         <div class="row">
                             @if($invoices)
                             <div class="col-md-12">
@@ -179,8 +161,8 @@ Payment
     @section('datepicker')
     <script type="text/javascript">
     $(function () {
-        $('#payment_date').datetimepicker({
-            format: 'YYYY-MM-DD'
+        $('#payment').datetimepicker({
+            format: 'L'
         });
     });
     </script>
@@ -261,13 +243,12 @@ Payment
     }); 
     
     function multiplePayment(){
-     $("#submit").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
+     $("#submit").html("<i class='fas fa-circle-notch fa-spin'></i>Please Wait...");
     var invoice = [];
     var invoiceAmount = [];
     $(":checked").each(function() {
       if($(this).val() != ""){
        var value = $('#'+ $(this).val()).val();
-       console.log(value);
         invoice.push($(this).val());
         invoiceAmount.push(value);
 
@@ -276,7 +257,6 @@ Payment
     });
 
 
-console.log(invoice);
     var data = {
             "totalAmt":   $('#amount').val(),
             "invoiceChecked"  : invoice,
@@ -293,11 +273,11 @@ console.log(invoice);
             $('#alertMessage').show();
             var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>'+response.message+'.</div>';
             $('#alertMessage').html(result+ ".");
-            $("#submit").html("<i class='fa fa-floppy-o'>&nbsp;&nbsp;</i>Save");
+            $("#submit").html("<i class='fa fa-save'>&nbsp;&nbsp;</i>Save");
           },
           error: function (ex) {
             var errors = ex.responseJSON;
-             $("#submit").html("<i class='fa fa-floppy-o'>&nbsp;&nbsp;</i>Save");
+             $("#submit").html("<i class='fa fa-save'>&nbsp;&nbsp;</i>Save");
                $('#error1').show();
             var html = '<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-ban"></i>Alert! </strong>'+ex.responseJSON.message+' <br><ul>';
             

@@ -3,57 +3,33 @@
 Edit Invoice
 @stop
 @section('content-header')
-<h1>
-Edit Invoice
-</h1>
-  <ol class="breadcrumb">
-        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="{{url('clients')}}">All Users</a></li>
-        <li><a href="{{url('clients/'.$invoice->user_id)}}">View User</a></li>
-        <li class="active">Edit Invoice</li>
-      </ol>
+    <div class="col-sm-6">
+        <h1> Edit Invoice</h1>
+    </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="breadcrumb-item"><a href="{{url('clients')}}"> All Users</a></li>
+            <li class="breadcrumb-item"><a href="{{url('clients/'.$invoice->user_id)}}">View User</a></li>
+            <li class="breadcrumb-item active">Edit Invoice</li>
+        </ol>
+    </div><!-- /.col -->
+
 @stop
+
 @section('content')
 
-<div class="box box-primary">
+<div class="card card-primary card-outline">
 
-    <div class="box-header">
-        @if (count($errors) > 0)
-                <div class="alert alert-danger">
-                      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    <strong>Whoops!</strong> There were some problems with your input.<br><br>
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-                @endif
-
-                @if(Session::has('success'))
-                <div class="alert alert-success alert-dismissable">
-                     <i class="fa fa-check"></i>
-                     <b>{{Lang::get('message.success')}}!</b> 
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    {{Session::get('success')}}
-                </div>
-                @endif
-                <!-- fail message -->
-                @if(Session::has('fails'))
-                <div class="alert alert-danger alert-dismissable">
-                    <i class="fa fa-ban"></i>
-                    <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.failed')}}.
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    {{Session::get('fails')}}
-                </div>
-                @endif
+    <div class="card-header">
+       
         {!! Form::open(['url'=>'invoice/edit/'.$invoiceid,'method'=>'post']) !!}
 
-        <h4>Invoice Number:#{{$invoice->number}}	 <button type="submit" class="form-group btn btn-primary pull-right" id="submit"><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></h4>
+        <h5>Invoice Number:#{{$invoice->number}}	</h5>
 
     </div>
 
-    <div class="box-body">
+    <div class="card-body">
 
         <div class="row">
 
@@ -66,13 +42,16 @@ Edit Invoice
                    <div class="col-md-6 form-group {{ $errors->has('date') ? 'has-error' : '' }}">
                         <!-- last name -->
                         {!! Form::label('date',Lang::get('message.date'),['class'=>'required']) !!}
-                      
-                         <div class="input-group date">
-                             <div class="input-group-addon">
-                      <i class="fa fa-calendar"></i>
-                         </div>
-                      <input name="date" type="text" value="{{$date}}" class="form-control" id="datepicker">
-                        </div>
+                         <div class="input-group date" id="payment" data-target-input="nearest">
+                                 <input type="text" id="payment_date" name="date" value="{{$date}}" class="form-control datetimepicker-input" autocomplete="off"  data-target="#payment"/>
+                                <div class="input-group-append" data-target="#payment" data-toggle="datetimepicker">
+                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+
+                                </div>
+                              
+
+                            </div>
+                       
                       
 
                     </div>
@@ -102,7 +81,7 @@ Edit Invoice
 
 
                 </div>
-
+                <button type="submit" class="form-group btn btn-primary pull-right" id="submit"><i class="fa fa-save">&nbsp;</i>{!!Lang::get('message.save')!!}</button>
 
             </div>
 
@@ -112,13 +91,15 @@ Edit Invoice
 
 </div>
 
-
+ 
 {!! Form::close() !!}
 @stop
 @section('datepicker')
 <script>
-     $('#datepicker').datepicker({
-      autoclose: true
+        $(function () {
+        $('#payment').datetimepicker({
+            format: 'L'
+        });
     });
 </script>
 @stop

@@ -6,7 +6,7 @@
         <!-- /.box-header -->
 
             <div class="scrollit">
-                <div class="card-body table-responsive p-0" style="height: 300px;">
+                <div class="card-body table-responsive p-0">
                 @if(!count($collection))
                     <tr>
                         <td><p class="text-center">No records found</p></td>

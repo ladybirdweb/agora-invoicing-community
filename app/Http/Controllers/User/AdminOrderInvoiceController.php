@@ -69,17 +69,19 @@ class AdminOrderInvoiceController extends Controller
                             $cont = new \App\Http\Controllers\Order\TaxRatesAndCodeExpiryController();
                             $check = $cont->checkExecution($model->id);
                             if ($check == false) {
+
                                 $action = '<form method="post" action='.url('order/execute?invoiceid='.$model->id).'>'.'<input type="hidden" name="_token" value='.\Session::token().'>'.'
-                                    <button type="submit" class="btn btn-sm btn-primary btn-xs"><i class="fa fa-tasks" style="color:white;"></i>&nbsp;&nbsp; Execute Order</button></form>';
+                                    <button type="submit" class="btn btn-sm btn-info btn-xs"'.tooltip("Execute&nbsp;Order").'<i class="fa fa-tasks" style="color:white;"></i></button></form>';
+
                             }
                             $editAction = '<a href='.url('invoices/edit/'.$model->id)
-                                ." class='btn btn-sm btn-primary btn-xs'>
+                                ." class='btn btn-sm btn-secondary btn-xs'".tooltip('Edit')."
                                 <i class='fa fa-edit' style='color:white;'>
-                                 </i>&nbsp;&nbsp; Edit</a>";
+                                 </i></a>";
 
                             return '<a href='.url('invoices/show?invoiceid='.$model->id)
-                            ." class='btn btn-sm btn-primary btn-xs'><i class='fa fa-eye' 
-                            style='color:white;'> </i>&nbsp;&nbsp;View</a>"
+                            ." class='btn btn-sm btn-primary btn-xs' ".tooltip('View')."<i class='fa fa-eye' 
+                            style='color:white;'></i></a>"
                                     ."   $editAction $action";
                         })
                          ->rawColumns(['checkbox', 'date', 'invoice_no', 'order_no', 'total', 'paid', 'balance', 'status', 'action'])
@@ -117,8 +119,8 @@ class AdminOrderInvoiceController extends Controller
                          })
                         ->addColumn('action', function ($model) {
                             return '<a href='.url('orders/'.$model->id)." 
-                            class='btn btn-sm btn-primary btn-xs'><i class='fa fa-eye' 
-                            style='color:white;'> </i>&nbsp;&nbsp;View</a>";
+                            class='btn btn-sm btn-primary btn-xs'".tooltip('View')."<i class='fa fa-eye' 
+                            style='color:white;'> </i></a>";
                         })
                         ->rawColumns(['checkbox', 'date', 'product', 'number', 'total', 'status', 'action'])
                         ->make(true);
@@ -162,7 +164,7 @@ class AdminOrderInvoiceController extends Controller
                          ->addColumn('action', function ($model) {
                              '<input type="hidden" class="paymentid" value="{{$model->id}}">';
                              if ($model->invoice_id == 0) {
-                                 return '<a href='.url('payments/'.$model->id.'/edit/')." class='btn btn-sm btn-primary btn-xs'> <i class='fa fa-edit' style='color:white;'> </i>&nbsp;&nbsp;Edit</a>";
+                                 return '<a href='.url('payments/'.$model->id.'/edit/')." class='btn btn-sm btn-secondary btn-xs' ".tooltip('Edit')." <i class='fa fa-edit' style='color:white;'> </i></a>";
                              } else {
                                  return '--';
                              }

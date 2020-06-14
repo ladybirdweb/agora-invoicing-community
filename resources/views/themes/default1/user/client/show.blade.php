@@ -15,6 +15,21 @@ User
     </div><!-- /.col -->
 
 @stop
+<style type="text/css">
+    .read-more-show{
+      cursor:pointer;
+      color: #ed8323;
+    }
+    .read-more-hide{
+      cursor:pointer;
+      color: #ed8323;
+    }
+    .hide_content{
+      display: none;
+    }
+ 
+}
+</style>
 @section('content')
 
     <!-- Widget: user widget style 1 -->
@@ -26,7 +41,7 @@ User
             <h3 class="widget-user-username">{{ucfirst($client->first_name)}}  {{ucfirst($client->last_name)}}
 
             </h3>
-            <a class="btn btn-sm btn-primary" href="{{url('clients/'.$client->id.'/edit')}}"> <i class="fas fa-edit"></i> Edit Details</a>
+            <a class="btn btn-sm btn-secondary" href="{{url('clients/'.$client->id.'/edit')}}"> <i class="fas fa-edit"></i> Edit Details</a>
             @if($is2faEnabled)
                 &nbsp;&nbsp;<button id="disable2fa" value="{{$client->id}}" class="btn btn-sm btn-danger"><i class="fa fa-ban"></i>&nbsp;
                     Disable 2FA
@@ -84,8 +99,7 @@ User
                 <h3 class="widget-user-username">
                     <div class="btn-group">
                         <button type="button" class="btn btn-sm btn-info">New Transaction</button>
-                        <button type="button" class="btn btn-info dropdown-toggle dropdown-hover dropdown-icon" data-toggle="dropdown">
-                            <span class="sr-only">Toggle Dropdown</span>
+                        <button type="button" class="btn btn-info dropdown-toggle dropdown-icon" data-toggle="dropdown">
                             <div class="dropdown-menu" role="menu">
                                 <a class="dropdown-item" href="{{url('invoice/generate?clientid='.$client->id)}}">{{Lang::get('message.create-invoice')}}</a>
                                 <a class="dropdown-item" href="{{url('newPayment/receive?clientid='.$client->id)}}">{{Lang::get('message.create-payment')}}</a>
@@ -99,18 +113,22 @@ User
         </div>
         <div class="card-body table-responsive">
             <div class="row">
-                <div class="col-5 col-sm-3">
+                <div class="col-2 col-lg-2 col-sm-2">
                     <div class="nav flex-column nav-tabs h-100" id="vert-tabs-tab myTab" role="tablist" aria-orientation="vertical">
                         <a class="nav-link active" id="invoice" data-toggle="pill" href="#activity" role="tab"  aria-selected="true">Invoice Detail</a>
                         <a class="nav-link" id="customer_detail" data-toggle="pill" href="#settings" role="tab"  aria-selected="false">{{Lang::get('message.customer_detail')}}</a>
                         <a class="nav-link" id="payment" data-toggle="pill" href="#timeline" role="tab"  aria-selected="false">{{Lang::get('message.payment_detail')}}</a>
                         <a class="nav-link" id="orderdetail" data-toggle="pill" href="#order" role="tab" aria-controls="vert-tabs-settings" aria-selected="false">{{Lang::get('message.order_detail')}}</a>
-                        <a class="nav-link" id="vert-tabs-comment-tab" data-toggle="pill" href="#comment" role="tab" aria-controls="vert-tabs-settings" aria-selected="false">{{Lang::get('message.comment')}}</a>
+                        <a class="nav-link" id="vert-tabs-comment-tab" data-toggle="pill" href="#comment" role="tab" aria-controls="vert-tabs-settings" aria-selected="false">{{Lang::get('message.comment')}}&nbsp;<span class="badge bg-red">{{count($comments)}}</span></a>
 
                     </div>
                 </div>
-                <div class="col-7 col-sm-9">
+                <div class="col-10 col-lg-10 col-sm-10">
                     <div class="tab-content" id="vert-tabs-tabContent">
+
+                         <div id="response"></div>
+                        <!-----------------------------Invoice detail tab starts here-------------------------------->
+
                         <div class="tab-pane text-left fade show active" id="activity" role="tabpanel" aria-labelledby="vert-tabs-home-tab">
                             <table id="invoice-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
                                 <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_invoice_delete"><i class= "fa fa-trash"></i>&nbsp;&nbsp;Delete Selected</button><br /><br />
@@ -150,6 +168,8 @@ User
                                     $('#customer_detail').trigger('click');
                                 }  else if(activeTab == "#activity") {
                                     $('#invoice').trigger('click');
+                                }  else if(activeTab == "#comment") {
+                                    $('#comment').trigger('click');
                                 }
                             });
 
@@ -192,6 +212,11 @@ User
                                         {data: 'action', name: 'action'}
                                     ],
                                     "fnDrawCallback": function( oSettings ) {
+                                         $(function () {
+                                              $('[data-toggle="tooltip"]').tooltip({
+                                                container : 'body'
+                                              });
+                                            });
                                         $('.loader').css('display', 'none');
                                     },
                                     "fnPreDrawCallback": function(oSettings, json) {
@@ -201,14 +226,56 @@ User
                             });
 
                         </script>
+                        <script>
+                         function checkinginvoice(e){
+                          $('#invoice-table').find("td input[type='checkbox']").prop('checked', $(e).prop('checked'));
+                         }
+
+                         $(document).on('click','#bulk_invoice_delete',function(){
+                              var id=[];
+                              if (confirm("Are you sure you want to delete this?"))
+                                {
+                                    $('.invoice_checkbox:checked').each(function(){
+                                      id.push($(this).val())
+                                    });
+                                    if(id.length >0)
+                                    {
+                                       $.ajax({
+                                              url:"{!! Url('invoice-delete') !!}",
+                                              method:"delete",
+                                              data: $('#check:checked').serialize(),
+                                              beforeSend: function () {
+                                        $('#gif').show();
+                                        },
+                                        success: function (data) {
+                                        $('#gif').hide();
+                                        $('#response').html(data);
+                                        setTimeout(function(){
+                                            location.reload();
+                                        },2000);
+                                        }
+                                       })
+                                    }
+                                    else
+                                    {
+                                        alert("Please select at least one checkbox");
+                                    }
+                                    }  
+                                     });
+                                    
+                                    </script>
 
 
 
+
+                                <!------------------------------- Customer detail Tab starts here  -------------------------------->
 
 
                         <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="vert-tabs-profile-tab">
                             <div class="row">
-                                <div class="col-12 col-sm-4">
+                                <div class="col-12 col-md-12 col-lg-12 order-2 order-md-1">
+                                    <div class="row">
+                                    <div class="col-12 col-lg-12 col-sm-4">
                                     <div class="info-box bg-light">
                                         <div class="info-box-content">
                                             <span class="info-box-text text-center text-muted clientemail"></span>
@@ -216,7 +283,7 @@ User
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-12 col-sm-4">
+                                <div class="col-12 col-lg-12 col-sm-4">
                                     <div class="info-box bg-light">
                                         <div class="info-box-content">
                                             <span class="info-box-text text-center text-muted clientcompanyname"></span>
@@ -224,11 +291,11 @@ User
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-12 col-sm-4">
+                                <div class="col-12 col-lg-12 col-sm-4">
                                     <div class="info-box bg-light">
                                         <div class="info-box-content">
                                             <span class="info-box-text text-center text-muted clientuser_name"></span>
-                                            <span class="info-box-number text-center text-muted mb-0">User Name <span>
+                                            <span class="info-box-number text-center text-muted mb-0">User Name </span>
                                         </div>
                                     </div>
                                 </div>
@@ -262,7 +329,7 @@ User
                                         </li>
 
                                         <li class="list-group-item">
-                                            <b>{{Lang::get('message.zip')}}</b>: <span class="pull-right clientzip" style="float:right;""></span>
+                                            <b>{{Lang::get('message.zip')}}</b>: <span class="pull-right clientzip" style="float:right;"></span>
                                         </li>
 
                                         <li class="list-group-item">
@@ -302,9 +369,13 @@ User
 
 
                                 </ul>
-                                </div>
-
+                                </div>  
                             </div>
+                            </div>
+                            </div>
+
+
+                            <!------------------------------------ Payment Detail tab-------------------------------------- -->
                         <div class="tab-pane fade" id="timeline" role="tabpanel" aria-labelledby="vert-tabs-messages-tab">
                             <table id="payment-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
                                 <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_payment_delete"><i class= "fa fa-trash"></i>&nbsp;&nbsp;Delete Selected</button><br /><br />
@@ -358,6 +429,11 @@ User
                                         {data: 'action', name: 'action'},
                                     ],
                                     "fnDrawCallback": function( oSettings ) {
+                                         $(function () {
+                                              $('[data-toggle="tooltip"]').tooltip({
+                                                container : 'body'
+                                              });
+                                            });
                                         $('.loader').css('display', 'none');
                                     },
                                     "fnPreDrawCallback": function(oSettings, json) {
@@ -392,7 +468,9 @@ User
                                             success: function (data) {
                                                 $('#gif').hide();
                                                 $('#response').html(data);
+                                                setTimeout(function(){
                                                 location.reload();
+                                                },2000);
                                             }
                                         })
                                     }
@@ -405,6 +483,10 @@ User
                             });
 
                         </script>
+
+
+
+                        <!------------------------------------------Order Detail Tab--------------------------------- -->
 
                         <div class="tab-pane fade" id="order" role="tabpanel" aria-labelledby="vert-tabs-settings-tab">
                             <table id="orderdetail-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
@@ -457,6 +539,11 @@ User
                                             {data: 'action', name: 'action'}
                                         ],
                                         "fnDrawCallback": function( oSettings ) {
+                                             $(function () {
+                                                  $('[data-toggle="tooltip"]').tooltip({
+                                                    container : 'body'
+                                                  });
+                                                });
                                             $('.loader').css('display', 'none');
                                         },
                                         "fnPreDrawCallback": function(oSettings, json) {
@@ -491,71 +578,62 @@ User
                                                 success: function (data) {
                                                     $('#gif').hide();
                                                     $('#response').html(data);
+                                                    setTimeout(function(){
                                                     location.reload();
-                                                }
-                                            })
+                                                    },2000);
+                                                    }
+                                                })
+                                            }
+                                            else
+                                            {
+                                                alert("Please select at least one checkbox");
+                                            }
                                         }
-                                        else
-                                        {
-                                            alert("Please select at least one checkbox");
-                                        }
-                                    }
 
                                 });
 
                             </script>
 
                         </div>
-                        @include('themes.default1.user.client.editComment')
+                       
                         <div class="tab-pane fade" id="comment" role="tabpanel" aria-labelledby="vert-tabs-settings-tab">
                             <a href="#comment" class="btn btn-primary btn-sm pull-right" data-toggle="modal" data-target="#createComment">
-                                <span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;{{Lang::get('message.add_comment')}}</a>
+                                <span class="fas fa-plus"></span>&nbsp;&nbsp;{{Lang::get('message.add_comment')}}</a>
                             @include('themes.default1.user.client.createComment')
+
                             <br/> <br/> <br/>
-                            <table id="" class="table table-bordered table-striped">
+                           
                                 <!-- The timeline -->
-                                <ul class="timeline timeline-inverse">
+                              
 
-
-
-
+                                   
                                     <!-- /.timeline-label -->
                                     <!-- timeline item -->
                                     @forelse($comments as $comment)
+                                     <div class="timeline">
                                         <?php
                                         $userId = $comment ->updated_by_user_id;
                                         $user = \App\User::where('id', $userId)->first();
                                         ?>
-                                        <li>
+                                        <div>
+                                      
 
-                                            <i class="fa fa-comments bg-yellow" title="Posted by {{$user->role}}"></i>
+                                            <i class="fas fa-comments bg-yellow" title="Posted by {{$user->role}}"></i>
 
                                             <div class="timeline-item">
-                                                <div class="user-block" >
-                                                    <img src = "{{$user->profile_pic}}" class="img-circle img-bordered-sm" alt="User Image" width="35" height="35" style="margin-top:5px;margin-left:10px;">
-                                                    <span class ="username" style="margin-left:10px;margin-top:5px">
-                     <a href="{{url('clients/'.$user->id)}}"  style="margin-left:10px;">{{$user->first_name}} {{$user->last_name}}</a>
-                 </span>
-                                                    <span class="description">
-                     <i class="fa fa-clock-o" style="margin-left:10px;">
-                        <?php
-                         $date1 = new DateTime($comment->created_at);
-                         $tz = \Auth::user()->timezone()->first()->name;
-                         $date1->setTimezone(new DateTimeZone($tz));
-                         $date = $date1->format('M j, Y, g:i a ');
-
-                         echo $date;
-                         ?>
-                     </i>
-                 </span>
-                                                </div>
+                                                   @include('themes.default1.user.client.editComment')
+                                                <h3 class="timeline-header"><a href="{{url('clients/'.$user->id)}}"><img src = "{{$user->profile_pic}}" class="img-circle img-bordered-sm" alt="User Image" width="35" height="35">&nbsp;{{$user->first_name}} {{$user->last_name}}</a> commented on
+                                                 <b> {!! getDateHtml($comment->created_at) !!}</b>
+                                             </h3>
+                                                   
+                                                 
 
                                                 <div class="timeline-body" id="longdesc" >
 
-                                                    <div class="comment more">
+                                                  
                                                         @if(strlen($comment->description) > 100)
                                                             {{substr($comment->description,0,100)}}
-                                                            <span class="read-more-show hide_content">More<i class="fa fa-angle-down"></i></span>
+                                                            <span class="read-more-show hide_content">More&nbsp;<i class="fa fa-angle-down"></i></span>
                                                             <span class="read-more-content"> {{substr($comment->description,100,strlen($comment->description))}}
                                 <span class="read-more-hide hide_content">Less <i class="fa fa-angle-up"></i></span> </span>
                                                     @else
@@ -565,28 +643,30 @@ User
 
                                                     <!-- {{$comment->description}} -->
 
-                                                    </div>
+                                                   
                                                     <br/>
+                                                    </div>
                                                     <div id="response"></div>
                                                     <div class="timeline-footer">
-                                                        <button type="submit" class="btn btn-primary btn-xs edit-comment" data-description="{{$comment->description}}" data-comment-id="{{$comment->id}}" data-user_id="{{$comment->user_id}}" data-admin_id="{{$comment->updated_by_user_id}}"><i class='fa fa-edit' style='color:white;'> </i>&nbsp;{{Lang::get('message.edit')}}</button>
+                                                        <button type="submit" class="btn btn-secondary btn-sm btn-xs edit-comment"data-description="{{$comment->description}}" data-comment-id="{{$comment->id}}" data-user_id="{{$comment->user_id}}" data-admin_id="{{$comment->updated_by_user_id}}"><i class='fa fa-edit' style='color:white;'{!! tooltip('Edit') !!} </i></button>
 
-                                                        <button type="submit" class="btn btn-danger btn-xs"  id="deleteComment" data-id="{{$comment->id}}"><i class='fa fa-trash' style='color:white;'> </i>&nbsp;Delete</button>
+                                                        <button type="submit" class="btn btn-danger btn-sm btn-xs"  id="deleteComment" data-id="{{$comment->id}}"> <i class='fa fa-trash' style='color:white;' {!! tooltip('Delete') !!} </i></button>
 
                                                     </div>
                                                 </div>
-
-                                        </li>
+                                        
+                                    </div>
                                     @empty
                                         <tr>
                                             <td>
                                                 {{Lang::get('message.no-comments')}}
                                             </td>
                                         </tr>
+                                         </div>
                                     @endforelse
-
-                                </ul>
-                            </table>                        </div>
+                               
+                                
+                             </div>
                     </div>
                 </div>
             </div>
@@ -595,7 +675,24 @@ User
         <!-- /.card -->
     </div>
 
-
+    <script type="text/javascript">
+    // Hide the extra content initially, using JS so that if JS is disabled, no problemo:
+                $('.read-more-content').addClass('hide_content')
+                $('.read-more-show, .read-more-hide').removeClass('hide_content')
+                // Set up the toggle effect:
+                $('.read-more-show').on('click', function(e) {
+                  $(this).next('.read-more-content').removeClass('hide_content');
+                  $(this).addClass('hide_content');
+                  e.preventDefault();
+                });
+                // Changes contributed by @diego-rzg
+                $('.read-more-hide').on('click', function(e) {
+                  var p = $(this).parent('.read-more-content');
+                  p.addClass('hide_content');
+                  p.prev('.read-more-show').removeClass('hide_content'); // Hide only the preceding "Read More"
+                  e.preventDefault();
+                });
+    </script>
 
 
 
@@ -693,7 +790,9 @@ User
                 $('#response').show();
                   var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>Success! </strong>'+data.message+'!</div>';
                   document.getElementById('response').innerHTML = result;
+                setTimeout(function(){
                 location.reload();
+                },2000);
                 },error: function(data) {
                   $('#response').show();
                   var result =  '<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>Whoops! </strong>'+data.message+'!</div>';

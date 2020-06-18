@@ -2,9 +2,11 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title">{{Lang::get('message.add-permissions')}}</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+
             </div>
+
             <div class="modal-body">              
                 <div id="permissionresponse"></div>
                 <div class= "form-group {{ $errors->has('name') ? 'has-error' : '' }}">
@@ -17,9 +19,9 @@
                   @endforeach
                 </div>
             </div>
-            <div class="modal-footer">
-                 <button type="button" id="close" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary " id="permissionssubmit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('Save')!!}</button>
+            <div class="modal-footer justify-content-between">
+                 <button type="button" id="close" class="btn btn-default pull-left" data-dismiss="modal"><i class="fas fa-times">&nbsp;</i>&nbsp;Close</button>
+                <button type="submit" class="btn btn-primary btn-sm" id="permissionssubmit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-save">&nbsp;</i>{!!Lang::get('Save')!!}</button>
             </div>
             <script>
 

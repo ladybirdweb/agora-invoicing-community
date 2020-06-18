@@ -19,9 +19,9 @@
 		</div>  
 		</div>
 		
-		  <div class="modal-footer">
-                <button type="button" id="close" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-                <input type="submit" id="licenseSave"  class="btn btn-primary" value="{{Lang::get('message.save')}}">
+		  <div class="modal-footer justify-content-between">
+                <button type="button" id="close" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="submit" id="licenseSave"  class="btn btn-primary" value="{{Lang::get('message.save')}}"><i class="fas fa-save"></i></i></button>
             </div>
 	</div>
 </div>

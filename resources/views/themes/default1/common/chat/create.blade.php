@@ -3,54 +3,26 @@
 Script
 @stop
 @section('content-header')
-<h1>
-Create Script Code
-</h1>
-  <ol class="breadcrumb">
-        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> {{Lang::get('message.home')}}</a></li>
-        <li><a href="{{url('settings')}}">{{Lang::get('message.settings')}}</a></li>
-        <li><a href="{{url('chat')}}">Script</a></li>
-        <li class="active">Create Script</li>
-      </ol>
+    <div class="col-sm-6">
+        <h1>Create Script Code</h1>
+    </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="breadcrumb-item"><a href="{{url('settings')}}"><i class="fa fa-dashboard"></i> Settings</a></li>
+            <li class="breadcrumb-item"><a href="{{url('chat')}}"><i class="fa fa-dashboard"></i> Script</a></li>
+            <li class="breadcrumb-item active">Create Script</li>
+        </ol>
+    </div><!-- /.col -->
 @stop
 @section('content')
-<div class="box box-primary">
+<div class="card card-primary card-outline">
 
-    <div class="box-header">
-        @if (count($errors) > 0)
-        <div class="alert alert-danger">
-            <strong>Whoops!</strong> There were some problems with your input.<br><br>
-            <ul>
-                @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-        @endif
-
-        @if(Session::has('success'))
-        <div class="alert alert-success alert-dismissable">
-           <i class="fa fa-check"></i>
-           <b>{{Lang::get('message.success')}}!</b> 
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            {{Session::get('success')}}
-        </div>
-        @endif
-        <!-- fail message -->
-        @if(Session::has('fails'))
-        <div class="alert alert-danger alert-dismissable">
-            <i class="fa fa-ban"></i>
-            <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.failed')}}.
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            {{Session::get('fails')}}
-        </div>
-        @endif
         {!! Form::open(['url'=>'chat','method'=>'post']) !!}
-        <h4>Javascript Code<button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></h4>
 
-    </div>
 
-    <div class="box-body">
+
+    <div class="card-body">
 
         <div class="row">
 
@@ -90,6 +62,7 @@ Create Script Code
             </div>
 
         </div>
+        <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-save">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button>
 
     </div>
 

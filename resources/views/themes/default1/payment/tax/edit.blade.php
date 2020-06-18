@@ -3,52 +3,29 @@
 Edit Tax
 @stop
 @section('content-header')
-<h1>
-Edit Tax Class
-</h1>
-  <ol class="breadcrumb">
-        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="{{url('settings')}}">Settings</a></li>
-        <li><a href="{{url('tax')}}">Tax</a></li>
-        <li class="active">Edit Tax</li>
-      </ol>
-@stop
-@section('content')
-<div class="box box-primary">
-
-    <div class="box-header">
-        @if (count($errors) > 0)
-                <div class="alert alert-danger">
-                    <strong>Whoops!</strong> There were some problems with your input.<br><br>
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-                @endif
-
-                @if(Session::has('success'))
-                <div class="alert alert-success alert-dismissable">
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    {{Session::get('success')}}
-                </div>
-                @endif
-                <!-- fail message -->
-                @if(Session::has('fails'))
-                <div class="alert alert-danger alert-dismissable">
-                    <i class="fa fa-ban"></i>
-                    <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.failed')}}.
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    {{Session::get('fails')}}
-                </div>
-                @endif
-        {!! Form::model($tax,['url'=>'tax/'.$tax->id,'method'=>'patch']) !!}
-        <h4>{{Lang::get('message.tax')}}	 <button type="submit" id="submit" class="btn btn-primary pull-right" data-loading-text="<i class='fa fa-refresh fa-spin fa-1x fa-fw'>&nbsp;</i> updating..."><i class="fa fa-refresh">&nbsp;&nbsp;</i>{!!Lang::get('Update')!!}</button></h4>
-
+    <div class="col-sm-6">
+        <h1>Edit Tax Class</h1>
     </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="breadcrumb-item"><a href="{{url('settings')}}"><i class="fa fa-dashboard"></i> Settings</a></li>
+            <li class="breadcrumb-item"><a href="{{url('tax')}}"><i class="fa fa-dashboard"></i> Tax</a></li>
+            <li class="breadcrumb-item active">Edit Tax</li>
+        </ol>
+    </div><!-- /.col -->
+@stop
 
-    <div class="box-body">
+@section('content')
+<div class="card card-primary card-outline">
+
+
+
+        {!! Form::model($tax,['url'=>'tax/'.$tax->id,'method'=>'patch']) !!}
+
+
+
+    <div class="card-body table-responsive">
 
         <div class="row">
 
@@ -143,6 +120,7 @@ Edit Tax Class
 
 
                 </div>
+                <button type="submit" id="submit" class="btn btn-primary pull-right" data-loading-text="<i class='fa fa-refresh fa-spin fa-1x fa-fw'>&nbsp;</i> updating..."><i class="fa fa-sync-alt">&nbsp;&nbsp;</i>{!!Lang::get('Update')!!}</button>
 
 
             </div>
@@ -151,7 +129,7 @@ Edit Tax Class
 
     </div>
    
-     <div class="box-body changegst" >
+     <div class="card-body changegst" >
              
              <div class="row">
             
@@ -177,8 +155,8 @@ Edit Tax Class
 <input type="hidden" value="{{$tax['country']}}" id="hiddenvalue">
 </div>
 
-<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
-<script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" />
+<script src="//cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript">
         $('#tax-table').DataTable({
             processing: true,
@@ -239,32 +217,52 @@ Edit Tax Class
          
       }
 if (inicial == 'IN'){
-$(document).find('.changegststate').addClass('hide');
-        $(document).find('.changegstrate').addClass('hide');
+$(document).find('.changegststate').hide();
+        $(document).find('.changegstrate').hide();
 
 }
+         $(document).ready(function(){
+             if($('#editTax').val() != 'Others') {
+                 $(document).find('.changegst').show();
+                 $(document).find('.changegststate').hide();
+                 $(document).find('.changegstrate').hide();
+                 $(document).find('#country').hide();
+                 $(document).find('#country1').hide();
+                 $(document).find('#country2').hide();
+                 $(document).find('.country').show();
+             } else {
+                 $(document).find('.changegst').hide();
+                 $(document).find('.country').show();
+                 $(document).find('.changegststate').show();
+                 $(document).find('.changegstrate').show();
+                 $('.country1').hide();
+                 $(document).find('.country1').hide();
+             }
+         });
+
 
   $('#editTax').on('change', function() {
         var val= $(this).val();
      if (val == 'Others')
       {
          $(document).find('.changegst').hide();
-        $(document).find('.country').removeClass('hidden');
-        $(document).find('.changegststate').removeClass('hide');
-        $(document).find('.changegstrate').removeClass('hide');
-        $(document).find('.country1').addClass('hide');
+        $(document).find('.country').show();
+        $(document).find('.changegststate').show();
+        $(document).find('.changegstrate').show();
+        $('.country1').hide();
+        $(document).find('.country1').hide();
          // $(document).find('#countryinvisible').removeClass('hide');
 
          
       }
       else {
              $(document).find('.changegst').show();
-             $(document).find('.changegststate').addClass('hide');
-             $(document).find('.changegstrate').addClass('hide');
-             $(document).find('#country').addClass('hide');
-             $(document).find('#country1').removeClass('hide');
-             $(document).find('#country2').addClass('hide');
-             $(document).find('.country').removeClass('hidden');
+             $(document).find('.changegststate').hide();
+             $(document).find('.changegstrate').hide();
+             $(document).find('#country').hide();
+             $(document).find('#country1').hide();
+             $(document).find('#country2').hide();
+             $(document).find('.country').show();
            }
 
     });

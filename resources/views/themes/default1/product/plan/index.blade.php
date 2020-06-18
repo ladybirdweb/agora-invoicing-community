@@ -3,59 +3,37 @@
 Plans
 @stop
 @section('content-header')
-<h1>
-All Plans
-</h1>
-  <ol class="breadcrumb">
-        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li class="active">All Plans</li>
-      </ol>
+    <div class="col-sm-6">
+        <h1>All Plans</h1>
+    </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="breadcrumb-item active">All Plans</li>
+        </ol>
+    </div><!-- /.col -->
 @stop
 @section('content')
 
 
 
-<div class="box box-primary">
+<div class="card card-primary card-outline">
+    <div class="card-header">
+        @include('themes.default1.product.plan.create')
+        <h3 class="card-title">Plans</h3>
+        <div class="card-tools">
+            <a href="#create-plan-option" data-toggle="modal" data-target="#create-plan-option" class="btn btn-primary btn-sm pull-right"><span class="fa fa-plus"></span>&nbsp;{{Lang::get('message.create')}}</a></h4>
 
-    <div class="box-header">
 
-       
-   
-       @include('themes.default1.product.plan.create') 
-    @if (count($errors) > 0)
-    <div class="alert alert-danger">
-        <strong>Whoops!</strong> There were some problems with your input.<br><br>
-        <ul>
-            @foreach ($errors->all() as $error)
-            <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-    @endif
+        </div>
 
-    @if(Session::has('success'))
-    <div class="alert alert-success alert-dismissable">
-        <i class="fa fa-check"></i>
-        <b>{{Lang::get('message.success')}}!</b>
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-        {{Session::get('success')}}
+
     </div>
-    @endif
-    <!-- fail message -->
-    @if(Session::has('fails'))
-    <div class="alert alert-danger alert-dismissable">
-        <i class="fa fa-ban"></i>
-        <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.failed')}}.
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-        {{Session::get('fails')}}
-    </div>
-    @endif
-     <h4>{{Lang::get('message.plans')}}
-        <a href="#create-plan-option" data-toggle="modal" data-target="#create-plan-option" class="btn btn-primary btn-sm pull-right"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;{{Lang::get('message.create')}}</a></h4>
-     </div>
+
+
     <div id="response"></div>
 
-    <div class="box-body">
+    <div class="card-body table-responsive">
          @include('themes.default1.product.plan.popup.create-period') 
         <div class="row">
             <div class="col-md-12">
@@ -82,8 +60,8 @@ All Plans
 
 </div>
 
-    <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
-<script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript">
         $('#plan-table').DataTable({
             processing: true,
@@ -111,6 +89,11 @@ All Plans
                 {data: 'action', name: 'action'}
             ],
             "fnDrawCallback": function( oSettings ) {
+                $(function () {
+                    $('[data-toggle="tooltip"]').tooltip({
+                        container : 'body'
+                    });
+                });
                 $('.loader').css('display', 'none');
             },
             "fnPreDrawCallback": function(oSettings, json) {

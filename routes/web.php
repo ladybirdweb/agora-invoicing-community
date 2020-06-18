@@ -219,9 +219,7 @@
             Route::get('get-users', 'User\ClientController@getUsers');
             Route::get('search-email', 'User\ClientController@search')->name('search-email');
 
-            /*
-             * Product
-             */
+
 
             Route::resource('products', 'Product\ProductController');
             Route::get('get-products', ['as' => 'get-products', 'uses' => 'Product\ProductController@getProducts']);

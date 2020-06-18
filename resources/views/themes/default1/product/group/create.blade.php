@@ -3,59 +3,33 @@
 Create Group
 @stop
 @section('content-header')
-<h1>
-Create Product Group
-</h1>
-  <ol class="breadcrumb">
-        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="{{url('groups')}}">Groups</a></li>
-        <li class="active">Create Group</li>
-      </ol>
+    <div class="col-sm-6">
+        <h1>Create Product Group</h1>
+    </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="breadcrumb-item"><a href="{{url('groups')}}"><i class="fa fa-dashboard"></i> Groups</a></li>
+            <li class="breadcrumb-item active">Create Group</li>
+        </ol>
+    </div><!-- /.col -->
+
+
 @stop
+
 @section('content')
 
 <div class="row">
 
     <div class="col-md-12">
-        <div class="box box-primary">
+        <div class="card card-primary card-outline">
 
           
 
-            <div class="box-body">
+            <div class="card-body">
                 {!! Form::open(['url'=>'groups']) !!}
         
-                <div class="box-header">
-                      @if (count($errors) > 0)
-            <div class="alert alert-danger">
-                <strong>Whoops!</strong> There were some problems with your input.<br><br>
-                <ul>
-                    @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-            @endif
 
-            @if(Session::has('success'))
-            <div class="alert alert-success alert-dismissable">
-                <i class="fa fa-ban"></i>
-                <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.success')}}.
-                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                {{Session::get('success')}}
-            </div>
-            @endif
-            <!-- fail message -->
-            @if(Session::has('fails'))
-            <div class="alert alert-danger alert-dismissable">
-                <i class="fa fa-ban"></i>
-                <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.failed')}}.
-                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                {{Session::get('fails')}}
-            </div>
-            @endif
-                    <h3 class="box-title">{{Lang::get('message.groups')}}</h3>
-                     <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button>
-                </div>
 
                 <table class="table table-condensed">
 
@@ -247,6 +221,7 @@ Create Product Group
 
                     {!! Form::close() !!}
                 </table>
+                <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-save">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button>
 
 
 

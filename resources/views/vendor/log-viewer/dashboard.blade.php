@@ -13,7 +13,7 @@ Log-Viewer
       </ol>
       @stop
 @section('content')
-   
+
   <div class="box box-primary">
     <div class="box-body">
     <div class="row">
@@ -47,7 +47,7 @@ Log-Viewer
         </div>
     </div>
 </div>
-</div>  
+</div>
 @endsection
 
 @section('scripts')

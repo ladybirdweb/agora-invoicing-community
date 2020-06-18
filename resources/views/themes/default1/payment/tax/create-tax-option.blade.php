@@ -2,9 +2,10 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">{{Lang::get('message.create-tax-class')}}</h4>
+                <h4 class="modal-title" id="defaultModalLabel">{{Lang::get('message.create-tax-class')}}</h4>
+                <!-- <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button> -->
             </div>
+
             <div class="modal-body">
                 <!-- Form  -->
                 {!! Form::open(['url'=>'taxes/option','id'=>'taxClass']) !!}
@@ -91,9 +92,10 @@
 
 
             </div>
-            <div class="modal-footer">
-                <button type="button" id="close" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary " id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('Save')!!}</button>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default " data-dismiss="modal"><i class="fa fa-times"></i>&nbsp;Close</button>
+                <button type="submit"  class="btn btn-primary"><i class="fas fa-save"></i>&nbsp;Save</button>
+
             </div>
             {!! Form::close()  !!}
             <!-- /Form -->
@@ -101,7 +103,7 @@
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->  
 <script>
-  
+
     function getState(val) {
       $.ajax({
             type: "GET",
@@ -114,20 +116,28 @@
     }
 
    $(document).ready(function(){
+       if($('#gst').val() != 'Others') {
+           $('#countryvisible').hide();
+           $('#countrynotvisible').show();
+       } else {
+           $('#countryvisible').show();
+          $('#countrynotvisible').hide();
+       }
     $('#gst').on('change', function() {
             if ( this.value != 'Others')
       {
          $(document).find('.showwhengst').hide();
-         $(document).find('#countryvisible').addClass('hide');
-         $(document).find('#countrynotvisible').removeClass('hide');
+          $('#countryvisible').hide();
+          $('#countrynotvisible').show();
 
-         
+
+
       }
       else
         {
              $(document).find('.showwhengst').show();
-             $(document).find('#countrynotvisible').addClass('hide');
-             $(document).find('#countryvisible').removeClass('hide');
+            $('#countryvisible').show();
+            $('#countrynotvisible').hide();
         }
     });
 });

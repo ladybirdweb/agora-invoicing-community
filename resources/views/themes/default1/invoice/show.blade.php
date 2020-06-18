@@ -3,78 +3,56 @@
 Invoice
 @stop
 @section('content-header')
-<h1>
-View Invoice
-</h1>
-  <ol class="breadcrumb">
-        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="{{url('clients')}}">All Users</a></li>
-        <li><a href="{{url('invoices')}}">All Invoices</a></li>
-        <li class="active">View Invoice</li>
-      </ol>
-@stop
-@section('content')
-<div class="box box-primary">
-
-    <div class="box-header">
-        @if (count($errors) > 0)
-        <div class="alert alert-danger">
-            <strong>Whoops!</strong> There were some problems with your input.<br><br>
-            <ul>
-                @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-        @endif
-
-        @if(Session::has('success'))
-        <div class="alert alert-success alert-dismissable">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            {{Session::get('success')}}
-        </div>
-        @endif
-        <!-- fail message -->
-        @if(Session::has('fails'))
-        <div class="alert alert-danger alert-dismissable">
-            <i class="fa fa-ban"></i>
-            <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.failed')}}.
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            {{Session::get('fails')}}
-        </div>
-        @endif
-        <div id="response"></div>
-
-        <h4>{{Lang::get('message.invoice')}}
-            <!--<a href="{{url('orders/create')}}" class="btn btn-primary pull-right   ">{{Lang::get('message.create')}}</a></h4>-->
+    <div class="col-sm-6">
+        <h1>View Invoice</h1>
     </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="breadcrumb-item"><a href="{{url('clients')}}"><i class="fa fa-dashboard"></i> All Users</a></li>
+            <li class="breadcrumb-item"><a href="{{url('invoices')}}"><i class="fa fa-dashboard"></i> All Invoices</a></li>
+            <li class="breadcrumb-item active">View Invoice</li>
+        </ol>
+    </div><!-- /.col -->
+
+
+@stop
+
+@section('content')
+
+    <div class="invoice p-3 mb-3">
+        <div class="container-fluid">
 
 
 
-    <div class="box-body">
         <div class="row">
 
-            <div class="col-md-12">
+            <div class="col-12">
 
                 <?php $set = App\Model\Common\Setting::where('id', '1')->first(); 
                  $gst =  App\Model\Payment\TaxOption::where('id', '1')->first(); 
                 $date = getDateHtml($invoice->date);
-
+                $logo = \App\Model\Common\Setting::where('id', 1)->value('logo');
                  $symbol = $invoice->currency;
             
                 ?>
 
-                <!-- Main content -->
-                <section class="invoice">
                     <!-- title row -->
+
                     <div class="row">
-                        <div class="col-xs-12">
-                            <h2 class="page-header">
-                                <i class="fa fa-globe"></i> {{ucfirst($set->company)}}
-                                <small class="pull-right">Date: {!! $date !!}</small>
-                            </h2>
+                        <div class="col-12">
+                            <h4>
+                                @if($logo)
+                                    <img alt="Logo" width="100" height="50" src="{{asset('common/images/'.$logo)}}" style="margin-top: -2px">
+                                    @else
+                                    {{ucfirst($set->company)}}
+                                @endif
+
+                                <small class="float-right">Date: {!! $date !!}</small>
+                            </h4>
                         </div><!-- /.col -->
                     </div>
+
                     <!-- info row -->
                     <div class="row invoice-info">
                         <div class="col-sm-4 invoice-col">
@@ -104,25 +82,23 @@ View Invoice
                             </address>
                         </div><!-- /.col -->
                         <div class="col-sm-4 invoice-col">
-                            <b>Invoice   #{{$invoice->number}}</b>
-                            <br/>
+                            <b>Invoice   #{{$invoice->number}}</b><br>
+                            <br>
 
-                        </div><!-- /.col -->
-                         <div class="col-sm-4 invoice-col">
-                            <b>Order</b>   #{!! $order !!}
-                            <br/>
 
-                        </div><!-- /.col -->
-                         <div class="col-sm-4 invoice-col">
-                            <b>GSTIN   &nbsp; #{{$gst->Gst_No}}</b>
-                            <br/>
+                            <b>Order:</b>   #{!! $order !!}
+                            <br>
+
+
+                            <b>GSTIN:</b>  &nbsp; #{{$gst->Gst_No}}
+                            <br>
 
                         </div><!-- /.col -->
                     </div><!-- /.row -->
 
                     <!-- Table row -->
                     <div class="row">
-                        <div class="col-xs-12 table-responsive">
+                        <div class="col-12 table-responsive">
                             <table class="table table-striped">
                                 <thead>
                                     <tr>
@@ -173,10 +149,10 @@ View Invoice
 
                     <div class="row">
                         <!-- accepted payments column -->
-                        <div class="col-xs-6">  
+                        <div class="col-6">
 
-                        </div><!-- /.col -->
-                        <div class="col-xs-6">
+                        </div>
+                        <div class="col-6">
                             <p class="lead">Amount</p>
                             <div class="table-responsive">
                               
@@ -197,7 +173,7 @@ View Invoice
                                     $tax_percentage = explode(',', $rate);
                                 }
                                 ?>
-                                 <table class="table  table-striped">
+                                 <table class="table">
                                       @if($invoice->discount != null)
                                   <th>Discount</th>
                                     <td>{{currency_format($invoice->discount,$code=$symbol)}}</td>
@@ -287,18 +263,18 @@ View Invoice
 
                     <!-- this row will not appear when printing -->
                     <div class="row no-print">
-                        <div class="col-xs-12"> 
+                        <div class="col-6"></div>
+                        <div class="col-6">
                             <a href="{{url('pdf?invoiceid='.$invoice->id)}}"><button class="btn btn-primary pull-right" style="margin-right: 5px;"><i class="fa fa-download"></i> Generate PDF</button></a>
                         </div>
                     </div>
-                </section><!-- /.content -->
 
 
             </div>
         </div>
-    </div>
-</div>
 
+</div>
+    </div>
 
 
 @stop

@@ -3,59 +3,25 @@
 Email Logs
 @stop
 @section('content-header')
-<h1>
-Email Log
-</h1>
-  <ol class="breadcrumb">
-        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="{{url('settings')}}">Settings</a></li>
-        <li class="active">Email Log</li>
-      </ol>
+    <div class="col-sm-6">
+        <h1>Email Log</h1>
+    </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="breadcrumb-item"><a href="{{url('settings')}}"><i class="fa fa-dashboard"></i> Settings</a></li>
+            <li class="breadcrumb-item active">Email Log</li>
+        </ol>
+    </div><!-- /.col -->
 @stop
 @section('content')
 
 
-<style type="text/css">
-    table { table-layout:fixed; word-break:break-all; word-wrap:break-word; }
-
-    .more-text{
-     display:none;
-}
 </style>
-    <div class="box box-primary">
- <div class="box-header">
-       @if (count($errors) > 0)
-        <div class="alert alert-danger alert-dismissable">
-            <strong>Whoops!</strong> There were some problems with your input.<br><br>
-            <ul>
-                @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-        @endif
+    <div class="card card-primary card-outline">
 
-        @if(Session::has('success'))
-        <div class="alert alert-success alert-dismissable">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            {{Session::get('success')}}
-        </div>
-        @endif
-        <!-- fail message -->
-        @if(Session::has('fails'))
-        <div class="alert alert-danger alert-dismissable">
-            <i class="fa fa-ban"></i>
-            <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.failed')}}.
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            {{Session::get('fails')}}
-        </div>
-        @endif
-        <div id="response"></div>
-         
 
- </div>
-
-<div class="box-body">
+<div class="card-body table-responsive">
 
   <div class="row">
           <div class="col-md-12">
@@ -87,9 +53,11 @@ Email Log
 </div>
 </div>
 </div>
-    <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
-<script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" />
+<script src="//cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 <!--  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script> -->
+
 <script type="text/javascript">
   
         $('#email-table').DataTable({
@@ -121,6 +89,11 @@ Email Log
                 
             ],
             "fnDrawCallback": function( oSettings ) {
+                $(function () {
+                $('[data-toggle="tooltip"]').tooltip({
+                    container : 'body'
+                });
+                });
                 $('.loader').css('display', 'none');
             },
             "fnPreDrawCallback": function(oSettings, json) {

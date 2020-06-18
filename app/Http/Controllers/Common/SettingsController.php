@@ -384,15 +384,7 @@ class SettingsController extends BaseSettingsController
                  return "<input type='checkbox' class='email' value=".$model->id.' name=select[] id=check>';
              })
                            ->addColumn('date', function ($model) {
-                               $date = $model->date;
-                               if ($date) {
-                                   $date1 = new \DateTime($date);
-                                   $tz = \Auth::user()->timezone()->first()->name;
-                                   $date1->setTimezone(new \DateTimeZone($tz));
-                                   $finalDate = $date1->format('M j, Y, g:i a ');
-                               }
-
-                               return $finalDate;
+                               return getDateHtml($model->date);
                            })
                              ->addColumn('from', function ($model) {
                                  $from = Markdown::convertToHtml($model->from);

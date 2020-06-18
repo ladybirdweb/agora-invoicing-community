@@ -109,7 +109,7 @@
 
                                 {!! Form::file('logo') !!}
                                 <p><i> {{Lang::get('message.enter-the-company-logo')}}</i> </p>
-                                @if($setting->logo) 
+                                @if($setting->logo)
                                 <img src="{{asset('cart/img/logo/'.$setting->logo)}}" class="img-thumbnail" style="height: 100px;">
                                 @endif
                             </div>

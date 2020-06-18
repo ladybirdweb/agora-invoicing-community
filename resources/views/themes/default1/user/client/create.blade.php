@@ -17,7 +17,9 @@ Create User
 @stop
 @section('content')
 
-<div class="card card-primary card-outline">
+
+
+    <div class="card card-primary card-outline">
 
 
 
@@ -96,7 +98,7 @@ Create User
 
                     <div class="col-md-3 form-group {{ $errors->has('active') ? 'has-error' : '' }}">
                         <!-- mobile -->
-                        {!! Form::label('active',Lang::get('message.active')) !!}
+                        {!! Form::label('active',Lang::get('message.email')) !!}
                         <p>{!! Form::radio('active',1,true) !!}&nbsp;Active&nbsp;&nbsp;{!! Form::radio('active',0) !!}&nbsp;Inactive</p>
 
                     </div>
@@ -179,14 +181,13 @@ Create User
 
                     <?php $countries = \App\Model\Common\Country::pluck('nicename', 'country_code_char2')->toArray();
                      ?>
-                    <div class="col-md-3 form-group select2{{ $errors->has('country') ? 'has-error' : '' }}">
+                    <div class="col-md-3 form-group{{ $errors->has('country') ? 'has-error' : '' }}">
                         <!-- name -->
                         {!! Form::label('country',Lang::get('message.country'),['class'=>'required']) !!}
-                      
 
-                     <!--    {!! Form::select('country',['choose'=>'Choose',''=>$countries],null,['class' => 'form-control selectpicker','data-live-search'=>'true','data-live-search-placeholder'=>'Search','data-dropup-auto'=>'false','data-size'=>'10','onChange'=>'getCountryAttr(this.value);']) !!} -->
 
-                          <select name="country" value= "Choose" id="country" onChange="getCountryAttr(this.value)" class="form-control selectpicker" data-live-search="true" data-live-search-placeholder="Search" data-dropup-auto="false" data-size="10">
+
+                          <select name="country" value= "Choose" id="country" onChange="getCountryAttr(this.value)" class="form-control select2">
                              <option value="">Choose</option>
                            @foreach($countries as $key=>$country)
                             @if (Request::old('country') == strtolower($key) || Request::old('country') == $key)
@@ -325,7 +326,12 @@ Create User
 
 
 <script>
-  $(document).ready(function(){
+
+        $(document).ready(function(){
+            $(function () {
+                //Initialize Select2 Elements
+                $('.select2').select2()
+            });
 // get the country data from the plugin
 var countryData = $.fn.intlTelInput.getCountryData(),
 

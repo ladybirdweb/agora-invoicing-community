@@ -3,52 +3,29 @@
 Create Page
 @stop
 @section('content-header')
-<h1>
-Create New Page
-</h1>
-  <ol class="breadcrumb">
-        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="{{url('pages')}}">All Pages</a></li>
-        <li class="active">Create New Page</li>
-      </ol>
+    <div class="col-sm-6">
+        <h1>Create New Page</h1>
+    </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="breadcrumb-item"><a href="{{url('pages')}}"><i class="fa fa-dashboard"></i> All Pages</a></li>
+            <li class="breadcrumb-item active">Create New Page</li>
+        </ol>
+    </div><!-- /.col -->
 @stop
+
 @section('content')
-<div class="box box-primary">
+<div class="card card-primary card-outline">
 
-    <div class="content-header">
-         @if (count($errors) > 0)
-                <div class="alert alert-danger">
-                    <strong>Whoops!</strong> There were some problems with your input.<br><br>
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-                @endif
 
-                @if(Session::has('success'))
-                <div class="alert alert-success alert-dismissable">
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    {{Session::get('success')}}
-                </div>
-                @endif
-                <!-- fail message -->
-                @if(Session::has('fails'))
-                <div class="alert alert-danger alert-dismissable">
-                    <i class="fa fa-ban"></i>
-                    <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.failed')}}.
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    {{Session::get('fails')}}
-                </div>
-                @endif
+
         {!! Form::open(['url'=>'pages','method'=>'post']) !!}
 
-        <h4>{{Lang::get('message.pages')}}	<button type="submit" class="btn btn-primary pull-right" id="submit"><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></h4>
 
-    </div>
 
-    <div class="box-body">
+
+    <div class="card-body">
 
         <div class="row">
 
@@ -150,6 +127,7 @@ Create New Page
             </div>
 
         </div>
+        <h4><button type="submit" class="btn btn-primary pull-right" id="submit"><i class="fa fa-save">&nbsp;</i>{!!Lang::get('message.save')!!}</button></h4>
 
     </div>
 

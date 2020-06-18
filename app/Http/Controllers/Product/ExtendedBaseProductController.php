@@ -44,8 +44,8 @@ class ExtendedBaseProductController extends Controller
         })
         ->addColumn('action', function ($model) {
             return '<p><a href='.url('edit-upload/'.$model->id).
-                                " class='btn btn-sm btn-primary btn-xs'><i class='fa fa-edit'
-                                 style='color:white;'> </i>&nbsp;&nbsp;Edit</a>&nbsp</p>";
+                                " class='btn btn-sm btn-secondary btn-xs'".tooltip('Edit')."<i class='fa fa-edit'
+                                 style='color:white;'> </i></a></p>";
         })
         ->rawcolumns(['checkbox', 'product_id', 'title', 'description', 'version', 'file', 'action'])
         ->make(true);

@@ -3,46 +3,42 @@
 Order
 @stop
 @section('content-header')
-<h1>
-Order Details
-</h1>
-  <ol class="breadcrumb">
-        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="{{url('orders')}}">All Orders</a></li>
-        <li class="active">View Order</li>
-      </ol>
-@stop
-@section('content')
-<style type="text/css">
-  .box-header.with-border {
-    border-bottom: 0px!important;
-  }
-  a {
-    color: currentColor;!important;
-  }
+    <div class="col-sm-6">
+        <h1>Order Details</h1>
+    </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="breadcrumb-item"><a href="{{url('orders')}}"><i class="fa fa-dashboard"></i> All Orders</a></li>
+            <li class="breadcrumb-item active">View Order</li>
+        </ol>
+    </div><!-- /.col -->
 
-</style>
+
+@stop
+
+@section('content')
+    <div class="card card-primary card-outline">
 <div class="row">
-    <div class="col-md-12">
-        
+<div class="col-md-12">
          
-            <div class="box-body">
+            <div class="card-body">
                 <div class="box-group" id="accordion">
-                  <div class="panel box box-primary">
-                   <div class="box-header with-border">
-                    <h4 class="box-title">
+
+                   <div class="card-header">
+                    <h5 class="card-title">
                      
                          <i class="fa fa-users"></i>
                         Overview
                      
-                    </h4>
+                    </h5>
                   </div>
-                    <div id="collapseOne" class="panel-collapse collapse in">
-                       <div class="box-body">
+
+                       <div class="card-body">
                         <div class="callout callout-info">
                             <div class="row">
                                 <div class="col-md-4">
-                                    <b>Date: </b>{{$order->created_at}} 
+                                    <b>Date: </b>{!! getDateHtml($order->created_at) !!}
                                 </div>
                                 <div class="col-md-4">
                                     <b>Order No: </b>  #{{$order->number}} 
@@ -53,20 +49,18 @@ Order Details
                                 </div>
                             </div>
                         </div>
-                         <div class="col-md-6">
-                     
-                           
-                          
-                           <div class="panel box box-success">
-                            <div class="box-body">
-                              <div class="box-header with-border">
-                              <h4 class="box-title">
+                           <div class="row">
+                           <div class="col-md-6">
+                             <div class="card card-info card-outline">
+                           <div class="card-body table-responsive">
+                               <div class="card-header">
+                              <h5 class="card-title">
                               User Details
-                             </h4>
-                            </div>
-                            
+                             </h5>
+                               </div>
+
                         
-                       
+
     
                             <table class="table table-hover">
 
@@ -82,15 +76,14 @@ Order Details
                                     <tr><td><b>Country:</b></td><td>{{\App\Http\Controllers\Front\CartController::getCountryByCode($user->country)}}</td></tr>
 
                                 </tbody></table>
-                              </div>
-                           
-                            </div>
-                        
-                     
-                    </div>
-                        <div class="col-md-6">
-                            <div class="panel box box-success">
-                            <div class="box-body">
+                             </div>
+
+                             </div>
+                       </div>
+                           <div class="col-md-6">
+                           <div class="card card-info card-outline">
+
+                            <div class="card-body table-responsive">
                                @include('themes.default1.front.clients.reissue-licenseModal')
                                @include('themes.default1.front.clients.domainRestriction')
                                @include('themes.default1.order.installationLimit')
@@ -99,8 +92,8 @@ Order Details
                                @include('themes.default1.order.support_end-modal')
                                
                                   
-                            <div class="box-header with-border">
-                              <h4 class="box-title">
+                            <div class="card-header">
+                              <h4 class="card-title">
                                 License Details
                               </h4>
                             </div>
@@ -109,12 +102,14 @@ Order Details
                             <table id="lic_details" class="table table-hover">
    
                               <input type="hidden" name="domainRes" id="domainRes" value={{$allowDomainStatus}}>
-                                <tbody><tr><td><b>License Code:</b></td>
+                                <tbody>
+                                <tr>
+                                    <td><b>License Code:</b></td>
                                   <td id="s_key" data-type="serialkey">{{($order->serial_key)}}</td>
 
                                   <td> @component('mini_views.copied_flash_text',[
                                  'navigations'=>[
-                                   ['btnName'=>'lic_btn','slot'=>'license','style'=>'<span data-type="copy" style="font-size: 15px; pointer-events: initial; cursor: pointer; display: block;" id="copyBtn" title="Click to copy to clipboard"><i class="fa fa-clipboard"></i></span><span class="label label-success label-xs pull-right" id="copied" style="display:none;margin-top:-40px;margin-left:-20px;position: absolute;">Copied</span>'],
+                                   ['btnName'=>'lic_btn','slot'=>'license','style'=>'<span data-type="copy" style="font-size: 15px; pointer-events: initial; cursor: pointer; display: block;" id="copyBtn" title="Click to copy to clipboard"><i class="fas fa-copy"></i></span><span class="badge badge-success badge-xs pull-right" id="copied" style="display:none;margin-top:-40px;margin-left:-20px;position: absolute;">Copied</span>'],
                                     ]
                                 ])
                                 
@@ -132,15 +127,15 @@ Order Details
                                           <td contenteditable="false" id="domain">{{$order->domain}}</td>
                                          
                                           <td>
-                                               <button class='class="btn btn-danger' style="width:max-content;border:none;" id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}">
-                                           Reissue License</button>
+                                              <button class='class="btn btn-sm btn-danger btn-xs' style="width:max-content;border:none;" id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}"><i class="fas fa-file-import" style='color:white;' {!! tooltip('Reissue&nbsp;License') !!}</i>
+                                           </button>
                                           </td>
                                       </tr>
                                       <tr>
                                         <td><b>Installation Path:</b></td> 
                                         @if(count($installationDetails['installed_path']) > 0)
                                           <td>@foreach($installationDetails['installed_path'] as $paths)
-                                              {{$paths}}<br>
+                                              <li>{{$paths}}</li>
                                               @endforeach
                                           </td>
                                         @else
@@ -156,7 +151,7 @@ Order Details
                                       @if(count($installationDetails['installed_path']) > 0)  
                                           <td>
                                               @foreach($installationDetails['installed_ip'] as $paths)
-                                              {{$paths}}
+                                              <li>{{$paths}}</li>
                                               @endforeach
                                           </td>
                                          @else
@@ -172,8 +167,7 @@ Order Details
                                         {{$noOfAllowedInstallation}}
                                       </td>
                                       <td>
-                                         <a class="btn btn-sm btn-primary btn-xs" id="installlimit" limit-id="{{$order->id}}" install-limit="{{$noOfAllowedInstallation}}" style='color:white;border-radius:0px;'><i class="fa fa-edit">&nbsp;</i>
-                                          Edit</a>
+                                         <button class="btn btn-sm btn-secondary btn-xs"  id="installlimit" limit-id="{{$order->id}}" install-limit="{{$noOfAllowedInstallation}}"><i class="fa fa-edit" style='color:white;' {!! tooltip('Edit') !!}</i></button>
                                         
                                     </td>
                                        
@@ -200,8 +194,7 @@ Order Details
                                     <td class="brtags"> {!! $date !!} </td>
                                     <td>
                                       @if($date != '--')
-                                     <a class="btn btn-sm btn-primary btn-xs" id="updates_end" updates-id="{{$order->id}}" data-date="{{getTimeInLoggedInUserTimeZone($subscription->update_ends_at,'d/m/Y')}}" style='color:white;border-radius:0px;'><i class="fa fa-edit">&nbsp;</i>
-                                Edit</a>
+                                     <button class="btn btn-sm btn-secondary btn-xs" id="updates_end" updates-id="{{$order->id}}" data-date="{{getTimeInLoggedInUserTimeZone($subscription->update_ends_at,'d/m/Y')}}" '><i class="fa fa-edit" style='color:white;' {!! tooltip('Edit') !!}</i></button>
                                 @endif
                                     </td>
                                     </tr>
@@ -211,8 +204,8 @@ Order Details
                                   <td class="brtags">{!! $licdate !!} </td>
                                   <td>
                                   @if($licdate != '--')
-                                    <a class="btn btn-sm btn-primary btn-xs" id="license_end" license-id="{{$order->id}}" license-date="{{getTimeInLoggedInUserTimeZone($subscription->ends_at,'d/m/Y')}}" style='color:white;border-radius:0px;'><i class="fa fa-edit">&nbsp;</i>
-                                Edit</a>
+                                    <button class="btn btn-sm btn-secondary btn-xs" id="license_end" license-id="{{$order->id}}" license-date="{{getTimeInLoggedInUserTimeZone($subscription->ends_at,'d/m/Y')}}"><i class="fa fa-edit" style='color:white;' {!! tooltip('Edit') !!}</i>
+                                </button>
                                 @endif
                                   </td>
                                 </tr>
@@ -222,8 +215,8 @@ Order Details
                                 <td class="brtags">{!! $supdate !!}</td>
                                 <td>
                                 @if($supdate != '--')
-                                    <a class="btn btn-sm btn-primary btn-xs" id="support_end" support-id="{{$order->id}}" support-date="{{getTimeInLoggedInUserTimeZone($subscription->support_ends_at,'d/m/Y')}}" style='color:white;border-radius:0px;'><i class="fa fa-edit">&nbsp;</i>
-                                Edit</a>
+                                        <button class="btn btn-sm btn-secondary btn-xs" id="support_end" support-id="{{$order->id}}" support-date="{{getTimeInLoggedInUserTimeZone($subscription->support_ends_at,'d/m/Y')}}" ><i class="fa fa-edit" style='color:white;' {!! tooltip('Edit') !!}</i></button>
+                                </button>
                                 @endif
                                   </td>
                                 </tr>
@@ -231,33 +224,34 @@ Order Details
                                 </tbody>
                               </table>
                              
-                             
-                              </div>
+
                             
-                        </div>
                       </div>
                     </div>
-                </div>
+
             </div>
         </div>
+        </div>
+                    </div>
     </div>
-
-
+            </div>
+</div>
+</div>
+    <div class="card card-primary card-outline">
         <div class="row">
             <div class="col-md-12">
-            <div class="box-body">
+            <div class="card-body table-responsive">
                 <div class="box-group" id="accordion3">
-                  <div class="panel box box-primary">
+
                      <a data-toggle="collapse" data-parent="#accordion3" href="#collapseFour">
-                   <div class="box-header with-border">
-                    <h4 class="box-title">
+                   <div class="card-header with-border">
+                    <h4 class="card-title">
                       <i class="fa fa-credit-card"></i>
                         Invoice List
                     </h4>
                   </div>
                 </a>
-                    <div id="collapseFour" class="panel-collapse collapse in">
-                       <div class="box-body">
+                       <div class="card-body">
                        <div class="col-md-12">
                          <table id="editorder-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
                              
@@ -280,15 +274,16 @@ Order Details
       
 
                           </div>
-                        </div>
-                    </div>
+
                 </div>
             </div>
           </div>
         </div>
 
-<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
-<script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+
+<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript">
         $('#editorder-table').DataTable({
             processing: true,
@@ -321,6 +316,11 @@ Order Details
                 {data: 'action', name: 'action'}
             ],
             "fnDrawCallback": function( oSettings ) {
+                $(function () {
+                    $('[data-toggle="tooltip"]').tooltip({
+                        container : 'body'
+                    });
+                });
                 $('.loader').css('display', 'none');
             },
             "fnPreDrawCallback": function(oSettings, json) {
@@ -328,21 +328,21 @@ Order Details
             },
         });
       </script>
+    </div>
+    <div class="card card-primary card-outline">
          <div class="row">
             <div class="col-md-12">
-            <div class="box-body">
+            <div class="card-body table-responsive">
                 <div class="box-group" id="accordion4">
-                  <div class="panel box box-primary">
                      <a data-toggle="collapse" data-parent="#accordion4" href="#collapseFive">
-                   <div class="box-header with-border">
-                    <h4 class="box-title">
+                   <div class="card-header">
+                    <h4 class="card-title">
                        <i class="fa fa-bars"></i>
                        Payment Receipts
                     </h4>
                   </div>
                 </a>
-                    <div id="collapseFive" class="panel-collapse collapse in">
-                       <div class="box-body">
+                       <div class="card-body">
                        <div class="col-md-12">
                            <table id="order1-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
                  <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_delete"><i class= "fa fa-trash"></i>&nbsp;&nbsp;Delete Selected</button><br /><br />
@@ -363,17 +363,26 @@ Order Details
       
 
                           </div>
-                        </div>
                     </div>
-                </div>
+
             </div>
           </div>
         </div>
 
+<script>
 
-<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
+    $(document).ready(function(){
+            $('[data-toggle="tooltip"]').tooltip({
+                container : 'body'
+            });
+
+    })
+</script>
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+
+<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
  <script src="{{asset('common/js/licCode.js')}}"></script>
-<script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript">
         $('#order1-table').DataTable({
             processing: true,
@@ -405,6 +414,11 @@ Order Details
                
             ],
             "fnDrawCallback": function( oSettings ) {
+                $(function () {
+                    $('[data-toggle="tooltip"]').tooltip({
+                        container : 'body'
+                    });
+                });
                 $('.loader').css('display', 'none');
             },
             "fnPreDrawCallback": function(oSettings, json) {
@@ -459,12 +473,17 @@ Order Details
 </script>
 @stop
 @section('datepicker')
-<script type="text/javascript">
-      $(function () {
-   //Datemask dd/mm/yyyy
-  $('[data-mask]').inputmask()
-  });
-</script>
+    <script>
+    $('#licenseEnds').datetimepicker({
+    format: 'L'
+    });
+    $('#updateEnds').datetimepicker({
+    format: 'L'
+    });
+    $('#supportEnds').datetimepicker({
+        format: 'L'
+    });
+    </script>
 <!-----------------------------------For Reissuing License Domain------------------------------------------------------------->
 <script>
         $("#reissueLic").click(function(){
@@ -490,7 +509,7 @@ Order Details
                      $('#response1').css('color', 'green');
                 setTimeout(function(){
                     window.location.reload();
-                },3000);
+                },2000);
                   }
                
                 }
@@ -555,7 +574,7 @@ Order Details
  //When Submit Button is Clicked in Modal Popup, passvalue through Ajax
     $("#updatesSave").on('click',function(){
       $('#updatesSave').attr('disabled',true);
-      $('#updatesSave').html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
+      $('#updatesSave').html("<i class='fas fa-circle-notch fa-spin'></i>Please Wait...");
         var newdate = $("#newDate").val();
         var orderId = $("#order").val();
         $.ajax({
@@ -572,7 +591,7 @@ Order Details
                      $('#response2').css('color', 'green');
                  setTimeout(function(){
                     window.location.reload();
-                },3000);
+                },2000);
                 }
             },
             error: function(response) {
@@ -608,7 +627,7 @@ Order Details
  //When Submit Button is Clicked in Modal Popup, passvalue through Ajax
     $("#licenseExpSave").on('click',function(){
        $('#licenseExpSave').attr('disabled',true);
-      $('#licenseExpSave').html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
+      $('#licenseExpSave').html("<i class='fas fa-circle-notch fa-spin'></i>Please Wait...");
         var newdate = $("#newDate2").val();
         var orderId = $("#order2").val();
         $.ajax({
@@ -624,7 +643,7 @@ Order Details
                      $('#response3').css('color', 'green');
                  setTimeout(function(){
                     window.location.reload();
-                },3000);
+                },2000);
                 }
             },
             error: function(response) {
@@ -643,8 +662,8 @@ Order Details
                 }
             })
         });
-  <!-------------------------------------------------------------------------------------------------------------------------->  
-  
+  <!-------------------------------------------------------------------------------------------------------------------------->
+
 
 /*
 * Update Support Expiry date 
@@ -661,7 +680,7 @@ Order Details
  //When Submit Button is Clicked in Modal Popup, passvalue through Ajax
     $("#supportExpSave").on('click',function(){
        $('#supportExpSave').attr('disabled',true);
-       $('#supportExpSave').html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
+       $('#supportExpSave').html("<i class='fas fa-circle-notch fa-spin'></i>Please Wait...");
         var newdate = $("#newDate3").val();
         var orderId = $("#order3").val();
         $.ajax({
@@ -677,7 +696,7 @@ Order Details
                      $('#response4').css('color', 'green');
                  setTimeout(function(){
                     window.location.reload();
-                },3000);
+                },2000);
                 }
             },
             error: function(response) {

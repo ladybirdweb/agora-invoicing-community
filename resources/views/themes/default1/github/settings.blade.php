@@ -3,14 +3,16 @@
 Github Setting
 @stop
 @section('content-header')
-<h1>
-Github Settings
-</h1>
-  <ol class="breadcrumb">
-        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="{{url('settings')}}">Settings</a></li>
-        <li class="active">Github Setting</li>
-      </ol>
+    <div class="col-sm-6">
+        <h1>Github Setting</h1>
+    </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="breadcrumb-item"><a href="{{url('settings')}}"><i class="fa fa-dashboard"></i> Settings</a></li>
+            <li class="breadcrumb-item active">Github Setting</li>
+        </ol>
+    </div><!-- /.col -->
 @stop
 @section('content')
 <style>
@@ -74,43 +76,9 @@ input:checked + .slider:before {
     height:600px;
 }
 </style>
-<div class="box box-primary">
+<div class="card card-primary card-outline">
 
-    <div class="box-header">
-        @if (count($errors) > 0)
-        <div class="alert alert-danger">
-            <strong>Whoops!</strong> There were some problems with your input.<br><br>
-            <ul>
-                @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-        @endif
-
-        @if(Session::has('success'))
-        <div class="alert alert-success alert-dismissable">
-             <i class="fa fa-check"></i>
-              <b>{{Lang::get('message.success')}}!</b>
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            {{Session::get('success')}}
-        </div>
-        @endif
-        <!-- fail message -->
-        @if(Session::has('fails'))
-        <div class="alert alert-danger alert-dismissable">
-            <i class="fa fa-ban"></i>
-            <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.failed')}}.
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            {{Session::get('fails')}}
-        </div>
-        @endif
-       
-        <h4>{{Lang::get('message.github')}}	<button type="submit" id="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></h4>
-
-    </div>
-
-    <div class="box-body">
+    <div class="card-body">
           <div id="alertMessage"></div>
                 <td class="col-md-2">
                     <label class="switch toggle_event_editing">
@@ -171,6 +139,7 @@ input:checked + .slider:before {
 
                 </div>
 
+                <button type="submit" id="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-save">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button>
 
 
             </div>
@@ -268,7 +237,7 @@ $(document).ready(function (){
        $('#git_secret').css("border-color","");
          var githubstatus = 0;
   }
-    $("#submit").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");   
+    $("#submit").html("<i class='fas fa-circle-notch fa-spin'></i>Please Wait...");
     $.ajax ({
       url: '{{url("github-setting")}}',
       type : 'post',

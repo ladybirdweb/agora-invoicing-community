@@ -3,60 +3,32 @@
 Mailchimp
 @stop
 @section('content-header')
-<h1>
-Mailchimp Settings
-</h1>
-  <ol class="breadcrumb">
-        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="{{url('settings')}}">Settings</a></li>
-        <li class="active">Mailchimp Setting</li>
-      </ol>
+    <div class="col-sm-6">
+        <h1>Mailchimp Settings</h1>
+    </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="breadcrumb-item"><a href="{{url('settings')}}"><i class="fa fa-dashboard"></i> Settings</a></li>
+            <li class="breadcrumb-item active">Mailchimp Setting</li>
+        </ol>
+    </div><!-- /.col -->
 @stop
+
 @section('content')
 
 <div class="row">
 
     <div class="col-md-12">
-        <div class="box box-primary">
-            <div class="box-header">
-                @if (count($errors) > 0)
-                <div class="alert alert-danger">
-                    <strong>Whoops!</strong> There were some problems with your input.<br><br>
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-                @endif
-
-                @if(Session::has('success'))
-                <div class="alert alert-success alert-dismissable">
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    {{Session::get('success')}}
-                </div>
-                @endif
-                <!-- fail message -->
-                @if(Session::has('fails'))
-                <div class="alert alert-danger alert-dismissable">
-                    <i class="fa fa-ban"></i>
-                    <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.failed')}}.
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    {{Session::get('fails')}}
-                </div>
-                @endif
-            </div>
+        <div class="card card-primary card-outline">
 
 
-            <div class="box-body">
+
+            <div class="card-body">
                 {!! Form::model($set,['url'=>'mailchimp','method'=>'patch','files'=>true]) !!}
 
                 <table class="table table-condensed">
 
-                    <tr>
-                       <h3 class="box-title">{{Lang::get('message.mailchimp')}}</h3>
-                        <button type="submit" class="btn btn-primary pull-right" id="submit" style="margin-top:-40px;"><i class="fa fa-refresh">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button>
-                    </tr>
                      
                     <tr>
 
@@ -137,10 +109,12 @@ Mailchimp Settings
                 </table>
 
 
+                <button type="submit" class="btn btn-primary pull-right" id="submit" style="margin-top:-40px;"><i class="fa fa-sync-alt">&nbsp;</i>{!!Lang::get('message.update')!!}</button>
 
             </div>
 
         </div>
+
         <!-- /.box -->
 
     </div>

@@ -3,16 +3,19 @@
 Mailchimp
 @stop
 @section('content-header')
-<h1>
-Mailchimp Mapping
-</h1>
-  <ol class="breadcrumb">
-        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-         <li><a href="{{url('settings')}}">Settings</a></li>
-        <li><a href="{{url('mailchimp')}}"><i class="fa fa-dashboard"></i> Mailchimp Setting</a></li>
-        <li class="active">Mailchimp Mapping</li>
+    <div class="col-sm-6">
+        <h1>Templates</h1>
+    </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="breadcrumb-item"><a href="{{url('settings')}}"><i class="fa fa-dashboard"></i> Settings</a></li>
+            <li class="breadcrumb-item"><a href="{{url('mailchimp')}}"><i class="fa fa-dashboard"></i> Mailchimp Setting</a></li>
+            <li class="breadcrumb-item active">Mailchimp Mapping</li>
         </ol>
+    </div><!-- /.col -->
 @stop
+
 @section('content')
 <style>
 .switch {
@@ -78,45 +81,18 @@ input:checked + .slider:before {
 <div class="row">
 
     <div class="col-md-12">
-        <div class="box box-primary">
+        <div class="card card-primary card-outline">
 
-            <div class="box-header">
-                @if (count($errors) > 0)
-                <div class="alert alert-danger">
-                    <strong>Whoops!</strong> There were some problems with your input.<br><br>
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-                @endif
-
-                @if(Session::has('success'))
-                <div class="alert alert-success alert-dismissable">
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    {{Session::get('success')}}
-                </div>
-                @endif
-                <!-- fail message -->
-                @if(Session::has('fails'))
-                <div class="alert alert-danger alert-dismissable">
-                    <i class="fa fa-ban"></i>
-                    <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.failed')}}.
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    {{Session::get('fails')}}
-                </div>
-                @endif
+            <div class="card-header">
+                <h3 class="card-title">{{Lang::get('message.list-fields')}}</h3>
                 {!! Form::model($model,['url'=>'mail-chimp/mapping','method'=>'patch','files'=>true]) !!}
                
                        
                     
               
                </div>   
-            <div class="box-body">
-                 <h3 class="box-title" style="margin-top:0px;margin-left: 10px;">{{Lang::get('message.list-fields')}}</h3>
-                           <button type="submit" class="btn btn-primary pull-right" id="submit"  style="margin-top:-40px;
-                        margin-right:15px;"><i class="fa fa-refresh">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button>
+            <div class="card-body">
+
                 <table class="table table-hover">
                     <tr>
                         <th>{{Lang::get('message.agora-fields')}}</th>
@@ -173,7 +149,12 @@ input:checked + .slider:before {
 
 
                 </table>
+                <button type="submit" class="btn btn-primary pull-right" id="submit" ><i class="fa fa-sync-alt">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button>
+
                 {!! Form::close() !!}
+
+            </div>
+
 
 
             </div>
@@ -182,16 +163,18 @@ input:checked + .slider:before {
 
         </div>
         <!-- /.box -->
-         <div class="box box-primary">
+    <div class="col-md-12">
+         <div class="card card-primary card-outline">
 
          
                         
-            <div class="box-body">
+            <div class="card-body">
 
-                   <h3 class="box-title" style="margin-top:0px;margin-left: 10px;">{{Lang::get('message.group-fields')}}</h3>
+
                    <div id="alertMessage"></div>
-                <div class="box-header">
-                    <h4>Map Products</h4>
+                <div class="card-header">
+                    <h3 class="card-title" >{{Lang::get('message.group-fields')}}</h3><br>
+{{--                    <h4>Map Products</h4>--}}
             <div class="form-group">
             <span style="color:red;">*&nbsp Map all your Products with the group fields created in Mailchimp. After purchase of the product, the mailchimp group field mapped with that Product will show in Mailchimp account groups's section </span>
         </div>  
@@ -202,12 +185,10 @@ input:checked + .slider:before {
                           <span class="slider round"></span>
                     </label>
                </div>   
-                    
+
             {!! Form::model($model2,['url'=>'mailchimp-group/mapping','id'=>'mapproducts','method'=>'patch','files'=>true]) !!}
                
               
-                           <button type="submit" class="btn btn-primary pull-right" id="submit"  style="margin-top:-40px;
-                        margin-right:15px;"><i class="fa fa-refresh">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button>
                         <h5>Select A Group</h5>
                          <select name="group"  class="form-control col-md-2"  id="group" onChange="getGroup(this.value)">
                             <option value="">Choose</option>
@@ -511,6 +492,8 @@ input:checked + .slider:before {
                     </tr>
 
                  </table>
+                <button type="submit" class="btn btn-primary pull-right" id="submit" ><i class="fa fa-sync-alt">&nbsp;</i>{!!Lang::get('message.update')!!}</button>
+
                 {!! Form::close() !!}
 
 
@@ -520,15 +503,14 @@ input:checked + .slider:before {
 
         </div>
 
-
-        <div class="box box-primary">
+    </div>
+    <div class="col-md-12">
+        <div class="card card-primary card-outline">
            <div id="alertMessage1"></div>
-             <div class="box-body">
-                  <h3 class="box-title" style="margin-top:0px;margin-left: 10px;">{{Lang::get('message.group-fields')}}</h3>
-            <div class="box-header">
-                 
-                <h4>Map Is Paid Group</h4>
-                      <div class="form-group">
+             <div class="card-body">
+                  <h3 class="card-title">Map Is Paid Group</h3><br>
+            <div class="card-header">
+                <div class="form-group">
                 <span style="color:red;">*&nbsp This Setting defines whether the Product is charged or a free Product. Create a group in Mailchimp with dropdown values which should either be YES/NO or TRUE/FALSE.<br> Once the settings is saved here, after every Product purchase, its status will reflect in your Mailchimp account group's Section. </span>
             </div>  
                 <label class="switch">
@@ -549,7 +531,6 @@ input:checked + .slider:before {
                 
             {!! Form::model($model2,['url'=>'mailchimp-ispaid/mapping','method'=>'patch','id'=>'mapispaid','files'=>true]) !!}
                
-                <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-refresh">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button>
                           <br>
                         <h5>Select A Group</h5>
                          <select name="group"  class="form-control col-md-2"  id="group" onChange="getGroup(this.value)">
@@ -562,14 +543,17 @@ input:checked + .slider:before {
                 @endforeach
             </select>
 
-                {!! Form::close() !!}
 
+                 <br>
+                 <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-sync-alt">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button>
+                 {!! Form::close() !!}
 
             </div>
 
-            
+
 
         </div>
+    </div>
 
     </div>
 

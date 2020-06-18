@@ -1,57 +1,26 @@
 @extends('themes.default1.layouts.master')
 @section('title')
-Github Setting
+Cron Setting
 @stop
 @section('content-header')
-<h1>
-{!! Lang::get('message.cron-setting') !!}
-</h1>
-  <ol class="breadcrumb">
-        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="{{url('settings')}}">Settings</a></li>
-        <li class="active">{!! Lang::get('message.cron-setting') !!}</li>
-      </ol>
+    <div class="col-sm-6">
+        <h1>{!! Lang::get('message.cron-setting') !!}</h1>
+    </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="breadcrumb-item"><a href="{{url('settings')}}"><i class="fa fa-dashboard"></i> Settings</a></li>
+            <li class="breadcrumb-item active">{!! Lang::get('message.cron-setting') !!}</li>
+        </ol>
+    </div><!-- /.col -->
 @stop
-<style>
-    .select2-container--default .select2-selection--multiple {
-    border-radius: 0px;
-</style>
+
+
 @section('content')
 
 
-    <div class="box-header">
-        @if (count($errors) > 0)
-        <div class="alert alert-danger">
-            <strong>Whoops!</strong> There were some problems with your input.<br><br>
-            <ul>
-                @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-        @endif
 
-        @if(Session::has('success'))
-        <div class="alert alert-success alert-dismissable">
-             <i class="fa fa-check"></i>
-              <b>{{Lang::get('message.success')}}!</b>
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            {{Session::get('success')}}
-        </div>
-        @endif
-        <!-- fail message -->
-        @if(Session::has('fails'))
-        <div class="alert alert-danger alert-dismissable">
-            <i class="fa fa-ban"></i>
-            <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.failed')}}.
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            {{Session::get('fails')}}
-        </div>
-        @endif
-
-
-    </div>
-    <div class="box box-primary">
+    <div class="card card-primary card-outline">
       <div class="row">
     <div class="col-md-12">
         <!-- Custom Tabs -->
@@ -60,8 +29,8 @@ Github Setting
                     @include('themes.default1.common.cron.cron-new')
                
                 <!-- /.tab-pane -->
-            
-         
+
+
         <!-- nav-tabs-custom -->
     </div>
     <!-- /.col -->
@@ -76,7 +45,7 @@ Github Setting
     <div class="col-md-12">
         <!-- Custom Tabs -->
   
-     <div class="box box-primary">
+     <div class="card card-primary card-outline">
         
         <!-- /.box-header -->
        
@@ -85,17 +54,13 @@ Github Setting
                    $mailStatus = \App\Model\Common\StatusSetting::pluck('expiry_mail')->first();
                    $activityStatus =\App\Model\Common\StatusSetting::pluck('activity_log_delete')->first();
                   ?>
-        <div class="box-header with-border">
-         
-         <h4>{{Lang::get('message.set_cron_period')}}  
-          @if ( $mailStatus || $activityStatus ==1)
-          <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button>
-          @else
-            <button type="submit" class="btn btn-primary pull-right disabled" id="submit"><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button>
-            @endif
-        </h4>
-     </div>
-      <div class="box-body">
+         <div class="card-header">
+             <h3 class="card-title">{{Lang::get('message.set_cron_period')}}  </h3>
+
+
+         </div>
+
+      <div class="card-body">
           <div class="row">
            
             <!-- /.col -->
@@ -163,6 +128,11 @@ Github Setting
             <!-- /.col -->
           </div>
           <!-- /.row -->
+          @if ( $mailStatus || $activityStatus ==1)
+              <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-save">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button>
+          @else
+              <button type="submit" class="btn btn-primary pull-right disabled" id="submit"><i class="fa fa-save">&nbsp;</i>{!!Lang::get('message.save')!!}</button>
+          @endif
             {!! Form::close() !!}
         </div>
         <!-- /.box-body -->

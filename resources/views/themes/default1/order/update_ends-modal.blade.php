@@ -12,22 +12,27 @@
 		  <div class="form-group">
                     <!-- name -->
                     {!! Form::label('updates',Lang::get('message.update_end'),['class'=>'required']) !!}
-                   
-                         <div class="input-group date">
-                             <div class="input-group-addon">
-                      <i class="fa fa-calendar"></i>
-                         </div>
-                     <input name="update_ends_at" type="text" value="" class="form-control" id="newDate" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask>
-                        </div>
+              <div class="input-group date" id="updateEnds" data-target-input="nearest">
+                  <input type="text" name="update_ends_at" id="newDate" class="form-control datetimepicker-input" autocomplete="off"  data-target="#updateEnds"/>
+                  <div class="input-group-append" data-target="#updateEnds" data-toggle="datetimepicker">
+                      <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+
+                  </div>
+
+
+              </div>
+
+
+
                     
                            <h6 id ="domaincheck"></h6>
                 </div>
         
 		</div>
 		
-		  <div class="modal-footer">
-                <button type="button" id="close" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-                <button type="submit" id="updatesSave" class="btn btn-primary">Save</button>
+		  <div class="modal-footer justify-content-between">
+                <button type="button" id="close" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i>&nbsp;Close</button>
+                <button type="submit" id="updatesSave" class="btn btn-primary"><i class="fas fa-save"></i>&nbsp;Save</button>
             </div>
 	</div>
 </div>

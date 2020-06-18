@@ -22,7 +22,7 @@ active
 <div class="col-md-12 pull-center">
 
 	 <table id="invoice-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
-	 	
+
                     <thead><tr>
                             <th>Invoice No</th>
                             <th>Date</th>
@@ -52,7 +52,7 @@ active
                 "sSearch"    : "Search: ",
                 "sProcessing": '<img id="blur-bg" class="backgroundfadein" style="top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;" src="{!! asset("lb-faveo/media/images/gifloader3.gif") !!}">'
             },
-    
+
             columns: [
                 {data: 'number', name: 'number'},
                 {data: 'date', name: 'date'},
@@ -74,9 +74,9 @@ active
             },
         });
     </script>
- 
 
-   
+
+
 
 
 @stop

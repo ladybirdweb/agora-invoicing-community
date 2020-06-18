@@ -2,7 +2,7 @@
 @section('title')
 Users
 @stop
-@section('content')
+
 @section('content-header')
     <div class="col-sm-6">
         <h1>All Users</h1>
@@ -15,7 +15,7 @@ Users
     </div><!-- /.col -->
 @stop
 
-
+@section('content')
 
     <div class="row">
         <div class="col-12">
@@ -48,7 +48,7 @@ Users
                         <div class="col-md-3 form-group">
                             <!-- first name -->
                             {!! Form::label('country','Country') !!}
-                            <select name="country" value= "Choose" onChange="getCountryAttr(this.value)" class="form-control selectpicker" data-live-search="true" data-live-search-placeholder="Search" data-dropup-auto="false" data-size="10">
+                            <select name="country" value= "Choose" onChange="getCountryAttr(this.value)" class="form-control select2" data-live-search="true" data-live-search-placeholder="Search" data-dropup-auto="false" data-size="10">
                                 <option value="" style="">Choose</option>
                                 @foreach($countries as $key=> $country)
                                     @if($key == $request->country)
@@ -74,7 +74,7 @@ Users
                         ?>
                         <!-- {!! Form::select('industry',['Choose',''=>DB::table('bussinesses')->pluck('name','short')->toarray(),'old'=>$old],null,['class' => 'form-control','data-live-search'=>'true','data-live-search-placeholder'=>'Search','data-dropup-auto'=>'false','data-size'=>'10','id'=>'industry']) !!} -->
 
-                            <select name="industry"  class="form-control selectpicker" data-live-search="true",data-live-search-placeholder="Search" data-dropup-auto="false"  data-size="10" id="industry">
+                            <select name="industry"  class="form-control select2" data-live-search="true",data-live-search-placeholder="Search" data-dropup-auto="false"  data-size="10" id="industry">
                                 <option value="">Choose</option>
                                 @foreach($bussinesses as $key=>$bussines)
                                     @if($key == $request->industry)
@@ -103,10 +103,11 @@ Users
                             <!-- first name -->
                             {!! Form::label('reg_from','Registered From') !!}
                             <div class="input-group date" id="reservationdate_from" data-target-input="nearest">
+                                <input type="text" name="reg_from" class="form-control datetimepicker-input" autocomplete="off" value="{!! $request->reg_from !!}" data-target="#reservationdate_from"/>
+
                                 <div class="input-group-append" data-target="#reservationdate_from" data-toggle="datetimepicker">
                                     <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                 </div>
-                                <input type="text" name="reg_from" class="form-control datetimepicker-input" autocomplete="off" value="{!! $request->reg_from !!}" data-target="#reservationdate_from"/>
 
                             </div>
                         </div>
@@ -115,10 +116,11 @@ Users
                             <!-- first name -->
                             {!! Form::label('from','Registered Till') !!}
                             <div class="input-group date" id="reservationdate" data-target-input="nearest">
+                                <input type="text" name="reg_till" class="form-control datetimepicker-input" autocomplete="off" value="{!! $request->reg_till !!}" data-target="#reservationdate"/>
+
                                 <div class="input-group-append" data-target="#reservationdate" data-toggle="datetimepicker">
                                     <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                 </div>
-                                <input type="text" name="reg_till" class="form-control datetimepicker-input" autocomplete="off" value="{!! $request->reg_till !!}" data-target="#reservationdate"/>
 
                             </div>
 
@@ -155,9 +157,9 @@ Users
                             </select>
                         </div>                </div>
                 <!-- /.card-body -->
-                    <button name="Search" type="submit"  class="btn btn-primary" data-loading-text="<i class='fa fa-search fa-spin fa-1x fa-fw'>&nbsp;</i> updating..."><i class="fa fa-search">&nbsp;</i>{!!Lang::get('Search')!!}</button>
+                    <button name="Search" type="submit"  class="btn btn-primary"><i class="fa fa-search"></i>&nbsp;{!!Lang::get('Search')!!}</button>
                     &nbsp;
-                    <a href="{!! url('clients') !!}" id="reset" class="btn btn-danger"><i class="fas fa-sync-alt">&nbsp;</i>{!!Lang::get('Reset')!!}</a>
+                    <a href="{!! url('clients') !!}" id="reset" class="btn btn-danger"><i class="fas fa-sync-alt"></i>&nbsp;{!!Lang::get('Reset')!!}</a>
             </div>
             <!-- /.card -->
         </div>
@@ -172,7 +174,7 @@ Users
         <h3 class="card-title">Users</h3>
 
         <div class="card-tools">
-                <a href="{{url('clients/create')}}" class="btn btn-primary btn-sm pull-right"><span class="fas fa-plus"></span>&nbsp;&nbsp;Create New User</a>
+            <a href="{{url('clients/create')}}" class="btn btn-primary btn-sm pull-right"><span class="fas fa-plus"></span>&nbsp;Create New User</a>
 
 
         </div>
@@ -197,7 +199,7 @@ Users
                             <th>Action</th>
                         </tr></thead>
                      </table>
-               
+
 
             </div>
         </div>
@@ -263,11 +265,17 @@ Users
 
 @section('icheck')
 <script>
+    $(document).ready(function() {
+        $(function () {
+            //Initialize Select2 Elements
+            $('.select2').select2()
+        });
+    });
    function checking(e){
-          
+
           $('#user-table').find("td input[type='checkbox']").prop('checked', $(e).prop('checked'));
      }
-     
+
 
      $(document).on('click','#bulk_delete',function(){
       var id=[];
@@ -298,7 +306,7 @@ Users
             {
                 alert("Please select at least one checkbox");
             }
-        }  
+        }
 
      });
    $('#reservationdate').datetimepicker({

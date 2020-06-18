@@ -27,7 +27,7 @@ Create Invoice
             <h5>{{ucfirst($user->first_name)}} {{ucfirst($user->last_name)}}, ({{$user->email}}) </h5>
             @else 
             {!! Form::open(['url'=>'generate/invoice','id'=>'formoid']) !!}
-            <h3>Place Order</h3>
+            <h5>Place Order</h5>
             @endif
         <div id="error">
         </div>
@@ -41,7 +41,6 @@ Create Invoice
          </div>
 
 
-
     
     <div class="card-body">
 
@@ -53,10 +52,11 @@ Create Invoice
                 <?php
                 $users = [];
                 ?>
-
+                    <link rel="stylesheet" href="{{asset('admin/css/select2.min.css')}}">
+                    <script src="{{asset('admin/plugins/select2.full.min.js')}}"></script>
                 <div class="col-sm-4 form-group">
                     {!! Form::label('user',Lang::get('message.clients')) !!}
-                     {!! Form::select('user', [Lang::get('User')=>$users],null,['multiple'=>true,'class'=>"form-control select2" ,'id'=>"users",'required','style'=>"width:100%!important",'oninvalid'=>"setCustomValidity('Please Select Client')", 
+                     {!! Form::select('user', [Lang::get('User')=>$users],null,['multiple'=>true,'class'=>"form-control select2" ,'id'=>"users",'required','style'=>"width:100%",'oninvalid'=>"setCustomValidity('Please Select Client')",
                   'onchange'=>"setCustomValidity('')"]) !!}
                  
                 </div>

@@ -3,56 +3,36 @@
 Create Script
 @stop
 @section('content-header')
-<h1>
-Google Analytics And Javascript Codes
-</h1>
-  <ol class="breadcrumb">
-        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> {{Lang::get('message.home')}}</a></li>
-        <li><a href="{{url('settings')}}">{{Lang::get('message.settings')}}</a></li>
-        <li class="active">Script</li>
-      </ol>
+    <div class="col-sm-6">
+        <h1>Google Analytics And Javascript Codes</h1>
+    </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="breadcrumb-item"><a href="{{url('settings')}}"><i class="fa fa-dashboard"></i> Settings</a></li>
+            <li class="breadcrumb-item active">Script</li>
+        </ol>
+    </div><!-- /.col -->
 @stop
+
 @section('content')
 
 
 
-<div class="box box-primary">
+<div class="card card-primary card-outline">
+    <div class="card-header">
+        <h3 class="card-title">Chat</h3>
 
-    <div class="box-header">
-        @if (count($errors) > 0)
-        <div class="alert alert-danger">
-            <strong>Whoops!</strong> There were some problems with your input.<br><br>
-            <ul>
-                @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-        @endif
+        <div class="card-tools">
+            <a href="{{url('chat/create')}}" class="btn btn-primary btn-sm pull-right"><span class="fa fa-plus"></span>&nbsp;&nbsp;{{Lang::get('message.create')}}</a></h4>
 
-        @if(Session::has('success'))
-        <div class="alert alert-success alert-dismissable">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            {{Session::get('success')}}
         </div>
-        @endif
-        <!-- fail message -->
-        @if(Session::has('fails'))
-        <div class="alert alert-danger alert-dismissable">
-            <i class="fa fa-ban"></i>
-            <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.failed')}}.
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            {{Session::get('fails')}}
-        </div>
-        @endif
-        <div id="response"></div>
-        <h4>
-            <a href="{{url('chat/create')}}" class="btn btn-primary btn-sm pull-right"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;{{Lang::get('message.create')}}</a></h4>
     </div>
 
 
 
-    <div class="box-body">
+
+    <div class="card-body table-responsive">
         <div class="row">
 
             <div class="col-md-12">
@@ -73,8 +53,8 @@ Google Analytics And Javascript Codes
 
 </div>
 
-<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
-<script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" />
+<script src="//cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript">
         $('#script-table').DataTable({
             processing: true,
@@ -100,6 +80,11 @@ Google Analytics And Javascript Codes
                 {data: 'action', name: 'action'}
             ],
             "fnDrawCallback": function( oSettings ) {
+                $(function () {
+                    $('[data-toggle="tooltip"]').tooltip({
+                        container : 'body'
+                    });
+                });
                 $('.loader').css('display', 'none');
             },
             "fnPreDrawCallback": function(oSettings, json) {

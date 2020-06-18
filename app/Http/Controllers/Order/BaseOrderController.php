@@ -28,14 +28,14 @@ class BaseOrderController extends ExtendedOrderController
         if ($status == 'success') {
             if ($subscriptionId) {
                 $url = '<a href='.url('renew/'.$subscriptionId)." 
-                class='btn btn-sm btn-primary btn-xs'><i class='fa fa-refresh'
-                 style='color:white;'> </i>&nbsp;&nbsp;Renew</a>";
+                class='btn btn-sm btn-success btn-xs'".tooltip('Renew')."<i class='fas fa-credit-card'
+                 style='color:white;'> </i></a>";
             }
         }
 
         return '<p><a href='.url('orders/'.$model->id)." 
-        class='btn btn-sm btn-primary btn-xs'><i class='fa fa-eye'
-         style='color:white;'> </i>&nbsp;&nbsp;View</a> $url</p>";
+        class='btn btn-sm btn-primary btn-xs'".tooltip('View')."<i class='fas fa-eye'
+         style='color:white;'> </i></a> $url</p>";
     }
 
     /**

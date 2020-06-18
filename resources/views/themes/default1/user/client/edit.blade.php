@@ -2,17 +2,17 @@
 @section('title')
 Edit User
 @stop
-@section('content-header')
-    <div class="col-sm-6">
-        <h1>Edit User</h1>
-    </div>
-    <div class="col-sm-6">
-        <ol class="breadcrumb float-sm-right">
-            <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-            <li class="breadcrumb-item active">Edit User</li>
-        </ol>
-    </div><!-- /.col -->
-@stop
+    @section('content-header')
+        <div class="col-sm-6">
+            <h1>Edit User</h1>
+        </div>
+        <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+                <li class="breadcrumb-item active">Edit User</li>
+            </ol>
+        </div><!-- /.col -->
+    @stop
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
 
 @section('content')
@@ -88,7 +88,7 @@ Edit User
 
                     <div class="col-md-3 form-group {{ $errors->has('active') ? 'has-error' : '' }}">
                         <!-- mobile -->
-                        {!! Form::label('active',Lang::get('message.active')) !!}
+                        {!! Form::label('active',Lang::get('message.email')) !!}
                         <p>{!! Form::radio('active',1,true) !!}&nbsp;Active&nbsp;&nbsp;{!! Form::radio('active',0) !!}&nbsp;Inactive</p>
 
                     </div>
@@ -163,7 +163,7 @@ Edit User
                         {!! Form::label('country',Lang::get('message.country'),['class'=>'required']) !!}
                         <?php $countries = \App\Model\Common\Country::pluck('nicename', 'country_code_char2')->toArray(); ?>
 
-                        {!! Form::select('country',[Lang::get('message.choose')=>$countries],null,['class' => 'form-control selectpicker','id'=>'country','onChange'=>'getCountryAttr(this.value)','data-live-search'=>'true','required','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false','data-size'=>'10']) !!}
+                        {!! Form::select('country',[Lang::get('message.choose')=>$countries],null,['class' => 'form-control select2','id'=>'country','onChange'=>'getCountryAttr(this.value)','data-live-search'=>'true','required','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false','data-size'=>'10']) !!}
 
                     </div>
                     <div class="col-md-3 form-group {{ $errors->has('state') ? 'has-error' : '' }}">
@@ -266,7 +266,10 @@ Edit User
 
    
      $(document).ready(function(){
-
+         $(function () {
+             //Initialize Select2 Elements
+             $('.select2').select2()
+         });
     var country = $('#country').val();
     var telInput = $('#mobile_code'),
      addressDropdown = $("#country");

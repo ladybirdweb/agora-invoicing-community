@@ -64,24 +64,24 @@ input:checked + .slider:before {
     height:600px;
 }
 </style>
-<h1>
-API Keys
-</h1>
-  <ol class="breadcrumb">
-        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="{{url('settings')}}">Settings</a></li>
-         <li class="active">Api Key</li>
-      </ol>
+<div class="col-sm-6 md-6">
+    <h1>API Keys</h1>
+</div>
+<div class="col-sm-6 md-6">
+    <ol class="breadcrumb float-sm-right">
+        <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="breadcrumb-item"><a href="{{url('settings')}}"> Settings</a></li>
+        <li class="breadcrumb-item active">Api Key</li>
+    </ol>
+</div><!-- /.col -->
 @stop
 @section('content')
    
          
-          <div class="box box-primary">
-            <div class="box-header">
-              <h3 class="box-title">Api Keys Settings</h3>
-            </div>
+          <div class="card card-primary card-outline">
+
             <!-- /.box-header -->
-            <div class="box-body">
+            <div class="card-body">
                <div id="alertMessage"></div>
               <div class="scrollit">
                <div class="col-md-12">
@@ -92,7 +92,7 @@ API Keys
                   <th>Options</th>
                   <th>Status</th>
                    <th>Fields</th>
-                  <th style="padding-left: 250px;">Action</th>
+                  <th>Action</th>
                 </tr>
                   
                 <tr>
@@ -112,13 +112,13 @@ API Keys
                   {!! Form::label('lic_api_secret',Lang::get('message.lic_api_secret')) !!}
                         {!! Form::text('license_api',null,['class' => 'form-control secretHide','disabled'=>'disabled'
                         ]) !!}
-                     
-                         
-                  
+
+
+
                         <!-- last name -->
                         {!! Form::label('lic_api_url',Lang::get('message.lic_api_url')) !!} :
                         {!! Form::text('license_api',null,['class' => 'form-control urlHide','disabled'=>'disabled']) !!}
-                        
+
                   </td>
                   <td class="col-md-4 LicenseField hide">
                     
@@ -135,7 +135,7 @@ API Keys
                         <h6 id="license_urlCheck"></h6>
                    
                </td>
-                  <td style="padding-left: 230px;"><button type="submit" class="form-group btn btn-primary"  onclick="licenseDetails()" id="submit"><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
+                  <td class="col-md-2"><button type="submit" class="form-group btn btn-primary"  onclick="licenseDetails()" id="submit"><i class="fa fa-save">&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
                 </tr>
 
                 <tr>
@@ -156,7 +156,7 @@ API Keys
                   
                    
                   </td>
-                  <td class="col-md-4" style="padding-left: 230px;"><button type="submit" class="form-group btn btn-primary"  id="submit14"><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
+                  <td class="col-md-2"><button type="submit" class="form-group btn btn-primary"  id="submit14"><i class="fa fa-save">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
                 </tr>
 
 
@@ -176,13 +176,13 @@ API Keys
                   <td class="col-md-4 updateEmptyField">
                   {!! Form::label('update_api_secret',Lang::get('message.lic_api_secret')) !!}
                         {!! Form::text('update_api',null,['class' => 'form-control updatesecretHide','disabled'=>'disabled']) !!}
-                     
-                         
-                  
+
+
+
                         <!-- last name -->
                         {!! Form::label('update_api_url',Lang::get('message.lic_api_url')) !!} :
                         {!! Form::text('update_api',null,['class' => 'form-control updateurlHide','disabled'=>'disabled']) !!}
-                        
+
                   </td>
                   <td class="col-md-4 updateField hide">
                     
@@ -199,7 +199,7 @@ API Keys
                         <h6 id="update_urlCheck"></h6>
                    
                </td>
-                  <td class="col-md-2" style="padding-left: 230px;"><button type="submit" class="form-group btn btn-primary" onclick="updateDetails()" id="submitudpate"><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
+                  <td class="col-md-2" ><button type="submit" class="form-group btn btn-primary" onclick="updateDetails()" id="submitudpate"><i class="fa fa-save">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
                 </tr>
 
 
@@ -221,8 +221,8 @@ API Keys
                   {!! Form::label('nocaptcha_secret',Lang::get('message.nocaptcha_secret')) !!}
                         {!! Form::text('nocaptcha_secret1',null,['class' => 'form-control nocapsecretHide','disabled'=>'disabled']) !!}
                         <h6 id=""></h6>
-                         
-                  
+
+
                         <!-- last name -->
                         {!! Form::label('nocaptcha_sitekey',Lang::get('message.nocaptcha_sitekey')) !!} :
                         {!! Form::text('nocaptcha_sitekey1',null,['class' => 'form-control siteKeyHide','disabled'=>'disabled']) !!}
@@ -243,7 +243,7 @@ API Keys
                         <h6 id="captcha_sitekeyCheck"></h6>
                    
                 </td>
-                  <td class="col-md-2" style="padding-left: 230px;"><button type="submit" class="form-group btn btn-primary" onclick="captchaDetails()" id="submit2"><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
+                  <td class="col-md-2"><button type="submit" class="form-group btn btn-primary" onclick="captchaDetails()" id="submit2"><i class="fa fa-save">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
                  </tr>
 
                   <tr>
@@ -271,7 +271,7 @@ API Keys
                         {!! Form::text('msg91_sender',$msg91Sender,['class' => 'form-control sender','id'=>'sender']) !!}
                         <h6 id="sender_check"></h6>
                   </td>
-                  <td style="padding-left: 230px;"><button type="submit" class="form-group btn btn-primary"  id="submit3"><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
+                  <td class="col-md-2"><button type="submit" class="form-group btn btn-primary"  id="submit3"><i class="fa fa-save">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
                 </tr>
                
 
@@ -298,7 +298,7 @@ API Keys
                   
                    
                   </td>
-                  <td style="padding-left: 230px;"><button type="submit" class="form-group btn btn-primary"  id="submit9"><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
+                  <td class="col-md-2"><button type="submit" class="form-group btn btn-primary"  id="submit9"><i class="fa fa-save">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
                 </tr>
 
               <tr>
@@ -324,7 +324,7 @@ API Keys
                   
                    
                   </td>
-                  <td style="padding-left: 230px;"><button type="submit" class="form-group btn btn-primary"  id="submit10"><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
+                  <td class="col-md-2"><button type="submit" class="form-group btn btn-primary"  id="submit10"><i class="fa fa-save">&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
                 </tr>
 
    
@@ -348,7 +348,7 @@ API Keys
                   
                    
                   </td>
-                  <td class="col-md-4" style="padding-left: 230px;"><button type="submit" class="form-group btn btn-primary"  id="submit4"><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
+                  <td class="col-md-2" ><button type="submit" class="form-group btn btn-primary"  id="submit4"><i class="fa fa-save">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
                 </tr>
 
 
@@ -395,7 +395,7 @@ API Keys
                    
                   </td>
 
-                  <td class="col-md-2" style="padding-left: 230px;"><button type="submit" class="form-group btn btn-primary"  id="submit5"><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
+                  <td class="col-md-2" ><button type="submit" class="form-group btn btn-primary"  id="submit5"><i class="fa fa-save">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
                 </tr>
 
                <tr>
@@ -421,7 +421,7 @@ API Keys
                   
                    
                   </td>
-                  <td style="padding-left: 230px;"><button type="submit" class="form-group btn btn-primary"  id="submit7"><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
+                  <td class="col-md-2"><button type="submit" class="form-group btn btn-primary"  id="submit7"><i class="fa fa-save">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
                 </tr>
 
                 <tr>
@@ -447,7 +447,7 @@ API Keys
                   
                    
                   </td>
-                  <td style="padding-left: 230px;"><button type="submit" class="form-group btn btn-primary"  id="submit13"><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
+                  <td class="col-md-2"><button type="submit" class="form-group btn btn-primary"  id="submit13"><i class="fa fa-save">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
                 </tr>
 
                   <tr>
@@ -484,7 +484,7 @@ API Keys
                          <h6 id="apilayer_keycheck"></h6>
                   </td>
 
-                  <td class="col-md-2" style="padding-left: 230px;"><button type="submit" class="form-group btn btn-primary"  id="submit6"><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
+                  <td class="col-md-2"><button type="submit" class="form-group btn btn-primary"  id="submit6"><i class="fa fa-save">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
                 </tr>
 
 
@@ -505,11 +505,11 @@ API Keys
       var status = $('.checkbox').val();
      if(status ==1) {
      $('#License').prop('checked', true);
-       $('.LicenseField').removeClass("hide");
-            $('.licenseEmptyField').addClass("hide");
+       $('.LicenseField').show();
+            $('.licenseEmptyField').hide();
      } else if(status ==0) {
        $('.LicenseField').addClass("hide");
-               $('.licenseEmptyField').removeClass("hide");
+               $('.licenseEmptyField').show();
               
      }
       });
@@ -519,14 +519,14 @@ API Keys
             // checked
            $('#license_api_secret').val();
                 $('#license_api_url').val();
-            $('.LicenseField').removeClass("hide");
-            $('.licenseEmptyField').addClass("hide");
+            $('.LicenseField').show();
+            $('.licenseEmptyField').hide();
         }
         else{
-            $('.LicenseField').addClass("hide");
+            $('.LicenseField').hide();
              $('.nocapsecretHide').val('');
                 $('.siteKeyHide').val('');
-               $('.licenseEmptyField').removeClass("hide");
+               $('.licenseEmptyField').show();
                
                
         }
@@ -555,7 +555,7 @@ if ($('#License').prop("checked")) {
     else{
           var checkboxvalue = 0;
          }
-       $("#submit").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");     
+       $("#submit").html("<i class='fas fa-circle-notch fa-spin'></i>Please Wait...");
   $.ajax({
     
     url : '{{url("licenseDetails")}}',
@@ -569,7 +569,7 @@ if ($('#License').prop("checked")) {
             $('#alertMessage').show();
             var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>'+response.update+'.</div>';
             $('#alertMessage').html(result+ ".");
-            $("#submit").html("<i class='fa fa-floppy-o'>&nbsp;&nbsp;</i>Save");
+            $("#submit").html("<i class='fa fa-save'>&nbsp;&nbsp;</i>Save");
                 setInterval(function(){ 
                 $('#alertMessage').slideUp(3000); 
             }, 1000);
@@ -587,11 +587,11 @@ if ($('#License').prop("checked")) {
       var status = $('.checkbox3').val();
      if(status ==1) {
      $('#update').prop('checked', true);
-       $('.updateField').removeClass("hide");
-            $('.updateEmptyField').addClass("hide");
+       $('.updateField').show();
+            $('.updateEmptyField').hide();
      } else if(status ==0) {
-       $('.updateField').addClass("hide");
-               $('.updateEmptyField').removeClass("hide");
+       $('.updateField').hide();
+               $('.updateEmptyField').show();
               
      }
       });
@@ -601,8 +601,8 @@ if ($('#License').prop("checked")) {
             // checked
            $('#update_api_secret').val();
                 $('#update_api_url').val();
-            $('.updateField').removeClass("hide");
-            $('.updateEmptyField').addClass("hide");
+            $('.updateField').show();
+            $('.updateEmptyField').hide();
         }
         else{
             $('.updateField').addClass("hide");
@@ -637,7 +637,7 @@ if ($('#update').prop("checked")) {
     else{
           var checkboxvalue = 0;
          }
-       $("#submitudpate").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");     
+       $("#submitudpate").html("<i class='fas fa-circle-notch fa-spin'></i>Please Wait...");
   $.ajax({
     
     url : '{{url("updateDetails")}}',
@@ -673,11 +673,11 @@ if ($('#update').prop("checked")) {
       var status = $('.checkbox2').val();
      if(status ==1) {
      $('#captcha').prop('checked', true);
-       $('.captchaField').removeClass("hide");
-       $('.captchaEmptyField').addClass("hide");
+       $('.captchaField').show();
+       $('.captchaEmptyField').hide();
      } else if(status ==0) {
-       $('.captchaField').addClass("hide");
-               $('.captchaEmptyField').removeClass("hide");
+       $('.captchaField').hide();
+               $('.captchaEmptyField').show();
               
      }
       });
@@ -687,14 +687,14 @@ if ($('#update').prop("checked")) {
             // checked
            $('#nocaptcha_secret').val();
                 $('#nocaptcha_sitekey').val();
-            $('.captchaField').removeClass("hide");
-            $('.captchaEmptyField').addClass("hide");
+            $('.captchaField').show();
+            $('.captchaEmptyField').hide();
         }
         else{
-            $('.captchaField').addClass("hide");
+            $('.captchaField').hide();
              $('.secretHide').val('');
                 $('.urlHide').val('');
-               $('.captchaEmptyField').removeClass("hide");
+               $('.captchaEmptyField').show();
                
                
         }
@@ -722,7 +722,7 @@ if ($('#update').prop("checked")) {
     else{
           var checkboxvalue = 0;
          }
-       $("#submit2").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");     
+       $("#submit2").html("<i class='fas fa-circle-notch fa-spin'></i>Please Wait...");
   $.ajax({
     
     url : '{{url("captchaDetails")}}',
@@ -736,7 +736,7 @@ if ($('#update').prop("checked")) {
             $('#alertMessage').show();
             var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>'+data.update+'.</div>';
             $('#alertMessage').html(result+ ".");
-            $("#submit2").html("<i class='fa fa-floppy-o'>&nbsp;&nbsp;</i>Save");
+            $("#submit2").html("<i class='fa fa-save'>&nbsp;&nbsp;</i>Save");
               setInterval(function(){ 
                 $('#alertMessage').slideUp(3000); 
             }, 1000);
@@ -826,7 +826,7 @@ if ($('#update').prop("checked")) {
             $('#alertMessage').show();
             var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>'+data.update+'.</div>';
             $('#alertMessage').html(result+ ".");
-            $("#submit3").html("<i class='fa fa-floppy-o'>&nbsp;&nbsp;</i>Save");
+            $("#submit3").html("<i class='fa fa-save'>&nbsp;&nbsp;</i>Save");
               setInterval(function(){ 
                 $('#alertMessage').slideUp(3000); 
             }, 1000);
@@ -856,7 +856,7 @@ if ($('#update').prop("checked")) {
       } else {
          var emailstatus = 0;
      }
-      $("#submit4").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");   
+      $("#submit4").html("<i class='fas fa-circle-notch fa-spin'></i>Please Wait...");
      $.ajax ({
       url: '{{url("updateemailDetails")}}',
       type : 'post',
@@ -867,7 +867,7 @@ if ($('#update').prop("checked")) {
             $('#alertMessage').show();
             var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>'+data.update+'.</div>';
             $('#alertMessage').html(result+ ".");
-            $("#submit4").html("<i class='fa fa-floppy-o'>&nbsp;&nbsp;</i>Save");
+            $("#submit4").html("<i class='fa fa-save'>&nbsp;&nbsp;</i>Save");
               setInterval(function(){ 
                 $('#alertMessage').slideUp(3000); 
             }, 1000);
@@ -967,7 +967,7 @@ if ($('#update').prop("checked")) {
        $('#token_secret').css("border-color","");
          var twitterstatus = 0;
   }
-    $("#submit5").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");   
+    $("#submit5").html("<i class='fas fa-circle-notch fa-spin'></i>Please Wait...");
     $.ajax ({
       url: '{{url("updatetwitterDetails")}}',
       type : 'post',
@@ -980,7 +980,7 @@ if ($('#update').prop("checked")) {
             $('#alertMessage').show();
             var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>'+data.update+'.</div>';
             $('#alertMessage').html(result+ ".");
-            $("#submit5").html("<i class='fa fa-floppy-o'>&nbsp;&nbsp;</i>Save");
+            $("#submit5").html("<i class='fa fa-save'>&nbsp;</i>Save");
               setInterval(function(){ 
                 $('#alertMessage').slideUp(3000); 
             }, 1000);
@@ -1064,7 +1064,7 @@ if ($('#update').prop("checked")) {
        $('#apilayer_key').css("border-color","");
        var rzpstatus = 0;
   }
-    $("#submit6").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");   
+    $("#submit6").html("<i class='fas fa-circle-notch fa-spin'></i>Please Wait...");
     $.ajax ({
       url: '{{url("updaterzpDetails")}}',
       type : 'post',
@@ -1076,7 +1076,7 @@ if ($('#update').prop("checked")) {
             $('#alertMessage').show();
             var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>'+data.update+'.</div>';
             $('#alertMessage').html(result+ ".");
-            $("#submit6").html("<i class='fa fa-floppy-o'>&nbsp;&nbsp;</i>Save");
+            $("#submit6").html("<i class='fa fa-save'>&nbsp;</i>Save");
               setInterval(function(){ 
                 $('#alertMessage').slideUp(3000); 
             }, 1000);
@@ -1130,7 +1130,7 @@ if ($('#update').prop("checked")) {
          var zohostatus = 0;
         
   }
-    $("#submit7").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");   
+    $("#submit7").html("<i class='fas fa-circle-notch fa-spin'></i>Please Wait...");
     $.ajax ({
       url: '{{url("updatezohoDetails")}}',
       type : 'post',
@@ -1142,7 +1142,7 @@ if ($('#update').prop("checked")) {
             $('#alertMessage').show();
             var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>'+data.update+'.</div>';
             $('#alertMessage').html(result+ ".");
-            $("#submit7").html("<i class='fa fa-floppy-o'>&nbsp;&nbsp;</i>Save");
+            $("#submit7").html("<i class='fa fa-save'>&nbsp;&nbsp;</i>Save");
               setInterval(function(){ 
                 $('#alertMessage').slideUp(3000); 
             }, 1000);
@@ -1194,7 +1194,7 @@ if ($('#update').prop("checked")) {
          var chimpstatus = 0;
         
   }
-    $("#submit9").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");   
+    $("#submit9").html("<i class='fas fa-circle-notch fa-spin'></i>Please Wait...");
     $.ajax ({
       url: '{{url("updateMailchimpDetails")}}',
       type : 'post',
@@ -1206,7 +1206,7 @@ if ($('#update').prop("checked")) {
             $('#alertMessage').show();
             var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>'+data.update+'.</div>';
             $('#alertMessage').html(result+ ".");
-            $("#submit9").html("<i class='fa fa-floppy-o'>&nbsp;&nbsp;</i>Save");
+            $("#submit9").html("<i class='fa fa-save'>&nbsp;</i>Save");
               setInterval(function(){ 
                 $('#alertMessage').slideUp(3000); 
             }, 1000);
@@ -1259,7 +1259,7 @@ if ($('#update').prop("checked")) {
          var termsstatus = 0;
         
   }
-    $("#submit10").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");   
+    $("#submit10").html("<i class='fas fa-circle-notch fa-spin'></i>Please Wait...");
     $.ajax ({
       url: '{{url("updateTermsDetails")}}',
       type : 'post',
@@ -1271,7 +1271,7 @@ if ($('#update').prop("checked")) {
             $('#alertMessage').show();
             var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>'+data.update+'.</div>';
             $('#alertMessage').html(result+ ".");
-            $("#submit10").html("<i class='fa fa-floppy-o'>&nbsp;&nbsp;</i>Save");
+            $("#submit10").html("<i class='fa fa-save'>&nbsp;&nbsp;</i>Save");
               setInterval(function(){ 
                 $('#alertMessage').slideUp(3000); 
             }, 1000);
@@ -1324,7 +1324,7 @@ if ($('#update').prop("checked")) {
          var pipedrivestatus = 0;
         
   }
-    $("#submit13").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");   
+    $("#submit13").html("<i class='fas fa-circle-notch fa-spin'></i>Please Wait...");
     $.ajax ({
       url: '{{url("updatepipedriveDetails")}}',
       type : 'post',
@@ -1336,7 +1336,7 @@ if ($('#update').prop("checked")) {
             $('#alertMessage').show();
             var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>'+data.update+'.</div>';
             $('#alertMessage').html(result+ ".");
-            $("#submit13").html("<i class='fa fa-floppy-o'>&nbsp;&nbsp;</i>Save");
+            $("#submit13").html("<i class='fa fa-save'>&nbsp;&nbsp;</i>Save");
               setInterval(function(){ 
                 $('#alertMessage').slideUp(3000); 
             }, 1000);
@@ -1364,7 +1364,7 @@ if ($('#update').prop("checked")) {
       } else {
          var domainstatus = 0;
      }
-      $("#submit14").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");   
+      $("#submit14").html("<i class='fas fa-circle-notch fa-spin'></i>Please Wait...");
      $.ajax ({
       url: '{{url("updatedomainCheckDetails")}}',
       type : 'post',
@@ -1375,7 +1375,7 @@ if ($('#update').prop("checked")) {
             $('#alertMessage').show();
             var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>'+data.update+'.</div>';
             $('#alertMessage').html(result+ ".");
-            $("#submit14").html("<i class='fa fa-floppy-o'>&nbsp;&nbsp;</i>Save");
+            $("#submit14").html("<i class='fa fa-save'>&nbsp;</i>Save");
               setInterval(function(){ 
                 $('#alertMessage').slideUp(3000); 
             }, 1000);

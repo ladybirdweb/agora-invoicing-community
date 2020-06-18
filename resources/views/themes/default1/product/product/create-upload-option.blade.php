@@ -2,9 +2,12 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title">Add Product Details</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
+
             <div class="modal-body">
                 <!-- Form  -->
               <!--   {!! Form::open(['url'=>'upload/save','files' => true]) !!} -->
@@ -48,9 +51,9 @@
                 
               </div>
              <input type="hidden" name="file_ids" id="file_ids" value="">
-              <div class="modal-footer">
-                <button type="button" id="close" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-                 <button type="submit" class="btn btn-primary" id="uploadVersion"><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('Save')!!}</button>
+              <div class="modal-footer justify-content-between">
+                <button type="button" id="close" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i>&nbsp;Close</button>
+                 <button type="submit" class="btn btn-primary" id="uploadVersion"><i class="fa fa-save"></i>&nbsp;{!!Lang::get('Save')!!}</button>
             </div>
            
            <!--  <form id="formsubmitform"> -->

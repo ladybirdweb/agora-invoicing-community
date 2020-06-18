@@ -149,13 +149,13 @@ class ProductController extends BaseProductController
                                 $url = '';
                                 if ($permissions['downloadPermission'] == 1) {
                                     $url = '<a href='.url('product/download/'.$model->id).
-                                    " class='btn btn-sm btn-primary btn-xs'><i class='fa fa-download' 
-                                    style='color:white;'> </i>&nbsp;&nbsp;Download</a>";
+                                    " class='btn btn-sm btn-info btn-xs'".tooltip('Download')."<i class='fas fa-cloud-download-alt' 
+                                    style='color:white;'> </i></a>";
                                 }
 
                                 return '<p><a href='.url('products/'.$model->id.'/edit').
-                                " class='btn btn-sm btn-primary btn-xs'><i class='fa fa-edit'
-                                 style='color:white;'> </i>&nbsp;&nbsp;Edit</a>&nbsp;$url</p>";
+                                " class='btn btn-sm btn-secondary btn-xs'".tooltip('Edit')."<i class='fa fa-edit'
+                                 style='color:white;'> </i></a>&nbsp;$url</p>";
                             })
 
                             ->rawColumns(['checkbox', 'name', 'image', 'type', 'group', 'Action'])

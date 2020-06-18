@@ -114,7 +114,7 @@ function getDateHtml(string $dateTimeString = null)
     }
 }
 
-function getExpiryLabel($expiryDate, $badge = 'label')
+function getExpiryLabel($expiryDate, $badge = 'badge')
 {
     if ($expiryDate < (new Carbon())->toDateTimeString()) {
         return getDateHtml($expiryDate).'&nbsp;<span class="'.$badge.' '.$badge.'-danger"  <label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="Order has Expired">

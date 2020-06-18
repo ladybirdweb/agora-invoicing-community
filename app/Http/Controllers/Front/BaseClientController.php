@@ -202,8 +202,8 @@ class BaseClientController extends Controller
                 $url = $this->getInvoiceLinkUrl($model->id);
 
                 return '<a href='.url($url)." 
-                class='btn btn-sm btn-primary btn-xs'><i class='fa fa-eye' 
-                style='color:white;'> </i>&nbsp;&nbsp;View</a>";
+                class='btn btn-sm btn-primary btn-xs'".tooltip('View')."<i class='fa fa-eye' 
+                style='color:white;'> </i></a>";
             })
                             ->rawColumns(['number', 'products', 'date', 'total', 'status', 'action'])
                             ->make(true);

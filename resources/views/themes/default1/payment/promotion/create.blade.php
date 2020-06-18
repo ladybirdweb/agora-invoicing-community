@@ -3,73 +3,31 @@
 Create Promotion
 @stop
 @section('content-header')
-<h1>
-Create New Promotion
-</h1>
-  <ol class="breadcrumb">
-        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="{{url('promotions')}}">All Promotions</a></li>
-        <li class="active">Create Promotion</li>
-      </ol>
+    <div class="col-sm-6">
+        <h1>Create New Promotion</h1>
+    </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="breadcrumb-item"><a href="{{url('promotions')}}"><i class="fa fa-dashboard"></i> All Promotions</a></li>
+            <li class="breadcrumb-item active">Create Promotion</li>
+        </ol>
+    </div><!-- /.col -->
+
+
 @stop
+
 @section('content')
-<style>
-    .tooltip {
-    background-color:#000;
-    border:1px solid #fff;
-    padding:10px 15px;
-    width:200px;
-    display:none;
-    color:#fff;
-    text-align:left;
-    font-size:12px;
- 
-    /* outline radius for mozilla/firefox only */
-    -moz-box-shadow:0 0 10px #000;
-    -webkit-box-shadow:0 0 10px #000;
-}
-</style>
+
 <div class="row">
 
     <div class="col-md-12">
-        <div class="box box-primary">
+        <div class="card card-primary card-outline">
 
-            <div class="box-header">
-                @if (count($errors) > 0)
-                <div class="alert alert-danger">
-                    <strong>Whoops!</strong> There were some problems with your input.<br><br>
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-                @endif
 
-                @if(Session::has('success'))
-                <div class="alert alert-success alert-dismissable">
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    {{Session::get('success')}}
-                </div>
-                @endif
-                <!-- fail message -->
-                @if(Session::has('fails'))
-                <div class="alert alert-danger alert-dismissable">
-                    <i class="fa fa-ban"></i>
-                    <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.failed')}}.
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    {{Session::get('fails')}}
-                </div>
-                @endif
-
-            </div>
-            <div class="box-body">
+            <div class="card-body">
                 {!! Form::open(['url'=>'promotions','id'=>'myform']) !!}
 
-                <div class="box-header">
-                    <h3 class="box-title">{{Lang::get('message.promotion')}}</h3>
-                    <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button>
-                </div>
 
                 <table class="table table-condensed">
 
@@ -158,8 +116,13 @@ Create New Promotion
                         <td><b>{!! Form::label('start',Lang::get('message.start')) !!}</b></td>
                         <td>
                             <div class="form-group {{ $errors->has('start') ? 'has-error' : '' }}">
-                               
-                                {!! Form::text('start',null,['class'=>'form-control','id'=>'datepicker1','title'=>'Date from which Coupon is Valid']) !!}
+                                <div class="input-group date" id="startDate" data-target-input="nearest">
+                                    <input type="text" name="start" class="form-control datetimepicker-input" autocomplete="off"  title="Date from which Coupon is Valid" data-target="#startDate"/>
+                                    <div class="input-group-append" data-target="#startDate" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+
+                                </div>
 
                             </div>
                         </td>
@@ -172,9 +135,14 @@ Create New Promotion
                         <td><b>{!! Form::label('expiry',Lang::get('message.expiry')) !!}</b></td>
                         <td>
                             <div class="form-group {{ $errors->has('expiry') ? 'has-error' : '' }}">
+                                <div class="input-group date" id="endDate" data-target-input="nearest">
+                                    <input type="text" name="expiry" class="form-control datetimepicker-input" autocomplete="off"  title="Date from which Coupon Expires" data-target="#endDate"/>
+                                    <div class="input-group-append" data-target="#endDate" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
 
+                                </div>
 
-                                {!! Form::text('expiry',null,['class' => 'form-control','id'=>'datepicker2','title'=>'Date on which Coupon Expires']) !!}
 
                             </div>
                         </td>
@@ -185,13 +153,16 @@ Create New Promotion
 
 
                     {!! Form::close() !!}
+
                 </table>
 
+                <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-save">&nbsp;</i>{!!Lang::get('message.save')!!}</button>
 
 
             </div>
 
         </div>
+
         <!-- /.box -->
 
     </div>
@@ -235,11 +206,11 @@ Create New Promotion
 @section('datepicker')
 <script type="text/javascript">
 
- $('#datepicker1').datepicker({
-      autoclose: true
+    $('#startDate').datetimepicker({
+        format: 'L'
     });
-  $('#datepicker2').datepicker({
-      autoclose: true
+    $('#endDate').datetimepicker({
+        format: 'L'
     });
 
 </script>

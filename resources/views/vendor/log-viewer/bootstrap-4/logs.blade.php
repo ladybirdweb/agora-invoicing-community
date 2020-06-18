@@ -3,20 +3,23 @@
 Log-Viewer
 @stop
 @section('content-header')
-<h1>
-Log-Viewer
-</h1>
-<ol class="breadcrumb">
-        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="{{url('settings')}}">Settings</a></li>
-        <li><a href="{{url('log-viewer')}}">Dashboard</a></li>
-        <li class="active">Logs</li>
-      </ol>
-      @stop
+    <div class="col-sm-6">
+        <h1>Log-Viewer</h1>
+    </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="breadcrumb-item"><a href="{{url('settings')}}"><i class="fa fa-dashboard"></i> Settings</a></li>
+            <li class="breadcrumb-item"><a href="{{url('log-viewer')}}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+            <li class="breadcrumb-item active">Logs</li>
+        </ol>
+    </div><!-- /.col -->
+@stop
+
 @section('content')
-<div class="box box-primary">
-    <div class="box-body">
-    <h1 class="page-header">Logs</h1>
+<div class="card card-primary card-outline">
+    <div class="card-body">
+    <h4 class="card-header">Logs</h4>
 
     {!! $rows->render() !!}
 
@@ -63,7 +66,7 @@ Log-Viewer
                                 <i class="fa fa-download"></i>
                             </a>
                             <a href="#delete-log-modal" class="btn btn-xs btn-danger" data-log-date="{{ $date }}">
-                                <i class="fa fa-trash-o"></i>
+                                <i class="fa fa-trash"></i>
                             </a>
                         </td>
                     </tr>

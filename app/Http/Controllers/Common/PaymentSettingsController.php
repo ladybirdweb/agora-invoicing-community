@@ -34,8 +34,8 @@ class PaymentSettingsController extends Controller
                                                     </div>
                                                     <div class=modal-body>
                                                        <p>Are you Sure ?</p>
-                                                        <div class=modal-footer>
-                                                            <button type=button class='btn btn-default pull-left' data-dismiss=modal id=dismis>".\Lang::get('lang.close').'</button>
+                                                        <div class=modal-footer justify-content-between>
+                                                            <button type=button class='btn btn-default pull-left' data-dismiss=modal id=dismis>Close</button>".'
                                                             <a href='.url('plugin/delete/'.$model['name'])."><button class='btn btn-danger'>Delete</button></a>
                                                         </div>
 

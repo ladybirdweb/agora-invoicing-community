@@ -12,7 +12,7 @@
 }
 </style>
 @stop
-<div class="box-body table-responsive"style="overflow:hidden;">
+
       {{-- alert block --}}
         <div class="alert alert-success cron-success alert-dismissable" style="display: none;">
             <i class="fa  fa-check-circle"></i>
@@ -32,12 +32,15 @@
         @endif
 
 {!! Form::model($status,['url' => 'post-scheduler', 'method' => 'PATCH','id'=>'Form']) !!}
+    <div class="card-header">
+        <h4 class="card-title">{{Lang::get('message.cron')}} </h4>
 
-    <div class="box-header with-border">
-       <h4>{{Lang::get('message.cron')}}  <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></h4>
+
     </div>
 
-    <div class="box-body table-responsive"style="overflow:hidden;">
+
+
+    <div class="card-body table-responsive"style="overflow:hidden;">
   <div class="row">
                 <div class="col-md-12">
                    <p>{{ Lang::get('message.copy-cron-command-description')}} </p>
@@ -69,66 +72,97 @@
                    <span style="font-size: 15px">-q {{$cronPath}} schedule:run 2>&1 </span> 
                 </div>
                 <div class="col-md-1">
-                    <span style="font-size: 20px" id="copyBtn" title="{{Lang::get('message.verify-and-copy-command')}}" onclick="verifyPHPExecutableAndCopyCommand()"><i class="fa fa-clipboard"></i></span>
-                    <span style="font-size: 20px; display:none;" id="loader"><i class="fa fa-circle-o-notch fa-spin"></i></span>
+                    <span style="font-size: 20px" id="copyBtn" title="{{Lang::get('message.verify-and-copy-command')}}" onclick="verifyPHPExecutableAndCopyCommand()"><i class="fas fa-copy"></i></span>
+                    <span style="font-size: 20px; display:none;" id="loader"><i class="fas fa-circle-notch fa-spin"></i></span>
                 </div>
+
             </div>
         </div>
         
-     
+      <div class="row">
         <div class="col-md-6">
-            <div class="info-box">
-                <!-- Apply any bg-* class to to the icon to color it -->
-                <span class="info-box-icon bg-aqua" style="padding-top: 15px"><i class="fa  fa-envelope"></i></span>
-                <div class="info-box-content">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Expiry Mails</h3>
 
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                            <i class="fas fa-minus"></i></button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove" data-toggle="tooltip" title="Remove">
+                            <i class="fas fa-times"></i></button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
                     <div class="col-md-6">
-                        <div class="form-group">
-                            {!! Form::label('email_fetching',Lang::get('message.expiry_mail')) !!}<br>
-                            {!! Form::checkbox('expiry_cron',1,$condition->checkActiveJob()['expiryMail'],['id'=>'email_fetching']) !!}&nbsp;{{Lang::get('message.enable_expiry-cron')}}
-                        </div>
-
+                    <div class="form-group">
+                        {!! Form::checkbox('expiry_cron',1,$condition->checkActiveJob()['expiryMail'],['id'=>'email_fetching']) !!}&nbsp;{{Lang::get('message.enable_expiry-cron')}}
+                    </div>
                     </div>
                     <div class="col-md-6" id="fetching">
+                        <div class="form-group">
                         {!! Form::select('expiry-commands',$commands,$condition->getConditionValue('expiryMail')['condition'],['class'=>'form-control','id'=>'fetching-command']) !!}
-                          <div id='fetching-daily-at'>
+                        <div id='fetching-daily-at'>
                             {!! Form::text('expiry-dailyAt',$condition->getConditionValue('expiryMail')['at'],['class'=>'form-control time-picker',"placeholder" => "HH:MM"]) !!}
 
                         </div>
-                      
+                        </div>
+                    </div>
                     </div>
                 </div>
-            </div><!-- /.info-box-content -->
+                <!-- /.card-body -->
 
-        </div><!-- /.info-box -->
+                <!-- /.card-footer-->
+            </div>
+        </div>
 
         <div class="col-md-6">
-            <div class="info-box">
-                <!-- Apply any bg-* class to to the icon to color it -->
-                <span class="info-box-icon bg-aqua" style="padding-top: 15px"><i class="fa  fa-close"></i></span>
-                <div class="info-box-content">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Delete Activity Log</h3>
+
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                            <i class="fas fa-minus"></i></button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove" data-toggle="tooltip" title="Remove">
+                            <i class="fas fa-times"></i></button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            {!! Form::label('activity',Lang::get('message.delete_activity')) !!}<br>
                             {!! Form::checkbox('activity',1,$condition->checkActiveJob()['deleteLogs'],['id'=>'auto_close']) !!}
-                                   {{Lang::get('message.enable_activity_clean')}}
+                            {{Lang::get('message.enable_activity_clean')}}
                         </div>
                     </div>
                     <div class="col-md-6" id="workflow">
-                        {!! Form::select('activity-commands',$commands,$condition->getConditionValue('deleteLogs')['condition'],['class'=>'form-control','id'=>'workflow-command']) !!}
-                         <div id='workflow-daily-at'>
-                            {!! Form::text('activity-dailyAt',$condition->getConditionValue('deleteLogs')['at'],['class'=>'form-control time-picker',"placeholder" => "HH:MM"]) !!}
+                    <div class="form-group">
+                        {!! Form::select('expiry-commands',$commands,$condition->getConditionValue('expiryMail')['condition'],['class'=>'form-control','id'=>'fetching-command']) !!}
+                        <div id='fetching-daily-at'>
+                            {!! Form::text('expiry-dailyAt',$condition->getConditionValue('expiryMail')['at'],['class'=>'form-control time-picker',"placeholder" => "HH:MM"]) !!}
 
                         </div>
-                       
                     </div>
-                </div><!-- /.info-box-content -->
-            </div><!-- /.info-box -->
+                    </div>
+                    </div>
+                </div>
+                <!-- /.card-body -->
+
+                <!-- /.card-footer-->
+            </div>
         </div>
-    
-        </div>
-    </div>
+
+
+      </div>
+
+        <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-save">&nbsp;</i>{!!Lang::get('message.save')!!}
+        </button>
+
+        </div><!-- /.info-box -->
+
  {!! Form::close() !!}
+
 
 <script>
     $(document).ready(function () {

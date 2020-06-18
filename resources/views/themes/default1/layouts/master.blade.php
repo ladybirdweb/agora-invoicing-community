@@ -14,6 +14,7 @@
         <meta http-equiv="x-ua-compatible" content="ie=edge">
 
         <title>@yield('title') | {{$set->favicon_title}}</title>
+        <link rel="stylesheet" href="{{asset('admin/css/select2.min.css')}}">
 
         <link rel="stylesheet" href="{{asset('admin/css/all.min.css')}}">
         <!-- Ionicons -->
@@ -35,6 +36,7 @@
         <!-- Google Font: Source Sans Pro -->
         <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
 
+        <link rel="stylesheet" href="{{asset('admin/css/icheck-bootstrap.min.css')}}">
 
         <!-- Custom style/js -->
         <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
@@ -395,6 +397,7 @@
 
 
     <!-- Bootstrap 3.3.2 JS -->
+    <script src="{{asset('admin/plugins/iCheck/icheck.min.js')}}" type="text/javascript"></script>
 
 
     <!-- jQuery -->
@@ -431,9 +434,17 @@
     <script src="{{asset('admin/js/dashboard.js')}}"></script>
     <!-- AdminLTE for demo purposes -->
     <script src="{{asset('admin/js/demo.js')}}"></script>
+    <script src="{{asset('admin/plugins/select2.full.min.js')}}"></script>
 
 
 
+{{-------------------------------------Custom---------------------------------------------------------}}
+    <script src="{{asset('admin/plugins/jquery-file-upload/vendor/jquery.ui.widget.js')}}"></script>
+
+    <script src="{{asset('admin/plugins/jquery-file-upload/jquery.fileupload.js')}}"></script>
+    <!-- <script src="{{asset('plugins/jquery-file-upload/main.js')}}"></script> -->
+    <script src="{{asset('admin/plugins/jquery-file-upload/jquery.iframe-transport.js')}}"></script>
+    <script src="{{asset('admin/plugins/jquery-file-upload/resumable.js')}}"></script>
 
 
     @yield('icheck')

@@ -3,67 +3,32 @@
 System Managers
 @stop
 @section('content-header')
+    <div class="col-sm-6">
+        <h1>System Managers</h1>
+    </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="breadcrumb-item"><a href="{{url('settings')}}"><i class="fa fa-dashboard"></i> Settings</a></li>
+            <li class="breadcrumb-item active">System Managers</li>
+        </ol>
+    </div><!-- /.col -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+    <link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css" rel="stylesheet" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"></script>
 
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
-<link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css" rel="stylesheet" />
-<script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"></script>
-<h1>
-System Managers
-</h1>
-  <ol class="breadcrumb">
-        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="{{url('settings')}}">Settings</a></li>
-         <li class="active">System Managers</li>
-      </ol>
 @stop
+
 @section('content')
-<div class="box box-primary">
+<div class="card card-primary card-outline">
 
-    <div class="box-header">
-        @if (count($errors) > 0)
-        <div class="alert alert-danger">
-            <strong>Whoops!</strong> There were some problems with your input.<br><br>
-            <ul>
-                @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-        @endif
-        <div id="error">
-        </div>
-        <div id="success">
-        </div>
-        <div id="fails">
-        </div>
-        @if(Session::has('success'))
-        <div class="alert alert-success alert-dismissable">
-              <i class="fa fa-check"></i>
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            {{Session::get('success')}}
-        </div>
-        @endif
-        <!-- fail message -->
-        @if(Session::has('fails'))
-        <div class="alert alert-danger alert-dismissable">
-            <i class="fa fa-ban"></i>
-            <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.failed')}}.
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            {{Session::get('fails')}}
-        </div>
-        @endif
-
-
-        
-         </div>
 
 
          <?php
          $users = [];
          ?>
 
-    <div class="box-body">
+    <div class="card-body table-responsive">
 
         <div class="row">
 
@@ -71,6 +36,7 @@ System Managers
 
             <div id="replaceMessage"></div>
             <div id="error"></div>
+                <div class ="row">
                 <div class="col-md-4 form-group">
                     {!! Form::label('user',Lang::get('message.system_account_manager'),['class'=>'required']) !!}
                        <select name="manager" value= "Choose" id="existingManager" class="form-control">
@@ -95,14 +61,16 @@ System Managers
 
                   <div class="col-md-4 form-group {{ $errors->has('account_manager') ? 'has-error' : '' }}">
                     <br>
-                 <button name="generate" type="submit" id="replace" class="btn btn-primary" style="margin-top: 4px;"><i class="fa fa-refresh">&nbsp;&nbsp;</i>{!!Lang::get('message.replace')!!}</button>
+                 <button name="generate" type="submit" id="replace" class="btn btn-primary" style="margin-top: 4px;"><i class="fa fa-sync-alt">&nbsp;</i>{!!Lang::get('message.replace')!!}</button>
                  </div>
+                </div>
                </div>
 
 
                <div class="col-md-12">
                  <div id="replaceMessage1"></div>
                   <div id="error1"></div>
+                   <div class="row">
                    <div class="col-md-4 form-group">
                     {!! Form::label('user',Lang::get('message.system_sales_manager'),['class'=>'required']) !!}
                        <select name="sales_manager" value= "Choose" id="existingSalesManager" class="form-control">
@@ -113,7 +81,7 @@ System Managers
                           </select>
                  
                 </div>
-               
+
                 <div class="col-md-4 form-group {{ $errors->has('sales_manager') ? 'has-error' : '' }}">
                             <!-- first name -->
                             {!! Form::label('replace_with',Lang::get('message.replace_with'),['class'=>'required']) !!}
@@ -127,10 +95,10 @@ System Managers
 
                   <div class="col-md-4 form-group {{ $errors->has('sales_manager') ? 'has-error' : '' }}">
                     <br>
-                 <button name="generate" type="submit" id="replaceSales" class="btn btn-primary" style="margin-top: 4px;"><i class="fa fa-refresh">&nbsp;&nbsp;</i>{!!Lang::get('message.replace')!!}</button>
+                 <button name="generate" type="submit" id="replaceSales" class="btn btn-primary" style="margin-top: 4px;"><i class="fa fa-sync-alt">&nbsp;&nbsp;</i>{!!Lang::get('message.replace')!!}</button>
                  </div>
-                
 
+                   </div>
             </div>
             {!! Form::close() !!}
 
@@ -180,7 +148,6 @@ System Managers
         return $state;
     }
 
-    <!---------------------------------------------------------------------------------------------------!>
 
       $('#sales').select2({
         placeholder: "Search",
@@ -223,14 +190,13 @@ System Managers
         return $state;
     }
 
-<!--------------------------------------------------------------------------------------------------------------!>
 
 
     $('#replace').click(function(){
       var existingManagerId = $('#existingManager').val();
       var newManagerId = $('#users').val();
       $("#replace").attr('disabled',true);
-      $("#replace").html("<i class='fa fa-refresh fa-spin fa-1x fa-fw'></i>Please Wait...");
+      $("#replace").html("<i class='fas fa-circle-notch fa-spin'></i>Please Wait...");
       $.ajax ({
                 type: 'post',
                 url : "{{url('replace-acc-manager')}}",
@@ -240,7 +206,8 @@ System Managers
                if (data.message =='success'){
                 $("#replace").attr('disabled',false);
                  var result =  '<div class="alert alert-success alert-dismissable"><strong><i class="fa fa-check"></i> Success! </strong> '+data.update+' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
-                 $("#replace").html("<i class='fa fa-refresh'>&nbsp;&nbsp;</i>Replace");
+                 $("#replace").html("<i class='fas fa-sync-alt'>&nbsp;&nbsp;</i>Replace");
+                 $("#replace").html("<i class='fas fa-sync-alt'>&nbsp;&nbsp;</i>Replace");
                   $('#replaceMessage').html(result);
                      $('#replaceMessage').css('color', 'green');
                 setTimeout(function(){
@@ -253,7 +220,7 @@ System Managers
                    $('#replaceMessage').hide();
                    $('#error').show();
                     document.getElementById('error').innerHTML = html;
-                    $("#replace").html("<i class='fa fa-refresh'>&nbsp;&nbsp;</i>Replace");
+                    $("#replace").html("<i class='fas fa-sync-alt'>&nbsp;&nbsp;</i>Replace");
                 }
                 }, error: function(data)  {
                   $("#replace").attr('disabled',false);
@@ -265,19 +232,18 @@ System Managers
                     $('#replaceMessage').hide();
                     $('#error').show();
                     document.getElementById('error').innerHTML = html;
-                    $("#replace").html("<i class='fa fa-refresh'>&nbsp;&nbsp;</i>Replace");
+                    $("#replace").html("<i class='fas fa-sync-alt'>&nbsp;&nbsp;</i>Replace");
                   }
                
              });
     })
 
-    <!----------------------------------------------------------------------------------------------------!>
 
         $('#replaceSales').click(function(){
       var existingManagerId = $('#existingSalesManager').val();
       var newManagerId = $('#sales').val();
       $("#replaceSales").attr('disabled',true);
-      $("#replaceSales").html("<i class='fa fa-refresh fa-spin fa-1x fa-fw'></i>Please Wait...");
+      $("#replaceSales").html("<i class='fas fa-circle-notch fa-spin'></i>Please Wait...");
       $.ajax ({
                 type: 'post',
                 url : "{{url('replace-sales-manager')}}",
@@ -287,7 +253,7 @@ System Managers
                if (data.message =='success'){
                  $("#replaceSales").attr('disabled',false);
                  var result =  '<div class="alert alert-success alert-dismissable"><strong><i class="fa fa-check"></i> Success! </strong> '+data.update+' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
-                 $("#replaceSales").html("<i class='fa fa-refresh'>&nbsp;&nbsp;</i>Replace");
+                 $("#replaceSales").html("<i class='fas fa-sync-alt'>&nbsp;&nbsp;</i>Replace");
                   $('#replaceMessage1').html(result);
                      $('#replaceMessage1').css('color', 'green');
                 setTimeout(function(){
@@ -300,7 +266,7 @@ System Managers
                    $('#replaceMessage1').hide();
                    $('#error1').show();
                     document.getElementById('error').innerHTML = html;
-                    $("#replaceSales").html("<i class='fa fa-refresh'>&nbsp;&nbsp;</i>Replace");
+                    $("#replaceSales").html("<i class='fas fa-sync-alt'>&nbsp;</i>Replace");
                 }
                 }, error: function(data)  {
                   $("#replaceSales").attr('disabled',false);
@@ -312,7 +278,7 @@ System Managers
                     $('#replaceMessage1').hide();
                     $('#error1').show();
                     document.getElementById('error').innerHTML = html;
-                    $("#replaceSales").html("<i class='fa fa-refresh'>&nbsp;&nbsp;</i>Replace");
+                    $("#replaceSales").html("<i class='fas fa-sync-alt'>&nbsp;&nbsp;</i>Replace");
                   }
                
              });

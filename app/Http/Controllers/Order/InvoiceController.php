@@ -160,13 +160,15 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
                             $check = $this->checkExecution($model->id);
                             if ($check == false) {
+
                                 $action = '<form method="post" action='.url('order/execute?invoiceid='.$model->id).'>'.'<input type="hidden" name="_token" value='.\Session::token().'>'.'
-                                    <button type="submit" class="btn btn-sm btn-primary btn-xs"><i class="fa fa-tasks" style="color:white;"></i>&nbsp;&nbsp; Execute Order</button></form>';
+                                    <button type="submit" class="btn btn-sm success btn-xs"'.tooltip("Execute&nbsp;Order").'<i class="fa fa-tasks" style="color:white;"></i></button></form>';
+
                             }
 
                             return '<a href='.url('invoices/show?invoiceid='.$model->id)
-                            ." class='btn btn-sm btn-primary btn-xs'><i class='fa fa-eye' 
-                            style='color:white;'> </i>&nbsp;&nbsp;View</a>"
+                            ." class='btn btn-sm btn-primary btn-xs'".tooltip('View')."<i class='fa fa-eye' 
+                            style='color:white;'> </i></a>"
                                     ."   $action";
                         })
                          ->filterColumn('user_id', function ($query, $keyword) {

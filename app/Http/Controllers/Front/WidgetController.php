@@ -50,8 +50,8 @@ class WidgetController extends Controller
                         })
                         ->addColumn('action', function ($model) {
                             return '<a href='.url('widgets/'.$model->id.'/edit')."
-                             class='btn btn-sm btn-primary btn-xs'><i class='fa fa-edit'
-                                 style='color:white;'> </i>&nbsp;&nbsp;Edit</a>";
+                             class='btn btn-sm btn-secondary btn-xs'".tooltip('Edit')."<i class='fa fa-edit'
+                                 style='color:white;'> </i></a>";
                         })
                         ->rawColumns(['checkbox', 'name', 'type', 'created_at', 'content', 'action'])
                         ->make(true);

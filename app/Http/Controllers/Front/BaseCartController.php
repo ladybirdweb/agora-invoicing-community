@@ -332,8 +332,7 @@ class BaseCartController extends ExtendedBaseCartController
         } catch (\Exception $e) {
             app('log')->error($e->getMessage());
             Bugsnag::notifyException($e);
-
-            return redirect()->back()->with('fails', $e->getMessage());
+            throw new \Exception($e->getMessage());
         }
     }
 

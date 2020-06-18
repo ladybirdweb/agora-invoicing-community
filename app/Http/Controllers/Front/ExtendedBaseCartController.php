@@ -151,12 +151,12 @@ class ExtendedBaseCartController extends Controller
                 }
                 $finalPrice = str_replace(',', '', $price);
                 $cost = round($months) * $finalPrice;
+            } else {
+                throw new \Exception('Product cannot be added to cart. No such plan exists.');
             }
 
             return $cost;
         } catch (\Exception $ex) {
-            dd($ex);
-
             throw new \Exception($ex->getMessage());
         }
     }

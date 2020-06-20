@@ -107,7 +107,7 @@ class CurrencyController extends Controller
                                     <button type="submit" class="btn btn-sm btn-success btn-xs"><i class="fa fa-check" style="color:white;"></i>&nbsp;&nbsp; Show on Dashboard</button></form>';
         } else {
             return '<form method="post" action='.url('dashboard-currency/'.$id).'>'.'<input type="hidden" name="_token" value='.\Session::token().'>'.'
-                                    <button type="submit" class="btn btn-sm btn-danger btn-xs"><i class="fa fa-close" style="color:white;"></i>&nbsp;&nbsp; Show on Dashboard</button></form>';
+                                    <button type="submit" class="btn btn-sm btn-danger btn-xs"><i class="fa fa-times" style="color:white;"></i>&nbsp;&nbsp; Show on Dashboard</button></form>';
         }
     }
 

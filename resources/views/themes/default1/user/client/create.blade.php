@@ -15,6 +15,9 @@ Create User
 
 
 @stop
+<style>
+
+</style>
 @section('content')
 
 
@@ -79,7 +82,7 @@ Create User
                         <!-- company -->
                         {!! Form::label('bussiness','Industry') !!}
                          <!-- {!! Form::select('bussiness',['Choose'=>'Choose',''=>$bussinesses],null,['class' => 'form-control selectpicker','data-live-search'=>'true', 'data-live-search-placeholder'=>'Search' ,'data-dropup-auto'=>'false', 'data-size'=>'10']) !!} -->
-                       <select name="bussiness"  class="form-control">
+                       <select name="bussiness"  class="form-control select2">
                              <option value="">Choose</option>
                            @foreach($bussinesses as $key=>$bussines)
                            @if (Request::old('bussiness') == $key)
@@ -231,7 +234,7 @@ Create User
                     <div class="col-md-3 form-group {{ $errors->has('timezone_id') ? 'has-error' : '' }}">
                         <!-- mobile -->
                         {!! Form::label('timezone_id',Lang::get('message.timezone'),['class'=>'required']) !!}
-                         {!! Form::select('timezone_id', [''=>'Choose','Timezones'=>$timezones],null,['class' => 'form-control selectpicker','data-live-search'=>'true','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false','data-size'=>'10']) !!}
+                         {!! Form::select('timezone_id', [''=>'Choose','Timezones'=>$timezones],null,['class' => 'form-control select2','data-live-search'=>'true','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false','data-size'=>'10']) !!}
 
 
                        <!--   <select name="timezone_id" value= "Choose" class="form-control selectpicker" data-live-search="true" data-live-search-placeholder="Search" data-dropup-auto="false" data-size="10"">

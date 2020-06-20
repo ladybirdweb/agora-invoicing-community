@@ -20,13 +20,13 @@ Users
     <div class="row">
         <div class="col-12">
             <!-- Default box -->
-            <div class="card card-danger card-outline">
+            <div class="card card-danger card-outline collapsed-card">
                 <div class="card-header">
-                    <h3 class="card-title">Search</h3>
+                    <h3 class="card-title">Advance Search</h3>
 
                     <div class="card-tools">
                         <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
-                            <i class="fas fa-minus"></i></button>
+                            <i class="fas fa-plus"></i></button>
                         <button type="button" class="btn btn-tool" data-card-widget="remove" data-toggle="tooltip" title="Remove">
                             <i class="fas fa-times"></i></button>
                     </div>
@@ -47,8 +47,8 @@ Users
                         ?>
                         <div class="col-md-3 form-group">
                             <!-- first name -->
-                            {!! Form::label('country','Country') !!}
-                            <select name="country" value= "Choose" onChange="getCountryAttr(this.value)" class="form-control select2" data-live-search="true" data-live-search-placeholder="Search" data-dropup-auto="false" data-size="10">
+                            {!! Form::label('country','Country') !!}<br>
+                            <select style="width:265px;" name="country" value= "Choose" onChange="getCountryAttr(this.value)" class="form-control select2" data-live-search="true" data-live-search-placeholder="Search" data-dropup-auto="false" data-size="10">
                                 <option value="" style="">Choose</option>
                                 @foreach($countries as $key=> $country)
                                     @if($key == $request->country)
@@ -62,7 +62,7 @@ Users
 
                         <div class="col-md-3 form-group">
                             <!-- first name -->
-                        {!! Form::label('industry','Industries') !!}
+                        {!! Form::label('industry','Industries') !!}<br>
 
                         <?php $old = ['agriculture_forestry'=>'Agriculture Forestry','safety_security_legal'=>'Safety Security Legal','business_information'=>'Business Information','finance_insurance'=>'Finance Insurance','gaming'=>'Gaming','real_estate_housing'=>'Real Estate Housing','health_services'=>'Health Services','education'=>'Education','food_hospitality'=>'Food Hospitality','personal_services'=>'Personal Services','transportation'=>'Transportation','construction_utilities_contracting'=>'Construction Utilities Contracting','motor_vehicle'=>'Motor Vehicle','animals_pets'=>'Animals & Pets','art_design'=>'Art & Design','auto_transport'=>'Auto & Transport','food_beverage'=>'Food & Beverage','beauty_fashion'=>'Beauty & Fashion','education_childcare'=>'Education & Childcare','environment_green_tech'=>'Environment & Green Tech','events_weddings'=>'Events & Weddings','finance_legal_consulting'=>'Finance, Legal & Consulting','government_municipal'=>'Government & Municipal','home_garden'=>'Home & Garden','internet_technology'=>'Internet & Technology','local_service_providers'=>'Local Service Providers','manufacturing_wholesale'=>'Manufacturing & Wholesale','marketing_advertising'=>'Marketing & Advertising','media_communication'=>'Media & Communication','medical_dental'=>'Medical & Dental','music_bands'=>'Music & Bands','non_profit_charity'=>'Non-Profit & Charity','real_estate'=>'Real Estate','religion'=>'Religion','retail_e-Commerce'=>'Retail & E-Commerce','sports_recreation'=>'Sports & Recreation','travel_hospitality'=>'Travel & Hospitality','other'=>'Other',];
                         $bussinesses =DB::table('bussinesses')->pluck('name','short')->toarray();
@@ -74,7 +74,7 @@ Users
                         ?>
                         <!-- {!! Form::select('industry',['Choose',''=>DB::table('bussinesses')->pluck('name','short')->toarray(),'old'=>$old],null,['class' => 'form-control','data-live-search'=>'true','data-live-search-placeholder'=>'Search','data-dropup-auto'=>'false','data-size'=>'10','id'=>'industry']) !!} -->
 
-                            <select name="industry"  class="form-control select2" data-live-search="true",data-live-search-placeholder="Search" data-dropup-auto="false"  data-size="10" id="industry">
+                            <select name="industry"  style="width:265px;" class="form-control select2" data-live-search="true",data-live-search-placeholder="Search" data-dropup-auto="false"  data-size="10" id="industry">
                                 <option value="">Choose</option>
                                 @foreach($bussinesses as $key=>$bussines)
                                     @if($key == $request->industry)
@@ -227,7 +227,8 @@ Users
             "oLanguage": {
                 "sLengthMenu": "_MENU_ Records per page",
                 "sSearch": "Search: ",
-                "sProcessing": '<img id="blur-bg" class="backgroundfadein" style="top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;" src="{!! asset("lb-faveo/media/images/gifloader3.gif") !!}">'
+                "sProcessing": ' <div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="text-bold pt-2">Loading...</div></div>'
+                    {{--'<img id="blur-bg" class="backgroundfadein" style="top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;" src="{!! asset("lb-faveo/media/images/gifloader3.gif") !!}">'--}}
             },
             columnDefs: [
                 {

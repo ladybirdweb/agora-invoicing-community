@@ -181,7 +181,7 @@
         $("#period-modal-show").modal();
       })
       $('.save-periods').on('click',function(){
-        $("#submit1").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
+        $("#submit1").html("<i class='fas fa-circle-notch fa-spin'></i>Please Wait...");
         $.ajax ({
           type : 'POST',
           url: "{{url('postInsertPeriod')}}",

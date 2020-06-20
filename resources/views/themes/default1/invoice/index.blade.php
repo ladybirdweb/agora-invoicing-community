@@ -16,13 +16,13 @@ Invoices
 @section('content')
     <div class="row">
         <div class="col-12">
-            <div class="card card-danger card-outline">
+            <div class="card card-danger card-outline collapsed-card">
             <div class="card-header">
-        <h3 class="card-title">Search</h3>
+        <h3 class="card-title">Advance Search</h3>
 
                 <div class="card-tools">
                     <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
-                        <i class="fas fa-minus"></i></button>
+                        <i class="fas fa-plus"></i></button>
                     <button type="button" class="btn btn-tool" data-card-widget="remove" data-toggle="tooltip" title="Remove">
                         <i class="fas fa-times"></i></button>
                 </div>
@@ -189,7 +189,7 @@ Invoices
             "oLanguage": {
                 "sLengthMenu": "_MENU_ Records per page",
                 "sSearch"    : "Search: ",
-                "sProcessing": '<img id="blur-bg" class="backgroundfadein" style="top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;" src="{!! asset("lb-faveo/media/images/gifloader3.gif") !!}">'
+                "sProcessing": ' <div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="text-bold pt-2">Loading...</div></div>'
             },
                 columnDefs: [
                 { 

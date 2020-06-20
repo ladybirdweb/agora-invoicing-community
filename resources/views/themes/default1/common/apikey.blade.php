@@ -4,6 +4,9 @@ Api Key
 @stop
 @section('content-header')
 <style>
+    .col-2, .col-lg-2, .col-lg-4, .col-md-2, .col-md-4,.col-sm-2 {
+        width: 0px;
+    }
 .switch {
   position: relative;
   display: inline-block;
@@ -76,25 +79,28 @@ input:checked + .slider:before {
 </div><!-- /.col -->
 @stop
 @section('content')
-   
-         
+
+
           <div class="card card-primary card-outline">
 
             <!-- /.box-header -->
             <div class="card-body">
                <div id="alertMessage"></div>
               <div class="scrollit">
+                  <div class="row">
                <div class="col-md-12">
-                <div class="row">
-              <table class="table table-striped ">
-                <tr>
+
+              <table class="table table-bordered ">
+                  <thead>
+                  <tr>
                  
                   <th>Options</th>
                   <th>Status</th>
                    <th>Fields</th>
                   <th>Action</th>
                 </tr>
-                  
+                  </thead>
+                  <tbody>
                 <tr>
                   
                   <td class="col-md-2">Auto PHP Licenser</td>
@@ -486,7 +492,7 @@ input:checked + .slider:before {
 
                   <td class="col-md-2"><button type="submit" class="form-group btn btn-primary"  id="submit6"><i class="fa fa-save">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
                 </tr>
-
+                  </tbody>
 
       
               </table>
@@ -813,7 +819,7 @@ if ($('#update').prop("checked")) {
          var mobilestatus = 0;
         
   }
-    $("#submit3").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");   
+    $("#submit3").html("<i class='fas fa-circle-notch fa-spin'></i>Please Wait...");
     $.ajax ({
       url: '{{url("updatemobileDetails")}}',
       type : 'post',

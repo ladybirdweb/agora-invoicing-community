@@ -38,16 +38,8 @@ User
         <!-- Add the bg color to the header using any of the bg-* classes -->
         <div class="widget-user-header bg-info">
 
-            <h3 class="widget-user-username">{{ucfirst($client->first_name)}}  {{ucfirst($client->last_name)}}
-
-            </h3>
-            <a class="btn btn-sm btn-secondary" href="{{url('clients/'.$client->id.'/edit')}}"> <i class="fas fa-edit"></i> Edit Details</a>
-            @if($is2faEnabled)
-                &nbsp;&nbsp;<button id="disable2fa" value="{{$client->id}}" class="btn btn-sm btn-danger"><i class="fa fa-ban"></i>&nbsp;
-                    Disable 2FA
-                </button>
-
-            @endif
+            <h3 class="widget-user-username">{{ucfirst($client->first_name)}}  {{ucfirst($client->last_name)}}</h3>
+            {{($client->email)}}
 
         </div>
 
@@ -73,8 +65,8 @@ User
                 </div>
                 <!-- /.col -->
                 <div class="col-sm-4">
-                    <div class="description-block">
-                        <h5 class="description-header">{{currency_format($pendingAmount,$code=$client->currency)}}</h5>
+                    <div class="description-block" style="color:red;">
+                        <h5 class="description-header" >{{currency_format($pendingAmount,$code=$client->currency)}}</h5>
                         <span class="description-text">BALANCE</span>
                     </div>
                     <!-- /.description-block -->
@@ -97,17 +89,17 @@ User
             <h3 class="card-title">
 
                 <h3 class="widget-user-username">
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-sm btn-info">New Transaction</button>
-                        <button type="button" class="btn btn-info dropdown-toggle dropdown-icon" data-toggle="dropdown">
-                            <div class="dropdown-menu" role="menu">
-                                <a class="dropdown-item" href="{{url('invoice/generate?clientid='.$client->id)}}">{{Lang::get('message.create-invoice')}}</a>
-                                <a class="dropdown-item" href="{{url('newPayment/receive?clientid='.$client->id)}}">{{Lang::get('message.create-payment')}}</a>
+                    <a class="btn btn-sm btn-primary" href="{{url('invoice/generate?clientid='.$client->id)}}"> <i class="fa fa-credit-card"></i> &nbsp;{{Lang::get('message.create-invoice')}}</a>
+                    <a class="btn btn-sm btn-info" href="{{url('newPayment/receive?clientid='.$client->id)}}"> <i class="fa fa-bars"></i> &nbsp;{{Lang::get('message.create-payment')}}</a>
 
-                            </div>
+
+                    <a class="btn btn-sm btn-secondary" href="{{url('clients/'.$client->id.'/edit')}}"> <i class="fas fa-edit"></i> Edit Details</a>
+                    @if($is2faEnabled)
+                        <button id="disable2fa" value="{{$client->id}}" class="btn btn-sm btn-danger"><i class="fa fa-ban"></i>&nbsp;
+                            Disable 2FA
                         </button>
 
-                    </div>
+                    @endif
                 </h3>
             </h3>
         </div>
@@ -191,7 +183,7 @@ User
                                     "oLanguage": {
                                         "sLengthMenu": "_MENU_ Records per page",
                                         "sSearch"    : "Search: ",
-                                        "sProcessing": '<img id="blur-bg" class="backgroundfadein" style="top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;" src="{!! asset("lb-faveo/media/images/gifloader3.gif") !!}">'
+                                        "sProcessing": ' <div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="text-bold pt-2">Loading...</div></div>'
                                     },
                                     columnDefs: [
                                         {
@@ -275,30 +267,9 @@ User
                             <div class="row">
                                 <div class="col-12 col-md-12 col-lg-12 order-2 order-md-1">
                                     <div class="row">
-                                    <div class="col-12 col-lg-12 col-sm-4">
-                                    <div class="info-box bg-light">
-                                        <div class="info-box-content">
-                                            <span class="info-box-text text-center text-muted clientemail"></span>
-                                            <span class="info-box-number text-center text-muted mb-0">{{Lang::get('message.email')}}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-12 col-lg-12 col-sm-4">
-                                    <div class="info-box bg-light">
-                                        <div class="info-box-content">
-                                            <span class="info-box-text text-center text-muted clientcompanyname"></span>
-                                            <span class="info-box-number text-center text-muted mb-0">{{Lang::get('message.company')}}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-12 col-lg-12 col-sm-4">
-                                    <div class="info-box bg-light">
-                                        <div class="info-box-content">
-                                            <span class="info-box-text text-center text-muted clientuser_name"></span>
-                                            <span class="info-box-number text-center text-muted mb-0">User Name </span>
-                                        </div>
-                                    </div>
-                                </div>
+
+
+
                                     <!-- /.description-block -->
 
                                 </div>
@@ -306,6 +277,18 @@ User
                                 <div class="card-body table-responsive">
                                     <div id="response"></div>
                                     <ul class="list-group list-group-unbordered mb-3">
+                                        <li class="list-group-item">
+                                            <b>{{Lang::get('message.email')}}</b>: <span class="pull-right clientemail" style="float:right;"></span>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <b>{{Lang::get('message.company')}}</b>: <span class="pull-right clientcompanyname" style="float:right;"></span>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <b>User Name</b>: <span class="pull-right clientuser_name" style="float:right;"></span>
+                                        </li>
+
+
+
                                         <li class="list-group-item">
                                             <b>Business</b>: <span class="pull-right clientbusiness" style="float:right;"></span>
                                         </li>
@@ -410,7 +393,7 @@ User
                                     "oLanguage": {
                                         "sLengthMenu": "_MENU_ Records per page",
                                         "sSearch"    : "Search: ",
-                                        "sProcessing": '<img id="blur-bg" class="backgroundfadein" style="top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;" src="{!! asset("lb-faveo/media/images/gifloader3.gif") !!}">'
+                                        "sProcessing": ' <div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="text-bold pt-2">Loading...</div></div>'
                                     },
                                     columnDefs: [
                                         {
@@ -521,7 +504,7 @@ User
                                         "oLanguage": {
                                             "sLengthMenu": "_MENU_ Records per page",
                                             "sSearch"    : "Search: ",
-                                            "sProcessing": '<img id="blur-bg" class="backgroundfadein" style="top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;" src="{!! asset("lb-faveo/media/images/gifloader3.gif") !!}">'
+                                            "sProcessing": ' <div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="text-bold pt-2">Loading...</div></div>'
                                         },
                                         columnDefs: [
                                             {

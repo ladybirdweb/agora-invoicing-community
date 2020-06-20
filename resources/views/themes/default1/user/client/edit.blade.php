@@ -17,7 +17,16 @@ Edit User
 
 @section('content')
 <div class="card card-primary card-outline">
+    <div class="card-header">
+        <h3 class="card-title">Advance Search</h3>
 
+        <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                <i class="fas fa-plus"></i></button>
+            <button type="button" class="btn btn-tool" data-card-widget="remove" data-toggle="tooltip" title="Remove">
+                <i class="fas fa-times"></i></button>
+        </div>
+    </div>
     <div class="card-body">
 
          {!! Form::model($user,['url'=>'clients/'.$user->id,'method'=>'PATCH']) !!}
@@ -74,7 +83,7 @@ Edit User
                     <div class="col-md-3 form-group {{ $errors->has('bussiness') ? 'has-error' : '' }}">
                         <!-- company -->
                         {!! Form::label('bussiness','Industry') !!}
-                        <select name="bussiness"  class="form-control">
+                        <select name="bussiness"  class="form-control select2">
                             <option value="">Choose</option>
                          @foreach($bussinesses as $key=>$bussiness)
                          
@@ -194,7 +203,7 @@ Edit User
                         <!-- mobile -->
                         {!! Form::label('timezone_id',Lang::get('message.timezone'),['class'=>'required']) !!}
 
-                         {!! Form::select('timezone_id', ['Timezones'=>$timezones],null,['class' => 'form-control chosen-select selectpicker','data-live-search'=>'true','required','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false','data-size'=>'10']) !!}
+                         {!! Form::select('timezone_id', ['Timezones'=>$timezones],null,['class' => 'form-control chosen-select select2','data-live-search'=>'true','required','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false']) !!}
 
                     </div>
                     <?php 

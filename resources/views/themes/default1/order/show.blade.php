@@ -16,7 +16,12 @@ Order
 
 
 @stop
-
+<style>
+    .scrollit {
+        overflow:scroll;
+        height:300px;
+    }
+</style>
 @section('content')
     <div class="card card-primary card-outline">
 <div class="row">
@@ -25,13 +30,13 @@ Order
             <div class="card-body">
                 <div class="box-group" id="accordion">
 
-                   <div class="card-header">
-                    <h5 class="card-title">
+                   <div class="card-header with-border">
+                    <h4 class="card-title">
                      
                          <i class="fa fa-users"></i>
                         Overview
                      
-                    </h5>
+                    </h4>
                   </div>
 
                        <div class="card-body">
@@ -50,8 +55,160 @@ Order
                             </div>
                         </div>
                            <div class="row">
+                               <div class="col-md-6">
+                                   <div class="card card-info card-outline">
+                                       <div class="scrollit">
+                                       <div class="card-body table-responsive">
+                                           @include('themes.default1.front.clients.reissue-licenseModal')
+                                           @include('themes.default1.front.clients.domainRestriction')
+                                           @include('themes.default1.order.installationLimit')
+                                           @include('themes.default1.order.update_ends-modal')
+                                           @include('themes.default1.order.license_end-modal')
+                                           @include('themes.default1.order.support_end-modal')
+
+
+                                           <div class="card-header">
+                                               <h4 class="card-title">
+                                                   License Details
+                                               </h4>
+                                           </div>
+
+
+                                           <table id="lic_details" class="table table-hover">
+
+                                               <input type="hidden" name="domainRes" id="domainRes" value={{$allowDomainStatus}}>
+                                               <tbody>
+                                               <tr>
+                                                   <td><b>License Code:</b></td>
+                                                   <td id="s_key" data-type="serialkey">{{($order->serial_key)}}</td>
+
+                                                   <td> @component('mini_views.copied_flash_text',[
+                                 'navigations'=>[
+                                   ['btnName'=>'lic_btn','slot'=>'license','style'=>'<span data-type="copy" style="font-size: 15px; pointer-events: initial; cursor: pointer; display: block;" id="copyBtn" title="Click to copy to clipboard"><i class="fas fa-copy"></i></span><span class="badge badge-success badge-xs pull-right" id="copied" style="display:none;margin-top:-40px;margin-left:-20px;position: absolute;">Copied</span>'],
+                                    ]
+                                ])
+
+                                                       @endcomponent
+
+                                                   </td>
+                                               </tr>
+                                               @if ($licenseStatus == 1)
+                                                   <tr>
+
+                                                       <td>
+                                                           <label name="domain">
+                                                               <b>Licensed Domain:</b>
+                                                       </td>
+                                                       <td contenteditable="false" id="domain">{{$order->domain}}</td>
+
+                                                       <td>
+                                                           <button class='class="btn btn-sm btn-danger btn-xs' style="width:max-content;border:none;" id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}"><i class="fas fa-file-import" style='color:white;' {!! tooltip('Reissue&nbsp;License') !!}</i>
+                                                           </button>
+                                                       </td>
+                                                   </tr>
+                                                   <tr>
+                                                       <td><b>Installation Path:</b></td>
+                                                       @if(count($installationDetails['installed_path']) > 0)
+                                                           <td>@foreach($installationDetails['installed_path'] as $paths)
+                                                                   <li>{{$paths}}</li>
+                                                               @endforeach
+                                                           </td>
+                                                       @else
+                                                           <td>
+                                                               No Active Installation
+                                                           </td>
+                                                       @endif
+                                                       <td></td>
+                                                   </tr>
+
+                                                   <tr>
+                                                       <td><b>Installation IP:</b></td>
+                                                       @if(count($installationDetails['installed_path']) > 0)
+                                                           <td>
+                                                               @foreach($installationDetails['installed_ip'] as $paths)
+                                                                   <li>{{$paths}}</li>
+                                                               @endforeach
+                                                           </td>
+                                                       @else
+                                                           <td>
+                                                               --
+                                                           </td>
+
+                                                           <td></td>
+                                                   </tr>
+                                                   <tr>
+                                                       <td><b>Installation Limit:</b></td>
+                                                       <td>
+                                                           {{$noOfAllowedInstallation}}
+                                                       </td>
+                                                       <td>
+                                                           <button class="btn btn-sm btn-secondary btn-xs"  id="installlimit" limit-id="{{$order->id}}" install-limit="{{$noOfAllowedInstallation}}"><i class="fa fa-edit" style='color:white;' {!! tooltip('Edit') !!}</i></button>
+
+                                                       </td>
+
+                                                   </tr>
+                                               @endif
+                                               <tr>
+                                                   <td><b>Current Version:</b></td>
+                                                   <td>{!! $versionLabel !!} </td>
+                                                   <td></td>
+                                               </tr>
+
+                                               <tr>
+                                                   <td><b><label data-toggle="tooltip" data-placement="top" title="" data-original-title="Last connection with License Manager">Last Active:</label></b></td>
+                                                   <td>
+                                                       {!! $lastActivity !!}
+                                                   </td>
+                                                   <td></td>
+                                               </tr>
+                                               @endif
+
+
+                                               <tr>
+                                                   <td><b>Updates Expiry:</b></td>
+                                                   <td class="brtags"> {!! $date !!} </td>
+                                                   <td>
+                                                       @if($date != '--')
+                                                           <button class="btn btn-sm btn-secondary btn-xs" id="updates_end" updates-id="{{$order->id}}" data-date="{{getTimeInLoggedInUserTimeZone($subscription->update_ends_at,'d/m/Y')}}" '><i class="fa fa-edit" style='color:white;' {!! tooltip('Edit') !!}</i></button>
+                                                       @endif
+                                                   </td>
+                                               </tr>
+
+                                               <tr>
+                                                   <td><b>License Expiry:</b></td>
+                                                   <td class="brtags">{!! $licdate !!} </td>
+                                                   <td>
+                                                       @if($licdate != '--')
+                                                           <button class="btn btn-sm btn-secondary btn-xs" id="license_end" license-id="{{$order->id}}" license-date="{{getTimeInLoggedInUserTimeZone($subscription->ends_at,'d/m/Y')}}"><i class="fa fa-edit" style='color:white;' {!! tooltip('Edit') !!}</i>
+                                                           </button>
+                                                       @endif
+                                                   </td>
+                                               </tr>
+
+                                               <tr>
+                                                   <td><b>Support Expiry:</b></td>
+                                                   <td class="brtags">{!! $supdate !!}</td>
+                                                   <td>
+                                                       @if($supdate != '--')
+                                                           <button class="btn btn-sm btn-secondary btn-xs" id="support_end" support-id="{{$order->id}}" support-date="{{getTimeInLoggedInUserTimeZone($subscription->support_ends_at,'d/m/Y')}}" ><i class="fa fa-edit" style='color:white;' {!! tooltip('Edit') !!}</i></button>
+                                                           </button>
+                                                       @endif
+                                                   </td>
+                                               </tr>
+
+                                               </tbody>
+                                           </table>
+
+
+
+                                       </div>
+                                       </div>
+                                   </div>
+
+                               </div>
                            <div class="col-md-6">
                              <div class="card card-info card-outline">
+                                 <div class="scrollit">
                            <div class="card-body table-responsive">
                                <div class="card-header">
                               <h5 class="card-title">
@@ -77,159 +234,11 @@ Order
 
                                 </tbody></table>
                              </div>
+                                 </div>
 
                              </div>
                        </div>
-                           <div class="col-md-6">
-                           <div class="card card-info card-outline">
 
-                            <div class="card-body table-responsive">
-                               @include('themes.default1.front.clients.reissue-licenseModal')
-                               @include('themes.default1.front.clients.domainRestriction')
-                               @include('themes.default1.order.installationLimit')
-                               @include('themes.default1.order.update_ends-modal')
-                               @include('themes.default1.order.license_end-modal')
-                               @include('themes.default1.order.support_end-modal')
-                               
-                                  
-                            <div class="card-header">
-                              <h4 class="card-title">
-                                License Details
-                              </h4>
-                            </div>
-                        
-                          
-                            <table id="lic_details" class="table table-hover">
-   
-                              <input type="hidden" name="domainRes" id="domainRes" value={{$allowDomainStatus}}>
-                                <tbody>
-                                <tr>
-                                    <td><b>License Code:</b></td>
-                                  <td id="s_key" data-type="serialkey">{{($order->serial_key)}}</td>
-
-                                  <td> @component('mini_views.copied_flash_text',[
-                                 'navigations'=>[
-                                   ['btnName'=>'lic_btn','slot'=>'license','style'=>'<span data-type="copy" style="font-size: 15px; pointer-events: initial; cursor: pointer; display: block;" id="copyBtn" title="Click to copy to clipboard"><i class="fas fa-copy"></i></span><span class="badge badge-success badge-xs pull-right" id="copied" style="display:none;margin-top:-40px;margin-left:-20px;position: absolute;">Copied</span>'],
-                                    ]
-                                ])
-                                
-                                @endcomponent
-
-                                  </td>
-                                </tr>
-                                 @if ($licenseStatus == 1)
-                                    <tr>
-                                        
-                                          <td>
-                                              <label name="domain">
-                                            <b>Licensed Domain:</b>
-                                          </td>
-                                          <td contenteditable="false" id="domain">{{$order->domain}}</td>
-                                         
-                                          <td>
-                                              <button class='class="btn btn-sm btn-danger btn-xs' style="width:max-content;border:none;" id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}"><i class="fas fa-file-import" style='color:white;' {!! tooltip('Reissue&nbsp;License') !!}</i>
-                                           </button>
-                                          </td>
-                                      </tr>
-                                      <tr>
-                                        <td><b>Installation Path:</b></td> 
-                                        @if(count($installationDetails['installed_path']) > 0)
-                                          <td>@foreach($installationDetails['installed_path'] as $paths)
-                                              <li>{{$paths}}</li>
-                                              @endforeach
-                                          </td>
-                                        @else
-                                        <td>
-                                        No Active Installation
-                                      </td>
-                                        @endif
-                                        <td></td>
-                                      </tr>
-
-                                      <tr>
-                                        <td><b>Installation IP:</b></td> 
-                                      @if(count($installationDetails['installed_path']) > 0)  
-                                          <td>
-                                              @foreach($installationDetails['installed_ip'] as $paths)
-                                              <li>{{$paths}}</li>
-                                              @endforeach
-                                          </td>
-                                         @else
-                                          <td>
-                                        --
-                                      </td>
-                                        
-                                        <td></td>
-                                       </tr>
-                                  <tr>
-                                    <td><b>Installation Limit:</b></td> 
-                                    <td>
-                                        {{$noOfAllowedInstallation}}
-                                      </td>
-                                      <td>
-                                         <button class="btn btn-sm btn-secondary btn-xs"  id="installlimit" limit-id="{{$order->id}}" install-limit="{{$noOfAllowedInstallation}}"><i class="fa fa-edit" style='color:white;' {!! tooltip('Edit') !!}</i></button>
-                                        
-                                    </td>
-                                       
-                                  </tr>
-                                  @endif
-                                  <tr>
-                                    <td><b>Current Version:</b></td> 
-                                    <td>{!! $versionLabel !!} </td>
-                                    <td></td>
-                                 </tr>
-
-                                  <tr>
-                                    <td><b><label data-toggle="tooltip" data-placement="top" title="" data-original-title="Last connection with License Manager">Last Active:</label></b></td> 
-                                    <td>
-                                      {!! $lastActivity !!}
-                                    </td>
-                                    <td></td> 
-                                  </tr>
-                                   @endif
-                                
-                                   
-                                  <tr>
-                                    <td><b>Updates Expiry:</b></td>
-                                    <td class="brtags"> {!! $date !!} </td>
-                                    <td>
-                                      @if($date != '--')
-                                     <button class="btn btn-sm btn-secondary btn-xs" id="updates_end" updates-id="{{$order->id}}" data-date="{{getTimeInLoggedInUserTimeZone($subscription->update_ends_at,'d/m/Y')}}" '><i class="fa fa-edit" style='color:white;' {!! tooltip('Edit') !!}</i></button>
-                                @endif
-                                    </td>
-                                    </tr>
-
-                                <tr>
-                                  <td><b>License Expiry:</b></td>
-                                  <td class="brtags">{!! $licdate !!} </td>
-                                  <td>
-                                  @if($licdate != '--')
-                                    <button class="btn btn-sm btn-secondary btn-xs" id="license_end" license-id="{{$order->id}}" license-date="{{getTimeInLoggedInUserTimeZone($subscription->ends_at,'d/m/Y')}}"><i class="fa fa-edit" style='color:white;' {!! tooltip('Edit') !!}</i>
-                                </button>
-                                @endif
-                                  </td>
-                                </tr>
-
-                              <tr>
-                                <td><b>Support Expiry:</b></td>
-                                <td class="brtags">{!! $supdate !!}</td>
-                                <td>
-                                @if($supdate != '--')
-                                        <button class="btn btn-sm btn-secondary btn-xs" id="support_end" support-id="{{$order->id}}" support-date="{{getTimeInLoggedInUserTimeZone($subscription->support_ends_at,'d/m/Y')}}" ><i class="fa fa-edit" style='color:white;' {!! tooltip('Edit') !!}</i></button>
-                                </button>
-                                @endif
-                                  </td>
-                                </tr>
-
-                                </tbody>
-                              </table>
-                             
-
-                            
-                      </div>
-                    </div>
-
-            </div>
         </div>
         </div>
                     </div>
@@ -258,7 +267,7 @@ Order
 
                     <thead><tr>
                         
-                         <th >Number</th>
+                         <th >Invoioce No</th>
                           <th>Products</th>
                            
                             <th>Date</th>
@@ -348,7 +357,7 @@ Order
                  <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_delete"><i class= "fa fa-trash"></i>&nbsp;&nbsp;Delete Selected</button><br /><br />
                     <thead><tr>
                         <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
-                         <th>Invoice Number</th>
+                         <th>Invoice No</th>
                           <th>Total</th>
                            
                             <th>Method</th>
@@ -394,7 +403,7 @@ Order
             "oLanguage": {
                 "sLengthMenu": "_MENU_ Records per page",
                 "sSearch"    : "Search: ",
-                "sProcessing": '<img id="blur-bg" class="backgroundfadein" style="top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;" src="{!! asset("lb-faveo/media/images/gifloader3.gif") !!}">'
+                "sProcessing": ' <div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="text-bold pt-2">Loading...</div></div>'
             },
                  columnDefs: [
                 { 

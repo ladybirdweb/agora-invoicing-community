@@ -91,9 +91,7 @@ User
                 <h3 class="widget-user-username">
                     <a class="btn btn-sm btn-primary" href="{{url('invoice/generate?clientid='.$client->id)}}"> <i class="fa fa-credit-card"></i> &nbsp;{{Lang::get('message.create-invoice')}}</a>
                     <a class="btn btn-sm btn-info" href="{{url('newPayment/receive?clientid='.$client->id)}}"> <i class="fa fa-bars"></i> &nbsp;{{Lang::get('message.create-payment')}}</a>
-
-
-                    <a class="btn btn-sm btn-secondary" href="{{url('clients/'.$client->id.'/edit')}}"> <i class="fas fa-edit"></i> Edit Details</a>
+                     <a class="btn btn-sm btn-secondary" href="{{url('clients/'.$client->id.'/edit')}}"> <i class="fas fa-edit"></i> Edit Details</a>
                     @if($is2faEnabled)
                         <button id="disable2fa" value="{{$client->id}}" class="btn btn-sm btn-danger"><i class="fa fa-ban"></i>&nbsp;
                             Disable 2FA
@@ -105,7 +103,7 @@ User
         </div>
         <div class="card-body table-responsive">
             <div class="row">
-                <div class="col-2 col-lg-2 col-sm-2">
+                <div class="col-md-2 col-lg-2 col-sm-2">
                     <div class="nav flex-column nav-tabs h-100" id="vert-tabs-tab myTab" role="tablist" aria-orientation="vertical">
                         <a class="nav-link active" id="invoice" data-toggle="pill" href="#activity" role="tab"  aria-selected="true">Invoice Detail</a>
                         <a class="nav-link" id="customer_detail" data-toggle="pill" href="#settings" role="tab"  aria-selected="false">{{Lang::get('message.customer_detail')}}</a>
@@ -115,7 +113,7 @@ User
 
                     </div>
                 </div>
-                <div class="col-10 col-lg-10 col-sm-10">
+                <div class="col-md-10 col-lg-10 col-sm-10">
                     <div class="tab-content" id="vert-tabs-tabContent">
 
                          <div id="response"></div>
@@ -125,8 +123,8 @@ User
                             <table id="invoice-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
                                 <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_invoice_delete"><i class= "fa fa-trash"></i>&nbsp;&nbsp;Delete Selected</button><br /><br />
                                 <thead><tr>
-                                    <th class="no-sort" style="width:1px;"><input type="checkbox" name="select_all" onchange="checkinginvoice(this)"></th>
-                                    <th>Date</th>
+                                    <th class="no-sort"><input type="checkbox" name="select_all" onchange="checkinginvoice(this)"></th>
+                                    <th style="width: 100px;">Date</th>
                                     <th>Invoice No</th>
                                     <th>Order No</th>
                                     <th>Total</th>

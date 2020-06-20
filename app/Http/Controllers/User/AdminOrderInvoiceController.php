@@ -69,10 +69,8 @@ class AdminOrderInvoiceController extends Controller
                             $cont = new \App\Http\Controllers\Order\TaxRatesAndCodeExpiryController();
                             $check = $cont->checkExecution($model->id);
                             if ($check == false) {
-
                                 $action = '<p><form method="post" action='.url('order/execute?invoiceid='.$model->id).'>'.'<input type="hidden" name="_token" value='.\Session::token().'>'.'
-                                    <button type="submit" style="margin-top:-10px;" class="btn btn-sm btn-info btn-xs"'.tooltip("Execute&nbsp;Order").'<i class="fa fa-tasks" style="color:white;"></i></button></form></p>';
-
+                                    <button type="submit" style="margin-top:-10px;" class="btn btn-sm btn-info btn-xs"'.tooltip('Execute&nbsp;Order').'<i class="fa fa-tasks" style="color:white;"></i></button></form></p>';
                             }
                             $editAction = '<a href='.url('invoices/edit/'.$model->id)
                                 ." class='btn btn-sm btn-secondary btn-xs'".tooltip('Edit')."

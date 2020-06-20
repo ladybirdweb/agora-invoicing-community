@@ -38,9 +38,11 @@
 
         <link rel="stylesheet" href="{{asset('admin/css/icheck-bootstrap.min.css')}}">
 
-        <!-- Custom style/js -->
-        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        <!-- Custom css/js -->
+        <link rel="stylesheet" href="{{asset('common/css/intlTelInput.css')}}">
+
+        <script src="{{asset('https://code.jquery.com/ui/1.12.1/jquery-ui.min.js')}}"></script>
+        <script src="{{asset('https://code.jquery.com/jquery-3.5.1.min.js')}}"></script>
 
         <script type="text/javascript">
             $.ajaxSetup({
@@ -57,6 +59,13 @@
 
 
     </head>
+    <style>
+        .required:after {
+            content:'*';
+            color:red;
+            padding-left:5px;
+        }
+    </style>
     <?php
     $set = new \App\Model\Common\Setting();
     $set = $set->findOrFail(1);
@@ -95,7 +104,7 @@
                         <div class="dropdown-item">
                             <!-- Message Start -->
                             <div class="media">
-                                <img src="{{Auth::user()->profile_pic}}"  style="width:auto;" class="img-size-50 mr-3 img-circle" alt="User Image" />
+                                <img src="{{Auth::user()->profile_pic}}"  class="img-size-50 mr-3 img-circle" alt="User Image" />
                                 <div class="media-body">
                                     <h3 class="dropdown-item-title">
                                         {{ucfirst(Auth::user()->first_name)}} {{ucfirst(Auth::user()->last_name)}}
@@ -123,10 +132,8 @@
                 @if ($set->title != '')
                     <!-- Brand Logo -->
                         <a href="{{url('/')}}" class="brand-link">
-                            <img src="{{ asset("admin/images/$set->admin_logo")}}" height="45" alt="Admin-Logo" class="brand-image img-circle elevation-3"
-                                 style="opacity: .8">
 
-                            <span class="brand-text font-weight-light"><b>{{$set->title}}</b></span>
+                            <span style="margin-left: 50px;" class="brand-text font-weight-light"><b>{{$set->title}}</b></span>
                         </a>
                 @else
                         <a href="{{url('/')}}" class="brand-link">
@@ -140,7 +147,7 @@
                 <!-- Sidebar user panel (optional) -->
                 <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                     <div class="image">
-                        <img src="{{Auth::user()->profile_pic}}" class="img-circle elevation-2" alt="User Image">
+                        <a href="{{url('/clients/'.Auth::user()->id)}}"><img src="{{Auth::user()->profile_pic}}" class="img-circle elevation-2" alt="User Image"></a>
                     </div>
                     <div class="info">
                         <a href="{{url('/clients/'.Auth::user()->id)}}" class="d-block">{{ucfirst(Auth::user()->first_name)}} {{ucfirst(Auth::user()->last_name)}}</a>
@@ -438,6 +445,8 @@
 
 
 {{-------------------------------------Custom---------------------------------------------------------}}
+    <script src="{{asset('common/js/intlTelInput.js')}}"></script>
+
     <script src="{{asset('admin/plugins/jquery-file-upload/vendor/jquery.ui.widget.js')}}"></script>
 
     <script src="{{asset('admin/plugins/jquery-file-upload/jquery.fileupload.js')}}"></script>

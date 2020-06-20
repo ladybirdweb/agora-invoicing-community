@@ -108,7 +108,7 @@ Dashboard
           <!-- small box -->
           <div class="small-box bg-yellow">
             <div class="inner">
-              <h4>Products Installation Rate:&nbsp; {{number_format($getLast30DaysInstallation['rate'], 2, '.', '')}}%</h4>
+              <h4>Products Installation Rate:&nbsp;{{number_format($getLast30DaysInstallation['rate'], 2, '.', '')}}%</h4>
               <span>Total Subscription (Last 30 days): &nbsp;  {{$getLast30DaysInstallation['total_subscription']}}</span></br>
               <span>Not Installed (Last 30 days): &nbsp;  {{$getLast30DaysInstallation['inactive_subscription']}}</span>
             </div>
@@ -127,7 +127,7 @@ Dashboard
           <!-- small box -->
           <div class="small-box bg-info">
             <div class="inner">
-              <h4>Paid Orders Rate:&nbsp; {{number_format($conversionRate['rate'], 2, '.', '')}}%</h4>
+              <h4>Paid Orders Rate:&nbsp;{{number_format($conversionRate['rate'], 2, '.', '')}}%</h4>
               <span>Total Orders (Last 30 days): &nbsp;  {{$conversionRate['all_orders']}}</span></br>
               <span>Paid Orders (Last 30 days): &nbsp;  {{$conversionRate['paid_orders']}}</span>
             </div>
@@ -246,7 +246,7 @@ Dashboard
              <tr>
                  <td><a href="{{$element->client_profile_link}}">{{ $element->client_name }}</a></td>
                  <td><a href="{{$element->order_link}}">{{$element->order_number}}</a></td>
-                 <td>{!! $element->subscription_ends_at !!}</td>
+                 <td style="color: red";>{!! $element->subscription_ends_at !!}</td>
                  <td>{{$element->days_difference}}</td>
                  <td>{{$element->product_name}}</td>
              </tr>
@@ -277,7 +277,7 @@ Dashboard
                  <td>{!! $element->client_name !!}</td>
                  <td>{!! $element->product_version !!}</td>
                  <td>{!! $element->product_name !!}</td>
-                 <td>{!! $element->subscription_ends_at !!}</td>
+                 <td style="color: red;">{!! $element->subscription_ends_at !!}</td>
              </tr>
          @endforeach
      @endcomponent
@@ -360,5 +360,4 @@ Dashboard
         @endforeach
     @endcomponent
 </div>
-
 @stop

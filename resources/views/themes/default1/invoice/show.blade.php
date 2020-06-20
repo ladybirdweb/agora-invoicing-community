@@ -107,7 +107,7 @@ Invoice
                                         <th>Price</th>
                                         <th>Taxes</th>
                                         <th>Tax Rates</th>
-                                        <th>Subtotal</th>
+                                        <th>Total</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -174,6 +174,10 @@ Invoice
                                 }
                                 ?>
                                  <table class="table">
+                                     <tr>
+                                         <th style="width:50%">Subtotal:</th>
+                                         <td>{{currency_format($item->regular_price,$code=$symbol)}}</td>
+                                     </tr>
                                       @if($invoice->discount != null)
                                   <th>Discount</th>
                                     <td>{{currency_format($invoice->discount,$code=$symbol)}}</td>

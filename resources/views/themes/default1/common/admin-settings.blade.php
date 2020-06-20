@@ -69,7 +69,7 @@ Settings
                         <div class="settingdivblue">
                             <a href="{{url('job-scheduler')}}">
                                 <span class="fa-stack fa-2x">
-                                    <i class="fas fa-tachometer fa-stack-1x"></i>
+                                    <i class="fas fa-tachometer-alt fa-stack-1x"></i>
                                 </span>
                             </a>
                         </div>
@@ -110,7 +110,7 @@ Settings
                         <div class="settingdivblue">
                             <a href="{{url('file-storage')}}">
                                 <span class="fa-stack fa-2x">
-                                    <i class="fa fa-file-archive-o fa-stack-1x"></i>
+                                    <i class="fas fa-file-archive fa-stack-1x"></i>
                                 </span>
                             </a>
                         </div>
@@ -271,7 +271,7 @@ Settings
                         <div class="settingdivblue">
                             <a href="{{url('templates')}}">
                                 <span class="fa-stack fa-2x">
-                                    <i class="fa fa-file-text fa-stack-1x"></i>
+                                    <i class="fas fa-file-alt fa-stack-1x"></i>
                                 </span>
                             </a>
                         </div>
@@ -299,7 +299,7 @@ Settings
                         <div class="settingdivblue">
                             <a href="{{ url('github') }}">
                                 <span class="fa-stack fa-2x">
-                                    <i class="fa fa-github fa-stack-1x"></i>
+                                    <i class="fab fa-github-square fa-stack-1x"></i>
                                 </span>
                             </a>
                         </div>
@@ -317,7 +317,7 @@ Settings
                         <div class="settingdivblue">
                             <a href="{{ url('mailchimp') }}">
                                 <span class="fa-stack fa-2x">
-                                    <i class="fa fa-mail-forward fa-stack-1x"></i>
+                                    <i class="fab fa-mailchimp fa-stack-1x"></i>
                                 </span>
                             </a>
                         </div>
@@ -357,7 +357,7 @@ Settings
                         <div class="settingdivblue">
                             <a href="{{url('tax')}}">
                                 <span class="fa-stack fa-2x">
-                                    <i class="fa fa-dollar fa-stack-1x"></i>
+                                    <i class="fas fa-money-check-alt fa-stack-1x"></i>
                                 </span>
                             </a>
                         </div>
@@ -371,7 +371,7 @@ Settings
                         <div class="settingdivblue">
                             <a href="{{url('currency')}}">
                                 <span class="fa-stack fa-2x">
-                                    <i class="fa fa-money fa-stack-1x"></i>
+                                    <i class="fas fa-dollar-sign fa-stack-1x"></i>
                                 </span>
                             </a>
                         </div>
@@ -439,7 +439,7 @@ Settings
                         <div class="settingdivblue">
                             <a href="{{ url('chat') }}">
                                 <span class="fa-stack fa-2x">
-                                    <i class="fa fa-wechat fa-stack-1x"></i>
+                                    <i class="fas fa-code fa-stack-1x"></i>
                                 </span>
                             </a>
                         </div>

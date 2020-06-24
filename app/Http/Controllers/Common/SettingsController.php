@@ -391,6 +391,7 @@ class SettingsController extends BaseSettingsController
                                    $date1->setTimezone(new \DateTimeZone($tz));
                                    $finalDate = $date1->format('M j, Y, g:i a ');
                                }
+
                                return $finalDate;
                            })
                              ->addColumn('from', function ($model) {

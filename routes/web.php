@@ -226,10 +226,8 @@
         Route::get('get-state/{state}', 'Payment\TaxController@getState');
         Route::get('get-tax', ['as' => 'get-tax', 'uses' => 'Payment\TaxController@getTax']);
         Route::get('get-loginstate/{state}', 'Auth\AuthController@getState');
-        Route::get('get-loginstate/{state}', 'Auth\AuthController@getState');
 
         Route::get('get-taxtable', ['as' => 'get-taxtable', 'uses' => 'Payment\TaxController@getTaxTable']);
-        Route::get('get-loginstate/{state}', 'Auth\AuthController@getState');
 
         // Route::get('get-tax', 'Payment\TaxController@GetTax');
 

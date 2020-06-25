@@ -38,7 +38,6 @@
         Route::match(['post', 'patch'], 'checkout', 'Front\CheckoutController@postCheckout');
 
         Route::post('pricing/update', 'Front\CartController@addCouponUpdate');
-        Route::post('update-final-price', 'Front\CartController@updateFinalPrice');
         Route::post('mail-chimp/subcribe', 'Common\MailChimpController@addSubscriberByClientPanel');
         Route::get('mailchimp', 'Common\MailChimpController@mailChimpSettings')->middleware('admin');
         Route::patch('mailchimp', 'Common\MailChimpController@postMailChimpSettings');

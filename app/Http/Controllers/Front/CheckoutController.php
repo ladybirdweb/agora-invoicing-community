@@ -79,6 +79,7 @@ class CheckoutController extends InfoController
      */
     public function checkoutForm(Request $request)
     {
+
         if (! \Auth::user()) {//If User is not Logged in then send him to login Page
             $url = $request->segments(); //The requested url (chekout).Save it in Session
             \Session::put('session-url', $url[0]);
@@ -92,6 +93,13 @@ class CheckoutController extends InfoController
             \Session::put('content', $content);
 
             return redirect('auth/login')->with('fails', 'Please login');
+        }
+        if(\Cart::isEmpty()) {//During renewal when payment fails due to some reason
+            $invoice = \Session::get('invoice');
+            if($invoice && \Session::has('fails')) {
+                return redirect('paynow/'.$invoice->id)->with('fails','Payment cannot be processed. Please try the other gateway.');
+
+            }
         }
         if (\Session::has('items')) {
             $content = \Session::get('items');
@@ -190,13 +198,7 @@ class CheckoutController extends InfoController
 
     public function postCheckout(Request $request)
     {
-        $invoice_controller = new \App\Http\Controllers\Order\InvoiceController();
-        $info_cont = new \App\Http\Controllers\Front\InfoController();
-        $payment_method = $request->input('payment_gateway');
-        \Session::put('payment_method', $payment_method);
-        $paynow = $this->checkregularPaymentOrRenewal($request->input('invoice_id'));
         $cost = $request->input('cost');
-        $state = $this->getState();
         if (Cart::getSubTotal() != 0 || $cost > 0) {
             $this->validate($request, [
                 'payment_gateway'=> 'required',
@@ -204,8 +206,17 @@ class CheckoutController extends InfoController
                 'payment_gateway.required'=> 'Please Select a Payment Gateway',
             ]);
         }
-
         try {
+        $invoice_controller = new \App\Http\Controllers\Order\InvoiceController();
+        $info_cont = new \App\Http\Controllers\Front\InfoController();
+        $payment_method = $request->input('payment_gateway');
+        \Session::put('payment_method', $payment_method);
+        $paynow = $this->checkregularPaymentOrRenewal($request->input('invoice_id'));
+        $cost = $request->input('cost');
+        $state = $this->getState();
+
+
+
             if ($paynow === false) {
                 /*
                  * Do order, invoicing etc
@@ -219,7 +230,9 @@ class CheckoutController extends InfoController
                 $invoice_no = $invoice->number;
                 $date = $this->getDate($invoice);
                 $invoiceid = $invoice->id;
-                $amount = $invoice->grand_total;
+                $processingFee = $this->getProcessingFee($payment_method, $invoice->currency);
+                CartController::updateFinalPrice(new Request(['processing_fee'=>$processingFee]));
+                $amount = Cart::getTotal();
                 $url = '';
                 $cart = Cart::getContent();
                 $invoices = $this->invoice->find($invoiceid);
@@ -317,20 +330,16 @@ class CheckoutController extends InfoController
 
     public function checkregularPaymentOrRenewal($invoiceid)
     {
-        try {
-            $paynow = false;
+        $paynow = false;
 
-            if ($invoiceid) {
-                if (Invoice::find($invoiceid)->user_id != \Auth::user()->id) {
-                    throw new \Exception('Invalid modification of data');
-                }
-                $paynow = true;
+        if ($invoiceid) {
+            if (Invoice::find($invoiceid)->user_id != \Auth::user()->id) {
+                throw new \Exception('Invalid modification of data');
             }
-
-            return $paynow;
-        } catch (\Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
+            $paynow = true;
         }
+
+        return $paynow;
     }
 
     public function checkoutAction($invoice)

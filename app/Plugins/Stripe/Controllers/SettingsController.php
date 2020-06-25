@@ -129,6 +129,7 @@ class SettingsController extends Controller
                     throw new \Exception('Invalid modification of data');
                 }
                 $amount = $request->input('amount');
+
             }
             $stripeSecretKey = ApiKey::pluck('stripe_secret')->first();
             $stripe = Stripe::make($stripeSecretKey);

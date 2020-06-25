@@ -79,6 +79,7 @@ class CheckoutController extends InfoController
      */
     public function checkoutForm(Request $request)
     {
+
         if (! \Auth::user()) {//If User is not Logged in then send him to login Page
             $url = $request->segments(); //The requested url (chekout).Save it in Session
             \Session::put('session-url', $url[0]);
@@ -93,10 +94,12 @@ class CheckoutController extends InfoController
 
             return redirect('auth/login')->with('fails', 'Please login');
         }
+
         if (\Cart::isEmpty()) {//During renewal when payment fails due to some reason
             $invoice = \Session::get('invoice');
             if ($invoice && \Session::has('fails')) {
                 return redirect('paynow/'.$invoice->id)->with('fails', 'Payment cannot be processed. Please try the other gateway.');
+
             }
         }
         if (\Session::has('items')) {

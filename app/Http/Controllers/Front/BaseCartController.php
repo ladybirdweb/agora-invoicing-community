@@ -190,13 +190,14 @@ class BaseCartController extends ExtendedBaseCartController
         try {
             $id = $request->input('productid');
             $hasPermissionToModifyAgent = Product::find($id)->can_modify_agent;
-            if($hasPermissionToModifyAgent) {
-                $cartValues = $this->getCartValues($id, $hasPermissionToModifyAgent,true);
+            if ($hasPermissionToModifyAgent) {
+                $cartValues = $this->getCartValues($id, $hasPermissionToModifyAgent, true);
                 Cart::update($id, [
                     'price'      => $cartValues['price'],
                     'attributes' => ['agents' =>  $cartValues['agtqty'], 'currency'=> ['currency'=>$cartValues['currency'], 'symbol'=>$cartValues['symbol']]],
                 ]);
             }
+
             return successResponse('Cart updated successfully');
         } catch (\Exception $ex) {
             return errorResponse($ex->getMessage());
@@ -215,8 +216,8 @@ class BaseCartController extends ExtendedBaseCartController
         try {
             $id = $request->input('productid');
             $hasPermissionToModifyAgent = Product::find($id)->can_modify_agent;
-            if($hasPermissionToModifyAgent) {
-               $cartValues = $this->getCartValues($id,$hasPermissionToModifyAgent);
+            if ($hasPermissionToModifyAgent) {
+                $cartValues = $this->getCartValues($id, $hasPermissionToModifyAgent);
                 Cart::update($id, [
                     'price'      => $cartValues['price'],
                     'attributes' => ['agents' =>  $cartValues['agtqty'], 'currency'=> ['currency'=>$cartValues['currency'], 'symbol'=>$cartValues['symbol']]],
@@ -242,13 +243,13 @@ class BaseCartController extends ExtendedBaseCartController
             throw new \Exception('Product not present in cart.');
         }
 
-            if ($canReduceAgent) {
-                $agtqty = $agtqty / 2;
-                $price = \Cart::getTotal() / 2;
-            } else {
-                $agtqty = $agtqty * 2;
-                $price = \Cart::getTotal() * 2;
-            }
+        if ($canReduceAgent) {
+            $agtqty = $agtqty / 2;
+            $price = \Cart::getTotal() / 2;
+        } else {
+            $agtqty = $agtqty * 2;
+            $price = \Cart::getTotal() * 2;
+        }
 
         return ['agtqty'=>$agtqty, 'price'=>$price, 'currency'=>$currency, 'symbol'=>$symbol];
     }
@@ -265,7 +266,7 @@ class BaseCartController extends ExtendedBaseCartController
         try {
             $id = $request->input('productid');
             $hasPermissionToModifyQuantity = Product::find($id)->can_modify_quantity;
-            if($hasPermissionToModifyQuantity) {
+            if ($hasPermissionToModifyQuantity) {
                 $cart = \Cart::get($id);
                 $qty = $cart->quantity - 1;
                 $price = $this->cost($id);
@@ -277,7 +278,7 @@ class BaseCartController extends ExtendedBaseCartController
                 throw new \Exception('Cannot Modify Quantity');
             }
         } catch (\Exception $ex) {
-            return redirect()->back()->with('fails',$ex->getMessage());
+            return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 
@@ -293,7 +294,7 @@ class BaseCartController extends ExtendedBaseCartController
         try {
             $id = $request->input('productid');
             $hasPermissionToModifyQuantity = Product::find($id)->can_modify_quantity;
-            if($hasPermissionToModifyQuantity) {
+            if ($hasPermissionToModifyQuantity) {
                 $cart = \Cart::get($id);
                 $qty = $cart->quantity + 1;
                 $price = $this->cost($id);
@@ -308,7 +309,7 @@ class BaseCartController extends ExtendedBaseCartController
                 throw new \Exception('Cannot Modify Quantity');
             }
         } catch (\Exception $ex) {
-            return redirect()->back()->with('fails',$ex->getMessage());
+            return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 

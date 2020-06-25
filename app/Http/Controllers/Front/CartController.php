@@ -453,7 +453,7 @@ class CartController extends BaseCartController
         }
     }
 
-    public function updateFinalPrice(Request $request)
+    public static function updateFinalPrice(Request $request)
     {
         $value = $request->input('processing_fee').'%';
         $updateValue = new CartCondition([

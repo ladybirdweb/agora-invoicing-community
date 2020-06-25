@@ -13,6 +13,7 @@
 
         // VisitStats::routes();
 
+
          /*
          * Installer Routes
          */
@@ -58,6 +59,8 @@
                 'uses' => 'Installer\FinalController@finish',
             ]);
         });
+
+        
 
         Route::group(['middleware' => ['install']], function () {
             Route::get('pricing', 'Front\CartController@cart')->name('pricing');

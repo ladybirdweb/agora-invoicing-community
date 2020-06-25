@@ -132,11 +132,10 @@ class ExtendedBaseCartController extends Controller
             $months = 0;
             $cont = new CartController();
             $currency = $cont->currency($userid);
-            if ($this->checkPlanSession() === true) {
-                $planid = Session::get('plan');
-            }
             if (! $planid) {//When Product Is Added from Cart
                 $planid = Plan::where('product', $productid)->pluck('id')->first();
+            } elseif($this->checkPlanSession() === true && !$planid) {
+                $planid = Session::get('plan');
             }
             $plan = Plan::where('id', $planid)->where('product', $productid)->first();
             if ($plan) { //Get the Total Plan Cost if the Plan Exists For a Product

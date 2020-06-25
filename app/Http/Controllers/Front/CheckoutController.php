@@ -79,7 +79,6 @@ class CheckoutController extends InfoController
      */
     public function checkoutForm(Request $request)
     {
-
         if (! \Auth::user()) {//If User is not Logged in then send him to login Page
             $url = $request->segments(); //The requested url (chekout).Save it in Session
             \Session::put('session-url', $url[0]);
@@ -94,11 +93,10 @@ class CheckoutController extends InfoController
 
             return redirect('auth/login')->with('fails', 'Please login');
         }
-        if(\Cart::isEmpty()) {//During renewal when payment fails due to some reason
+        if (\Cart::isEmpty()) {//During renewal when payment fails due to some reason
             $invoice = \Session::get('invoice');
-            if($invoice && \Session::has('fails')) {
-                return redirect('paynow/'.$invoice->id)->with('fails','Payment cannot be processed. Please try the other gateway.');
-
+            if ($invoice && \Session::has('fails')) {
+                return redirect('paynow/'.$invoice->id)->with('fails', 'Payment cannot be processed. Please try the other gateway.');
             }
         }
         if (\Session::has('items')) {
@@ -208,15 +206,13 @@ class CheckoutController extends InfoController
             ]);
         }
         try {
-        $invoice_controller = new \App\Http\Controllers\Order\InvoiceController();
-        $info_cont = new \App\Http\Controllers\Front\InfoController();
-        $payment_method = $request->input('payment_gateway');
-        \Session::put('payment_method', $payment_method);
-        $paynow = $this->checkregularPaymentOrRenewal($request->input('invoice_id'));
-        $cost = $request->input('cost');
-        $state = $this->getState();
-
-
+            $invoice_controller = new \App\Http\Controllers\Order\InvoiceController();
+            $info_cont = new \App\Http\Controllers\Front\InfoController();
+            $payment_method = $request->input('payment_gateway');
+            \Session::put('payment_method', $payment_method);
+            $paynow = $this->checkregularPaymentOrRenewal($request->input('invoice_id'));
+            $cost = $request->input('cost');
+            $state = $this->getState();
 
             if ($paynow === false) {
                 /*

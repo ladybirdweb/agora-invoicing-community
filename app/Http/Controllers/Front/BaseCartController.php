@@ -190,8 +190,10 @@ class BaseCartController extends ExtendedBaseCartController
         try {
             $id = $request->input('productid');
             $hasPermissionToModifyAgent = Product::find($id)->can_modify_agent;
-            if ($hasPermissionToModifyAgent) {
-                $cartValues = $this->getCartValues($id, true);
+
+            if($hasPermissionToModifyAgent) {
+                $cartValues = $this->getCartValues($id, $hasPermissionToModifyAgent,true);
+
                 Cart::update($id, [
                     'price'      => $cartValues['price'],
                     'attributes' => ['agents' =>  $cartValues['agtqty'], 'currency'=> ['currency'=>$cartValues['currency'], 'symbol'=>$cartValues['symbol']]],
@@ -216,8 +218,10 @@ class BaseCartController extends ExtendedBaseCartController
         try {
             $id = $request->input('productid');
             $hasPermissionToModifyAgent = Product::find($id)->can_modify_agent;
-            if ($hasPermissionToModifyAgent) {
-                $cartValues = $this->getCartValues($id);
+
+            if($hasPermissionToModifyAgent) {
+               $cartValues = $this->getCartValues($id,$hasPermissionToModifyAgent);
+
                 Cart::update($id, [
                     'price'      => $cartValues['price'],
                     'attributes' => ['agents' =>  $cartValues['agtqty'], 'currency'=> ['currency'=>$cartValues['currency'], 'symbol'=>$cartValues['symbol']]],
@@ -230,19 +234,8 @@ class BaseCartController extends ExtendedBaseCartController
         }
     }
 
-    /**
-     * The method returns the updated price, no of agents and currency of the product added to the cart
-     * Since this method is called when the the user has permission to modify agents(set from the admin panel), if the parameter $canReduceAgent is true the agent quantity and the cart total will be divided by two else they will be multiplied by two.
-     *
-     * Wehn the api for reducing the agent is called, agent gets divided by 2 and the price also gets divided by two, since we only increase and decrease agents/price by doubling them or making them half.
-     *
-     *
-     * @param  int $productId The product to be added to cart
-     * @param  bool $canReduceAgent Increase or decrease no of agents
-     *
-     * @return array
-     */
-    private function getCartValues($productId, $canReduceAgent = false)
+
+    private function getCartValues($productId, $hasPermissionToModifyAgent, $canReduceAgent = false)
     {
         $cart = \Cart::get($productId);
 
@@ -255,13 +248,14 @@ class BaseCartController extends ExtendedBaseCartController
             throw new \Exception('Product not present in cart.');
         }
 
-        if ($canReduceAgent) {
-            $agtqty = $agtqty / 2;
-            $price = \Cart::getTotal() / 2;
-        } else {
-            $agtqty = $agtqty * 2;
-            $price = \Cart::getTotal() * 2;
-        }
+
+            if ($canReduceAgent) {
+                $agtqty = $agtqty / 2;
+                $price = \Cart::getTotal() / 2;
+            } else {
+                $agtqty = $agtqty * 2;
+                $price = \Cart::getTotal() * 2;
+            }
 
         return ['agtqty'=>$agtqty, 'price'=>$price, 'currency'=>$currency, 'symbol'=>$symbol];
     }
@@ -278,6 +272,7 @@ class BaseCartController extends ExtendedBaseCartController
         try {
             $id = $request->input('productid');
             $hasPermissionToModifyQuantity = Product::find($id)->can_modify_quantity;
+
             if ($hasPermissionToModifyQuantity) {
                 $cart = \Cart::get($id);
                 $qty = $cart->quantity - 1;
@@ -290,7 +285,7 @@ class BaseCartController extends ExtendedBaseCartController
                 throw new \Exception('Cannot Modify Quantity');
             }
         } catch (\Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
+            return redirect()->back()->with('fails',$ex->getMessage());
         }
     }
 
@@ -306,7 +301,9 @@ class BaseCartController extends ExtendedBaseCartController
         try {
             $id = $request->input('productid');
             $hasPermissionToModifyQuantity = Product::find($id)->can_modify_quantity;
-            if ($hasPermissionToModifyQuantity) {
+
+            if($hasPermissionToModifyQuantity) {
+
                 $cart = \Cart::get($id);
                 $qty = $cart->quantity + 1;
                 $price = $this->cost($id);
@@ -321,7 +318,8 @@ class BaseCartController extends ExtendedBaseCartController
                 throw new \Exception('Cannot Modify Quantity');
             }
         } catch (\Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
+
+            return redirect()->back()->with('fails',$ex->getMessage());
         }
     }
 

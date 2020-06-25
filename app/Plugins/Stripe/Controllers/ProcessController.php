@@ -3,6 +3,7 @@
 namespace App\Plugins\Stripe\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Model\Order\Invoice;
 use App\Plugins\Stripe\Model\StripePayment;
 use Illuminate\Http\Request;
 
@@ -120,13 +121,15 @@ class ProcessController extends Controller
     {
         try {
             $path = app_path().'/Plugins/Stripe/views';
-            $total = \Cart::getTotal();
+
             if (! $total) {
+
                 $total = $data['amount'];
             }
             $total = intval($total);
             \View::addNamespace('plugins', $path);
             echo view('plugins::middle-page', compact('data', 'total'));
+
         } catch (\Exception $ex) {
         }
     }

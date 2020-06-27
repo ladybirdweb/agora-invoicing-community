@@ -30,20 +30,7 @@ class PageController extends GetPageTemplateController
         }
     }
 
-    public function getLocation()
-    {
-        try {
-            $location = \GeoIP::getLocation();
 
-            return $location;
-        } catch (Exception $ex) {
-            app('log')->error($ex->getMessage());
-            Bugsnag::notifyException($ex->getMessage());
-            $location = \Config::get('geoip.default_location');
-
-            return $location;
-        }
-    }
 
     public function getPages()
     {

@@ -21,12 +21,13 @@ Sign in or Register
 @stop
 @section('content')
     <?php
-    $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['iso_code']);
-    $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['iso_code']);
+    use App\Http\Controllers\Front\CartController;
+    $country = CartController::findCountryByGeoip($location['iso_code']);
+    $states = CartController::findStateByRegionId($location['iso_code']);
     $states = \App\Model\Common\State::pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
     $state_code = $location['iso_code'] . "-" . $location['state'];
-    $state = \App\Http\Controllers\Front\CartController::getStateByCode($state_code);
-    $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($location['iso_code']);
+    $state = CartController::getStateByCode($state_code);
+    $mobile_code = CartController::getMobileCodeByIso($location['iso_code']);
 
 
     ?>
@@ -130,7 +131,7 @@ Sign in or Register
                                             <div class="box-content">
 
                                                 <h4 class="heading-primary text-uppercase mb-3">I'm a Returning Customer</h4>
-                                                @if ($captchaStatus==1 && $captchaSiteKey != '00' && $captchaSecretKey != '00')
+                                                @if ($status->recaptcha_status==1 && $apiKeys->nocaptcha_sitekey != '00' && $apiKeys->captcha_secretCheck != '00')
                                                     {!!  Form::open(['action'=>'Auth\LoginController@postLogin', 'method'=>'post','id'=>'formoid','onsubmit'=>'return validateform()']) !!}
                                                 @else
                                                     {!!  Form::open(['action'=>'Auth\LoginController@postLogin', 'method'=>'post','id'=>'formoid']) !!}
@@ -169,7 +170,7 @@ Sign in or Register
                                                     </div>
                                                 </div>
 
-                                                @if ($captchaStatus==1 && $captchaSiteKey != '00' && $captchaSecretKey != '00')
+                                                @if ($status->recaptcha_status==1 && $apiKeys->nocaptcha_sitekey != '00' && $apiKeys->captcha_secretCheck != '00')
                                                     {!! NoCaptcha::renderJs() !!}
                                                     {!! NoCaptcha::display() !!}
                                                     <div class="loginrobot-verification"></div>
@@ -326,7 +327,7 @@ Sign in or Register
                                                 <!--   <input type="checkbox" name="checkbox" id="option" value="{{old('option')}}"><label for="option"><span></span> <p>I agree to the <a href="#">terms</a></p></label>-->
                                                     <div class="form-row">
                                                         <div class="form-group col-lg-6">
-                                                            @if ($captchaStatus==1 && $captchaSiteKey != '00' && $captchaSecretKey != '00')
+                                                            @if ($status->recaptcha_status==1 && $apiKeys->nocaptcha_sitekey != '00' && $apiKeys->captcha_secretCheck != '00')
 
                                                                 {!! NoCaptcha::display() !!}
 
@@ -336,7 +337,7 @@ Sign in or Register
                                                         </div>
                                                     </div>
                                                     <div class="form-row">
-                                                        @if ($termsStatus ==0)
+                                                        @if ($status->terms ==0)
                                                             <div class="form-group col-lg-6">
                                                                 <input type="hidden" value="true" name="terms" id="term">
                                                             </div>
@@ -344,7 +345,7 @@ Sign in or Register
                                                             <div class="form-group col-lg-6">
                                                                 <label>
 
-                                                                    <input type="checkbox" value="false" name="terms" id="term" > {{Lang::get('message.i-agree-to-the')}} <a href="{{$termsUrl}}" target="_blank">{{Lang::get('message.terms')}}</a>
+                                                                    <input type="checkbox" value="false" name="terms" id="term" > {{Lang::get('message.i-agree-to-the')}} <a href="{{$apiKeys->terms_url}}" target="_blank">{{Lang::get('message.terms')}}</a>
                                                                 </label>
                                                                 <span id="termscheck"></span>
                                                             </div>
@@ -393,14 +394,14 @@ Sign in or Register
 
                                                     <input type="hidden" name="user_id" id="user_id"/>
                                                     <input type="hidden" name="email_password" id="email_password"/>
-                                                    <input type="hidden" id="checkEmailStatus" value="{{$emailStatus}}">
-                                                    @if($emailStatus == 1)
+                                                    <input type="hidden" id="checkEmailStatus" value="{{$status->emailverification_status}}">
+                                                    @if($status->emailverification_status == 1)
                                                         <p>You will be sent a verification email by an automated system, Please click on the verification link in the email. Click next to continue</p>
                                                         <div class="form-row">
                                                             <div class="form-group col">
                                                                 <label  for="mobile" class="required">Email</label>
                                                                 <div class="input-group">
-                                                                    <input type="hidden" id="emailstatusConfirm" value="{{$emailStatus}}">
+                                                                    <input type="hidden" id="emailstatusConfirm" value="{{$status->emailverification_status}}">
                                                                     <input type="email" value="" name="verify_email" id="verify_email" class="form-control form-control input-lg">
                                                                     <div class="input-group-append">
                                                                         <span class="input-group-text"><i class="fa fa-envelope"></i></span>
@@ -415,14 +416,14 @@ Sign in or Register
 
 
 
-                                                    @if($mobileStatus == 1)
+                                                    @if($status->msg91_status == 1)
                                                         <p>You will be sent an OTP on your mobile immediately by an automated system, Please enter the OTP in the next step. Click next to continue</p>
                                                         <div class="form-row">
                                                             <div class="form-group col">
                                                                 <input id="mobile_code_hidden" name="mobile_code" type="hidden">
                                                                 <input class="form-control form-control input-lg"  id="verify_country_code" name="verify_country_code" type="hidden">
                                                                 <label for="mobile" class="required">Mobile</label><br/>
-                                                                <input type="hidden" id="mobstatusConfirm" value="{{$mobileStatus}}">
+                                                                <input type="hidden" id="mobstatusConfirm" value="{{$status->msg91_status}}">
                                                                 <input class="form-control input-lg phone"  name="verify_number" type="text" id="verify_number">
                                                                 <span id="valid-msg1" class="hide"></span>
                                                                 <span id="error-msg1" class="hide"></span>
@@ -464,7 +465,7 @@ Sign in or Register
                                         <div id="alertMessage3"></div>
 
                                         <div class="featured-box featured-box-primary text-left mt-5">
-                                            <input type="hidden" id="checkOtpStatus" value="{{$mobileStatus}}">
+                                            <input type="hidden" id="checkOtpStatus" value="{{$status->msg91_status}}">
                                             <div class="box-content" id="showOtpBox">
                                                 <h4 class="heading-primary text-uppercase mb-md">OTP Confirmation</h4>
                                                 <!-- <div class="row verify">

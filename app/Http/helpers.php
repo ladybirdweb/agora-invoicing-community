@@ -4,6 +4,20 @@ use App\Model\Order\Order;
 use App\Model\Product\ProductUpload;
 use Carbon\Carbon;
 
+function getLocation()
+{
+    try {
+        $location = \GeoIP::getLocation();
+
+        return $location;
+    } catch (Exception $ex) {
+        app('log')->error($ex->getMessage());
+        $location = \Config::get('geoip.default_location');
+
+        return $location;
+    }
+}
+
 function checkArray($key, $array)
 {
     $value = '';
@@ -49,6 +63,8 @@ function errorResponse($message, $statusCode = 400)
 {
     return response()->json(['success' => false, 'message' => $message], $statusCode);
 }
+
+
 
 /**
  * Format success message/data into json success response.
@@ -114,6 +130,7 @@ function getDateHtml(string $dateTimeString = null)
     }
 }
 
+
 function getExpiryLabel($expiryDate, $badge = 'label')
 {
     if ($expiryDate < (new Carbon())->toDateTimeString()) {
@@ -152,6 +169,8 @@ function getOrderLink($orderId, $url = 'orders')
 
     return $link;
 }
+
+
 
 function getStatusLabel($status, $badge = 'label')
 {

@@ -30,8 +30,6 @@ class PageController extends GetPageTemplateController
         }
     }
 
-
-
     public function getPages()
     {
         return \DataTables::of($this->page->get())

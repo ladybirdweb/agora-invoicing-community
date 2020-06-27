@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\User;
 use App\ApiKey;
+use App\Http\Controllers\Controller;
 use App\Model\Common\Bussiness;
 use App\Model\Common\StatusSetting;
-use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
-use App\Http\Controllers\Front\PageController;
 use Illuminate\Http\Request;
 
 class LoginController extends Controller
@@ -42,16 +40,16 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
-
     public function showLoginForm()
     {
-        try{
+        try {
             $bussinesses = Bussiness::pluck('name', 'short')->toArray();
             $status = StatusSetting::select('recaptcha_status', 'msg91_status', 'emailverification_status', 'terms')->first();
             $apiKeys = ApiKey::select('nocaptcha_sitekey', 'captcha_secretCheck', 'msg91_auth_key', 'terms_url')->first();
             $location = getLocation();
-            return view('themes.default1.front.auth.login-register', compact('bussinesses','location','status', 'apiKeys'));
-        } catch(\Exception $ex) {
+
+            return view('themes.default1.front.auth.login-register', compact('bussinesses', 'location', 'status', 'apiKeys'));
+        } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
             $error = $ex->getMessage();
         }
@@ -62,7 +60,7 @@ class LoginController extends Controller
         $this->validate($request, [
             'email1' => 'required',
             'password1' => 'required',
-            'g-recaptcha-response' => 'sometimes|required|captcha'
+            'g-recaptcha-response' => 'sometimes|required|captcha',
         ], [
             'g-recaptcha-response.required' => 'Robot Verification Failed. Please Try Again.',
             'email1.required'    => 'Username/Email is required',
@@ -70,39 +68,38 @@ class LoginController extends Controller
         ]);
         $usernameinput = $request->input('email1');
         $password = $request->input('password1');
-        $credentialsForEmail = ['email' => $usernameinput, 'password' => $password,'active' => '1' , 'mobile_verified' => '1'];
+        $credentialsForEmail = ['email' => $usernameinput, 'password' => $password, 'active' => '1', 'mobile_verified' => '1'];
         $auth = \Auth::attempt($credentialsForEmail, $request->has('remember'));
-        if (!$auth) {//Check for correct email
-            $credentialsForusername = ['user_name' => $usernameinput, 'password' => $password,'active' => '1' , 'mobile_verified' => '1'];
+        if (! $auth) {//Check for correct email
+            $credentialsForusername = ['user_name' => $usernameinput, 'password' => $password, 'active' => '1', 'mobile_verified' => '1'];
             $auth = \Auth::attempt($credentialsForusername, $request->has('remember'));
-        } if(!$auth){//Check for correct username
-                return redirect()->back()
-                ->withInput($request->only('email1', 'remember'))
-                ->withErrors([
-                    'email1' => 'Invalid Email and/or Password',
-                ]);
-        if(!Hash::check($password ,$user->password)){//Check for correct password
+        }
+        if (! $auth) {//Check for correct username
             return redirect()->back()
                 ->withInput($request->only('email1', 'remember'))
                 ->withErrors([
                     'email1' => 'Invalid Email and/or Password',
                 ]);
+            if (! Hash::check($password, $user->password)) {//Check for correct password
+                return redirect()->back()
+                ->withInput($request->only('email1', 'remember'))
+                ->withErrors([
+                    'email1' => 'Invalid Email and/or Password',
+                ]);
+            }
+            if ($user && ($user->active !== 1 || $user->mobile_verified !== 1)) {
+                return redirect('verify')->with('user', $user);
+            }
         }
-        if ($user && ($user->active !== 1 || $user->mobile_verified !== 1)) {
-            return redirect('verify')->with('user', $user);
-
-        }
-    }
-        if (\Auth::user()->is_2fa_enabled ==1) {
+        if (\Auth::user()->is_2fa_enabled == 1) {
             $userId = Auth::user()->id;
             \Auth::logout();
             $request->session()->put('2fa:user:id', $userId);
+
             return redirect('2fa/validate');
         }
         activity()->log('Logged In');
 
         return redirect()->intended($this->redirectPath());
     }
-
-
 }

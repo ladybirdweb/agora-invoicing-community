@@ -42,7 +42,7 @@ class Handler extends ExceptionHandler
     }
 
     /**
-     * Report to Bugsnag
+     * Report to Bugsnag.
      *
      * @param Exception $exception Exception instance
      * @return void
@@ -54,7 +54,6 @@ class Handler extends ExceptionHandler
             Bugsnag::notifyException($exception);
         }
     }
-
 
     /**
      * Render an exception into an HTTP response.

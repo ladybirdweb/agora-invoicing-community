@@ -83,7 +83,5 @@ class ResetPasswordController extends Controller
                 ->withErrors([
                     'email' => 'Invalid email', ]);
         }
-
-
     }
 }

@@ -64,8 +64,6 @@ function errorResponse($message, $statusCode = 400)
     return response()->json(['success' => false, 'message' => $message], $statusCode);
 }
 
-
-
 /**
  * Format success message/data into json success response.
  *
@@ -130,7 +128,6 @@ function getDateHtml(string $dateTimeString = null)
     }
 }
 
-
 function getExpiryLabel($expiryDate, $badge = 'label')
 {
     if ($expiryDate < (new Carbon())->toDateTimeString()) {
@@ -169,8 +166,6 @@ function getOrderLink($orderId, $url = 'orders')
 
     return $link;
 }
-
-
 
 function getStatusLabel($status, $badge = 'label')
 {

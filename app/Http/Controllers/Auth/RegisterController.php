@@ -50,7 +50,7 @@ class RegisterController extends Controller
     {
         try {
             $location = getLocation();
-            $state_code = $location['iso_code'] . "-" . $location['state'];
+            $state_code = $location['iso_code'].'-'.$location['state'];
             $state = CartController::getStateByCode($state_code);
             $user->state = $state['id'];
             $password = \Hash::make($request->input('password'));
@@ -59,13 +59,13 @@ class RegisterController extends Controller
             $user->currency = $this->getUserCurrency($userCountry);
             $user->currency_symbol = $this->getUserCurrencySymbol($userCountry);
             $user->password = $password;
-            $user->town=$location['city'];
-            $user->profile_pic="";
-            $user->active=0;
-            $user->mobile_verified=0;
+            $user->town = $location['city'];
+            $user->profile_pic = '';
+            $user->active = 0;
+            $user->mobile_verified = 0;
             $user->mobile = ltrim($request->input('mobile'), '0');
             $user->role = 'user';
-            $user->first_name = strip_tags($request->input('first_name'));;
+            $user->first_name = strip_tags($request->input('first_name'));
             $user->last_name = strip_tags($request->input('last_name'));
             $user->company = strip_tags($request->input('company'));
             $user->email = strip_tags($request->input('email'));
@@ -78,12 +78,13 @@ class RegisterController extends Controller
             $emailMobileStatusResponse = $this->getEmailMobileStatusResponse($user);
 
             $user->save();
-            activity()->log('User <strong>' . $user->first_name. ' '.$user->last_name.  '</strong> was created');
+            activity()->log('User <strong>'.$user->first_name.' '.$user->last_name.'</strong> was created');
 
             return response()->json($emailMobileStatusResponse);
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
             $result = [$ex->getMessage()];
+
             return response()->json($result);
         }
     }
@@ -91,21 +92,22 @@ class RegisterController extends Controller
     protected function getEmailMobileStatusResponse($user)
     {
         $emailMobileSetting = StatusSetting::select('emailverification_status', 'msg91_status')->first();
-        if ($emailMobileSetting->emailverification_status == 0 && $emailMobileSetting->msg91_status ==1) {
-            $user->mobile_verified=0;
-            $user->active=1;
+        if ($emailMobileSetting->emailverification_status == 0 && $emailMobileSetting->msg91_status == 1) {
+            $user->mobile_verified = 0;
+            $user->active = 1;
             $response = ['type' => 'success', 'user_id' => $user->id, 'message' => 'Your Submission has been received successfully. Verify your Mobile to log into the Website.'];
-        } elseif ($emailMobileSetting->emailverification_status ==1 && $emailMobileSetting->msg91_status ==0) {
-            $user->mobile_verified=1;
-            $user->active=0;
+        } elseif ($emailMobileSetting->emailverification_status == 1 && $emailMobileSetting->msg91_status == 0) {
+            $user->mobile_verified = 1;
+            $user->active = 0;
             $response = ['type' => 'success', 'user_id' => $user->id, 'message' => 'Your Submission has been received successfully. Verify your Email to log into the Website.'];
-        } elseif ($emailMobileSetting->emailverification_status ==0 && $emailMobileSetting->msg91_status ==0) {
-            $user->mobile_verified=1;
-            $user->active=1;
+        } elseif ($emailMobileSetting->emailverification_status == 0 && $emailMobileSetting->msg91_status == 0) {
+            $user->mobile_verified = 1;
+            $user->active = 1;
             $response = ['type' => 'success', 'user_id' => $user->id, 'message' => 'Your have been Registered Successfully.'];
         } else {
             $response = ['type' => 'success', 'user_id' => $user->id, 'message' => 'Your Submission has been received successfully. Verify your Email and Mobile to log into the Website.'];
         }
+
         return $response;
     }
 
@@ -115,8 +117,8 @@ class RegisterController extends Controller
         if ($userCountry->currency->status) {
             return $userCountry->currency->code;
         }
-        return $currency;
 
+        return $currency;
     }
 
     protected function getUserCurrencySymbol($userCountry)
@@ -125,6 +127,7 @@ class RegisterController extends Controller
         if ($userCountry->currency->status) {
             return $userCountry->currency->symbol;
         }
+
         return $currency_symbol;
     }
 

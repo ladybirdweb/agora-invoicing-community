@@ -107,6 +107,17 @@ return [
     'cipher' => 'AES-128-CBC',
 
     /*
+      |---------------------------------------------------------------------------------
+      | Bugsnag error reporting
+      |-----------------------------------------------------------------------------------
+      |Accepts true or false as a value. It decides whether to send the error
+      |to AGORA developers  when any exception/error occurs or not. True value of this variable will
+      |allow application to send error reports to AGORA team's bugsnag log.
+     */
+    'bugsnag_reporting' => env('APP_BUGSNAG', true),
+    /*
+
+    /*
     |--------------------------------------------------------------------------
     | Logging Configuration
     |--------------------------------------------------------------------------

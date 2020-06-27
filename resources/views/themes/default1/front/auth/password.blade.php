@@ -1,6 +1,6 @@
 @extends('themes.default1.layouts.front.master')
 @section('title')
-Forgot Paswword| Faveo Helpdesk
+Forgot Paswword | Faveo Helpdesk
 @stop
 @section('page-heading')
  Forgot Password? Reset it Now!

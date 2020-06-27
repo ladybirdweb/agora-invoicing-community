@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use Bugsnag;
 use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
@@ -35,7 +36,25 @@ class Handler extends ExceptionHandler
     public function report(Exception $exception)
     {
         parent::report($exception);
+
+        // Send unhandled exceptions to bugsnag
+        $this->reportToBugsnag($exception);
     }
+
+    /**
+     * Report to Bugsnag
+     *
+     * @param Exception $exception Exception instance
+     * @return void
+     */
+    protected function reportToBugsnag(Exception $exception)
+    {
+        // Check bugsnag reporting is active
+        if (config('app.bugsnag_reporting')) {
+            Bugsnag::notifyException($exception);
+        }
+    }
+
 
     /**
      * Render an exception into an HTTP response.

@@ -45,7 +45,7 @@ class ForgotPasswordController extends Controller
      */
     public function sendResetLinkEmail(Request $request)
     {
-        try{
+        try {
             $this->validate($request, ['email' => 'required|email|exists:users,email']);
             $email = $request->email;
             $token = str_random(40);
@@ -61,7 +61,7 @@ class ForgotPasswordController extends Controller
 
             $user = new \App\User();
             $user = $user->where('email', $email)->first();
-            if (!$user) {
+            if (! $user) {
                 return redirect()->back()->with('fails', 'Invalid Email');
             }
             //check in the settings
@@ -78,9 +78,8 @@ class ForgotPasswordController extends Controller
             $contactUs = $setting->website;
             $subject = $template->name;
             $data = $template->data;
-            $replace = ['name' => $user->first_name . ' ' . $user->last_name, 'url' => $url,'contact_us'=>$contactUs];
+            $replace = ['name' => $user->first_name.' '.$user->last_name, 'url' => $url, 'contact_us'=>$contactUs];
             $type = '';
-
 
             if ($template) {
                 $type_id = $template->type;
@@ -89,17 +88,16 @@ class ForgotPasswordController extends Controller
             }
             $templateController = new \App\Http\Controllers\Common\TemplateController();
             $mail = $templateController->mailing($from, $to, $data, $subject, $replace, $type);
-            $response = ['type' => 'success',   'message' =>'Reset instructions have been mailed to ' . $to .'
+            $response = ['type' => 'success',   'message' =>'Reset instructions have been mailed to '.$to.'
         .Be sure to check your Junk folder if you do not see an email from us in your Inbox within a few minutes.'];
 
             return response()->json($response);
-        }
-        catch (\Exception $ex) {
+        } catch (\Exception $ex) {
             $result = [$ex->getMessage()];
             $errors = ['If you are registered with the entered email, reset instructions have been mailed to you
         .Be sure to check your Junk folder if you do not see an email from us in your Inbox within a few minutes.'];
-            return response()->json(compact('result','errors'), 500);
-        }
 
+            return response()->json(compact('result', 'errors'), 500);
+        }
     }
 }

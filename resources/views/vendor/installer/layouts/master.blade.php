@@ -29,9 +29,9 @@
                         <i class="step__icon fa fa-server" style="background-color: #34a0db;" aria-hidden="true"></i>
                     </li>
                     <li class="step__divider"></li>
-                    <li class="step__item {{ isActive('AgoraInvoicingInstaller::environment')}} {{ isActive('LaravelInstaller::environmentWizard')}} {{ isActive('LaravelInstaller::environmentClassic')}}">
+                    <li class="step__item {{ isActive('AgoraInstaller::environment')}} {{ isActive('AgoraInstaller::environmentWizard')}} {{ isActive('AgoraInstaller::environmentClassic')}}">
                         @if(Request::is('install/environment') || Request::is('install/environment/wizard') || Request::is('install/environment/classic') )
-                            <a href="{{ route('LaravelInstaller::environment') }}">
+                            <a href="{{ route('AgoraInstaller::environment') }}">
                                 <i class="step__icon fa fa-cog" style="background-color: #34a0db;" aria-hidden="true"></i>
                             </a>
                         @else
@@ -39,9 +39,9 @@
                         @endif
                     </li>
                     <li class="step__divider"></li>
-                    <li class="step__item {{ isActive('AgoraInvoicingInstaller::permissions') }}">
+                    <li class="step__item {{ isActive('AgoraInstaller::permissions') }}">
                         @if(Request::is('install/permissions') || Request::is('install/environment') || Request::is('install/environment/wizard') || Request::is('install/environment/classic') )
-                            <a href="{{ route('LaravelInstaller::permissions') }}">
+                            <a href="{{ route('AgoraInstaller::permissions') }}">
                                 <i class="step__icon fa fa-key" style="background-color: #34a0db;" aria-hidden="true"></i>
                             </a>
                         @else
@@ -49,19 +49,11 @@
                         @endif
                     </li>
                     <li class="step__divider"></li>
-                    <li class="step__item {{ isActive('AgoraInvoicingInstaller::requirements') }}">
-                        @if(Request::is('install') || Request::is('install/requirements') || Request::is('install/permissions') || Request::is('install/environment') || Request::is('install/environment/wizard') || Request::is('install/environment/classic') )
-                            <a href="{{ route('LaravelInstaller::requirements') }}">
-                                <i class="step__icon fa fa-list" style="background-color: #34a0db;" aria-hidden="true"></i>
-                            </a>
-                        @else
-                            <i class="step__icon fa fa-list" aria-hidden="true"></i>
-                        @endif
-                    </li>
+                  
                     <li class="step__divider"></li>
-                    <li class="step__item {{ isActive('AgoraInvoicingInstaller::welcome') }}">
+                    <li class="step__item {{ isActive('AgoraInstaller::welcome') }}">
                         @if(Request::is('install') || Request::is('install/requirements') || Request::is('install/permissions') || Request::is('install/environment') || Request::is('install/environment/wizard') || Request::is('install/environment/classic') )
-                            <a href="{{ route('LaravelInstaller::welcome') }}">
+                            <a href="{{ route('AgoraInstaller::welcome') }}">
                                 <i class="step__icon fa fa-home" style="background-color: #34a0db;" aria-hidden="true"></i>
                             </a>
                         @else

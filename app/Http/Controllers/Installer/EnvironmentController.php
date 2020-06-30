@@ -3,11 +3,10 @@
 namespace App\Http\Controllers\Installer;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Installer\Helpers\EnvironmentManager;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
-use App\Http\Controllers\Installer\Helpers\EnvironmentManager;
 use Validator;
-use Illuminate\Validation\Rule;
 
 class EnvironmentController extends Controller
 {
@@ -23,7 +22,6 @@ class EnvironmentController extends Controller
     {
         $this->EnvironmentManager = $environmentManager;
     }
-
 
     /**
      * Display the Environment menu page.
@@ -86,13 +84,14 @@ class EnvironmentController extends Controller
         $rules = config('installer.environment.form.rules');
         $messages = [
             'environment_custom.required_if' => trans('installer_messages.environment.wizard.form.name_required'),
-            'app_name.regex' => 'The app name should not contain spaces', 
+            'app_name.regex' => 'The app name should not contain spaces',
         ];
 
         $validator = Validator::make($request->all(), $rules, $messages);
 
         if ($validator->fails()) {
             $errors = $validator->errors();
+
             return redirect()->back()->withInput()->withErrors($errors);
             // return view('vendor.installer.environment-wizard', compact('errors'));
         }

@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers\Installer;
 
-use App\Http\Requests;
 use Illuminate\Routing\Controller;
 use RachidLaasri\LaravelInstaller\Helpers\PermissionsChecker;
 
 class PermissionsController extends Controller
 {
-
     /**
      * @var PermissionsChecker
      */

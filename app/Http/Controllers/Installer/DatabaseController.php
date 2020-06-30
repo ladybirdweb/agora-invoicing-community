@@ -30,12 +30,11 @@ class DatabaseController extends Controller
         try {
             $response = $this->databaseManager->migrateAndSeed();
 
-        return redirect()->route('AgoraInstaller::final')
+            return redirect()->route('AgoraInstaller::final')
                          ->with(['message' => $response]);
-                     } catch (\Exception $ex) {
-                          return redirect()->route('AgoraInstaller::environmentWizard')
+        } catch (\Exception $ex) {
+            return redirect()->route('AgoraInstaller::environmentWizard')
                          ->with(['fails' =>$ex->getMessage()]);
-                     }
-        
+        }
     }
 }

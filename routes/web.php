@@ -24,6 +24,58 @@
 
         // Route::match(['get', 'post'], 'home', 'Front\CartController@productList');
         // VisitStats::routes();
+        Route::group(['prefix' => 'install','as' => 'AgoraInstaller::','middleware' => ['isInstalled']], function() {
+
+            Route::get('/', [
+            'as' => 'welcome',
+            'uses' => 'Installer\WelcomeController@welcome'
+            ]);
+            // Route::get('/', 'Installer\WelcomeController@index')->name('install');
+
+            Route::get('requirements', [
+            'as' => 'requirements',
+            'uses' => 'Installer\RequirementsController@requirements'
+            ]);
+
+            Route::get('permissions', [
+            'as' => 'permissions',
+            'uses' => 'Installer\PermissionsController@permissions'
+            ]);
+
+            Route::get('environment', [
+            'as' => 'environment',
+            'uses' => 'Installer\EnvironmentController@environmentMenu'
+            ]);
+
+            Route::get('environment/wizard', [
+            'as' => 'environmentWizard',
+            'uses' => 'Installer\EnvironmentController@environmentWizard'
+            ]);
+
+            Route::post('environment/saveWizard', [
+            'as' => 'environmentSaveWizard',
+            'uses' => 'Installer\EnvironmentController@saveWizard'
+            ]);
+
+            Route::get('database', [
+            'as' => 'database',
+            'uses' => 'Installer\DatabaseController@database'
+            ]);
+
+            Route::get('final', [
+            'as' => 'final',
+            'uses' => 'Installer\FinalController@finish'
+            ]);
+
+
+        });
+
+
+
+
+
+
+        Route::group(['middleware' => ['install']], function () {
         Route::get('pricing', 'Front\CartController@cart')->name('pricing');
         Route::get('group/{templateid}/{groupid}/', 'Front\PageController@pageTemplates');
         Route::post('cart/remove', 'Front\CartController@cartRemove');
@@ -447,6 +499,7 @@
 
             return redirect('auth/login');
         });
+    });
          /*
          * Faveo APIs
          */

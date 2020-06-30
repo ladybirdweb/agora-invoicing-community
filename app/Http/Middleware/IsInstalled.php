@@ -14,19 +14,25 @@ class IsInstalled
      *
      * @return mixed
      */
-    public function handle($request, Closure $next)
-    {
-        if (! isInstall()) {
-            return $next($request);
-        } else {
-            if ($request->isJson()) {
-                $url = url('/');
-                $result = ['fails' => 'already installed', 'api' => $url];
+   public function handle($request, Closure $next)
+   {
+   	   $env = base_path('.env');
+       if (! $this->alreadyInstalled()) {
+           return $next($request);
+       } else {
+       	   if ($request->isJson()) {
+               $url = url('/');
+               $result = ['fails' => 'already installed', 'api' => $url];
 
-                return response()->json(compact('result'));
-            } else {
-                return redirect('/');
-            }
-        }
-    }
+               return response()->json(compact('result'));
+           } else {
+               return redirect('/');
+           }
+       }
+   }
+
+   public function alreadyInstalled()
+   {
+	   return file_exists(storage_path('installed'));
+   }
 }

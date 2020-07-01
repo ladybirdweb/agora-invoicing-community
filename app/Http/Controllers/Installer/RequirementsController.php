@@ -4,8 +4,9 @@ namespace App\Http\Controllers\Installer;
 
 use Illuminate\Routing\Controller;
 use RachidLaasri\LaravelInstaller\Helpers\RequirementsChecker;
+use RachidLaasri\LaravelInstaller\Controllers\RequirementsController as BaseRequirementsController;
 
-class RequirementsController extends Controller
+class RequirementsController extends BaseRequirementsController
 {
     /**
      * @var RequirementsChecker

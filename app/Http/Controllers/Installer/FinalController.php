@@ -6,8 +6,9 @@ use Illuminate\Routing\Controller;
 use RachidLaasri\LaravelInstaller\Helpers\EnvironmentManager;
 use RachidLaasri\LaravelInstaller\Helpers\FinalInstallManager;
 use RachidLaasri\LaravelInstaller\Helpers\InstalledFileManager;
+use RachidLaasri\LaravelInstaller\Controllers\FinalController as BaseFinalController;
 
-class FinalController extends Controller
+class FinalController extends BaseFinalController
 {
     /**
      * Update installed file and display finished view.

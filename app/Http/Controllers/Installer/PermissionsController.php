@@ -4,8 +4,9 @@ namespace App\Http\Controllers\Installer;
 
 use Illuminate\Routing\Controller;
 use RachidLaasri\LaravelInstaller\Helpers\PermissionsChecker;
+use RachidLaasri\LaravelInstaller\Controllers\PermissionsController as BasePermissionsController;
 
-class PermissionsController extends Controller
+class PermissionsController extends BasePermissionsController
 {
     /**
      * @var PermissionsChecker

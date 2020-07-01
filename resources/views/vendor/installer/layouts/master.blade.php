@@ -49,7 +49,15 @@
                         @endif
                     </li>
                     <li class="step__divider"></li>
-                  
+                    <li class="step__item {{ isActive('AgoraInstaller::requirements') }}">
+                        @if(Request::is('install') || Request::is('install/requirements') || Request::is('install/permissions') || Request::is('install/environment') || Request::is('install/environment/wizard') || Request::is('install/environment/classic') )
+                            <a href="{{ route('AgoraInstaller::requirements') }}">
+                                <i class="step__icon fa fa-list" aria-hidden="true"></i>
+                            </a>
+                        @else
+                            <i class="step__icon fa fa-list" aria-hidden="true"></i>
+                        @endif
+                    </li>
                     <li class="step__divider"></li>
                     <li class="step__item {{ isActive('AgoraInstaller::welcome') }}">
                         @if(Request::is('install') || Request::is('install/requirements') || Request::is('install/permissions') || Request::is('install/environment') || Request::is('install/environment/wizard') || Request::is('install/environment/classic') )

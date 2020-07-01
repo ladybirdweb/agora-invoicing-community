@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers\Installer;
 
-use Illuminate\Routing\Controller;
+use RachidLaasri\LaravelInstaller\Controllers\FinalController as BaseFinalController;
 use RachidLaasri\LaravelInstaller\Helpers\EnvironmentManager;
 use RachidLaasri\LaravelInstaller\Helpers\FinalInstallManager;
 use RachidLaasri\LaravelInstaller\Helpers\InstalledFileManager;
-use RachidLaasri\LaravelInstaller\Controllers\FinalController as BaseFinalController;
 
 class FinalController extends BaseFinalController
 {

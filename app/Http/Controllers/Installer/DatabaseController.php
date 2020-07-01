@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers\Installer;
 
-use Illuminate\Routing\Controller;
-use RachidLaasri\LaravelInstaller\Helpers\DatabaseManager;
 use RachidLaasri\LaravelInstaller\Controllers\DatabaseController as BaseDatabaseController;
+use RachidLaasri\LaravelInstaller\Helpers\DatabaseManager;
 
 class DatabaseController extends BaseDatabaseController
 {

@@ -245,7 +245,7 @@ $json = json_encode($data);
                                     {{$item->quantity}}
                                 </td>
                                 <td class="product-total">
-                                    <span class="amount">{{currency_format(intval($item->regular_price),$code = $currency)}}</span>
+                                    <span class="amount">{{currencyFormat(intval($item->regular_price),$code = $currency)}}</span>
                                 </td>
                             </tr>
                             @empty 
@@ -301,7 +301,7 @@ $json = json_encode($data);
                         <strong>Cart Subtotal</strong>
                     </th>
                     <td>
-                        <span class="amount">{{currency_format($subtotal,$code = $currency)}}</span>
+                        <span class="amount">{{currencyFormat($subtotal,$code = $currency)}}</span>
                     </td>
                 </tr>
                 @foreach($content as $attributes)
@@ -324,8 +324,8 @@ $json = json_encode($data);
                         $cgst =  \App\Http\Controllers\Front\CartController::taxValue($tax_attribute[0]['c_gst'],$subtotal);
                         $sgst = \App\Http\Controllers\Front\CartController::taxValue($tax_attribute[0]['s_gst'],$subtotal);
                         ?>
-                        {{currency_format( $cgst,$code = $currency)}} <br/>
-                        {{currency_format($sgst,$code = $currency)}}<br/>
+                        {{currencyFormat( $cgst,$code = $currency)}} <br/>
+                        {{currencyFormat($sgst,$code = $currency)}}<br/>
                        
                        
                     </td>
@@ -345,7 +345,7 @@ $json = json_encode($data);
                         <?php
                         $igst = \App\Http\Controllers\Front\CartController::taxValue($tax_attribute[0]['i_gst'],$subtotal);
                         ?>
-                        {{currency_format( $igst,$code = $currency)}}  <br/>
+                        {{currencyFormat( $igst,$code = $currency)}}  <br/>
                       
                     </td>
 
@@ -366,8 +366,8 @@ $json = json_encode($data);
                         $cgst = \App\Http\Controllers\Front\CartController::taxValue($tax_attribute[0]['c_gst'],$subtotal);
                         $utgst = \App\Http\Controllers\Front\CartController::taxValue($tax_attribute[0]['ut_gst'],$subtotal);
                         ?>
-                         {{currency_format( $cgst,$code = $currency)}}  <br/>
-                          {{currency_format( $utgst,$code = $currency)}}  <br/>
+                         {{currencyFormat( $cgst,$code = $currency)}}  <br/>
+                          {{currencyFormat( $utgst,$code = $currency)}}  <br/>
                        
                     </td>
 
@@ -387,7 +387,7 @@ $json = json_encode($data);
                         <?php
                         $value = \App\Http\Controllers\Front\CartController::taxValue($tax_attribute[0]['rate'],$subtotal);
                         ?>
-                         {{currency_format( $value,$code = $currency)}} <br/>
+                         {{currencyFormat( $value,$code = $currency)}} <br/>
                          
                        
                     </td>
@@ -405,7 +405,7 @@ $json = json_encode($data);
                 <?php
                  $value = \App\Http\Controllers\Front\CartController::taxValue($tax_attribute[0]['rate'],Cart::getSubTotalWithoutConditions())
                  ?>
-                        {{currency_format( $value,$code = $currency)}} <br/>
+                        {{currencyFormat( $value,$code = $currency)}} <br/>
                          
                        
                     </td>
@@ -424,7 +424,7 @@ $json = json_encode($data);
                  <?php
                  $value = \App\Http\Controllers\Front\CartController::taxValue($tax_attribute[0]['rate'],$subtotal);
                  ?>
-                        {{currency_format( $value,$code = $currency)}} <br/>
+                        {{currencyFormat( $value,$code = $currency)}} <br/>
                          
                        
                     </td>
@@ -451,7 +451,7 @@ $json = json_encode($data);
                  <?php
                  $value = \App\Http\Controllers\Front\CartController::taxValue($item->tax_percentage,$item->regular_price);
                  ?>
-                       {{currency_format($value,$code = $currency)}} <br/>
+                       {{currencyFormat($value,$code = $currency)}} <br/>
                          
                        
                     </td>
@@ -472,7 +472,7 @@ $json = json_encode($data);
                     <td>
 
 
-                        <strong><span class="amount">{{currency_format( $invoice->grand_total,$code = $currency)}} </span></strong>
+                        <strong><span class="amount">{{currencyFormat( $invoice->grand_total,$code = $currency)}} </span></strong>
 
 
                     </td>

@@ -11,20 +11,19 @@
 |
 */
 
-// Route::get('/', function () {
-//  dd('ok');
-//     return view('welcome');
-// });
-// Route::group(['middleware' => ['web']], function () {
-        // Route::get('/', 'HomeController@index');
 
-        /*
-         * Front end
+
+        // VisitStats::routes();
+
+
+
+         /*
+         * Installer Routes
          */
 
-        // Route::match(['get', 'post'], 'home', 'Front\CartController@productList');
-        // VisitStats::routes();
-        Route::group(['prefix' => 'install', 'as' => 'AgoraInstaller::', 'middleware' => ['isInstalled']], function () {
+        Route::group(['prefix' => 'install','as' => 'AgoraInstaller::','middleware' => ['isInstalled']], function() {
+
+
             Route::get('/', [
                 'as' => 'welcome',
                 'uses' => 'Installer\WelcomeController@welcome',

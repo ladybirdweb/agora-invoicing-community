@@ -149,7 +149,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                             return getDateHtml($model->created_at);
                         })
                          ->addColumn('grand_total', function ($model) {
-                             return currency_format($model->grand_total, $code = $model->currency);
+                             return currencyFormat($model->grand_total, $code = $model->currency);
                          })
                           ->addColumn('status', function ($model) {
                               return getStatusLabel($model->status);

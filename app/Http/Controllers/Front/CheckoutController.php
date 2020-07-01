@@ -119,6 +119,7 @@ class CheckoutController extends InfoController
 
             return view('themes.default1.front.checkout', compact('content', 'attributes'));
         } catch (\Exception $ex) {
+            dd($ex);
             app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
 

@@ -93,7 +93,7 @@ class ClientController extends BaseClientController
                                 return getDateHtml($model->created_at);
                             })
                             ->addColumn('total', function ($model) {
-                                return  currency_format($model->grand_total, $code = \Auth::user()->currency);
+                                return  currencyFormat($model->grand_total, $code = \Auth::user()->currency);
                             })
                              ->addColumn('status', function ($model) {
                                  return  getStatusLabel($model->status, 'badge');
@@ -449,7 +449,7 @@ class ClientController extends BaseClientController
                             })
                             ->addColumn('amount', function ($model) {
                                 $currency = $model->invoice()->first()->currency;
-                                $total = currency_format($model->amount, $code = $currency);
+                                $total = currencyFormat($model->amount, $code = $currency);
 
                                 return $total;
                             })

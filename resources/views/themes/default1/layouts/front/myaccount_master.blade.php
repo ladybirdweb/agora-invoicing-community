@@ -264,7 +264,7 @@ if($script){
                                                                                   $price = $controller->rounding($item->getPriceSumWithConditions());
 
                                                                                   ?>
-                                                                                    <a>{{$item->name}}<br><span class="amount"><strong>{{currency_format($price,$code = $currency['currency'])}}</strong></span></a>
+                                                                                    <a>{{$item->name}}<br><span class="amount"><strong>{{currencyFormat($price,$code = $currency['currency'])}}</strong></span></a>
 
                                                                                 </td>
 

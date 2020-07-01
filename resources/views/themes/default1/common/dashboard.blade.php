@@ -17,9 +17,9 @@ Dashboard
             <div class="inner">
               <h4>Total Sales</h4>
               @if(($allowedCurrencies2) != null)
-              <span>{{$allowedCurrencies2}}: &nbsp;  {{currency_format($totalSalesCurrency2,$code=$allowedCurrencies2)}}</span><br/>
+              <span>{{$allowedCurrencies2}}: &nbsp;  {{currencyFormat($totalSalesCurrency2,$code=$allowedCurrencies2)}}</span><br/>
               @endif
-               <span>{{$allowedCurrencies1}}: &nbsp;  {{currency_format($totalSalesCurrency1,$code=$allowedCurrencies1)}} </span>
+               <span>{{$allowedCurrencies1}}: &nbsp;  {{currencyFormat($totalSalesCurrency1,$code=$allowedCurrencies1)}} </span>
             </div>
 
             <div class="icon">
@@ -39,9 +39,9 @@ Dashboard
               
               ?>
               @if(($allowedCurrencies2) != null)
-              <span>{{$allowedCurrencies2}}:&nbsp;  {{currency_format($yearlySalesCurrency2,$code=$allowedCurrencies2)}}   </span><br/>
+              <span>{{$allowedCurrencies2}}:&nbsp;  {{currencyFormat($yearlySalesCurrency2,$code=$allowedCurrencies2)}}   </span><br/>
               @endif
-               <span>{{$allowedCurrencies1}}:&nbsp; {{currency_format($yearlySalesCurrency1,$code=$allowedCurrencies1)}} </span>
+               <span>{{$allowedCurrencies1}}:&nbsp; {{currencyFormat($yearlySalesCurrency1,$code=$allowedCurrencies1)}} </span>
             </div>
             <div class="icon">
               <i class="ion ion-stats-bars"></i>
@@ -60,9 +60,9 @@ Dashboard
               $endMonthDate = date('Y-m-t');
                ?>
                @if(($allowedCurrencies2) != null)
-              <span>{{$allowedCurrencies2}}:&nbsp; {{currency_format($monthlySalesCurrency2,$code=$allowedCurrencies2)}}</span><br/>
+              <span>{{$allowedCurrencies2}}:&nbsp; {{currencyFormat($monthlySalesCurrency2,$code=$allowedCurrencies2)}}</span><br/>
               @endif
-              <span>{{$allowedCurrencies1}}:&nbsp; {{currency_format($monthlySalesCurrency1,$code=$allowedCurrencies1)}}</span>
+              <span>{{$allowedCurrencies1}}:&nbsp; {{currencyFormat($monthlySalesCurrency1,$code=$allowedCurrencies1)}}</span>
              
             </div>
             <div class="icon">
@@ -78,9 +78,9 @@ Dashboard
             <div class="inner">
               <h4>Pending Payments</h4>
               @if(($allowedCurrencies2) != null)
-              <span>{{$allowedCurrencies2}}: &nbsp;  {{currency_format($pendingPaymentCurrency2,$code=$allowedCurrencies2)}}</span><br/>
+              <span>{{$allowedCurrencies2}}: &nbsp;  {{currencyFormat($pendingPaymentCurrency2,$code=$allowedCurrencies2)}}</span><br/>
               @endif
-               <span>{{$allowedCurrencies1}}: &nbsp; {{currency_format($pendingPaymentCurrency1,$code=$allowedCurrencies1)}} </span>
+               <span>{{$allowedCurrencies1}}: &nbsp; {{currencyFormat($pendingPaymentCurrency1,$code=$allowedCurrencies1)}} </span>
             </div>
             <div class="icon">
              <i class="ion ion-ios-pricetag-outline"></i>

@@ -11,24 +11,17 @@
 |
 */
 
-
-
         // VisitStats::routes();
-
-
 
          /*
          * Installer Routes
          */
 
-        Route::group(['prefix' => 'install','as' => 'AgoraInstaller::','middleware' => ['isInstalled']], function() {
-
-
+        Route::group(['prefix' => 'install', 'as' => 'AgoraInstaller::', 'middleware' => ['isInstalled']], function () {
             Route::get('/', [
                 'as' => 'welcome',
                 'uses' => 'Installer\WelcomeController@welcome',
             ]);
-            // Route::get('/', 'Installer\WelcomeController@index')->name('install');
 
             Route::get('requirements', [
                 'as' => 'requirements',

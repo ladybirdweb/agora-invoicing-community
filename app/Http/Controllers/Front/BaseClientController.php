@@ -188,7 +188,7 @@ class BaseClientController extends Controller
                 return getDateHtml($model->created_at);
             })
             ->addColumn('total', function ($model) {
-                return currency_format($model->grand_total, $code = $model->currency);
+                return currencyFormat($model->grand_total, $code = $model->currency);
             })
             ->addColumn('status', function ($model) {
                 if (\Auth::user()->role == 'admin') {

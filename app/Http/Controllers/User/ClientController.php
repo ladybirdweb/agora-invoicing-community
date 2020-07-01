@@ -185,9 +185,8 @@ class ClientController extends AdvanceSearchController
             } else {
                 $mobile_code = str_replace('+', '', $request->input('mobile_code'));
             }
-            $cont = new \App\Http\Controllers\Front\PageController();
             $currency_symbol = Currency::where('code', $request->input('currency'))->pluck('symbol')->first();
-            $location = $cont->getLocation();
+            $location = getLocation();
             $user->user_name = $request->input('user_name');
             $user->first_name = $request->input('first_name');
             $user->last_name = $request->input('last_name');

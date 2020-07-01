@@ -152,7 +152,7 @@
                                                     <tr>
                                                           
                                                     <th>Discount</th>
-                                                    <td>{{currency_format($invoice->discount,$code=$symbol)}}</td>
+                                                    <td>{{currencyFormat($invoice->discount,$code=$symbol)}}</td>
                                                     </tr>
                                                      @endif
                                                     <?php

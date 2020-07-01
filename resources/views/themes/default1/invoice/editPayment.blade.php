@@ -151,10 +151,10 @@ Edit Payment
                                                 <a href="{{url('invoices/show?invoiceid='.$invoice->id)}}">{{$invoice->number}}</a>
                                             </td>
                                             <td class="invoice-total"> 
-                                               {{currency_format($invoice->grand_total,$code = $currency)}}
+                                               {{currencyFormat($invoice->grand_total,$code = $currency)}}
                                             </td>
                                             <td id="pendingamt">
-                                                  <input type="text" class="pendingamt" name="pending" value ="{{currency_format($pendingAmount,$code = $currency)}}" id="pending_{{$invoice->id}}" disabled="disabled">
+                                                  <input type="text" class="pendingamt" name="pending" value ="{{currencyFormat($pendingAmount,$code = $currency)}}" id="pending_{{$invoice->id}}" disabled="disabled">
                                                
                                             </td>
                                             <td class="changeamt">

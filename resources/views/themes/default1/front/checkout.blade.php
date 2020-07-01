@@ -102,7 +102,7 @@ $sum = 0;
 
                                 <td class="product-subtotal">
                                     <span class="amount">
-                                     {{currency_format($item->getPriceSum(),$code = $currency)}}
+                                     {{currencyFormat($item->getPriceSum(),$code = $currency)}}
                                 </td>
                             </tr>
                             @empty
@@ -193,7 +193,7 @@ $sum = 0;
 
                         <span class="amount">
 
-                                {{currency_format(Cart::getSubTotalWithoutConditions(),$code = $currency)}}
+                                {{currencyFormat(Cart::getSubTotalWithoutConditions(),$code = $currency)}}
 
                     </td>
                 </tr>
@@ -212,8 +212,8 @@ $sum = 0;
                      $cgst = \App\Http\Controllers\Front\CartController::taxValue($attribute['c_gst'],Cart::getSubTotalWithoutConditions());
                      $sgst = \App\Http\Controllers\Front\CartController::taxValue($attribute['s_gst'],Cart::getSubTotalWithoutConditions());
                      ?>
-                       {{currency_format($cgst,$code = $currency)}}<br/>
-                       {{currency_format($sgst,$code = $currency)}} <br/>
+                       {{currencyFormat($cgst,$code = $currency)}}<br/>
+                       {{currencyFormat($sgst,$code = $currency)}} <br/>
 
 
 
@@ -235,7 +235,7 @@ $sum = 0;
                      <?php
                     $igst = \App\Http\Controllers\Front\CartController::taxValue($attribute['i_gst'],Cart::getSubTotalWithoutConditions());
                      ?>
-                       {{currency_format($igst,$code = $currency)}}
+                       {{currencyFormat($igst,$code = $currency)}}
 
 
                     </td>
@@ -257,8 +257,8 @@ $sum = 0;
                         $cgst = \App\Http\Controllers\Front\CartController::taxValue($attribute['c_gst'],Cart::getSubTotalWithoutConditions());
                         $utgst = \App\Http\Controllers\Front\CartController::taxValue($attribute['ut_gst'],Cart::getSubTotalWithoutConditions())
                         ?>
-                         {{currency_format($cgst,$code = $currency)}} <br/>
-                         {{currency_format($utgst,$code = $currency)}} <br/>
+                         {{currencyFormat($cgst,$code = $currency)}} <br/>
+                         {{currencyFormat($utgst,$code = $currency)}} <br/>
 
                     </td>
 
@@ -277,7 +277,7 @@ $sum = 0;
                        <?php
                        $value = \App\Http\Controllers\Front\CartController::taxValue($attribute['rate'],Cart::getSubTotalWithoutConditions())
                        ?>
-                        {{currency_format($value,$code = $currency)}} <br/>
+                        {{currencyFormat($value,$code = $currency)}} <br/>
 
 
                     </td>
@@ -297,7 +297,7 @@ $sum = 0;
                      $value = \App\Http\Controllers\Front\CartController::taxValue($attribute['rate'],Cart::getSubTotalWithoutConditions())
                      ?>
 
-                        {{currency_format($value,$code = $currency)}} <br/>
+                        {{currencyFormat($value,$code = $currency)}} <br/>
 
 
                     </td>
@@ -317,7 +317,7 @@ $sum = 0;
                         $value = \App\Http\Controllers\Front\CartController::taxValue($attribute['rate'],Cart::getSubTotalWithoutConditions())
                         ?>
 
-                         {{currency_format($value,$code = $currency)}} <br/>
+                         {{currencyFormat($value,$code = $currency)}} <br/>
 
 
                     </td>
@@ -337,7 +337,7 @@ $sum = 0;
                                     $total = \App\Http\Controllers\Front\CartController::rounding(Cart::getTotal());
                                 ?>
                                   <div id="total-price" value={{$total}} hidden></div>
-                                  <div>{{currency_format($total,$code = $currency)}} </div>
+                                  <div>{{currencyFormat($total,$code = $currency)}} </div>
                             </span>
                         </strong>
 

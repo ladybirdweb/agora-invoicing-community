@@ -247,7 +247,7 @@ if($script){
                                                                                <?php
                                                                                 $total = \App\Http\Controllers\Front\CartController::rounding($item->getPriceSumWithConditions())
                                                                                 ?>
-                                                                                    <a>{{$item->name}}<br><span class="amount"><strong>{{currency_format($total,$code = $currency)}}</strong></span></a>
+                                                                                    <a>{{$item->name}}<br><span class="amount"><strong>{{currencyFormat($total,$code = $currency)}}</strong></span></a>
                                                                                 </td>
 
                                                                                 <td class="product-actions">

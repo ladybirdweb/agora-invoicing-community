@@ -36,7 +36,7 @@ class AdminOrderInvoiceController extends Controller
                              return getOrderLink($model->order_id);
                          })
                         ->addColumn('total', function ($model) use ($client) {
-                            return currency_format($model->grand_total, $code = $client->currency);
+                            return currencyFormat($model->grand_total, $code = $client->currency);
                         })
                          ->addColumn('paid', function ($model) use ($client) {
                              $payment = \App\Model\Order\Payment::where('invoice_id', $model->id)->select('amount')->get();
@@ -47,7 +47,7 @@ class AdminOrderInvoiceController extends Controller
                                  $sum = $sum + $payment[$i]->amount;
                              }
 
-                             return currency_format($sum, $code = $client->currency);
+                             return currencyFormat($sum, $code = $client->currency);
                          })
                          ->addColumn('balance', function ($model) use ($client) {
                              $payment = \App\Model\Order\Payment::where('invoice_id', $model->id)->select('amount')->get();
@@ -59,7 +59,7 @@ class AdminOrderInvoiceController extends Controller
                              }
                              $pendingAmount = ($model->grand_total) - ($sum);
 
-                             return currency_format($pendingAmount, $code = $client->currency);
+                             return currencyFormat($pendingAmount, $code = $client->currency);
                          })
                           ->addColumn('status', function ($model) {
                               return getStatusLabel($model->status);
@@ -148,9 +148,9 @@ class AdminOrderInvoiceController extends Controller
 
                          ->addColumn('total', function ($model) use ($client, $extraAmt) {
                              if ($model->invoice_id == 0) {
-                                 $amount = currency_format($extraAmt, $code = $client->currency);
+                                 $amount = currencyFormat($extraAmt, $code = $client->currency);
                              } else {
-                                 $amount = currency_format($model->amount, $code = $client->currency);
+                                 $amount = currencyFormat($model->amount, $code = $client->currency);
                              }
 
                              return $amount;

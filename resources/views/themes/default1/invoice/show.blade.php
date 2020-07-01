@@ -141,7 +141,7 @@ View Invoice
                          
                                         <td>{{$item->product_name}}</td>
                                         <td>{{$item->quantity}}</td>
-                                        <td>{{currency_format($item->regular_price,$code=$symbol)}}</td>
+                                        <td>{{currencyFormat($item->regular_price,$code=$symbol)}}</td>
                                         <td>
                                             <?php $taxes = explode(',', $item->tax_name); ?>
                                             <ul class="list-unstyled">
@@ -163,7 +163,7 @@ View Invoice
                                             </ul>
                                         </td>
                                      
-                                        <td> {{currency_format($item->subtotal,$code=$symbol)}}</td>
+                                        <td> {{currencyFormat($item->subtotal,$code=$symbol)}}</td>
                                     </tr>
                                     @endforeach
                                 </tbody>
@@ -200,7 +200,7 @@ View Invoice
                                  <table class="table  table-striped">
                                       @if($invoice->discount != null)
                                   <th>Discount</th>
-                                    <td>{{currency_format($invoice->discount,$code=$symbol)}}</td>
+                                    <td>{{currencyFormat($invoice->discount,$code=$symbol)}}</td>
                                 @endif
 
                                 @if($tax_name[0] !='null' && $tax_percentage[0] !=null)
@@ -221,8 +221,8 @@ View Invoice
                                 $cgst = \App\Http\Controllers\Front\CartController::taxValue($taxes['tax_attributes'][0]['c_gst'],$item->regular_price);
                                 $sgst = \App\Http\Controllers\Front\CartController::taxValue($taxes['tax_attributes'][0]['s_gst'],$item->regular_price);
                                 ?>
-                                {{currency_format($cgst,$code=$symbol)}} <br/>
-                                {{currency_format($sgst,$code=$symbol)}}<br/>
+                                {{currencyFormat($cgst,$code=$symbol)}} <br/>
+                                {{currencyFormat($sgst,$code=$symbol)}}<br/>
                              </td>
                               </tr>
                                     @endif
@@ -236,7 +236,7 @@ View Invoice
                                 <?php
                                 $igst =  \App\Http\Controllers\Front\CartController::taxValue($taxes['tax_attributes'][0]['i_gst'],$item->regular_price);
                                 ?>
-                                  {{currency_format($igst,$code=$symbol)}} <br/>
+                                  {{currencyFormat($igst,$code=$symbol)}} <br/>
                               
                              </td>
                          </tr>
@@ -254,8 +254,8 @@ View Invoice
                                 $utgst = \App\Http\Controllers\Front\CartController::taxValue($taxes['tax_attributes'][0]['ut_gst'],$item->regular_price);
                                 $cgst = App\Http\Controllers\Front\CartController::taxValue($taxes['tax_attributes'][0]['c_gst'],$item->regular_price)
                                     ?>
-                                {{currency_format($utgst,$code=$symbol)}} <br/>
-                                {{currency_format($cgst,$code=$symbol)}}
+                                {{currencyFormat($utgst,$code=$symbol)}} <br/>
+                                {{currencyFormat($cgst,$code=$symbol)}}
 
                              </td>
                          </tr>
@@ -271,14 +271,14 @@ View Invoice
                                             <?php
                                             $value = \App\Http\Controllers\Front\CartController::taxValue($tax_percentage[0],$item->regular_price)
                                             ?>
-                                             {{currency_format($value,$code=$symbol)}}
+                                             {{currencyFormat($value,$code=$symbol)}}
                                         </td>
 
                                     </tr>
                                     @endif
                                     @endif
                                     <th>Total:</th>
-                                    <td>{{currency_format($invoice->grand_total,$code=$symbol)}}</td>
+                                    <td>{{currencyFormat($invoice->grand_total,$code=$symbol)}}</td>
                                
                             </table>
                             </div>

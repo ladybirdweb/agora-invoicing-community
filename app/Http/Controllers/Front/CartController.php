@@ -161,8 +161,7 @@ class CartController extends BaseCartController
                 'target' => 'item',
                 'value'  => '0%',
             ]);
-            $cont = new \App\Http\Controllers\Front\PageController();
-            $location = $cont->getLocation();
+            $location = getLocation();
             $country = $this->findCountryByGeoip($location['iso_code']); //Get country by geopip
             $states = \App\Model\Common\State::pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
             $state_code = $location['iso_code'].'-'.$location['state'];
@@ -397,8 +396,7 @@ class CartController extends BaseCartController
             $currency = Setting::find(1)->default_currency;
             $currency_symbol = Setting::find(1)->default_symbol;
             if (! \Auth::user()) {//When user is not logged in
-                $cont = new \App\Http\Controllers\Front\PageController();
-                $location = $cont->getLocation();
+                $location = getLocation();
                 $country = self::findCountryByGeoip($location['iso_code']);
                 $userCountry = Country::where('country_code_char2', $country)->first();
                 $currencyStatus = $userCountry->currency->status;

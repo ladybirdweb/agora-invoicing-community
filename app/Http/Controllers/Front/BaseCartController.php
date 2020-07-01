@@ -407,8 +407,7 @@ class BaseCartController extends ExtendedBaseCartController
      */
     public function getStatuswhenNotLoggedin()
     {
-        $cont = new \App\Http\Controllers\Front\PageController();
-        $location = $cont->getLocation();
+        $location = getLocation();
         $country = self::findCountryByGeoip($location['iso_code']);
         $currencyStatus = $userCountry->currency->status;
 

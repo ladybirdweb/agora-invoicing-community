@@ -95,9 +95,9 @@ User Details
         <div class="padright">
             
             
-            <h6 class="rupee colorblack margintopzero"><span class="font18">Invoice Total </span><br> {{currency_format($invoiceSum,$code=$client->currency)}}</h6> 
-            <h6 class="rupee colorgreen" style="color:green;"><span class="font18">Paid </span><br> {{currency_format($amountReceived,$code=$client->currency)}}</h6> 
-            <h6 class="rupee colorred"><span class="font18">{{Lang::get('message.balance')}} </span><br>{{currency_format($pendingAmount,$code=$client->currency)}}</h6> 
+            <h6 class="rupee colorblack margintopzero"><span class="font18">Invoice Total </span><br> {{currencyFormat($invoiceSum,$code=$client->currency)}}</h6> 
+            <h6 class="rupee colorgreen" style="color:green;"><span class="font18">Paid </span><br> {{currencyFormat($amountReceived,$code=$client->currency)}}</h6> 
+            <h6 class="rupee colorred"><span class="font18">{{Lang::get('message.balance')}} </span><br>{{currencyFormat($pendingAmount,$code=$client->currency)}}</h6> 
            <!--   <h6 class="rupee colorred"><span class="font18">{{Lang::get('message.extra')}} </span><br>{{$client->currency_symbol }} {{$extraAmt}}</h6>  -->
           
         </div>

@@ -37,7 +37,7 @@
                     <?php 
                     $total = $invoiceItem->subtotal;
                     ?>
-                    Total:   <strong><span class="amount">{{currency_format($total,$code = $currency)}}
+                    Total:   <strong><span class="amount">{{currencyFormat($total,$code = $currency)}}
                 </span></strong>
                 </li>
 
@@ -75,7 +75,7 @@
             <?php 
             $invoiceTotal = $invoiceItem->regular_price;
             ?>
-        <span class="amount">{{currency_format($invoiceTotal,$code = $currency)}}</span>   
+        <span class="amount">{{currencyFormat($invoiceTotal,$code = $currency)}}</span>   
        </td>
 
             </tr>
@@ -95,7 +95,7 @@
                         <?php
                         $orderTotal = $order->price_override;
                         ?>
-                        <td><span class="amount">{{currency_format($orderTotal,$code = $currency)}}</span></td>
+                        <td><span class="amount">{{currencyFormat($orderTotal,$code = $currency)}}</span></td>
                     </tr>
         </tfoot>
     </table>

@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers\Installer;
 
-use App\Http\Controllers\Controller;
-use RachidLaasri\LaravelInstaller\Controllers\EnvironmentController as BaseEnvironmentController;
 use App\Http\Controllers\Installer\Helpers\EnvironmentManager;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
+use RachidLaasri\LaravelInstaller\Controllers\EnvironmentController as BaseEnvironmentController;
 use Validator;
 
 class EnvironmentController extends BaseEnvironmentController

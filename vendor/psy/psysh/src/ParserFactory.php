@@ -3,7 +3,7 @@
 /*
  * This file is part of Psy Shell.
  *
- * (c) 2012-2018 Justin Hileman
+ * (c) 2012-2020 Justin Hileman
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -44,7 +44,7 @@ class ParserFactory
      */
     public function hasKindsSupport()
     {
-        return \class_exists('PhpParser\ParserFactory');
+        return \class_exists(OriginalParserFactory::class);
     }
 
     /**
@@ -77,7 +77,7 @@ class ParserFactory
                 throw new \InvalidArgumentException('Unknown parser kind');
             }
 
-            $parser = $originalFactory->create(\constant('PhpParser\ParserFactory::' . $kind));
+            $parser = $originalFactory->create(\constant(OriginalParserFactory::class . '::' . $kind));
         } else {
             if ($kind !== null) {
                 throw new \InvalidArgumentException('Install PHP Parser v2.x to specify parser kind');

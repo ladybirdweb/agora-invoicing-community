@@ -1,6 +1,6 @@
-<?php
+<?php declare(strict_types=1);
 /*
- * This file is part of the php-code-coverage package.
+ * This file is part of phpunit/php-code-coverage.
  *
  * (c) Sebastian Bergmann <sebastian@phpunit.de>
  *
@@ -11,7 +11,7 @@ namespace SebastianBergmann\CodeCoverage\Report;
 
 use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Node\File;
-use SebastianBergmann\CodeCoverage\Util;
+use SebastianBergmann\CodeCoverage\Percentage;
 
 /**
  * Generates human readable output from a code coverage object.
@@ -115,33 +115,30 @@ final class Text
 
         $classes = \sprintf(
             '  Classes: %6s (%d/%d)',
-            Util::percent(
+            Percentage::fromFractionAndTotal(
                 $report->getNumTestedClassesAndTraits(),
-                $report->getNumClassesAndTraits(),
-                true
-            ),
+                $report->getNumClassesAndTraits()
+            )->asString(),
             $report->getNumTestedClassesAndTraits(),
             $report->getNumClassesAndTraits()
         );
 
         $methods = \sprintf(
             '  Methods: %6s (%d/%d)',
-            Util::percent(
+            Percentage::fromFractionAndTotal(
                 $report->getNumTestedMethods(),
                 $report->getNumMethods(),
-                true
-            ),
+            )->asString(),
             $report->getNumTestedMethods(),
             $report->getNumMethods()
         );
 
         $lines = \sprintf(
             '  Lines:   %6s (%d/%d)',
-            Util::percent(
+            Percentage::fromFractionAndTotal(
                 $report->getNumExecutedLines(),
                 $report->getNumExecutableLines(),
-                true
-            ),
+            )->asString(),
             $report->getNumExecutedLines(),
             $report->getNumExecutableLines()
         );
@@ -154,7 +151,7 @@ final class Text
 
             $output .= $this->format($colors['header'], $padding, $title);
         } else {
-            $date  = \date('  Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
+            $date  = \date('  Y-m-d H:i:s');
             $title = 'Code Coverage Report:';
 
             $output .= $this->format($colors['header'], $padding, $title);
@@ -200,16 +197,14 @@ final class Text
                     }
                 }
 
-                $namespace = '';
+                $package = '';
 
-                if (!empty($class['package']['namespace'])) {
-                    $namespace = '\\' . $class['package']['namespace'] . '::';
-                } elseif (!empty($class['package']['fullPackage'])) {
-                    $namespace = '@' . $class['package']['fullPackage'] . '::';
+                if (!empty($class['package']['fullPackage'])) {
+                    $package = '@' . $class['package']['fullPackage'] . '::';
                 }
 
-                $classCoverage[$namespace . $className] = [
-                    'namespace'         => $namespace,
+                $classCoverage[$package . $className] = [
+                    'namespace'         => $class['package']['namespace'],
                     'className '        => $className,
                     'methodsCovered'    => $coveredMethods,
                     'methodCount'       => $classMethods,
@@ -244,16 +239,16 @@ final class Text
 
     private function getCoverageColor(int $numberOfCoveredElements, int $totalNumberOfElements): string
     {
-        $coverage = Util::percent(
+        $coverage = Percentage::fromFractionAndTotal(
             $numberOfCoveredElements,
             $totalNumberOfElements
         );
 
-        if ($coverage >= $this->highLowerBound) {
+        if ($coverage->asFloat() >= $this->highLowerBound) {
             return self::COLOR_GREEN;
         }
 
-        if ($coverage > $this->lowUpperBound) {
+        if ($coverage->asFloat() > $this->lowUpperBound) {
             return self::COLOR_YELLOW;
         }
 
@@ -264,20 +259,21 @@ final class Text
     {
         $format = '%' . $precision . 's';
 
-        return Util::percent(
+        return Percentage::fromFractionAndTotal(
             $numberOfCoveredElements,
-            $totalNumberOfElements,
-            true,
-            true
-        ) .
-        ' (' . \sprintf($format, $numberOfCoveredElements) . '/' .
+            $totalNumberOfElements
+        )->asFixedWidthString() .
+            ' (' . \sprintf($format, $numberOfCoveredElements) . '/' .
         \sprintf($format, $totalNumberOfElements) . ')';
     }
 
-    private function format($color, $padding, $string): string
+    /**
+     * @param false|string $string
+     */
+    private function format(string $color, int $padding, $string): string
     {
         $reset = $color ? self::COLOR_RESET : '';
 
-        return $color . \str_pad($string, $padding) . $reset . \PHP_EOL;
+        return $color . \str_pad((string) $string, $padding) . $reset . \PHP_EOL;
     }
 }

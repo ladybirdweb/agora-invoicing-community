@@ -5,6 +5,7 @@ namespace Yajra\DataTables;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Storage;
@@ -16,6 +17,13 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 abstract class DataTablesEditor
 {
     use ValidatesRequests;
+
+    /**
+     * Action performed by the editor.
+     *
+     * @var string|null
+     */
+    protected $action = null;
 
     /**
      * Allowed dataTables editor actions.
@@ -124,7 +132,10 @@ abstract class DataTablesEditor
      */
     protected function toJson(array $data, array $errors = [], $error = '')
     {
-        $response = ['data' => $data];
+        $response = [
+            'action' => $this->action,
+            'data'   => $data,
+        ];
 
         if ($error) {
             $response['error'] = $error;
@@ -146,6 +157,8 @@ abstract class DataTablesEditor
      */
     public function create(Request $request)
     {
+        $this->action = $this->action ?? 'create';
+
         $model      = $this->resolveModel();
         $connection = $model->getConnection();
         $affected   = [];
@@ -281,6 +294,8 @@ abstract class DataTablesEditor
      */
     public function restore(Request $request)
     {
+        $this->action = 'restore';
+
         $this->restoring = true;
 
         return $this->edit($request);
@@ -294,6 +309,8 @@ abstract class DataTablesEditor
      */
     public function edit(Request $request)
     {
+        $this->action = $this->action ?? 'edit';
+
         $connection = $this->getBuilder()->getConnection();
         $affected   = [];
         $errors     = [];
@@ -392,6 +409,8 @@ abstract class DataTablesEditor
      */
     public function forceDelete(Request $request)
     {
+        $this->action = 'forceDelete';
+
         $this->forceDeleting = true;
 
         return $this->remove($request);
@@ -406,6 +425,8 @@ abstract class DataTablesEditor
      */
     public function remove(Request $request)
     {
+        $this->action = $this->action ?? 'remove';
+
         $connection = $this->getBuilder()->getConnection();
         $affected   = [];
         $errors     = [];
@@ -540,6 +561,8 @@ abstract class DataTablesEditor
      */
     public function upload(Request $request)
     {
+        $this->action = 'upload';
+
         $field   = $request->input('uploadField');
         $storage = Storage::disk($this->disk);
 
@@ -549,22 +572,26 @@ abstract class DataTablesEditor
 
             $this->validate($request, $fieldRules, $this->messages(), $this->attributes());
 
-            $id = $storage->putFile($this->uploadDir, $request->file('upload'));
+            $uploadedFile = $request->file('upload');
+            $filename     = $this->getUploadedFilename($field, $uploadedFile);
+            $id           = $storage->putFileAs($this->uploadDir, $uploadedFile, $filename);
 
             if (method_exists($this, 'uploaded')) {
                 $id = $this->uploaded($id);
             }
 
             return response()->json([
+                'action' => $this->action,
                 'data'   => [],
                 'files'  => [
                     'files' => [
                         $id => [
-                            'filename'  => $id,
-                            'size'      => $request->file('upload')->getSize(),
-                            'directory' => $this->uploadDir,
-                            'disk'      => $this->disk,
-                            'url'       => $storage->url($id),
+                            'filename'      => $id,
+                            'original_name' => $uploadedFile->getClientOriginalName(),
+                            'size'          => $uploadedFile->getSize(),
+                            'directory'     => $this->uploadDir,
+                            'disk'          => $this->disk,
+                            'url'           => $storage->url($id),
                         ],
                     ],
                 ],
@@ -574,6 +601,7 @@ abstract class DataTablesEditor
             ]);
         } catch (ValidationException $exception) {
             return response()->json([
+                'action'      => $this->action,
                 'data'        => [],
                 'fieldErrors' => [
                     [
@@ -593,5 +621,15 @@ abstract class DataTablesEditor
     public function uploadRules()
     {
         return [];
+    }
+
+    /**
+     * @param string $field
+     * @param UploadedFile $uploadedFile
+     * @return string
+     */
+    protected function getUploadedFilename($field, UploadedFile $uploadedFile)
+    {
+        return date('Ymd_His') . '_' . $uploadedFile->getClientOriginalName();
     }
 }

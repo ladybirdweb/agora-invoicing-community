@@ -14,7 +14,7 @@
         }
     ],
     "require": {
-        "php": "^5.5.9 || ^7.0"
+        "php": "^5.5.9 || ^7.0 || ^8.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^4.8.35 || ^5.0 || ^6.0 || ^7.0",
@@ -29,6 +29,10 @@
         "psr-4": {
             "PhpOption\\Tests\\": "tests/PhpOption/Tests/"
         }
+    },
+    "config": {
+        "preferred-install": "dist",
+        "platform-check": false
     },
     "extra": {
         "branch-alias": {

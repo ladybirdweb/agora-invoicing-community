@@ -111,6 +111,14 @@ To disable packagist:
 You can alter repositories in the global config.json file by passing in the
 <info>--global</info> option.
 
+To add or edit suggested packages you can use:
+
+    <comment>%command.full_name% suggest.package reason for the suggestion</comment>
+
+To add or edit extra properties you can use:
+
+    <comment>%command.full_name% extra.property value</comment>
+
 To edit the file in an external editor:
 
     <comment>%command.full_name% --editor</comment>
@@ -179,7 +187,7 @@ EOT
         }
         if ($input->getOption('global') && !$this->authConfigFile->exists()) {
             touch($this->authConfigFile->getPath());
-            $this->authConfigFile->write(array('bitbucket-oauth' => new \ArrayObject, 'github-oauth' => new \ArrayObject, 'gitlab-oauth' => new \ArrayObject, 'gitlab-token' => new \ArrayObject, 'http-basic' => new \ArrayObject));
+            $this->authConfigFile->write(array('bitbucket-oauth' => new \ArrayObject, 'github-oauth' => new \ArrayObject, 'gitlab-oauth' => new \ArrayObject, 'gitlab-token' => new \ArrayObject, 'http-basic' => new \ArrayObject, 'bearer' => new \ArrayObject));
             Silencer::call('chmod', $this->authConfigFile->getPath(), 0600);
         }
 
@@ -412,6 +420,7 @@ EOT
             ),
             'github-expose-hostname' => array($booleanValidator, $booleanNormalizer),
             'htaccess-protect' => array($booleanValidator, $booleanNormalizer),
+            'lock' => array($booleanValidator, $booleanNormalizer),
         );
         $multiConfigValues = array(
             'github-protocols' => array(
@@ -474,6 +483,23 @@ EOT
         }
         if (isset($multiConfigValues[$settingKey])) {
             $this->handleMultiValue($settingKey, $multiConfigValues[$settingKey], $values, 'addConfigSetting');
+
+            return 0;
+        }
+        // handle preferred-install per-package config
+        if (preg_match('/^preferred-install\.(.+)/', $settingKey, $matches)) {
+            if ($input->getOption('unset')) {
+                $this->configSource->removeConfigSetting($settingKey);
+
+                return 0;
+            }
+
+            list($validator) = $uniqueConfigValues['preferred-install'];
+            if (!$validator($values[0])) {
+                throw new \RuntimeException('Invalid value for '.$settingKey.'. Should be one of: auto, source, or dist');
+            }
+
+            $this->configSource->addConfigSetting($settingKey, $values[0]);
 
             return 0;
         }
@@ -600,6 +626,26 @@ EOT
             return 0;
         }
 
+        // handle suggest
+        if (preg_match('/^suggest\.(.+)/', $settingKey, $matches)) {
+            if ($input->getOption('unset')) {
+                $this->configSource->removeProperty($settingKey);
+
+                return 0;
+            }
+
+            $this->configSource->addProperty($settingKey, implode(' ', $values));
+
+            return 0;
+        }
+
+        // handle unsetting extra/suggest
+        if (in_array($settingKey, array('suggest', 'extra'), true) && $input->getOption('unset')) {
+            $this->configSource->removeProperty($settingKey);
+
+            return 0;
+        }
+
         // handle platform
         if (preg_match('/^platform\.(.+)/', $settingKey, $matches)) {
             if ($input->getOption('unset')) {
@@ -612,6 +658,8 @@ EOT
 
             return 0;
         }
+
+        // handle unsetting platform
         if ($settingKey === 'platform' && $input->getOption('unset')) {
             $this->configSource->removeConfigSetting($settingKey);
 
@@ -619,7 +667,7 @@ EOT
         }
 
         // handle auth
-        if (preg_match('/^(bitbucket-oauth|github-oauth|gitlab-oauth|gitlab-token|http-basic)\.(.+)/', $settingKey, $matches)) {
+        if (preg_match('/^(bitbucket-oauth|github-oauth|gitlab-oauth|gitlab-token|http-basic|bearer)\.(.+)/', $settingKey, $matches)) {
             if ($input->getOption('unset')) {
                 $this->authConfigSource->removeConfigSetting($matches[1].'.'.$matches[2]);
                 $this->configSource->removeConfigSetting($matches[1].'.'.$matches[2]);
@@ -633,7 +681,7 @@ EOT
                 }
                 $this->configSource->removeConfigSetting($matches[1].'.'.$matches[2]);
                 $this->authConfigSource->addConfigSetting($matches[1].'.'.$matches[2], array('consumer-key' => $values[0], 'consumer-secret' => $values[1]));
-            } elseif (in_array($matches[1], array('github-oauth', 'gitlab-oauth', 'gitlab-token'), true)) {
+            } elseif (in_array($matches[1], array('github-oauth', 'gitlab-oauth', 'gitlab-token', 'bearer'), true)) {
                 if (1 !== count($values)) {
                     throw new \RuntimeException('Too many arguments, expected only one token');
                 }

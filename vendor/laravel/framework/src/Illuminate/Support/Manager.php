@@ -68,7 +68,7 @@ abstract class Manager
     /**
      * Get a driver instance.
      *
-     * @param  string  $driver
+     * @param  string|null  $driver
      * @return mixed
      *
      * @throws \InvalidArgumentException
@@ -115,6 +115,7 @@ abstract class Manager
                 return $this->$method();
             }
         }
+
         throw new InvalidArgumentException("Driver [$driver] not supported.");
     }
 

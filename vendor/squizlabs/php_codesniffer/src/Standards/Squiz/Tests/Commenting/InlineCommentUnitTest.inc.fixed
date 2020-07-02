@@ -122,6 +122,26 @@ echo $foo; // An unrelated comment.
 // An unrelated comment.
 echo $foo; // some comment without capital or full stop
 
+class Foo
+{
+    // This is fine.
+
+    /**
+     * Spacing is ignored above.
+     */
+    function bar(){}
+}
+
+if ($foo) {
+}//end if
+// Another comment here.
+$foo++;
+
+if ($foo) {
+}//end if
+// another comment here.
+$foo++;
+
 /*
  * N.B.: The below test line must be the last test in the file.
  * Testing that a new line after an inline comment when it's the last non-whitespace

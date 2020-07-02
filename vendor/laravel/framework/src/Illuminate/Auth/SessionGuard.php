@@ -9,6 +9,7 @@ use Illuminate\Auth\Events\Failed;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
 use Illuminate\Auth\Events\OtherDeviceLogout;
+use Illuminate\Auth\Events\Validated;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\StatefulGuard;
 use Illuminate\Contracts\Auth\SupportsBasicAuth;
@@ -198,7 +199,7 @@ class SessionGuard implements StatefulGuard, SupportsBasicAuth
     /**
      * Get the ID for the currently authenticated user.
      *
-     * @return int|null
+     * @return int|string|null
      */
     public function id()
     {
@@ -381,7 +382,13 @@ class SessionGuard implements StatefulGuard, SupportsBasicAuth
      */
     protected function hasValidCredentials($user, $credentials)
     {
-        return ! is_null($user) && $this->provider->validateCredentials($user, $credentials);
+        $validated = ! is_null($user) && $this->provider->validateCredentials($user, $credentials);
+
+        if ($validated) {
+            $this->fireValidatedEvent($user);
+        }
+
+        return $validated;
     }
 
     /**
@@ -618,6 +625,21 @@ class SessionGuard implements StatefulGuard, SupportsBasicAuth
         if (isset($this->events)) {
             $this->events->dispatch(new Attempting(
                 $this->name, $credentials, $remember
+            ));
+        }
+    }
+
+    /**
+     * Fires the validated event if the dispatcher is set.
+     *
+     * @param  \Illuminate\Contracts\Auth\Authenticatable  $user
+     * @return void
+     */
+    protected function fireValidatedEvent($user)
+    {
+        if (isset($this->events)) {
+            $this->events->dispatch(new Validated(
+                $this->name, $user
             ));
         }
     }

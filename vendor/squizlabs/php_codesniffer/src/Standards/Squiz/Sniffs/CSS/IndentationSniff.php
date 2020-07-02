@@ -9,8 +9,9 @@
 
 namespace PHP_CodeSniffer\Standards\Squiz\Sniffs\CSS;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
+use PHP_CodeSniffer\Util\Tokens;
 
 class IndentationSniff implements Sniff
 {
@@ -59,13 +60,21 @@ class IndentationSniff implements Sniff
         $indentLevel  = 0;
         $nestingLevel = 0;
         for ($i = 1; $i < $numTokens; $i++) {
-            if ($tokens[$i]['code'] === T_COMMENT) {
+            if ($tokens[$i]['code'] === T_COMMENT
+                || isset(Tokens::$phpcsCommentTokens[$tokens[$i]['code']]) === true
+            ) {
                 // Don't check the indent of comments.
                 continue;
             }
 
             if ($tokens[$i]['code'] === T_OPEN_CURLY_BRACKET) {
                 $indentLevel++;
+
+                if (isset($tokens[$i]['bracket_closer']) === false) {
+                    // Syntax error or live coding.
+                    // Anything after this would receive incorrect fixes, so bow out.
+                    return;
+                }
 
                 // Check for nested class definitions.
                 $found = $phpcsFile->findNext(

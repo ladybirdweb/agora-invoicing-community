@@ -9,22 +9,13 @@
 
 namespace PHP_CodeSniffer\Standards\Squiz\Sniffs\NamingConventions;
 
+use PHP_CodeSniffer\Files\File;
 use PHP_CodeSniffer\Sniffs\AbstractVariableSniff;
 use PHP_CodeSniffer\Util\Common;
-use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Util\Tokens;
 
 class ValidVariableNameSniff extends AbstractVariableSniff
 {
-
-    /**
-     * Tokens to ignore so that we can find a DOUBLE_COLON.
-     *
-     * @var array
-     */
-    private $ignore = [
-        T_WHITESPACE,
-        T_COMMENT,
-    ];
 
 
     /**
@@ -41,23 +32,8 @@ class ValidVariableNameSniff extends AbstractVariableSniff
         $tokens  = $phpcsFile->getTokens();
         $varName = ltrim($tokens[$stackPtr]['content'], '$');
 
-        $phpReservedVars = [
-            '_SERVER',
-            '_GET',
-            '_POST',
-            '_REQUEST',
-            '_SESSION',
-            '_ENV',
-            '_COOKIE',
-            '_FILES',
-            'GLOBALS',
-            'http_response_header',
-            'HTTP_RAW_POST_DATA',
-            'php_errormsg',
-        ];
-
         // If it's a php reserved var, then its ok.
-        if (in_array($varName, $phpReservedVars) === true) {
+        if (isset($this->phpReservedVars[$varName]) === true) {
             return;
         }
 
@@ -92,13 +68,13 @@ class ValidVariableNameSniff extends AbstractVariableSniff
         // check the main part of the variable name.
         $originalVarName = $varName;
         if (substr($varName, 0, 1) === '_') {
-            $objOperator = $phpcsFile->findPrevious([T_WHITESPACE], ($stackPtr - 1), null, true);
+            $objOperator = $phpcsFile->findPrevious(T_WHITESPACE, ($stackPtr - 1), null, true);
             if ($tokens[$objOperator]['code'] === T_DOUBLE_COLON) {
                 // The variable lives within a class, and is referenced like
                 // this: MyClass::$_variable, so we don't know its scope.
                 $inClass = true;
             } else {
-                $inClass = $phpcsFile->hasCondition($stackPtr, [T_CLASS, T_INTERFACE, T_TRAIT]);
+                $inClass = $phpcsFile->hasCondition($stackPtr, Tokens::$ooScopeTokens);
             }
 
             if ($inClass === true) {
@@ -149,17 +125,18 @@ class ValidVariableNameSniff extends AbstractVariableSniff
                     $errorData[0],
                 ];
                 $phpcsFile->addError($error, $stackPtr, 'PublicHasUnderscore', $data);
-                return;
             }
         } else {
             if (substr($varName, 0, 1) !== '_') {
                 $error = 'Private member variable "%s" must contain a leading underscore';
                 $phpcsFile->addError($error, $stackPtr, 'PrivateNoUnderscore', $errorData);
-                return;
             }
         }
 
-        if (Common::isCamelCaps($varName, false, $public, false) === false) {
+        // Remove a potential underscore prefix for testing CamelCaps.
+        $varName = ltrim($varName, '_');
+
+        if (Common::isCamelCaps($varName, false, true, false) === false) {
             $error = 'Member variable "%s" is not in valid camel caps format';
             $phpcsFile->addError($error, $stackPtr, 'MemberNotCamelCaps', $errorData);
         }
@@ -180,25 +157,10 @@ class ValidVariableNameSniff extends AbstractVariableSniff
     {
         $tokens = $phpcsFile->getTokens();
 
-        $phpReservedVars = [
-            '_SERVER',
-            '_GET',
-            '_POST',
-            '_REQUEST',
-            '_SESSION',
-            '_ENV',
-            '_COOKIE',
-            '_FILES',
-            'GLOBALS',
-            'http_response_header',
-            'HTTP_RAW_POST_DATA',
-            'php_errormsg',
-        ];
-
         if (preg_match_all('|[^\\\]\${?([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)|', $tokens[$stackPtr]['content'], $matches) !== 0) {
             foreach ($matches[1] as $varName) {
                 // If it's a php reserved var, then its ok.
-                if (in_array($varName, $phpReservedVars) === true) {
+                if (isset($this->phpReservedVars[$varName]) === true) {
                     continue;
                 }
 

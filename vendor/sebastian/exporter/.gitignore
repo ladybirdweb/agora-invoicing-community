@@ -1,5 +1,7 @@
 /.idea
-/composer.lock
-/vendor
 /.php_cs
 /.php_cs.cache
+/.phpunit.result.cache
+/.psalm/cache
+/composer.lock
+/vendor

@@ -6,7 +6,6 @@ use Exception;
 use Illuminate\Database\SQLiteConnection;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\Console\Output\BufferedOutput;
 
@@ -19,32 +18,25 @@ class DatabaseManager
      */
     public function migrateAndSeed()
     {
-        try {
-             $outputLog = new BufferedOutput;
+        $outputLog = new BufferedOutput;
 
-        ($this->sqlite($outputLog));
+        $this->sqlite($outputLog);
 
         return $this->migrate($outputLog);
-    } catch (\Exception $ex) {
-       throw new \Exception($ex->getMessage());
-       
-    }
-       
     }
 
     /**
      * Run the migration and call the seeder.
      *
-     * @param collection $outputLog
-     * @return collection
+     * @param \Symfony\Component\Console\Output\BufferedOutput $outputLog
+     * @return array
      */
-    private function migrate($outputLog)
+    private function migrate(BufferedOutput $outputLog)
     {
-        try{
-            Artisan::call('migrate', ["--force"=> true], $outputLog);
-        }
-        catch(Exception $e){
-             throw new Exception($e->getMessage());
+        try {
+            Artisan::call('migrate', ['--force'=> true], $outputLog);
+        } catch (Exception $e) {
+            return $this->response($e->getMessage(), 'error', $outputLog);
         }
 
         return $this->seed($outputLog);
@@ -53,16 +45,15 @@ class DatabaseManager
     /**
      * Seed the database.
      *
-     * @param collection $outputLog
+     * @param \Symfony\Component\Console\Output\BufferedOutput $outputLog
      * @return array
      */
-    private function seed($outputLog)
+    private function seed(BufferedOutput $outputLog)
     {
-        try{
-               Artisan::call('db:seed', ["--force"=> true], $outputLog);
-        }
-        catch(Exception $e){
-            return $this->response($e->getMessage());
+        try {
+            Artisan::call('db:seed', ['--force' => true], $outputLog);
+        } catch (Exception $e) {
+            return $this->response($e->getMessage(), 'error', $outputLog);
         }
 
         return $this->response(trans('installer_messages.final.finished'), 'success', $outputLog);
@@ -71,36 +62,34 @@ class DatabaseManager
     /**
      * Return a formatted error messages.
      *
-     * @param $message
+     * @param string $message
      * @param string $status
-     * @param collection $outputLog
+     * @param \Symfony\Component\Console\Output\BufferedOutput $outputLog
      * @return array
      */
-    private function response($message, $status = 'danger', $outputLog)
+    private function response($message, $status, BufferedOutput $outputLog)
     {
         return [
             'status' => $status,
             'message' => $message,
-            'dbOutputLog' => $outputLog->fetch()
+            'dbOutputLog' => $outputLog->fetch(),
         ];
     }
 
     /**
-     * check database type. If SQLite, then create the database file.
+     * Check database type. If SQLite, then create the database file.
      *
-     * @param collection $outputLog
+     * @param \Symfony\Component\Console\Output\BufferedOutput $outputLog
      */
-    private function sqlite($outputLog)
+    private function sqlite(BufferedOutput $outputLog)
     {
-       if(DB::connection() instanceof SQLiteConnection) {
+        if (DB::connection() instanceof SQLiteConnection) {
             $database = DB::connection()->getDatabaseName();
-            if(!file_exists($database)) {
+            if (! file_exists($database)) {
                 touch($database);
                 DB::reconnect(Config::get('database.default'));
             }
-            $outputLog->write('Using SqlLite database: ' . $database, 1);
-        }  else {
-              return ;
-          }
+            $outputLog->write('Using SqlLite database: '.$database, 1);
+        }
     }
 }

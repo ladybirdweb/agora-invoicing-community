@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -10,7 +10,6 @@
 namespace PHPUnit\Framework;
 
 use PHPUnit\Util\Filter;
-use Throwable;
 
 /**
  * Wraps Exceptions thrown by code under test.
@@ -20,8 +19,10 @@ use Throwable;
  *
  * Unlike PHPUnit\Framework_\Exception, the complete stack of previous Exceptions
  * is processed.
+ *
+ * @internal This class is not covered by the backward compatibility promise for PHPUnit
  */
-class ExceptionWrapper extends Exception
+final class ExceptionWrapper extends Exception
 {
     /**
      * @var string
@@ -33,7 +34,7 @@ class ExceptionWrapper extends Exception
      */
     protected $previous;
 
-    public function __construct(Throwable $t)
+    public function __construct(\Throwable $t)
     {
         // PDOException::getCode() is a string.
         // @see https://php.net/manual/en/class.pdoexception.php#95812
@@ -41,9 +42,6 @@ class ExceptionWrapper extends Exception
         $this->setOriginalException($t);
     }
 
-    /**
-     * @throws \InvalidArgumentException
-     */
     public function __toString(): string
     {
         $string = TestFailure::exceptionToString($this);
@@ -84,8 +82,8 @@ class ExceptionWrapper extends Exception
 
         $this->serializableTrace = $t->getTrace();
 
-        foreach ($this->serializableTrace as $i => $call) {
-            unset($this->serializableTrace[$i]['args']);
+        foreach (\array_keys($this->serializableTrace) as $key) {
+            unset($this->serializableTrace[$key]['args']);
         }
 
         if ($t->getPrevious()) {
@@ -93,7 +91,7 @@ class ExceptionWrapper extends Exception
         }
     }
 
-    public function getOriginalException(): ?Throwable
+    public function getOriginalException(): ?\Throwable
     {
         return $this->originalException();
     }
@@ -103,7 +101,7 @@ class ExceptionWrapper extends Exception
      * which can be quite big, from being garbage-collected, thus blocking memory until shutdown.
      * Approach works both for var_dump() and var_export() and print_r()
      */
-    private function originalException(Throwable $exceptionToStore = null): ?Throwable
+    private function originalException(\Throwable $exceptionToStore = null): ?\Throwable
     {
         static $originalExceptions;
 

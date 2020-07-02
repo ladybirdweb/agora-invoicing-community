@@ -9,8 +9,8 @@
 
 namespace PHP_CodeSniffer\Standards\Squiz\Sniffs\Classes;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Util\Common;
 
 class ValidClassNameSniff implements Sniff
@@ -65,19 +65,19 @@ class ValidClassNameSniff implements Sniff
             $name = trim($phpcsFile->getTokensAsString($nameStart, ($nameEnd - $nameStart)));
         }
 
-        // Check for camel caps format.
+        // Check for PascalCase format.
         $valid = Common::isCamelCaps($name, true, true, false);
         if ($valid === false) {
             $type  = ucfirst($tokens[$stackPtr]['content']);
-            $error = '%s name "%s" is not in camel caps format';
+            $error = '%s name "%s" is not in PascalCase format';
             $data  = [
                 $type,
                 $name,
             ];
             $phpcsFile->addError($error, $stackPtr, 'NotCamelCaps', $data);
-            $phpcsFile->recordMetric($stackPtr, 'CamelCase class name', 'no');
+            $phpcsFile->recordMetric($stackPtr, 'PascalCase class name', 'no');
         } else {
-            $phpcsFile->recordMetric($stackPtr, 'CamelCase class name', 'yes');
+            $phpcsFile->recordMetric($stackPtr, 'PascalCase class name', 'yes');
         }
 
     }//end process()

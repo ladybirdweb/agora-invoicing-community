@@ -9,10 +9,10 @@
 
 namespace PHP_CodeSniffer;
 
-use PHP_CodeSniffer\Reports\Report;
-use PHP_CodeSniffer\Files\File;
-use PHP_CodeSniffer\Exceptions\RuntimeException;
 use PHP_CodeSniffer\Exceptions\DeepExitException;
+use PHP_CodeSniffer\Exceptions\RuntimeException;
+use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Reports\Report;
 use PHP_CodeSniffer\Util\Common;
 
 class Reporter
@@ -92,19 +92,19 @@ class Reporter
      * @param \PHP_CodeSniffer\Config $config The config data for the run.
      *
      * @return void
-     * @throws RuntimeException If a report is not available.
+     * @throws \PHP_CodeSniffer\Exceptions\DeepExitException If a custom report class could not be found.
+     * @throws \PHP_CodeSniffer\Exceptions\RuntimeException  If a report class is incorrectly set up.
      */
     public function __construct(Config $config)
     {
         $this->config = $config;
 
         foreach ($config->reports as $type => $output) {
-            $type = ucfirst($type);
-
             if ($output === null) {
                 $output = $config->reportFile;
             }
 
+            $reportClassName = '';
             if (strpos($type, '.') !== false) {
                 // This is a path to a custom report class.
                 $filename = realpath($type);
@@ -114,12 +114,36 @@ class Reporter
                 }
 
                 $reportClassName = Autoload::loadFile($filename);
+            } else if (class_exists('PHP_CodeSniffer\Reports\\'.ucfirst($type)) === true) {
+                // PHPCS native report.
+                $reportClassName = 'PHP_CodeSniffer\Reports\\'.ucfirst($type);
+            } else if (class_exists($type) === true) {
+                // FQN of a custom report.
+                $reportClassName = $type;
             } else {
-                $reportClassName = 'PHP_CodeSniffer\Reports\\'.$type;
+                // OK, so not a FQN, try and find the report using the registered namespaces.
+                $registeredNamespaces = Autoload::getSearchPaths();
+                $trimmedType          = ltrim($type, '\\');
+
+                foreach ($registeredNamespaces as $nsPrefix) {
+                    if ($nsPrefix === '') {
+                        continue;
+                    }
+
+                    if (class_exists($nsPrefix.'\\'.$trimmedType) === true) {
+                        $reportClassName = $nsPrefix.'\\'.$trimmedType;
+                        break;
+                    }
+                }
+            }//end if
+
+            if ($reportClassName === '') {
+                $error = "ERROR: Class file for report \"$type\" not found".PHP_EOL;
+                throw new DeepExitException($error, 3);
             }
 
             $reportClass = new $reportClassName();
-            if (false === ($reportClass instanceof Report)) {
+            if (($reportClass instanceof Report) === false) {
                 throw new RuntimeException('Class "'.$reportClassName.'" must implement the "PHP_CodeSniffer\Report" interface.');
             }
 
@@ -175,7 +199,6 @@ class Reporter
      */
     public function printReport($report)
     {
-        $report      = ucfirst($report);
         $reportClass = $this->reports[$report]['class'];
         $reportFile  = $this->reports[$report]['output'];
 

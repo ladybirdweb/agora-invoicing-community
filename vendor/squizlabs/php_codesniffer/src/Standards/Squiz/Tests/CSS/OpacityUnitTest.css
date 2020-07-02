@@ -25,3 +25,11 @@ div {
   background: url(../1/2/3/4-5-6_7_100x100.png) repeat scroll 50% 50% #EEE;
   opacity: -1;
 }
+
+.my-commented-style {
+    opacity: /*comment*/ 0;
+    opacity: /* phpcs:ignore Standard.Cat.Sniff -- for reasons */
+		0.0;
+    opacity: /*comment*/ 1.0;
+    opacity: /*comment*/ .5;
+}

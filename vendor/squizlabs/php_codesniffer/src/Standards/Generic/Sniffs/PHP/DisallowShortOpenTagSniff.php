@@ -9,8 +9,8 @@
 
 namespace PHP_CodeSniffer\Standards\Generic\Sniffs\PHP;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Util\Tokens;
 
 class DisallowShortOpenTagSniff implements Sniff
@@ -29,7 +29,7 @@ class DisallowShortOpenTagSniff implements Sniff
             T_OPEN_TAG_WITH_ECHO,
         ];
 
-        $shortOpenTags = (boolean) ini_get('short_open_tag');
+        $shortOpenTags = (bool) ini_get('short_open_tag');
         if ($shortOpenTags === false) {
             $targets[] = T_INLINE_HTML;
         }

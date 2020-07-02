@@ -3,7 +3,7 @@
 /*
  * This file is part of Psy Shell.
  *
- * (c) 2012-2018 Justin Hileman
+ * (c) 2012-2020 Justin Hileman
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,6 +11,7 @@
 
 namespace Psy\Command\ListCommand;
 
+use Psy\Reflection\ReflectionNamespace;
 use Symfony\Component\Console\Input\InputInterface;
 
 /**
@@ -23,21 +24,14 @@ class FunctionEnumerator extends Enumerator
      */
     protected function listItems(InputInterface $input, \Reflector $reflector = null, $target = null)
     {
-        // only list functions when no Reflector is present.
-        //
-        // @todo make a NamespaceReflector and pass that in for commands like:
-        //
-        //     ls --functions Foo
-        //
-        // ... for listing functions in the Foo namespace
-
-        if ($reflector !== null || $target !== null) {
-            return;
+        // if we have a reflector, ensure that it's a namespace reflector
+        if (($target !== null || $reflector !== null) && !$reflector instanceof ReflectionNamespace) {
+            return [];
         }
 
         // only list functions if we are specifically asked
         if (!$input->getOption('functions')) {
-            return;
+            return [];
         }
 
         if ($input->getOption('user')) {
@@ -51,10 +45,11 @@ class FunctionEnumerator extends Enumerator
             $functions = $this->getFunctions();
         }
 
-        $functions = $this->prepareFunctions($functions);
+        $prefix = $reflector === null ? null : \strtolower($reflector->getName()) . '\\';
+        $functions = $this->prepareFunctions($functions, $prefix);
 
         if (empty($functions)) {
-            return;
+            return [];
         }
 
         $ret = [];
@@ -68,7 +63,7 @@ class FunctionEnumerator extends Enumerator
      *
      * Optionally limit functions to "user" or "internal" functions.
      *
-     * @param null|string $type "user" or "internal" (default: both)
+     * @param string|null $type "user" or "internal" (default: both)
      *
      * @return array
      */
@@ -86,11 +81,12 @@ class FunctionEnumerator extends Enumerator
     /**
      * Prepare formatted function array.
      *
-     * @param array $functions
+     * @param array  $functions
+     * @param string $prefix
      *
      * @return array
      */
-    protected function prepareFunctions(array $functions)
+    protected function prepareFunctions(array $functions, $prefix = null)
     {
         \natcasesort($functions);
 
@@ -98,12 +94,20 @@ class FunctionEnumerator extends Enumerator
         $ret = [];
 
         foreach ($functions as $name) {
+            if ($prefix !== null && \strpos(\strtolower($name), $prefix) !== 0) {
+                continue;
+            }
+
             if ($this->showItem($name)) {
-                $ret[$name] = [
-                    'name'  => $name,
-                    'style' => self::IS_FUNCTION,
-                    'value' => $this->presentSignature($name),
-                ];
+                try {
+                    $ret[$name] = [
+                        'name'  => $name,
+                        'style' => self::IS_FUNCTION,
+                        'value' => $this->presentSignature($name),
+                    ];
+                } catch (\Exception $e) {
+                    // Ignore failures. HHVM does this sometimes for internal functions.
+                }
             }
         }
 

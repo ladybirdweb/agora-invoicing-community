@@ -12,8 +12,8 @@
 
 namespace PHP_CodeSniffer\Standards\Generic\Sniffs\PHP;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
 
 class ForbiddenFunctionsSniff implements Sniff
 {
@@ -74,9 +74,18 @@ class ForbiddenFunctionsSniff implements Sniff
 
         // If we are not pattern matching, we need to work out what
         // tokens to listen for.
-        $string = '<?php ';
+        $hasHaltCompiler = false;
+        $string          = '<?php ';
         foreach ($this->forbiddenFunctionNames as $name) {
-            $string .= $name.'();';
+            if ($name === '__halt_compiler') {
+                $hasHaltCompiler = true;
+            } else {
+                $string .= $name.'();';
+            }
+        }
+
+        if ($hasHaltCompiler === true) {
+            $string .= '__halt_compiler();';
         }
 
         $register = [];
@@ -173,7 +182,7 @@ class ForbiddenFunctionsSniff implements Sniff
             // Remove the pattern delimiters and modifier.
             $pattern = substr($pattern, 1, -2);
         } else {
-            if (in_array($function, $this->forbiddenFunctionNames) === false) {
+            if (in_array($function, $this->forbiddenFunctionNames, true) === false) {
                 return;
             }
         }//end if

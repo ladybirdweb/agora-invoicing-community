@@ -3,7 +3,7 @@
 /*
  * This file is part of Psy Shell.
  *
- * (c) 2012-2018 Justin Hileman
+ * (c) 2012-2020 Justin Hileman
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -141,8 +141,8 @@ abstract class AbstractMatcher
     /**
      * Check whether $token type is $which.
      *
-     * @param string $which A PHP token type
      * @param mixed  $token A PHP token (see token_get_all)
+     * @param string $which A PHP token type
      *
      * @return bool
      */

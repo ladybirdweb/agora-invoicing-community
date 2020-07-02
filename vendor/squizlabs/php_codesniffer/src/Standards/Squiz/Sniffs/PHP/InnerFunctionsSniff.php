@@ -9,8 +9,8 @@
 
 namespace PHP_CodeSniffer\Standards\Squiz\Sniffs\PHP;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
 
 class InnerFunctionsSniff implements Sniff
 {
@@ -47,7 +47,7 @@ class InnerFunctionsSniff implements Sniff
             return;
         }
 
-        $class = $phpcsFile->getCondition($stackPtr, T_ANON_CLASS);
+        $class = $phpcsFile->getCondition($stackPtr, T_ANON_CLASS, false);
         if ($class !== false && $class > $function) {
             // Ignore methods in anon classes.
             return;

@@ -3,7 +3,7 @@
 /*
  * This file is part of Psy Shell.
  *
- * (c) 2012-2018 Justin Hileman
+ * (c) 2012-2020 Justin Hileman
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -25,27 +25,26 @@ class ClassConstantEnumerator extends Enumerator
     protected function listItems(InputInterface $input, \Reflector $reflector = null, $target = null)
     {
         // only list constants when a Reflector is present.
-
         if ($reflector === null) {
-            return;
+            return [];
         }
 
         // We can only list constants on actual class (or object) reflectors.
         if (!$reflector instanceof \ReflectionClass) {
             // @todo handle ReflectionExtension as well
-            return;
+            return [];
         }
 
         // only list constants if we are specifically asked
         if (!$input->getOption('constants')) {
-            return;
+            return [];
         }
 
         $noInherit = $input->getOption('no-inherit');
         $constants = $this->prepareConstants($this->getConstants($reflector, $noInherit));
 
         if (empty($constants)) {
-            return;
+            return [];
         }
 
         $ret = [];
@@ -118,8 +117,6 @@ class ClassConstantEnumerator extends Enumerator
     {
         if ($reflector->isInterface()) {
             return 'Interface Constants';
-        } elseif (\method_exists($reflector, 'isTrait') && $reflector->isTrait()) {
-            return 'Trait Constants';
         } else {
             return 'Class Constants';
         }

@@ -1,4 +1,8 @@
-<?php namespace Arcanedev\Support;
+<?php
+
+declare(strict_types=1);
+
+namespace Arcanedev\Support;
 
 /**
  * Class     Stub
@@ -61,12 +65,12 @@ class Stub
      *
      * @return string
      */
-    public function getPath()
+    public function getPath(): string
     {
         $path = $this->path;
 
         if ( ! empty(static::$basePath)) {
-            $path = static::$basePath.DS.ltrim($path, DS);
+            $path = static::$basePath.DIRECTORY_SEPARATOR.ltrim($path, DIRECTORY_SEPARATOR);
         }
 
         return $path;
@@ -77,9 +81,9 @@ class Stub
      *
      * @param  string  $path
      *
-     * @return self
+     * @return $this
      */
-    public function setPath($path)
+    public function setPath(string $path): self
     {
         $this->path = $path;
 
@@ -91,7 +95,7 @@ class Stub
      *
      * @return string|null
      */
-    public static function getBasePath()
+    public static function getBasePath(): ?string
     {
         return static::$basePath;
     }
@@ -101,7 +105,7 @@ class Stub
      *
      * @param  string  $path
      */
-    public static function setBasePath($path)
+    public static function setBasePath(string $path)
     {
         static::$basePath = $path;
     }
@@ -111,7 +115,7 @@ class Stub
      *
      * @return array
      */
-    public function getReplaces()
+    public function getReplaces(): array
     {
         return $this->replaces;
     }
@@ -121,9 +125,9 @@ class Stub
      *
      * @param  array  $replaces
      *
-     * @return self
+     * @return $this
      */
-    public function setReplaces(array $replaces = [])
+    public function setReplaces(array $replaces = []): self
     {
         $this->replaces = $replaces;
 
@@ -135,9 +139,9 @@ class Stub
      *
      * @param  array  $replaces
      *
-     * @return self
+     * @return $this
      */
-    public function replaces(array $replaces = [])
+    public function replaces(array $replaces = []): self
     {
         return $this->setReplaces($replaces);
     }
@@ -153,9 +157,9 @@ class Stub
      * @param  string  $path
      * @param  array   $replaces
      *
-     * @return self
+     * @return $this
      */
-    public static function create($path, array $replaces = [])
+    public static function create(string $path, array $replaces = []): self
     {
         return new static($path, $replaces);
     }
@@ -166,9 +170,9 @@ class Stub
      * @param  string  $path
      * @param  array   $replaces
      *
-     * @return self
+     * @return $this
      */
-    public static function createFromPath($path, array $replaces = [])
+    public static function createFromPath(string $path, array $replaces = []): self
     {
         return tap(new static($path, $replaces), function (self $stub) {
             $stub->setBasePath('');
@@ -180,7 +184,7 @@ class Stub
      *
      * @return string
      */
-    public function render()
+    public function render(): string
     {
         return $this->getContents();
     }
@@ -192,7 +196,7 @@ class Stub
      *
      * @return bool
      */
-    public function save($filename)
+    public function save(string $filename): bool
     {
         return $this->saveTo(self::getBasePath(), $filename);
     }
@@ -205,9 +209,9 @@ class Stub
      *
      * @return bool
      */
-    public function saveTo($path, $filename)
+    public function saveTo(string $path, string $filename): bool
     {
-        return file_put_contents($path.DS.$filename, $this->render());
+        return file_put_contents($path.DIRECTORY_SEPARATOR.$filename, $this->render()) !== false;
     }
 
     /**
@@ -231,7 +235,7 @@ class Stub
      *
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->render();
     }

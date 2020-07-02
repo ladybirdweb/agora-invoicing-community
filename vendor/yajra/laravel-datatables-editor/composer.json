@@ -18,10 +18,10 @@
   ],
   "require": {
     "php": ">=7.0",
-    "illuminate/console": "5.5.*|5.6.*|5.7.*|5.8.*|^6.0",
-    "illuminate/database": "5.5.*|5.6.*|5.7.*|5.8.*|^6.0",
-    "illuminate/http": "5.5.*|5.6.*|5.7.*|5.8.*|^6.0",
-    "illuminate/validation": "5.5.*|5.6.*|5.7.*|5.8.*|^6.0",
+    "illuminate/console": "5.5.*|5.6.*|5.7.*|5.8.*|^6|^7",
+    "illuminate/database": "5.5.*|5.6.*|5.7.*|5.8.*|^6|^7",
+    "illuminate/http": "5.5.*|5.6.*|5.7.*|5.8.*|^6|^7",
+    "illuminate/validation": "5.5.*|5.6.*|5.7.*|5.8.*|^6|^7",
     "yajra/laravel-datatables-buttons": "3.*|4.*"
   },
   "require-dev": {

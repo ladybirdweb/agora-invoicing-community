@@ -2,6 +2,24 @@
 
 ## [Unreleased]
 
+## [v1.21.0] - 2020-04-02
+
+- Include the action performed by the editor on json response.
+
+## [v1.20.0] - 2020-03-04
+
+- Allow Laravel 7.
+
+## [v1.19.0] - 2020-02-23
+
+- Fix & use original client name when uploading file.
+- Add timestamp prefix on filename to possibly avoid duplicate files.
+- Add method to compute field uploaded filename. `getUploadedFilename($field, UploadedFile $uploadedFile)`
+
+## [v1.18.0] - 2020-02-01
+
+- Include file original name on upload response.
+
 ## [v1.17.1] - 2019-09-21
 
 - Log exception for further debugging and error tracking.
@@ -162,7 +180,11 @@ Rule::unique($model->getTable())
 - CRUD pre / post events hooks.
 - Artisan command for DataTables Editor generation.
 
-[Unreleased]: https://github.com/yajra/laravel-datatables-editor/compare/v1.17.1...master
+[Unreleased]: https://github.com/yajra/laravel-datatables-editor/compare/v1.21.0...master
+[v1.21.0]: https://github.com/yajra/laravel-datatables-editor/compare/v1.20.0...v1.21.0
+[v1.20.0]: https://github.com/yajra/laravel-datatables-editor/compare/v1.19.0...v1.20.0
+[v1.19.0]: https://github.com/yajra/laravel-datatables-editor/compare/v1.18.0...v1.19.0
+[v1.18.0]: https://github.com/yajra/laravel-datatables-editor/compare/v1.17.1...v1.18.0
 [v1.17.1]: https://github.com/yajra/laravel-datatables-editor/compare/v1.17.0...v1.17.1
 [v1.17.0]: https://github.com/yajra/laravel-datatables-editor/compare/v1.16.0...v1.17.0
 [v1.16.0]: https://github.com/yajra/laravel-datatables-editor/compare/v1.15.0...v1.16.0

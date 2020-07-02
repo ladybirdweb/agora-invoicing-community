@@ -9,8 +9,8 @@
 
 namespace PHP_CodeSniffer\Standards\PSR2\Sniffs\Methods;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
 
 class FunctionClosingBraceSniff implements Sniff
 {
@@ -74,7 +74,7 @@ class FunctionClosingBraceSniff implements Sniff
                     continue;
                 }
 
-                // Don't remove any identation before the brace.
+                // Don't remove any indentation before the brace.
                 if ($tokens[$i]['line'] === $tokens[$closeBrace]['line']) {
                     break;
                 }

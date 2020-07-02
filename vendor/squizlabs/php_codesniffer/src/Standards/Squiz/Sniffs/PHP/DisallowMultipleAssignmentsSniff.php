@@ -9,8 +9,8 @@
 
 namespace PHP_CodeSniffer\Standards\Squiz\Sniffs\PHP;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Util\Tokens;
 
 class DisallowMultipleAssignmentsSniff implements Sniff
@@ -52,6 +52,28 @@ class DisallowMultipleAssignmentsSniff implements Sniff
             }
         }
 
+        // Ignore assignments in WHILE loop conditions.
+        if (isset($tokens[$stackPtr]['nested_parenthesis']) === true) {
+            $nested = $tokens[$stackPtr]['nested_parenthesis'];
+            foreach ($nested as $opener => $closer) {
+                if (isset($tokens[$opener]['parenthesis_owner']) === true
+                    && $tokens[$tokens[$opener]['parenthesis_owner']]['code'] === T_WHILE
+                ) {
+                    return;
+                }
+            }
+        }
+
+        // Ignore member var definitions.
+        if (empty($tokens[$stackPtr]['conditions']) === false) {
+            $conditions = $tokens[$stackPtr]['conditions'];
+            end($conditions);
+            $deepestScope = key($conditions);
+            if (isset(Tokens::$ooScopeTokens[$tokens[$deepestScope]['code']]) === true) {
+                return;
+            }
+        }
+
         /*
             The general rule is:
             Find an equal sign and go backwards along the line. If you hit an
@@ -89,80 +111,72 @@ class DisallowMultipleAssignmentsSniff implements Sniff
             return;
         }
 
-        // Deal with this type of variable: self::$var by setting the var
-        // token to be "self" rather than "$var".
-        if ($tokens[($varToken - 1)]['code'] === T_DOUBLE_COLON) {
-            $varToken = ($varToken - 2);
+        $start = $phpcsFile->findStartOfStatement($varToken);
+
+        $allowed = Tokens::$emptyTokens;
+
+        $allowed[T_STRING]          = T_STRING;
+        $allowed[T_NS_SEPARATOR]    = T_NS_SEPARATOR;
+        $allowed[T_DOUBLE_COLON]    = T_DOUBLE_COLON;
+        $allowed[T_OBJECT_OPERATOR] = T_OBJECT_OPERATOR;
+        $allowed[T_ASPERAND]        = T_ASPERAND;
+        $allowed[T_DOLLAR]          = T_DOLLAR;
+        $allowed[T_SELF]            = T_SELF;
+        $allowed[T_PARENT]          = T_PARENT;
+        $allowed[T_STATIC]          = T_STATIC;
+
+        $varToken = $phpcsFile->findPrevious($allowed, ($varToken - 1), null, true);
+
+        if ($varToken < $start
+            && $tokens[$varToken]['code'] !== T_OPEN_PARENTHESIS
+            && $tokens[$varToken]['code'] !== T_OPEN_SQUARE_BRACKET
+        ) {
+            $varToken = $start;
         }
 
-        // Deal with this type of variable: $obj->$var by setting the var
-        // token to be "$obj" rather than "$var".
-        if ($tokens[($varToken - 1)]['code'] === T_OBJECT_OPERATOR) {
-            $varToken = ($varToken - 2);
+        // Ignore the first part of FOR loops as we are allowed to
+        // assign variables there even though the variable is not the
+        // first thing on the line.
+        if ($tokens[$varToken]['code'] === T_OPEN_PARENTHESIS && isset($tokens[$varToken]['parenthesis_owner']) === true) {
+            $owner = $tokens[$varToken]['parenthesis_owner'];
+            if ($tokens[$owner]['code'] === T_FOR) {
+                return;
+            }
         }
 
-        // Deal with this type of variable: $$var by setting the var
-        // token to be "$" rather than "$var".
-        if ($tokens[($varToken - 1)]['content'] === '$') {
-            $varToken--;
-        }
-
-        // Ignore member var definitions.
-        $prev = $phpcsFile->findPrevious(T_WHITESPACE, ($varToken - 1), null, true);
-        if (isset(Tokens::$scopeModifiers[$tokens[$prev]['code']]) === true
-            || $tokens[$prev]['code'] === T_VAR
+        if ($tokens[$varToken]['code'] === T_VARIABLE
+            || $tokens[$varToken]['code'] === T_OPEN_TAG
+            || $tokens[$varToken]['code'] === T_INLINE_THEN
+            || $tokens[$varToken]['code'] === T_INLINE_ELSE
+            || $tokens[$varToken]['code'] === T_SEMICOLON
+            || $tokens[$varToken]['code'] === T_CLOSE_PARENTHESIS
+            || isset($allowed[$tokens[$varToken]['code']]) === true
         ) {
             return;
         }
 
-        if ($tokens[$prev]['code'] === T_STATIC) {
-            return;
-        }
+        $error     = 'Assignments must be the first block of code on a line';
+        $errorCode = 'Found';
 
-        // Make sure this variable is the first thing in the statement.
-        $varLine  = $tokens[$varToken]['line'];
-        $prevLine = 0;
-        for ($i = ($varToken - 1); $i >= 0; $i--) {
-            if ($tokens[$i]['code'] === T_SEMICOLON) {
-                // We reached the end of the statement.
-                return;
-            }
-
-            if ($tokens[$i]['code'] === T_INLINE_THEN) {
-                // We reached the end of the inline THEN statement.
-                return;
-            }
-
-            if ($tokens[$i]['code'] === T_INLINE_ELSE) {
-                // We reached the end of the inline ELSE statement.
-                return;
-            }
-
-            if ($tokens[$i]['code'] === T_OPEN_TAG) {
-                // We reached the end of the code block.
-                return;
-            }
-
-            if (isset(Tokens::$emptyTokens[$tokens[$i]['code']]) === false) {
-                $prevLine = $tokens[$i]['line'];
-                break;
-            }
-        }//end for
-
-        // Ignore the first part of FOR loops as we are allowed to
-        // assign variables there even though the variable is not the
-        // first thing on the line. Also ignore WHILE loops.
-        if ($tokens[$i]['code'] === T_OPEN_PARENTHESIS && isset($tokens[$i]['parenthesis_owner']) === true) {
-            $owner = $tokens[$i]['parenthesis_owner'];
-            if ($tokens[$owner]['code'] === T_FOR || $tokens[$owner]['code'] === T_WHILE) {
-                return;
+        if (isset($nested) === true) {
+            $controlStructures = [
+                T_IF     => T_IF,
+                T_ELSEIF => T_ELSEIF,
+                T_SWITCH => T_SWITCH,
+                T_CASE   => T_CASE,
+                T_FOR    => T_FOR,
+            ];
+            foreach ($nested as $opener => $closer) {
+                if (isset($tokens[$opener]['parenthesis_owner']) === true
+                    && isset($controlStructures[$tokens[$tokens[$opener]['parenthesis_owner']]['code']]) === true
+                ) {
+                    $errorCode .= 'InControlStructure';
+                    break;
+                }
             }
         }
 
-        if ($prevLine === $varLine) {
-            $error = 'Assignments must be the first block of code on a line';
-            $phpcsFile->addError($error, $stackPtr, 'Found');
-        }
+        $phpcsFile->addError($error, $stackPtr, $errorCode);
 
     }//end process()
 

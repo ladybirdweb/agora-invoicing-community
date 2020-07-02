@@ -1,3 +1,86 @@
+### [1.10.8] 2020-06-24
+
+  * Fixed compatibility issue with git being configured to show signatures by default
+  * Fixed discarding of local changes when updating packages to include untracked files
+  * Several minor fixes
+
+### [1.10.7] 2020-06-03
+
+  * Fixed PHP 8 deprecations
+  * Fixed detection of pcntl_signal being in disabled_functions when pcntl_async_signal is allowed
+
+### [1.10.6] 2020-05-06
+
+  * Fixed version guessing to take composer-runtime-api and composer-plugin-api requirements into account to avoid selecting packages which require Composer 2
+  * Fixed package name validation to allow several dashes following each other
+  * Fixed post-status-cmd script not firing when there were no changes to be displayed
+  * Fixed composer-runtime-api support on Composer 1.x, the package is now present as 1.0.0
+  * Fixed support for composer show --name-only --self
+  * Fixed detection of GitLab URLs when handling authentication in some cases
+
+### [1.10.5] 2020-04-10
+
+  * Fixed self-update on PHP <5.6, seriously please upgrade people, it's time
+  * Fixed 1.10.2 regression with PATH resolution in scripts
+
+### [1.10.4] 2020-04-09
+
+  * Fixed 1.10.2 regression in path symlinking with absolute path repos
+
+### [1.10.3] 2020-04-09
+
+  * Fixed invalid --2 flag warning in `self-update` when no channel is requested
+
+### [1.10.2] 2020-04-09
+
+  * Added --1 flag to `self-update` command which can be added to automated self-update runs to make sure it won't automatically jump to 2.0 once that is released
+  * Fixed path repository symlinks being made relative when the repo url is defined as absolute paths
+  * Fixed potential issues when using "composer ..." in scripts and composer/composer was also required in the project
+  * Fixed 1.10.0 regression when downloading GitHub archives from non-API URLs
+  * Fixed handling of malformed info in fund command
+  * Fixed Symfony5 compatibility issues in a few commands
+
+### [1.10.1] 2020-03-13
+
+  * Fixed path repository warning on empty path when using wildcards
+  * Fixed superfluous warnings when generating optimized autoloaders
+
+### [1.10.0] 2020-03-10
+
+  * Added `bearer` auth config to authenticate using `Authorization: Bearer <token>` headers
+  * Added `plugin-api-version` in composer.lock so third-party tools can know which Composer version was used to generate a lock file
+  * Fixed composer fund command and funding info parsing to be more useful
+  * Fixed issue where --no-dev autoload generation was excluding some packages which should not have been excluded
+  * Fixed 1.10-RC regression in create project's handling of absolute paths
+
+### [1.10.0-RC] 2020-02-14
+
+  * Breaking: `composer global exec ...` now executes the process in the current working directory instead of executing it in the global directory.
+  * Warning: Added a warning when class names are being loaded by a PSR-4 or PSR-0 rule only due to classmap optimization, but would not otherwise be autoloadable. Composer 2.0 will stop autoloading these classes so make sure you fix your autoload configs.
+  * Added new funding key to composer.json to describe ways your package's maintenance can be funded. This reads info from GitHub's FUNDING.yml by default so better configure it there so it shows on GitHub and Composer/Packagist
+  * Added `composer fund` command to show funding info of your dependencies
+  * Added support for --format=json output for show command when showing a single package
+  * Added support for configuring suggestions using config command, e.g. `composer config suggest.foo/bar some text`
+  * Added support for configuring fine-grained preferred-install using config command, e.g. `composer config preferred-install.foo/* dist`
+  * Added `@putenv` script handler to set environment variables from composer.json for following scripts
+  * Added `lock` option that can be set to false, in which case no composer.lock file will be generated
+  * Added --add-repository flag to create-project command which will persist the repo given in --repository into the composer.json of the package being installed
+  * Added support for IPv6 addresses in NO_PROXY
+  * Added package homepage display in the show command
+  * Added debug info about HTTP authentications
+  * Added Symfony 5 compatibility
+  * Added --fixed flag to require command to make it use a fixed constraint instead of a ^x.y constraint when adding the requirement
+  * Fixed exclude-from-classmap matching subsets of directories e.g. foo/ was excluding foobar/
+  * Fixed archive command to persist file permissions inside the zip files
+  * Fixed init/require command to avoid suggesting packages which are already selected in the search results
+  * Fixed create-project UX issues
+  * Fixed filemtime for vendor/composer/* files is now only changing when the files actually change
+  * Fixed issues detecting docker environment with an active open_basedir
+
+### [1.9.3] 2020-02-04
+
+  * Fixed GitHub deprecation of access_token query parameter, now using Authorization header
+
 ### [1.9.2] 2020-01-14
 
   * Fixed minor git driver bugs
@@ -259,7 +342,7 @@
   * Fixed output inconsistencies
   * Fixed unicode handling in `init` command for author names
   * Fixed useless warning when doing partial updates/removes on packages that are not currently installed
-  * Fixed xdebug disabling issue when combined with disable_functions and allow_url_fopen CLI overrides
+  * Fixed Xdebug disabling issue when combined with disable_functions and allow_url_fopen CLI overrides
 
 ### [1.4.1] - 2017-03-10
 
@@ -320,7 +403,7 @@
   * Added `gitlab-token` auth config for GitLab private tokens
   * Added `--strict` to the `outdated` command to return a non-zero exit code when there are outdated packages
   * Added ability to call php scripts using the current php interpreter (instead of finding php in PATH by default) in script handlers via `@php ...`
-  * Added `COMPOSER_ALLOW_XDEBUG` env var to circumvent the xdebug-disabling behavior
+  * Added `COMPOSER_ALLOW_XDEBUG` env var to circumvent the Xdebug-disabling behavior
   * Added `COMPOSER_MIRROR_PATH_REPOS` env var to force mirroring of path repositories vs symlinking
   * Added `COMPOSER_DEV_MODE` env var that is set by Composer to forward the dev mode to script handlers
   * Fixed support for git 2.11
@@ -783,6 +866,17 @@
 
   * Initial release
 
+[1.10.8]: https://github.com/composer/composer/compare/1.10.7...1.10.8
+[1.10.7]: https://github.com/composer/composer/compare/1.10.6...1.10.7
+[1.10.6]: https://github.com/composer/composer/compare/1.10.5...1.10.6
+[1.10.5]: https://github.com/composer/composer/compare/1.10.4...1.10.5
+[1.10.4]: https://github.com/composer/composer/compare/1.10.3...1.10.4
+[1.10.3]: https://github.com/composer/composer/compare/1.10.2...1.10.3
+[1.10.2]: https://github.com/composer/composer/compare/1.10.1...1.10.2
+[1.10.1]: https://github.com/composer/composer/compare/1.10.0...1.10.1
+[1.10.0]: https://github.com/composer/composer/compare/1.10.0-RC...1.10.0
+[1.10.0-RC]: https://github.com/composer/composer/compare/1.9.3...1.10.0-RC
+[1.9.3]: https://github.com/composer/composer/compare/1.9.2...1.9.3
 [1.9.2]: https://github.com/composer/composer/compare/1.9.1...1.9.2
 [1.9.1]: https://github.com/composer/composer/compare/1.9.0...1.9.1
 [1.9.0]: https://github.com/composer/composer/compare/1.8.6...1.9.0

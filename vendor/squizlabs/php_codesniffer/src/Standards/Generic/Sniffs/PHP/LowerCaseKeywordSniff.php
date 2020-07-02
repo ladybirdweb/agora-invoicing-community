@@ -9,8 +9,9 @@
 
 namespace PHP_CodeSniffer\Standards\Generic\Sniffs\PHP;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
+use PHP_CodeSniffer\Util;
 
 class LowerCaseKeywordSniff implements Sniff
 {
@@ -24,10 +25,8 @@ class LowerCaseKeywordSniff implements Sniff
     public function register()
     {
         return [
-            T_HALT_COMPILER,
             T_ABSTRACT,
             T_ARRAY,
-            T_ARRAY_HINT,
             T_AS,
             T_BREAK,
             T_CALLABLE,
@@ -56,6 +55,7 @@ class LowerCaseKeywordSniff implements Sniff
             T_EXTENDS,
             T_FINAL,
             T_FINALLY,
+            T_FN,
             T_FOR,
             T_FOREACH,
             T_FUNCTION,
@@ -120,10 +120,12 @@ class LowerCaseKeywordSniff implements Sniff
                 $phpcsFile->recordMetric($stackPtr, 'PHP keyword case', 'mixed');
             }
 
+            $messageKeyword = Util\Common::prepareForOutput($keyword);
+
             $error = 'PHP keywords must be lowercase; expected "%s" but found "%s"';
             $data  = [
-                strtolower($keyword),
-                $keyword,
+                strtolower($messageKeyword),
+                $messageKeyword,
             ];
 
             $fix = $phpcsFile->addFixableError($error, $stackPtr, 'Found', $data);
@@ -132,7 +134,7 @@ class LowerCaseKeywordSniff implements Sniff
             }
         } else {
             $phpcsFile->recordMetric($stackPtr, 'PHP keyword case', 'lower');
-        }
+        }//end if
 
     }//end process()
 

@@ -161,3 +161,39 @@ function foo(
     $param3,
 ) : SomeClass {
 }
+
+// Issue 1959.
+function __construct(
+    $foo,   // This is foo
+    $bar
+) {}
+
+function __construct(
+    $foo /* this is foo */,
+    $bar // this is bar
+) {}
+
+function __construct(
+    $foo,   // phpcs:ignore Standard.Category.Sniff -- for reasons.
+    $bar
+) {}
+
+public function hello(string $greeting
+) {
+}
+
+public function hello(string $greeting // cant fix this
+) {
+}
+
+public function hello(string $greeting // phpcs:ignore Standard.Category.Sniff -- for reasons.
+) {
+}
+
+function foo(
+
+
+    $foo,
+    $bar
+) {
+}

@@ -9,8 +9,8 @@
 
 namespace PHP_CodeSniffer\Standards\Squiz\Sniffs\WhiteSpace;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
 
 class FunctionClosingBraceSpaceSniff implements Sniff
 {
@@ -83,8 +83,7 @@ class FunctionClosingBraceSpaceSniff implements Sniff
         }
 
         $nestedFunction = false;
-        if ($phpcsFile->hasCondition($stackPtr, T_FUNCTION) === true
-            || $phpcsFile->hasCondition($stackPtr, T_CLOSURE) === true
+        if ($phpcsFile->hasCondition($stackPtr, [T_FUNCTION, T_CLOSURE]) === true
             || isset($tokens[$stackPtr]['nested_parenthesis']) === true
         ) {
             $nestedFunction = true;

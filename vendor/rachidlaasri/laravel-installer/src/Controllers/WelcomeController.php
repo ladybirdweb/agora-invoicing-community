@@ -2,13 +2,10 @@
 
 namespace RachidLaasri\LaravelInstaller\Controllers;
 
-use App\Http\Controllers\Controller;
-
-use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 
 class WelcomeController extends Controller
 {
-
     /**
      * Display the installer welcome page.
      *
@@ -18,5 +15,4 @@ class WelcomeController extends Controller
     {
         return view('vendor.installer.welcome');
     }
-
 }

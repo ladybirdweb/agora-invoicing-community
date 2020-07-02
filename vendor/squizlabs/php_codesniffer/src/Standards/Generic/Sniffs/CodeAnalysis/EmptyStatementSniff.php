@@ -23,8 +23,8 @@
 
 namespace PHP_CodeSniffer\Standards\Generic\Sniffs\CodeAnalysis;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Util\Tokens;
 
 class EmptyStatementSniff implements Sniff
@@ -39,7 +39,9 @@ class EmptyStatementSniff implements Sniff
     public function register()
     {
         return [
+            T_TRY,
             T_CATCH,
+            T_FINALLY,
             T_DO,
             T_ELSE,
             T_ELSEIF,
@@ -47,7 +49,6 @@ class EmptyStatementSniff implements Sniff
             T_FOREACH,
             T_IF,
             T_SWITCH,
-            T_TRY,
             T_WHILE,
         ];
 
@@ -87,7 +88,7 @@ class EmptyStatementSniff implements Sniff
         // Get token identifier.
         $name  = strtoupper($token['content']);
         $error = 'Empty %s statement detected';
-        $phpcsFile->addError($error, $stackPtr, 'Detected'.$name, [$name]);
+        $phpcsFile->addError($error, $stackPtr, 'Detected'.ucfirst(strtolower($name)), [$name]);
 
     }//end process()
 

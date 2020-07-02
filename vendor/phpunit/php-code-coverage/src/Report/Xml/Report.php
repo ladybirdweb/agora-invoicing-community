@@ -1,6 +1,6 @@
-<?php
+<?php declare(strict_types=1);
 /*
- * This file is part of the php-code-coverage package.
+ * This file is part of phpunit/php-code-coverage.
  *
  * (c) Sebastian Bergmann <sebastian@phpunit.de>
  *
@@ -72,13 +72,13 @@ final class Report extends File
         return new Source($source);
     }
 
-    private function setName($name): void
+    private function setName(string $name): void
     {
         $this->getContextNode()->setAttribute('name', \basename($name));
         $this->getContextNode()->setAttribute('path', \dirname($name));
     }
 
-    private function getUnitObject($tagName, $name): Unit
+    private function getUnitObject(string $tagName, $name): Unit
     {
         $node = $this->getContextNode()->appendChild(
             $this->getDomDocument()->createElementNS(

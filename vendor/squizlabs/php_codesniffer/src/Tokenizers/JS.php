@@ -9,13 +9,12 @@
 
 namespace PHP_CodeSniffer\Tokenizers;
 
-use PHP_CodeSniffer\Util;
-use PHP_CodeSniffer\Exceptions\TokenizerException;
 use PHP_CodeSniffer\Config;
+use PHP_CodeSniffer\Exceptions\TokenizerException;
+use PHP_CodeSniffer\Util;
 
 class JS extends Tokenizer
 {
-
 
     /**
      * A list of tokens that are allowed to open a scope.
@@ -257,7 +256,7 @@ class JS extends Tokenizer
      * @param string                  $eolChar The EOL char used in the content.
      *
      * @return void
-     * @throws TokenizerException If the file appears to be minified.
+     * @throws \PHP_CodeSniffer\Exceptions\TokenizerException If the file appears to be minified.
      */
     public function __construct($content, Config $config, $eolChar='\n')
     {
@@ -265,7 +264,7 @@ class JS extends Tokenizer
             throw new TokenizerException('File appears to be minified and cannot be processed');
         }
 
-        return parent::__construct($content, $config, $eolChar);
+        parent::__construct($content, $config, $eolChar);
 
     }//end __construct()
 
@@ -446,14 +445,7 @@ class JS extends Tokenizer
             // Special case for T_DIVIDE which can actually be
             // the start of a regular expression.
             if ($buffer === $char && $char === '/' && $chars[($i + 1)] !== '*') {
-                $regex = $this->getRegexToken(
-                    $i,
-                    $string,
-                    $chars,
-                    $tokens,
-                    $this->eolChar
-                );
-
+                $regex = $this->getRegexToken($i, $string, $chars, $tokens);
                 if ($regex !== null) {
                     $tokens[] = [
                         'code'    => T_REGULAR_EXPRESSION,
@@ -832,7 +824,7 @@ class JS extends Tokenizer
                 $numLines   = count($tokenLines);
 
                 for ($i = 0; $i < $numLines; $i++) {
-                    $newToken['content'] = $tokenLines[$i];
+                    $newToken = ['content' => $tokenLines[$i]];
                     if ($i === ($numLines - 1)) {
                         if ($tokenLines[$i] === '') {
                             break;
@@ -918,7 +910,7 @@ class JS extends Tokenizer
      * @param string $chars  An array of characters being tokenized.
      * @param string $tokens The current array of tokens found in the string.
      *
-     * @return void
+     * @return array<string, string>|null
      */
     public function getRegexToken($char, $string, $chars, $tokens)
     {
@@ -932,6 +924,7 @@ class JS extends Tokenizer
             T_RETURN              => true,
             T_BOOLEAN_OR          => true,
             T_BOOLEAN_AND         => true,
+            T_BOOLEAN_NOT         => true,
             T_BITWISE_OR          => true,
             T_BITWISE_AND         => true,
             T_COMMA               => true,
@@ -1012,7 +1005,7 @@ class JS extends Tokenizer
             echo "\t* found end of regular expression at token $regexEnd *".PHP_EOL;
         }
 
-        for ($next = ($next + 1); $next < $numChars; $next++) {
+        for ($next += 1; $next < $numChars; $next++) {
             if ($chars[$next] !== ' ') {
                 break;
             } else {
@@ -1110,8 +1103,8 @@ class JS extends Tokenizer
                 && isset($this->tokens[$i]['scope_condition']) === false
                 && isset($this->tokens[$i]['bracket_closer']) === true
             ) {
-                $condition = end($this->tokens[$i]['conditions']);
-                reset($this->tokens[$i]['conditions']);
+                $condition = $this->tokens[$i]['conditions'];
+                $condition = end($condition);
                 if ($condition === T_CLASS) {
                     // Possibly an ES6 method. To be classified as one, the previous
                     // non-empty tokens need to be a set of parenthesis, and then a string

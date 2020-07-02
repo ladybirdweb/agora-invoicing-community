@@ -48,3 +48,65 @@ $response
      -> CompletedTrackDetails
 -> TrackDetails
  -> Events;
+
+$var = get_object(
+    $foo->something()
+        ->query()
+)->two()
+    ->three();
+
+$foo->one(
+    $foo
+            ->two()
+);
+
+get_object()->one()
+    ->two()
+        ->three();
+
+someclass::one()
+    ->two()
+        ->three();
+
+(new someclass())->one()
+    ->two()
+        ->three();
+
+// phpcs:set PEAR.WhiteSpace.ObjectOperatorIndent multilevel true
+
+$someObject
+    ->startSomething()
+                    ->someOtherFunc(23, 42)
+->endSomething()
+->doSomething(23, 42)
+->endEverything();
+
+$rootNode
+    ->one()
+        ->two()
+            ->three()
+        ->four()
+    ->five();
+
+$rootNode
+    ->one()
+        ->two()
+            ->three()
+    ->four()
+    ->five();
+
+$rootNode
+    ->one()
+    ->two()
+        ->three()
+    ->four()
+->five();
+
+$rootNode
+    ->one()
+        ->two()
+            ->three()
+        ->four()
+        ->five();
+
+// phpcs:set PEAR.WhiteSpace.ObjectOperatorIndent multilevel false

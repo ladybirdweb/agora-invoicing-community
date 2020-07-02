@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -20,8 +20,8 @@ use phpDocumentor\Reflection\Project;
 use phpDocumentor\Reflection\Type;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophet;
-use ReflectionClass;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
+use SebastianBergmann\CodeUnit\CodeUnit;
 use SebastianBergmann\CodeUnitReverseLookup\Wizard;
 use SebastianBergmann\Comparator\Comparator;
 use SebastianBergmann\Diff\Diff;
@@ -33,21 +33,19 @@ use SebastianBergmann\Invoker\Invoker;
 use SebastianBergmann\ObjectEnumerator\Enumerator;
 use SebastianBergmann\RecursionContext\Context;
 use SebastianBergmann\ResourceOperations\ResourceOperations;
+use SebastianBergmann\Template\Template;
 use SebastianBergmann\Timer\Timer;
+use SebastianBergmann\Type\TypeName;
 use SebastianBergmann\Version;
-use Text_Template;
 use TheSeer\Tokenizer\Tokenizer;
 use Webmozart\Assert\Assert;
 
-/**
- * Utility class for blacklisting PHPUnit's own source code files.
- */
 final class Blacklist
 {
     /**
-     * @var array
+     * @var array<string,int>
      */
-    public static $blacklistedClassNames = [
+    private const BLACKLISTED_CLASS_NAMES = [
         // composer
         ClassLoader::class => 1,
 
@@ -88,13 +86,16 @@ final class Blacklist
         Invoker::class => 1,
 
         // phpunit/php-text-template
-        Text_Template::class => 1,
+        Template::class => 1,
 
         // phpunit/php-timer
         Timer::class => 1,
 
         // phpunit/php-token-stream
         PHP_Token::class => 1,
+
+        // sebastian/code-unit
+        CodeUnit::class => 1,
 
         // sebastian/code-unit-reverse-lookup
         Wizard::class => 1,
@@ -123,6 +124,9 @@ final class Blacklist
         // sebastian/resource-operations
         ResourceOperations::class => 1,
 
+        // sebastian/type
+        TypeName::class => 1,
+
         // sebastian/version
         Version::class => 1,
 
@@ -138,7 +142,23 @@ final class Blacklist
      */
     private static $directories;
 
+    public static function addDirectory(string $directory): void
+    {
+        if (!\is_dir($directory)) {
+            throw new Exception(
+                \sprintf(
+                    '"%s" is not a directory',
+                    $directory
+                )
+            );
+        }
+
+        self::$directories[] = \realpath($directory);
+    }
+
     /**
+     * @throws Exception
+     *
      * @return string[]
      */
     public function getBlacklistedDirectories(): array
@@ -148,6 +168,9 @@ final class Blacklist
         return self::$directories;
     }
 
+    /**
+     * @throws Exception
+     */
     public function isBlacklisted(string $file): bool
     {
         if (\defined('PHPUNIT_TESTSUITE')) {
@@ -165,18 +188,30 @@ final class Blacklist
         return false;
     }
 
+    /**
+     * @throws Exception
+     */
     private function initialize(): void
     {
         if (self::$directories === null) {
             self::$directories = [];
 
-            foreach (self::$blacklistedClassNames as $className => $parent) {
+            foreach (self::BLACKLISTED_CLASS_NAMES as $className => $parent) {
                 if (!\class_exists($className)) {
                     continue;
                 }
 
-                $reflector = new ReflectionClass($className);
-                $directory = $reflector->getFileName();
+                try {
+                    $directory = (new \ReflectionClass($className))->getFileName();
+                    // @codeCoverageIgnoreStart
+                } catch (\ReflectionException $e) {
+                    throw new Exception(
+                        $e->getMessage(),
+                        (int) $e->getCode(),
+                        $e
+                    );
+                }
+                // @codeCoverageIgnoreEnd
 
                 for ($i = 0; $i < $parent; $i++) {
                     $directory = \dirname($directory);

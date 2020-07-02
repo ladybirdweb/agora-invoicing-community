@@ -9,8 +9,8 @@
 
 namespace PHP_CodeSniffer\Standards\PSR2\Sniffs\ControlStructures;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Util\Tokens;
 
 class SwitchDeclarationSniff implements Sniff
@@ -109,7 +109,8 @@ class SwitchDeclarationSniff implements Sniff
 
                 $next = $phpcsFile->findNext(T_WHITESPACE, ($opener + 1), null, true);
                 if ($tokens[$next]['line'] === $tokens[$opener]['line']
-                    && $tokens[$next]['code'] === T_COMMENT
+                    && ($tokens[$next]['code'] === T_COMMENT
+                    || isset(Tokens::$phpcsCommentTokens[$tokens[$next]['code']]) === true)
                 ) {
                     // Skip comments on the same line.
                     $next = $phpcsFile->findNext(T_WHITESPACE, ($next + 1), null, true);
@@ -207,7 +208,7 @@ class SwitchDeclarationSniff implements Sniff
      * @param int                         $stackPtr  The position to start looking at.
      * @param int                         $end       The position to stop looking at.
      *
-     * @return int | bool
+     * @return int|false
      */
     private function findNextCase($phpcsFile, $stackPtr, $end)
     {

@@ -2,8 +2,8 @@
 /**
  * Detects unnecessary overridden methods that simply call their parent.
  *
- * This rule is based on the PMD rule catalog. The Useless Overriding Method
- * sniff detects the use of methods that only call their parent classes's method
+ * This rule is based on the PMD rule catalogue. The Useless Overriding Method
+ * sniff detects the use of methods that only call their parent class's method
  * with the same name and arguments. These methods are not required.
  *
  * <code>
@@ -21,8 +21,8 @@
 
 namespace PHP_CodeSniffer\Standards\Generic\Sniffs\CodeAnalysis;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Util\Tokens;
 
 class UselessOverridingMethodSniff implements Sniff

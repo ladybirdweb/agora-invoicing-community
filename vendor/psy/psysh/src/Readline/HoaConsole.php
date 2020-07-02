@@ -3,7 +3,7 @@
 /*
  * This file is part of Psy Shell.
  *
- * (c) 2012-2018 Justin Hileman
+ * (c) 2012-2020 Justin Hileman
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,6 +11,8 @@
 
 namespace Psy\Readline;
 
+use Hoa\Console\Console;
+use Hoa\Console\Cursor;
 use Hoa\Console\Readline\Readline as HoaReadline;
 use Psy\Exception\BreakException;
 
@@ -22,17 +24,25 @@ class HoaConsole implements Readline
     /** @var HoaReadline */
     private $hoaReadline;
 
+    /** @var string|null */
+    private $lastPrompt;
+
     /**
      * @return bool
      */
     public static function isSupported()
     {
-        return \class_exists('\Hoa\Console\Console', true);
+        return \class_exists(Console::class, true);
     }
 
     public function __construct()
     {
         $this->hoaReadline = new HoaReadline();
+        $this->hoaReadline->addMapping('\C-l', function () {
+            $this->redisplay();
+
+            return HoaReadline::STATE_NO_ECHO;
+        });
     }
 
     /**
@@ -86,6 +96,8 @@ class HoaConsole implements Readline
      */
     public function readline($prompt = null)
     {
+        $this->lastPrompt = $prompt;
+
         return $this->hoaReadline->readLine($prompt);
     }
 
@@ -94,7 +106,9 @@ class HoaConsole implements Readline
      */
     public function redisplay()
     {
-        // noop
+        $currentLine = $this->hoaReadline->getLine();
+        Cursor::clear('all');
+        echo $this->lastPrompt, $currentLine;
     }
 
     /**

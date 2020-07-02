@@ -15,3 +15,14 @@ function test()
         'test3'
     );
 }
+
+if ($foo) {
+    [
+      'enabled'     => $enabled,
+      'compression' => $compression,
+    ] = $options;
+}
+
+$this->foo()
+    ->bar()
+    ->baz();

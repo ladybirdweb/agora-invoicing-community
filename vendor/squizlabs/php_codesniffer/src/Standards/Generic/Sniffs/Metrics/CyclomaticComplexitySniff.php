@@ -14,8 +14,8 @@
 
 namespace PHP_CodeSniffer\Standards\Generic\Sniffs\Metrics;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
 
 class CyclomaticComplexitySniff implements Sniff
 {
@@ -58,8 +58,6 @@ class CyclomaticComplexitySniff implements Sniff
      */
     public function process(File $phpcsFile, $stackPtr)
     {
-        $this->currentFile = $phpcsFile;
-
         $tokens = $phpcsFile->getTokens();
 
         // Ignore abstract methods.

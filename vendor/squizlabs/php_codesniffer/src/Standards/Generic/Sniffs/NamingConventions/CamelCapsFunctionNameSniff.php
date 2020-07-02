@@ -9,10 +9,10 @@
 
 namespace PHP_CodeSniffer\Standards\Generic\Sniffs\NamingConventions;
 
+use PHP_CodeSniffer\Files\File;
 use PHP_CodeSniffer\Sniffs\AbstractScopeSniff;
 use PHP_CodeSniffer\Util\Common;
 use PHP_CodeSniffer\Util\Tokens;
-use PHP_CodeSniffer\Files\File;
 
 class CamelCapsFunctionNameSniff extends AbstractScopeSniff
 {
@@ -48,17 +48,18 @@ class CamelCapsFunctionNameSniff extends AbstractScopeSniff
      * @var array
      */
     protected $methodsDoubleUnderscore = [
-        'soapcall'               => true,
-        'getlastrequest'         => true,
-        'getlastresponse'        => true,
-        'getlastrequestheaders'  => true,
-        'getlastresponseheaders' => true,
-        'getfunctions'           => true,
-        'gettypes'               => true,
         'dorequest'              => true,
+        'getcookies'             => true,
+        'getfunctions'           => true,
+        'getlastrequest'         => true,
+        'getlastrequestheaders'  => true,
+        'getlastresponse'        => true,
+        'getlastresponseheaders' => true,
+        'gettypes'               => true,
         'setcookie'              => true,
         'setlocation'            => true,
         'setsoapheaders'         => true,
+        'soapcall'               => true,
     ];
 
     /**
@@ -98,6 +99,16 @@ class CamelCapsFunctionNameSniff extends AbstractScopeSniff
      */
     protected function processTokenWithinScope(File $phpcsFile, $stackPtr, $currScope)
     {
+        $tokens = $phpcsFile->getTokens();
+
+        // Determine if this is a function which needs to be examined.
+        $conditions = $tokens[$stackPtr]['conditions'];
+        end($conditions);
+        $deepestScope = key($conditions);
+        if ($deepestScope !== $currScope) {
+            return;
+        }
+
         $methodName = $phpcsFile->getDeclarationName($stackPtr);
         if ($methodName === null) {
             // Ignore closures.
@@ -105,28 +116,35 @@ class CamelCapsFunctionNameSniff extends AbstractScopeSniff
         }
 
         $className = $phpcsFile->getDeclarationName($currScope);
+        if (isset($className) === false) {
+            $className = '[Anonymous Class]';
+        }
+
         $errorData = [$className.'::'.$methodName];
+
+        $methodNameLc = strtolower($methodName);
+        $classNameLc  = strtolower($className);
 
         // Is this a magic method. i.e., is prefixed with "__" ?
         if (preg_match('|^__[^_]|', $methodName) !== 0) {
-            $magicPart = strtolower(substr($methodName, 2));
-            if (isset($this->magicMethods[$magicPart]) === false
-                && isset($this->methodsDoubleUnderscore[$magicPart]) === false
+            $magicPart = substr($methodNameLc, 2);
+            if (isset($this->magicMethods[$magicPart]) === true
+                || isset($this->methodsDoubleUnderscore[$magicPart]) === true
             ) {
-                $error = 'Method name "%s" is invalid; only PHP magic methods should be prefixed with a double underscore';
-                $phpcsFile->addError($error, $stackPtr, 'MethodDoubleUnderscore', $errorData);
+                return;
             }
 
-            return;
+            $error = 'Method name "%s" is invalid; only PHP magic methods should be prefixed with a double underscore';
+            $phpcsFile->addError($error, $stackPtr, 'MethodDoubleUnderscore', $errorData);
         }
 
         // PHP4 constructors are allowed to break our rules.
-        if ($methodName === $className) {
+        if ($methodNameLc === $classNameLc) {
             return;
         }
 
         // PHP4 destructors are allowed to break our rules.
-        if ($methodName === '_'.$className) {
+        if ($methodNameLc === '_'.$classNameLc) {
             return;
         }
 
@@ -178,12 +196,12 @@ class CamelCapsFunctionNameSniff extends AbstractScopeSniff
         // Is this a magic function. i.e., it is prefixed with "__".
         if (preg_match('|^__[^_]|', $functionName) !== 0) {
             $magicPart = strtolower(substr($functionName, 2));
-            if (isset($this->magicFunctions[$magicPart]) === false) {
-                 $error = 'Function name "%s" is invalid; only PHP magic methods should be prefixed with a double underscore';
-                 $phpcsFile->addError($error, $stackPtr, 'FunctionDoubleUnderscore', $errorData);
+            if (isset($this->magicFunctions[$magicPart]) === true) {
+                return;
             }
 
-            return;
+            $error = 'Function name "%s" is invalid; only PHP magic methods should be prefixed with a double underscore';
+            $phpcsFile->addError($error, $stackPtr, 'FunctionDoubleUnderscore', $errorData);
         }
 
         // Ignore first underscore in functions prefixed with "_".

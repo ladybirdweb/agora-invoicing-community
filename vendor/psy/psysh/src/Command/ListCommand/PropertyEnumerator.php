@@ -3,7 +3,7 @@
 /*
  * This file is part of Psy Shell.
  *
- * (c) 2012-2018 Justin Hileman
+ * (c) 2012-2020 Justin Hileman
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -26,17 +26,17 @@ class PropertyEnumerator extends Enumerator
         // only list properties when a Reflector is present.
 
         if ($reflector === null) {
-            return;
+            return [];
         }
 
         // We can only list properties on actual class (or object) reflectors.
         if (!$reflector instanceof \ReflectionClass) {
-            return;
+            return [];
         }
 
         // only list properties if we are specifically asked
         if (!$input->getOption('properties')) {
-            return;
+            return [];
         }
 
         $showAll    = $input->getOption('all');
@@ -44,7 +44,7 @@ class PropertyEnumerator extends Enumerator
         $properties = $this->prepareProperties($this->getProperties($showAll, $reflector, $noInherit), $target);
 
         if (empty($properties)) {
-            return;
+            return [];
         }
 
         $ret = [];
@@ -117,9 +117,7 @@ class PropertyEnumerator extends Enumerator
      */
     protected function getKindLabel(\ReflectionClass $reflector)
     {
-        if ($reflector->isInterface()) {
-            return 'Interface Properties';
-        } elseif (\method_exists($reflector, 'isTrait') && $reflector->isTrait()) {
+        if (\method_exists($reflector, 'isTrait') && $reflector->isTrait()) {
             return 'Trait Properties';
         } else {
             return 'Class Properties';
@@ -154,7 +152,7 @@ class PropertyEnumerator extends Enumerator
      */
     protected function presentValue(\ReflectionProperty $property, $target)
     {
-        // If $target is a class, trait or interface (try to) get the default
+        // If $target is a class or trait (try to) get the default
         // value for the property.
         if (!\is_object($target)) {
             try {

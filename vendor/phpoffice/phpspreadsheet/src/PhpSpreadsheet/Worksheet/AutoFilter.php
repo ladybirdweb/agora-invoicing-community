@@ -38,7 +38,7 @@ class AutoFilter
      * @param string $pRange Cell range (i.e. A1:E10)
      * @param Worksheet $pSheet
      */
-    public function __construct($pRange = '', Worksheet $pSheet = null)
+    public function __construct($pRange = '', ?Worksheet $pSheet = null)
     {
         $this->range = $pRange;
         $this->workSheet = $pSheet;
@@ -59,9 +59,9 @@ class AutoFilter
      *
      * @param Worksheet $pSheet
      *
-     * @return AutoFilter
+     * @return $this
      */
-    public function setParent(Worksheet $pSheet = null)
+    public function setParent(?Worksheet $pSheet = null)
     {
         $this->workSheet = $pSheet;
 
@@ -83,9 +83,7 @@ class AutoFilter
      *
      * @param string $pRange Cell range (i.e. A1:E10)
      *
-     * @throws PhpSpreadsheetException
-     *
-     * @return AutoFilter
+     * @return $this
      */
     public function setRange($pRange)
     {
@@ -132,8 +130,6 @@ class AutoFilter
      *
      * @param string $column Column name (e.g. A)
      *
-     * @throws PhpSpreadsheetException
-     *
      * @return int The column offset within the autofilter range
      */
     public function testColumnInRange($column)
@@ -156,8 +152,6 @@ class AutoFilter
      *
      * @param string $pColumn Column name (e.g. A)
      *
-     * @throws PhpSpreadsheetException
-     *
      * @return int The offset of the specified column within the autofilter range
      */
     public function getColumnOffset($pColumn)
@@ -169,8 +163,6 @@ class AutoFilter
      * Get a specified AutoFilter Column.
      *
      * @param string $pColumn Column name (e.g. A)
-     *
-     * @throws PhpSpreadsheetException
      *
      * @return AutoFilter\Column
      */
@@ -190,8 +182,6 @@ class AutoFilter
      *
      * @param int $pColumnOffset Column offset within range (starting from 0)
      *
-     * @throws PhpSpreadsheetException
-     *
      * @return AutoFilter\Column
      */
     public function getColumnByOffset($pColumnOffset)
@@ -208,9 +198,7 @@ class AutoFilter
      * @param AutoFilter\Column|string $pColumn
      *            A simple string containing a Column ID like 'A' is permitted
      *
-     * @throws PhpSpreadsheetException
-     *
-     * @return AutoFilter
+     * @return $this
      */
     public function setColumn($pColumn)
     {
@@ -239,9 +227,7 @@ class AutoFilter
      *
      * @param string $pColumn Column name (e.g. A)
      *
-     * @throws PhpSpreadsheetException
-     *
-     * @return AutoFilter
+     * @return $this
      */
     public function clearColumn($pColumn)
     {
@@ -264,7 +250,7 @@ class AutoFilter
      * @param string $fromColumn Column name (e.g. A)
      * @param string $toColumn Column name (e.g. B)
      *
-     * @return AutoFilter
+     * @return $this
      */
     public function shiftColumn($fromColumn, $toColumn)
     {
@@ -615,9 +601,7 @@ class AutoFilter
     /**
      * Apply the AutoFilter rules to the AutoFilter Range.
      *
-     * @throws PhpSpreadsheetException
-     *
-     * @return AutoFilter
+     * @return $this
      */
     public function showHideRows()
     {

@@ -11,7 +11,6 @@
 
 namespace Symfony\Component\HttpKernel;
 
-use Symfony\Component\EventDispatcher\LegacyEventDispatcherProxy;
 use Symfony\Component\HttpFoundation\Exception\RequestExceptionInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -33,6 +32,18 @@ use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
+// Help opcache.preload discover always-needed symbols
+class_exists(LegacyEventDispatcherProxy::class);
+class_exists(ControllerArgumentsEvent::class);
+class_exists(ControllerEvent::class);
+class_exists(ExceptionEvent::class);
+class_exists(FinishRequestEvent::class);
+class_exists(RequestEvent::class);
+class_exists(ResponseEvent::class);
+class_exists(TerminateEvent::class);
+class_exists(ViewEvent::class);
+class_exists(KernelEvents::class);
+
 /**
  * HttpKernel notifies events to convert a Request object to a Response one.
  *
@@ -47,7 +58,7 @@ class HttpKernel implements HttpKernelInterface, TerminableInterface
 
     public function __construct(EventDispatcherInterface $dispatcher, ControllerResolverInterface $resolver, RequestStack $requestStack = null, ArgumentResolverInterface $argumentResolver = null)
     {
-        $this->dispatcher = LegacyEventDispatcherProxy::decorate($dispatcher);
+        $this->dispatcher = $dispatcher;
         $this->resolver = $resolver;
         $this->requestStack = $requestStack ?: new RequestStack();
         $this->argumentResolver = $argumentResolver;
@@ -60,7 +71,7 @@ class HttpKernel implements HttpKernelInterface, TerminableInterface
     /**
      * {@inheritdoc}
      */
-    public function handle(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
+    public function handle(Request $request, int $type = HttpKernelInterface::MASTER_REQUEST, bool $catch = true)
     {
         $request->headers->set('X-Php-Ob-Level', (string) ob_get_level());
 

@@ -19,7 +19,7 @@ class DeprecatedFunctionsSniff extends ForbiddenFunctionsSniff
      * The value is NULL if no alternative exists. IE, the
      * function should just not be used.
      *
-     * @var array(string => string|null)
+     * @var array<string, string|null>
      */
     public $forbiddenFunctions = [];
 
@@ -35,9 +35,6 @@ class DeprecatedFunctionsSniff extends ForbiddenFunctionsSniff
 
         foreach ($functions['internal'] as $functionName) {
             $function = new \ReflectionFunction($functionName);
-            if (method_exists($function, 'isDeprecated') === false) {
-                break;
-            }
 
             if ($function->isDeprecated() === true) {
                 $this->forbiddenFunctions[$functionName] = null;

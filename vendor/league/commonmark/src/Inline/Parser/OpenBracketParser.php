@@ -20,25 +20,13 @@ use League\CommonMark\InlineParserContext;
 
 final class OpenBracketParser implements InlineParserInterface
 {
-    /**
-     * @return string[]
-     */
     public function getCharacters(): array
     {
         return ['['];
     }
 
-    /**
-     * @param InlineParserContext $inlineContext
-     *
-     * @return bool
-     */
     public function parse(InlineParserContext $inlineContext): bool
     {
-        if ($inlineContext->getCursor()->getCharacter() !== '[') {
-            return false;
-        }
-
         $inlineContext->getCursor()->advanceBy(1);
         $node = new Text('[', ['delim' => true]);
         $inlineContext->getContainer()->appendChild($node);

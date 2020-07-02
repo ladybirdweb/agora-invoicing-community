@@ -15,10 +15,10 @@ use Carbon\CarbonImmutable;
 use Carbon\CarbonInterface;
 use Carbon\CarbonInterval;
 use Carbon\CarbonPeriod;
+use Carbon\Exceptions\UnitException;
 use Closure;
 use DateTime;
 use DateTimeImmutable;
-use InvalidArgumentException;
 
 /**
  * Trait Converter.
@@ -28,7 +28,7 @@ use InvalidArgumentException;
  *
  * Depends on the following methods:
  *
- * @method Carbon|CarbonImmutable copy()
+ * @method static copy()
  */
 trait Converter
 {
@@ -211,7 +211,7 @@ trait Converter
                 return 'H:i:s.u';
         }
 
-        throw new InvalidArgumentException('Precision unit expected among: minute, second, millisecond and microsecond.');
+        throw new UnitException('Precision unit expected among: minute, second, millisecond and microsecond.');
     }
 
     /**

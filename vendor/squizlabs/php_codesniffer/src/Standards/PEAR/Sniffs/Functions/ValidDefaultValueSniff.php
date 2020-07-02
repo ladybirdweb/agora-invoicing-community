@@ -9,9 +9,8 @@
 
 namespace PHP_CodeSniffer\Standards\PEAR\Sniffs\Functions;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
-use PHP_CodeSniffer\Util\Tokens;
+use PHP_CodeSniffer\Sniffs\Sniff;
 
 class ValidDefaultValueSniff implements Sniff
 {
@@ -27,6 +26,7 @@ class ValidDefaultValueSniff implements Sniff
         return [
             T_FUNCTION,
             T_CLOSURE,
+            T_FN,
         ];
 
     }//end register()

@@ -2,7 +2,7 @@
 /**
  * Detects incrementer jumbling in for loops.
  *
- * This rule is based on the PMD rule catalog. The jumbling incrementer sniff
+ * This rule is based on the PMD rule catalogue. The jumbling incrementer sniff
  * detects the usage of one and the same incrementer into an outer and an inner
  * loop. Even it is intended this is confusing code.
  *
@@ -29,8 +29,8 @@
 
 namespace PHP_CodeSniffer\Standards\Generic\Sniffs\CodeAnalysis;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
 
 class JumbledIncrementerSniff implements Sniff
 {

@@ -83,6 +83,8 @@ class Context implements ContextInterface
 
     /**
      * @param string $line
+     *
+     * @return void
      */
     public function setNextLine(string $line)
     {
@@ -90,17 +92,11 @@ class Context implements ContextInterface
         $this->line = $line;
     }
 
-    /**
-     * @return Document
-     */
     public function getDocument(): Document
     {
         return $this->doc;
     }
 
-    /**
-     * @return AbstractBlock|null
-     */
     public function getTip(): ?AbstractBlock
     {
         return $this->tip;
@@ -118,35 +114,21 @@ class Context implements ContextInterface
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getLineNumber(): int
     {
         return $this->lineNumber;
     }
 
-    /**
-     * @return string
-     */
     public function getLine(): string
     {
         return $this->line;
     }
 
-    /**
-     * Finalize and close any unmatched blocks
-     *
-     * @return UnmatchedBlockCloser
-     */
     public function getBlockCloser(): UnmatchedBlockCloser
     {
         return $this->blockCloser;
     }
 
-    /**
-     * @return AbstractBlock
-     */
     public function getContainer(): AbstractBlock
     {
         return $this->container;
@@ -164,12 +146,9 @@ class Context implements ContextInterface
         return $this;
     }
 
-    /**
-     * @param AbstractBlock $block
-     */
     public function addBlock(AbstractBlock $block)
     {
-        $this->getBlockCloser()->closeUnmatchedBlocks();
+        $this->blockCloser->closeUnmatchedBlocks();
         $block->setStartLine($this->lineNumber);
 
         while ($this->tip !== null && !$this->tip->canContain($block)) {
@@ -185,24 +164,18 @@ class Context implements ContextInterface
         $this->container = $block;
     }
 
-    /**
-     * @param AbstractBlock $replacement
-     */
     public function replaceContainerBlock(AbstractBlock $replacement)
     {
-        $this->getBlockCloser()->closeUnmatchedBlocks();
-        $this->getContainer()->replaceWith($replacement);
+        $this->blockCloser->closeUnmatchedBlocks();
+        $this->container->replaceWith($replacement);
 
-        if ($this->getTip() === $this->getContainer()) {
-            $this->setTip($replacement);
+        if ($this->tip === $this->container) {
+            $this->tip = $replacement;
         }
 
-        $this->setContainer($replacement);
+        $this->container = $replacement;
     }
 
-    /**
-     * @return bool
-     */
     public function getBlocksParsed(): bool
     {
         return $this->blocksParsed;
@@ -220,9 +193,6 @@ class Context implements ContextInterface
         return $this;
     }
 
-    /**
-     * @return ReferenceParser
-     */
     public function getReferenceParser(): ReferenceParser
     {
         return $this->referenceParser;

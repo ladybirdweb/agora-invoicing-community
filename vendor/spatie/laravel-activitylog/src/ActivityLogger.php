@@ -2,14 +2,15 @@
 
 namespace Spatie\Activitylog;
 
-use Spatie\String\Str;
-use Illuminate\Support\Arr;
 use Illuminate\Auth\AuthManager;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Traits\Macroable;
 use Illuminate\Contracts\Config\Repository;
-use Spatie\Activitylog\Exceptions\CouldNotLogActivity;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
+use Illuminate\Support\Traits\Macroable;
 use Spatie\Activitylog\Contracts\Activity as ActivityContract;
+use Spatie\Activitylog\Exceptions\CouldNotLogActivity;
 
 class ActivityLogger
 {
@@ -104,6 +105,13 @@ class ActivityLogger
         return $this;
     }
 
+    public function createdAt(Carbon $dateTime)
+    {
+        $this->getActivity()->created_at = $dateTime;
+
+        return $this;
+    }
+
     public function useLog(string $logName)
     {
         $this->getActivity()->log_name = $logName;
@@ -157,6 +165,21 @@ class ActivityLogger
         return $activity;
     }
 
+    public function withoutLogs(callable $callback)
+    {
+        if ($this->logStatus->disabled()) {
+            return $callback();
+        }
+
+        $this->logStatus->disable();
+
+        try {
+            return $callback();
+        } finally {
+            $this->logStatus->enable();
+        }
+    }
+
     protected function normalizeCauser($modelOrId): Model
     {
         if ($modelOrId instanceof Model) {
@@ -179,7 +202,7 @@ class ActivityLogger
         return preg_replace_callback('/:[a-z0-9._-]+/i', function ($match) use ($activity) {
             $match = $match[0];
 
-            $attribute = (string) (new Str($match))->between(':', '.');
+            $attribute = Str::before(Str::after($match, ':'), '.');
 
             if (! in_array($attribute, ['subject', 'causer', 'properties'])) {
                 return $match;

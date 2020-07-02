@@ -3,7 +3,7 @@
 /*
  * This file is part of Psy Shell.
  *
- * (c) 2012-2018 Justin Hileman
+ * (c) 2012-2020 Justin Hileman
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -17,7 +17,7 @@ use Symfony\Component\Console\Formatter\OutputFormatter;
 /**
  * A pretty-printer for docblocks.
  */
-class DocblockFormatter implements Formatter
+class DocblockFormatter implements ReflectorFormatter
 {
     private static $vectorParamTemplates = [
         'type' => 'info',
@@ -89,7 +89,13 @@ class DocblockFormatter implements Formatter
         $template = \implode(' ', $template);
 
         return \implode("\n", \array_map(function ($line) use ($template) {
-            $escaped = \array_map(['Symfony\Component\Console\Formatter\OutputFormatter', 'escape'], $line);
+            $escaped = \array_map(function ($l) {
+                if ($l === null) {
+                    return '';
+                }
+
+                return OutputFormatter::escape($l);
+            }, $line);
 
             return \rtrim(\vsprintf($template, $escaped));
         }, $lines));

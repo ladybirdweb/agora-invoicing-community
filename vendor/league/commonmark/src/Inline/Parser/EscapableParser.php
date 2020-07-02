@@ -21,26 +21,14 @@ use League\CommonMark\Util\RegexHelper;
 
 final class EscapableParser implements InlineParserInterface
 {
-    /**
-     * @return string[]
-     */
     public function getCharacters(): array
     {
         return ['\\'];
     }
 
-    /**
-     * @param InlineParserContext $inlineContext
-     *
-     * @return bool
-     */
     public function parse(InlineParserContext $inlineContext): bool
     {
         $cursor = $inlineContext->getCursor();
-        if ($cursor->getCharacter() !== '\\') {
-            return false;
-        }
-
         $nextChar = $cursor->peek();
 
         if ($nextChar === "\n") {

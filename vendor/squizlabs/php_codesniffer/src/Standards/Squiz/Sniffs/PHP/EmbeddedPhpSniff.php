@@ -9,8 +9,8 @@
 
 namespace PHP_CodeSniffer\Standards\Squiz\Sniffs\PHP;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Util\Tokens;
 
 class EmbeddedPhpSniff implements Sniff
@@ -328,7 +328,7 @@ class EmbeddedPhpSniff implements Sniff
         // The open tag token always contains a single space after it.
         $leadingSpace = 1;
         if ($tokens[($stackPtr + 1)]['code'] === T_WHITESPACE) {
-            $leadingSpace = (strlen($tokens[($stackPtr + 1)]['content']) + 1);
+            $leadingSpace = ($tokens[($stackPtr + 1)]['length'] + 1);
         }
 
         if ($leadingSpace !== 1) {
@@ -371,8 +371,9 @@ class EmbeddedPhpSniff implements Sniff
 
         $trailingSpace = 0;
         if ($tokens[($closeTag - 1)]['code'] === T_WHITESPACE) {
-            $trailingSpace = strlen($tokens[($closeTag - 1)]['content']);
-        } else if ($tokens[($closeTag - 1)]['code'] === T_COMMENT
+            $trailingSpace = $tokens[($closeTag - 1)]['length'];
+        } else if (($tokens[($closeTag - 1)]['code'] === T_COMMENT
+            || isset(Tokens::$phpcsCommentTokens[$tokens[($closeTag - 1)]['code']]) === true)
             && substr($tokens[($closeTag - 1)]['content'], -1) === ' '
         ) {
             $trailingSpace = (strlen($tokens[($closeTag - 1)]['content']) - strlen(rtrim($tokens[($closeTag - 1)]['content'])));
@@ -385,7 +386,9 @@ class EmbeddedPhpSniff implements Sniff
             if ($fix === true) {
                 if ($trailingSpace === 0) {
                     $phpcsFile->fixer->addContentBefore($closeTag, ' ');
-                } else if ($tokens[($closeTag - 1)]['code'] === T_COMMENT) {
+                } else if ($tokens[($closeTag - 1)]['code'] === T_COMMENT
+                    || isset(Tokens::$phpcsCommentTokens[$tokens[($closeTag - 1)]['code']]) === true
+                ) {
                     $phpcsFile->fixer->replaceToken(($closeTag - 1), rtrim($tokens[($closeTag - 1)]['content']).' ');
                 } else {
                     $phpcsFile->fixer->replaceToken(($closeTag - 1), ' ');

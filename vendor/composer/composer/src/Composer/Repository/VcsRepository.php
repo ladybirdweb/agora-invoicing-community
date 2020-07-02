@@ -20,6 +20,7 @@ use Composer\Package\Loader\ValidatingArrayLoader;
 use Composer\Package\Loader\InvalidPackageException;
 use Composer\Package\Loader\LoaderInterface;
 use Composer\EventDispatcher\EventDispatcher;
+use Composer\Semver\Constraint\Constraint;
 use Composer\IO\IOInterface;
 use Composer\Config;
 
@@ -45,6 +46,7 @@ class VcsRepository extends ArrayRepository implements ConfigurableRepositoryInt
     /** @var VersionCacheInterface */
     private $versionCache;
     private $emptyReferences = array();
+    private $versionTransportExceptions = array();
 
     public function __construct(array $repoConfig, IOInterface $io, Config $config, EventDispatcher $dispatcher = null, array $drivers = null, VersionCacheInterface $versionCache = null)
     {
@@ -123,6 +125,11 @@ class VcsRepository extends ArrayRepository implements ConfigurableRepositoryInt
     public function getEmptyReferences()
     {
         return $this->emptyReferences;
+    }
+
+    public function getVersionTransportExceptions()
+    {
+        return $this->versionTransportExceptions;
     }
 
     protected function initialize()
@@ -207,7 +214,11 @@ class VcsRepository extends ArrayRepository implements ConfigurableRepositoryInt
                 // broken package, version doesn't match tag
                 if ($data['version_normalized'] !== $parsedTag) {
                     if ($isVeryVerbose) {
-                        $this->io->writeError('<warning>Skipped tag '.$tag.', tag ('.$parsedTag.') does not match version ('.$data['version_normalized'].') in composer.json</warning>');
+                        if (preg_match('{(^dev-|[.-]?dev$)}i', $parsedTag)) {
+                            $this->io->writeError('<warning>Skipped tag '.$tag.', invalid tag name, tags can not use dev prefixes or suffixes</warning>');
+                        } else {
+                            $this->io->writeError('<warning>Skipped tag '.$tag.', tag ('.$parsedTag.') does not match version ('.$data['version_normalized'].') in composer.json</warning>');
+                        }
                     }
                     continue;
                 }
@@ -226,11 +237,14 @@ class VcsRepository extends ArrayRepository implements ConfigurableRepositoryInt
 
                 $this->addPackage($this->loader->load($this->preProcess($driver, $data, $identifier)));
             } catch (\Exception $e) {
-                if ($e instanceof TransportException && $e->getCode() === 404) {
-                    $this->emptyReferences[] = $identifier;
+                if ($e instanceof TransportException) {
+                    $this->versionTransportExceptions['tags'][$tag] = $e;
+                    if ($e->getCode() === 404) {
+                        $this->emptyReferences[] = $identifier;
+                    }
                 }
                 if ($isVeryVerbose) {
-                    $this->io->writeError('<warning>Skipped tag '.$tag.', '.($e instanceof TransportException ? 'no composer file was found' : $e->getMessage()).'</warning>');
+                    $this->io->writeError('<warning>Skipped tag '.$tag.', '.($e instanceof TransportException ? 'no composer file was found (' . $e->getCode() . ' HTTP status code)' : $e->getMessage()).'</warning>');
                 }
                 continue;
             }
@@ -306,11 +320,12 @@ class VcsRepository extends ArrayRepository implements ConfigurableRepositoryInt
                 }
                 $this->addPackage($package);
             } catch (TransportException $e) {
+                $this->versionTransportExceptions['branches'][$branch] = $e;
                 if ($e->getCode() === 404) {
                     $this->emptyReferences[] = $identifier;
                 }
                 if ($isVeryVerbose) {
-                    $this->io->writeError('<warning>Skipped branch '.$branch.', no composer file was found</warning>');
+                    $this->io->writeError('<warning>Skipped branch '.$branch.', no composer file was found (' . $e->getCode() . ' HTTP status code)</warning>');
                 }
                 continue;
             } catch (\Exception $e) {
@@ -353,7 +368,12 @@ class VcsRepository extends ArrayRepository implements ConfigurableRepositoryInt
     private function validateBranch($branch)
     {
         try {
-            return $this->versionParser->normalizeBranch($branch);
+            $normalizedBranch = $this->versionParser->normalizeBranch($branch);
+
+            // validate that the branch name has no weird characters conflicting with constraints
+            $this->versionParser->parseConstraints($normalizedBranch);
+
+            return $normalizedBranch;
         } catch (\Exception $e) {
         }
 
@@ -393,7 +413,7 @@ class VcsRepository extends ArrayRepository implements ConfigurableRepositoryInt
                 $this->io->overwriteError($msg, false);
             }
 
-            if ($existingPackage = $this->findPackage($cachedPackage['name'], $cachedPackage['version_normalized'])) {
+            if ($existingPackage = $this->findPackage($cachedPackage['name'], new Constraint('=', $cachedPackage['version_normalized']))) {
                 if ($isVeryVerbose) {
                     $this->io->writeError('<warning>Skipped cached version '.$version.', it conflicts with an another tag ('.$existingPackage->getPrettyVersion().') as both resolve to '.$cachedPackage['version_normalized'].' internally</warning>');
                 }

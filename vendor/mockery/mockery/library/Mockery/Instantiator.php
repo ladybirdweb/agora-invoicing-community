@@ -47,7 +47,6 @@ final class Instantiator
     {
         $factory    = $this->buildFactory($className);
         $instance   = $factory();
-        $reflection = new ReflectionClass($instance);
 
         return $instance;
     }
@@ -154,11 +153,7 @@ final class Instantiator
      */
     private function isInstantiableViaReflection(ReflectionClass $reflectionClass)
     {
-        if (\PHP_VERSION_ID >= 50600) {
-            return ! ($reflectionClass->isInternal() && $reflectionClass->isFinal());
-        }
-
-        return \PHP_VERSION_ID >= 50400 && ! $this->hasInternalAncestors($reflectionClass);
+        return ! ($reflectionClass->isInternal() && $reflectionClass->isFinal());
     }
 
     /**

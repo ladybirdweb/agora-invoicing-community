@@ -1,6 +1,6 @@
-<?php
+<?php declare(strict_types=1);
 /*
- * This file is part of the php-code-coverage package.
+ * This file is part of phpunit/php-code-coverage.
  *
  * (c) Sebastian Bergmann <sebastian@phpunit.de>
  *
@@ -10,6 +10,7 @@
 namespace SebastianBergmann\CodeCoverage\Report;
 
 use SebastianBergmann\CodeCoverage\CodeCoverage;
+use SebastianBergmann\CodeCoverage\Directory;
 use SebastianBergmann\CodeCoverage\RuntimeException;
 
 /**
@@ -34,15 +35,13 @@ $filter = $coverage->filter();
 $filter->setWhitelistedFiles(%s);
 
 return $coverage;',
-            \var_export($coverage->getData(true), 1),
-            \var_export($coverage->getTests(), 1),
-            \var_export($filter->getWhitelistedFiles(), 1)
+            \var_export($coverage->getData(true), true),
+            \var_export($coverage->getTests(), true),
+            \var_export($filter->getWhitelistedFiles(), true)
         );
 
         if ($target !== null) {
-            if (!$this->createDirectory(\dirname($target))) {
-                throw new \RuntimeException(\sprintf('Directory "%s" was not created', \dirname($target)));
-            }
+            Directory::create(\dirname($target));
 
             if (@\file_put_contents($target, $buffer) === false) {
                 throw new RuntimeException(
@@ -55,10 +54,5 @@ return $coverage;',
         }
 
         return $buffer;
-    }
-
-    private function createDirectory(string $directory): bool
-    {
-        return !(!\is_dir($directory) && !@\mkdir($directory, 0777, true) && !\is_dir($directory));
     }
 }

@@ -9,8 +9,8 @@
 
 namespace PHP_CodeSniffer\Standards\PEAR\Sniffs\Commenting;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Util\Tokens;
 
 class FunctionCommentSniff implements Sniff
@@ -59,7 +59,13 @@ class FunctionCommentSniff implements Sniff
         if ($tokens[$commentEnd]['code'] !== T_DOC_COMMENT_CLOSE_TAG
             && $tokens[$commentEnd]['code'] !== T_COMMENT
         ) {
-            $phpcsFile->addError('Missing function doc comment', $stackPtr, 'Missing');
+            $function = $phpcsFile->getDeclarationName($stackPtr);
+            $phpcsFile->addError(
+                'Missing doc comment for function %s()',
+                $stackPtr,
+                'Missing',
+                [$function]
+            );
             $phpcsFile->recordMetric($stackPtr, 'Function has doc comment', 'no');
             return;
         } else {
@@ -211,7 +217,7 @@ class FunctionCommentSniff implements Sniff
 
             if ($tokens[($tag + 2)]['code'] === T_DOC_COMMENT_STRING) {
                 $matches = [];
-                preg_match('/([^$&.]+)(?:((?:\.\.\.)?(?:\$|&)[^\s]+)(?:(\s+)(.*))?)?/', $tokens[($tag + 2)]['content'], $matches);
+                preg_match('/((?:(?![$.]|&(?=\$)).)*)(?:((?:\.\.\.)?(?:\$|&)[^\s]+)(?:(\s+)(.*))?)?/', $tokens[($tag + 2)]['content'], $matches);
 
                 if (empty($matches) === false) {
                     $typeLen   = strlen($matches[1]);
@@ -291,43 +297,45 @@ class FunctionCommentSniff implements Sniff
 
             $foundParams[] = $param['var'];
 
-            // Check number of spaces after the type.
-            $spaces = ($maxType - strlen($param['type']) + 1);
-            if ($param['type_space'] !== $spaces) {
-                $error = 'Expected %s spaces after parameter type; %s found';
-                $data  = [
-                    $spaces,
-                    $param['type_space'],
-                ];
+            if (trim($param['type']) !== '') {
+                // Check number of spaces after the type.
+                $spaces = ($maxType - strlen($param['type']) + 1);
+                if ($param['type_space'] !== $spaces) {
+                    $error = 'Expected %s spaces after parameter type; %s found';
+                    $data  = [
+                        $spaces,
+                        $param['type_space'],
+                    ];
 
-                $fix = $phpcsFile->addFixableError($error, $param['tag'], 'SpacingAfterParamType', $data);
-                if ($fix === true) {
-                    $commentToken = ($param['tag'] + 2);
+                    $fix = $phpcsFile->addFixableError($error, $param['tag'], 'SpacingAfterParamType', $data);
+                    if ($fix === true) {
+                        $commentToken = ($param['tag'] + 2);
 
-                    $content  = $param['type'];
-                    $content .= str_repeat(' ', $spaces);
-                    $content .= $param['var'];
-                    $content .= str_repeat(' ', $param['var_space']);
+                        $content  = $param['type'];
+                        $content .= str_repeat(' ', $spaces);
+                        $content .= $param['var'];
+                        $content .= str_repeat(' ', $param['var_space']);
 
-                    $wrapLength = ($tokens[$commentToken]['length'] - $param['type_space'] - $param['var_space'] - strlen($param['type']) - strlen($param['var']));
+                        $wrapLength = ($tokens[$commentToken]['length'] - $param['type_space'] - $param['var_space'] - strlen($param['type']) - strlen($param['var']));
 
-                    $star        = $phpcsFile->findPrevious(T_DOC_COMMENT_STAR, $param['tag']);
-                    $spaceLength = (strlen($content) + $tokens[($commentToken - 1)]['length'] + $tokens[($commentToken - 2)]['length']);
+                        $star        = $phpcsFile->findPrevious(T_DOC_COMMENT_STAR, $param['tag']);
+                        $spaceLength = (strlen($content) + $tokens[($commentToken - 1)]['length'] + $tokens[($commentToken - 2)]['length']);
 
-                    $padding  = str_repeat(' ', ($tokens[$star]['column'] - 1));
-                    $padding .= '* ';
-                    $padding .= str_repeat(' ', $spaceLength);
+                        $padding  = str_repeat(' ', ($tokens[$star]['column'] - 1));
+                        $padding .= '* ';
+                        $padding .= str_repeat(' ', $spaceLength);
 
-                    $content .= wordwrap(
-                        $param['comment'],
-                        $wrapLength,
-                        $phpcsFile->eolChar.$padding
-                    );
+                        $content .= wordwrap(
+                            $param['comment'],
+                            $wrapLength,
+                            $phpcsFile->eolChar.$padding
+                        );
 
-                    $phpcsFile->fixer->replaceToken($commentToken, $content);
-                    for ($i = ($commentToken + 1); $i <= $param['comment_end']; $i++) {
-                        $phpcsFile->fixer->replaceToken($i, '');
-                    }
+                        $phpcsFile->fixer->replaceToken($commentToken, $content);
+                        for ($i = ($commentToken + 1); $i <= $param['comment_end']; $i++) {
+                            $phpcsFile->fixer->replaceToken($i, '');
+                        }
+                    }//end if
                 }//end if
             }//end if
 
@@ -425,7 +433,14 @@ class FunctionCommentSniff implements Sniff
                         $expected,
                         $found,
                     ];
-                    $fix   = $phpcsFile->addFixableError($error, $commentToken, 'ParamCommentAlignment', $data);
+
+                    if ($found < $expected) {
+                        $code = 'ParamCommentAlignment';
+                    } else {
+                        $code = 'ParamCommentAlignmentExceeded';
+                    }
+
+                    $fix = $phpcsFile->addFixableError($error, $commentToken, $code, $data);
                     if ($fix === true) {
                         $padding = str_repeat(' ', $expected);
                         if ($tokens[($commentToken - 1)]['code'] === T_DOC_COMMENT_WHITESPACE) {

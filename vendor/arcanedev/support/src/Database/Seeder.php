@@ -1,4 +1,8 @@
-<?php namespace Arcanedev\Support\Database;
+<?php
+
+declare(strict_types=1);
+
+namespace Arcanedev\Support\Database;
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
 use Illuminate\Database\Seeder as IlluminateSeeder;
@@ -6,7 +10,7 @@ use Illuminate\Database\Seeder as IlluminateSeeder;
 /**
  * Class     Seeder
  *
- * @package  Arcanedev\Support\Bases
+ * @package  Arcanedev\Support\Database
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
 abstract class Seeder extends IlluminateSeeder
@@ -31,7 +35,7 @@ abstract class Seeder extends IlluminateSeeder
     /**
      * Run the database seeds.
      */
-    public function run()
+    public function run(): void
     {
         Eloquent::unguard();
 

@@ -190,7 +190,7 @@ class HttpCache implements HttpKernelInterface, TerminableInterface
     /**
      * {@inheritdoc}
      */
-    public function handle(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
+    public function handle(Request $request, int $type = HttpKernelInterface::MASTER_REQUEST, bool $catch = true)
     {
         // FIXME: catch exceptions and implement a 500 error page here? -> in Varnish, there is a built-in error page mechanism
         if (HttpKernelInterface::MASTER_REQUEST === $type) {
@@ -260,7 +260,7 @@ class HttpCache implements HttpKernelInterface, TerminableInterface
      *
      * @return Response A Response instance
      */
-    protected function pass(Request $request, $catch = false)
+    protected function pass(Request $request, bool $catch = false)
     {
         $this->record($request, 'pass');
 
@@ -278,7 +278,7 @@ class HttpCache implements HttpKernelInterface, TerminableInterface
      *
      * @see RFC2616 13.10
      */
-    protected function invalidate(Request $request, $catch = false)
+    protected function invalidate(Request $request, bool $catch = false)
     {
         $response = $this->pass($request, $catch);
 
@@ -324,7 +324,7 @@ class HttpCache implements HttpKernelInterface, TerminableInterface
      *
      * @throws \Exception
      */
-    protected function lookup(Request $request, $catch = false)
+    protected function lookup(Request $request, bool $catch = false)
     {
         try {
             $entry = $this->store->lookup($request);
@@ -371,7 +371,7 @@ class HttpCache implements HttpKernelInterface, TerminableInterface
      *
      * @return Response A Response instance
      */
-    protected function validate(Request $request, Response $entry, $catch = false)
+    protected function validate(Request $request, Response $entry, bool $catch = false)
     {
         $subRequest = clone $request;
 
@@ -434,7 +434,7 @@ class HttpCache implements HttpKernelInterface, TerminableInterface
      *
      * @return Response A Response instance
      */
-    protected function fetch(Request $request, $catch = false)
+    protected function fetch(Request $request, bool $catch = false)
     {
         $subRequest = clone $request;
 
@@ -467,7 +467,7 @@ class HttpCache implements HttpKernelInterface, TerminableInterface
      *
      * @return Response A Response instance
      */
-    protected function forward(Request $request, $catch = false, Response $entry = null)
+    protected function forward(Request $request, bool $catch = false, Response $entry = null)
     {
         if ($this->surrogate) {
             $this->surrogate->addSurrogateCapability($request);
@@ -476,13 +476,37 @@ class HttpCache implements HttpKernelInterface, TerminableInterface
         // always a "master" request (as the real master request can be in cache)
         $response = SubRequestHandler::handle($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST, $catch);
 
-        // we don't implement the stale-if-error on Requests, which is nonetheless part of the RFC
-        if (null !== $entry && \in_array($response->getStatusCode(), [500, 502, 503, 504])) {
+        /*
+         * Support stale-if-error given on Responses or as a config option.
+         * RFC 7234 summarizes in Section 4.2.4 (but also mentions with the individual
+         * Cache-Control directives) that
+         *
+         *      A cache MUST NOT generate a stale response if it is prohibited by an
+         *      explicit in-protocol directive (e.g., by a "no-store" or "no-cache"
+         *      cache directive, a "must-revalidate" cache-response-directive, or an
+         *      applicable "s-maxage" or "proxy-revalidate" cache-response-directive;
+         *      see Section 5.2.2).
+         *
+         * https://tools.ietf.org/html/rfc7234#section-4.2.4
+         *
+         * We deviate from this in one detail, namely that we *do* serve entries in the
+         * stale-if-error case even if they have a `s-maxage` Cache-Control directive.
+         */
+        if (null !== $entry
+            && \in_array($response->getStatusCode(), [500, 502, 503, 504])
+            && !$entry->headers->hasCacheControlDirective('no-cache')
+            && !$entry->mustRevalidate()
+        ) {
             if (null === $age = $entry->headers->getCacheControlDirective('stale-if-error')) {
                 $age = $this->options['stale_if_error'];
             }
 
-            if (abs($entry->getTtl()) < $age) {
+            /*
+             * stale-if-error gives the (extra) time that the Response may be used *after* it has become stale.
+             * So we compare the time the $entry has been sitting in the cache already with the
+             * time it was fresh plus the allowed grace period.
+             */
+            if ($entry->getAge() <= $entry->getMaxAge() + $age) {
                 $this->record($request, 'stale-if-error');
 
                 return $entry;

@@ -120,6 +120,42 @@ class GitLabDriver extends VcsDriver
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public function getComposerInformation($identifier)
+    {
+        if ($this->gitDriver) {
+            return $this->gitDriver->getComposerInformation($identifier);
+        }
+
+        if (!isset($this->infoCache[$identifier])) {
+            if ($this->shouldCache($identifier) && $res = $this->cache->read($identifier)) {
+                return $this->infoCache[$identifier] = JsonFile::parseJson($res);
+            }
+
+            $composer = $this->getBaseComposerInformation($identifier);
+
+            if ($composer) {
+                // specials for gitlab (this data is only available if authentication is provided)
+                if (!isset($composer['support']['issues']) && isset($this->project['_links']['issues'])) {
+                    $composer['support']['issues'] = $this->project['_links']['issues'];
+                }
+                if (!isset($composer['abandoned']) && !empty($this->project['archived'])) {
+                    $composer['abandoned'] = true;
+                }
+            }
+
+            if ($this->shouldCache($identifier)) {
+                $this->cache->write($identifier, json_encode($composer));
+            }
+
+            $this->infoCache[$identifier] = $composer;
+        }
+
+        return $this->infoCache[$identifier];
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getFileContent($file, $identifier)
@@ -390,6 +426,29 @@ class GitLabDriver extends VcsDriver
 
             if ($fetchingRepoData) {
                 $json = JsonFile::parseJson($res, $url);
+
+                // Accessing the API with a token with Guest (10) access will return
+                // more data than unauthenticated access but no default_branch data
+                // accessing files via the API will then also fail
+                if (!isset($json['default_branch']) && isset($json['permissions'])) {
+                    $this->isPrivate = $json['visibility'] !== 'public';
+
+                    $moreThanGuestAccess = false;
+                    // Check both access levels (e.g. project, group)
+                    // - value will be null if no access is set
+                    // - value will be array with key access_level if set
+                    foreach ($json['permissions'] as $permission) {
+                        if ($permission && $permission['access_level'] > 10) {
+                            $moreThanGuestAccess = true;
+                        }
+                    }
+
+                    if (!$moreThanGuestAccess) {
+                        $this->io->writeError('<warning>GitLab token with Guest only access detected</warning>');
+
+                        return $this->attemptCloneFallback(); 
+                    }
+                }
 
                 // force auth as the unauthenticated version of the API is broken
                 if (!isset($json['default_branch'])) {

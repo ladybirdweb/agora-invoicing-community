@@ -181,7 +181,7 @@ abstract class Test3
     }
 }
 
-public function test()
+function test()
 {
     $o = <<<EOF
 this is some text
@@ -396,7 +396,7 @@ $myFunction = function() {
     if ($a === 404) {
        $a = 403;
     }
-}
+};
 
 class Whatever
 {
@@ -626,7 +626,7 @@ $var = call_user_func(
                 } else {
                     return $a--;
                 }
-            }
+            };
         }
     }
 );
@@ -636,7 +636,7 @@ a(
         $a = function() {
             $b = false;
         };
-    true
+    true;
     }
 );
 
@@ -999,7 +999,7 @@ try {
 } catch (\Exception $e) {
     $foo = function() {
         return 'foo';
-    }
+    };
 
     if (true) {
     }
@@ -1007,17 +1007,17 @@ try {
 
 if ($foo) {
     foo();
-} else if (\Exception $e) {
+} else if ($e) {
     $foo = function() {
         return 'foo';
-    }
+    };
 
     if (true) {
     }
 } else {
     $foo = function() {
         return 'foo';
-    }
+    };
 
     if (true) {
     }
@@ -1070,7 +1070,7 @@ class Test123
         ],
         $prop2 = [
             'testB' => 456,
-        ],
+        ];
 
     protected static
         $prop3 = array(
@@ -1078,7 +1078,7 @@ class Test123
         ),
         $prop4 = array(
             'testB' => 456,
-        ),
+        );
 
     protected static $prop5;
 }
@@ -1184,7 +1184,7 @@ function test()
 
 switch ($a) {
     case 0:
-        function () {
+        $a = function () {
         };
     case 1:
         break;
@@ -1238,13 +1238,13 @@ array_map(
 /**
  * Comment.
  */
-(function () use ($app) {
+$a(function () use ($app) {
     echo 'hi';
 })();
 
 $app->run();
 
-public function foo()
+function foo()
 {
     $foo('some
     long description', function () {
@@ -1260,6 +1260,78 @@ public function foo()
     });
 }
 
+switch ( $a ) {
+case 'a':
+    $b = 2;
+    /**
+     * A comment.
+     */
+    apply_filter( 'something', $b );
+    break;
+
+case 'aa':
+    $b = 2;
+    /*
+     * A comment.
+     */
+    apply_filter( 'something', $b );
+    break;
+
+case 'b':
+    $b = 3;
+?>
+    <input name="something" value="<?php echo $b; ?>">
+<?php
+    $b = 4;
+    break;
+
+default:
+    $b = 3;
+    ?>
+    <input name="something" value="<?php echo $b; ?>">
+    <?php
+    $b = 4;
+    break;
+}
+
+// phpcs:set Generic.WhiteSpace.ScopeIndent exact true
+$shortArray = [
+    'hello',
+'world',
+];
+
+$shortArray = array(
+    'hello',
+'world',
+);
+
+function foo() {
+    echo 'foo';
+        echo 'bar';
+    if ($foo) {
+            echo 'baz';
+    }
+}
+// phpcs:set Generic.WhiteSpace.ScopeIndent exact false
+
+function test() {
+    return [
+        <<<'SQLDATA'
+DATA
+SQLDATA
+,
+    ];
+}
+
+if ($foo) {
+if ($oo) {
+    /*
+     *
+     *
+   */
+}
+}
+
     function foo()
     {
         $foo = array(
@@ -1273,6 +1345,121 @@ public function foo()
     }
 
 ?>
+
+<div>
+    <?php if ($foo) {
+        echo $foo;
+    } ?>
+</div>
+
+<div>
+    <?php echo
+        foo(
+            $foo
+        );
+    ?>
+</div>
+
+<?php
+
+if (true) {
+    ?>
+    <div>
+        <?php
+
+        if (true) {
+            ?>
+            <?php
+        }
+
+        if (true
+            || false) {
+            ?>
+            <?php
+        }
+
+        ?>
+    </div>
+    <?php
+}
+
+foo(function () {
+    if ($conditionA &&
+        $conditionB
+    ) {
+        if ($conditionC) {
+            $a = 1;
+        }
+    }
+});
+
+switch($foo)
+{
+    case 1:
+        $value = 1; break;
+    case 2:
+        if ($bar) {
+            break;
+        }
+    default:
+        $value = 0;
+}
+
+switch ($x) {
+    case 'a':
+        switch ($y) {
+            case 'c':
+                return true;
+        }
+    case 'b':
+        switch ($z) {
+            case 'd':
+                return true;
+        }
+}
+
+$foo = [
+    [
+        'a' => [
+        ],
+        'b' => <<<'FOO'
+foo;
+FOO
+    ],
+    $a,
+];
+
+$query = Model::query()
+   ->when($a, function () {
+        static $b = '';
+   });
+
+$result = array_map(
+    static fn(int $number) : int => $number + 1,
+    $numbers
+);
+
+$a = $a === true ? [
+    'a' => 1,
+    ] : [
+    'a' => 100,
+];
+
+return [
+    Url::make('View Song', fn($song) => $song->url())
+        ->onlyOnDetail(),
+
+    new Panel('Information', [
+        Text::make('Title')
+    ]),
+];
+
+?>
+
+     <?php if (true) : ?>
+         <span></span>
+     <?php endif ?>
+
 <?php
     if (true) {
     }

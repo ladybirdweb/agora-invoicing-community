@@ -30,12 +30,8 @@ class MessageCatalogue implements MessageCatalogueInterface, MetadataAwareInterf
      * @param string $locale   The locale
      * @param array  $messages An array of messages classified by domain
      */
-    public function __construct(?string $locale, array $messages = [])
+    public function __construct(string $locale, array $messages = [])
     {
-        if (null === $locale) {
-            @trigger_error(sprintf('Passing "null" to the first argument of the "%s" method has been deprecated since Symfony 4.4 and will throw an error in 5.0.', __METHOD__), E_USER_DEPRECATED);
-        }
-
         $this->locale = $locale;
         $this->messages = $messages;
     }
@@ -69,9 +65,14 @@ class MessageCatalogue implements MessageCatalogueInterface, MetadataAwareInterf
     /**
      * {@inheritdoc}
      */
-    public function all($domain = null)
+    public function all(string $domain = null)
     {
         if (null !== $domain) {
+            // skip messages merge if intl-icu requested explicitly
+            if (false !== strpos($domain, self::INTL_DOMAIN_SUFFIX)) {
+                return $this->messages[$domain] ?? [];
+            }
+
             return ($this->messages[$domain.self::INTL_DOMAIN_SUFFIX] ?? []) + ($this->messages[$domain] ?? []);
         }
 
@@ -93,7 +94,7 @@ class MessageCatalogue implements MessageCatalogueInterface, MetadataAwareInterf
     /**
      * {@inheritdoc}
      */
-    public function set($id, $translation, $domain = 'messages')
+    public function set(string $id, string $translation, string $domain = 'messages')
     {
         $this->add([$id => $translation], $domain);
     }
@@ -101,7 +102,7 @@ class MessageCatalogue implements MessageCatalogueInterface, MetadataAwareInterf
     /**
      * {@inheritdoc}
      */
-    public function has($id, $domain = 'messages')
+    public function has(string $id, string $domain = 'messages')
     {
         if (isset($this->messages[$domain][$id]) || isset($this->messages[$domain.self::INTL_DOMAIN_SUFFIX][$id])) {
             return true;
@@ -117,7 +118,7 @@ class MessageCatalogue implements MessageCatalogueInterface, MetadataAwareInterf
     /**
      * {@inheritdoc}
      */
-    public function defines($id, $domain = 'messages')
+    public function defines(string $id, string $domain = 'messages')
     {
         return isset($this->messages[$domain][$id]) || isset($this->messages[$domain.self::INTL_DOMAIN_SUFFIX][$id]);
     }
@@ -125,7 +126,7 @@ class MessageCatalogue implements MessageCatalogueInterface, MetadataAwareInterf
     /**
      * {@inheritdoc}
      */
-    public function get($id, $domain = 'messages')
+    public function get(string $id, string $domain = 'messages')
     {
         if (isset($this->messages[$domain.self::INTL_DOMAIN_SUFFIX][$id])) {
             return $this->messages[$domain.self::INTL_DOMAIN_SUFFIX][$id];
@@ -145,7 +146,7 @@ class MessageCatalogue implements MessageCatalogueInterface, MetadataAwareInterf
     /**
      * {@inheritdoc}
      */
-    public function replace($messages, $domain = 'messages')
+    public function replace(array $messages, string $domain = 'messages')
     {
         unset($this->messages[$domain], $this->messages[$domain.self::INTL_DOMAIN_SUFFIX]);
 
@@ -155,12 +156,20 @@ class MessageCatalogue implements MessageCatalogueInterface, MetadataAwareInterf
     /**
      * {@inheritdoc}
      */
-    public function add($messages, $domain = 'messages')
+    public function add(array $messages, string $domain = 'messages')
     {
         if (!isset($this->messages[$domain])) {
-            $this->messages[$domain] = $messages;
-        } else {
-            foreach ($messages as $id => $message) {
+            $this->messages[$domain] = [];
+        }
+        $intlDomain = $domain;
+        $suffixLength = \strlen(self::INTL_DOMAIN_SUFFIX);
+        if (\strlen($domain) > $suffixLength && false !== strpos($domain, self::INTL_DOMAIN_SUFFIX, -$suffixLength)) {
+            $intlDomain .= self::INTL_DOMAIN_SUFFIX;
+        }
+        foreach ($messages as $id => $message) {
+            if (isset($this->messages[$intlDomain]) && \array_key_exists($id, $this->messages[$intlDomain])) {
+                $this->messages[$intlDomain][$id] = $message;
+            } else {
                 $this->messages[$domain][$id] = $message;
             }
         }
@@ -172,7 +181,7 @@ class MessageCatalogue implements MessageCatalogueInterface, MetadataAwareInterf
     public function addCatalogue(MessageCatalogueInterface $catalogue)
     {
         if ($catalogue->getLocale() !== $this->locale) {
-            throw new LogicException(sprintf('Cannot add a catalogue for locale "%s" as the current locale for this catalogue is "%s"', $catalogue->getLocale(), $this->locale));
+            throw new LogicException(sprintf('Cannot add a catalogue for locale "%s" as the current locale for this catalogue is "%s".', $catalogue->getLocale(), $this->locale));
         }
 
         foreach ($catalogue->all() as $domain => $messages) {
@@ -252,7 +261,7 @@ class MessageCatalogue implements MessageCatalogueInterface, MetadataAwareInterf
     /**
      * {@inheritdoc}
      */
-    public function getMetadata($key = '', $domain = 'messages')
+    public function getMetadata(string $key = '', string $domain = 'messages')
     {
         if ('' == $domain) {
             return $this->metadata;
@@ -274,7 +283,7 @@ class MessageCatalogue implements MessageCatalogueInterface, MetadataAwareInterf
     /**
      * {@inheritdoc}
      */
-    public function setMetadata($key, $value, $domain = 'messages')
+    public function setMetadata(string $key, $value, string $domain = 'messages')
     {
         $this->metadata[$domain][$key] = $value;
     }
@@ -282,7 +291,7 @@ class MessageCatalogue implements MessageCatalogueInterface, MetadataAwareInterf
     /**
      * {@inheritdoc}
      */
-    public function deleteMetadata($key = '', $domain = 'messages')
+    public function deleteMetadata(string $key = '', string $domain = 'messages')
     {
         if ('' == $domain) {
             $this->metadata = [];

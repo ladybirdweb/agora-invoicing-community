@@ -28,7 +28,7 @@ class DisallowAlternativePHPTagsUnitTest extends AbstractSniffUnitTest
 
         $aspTags = false;
         if (PHP_VERSION_ID < 70000) {
-            $aspTags = (boolean) ini_get('asp_tags');
+            $aspTags = (bool) ini_get('asp_tags');
         }
 
         if ($aspTags === true) {
@@ -40,18 +40,6 @@ class DisallowAlternativePHPTagsUnitTest extends AbstractSniffUnitTest
         return $testFiles;
 
     }//end getTestFiles()
-
-
-    /**
-     * Skip this test on HHVM.
-     *
-     * @return bool Whether to skip this test.
-     */
-    protected function shouldSkipTest()
-    {
-        return defined('HHVM_VERSION');
-
-    }//end shouldSkipTest()
 
 
     /**

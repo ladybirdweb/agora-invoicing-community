@@ -81,7 +81,7 @@ abstract class AbstractSniffUnitTest extends TestCase
         foreach ($di as $file) {
             $path = $file->getPathname();
             if (substr($path, 0, strlen($testFileBase)) === $testFileBase) {
-                if ($path !== $testFileBase.'php' && substr($path, -5) !== 'fixed') {
+                if ($path !== $testFileBase.'php' && substr($path, -5) !== 'fixed' && substr($path, -4) !== '.bak') {
                     $testFiles[] = $path;
                 }
             }
@@ -127,6 +127,7 @@ abstract class AbstractSniffUnitTest extends TestCase
 
         // Get a list of all test files to check.
         $testFiles = $this->getTestFiles($testFileBase);
+        $GLOBALS['PHP_CODESNIFFER_SNIFF_CASE_FILES'][] = $testFiles;
 
         if (isset($GLOBALS['PHP_CODESNIFFER_CONFIG']) === true) {
             $config = $GLOBALS['PHP_CODESNIFFER_CONFIG'];
@@ -264,12 +265,12 @@ abstract class AbstractSniffUnitTest extends TestCase
                     $errorsTemp[] = $foundError['message'].' ('.$foundError['source'].')';
 
                     $source = $foundError['source'];
-                    if (in_array($source, $GLOBALS['PHP_CODESNIFFER_SNIFF_CODES']) === false) {
+                    if (in_array($source, $GLOBALS['PHP_CODESNIFFER_SNIFF_CODES'], true) === false) {
                         $GLOBALS['PHP_CODESNIFFER_SNIFF_CODES'][] = $source;
                     }
 
                     if ($foundError['fixable'] === true
-                        && in_array($source, $GLOBALS['PHP_CODESNIFFER_FIXABLE_CODES']) === false
+                        && in_array($source, $GLOBALS['PHP_CODESNIFFER_FIXABLE_CODES'], true) === false
                     ) {
                         $GLOBALS['PHP_CODESNIFFER_FIXABLE_CODES'][] = $source;
                     }

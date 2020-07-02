@@ -35,6 +35,7 @@ use Composer\IO\IOInterface;
 use Composer\Package\AliasPackage;
 use Composer\Package\BasePackage;
 use Composer\Package\CompletePackage;
+use Composer\Package\CompletePackageInterface;
 use Composer\Package\Link;
 use Composer\Package\Loader\ArrayLoader;
 use Composer\Package\Dumper\ArrayDumper;
@@ -118,7 +119,7 @@ class Installer
     protected $preferStable = false;
     protected $preferLowest = false;
     protected $skipSuggest = false;
-    protected $writeLock = true;
+    protected $writeLock;
     protected $executeOperations = true;
 
     /**
@@ -126,9 +127,9 @@ class Installer
      *
      * @var array|null
      */
-    protected $updateWhitelist = null;
-    protected $whitelistDependencies = false; // TODO 2.0 rename to whitelistTransitiveDependencies
-    protected $whitelistAllDependencies = false;
+    protected $updateWhitelist = null; // TODO 2.0 rename to updateAllowList
+    protected $whitelistDependencies = false; // TODO 2.0 rename to allowListTransitiveDependencies
+    protected $whitelistAllDependencies = false; // TODO 2.0 rename to allowListAllDependencies
 
     /**
      * @var SuggestedPackagesReporter
@@ -164,6 +165,8 @@ class Installer
         $this->installationManager = $installationManager;
         $this->eventDispatcher = $eventDispatcher;
         $this->autoloadGenerator = $autoloadGenerator;
+
+        $this->writeLock = $config->get('lock');
     }
 
     /**
@@ -197,8 +200,8 @@ class Installer
         }
 
         if ($this->runScripts) {
-            $devMode = (int) $this->devMode;
-            putenv("COMPOSER_DEV_MODE=$devMode");
+            $_SERVER['COMPOSER_DEV_MODE'] = $this->devMode ? '1' : '0';
+            putenv('COMPOSER_DEV_MODE='.$_SERVER['COMPOSER_DEV_MODE']);
 
             // dispatch pre event
             $eventName = $this->update ? ScriptEvents::PRE_UPDATE_CMD : ScriptEvents::PRE_INSTALL_CMD;
@@ -231,13 +234,13 @@ class Installer
                 return $res;
             }
         } catch (\Exception $e) {
-            if ($this->executeOperations) {
+            if ($this->executeOperations && $this->config->get('notify-on-install')) {
                 $this->installationManager->notifyInstalls($this->io);
             }
 
             throw $e;
         }
-        if ($this->executeOperations) {
+        if ($this->executeOperations && $this->config->get('notify-on-install')) {
             $this->installationManager->notifyInstalls($this->io);
         }
 
@@ -309,13 +312,24 @@ class Installer
             foreach ($localRepo->getPackages() as $package) {
                 $this->installationManager->ensureBinariesPresence($package);
             }
+        }
 
-            $vendorDir = $this->config->get('vendor-dir');
-            if (is_dir($vendorDir)) {
-                // suppress errors as this fails sometimes on OSX for no apparent reason
-                // see https://github.com/composer/composer/issues/4070#issuecomment-129792748
-                @touch($vendorDir);
+        $fundingCount = 0;
+        foreach ($localRepo->getPackages() as $package) {
+            if ($package instanceof CompletePackageInterface && !$package instanceof AliasPackage && $package->getFunding()) {
+                $fundingCount++;
             }
+        }
+        if ($fundingCount) {
+            $this->io->writeError(array(
+                sprintf(
+                    "<info>%d package%s you are using %s looking for funding.</info>",
+                    $fundingCount,
+                    1 === $fundingCount ? '' : 's',
+                    1 === $fundingCount ? 'is' : 'are'
+                ),
+                '<info>Use the `composer fund` command to find out more!</info>',
+            ));
         }
 
         if ($this->runScripts) {
@@ -346,7 +360,7 @@ class Installer
         $repositories = null;
 
         // initialize locked repo if we are installing from lock or in a partial update
-        // and a lock file is present as we need to force install non-whitelisted lock file
+        // and a lock file is present as we need to force install non-allowed lock file
         // packages in that case
         if (!$this->update || (!empty($this->updateWhitelist) && $this->locker->isLocked())) {
             try {
@@ -361,7 +375,7 @@ class Installer
             }
         }
 
-        $this->whitelistUpdateDependencies(
+        $this->allowListUpdateDependencies(
             $lockedRepository ?: $localRepo,
             $this->package->getRequires(),
             $this->package->getDevRequires()
@@ -627,6 +641,16 @@ class Installer
             // force source/dist urls to be updated for all packages
             $this->processPackageUrls($pool, $policy, $localRepo, $repositories);
             $localRepo->write();
+        }
+
+        // see https://github.com/composer/composer/issues/2764
+        if ($operations) {
+            $vendorDir = $this->config->get('vendor-dir');
+            if (is_dir($vendorDir)) {
+                // suppress errors as this fails sometimes on OSX for no apparent reason
+                // see https://github.com/composer/composer/issues/4070#issuecomment-129792748
+                @touch($vendorDir);
+            }
         }
 
         return array(0, $devPackages);
@@ -987,7 +1011,7 @@ class Installer
             }
 
             if ($this->update) {
-                // skip package if the whitelist is enabled and it is not in it
+                // skip package if the allow list is enabled and it is not in it
                 if ($this->updateWhitelist && !$this->isUpdateable($package)) {
                     // check if non-updateable packages are out of date compared to the lock file to ensure we don't corrupt it
                     foreach ($currentPackages as $curPackage) {
@@ -1256,11 +1280,11 @@ class Installer
     private function isUpdateable(PackageInterface $package)
     {
         if (!$this->updateWhitelist) {
-            throw new \LogicException('isUpdateable should only be called when a whitelist is present');
+            throw new \LogicException('isUpdateable should only be called when an allow list is present');
         }
 
-        foreach ($this->updateWhitelist as $whiteListedPattern => $void) {
-            $patternRegexp = BasePackage::packageNameToRegexp($whiteListedPattern);
+        foreach ($this->updateWhitelist as $pattern => $void) {
+            $patternRegexp = BasePackage::packageNameToRegexp($pattern);
             if (preg_match($patternRegexp, $package->getName())) {
                 return true;
             }
@@ -1286,11 +1310,11 @@ class Installer
     }
 
     /**
-     * Adds all dependencies of the update whitelist to the whitelist, too.
+     * Adds all dependencies of the update allow list to the allow list, too.
      *
      * Packages which are listed as requirements in the root package will be
      * skipped including their dependencies, unless they are listed in the
-     * update whitelist themselves or $whitelistAllDependencies is true.
+     * update allow list themselves or $whitelistAllDependencies is true.
      *
      * @param RepositoryInterface $localOrLockRepo Use the locked repo if available, otherwise installed repo will do
      *                                             As we want the most accurate package list to work with, and installed
@@ -1298,7 +1322,7 @@ class Installer
      * @param array               $rootRequires    An array of links to packages in require of the root package
      * @param array               $rootDevRequires An array of links to packages in require-dev of the root package
      */
-    private function whitelistUpdateDependencies($localOrLockRepo, array $rootRequires, array $rootDevRequires)
+    private function allowListUpdateDependencies($localOrLockRepo, array $rootRequires, array $rootDevRequires)
     {
         if (!$this->updateWhitelist) {
             return;
@@ -1328,16 +1352,16 @@ class Installer
             $matchesByPattern = array();
             // check if the name is a glob pattern that did not match directly
             if (empty($depPackages)) {
-                // add any installed package matching the whitelisted name/pattern
-                $whitelistPatternSearchRegexp = BasePackage::packageNameToRegexp($packageName, '^%s$');
-                foreach ($localOrLockRepo->search($whitelistPatternSearchRegexp) as $installedPackage) {
+                // add any installed package matching the allow listed name/pattern
+                $allowListPatternSearchRegexp = BasePackage::packageNameToRegexp($packageName, '^%s$');
+                foreach ($localOrLockRepo->search($allowListPatternSearchRegexp) as $installedPackage) {
                     $matchesByPattern[] = $pool->whatProvides($installedPackage['name']);
                 }
 
-                // add root requirements which match the whitelisted name/pattern
-                $whitelistPatternRegexp = BasePackage::packageNameToRegexp($packageName);
+                // add root requirements which match the allow listed name/pattern
+                $allowListPatternRegexp = BasePackage::packageNameToRegexp($packageName);
                 foreach ($rootRequiredPackageNames as $rootRequiredPackageName) {
-                    if (preg_match($whitelistPatternRegexp, $rootRequiredPackageName)) {
+                    if (preg_match($allowListPatternRegexp, $rootRequiredPackageName)) {
                         $nameMatchesRequiredPackage = true;
                         break;
                     }
@@ -1380,7 +1404,7 @@ class Installer
                         }
 
                         if (isset($skipPackages[$requirePackage->getName()]) && !preg_match(BasePackage::packageNameToRegexp($packageName), $requirePackage->getName())) {
-                            $this->io->writeError('<warning>Dependency "' . $requirePackage->getName() . '" is also a root requirement, but is not explicitly whitelisted. Ignoring.</warning>');
+                            $this->io->writeError('<warning>Dependency "' . $requirePackage->getName() . '" is also a root requirement, but is not explicitly allowed. Ignoring.</warning>');
                             continue;
                         }
 
@@ -1655,6 +1679,8 @@ class Installer
      * restrict the update operation to a few packages, all other packages
      * that are already installed will be kept at their current version
      *
+     * @deprecated use setAllowList instead
+     *
      * @param  array     $packages
      * @return Installer
      */
@@ -1666,7 +1692,20 @@ class Installer
     }
 
     /**
-     * @deprecated use setWhitelistTransitiveDependencies instead
+     * restrict the update operation to a few packages, all other packages
+     * that are already installed will be kept at their current version
+     *
+     * @param  array     $packages
+     * @return Installer
+     */
+    public function setUpdateAllowList(array $packages)
+    {
+        // call original method for BC
+        return $this->setUpdateWhitelist($packages);
+    }
+
+    /**
+     * @deprecated use setAllowListTransitiveDependencies instead
      */
     public function setWhitelistDependencies($updateDependencies = true)
     {
@@ -1674,10 +1713,12 @@ class Installer
     }
 
     /**
-     * Should dependencies of whitelisted packages (but not direct dependencies) be updated?
+     * Should dependencies of allowed packages (but not direct dependencies) be updated?
      *
-     * This will NOT whitelist any dependencies that are also directly defined
+     * This will NOT allow list any dependencies that are also directly defined
      * in the root package.
+     *
+     * @deprecated use setAllowListTransitiveDependencies instead
      *
      * @param  bool      $updateTransitiveDependencies
      * @return Installer
@@ -1690,10 +1731,27 @@ class Installer
     }
 
     /**
-     * Should all dependencies of whitelisted packages be updated recursively?
+     * Should dependencies of allowed packages (but not direct dependencies) be updated?
      *
-     * This will whitelist any dependencies of the whitelisted packages, including
+     * This will NOT allow list any dependencies that are also directly defined
+     * in the root package.
+     *
+     * @param  bool      $updateTransitiveDependencies
+     * @return Installer
+     */
+    public function setAllowListTransitiveDependencies($updateTransitiveDependencies = true)
+    {
+        // call original method for BC
+        return $this->setWhitelistTransitiveDependencies($updateTransitiveDependencies);
+    }
+
+    /**
+     * Should all dependencies of allowed packages be updated recursively?
+     *
+     * This will allow list any dependencies of the allow listed packages, including
      * those defined in the root package.
+     *
+     * @deprecated use setAllowListAllDependencies instead
      *
      * @param  bool      $updateAllDependencies
      * @return Installer
@@ -1703,6 +1761,21 @@ class Installer
         $this->whitelistAllDependencies = (bool) $updateAllDependencies;
 
         return $this;
+    }
+
+    /**
+     * Should all dependencies of allowed packages be updated recursively?
+     *
+     * This will allow list any dependencies of the allow listed packages, including
+     * those defined in the root package.
+     *
+     * @param  bool      $updateAllDependencies
+     * @return Installer
+     */
+    public function setAllowListAllDependencies($updateAllDependencies = true)
+    {
+        // call original method for BC
+        return $this->setWhitelistAllDependencies($updateAllDependencies);
     }
 
     /**

@@ -1,4 +1,8 @@
-<?php namespace Arcanedev\Support\Providers\Concerns;
+<?php
+
+declare(strict_types=1);
+
+namespace Arcanedev\Support\Providers\Concerns;
 
 /**
  * Trait     HasTranslations
@@ -18,9 +22,9 @@ trait HasTranslations
      *
      * @return string
      */
-    protected function getTranslationsPath()
+    protected function getTranslationsPath(): string
     {
-        return $this->getBasePath().DS.'resources'.DS.'lang';
+        return $this->getBasePath().DIRECTORY_SEPARATOR.'translations';
     }
 
     /**
@@ -28,31 +32,31 @@ trait HasTranslations
      *
      * @return string
      */
-    protected function getTranslationsDestinationPath()
+    protected function getTranslationsDestinationPath(): string
     {
-        return $this->app['path.lang'].DS.'vendor'.DS.$this->package;
+        return $this->app['path.lang'].DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.$this->getPackageName();
     }
 
     /**
-     * Publish and load the translations if $load argument is true.
+     * Publish the translations.
      *
-     * @param  bool  $load
+     * @param  string|null  $path
      */
-    protected function publishTranslations(bool $load = true)
+    protected function publishTranslations(?string $path = null): void
     {
         $this->publishes([
-            $this->getTranslationsPath() => $this->getTranslationsDestinationPath()
-        ], 'lang');
-
-        if ($load)
-            $this->loadTranslations();
+            $this->getTranslationsPath() => $path ?: $this->getTranslationsDestinationPath(),
+        ], $this->getPublishedTags('translations'));
     }
 
     /**
      * Load the translations files.
      */
-    protected function loadTranslations()
+    protected function loadTranslations(): void
     {
-        $this->loadTranslationsFrom($this->getTranslationsPath(), $this->package);
+        $path = $this->getTranslationsPath();
+
+        $this->loadTranslationsFrom($path, $this->getPackageName());
+        $this->loadJsonTranslationsFrom($path);
     }
 }

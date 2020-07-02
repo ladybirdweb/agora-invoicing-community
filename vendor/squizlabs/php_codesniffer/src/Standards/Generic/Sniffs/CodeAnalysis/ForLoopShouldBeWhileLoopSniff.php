@@ -2,7 +2,7 @@
 /**
  * Detects for-loops that can be simplified to a while-loop.
  *
- * This rule is based on the PMD rule catalog. Detects for-loops that can be
+ * This rule is based on the PMD rule catalogue. Detects for-loops that can be
  * simplified as a while-loop.
  *
  * <code>
@@ -22,8 +22,8 @@
 
 namespace PHP_CodeSniffer\Standards\Generic\Sniffs\CodeAnalysis;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Util\Tokens;
 
 class ForLoopShouldBeWhileLoopSniff implements Sniff

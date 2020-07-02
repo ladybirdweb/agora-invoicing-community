@@ -69,7 +69,7 @@ class Currency
      * @param string $to
      * @param bool   $format
      *
-     * @return string
+     * @return string|null
      */
     public function convert($amount, $from = null, $to = null, $format = true)
     {
@@ -86,11 +86,16 @@ class Currency
             return null;
         }
 
-        // Convert amount
-        if ($from === $to) {
-            $value = $amount;
-        } else {
-            $value = ($amount * $to_rate) / $from_rate;
+        try {
+            // Convert amount
+            if ($from === $to) {
+                $value = $amount;
+            } else {
+                $value = ($amount * $to_rate) / $from_rate;
+            }
+        } catch (\Exception $e) {
+            // Prevent invalid conversion or division by zero errors
+            return null;
         }
 
         // Should the result be formatted?
@@ -132,82 +137,38 @@ class Currency
 
         // Match decimal and thousand separators
         preg_match_all('/[\s\',.!]/', $format, $separators);
-   
-        if ($thousand = array_get($separators, '0.0', null)) {
+
+        if ($thousand = Arr::get($separators, '0.0', null)) {
             if ($thousand == '!') {
                 $thousand = '';
             }
         }
-     
-        $decimal = array_get($separators, '0.1', null);
+
+        $decimal = Arr::get($separators, '0.1', null);
+
         // Match format for decimals count
         preg_match($valRegex, $format, $valFormat);
 
-        $valFormat = array_get($valFormat, 0, 0);
+        $valFormat = Arr::get($valFormat, 0, 0);
+
         // Count decimals length
         $decimals = $decimal ? strlen(substr(strrchr($valFormat, $decimal), 1)) : 0;
-        
+
         // Do we have a negative value?
         if ($negative = $value < 0 ? '-' : '') {
             $value = $value * -1;
         }
-         
-        if ($code == 'INR') {
-            $value = $this->getIndianCurrencyFormat($value);
-        } else {
-            // $value = number_format($value, $decimals, $decimal, $thousand);
-            $value =number_format($value);
-        }
+
         // Format the value
-      
-       
-        // dd($value);
-        // dd($value,$code);
-         
+        $value = number_format($value, $decimals, $decimal, $thousand);
 
         // Apply the formatted measurement
         if ($include_symbol) {
             $value = preg_replace($valRegex, $value, $format);
         }
+
         // Return value
         return $negative . $value;
-    }
-
-    public function getIndianCurrencyFormat($number)
-    {
-       
-            $explrestunits = "" ;
-            $number = explode('.', $number);
-            $num = $number[0];
-            if (strlen($num)>3) {
-                $lastthree = substr($num, strlen($num)-3, strlen($num));
-                $restunits = substr($num, 0, strlen($num)-3); // extracts the last three digits
-          $restunits = (strlen($restunits)%2 == 1)?"0".$restunits:$restunits; // explodes the remaining digits in 2's formats, adds a zero in the beginning to maintain the 2's grouping.
-          $expunit = str_split($restunits, 2);
-                for ($i=0; $i<sizeof($expunit); $i++) {
-                    // creates each of the 2's group and adds a comma to the end
-                    if ($i==0) {
-                        $explrestunits .= (int)$expunit[$i].","; // if is first value , convert into integer
-                    } else {
-                        $explrestunits .= $expunit[$i].",";
-                    }
-                }
-                $thecash = $explrestunits.$lastthree;
-            } else {
-                $thecash = $num;
-            }
-            if (!empty($number[1])) {
-                if (strlen($number[1]) == 1) {
-                    return $thecash . '.' . $number[1] . '0';
-                } elseif (strlen($number[1]) == 2) {
-                    return $thecash . '.' . $number[1];
-                } else {
-                    return 'cannot handle decimal values more than two digits...';
-                }
-            } else {
-                return $thecash;
-            }
-        
     }
 
     /**
@@ -279,7 +240,8 @@ class Currency
         if ($this->currencies_cache === null) {
             if (config('app.debug', false) === true) {
                 $this->currencies_cache = $this->getDriver()->all();
-            } else {
+            }
+            else {
                 $this->currencies_cache = $this->cache->rememberForever('torann.currency', function () {
                     return $this->getDriver()->all();
                 });
@@ -296,7 +258,7 @@ class Currency
      */
     public function getActiveCurrencies()
     {
-        return array_filter($this->getCurrencies(), function ($currency) {
+        return array_filter($this->getCurrencies(), function($currency) {
             return $currency['active'] == true;
         });
     }

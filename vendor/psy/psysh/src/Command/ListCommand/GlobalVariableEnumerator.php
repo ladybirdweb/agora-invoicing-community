@@ -3,7 +3,7 @@
 /*
  * This file is part of Psy Shell.
  *
- * (c) 2012-2018 Justin Hileman
+ * (c) 2012-2020 Justin Hileman
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -25,18 +25,18 @@ class GlobalVariableEnumerator extends Enumerator
     {
         // only list globals when no Reflector is present.
         if ($reflector !== null || $target !== null) {
-            return;
+            return [];
         }
 
         // only list globals if we are specifically asked
         if (!$input->getOption('globals')) {
-            return;
+            return [];
         }
 
         $globals = $this->prepareGlobals($this->getGlobals());
 
         if (empty($globals)) {
-            return;
+            return [];
         }
 
         return [

@@ -2,7 +2,7 @@
 /**
  * Detects for-loops that use a function call in the test expression.
  *
- * This rule is based on the PMD rule catalog. Detects for-loops that use a
+ * This rule is based on the PMD rule catalogue. Detects for-loops that use a
  * function call in the test expression.
  *
  * <code>
@@ -26,8 +26,8 @@
 
 namespace PHP_CodeSniffer\Standards\Generic\Sniffs\CodeAnalysis;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Util\Tokens;
 
 class ForLoopWithTestFunctionCallSniff implements Sniff

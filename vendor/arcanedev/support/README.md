@@ -1,6 +1,6 @@
 # Support [![Packagist License][badge_license]](LICENSE.md) [![For Laravel 5][badge_laravel]][link-github-repo]
 
-[![Travis Status][badge_build]][link-travis]
+[![Github Workflow Status][badge_build]][link-github-status]
 [![Coverage Status][badge_coverage]][link-scrutinizer]
 [![Scrutinizer Code Quality][badge_quality]][link-scrutinizer]
 [![SensioLabs Insight][badge_insight]][link-insight]
@@ -31,7 +31,7 @@ If you discover any security related issues, please email arcanedev.maroc@gmail.
 
 [badge_license]:   http://img.shields.io/packagist/l/arcanedev/support.svg?style=flat-square
 [badge_laravel]:   https://img.shields.io/badge/Laravel-5.1%20to%205.8-orange.svg?style=flat-square
-[badge_build]:     http://img.shields.io/travis/ARCANEDEV/Support.svg?style=flat-square
+[badge_build]:     https://img.shields.io/github/workflow/status/ARCANEDEV/Support/run-tests?style=flat-square
 [badge_coverage]:  https://img.shields.io/scrutinizer/coverage/g/ARCANEDEV/Support.svg?style=flat-square
 [badge_quality]:   https://img.shields.io/scrutinizer/g/ARCANEDEV/Support.svg?style=flat-square
 [badge_insight]:   https://img.shields.io/sensiolabs/i/de0353dd-df17-4656-b9c0-1eea95aa30a2.svg?style=flat-square
@@ -42,9 +42,9 @@ If you discover any security related issues, please email arcanedev.maroc@gmail.
 
 [link-author]:        https://github.com/arcanedev-maroc
 [link-github-repo]:   https://github.com/ARCANEDEV/Support
+[link-github-status]: https://github.com/ARCANEDEV/Support/actions
 [link-github-issues]: https://github.com/ARCANEDEV/Support/issues
 [link-contributors]:  https://github.com/ARCANEDEV/Support/graphs/contributors
 [link-packagist]:     https://packagist.org/packages/arcanedev/support
-[link-travis]:        https://travis-ci.org/ARCANEDEV/Support
 [link-scrutinizer]:   https://scrutinizer-ci.com/g/ARCANEDEV/Support/?branch=master
 [link-insight]:       https://insight.sensiolabs.com/projects/de0353dd-df17-4656-b9c0-1eea95aa30a2

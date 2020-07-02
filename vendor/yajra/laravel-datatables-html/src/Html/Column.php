@@ -101,6 +101,20 @@ class Column extends Fluent
 
         return $this;
     }
+    
+     /**
+     * Set column responsive priority.
+     *
+     * @param int|string $value
+     * @return $this
+     * @see https://datatables.net/reference/option/columns.responsivePriority
+     */
+    public function responsivePriority($value)
+    {
+        $this->attributes['responsivePriority'] = $value;
+
+        return $this;
+    }
 
     /**
      * Set column title.
@@ -189,6 +203,17 @@ class Column extends Fluent
         $this->attributes['visible'] = $flag;
 
         return $this;
+    }
+
+    /**
+     * Set column hidden state.
+     *
+     * @return $this
+     * @see https://datatables.net/reference/option/columns.visible
+     */
+    public function hidden()
+    {
+        return $this->visible(false);
     }
 
     /**
@@ -427,6 +452,20 @@ class Column extends Fluent
     }
 
     /**
+     * Set column renderer with give raw value.
+     *
+     * @param mixed $value
+     * @return $this
+     * @see https://datatables.net/reference/option/columns.render
+     */
+    public function renderRaw($value)
+    {
+        $this->attributes['render'] = $value;
+
+        return $this;
+    }
+
+    /**
      * Parse render attribute.
      *
      * @param mixed $value
@@ -466,7 +505,7 @@ class Column extends Fluent
             return false;
         }
 
-        return Str::startsWith(trim($value), ['$.fn.dataTable.render']);
+        return Str::startsWith(trim($value), ['$.fn.dataTable.render', '[']);
     }
 
     /**
@@ -489,6 +528,19 @@ class Column extends Fluent
     public function footer($value)
     {
         $this->attributes['footer'] = $value;
+
+        return $this;
+    }
+
+    /**
+     * Set custom html title instead defult label.
+     *
+     * @param mixed $value
+     * @return $this
+     */
+    public function titleAttr($value)
+    {
+        $this->attributes['titleAttr'] = $value;
 
         return $this;
     }

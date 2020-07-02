@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -9,8 +9,9 @@
  */
 namespace PHPUnit\Util;
 
-use Closure;
-
+/**
+ * @internal This class is not covered by the backward compatibility promise for PHPUnit
+ */
 final class GlobalState
 {
     /**
@@ -26,6 +27,9 @@ final class GlobalState
         '_REQUEST',
     ];
 
+    /**
+     * @throws Exception
+     */
     public static function getIncludedFilesAsString(): string
     {
         return static::processIncludedFilesAsString(\get_included_files());
@@ -33,6 +37,8 @@ final class GlobalState
 
     /**
      * @param string[] $files
+     *
+     * @throws Exception
      */
     public static function processIncludedFilesAsString(array $files): string
     {
@@ -71,14 +77,13 @@ final class GlobalState
 
     public static function getIniSettingsAsString(): string
     {
-        $result      = '';
-        $iniSettings = \ini_get_all(null, false);
+        $result = '';
 
-        foreach ($iniSettings as $key => $value) {
+        foreach (\ini_get_all(null, false) as $key => $value) {
             $result .= \sprintf(
                 '@ini_set(%s, %s);' . "\n",
                 self::exportVariable($key),
-                self::exportVariable($value)
+                self::exportVariable((string) $value)
             );
         }
 
@@ -111,7 +116,7 @@ final class GlobalState
         foreach (self::SUPER_GLOBAL_ARRAYS as $superGlobalArray) {
             if (isset($GLOBALS[$superGlobalArray]) && \is_array($GLOBALS[$superGlobalArray])) {
                 foreach (\array_keys($GLOBALS[$superGlobalArray]) as $key) {
-                    if ($GLOBALS[$superGlobalArray][$key] instanceof Closure) {
+                    if ($GLOBALS[$superGlobalArray][$key] instanceof \Closure) {
                         continue;
                     }
 
@@ -129,7 +134,7 @@ final class GlobalState
         $blacklist[] = 'GLOBALS';
 
         foreach (\array_keys($GLOBALS) as $key) {
-            if (!$GLOBALS[$key] instanceof Closure && !\in_array($key, $blacklist, true)) {
+            if (!$GLOBALS[$key] instanceof \Closure && !\in_array($key, $blacklist, true)) {
                 $result .= \sprintf(
                     '$GLOBALS[\'%s\'] = %s;' . "\n",
                     $key,
@@ -162,7 +167,7 @@ final class GlobalState
                 $result = false;
             }
 
-            if ($result === false) {
+            if (!$result) {
                 break;
             }
         }

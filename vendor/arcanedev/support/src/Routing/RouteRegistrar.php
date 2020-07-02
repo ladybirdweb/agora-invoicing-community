@@ -1,58 +1,36 @@
-<?php namespace Arcanedev\Support\Routing;
+<?php
+
+declare(strict_types=1);
+
+namespace Arcanedev\Support\Routing;
+
+use Arcanedev\Support\Routing\Concerns\RegistersRouteClasses;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\Routing\Registrar;
+use Illuminate\Routing\Router;
+use Illuminate\Support\Traits\ForwardsCalls;
 
 /**
  * Class     RouteRegistrar
  *
- * @package  Arcanedev\Support\Laravel
+ * @package  Arcanedev\Support\Routing
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  *
- * @method  \Arcanedev\Support\Routing\RouteRegistrar  as(string $name)
- * @method  \Arcanedev\Support\Routing\RouteRegistrar  domain(string $domain)
- * @method  \Arcanedev\Support\Routing\RouteRegistrar  middleware(string $middleware)
- * @method  \Arcanedev\Support\Routing\RouteRegistrar  name(string $name)
- * @method  \Arcanedev\Support\Routing\RouteRegistrar  namespace(string $namespace)
- * @method  \Arcanedev\Support\Routing\RouteRegistrar  prefix(string $prefix)
- * @method  void                                       group(...$mixed)
+ * @method  \Illuminate\Routing\RouteRegistrar  bind(string $key, \Closure $binder)
+ * @method  void                                map()
+ * @method  void                                bindings()
  *
- * @method  \Illuminate\Routing\Route  get(string $uri, \Closure|array|string|null $action = null)
- * @method  \Illuminate\Routing\Route  post(string $uri, \Closure|array|string|null $action = null)
- * @method  \Illuminate\Routing\Route  put(string $uri, \Closure|array|string|null $action = null)
- * @method  \Illuminate\Routing\Route  patch(string $uri, \Closure|array|string|null $action = null)
- * @method  \Illuminate\Routing\Route  delete(string $uri, \Closure|array|string|null $action = null)
- * @method  \Illuminate\Routing\Route  options(string $uri, \Closure|array|string|null $action = null)
- * @method  \Illuminate\Routing\Route  any(string $uri, \Closure|array|string|null $action = null)
- * @method  \Illuminate\Routing\Route  match(array|string $methods, string $uri, \Closure|array|string|null $action = null)
- *
- * @method  void  resource(string $name, string $controller, array $options = [])
- * @method  void  resources(array $resources)
- *
- * @method  void  pattern(string $key, string $pattern)
- * @method  void  patterns(array $patterns)
- *
- * @method  void  model(string $key, string $class, \Closure|null $callback = null)
- * @method  void  bind(string $key, string|\Closure $binder)
- *
- * @method  void  aliasMiddleware(string $name, string $class)
+ * @mixin  \Illuminate\Routing\RouteRegistrar
  */
 abstract class RouteRegistrar
 {
     /* -----------------------------------------------------------------
-     |  Main Methods
+     |  Traits
      | -----------------------------------------------------------------
      */
 
-    /**
-     * Register and map routes.
-     */
-    public static function register()
-    {
-        (new static)->map();
-    }
-
-    /**
-     * Map the routes for the application.
-     */
-    abstract public function map();
+    use RegistersRouteClasses,
+        ForwardsCalls;
 
     /* -----------------------------------------------------------------
      |  Other Methods
@@ -60,15 +38,31 @@ abstract class RouteRegistrar
      */
 
     /**
-     * Call the router method.
+     * Pass dynamic methods onto the router instance.
      *
-     * @param  string  $name
-     * @param  array   $arguments
+     * @param  string  $method
+     * @param  array   $parameters
      *
      * @return mixed
      */
-    public function __call($name, $arguments)
+    public function __call($method, $parameters)
     {
-        return app('router')->$name(...$arguments);
+        return $this->forwardCallToRouter(
+            app(Router::class), $method, $parameters
+        );
+    }
+
+    /**
+     * Pass dynamic methods onto the router instance.
+     *
+     * @param  \Illuminate\Contracts\Routing\Registrar  $router
+     * @param  string                                   $method
+     * @param  array                                    $parameters
+     *
+     * @return mixed
+     */
+    protected function forwardCallToRouter(Registrar $router, $method, $parameters)
+    {
+        return $this->forwardCallTo($router, $method, $parameters);
     }
 }

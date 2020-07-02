@@ -1,9 +1,9 @@
 This is the PHP port of Hamcrest Matchers
 =========================================
 
-[![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/hamcrest/hamcrest-php/badges/quality-score.png?s=754f5c0556419fc6204917ca9a9dcf2fa2b45ed0)](https://scrutinizer-ci.com/g/hamcrest/hamcrest-php/)
 [![Build Status](https://travis-ci.org/hamcrest/hamcrest-php.png?branch=master)](https://travis-ci.org/hamcrest/hamcrest-php)
-[![Coverage Status](https://coveralls.io/repos/hamcrest/hamcrest-php/badge.png)](https://coveralls.io/r/hamcrest/hamcrest-php)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/hamcrest/hamcrest-php/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/hamcrest/hamcrest-php/?branch=master)
+[![Code Coverage](https://scrutinizer-ci.com/g/hamcrest/hamcrest-php/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/hamcrest/hamcrest-php/?branch=master)
 
 Hamcrest is a matching library originally written for Java, but
 subsequently ported to many other languages.  hamcrest-php is the
@@ -37,6 +37,12 @@ Exceptions, mostly down to PHP language barriers:
      conventions between Java's Arrays, Collections, Sets and Maps compared
      with PHP's Arrays.
 
+---
+** [Unless we consider POPO's (Plain Old PHP Objects) akin to JavaBeans]
+     - The POPO thing is a joke.  Java devs coin the term POJO's (Plain Old
+       Java Objects).
+
+
 Usage
 -----
 
@@ -45,7 +51,3 @@ Hamcrest matchers are easy to use as:
 ```php
 Hamcrest_MatcherAssert::assertThat('a', Hamcrest_Matchers::equalToIgnoringCase('A'));
 ```
-
-  ** [Unless we consider POPO's (Plain Old PHP Objects) akin to JavaBeans]
-     - The POPO thing is a joke.  Java devs coin the term POJO's (Plain Old
-       Java Objects).

@@ -176,7 +176,7 @@ abstract class DataTable implements DataTableButtons
      */
     public function request()
     {
-        return $this->request ?: $this->request = resolve('datatables.request');
+        return $this->request ?: $this->request = app('datatables.request');
     }
 
     /**
@@ -186,14 +186,14 @@ abstract class DataTable implements DataTableButtons
      */
     public function ajax()
     {
-        $source = null;
+        $query = null;
         if (method_exists($this, 'query')) {
-            $source = app()->call([$this, 'query']);
-            $source = $this->applyScopes($source);
+            $query = app()->call([$this, 'query']);
+            $query = $this->applyScopes($query);
         }
 
         /** @var \Yajra\DataTables\DataTableAbstract $dataTable */
-        $dataTable = app()->call([$this, 'dataTable'], compact('source'));
+        $dataTable = app()->call([$this, 'dataTable'], compact('query'));
 
         if ($callback = $this->beforeCallback) {
             $callback($dataTable);
@@ -520,7 +520,7 @@ abstract class DataTable implements DataTableButtons
     public function snappyPdf()
     {
         /** @var \Barryvdh\Snappy\PdfWrapper $snappy */
-        $snappy      = resolve('snappy.pdf.wrapper');
+        $snappy      = app('snappy.pdf.wrapper');
         $options     = config('datatables-buttons.snappy.options');
         $orientation = config('datatables-buttons.snappy.orientation');
 

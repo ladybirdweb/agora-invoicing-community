@@ -9,12 +9,12 @@
 
 namespace PHP_CodeSniffer\Standards\PSR2\Sniffs\ControlStructures;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
+use PHP_CodeSniffer\Util\Tokens;
 
 class ControlStructureSpacingSniff implements Sniff
 {
-
 
     /**
      * How many spaces should follow the opening bracket.
@@ -44,10 +44,8 @@ class ControlStructureSpacingSniff implements Sniff
             T_FOREACH,
             T_FOR,
             T_SWITCH,
-            T_DO,
             T_ELSE,
             T_ELSEIF,
-            T_TRY,
             T_CATCH,
         ];
 
@@ -75,39 +73,43 @@ class ControlStructureSpacingSniff implements Sniff
             return;
         }
 
-        $parenOpener    = $tokens[$stackPtr]['parenthesis_opener'];
-        $parenCloser    = $tokens[$stackPtr]['parenthesis_closer'];
-        $spaceAfterOpen = 0;
-        if ($tokens[($parenOpener + 1)]['code'] === T_WHITESPACE) {
-            if (strpos($tokens[($parenOpener + 1)]['content'], $phpcsFile->eolChar) !== false) {
-                $spaceAfterOpen = 'newline';
-            } else {
-                $spaceAfterOpen = strlen($tokens[($parenOpener + 1)]['content']);
-            }
-        }
-
-        $phpcsFile->recordMetric($stackPtr, 'Spaces after control structure open parenthesis', $spaceAfterOpen);
-
-        if ($spaceAfterOpen !== $this->requiredSpacesAfterOpen) {
-            $error = 'Expected %s spaces after opening bracket; %s found';
-            $data  = [
-                $this->requiredSpacesAfterOpen,
-                $spaceAfterOpen,
-            ];
-            $fix   = $phpcsFile->addFixableError($error, ($parenOpener + 1), 'SpacingAfterOpenBrace', $data);
-            if ($fix === true) {
-                $padding = str_repeat(' ', $this->requiredSpacesAfterOpen);
-                if ($spaceAfterOpen === 0) {
-                    $phpcsFile->fixer->addContent($parenOpener, $padding);
-                } else if ($spaceAfterOpen === 'newline') {
-                    $phpcsFile->fixer->replaceToken(($parenOpener + 1), '');
+        $parenOpener = $tokens[$stackPtr]['parenthesis_opener'];
+        $parenCloser = $tokens[$stackPtr]['parenthesis_closer'];
+        $nextContent = $phpcsFile->findNext(T_WHITESPACE, ($parenOpener + 1), null, true);
+        if (in_array($tokens[$nextContent]['code'], Tokens::$commentTokens, true) === false) {
+            $spaceAfterOpen = 0;
+            if ($tokens[($parenOpener + 1)]['code'] === T_WHITESPACE) {
+                if (strpos($tokens[($parenOpener + 1)]['content'], $phpcsFile->eolChar) !== false) {
+                    $spaceAfterOpen = 'newline';
                 } else {
-                    $phpcsFile->fixer->replaceToken(($parenOpener + 1), $padding);
+                    $spaceAfterOpen = $tokens[($parenOpener + 1)]['length'];
                 }
             }
-        }
 
-        if ($tokens[$parenOpener]['line'] === $tokens[$parenCloser]['line']) {
+            $phpcsFile->recordMetric($stackPtr, 'Spaces after control structure open parenthesis', $spaceAfterOpen);
+
+            if ($spaceAfterOpen !== $this->requiredSpacesAfterOpen) {
+                $error = 'Expected %s spaces after opening bracket; %s found';
+                $data  = [
+                    $this->requiredSpacesAfterOpen,
+                    $spaceAfterOpen,
+                ];
+                $fix   = $phpcsFile->addFixableError($error, ($parenOpener + 1), 'SpacingAfterOpenBrace', $data);
+                if ($fix === true) {
+                    $padding = str_repeat(' ', $this->requiredSpacesAfterOpen);
+                    if ($spaceAfterOpen === 0) {
+                        $phpcsFile->fixer->addContent($parenOpener, $padding);
+                    } else if ($spaceAfterOpen === 'newline') {
+                        $phpcsFile->fixer->replaceToken(($parenOpener + 1), '');
+                    } else {
+                        $phpcsFile->fixer->replaceToken(($parenOpener + 1), $padding);
+                    }
+                }
+            }
+        }//end if
+
+        $prev = $phpcsFile->findPrevious(T_WHITESPACE, ($parenCloser - 1), $parenOpener, true);
+        if ($tokens[$prev]['line'] === $tokens[$parenCloser]['line']) {
             $spaceBeforeClose = 0;
             if ($tokens[($parenCloser - 1)]['code'] === T_WHITESPACE) {
                 $spaceBeforeClose = strlen(ltrim($tokens[($parenCloser - 1)]['content'], $phpcsFile->eolChar));

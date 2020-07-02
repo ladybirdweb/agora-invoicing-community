@@ -9,8 +9,8 @@
 
 namespace PHP_CodeSniffer\Standards\Squiz\Sniffs\CSS;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Util\Tokens;
 
 class DuplicateClassDefinitionSniff implements Sniff
@@ -88,13 +88,14 @@ class DuplicateClassDefinitionSniff implements Sniff
             $name = trim($name);
             $name = str_replace("\n", ' ', $name);
             $name = preg_replace('|[\s]+|', ' ', $name);
+            $name = preg_replace('|\s*/\*.*\*/\s*|', '', $name);
             $name = str_replace(', ', ',', $name);
 
             $names = explode(',', $name);
             sort($names);
             $name = implode(',', $names);
 
-            if ($name{0} === '@') {
+            if ($name[0] === '@') {
                 // Media block has its own "scope".
                 $scope = $name;
             } else if (isset($classNames[$scope][$name]) === true) {

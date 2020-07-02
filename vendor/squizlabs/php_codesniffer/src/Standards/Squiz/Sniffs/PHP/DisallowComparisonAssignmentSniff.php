@@ -9,8 +9,8 @@
 
 namespace PHP_CodeSniffer\Standards\Squiz\Sniffs\PHP;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Util\Tokens;
 
 class DisallowComparisonAssignmentSniff implements Sniff
@@ -82,15 +82,10 @@ class DisallowComparisonAssignmentSniff implements Sniff
             return;
         }
 
-        $endStatement = $phpcsFile->findNext(T_SEMICOLON, ($stackPtr + 1));
-        if ($tokens[$stackPtr]['conditions'] !== $tokens[$endStatement]['conditions']) {
-            // This statement doesn't end with a semicolon, which is the case for
-            // the last expression in a for loop.
-            return;
-        }
-
+        $endStatement = $phpcsFile->findEndOfStatement($stackPtr);
         for ($i = ($stackPtr + 1); $i < $endStatement; $i++) {
-            if (isset(Tokens::$comparisonTokens[$tokens[$i]['code']]) === true
+            if ((isset(Tokens::$comparisonTokens[$tokens[$i]['code']]) === true
+                && $tokens[$i]['code'] !== T_COALESCE)
                 || $tokens[$i]['code'] === T_INLINE_THEN
             ) {
                 $error = 'The value of a comparison must not be assigned to a variable';

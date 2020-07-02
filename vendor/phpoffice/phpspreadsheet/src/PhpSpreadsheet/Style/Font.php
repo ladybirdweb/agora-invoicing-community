@@ -2,8 +2,6 @@
 
 namespace PhpOffice\PhpSpreadsheet\Style;
 
-use PhpOffice\PhpSpreadsheet\Exception as PhpSpreadsheetException;
-
 class Font extends Supervisor
 {
     // Underline types
@@ -159,9 +157,7 @@ class Font extends Supervisor
      *
      * @param array $pStyles Array containing style information
      *
-     * @throws PhpSpreadsheetException
-     *
-     * @return Font
+     * @return $this
      */
     public function applyFromArray(array $pStyles)
     {
@@ -219,7 +215,7 @@ class Font extends Supervisor
      *
      * @param string $pValue
      *
-     * @return Font
+     * @return $this
      */
     public function setName($pValue)
     {
@@ -255,7 +251,7 @@ class Font extends Supervisor
      *
      * @param float $pValue
      *
-     * @return Font
+     * @return $this
      */
     public function setSize($pValue)
     {
@@ -291,7 +287,7 @@ class Font extends Supervisor
      *
      * @param bool $pValue
      *
-     * @return Font
+     * @return $this
      */
     public function setBold($pValue)
     {
@@ -327,7 +323,7 @@ class Font extends Supervisor
      *
      * @param bool $pValue
      *
-     * @return Font
+     * @return $this
      */
     public function setItalic($pValue)
     {
@@ -363,7 +359,7 @@ class Font extends Supervisor
      *
      * @param bool $pValue
      *
-     * @return Font
+     * @return $this
      */
     public function setSuperscript($pValue)
     {
@@ -400,7 +396,7 @@ class Font extends Supervisor
      *
      * @param bool $pValue
      *
-     * @return Font
+     * @return $this
      */
     public function setSubscript($pValue)
     {
@@ -439,7 +435,7 @@ class Font extends Supervisor
      *                                    If a boolean is passed, then TRUE equates to UNDERLINE_SINGLE,
      *                                        false equates to UNDERLINE_NONE
      *
-     * @return Font
+     * @return $this
      */
     public function setUnderline($pValue)
     {
@@ -477,7 +473,7 @@ class Font extends Supervisor
      *
      * @param bool $pValue
      *
-     * @return Font
+     * @return $this
      */
     public function setStrikethrough($pValue)
     {
@@ -508,11 +504,7 @@ class Font extends Supervisor
     /**
      * Set Color.
      *
-     * @param Color $pValue
-     *
-     * @throws PhpSpreadsheetException
-     *
-     * @return Font
+     * @return $this
      */
     public function setColor(Color $pValue)
     {

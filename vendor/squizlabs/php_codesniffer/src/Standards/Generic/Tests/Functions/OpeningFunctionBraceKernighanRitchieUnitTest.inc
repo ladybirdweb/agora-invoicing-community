@@ -18,7 +18,7 @@ function myFunction()	{
 }
 
 
-class myClass()
+class myClass
 {
     // Good.
     function myFunction() {
@@ -64,7 +64,7 @@ function myFunction($variable1, $variable2,
 }
 
 
-class myClass()
+class myClass
 {
     // Good.
     function myFunction($variable1, $variable2,
@@ -88,7 +88,7 @@ class myClass()
     }
 }
 
-interface MyInterface()
+interface MyInterface
 {
     function myFunction();
 }
@@ -131,17 +131,17 @@ $closureWithArgsAndVars = function ($arg1, $arg2) use ($var1, $var2){
 $test = function ($param) use ($result)
 {
     return null;
-}
+};
 
 $test = function ($param) use ($result) : Something
 {
     return null;
-}
+};
 
 $test = function ($param) use ($result): Something
 {
     return null;
-}
+};
 
 foo(function ($bar) { ?>
     <div><?php echo $bar; ?></div>
@@ -175,3 +175,36 @@ function myFunction(): Something
 function myFunction($bar) { ?>
     <div><?php echo $bar; ?></div>
 <?php }
+
+function myFunction($a, $lot, $of, $params)
+    : array
+{
+    return null;
+}
+
+function myFunction($a, $lot, $of, $params)
+    : array {
+    return null;
+}
+
+function myFunction($a, $lot, $of, $params) // comment
+{
+    return null;
+}
+
+function myFunction($a, $lot, $of, $params)
+    : array // comment
+{
+    return null;
+}
+
+function myFunction($a, $lot, $of, $params)
+    : array // phpcs:ignore Standard.Category.Sniff -- for reasons.
+{
+    return null;
+}
+
+function myFunction($a, $lot, $of, $params)
+    : array { // phpcs:ignore Standard.Category.Sniff -- for reasons.
+    return null;
+}

@@ -37,14 +37,14 @@ Invoices
              <div class="col-md-3 form-group">
                 <!-- first name -->
                 {!! Form::label('name','First Name') !!}
-                {!! Form::text('name',null,['class' => 'form-control','id'=>'name']) !!}
+                {!! Form::text('name',$request->name,['class' => 'form-control','id'=>'name']) !!}
 
             </div>
 
             <div class="col-md-3 form-group">
                 <!-- first name -->
                 {!! Form::label('invoice_no','Invoice No') !!}
-                {!! Form::text('invoice_no',null,['class' => 'form-control','id'=>'invoice_no']) !!}
+                {!! Form::text('invoice_no',$request->invoice_no,['class' => 'form-control','id'=>'invoice_no']) !!}
 
             </div>
             <div class="col-md-3 form-group">
@@ -183,7 +183,7 @@ Invoices
         $('#invoice-table').DataTable({
             processing: true,
             serverSide: true,
-             stateSave: true,
+             stateSave: false,
             order: [[ 0, "desc" ]],
             ajax: '{!! route('get-invoices',"name=$name&invoice_no=$invoice_no&status=$status&currency_id=$currency_id&from=$from&till=$till") !!}',
             "oLanguage": {

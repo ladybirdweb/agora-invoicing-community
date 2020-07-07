@@ -63,7 +63,7 @@ Create Widget
                     
                     <div class="col-md-4 form-group {{ $errors->has('type') ? 'has-error' : '' }}">
                         <!-- last name -->
-                        {!! Form::label('type',Lang::get('message.type')) !!}
+                        {!! Form::label('type',Lang::get('message.type'),['class'=>'required']) !!}
                          <select name="type" value= "Choose" class="form-control">
                              <option value="">Choose</option>
                             <option value="footer1">footer1</option>

@@ -88,12 +88,15 @@ Create Product
 
                                 <div class="col-md-3 form-group {{ $errors->has('group') ? 'has-error' : '' }}">
                                     <!-- last name -->
-                                    {!! Form::label('group',Lang::get('message.group')) !!}
+                                    {!! Form::label('group',Lang::get('message.group'),['class'=>'required']) !!}
                           <select name="group" value= "Choose" class="form-control">
                              <option>Choose</option>
                            @foreach($group as $key=>$value)
-
+                               @if (Request::old('group') == $key)
+                             <option value={{$key}} selected>{{$value}}</option>
+                             @else
                              <option value={{$key}}>{{$value}}</option>
+                             @endif
                           @endforeach
                           </select>
   
@@ -108,10 +111,13 @@ Create Product
                                    <!--  {!! Form::select('category',['helpdesk'=>'Helpdesk','servicedesk'=>'ServiceDesk','service'=>'Service','satellite helpdesk'=>'Satellite Helpdesk','plugin'=>'Plugins','helpdeskvps'=>'HelpDesk VPS','servicedesk vps'=>'ServiceDesk VPS'],null,['class' => 'form-control']) !!} -->
 
                                      <select name="category" value= "Choose" class="form-control">
-                             <option value="">Choose</option>
+                             <option>Choose</option>
                            @foreach($type as $key=>$types)
-
-                             <option value={{$types}}>{{$types}}</option>
+                             @if (Request::old('category') == $key)
+                             <option value={{$key}} selected>{{$types}}</option>
+                             @else
+                             <option value={{$key}}>{{$types}}</option>
+                             @endif
                           @endforeach
                           </select>
 

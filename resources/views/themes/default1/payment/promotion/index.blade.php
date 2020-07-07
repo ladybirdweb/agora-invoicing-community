@@ -29,7 +29,7 @@ Promotions
     </div>
 
 
-
+    <div id="response"></div>
 
     <div class="card-body table-responsive">
         <div class="row">

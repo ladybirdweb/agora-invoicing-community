@@ -10,7 +10,7 @@ Stripe
         <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
             <li class="breadcrumb-item"><a href="{{url('settings')}}"><i class="fa fa-dashboard"></i> Settings</a></li>
-            <li class="breadcrumb-item"><a href="{{url('plugin')}}"><i class="fa fa-dashboard"></i> Plugins</a></li>
+            <li class="breadcrumb-item"><a href="{{url('plugin')}}"><i class="fa fa-dashboard"></i> Payment Gateways</a></li>
             <li class="breadcrumb-item active">Stripe</li>
         </ol>
     </div><!-- /.col -->
@@ -124,7 +124,7 @@ Stripe
             $('#alertMessage').show();
             var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>'+data.message.message+'.</div>';
             $('#alertMessage').html(result+ ".");
-            $("#key_update").html("<i class='fa fa-save'>&nbsp;</i>Save");
+            $("#key_update").html("<i class='fa fa-sync-alt'>&nbsp;</i>Update");
               setInterval(function(){ 
                 $('#alertMessage').slideUp(3000); 
             }, 1000);

@@ -9,6 +9,7 @@ License Types
     <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="breadcrumb-item"><a href="{{url('settings')}}"><i class="fa fa-dashboard"></i> Settings</a></li>
             <li class="breadcrumb-item active">License Types</li>
         </ol>
     </div><!-- /.col -->
@@ -28,6 +29,7 @@ License Types
 
        @include('themes.default1.licence.create')
         @include('themes.default1.licence.edit')
+        <div id="response"></div>
        <div class="card-body table-responsive">
              
              <div class="row">

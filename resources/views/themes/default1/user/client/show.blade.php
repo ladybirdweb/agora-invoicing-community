@@ -92,8 +92,8 @@ User
             <h3 class="card-title">
 
                 <h3 class="widget-user-username">
-                    <a class="btn btn-sm btn-primary" href="{{url('invoice/generate?clientid='.$client->id)}}"> <i class="fa fa-credit-card"></i> &nbsp;{{Lang::get('message.create-invoice')}}</a>
-                    <a class="btn btn-sm btn-info" href="{{url('newPayment/receive?clientid='.$client->id)}}"> <i class="fa fa-bars"></i> &nbsp;{{Lang::get('message.create-payment')}}</a>
+                    <a class="btn btn-sm btn-secondary" href="{{url('invoice/generate?clientid='.$client->id)}}"> <i class="fa fa-credit-card"></i> &nbsp;{{Lang::get('message.create-invoice')}}</a>
+                    <a class="btn btn-sm btn-secondary" href="{{url('newPayment/receive?clientid='.$client->id)}}"> <i class="fa fa-bars"></i> &nbsp;{{Lang::get('message.create-payment')}}</a>
                      <a class="btn btn-sm btn-secondary" href="{{url('clients/'.$client->id.'/edit')}}"> <i class="fas fa-edit"></i> Edit Details</a>
                     @if($is2faEnabled)
                         <button id="disable2fa" value="{{$client->id}}" class="btn btn-sm btn-danger"><i class="fa fa-ban"></i>&nbsp;
@@ -189,7 +189,7 @@ User
                                     columnDefs: [
                                         {
                                             targets: 'no-sort',
-                                            orderable: false,
+                                            orderable: true,
                                             order: []
                                         }
                                     ],

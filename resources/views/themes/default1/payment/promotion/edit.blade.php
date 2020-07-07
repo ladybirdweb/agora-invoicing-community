@@ -116,7 +116,7 @@ Edit Promotion
                         <td>
                             <div class="form-group {{ $errors->has('start') ? 'has-error' : '' }}">
                                 <div class="input-group date" id="startDate" data-target-input="nearest">
-                                    <input type="text" name="start" class="form-control datetimepicker-input" autocomplete="off"  title="Date from which Coupon is Valid" data-target="#startDate"/>
+                                    <input type="text" name="start" class="form-control datetimepicker-input" autocomplete="off"  value="{{$startDate}}" title="Date from which Coupon is Valid" data-target="#startDate"/>
                                     <div class="input-group-append" data-target="#startDate" data-toggle="datetimepicker">
                                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                     </div>
@@ -136,7 +136,7 @@ Edit Promotion
                             <div class="form-group {{ $errors->has('expiry') ? 'has-error' : '' }}">
 
                                 <div class="input-group date" id="endDate" data-target-input="nearest">
-                                    <input type="text" name="expiry" class="form-control datetimepicker-input" autocomplete="off"  title="Date from which Coupon Expires" data-target="#endDate"/>
+                                    <input type="text" name="expiry" class="form-control datetimepicker-input" autocomplete="off"  value="{{$expiryDate}}" title="Date from which Coupon Expires" data-target="#endDate"/>
                                     <div class="input-group-append" data-target="#endDate" data-toggle="datetimepicker">
                                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                     </div>
@@ -156,7 +156,7 @@ Edit Promotion
                 </table>
 
 
-                <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-save">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button>
+                <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-save">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button>
 
             </div>
 
@@ -176,7 +176,7 @@ Edit Promotion
 
         $.ajax({
             type: "GET",
-            url: "{{url('get-code')}}",
+            url: "{{url('get-promotion-code')}}",
             success: function (data) {
                 $("#code").val(data)
             }

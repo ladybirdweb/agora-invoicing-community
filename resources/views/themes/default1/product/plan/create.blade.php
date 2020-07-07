@@ -35,7 +35,7 @@
                      <div class="col-md-4 form-group {{ $errors->has('product') ? 'has-error' : '' }}">
                         <!-- first name -->
                         {!! Form::label('product',Lang::get('message.product'),['class'=>'required']) !!}
-                        <select name="product" value= "Choose" class="form-control" id="planproduct" onchange="myProduct()">
+                        <select name="product" value= "Choose" class="form-control" id="planproduct" onchange="myProduct()" required>
                              <option value="">Choose</option>
                            @foreach($products as $key=>$product)
                               <option value={{$key}}>{{$product}}</option>

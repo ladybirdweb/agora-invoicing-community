@@ -45,7 +45,7 @@ Create Promotion
                                          <input id="code" name="code" type="text" class="form-control" title="Generate Coupon Code"/>
                                     </div>
                                     <div class="col-md-6">
-                                        <a href="#" class="btn btn-primary" onclick="getCode();"><i class="fa fa-refresh"></i>&nbsp;Generate Code</a>
+                                        <a href="#" class="btn btn-primary" id="get-code"><i class="fa fa-refresh"></i>&nbsp;Generate Code</a>
                                     </div>
                                 </div>
 
@@ -170,20 +170,23 @@ Create Promotion
 
 </div>
 
-@stop
+
 
 <script>
-    function getCode() {
+  
 
-
-        $.ajax({
+        $('#get-code').on('click',function(){
+            $.ajax({
             type: "GET",
-            url: "{{url('get-code')}}",
+            url: "{{url('get-promotion-code')}}",
             success: function (data) {
+                console.log(data);
                 $("#code").val(data)
             }
         });
-    }
+
+        })
+        
 
       $("#myform :input").tooltip({
  
@@ -203,6 +206,7 @@ Create Promotion
 
   
 </script>
+@stop
 @section('datepicker')
 <script type="text/javascript">
 

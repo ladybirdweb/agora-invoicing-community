@@ -139,7 +139,7 @@ input:checked + .slider:before {
 
                 </div>
 
-                <button type="submit" id="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-save">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button>
+                <button type="submit" id="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-sync-alt">&nbsp;</i>{!!Lang::get('message.update')!!}</button>
 
 
             </div>
@@ -250,7 +250,7 @@ $(document).ready(function (){
             $('#alertMessage').show();
             var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>'+data.update+'.</div>';
             $('#alertMessage').html(result+ ".");
-            $("#submit").html("<i class='fa fa-floppy-o'>&nbsp;&nbsp;</i>Save");
+            $("#submit").html("<i class='fa fa-sync-alt'>&nbsp;</i>Update");
               setInterval(function(){ 
                 $('#alertMessage').slideUp(3000); 
             }, 1000);

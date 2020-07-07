@@ -279,7 +279,7 @@ Payment
             var errors = ex.responseJSON;
              $("#submit").html("<i class='fa fa-save'>&nbsp;&nbsp;</i>Save");
                $('#error1').show();
-            var html = '<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-ban"></i>Alert! </strong>'+ex.responseJSON.message+' <br><ul>';
+            var html = '<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-ban"></i>Whoops! </strong>Something went wrong <br><ul>';
             
             for (var key in ex.responseJSON.errors)
             {

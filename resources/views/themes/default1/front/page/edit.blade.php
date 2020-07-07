@@ -101,14 +101,30 @@ Edit Page
                     <div class="col-md-6 form-group {{ $errors->has('parent_page_id') ? 'has-error' : '' }}">
                         <!-- last name -->
                         {!! Form::label('publish_date',Lang::get('message.publish-date')) !!}
-                        <div class="form-group">
-                         <div class="input-group date">
-                             <div class="input-group-addon">
-                      <i class="fa fa-calendar"></i>
-                         </div>
-                     <input name="created_at" type="text" value="{{$publishingDate}}" class="form-control" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask>
+
+                        <div class="input-group date" id="publishing_date" data-target-input="nearest">
+                        <input type="text" name="created_at" value="{{$publishingDate}}" class="form-control datetimepicker-input" autocomplete="off"  data-target="#publishing_date"/>
+
+                        <div class="input-group-append" data-target="#publishing_date"  data-toggle="datetimepicker">
+                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                         </div>
-                      </div>
+
+                        </div>
+
+                         <!--  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                    </div>
+                    <input type="text" class="form-control" data-inputmask-alias="datetime" data-inputmask-inputformat="dd/mm/yyyy" data-mask>
+                  </div> -->
+                       <!--  <div class="form-group">
+                         <div class="input-group">
+                             <div class="input-group-prepend">
+                      <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                         </div>
+                     <input name="created_at" type="text" value="{{$publishingDate}}" class="form-control" data-inputmask-alias="datetime" data-inputmask-inputformat="dd/mm/yyyy" data-mask>
+                        </div>
+                      </div> -->
 
                           <!-- <div class="form-group">
                                     <div class='input-group date' id='datetimepicker1'>
@@ -169,7 +185,7 @@ Edit Page
             </div>
 
         </div>
-        <button type="submit" class="btn btn-primary pull-right" id="submit"><i class="fa fa-save">&nbsp;</i>&nbsp;{!!Lang::get('message.save')!!}</button>
+        <button type="submit" class="btn btn-primary pull-right" id="submit"><i class="fa fa-sync-alt">&nbsp;</i>&nbsp;{!!Lang::get('message.update')!!}</button>
     </div>
 
 </div>
@@ -177,11 +193,7 @@ Edit Page
 
 {!! Form::close() !!}
 
-<script>
-  $(function () {
-   //Datemask dd/mm/yyyy
-  $('[data-mask]').inputmask()
-  });
+  <script>
     $(document).on('input', '#name', function () {
 
         $.ajax({
@@ -205,5 +217,12 @@ Edit Page
         });
     });
 </script>
+@section('icheck')
+<script>
+  $('#publishing_date').datetimepicker({
+        format: 'L'
+    });
+  </script>
+  @stop
 @stop
 

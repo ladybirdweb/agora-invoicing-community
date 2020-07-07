@@ -17,16 +17,6 @@ Edit User
 
 @section('content')
 <div class="card card-primary card-outline">
-    <div class="card-header">
-        <h3 class="card-title">Advance Search</h3>
-
-        <div class="card-tools">
-            <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
-                <i class="fas fa-plus"></i></button>
-            <button type="button" class="btn btn-tool" data-card-widget="remove" data-toggle="tooltip" title="Remove">
-                <i class="fas fa-times"></i></button>
-        </div>
-    </div>
     <div class="card-body">
 
          {!! Form::model($user,['url'=>'clients/'.$user->id,'method'=>'PATCH']) !!}
@@ -242,14 +232,14 @@ Edit User
                     <div class="col-md-3 form-group {{ $errors->has('manager') ? 'has-error' : '' }}">
                         <!-- mobile -->
                         {!! Form::label('manager','Sales Manager') !!}
-                        {!! Form::select('manager',[''=>'Select','Managers'=>$managers],null,['class' => 'form-control']) !!}
+                        {!! Form::select('manager',[''=>'Choose','Managers'=>$managers],null,['class' => 'form-control']) !!}
 
                     </div>
 
                      <div class="col-md-3 form-group {{ $errors->has('manager') ? 'has-error' : '' }}">
                         <!-- mobile -->
                         {!! Form::label('account_manager','Account Manager') !!}
-                        {!! Form::select('account_manager',[''=>'Select','Managers'=>$acc_managers],null,['class' => 'form-control']) !!}
+                        {!! Form::select('account_manager',[''=>'Choose','Managers'=>$acc_managers],null,['class' => 'form-control']) !!}
 
                     </div>
                     @endif

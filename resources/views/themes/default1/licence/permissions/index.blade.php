@@ -9,6 +9,7 @@ License Permission
     <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+             <li class="breadcrumb-item"><a href="{{url('settings')}}"><i class="fa fa-dashboard"></i> Settings</a></li>
             <li class="breadcrumb-item active">License Permissions</li>
         </ol>
     </div><!-- /.col -->
@@ -19,7 +20,7 @@ License Permission
 
 
        @include('themes.default1.licence.permissions.create')
-       <div class="card-body">
+       <div class="card-body table-responsive">
              
              <div class="row">
             
@@ -127,11 +128,11 @@ License Permission
                          method: "delete",
                          data: { 'licenseId': licenseTypeId ,'permissionid' : permissionid },
                         beforeSend: function () {
-                       $('#permissionresponse').html( "<img id='blur-bg' class='backgroundfadein' style='top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
+                       $('#permissionresponse').html( '<div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="text-bold pt-2">Loading...</div></div>');
                      },
                   success: function (data) {
                    if (data.message =='success'){
-                     var result =  '<div class="alert alert-success alert-dismissable"><strong><i class="far fa-thumbs-up"></i> Well Done! </strong> '+data.update+' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
+                     var result =  '<div class="alert alert-success alert-dismissable"><strong><i class="fa fa-check"></i> Success!! </strong> '+data.update+' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
                         $('#permissionresponse').html(result);
                          $('#permissionresponse').css('color', 'green');
                     setTimeout(function(){

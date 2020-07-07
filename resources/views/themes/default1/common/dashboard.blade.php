@@ -108,7 +108,7 @@ Dashboard
           <!-- small box -->
           <div class="small-box bg-yellow">
             <div class="inner">
-              <h4>Products Installation Rate:&nbsp;{{number_format($getLast30DaysInstallation['rate'], 2, '.', '')}}%</h4>
+              <h4>Products Installed Rate:&nbsp;{{number_format($getLast30DaysInstallation['rate'], 2, '.', '')}}%</h4>
               <span>Total Subscription (Last 30 days): &nbsp;  {{$getLast30DaysInstallation['total_subscription']}}</span></br>
               <span>Not Installed (Last 30 days): &nbsp;  {{$getLast30DaysInstallation['inactive_subscription']}}</span>
             </div>

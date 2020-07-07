@@ -1,6 +1,6 @@
 <div class="modal fade" id="create-upload-option">
     <div class="modal-dialog">
-        <div class="modal-content">
+        <div class="modal-content" style="width:max-content;">
             <div class="modal-header">
                 <h4 class="modal-title">Add Product Details</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -13,24 +13,26 @@
               <!--   {!! Form::open(['url'=>'upload/save','files' => true]) !!} -->
                   <div id="error"></div>
                 <div id="alertMessage1"></div>
-                <div class="form-group">
+                <div class="row">
+                <div class="form-group col-md-6">
                     <label> Product Name </label>
                  
                       <input type="text" id="productname" name="product" class="form-control" value="{{$product->name}}" readonly>
                  </div>
                 
-                 <div class="form-group {{ $errors->has('title') ? 'has-error' : '' }}">
+                 <div class="form-group col-md-6 {{ $errors->has('title') ? 'has-error' : '' }}">
                    
                     {!! Form::label('Title',Lang::get('Title'),['class'=>'required']) !!}
                     <input type="text" id="producttitle" class="form-control" name="title">
                  </div>
+               </div>
                 <div class="form-group {{ $errors->has('description') ? 'has-error' : '' }}">
                                     <!-- last name -->
                 {!! Form::label('description',Lang::get('message.description')) !!}
                 <textarea class="form-control" id= "textarea3" name="description"></textarea>
                </div>
-
-                <div class="form-group {{ $errors->has('version') ? 'has-error' : '' }}">
+               <div class="row">
+                <div class="form-group col-md-6{{ $errors->has('version') ? 'has-error' : '' }}">
                     <!-- name -->
                     {!! Form::label('Version',Lang::get('Version'),['class'=>'required']) !!}
                     <input type="text" class="form-control" id="productver" name="version">
@@ -38,7 +40,7 @@
 
                      
                  
-              <div class="form-group {{ $errors->has('version') ? 'has-error' : '' }}">
+              <div class="form-group col-md-6{{ $errors->has('version') ? 'has-error' : '' }}">
                     <!-- name -->
                     {!! Form::label('File',Lang::get('File'),['class'=>'required']) !!}
                    <div id="resumable-drop" style="display: none">
@@ -50,6 +52,7 @@
                </ul>
                 
               </div>
+            </div>
              <input type="hidden" name="file_ids" id="file_ids" value="">
               <div class="modal-footer justify-content-between">
                 <button type="button" id="close" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i>&nbsp;Close</button>

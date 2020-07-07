@@ -107,7 +107,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $from = $request->input('from');
             $till = $request->input('till');
 
-            return view('themes.default1.invoice.index', compact('name','invoice_no','status','currencies','currency_id','from',
+            return view('themes.default1.invoice.index', compact('request','name','invoice_no','status','currencies','currency_id','from',
 
                 'till'));
         } catch (\Exception $ex) {
@@ -359,7 +359,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
     public function invoiceGenerateByForm(Request $request, $user_id = '')
     {
         $this->validate($request, [
-            'date'      => 'required',
+            'date'      => 'required|date',
             'domain'    => 'sometimes|nullable|regex:/^(?!:\/\/)(?=.{1,255}$)((.{1,63}\.){1,127}(?![0-9]*$)[a-z0-9-]+\.?)$/i',
             'plan'      => 'required_if:subscription,true',
             'price'     => 'required',
@@ -420,13 +420,12 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $items = $this->createInvoiceItemsByAdmin($invoice->id, $productid,
              $code, $total, $currency, $qty, $agents, $plan, $user_id, $tax_name, $tax_rate);
             $result = $this->getMessage($items, $user_id);
+            return successResponse($result);
         } catch (\Exception $ex) {
             app('log')->info($ex->getMessage());
-            Bugsnag::notifyException($ex);
-            $result = ['fails' => $ex->getMessage()];
+            Bugsnag::notifyException($ex->getMessage());
+            return errorResponse([$ex->getMessage()]);
         }
-
-        return response()->json(compact('result'));
     }
 
     public function createInvoiceItemsByAdmin($invoiceid, $productid, $code, $price,

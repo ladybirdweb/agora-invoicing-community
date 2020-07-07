@@ -420,10 +420,12 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $items = $this->createInvoiceItemsByAdmin($invoice->id, $productid,
              $code, $total, $currency, $qty, $agents, $plan, $user_id, $tax_name, $tax_rate);
             $result = $this->getMessage($items, $user_id);
+
             return successResponse($result);
         } catch (\Exception $ex) {
             app('log')->info($ex->getMessage());
             Bugsnag::notifyException($ex->getMessage());
+
             return errorResponse([$ex->getMessage()]);
         }
     }

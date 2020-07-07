@@ -136,6 +136,7 @@ Order
 
                                                            <td></td>
                                                    </tr>
+                                                    @endif
                                                    <tr>
                                                        <td><b>Installation Limit:</b></td>
                                                        <td>
@@ -147,7 +148,7 @@ Order
                                                        </td>
 
                                                    </tr>
-                                               @endif
+                                              
                                                <tr>
                                                    <td><b>Current Version:</b></td>
                                                    <td>{!! $versionLabel !!} </td>
@@ -303,7 +304,7 @@ Order
             "oLanguage": {
                 "sLengthMenu": "_MENU_ Records per page",
                 "sSearch"    : "Search: ",
-                "sProcessing": '<img id="blur-bg" class="backgroundfadein" style="top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;" src="{!! asset("lb-faveo/media/images/gifloader3.gif") !!}">'
+                "sProcessing": '<div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="text-bold pt-2">Loading...</div></div>'
             },
                 columnDefs: [
                 { 
@@ -507,7 +508,7 @@ Order
                 url : "{{url('reissue-license')}}",
                 data : {'id':id},
                   beforeSend: function () {
-                 $('#response1').html( "<img id='blur-bg' class='backgroundfadein' style='top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
+                 $('#response1').html( '<div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="text-bold pt-2">Loading...</div></div>');
 
                 },
           
@@ -542,7 +543,7 @@ Order
                 url : "{{url('change-domain')}}",
                 data : {'domain':domain,'id':id},
                   beforeSend: function () {
-                 $('#response').html( "<img id='blur-bg' class='backgroundfadein' style='top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
+                 $('#response').html( '<div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="text-bold pt-2">Loading...</div></div>');
 
                 },
           
@@ -749,7 +750,7 @@ Order
             data: {'orderid': orderId , 'limit': newlimit},
             url: "{{url('edit-installation-limit')}}",
              beforeSend: function () {
-                 $('#response5').html( "<img id='blur-bg' class='backgroundfadein' style='top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
+                 $('#response5').html( '<div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="text-bold pt-2">Loading...</div></div>');
 
             },
             success: function (response) {

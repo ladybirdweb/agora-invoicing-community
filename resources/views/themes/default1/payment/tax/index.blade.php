@@ -76,7 +76,7 @@ Tax
                                      <!-- {!! Form::hidden('tax_enable',0) !!} -->
                                  <!-- {!! Form::checkbox('tax_enable',1) !!} -->
                                  <!-- <input id="toggle-event" type="checkbox" data-toggle="toggle" name="tax_enable"> -->
-                                <div class="btn-group"  data-toggle="buttons" >
+                                <div class="btn-group btn-group-toggle"  data-toggle="buttons" >
                                     <label class="btn btn-default btn-on-1 btn-sm ">
                                     <input type="radio" id="chkYes" value="1" name="tax_enable" onchange="getTaxValue(this)">ENABLED</label>
                                     <label class="btn btn-default btn-off-1 btn-sm  ">
@@ -107,7 +107,7 @@ Tax
                             </td>
                             <td>
                            
-                                      <div class="btn-group"  data-toggle="buttons">
+                                      <div class="btn-group btn-group-toggle"  data-toggle="buttons">
                                     <label class="btn btn-default btn-on-2 btn-sm ">
                                     <input type="radio" id="chkYes" value="1" name="inclusive">INCLUSIVE</label>
                                     <label class="btn btn-default btn-off-2 btn-sm">
@@ -123,7 +123,7 @@ Tax
                                 {!! Form::label('rounding',Lang::get('message.rounding')) !!}
                             </td>
                             <td>
-                                    <div class="btn-group"  data-toggle="buttons">
+                                    <div class="btn-group btn-group-toggle"  data-toggle="buttons">
                                     <label class="btn btn-default btn-on-3 btn-sm ">
                                     <input type="radio" id="chkYes" value="1" name="rounding">ENABLED</label>
                                     <label class="btn btn-default btn-off-3 btn-sm">
@@ -154,6 +154,7 @@ Tax
 
                       </div>
                   </div>
+                  <div id="response"></div>
                  <div class="card-body table-responsive">
                   <div class="row">
                 <div class="col-md-12">
@@ -181,15 +182,16 @@ Tax
     <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" />
     <script src="//cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript">
-      var btn = {{($options->tax_enable)}};
+      $(document).ready(function(){
+              var btn = {{($options->tax_enable)}};
      if(btn== '1'){
 $('.btn-on-1').addClass('active');
-$('.gstshow').removeClass("hide");
+$('.gstshow').show();
 
      }
      else{
 $('.btn-off-1').addClass('active');
-// $('.gstshow').addClass('hide');
+$('.gstshow').hide();
 // $('.gstshow').removeAttribute("style");
      }
     var btn1 = {{($options->inclusive)}};
@@ -215,13 +217,16 @@ $('.btn-off-3').addClass('active');
 // $('.gstshow').removeAttribute("style");
      }
 
+      })
+
+
 
    function getTaxValue(x){
         if($(x).val()==1){
-              $('.gstshow').removeClass("hide");
+              $('.gstshow').show();
         }
         else{
-               $('.gstshow').addClass("hide");
+               $('.gstshow').hide();
         }
    }
      // $('#chkYes').click

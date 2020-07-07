@@ -105,8 +105,8 @@ class ExtendedBaseInvoiceController extends Controller
             'payment_date'  => 'required',
             'payment_method'=> 'required',
             'totalAmt'      => 'required|numeric|not_in:0',
-        ],[
-           'totalAmt.required'=> 'The amount field is required', 
+        ], [
+            'totalAmt.required'=> 'The amount field is required',
         ]);
 
         try {

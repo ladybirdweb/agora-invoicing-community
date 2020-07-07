@@ -178,7 +178,6 @@ class MailChimpController extends BaseMailChimpController
         }
     }
 
-
     public function addFieldsToAgora()
     {
         try {

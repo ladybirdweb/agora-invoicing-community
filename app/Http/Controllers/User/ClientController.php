@@ -45,16 +45,18 @@ class ClientController extends AdvanceSearchController
      */
     public function index(Request $request)
     {
-        $validator = \Validator::make($request->all(),[
-        'reg_from'     => 'nullable',
-        'reg_till'     => 'nullable|after:reg_from',
+        $validator = \Validator::make($request->all(), [
+            'reg_from'     => 'nullable',
+            'reg_till'     => 'nullable|after:reg_from',
 
         ]);
-        if($validator->fails()){
+        if ($validator->fails()) {
             $request->reg_from = '';
             $request->reg_till = '';
+
             return redirect('clients')->with('fails', 'Registered from should be before registered till date');
         }
+
         return view('themes.default1.user.client.index', compact('request'));
     }
 
@@ -66,7 +68,6 @@ class ClientController extends AdvanceSearchController
      */
     public function getClients(Request $request)
     {
-        
         $baseQuery = $this->getBaseQueryForUserSearch($request);
 
         return\ DataTables::of($baseQuery)
@@ -128,7 +129,6 @@ class ClientController extends AdvanceSearchController
 
                         ->rawColumns(['checkbox', 'name', 'email',  'created_at', 'active', 'action'])
                         ->make(true);
-                     
     }
 
     public function getActiveLabel($mobileActive, $emailActive, $twoFaActive)

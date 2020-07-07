@@ -43,7 +43,13 @@
 
         <script src="{{asset('https://code.jquery.com/ui/1.12.1/jquery-ui.min.js')}}"></script>
         <script src="{{asset('https://code.jquery.com/jquery-3.5.1.min.js')}}"></script>
-
+        <script>
+        $(function () {
+          $("input[data-bootstrap-switch]").each(function(){
+              $(this).bootstrapSwitch('state', $(this).prop('checked'));
+            });
+        })
+        </script>
         <script type="text/javascript">
             $.ajaxSetup({
                 headers: {

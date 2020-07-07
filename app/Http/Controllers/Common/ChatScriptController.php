@@ -75,6 +75,8 @@ class ChatScriptController extends Controller
         $this->validate($request, [
             'name'  => 'required',
             'script'=> 'required',
+        ],[
+            'script.required' => 'Content field is required',
         ]);
 
         try {

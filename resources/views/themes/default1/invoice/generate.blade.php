@@ -54,9 +54,14 @@ Create Invoice
                 ?>
                     <link rel="stylesheet" href="{{asset('admin/css/select2.min.css')}}">
                     <script src="{{asset('admin/plugins/select2.full.min.js')}}"></script>
+                     <style>
+                        .select2-container--default .select2-selection--multiple .select2-selection__choice {
+                            background-color: #1b1818 !important;
+                    </style>
+
                 <div class="col-sm-4 form-group">
-                    {!! Form::label('user',Lang::get('message.clients')) !!}
-                     {!! Form::select('user', [Lang::get('User')=>$users],null,['multiple'=>true,'class'=>"form-control select2" ,'id'=>"users",'required','style'=>"width:100%",'oninvalid'=>"setCustomValidity('Please Select Client')",
+                    {!! Form::label('user',Lang::get('message.clients'),['class'=>'required']) !!}
+                     {!! Form::select('user', [Lang::get('User')=>$users],null,['multiple'=>true,'class'=>"form-control select2" ,'id'=>"users",'required','style'=>"width:100%;color:black",'oninvalid'=>"setCustomValidity('Please Select Client')",
                   'onchange'=>"setCustomValidity('')"]) !!}
                  
                 </div>
@@ -199,7 +204,6 @@ Create Invoice
            
             subscription = 'true';
         }
-         console.log(plan);
         if ($('#description').length > 0) {
             var description = document.getElementsByName('description')[0].value;
         }
@@ -231,48 +235,36 @@ Create Invoice
             data: data,
             success: function (data) {
                 $("#generate").html("<i class='fas fa-sync-alt'>&nbsp;&nbsp;</i>Generate");
-                //var response = JSON.stringify(data.result);
-                for (key in data.result) {
-                   
-                    if (key == 'success') {
-                        $('#fails').hide();
+                if(data.success == true) {
+                    $('#fails').hide();
                         $('#error').hide();
                         $('#success').show();
-                        $('#success').append('<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' + data.result[key] + '</div>');
-                        //$('#success').remove();
-
-                    }
-                    if (key == 'fails') {
-                        // $('#fails').remove();
-                        $('#fails').hide();
-                        $('#success').hide();
-                        $('#fails').show();
-                        $('#fails').append('<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' + data.result[key] + '</div>');
-                    }
-
+                    var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="fa fa-check"></i>Success! </strong>'+data.message.success+'!</div>';
+                    $('#success').html(result);
                 }
+
 
             },
             error: function (response) {
-                 $("#generate").html("<i class='fas fa-sync-alt'>&nbsp;&nbsp;</i>Generate");
-                // console.log(data)
-                for (key in response.responseJSON.errors) {
-                    //  $('#error').hide();
-                    // $('#fails').hide();
-                    // $('#success').hide();
-                    $('#error').show();
-                    $('#error').append('<div class="alert alert-danger"><strong>Whoops!</strong> There were some problems with your input.<br><br><ul><li>' + response.responseJSON.errors[key][0] + '</li></ul></div>');
+                $("#generate").html("<i class='fas fa-sync-alt'>&nbsp;&nbsp;</i>Generate");
+                if(response.responseJSON.success == false) {
+                    var html = '<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong>Whoops! </strong>Something went wrong<ul>';
+                    html += '<li>' + response.responseJSON.message[0] + '</li>'
+                } else {
+                    var html = '<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong>Whoops! </strong>Something went wrong<br><br><ul>';
+                for (var key in response.responseJSON.errors)
+                {
+                    // console.log(response.responseJSON.errors)
+                    // console.log(response.responseJSON.errors[0]);
+                    html += '<li>' + response.responseJSON.errors[key][0] + '</li>'
                 }
-                // $.each(response, function (k, v) {
-                //     console.log(k, v);
-                //     $('#error').hide();
-                //     $('#fails').hide();
-                //     $('#success').hide();
-                //     $('#error').show();
-                //     $('#error').append('<div class="alert alert-danger"><strong>Whoops!</strong> There were some problems with your input.<br><br><ul><li>' + v[0] + '</li></ul></div>');
-                //     // $('#error').remove();
-
-                // });
+                 
+                }
+                
+                 html += '</ul></div>';
+                 $('#error').show();
+                  document.getElementById('error').innerHTML = html;
+              
 
             }
         });

@@ -9,6 +9,7 @@ Widgets
     <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+             <li class="breadcrumb-item"><a href="{{url('settings')}}"><i class="fa fa-dashboard"></i> Settings</a></li>
             <li class="breadcrumb-item active">Widgets</li>
         </ol>
     </div><!-- /.col -->

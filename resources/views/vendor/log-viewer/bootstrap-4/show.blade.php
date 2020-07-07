@@ -9,7 +9,7 @@ Log-Viewer
 <ol class="breadcrumb">
         <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
         <li><a href="{{url('settings')}}">Settings</a></li>
-        <li><a href="{{url('log-viewer')}}">Dashboard</a></li>
+        <li><a href="{{url('log-viewer')}}">Log Viewer</a></li>
         <li class="active">View Logs</li>
       </ol>
       @stop

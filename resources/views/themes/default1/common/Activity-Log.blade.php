@@ -42,7 +42,7 @@ Activity Log
                 <!-- first name -->
                 {!! Form::label('from','View Logs From') !!}
                 <div class="input-group date" id="log_from" data-target-input="nearest">
-                    <input type="text" name="from" class="form-control datetimepicker-input" autocomplete="off"  data-target="#log_from"/>
+                    <input type="text" name="from" value="{{$from}}" id="from" class="form-control datetimepicker-input" autocomplete="off"  data-target="#log_from"/>
 
                     <div class="input-group-append" data-target="#log_from" data-toggle="datetimepicker">
                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
@@ -56,7 +56,7 @@ Activity Log
                 {!! Form::label('till','View Logs Till') !!}
 
                 <div class="input-group date" id="log_till" data-target-input="nearest">
-                    <input type="text" name="till" class="form-control datetimepicker-input" autocomplete="off"  data-target="#log_till"/>
+                    <input type="text" name="till" value="{{$till}}" id="till" class="form-control datetimepicker-input" autocomplete="off"  data-target="#log_till"/>
 
                     <div class="input-group-append" data-target="#log_till" data-toggle="datetimepicker">
                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
@@ -70,7 +70,7 @@ Activity Log
                 <!-- first name -->
                 {!! Form::label('delFrom','Delete Logs From') !!}
                 <div class="input-group date" id="del_from" data-target-input="nearest">
-                    <input type="text" name="delFrom" class="form-control datetimepicker-input" autocomplete="off"  data-target="#del_from"/>
+                    <input type="text" name="delFrom" id="delfrom" class="form-control datetimepicker-input" autocomplete="off"  data-target="#del_from"/>
 
                     <div class="input-group-append" data-target="#del_from" data-toggle="datetimepicker">
                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
@@ -86,7 +86,7 @@ Activity Log
                 <!-- first name -->
                 {!! Form::label('delTill','Delete Logs Till') !!}
                   <div class="input-group date" id="del_till" data-target-input="nearest">
-                      <input type="text" name="delTill" class="form-control datetimepicker-input" autocomplete="off"  data-target="#del_till"/>
+                      <input type="text" name="delTill" id="deltill" class="form-control datetimepicker-input" autocomplete="off"  data-target="#del_till"/>
 
                       <div class="input-group-append" data-target="#del_till" data-toggle="datetimepicker">
                           <div class="input-group-text"><i class="fa fa-calendar"></i></div>
@@ -114,10 +114,10 @@ Activity Log
                     $(function () {
                     $('#reset').on('click', function () {
                       
-                        $('.log_from').val('');
-                        $('.log_till').val('');
-                         $('.del_from').val('');
-                         $('.del_till').val('');
+                        $('#from').val('');
+                        $('#till').val('');
+                         $('#delfrom').val('');
+                         $('#deltill').val('');
                        
                     });
                 });
@@ -130,6 +130,7 @@ Activity Log
 
         </div>
     </div>
+    <div id="response"></div>
     <div class="card card-primary card-outline">
 
 

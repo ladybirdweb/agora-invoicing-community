@@ -100,7 +100,8 @@ return [
     |--------------------------------------------------------------------------
     |
     | This key is used by the Illuminate encrypter service and should be set
-//
+
+'App\Plugins\Stripe\ServiceProvider',
 'App\Plugins\stripe\ServiceProvider',
 'App\Plugins\stripr\ServiceProvider',//
 'App\Plugins\Paypal\ServiceProvider',//

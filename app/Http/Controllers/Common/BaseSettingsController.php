@@ -15,12 +15,6 @@ class BaseSettingsController extends PaymentSettingsController
 {
     use ApiKeySettings;
 
-    public function __construct()
-    {
-        $this->middleware('auth');
-        $this->middleware('admin');
-    }
-
     /**
      * Get the logged activity.
      */
@@ -333,20 +327,36 @@ class BaseSettingsController extends PaymentSettingsController
         if ($status == 1) {
             $nocaptcha_sitekey = $request->input('nocaptcha_sitekey');
             $captcha_secretCheck = $request->input('nocaptcha_secret');
-            $path_to_file = base_path('.env');
-            $file_contents = file_get_contents($path_to_file);
-            $file_contents_sitekey = str_replace(env('NOCAPTCHA_SITEKEY'), $nocaptcha_sitekey, $file_contents);
-            file_put_contents($path_to_file, $file_contents_sitekey);
-            $file_contents_nocaptcha_secret = str_replace(env('NOCAPTCHA_SECRET'), $captcha_secretCheck, $file_contents);
-            file_put_contents($path_to_file, $file_contents_nocaptcha_secret);
+            $values = ['NOCAPTCHA_SITEKEY'=>$nocaptcha_sitekey,'NOCAPTCHA_SECRET'=>$captcha_secretCheck];
+
+              $envFile = app()->environmentFilePath();
+                $str = file_get_contents($envFile);
+
+                if (count($values) > 0) {
+                    foreach ($values as $envKey => $envValue) {
+
+                        $str .= "\n"; // In case the searched variable is in the last line without \n
+                        $keyPosition = strpos($str, "{$envKey}=");
+                        $endOfLinePosition = strpos($str, "\n", $keyPosition);
+                        $oldLine = substr($str, $keyPosition, $endOfLinePosition - $keyPosition);
+
+                        // If key does not exist, add it
+                        if (!$keyPosition || !$endOfLinePosition || !$oldLine) {
+                            $str .= "{$envKey}={$envValue}\n";
+                        } else {
+                            $str = str_replace($oldLine, "{$envKey}={$envValue}", $str);
+                        }
+                    }
+                    }
+
+                    $str = substr($str, 0, -1);
+                    if (!file_put_contents($envFile, $str)) return false;
         } else {
             $nocaptcha_sitekey = '00';
             $captcha_secretCheck = '00';
             $path_to_file = base_path('.env');
             $file_contents = file_get_contents($path_to_file);
-            $file_contents_sitekey = str_replace(env('NOCAPTCHA_SITEKEY'), $nocaptcha_sitekey, $file_contents);
-            file_put_contents($path_to_file, $file_contents_sitekey);
-            $file_contents_secretchek = str_replace(env('NOCAPTCHA_SECRET'), $captcha_secretCheck, $file_contents);
+           $file_contents_secretchek = str_replace([env('NOCAPTCHA_SECRET'),env('NOCAPTCHA_SITEKEY')], [$captcha_secretCheck, $nocaptcha_sitekey], $file_contents);
             file_put_contents($path_to_file, $file_contents_secretchek);
         }
 

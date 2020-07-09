@@ -234,6 +234,8 @@ class BaseCartController extends ExtendedBaseCartController
      * The method returns the updated price, no of agents and currency of the product added to the cart
      * Since this method is called when the the user has permission to modify agents(set from the admin panel), if the parameter $canReduceAgent is true the agent quantity and the cart total will be divided by two else they will be multiplied by two.
      *
+     * Wehn the api for reducing the agent is called, agent gets divided by 2 and the price also gets divided by two, since we only increase and decrease agents/price by doubling them or making them half.
+     *
      *
      * @param  int $productId The product to be added to cart
      * @param  bool $canReduceAgent Increase or decrease no of agents

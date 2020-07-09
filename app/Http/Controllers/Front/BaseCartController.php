@@ -238,7 +238,7 @@ class BaseCartController extends ExtendedBaseCartController
      * @param  int $productId The product to be added to cart
      * @param  bool $canReduceAgent Increase or decrease no of agents
      *
-     * @return array 
+     * @return array
      */
     private function getCartValues($productId, $canReduceAgent = false)
     {

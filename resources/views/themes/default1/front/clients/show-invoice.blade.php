@@ -76,10 +76,6 @@ active
                         <div class="col-md-6">
                             <div class="bill-data text-right">
                                 <p class="mb-0">
-                                    <span class="text-dark">Order:</span>
-                                    <span class="value">#{!! $order !!}</span>
-                                </p>
-                                <p class="mb-0">
                                     <span class="text-dark">GSTIN:</span>
                                     <span class="value">#{{$gst->Gst_No}}</span>
                                 </p>
@@ -91,6 +87,7 @@ active
                 <table class="table table-responsive-md invoice-items">
                     <thead>
                     <tr class="text-dark">
+                        <th class="font-weight-semibold">Order No</th>
                         <th class="font-weight-semibold">Product</th>
                         <th class="font-weight-semibold">Quantity</th>
                         <th class="font-weight-semibold">Price</th>
@@ -102,6 +99,19 @@ active
                     <tbody>
                     @foreach($items as $item)
                         <tr>
+                            @php
+                            $orderForThisItem = $item->order()->first();
+                            @endphp
+                            @if($orderForThisItem)
+                            <td> {!! getOrderLink($orderForThisItem->id,'my-order') !!}
+                           
+                                @elseif($order)
+                                <td>{!! $order !!}</td>
+                                <span>Renewed</span>
+                                @else
+                                <td>--</td>
+                               
+                            @endif
                             <td>{{$item->product_name}}</td>
                             <td>{{$item->quantity}}</td>
                             <td>{{currencyFormat(intval($item->regular_price),$code = $symbol)}}</td>

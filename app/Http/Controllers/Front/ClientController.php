@@ -74,10 +74,10 @@ class ClientController extends BaseClientController
         try {
             $invoices = Invoice::leftJoin('order_invoice_relations', 'invoices.id', '=', 'order_invoice_relations.invoice_id')
             ->select('invoices.id', 'invoices.user_id', 'invoices.date', 'invoices.number', 'invoices.grand_total', 'order_invoice_relations.order_id', 'invoices.is_renewed', 'invoices.status')
+            ->groupBy('invoices.number')
             ->where('invoices.user_id', '=', \Auth::user()->id)
             ->orderBy('invoices.created_at', 'desc')
             ->get();
-
             return \DataTables::of($invoices)
                             ->addColumn('number', function ($model) {
                                 if ($model->is_renewed) {
@@ -87,7 +87,18 @@ class ClientController extends BaseClientController
                                 }
                             })
                             ->addColumn('orderNo', function ($model) {
-                                return getOrderLink($model->order_id, 'my-order');
+                                if($model->is_renewed) {
+                                 return getOrderLink($model->order_id, 'my-order');
+                                } else {
+                                 $allOrders =  $model->order()->select('id','number')->get();
+                                 $orderArray[] = '';
+                                 foreach ($allOrders as $orders) {
+                                     $orderArray[]= getOrderLink($orders->id, 'my-order');
+                                 }
+                                 return implode(' ', $orderArray);
+
+                                }
+                               
                             })
                             ->addColumn('date', function ($model) {
                                 return getDateHtml($model->created_at);

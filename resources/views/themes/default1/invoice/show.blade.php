@@ -93,6 +93,7 @@ Invoice
                             <b>GSTIN:</b>  &nbsp; #{{$gst->Gst_No}}
                             <br>
 
+
                         </div><!-- /.col -->
                     </div><!-- /.row -->
 
@@ -102,6 +103,7 @@ Invoice
                             <table class="table table-striped">
                                 <thead>
                                     <tr>
+                                        <th>Order No</th>
                                         <th>Product</th>
                                         <th>Quantity</th>
                                         <th>Price</th>
@@ -114,7 +116,19 @@ Invoice
 
                                     @foreach($invoiceItems as $item)
                                     <tr>
-                         
+                                        @php
+                                        $orderForThisItem = $item->order()->first();
+                                        @endphp
+                                        @if($orderForThisItem)
+                                        <td> {!! getOrderLink($orderForThisItem->id) !!}
+                                       
+                                            @elseif($order)
+                                            <td>{!! $order !!}</td>
+                                            <span>Renewed</span>
+                                            @else
+                                            <td>--</td>
+                                           
+                                        @endif
                                         <td>{{$item->product_name}}</td>
                                         <td>{{$item->quantity}}</td>
                                         <td>{{currencyFormat($item->regular_price,$code=$symbol)}}</td>

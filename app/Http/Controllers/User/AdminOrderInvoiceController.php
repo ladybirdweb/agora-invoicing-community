@@ -12,6 +12,7 @@ class AdminOrderInvoiceController extends Controller
         $client = $this->user->where('id', $id)->select('currency')->first();
         $invoices = Invoice::leftJoin('order_invoice_relations', 'invoices.id', '=', 'order_invoice_relations.invoice_id')
         ->select('invoices.id', 'invoices.user_id', 'invoices.date', 'invoices.number', 'invoices.grand_total', 'order_invoice_relations.order_id', 'invoices.is_renewed', 'invoices.status')
+        ->groupBy('invoices.number')
         ->where('invoices.user_id', '=', $id)
         ->orderBy('invoices.created_at', 'desc')
         ->get();
@@ -33,7 +34,19 @@ class AdminOrderInvoiceController extends Controller
                             return $label;
                         })
                          ->addColumn('order_no', function ($model) {
-                             return getOrderLink($model->order_id);
+                            if($model->is_renewed) {
+                                 return getOrderLink($model->order_id, 'my-order');
+                                } else {
+                                 $allOrders =  ($model->order()->select('id','number')->get());
+                                 $orderArray[] = '';
+                                 foreach ($allOrders as $orders) {
+                                     $orderArray[]= getOrderLink($orders->id);
+                                 }
+                                 return implode(' ', $orderArray);
+
+                                }
+                               
+                             // return getOrderLink($model->order_id);
                          })
                         ->addColumn('total', function ($model) use ($client) {
                             return currencyFormat($model->grand_total, $code = $client->currency);

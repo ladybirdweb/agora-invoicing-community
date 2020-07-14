@@ -208,9 +208,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 ->select('invoices.id', 'invoices.user_id', 'invoices.date', 'invoices.currency', 'invoices.number', 'invoices.discount', 'invoices.grand_total', 'order_invoice_relations.order_id')
                 ->where('invoices.id', '=', $request->input('invoiceid'))
                 ->first();
-            $invoiceItems = $this->invoiceItem->where('invoice_id', $request->input('invoiceid'))
-            ->select('product_name', 'quantity', 'regular_price', 'tax_name', 'tax_percentage', 'subtotal')
-            ->get();
+            $invoiceItems = $invoice->invoiceItem()->get();
             $user = $this->user->find($invoice->user_id);
             $currency = CartController::currency($user->id);
             $order = getOrderLink($invoice->order_id);

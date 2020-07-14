@@ -34,18 +34,18 @@ class AdminOrderInvoiceController extends Controller
                             return $label;
                         })
                          ->addColumn('order_no', function ($model) {
-                            if($model->is_renewed) {
+                             if ($model->is_renewed) {
                                  return getOrderLink($model->order_id, 'my-order');
-                                } else {
-                                 $allOrders =  ($model->order()->select('id','number')->get());
+                             } else {
+                                 $allOrders = ($model->order()->select('id', 'number')->get());
                                  $orderArray[] = '';
                                  foreach ($allOrders as $orders) {
-                                     $orderArray[]= getOrderLink($orders->id);
+                                     $orderArray[] = getOrderLink($orders->id);
                                  }
-                                 return implode(' ', $orderArray);
 
-                                }
-                               
+                                 return implode(' ', $orderArray);
+                             }
+
                              // return getOrderLink($model->order_id);
                          })
                         ->addColumn('total', function ($model) use ($client) {

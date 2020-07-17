@@ -530,6 +530,16 @@ if($script){
           <script src="{{asset('client/porto/js/theme.init.js')}}"></script>
           <script src="{{asset('common/js/intlTelInput.js')}}"></script>
           <script type="text/javascript">
+          var csrfToken = $('[name="csrf_token"]').attr('content');
+
+          setInterval(refreshToken, 3600000); // 1 hour 
+
+          function refreshToken(){
+               $.get('refresh-csrf').done(function(data){
+                   csrfToken = data; // the new token
+               });
+          }
+
           $.ajaxSetup({
               headers: {
                   'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -569,7 +579,6 @@ if($script){
                  }, 2000);
                } else {
                   var myJSON = response.responseJSON.errors;
-                  console.log(myJSON);
                       $("#mailchimp-subscription").html("Go");
                         var html = '<br><div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<ul>';
                                   for (var key in myJSON)

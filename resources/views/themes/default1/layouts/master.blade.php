@@ -341,6 +341,17 @@ function move() {
        
         <!-- Bootstrap 3.3.2 JS -->
         <script type="text/javascript">
+        var csrfToken = $('[name="csrf_token"]').attr('content');
+
+        setInterval(refreshToken, 3600000); // 1 hour 
+
+        function refreshToken(){
+               $.get('refresh-csrf').done(function(data){
+                   csrfToken = data; // the new token
+               });
+        }
+
+
           $.ajaxSetup({
               headers: {
                   'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

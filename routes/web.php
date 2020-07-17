@@ -24,6 +24,11 @@
 
         // Route::match(['get', 'post'], 'home', 'Front\CartController@productList');
         // VisitStats::routes();
+        Route::get('refresh-csrf', function(){
+             return response()->json([
+                "token"=>csrf_token()],
+              200);
+        });
         Route::get('pricing', 'Front\CartController@cart')->name('pricing');
         Route::get('group/{templateid}/{groupid}/', 'Front\PageController@pageTemplates');
         Route::post('cart/remove', 'Front\CartController@cartRemove');

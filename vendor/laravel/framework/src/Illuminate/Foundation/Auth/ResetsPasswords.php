@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Password;
 use App\ApiKey;
 use App\Model\Common\StatusSetting;
 use Illuminate\Auth\Events\PasswordReset;
+use App\Model\User\AccountActivate;
 
 trait ResetsPasswords
 {
@@ -28,12 +29,15 @@ trait ResetsPasswords
     public function showResetForm(Request $request, $token = null)
     {
         try {
+            $password = new \App\Model\User\Password();
+            $email = $password->where('token', $token)->first();
             $captchaStatus = StatusSetting::pluck('recaptcha_status')->first();
             $captchaKeys = ApiKey::select('nocaptcha_sitekey','captcha_secretCheck')->first();
             $captchaSecretKey = ApiKey::pluck('captcha_secretCheck')->first();
-            $userId = \Session::get('2fa:user:id');
+            $userId = User::where('email',$email->email)->first()->id;
             $user = User::find($userId);
-            if ($user && $user->is_2fa_enabled) {
+            if ($user && $user->is_2fa_enabled && \Session::get('2fa_verified') == null) {
+                \Session::put('2fa:user:id',$userId);
                 \Session::put('reset_token',$token);
                 return redirect('verify-2fa');
             }
@@ -55,6 +59,7 @@ trait ResetsPasswords
         public function reset(Request $request)
         {
             \Session::forget('reset_token');
+            \Session::forget('2fa_verified');
             $this->validate($request, [
                 'token' => 'required',
                 //'email' => 'required|email',

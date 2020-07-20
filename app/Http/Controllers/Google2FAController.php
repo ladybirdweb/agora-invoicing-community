@@ -100,8 +100,9 @@ class Google2FAController extends Controller
         if ($checkValidPasscode) {
             if (\Session::has('reset_token')) {
                 $token = \Session::get('reset_token');
-                \Session::put('2fa_verified',1);
+                \Session::put('2fa_verified', 1);
                 \Session::forget('2fa:user:id');
+
                 return redirect('password/reset/'.$token);
             }
             \Auth::loginUsingId($userId);

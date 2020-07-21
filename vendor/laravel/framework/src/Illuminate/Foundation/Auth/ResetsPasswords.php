@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use App\ApiKey;
+use Carbon\Carbon;
 use App\Model\Common\StatusSetting;
 use Illuminate\Auth\Events\PasswordReset;
 use App\Model\User\AccountActivate;
@@ -29,21 +30,29 @@ trait ResetsPasswords
     public function showResetForm(Request $request, $token = null)
     {
         try {
-            $password = new \App\Model\User\Password();
-            $email = $password->where('token', $token)->first();
+        $reset = \DB::table('password_resets')->select('email','created_at')->where('token', '=', $token)->first();
+        if ($reset) {
+        if(Carbon::parse($reset->created_at)->addSeconds(config('auth.passwords.users.expire')*60) > Carbon::now()) {
+            
             $captchaStatus = StatusSetting::pluck('recaptcha_status')->first();
             $captchaKeys = ApiKey::select('nocaptcha_sitekey','captcha_secretCheck')->first();
             $captchaSecretKey = ApiKey::pluck('captcha_secretCheck')->first();
-            $userId = User::where('email',$email->email)->first()->id;
-            $user = User::find($userId);
+            $user = User::where('email',$reset->email)->first();
             if ($user && $user->is_2fa_enabled && \Session::get('2fa_verified') == null) {
-                \Session::put('2fa:user:id',$userId);
+                \Session::put('2fa:user:id',$user->id);
                 \Session::put('reset_token',$token);
                 return redirect('verify-2fa');
             }
             return view('themes.default1.front.auth.reset',compact('captchaKeys','captchaStatus'))->with(
-                ['reset_token' => $token, 'email' => $request->email]
+                ['reset_token' => $token, 'email' => $reset->email]
             );
+        } else {
+            return \Redirect::to('password/email')->with('fails', 'It looks like you clicked on an invalid password reset link. Please try again.');
+        }
+    } else {
+        return redirect('password/email')->with('fails','Reset password token expired or not found. Please try again');
+    }
+       
         } catch (\Exception $ex) {
             return redirect('auth/login')->with('fails',$ex->getMessage());
         }
@@ -58,10 +67,9 @@ trait ResetsPasswords
      */
         public function reset(Request $request)
         {
-        
         $this->validate($request, [
             'token' => 'required',
-            //'email' => 'required|email',
+            'email' => 'required|email',
             'password' => 'required|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$/|
            confirmed', 'g-recaptcha-response' => 'sometimes|required|captcha'
         ], ['password.regex'=>'Your password must be more than 6 characters long, should contain at-least 1 Uppercase, 1 Lowercase, 1 Numeric and 1 special character.'
@@ -71,29 +79,36 @@ trait ResetsPasswords
         try {
         $token = $request->input('token');
         $pass = $request->input('password');
+        $email = $request->input('email');
         $password = new \App\Model\User\Password();
-        $password = $password->where('token', $token)->first();
-        if ($password) {
-            $user = new \App\User();
-            $user = $user->where('email', $password->email)->first();
-            if ($user) {
-                \Session::forget('2fa_verified');
-                \Session::forget('reset_token');
-                $user->password = \Hash::make($pass);
-                $user->save();
+        $password_tokens = $password->where('email', '=', $email)->first();
+         if ($password_tokens) { 
+            if ($password_tokens->token == $token) { 
+                    $user = new \App\User();
+                    $user = $user->where('email', $email)->first();
+                    if ($user) {
+                        \Session::forget('2fa_verified');
+                        \Session::forget('reset_token');
 
-                return redirect('auth/login')->with('success', 'You have successfully changed your password');
-            } else {
+                        $user->password = \Hash::make($pass);
+                        $user->save();
+                        \DB::table('password_resets')->where('email', $user->email)->delete();
+                        return redirect('login')->with('success', 'You have successfully changed your password');
+                    } else {
+                        return redirect()->back()
+                                        ->withInput($request->only('email'))
+                                        ->with('fails', 'User cannot be identified');
+                    }
+            }   else {
                 return redirect()->back()
                                 ->withInput($request->only('email'))
-                                ->withErrors([
-                                    'email' => 'User cannot be identified', ]);
+                                ->with('fails','Cannot reset password. Invalid modification of data suspected.');
             }
-        } else {
+           
+         } else {
             return redirect()->back()
                             ->withInput($request->only('email'))
-                            ->withErrors([
-                                'email' => 'Invalid token', ]);
+                            ->with('fails','Cannot reset password.');
         }
 
         } catch(\Exception $ex) {

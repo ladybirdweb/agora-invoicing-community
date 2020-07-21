@@ -26,12 +26,11 @@ main
                  <div class="col-lg-6 offset-lg-3">
                      <div class="featured-box featured-box-primary text-left mt-5">
                         <div class="box-content">
-                            
                                
                             <h4 class="heading-primary text-uppercase mb-md">Reset Password</h4>
                             {!!  Form::open(['url'=>'/password/reset', 'method'=>'post']) !!}
                             <input type="hidden" name="token" value="{{ $reset_token }}">
-                            
+                            <input type="hidden" name="email" value="{{ $email }}">
                             <div class="form-row">
                                 <div class="form-group col{{ $errors->has('password') ? 'has-error' : '' }}">
                                    
@@ -69,7 +68,7 @@ main
                                     <!--<input type="submit" value="Login" class="btn btn-primary pull-right mb-xl" data-loading-text="Loading...">-->
                                 </div>
                             </div>
-                           
+                           {!! Form::close() !!}
                         </div>
                     </div>
                 </div>

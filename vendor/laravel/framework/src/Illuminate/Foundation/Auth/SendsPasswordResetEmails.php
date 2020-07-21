@@ -138,8 +138,7 @@ trait SendsPasswordResetEmails {
       }
       catch (\Exception $ex) {
             $result = [$ex->getMessage()];
-            $errors = ['If you are registered with the entered email, reset instructions have been mailed to you
-        .Be sure to check your Junk folder if you do not see an email from us in your Inbox within a few minutes.'];
+            $errors = ['If you are registered with the entered email, reset instructions have been mailed to you. '];
             return response()->json(compact('result','errors'), 500);
         }
 

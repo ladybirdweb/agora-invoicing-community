@@ -93,9 +93,10 @@ trait SendsPasswordResetEmails {
         $token = str_random(40);
         $password = new \App\Model\User\Password();
         if ($password->where('email', $email)->first()) {
+            $password->where('email', $email)->update(['created_at'=>\Carbon\Carbon::now()]);
             $token = $password->where('email', $email)->first()->token;
         } else {
-            $activate = $password->create(['email' => $email, 'token' => $token]);
+            $activate = $password->create(['email' => $email, 'token' => $token,'created_at'=>\Carbon\Carbon::now()]);
             $token = $activate->token;
         }
 

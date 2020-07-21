@@ -122,7 +122,14 @@ class SettingsController extends Controller
         $stripeSecretKey = ApiKey::pluck('stripe_secret')->first();
         $stripe = Stripe::make($stripeSecretKey);
         try {
-            $amount = \Session::get('amount');
+            $invoice = \Session::get('invoice');
+            $amount = \Cart::getTotal();
+            if (! $amount) {//During renewal
+                if ($request->input('amount') != $invoice->grand_total) {
+                    throw new \Exception('Invalid modification of data');
+                }
+                $amount = $request->input('amount');
+            }
             $stripeSecretKey = ApiKey::pluck('stripe_secret')->first();
             $stripe = Stripe::make($stripeSecretKey);
             $token = $stripe->tokens()->create([
@@ -164,7 +171,7 @@ class SettingsController extends Controller
                 $cont = new \App\Http\Controllers\RazorpayController();
                 $state = $cont->getState($stateCode);
                 $currency = $cont->getCurrency();
-                $invoice = \Session::get('invoice');
+
                 $control = new \App\Http\Controllers\Order\RenewController();
                 //After Regular Payment
                 if ($control->checkRenew() === false) {
@@ -203,7 +210,7 @@ class SettingsController extends Controller
             \Session::put('amount', $request['amount']);
             \Session::put('error', $e->getMessage());
 
-            return redirect()->route('stripform');
+            return redirect()->route('checkout');
         } catch (\Exception $e) {
             return redirect('checkout')->with('fails', 'Your payment was declined. '.$e->getMessage().'. Please try again or try the other gateway.');
         }

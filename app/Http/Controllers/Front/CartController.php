@@ -451,10 +451,11 @@ class CartController extends BaseCartController
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex->getMessage());
             app('log')->error($ex->getMessage());
+            throw new \Exception($ex->getMessage());
         }
     }
 
-    public function updateFinalPrice(Request $request)
+    public static function updateFinalPrice(Request $request)
     {
         $value = $request->input('processing_fee').'%';
         $updateValue = new CartCondition([

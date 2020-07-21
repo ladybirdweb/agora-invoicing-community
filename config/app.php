@@ -100,21 +100,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | This key is used by the Illuminate encrypter service and should be set
-//
-'App\Plugins\stripe\ServiceProvider',
-'App\Plugins\stripr\ServiceProvider',//
-'App\Plugins\Paypal\ServiceProvider',//
-'App\Plugins\Ccavenue\ServiceProvider',
-//
-'App\Plugins\Ccavenue\ServiceProvider',//
-'App\Plugins\Ccavanue\ServiceProvider',
-'App\Plugins\Ccavanue\ServiceProvider',
 
-            'App\Plugins\Paypal\ServiceProvider',
-////
-'App\Plugins\Razorpay\ServiceProvider',
-'App\Plugins\Razorpay\ServiceProvider',////////////////
-//
     */
 
     'key'   => 'SomeRandomString',

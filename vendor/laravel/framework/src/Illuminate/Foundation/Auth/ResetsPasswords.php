@@ -58,41 +58,48 @@ trait ResetsPasswords
      */
         public function reset(Request $request)
         {
-            \Session::forget('reset_token');
-            \Session::forget('2fa_verified');
-            $this->validate($request, [
-                'token' => 'required',
-                //'email' => 'required|email',
-                'password' => 'required|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$/|
-               confirmed', 'g-recaptcha-response' => 'sometimes|required|captcha'
-            ], ['password.regex'=>'Your password must be more than 6 characters long, should contain at-least 1 Uppercase, 1 Lowercase, 1 Numeric and 1 special character.'
-            ,'g-recaptcha-response.required'=>'Please verify that you are not a robot.',
-            'g-recaptcha-response.captcha' => 'Captcha error! try again later or contact site admin.'
+        
+        $this->validate($request, [
+            'token' => 'required',
+            //'email' => 'required|email',
+            'password' => 'required|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$/|
+           confirmed', 'g-recaptcha-response' => 'sometimes|required|captcha'
+        ], ['password.regex'=>'Your password must be more than 6 characters long, should contain at-least 1 Uppercase, 1 Lowercase, 1 Numeric and 1 special character.'
+        ,'g-recaptcha-response.required'=>'Please verify that you are not a robot.',
+        'g-recaptcha-response.captcha' => 'Captcha error! try again later or contact site admin.'
         ]);
-            $token = $request->input('token');
-            $pass = $request->input('password');
-            $password = new \App\Model\User\Password();
-            $password = $password->where('token', $token)->first();
-            if ($password) {
-                $user = new \App\User();
-                $user = $user->where('email', $password->email)->first();
-                if ($user) {
-                    $user->password = \Hash::make($pass);
-                    $user->save();
+        try {
+        $token = $request->input('token');
+        $pass = $request->input('password');
+        $password = new \App\Model\User\Password();
+        $password = $password->where('token', $token)->first();
+        if ($password) {
+            $user = new \App\User();
+            $user = $user->where('email', $password->email)->first();
+            if ($user) {
+                \Session::forget('2fa_verified');
+                \Session::forget('reset_token');
+                $user->password = \Hash::make($pass);
+                $user->save();
 
-                    return redirect('auth/login')->with('success', 'You have successfully changed your password');
-                } else {
-                    return redirect()->back()
-                                    ->withInput($request->only('email'))
-                                    ->withErrors([
-                                        'email' => 'User cannot be identified', ]);
-                }
+                return redirect('auth/login')->with('success', 'You have successfully changed your password');
             } else {
                 return redirect()->back()
                                 ->withInput($request->only('email'))
                                 ->withErrors([
-                                    'email' => 'Invalid token', ]);
+                                    'email' => 'User cannot be identified', ]);
             }
+        } else {
+            return redirect()->back()
+                            ->withInput($request->only('email'))
+                            ->withErrors([
+                                'email' => 'Invalid token', ]);
+        }
+
+        } catch(\Exception $ex) {
+            return redirect()->back()->with('fails',$ex->getMessage());
+        }
+            
 
 
 

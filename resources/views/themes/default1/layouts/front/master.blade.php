@@ -194,7 +194,7 @@ if($script){
 
                                                     @if(!Auth::user())
                                                     <li class="dropdown">
-                                                        <a  class="nav-link"  href="{{url('auth/login')}}">
+                                                        <a  class="nav-link"  href="{{url('login')}}">
                                                             Login
                                                         </a>
                                                     </li>

@@ -50,7 +50,7 @@ main
                             <div class="clear"></div>
                                 <div class="form-row">
                          <div class="form-group col">
-                               <a href="{{url('auth/login')}}" class="pt-left back-login">Click Here To Login</a>
+                               <a href="{{url('login')}}" class="pt-left back-login">Click Here To Login</a>
                                 <button type="button" class="btn btn-primary mb-xl next-step float-right" name="sendOtp" id="resetmail" onclick="resetpassword()">
                                             Send Email
                                 </button>

@@ -17,5 +17,6 @@ class VerifyCsrfToken extends BaseVerifier
         'update-latest-version',
         'v1/checkUpdatesExpiry',
         'v2/serial',
+        'update/lic-code',
     ];
 }

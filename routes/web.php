@@ -164,6 +164,7 @@
             // // 'password' => 'Auth\PasswordController',
             //     ]);
             Route::auth();
+            Route::get('auth/logout', 'Auth\LoginController@logout')->name('logout' );
             Route::get('/', 'DashboardController@index');
 
             Route::get('activate/{token}', 'Auth\AuthController@activate');

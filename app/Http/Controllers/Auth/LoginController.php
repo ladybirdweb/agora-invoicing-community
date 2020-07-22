@@ -55,7 +55,7 @@ class LoginController extends Controller
         }
     }
 
-    public function postLogin(Request $request)
+    public function login(Request $request)
     {
         $this->validate($request, [
             'email1' => 'required',
@@ -92,7 +92,7 @@ class LoginController extends Controller
             }
         }
         if (\Auth::user()->is_2fa_enabled == 1) {
-            $userId = Auth::user()->id;
+            $userId = \Auth::user()->id;
             \Auth::logout();
             $request->session()->put('2fa:user:id', $userId);
 

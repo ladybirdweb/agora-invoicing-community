@@ -135,7 +135,6 @@ class ExtendedBaseCartController extends Controller
             if (! $planid) {//When Product Is Added from Cart
                 $planid = Plan::where('product', $productid)->pluck('id')->first();
             } elseif ($this->checkPlanSession() === true && ! $planid) {
-
                 $planid = Session::get('plan');
             }
             $plan = Plan::where('id', $planid)->where('product', $productid)->first();

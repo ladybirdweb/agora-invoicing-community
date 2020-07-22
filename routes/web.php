@@ -18,8 +18,6 @@
               200);
         });
 
-
-
          /*
          * Installer Routes
          */
@@ -65,8 +63,6 @@
                 'uses' => 'Installer\FinalController@finish',
             ]);
         });
-
-        
 
         Route::group(['middleware' => ['install']], function () {
             Route::get('pricing', 'Front\CartController@cart')->name('pricing');
@@ -164,7 +160,7 @@
             // // 'password' => 'Auth\PasswordController',
             //     ]);
             Route::auth();
-            Route::get('auth/logout', 'Auth\LoginController@logout')->name('logout' );
+            Route::get('auth/logout', 'Auth\LoginController@logout')->name('logout');
             Route::get('/', 'DashboardController@index');
 
             Route::get('activate/{token}', 'Auth\AuthController@activate');
@@ -226,8 +222,6 @@
             Route::get('get-users', 'User\ClientController@getUsers');
             Route::get('search-email', 'User\ClientController@search')->name('search-email');
 
-
-
             Route::resource('products', 'Product\ProductController');
             Route::get('get-products', ['as' => 'get-products', 'uses' => 'Product\ProductController@getProducts']);
             // Route::get('get-products', 'Product\ProductController@GetProducts');
@@ -257,7 +251,6 @@
             /*
              * Currency
              */
-
 
             Route::resource('currency', 'Payment\CurrencyController');
             Route::get('get-currency/datatable', ['as' => 'get-currency.datatable', 'uses' => 'Payment\CurrencyController@getCurrency']);

@@ -155,7 +155,7 @@ Sign in or Register
                                                 <div class="form-row">
                                                     <div class="form-group col {{ $errors->has('password1') ? 'has-error' : '' }}">
 
-                                                        <a class="pull-right" href="{{url('password/email')}}">({{Lang::get('message.forgot-my-password')}})</a>
+                                                        <a class="pull-right" href="{{url('password/reset')}}">({{Lang::get('message.forgot-my-password')}})</a>
                                                         <label class="required">Password</label>
                                                         <div class="input-group">
                                                             {!! Form::password('password1',['class' => 'form-control input-lg' ,'id'=>'pass']) !!}

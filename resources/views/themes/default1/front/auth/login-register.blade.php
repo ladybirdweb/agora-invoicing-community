@@ -132,9 +132,9 @@ Sign in or Register
 
                                                 <h4 class="heading-primary text-uppercase mb-3">I'm a Returning Customer</h4>
                                                 @if ($status->recaptcha_status==1 && $apiKeys->nocaptcha_sitekey != '00' && $apiKeys->captcha_secretCheck != '00')
-                                                    {!!  Form::open(['action'=>'Auth\LoginController@postLogin', 'method'=>'post','id'=>'formoid','onsubmit'=>'return validateform()']) !!}
+                                                    {!!  Form::open(['action'=>'Auth\LoginController@login', 'method'=>'post','id'=>'formoid','onsubmit'=>'return validateform()']) !!}
                                                 @else
-                                                    {!!  Form::open(['action'=>'Auth\LoginController@postLogin', 'method'=>'post','id'=>'formoid']) !!}
+                                                    {!!  Form::open(['action'=>'Auth\LoginController@login', 'method'=>'post','id'=>'formoid']) !!}
                                                 @endif
                                                 <div class="form-row">
                                                     <div class="form-group col {{ $errors->has('email1') ? 'has-error' : '' }}">

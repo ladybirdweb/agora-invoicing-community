@@ -1,6 +1,6 @@
 @extends('themes.default1.layouts.front.master')
 @section('title')
-Reset Paswword| Faveo Helpdesk
+Reset Password | Faveo Helpdesk
 @stop
 @section('page-heading')
 Reset Your Password
@@ -16,6 +16,7 @@ Reset Password
 main
 @stop
 @section('content')
+
 <div class="row">
     <div class="col-md-12">
 
@@ -23,43 +24,13 @@ main
             
             <div class="row">
                  <div class="col-lg-6 offset-lg-3">
-                    @if(Session::has('success'))
-                    <div class="alert alert-success alert-dismissable">
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                        {{Session::get('success')}}
-                    </div>
-                    @endif
-                    <!-- fail message -->
-                    @if(Session::has('fails'))
-                    <div class="alert alert-danger alert-dismissable">
-                        <i class="fa fa-ban"></i>
-                        <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.failed')}}.
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                        {{Session::get('fails')}}
-                    </div>
-                    @endif
-
-                      @if (count($errors) > 0)
-                    <div class="alert alert-danger alert-dismissable" role="alert">
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                       <strong><i class="fa fa-exclamation-triangle"></i>Oh snap!</strong> Change a few things up and try submitting again.
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                            <li>{!! $error !!}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                    @endif
-
-
                      <div class="featured-box featured-box-primary text-left mt-5">
                         <div class="box-content">
-                            
                                
                             <h4 class="heading-primary text-uppercase mb-md">Reset Password</h4>
                             {!!  Form::open(['url'=>'/password/reset', 'method'=>'post']) !!}
-                            <input type="hidden" name="token" value="{{ $token }}">
-                            
+                            <input type="hidden" name="token" value="{{ $reset_token }}">
+                            <input type="hidden" name="email" value="{{ $email }}">
                             <div class="form-row">
                                 <div class="form-group col{{ $errors->has('password') ? 'has-error' : '' }}">
                                    
@@ -84,6 +55,10 @@ main
                                 </div>
                             
                     </div>
+                            @if ($captchaStatus==1 && $captchaKeys->nocaptcha_sitekey != '00' && $captchaKeys->captcha_secretCheck != '00')
+                                {!! NoCaptcha::renderJs() !!}
+                                {!! NoCaptcha::display() !!}
+                            @endif
                             <div class="row">
                                 
                                
@@ -93,7 +68,7 @@ main
                                     <!--<input type="submit" value="Login" class="btn btn-primary pull-right mb-xl" data-loading-text="Loading...">-->
                                 </div>
                             </div>
-                           
+                           {!! Form::close() !!}
                         </div>
                     </div>
                 </div>

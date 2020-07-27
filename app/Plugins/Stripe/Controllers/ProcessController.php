@@ -120,9 +120,13 @@ class ProcessController extends Controller
     {
         try {
             $path = app_path().'/Plugins/Stripe/views';
-            \Session::put('data', $data['amount']);
+            $total = \Cart::getTotal();
+            if (! $total) {
+                $total = $data['amount'];
+            }
+            $total = intval($total);
             \View::addNamespace('plugins', $path);
-            echo view('plugins::middle-page', compact('data'));
+            echo view('plugins::middle-page', compact('data', 'total'));
         } catch (\Exception $ex) {
         }
     }

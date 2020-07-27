@@ -189,11 +189,14 @@ class BaseCartController extends ExtendedBaseCartController
     {
         try {
             $id = $request->input('productid');
-            $cartValues = $this->getCartValues($id, true);
-            Cart::update($id, [
-                'price'      => $cartValues['price'],
-                'attributes' => ['agents' =>  $cartValues['agtqty'], 'currency'=> ['currency'=>$cartValues['currency'], 'symbol'=>$cartValues['symbol']]],
-            ]);
+            $hasPermissionToModifyAgent = Product::find($id)->can_modify_agent;
+            if ($hasPermissionToModifyAgent) {
+                $cartValues = $this->getCartValues($id, true);
+                Cart::update($id, [
+                    'price'      => $cartValues['price'],
+                    'attributes' => ['agents' =>  $cartValues['agtqty'], 'currency'=> ['currency'=>$cartValues['currency'], 'symbol'=>$cartValues['symbol']]],
+                ]);
+            }
 
             return successResponse('Cart updated successfully');
         } catch (\Exception $ex) {
@@ -212,11 +215,14 @@ class BaseCartController extends ExtendedBaseCartController
     {
         try {
             $id = $request->input('productid');
-            $cartValues = $this->getCartValues($id);
-            Cart::update($id, [
-                'price'      => $cartValues['price'],
-                'attributes' => ['agents' =>  $cartValues['agtqty'], 'currency'=> ['currency'=>$cartValues['currency'], 'symbol'=>$cartValues['symbol']]],
-            ]);
+            $hasPermissionToModifyAgent = Product::find($id)->can_modify_agent;
+            if ($hasPermissionToModifyAgent) {
+                $cartValues = $this->getCartValues($id);
+                Cart::update($id, [
+                    'price'      => $cartValues['price'],
+                    'attributes' => ['agents' =>  $cartValues['agtqty'], 'currency'=> ['currency'=>$cartValues['currency'], 'symbol'=>$cartValues['symbol']]],
+                ]);
+            }
 
             return successResponse('Cart updated successfully');
         } catch (\Exception $ex) {
@@ -224,10 +230,22 @@ class BaseCartController extends ExtendedBaseCartController
         }
     }
 
+    /**
+     * The method returns the updated price, no of agents and currency of the product added to the cart
+     * Since this method is called when the the user has permission to modify agents(set from the admin panel), if the parameter $canReduceAgent is true the agent quantity and the cart total will be divided by two else they will be multiplied by two.
+     *
+     * Wehn the api for reducing the agent is called, agent gets divided by 2 and the price also gets divided by two, since we only increase and decrease agents/price by doubling them or making them half.
+     *
+     *
+     * @param  int $productId The product to be added to cart
+     * @param  bool $canReduceAgent Increase or decrease no of agents
+     *
+     * @return array
+     */
     private function getCartValues($productId, $canReduceAgent = false)
     {
         $cart = \Cart::get($productId);
-        $hasPermissionToModifyAgent = Product::find($productId)->can_modify_agent;
+
         if ($cart) {
             $agtqty = $cart->attributes->agents;
             $price = \Cart::getTotal();
@@ -237,14 +255,12 @@ class BaseCartController extends ExtendedBaseCartController
             throw new \Exception('Product not present in cart.');
         }
 
-        if ($hasPermissionToModifyAgent) {
-            if ($canReduceAgent) {
-                $agtqty = $agtqty / 2;
-                $price = \Cart::getTotal() / 2;
-            } else {
-                $agtqty = $agtqty * 2;
-                $price = \Cart::getTotal() * 2;
-            }
+        if ($canReduceAgent) {
+            $agtqty = $agtqty / 2;
+            $price = \Cart::getTotal() / 2;
+        } else {
+            $agtqty = $agtqty * 2;
+            $price = \Cart::getTotal() * 2;
         }
 
         return ['agtqty'=>$agtqty, 'price'=>$price, 'currency'=>$currency, 'symbol'=>$symbol];
@@ -259,16 +275,23 @@ class BaseCartController extends ExtendedBaseCartController
      */
     public function reduceProductQty(Request $request)
     {
-        $id = $request->input('productid');
-        $cart = \Cart::get($id);
-        $qty = $cart->quantity - 1;
-        $price = $this->cost($id);
-        Cart::update($id, [
-            'quantity' => -1,
-            'price'    => $price,
-        ]);
-
-        return 'success';
+        try {
+            $id = $request->input('productid');
+            $hasPermissionToModifyQuantity = Product::find($id)->can_modify_quantity;
+            if ($hasPermissionToModifyQuantity) {
+                $cart = \Cart::get($id);
+                $qty = $cart->quantity - 1;
+                $price = $this->cost($id);
+                Cart::update($id, [
+                    'quantity' => -1,
+                    'price'    => $price,
+                ]);
+            } else {
+                throw new \Exception('Cannot Modify Quantity');
+            }
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
     }
 
     /**
@@ -280,19 +303,26 @@ class BaseCartController extends ExtendedBaseCartController
      */
     public function updateProductQty(Request $request)
     {
-        $id = $request->input('productid');
-        $cart = \Cart::get($id);
-        $qty = $cart->quantity + 1;
-        $price = $this->cost($id);
-        Cart::update($id, [
-            'quantity' => [
-                'relative' => false,
-                'value'    => $qty,
-            ],
-            'price'  => $price,
-        ]);
-
-        return 'success';
+        try {
+            $id = $request->input('productid');
+            $hasPermissionToModifyQuantity = Product::find($id)->can_modify_quantity;
+            if ($hasPermissionToModifyQuantity) {
+                $cart = \Cart::get($id);
+                $qty = $cart->quantity + 1;
+                $price = $this->cost($id);
+                Cart::update($id, [
+                    'quantity' => [
+                        'relative' => false,
+                        'value'    => $qty,
+                    ],
+                    'price'  => $price,
+                ]);
+            } else {
+                throw new \Exception('Cannot Modify Quantity');
+            }
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
     }
 
     /**
@@ -332,8 +362,7 @@ class BaseCartController extends ExtendedBaseCartController
         } catch (\Exception $e) {
             app('log')->error($e->getMessage());
             Bugsnag::notifyException($e);
-
-            return redirect()->back()->with('fails', $e->getMessage());
+            throw new \Exception($e->getMessage());
         }
     }
 

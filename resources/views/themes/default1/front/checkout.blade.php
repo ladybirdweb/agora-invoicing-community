@@ -75,9 +75,9 @@ $sum = 0;
                                     $currency = $item->attributes['currency']['currency'] ;
                                     $symbol = $item->attributes['currency']['symbol'];
                                     $product = App\Model\Product\Product::where('id', $item->id)->first();
-                                    $price = 0;
+                                    $planid = App\Model\Payment\Plan::where('product', $item->id)->pluck('id')->first();                                    $price = 0;
                                     $cart_controller = new App\Http\Controllers\Front\CartController();
-                                    $value = $cart_controller->cost($product->id);
+                                    $value = $cart_controller->cost($product->id,\Auth::user()->id,$planid);
                                     $price += $value;
                                     ?>
                                     <img width="100" height="100" alt="" class="img-responsive" src="{{$product->image}}">
@@ -348,7 +348,28 @@ $sum = 0;
     </div>
 </div>
 </div>
+@elseif (\Cart::isEmpty())
+    <div class="featured-boxes">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="featured-box featured-box-primary align-left mt-sm">
+                    <div class="box-content">
 
+                        <div class="col-md-offset-5">
+
+                            @if(Auth::check())
+
+                                <a href="{{url('my-invoices')}}" class="btn btn-primary">CONTINUE SHOPPING
+                                    @else
+                                        <a href="{{url('login')}}" class="btn btn-primary">CONTINUE SHOPPING
+                                            @endif
+                                        </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 @endif
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
 <script>
@@ -358,33 +379,11 @@ $sum = 0;
 
   });
      $(document).ready(function(){
-            var finalPrice = $('#total-price').val();
             $("#rzp_selected").click(function(){
-
-            var processingFee = $(this).attr('data-currency');
-            var totalPrice = finalPrice;
             $('#fee').hide();
-            $.ajax({
-                type:'POST',
-                data: {'processing_fee':processingFee,'price':totalPrice,'_token':"{{csrf_token()}}"},
-                 beforeSend: function () {
-                 $('#response').html( "<img id='blur-bg' class='backgroundfadein' style='width: 50px; height:50 px; display: block; position:    fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
-                },
-                 url: "{{url('update-final-price')}}",
-            });
         });
         $("#allow_gateway").click(function(){
-            var processingFee = $(this).attr('data-currency');
-            var totalPrice = finalPrice;
-            $('#fee').show();
-            $.ajax({
-                type:'POST',
-                data: {'processing_fee':processingFee,'price':totalPrice,'_token':"{{csrf_token()}}"},
-                 beforeSend: function () {
-                 $('#response').html( "<img id='blur-bg' class='backgroundfadein' style='width: 50px; height:50 px; display: block; position:    fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
-                },
-                 url: "{{url('update-final-price')}}",
-            });
+           $('#fee').show();
         });
     });
 </script>

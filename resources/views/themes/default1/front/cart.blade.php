@@ -20,18 +20,7 @@ Cart
 @section('main-class') "main shop" @stop
 @section('content')
 
-<?php
-$symbol = '';
-if (count($attributes) > 0) {
-    if ($attributes[0]['currency']['symbol'] == '') {
-        $symbol = $attributes[0]['currency']['currency'];
-    } else {
-        $symbol = $attributes[0]['currency']['symbol'];
-    }
-}
 
-
-?>
 <div class="row">
     <div class="col-md-12">
 
@@ -49,14 +38,13 @@ if (count($attributes) > 0) {
                                 <div class="box-content">
 
                                         <table class="shop_table cart">
-                                        @forelse($cartCollection as $key=>$item)
+                                        @forelse($cartCollection as $item)
                                           <?php
-                                            $product = App\Model\Product\Product::where('id', $item->id)->first();
                                             $domain = [];
 
-                                            if ($product->require_domain == 1) {
-                                                $domain[$key] = $product->id;
-                                                $productName = $product->name;
+                                            if ($item->associatedModel->require_domain) {
+                                                $domain[$key] = $item->associatedModel->id;
+                                                $productName = $item->associatedModel->name;
                                             
                                             }
                                             $cont = new \App\Http\Controllers\Product\ProductController();
@@ -107,22 +95,22 @@ if (count($attributes) > 0) {
                                                         </a>
                                                     </td>
                                                     <td class="product-thumbnail">
-                                                      <img width="100" height="100" alt="" class="img-responsive" src="{{$product->image}}">
+                                                      <img width="100" height="100" alt="" class="img-responsive" src="{{$item->associatedModel->image}}">
                                                     </td>
                                                     <td class="product-name">
                                                         {{$item->name}}
                                                     </td>
                                                     <td class="product-price">
                                                          <span class="amount">
-                                                            {{currencyFormat($item->price,$code = $attributes[0]['currency']['currency'])}}
+                                                            {{currencyFormat($item->price,$code = $item->attributes->currency)}}
                                                          <!-- {{\App\Http\Controllers\Front\CartController::rounding($item->getPriceSumWithConditions())}} -->
                                                      </span>
                                                        <div id="response"></div>
                                                     </td>
                                                       
-                                                      @if( $isAgentAllowed ==false)
+                                                      @if(!$isAgentAllowed)
                                                     <td class="product-quantity">
-                                                        @if($isAllowedtoEdit['quantity']==1)
+                                                        @if($isAllowedtoEdit['quantity'])
                                                         <div class="quantity">
                                                         <input type="button" id="quantityminus" class="minus" value="-">
                                                         <input type = "hidden" class="productid" value="{{$item->id}}">
@@ -130,7 +118,7 @@ if (count($attributes) > 0) {
                                                         <input type="text" class="input-text qty text" title="Qty" id="qty" value="{{$item->quantity}}" name="quantity" id="quantity" min="1" step="1" disabled>
                                                         <input type="button" class="plus" value="+" id="quantityplus" >
                                                        </div>
-                                                 <!--       <input type="number"  title="Qty" value="{{$item->quantity}}" name="quantity" id="quantity" min="1"  step="1" style="width: 50%" onchange="changeQty(this.value,'{{$item->id}}')">-->
+                                                
                                                         
                                                         @else 
                                                             {{$item->quantity}}
@@ -138,15 +126,15 @@ if (count($attributes) > 0) {
                                                     </td>
                                                      @else
                                                      <td class="product-agents">
-                                                        @if ($item->attributes->agents == 0)
+                                                        @if (!$item->attributes->agents)
                                                          {{'Unlimited Agents'}}
                                                          @else
-                                                        @if($isAllowedtoEdit['agent']==1)
+                                                        @if($isAllowedtoEdit['agent'])
                                                         <div class="quantity">
                                                           <input type="button" id='agentminus' class="minus" value="-">
                                                            <input type="hidden" id="initialagent" value="{{$item->attributes->initialagent}}">
-                                                         <input type = "hidden" class="currency" value="{{$item->attributes->currency['currency']}}">
-                                                         <input type = "hidden" class="symbol" value="{{$item->attributes->currency['symbol']}}">
+                                                         <input type = "hidden" class="currency" value="{{$item->attributes->currency}}">
+                                                         <input type = "hidden" class="symbol" value="{{$item->attributes->symbol}}">
                                                        <input type = "hidden" class="productid" value="{{$item->id}}">
                                                     <input type = "hidden" class="agentprice" id="agentprice" value=" {{$item->getPriceSum()}}">
                                                         <input type="text" class="input-text qty text" id="agtqty" title="Qty" value="{{$item->attributes->agents}}" name="quantity" min="1" step="1" disabled>
@@ -162,7 +150,7 @@ if (count($attributes) > 0) {
                                                          
                                                     <td class="product-subtotal">
                                                       <span class="amount">
-                                                        {{currencyFormat($item->getPriceSum(),$code = $attributes[0]['currency']['currency'])}}
+                                                        {{currencyFormat($item->getPriceSum(),$item->attributes->currency)}}
                                                     </span>
 
 
@@ -203,8 +191,8 @@ if (count($attributes) > 0) {
                                         <td>
 
 
-                                            <strong><span class="amount"><small>&nbsp;</small>  
-                                                {{currencyFormat(Cart::getSubTotalWithoutConditions(),$code= $attributes[0]['currency']['currency'])}}
+                                            <strong><span class="amount"><small>&nbsp;</small> 
+                                                {{currencyFormat(Cart::getSubTotalWithoutConditions(), $item->attributes->currency)}}
                                            </span></strong>
 
 

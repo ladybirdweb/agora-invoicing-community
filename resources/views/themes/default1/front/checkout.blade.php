@@ -20,16 +20,6 @@ Checkout
 @section('content')
 @if (!\Cart::isEmpty())
 
-<?php
-
-$tax=  0;
-
-
-$sum = 0;
-
-
-
-?>
 <div class="container">
 <div class="row">
 
@@ -71,16 +61,8 @@ $sum = 0;
                             <tr class="cart_table_item">
 
                                 <td class="product-thumbnail">
-                                    <?php
-                                    $currency = $item->attributes['currency']['currency'] ;
-                                    $symbol = $item->attributes['currency']['symbol'];
-                                    $product = App\Model\Product\Product::where('id', $item->id)->first();
-                                    $planid = App\Model\Payment\Plan::where('product', $item->id)->pluck('id')->first();                                    $price = 0;
-                                    $cart_controller = new App\Http\Controllers\Front\CartController();
-                                    $value = $cart_controller->cost($product->id,\Auth::user()->id,$planid);
-                                    $price += $value;
-                                    ?>
-                                    <img width="100" height="100" alt="" class="img-responsive" src="{{$product->image}}">
+                                  
+                                    <img width="100" height="100" alt="" class="img-responsive" src="{{$item->associatedModel->image}}">
 
                                 </td>
 
@@ -89,8 +71,8 @@ $sum = 0;
                                 </td>
 
                                 <td class="product-version">
-                                    @if($product->version)
-                                    {{$product->version}}
+                                    @if($item->associatedModel->version)
+                                    {{$item->associatedModel->version}}
                                     @else
                                     Not available
                                     @endif
@@ -102,11 +84,11 @@ $sum = 0;
 
                                 <td class="product-subtotal">
                                     <span class="amount">
-                                     {{currencyFormat($item->getPriceSum(),$code = $currency)}}
+                                     {{currencyFormat($item->getPriceSum(),$code = $item->attributes->currency)}}
                                 </td>
                             </tr>
                             @empty
-                        <p>Your Cart is void</p>
+                        <p>Your Cart is empty</p>
                         @endforelse
 
 
@@ -126,8 +108,8 @@ $sum = 0;
                 @if(Cart::getTotal()>0)
 
                  <?php
-                $gateways = \App\Http\Controllers\Common\SettingsController::checkPaymentGateway($item['attributes']['currency']['currency']);
-                $total = Cart::getSubTotal();
+                $gateways = \App\Http\Controllers\Common\SettingsController::checkPaymentGateway($item->attributes['currency']);
+                // $total = Cart::getSubTotal();
                 $rzpstatus = \App\Model\Common\StatusSetting::first()->value('rzp_status');
 
                   //
@@ -139,7 +121,7 @@ $sum = 0;
                     <div class="col-md-6">
                         @foreach($gateways as $gateway)
                         <?php
-                        $processingFee = \DB::table(strtolower($gateway))->where('currencies',$item['attributes']['currency']['currency'])->value('processing_fee');
+                        $processingFee = \DB::table(strtolower($gateway))->where('currencies',$item->attributes['currency'])->value('processing_fee');
                         ?>
                         {!! Form::radio('payment_gateway',$gateway,false,['id'=>'allow_gateway','data-currency'=>$processingFee]) !!}
                          <img alt="{{$gateway}}" width="111"  src="{{asset('client/images/'.$gateway.'.png')}}">
@@ -190,141 +172,31 @@ $sum = 0;
                     </th>
                     <td>
 
-
                         <span class="amount">
 
-                                {{currencyFormat(Cart::getSubTotalWithoutConditions(),$code = $currency)}}
+                                {{currencyFormat(Cart::getSubTotalWithoutConditions(),$code = $item->attributes->currency)}}
+                      
 
                     </td>
                 </tr>
-                @foreach($item->attributes['tax'] as $attribute)
-                    @if($attribute['name']!='null' && ($currency == "INR" && $attribute['tax_enable'] ==1))
-                 @if($attribute['state']==$attribute['origin_state'] && $attribute['ut_gst']=='NULL' && $attribute['status'] ==1)
-
+                @if($taxConditions->getName() != 'null')
                 <tr class="Taxes">
-                    <th>
-                        <strong>CGST<span>@</span>{{$attribute['c_gst']}}%</strong><br/>
-                        <strong>SGST<span>@</span>{{$attribute['s_gst']}}%</strong><br/>
+                    <?php
+                    $bifurcateTax = bifurcateTax($taxConditions->getName(),$taxConditions->getValue(),$item->attributes->currency, \Auth::user()->state);
+                    ?>
+                   <th>
+                        
+                        <strong>{!! $bifurcateTax['html'] !!}</strong><br/>
 
                     </th>
                     <td>
-                     <?php
-                     $cgst = \App\Http\Controllers\Front\CartController::taxValue($attribute['c_gst'],Cart::getSubTotalWithoutConditions());
-                     $sgst = \App\Http\Controllers\Front\CartController::taxValue($attribute['s_gst'],Cart::getSubTotalWithoutConditions());
-                     ?>
-                       {{currencyFormat($cgst,$code = $currency)}}<br/>
-                       {{currencyFormat($sgst,$code = $currency)}} <br/>
-
-
-
-                    </td>
-
-
+                     {!! $bifurcateTax['tax'] !!}
+                  </td>
+                  
+                   
                 </tr>
                 @endif
-
-                @if ($attribute['state']!=$attribute['origin_state'] && $attribute['ut_gst']=='NULL' &&$attribute['status'] ==1)
-
-
-                <tr class="Taxes">
-                    <th>
-                        <strong>{{$attribute['name']}}<span>@</span>{{$attribute['i_gst']}}%</strong>
-
-                    </th>
-                    <td>
-                     <?php
-                    $igst = \App\Http\Controllers\Front\CartController::taxValue($attribute['i_gst'],Cart::getSubTotalWithoutConditions());
-                     ?>
-                       {{currencyFormat($igst,$code = $currency)}}
-
-
-                    </td>
-
-
-                </tr>
-                @endif
-
-                @if ($attribute['state']!=$attribute['origin_state'] && $attribute['ut_gst']!='NULL' &&$attribute['status'] ==1)
-
-                <tr class="Taxes">
-                    <th>
-                       <strong>CGST<span>@</span>{{$attribute['c_gst']}}%</strong><br/>
-                        <strong>UTGST<span>@</span>{{$attribute['ut_gst']}}%</strong>
-
-                    </th>
-                    <td>
-                        <?php
-                        $cgst = \App\Http\Controllers\Front\CartController::taxValue($attribute['c_gst'],Cart::getSubTotalWithoutConditions());
-                        $utgst = \App\Http\Controllers\Front\CartController::taxValue($attribute['ut_gst'],Cart::getSubTotalWithoutConditions())
-                        ?>
-                         {{currencyFormat($cgst,$code = $currency)}} <br/>
-                         {{currencyFormat($utgst,$code = $currency)}} <br/>
-
-                    </td>
-
-
-                </tr>
-                @endif
-                @endif
-
-                 @if($attribute['name']!='null' && ($currency == "INR" && $attribute['tax_enable'] ==0 && $attribute['status'] ==1))
-
-                 <tr class="Taxes">
-                    <th>
-                        <strong>{{$attribute['name']}}<span>@</span>{{$attribute['rate']}}%</strong><br/>
-                    </th>
-                    <td>
-                       <?php
-                       $value = \App\Http\Controllers\Front\CartController::taxValue($attribute['rate'],Cart::getSubTotalWithoutConditions())
-                       ?>
-                        {{currencyFormat($value,$code = $currency)}} <br/>
-
-
-                    </td>
-                  </tr>
-                 @endif
-
-                @if($attribute['name']!='null' && ($currency != "INR" && $attribute['tax_enable'] ==1 && $attribute['status'] ==1))
-
-                  <tr class="Taxes">
-                    <th>
-                        <strong>{{$attribute['name']}}<span>@</span>{{$attribute['rate']}}</strong><br/>
-
-
-                    </th>
-                    <td>
-                     <?php
-                     $value = \App\Http\Controllers\Front\CartController::taxValue($attribute['rate'],Cart::getSubTotalWithoutConditions())
-                     ?>
-
-                        {{currencyFormat($value,$code = $currency)}} <br/>
-
-
-                    </td>
-                  </tr>
-                 @endif
-                 @if($attribute['name']!='null' && ($currency != "INR" && $attribute['tax_enable'] ==0 && $attribute['status'] ==1))
-
-                  <tr class="Taxes">
-
-                    <th>
-                        <strong>{{$attribute['name']}}<span>@</span>{{$attribute['rate']}}</strong><br/>
-
-
-                    </th>
-                    <td>
-                        <?php
-                        $value = \App\Http\Controllers\Front\CartController::taxValue($attribute['rate'],Cart::getSubTotalWithoutConditions())
-                        ?>
-
-                         {{currencyFormat($value,$code = $currency)}} <br/>
-
-
-                    </td>
-
-                  </tr>
-                 @endif
-                @endforeach
+               
                 <tr class="total">
                     <th>
                         <strong>Order Total</strong>
@@ -337,7 +209,7 @@ $sum = 0;
                                     $total = \App\Http\Controllers\Front\CartController::rounding(Cart::getTotal());
                                 ?>
                                   <div id="total-price" value={{$total}} hidden></div>
-                                  <div>{{currencyFormat($total,$code = $currency)}} </div>
+                                  <div>{{currencyFormat($total,$code = $item->attributes->currency)}} </div>
                             </span>
                         </strong>
 

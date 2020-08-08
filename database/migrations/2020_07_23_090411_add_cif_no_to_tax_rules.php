@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddGstNoColumnToTaxRulesTable extends Migration
+class AddCifNoToTaxRules extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,7 @@ class AddGstNoColumnToTaxRulesTable extends Migration
     public function up()
     {
         Schema::table('tax_rules', function (Blueprint $table) {
-            $table->string('Gst_No')->nullable();
+            $table->string('cif_no')->nullable();
         });
     }
 
@@ -26,7 +26,7 @@ class AddGstNoColumnToTaxRulesTable extends Migration
     public function down()
     {
         Schema::table('tax_rules', function (Blueprint $table) {
-            $table->dropColumn('Gst_No');
+            $table->dropColumn('cif_no');
         });
     }
 }

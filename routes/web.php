@@ -271,8 +271,8 @@
             // Route::get('get-tax', 'Payment\TaxController@GetTax');
 
             Route::delete('tax-delete', 'Payment\TaxController@destroy')->name('tax-delete');
-            Route::patch('taxes/option', 'Payment\TaxController@options')->name('taxes/option');
-            Route::post('taxes/option', 'Payment\TaxController@options');
+            Route::post('taxes/option', 'Payment\TaxController@saveTaxOptionSetting')->name('taxes/option');
+            Route::post('taxes/class', 'Payment\TaxController@saveTaxClassSetting');
 
             /*
              * Promotion

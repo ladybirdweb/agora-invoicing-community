@@ -236,37 +236,7 @@ use Illuminate\Http\Request;
             }
         }
 
-        public function pdf(Request $request)
-        {
-            try {
-                $id = $request->input('invoiceid');
-                if (! $id) {
-                    return redirect()->back()->with('fails', \Lang::get('message.no-invoice-id'));
-                }
-                $invoice = $this->invoice->where('id', $id)->first();
-                if (! $invoice) {
-                    return redirect()->back()->with('fails', \Lang::get('message.invalid-invoice-id'));
-                }
-                $invoiceItems = $this->invoiceItem->where('invoice_id', $id)->get();
-                if ($invoiceItems->count() == 0) {
-                    return redirect()->back()->with('fails', \Lang::get('message.invalid-invoice-id'));
-                }
-                $user = $this->user->find($invoice->user_id);
-                if (! $user) {
-                    return redirect()->back()->with('fails', 'No User');
-                }
-                $cont = new \App\Http\Controllers\Front\CartController();
-                $currency = $cont->currency($user->id);
-                $symbol = $currency['currency'];
-                $pdf = \PDF::loadView('themes.default1.invoice.newpdf', compact('invoiceItems', 'invoice', 'user', 'currency', 'symbol'));
-
-                return $pdf->download($user->first_name.'-invoice.pdf');
-            } catch (\Exception $ex) {
-                Bugsnag::notifyException($ex);
-
-                return redirect()->back()->with('fails', $ex->getMessage());
-            }
-        }
+        
 
         public function getExtraAmtPaid($userId)
         {

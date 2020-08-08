@@ -206,6 +206,7 @@ return [
         Spatie\Referer\RefererServiceProvider::class,
         Cartalyst\Stripe\Laravel\StripeServiceProvider::class,
         PragmaRX\Google2FALaravel\ServiceProvider::class,
+        Darryldecode\Cart\CartServiceProvider::class
         // Voerro\Laravel\VisitorTracker\VisitorTrackerServiceProvider::class,
 
     ],
@@ -273,6 +274,7 @@ return [
         'Pipedrive'  => Devio\Pipedrive\PipedriveFacade::class,
         'Stripe' => Cartalyst\Stripe\Laravel\Facades\Stripe::class,
         'Google2FA' => PragmaRX\Google2FALaravel\Facade::class,
+        'Cart' => Darryldecode\Cart\Facades\CartFacade::class
         // 'VisitStats' => Voerro\Laravel\VisitorTracker\Facades\VisitStats::class,
 
     ],

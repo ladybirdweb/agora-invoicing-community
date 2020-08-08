@@ -11,10 +11,10 @@ use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
 use App\Model\Order\Order;
 use App\Model\Payment\Plan;
-use App\Traits\TaxCalculation;
 use App\Model\Product\Price;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
+use App\Traits\TaxCalculation;
 use App\User;
 use Bugsnag;
 use Cart;
@@ -119,6 +119,7 @@ class CheckoutController extends InfoController
                     \Session::put('domain'.$key, $value);
                 }
             }
+
             return view('themes.default1.front.checkout', compact('content', 'taxConditions'));
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
@@ -151,13 +152,13 @@ class CheckoutController extends InfoController
                     if ($require_domain) {
                         $require[$key] = $item->id;
                     }
-                    $taxConditions = $this->calculateTax($item->id,\Auth::user()->state, \Auth::user()->country); //Calculate Tax Condition by passing ProductId
+                    $taxConditions = $this->calculateTax($item->id, \Auth::user()->state, \Auth::user()->country); //Calculate Tax Condition by passing ProductId
                     Cart::condition($taxConditions);
                     Cart::remove($item->id);
 
                     //Return array of Product Details,attributes and their conditions
                     $items[] = ['id' => $item->id, 'name' => $item->name, 'price' => $item->price,
-                        'quantity'       => $item->quantity, 'attributes' => ['currency'=> $cart_currency, 'symbol'=>$item->attributes->symbol, 'agents'=> $item->attributes->agents],'associatedModel' => Product::find($item->id)];
+                        'quantity'       => $item->quantity, 'attributes' => ['currency'=> $cart_currency, 'symbol'=>$item->attributes->symbol, 'agents'=> $item->attributes->agents], 'associatedModel' => Product::find($item->id), ];
                 }
 
                 Cart::add($items);

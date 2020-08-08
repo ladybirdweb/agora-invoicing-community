@@ -10,7 +10,6 @@ use App\Model\Payment\PlanPrice;
 use App\Model\Payment\Tax;
 use App\Model\Payment\TaxByState;
 use App\Model\Payment\TaxOption;
-use App\Model\Payment\TaxProductRelation;
 use App\Model\Product\Product;
 use App\Traits\TaxCalculation;
 use Bugsnag;
@@ -111,6 +110,7 @@ class CartController extends BaseCartController
                     }
                 }
             }
+
             return view('themes.default1.front.cart', compact('cartCollection'));
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
@@ -119,7 +119,6 @@ class CartController extends BaseCartController
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-
 
     public function cartRemove(Request $request)
     {
@@ -130,8 +129,6 @@ class CartController extends BaseCartController
 
         return 'success';
     }
-
-
 
     /**
      * @return type

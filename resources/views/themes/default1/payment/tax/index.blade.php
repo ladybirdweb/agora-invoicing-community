@@ -55,7 +55,7 @@ Tax
        <div class="card card-primary card-outline">
            <div class="card-header">
                <h3 class="card-title">{{Lang::get('Options')}}</h3>
-               {!! Form::model($options,['url'=>'taxes/option','method'=>'patch']) !!}
+               {!! Form::model($options,['url'=>'taxes/option','method'=>'post']) !!}
            </div>
         <div class="card-body">
             <div class="row">
@@ -96,7 +96,19 @@ Tax
                                 </td>
 
                                  <td>
-                                     <input type='text' name="Gst_no"  class="form-control col-md-6" value="{{$gstNo->Gst_No}}">
+                                     <input type='text' name="Gst_no"  class="form-control col-md-6" value="{{$options->Gst_No}}" id="gstin">
+                                 </td>
+                          
+                        </tr>
+
+                         <tr class="form-group cifshow hide">
+                              
+                                 <td>
+                                    {!! Form::label('CIF',Lang::get('CIF')) !!}
+                                </td>
+
+                                 <td>
+                                     <input type='text' name="cif_no"  class="form-control col-md-6" value="{{$options->cif_no}}">
                                  </td>
                           
                         </tr>
@@ -183,15 +195,16 @@ Tax
     <script src="//cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript">
       $(document).ready(function(){
-              var btn = {{($options->tax_enable)}};
+      var btn = {{($options->tax_enable)}};
      if(btn== '1'){
 $('.btn-on-1').addClass('active');
 $('.gstshow').show();
-
+$('.cifshow').show();
      }
      else{
 $('.btn-off-1').addClass('active');
 $('.gstshow').hide();
+$('.cifshow').hide();
 // $('.gstshow').removeAttribute("style");
      }
     var btn1 = {{($options->inclusive)}};
@@ -224,9 +237,12 @@ $('.btn-off-3').addClass('active');
    function getTaxValue(x){
         if($(x).val()==1){
               $('.gstshow').show();
+              $('.cifshow').show();
         }
         else{
                $('.gstshow').hide();
+                $('.cifshow').hide();
+                $('#gstin').val('');
         }
    }
      // $('#chkYes').click

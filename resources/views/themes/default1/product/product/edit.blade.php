@@ -347,6 +347,7 @@ Edit Product
 
                                                
                                             </div>
+                                             {!! Form::close() !!}
                                             <br>
                                             <h3>  Plans &nbsp;
                                                 <!-- <a href="#create-plan-option" data-toggle="modal" data-target="#create-plan-option" class="btn btn-default">Add new</a> -->
@@ -392,7 +393,7 @@ Edit Product
 
            
 
-          {!! Form::close() !!}
+         
 
 
                               </div>

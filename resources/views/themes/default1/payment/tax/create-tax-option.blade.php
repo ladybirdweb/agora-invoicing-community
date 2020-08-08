@@ -8,21 +8,19 @@
 
             <div class="modal-body">
                 <!-- Form  -->
-                {!! Form::open(['url'=>'taxes/option','id'=>'taxClass']) !!}
+                {!! Form::open(['url'=>'taxes/class','id'=>'taxClass', 'method'=>'post']) !!}
 
                 <div class="form-group {{ $errors->has('name') ? 'has-error' : '' }}">
                     <!-- name -->
                     {!! Form::label('name',Lang::get('Tax Type'),['class'=>'required']) !!}
-                    <?php
-                    $taxType = \App\Model\Payment\TaxOption::where('id', '1')->pluck('tax_enable')->toArray();
-                    ?>
+
                     <!-- {!! Form::text('name',null,['class' => 'form-control']) !!} -->
                       <select name="name" id="gst" class="form-control">
                       <option value="Others">Others</option>
-                       @if($taxType[0]==1)
-                      <option value="Intra State GST">Intra State GST</option>
-                      <option value="Inter State GST">Inter State GST</option>
-                      <option value="Union Territory GST">Union Territory GST</option>
+                       @if($options->tax_enable)
+                      <option value="Intra State GST">Intra State GST (Same Indian State)</option>
+                      <option value="Inter State GST">Inter State GST (Other Indian  State)</option>
+                      <option value="Union Territory GST">Union Territory GST (Indian Union Territory)</option>
                         @endif
                       </select>
                 </div>
@@ -59,14 +57,11 @@
                   <div class="form-group {{ $errors->has('country') ? 'has-error' : '' }}">
                     <!-- name -->
                     {!! Form::label('country',Lang::get('message.country')) !!}
-                    <?php $countries = \App\Model\Common\Country::pluck('nicename', 'country_code_char2')->toArray(); 
+                    <br>
+                      {!! Form::select('country',[''=>'All Countries','Choose'=>$countries],null,['class' => 'form-control select2','style'=>'width:460px','onChange'=>'getState(this.value);','id'=>'countryvisible']) !!}
 
-
-                    ?>
-                      {!! Form::select('country',[''=>'Any Country','Choose'=>$countries],null,['class' => 'form-control','onChange'=>'getState(this.value);','id'=>'countryvisible']) !!}
-
-                      <!--  {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],['IN'],['class' => 'form-control hide','onChange'=>'getState(this.value);','id'=>'countrynotvisible','disabled'=>'disabled'])!!} -->
-                     <input type='text' name="country1" id= "countrynotvisible" class="form-control hide" value="IN" readonly>
+                     
+                     <input type='text' name="country1" id= "countrynotvisible" class="form-control hide" value="India" readonly>
                    
 
                 </div>
@@ -76,14 +71,14 @@
                  
 
                     <select name="state"  class="form-control" id="statess">
-                        <option name="state">Any State</option>
+                        <option name="state" value=''>All States</option>
                     </select>
 
                 </div>
                  <div class="form-group showwhengst{{ $errors->has('rate') ? 'has-error' : '' }}" style="display:block" >
                     <!-- name -->
                     {!! Form::label('rate',Lang::get('message.rate').' (%)',['class'=>'required']) !!}
-                    {!! Form::text('rate',null,['class' => 'form-control','id'=>'rate']) !!}
+                    {!! Form::number('rate',null,['class' => 'form-control','id'=>'rate']) !!}
                   
 
                 </div>
@@ -124,19 +119,28 @@
           $('#countrynotvisible').hide();
        }
     $('#gst').on('change', function() {
-            if ( this.value != 'Others')
+      if ( this.value != 'Others')
       {
+        $('#taxname').attr('readonly',true);
+        if(this.value == 'Intra State GST') {
+          $('#taxname').val('CGST+SGST')
+        } else if(this.value == 'Inter State GST') {
+          $('#taxname').val('IGST')
+        } else {
+            $('#taxname').val('CGST+UTGST')
+        }
+
          $(document).find('.showwhengst').hide();
-          $('#countryvisible').hide();
+         $(document).find('.select2').hide();
           $('#countrynotvisible').show();
 
 
-
       }
-      else
-        {
+      else{
+          $('#taxname').attr('readonly',false);
+          $('#taxname').val('')
              $(document).find('.showwhengst').show();
-            $('#countryvisible').show();
+            $('.select2').show();
             $('#countrynotvisible').hide();
         }
     });
@@ -145,6 +149,10 @@
 
 <script>
      $(document).ready(function(){
+      $(function () {
+                //Initialize Select2 Elements
+                $('.select2').select2()
+            });
         $('#namecheck').hide();
       
       $('#taxClass').submit(function(){

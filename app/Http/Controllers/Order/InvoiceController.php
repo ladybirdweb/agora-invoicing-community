@@ -15,12 +15,11 @@ use App\Model\Payment\Promotion;
 use App\Model\Payment\Tax;
 use App\Model\Payment\TaxByState;
 use App\Model\Payment\TaxOption;
-use App\Model\Payment\TaxProductRelation;
 use App\Model\Product\Price;
 use App\Model\Product\Product;
-use App\Traits\TaxCalculation;
 use App\Traits\CoupCodeAndInvoiceSearch;
 use App\Traits\PaymentsAndInvoices;
+use App\Traits\TaxCalculation;
 use App\User;
 use Bugsnag;
 use Illuminate\Http\Request;
@@ -284,7 +283,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             if ($rounding == 1) {
                 $grand_total = round($grand_total);
             }
-            
+
             $invoice = $this->invoice->create(['user_id' => $user_id, 'number' => $number, 'date'=> $date, 'discount'=>$codevalue, 'grand_total' => $grand_total, 'coupon_code'=>$code, 'status' => 'pending',
                 'currency' => \Auth::user()->currency, ]);
             foreach (\Cart::getContent() as $cart) {
@@ -394,12 +393,12 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             if ($grand_total == 0) {
                 $status = 'success';
             }
-            $user = User::where('id',$user_id)->select('state','country')->first();
-            $tax = $this->calculateTax($product->id,$user->state,$user->country,true);
-           
+            $user = User::where('id', $user_id)->select('state', 'country')->first();
+            $tax = $this->calculateTax($product->id, $user->state, $user->country, true);
+
             $tax_name = $tax['name'];
             $tax_rate = $tax['value'];
-           
+
             $grand_total = $this->calculateTotal($tax_rate, $grand_total);
             $grand_total = \App\Http\Controllers\Front\CartController::rounding($grand_total);
 
@@ -470,8 +469,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         }
     }
 
-
-
     public function setDomain($productid, $domain)
     {
         try {
@@ -502,37 +499,38 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
     }
 
     public function pdf(Request $request)
-        {
-            try {
-                $id = $request->input('invoiceid');
-                if (! $id) {
-                    return redirect()->back()->with('fails', \Lang::get('message.no-invoice-id'));
-                }
-                $invoice = $this->invoice->where('id', $id)->first();
-                if (! $invoice) {
-                    return redirect()->back()->with('fails', \Lang::get('message.invalid-invoice-id'));
-                }
-                $invoiceItems = $this->invoiceItem->where('invoice_id', $id)->get();
-                if ($invoiceItems->count() == 0) {
-                    return redirect()->back()->with('fails', \Lang::get('message.invalid-invoice-id'));
-                }
-                $user = $this->user->find($invoice->user_id);
-                if (! $user) {
-                    return redirect()->back()->with('fails', 'No User');
-                }
-                $cont = new \App\Http\Controllers\Front\CartController();
-                $order = getOrderLink($invoice->order_id);
-                $currency = $cont->currency($user->id);
-                $gst =  TaxOption::select('tax_enable','Gst_No')->first();
-                $symbol = $currency['currency'];
-                ini_set('max_execution_time', '0'); 
-
-                $pdf = \PDF::loadView('themes.default1.invoice.newpdf', compact('invoiceItems', 'invoice', 'user', 'currency', 'symbol', 'gst','order'));
-                return $pdf->download($user->first_name.'-invoice.pdf');
-            } catch (\Exception $ex) {
-                Bugsnag::notifyException($ex);
-
-                return redirect()->back()->with('fails', $ex->getMessage());
+    {
+        try {
+            $id = $request->input('invoiceid');
+            if (! $id) {
+                return redirect()->back()->with('fails', \Lang::get('message.no-invoice-id'));
             }
+            $invoice = $this->invoice->where('id', $id)->first();
+            if (! $invoice) {
+                return redirect()->back()->with('fails', \Lang::get('message.invalid-invoice-id'));
+            }
+            $invoiceItems = $this->invoiceItem->where('invoice_id', $id)->get();
+            if ($invoiceItems->count() == 0) {
+                return redirect()->back()->with('fails', \Lang::get('message.invalid-invoice-id'));
+            }
+            $user = $this->user->find($invoice->user_id);
+            if (! $user) {
+                return redirect()->back()->with('fails', 'No User');
+            }
+            $cont = new \App\Http\Controllers\Front\CartController();
+            $order = getOrderLink($invoice->order_id);
+            $currency = $cont->currency($user->id);
+            $gst = TaxOption::select('tax_enable', 'Gst_No')->first();
+            $symbol = $currency['currency'];
+            ini_set('max_execution_time', '0');
+
+            $pdf = \PDF::loadView('themes.default1.invoice.newpdf', compact('invoiceItems', 'invoice', 'user', 'currency', 'symbol', 'gst', 'order'));
+
+            return $pdf->download($user->first_name.'-invoice.pdf');
+        } catch (\Exception $ex) {
+            Bugsnag::notifyException($ex);
+
+            return redirect()->back()->with('fails', $ex->getMessage());
         }
+    }
 }

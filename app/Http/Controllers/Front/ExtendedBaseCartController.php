@@ -4,8 +4,6 @@ namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
 use App\Model\Payment\Plan;
-use App\Model\Payment\Tax;
-use App\Model\Payment\TaxClass;
 use App\Model\Product\Product;
 use Bugsnag;
 use Cart;
@@ -198,6 +196,4 @@ class ExtendedBaseCartController extends Controller
 
         return $geoip_state;
     }
-
-   
 }

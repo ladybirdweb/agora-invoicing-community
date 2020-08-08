@@ -316,6 +316,7 @@ class BaseProductController extends ExtendedBaseProductController
     public function allowQuantityOrAgent(int $productid)
     {
         $product = Product::find($productid);
+
         return $product->show_agent;
     }
 

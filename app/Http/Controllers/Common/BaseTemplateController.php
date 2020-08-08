@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Common;
 use App\Model\Common\Setting;
 use App\Model\Payment\Currency;
 use App\Model\Payment\Plan;
+use App\Model\Common\Setting;
 use Bugsnag;
 
 class BaseTemplateController extends ExtendedBaseTemplateController

@@ -459,6 +459,7 @@
     <!-- <script src="{{asset('plugins/jquery-file-upload/main.js')}}"></script> -->
     <script src="{{asset('admin/plugins/jquery-file-upload/jquery.iframe-transport.js')}}"></script>
     <script src="{{asset('admin/plugins/jquery-file-upload/resumable.js')}}"></script>
+    <script src="{{asset('admin/plugins/bootstrap-switch.min.js')}}"></script>
 
 
     @yield('icheck')

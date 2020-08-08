@@ -87,7 +87,7 @@ class TaxController extends Controller
                                     return ucfirst($this->country
                                       ->where('country_code_char2', $model->country)->first()->country_name);
                                 } else {
-                                   return '--';
+                                    return '--';
                                 }
                             })
                             ->addColumn('state', function ($model) {
@@ -100,12 +100,11 @@ class TaxController extends Controller
                                 }
                             })
                             ->addColumn('rate', function ($model) {
-                                if($model->rate) {
+                                if ($model->rate) {
                                     return $model->rate;
                                 } else {
-                                    return '<p'.tooltip("Default&nbsp;GST&nbsp;set&nbsp;in&nbsp;the&nbsp;system&nbsp;will&nbsp;be&nbsp;applicable").'Default</p>';
+                                    return '<p'.tooltip('Default&nbsp;GST&nbsp;set&nbsp;in&nbsp;the&nbsp;system&nbsp;will&nbsp;be&nbsp;applicable').'Default</p>';
                                 }
-                                
                             })
 
                             ->addColumn('action', function ($model) {
@@ -152,14 +151,13 @@ class TaxController extends Controller
      */
     public function edit($id)
     {
-        try {   
+        try {
             $options = $this->tax_option->find(1);
             $tax = $this->tax->where('id', $id)->first();
             $taxClassName = $tax->taxClass()->find($tax->tax_classes_id)->name; //Find the Tax Class Name related to the tax
             $txClass = $this->tax_class->where('id', $tax->tax_classes_id)->first();
             $state = \App\Http\Controllers\Front\CartController::getStateByCode($tax->state);
             $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($tax->country);
-          
 
             return view('themes.default1.payment.tax.edit',
                 compact('options', 'tax', 'txClass', 'states', 'state', 'taxClassName'));
@@ -177,21 +175,21 @@ class TaxController extends Controller
      */
     public function update($id, Request $request)
     {
-      if ($request->tax_classes_id == 'Others') {
+        if ($request->tax_classes_id == 'Others') {
             $this->validate($request, [
                 'rate'        => 'required|numeric',
             ]);
         }
         try {
-           $v = \Validator::make($request->all(), ['name' => 'required']);
-                if ($v->fails()) {
-                    return redirect()->back()
+            $v = \Validator::make($request->all(), ['name' => 'required']);
+            if ($v->fails()) {
+                return redirect()->back()
                                         ->withErrors($v)
                                         ->withInput();
-                }
+            }
             $taxClassesName = $request->tax_classes_id;
             $taxClass = TaxClass::where('name', $request->tax_classes_id)->first();
-            if (!$taxClass) {
+            if (! $taxClass) {
                 $taxClass = $this->tax_class->create(['name'=>$taxClassesName]);
             }
             $taxId = $taxClass->id;
@@ -302,6 +300,7 @@ class TaxController extends Controller
     public function saveTaxOptionSetting(Request $request)
     {
         $this->tax_option->find(1)->fill($request->input())->save();
+
         return redirect()->back()->with('success', 'Tax option settings saved successfully');
     }
 
@@ -325,22 +324,21 @@ class TaxController extends Controller
         }
 
         try {
-                $v = \Validator::make($request->all(), ['name' => 'required']);
-                if ($v->fails()) {
-                    return redirect()->back()
+            $v = \Validator::make($request->all(), ['name' => 'required']);
+            if ($v->fails()) {
+                return redirect()->back()
                                         ->withErrors($v)
                                         ->withInput();
-                }
-                $this->tax_class->name = $request->input('name');
-                $this->tax_class->save();
-                $country = ($request->input('rate')) ? $request->input('country') : 'IN';
+            }
+            $this->tax_class->name = $request->input('name');
+            $this->tax_class->save();
+            $country = ($request->input('rate')) ? $request->input('country') : 'IN';
 
-                $this->tax->fill($request->except('tax-name','name','country'))->save();
-                $this->tax->country = $country;
-                $this->tax->name = $request->input('tax-name');
-                $this->tax->tax_classes_id = $this->tax_class->id;
-                $this->tax->save();
-            
+            $this->tax->fill($request->except('tax-name', 'name', 'country'))->save();
+            $this->tax->country = $country;
+            $this->tax->name = $request->input('tax-name');
+            $this->tax->tax_classes_id = $this->tax_class->id;
+            $this->tax->save();
 
             return redirect()->back()->with('success', \Lang::get('message.created-successfully'));
         } catch (\Exception $ex) {

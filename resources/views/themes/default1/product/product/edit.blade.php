@@ -347,6 +347,7 @@ Edit Product
 
                                                
                                             </div>
+
                                         </div>
                                     </td>
                                 </tr>
@@ -397,7 +398,7 @@ Edit Product
                       
                 <!-- nav-tabs-custom -->
 
-          
+
 
 
                               </div>

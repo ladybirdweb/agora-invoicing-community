@@ -11,6 +11,7 @@ use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
 use App\Model\Order\Order;
 use App\Model\Payment\Plan;
+use App\Traits\TaxCalculation;
 use App\Model\Product\Price;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
@@ -21,6 +22,8 @@ use Illuminate\Http\Request;
 
 class CheckoutController extends InfoController
 {
+    use TaxCalculation;
+
     public $subscription;
     public $plan;
     public $templateController;
@@ -102,14 +105,13 @@ class CheckoutController extends InfoController
         }
         if (\Session::has('items')) {
             $content = \Session::get('items');
-            $attributes = $this->getAttributes($content);
+            $taxConditions = $this->getAttributes($content);
         } else {
             $content = Cart::getContent();
-            $attributes = $this->getAttributes($content);
+            $taxConditions = $this->getAttributes($content);
 
             $content = Cart::getContent();
         }
-
         try {
             $domain = $request->input('domain');
             if ($domain) {//Store the Domain  in session when user Logged In
@@ -117,8 +119,7 @@ class CheckoutController extends InfoController
                     \Session::put('domain'.$key, $value);
                 }
             }
-
-            return view('themes.default1.front.checkout', compact('content', 'attributes'));
+            return view('themes.default1.front.checkout', compact('content', 'taxConditions'));
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
@@ -138,29 +139,30 @@ class CheckoutController extends InfoController
     {
         try {
             if (count($content) > 0) {//after ProductPurchase this is not true as cart is cleared
-                foreach ($content as $key => $item) {
-                    $attributes[] = $item->attributes;
-                    $cart_currency = $attributes[0]['currency']['currency']; //Get the currency of Product in the cart
+                foreach ($content as $item) {
+                    $cart_currency = $item->attributes->currency; //Get the currency of Product in the cart
                     $currency = \Auth::user()->currency != $cart_currency ? \Auth::user()->currency : $cart_currency; //If User Currency and cart currency are different the currency es set to user currency.
                     if ($cart_currency != $currency) {
                         $id = $item->id;
                         Cart::remove($id);
                     }
-                    $require_domain = $this->product->where('id', $item->id)->first()->require_domain;
+                    $require_domain = $item->associatedModel->require_domain;
                     $require = [];
-                    if ($require_domain == 1) {
+                    if ($require_domain) {
                         $require[$key] = $item->id;
                     }
-                    $cont = new CartController();
-                    $taxConditions = $cont->checkTax($item->id); //Calculate Tax Condition by passing ProductId
+                    $taxConditions = $this->calculateTax($item->id,\Auth::user()->state, \Auth::user()->country); //Calculate Tax Condition by passing ProductId
+                    Cart::condition($taxConditions);
                     Cart::remove($item->id);
 
                     //Return array of Product Details,attributes and their conditions
                     $items[] = ['id' => $item->id, 'name' => $item->name, 'price' => $item->price,
-                        'quantity'       => $item->quantity, 'attributes' => ['currency'=> $attributes[0]['currency'],
-                            'agents'                                                        => $attributes[0]['agents'], 'tax'=>$taxConditions['tax_attributes'], ], 'conditions'=>$taxConditions['conditions'], ];
+                        'quantity'       => $item->quantity, 'attributes' => ['currency'=> $cart_currency, 'symbol'=>$item->attributes->symbol, 'agents'=> $item->attributes->agents],'associatedModel' => Product::find($item->id)];
                 }
+
                 Cart::add($items);
+
+                return $taxConditions;
             }
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
@@ -220,7 +222,6 @@ class CheckoutController extends InfoController
                  */
 
                 $invoice = $invoice_controller->generateInvoice();
-
                 $pay = $this->payment($payment_method, $status = 'pending');
                 $payment_method = $pay['payment'];
                 $status = $pay['status'];
@@ -309,6 +310,7 @@ class CheckoutController extends InfoController
                 return redirect()->back()->with('success', $url);
             }
         } catch (\Exception $ex) {
+            dd($ex);
             app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
 

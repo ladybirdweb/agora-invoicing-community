@@ -39,23 +39,24 @@ Edit Tax
                     <div class="col-md-4 form-group {{ $errors->has('name') ? 'has-error' : '' }}">
                         <!-- name -->
                         {!! Form::label('name',Lang::get('message.name'),['class'=>'required']) !!}
-                        {!! Form::text('name',null,['class' => 'form-control']) !!}
+                        {!! Form::text('name',null,['class' => 'form-control','id'=>'tax-name']) !!}
 
                     </div>
-                    <?php
-                    $defaultValue = \App\Model\Payment\TaxClass::pluck('name','id')->toArray();
-                    ?>
+                   
                     <div class="col-md-4 form-group {{ $errors->has('tax_class') ? 'has-error' : '' }}">
                         <!-- name -->
                         {!! Form::label('tax_class',Lang::get('Tax Type'),['class'=>'required']) !!}
-                         <select name="tax_classes_id"  id="editTax"  class="form-control">
-                            <option value="">Choose</option>
-                         @foreach($defaultValue as $key=>$value)
-                             <option value="{{$value}}" <?php  if(in_array($value, $taxClassName) ) { echo "selected";} ?>>{{$value}}</option>
-                           
-                             @endforeach
-                              </select>
+                         <select name="tax_classes_id" id="editTax" class="form-control">
+                      <option value="{{$txClass->name}}">{{$taxClassName}}</option>
+                      <option value="Others">Others</option>
+                       @if($options->tax_enable)
+                      <option value="Intra State GST">Intra State GST (Same Indian State)</option>
+                      <option value="Inter State GST">Inter State GST (Other Indian State)</option>
+                      <option value="Union Territory GST">Union Territory GST (Indian Union Territory)</option>
+                        @endif
+                      </select>
 
+                       
 
                     </div>
                    
@@ -90,21 +91,13 @@ Edit Tax
                   
                         <!-- name -->
                         {!! Form::label('country',Lang::get('message.country')) !!}
-                     {!! Form::select('country',[''=>'Any Country','Countries'=>$countries],null,['class' => 'form-control country hidden']) !!}
-
-                       @if($tax['country']=='IN')
-                         <input type='text' name="country1" id= "country2" class="form-control country1" value="IN" disabled>
-                         @else
-                        
-                        {!! Form::select('country',[''=>'Any Country','Countries'=>$countries],null,['class' => 'form-control','id'=>'country']) !!}
-                        @endif
-                       <input type='text' name="country1" id= "country1" class="form-control country1 hide" value="IN" disabled>
+                     {!! Form::select('country',[''=>'All Countries','Countries'=>$countries],null,['class' => 'form-control country']) !!}
                       </div>
                   
                     <div class="col-md-4 form-group changegststate">
                         <!-- name -->
                         {!! Form::label('state',Lang::get('message.state')) !!}
-                         {!! Form::select('state',['Any State'=>'Any State','state'=>$states],null,['class' => 'form-control','id'=>'state-list']) !!}
+                         {!! Form::select('state',[''=>'All States','state'=>$states],null,['class' => 'form-control','id'=>'state-list']) !!}
                       
 
                     </div>
@@ -113,7 +106,7 @@ Edit Tax
                     <div class="col-md-4 form-group changegstrate">
                         <!-- name -->
                         {!! Form::label('rate',Lang::get('message.rate').' (%)',['class'=>'required']) !!}
-                        {!! Form::text('rate',null,['class' => 'form-control']) !!}
+                        {!! Form::number('rate',null,['class' => 'form-control']) !!}
 
                     </div>
                
@@ -206,63 +199,62 @@ Edit Tax
     }); 
 
      $(document).ready(function(){
-         var inicial=$('#hiddenvalue').val();
+         var initial=$('#hiddenvalue').val();
          var taxValue=$('#editTax').val();
-         if (inicial != 'IN' || taxValue == 0)
-      {
-         $(document).find('.changegst').hide();
-         // $(document).find('#country').addClass('hide');
-         // $(document).find('#countryinvisible').removeClass('hide');
-        
          
-      }
-if (inicial == 'IN'){
+         if (taxValue == 'Inter State GST' || taxValue == 'Intra State GST' || taxValue == 'Union Territory GST') {
+             $('.country').attr('disabled', true)
+            $('#tax-name').attr('readonly', true)
+         } else {
+            $('.country').attr('disabled', false)
+            $('#tax-name').attr('readonly', false)
+         }
+
+        if (initial != 'IN' || taxValue == 0)
+          {
+             $(document).find('.changegst').hide();
+            
+          }
+
+
+  
+
+if (initial == 'IN'){
 $(document).find('.changegststate').hide();
         $(document).find('.changegstrate').hide();
 
 }
-         $(document).ready(function(){
-             if($('#editTax').val() != 'Others') {
-                 $(document).find('.changegst').show();
-                 $(document).find('.changegststate').hide();
-                 $(document).find('.changegstrate').hide();
-                 $(document).find('#country').hide();
-                 $(document).find('#country1').hide();
-                 $(document).find('#country2').hide();
-                 $(document).find('.country').show();
-             } else {
-                 $(document).find('.changegst').hide();
-                 $(document).find('.country').show();
-                 $(document).find('.changegststate').show();
-                 $(document).find('.changegstrate').show();
-                 $('.country1').hide();
-                 $(document).find('.country1').hide();
-             }
-         });
-
 
   $('#editTax').on('change', function() {
-        var val= $(this).val();
+    var val= $(this).val();
      if (val == 'Others')
       {
+        $('#tax-name').val('')
+         $('.country').attr('disabled', false)
+         $('#tax-name').attr('readonly',false);
+          
          $(document).find('.changegst').hide();
         $(document).find('.country').show();
         $(document).find('.changegststate').show();
         $(document).find('.changegstrate').show();
-        $('.country1').hide();
-        $(document).find('.country1').hide();
-         // $(document).find('#countryinvisible').removeClass('hide');
-
+       
          
-      }
-      else {
+      } else { 
+            $('.country').attr('disabled', true)
+            $('.country').val('IN')
+            $('#tax-name').attr('readonly',true);
+
+            if(this.value == 'Intra State GST') {
+              $('#tax-name').val('CGST+SGST')
+            } else if(this.value == 'Inter State GST') {
+              $('#tax-name').val('IGST')
+            } else {
+                $('#tax-name').val('CGST+UTGST')
+            }
+
              $(document).find('.changegst').show();
              $(document).find('.changegststate').hide();
              $(document).find('.changegstrate').hide();
-             $(document).find('#country').hide();
-             $(document).find('#country1').hide();
-             $(document).find('#country2').hide();
-             $(document).find('.country').show();
            }
 
     });

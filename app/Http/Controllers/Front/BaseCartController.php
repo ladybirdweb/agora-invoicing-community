@@ -26,98 +26,8 @@ class BaseCartController extends ExtendedBaseCartController
         return $cartCollection;
     }
 
-    /**
-     * @param type $tax_class_id
-     *
-     * @throws \Exception
-     *
-     * @return type
-     */
-    public function getTaxByPriority($taxClassId)
-    {
-        try {
-            $taxe_relation = Tax::where('tax_classes_id', $taxClassId)->get();
 
-            return $taxe_relation;
-        } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
 
-            throw new \Exception('error in get tax priority');
-        }
-    }
-
-    /**
-     *   Get tax value for Same State.
-     *
-     * @param type $productid
-     * @param type $c_gst
-     * @param type $s_gst
-     *                        return type
-     */
-    public function getValueForSameState($productid, $c_gst, $s_gst, $taxClassId, $taxes)
-    {
-        try {
-            $value = $taxes->toArray()[0]['active'] ?
-                    (TaxProductRelation::where('product_id', $productid)->where('tax_class_id', $taxClassId)->count() ?
-                        $c_gst + $s_gst.'%' : 0) : 0;
-
-            return $value;
-        } catch (Exception $ex) {
-            Bugsnag::notifyException($ex);
-
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
-
-    /**
-     *   Get tax value for Other States.
-     *
-     * @param type $productid
-     * @param type $i_gst
-     *                        return type
-     */
-    public function getValueForOtherState($productid, $i_gst, $taxClassId, $taxes)
-    {
-        $value = '';
-        $value = $taxes->toArray()[0]['active'] ? //If the Current Class is active
-              (TaxProductRelation::where('product_id', $productid)->where('tax_class_id', $taxClassId)->count() ?
-                        $i_gst.'%' : 0) : 0; //IGST
-
-        return $value;
-    }
-
-    /**
-     *  Get tax value for Union Territory States.
-     *
-     * @param type $productid
-     * @param type $c_gst
-     * @param type $ut_gst
-     *                        return type
-     */
-    public function getValueForUnionTerritory($productid, $c_gst, $ut_gst, $taxClassId, $taxes)
-    {
-        $value = '';
-        $value = $taxes->toArray()[0]['active'] ?
-             (TaxProductRelation::where('product_id', $productid)
-                ->where('tax_class_id', $taxClassId)
-                ->count() ? $ut_gst + $c_gst.'%' : 0) : 0;
-
-        return $value;
-    }
-
-    public function getValueForOthers($productid, $taxClassId, $taxes)
-    {
-        $otherRate = 0;
-        $status = $taxes->toArray()[0]['active'];
-        if ($status && (TaxProductRelation::where('product_id', $productid)
-            ->where('tax_class_id', $taxClassId)->count() > 0)) {
-            $otherRate = Tax::where('tax_classes_id', $taxClassId)->first()->rate;
-        }
-
-        $value = $otherRate.'%';
-
-        return $value;
-    }
 
     /**
      * @param type $id
@@ -335,7 +245,7 @@ class BaseCartController extends ExtendedBaseCartController
         try {
             $qty = 1;
             $agents = 0; //Unlmited Agents
-            $planid = $this->checkPlanSession() === true ? Session::get('plan') : Plan::where('product', $id)->pluck('id')->first(); //Get Plan id From Session
+            $planid = $this->checkPlanSession() ? Session::get('plan') : Plan::where('product', $id)->pluck('id')->first(); //Get Plan id From Session
             $product = Product::find($id);
             $plan = $product->planRelation->find($planid);
             if ($plan) { //If Plan For a Product exists
@@ -350,7 +260,7 @@ class BaseCartController extends ExtendedBaseCartController
             $actualPrice = $this->cost($product->id);
             // $taxConditions = $this->checkTax($id);
             $items = ['id'     => $id, 'name' => $product->name, 'price' => $actualPrice,
-                'quantity'    => $qty, 'attributes' => ['currency' => $currency, 'agents'=> $agents], ];
+                'quantity'    => $qty, 'attributes' => ['currency' => $currency['currency'], 'symbol'=>$currency['symbol'], 'agents'=> $agents], 'associatedModel' => $product];
 
             return $items;
         } catch (\Exception $e) {

@@ -120,7 +120,7 @@ class ProcessController extends Controller
     {
         try {
             $path = app_path().'/Plugins/Stripe/views';
-
+            $total = \Cart::getTotal();
             if (! $total) {
                 $total = $data['amount'];
             }

@@ -2,6 +2,8 @@
 
 use App\Model\Order\Order;
 use App\Model\Product\ProductUpload;
+use App\Model\Payment\TaxByState;
+use App\Http\Controllers\Front\CartController;
 use Carbon\Carbon;
 
 function getLocation()
@@ -122,7 +124,7 @@ function getDateHtml(string $dateTimeString = null)
         $date = getTimeInLoggedInUserTimeZone($dateTimeString, 'M j, Y');
         $dateTime = getTimeInLoggedInUserTimeZone($dateTimeString);
 
-        return "<label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='$dateTime'>$date</label>";
+        return "<label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='".$dateTime."'>".$date."</label>";
     } catch (Exception $e) {
         return '--';
     }
@@ -193,10 +195,16 @@ function getStatusLabel($status, $badge = 'badge')
 function currencyFormat($amount = null, $currency = null, $include_symbol = true)
 {
     if ($currency == 'INR') {
-        return getIndianCurrencyFormat($amount);
+        $symbol = getIndianCurrencySymbol($currency);
+        return $symbol.getIndianCurrencyFormat($amount);
     }
 
     return app('currency')->format($amount, $currency, $include_symbol);
+}
+
+function getIndianCurrencySymbol($currency)
+{
+    return \DB::table('format_currencies')->where('code',$currency)->value('symbol');
 }
 
 function getIndianCurrencyFormat($number)
@@ -232,4 +240,39 @@ function getIndianCurrencyFormat($number)
     } else {
         return $thecash;
     }
+}
+
+function bifurcateTax($taxName, $taxValue, $currency,  $state, $price ='')
+{
+    if(!$price) {
+        $price = Cart::getSubTotalWithoutConditions();
+        }
+    if(\Auth::user()->country == 'IN' ) {
+        $gst = TaxByState::where('state_code',$state)->select('c_gst','s_gst','ut_gst')->first();
+        if($taxName == 'CGST+SGST') {
+        $html = 'CGST@'.$gst->c_gst.'%<br>SGST@'.$gst->s_gst.'%';
+        
+        $cgst_value = currencyFormat(CartController::taxValue($gst->c_gst,$price),$currency);
+
+        $sgst_value = currencyFormat(CartController::taxValue($gst->s_gst,$price),$currency);
+        return ['html'=>$html, 'tax'=>$cgst_value.'<br>'.$sgst_value];
+        } elseif($taxName == 'CGST+UTGST') {
+        $html = 'CGST@'.$gst->c_gst.'%<br>UTGST@'.$gst->ut_gst.'%';
+       
+        $cgst_value = currencyFormat(CartController::taxValue($gst->c_gst,$price),$currency);
+        $utgst_value = currencyFormat(CartController::taxValue($gst->ut_gst,$price),$currency);
+        return ['html'=>$html, 'tax'=>$cgst_value.'<br>'.$utgst_value]; 
+        } else {
+        $html = $taxName.'@'. $taxValue;
+        $tax_value = currencyFormat(CartController::taxValue($taxValue,$price),$currency);
+         return ['html'=>$html, 'tax'=>$tax_value];
+    }
+       
+     
+    } else {
+        $html = $taxName.'@'. $taxValue;
+        $tax_value = currencyFormat(CartController::taxValue($taxValue,$price),$currency);
+         return ['html'=>$html, 'tax'=>$tax_value];
+    }
+    
 }

@@ -120,9 +120,9 @@ Invoice
                                         $orderForThisItem = $item->order()->first();
                                         @endphp
                                         @if($orderForThisItem)
-                                        <td> {!! getOrderLink($orderForThisItem->id) !!}
-                                       
-                                            @elseif($order)
+                                        <td> {!! getOrderLink($orderForThisItem->id) !!}</td>
+                                        
+                                            @elseif($order != '--')
                                             <td>{!! $order !!}</td>
                                             <span>Renewed</span>
                                             @else
@@ -133,24 +133,10 @@ Invoice
                                         <td>{{$item->quantity}}</td>
                                         <td>{{currencyFormat($item->regular_price,$code=$symbol)}}</td>
                                         <td>
-                                            <?php $taxes = explode(',', $item->tax_name); ?>
-                                            <ul class="list-unstyled">
-                                                @forelse($taxes as $tax)
-                                                <li>{{$tax}}</li>
-                                                @empty 
-                                                <li>No Tax</li>
-                                                @endif
-                                            </ul>
+                                           {{$item->tax_name}}
                                         </td>
                                         <td>
-                                            <?php $taxes = explode(',', $item->tax_percentage); ?>
-                                            <ul class="list-unstyled">
-                                                @forelse($taxes as $tax)
-                                                <li>{{$tax}}</li>
-                                                @empty 
-                                                <li>No Tax Rates</li>
-                                                @endif
-                                            </ul>
+                                            {{$item->tax_percentage}}
                                         </td>
                                      
                                         <td> {{currencyFormat($item->subtotal,$code=$symbol)}}</td>
@@ -170,106 +156,47 @@ Invoice
                             <p class="lead">Amount</p>
                             <div class="table-responsive">
                               
-                                          <?php
-                                $tax_name = [];
-                                $tax_percentage = [];
-                                foreach ($invoiceItems as $key => $item) {
-                                   
-                                    if (str_finish(',', $item->tax_name)) {
-                                        $name = ($item->tax_name);
                                        
-                                    }
-                                    if (str_finish(',', $item->tax_percentage)) {
-                                        $rate = substr_replace($item->tax_percentage, '', -1);
-                                        
-                                    }
-                                    $tax_name = explode(',', $name);
-                                    $tax_percentage = explode(',', $rate);
-                                }
-                                ?>
                                  <table class="table">
                                      <tr>
                                          <th style="width:50%">Subtotal:</th>
-                                         <td>{{currency_format($item->regular_price,$code=$symbol)}}</td>
+                                         <td>{{currencyFormat($item->regular_price,$code=$symbol)}}</td>
                                      </tr>
                                       @if($invoice->discount != null)
                                   <th>Discount</th>
                                     <td>{{currencyFormat($invoice->discount,$code=$symbol)}}</td>
                                 @endif
 
-                                @if($tax_name[0] !='null' && $tax_percentage[0] !=null)
-                                   <?php $productId =  App\Model\Product\Product::where('name',$item->product_name)->pluck('id')->first(); 
-                                   $taxInstance= new \App\Http\Controllers\Front\CartController();
-                                    $taxes= $taxInstance->checkTax($productId,$user->state,$user->country);
-                                     ?>
-                                   @if ($currency['currency'] == 'INR' && $user->country == 'IN' && $taxes['tax_attributes'][0]['name']!= 'null')
-                                    @if($set->state == $user->state)
-                                             <tr class="Taxes">
-                            <th>
-                                <strong>CGST<span>@</span>{{$taxes['tax_attributes'][0]['c_gst']}}%</strong><br/>
-                                <strong>SGST<span>@</span>{{$taxes['tax_attributes'][0]['s_gst']}}%</strong><br/>
-                               
-                            </th>
-                            <td>
-                                <?php
-                                $cgst = \App\Http\Controllers\Front\CartController::taxValue($taxes['tax_attributes'][0]['c_gst'],$item->regular_price);
-                                $sgst = \App\Http\Controllers\Front\CartController::taxValue($taxes['tax_attributes'][0]['s_gst'],$item->regular_price);
-                                ?>
-                                {{currencyFormat($cgst,$code=$symbol)}} <br/>
-                                {{currencyFormat($sgst,$code=$symbol)}}<br/>
-                             </td>
-                              </tr>
-                                    @endif
-                                      @if($set->state != $user->state && $taxes['tax_attributes'][0]['ut_gst'] == "NULL")
-                                      <tr>
-                                      <th>
-                                    <strong>IGST<span>@</span>{{$taxes['tax_attributes'][0]['i_gst']}}%</strong><br/>
-                                  
-                            </th>
-                            <td>
-                                <?php
-                                $igst =  \App\Http\Controllers\Front\CartController::taxValue($taxes['tax_attributes'][0]['i_gst'],$item->regular_price);
-                                ?>
-                                  {{currencyFormat($igst,$code=$symbol)}} <br/>
-                              
-                             </td>
-                         </tr>
-                                     @endif
-                                     <tr>
-                                     @if($set->state != $user->state && $taxes['tax_attributes'][0]['ut_gst'] != "NULL")
-                                     <th>
-                                 <strong>UTGST<span>@</span>{{$taxes['tax_attributes'][0]['ut_gst']}}%</strong><br/>
-                                 <strong>CGST<span>@</span>{{$taxes['tax_attributes'][0]['c_gst']}}%</strong><br/>
-
-                                  
-                            </th>
-                            <td>
-                                <?php
-                                $utgst = \App\Http\Controllers\Front\CartController::taxValue($taxes['tax_attributes'][0]['ut_gst'],$item->regular_price);
-                                $cgst = App\Http\Controllers\Front\CartController::taxValue($taxes['tax_attributes'][0]['c_gst'],$item->regular_price)
+                                 <?php
+                                    $order = \App\Model\Order\Order::where('invoice_item_id',$item->id)->first();
+                                    if($order != null) {
+                                        $productId = $order->product;
+                                    } else {
+                                        $productId =  App\Model\Product\Product::where('name',$item->product_name)->pluck('id')->first();
+                                    }
+                                    
                                     ?>
-                                {{currencyFormat($utgst,$code=$symbol)}} <br/>
-                                {{currencyFormat($cgst,$code=$symbol)}}
+                                     @if ($item->tax_name != 'null')
+                                            
+                                       
+                                            <tr>
+                                                 <?php
+                                                $bifurcateTax = bifurcateTax($item->tax_name,$item->tax_percentage,$user->currency, $user->state, $item->regular_price);
+                                                ?>
+                                                <th>
 
-                             </td>
-                         </tr>
-                                     @endif
-                                     @endif
-                                      
-                                        @if ($currency['currency'] != 'INR')
-                                     <tr>
-                                        <th>
-                                            <strong>{{ucfirst($tax_name[0])}}<span>@</span>{{$tax_percentage[0]}} </strong>
-                                        </th>
-                                        <td>
-                                            <?php
-                                            $value = \App\Http\Controllers\Front\CartController::taxValue($tax_percentage[0],$item->regular_price)
-                                            ?>
-                                             {{currencyFormat($value,$code=$symbol)}}
-                                        </td>
+                                                    <strong>{!! $bifurcateTax['html'] !!}</strong>
 
-                                    </tr>
-                                    @endif
+
+                                                </th>
+                                                <td>
+                                                   
+                                                    {!! $bifurcateTax['tax'] !!}
+
+                                                </td>
+                                            </tr>
+                                     
+                                       
                                     @endif
                                     <th>Total:</th>
                                     <td>{{currencyFormat($invoice->grand_total,$code=$symbol)}}</td>
@@ -293,6 +220,14 @@ Invoice
 
 </div>
     </div>
-
+<script>
+    $(document).ready(function(){
+         $(function () {
+          $('[data-toggle="tooltip"]').tooltip({
+            container : 'body'
+          });
+        });
+    })
+</script>
 
 @stop

@@ -9,7 +9,7 @@ class TaxOption extends BaseModel
 {
     use LogsActivity;
     protected $table = 'tax_rules';
-    protected $fillable = ['tax_enable', 'inclusive', 'shop_inclusive', 'cart_inclusive', 'rounding', 'Gst_no'];
+    protected $fillable = ['tax_enable', 'inclusive', 'shop_inclusive', 'cart_inclusive', 'rounding', 'Gst_no','cif_no'];
     protected static $logName = 'Tax Class';
     protected static $logAttributes = ['tax_enable', 'inclusive',
         'shop_inclusive', 'cart_inclusive', 'rounding', 'Gst_no', ];

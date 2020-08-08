@@ -5,11 +5,9 @@ namespace App\Http\Controllers\Front;
 use App\Model\Common\Country;
 use App\Model\Payment\Plan;
 use App\Model\Payment\Tax;
-use App\Model\Payment\TaxProductRelation;
 use App\Model\Product\Product;
 use Bugsnag;
 use Cart;
-use Exception;
 use Illuminate\Http\Request;
 use Session;
 
@@ -25,9 +23,6 @@ class BaseCartController extends ExtendedBaseCartController
 
         return $cartCollection;
     }
-
-
-
 
     /**
      * @param type $id
@@ -224,7 +219,7 @@ class BaseCartController extends ExtendedBaseCartController
             $actualPrice = $this->cost($product->id);
             // $taxConditions = $this->checkTax($id);
             $items = ['id'     => $id, 'name' => $product->name, 'price' => $actualPrice,
-                'quantity'    => $qty, 'attributes' => ['currency' => $currency['currency'], 'symbol'=>$currency['symbol'], 'agents'=> $agents], 'associatedModel' => $product];
+                'quantity'    => $qty, 'attributes' => ['currency' => $currency['currency'], 'symbol'=>$currency['symbol'], 'agents'=> $agents], 'associatedModel' => $product, ];
 
             return $items;
         } catch (\Exception $e) {

@@ -120,7 +120,7 @@ User
                     <div class="tab-content" id="vert-tabs-tabContent">
 
                          <div id="response"></div>
-                        <!-----------------------------Invoice detail tab starts here-------------------------------->
+                        <!--------------------Invoice detail tab starts here-------------------------------->
 
                         <div class="tab-pane text-left fade show active" id="activity" role="tabpanel" aria-labelledby="vert-tabs-home-tab">
                             <table id="invoice-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
@@ -199,7 +199,7 @@ User
                                     columnDefs: [
                                         {
                                             targets: 'no-sort',
-                                            orderable: true,
+                                            orderable: false,
                                             order: []
                                         }
                                     ],
@@ -271,7 +271,7 @@ User
 
 
 
-                                <!------------------------------- Customer detail Tab starts here  -------------------------------->
+                 <!---------------------- Customer detail Tab starts here  -------------------------------->
 
 
                         <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="vert-tabs-profile-tab">
@@ -369,7 +369,7 @@ User
                             </div>
 
 
-                            <!------------------------------------ Payment Detail tab-------------------------------------- -->
+                            <!---------------------- Payment Detail tab---------------------------------------->
                         <div class="tab-pane fade" id="timeline" role="tabpanel" aria-labelledby="vert-tabs-messages-tab">
                             <table id="payment-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
                                 <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_payment_delete"><i class= "fa fa-trash"></i>&nbsp;&nbsp;Delete Selected</button><br /><br />

@@ -309,34 +309,12 @@ Edit Product
                                     <td>
                                         <div class="form-group {{ $errors->has('taxes') ? 'has-error' : '' }}">
                                             <div class="row">
-                                                <?php
-                                                if (count($saved_taxes) > 0) {
-                                                    foreach ($saved_taxes as $tax) {
-                                                        $saved[$tax->tax_class_id] = 'true';
-                                                    }
-                                                } else {
-                                                    $saved=[];
-                                                }
-                                               
-                                                if (count($saved) > 0) {
-                                                    foreach ($saved as $key => $value) {
-                                                        $savedkey[]=$key;
-                                                    }
-                                                    $saved1=$savedkey?$savedkey:[];
-                                                } else {
-                                                    $saved1=[];
-                                                }
-                                                  
-                                        
-                                                ?>
                                                 
-                                                        
                                                 <div class="col-md-2">
                                                    <select id="editTax" placeholder="Select Taxes" name="tax[]" style="width:500px;" class="select2" multiple="true">
-                                                      
-                                                       @foreach($taxes as $taxkey => $taxvalue)
-                                                  
-                                                        <option value={{$taxkey}} <?php echo (in_array($taxkey, $savedTaxes)) ?  "selected" : "" ;  ?>>{{$taxvalue}}</option> 
+                                                    
+                                                       @foreach($taxes as $value)
+                                                        <option value={{$value['id']}} <?php echo (in_array($value['id'], $savedTaxes)) ?  "selected" : "" ;  ?>>{{$value['name'].'('.$value['tax'][0]['name'].')'}}</option> 
                                                         
                                                        @endforeach
                                                     </select>

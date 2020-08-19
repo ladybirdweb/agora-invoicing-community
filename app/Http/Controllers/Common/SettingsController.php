@@ -171,6 +171,7 @@ class SettingsController extends BaseSettingsController
             'website'         => 'required',
             'phone'           => 'required',
             'address'         => 'required',
+            'state'           => 'required',
             'country'         => 'required',
             'default_currency'=> 'required',
             'admin-logo'      => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',

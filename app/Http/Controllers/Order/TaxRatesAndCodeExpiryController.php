@@ -2,37 +2,32 @@
 
 namespace App\Http\Controllers\Order;
 
-use App\Http\Controllers\Front\CartController;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
 use App\Model\Order\Payment;
 use App\Model\Payment\Currency;
-use App\Model\Payment\Promotion;
-use App\Model\Payment\Tax;
-use App\Model\Payment\TaxOption;
 use App\User;
 use Bugsnag;
 
 class TaxRatesAndCodeExpiryController extends BaseInvoiceController
 {
-   
     /**
      * Get Grandtotal.
      **/
-    public function getGrandTotal($code, $total, $cost, $productid, $currency, $user_id='')
+    public function getGrandTotal($code, $total, $cost, $productid, $currency, $user_id = '')
     {
-        if(!$total) {
+        if (! $total) {
             return ['total'=>$total, 'code'=>'', 'value'=>'', 'mode'=>''];
         }
         if ($code) {
             $cont = new \App\Http\Controllers\Payment\PromotionController();
             $promo = $cont->getPromotionDetails($code);
             $total = $cont->findCostAfterDiscount($promo->id, $productid, $user_id);
+
             return ['total'=>$total, 'code'=>$promo->code, 'value'=>$promo->value, 'mode'=>'coupon'];
         } else {
             return ['total'=>$total, 'code'=>'', 'value'=>'', 'mode'=>''];
         }
-
     }
 
     /**
@@ -49,9 +44,6 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
 
         return $result;
     }
-
-
-
 
     public function checkExecution($invoiceid)
     {
@@ -215,5 +207,4 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
-
 }

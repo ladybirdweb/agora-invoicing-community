@@ -7,8 +7,8 @@ use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
 use App\Model\Payment\Promotion;
 use App\Model\Payment\Tax;
-use App\Model\Payment\TaxOption;
 use App\Model\Payment\TaxClass;
+use App\Model\Payment\TaxOption;
 use App\User;
 use Bugsnag;
 use Illuminate\Http\Request;
@@ -91,7 +91,6 @@ class BaseInvoiceController extends ExtendedBaseInvoiceController
         return ['taxes'=>$taxes, 'value'=>$value, 'rate'=>$rate];
     }
 
-
     public function getExpiryStatus($start, $end, $now)
     {
         $whenDateNotSet = $this->whenDateNotSet($start, $end);
@@ -111,7 +110,6 @@ class BaseInvoiceController extends ExtendedBaseInvoiceController
             return $whenBothAreSet;
         }
     }
-
 
     public function whenDateNotSet($start, $end)
     {

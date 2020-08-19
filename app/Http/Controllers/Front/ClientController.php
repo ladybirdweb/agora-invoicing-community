@@ -107,28 +107,28 @@ class ClientController extends BaseClientController
                                 return  currencyFormat($model->grand_total, $code = \Auth::user()->currency);
                             })
                             ->addColumn('paid', function ($model) {
-                             $payment = \App\Model\Order\Payment::where('invoice_id', $model->id)->select('amount')->get();
-                             $c = count($payment);
-                             $sum = 0;
+                                $payment = \App\Model\Order\Payment::where('invoice_id', $model->id)->select('amount')->get();
+                                $c = count($payment);
+                                $sum = 0;
 
-                             for ($i = 0; $i <= $c - 1; $i++) {
-                                 $sum = $sum + $payment[$i]->amount;
-                             }
+                                for ($i = 0; $i <= $c - 1; $i++) {
+                                    $sum = $sum + $payment[$i]->amount;
+                                }
 
-                             return currencyFormat($sum, $code = \Auth::user()->currency);
+                                return currencyFormat($sum, $code = \Auth::user()->currency);
                             })
                              ->addColumn('balance', function ($model) {
-                             $payment = \App\Model\Order\Payment::where('invoice_id', $model->id)->select('amount')->get();
-                             $c = count($payment);
-                             $sum = 0;
+                                 $payment = \App\Model\Order\Payment::where('invoice_id', $model->id)->select('amount')->get();
+                                 $c = count($payment);
+                                 $sum = 0;
 
-                             for ($i = 0; $i <= $c - 1; $i++) {
-                                 $sum = $sum + $payment[$i]->amount;
-                             }
-                             $pendingAmount = ($model->grand_total) - ($sum);
+                                 for ($i = 0; $i <= $c - 1; $i++) {
+                                     $sum = $sum + $payment[$i]->amount;
+                                 }
+                                 $pendingAmount = ($model->grand_total) - ($sum);
 
-                             return currencyFormat($pendingAmount, $code = \Auth::user()->currency);
-                            })
+                                 return currencyFormat($pendingAmount, $code = \Auth::user()->currency);
+                             })
                              ->addColumn('status', function ($model) {
                                  return  getStatusLabel($model->status, 'badge');
                              })

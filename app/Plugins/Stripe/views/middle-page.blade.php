@@ -40,21 +40,7 @@ input[type=number] {
              </div>
 
                 <div class="card-body">
-                    @if ($message = Session::get('success'))
-                    <div class="custom-alerts alert alert-success">
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
-                        {!! $message !!}
-                    </div>
-                    <?php Session::forget('success');?>
-                    @endif
-                    @if ($message = Session::get('error'))
-                    <div class="custom-alerts alert alert-danger">
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
-                        {!! $message !!}
-                    </div>
-                    <?php Session::forget('error');?>
-                    @endif
-                    <form method="POST" id="submit_total" action="{{ route('paywithstripe') }}" >
+                    <form method="POST" id="submit_total" action="{{ url('stripe') }}" >
                         @csrf
                         <div class="form-group row">
                             <div class="col-md-12">
@@ -104,7 +90,6 @@ input[type=number] {
                                 @enderror
                             </div>
                         </div>
-
                         <div class="form-group row mb-0">
                             <div class="col-md-12">
                                 <button type="submit" id="pay_now" class="btn btn-primary btn-block">

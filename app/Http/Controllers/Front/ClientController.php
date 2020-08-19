@@ -106,6 +106,29 @@ class ClientController extends BaseClientController
                             ->addColumn('total', function ($model) {
                                 return  currencyFormat($model->grand_total, $code = \Auth::user()->currency);
                             })
+                            ->addColumn('paid', function ($model) {
+                             $payment = \App\Model\Order\Payment::where('invoice_id', $model->id)->select('amount')->get();
+                             $c = count($payment);
+                             $sum = 0;
+
+                             for ($i = 0; $i <= $c - 1; $i++) {
+                                 $sum = $sum + $payment[$i]->amount;
+                             }
+
+                             return currencyFormat($sum, $code = \Auth::user()->currency);
+                            })
+                             ->addColumn('balance', function ($model) {
+                             $payment = \App\Model\Order\Payment::where('invoice_id', $model->id)->select('amount')->get();
+                             $c = count($payment);
+                             $sum = 0;
+
+                             for ($i = 0; $i <= $c - 1; $i++) {
+                                 $sum = $sum + $payment[$i]->amount;
+                             }
+                             $pendingAmount = ($model->grand_total) - ($sum);
+
+                             return currencyFormat($pendingAmount, $code = \Auth::user()->currency);
+                            })
                              ->addColumn('status', function ($model) {
                                  return  getStatusLabel($model->status, 'badge');
                              })
@@ -127,6 +150,27 @@ class ClientController extends BaseClientController
         } catch (Exception $ex) {
             Bugsnag::notifyException($ex);
             echo $ex->getMessage();
+        }
+    }
+
+    public function getInvoice($id)
+    {
+        try {
+            $invoice = $this->invoice->findOrFail($id);
+            $user = \Auth::user();
+            if ($invoice->user_id != $user->id) {
+                throw new \Exception('Cannot view invoice. Invalid modification of data.');
+            }
+            $items = $invoice->invoiceItem()->get();
+            $order = getOrderLink($invoice->orderRelation()->value('order_id'), 'my-order');
+            $currency = CartController::currency($user->id);
+            $symbol = $currency['symbol'];
+
+            return view('themes.default1.front.clients.show-invoice', compact('invoice', 'items', 'user', 'currency', 'symbol', 'order'));
+        } catch (Exception $ex) {
+            Bugsnag::notifyException($ex);
+
+            return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 

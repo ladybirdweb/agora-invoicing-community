@@ -202,8 +202,6 @@ class PromotionTypeTableSeeder extends Seeder
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         PromotionType::create(['id' => 1, 'name' => 'Percentage']);
         PromotionType::create(['id' => 2, 'name' => 'Fixed Amount']);
-        PromotionType::create(['id' => 3, 'name' => 'Price Override']);
-        PromotionType::create(['id' => 4, 'name' => 'Free Setup']);
     }
 }
 

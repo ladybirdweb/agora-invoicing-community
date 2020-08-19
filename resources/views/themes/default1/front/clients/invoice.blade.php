@@ -28,6 +28,8 @@ active
                             <th>Date</th>
                             <th>Order No</th>
                             <th>Total</th>
+                            <th>Paid</th>
+                            <th>Balance</th>
                             <th>Status</th>
                             <th>Action</th>
                         </tr></thead>
@@ -67,6 +69,8 @@ active
                 {data: 'date', name: 'date'},
                 {data: 'orderNo', name: 'orderNo'},
                 {data: 'total', name: 'total'},
+                {data: 'paid', name: 'paid'},
+                {data: 'balance', name: 'balance'},
                 {data: 'status', name: 'status'},
                 {data: 'Action', name: 'Action'}
             ],

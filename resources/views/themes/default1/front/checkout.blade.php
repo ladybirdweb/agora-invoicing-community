@@ -19,12 +19,14 @@ Checkout
 @section('main-class') "main shop" @stop
 @section('content')
 @if (!\Cart::isEmpty())
-
+<?php
+$cartSubtotalWithoutCondition = 0;
+?>
 <div class="container">
 <div class="row">
 
     <div class="col-lg-8">
-         <div class="card card-default" style="margin-bottom: 40px;">
+         <div class="card card-default">
              <div class="card-header">
                  <h4 class="card-title m-0">
                      Review Your Order
@@ -58,6 +60,10 @@ Checkout
                         </thead>
                         <tbody>
                             @forelse($content as $item)
+
+                            @php
+                            $cartSubtotalWithoutCondition += $item->getPriceSum();
+                            @endphp
                             <tr class="cart_table_item">
 
                                 <td class="product-thumbnail">
@@ -84,7 +90,7 @@ Checkout
 
                                 <td class="product-subtotal">
                                     <span class="amount">
-                                     {{currencyFormat($item->getPriceSum(),$code = $item->attributes->currency)}}
+                                     {{currencyFormat($item->price,$code = $item->attributes->currency)}}
                                 </td>
                             </tr>
                             @empty
@@ -103,16 +109,14 @@ Checkout
                 <h4 class="heading-primary">Payment</h4>
 
 
-                {!! Form::open(['url'=>'checkout','method'=>'post','id' => 'checkoutsubmitform' ]) !!}
+                {!! Form::open(['url'=>'checkout-and-pay','method'=>'post','id' => 'checkoutsubmitform' ]) !!}
 
                 @if(Cart::getTotal()>0)
 
                  <?php
                 $gateways = \App\Http\Controllers\Common\SettingsController::checkPaymentGateway($item->attributes['currency']);
-                // $total = Cart::getSubTotal();
                 $rzpstatus = \App\Model\Common\StatusSetting::first()->value('rzp_status');
 
-                  //
                 ?>
                 @if($gateways)
                 <div class="row">
@@ -174,15 +178,30 @@ Checkout
 
                         <span class="amount">
 
-                                {{currencyFormat(Cart::getSubTotalWithoutConditions(),$code = $item->attributes->currency)}}
+                                {{currencyFormat($cartSubtotalWithoutCondition,$code = $item->attributes->currency)}}
+                            </span>
                       
 
                     </td>
                 </tr>
-                @if($taxConditions->getName() != 'null')
+                @if(Session::has('code'))
+                  <tr class="cart-subtotal">
+
+                    <th>
+                        <strong>Discount</strong>
+                    </th>
+                    <td>
+                         {{currencyFormat(\Session::get('codevalue'),$code = $item->attributes->currency)}}
+                    </td>
+                </tr>
+                @endif
+                @if(count(\Cart::getConditionsByType('tax')) == 1)
+                @foreach(\Cart::getConditions() as $tax)
+
+                 @if($tax->getName()!= 'null')
                 <tr class="Taxes">
                     <?php
-                    $bifurcateTax = bifurcateTax($taxConditions->getName(),$taxConditions->getValue(),$item->attributes->currency, \Auth::user()->state);
+                    $bifurcateTax = bifurcateTax($tax->getName(),$tax->getValue(),$item->attributes->currency, \Auth::user()->state, \Cart::getContent()->sum('price'));
                     ?>
                    <th>
                         
@@ -196,7 +215,30 @@ Checkout
                    
                 </tr>
                 @endif
-               
+                @endforeach
+
+                @else
+                @foreach(Cart::getContent() as $tax)
+                @if($tax->conditions->getName() != 'null')
+                <tr class="Taxes">
+                    <?php
+                    $bifurcateTax = bifurcateTax($tax->conditions->getName(),$tax->conditions->getValue(),$item->attributes->currency, \Auth::user()->state, $tax->price*$tax->quantity);
+                    ?>
+                   <th>
+                        
+                        <strong>{!! $bifurcateTax['html'] !!}</strong><br/>
+
+                    </th>
+                    <td>
+                     {!! $bifurcateTax['tax'] !!}
+                  </td>
+                  
+                   
+                </tr>
+                @endif
+                
+                @endforeach
+               @endif
                 <tr class="total">
                     <th>
                         <strong>Order Total</strong>
@@ -204,12 +246,8 @@ Checkout
                     <td>
                         <strong class="text-dark">
                             <span class="amount">
-                                <?php
-                                    Cart::removeCartCondition('Processing fee');
-                                    $total = \App\Http\Controllers\Front\CartController::rounding(Cart::getTotal());
-                                ?>
-                                  <div id="total-price" value={{$total}} hidden></div>
-                                  <div>{{currencyFormat($total,$code = $item->attributes->currency)}} </div>
+                                    {{Cart::removeCartCondition('Processing fee')}}
+                                  <div>{{currencyFormat(\Cart::getTotal(),$code = $item->attributes->currency)}} </div>
                             </span>
                         </strong>
 
@@ -217,7 +255,15 @@ Checkout
                 </tr>
             </tbody>
         </table>
+        {!! Form::open(['url'=>'pricing/update','method'=>'post']) !!}
+            <div class="input-group" style="margin-top: 10px">
+                <input type="text" name="coupon" class="form-control input-lg" placeholder="{{Lang::get('message.coupon-code')}}">
+                &nbsp;&nbsp;
+                <input type="submit" value="Apply" class="btn btn-primary">
+            </div>
+        {!! Form::close() !!}
     </div>
+
 </div>
 </div>
 @elseif (\Cart::isEmpty())

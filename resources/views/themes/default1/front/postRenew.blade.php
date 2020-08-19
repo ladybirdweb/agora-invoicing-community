@@ -20,9 +20,8 @@
 @section('main-class') "main shop" @stop
 @section('content')
 <?php
+ $taxAmt = 0;
 
-$cartSubtotalWithoutCondition = 0;
- 
 use Razorpay\Api\Api;
  $merchant_orderid= generateMerchantRandomString();  
 
@@ -46,7 +45,7 @@ $exchangeRate= '';
 
 $orderData = [
 'receipt'         => 3456,
-'amount'          => round($invoice->grand_total*100), // 2000 rupees in paise
+'amount'          => round($totalPaid*100), // 2000 rupees in paise
 
 'currency'        => 'INR',
 'payment_capture' => 0 // auto capture
@@ -61,7 +60,7 @@ $orderData = [
 
  $exchangeRate = $exchange->quotes->USDINR;
  // dd($exchangeRate);
- $displayAmount =$exchangeRate * $invoice->grand_total ;
+ $displayAmount =$exchangeRate * $totalPaid ;
 
 
  $orderData = [
@@ -102,7 +101,7 @@ $data = [
     "City"              => \Auth::user()->town,
     "Zip"               => \Auth::user()->zip,
     "Currency"          => \Auth::user()->currency,
-    "Amount Paid"   => $invoice->grand_total,
+    "Amount Paid"   => $totalPaid,
     "Exchange Rate"   =>  $exchangeRate,
 
 
@@ -118,7 +117,7 @@ $data = [
 if ($displayCurrency !== 'INR')
 {
     $data['display_currency']  = 'USD';
-    $data['display_amount']    =$invoice->grand_total;
+    $data['display_amount']    =$totalPaid;
     
 }
 $json = json_encode($data);
@@ -175,28 +174,31 @@ $json = json_encode($data);
                             </tr>
                         </thead>
                         <tbody>
-                             @forelse(Cart::getContent() as $item)
-                               @php
-                            $cartSubtotalWithoutCondition += $item->getPriceSum();
+                             @forelse($items as $item)
+                            @php
+                            $taxName[] =  $item->tax_name.'@'.$item->tax_percentage;
+                            if ($item->tax_name != 'null') {
+                                $taxAmt +=  $item->subtotal;
+                             }
                             @endphp
                             <tr class="cart_table_item">
 
                                 <td class="product-thumbnail">
                                     
-                                    <img width="100" height="100" alt="" class="img-responsive" src="{{$item->associatedModel->image}}">
+                                    <img width="100" height="100" alt="" class="img-responsive" src="{{$product->image}}">
 
                                 </td>
 
                                 <td class="product-name">
-                                    {{$item->name}}
+                                    {{$item->product_name}}
                                 </td>
                                 <td class="product-invoice">
                                     <a href="{{url('my-invoice/'.$invoice->id)}}" target="_blank">{{$invoice->number}}</a>
                                 </td>
                                 <td class="product-version">
-                                    @if($item->associatedModel->version)
-                                    {{$item->associatedModel->version}}
-                                    @else
+                                     @if($product->version)
+                                    {{$product->version}}
+                                    @else 
                                     Not available
                                     @endif
                                 </td>
@@ -206,7 +208,7 @@ $json = json_encode($data);
                                     {{$item->quantity}}
                                 </td>
                                 <td class="product-total">
-                                    <span class="amount">{{currencyFormat($item->price,$code = $item->attributes->currency)}}</span>
+                                    <span class="amount">{{currencyFormat($item->regular_price,$code = $currency)}}</span>
                                 </td>
                             </tr>
                             @empty 
@@ -229,14 +231,21 @@ $json = json_encode($data);
         <table class="cart-totals">
             <tbody>
                 <tr class="cart-subtotal">
-                  
+                    <?php 
+                    $subtotals = App\Model\Order\InvoiceItem::where('invoice_id',$invoice->id)->pluck('regular_price')->toArray();
+                    $subtotal = array_sum($subtotals);
+                    ?>
                     <th>
                         <strong>Cart Subtotal</strong>
                     </th>
                     <td>
-                        <span class="amount">{{currencyFormat($cartSubtotalWithoutCondition,$code = $currency)}}</span>
+                        <span class="amount">{{currencyFormat($subtotal,$code = $currency)}}</span>
                     </td>
                 </tr>
+                 @php
+                $taxName = array_unique($taxName);
+                @endphp
+
                  @if(Session::has('code'))
                   <tr class="cart-subtotal">
 
@@ -248,60 +257,65 @@ $json = json_encode($data);
                     </td>
                 </tr>
                 @endif
+
+                 @foreach($taxName as $tax)
+                  @php
+                  $taxDetails = explode('@', $tax);
+                  @endphp
                
-                @if(count(\Cart::getConditionsByType('tax')) == 1)
-                @foreach(\Cart::getConditionsByType('tax') as $tax)
+                @if ($taxDetails[0]!= 'null')
+                                            
+                                       
+                    <tr>
+                         <?php
+                        $bifurcateTax = bifurcateTax($taxDetails[0],$taxDetails[1],\Auth::user()->currency, \Auth::user()->state, $taxAmt);
+                        ?>
+                        <th>
+
+                            <strong>{!! $bifurcateTax['html'] !!}</strong>
 
 
+                        </th>
+                        <td>
+                           
+                            {!! $bifurcateTax['tax'] !!}
 
-                 @if($tax->getName()!= 'null')
-                <tr class="Taxes">
-                    <?php
-                    $bifurcateTax = bifurcateTax($tax->getName(),$tax->getValue(),$item->attributes->currency, \Auth::user()->state, \Cart::getContent()->sum('price'));
-                    ?>
-                   <th>
-                        
-                        <strong>{!! $bifurcateTax['html'] !!}</strong><br/>
+                        </td>
+                    </tr>
+             
+               
+                    @endif
+                    @endforeach
 
+                @if($paid)
+
+                    <tr class="total">
+                    <th>
+                        <strong>Paid</strong>
                     </th>
                     <td>
-                     {!! $bifurcateTax['tax'] !!}
-                  </td>
-                  
-                   
+
+                        {{currencyFormat($paid,$code = $currency)}}
+                    </td>
                 </tr>
-                @endif
-                @endforeach
 
-                @else
-                @foreach(Cart::getContent() as $tax)
-                @if($tax->conditions->getName() != 'null')
-                <tr class="Taxes">
-                    <?php
-                    $bifurcateTax = bifurcateTax($tax->conditions->getName(),$tax->conditions->getValue(),$item->attributes->currency, \Auth::user()->state, $tax->price*$tax->quantity);
-                    ?>
-                   <th>
-                        
-                        <strong>{!! $bifurcateTax['html'] !!}</strong><br/>
-
+                <tr class="total">
+                    <th>
+                        <strong>Balance</strong>
                     </th>
                     <td>
-                     {!! $bifurcateTax['tax'] !!}
-                  </td>
-                  
-                   
+
+                        {{currencyFormat($totalPaid,$code = $currency)}}
+                    </td>
                 </tr>
                 @endif
-                
-                @endforeach
-               @endif
                      
                 <tr class="total">
                     <th>
                         <strong>Order Total</strong>
                     </th>
                     <td>
-                    <strong><span class="amount">{{currencyFormat(\Cart::getTotal(),$code = $item->attributes->currency)}} </span></strong>
+                    <strong><span class="amount">{{currencyFormat($totalPaid,$code = $currency)}} </span></strong>
 
 
                     </td>

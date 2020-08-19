@@ -16,19 +16,18 @@ class ProcessController extends Controller
         $this->stripe = $stripe;
     }
 
-
     public function PassToPayment($requests)
     {
         try {
             $request = $requests['request'];
             $invoice = $requests['invoice'];
             $cart = \Cart::getContent();
-            if (!$cart->count() ) {
+            if (! $cart->count()) {
                 \Cart::clear();
-            }  else {
-                 $invoice->grand_total = intval(\Cart::getTotal());
+            } else {
+                $invoice->grand_total = intval(\Cart::getTotal());
             }
-                if ($request->input('payment_gateway') == 'Stripe') {
+            if ($request->input('payment_gateway') == 'Stripe') {
                 if (! \Schema::hasTable('stripe')) {
                     throw new \Exception('Stripe is not configured');
                 }
@@ -45,7 +44,6 @@ class ProcessController extends Controller
         }
     }
 
-
     public function middlePage()
     {
         try {
@@ -58,7 +56,7 @@ class ProcessController extends Controller
             \View::addNamespace('plugins', $path);
             echo view('plugins::middle-page', compact('total'));
         } catch (\Exception $ex) {
-             throw new \Exception($ex->getMessage());
+            throw new \Exception($ex->getMessage());
         }
     }
 

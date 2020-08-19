@@ -224,6 +224,7 @@ class BaseClientController extends Controller
     }
 
 
+
     public function getInvoice($id)
     {
         try {

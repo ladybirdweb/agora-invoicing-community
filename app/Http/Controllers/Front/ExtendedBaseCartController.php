@@ -3,16 +3,11 @@
 namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
-use App\Model\Payment\Plan;
-use App\Model\Product\Product;
-use Bugsnag;
 use Cart;
 use Session;
 
 class ExtendedBaseCartController extends Controller
 {
-    
-
     /**
      * @return type
      */
@@ -89,8 +84,6 @@ class ExtendedBaseCartController extends Controller
             throw new \Exception($ex->getMessage());
         }
     }
-
-
 
     public function getGeoipCountry($country_iso, $user_country = '')
     {

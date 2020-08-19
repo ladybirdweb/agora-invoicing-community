@@ -3,10 +3,6 @@
 namespace App\Traits;
 
 use App\Model\Order\Invoice;
-use App\Model\Payment\Plan;
-use App\Model\Payment\PlanPrice;
-use App\Model\Payment\Promotion;
-use App\Model\Product\Product;
 use Bugsnag;
 use Illuminate\Http\Request;
 
@@ -16,7 +12,6 @@ use Illuminate\Http\Request;
 
 trait CoupCodeAndInvoiceSearch
 {
-
     public function advanceSearch($name = '', $invoice_no = '', $currency = '', $status = '', $from = '', $till = '')
     {
         $join = Invoice::leftJoin('users', 'invoices.user_id', '=', 'users.id');
@@ -136,7 +131,7 @@ trait CoupCodeAndInvoiceSearch
             $invoice = Invoice::find($invoiceid);
             $processingFee = '';
             foreach (\Cart::getConditionsByType('fee') as $processFee) {
-               $processingFee = $processFee->getValue();
+                $processingFee = $processFee->getValue();
             }
             $invoice_status = 'pending';
 

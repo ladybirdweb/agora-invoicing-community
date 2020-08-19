@@ -125,6 +125,9 @@ use Illuminate\Http\Request;
         {
             try {
                 $invoice = $this->invoice->findOrFail($invoiceid);
+                 foreach (\Cart::getConditionsByType('fee') as $value) {
+               $invoice->processing_fee = $value->getValue();
+            }
                 $payment = $this->payment->where('invoice_id', $invoiceid)
             ->where('payment_status', 'success')->pluck('amount')->toArray();
                 $total = array_sum($payment);
@@ -152,6 +155,11 @@ use Illuminate\Http\Request;
         public function postRazorpayPayment($invoice)
         {
             try {
+                $totalPayment = $invoice->grand_total;
+                if(count($invoice->payment()->get())) {//If partial payment is made
+                $paid = array_sum($invoice->payment()->pluck('amount')->toArray());
+                $totalPayment= $invoice->grand_total - $paid ;
+                }
                 $payment_method = \Session::get('payment_method');
                 $payment_status = 'success';
                 $payment_date = \Carbon\Carbon::now()->toDateTimeString();
@@ -160,7 +168,7 @@ use Illuminate\Http\Request;
                 $payment_method,
                 $payment_status,
                 $payment_date,
-                $invoice->grand_total
+                $totalPayment
             );
 
                 return redirect()->back()->with('success', 'Payment Accepted Successfully');

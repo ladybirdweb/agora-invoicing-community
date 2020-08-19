@@ -20,7 +20,9 @@ Cart
 @section('main-class') "main shop" @stop
 @section('content')
 
-
+<?php
+$cartTotal = 0;
+?>
 <div class="row">
     <div class="col-md-12">
 
@@ -36,10 +38,17 @@ Cart
                            <div class="featured-box featured-box-primary align-left mt-sm">
 
                                 <div class="box-content">
-
                                         <table class="shop_table cart">
                                         @forelse($cartCollection as $item)
-                                          <?php
+                                          @php
+                                          Cart::clearItemConditions($item->id);
+                                          \Session::forget('code');
+                                          \Session::forget('usage');
+                                          $cartcont = new \App\Http\Controllers\Front\CartController();
+                                           \Cart::update($item->id, [
+                                            'price'      => $cartcont->planCost($item->id, \Auth::user()->id),
+                                          ]);
+                                          $cartTotal += $item->getPriceSum();; 
                                             $domain = [];
 
                                             if ($item->associatedModel->require_domain) {
@@ -50,7 +59,7 @@ Cart
                                             $cont = new \App\Http\Controllers\Product\ProductController();
                                             $isAgentAllowed = $cont->allowQuantityOrAgent($item->id);
                                             $isAllowedtoEdit = $cont->isAllowedtoEdit($item->id);
-                                            ?>
+                                            @endphp
 
                                             <thead>
 
@@ -68,7 +77,7 @@ Cart
                                                     <th class="product-price">
                                                         Price
                                                     </th>
-                                                    @if( $isAgentAllowed ==false)
+                                                    @if(!$isAgentAllowed)
                                                     <th class="product-quantity">
                                                         Quantity
                                                     </th>
@@ -192,7 +201,7 @@ Cart
 
 
                                             <strong><span class="amount"><small>&nbsp;</small> 
-                                                {{currencyFormat(Cart::getSubTotalWithoutConditions(), $item->attributes->currency)}}
+                                                {{currencyFormat($cartTotal, $item->attributes->currency)}}
                                            </span></strong>
 
 
@@ -205,14 +214,7 @@ Cart
 
                                 </tbody>
                             </table>
-
-                            {!! Form::open(['url'=>'pricing/update','method'=>'post']) !!}
-                                <div class="input-group" style="margin-top: 10px">
-                                    <input type="text" name="coupon" class="form-control input-lg" placeholder="{{Lang::get('message.coupon-code')}}">
-                                    &nbsp;&nbsp;
-                                    <input type="submit" value="Apply" class="btn btn-primary">
-                                </div>
-                            {!! Form::close() !!}
+                           
                             </div>
                         </div>
                          <!-- </div> -->

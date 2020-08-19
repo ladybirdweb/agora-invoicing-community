@@ -30,11 +30,9 @@ Invoice
             <div class="col-12">
 
                 <?php $set = App\Model\Common\Setting::where('id', '1')->first(); 
-                 $gst =  App\Model\Payment\TaxOption::where('id', '1')->first(); 
                 $date = getDateHtml($invoice->date);
-                $logo = \App\Model\Common\Setting::where('id', 1)->value('logo');
                  $symbol = $invoice->currency;
-            
+                $itemsSubtotal = 0;
                 ?>
 
                     <!-- title row -->
@@ -42,8 +40,8 @@ Invoice
                     <div class="row">
                         <div class="col-12">
                             <h4>
-                                @if($logo)
-                                    <img alt="Logo" width="100" height="50" src="{{asset('common/images/'.$logo)}}" style="margin-top: -2px">
+                                @if($set->logo)
+                                    <img alt="Logo" width="100" height="50" src="{{asset('common/images/'.$set->logo)}}" style="margin-top: -2px">
                                     @else
                                     {{ucfirst($set->company)}}
                                 @endif
@@ -89,10 +87,15 @@ Invoice
                             <b>Order:</b>   #{!! $order !!}
                             <br>
 
-
-                            <b>GSTIN:</b>  &nbsp; #{{$gst->Gst_No}}
+                            @if($set->gstin)
+                            <b>GSTIN:</b>  &nbsp; #{{$set->gstin}}
                             <br>
+                            @endif
 
+                            @if($set->cin_no)
+                            <b>CIN:</b>  &nbsp; #{{$set->cin_no}}
+                            <br>
+                            @endif
 
                         </div><!-- /.col -->
                     </div><!-- /.row -->
@@ -105,11 +108,9 @@ Invoice
                                     <tr>
                                         <th>Order No</th>
                                         <th>Product</th>
-                                        <th>Quantity</th>
                                         <th>Price</th>
-                                        <th>Taxes</th>
-                                        <th>Tax Rates</th>
-                                        <th>Total</th>
+                                        <th>Quantity</th>
+                                        <th>Subtotal</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -118,6 +119,7 @@ Invoice
                                     <tr>
                                         @php
                                         $orderForThisItem = $item->order()->first();
+                                        $itemsSubtotal += $item->subtotal;
                                         @endphp
                                         @if($orderForThisItem)
                                         <td> {!! getOrderLink($orderForThisItem->id) !!}</td>
@@ -130,16 +132,10 @@ Invoice
                                            
                                         @endif
                                         <td>{{$item->product_name}}</td>
+                                         <td>{{currencyFormat($item->regular_price,$code=$symbol)}}</td>
                                         <td>{{$item->quantity}}</td>
-                                        <td>{{currencyFormat($item->regular_price,$code=$symbol)}}</td>
-                                        <td>
-                                           {{$item->tax_name}}
-                                        </td>
-                                        <td>
-                                            {{$item->tax_percentage}}
-                                        </td>
-                                     
-                                        <td> {{currencyFormat($item->subtotal,$code=$symbol)}}</td>
+                                       
+                                       <td> {{currencyFormat($item->subtotal,$code=$symbol)}}</td>
                                     </tr>
                                     @endforeach
                                 </tbody>
@@ -153,14 +149,13 @@ Invoice
 
                         </div>
                         <div class="col-6">
-                            <p class="lead">Amount</p>
                             <div class="table-responsive">
                               
                                        
                                  <table class="table">
                                      <tr>
-                                         <th style="width:50%">Subtotal:</th>
-                                         <td>{{currencyFormat($item->regular_price,$code=$symbol)}}</td>
+                                         <th>Subtotal:</th>
+                                         <td>{{currencyFormat($itemsSubtotal,$code=$symbol)}}</td>
                                      </tr>
                                       @if($invoice->discount != null)
                                   <th>Discount</th>
@@ -181,7 +176,7 @@ Invoice
                                        
                                             <tr>
                                                  <?php
-                                                $bifurcateTax = bifurcateTax($item->tax_name,$item->tax_percentage,$user->currency, $user->state, $item->regular_price);
+                                                $bifurcateTax = bifurcateTax($item->tax_name,$item->tax_percentage,$user->currency, $user->state, $item->subtotal);
                                                 ?>
                                                 <th>
 

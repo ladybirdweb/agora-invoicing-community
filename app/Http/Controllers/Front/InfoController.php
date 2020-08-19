@@ -27,17 +27,7 @@ class InfoController extends Controller
         return $states;
     }
 
-    /**
-     * Get The Date.
-     */
-    public function getDate($invoice)
-    {
-        $date1 = new DateTime($invoice->date);
-        $date1->setTimezone(new DateTimeZone(\Auth::user()->timezone()->first()->name));
-        $date = $date1->format('M j, Y, g:i a ');
 
-        return $date;
-    }
 
     public function payment($payment_method, $status)
     {

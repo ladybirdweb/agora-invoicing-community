@@ -144,8 +144,7 @@ Edit Tax
         </div>
 
     </div>
-    
-<input type="hidden" value="{{$tax['country']}}" id="hiddenvalue">
+<input type="hidden" value="{{$tax->country}}" id="hiddenvalue">
 </div>
 
 <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" />
@@ -200,7 +199,8 @@ Edit Tax
 
      $(document).ready(function(){
          var initial=$('#hiddenvalue').val();
-         var taxValue=$('#editTax').val();
+         var initialState = $('#state-list').val();
+          var taxValue=$('#editTax').val();
          
          if (taxValue == 'Inter State GST' || taxValue == 'Intra State GST' || taxValue == 'Union Territory GST') {
              $('.country').attr('disabled', true)
@@ -219,7 +219,7 @@ Edit Tax
 
   
 
-if (initial == 'IN'){
+if (initial == 'IN' && initialState == ''){
 $(document).find('.changegststate').hide();
         $(document).find('.changegstrate').hide();
 

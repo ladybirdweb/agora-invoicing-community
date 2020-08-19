@@ -78,9 +78,9 @@ Tax
                                  <!-- <input id="toggle-event" type="checkbox" data-toggle="toggle" name="tax_enable"> -->
                                 <div class="btn-group btn-group-toggle"  data-toggle="buttons" >
                                     <label class="btn btn-default btn-on-1 btn-sm ">
-                                    <input type="radio" id="chkYes" value="1" name="tax_enable" onchange="getTaxValue(this)">ENABLED</label>
+                                    <input type="radio" id="chkYes" value="1" name="tax_enable" >ENABLED</label>
                                     <label class="btn btn-default btn-off-1 btn-sm  ">
-                                    <input type="radio" id="chkNo" value="0" name="tax_enable" onchange="getTaxValue(this)">DISABLED</label>
+                                    <input type="radio" id="chkNo" value="0" name="tax_enable" >DISABLED</label>
                                     <span class="slider"></span>
                                   </div>
                                     
@@ -88,30 +88,6 @@ Tax
                                
                             </td>
                         
-
-                        <tr class="form-group gstshow hide">
-                              
-                                 <td>
-                                    {!! Form::label('GSTIN',Lang::get('GSTIN')) !!}
-                                </td>
-
-                                 <td>
-                                     <input type='text' name="Gst_no"  class="form-control col-md-6" value="{{$options->Gst_No}}" id="gstin">
-                                 </td>
-                          
-                        </tr>
-
-                         <tr class="form-group cifshow hide">
-                              
-                                 <td>
-                                    {!! Form::label('CIF',Lang::get('CIF')) !!}
-                                </td>
-
-                                 <td>
-                                     <input type='text' name="cif_no"  class="form-control col-md-6" value="{{$options->cif_no}}">
-                                 </td>
-                          
-                        </tr>
 
                         <tr>
                             <td>
@@ -234,17 +210,7 @@ $('.btn-off-3').addClass('active');
 
 
 
-   function getTaxValue(x){
-        if($(x).val()==1){
-              $('.gstshow').show();
-              $('.cifshow').show();
-        }
-        else{
-               $('.gstshow').hide();
-                $('.cifshow').hide();
-                $('#gstin').val('');
-        }
-   }
+   
      // $('#chkYes').click
 
 

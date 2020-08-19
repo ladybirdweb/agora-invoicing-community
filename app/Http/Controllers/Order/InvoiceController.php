@@ -268,7 +268,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $rule = $tax_rule->findOrFail(1);
             $rounding = $rule->rounding;
             $user_id = \Auth::user()->id;
-            
+
             $grand_total = \Cart::getTotal();
             $number = rand(11111111, 99999999);
             $date = \Carbon\Carbon::now();
@@ -374,17 +374,17 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $cost = $controller->cost($productid, $user_id, $plan);
             $couponTotal = $this->getGrandTotal($code, $total, $cost, $productid, $currency, $user_id);
             $grandTotalAfterCoupon = $qty * $couponTotal['total'];
-            if (!$grandTotalAfterCoupon) {
+            if (! $grandTotalAfterCoupon) {
                 $status = 'success';
             }
             $user = User::where('id', $user_id)->select('state', 'country')->first();
             $tax = $this->calculateTax($product->id, $user->state, $user->country, true);
             $grand_total = CartController::rounding($this->calculateTotal($tax['value'], $grandTotalAfterCoupon));
             $invoice = Invoice::create(['user_id' => $user_id, 'number' => $number, 'date' => $date,
-            'coupon_code'  => $couponTotal['code'], 'discount'=>$couponTotal['value'], 'discount_mode'  => $couponTotal['mode'],'grand_total'  => $grand_total,  'currency'  => $currency, 'status' => $status, 'description' => $description, ]);
+                'coupon_code'  => $couponTotal['code'], 'discount'=>$couponTotal['value'], 'discount_mode'  => $couponTotal['mode'], 'grand_total'  => $grand_total,  'currency'  => $currency, 'status' => $status, 'description' => $description, ]);
 
             $items = $this->createInvoiceItemsByAdmin($invoice->id, $productid,
-              $total, $currency, $qty, $agents, $plan, $user_id, $tax['name'], $tax['value'],$grandTotalAfterCoupon);
+              $total, $currency, $qty, $agents, $plan, $user_id, $tax['name'], $tax['value'], $grandTotalAfterCoupon);
             $result = $this->getMessage($items, $user_id);
 
             return successResponse($result);
@@ -396,13 +396,13 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
     }
 
     public function createInvoiceItemsByAdmin($invoiceid, $productid, $price,
-        $currency, $qty, $agents, $planid = '', $userid = '', $tax_name = '', $tax_rate = '',$grandTotalAfterCoupon)
+        $currency, $qty, $agents, $planid = '', $userid = '', $tax_name = '', $tax_rate = '', $grandTotalAfterCoupon)
     {
         try {
             $product = $this->product->findOrFail($productid);
             $plan = Plan::where('product', $productid)->first();
             $subtotal = $qty * intval($grandTotalAfterCoupon);
-            
+
             $domain = $this->domain($productid);
             $items = $this->invoiceItem->create([
                 'invoice_id'     => $invoiceid,

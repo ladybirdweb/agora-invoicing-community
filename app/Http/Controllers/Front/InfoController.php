@@ -5,8 +5,6 @@ namespace App\Http\Controllers\Front;
 use App\Http\Controllers\Controller;
 use App\Model\Common\State;
 use App\Model\Payment\TaxByState;
-use DateTime;
-use DateTimeZone;
 
 class InfoController extends Controller
 {
@@ -26,8 +24,6 @@ class InfoController extends Controller
 
         return $states;
     }
-
-
 
     public function payment($payment_method, $status)
     {

@@ -182,7 +182,6 @@ class SettingsController extends Controller
                     $view = $cont->getViewMessageAfterPayment($invoice, $state, $currency);
                     $status = $view['status'];
                     $message = $view['message'];
-
                 } else {
                     //Afer Renew
                     $control->successRenew($invoice);
@@ -201,6 +200,7 @@ class SettingsController extends Controller
                 \Session::forget('totalToBePaid');
                 \Session::forget('invoice');
                 \Cart::removeCartCondition('Processing fee');
+
                 return redirect('checkout')->with($status, $message);
             } else {
                 return redirect('checkout')->with('fails', 'Your Payment was declined. Please try making payment with other gateway');

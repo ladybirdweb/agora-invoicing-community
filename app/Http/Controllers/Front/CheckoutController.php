@@ -158,9 +158,10 @@ class CheckoutController extends InfoController
 
                     //Return array of Product Details,attributes and their conditions
                     $items[] = ['id' => $item->id, 'name' => $item->name, 'price' => $item->price,
-                        'quantity'       => $item->quantity, 'attributes' => ['currency'=> $cart_currency, 'symbol'=>$item->attributes->symbol, 'agents'=> $item->attributes->agents], 'associatedModel' => Product::find($item->id), 'conditions' => $taxConditions];
+                        'quantity'       => $item->quantity, 'attributes' => ['currency'=> $cart_currency, 'symbol'=>$item->attributes->symbol, 'agents'=> $item->attributes->agents], 'associatedModel' => Product::find($item->id), 'conditions' => $taxConditions, ];
                 }
                 Cart::add($items);
+
                 return $taxConditions;
             }
         } catch (\Exception $ex) {
@@ -179,7 +180,7 @@ class CheckoutController extends InfoController
             if ($invoice->user_id != \Auth::user()->id) {
                 throw new \Exception('Cannot initiate payment. Invalid modification of data');
             }
-            if(count($invoice->payment()->get())) {//If partial payment is made
+            if (count($invoice->payment()->get())) {//If partial payment is made
                 $paid = array_sum($invoice->payment()->pluck('amount')->toArray());
                 $invoice->grand_total = $invoice->grand_total - $paid;
             }
@@ -230,25 +231,24 @@ class CheckoutController extends InfoController
                 $amount = Cart::getTotal();
 
                 if (Cart::getSubTotal()) {
-                if ($payment_method == 'razorpay') {
-                    $rzp_key = ApiKey::where('id', 1)->value('rzp_key');
-                    $rzp_secret = ApiKey::where('id', 1)->value('rzp_secret');
-                    $apilayer_key = ApiKey::where('id', 1)->value('apilayer_key');
+                    if ($payment_method == 'razorpay') {
+                        $rzp_key = ApiKey::where('id', 1)->value('rzp_key');
+                        $rzp_secret = ApiKey::where('id', 1)->value('rzp_secret');
+                        $apilayer_key = ApiKey::where('id', 1)->value('apilayer_key');
 
-                    return view('themes.default1.front.postCheckout',compact('invoice','items','amount','invoice_no','payment_method','invoice','paynow','rzp_key','rzp_secret','apilayer_key'
+                        return view('themes.default1.front.postCheckout', compact('invoice', 'items', 'amount', 'invoice_no', 'payment_method', 'invoice', 'paynow', 'rzp_key', 'rzp_secret', 'apilayer_key'
                         )
                     );
+                    } else {
+                        \Event::dispatch(new \App\Events\PaymentGateway(['request' => $request, 'invoice' => $invoice]));
+                    }
                 } else {
-                    \Event::dispatch(new \App\Events\PaymentGateway(['request' => $request, 'invoice' => $invoice]));
-                }
-            } else {
                     $action = $this->checkoutAction($invoice);
-               
 
-                // $check_product_category = $this->product($invoiceid);
-                $url = '';
-                // if ($check_product_category->category) {
-                $url = view('themes.default1.front.postCheckoutTemplate', compact(
+                    // $check_product_category = $this->product($invoiceid);
+                    $url = '';
+                    // if ($check_product_category->category) {
+                    $url = view('themes.default1.front.postCheckoutTemplate', compact(
                         'invoice',
                         'date',
                         'product',
@@ -256,24 +256,23 @@ class CheckoutController extends InfoController
                         'attributes',
                         'state'
                     ))->render();
-                // }
+                    // }
 
-                \Cart::clear();
+                    \Cart::clear();
 
-                return redirect()->back()->with('success', $url);
-            }
-               
-        } else {
+                    return redirect()->back()->with('success', $url);
+                }
+            } else {
                 $paid = 0;
                 $items = new \Illuminate\Support\Collection();
                 $invoiceid = $request->input('invoice_id');
                 $invoice = $this->invoice->find($invoiceid);
                 $processingFee = $this->getProcessingFee($payment_method, $invoice->currency);
                 $totalPaid = $invoice->grand_total;
-                if(count($invoice->payment()->get())) {//If partial payment is made
-                $paid = array_sum($invoice->payment()->pluck('amount')->toArray());
-                $totalPaid = $invoice->grand_total - $paid;
-               }
+                if (count($invoice->payment()->get())) {//If partial payment is made
+                    $paid = array_sum($invoice->payment()->pluck('amount')->toArray());
+                    $totalPaid = $invoice->grand_total - $paid;
+                }
                 \Session::put('totalToBePaid', $totalPaid);
                 $invoice->grand_total = intval($invoice->grand_total * (1 + $processingFee / 100));
                 $invoice_no = $invoice->number;
@@ -281,20 +280,20 @@ class CheckoutController extends InfoController
                 $product = $this->product($invoiceid);
                 $amount = $invoice->grand_total;
                 if ($amount) {
-                if ($payment_method == 'razorpay') {
-                    $rzp_key = ApiKey::where('id', 1)->value('rzp_key');
-                    $rzp_secret = ApiKey::where('id', 1)->value('rzp_secret');
-                    $apilayer_key = ApiKey::where('id', 1)->value('apilayer_key');
+                    if ($payment_method == 'razorpay') {
+                        $rzp_key = ApiKey::where('id', 1)->value('rzp_key');
+                        $rzp_secret = ApiKey::where('id', 1)->value('rzp_secret');
+                        $apilayer_key = ApiKey::where('id', 1)->value('apilayer_key');
 
-                    return view('themes.default1.front.postRenew',compact('invoice','items','amount','invoice_no','payment_method','invoice','product','paynow','rzp_key','rzp_secret','apilayer_key','paid','totalPaid'
+                        return view('themes.default1.front.postRenew', compact('invoice', 'items', 'amount', 'invoice_no', 'payment_method', 'invoice', 'product', 'paynow', 'rzp_key', 'rzp_secret', 'apilayer_key', 'paid', 'totalPaid'
                         )
                     );
-                } else {
-                    \Event::dispatch(new \App\Events\PaymentGateway(['request' => $request, 'amount'=> $totalPaid, 'invoice' => $invoice]));
-                }
-                $url = '';
-                // if ($check_product_category->category) {
-                $url = view('themes.default1.front.postCheckoutTemplate', compact(
+                    } else {
+                        \Event::dispatch(new \App\Events\PaymentGateway(['request' => $request, 'amount'=> $totalPaid, 'invoice' => $invoice]));
+                    }
+                    $url = '';
+                    // if ($check_product_category->category) {
+                    $url = view('themes.default1.front.postCheckoutTemplate', compact(
                         'invoice',
                         'date',
                         'product',
@@ -302,19 +301,18 @@ class CheckoutController extends InfoController
                         'attributes',
                         'state'
                     ))->render();
-                // }
+                    // }
 
-                \Cart::clear();
+                    \Cart::clear();
 
-                return redirect()->back()->with('success', $url);
-            } else {
-                $control = new \App\Http\Controllers\Order\RenewController();
-                $control->successRenew($invoice);
-                $payment = new \App\Http\Controllers\Order\InvoiceController();
-                $payment->postRazorpayPayment($invoice);
+                    return redirect()->back()->with('success', $url);
+                } else {
+                    $control = new \App\Http\Controllers\Order\RenewController();
+                    $control->successRenew($invoice);
+                    $payment = new \App\Http\Controllers\Order\InvoiceController();
+                    $payment->postRazorpayPayment($invoice);
+                }
             }
-            }
-             
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
@@ -353,9 +351,9 @@ class CheckoutController extends InfoController
             $invoice_number = $invoice->number;
             $invoice_id = $invoice->id;
             foreach (\Cart::getConditionsByType('fee') as $value) {
-               $invoice->processing_fee = $value->getValue();
+                $invoice->processing_fee = $value->getValue();
             }
-            // $invoice->processing_fee = 
+            // $invoice->processing_fee =
             $invoice->status = 'success';
             $invoice->save();
             $user_id = \Auth::user()->id;

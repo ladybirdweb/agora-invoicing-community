@@ -3,12 +3,11 @@
 namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Common\TemplateController;
-use App\Http\Controllers\Payment\PromotionController;
 use App\Model\Common\Country;
 use App\Model\Common\Setting;
 use App\Model\Payment\Currency;
-use App\Model\Payment\PlanPrice;
 use App\Model\Payment\Plan;
+use App\Model\Payment\PlanPrice;
 use App\Model\Payment\Tax;
 use App\Model\Payment\TaxByState;
 use App\Model\Payment\TaxOption;
@@ -337,8 +336,7 @@ class CartController extends BaseCartController
         }
     }
 
-
-        /**
+    /**
      * Get Cost For a particular Plan.
      *
      * @param int $productid
@@ -355,7 +353,7 @@ class CartController extends BaseCartController
             $cost = 0;
             $months = 0;
             $currency = $this->currency($userid);
-            if (!$planid) {//When Product Is Added from Cart
+            if (! $planid) {//When Product Is Added from Cart
                 $planid = Plan::where('product', $productid)->pluck('id')->first();
             } elseif ($this->checkPlanSession() === true && ! $planid) {
                 $planid = Session::get('plan');
@@ -375,6 +373,7 @@ class CartController extends BaseCartController
             } else {
                 throw new \Exception('Product cannot be added to cart. No such plan exists.');
             }
+
             return $cost;
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());

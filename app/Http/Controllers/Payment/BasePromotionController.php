@@ -58,7 +58,7 @@ class BasePromotionController extends Controller
         //check the usess
         $cont = new \App\Http\Controllers\Payment\PromotionController();
         $uses = $cont->checkNumberOfUses($code);
-        
+
         if ($uses != 'success') {
             throw new \Exception(\Lang::get('message.usage-of-code-completed'));
         }
@@ -80,8 +80,9 @@ class BasePromotionController extends Controller
             if ($cart_control->checkPlanSession() === true) {
                 $planid = \Session::get('plan');
             }
-                $price = $cart_control->planCost($productid, $userid, $planid = '');
+            $price = $cart_control->planCost($productid, $userid, $planid = '');
             $updated_price = $this->findCost($promotion->type, $promotion->value, $price, $productid);
+
             return $updated_price;
         } catch (\Exception $ex) {
             throw new \Exception(\Lang::get('message.find-discount-error'));

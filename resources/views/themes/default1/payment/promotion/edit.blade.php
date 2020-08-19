@@ -110,7 +110,7 @@ Edit Promotion
                         </td>
 
                     </tr>
-                    <tr>
+                    <tr>    
 
                         <td><b>{!! Form::label('start',Lang::get('message.start')) !!}</b></td>
                         <td>

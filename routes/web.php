@@ -76,7 +76,7 @@
             Route::get('show/cart', 'Front\CartController@showCart');
 
             Route::get('checkout', 'Front\CheckoutController@checkoutForm');
-            Route::match(['post', 'patch'], 'checkout', 'Front\CheckoutController@postCheckout');
+            Route::match(['post', 'patch'], 'checkout-and-pay', 'Front\CheckoutController@postCheckout');
 
             Route::post('pricing/update', 'Front\CartController@addCouponUpdate');
             Route::post('update-final-price', 'Front\CartController@updateFinalPrice');

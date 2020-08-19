@@ -123,7 +123,7 @@ class PromotionController extends BasePromotionController
             $expiry = date_format($enddate, 'Y-m-d H:m:i');
             $this->promotion->code = $request->input('code');
             $this->promotion->type = $request->input('type');
-            $this->promotion->value = $request->input('value');
+            $this->promotion->value = $request->input('type') == 1 ? intval($request->input('value')).'%' : intval($request->input('value'));
             $this->promotion->uses = $request->input('uses');
             $this->promotion->start = $start;
             $this->promotion->expiry = $expiry;
@@ -154,8 +154,8 @@ class PromotionController extends BasePromotionController
             $promotion = $this->promotion->where('id', $id)->first();
             $product = $this->product->pluck('name', 'id')->toArray();
             $type = $this->type->pluck('name', 'id')->toArray();
-            $startDate = date('d/m/Y', strtotime($this->promotion->where('id', $id)->pluck('start')->first()));
-            $expiryDate = date('d/m/Y', strtotime($this->promotion->where('id', $id)->pluck('expiry')->first()));
+            $startDate = date('m/d/Y', strtotime($this->promotion->where('id', $id)->pluck('start')->first()));
+            $expiryDate = date('m/d/Y', strtotime($this->promotion->where('id', $id)->pluck('expiry')->first()));
             $selectedProduct = $this->promoRelation
             ->where('promotion_id', $id)
             ->pluck('product_id', 'product_id')->toArray();
@@ -182,11 +182,10 @@ class PromotionController extends BasePromotionController
             $start = date_format($startdate, 'Y-m-d H:m:i');
             $enddate = date_create($request->input('expiry'));
             $expiry = date_format($enddate, 'Y-m-d H:m:i');
-
             $promotion = $this->promotion->where('id', $id)->update([
                 'code'   => $request->input('code'),
                 'type'   => $request->input('type'),
-                'value'  => $request->input('value'),
+                'value'  => $request->input('type') == 2 ? intval($request->input('value')) : intval($request->input('value')).'%',
                 'uses'   => $request->input('uses'),
                 'start'  => $start,
                 'expiry' => $expiry,
@@ -204,7 +203,6 @@ class PromotionController extends BasePromotionController
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $ex) {
-            dd($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -265,48 +263,44 @@ class PromotionController extends BasePromotionController
         }
     }
 
-    public function checkCode($code, $productid)
+    public function checkCode($code)
     {
         try {
-            $inv_cont = new \App\Http\Controllers\Order\InvoiceController();
-            $promo = $inv_cont->getPromotionDetails($code);
-            $value = $this->findCostAfterDiscount($promo->id, $productid);
-            $coupon = new CartCondition([
-                'name'   => $promo->code,
-                'type'   => 'coupon',
-                'target' => 'item',
-                'value'  => $value,
-            ]);
+            $promo = $this->getPromotionDetails($code);
+            $validProductForPromo = $promo->relation->first()->product_id;
+            $value = $this->findCostAfterDiscount($promo->id, $validProductForPromo, \Auth::user()->id);
+            $productid = '';
+            foreach (\Cart::getContent() as $item) {
+               if($item->id == $validProductForPromo) {
+                $productid = $item->id;
+               } 
+            }
+        if ($productid) {
             if (\Session::get('usage') == null || \Session::get('usage') != 1) {
-                $userId = \Auth::user()->id;
-                \Cart::update($productid, [
-                    'id'         => $productid,
-                    'price'      => $value,
-                    'conditions' => $coupon,
+            \Session::put('usage', 1);
+            \Session::put('code', $promo->code);
+            \Session::put('codevalue', $promo->value);
+             $coupon101 = new CartCondition([
+            'name'   => $promo->code,
+            'type'   => 'coupon',
+            'value'  => '-'.$promo->value,
+        ]);
+         \Cart::update($productid, [
+                'id'         => $productid,
+                'price'      => $value,
+                'conditions' => $coupon101,
 
-                    // new item price, price can also be a string format like so: '98.67'
-                ]);
-                \Session::put('usage', 1);
-                \Session::put('code', $promo->code);
-                \Session::put('codevalue', $promo->value);
-            }
-            $items = \Cart::getContent();
-            \Session::put('items', $items);
-
-            foreach ($items as $item) {
-                if ($item->conditions) {
-                    // if (count($item->conditions) == 2 || count($item->conditions) == 1) {
-                    \Cart::addItemCondition($productid, $coupon);
-                }
-            }
-
-            return 'success';
-        } catch (\Exception $ex) {
-            if (! \Auth::user()) {
-                throw new \Exception('Please Login');
+                // new item price, price can also be a string format like so: '98.67'
+            ]);
             } else {
-                throw new \Exception($ex->getMessage());
+                throw new \Exception('Code already used once');
             }
+         } else {
+                throw new \Exception('Invalid promo code');
+             }
+       
+        } catch (\Exception $ex) {
+            throw new \Exception($ex->getMessage());
         }
     }
 
@@ -315,7 +309,7 @@ class PromotionController extends BasePromotionController
         try {
             $promotion = $this->promotion->where('code', $code)->first();
             $uses = $promotion->uses;
-            if ($uses == 0) {
+            if ($uses == 1) {
                 return 'success';
             }
             $used_number = $this->invoice->where('coupon_code', $code)->count();
@@ -335,7 +329,7 @@ class PromotionController extends BasePromotionController
             $promotion = $this->promotion->where('code', $code)->first();
             $start = $promotion->start;
             $end = $promotion->expiry;
-            $now = \Carbon\Carbon::now();
+            $now = \Carbon\Carbon::now()->format('Y-m-d H:m:i') ;
             $inv_cont = new \App\Http\Controllers\Order\InvoiceController();
             $getExpiryStatus = $inv_cont->getExpiryStatus($start, $end, $now);
 

@@ -16,27 +16,19 @@ class ProcessController extends Controller
         $this->stripe = $stripe;
     }
 
-    public function payWithStripe(Request $request)
-    {
-        $path = app_path().'/Plugins/Stripe/views';
-        \View::addNamespace('plugins', $path);
-        echo view('plugins::middle-page');
-    }
 
     public function PassToPayment($requests)
     {
         try {
             $request = $requests['request'];
-            $invoice = $requests['order'];
-            $cart = $requests['cart'];
-            if ($cart->count() > 0) {
-                $invoice->grand_total = intval(\Cart::getTotal());
-            } else {
+            $invoice = $requests['invoice'];
+            $cart = \Cart::getContent();
+            if (!$cart->count() ) {
                 \Cart::clear();
-                \Session::put('invoiceid', $invoice->id);
+            }  else {
+                 $invoice->grand_total = intval(\Cart::getTotal());
             }
-            // dd(\Session::get('invoiceid');
-            if ($request->input('payment_gateway') == 'Stripe') {
+                if ($request->input('payment_gateway') == 'Stripe') {
                 if (! \Schema::hasTable('stripe')) {
                     throw new \Exception('Stripe is not configured');
                 }
@@ -44,90 +36,29 @@ class ProcessController extends Controller
                 if (! $stripe) {
                     throw new \Exception('Stripe Fields not given');
                 }
-                $data = $this->getFields($invoice);
                 \Session::put('invoice', $invoice);
-                \Session::put('amount', $data['amount']);
-
-                $this->middlePage($data);
+                \Session::save();
+                $this->middlePage();
             }
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage(), $ex->getCode(), $ex->getPrevious());
         }
     }
 
-    public function getFields($invoice)
-    {
-        try {
-            $item = [];
-            $data = [];
-            $user = \Auth::user();
-            if (! $user) {
-                throw new \Exception('No autherized user');
-            }
-            $config = $this->stripe->where('id', 1)->first();
-            if ($config) {
-                $image_url = $config->image_url;
-                $currency_code = $invoice->currency;
-                $invoice_id = $invoice->id;
-                $first_name = $user->first_name;
-                $last_name = $user->last_name;
-                $address1 = $user->address;
-                $city = $user->town;
-                $zip = $user->zip;
-                $email = $user->email;
-                $product_name = '';
-                if ($invoice->invoiceItem()->first()) {
-                    $product_name = str_replace(' ', '-', $invoice->invoiceItem()->first()->product_name);
-                }
 
-                $data = [
-                    'image_url'     => $image_url,
-                    'currency_code' => $currency_code, //$currency_code,
-                    'invoice'       => $invoice_id,
-                    'first_name'    => $first_name,
-                    'last_name'     => $last_name,
-                    'address1'      => $address1,
-                    'city'          => $city,
-                    'zip'           => $zip,
-                    'email'         => $email,
-                    'item_name'     => $product_name,
-                ];
-
-                $items = $invoice->invoiceItem()->get()->toArray();
-                //dd($items);
-                $c = count($items);
-                if (count($items) > 0) {
-                    for ($i = 0; $i < $c; $i++) {
-                        $n = $i + 1;
-                        $item = [
-                            "item_name_$n" => $items[$i]['product_name'],
-                            "quantity_$n"  => $items[$i]['quantity'],
-                        ];
-                    }
-                    $data = array_merge($data, $item);
-                    $total = ['amount' => $invoice->grand_total];
-                    $data = array_merge($data, $total);
-                }
-            }
-
-            return $data;
-        } catch (\Exception $ex) {
-            throw new \Exception($ex->getMessage(), $ex->getCode(), $ex->getPrevious());
-        }
-    }
-
-    public function middlePage($data)
+    public function middlePage()
     {
         try {
             $path = app_path().'/Plugins/Stripe/views';
             $total = \Cart::getTotal();
             if (! $total) {
-                $total = $data['amount'];
+                $total = \Session::get('totalToBePaid');
             }
             $total = intval($total);
             \View::addNamespace('plugins', $path);
-            echo view('plugins::middle-page', compact('data', 'total'));
+            echo view('plugins::middle-page', compact('total'));
         } catch (\Exception $ex) {
+             throw new \Exception($ex->getMessage());
         }
     }
 

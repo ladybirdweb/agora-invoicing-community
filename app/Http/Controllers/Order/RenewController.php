@@ -10,6 +10,7 @@ use App\Model\Order\Order;
 use App\Model\Payment\Plan;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
+use App\Traits\TaxCalculation;
 use App\User;
 use Carbon\Carbon;
 use Exception;
@@ -18,6 +19,8 @@ use Session;
 
 class RenewController extends BaseRenewController
 {
+    use TaxCalculation;
+
     protected $sub;
     protected $plan;
     protected $order;
@@ -202,21 +205,15 @@ class RenewController extends BaseRenewController
         }
     }
 
-    public function tax($product, $cost, $userid)
+    public function tax($product, $cost, $user)
     {
         try {
-            $controller = new InvoiceController();
-            $tax = $controller->checkTax($product->id, $userid);
-            $tax_name = '';
-            $tax_rate = '';
-            if (! empty($tax)) {
-
-                    //dd($value);
-                $tax_name .= $tax[0].',';
-                $tax_rate .= $tax[1].',';
-            }
+            $controller = new \App\Http\Controllers\Order\InvoiceController();
+            $tax = $this->calculateTax($product->id, $user->state, $user->country);
+            $tax_name = $tax->getName();
+            $tax_rate = $tax->getValue();
+            
             $grand_total = $controller->calculateTotal($tax_rate, $cost);
-
             return \App\Http\Controllers\Front\CartController::rounding($grand_total);
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());

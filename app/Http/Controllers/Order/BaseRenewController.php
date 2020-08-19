@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Order;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Front\CartController;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
 use App\Model\Order\Order;
@@ -109,7 +110,11 @@ class BaseRenewController extends Controller
                 $product_cost = $controller->checkCode($code, $product->id, $currency);
             }
             $renewalPrice = $cost; //Get Renewal Price before calculating tax over it to save as regular price of product
-            $cost = $this->tax($product, $renewalPrice, $user->id);
+            $controller = new \App\Http\Controllers\Order\InvoiceController();
+            $tax = $this->calculateTax($product->id, $user->state, $user->country);
+            $tax_name = $tax->getName();
+            $tax_rate = $tax->getValue();
+            $cost = CartController::rounding($controller->calculateTotal($tax_rate, $cost));
             $currency = $this->getUserCurrencyById($user->id);
             $number = rand(11111111, 99999999);
             $date = \Carbon\Carbon::now();
@@ -124,7 +129,7 @@ class BaseRenewController extends Controller
             ]);
             $this->createOrderInvoiceRelation($orderid, $invoice->id);
             $items = $controller->createInvoiceItemsByAdmin($invoice->id, $product->id,
-             $code, $renewalPrice, $currency, $qty = 1, $agents);
+             $renewalPrice, $currency, $qty = 1, $agents, $planid , $user->id, $tax_name , $tax_rate , $renewalPrice);
 
             return $items;
         } catch (Exception $ex) {

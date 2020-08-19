@@ -7,6 +7,7 @@ use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
 use App\Model\Payment\Promotion;
 use App\Model\Payment\Tax;
+use App\Model\Payment\TaxOption;
 use App\Model\Payment\TaxClass;
 use App\User;
 use Bugsnag;
@@ -89,6 +90,28 @@ class BaseInvoiceController extends ExtendedBaseInvoiceController
 
         return ['taxes'=>$taxes, 'value'=>$value, 'rate'=>$rate];
     }
+
+
+    public function getExpiryStatus($start, $end, $now)
+    {
+        $whenDateNotSet = $this->whenDateNotSet($start, $end);
+        if ($whenDateNotSet) {
+            return $whenDateNotSet;
+        }
+        $whenStartDateSet = $this->whenStartDateSet($start, $end, $now);
+        if ($whenStartDateSet) {
+            return $whenStartDateSet;
+        }
+        $whenEndDateSet = $this->whenEndDateSet($start, $end, $now);
+        if ($whenEndDateSet) {
+            return $whenEndDateSet;
+        }
+        $whenBothAreSet = $this->whenBothSet($start, $end, $now);
+        if ($whenBothAreSet) {
+            return $whenBothAreSet;
+        }
+    }
+
 
     public function whenDateNotSet($start, $end)
     {
@@ -207,10 +230,28 @@ class BaseInvoiceController extends ExtendedBaseInvoiceController
         $invoices = Invoice::where('number', $number)->update(['grand_total'=>$total]);
     }
 
-    public function getCodeValue($promo, $code)
+    public function calculateTotal($rate, $total)
     {
-        if ($promo && $code) {
-            return $promo->value;
+        try {
+            $total = intval($total);
+            $rates = explode(',', $rate);
+            $rule = new TaxOption();
+            $rule = $rule->findOrFail(1);
+            if ($rule->inclusive == 0) {
+                foreach ($rates as $rate1) {
+                    if ($rate1 != '') {
+                        $rateTotal = str_replace('%', '', $rate1);
+                        $total += $total * ($rateTotal / 100);
+                    }
+                }
+            }
+
+            return intval(round($total));
+        } catch (\Exception $ex) {
+            app('log')->warning($ex->getMessage());
+            Bugsnag::notifyException($ex);
+
+            throw new \Exception($ex->getMessage());
         }
     }
 

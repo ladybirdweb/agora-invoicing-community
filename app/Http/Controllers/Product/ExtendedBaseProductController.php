@@ -97,8 +97,8 @@ class ExtendedBaseProductController extends Controller
 
     public function saveTax($taxes, $product_id)
     {
+        TaxProductRelation::where('product_id', $product_id)->delete();
         if ($taxes) {
-            TaxProductRelation::where('product_id', $product_id)->delete();
             foreach ($taxes as $tax) {
                 $newTax = new TaxProductRelation();
                 $newTax->product_id = $product_id;

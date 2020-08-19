@@ -35,7 +35,6 @@ trait TaxCalculation
                     }
                 }
             }
-
             return  $taxCondition;
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -50,16 +49,16 @@ trait TaxCalculation
             } else {
                 $taxCondition = new \Darryldecode\Cart\CartCondition([
                     'name'   => $tax->name, 'type'   => 'tax',
-                    'target' => 'total', 'value'  => $tax->value.'%',
+                     'value'  => $tax->value.'%',
                 ]);
             }
         } else {
             if ($taxCaluculationFromAdminPanel) {
-                $taxCondition = ['name'=>'null', 'value'  => 0];
+                $taxCondition = ['name'=>'null', 'value'  => '0%'];
             } else {
                 $taxCondition = new \Darryldecode\Cart\CartCondition([
                     'name'   => 'null', 'type'   => 'tax',
-                    'target' => 'total', 'value'  => '0',
+                    'value'  => '0%',
                 ]);
             }
         }
@@ -183,7 +182,6 @@ trait TaxCalculation
                 $taxes->value = $this->getValueForOthers($productid, $taxClassId, $taxes);
             }
         }
-
         return $taxes;
     }
 
@@ -261,7 +259,6 @@ trait TaxCalculation
     {
         $value = $taxes->active ? (TaxProductRelation::where('product_id', $productid)
           ->where('tax_class_id', $taxClassId->id)->count() ? Tax::where('tax_classes_id', $taxClassId->id)->first()->rate : 0) : 0;
-
         return $value;
     }
 

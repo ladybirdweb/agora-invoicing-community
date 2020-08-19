@@ -223,6 +223,7 @@ class BaseClientController extends Controller
         return $link;
     }
 
+
     public function getInvoice($id)
     {
         try {
@@ -242,9 +243,7 @@ class BaseClientController extends Controller
         } catch (Exception $ex) {
             Bugsnag::notifyException($ex);
 
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
+
 
     public function subscriptions()
     {

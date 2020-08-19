@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Common\TemplateController;
+use App\Http\Controllers\Payment\PromotionController;
 use App\Model\Common\Country;
 use App\Model\Common\Setting;
 use App\Model\Payment\Currency;
 use App\Model\Payment\PlanPrice;
+use App\Model\Payment\Plan;
 use App\Model\Payment\Tax;
 use App\Model\Payment\TaxByState;
 use App\Model\Payment\TaxOption;
@@ -338,6 +340,50 @@ class CartController extends BaseCartController
         }
     }
 
+
+        /**
+     * Get Cost For a particular Plan.
+     *
+     * @param int $productid
+     * @param int $userid
+     * @param int $planid
+     *
+     * @throws \Exception
+     *
+     * @return int
+     */
+    public function planCost($productid, $userid, $planid = '')
+    {
+        try {
+            $cost = 0;
+            $months = 0;
+            $currency = $this->currency($userid);
+            if (!$planid) {//When Product Is Added from Cart
+                $planid = Plan::where('product', $productid)->pluck('id')->first();
+            } elseif ($this->checkPlanSession() === true && ! $planid) {
+                $planid = Session::get('plan');
+            }
+            $plan = Plan::where('id', $planid)->where('product', $productid)->first();
+            if ($plan) { //Get the Total Plan Cost if the Plan Exists For a Product
+                $months = 1;
+                $currency = $this->currency($userid);
+                $product = Product::find($productid);
+                $days = $plan->periods->pluck('days')->first();
+                $price = ($product->planRelation->find($planid)->planPrice->where('currency', $currency['currency'])->first()->add_price);
+                if ($days) { //If Period Is defined for a Particular Plan ie no. of Days Generated
+                    $months = $days >= '365' ? $days / 30 / 12 : $days / 30;
+                }
+                $finalPrice = str_replace(',', '', $price);
+                $cost = round($months) * $finalPrice;
+            } else {
+                throw new \Exception('Product cannot be added to cart. No such plan exists.');
+            }
+            return $cost;
+        } catch (\Exception $ex) {
+            throw new \Exception($ex->getMessage());
+        }
+    }
+
     public static function updateFinalPrice(Request $request)
     {
         $value = $request->input('processing_fee').'%';
@@ -348,5 +394,26 @@ class CartController extends BaseCartController
             'value'  => $value,
         ]);
         \Cart::condition($updateValue);
+    }
+
+    /**
+     * @return type
+     */
+    public function addCouponUpdate(Request $request)
+    {
+        try {
+            $code = \Request::get('coupon');
+            $promo_controller = new \App\Http\Controllers\Payment\PromotionController();
+            $result = $promo_controller->checkCode($code);
+            if ($result == 'success') {
+                return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
+            }
+
+            return redirect()->back();
+        } catch (\Exception $ex) {
+            Bugsnag::notifyException($ex);
+
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
     }
 }

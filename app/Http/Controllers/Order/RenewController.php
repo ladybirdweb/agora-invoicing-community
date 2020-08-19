@@ -212,8 +212,9 @@ class RenewController extends BaseRenewController
             $tax = $this->calculateTax($product->id, $user->state, $user->country);
             $tax_name = $tax->getName();
             $tax_rate = $tax->getValue();
-            
+
             $grand_total = $controller->calculateTotal($tax_rate, $cost);
+
             return \App\Http\Controllers\Front\CartController::rounding($grand_total);
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());

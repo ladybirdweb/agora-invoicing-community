@@ -87,6 +87,7 @@ class RazorpayController extends Controller
                     $message = $view['message'];
                 }
                 \Cart::removeCartCondition('Processing fee');
+
                 return redirect('checkout')->with($status, $message);
             } catch (\Razorpay\Api\Errors\SignatureVerificationError | \Razorpay\Api\Errors\BadRequestError | \Razorpay\Api\Errors\GatewayError | \Razorpay\Api\Errors\ServerError $e) {
                 SettingsController::sendFailedPaymenttoAdmin($invoice->grand_total, $e->getMessage());

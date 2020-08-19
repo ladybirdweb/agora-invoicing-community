@@ -123,9 +123,10 @@ class SettingsController extends Controller
         $stripe = Stripe::make($stripeSecretKey);
         try {
             $invoice = \Session::get('invoice');
+            $invoiceTotal = \Session::get('totalToBePaid');
             $amount = \Cart::getTotal();
             if (! $amount) {//During renewal
-                if ($request->input('amount') != $invoice->grand_total) {
+                if ($request->input('amount') != $invoiceTotal) {
                     throw new \Exception('Invalid modification of data');
                 }
                 $amount = $request->input('amount');
@@ -181,9 +182,7 @@ class SettingsController extends Controller
                     $view = $cont->getViewMessageAfterPayment($invoice, $state, $currency);
                     $status = $view['status'];
                     $message = $view['message'];
-                    \Session::forget('items');
-                    \Session::forget('code');
-                    \Session::forget('codevalue');
+
                 } else {
                     //Afer Renew
                     $control->successRenew($invoice);
@@ -196,7 +195,12 @@ class SettingsController extends Controller
                     $status = $view['status'];
                     $message = $view['message'];
                 }
-
+                \Session::forget('items');
+                \Session::forget('code');
+                \Session::forget('codevalue');
+                \Session::forget('totalToBePaid');
+                \Session::forget('invoice');
+                \Cart::removeCartCondition('Processing fee');
                 return redirect('checkout')->with($status, $message);
             } else {
                 return redirect('checkout')->with('fails', 'Your Payment was declined. Please try making payment with other gateway');

@@ -15,7 +15,7 @@ Checkout
 
     $currency = $invoice->currency;
     $symbol = \App\Model\Payment\Currency::where('code',$invoice->currency)->pluck('symbol')->first();
-
+    $taxAmt = 0;
 ?>
 <div class="container">
 <div class="row">
@@ -58,7 +58,12 @@ Checkout
                         <tbody>
                             
                             @forelse($items as $item)
-                            
+                            @php
+                            $taxName[] =  $item->tax_name.'@'.$item->tax_percentage;
+                            if ($item->tax_name != 'null') {
+                                $taxAmt +=  $item->subtotal;
+                             }
+                             @endphp
                             <tr class="cart_table_item">
 
                                 <td class="product-thumbnail">
@@ -84,7 +89,7 @@ Checkout
                                 </td>
                                 <td class="product-name">
                                     
-                                    <span class="amount">{{currencyFormat(intval($item->subtotal),$code = $currency)}}</span>
+                                    <span class="amount">{{currencyFormat(intval($item->regular_price),$code = $currency)}}</span>
                                 </td>
                             </tr>
                             @empty 
@@ -96,7 +101,7 @@ Checkout
                     </table>
 
                 </div>
-                {!! Form::open(['url'=>'checkout','method'=>'post','id' => 'checkoutsubmitform']) !!}
+                {!! Form::open(['url'=>'checkout-and-pay','method'=>'post','id' => 'checkoutsubmitform']) !!}
                   @if($invoice->grand_total > 0)
                 <h4 class="heading-primary">Payment</h4>
                     <?php $gateways = \App\Http\Controllers\Common\SettingsController::checkPaymentGateway($invoice->currency);
@@ -136,11 +141,12 @@ Checkout
                   </div>
                 @endif
                   @endif
-                   <div class="col-md-6">
+                     <div class="col-md-6">
                         
                         {!! Form::hidden('invoice_id',$invoice->id) !!}
                         {!! Form::hidden('cost',$invoice->grand_total) !!}
                     </div>
+
                 <div class="row">
                     <div class="col-md-6 col-md-offset-4">
                         <button type="submit" id="proceed" class="btn btn-primary">
@@ -171,37 +177,61 @@ Checkout
                        <span class="amount">{{currencyFormat($subtotal,$code = $currency)}}</span>
                     </td>
                 </tr>
-                  @foreach($items->toArray() as $attribute)
-                  @if($attribute['tax_name']!='null')
-                <?php 
-                $tax_name = "";
-                $tax_percentage="";
-                if(str_finish($attribute['tax_name'], ',')){
-                    $tax_name = str_replace(',','',$attribute['tax_name']);
-                }
-                if(str_finish($attribute['tax_percentage'], ',')){
-                    $tax_percentage = str_replace(',','',$attribute['tax_percentage']);
-                }
-                ?>
-                <tr class="Taxes">
-                    <th>
-                        <strong>{{$tax_name}}<span>@</span>{{$tax_percentage}}</strong><br/>
-                         </th>
-                    <td>
-                    <?php
-                     $value = \App\Http\Controllers\Front\CartController::taxValue($attribute['tax_percentage'],$subtotal);
-                     ?>
-                      {{currencyFormat($value,$code = $currency)}}
-                        
-                       
-                       
-                    </td>
+                 @php
+                $taxName = array_unique($taxName);
+                @endphp
+                  @foreach($taxName as $tax)
+                  @php
+                  $taxDetails = explode('@', $tax);
+                  @endphp
+                  @if ($taxDetails[0]!= 'null')
+                                            
+                                       
+                    <tr>
+                         <?php
+                        $bifurcateTax = bifurcateTax($taxDetails[0],$taxDetails[1],\Auth::user()->currency, \Auth::user()->state, $taxAmt);
+                        ?>
+                        <th>
+
+                            <strong>{!! $bifurcateTax['html'] !!}</strong>
 
 
-                </tr>
+                        </th>
+                        <td>
+                           
+                            {!! $bifurcateTax['tax'] !!}
+
+                        </td>
+                    </tr>
+             
                
+                    @endif
+                    @endforeach
+
+
+                    @if($paid)
+
+                    <tr class="total">
+                    <th>
+                        <strong>Paid</strong>
+                    </th>
+                    <td>
+
+                        {{currencyFormat($paid,$code = $currency)}}
+                    </td>
+                </tr>
+
+                <tr class="total">
+                    <th>
+                        <strong>Balance</strong>
+                    </th>
+                    <td>
+
+                        {{currencyFormat($invoice->grand_total,$code = $currency)}}
+                    </td>
+                </tr>
                 @endif
-                @endforeach
+                
                 <tr class="total">
                     <th>
                         <strong>Order Total</strong>

@@ -344,8 +344,7 @@ class ProductController extends BaseProductController
             $taxes = $this->tax_class->pluck('name', 'id')->toArray();
             $selectedCategory = \App\Model\Product\ProductCategory::
                 where('category_name', $product->category)->pluck('category_name')->toArray();
-            $taxes = $this->tax_class->pluck('name', 'id')->toArray();
-            // dd($taxes);
+            $taxes = $this->tax_class->with('tax:tax_classes_id,id,name')->get()->toArray();
             $saved_taxes = $this->tax_relation->where('product_id', $id)->get();
             $savedTaxes = $this->tax_relation->where('product_id', $id)->pluck('tax_class_id')->toArray();
             $showagent = $product->show_agent;

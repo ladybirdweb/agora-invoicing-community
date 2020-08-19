@@ -86,7 +86,7 @@ Renew
             type: "get",
             url: "{{url('get-renew-cost')}}",
             data: {'user': user, 'plan': val},
-            success: function (data) {alert('dsfds');
+            success: function (data) {
                 var price = data
                 $("#price").val(price);
             }

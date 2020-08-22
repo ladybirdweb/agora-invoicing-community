@@ -28,7 +28,7 @@ class InfoController extends Controller
     public function payment($payment_method, $status)
     {
         if (! $payment_method) {
-            $payment_method = 'free';
+            $payment_method = '';
             $status = 'success';
         }
 

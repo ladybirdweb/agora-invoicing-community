@@ -25,7 +25,7 @@ class ProcessController extends Controller
             if (! $cart->count()) {
                 \Cart::clear();
             } else {
-                $invoice->grand_total = intval(\Cart::getTotal());
+                $invoice->grand_total = \Cart::getTotal();
             }
             if ($request->input('payment_gateway') == 'Stripe') {
                 if (! \Schema::hasTable('stripe')) {
@@ -40,6 +40,7 @@ class ProcessController extends Controller
                 $this->middlePage();
             }
         } catch (\Exception $ex) {
+            dd($ex);
             throw new \Exception($ex->getMessage(), $ex->getCode(), $ex->getPrevious());
         }
     }
@@ -52,7 +53,6 @@ class ProcessController extends Controller
             if (! $total) {
                 $total = \Session::get('totalToBePaid');
             }
-            $total = intval($total);
             \View::addNamespace('plugins', $path);
             echo view('plugins::middle-page', compact('total'));
         } catch (\Exception $ex) {

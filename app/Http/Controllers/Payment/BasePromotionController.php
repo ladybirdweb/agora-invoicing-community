@@ -29,17 +29,9 @@ class BasePromotionController extends Controller
                     return  $price - $percentage;
                 case 2://Fixed amount
                     return $price - $value;
-                case 3://Price Override
-                    \Cart::update($productid, [
-                        'price' => $value,
-                    ]);
-
-                    return '-0';
-                case 4://Free setup
-                    return '-'.$price;
             }
         } catch (\Exception $ex) {
-            throw new \Exception(\Lang::get('message.find-cost-error'));
+            throw new \Exception($ex->getMessage());
         }
     }
 
@@ -76,8 +68,7 @@ class BasePromotionController extends Controller
         try {
             $promotion = Promotion::findOrFail($promoid);
             $cart_control = new \App\Http\Controllers\Front\CartController();
-            $currency = $cart_control->checkCurrencySession();
-            if ($cart_control->checkPlanSession() === true) {
+            if (checkPlanSession()) {
                 $planid = \Session::get('plan');
             }
             $price = $cart_control->planCost($productid, $userid, $planid = '');
@@ -85,7 +76,8 @@ class BasePromotionController extends Controller
 
             return $updated_price;
         } catch (\Exception $ex) {
-            throw new \Exception(\Lang::get('message.find-discount-error'));
+            dd($ex);
+            throw new \Exception($ex->getMessage());
         }
     }
 }

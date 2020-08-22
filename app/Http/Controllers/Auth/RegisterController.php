@@ -51,7 +51,7 @@ class RegisterController extends Controller
         try {
             $location = getLocation();
             $state_code = $location['iso_code'].'-'.$location['state'];
-            $state = CartController::getStateByCode($state_code);
+            $state = getStateByCode($state_code);
             $user->state = $state['id'];
             $password = \Hash::make($request->input('password'));
             $user->country = $request->input('country');
@@ -74,7 +74,7 @@ class RegisterController extends Controller
             $user->manager = $user->assignSalesManager();
             $user->ip = $location['ip'];
             $user->referrer = Referer::get(); // 'google.com'
-            $user->timezone_id = CartController::getTimezoneByName($location['timezone']);
+            $user->timezone_id = getTimezoneByName($location['timezone']);
             $emailMobileStatusResponse = $this->getEmailMobileStatusResponse($user);
 
             $user->save();

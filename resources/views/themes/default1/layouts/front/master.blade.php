@@ -233,8 +233,8 @@ if($script){
                                                                             if ($product->require_domain == 1) {
                                                                                 $domain[$key] = $item->id;
                                                                             }
-                                                                            $cart_controller = new \App\Http\Controllers\Front\CartController();
-                                                                            $currency = $cart_controller->currency();
+                                                                           
+                                                                            $currency = userCurrency();
                                                                             $currency =  $currency['currency'];
                                                                           ?>
                                                                             <tr>
@@ -245,7 +245,7 @@ if($script){
 
                                                                                 <td class="product-name">
                                                                                <?php
-                                                                                $total = \App\Http\Controllers\Front\CartController::rounding($item->getPriceSumWithConditions())
+                                                                                $total = rounding($item->getPriceSumWithConditions())
                                                                                 ?>
                                                                                     <a>{{$item->name}}<br><span class="amount"><strong>{{currencyFormat($total,$code = $currency)}}</strong></span></a>
                                                                                 </td>

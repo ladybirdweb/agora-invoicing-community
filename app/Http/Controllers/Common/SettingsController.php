@@ -146,12 +146,12 @@ class SettingsController extends BaseSettingsController
     {
         try {
             $set = $settings->find(1);
-            $state = \App\Http\Controllers\Front\CartController::getStateByCode($set->state);
+            $state = getStateByCode($set->state);
             $selectedCountry = \DB::table('countries')->where('country_code_char2', $set->country)
             ->pluck('nicename', 'country_code_char2')->toArray();
             $selectedCurrency = \DB::table('currencies')->where('code', $set->default_currency)
             ->pluck('name', 'symbol')->toArray();
-            $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($set->country);
+            $states = findStateByRegionId($set->country);
 
             return view(
                 'themes.default1.common.setting.system',

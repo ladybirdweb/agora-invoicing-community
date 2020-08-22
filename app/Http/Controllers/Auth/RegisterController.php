@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Front\CartController;
 use App\Http\Requests\User\ProfileRequest;
 use App\Model\Common\Country;
 use App\Model\Common\Setting;

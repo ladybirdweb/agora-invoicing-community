@@ -1,13 +1,12 @@
 <?php
 
-use App\Http\Controllers\Front\CartController;
-use App\Model\Order\Order;
+use App\Model\Common\Country;
 use App\Model\Common\Setting;
+use App\Model\Order\Order;
 use App\Model\Payment\TaxByState;
 use App\Model\Product\ProductUpload;
-use App\Model\Common\Country;
-use Carbon\Carbon;
 use App\Traits\TaxCalculation;
+use Carbon\Carbon;
 
 function getLocation()
 {
@@ -325,7 +324,6 @@ function getStateByCode($code)
     }
 }
 
-
 function rounding($price)
 {
     try {
@@ -333,11 +331,10 @@ function rounding($price)
         $rule = $tax_rule->findOrFail(1);
         $rounding = $rule->rounding;
         if ($rounding) {
-        return round($price);
+            return round($price);
         } else {
             return round($price, 2);
         }
-        
     } catch (\Exception $ex) {
         Bugsnag::notifyException($ex);
     }
@@ -424,4 +421,3 @@ function getCurrency($userid)
 
     return ['currency'=>$currency, 'symbol'=>$symbol];
 }
-

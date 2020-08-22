@@ -33,8 +33,8 @@ class ProfileController extends Controller
             }
             //for display
             $timezones = array_column($display, 'name', 'id');
-            $state = \App\Http\Controllers\Front\CartController::getStateByCode($user->state);
-            $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($user->country);
+            $state = getStateByCode($user->state);
+            $states = findStateByRegionId($user->country);
             $bussinesses = \App\Model\Common\Bussiness::pluck('name', 'short')->toArray();
 
             return view('themes.default1.user.profile', compact('bussinesses', 'user', 'timezones', 'state', 'states', 'is2faEnabled', 'dateSinceEnabled'));

@@ -59,6 +59,7 @@ Checkout
                             
                             @forelse($items as $item)
                             @php
+                            Session::forget('code');
                             $taxName[] =  $item->tax_name.'@'.$item->tax_percentage;
                             if ($item->tax_name != 'null') {
                                 $taxAmt +=  $item->subtotal;
@@ -89,7 +90,7 @@ Checkout
                                 </td>
                                 <td class="product-name">
                                     
-                                    <span class="amount">{{currencyFormat(intval($item->regular_price),$code = $currency)}}</span>
+                                    <span class="amount">{{currencyFormat(($item->regular_price),$code = $currency)}}</span>
                                 </td>
                             </tr>
                             @empty 

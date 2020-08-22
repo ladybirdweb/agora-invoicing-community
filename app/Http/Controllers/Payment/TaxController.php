@@ -156,8 +156,8 @@ class TaxController extends Controller
             $tax = $this->tax->where('id', $id)->first();
             $taxClassName = $tax->taxClass()->find($tax->tax_classes_id)->name; //Find the Tax Class Name related to the tax
             $txClass = $this->tax_class->where('id', $tax->tax_classes_id)->first();
-            $state = \App\Http\Controllers\Front\CartController::getStateByCode($tax->state);
-            $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($tax->country);
+            $state = getStateByCode($tax->state);
+            $states = findStateByRegionId($tax->country);
 
             return view('themes.default1.payment.tax.edit',
                 compact('options', 'tax', 'txClass', 'states', 'state', 'taxClassName'));

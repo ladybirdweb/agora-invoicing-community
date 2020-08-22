@@ -85,6 +85,7 @@ class RenewController extends BaseRenewController
     public function successRenew($invoice)
     {
         try {
+            $invoice->processing_fee = $invoice->processing_fee;
             $invoice->status = 'success';
             $invoice->save();
 
@@ -215,7 +216,7 @@ class RenewController extends BaseRenewController
 
             $grand_total = $controller->calculateTotal($tax_rate, $cost);
 
-            return \App\Http\Controllers\Front\CartController::rounding($grand_total);
+            return rounding($grand_total);
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());
         }

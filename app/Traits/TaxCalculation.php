@@ -16,6 +16,14 @@ trait TaxCalculation
     public function calculateTax($productid, $user_state = '', $user_country = '', $taxCaluculationFromAdminPanel = false)
     {
         try {
+            if ($taxCaluculationFromAdminPanel) {
+                $taxCondition = ['name'=>'null', 'value'  => '0%'];
+                } else {
+                    $taxCondition = new \Darryldecode\Cart\CartCondition([
+                        'name'   => 'null', 'type'   => 'tax',
+                        'value'  => '0%',
+                    ]);
+                }
             if (TaxOption::findOrFail(1)->inclusive == 0) {
                 $tax_enable = TaxOption::findOrFail(1)->tax_enable;
                 //Check the state of user for calculating GST(cgst,igst,utgst,sgst)
@@ -25,7 +33,6 @@ trait TaxCalculation
                 $tax_class_id = TaxProductRelation::where('product_id', $productid)->pluck('tax_class_id')->toArray();
                 if ($tax_class_id) {//If the product is allowed for tax (Check in tax_product relation table)
                     if ($tax_enable == 1) {//If GST is Enabled
-
                         $tax = $this->getTaxDetails($indian_state, $user_country, $user_state, $origin_state, $origin_country, $productid);
                         //All the da a attribute that is sent to the checkout Page if tax_compound=0
                         $taxCondition = $this->getTaxConditions($tax, $taxCaluculationFromAdminPanel);
@@ -35,7 +42,6 @@ trait TaxCalculation
                     }
                 }
             }
-
             return  $taxCondition;
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -50,7 +56,7 @@ trait TaxCalculation
             } else {
                 $taxCondition = new \Darryldecode\Cart\CartCondition([
                     'name'   => $tax->name, 'type'   => 'tax',
-                    'value'  => $tax->value.'%',
+                     'value'  => $tax->value.'%',
                 ]);
             }
         } else {
@@ -146,10 +152,9 @@ trait TaxCalculation
     public function getDetailsWhenUserFromOtherCountry($user_state, $user_country, $productid, $status = 1)
     {
         $taxes = '';
-        $taxClassId = Tax::where('state', $user_state)->orWhere('country', $user_country)
-        ->select('tax_classes_id as id')->first();
+        $taxClassId = Tax::where('state', $user_state)->orWhere('state', '')->where('country',$user_country)->select('tax_classes_id as id')->first();
         if ($taxClassId) { //if state equals the user State or country equals user country
-            $taxes = $this->getTaxForSpecificCountry($taxClassId, $productid, $status);
+                 $taxes = $this->getTaxForSpecificCountry($taxClassId, $productid, $status);
         } else {//if Tax is selected for Any Country Any State
             $taxClassId = Tax::where('country', '')
                     ->where('state', '')
@@ -183,7 +188,6 @@ trait TaxCalculation
                 $taxes->value = $this->getValueForOthers($productid, $taxClassId, $taxes);
             }
         }
-
         return $taxes;
     }
 
@@ -261,7 +265,6 @@ trait TaxCalculation
     {
         $value = $taxes->active ? (TaxProductRelation::where('product_id', $productid)
           ->where('tax_class_id', $taxClassId->id)->count() ? Tax::where('tax_classes_id', $taxClassId->id)->first()->rate : 0) : 0;
-
         return $value;
     }
 
@@ -285,27 +288,7 @@ trait TaxCalculation
         }
     }
 
-    /**
-     * @param type $price
-     *
-     * @throws \Exception
-     *
-     * @return type
-     */
-    public static function rounding($price)
-    {
-        try {
-            $tax_rule = new \App\Model\Payment\TaxOption();
-            $rule = $tax_rule->findOrFail(1);
-            $rounding = $rule->rounding;
-
-            return round($price);
-        } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
-            // throw new \Exception('error in get tax priority');
-        }
-    }
-
+    
     /**
      * @param type $rate
      * @param type $price
@@ -320,8 +303,8 @@ trait TaxCalculation
                 $rate = str_replace('%', '', $rate);
                 $tax = intval($price) * (intval($rate) / 100);
                 $result = $tax;
-
-                $result = self::rounding($result);
+                
+                $result = rounding($result);
             }
 
             return $result;
@@ -330,21 +313,5 @@ trait TaxCalculation
         }
     }
 
-    /**
-     * @throws \Exception
-     *
-     * @return bool
-     */
-    public function checkCurrencySession()
-    {
-        try {
-            if (Session::has('currency')) {
-                return true;
-            }
 
-            return false;
-        } catch (\Exception $ex) {
-            throw new \Exception($ex->getMessage());
-        }
-    }
 }

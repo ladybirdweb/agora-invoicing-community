@@ -128,7 +128,6 @@ class PromotionController extends BasePromotionController
             $this->promotion->start = $start;
             $this->promotion->expiry = $expiry;
             $this->promotion->save();
-            //dd($this->promotion);
             $products = $request->input('applied');
 
             foreach ($products as $product) {
@@ -297,6 +296,7 @@ class PromotionController extends BasePromotionController
             } else {
                 throw new \Exception('Invalid promo code');
             }
+
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());
         }

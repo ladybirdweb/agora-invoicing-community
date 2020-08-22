@@ -299,8 +299,6 @@ class TemplateController extends BaseTemplateController
         }
     }
 
-   
-
     public function plans($url, $id)
     {
         $plan = new Plan();

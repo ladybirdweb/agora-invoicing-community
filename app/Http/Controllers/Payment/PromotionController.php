@@ -296,7 +296,6 @@ class PromotionController extends BasePromotionController
             } else {
                 throw new \Exception('Invalid promo code');
             }
-
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());
         }

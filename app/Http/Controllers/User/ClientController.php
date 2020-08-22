@@ -309,7 +309,7 @@ class ClientController extends AdvanceSearchController
             }
             //for display
             $timezones = array_column($display, 'name', 'id');
-            $state = \App\Http\Controllers\Front\CartController::getStateByCode($user->state);
+            $state = getStateByCode($user->state);
             $managers = User::where('role', 'admin')
             ->where('position', 'manager')
             ->pluck('first_name', 'id')->toArray();
@@ -324,7 +324,7 @@ class ClientController extends AdvanceSearchController
             ->pluck('name', 'short')->toArray();
             $selectedCompanySize = \DB::table('company_sizes')->where('short', $user->company_size)
             ->pluck('name', 'short')->toArray();
-            $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($user->country);
+            $states = findStateByRegionId($user->country);
 
             $bussinesses = \App\Model\Common\Bussiness::pluck('name', 'short')->toArray();
 

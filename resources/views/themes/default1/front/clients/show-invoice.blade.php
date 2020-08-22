@@ -65,11 +65,11 @@ active
                                         {{$user->address}}<br/>
                                     @endif
                                     {{$user->town}}<br/>
-                                    @if(key_exists('name',App\Http\Controllers\Front\CartController::getStateByCode($user->state)))
-                                        {{App\Http\Controllers\Front\CartController::getStateByCode($user->state)['name']}}
+                                    @if(key_exists('name',getStateByCode($user->state)))
+                                        {{getStateByCode($user->state)['name']}}
                                     @endif
                                     {{$user->zip}}<br/>
-                                    Country : {{App\Http\Controllers\Front\CartController::getCountryByCode($user->country)}}<br/>
+                                    Country : {{getCountryByCode($user->country)}}<br/>
                                     Mobile: @if($user->mobile_code)<b>+</b>{{$user->mobile_code}}@endif{{$user->mobile}}<br/>
                                     Email : {{$user->email}}
                                 </address>

@@ -12,7 +12,6 @@ use App\Model\Payment\Tax;
 use App\Model\Payment\TaxByState;
 use App\Model\Payment\TaxOption;
 use App\Model\Product\Product;
-use App\Traits\TaxCalculation;
 use Bugsnag;
 use Cart;
 use Darryldecode\Cart\CartCondition;
@@ -21,7 +20,6 @@ use Session;
 
 class CartController extends BaseCartController
 {
-    use TaxCalculation;
 
     public $templateController;
     public $product;
@@ -90,6 +88,45 @@ class CartController extends BaseCartController
         }
     }
 
+    /**
+     * Returns the Collection to be added to cart.
+     *
+     * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
+     *
+     * @date   2019-01-10T18:14:09+0530
+     *
+     * @param int $id Product Id
+     *
+     * @return array $items  Array of items and Tax conditions to the cart
+     */
+    public function addProduct(int $id)
+    {
+        try {
+            $qty = 1;
+            $agents = 0; //Unlmited Agents
+            $planid = checkPlanSession() ? Session::get('plan') : Plan::where('product', $id)->pluck('id')->first(); //Get Plan id From Session
+            $product = Product::find($id);
+            $plan = $product->planRelation->find($planid);
+            if ($plan) { //If Plan For a Product exists
+                $quantity = $plan->planPrice->first()->product_quantity;
+                //If Product quantity is null(when show agent in Product Seting Selected),then set quantity as 1;
+                $qty = $quantity != null ? $quantity : 1;
+                $agtQty = $plan->planPrice->first()->no_of_agents;
+                // //If Agent qty is null(when show quantity in Product Setting Selected),then set Agent as 0,ie Unlimited Agents;
+                $agents = $agtQty != null ? $agtQty : 0;
+            }
+            $currency = userCurrency();
+            $actualPrice = $this->cost($product->id);
+            $items = ['id'     => $id, 'name' => $product->name, 'price' => $actualPrice,
+                'quantity'    => $qty, 'attributes' => ['currency' => $currency['currency'], 'symbol'=>$currency['symbol'], 'agents'=> $agents], 'associatedModel' => $product, ];
+            return $items;
+        } catch (\Exception $e) {
+            app('log')->error($e->getMessage());
+            Bugsnag::notifyException($e);
+            throw new \Exception($e->getMessage());
+        }
+    }
+
     /*
      * Show the cart with all the Cart Attributes and Cart Collections
      * Link: https://github.com/darryldecode/laravelshoppingcart
@@ -121,200 +158,41 @@ class CartController extends BaseCartController
         }
     }
 
+
     public function cartRemove(Request $request)
     {
         $id = $request->input('id');
         Cart::remove($id);
         Cart::removeConditionsByType('tax');
+        Cart::removeConditionsByType('coupon');
         Cart::clearItemConditions($id);
 
         return 'success';
     }
 
-    /**
-     * @return type
-     */
-    public function contactUs()
+    public function clearCart()
     {
-        try {
-            return view('themes.default1.front.contact');
-        } catch (\Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
-
-    /**
-     * @param Request $request
-     *
-     * @return type
-     */
-    public function postContactUs(Request $request)
-    {
-        $this->validate($request, [
-            'name'    => 'required',
-            'email'   => 'required|email',
-            'message' => 'required',
-        ]);
-
-        $set = new \App\Model\Common\Setting();
-        $set = $set->findOrFail(1);
-
-        try {
-            $from = $set->email;
-            $fromname = $set->company;
-            $toname = '';
-            $to = $set->company_email;
-            $data = '';
-            $data .= 'Name: '.strip_tags($request->input('name')).'<br/>';
-            $data .= 'Email: '.strip_tags($request->input('email')).'<br/>';
-            $data .= 'Message: '.strip_tags($request->input('message')).'<br/>';
-            $data .= 'Mobile: '.strip_tags($request->input('country_code').$request->input('Mobile')).'<br/>';
-            $subject = 'Faveo billing enquiry';
-            $this->templateController->mailing($from, $to, $data, $subject, [], $fromname, $toname);
-            //$this->templateController->Mailing($from, $to, $data, $subject);
-            return redirect()->back()->with('success', 'Your message was sent successfully. Thanks.');
-        } catch (\Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
-
-    /**
-     * @param type $code
-     *
-     * @throws \Exception
-     *
-     * @return type
-     */
-    public static function getCountryByCode($code)
-    {
-        try {
-            $country = \App\Model\Common\Country::where('country_code_char2', $code)->first();
-            if ($country) {
-                return $country->nicename;
+        foreach (Cart::getContent() as $item) {
+            Cart::clearItemConditions($item->id);
+            if (\Session::has('domain'.$item->id)) {
+                \Session::forget('domain'.$item->id);
             }
-        } catch (\Exception $ex) {
-            throw new \Exception($ex->getMessage());
         }
-    }
 
-    /**
-     * @param type $name
-     *
-     * @throws \Exception
-     *
-     * @return string
-     */
-    public static function getTimezoneByName($name)
-    {
-        try {
-            $timezone = \App\Model\Common\Timezone::where('name', $name)->first();
-            if ($timezone) {
-                $timezone = $timezone->id;
-            } else {
-                $timezone = '114';
-            }
-
-            return $timezone;
-        } catch (\Exception $ex) {
-            throw new \Exception($ex->getMessage());
+        if (Session::has('plan')) {
+            Session::forget('plan');
         }
+        $renew_control = new \App\Http\Controllers\Order\RenewController();
+        $renew_control->removeSession();
+        Cart::clearCartConditions();
+        Cart::clear();
+
+        return redirect('show/cart');
     }
 
-    /**
-     * @param type $code
-     *
-     * @throws \Exception
-     *
-     * @return type
-     */
-    public static function getStateByCode($code)
-    {
-        try {
-            $result = ['id' => '', 'name' => ''];
 
-            $subregion = \App\Model\Common\State::where('state_subdivision_code', $code)->first();
-            if ($subregion) {
-                $result = ['id' => $subregion->state_subdivision_code,
-                    'name'         => $subregion->state_subdivision_name, ];
-            }
 
-            return $result;
-        } catch (\Exception $ex) {
-            throw new \Exception($ex->getMessage());
-        }
-    }
-
-    /**
-     * @param type $id
-     *
-     * @throws \Exception
-     *
-     * @return type
-     */
-    public static function getStateNameById($id)
-    {
-        try {
-            $name = '';
-            $subregion = \App\Model\Common\State::where('state_subdivision_id', $id)->first();
-            if ($subregion) {
-                $name = $subregion->state_subdivision_name;
-            }
-
-            return $name;
-        } catch (\Exception $ex) {
-            throw new \Exception($ex->getMessage());
-        }
-    }
-
-    /**
-     * @param type $userid
-     *
-     * @throws \Exception
-     *
-     * @return string
-     */
-    public static function currency($userid = '')
-    {
-        try {
-            $currency = Setting::find(1)->default_currency;
-            $currency_symbol = Setting::find(1)->default_symbol;
-            if (! \Auth::user()) {//When user is not logged in
-                $location = getLocation();
-                $country = self::findCountryByGeoip($location['iso_code']);
-                $userCountry = Country::where('country_code_char2', $country)->first();
-                $currencyStatus = $userCountry->currency->status;
-                if ($currencyStatus == 1) {
-                    $currency = $userCountry->currency->code;
-                    $currency_symbol = $userCountry->currency->symbol;
-                }
-            }
-            if (\Auth::user()) {
-                $currency = \Auth::user()->currency;
-                $currency_symbol = \Auth::user()->currency_symbol;
-            }
-            if ($userid != '') {//For Admin Panel Clients
-                $currencyAndSymbol = self::getCurrency($userid);
-                $currency = $currencyAndSymbol['currency'];
-                $currency_symbol = $currencyAndSymbol['symbol'];
-            }
-
-            return ['currency'=>$currency, 'symbol'=>$currency_symbol];
-        } catch (\Exception $ex) {
-            throw new \Exception($ex->getMessage());
-        }
-    }
-
-    /*
-    * Get Currency And Symbol For Admin Panel Clients
-    */
-    public static function getCurrency($userid)
-    {
-        $user = new \App\User();
-        $currency = $user->find($userid)->currency;
-        $symbol = $user->find($userid)->currency_symbol;
-
-        return ['currency'=>$currency, 'symbol'=>$symbol];
-    }
+    
 
     /**
      * @param int $productid
@@ -352,16 +230,16 @@ class CartController extends BaseCartController
         try {
             $cost = 0;
             $months = 0;
-            $currency = $this->currency($userid);
+            $currency = userCurrency($userid);
             if (! $planid) {//When Product Is Added from Cart
                 $planid = Plan::where('product', $productid)->pluck('id')->first();
-            } elseif ($this->checkPlanSession() === true && ! $planid) {
+            } elseif (checkPlanSession()  && ! $planid) {
                 $planid = Session::get('plan');
             }
             $plan = Plan::where('id', $planid)->where('product', $productid)->first();
             if ($plan) { //Get the Total Plan Cost if the Plan Exists For a Product
                 $months = 1;
-                $currency = $this->currency($userid);
+                $currency = userCurrency($userid);
                 $product = Product::find($productid);
                 $days = $plan->periods->pluck('days')->first();
                 $price = ($product->planRelation->find($planid)->planPrice->where('currency', $currency['currency'])->first()->add_price);
@@ -380,18 +258,7 @@ class CartController extends BaseCartController
         }
     }
 
-    public static function updateFinalPrice(Request $request)
-    {
-        $value = $request->input('processing_fee').'%';
-        $updateValue = new CartCondition([
-            'name'   => 'Processing fee',
-            'type'   => 'fee',
-            'target' => 'total',
-            'value'  => $value,
-        ]);
-        \Cart::condition($updateValue);
-    }
-
+   
     /**
      * @return type
      */

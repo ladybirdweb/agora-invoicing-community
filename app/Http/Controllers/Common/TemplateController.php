@@ -330,27 +330,7 @@ class TemplateController extends BaseTemplateController
         }
     }
 
-    public function checkPriceWithTaxClass($productid, $currency)
-    {
-        try {
-            $product = $this->product->findOrFail($productid);
-            // dd($product);
-            if ($product->tax_apply == 1) {
-                $price = $this->checkTax($product->id, $currency);
-            } else {
-                $price = $product->price()->where('currency', $currency)->first()->sales_price;
-                if (! $price) {
-                    $price = $product->price()->where('currency', $currency)->first()->price;
-                }
-            }
-
-            return $price;
-        } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
-
-            throw new \Exception($ex->getMessage());
-        }
-    }
+   
 
     public function plans($url, $id)
     {
@@ -375,8 +355,7 @@ class TemplateController extends BaseTemplateController
             $price = '';
             $plan = new Plan();
             $plans = $plan->where('product', $id)->get();
-            $cart_controller = new \App\Http\Controllers\Front\CartController();
-            $currencyAndSymbol = $cart_controller->currency();
+            $currencyAndSymbol = userCurrency();
             $prices = [];
             if ($plans->count() > 0) {
                 foreach ($plans as $value) {

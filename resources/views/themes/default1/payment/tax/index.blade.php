@@ -35,7 +35,6 @@ Tax
 </style>
 <head>
 
-  <!-- <script src="{{asset('bootstrap/js/bootstrap.min.js')}}" type="text/javascript"></script> -->
   </head>
   
 
@@ -44,8 +43,7 @@ Tax
 
 
             
-                <!--<a href="{{url('currency/create')}}" class="btn btn-primary pull-right   ">{{Lang::get('message.create')}}</a>-->
-                <!--<a href="#create" class="btn btn-primary pull-right" data-toggle="modal" data-target="#create">{{Lang::get('message.create')}}</a>-->
+             
                 
 
             @include('themes.default1.payment.tax.create-tax-option')
@@ -174,39 +172,41 @@ Tax
       var btn = {{($options->tax_enable)}};
      if(btn== '1'){
 $('.btn-on-1').addClass('active');
-$('.gstshow').show();
-$('.cifshow').show();
+$('.btn-on-1').css("background-color", "#006FFC","color", "white");
      }
      else{
 $('.btn-off-1').addClass('active');
-$('.gstshow').hide();
-$('.cifshow').hide();
+$('.btn-off-1').css("background-color", "#DA4F49","color", "white");
 // $('.gstshow').removeAttribute("style");
      }
     var btn1 = {{($options->inclusive)}};
      if(btn1== '1'){
 $('.btn-on-2').addClass('active');
+$('.btn-on-2').css("background-color", "#006FFC","color", "white");
 // $('.gstshow').removeClass("hide");
 
      }
      else{
 $('.btn-off-2').addClass('active');
+$('.btn-off-2').css("background-color", "#DA4F49","color", "white");
 // $('.gstshow').addClass('hide');
 // $('.gstshow').removeAttribute("style");
      }
        var btn2 = {{($options->rounding)}};
      if(btn2== '1'){
 $('.btn-on-3').addClass('active');
+$('.btn-on-3').css("background-color", "#006FFC","color", "white");
 // $('.gstshow').removeClass("hide");
 
      }
      else{
 $('.btn-off-3').addClass('active');
+$('.btn-off-3').css("background-color", "#DA4F49","color", "white");
 // $('.gstshow').addClass('hide');
 // $('.gstshow').removeAttribute("style");
      }
 
-      })
+    })
 
 
 

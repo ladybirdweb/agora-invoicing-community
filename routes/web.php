@@ -79,7 +79,6 @@
             Route::match(['post', 'patch'], 'checkout-and-pay', 'Front\CheckoutController@postCheckout');
 
             Route::post('pricing/update', 'Front\CartController@addCouponUpdate');
-            Route::post('update-final-price', 'Front\CartController@updateFinalPrice');
             Route::post('mail-chimp/subcribe', 'Common\MailChimpController@addSubscriberByClientPanel');
             Route::get('mailchimp', 'Common\MailChimpController@mailChimpSettings')->middleware('admin');
             Route::patch('mailchimp', 'Common\MailChimpController@postMailChimpSettings');
@@ -88,8 +87,8 @@
             Route::patch('mailchimp-ispaid/mapping', 'Common\MailChimpController@postIsPaidMapField');
             Route::patch('mailchimp-group/mapping', 'Common\MailChimpController@postGroupMapField');
             Route::get('get-group-field/{value}', 'Common\MailChimpController@addInterestFieldsToAgora');
-            Route::get('contact-us', 'Front\CartController@contactUs');
-            Route::post('contact-us', 'Front\CartController@postContactUs');
+            Route::get('contact-us', 'Front\PageController@contactUs');
+            Route::post('contact-us', 'Front\PageController@postContactUs');
 
             /*
              * Front Client Pages

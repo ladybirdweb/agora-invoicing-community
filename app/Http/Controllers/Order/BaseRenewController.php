@@ -114,7 +114,7 @@ class BaseRenewController extends Controller
             $tax = $this->calculateTax($product->id, $user->state, $user->country);
             $tax_name = $tax->getName();
             $tax_rate = $tax->getValue();
-            $cost = CartController::rounding($controller->calculateTotal($tax_rate, $cost));
+            $cost = rounding($controller->calculateTotal($tax_rate, $cost));
             $currency = $this->getUserCurrencyById($user->id);
             $number = rand(11111111, 99999999);
             $date = \Carbon\Carbon::now();

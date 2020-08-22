@@ -14,6 +14,7 @@ use App\Model\Payment\Plan;
 use App\Model\Product\Price;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
+use Darryldecode\Cart\CartCondition;
 use App\Traits\TaxCalculation;
 use App\User;
 use Bugsnag;
@@ -227,7 +228,7 @@ class CheckoutController extends InfoController
                 $invoice_no = $invoice->number;
                 $items = $invoice->invoiceItem()->get();
                 $processingFee = $this->getProcessingFee($payment_method, $invoice->currency);
-                CartController::updateFinalPrice(new Request(['processing_fee'=>$processingFee]));
+                $this->updateFinalPrice(new Request(['processing_fee'=>$processingFee]));
                 $amount = Cart::getTotal();
 
                 if (Cart::getSubTotal()) {
@@ -244,7 +245,8 @@ class CheckoutController extends InfoController
                     }
                 } else {
                     $action = $this->checkoutAction($invoice);
-
+                    $date = getDateHtml($invoice->date);
+                     $product = $this->product($invoice->id);
                     // $check_product_category = $this->product($invoiceid);
                     $url = '';
                     // if ($check_product_category->category) {
@@ -253,7 +255,6 @@ class CheckoutController extends InfoController
                         'date',
                         'product',
                         'items',
-                        'attributes',
                         'state'
                     ))->render();
                     // }
@@ -268,13 +269,15 @@ class CheckoutController extends InfoController
                 $invoiceid = $request->input('invoice_id');
                 $invoice = $this->invoice->find($invoiceid);
                 $processingFee = $this->getProcessingFee($payment_method, $invoice->currency);
+                $invoice->processing_fee = $processingFee;
+                $invoice->grand_total = intval($invoice->grand_total * (1 + $processingFee / 100));
                 $totalPaid = $invoice->grand_total;
                 if (count($invoice->payment()->get())) {//If partial payment is made
                     $paid = array_sum($invoice->payment()->pluck('amount')->toArray());
                     $totalPaid = $invoice->grand_total - $paid;
                 }
                 \Session::put('totalToBePaid', $totalPaid);
-                $invoice->grand_total = intval($invoice->grand_total * (1 + $processingFee / 100));
+                
                 $invoice_no = $invoice->number;
                 $items = $invoice->invoiceItem()->get();
                 $product = $this->product($invoiceid);
@@ -291,7 +294,12 @@ class CheckoutController extends InfoController
                     } else {
                         \Event::dispatch(new \App\Events\PaymentGateway(['request' => $request, 'amount'=> $totalPaid, 'invoice' => $invoice]));
                     }
-                    $url = '';
+                } else {
+                    $control = new \App\Http\Controllers\Order\RenewController();
+                    $control->successRenew($invoice);
+                    $payment = new \App\Http\Controllers\Order\InvoiceController();
+                    $payment->postRazorpayPayment($invoice);
+                     $url = '';
                     // if ($check_product_category->category) {
                     $url = view('themes.default1.front.postCheckoutTemplate', compact(
                         'invoice',
@@ -304,13 +312,7 @@ class CheckoutController extends InfoController
                     // }
 
                     \Cart::clear();
-
                     return redirect()->back()->with('success', $url);
-                } else {
-                    $control = new \App\Http\Controllers\Order\RenewController();
-                    $control->successRenew($invoice);
-                    $payment = new \App\Http\Controllers\Order\InvoiceController();
-                    $payment->postRazorpayPayment($invoice);
                 }
             }
         } catch (\Exception $ex) {
@@ -324,13 +326,33 @@ class CheckoutController extends InfoController
     private function getProcessingFee($paymentMethod, $currency)
     {
         try {
-            if ($paymentMethod) {
-                return $paymentMethod == 'razorpay' ? 0 : \DB::table(strtolower($paymentMethod))->where('currencies', $currency)->value('processing_fee');
-            }
+
+             if($paymentMethod) {
+            return $paymentMethod == 'razorpay' ? 0 : \DB::table(strtolower($paymentMethod))->where('currencies', $currency)->value('processing_fee');
+        }
+
         } catch (\Exception $e) {
             throw new \Exception('Invalid modification of data');
         }
     }
+
+
+    public static function updateFinalPrice(Request $request)
+    {
+        $value = '0%' ;
+        if($request->input('processing_fee')) {
+             $value = $request->input('processing_fee').'%';
+        }
+       
+        $updateValue = new CartCondition([
+            'name'   => 'Processing fee',
+            'type'   => 'fee',
+            'target' => 'total',
+            'value'  => $value,
+        ]);
+        \Cart::condition($updateValue);
+    }
+
 
     public function checkregularPaymentOrRenewal($invoiceid)
     {
@@ -352,6 +374,7 @@ class CheckoutController extends InfoController
             //get elements from invoice
             $invoice_number = $invoice->number;
             $invoice_id = $invoice->id;
+
             foreach (\Cart::getConditionsByType('fee') as $value) {
                 $invoice->processing_fee = $value->getValue();
             }

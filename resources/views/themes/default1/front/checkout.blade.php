@@ -59,6 +59,7 @@ $cartSubtotalWithoutCondition = 0;
                             </tr>
                         </thead>
                         <tbody>
+                              {{Cart::removeCartCondition('Processing fee')}}
                             @forelse($content as $item)
 
                             @php
@@ -246,7 +247,7 @@ $cartSubtotalWithoutCondition = 0;
                     <td>
                         <strong class="text-dark">
                             <span class="amount">
-                                    {{Cart::removeCartCondition('Processing fee')}}
+                                  
                                   <div>{{currencyFormat(\Cart::getTotal(),$code = $item->attributes->currency)}} </div>
                             </span>
                         </strong>

@@ -235,6 +235,72 @@ class TemplateController extends BaseTemplateController
         }
     }
 
+
+    public function mailing($from, $to, $data, $subject, $replace = [],
+     $type = '', $bcc = [], $fromname = '', $toname = '', $cc = [], $attach = [])
+    {
+        try {
+            $transform = [];
+            $page_controller = new \App\Http\Controllers\Front\PageController();
+            $transform[0] = $replace;
+            $data = $page_controller->transform($type, $data, $transform);
+            $settings = \App\Model\Common\Setting::find(1);
+            $fromname = $settings->company;
+            \Mail::send('emails.mail', ['data' => $data], function ($m) use ($from, $to, $subject, $fromname, $toname, $cc, $attach, $bcc) {
+                $m->from($from, $fromname);
+
+                $m->to($to, $toname)->subject($subject);
+
+                /* if cc is need  */
+                if (! empty($cc)) {
+                    foreach ($cc as $address) {
+                        $m->cc($address['address'], $address['name']);
+                    }
+                }
+
+                if (! empty($bcc)) {
+                    foreach ($bcc as $address) {
+                        $m->bcc($address);
+                    }
+                }
+
+                /*  if attachment is need */
+                if (! empty($attach)) {
+                    foreach ($attach as $file) {
+                        $m->attach($file['path'], $options = []);
+                    }
+                }
+            });
+            \DB::table('email_log')->insert([
+                'date'       => date('Y-m-d H:i:s'),
+                'from'       => $from,
+                'to'         => $to,
+                'subject'   => $subject,
+                'body'       => $data,
+                'status'     => 'success',
+            ]);
+
+            return 'success';
+        } catch (\Exception $ex) {
+            \DB::table('email_log')->insert([
+                'date'     => date('Y-m-d H:i:s'),
+                'from'     => $from,
+                'to'       => $to,
+                'subject' => $subject,
+                'body'     => $data,
+                'status'   => 'failed',
+            ]);
+            Bugsnag::notifyException($ex);
+            if ($ex instanceof \Swift_TransportException) {
+                throw new \Exception('We can not reach to this email address');
+            }
+
+            throw new \Exception('mailing problem');
+        }
+    }
+
+   
+
     public function plans($url, $id)
     {
         $plan = new Plan();
@@ -258,8 +324,7 @@ class TemplateController extends BaseTemplateController
             $price = '';
             $plan = new Plan();
             $plans = $plan->where('product', $id)->get();
-            $cart_controller = new \App\Http\Controllers\Front\CartController();
-            $currencyAndSymbol = $cart_controller->currency();
+            $currencyAndSymbol = userCurrency();
             $prices = [];
             if ($plans->count() > 0) {
                 foreach ($plans as $value) {

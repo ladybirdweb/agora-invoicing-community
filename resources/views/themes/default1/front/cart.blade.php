@@ -41,14 +41,20 @@ $cartTotal = 0;
                                         <table class="shop_table cart">
                                         @forelse($cartCollection as $item)
                                           @php
+                                          if(\Auth::check()) {
                                           Cart::clearItemConditions($item->id);
+                                          if(\Session::has('code')) {
                                           \Session::forget('code');
                                           \Session::forget('usage');
-                                          $cartcont = new \App\Http\Controllers\Front\CartController();
+                                           $cartcont = new \App\Http\Controllers\Front\CartController();
                                            \Cart::update($item->id, [
                                             'price'      => $cartcont->planCost($item->id, \Auth::user()->id),
                                           ]);
-                                          $cartTotal += $item->getPriceSum();; 
+                                        }
+                                        
+                                         
+                                        }
+                                           $cartTotal += $item->getPriceSum();; 
                                             $domain = [];
 
                                             if ($item->associatedModel->require_domain) {
@@ -112,7 +118,6 @@ $cartTotal = 0;
                                                     <td class="product-price">
                                                          <span class="amount">
                                                             {{currencyFormat($item->price,$code = $item->attributes->currency)}}
-                                                         <!-- {{\App\Http\Controllers\Front\CartController::rounding($item->getPriceSumWithConditions())}} -->
                                                      </span>
                                                        <div id="response"></div>
                                                     </td>

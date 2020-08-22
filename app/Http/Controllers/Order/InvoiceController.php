@@ -211,7 +211,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 ->first();
             $invoiceItems = $invoice->invoiceItem()->get();
             $user = $this->user->find($invoice->user_id);
-            $currency = CartController::currency($user->id);
+            $currency = userCurrency($user->id);
             $order = Order::getOrderLink($invoice->order_id, 'orders');
             $symbol = $currency['symbol'];
 
@@ -303,8 +303,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $quantity = $cart->quantity;
             $agents = $cart->attributes->agents;
             $domain = $this->domain($cart->id);
-            $cart_cont = new \App\Http\Controllers\Front\CartController();
-            if ($cart_cont->checkPlanSession() === true) {
+            if (checkPlanSession()) {
                 $planid = \Session::get('plan');
             }
             if ($planid == 0) {
@@ -367,8 +366,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 $domain = $request->input('domain');
                 $this->setDomain($productid, $domain);
             }
-            $controller = new \App\Http\Controllers\Front\CartController();
-            $userCurrency = $controller->currency($user_id);
+            $userCurrency = userCurrency($user_id);
             $currency = $userCurrency['currency'];
             $number = rand(11111111, 99999999);
             $date = \Carbon\Carbon::parse($request->input('date'));
@@ -381,7 +379,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             }
             $user = User::where('id', $user_id)->select('state', 'country')->first();
             $tax = $this->calculateTax($product->id, $user->state, $user->country, true);
-            $grand_total = CartController::rounding($this->calculateTotal($tax['value'], $grandTotalAfterCoupon));
+            $grand_total = rounding($this->calculateTotal($tax['value'], $grandTotalAfterCoupon));
             $invoice = Invoice::create(['user_id' => $user_id, 'number' => $number, 'date' => $date,
                 'coupon_code'  => $couponTotal['code'], 'discount'=>$couponTotal['value'], 'discount_mode'  => $couponTotal['mode'], 'grand_total'  => $grand_total,  'currency'  => $currency, 'status' => $status, 'description' => $description, ]);
 
@@ -411,7 +409,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 'product_name'   => $product->name,
                 'regular_price'  => $price,
                 'quantity'       => $qty,
-                'subtotal'       => \App\Http\Controllers\Front\CartController::rounding($subtotal),
+                'subtotal'       => rounding($subtotal),
                 'tax_name'       => $tax_name,
                 'tax_percentage' => $tax_rate,
                 'domain'         => $domain,
@@ -475,9 +473,8 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             if (! $user) {
                 return redirect()->back()->with('fails', 'No User');
             }
-            $cont = new \App\Http\Controllers\Front\CartController();
             $order = getOrderLink($invoice->order_id);
-            $currency = $cont->currency($user->id);
+            $currency = userCurrency($user->id);
             $gst = TaxOption::select('tax_enable', 'Gst_No')->first();
             $symbol = $currency['currency'];
             ini_set('max_execution_time', '0');

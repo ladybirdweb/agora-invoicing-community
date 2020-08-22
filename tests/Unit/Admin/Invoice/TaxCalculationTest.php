@@ -2,28 +2,26 @@
 
 namespace Tests\Unit\Admin\Invoice;
 
-use PHPUnit\Framework\TestCase;
-use App\Model\Payment\TaxOption;
-use App\Model\Payment\TaxClass;
+use App\Http\Controllers\Order\InvoiceController;
 use App\Model\License\LicenseType;
+use App\Model\Payment\TaxClass;
+use App\Model\Payment\TaxOption;
+use App\Model\Payment\TaxProductRelation;
 use App\Model\Product\Product;
 use App\User;
-use Tests\DBTestCase;
-use App\Model\Payment\TaxProductRelation;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use App\Http\Controllers\Order\InvoiceController;
+use Tests\DBTestCase;
 
 class TaxCalculationTest extends DBTestCase
 {
-	use DatabaseTransactions;
+    use DatabaseTransactions;
 
-	public function setUp(): void
+    public function setUp(): void
     {
         parent::setUp();
         $this->classObject = new InvoiceController();
-
     }
-    
+
     /** @group tax */
     public function test_calculateTax_whenNoTaxIsAppliedOnProduct()
     {
@@ -40,16 +38,15 @@ class TaxCalculationTest extends DBTestCase
     {
         $user = factory(User::class)->create();
         $this->withoutMiddleware();
-        $this->call('POST','taxes/class',['name'=>'Intra State GST', 'tax-name'=>'CGST+SGST','active'=>1]);
-        $this->call('POST','license-type',['name'=>'Download Perpetual']);
+        $this->call('POST', 'taxes/class', ['name'=>'Intra State GST', 'tax-name'=>'CGST+SGST', 'active'=>1]);
+        $this->call('POST', 'license-type', ['name'=>'Download Perpetual']);
         $taxClass = TaxClass::first();
         $licenseType = LicenseType::first();
-        $product = factory(Product::class)->create(['type'=>$licenseType->id,'product_sku'=>'test']);
+        $product = factory(Product::class)->create(['type'=>$licenseType->id, 'product_sku'=>'test']);
         TaxProductRelation::create(['product_id'=>$product->id, 'tax_class_id'=>$taxClass->id]);
         $tax = $this->classObject->calculateTax($product->id, $user->state, $user->country, true);
         $this->assertEquals($tax['name'], 'null');
         $this->assertEquals($tax['value'], '0%');
-      
     }
 
     /** @group tax */
@@ -57,17 +54,16 @@ class TaxCalculationTest extends DBTestCase
     {
         $user = factory(User::class)->create(['state'=>'IN-KA', 'country'=> 'IN']);
         $this->withoutMiddleware();
-        $this->call('POST','taxes/class',['name'=>'Intra State GST', 'tax-name'=>'CGST+SGST','active'=>1]);
-        $this->call('POST','license-type',['name'=>'Download Perpetual']);
+        $this->call('POST', 'taxes/class', ['name'=>'Intra State GST', 'tax-name'=>'CGST+SGST', 'active'=>1]);
+        $this->call('POST', 'license-type', ['name'=>'Download Perpetual']);
         $taxClass = TaxClass::first();
         $licenseType = LicenseType::first();
-        $product = factory(Product::class)->create(['type'=>$licenseType->id,'product_sku'=>'test']);
-        TaxOption::where('id',1)->update(['tax_enable'=> 1]);
+        $product = factory(Product::class)->create(['type'=>$licenseType->id, 'product_sku'=>'test']);
+        TaxOption::where('id', 1)->update(['tax_enable'=> 1]);
         TaxProductRelation::create(['product_id'=>$product->id, 'tax_class_id'=>$taxClass->id]);
         $tax = $this->classObject->calculateTax($product->id, $user->state, $user->country, true);
         $this->assertEquals($tax['name'], 'CGST+SGST');
         $this->assertEquals($tax['value'], '18%');
-      
     }
 
     /** @group tax */
@@ -75,17 +71,16 @@ class TaxCalculationTest extends DBTestCase
     {
         $user = factory(User::class)->create(['state'=>'IN-KA', 'country'=> 'IN']);
         $this->withoutMiddleware();
-        $this->call('POST','taxes/class',['name'=>'Inter State GST', 'tax-name'=>'IGST','active'=>1]);
-        $this->call('POST','license-type',['name'=>'Download Perpetual']);
+        $this->call('POST', 'taxes/class', ['name'=>'Inter State GST', 'tax-name'=>'IGST', 'active'=>1]);
+        $this->call('POST', 'license-type', ['name'=>'Download Perpetual']);
         $taxClass = TaxClass::first();
         $licenseType = LicenseType::first();
-        $product = factory(Product::class)->create(['type'=>$licenseType->id,'product_sku'=>'test']);
-        TaxOption::where('id',1)->update(['tax_enable'=> 1]);
+        $product = factory(Product::class)->create(['type'=>$licenseType->id, 'product_sku'=>'test']);
+        TaxOption::where('id', 1)->update(['tax_enable'=> 1]);
         TaxProductRelation::create(['product_id'=>$product->id, 'tax_class_id'=>$taxClass->id]);
         $tax = $this->classObject->calculateTax($product->id, $user->state, $user->country, true);
         $this->assertEquals($tax['name'], 'null');
         $this->assertEquals($tax['value'], '0%');
-      
     }
 
     /** @group tax */
@@ -93,17 +88,16 @@ class TaxCalculationTest extends DBTestCase
     {
         $user = factory(User::class)->create(['state'=>'IN-DL', 'country'=> 'IN']);
         $this->withoutMiddleware();
-        $this->call('POST','taxes/class',['name'=>'Inter State GST', 'tax-name'=>'IGST','active'=>1]);
-        $this->call('POST','license-type',['name'=>'Download Perpetual']);
+        $this->call('POST', 'taxes/class', ['name'=>'Inter State GST', 'tax-name'=>'IGST', 'active'=>1]);
+        $this->call('POST', 'license-type', ['name'=>'Download Perpetual']);
         $taxClass = TaxClass::first();
         $licenseType = LicenseType::first();
-        $product = factory(Product::class)->create(['type'=>$licenseType->id,'product_sku'=>'test']);
-        TaxOption::where('id',1)->update(['tax_enable'=> 1]);
+        $product = factory(Product::class)->create(['type'=>$licenseType->id, 'product_sku'=>'test']);
+        TaxOption::where('id', 1)->update(['tax_enable'=> 1]);
         TaxProductRelation::create(['product_id'=>$product->id, 'tax_class_id'=>$taxClass->id]);
         $tax = $this->classObject->calculateTax($product->id, $user->state, $user->country, true);
         $this->assertEquals($tax['name'], 'IGST');
         $this->assertEquals($tax['value'], '18%');
-      
     }
 
     /** @group tax */
@@ -111,17 +105,16 @@ class TaxCalculationTest extends DBTestCase
     {
         $user = factory(User::class)->create(['state'=>'IN-DL', 'country'=> 'IN']);
         $this->withoutMiddleware();
-        $this->call('POST','taxes/class',['name'=>'Inter State GST', 'tax-name'=>'IGST','active'=>0]);
-        $this->call('POST','license-type',['name'=>'Download Perpetual']);
+        $this->call('POST', 'taxes/class', ['name'=>'Inter State GST', 'tax-name'=>'IGST', 'active'=>0]);
+        $this->call('POST', 'license-type', ['name'=>'Download Perpetual']);
         $taxClass = TaxClass::first();
         $licenseType = LicenseType::first();
-        $product = factory(Product::class)->create(['type'=>$licenseType->id,'product_sku'=>'test']);
-        TaxOption::where('id',1)->update(['tax_enable'=> 1]);
+        $product = factory(Product::class)->create(['type'=>$licenseType->id, 'product_sku'=>'test']);
+        TaxOption::where('id', 1)->update(['tax_enable'=> 1]);
         TaxProductRelation::create(['product_id'=>$product->id, 'tax_class_id'=>$taxClass->id]);
         $tax = $this->classObject->calculateTax($product->id, $user->state, $user->country, true);
         $this->assertEquals($tax['name'], 'null');
         $this->assertEquals($tax['value'], '0%');
-      
     }
 
     /** @group tax */
@@ -129,17 +122,16 @@ class TaxCalculationTest extends DBTestCase
     {
         $user = factory(User::class)->create(['state'=>'IN-DL', 'country'=> 'IN']);
         $this->withoutMiddleware();
-        $this->call('POST','taxes/class',['name'=>'Union Territory GST', 'tax-name'=>'CGST+UTGST','active'=>1]);
-        $this->call('POST','license-type',['name'=>'Download Perpetual']);
+        $this->call('POST', 'taxes/class', ['name'=>'Union Territory GST', 'tax-name'=>'CGST+UTGST', 'active'=>1]);
+        $this->call('POST', 'license-type', ['name'=>'Download Perpetual']);
         $taxClass = TaxClass::first();
         $licenseType = LicenseType::first();
-        $product = factory(Product::class)->create(['type'=>$licenseType->id,'product_sku'=>'test']);
-        TaxOption::where('id',1)->update(['tax_enable'=> 1]);
+        $product = factory(Product::class)->create(['type'=>$licenseType->id, 'product_sku'=>'test']);
+        TaxOption::where('id', 1)->update(['tax_enable'=> 1]);
         TaxProductRelation::create(['product_id'=>$product->id, 'tax_class_id'=>$taxClass->id]);
         $tax = $this->classObject->calculateTax($product->id, $user->state, $user->country, true);
         $this->assertEquals($tax['name'], 'null');
         $this->assertEquals($tax['value'], '0%');
-      
     }
 
     /** @group tax */
@@ -147,17 +139,16 @@ class TaxCalculationTest extends DBTestCase
     {
         $user = factory(User::class)->create(['state'=>'IN-AN', 'country'=> 'IN']);
         $this->withoutMiddleware();
-        $this->call('POST','taxes/class',['name'=>'Union Territory GST', 'tax-name'=>'CGST+UTGST','active'=>1]);
-        $this->call('POST','license-type',['name'=>'Download Perpetual']);
+        $this->call('POST', 'taxes/class', ['name'=>'Union Territory GST', 'tax-name'=>'CGST+UTGST', 'active'=>1]);
+        $this->call('POST', 'license-type', ['name'=>'Download Perpetual']);
         $taxClass = TaxClass::first();
         $licenseType = LicenseType::first();
-        $product = factory(Product::class)->create(['type'=>$licenseType->id,'product_sku'=>'test']);
-        TaxOption::where('id',1)->update(['tax_enable'=> 1]);
+        $product = factory(Product::class)->create(['type'=>$licenseType->id, 'product_sku'=>'test']);
+        TaxOption::where('id', 1)->update(['tax_enable'=> 1]);
         TaxProductRelation::create(['product_id'=>$product->id, 'tax_class_id'=>$taxClass->id]);
         $tax = $this->classObject->calculateTax($product->id, $user->state, $user->country, true);
         $this->assertEquals($tax['name'], 'CGST+UTGST');
         $this->assertEquals($tax['value'], '18%');
-      
     }
 
     /** @group tax */
@@ -165,17 +156,16 @@ class TaxCalculationTest extends DBTestCase
     {
         $user = factory(User::class)->create(['state'=>'IN-DL', 'country'=> 'IN']);
         $this->withoutMiddleware();
-        $this->call('POST','taxes/class',['name'=>'Others', 'tax-name'=>'VAT','active'=>1,'rate'=>'20']);
-        $this->call('POST','license-type',['name'=>'Download Perpetual']);
+        $this->call('POST', 'taxes/class', ['name'=>'Others', 'tax-name'=>'VAT', 'active'=>1, 'rate'=>'20']);
+        $this->call('POST', 'license-type', ['name'=>'Download Perpetual']);
         $taxClass = TaxClass::first();
         $licenseType = LicenseType::first();
-        $product = factory(Product::class)->create(['type'=>$licenseType->id,'product_sku'=>'test']);
-        TaxOption::where('id',1)->update(['tax_enable'=> 1]);
+        $product = factory(Product::class)->create(['type'=>$licenseType->id, 'product_sku'=>'test']);
+        TaxOption::where('id', 1)->update(['tax_enable'=> 1]);
         TaxProductRelation::create(['product_id'=>$product->id, 'tax_class_id'=>$taxClass->id]);
         $tax = $this->classObject->calculateTax($product->id, $user->state, $user->country, true);
         $this->assertEquals($tax['name'], 'null');
         $this->assertEquals($tax['value'], '0%');
-      
     }
 
     /** @group tax */
@@ -183,17 +173,16 @@ class TaxCalculationTest extends DBTestCase
     {
         $user = factory(User::class)->create(['state'=>'AU-NT', 'country'=> 'AU']);
         $this->withoutMiddleware();
-        $this->call('POST','taxes/class',['name'=>'Others', 'tax-name'=>'VAT','active'=>1,'rate'=>'20']);
-        $this->call('POST','license-type',['name'=>'Download Perpetual']);
+        $this->call('POST', 'taxes/class', ['name'=>'Others', 'tax-name'=>'VAT', 'active'=>1, 'rate'=>'20']);
+        $this->call('POST', 'license-type', ['name'=>'Download Perpetual']);
         $taxClass = TaxClass::first();
         $licenseType = LicenseType::first();
-        $product = factory(Product::class)->create(['type'=>$licenseType->id,'product_sku'=>'test']);
-        TaxOption::where('id',1)->update(['tax_enable'=> 1]);
+        $product = factory(Product::class)->create(['type'=>$licenseType->id, 'product_sku'=>'test']);
+        TaxOption::where('id', 1)->update(['tax_enable'=> 1]);
         TaxProductRelation::create(['product_id'=>$product->id, 'tax_class_id'=>$taxClass->id]);
         $tax = $this->classObject->calculateTax($product->id, $user->state, $user->country, true);
         $this->assertEquals($tax['name'], 'VAT');
         $this->assertEquals($tax['value'], '20%');
-      
     }
 
     /** @group tax */
@@ -201,17 +190,16 @@ class TaxCalculationTest extends DBTestCase
     {
         $user = factory(User::class)->create(['state'=>'AU-NT', 'country'=> 'AU']);
         $this->withoutMiddleware();
-        $this->call('POST','taxes/class',['name'=>'Others', 'tax-name'=>'VAT','active'=>0,'rate'=>'20']);
-        $this->call('POST','license-type',['name'=>'Download Perpetual']);
+        $this->call('POST', 'taxes/class', ['name'=>'Others', 'tax-name'=>'VAT', 'active'=>0, 'rate'=>'20']);
+        $this->call('POST', 'license-type', ['name'=>'Download Perpetual']);
         $taxClass = TaxClass::first();
         $licenseType = LicenseType::first();
-        $product = factory(Product::class)->create(['type'=>$licenseType->id,'product_sku'=>'test']);
-        TaxOption::where('id',1)->update(['tax_enable'=> 1]);
+        $product = factory(Product::class)->create(['type'=>$licenseType->id, 'product_sku'=>'test']);
+        TaxOption::where('id', 1)->update(['tax_enable'=> 1]);
         TaxProductRelation::create(['product_id'=>$product->id, 'tax_class_id'=>$taxClass->id]);
         $tax = $this->classObject->calculateTax($product->id, $user->state, $user->country, true);
         $this->assertEquals($tax['name'], 'null');
         $this->assertEquals($tax['value'], '0%');
-      
     }
 
     /** @group tax */
@@ -219,17 +207,16 @@ class TaxCalculationTest extends DBTestCase
     {
         $user = factory(User::class)->create(['state'=>'AU-NT', 'country'=> 'AU']);
         $this->withoutMiddleware();
-        $this->call('POST','taxes/class',['name'=>'Others', 'tax-name'=>'VAT','active'=>0,'rate'=>'20','country'=>'AF', 'state'=>'AF-BDG']);
-        $this->call('POST','license-type',['name'=>'Download Perpetual']);
+        $this->call('POST', 'taxes/class', ['name'=>'Others', 'tax-name'=>'VAT', 'active'=>0, 'rate'=>'20', 'country'=>'AF', 'state'=>'AF-BDG']);
+        $this->call('POST', 'license-type', ['name'=>'Download Perpetual']);
         $taxClass = TaxClass::first();
         $licenseType = LicenseType::first();
-        $product = factory(Product::class)->create(['type'=>$licenseType->id,'product_sku'=>'test']);
-        TaxOption::where('id',1)->update(['tax_enable'=> 1]);
+        $product = factory(Product::class)->create(['type'=>$licenseType->id, 'product_sku'=>'test']);
+        TaxOption::where('id', 1)->update(['tax_enable'=> 1]);
         TaxProductRelation::create(['product_id'=>$product->id, 'tax_class_id'=>$taxClass->id]);
         $tax = $this->classObject->calculateTax($product->id, $user->state, $user->country, true);
         $this->assertEquals($tax['name'], 'null');
         $this->assertEquals($tax['value'], '0%');
-      
     }
 
     /** @group tax */
@@ -237,17 +224,16 @@ class TaxCalculationTest extends DBTestCase
     {
         $user = factory(User::class)->create(['state'=>'AU-NT', 'country'=> 'AU']);
         $this->withoutMiddleware();
-        $this->call('POST','taxes/class',['name'=>'Others', 'tax-name'=>'VAT','active'=>1,'rate'=>'20','country'=>'AU', 'state'=>'AU-NT']);
-        $this->call('POST','license-type',['name'=>'Download Perpetual']);
+        $this->call('POST', 'taxes/class', ['name'=>'Others', 'tax-name'=>'VAT', 'active'=>1, 'rate'=>'20', 'country'=>'AU', 'state'=>'AU-NT']);
+        $this->call('POST', 'license-type', ['name'=>'Download Perpetual']);
         $taxClass = TaxClass::first();
         $licenseType = LicenseType::first();
-        $product = factory(Product::class)->create(['type'=>$licenseType->id,'product_sku'=>'test']);
-        TaxOption::where('id',1)->update(['tax_enable'=> 1]);
+        $product = factory(Product::class)->create(['type'=>$licenseType->id, 'product_sku'=>'test']);
+        TaxOption::where('id', 1)->update(['tax_enable'=> 1]);
         TaxProductRelation::create(['product_id'=>$product->id, 'tax_class_id'=>$taxClass->id]);
         $tax = $this->classObject->calculateTax($product->id, $user->state, $user->country, true);
         $this->assertEquals($tax['name'], 'VAT');
         $this->assertEquals($tax['value'], '20%');
-      
     }
 
     /** @group tax */
@@ -255,17 +241,16 @@ class TaxCalculationTest extends DBTestCase
     {
         $user = factory(User::class)->create(['state'=>'AU-NT', 'country'=> 'AU']);
         $this->withoutMiddleware();
-        $this->call('POST','taxes/class',['name'=>'Others', 'tax-name'=>'VAT','active'=>1,'rate'=>'20','country'=>'AU', 'state'=>'AU-NSW']);
-        $this->call('POST','license-type',['name'=>'Download Perpetual']);
+        $this->call('POST', 'taxes/class', ['name'=>'Others', 'tax-name'=>'VAT', 'active'=>1, 'rate'=>'20', 'country'=>'AU', 'state'=>'AU-NSW']);
+        $this->call('POST', 'license-type', ['name'=>'Download Perpetual']);
         $taxClass = TaxClass::first();
         $licenseType = LicenseType::first();
-        $product = factory(Product::class)->create(['type'=>$licenseType->id,'product_sku'=>'test']);
-        TaxOption::where('id',1)->update(['tax_enable'=> 1]);
+        $product = factory(Product::class)->create(['type'=>$licenseType->id, 'product_sku'=>'test']);
+        TaxOption::where('id', 1)->update(['tax_enable'=> 1]);
         TaxProductRelation::create(['product_id'=>$product->id, 'tax_class_id'=>$taxClass->id]);
         $tax = $this->classObject->calculateTax($product->id, $user->state, $user->country, true);
         $this->assertEquals($tax['name'], 'null');
         $this->assertEquals($tax['value'], '0%');
-      
     }
 
     /** @group tax */
@@ -273,12 +258,12 @@ class TaxCalculationTest extends DBTestCase
     {
         $user = factory(User::class)->create(['state'=>'AU-NT', 'country'=> 'AU']);
         $this->withoutMiddleware();
-        $this->call('POST','taxes/class',['name'=>'Others', 'tax-name'=>'VAT','active'=>1,'rate'=>'20','country'=>'AU', 'state'=>'']);
-        $this->call('POST','license-type',['name'=>'Download Perpetual']);
+        $this->call('POST', 'taxes/class', ['name'=>'Others', 'tax-name'=>'VAT', 'active'=>1, 'rate'=>'20', 'country'=>'AU', 'state'=>'']);
+        $this->call('POST', 'license-type', ['name'=>'Download Perpetual']);
         $taxClass = TaxClass::first();
         $licenseType = LicenseType::first();
-        $product = factory(Product::class)->create(['type'=>$licenseType->id,'product_sku'=>'test']);
-        TaxOption::where('id',1)->update(['tax_enable'=> 1]);
+        $product = factory(Product::class)->create(['type'=>$licenseType->id, 'product_sku'=>'test']);
+        TaxOption::where('id', 1)->update(['tax_enable'=> 1]);
         TaxProductRelation::create(['product_id'=>$product->id, 'tax_class_id'=>$taxClass->id]);
         $tax = $this->classObject->calculateTax($product->id, $user->state, $user->country, true);
         $this->assertEquals($tax['name'], 'VAT');
@@ -290,12 +275,12 @@ class TaxCalculationTest extends DBTestCase
     {
         $user = factory(User::class)->create(['state'=>'AU-NT', 'country'=> 'AU']);
         $this->withoutMiddleware();
-        $this->call('POST','taxes/class',['name'=>'Others', 'tax-name'=>'VAT','active'=>0,'rate'=>'20','country'=>'AU', 'state'=>'']);
-        $this->call('POST','license-type',['name'=>'Download Perpetual']);
+        $this->call('POST', 'taxes/class', ['name'=>'Others', 'tax-name'=>'VAT', 'active'=>0, 'rate'=>'20', 'country'=>'AU', 'state'=>'']);
+        $this->call('POST', 'license-type', ['name'=>'Download Perpetual']);
         $taxClass = TaxClass::first();
         $licenseType = LicenseType::first();
-        $product = factory(Product::class)->create(['type'=>$licenseType->id,'product_sku'=>'test']);
-        TaxOption::where('id',1)->update(['tax_enable'=> 1]);
+        $product = factory(Product::class)->create(['type'=>$licenseType->id, 'product_sku'=>'test']);
+        TaxOption::where('id', 1)->update(['tax_enable'=> 1]);
         TaxProductRelation::create(['product_id'=>$product->id, 'tax_class_id'=>$taxClass->id]);
         $tax = $this->classObject->calculateTax($product->id, $user->state, $user->country, true);
         $this->assertEquals($tax['name'], 'null');
@@ -307,12 +292,12 @@ class TaxCalculationTest extends DBTestCase
     {
         $user = factory(User::class)->create(['state'=>'AU-NT', 'country'=> 'AU']);
         $this->withoutMiddleware();
-        $this->call('POST','taxes/class',['name'=>'Others', 'tax-name'=>'VAT','active'=>1,'rate'=>'20','country'=>'AU', 'state'=>'']);
-        $this->call('POST','license-type',['name'=>'Download Perpetual']);
+        $this->call('POST', 'taxes/class', ['name'=>'Others', 'tax-name'=>'VAT', 'active'=>1, 'rate'=>'20', 'country'=>'AU', 'state'=>'']);
+        $this->call('POST', 'license-type', ['name'=>'Download Perpetual']);
         $taxClass = TaxClass::first();
         $licenseType = LicenseType::first();
-        $product = factory(Product::class)->create(['type'=>$licenseType->id,'product_sku'=>'test']);
-        TaxOption::where('id',1)->update(['tax_enable'=> 1]);
+        $product = factory(Product::class)->create(['type'=>$licenseType->id, 'product_sku'=>'test']);
+        TaxOption::where('id', 1)->update(['tax_enable'=> 1]);
         $tax = $this->classObject->calculateTax($product->id, $user->state, $user->country, true);
         $this->assertEquals($tax['name'], 'null');
         $this->assertEquals($tax['value'], '0%');
@@ -323,12 +308,12 @@ class TaxCalculationTest extends DBTestCase
     {
         $user = factory(User::class)->create(['state'=>'AU-NT', 'country'=> 'AU']);
         $this->withoutMiddleware();
-        $this->call('POST','taxes/class',['name'=>'Others', 'tax-name'=>'VAT','active'=>1,'rate'=>'20','country'=>'', 'state'=>'']);
-        $this->call('POST','license-type',['name'=>'Download Perpetual']);
+        $this->call('POST', 'taxes/class', ['name'=>'Others', 'tax-name'=>'VAT', 'active'=>1, 'rate'=>'20', 'country'=>'', 'state'=>'']);
+        $this->call('POST', 'license-type', ['name'=>'Download Perpetual']);
         $taxClass = TaxClass::first();
         $licenseType = LicenseType::first();
-        $product = factory(Product::class)->create(['type'=>$licenseType->id,'product_sku'=>'test']);
-        TaxOption::where('id',1)->update(['tax_enable'=> 1]);
+        $product = factory(Product::class)->create(['type'=>$licenseType->id, 'product_sku'=>'test']);
+        TaxOption::where('id', 1)->update(['tax_enable'=> 1]);
         TaxProductRelation::create(['product_id'=>$product->id, 'tax_class_id'=>$taxClass->id]);
         $tax = $this->classObject->calculateTax($product->id, $user->state, $user->country, true);
         $this->assertEquals($tax['name'], 'VAT');
@@ -340,12 +325,12 @@ class TaxCalculationTest extends DBTestCase
     {
         $user = factory(User::class)->create(['state'=>'', 'country'=> 'AU']);
         $this->withoutMiddleware();
-        $this->call('POST','taxes/class',['name'=>'Others', 'tax-name'=>'VAT','active'=>1,'rate'=>'20','country'=>'', 'state'=>'']);
-        $this->call('POST','license-type',['name'=>'Download Perpetual']);
+        $this->call('POST', 'taxes/class', ['name'=>'Others', 'tax-name'=>'VAT', 'active'=>1, 'rate'=>'20', 'country'=>'', 'state'=>'']);
+        $this->call('POST', 'license-type', ['name'=>'Download Perpetual']);
         $taxClass = TaxClass::first();
         $licenseType = LicenseType::first();
-        $product = factory(Product::class)->create(['type'=>$licenseType->id,'product_sku'=>'test']);
-        TaxOption::where('id',1)->update(['tax_enable'=> 1]);
+        $product = factory(Product::class)->create(['type'=>$licenseType->id, 'product_sku'=>'test']);
+        TaxOption::where('id', 1)->update(['tax_enable'=> 1]);
         TaxProductRelation::create(['product_id'=>$product->id, 'tax_class_id'=>$taxClass->id]);
         $tax = $this->classObject->calculateTax($product->id, $user->state, $user->country, true);
         $this->assertEquals($tax['name'], 'VAT');
@@ -357,11 +342,11 @@ class TaxCalculationTest extends DBTestCase
     {
         $user = factory(User::class)->create(['state'=>'IN-KA', 'country'=> 'IN']);
         $this->withoutMiddleware();
-        $this->call('POST','taxes/class',['name'=>'Others', 'tax-name'=>'VAT','active'=>1,'rate'=>'20','country'=>'', 'state'=>'']);
-        $this->call('POST','license-type',['name'=>'Download Perpetual']);
+        $this->call('POST', 'taxes/class', ['name'=>'Others', 'tax-name'=>'VAT', 'active'=>1, 'rate'=>'20', 'country'=>'', 'state'=>'']);
+        $this->call('POST', 'license-type', ['name'=>'Download Perpetual']);
         $taxClass = TaxClass::first();
         $licenseType = LicenseType::first();
-        $product = factory(Product::class)->create(['type'=>$licenseType->id,'product_sku'=>'test']);
+        $product = factory(Product::class)->create(['type'=>$licenseType->id, 'product_sku'=>'test']);
         TaxProductRelation::create(['product_id'=>$product->id, 'tax_class_id'=>$taxClass->id]);
         $tax = $this->classObject->calculateTax($product->id, $user->state, $user->country, true);
         $this->assertEquals($tax['name'], 'VAT');
@@ -373,11 +358,11 @@ class TaxCalculationTest extends DBTestCase
     {
         $user = factory(User::class)->create(['state'=>'IN-KA', 'country'=> 'IN']);
         $this->withoutMiddleware();
-        $this->call('POST','taxes/class',['name'=>'Others', 'tax-name'=>'VAT','active'=>1,'rate'=>'20','country'=>'AU', 'state'=>'']);
-        $this->call('POST','license-type',['name'=>'Download Perpetual']);
+        $this->call('POST', 'taxes/class', ['name'=>'Others', 'tax-name'=>'VAT', 'active'=>1, 'rate'=>'20', 'country'=>'AU', 'state'=>'']);
+        $this->call('POST', 'license-type', ['name'=>'Download Perpetual']);
         $taxClass = TaxClass::first();
         $licenseType = LicenseType::first();
-        $product = factory(Product::class)->create(['type'=>$licenseType->id,'product_sku'=>'test']);
+        $product = factory(Product::class)->create(['type'=>$licenseType->id, 'product_sku'=>'test']);
         TaxProductRelation::create(['product_id'=>$product->id, 'tax_class_id'=>$taxClass->id]);
         $tax = $this->classObject->calculateTax($product->id, $user->state, $user->country, true);
         $this->assertEquals($tax['name'], 'null');

@@ -2,19 +2,14 @@
 
 namespace App\Http\Controllers\Front;
 
-use App\Model\Common\Country;
 use App\Http\Controllers\Controller;
-use App\Model\Payment\Plan;
-use App\Model\Payment\Tax;
 use App\Model\Product\Product;
-use Bugsnag;
 use Cart;
 use Illuminate\Http\Request;
-use Session;
 
 class BaseCartController extends Controller
 {
-   /**
+    /**
      * Reduce No. of Agents When Minus button Is Clicked.
      *
      * @param Request $request Get productid , Product quantity ,Price,Currency,Symbol as Request
@@ -62,9 +57,11 @@ class BaseCartController extends Controller
                     'attributes' => ['agents' =>  $cartValues['agtqty'], 'currency'=> $cartValues['currency'], 'symbol'=>$cartValues['symbol']],
                 ]);
             }
+
             return successResponse('Cart updated successfully');
         } catch (\Exception $ex) {
             dd($ex);
+
             return errorResponse($ex->getMessage());
         }
     }
@@ -116,7 +113,7 @@ class BaseCartController extends Controller
                 throw new \Exception('Cannot Modify Quantity');
             }
         } catch (\Exception $ex) {
-             throw new \Exception($ex->getMessage());
+            throw new \Exception($ex->getMessage());
         }
     }
 
@@ -147,11 +144,7 @@ class BaseCartController extends Controller
                 throw new \Exception('Cannot Modify Quantity');
             }
         } catch (\Exception $ex) {
-             throw new \Exception($ex->getMessage());
+            throw new \Exception($ex->getMessage());
         }
     }
-
-
-    
-
 }

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Common\TemplateController;
-use App\Model\Common\Country;
 use App\Model\Common\Setting;
 use App\Model\Payment\Currency;
 use App\Model\Payment\Plan;
@@ -14,13 +13,11 @@ use App\Model\Payment\TaxOption;
 use App\Model\Product\Product;
 use Bugsnag;
 use Cart;
-use Darryldecode\Cart\CartCondition;
 use Illuminate\Http\Request;
 use Session;
 
 class CartController extends BaseCartController
 {
-
     public $templateController;
     public $product;
     public $currency;
@@ -119,6 +116,7 @@ class CartController extends BaseCartController
             $actualPrice = $this->cost($product->id);
             $items = ['id'     => $id, 'name' => $product->name, 'price' => $actualPrice,
                 'quantity'    => $qty, 'attributes' => ['currency' => $currency['currency'], 'symbol'=>$currency['symbol'], 'agents'=> $agents], 'associatedModel' => $product, ];
+
             return $items;
         } catch (\Exception $e) {
             app('log')->error($e->getMessage());
@@ -158,7 +156,6 @@ class CartController extends BaseCartController
         }
     }
 
-
     public function cartRemove(Request $request)
     {
         $id = $request->input('id');
@@ -189,10 +186,6 @@ class CartController extends BaseCartController
 
         return redirect('show/cart');
     }
-
-
-
-    
 
     /**
      * @param int $productid
@@ -233,7 +226,7 @@ class CartController extends BaseCartController
             $currency = userCurrency($userid);
             if (! $planid) {//When Product Is Added from Cart
                 $planid = Plan::where('product', $productid)->pluck('id')->first();
-            } elseif (checkPlanSession()  && ! $planid) {
+            } elseif (checkPlanSession() && ! $planid) {
                 $planid = Session::get('plan');
             }
             $plan = Plan::where('id', $planid)->where('product', $productid)->first();
@@ -258,7 +251,6 @@ class CartController extends BaseCartController
         }
     }
 
-   
     /**
      * @return type
      */

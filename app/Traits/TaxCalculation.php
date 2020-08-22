@@ -9,7 +9,6 @@ use App\Model\Payment\TaxClass;
 use App\Model\Payment\TaxOption;
 use App\Model\Payment\TaxProductRelation;
 use Bugsnag;
-use Session;
 
 trait TaxCalculation
 {
@@ -18,12 +17,12 @@ trait TaxCalculation
         try {
             if ($taxCaluculationFromAdminPanel) {
                 $taxCondition = ['name'=>'null', 'value'  => '0%'];
-                } else {
-                    $taxCondition = new \Darryldecode\Cart\CartCondition([
-                        'name'   => 'null', 'type'   => 'tax',
-                        'value'  => '0%',
-                    ]);
-                }
+            } else {
+                $taxCondition = new \Darryldecode\Cart\CartCondition([
+                    'name'   => 'null', 'type'   => 'tax',
+                    'value'  => '0%',
+                ]);
+            }
             if (TaxOption::findOrFail(1)->inclusive == 0) {
                 $tax_enable = TaxOption::findOrFail(1)->tax_enable;
                 //Check the state of user for calculating GST(cgst,igst,utgst,sgst)
@@ -42,6 +41,7 @@ trait TaxCalculation
                     }
                 }
             }
+
             return  $taxCondition;
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -56,7 +56,7 @@ trait TaxCalculation
             } else {
                 $taxCondition = new \Darryldecode\Cart\CartCondition([
                     'name'   => $tax->name, 'type'   => 'tax',
-                     'value'  => $tax->value.'%',
+                    'value'  => $tax->value.'%',
                 ]);
             }
         } else {
@@ -152,9 +152,9 @@ trait TaxCalculation
     public function getDetailsWhenUserFromOtherCountry($user_state, $user_country, $productid, $status = 1)
     {
         $taxes = '';
-        $taxClassId = Tax::where('state', $user_state)->orWhere('state', '')->where('country',$user_country)->select('tax_classes_id as id')->first();
+        $taxClassId = Tax::where('state', $user_state)->orWhere('state', '')->where('country', $user_country)->select('tax_classes_id as id')->first();
         if ($taxClassId) { //if state equals the user State or country equals user country
-                 $taxes = $this->getTaxForSpecificCountry($taxClassId, $productid, $status);
+            $taxes = $this->getTaxForSpecificCountry($taxClassId, $productid, $status);
         } else {//if Tax is selected for Any Country Any State
             $taxClassId = Tax::where('country', '')
                     ->where('state', '')
@@ -188,6 +188,7 @@ trait TaxCalculation
                 $taxes->value = $this->getValueForOthers($productid, $taxClassId, $taxes);
             }
         }
+
         return $taxes;
     }
 
@@ -265,6 +266,7 @@ trait TaxCalculation
     {
         $value = $taxes->active ? (TaxProductRelation::where('product_id', $productid)
           ->where('tax_class_id', $taxClassId->id)->count() ? Tax::where('tax_classes_id', $taxClassId->id)->first()->rate : 0) : 0;
+
         return $value;
     }
 
@@ -288,7 +290,6 @@ trait TaxCalculation
         }
     }
 
-    
     /**
      * @param type $rate
      * @param type $price
@@ -303,7 +304,7 @@ trait TaxCalculation
                 $rate = str_replace('%', '', $rate);
                 $tax = intval($price) * (intval($rate) / 100);
                 $result = $tax;
-                
+
                 $result = rounding($result);
             }
 
@@ -312,6 +313,4 @@ trait TaxCalculation
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-
-
 }

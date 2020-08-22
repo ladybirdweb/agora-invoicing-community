@@ -281,7 +281,6 @@ class PageController extends GetPageTemplateController
         }
     }
 
-    
     public function transform($type, $data, $trasform = [])
     {
         $config = \Config::get("transform.$type");

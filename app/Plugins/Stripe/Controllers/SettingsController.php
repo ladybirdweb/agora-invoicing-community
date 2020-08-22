@@ -124,12 +124,12 @@ class SettingsController extends Controller
         try {
             $invoice = \Session::get('invoice');
             $invoiceTotal = \Session::get('totalToBePaid');
-            $amount = \Cart::getTotal();
+            $amount = rounding(\Cart::getTotal());
             if (! $amount) {//During renewal
-                if ($request->input('amount') != $invoiceTotal) {
+                if (rounding($request->input('amount')) != rounding($invoiceTotal)) {
                     throw new \Exception('Invalid modification of data');
                 }
-                $amount = $request->input('amount');
+                $amount = rounding($request->input('amount'));
             }
             $stripeSecretKey = ApiKey::pluck('stripe_secret')->first();
             $stripe = Stripe::make($stripeSecretKey);

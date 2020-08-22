@@ -227,11 +227,11 @@ Order
                                     <tr><td><b>Mobile:</b></td><td>@if($user->mobile_code)(<b>+</b>{{$user->mobile_code}})@endif&nbsp;{{$user->mobile}}</td></tr>
                                     <tr><td><b>Address:</b></td><td>{{$user->address}}, 
                                             {{ucfirst($user->town)}}, 
-                                            @if(key_exists('name',\App\Http\Controllers\Front\CartController::getStateByCode($user->state)))
-                                            {{\App\Http\Controllers\Front\CartController::getStateByCode($user->state)['name']}}
+                                            @if(key_exists('name',getStateByCode($user->state)))
+                                            {{getStateByCode($user->state)['name']}}
                                             @endif
                                         </td></tr>
-                                    <tr><td><b>Country:</b></td><td>{{\App\Http\Controllers\Front\CartController::getCountryByCode($user->country)}}</td></tr>
+                                    <tr><td><b>Country:</b></td><td>{{getCountryByCode($user->country)}}</td></tr>
 
                                 </tbody></table>
                              </div>

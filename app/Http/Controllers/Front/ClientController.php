@@ -163,7 +163,7 @@ class ClientController extends BaseClientController
             }
             $items = $invoice->invoiceItem()->get();
             $order = getOrderLink($invoice->orderRelation()->value('order_id'), 'my-order');
-            $currency = CartController::currency($user->id);
+            $currency = userCurrency($user->id);
             $symbol = $currency['symbol'];
 
             return view('themes.default1.front.clients.show-invoice', compact('invoice', 'items', 'user', 'currency', 'symbol', 'order'));
@@ -416,8 +416,8 @@ class ClientController extends BaseClientController
             }
             //for display
             $timezones = array_column($display, 'name', 'id');
-            $state = \App\Http\Controllers\Front\CartController::getStateByCode($user->state);
-            $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($user->country);
+            $state = getStateByCode($user->state);
+            $states = findStateByRegionId($user->country);
             $bussinesses = \App\Model\Common\Bussiness::pluck('name', 'short')->toArray();
             $selectedIndustry = \App\Model\Common\Bussiness::where('name', $user->bussiness)
             ->pluck('name', 'short')->toArray();

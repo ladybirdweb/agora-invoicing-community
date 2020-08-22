@@ -22,12 +22,11 @@ Sign in or Register
 @section('content')
     <?php
     use App\Http\Controllers\Front\CartController;
-    $country = CartController::findCountryByGeoip($location['iso_code']);
-    $states = CartController::findStateByRegionId($location['iso_code']);
+    $country = findCountryByGeoip($location['iso_code']);
+    $states = findStateByRegionId($location['iso_code']);
     $states = \App\Model\Common\State::pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
     $state_code = $location['iso_code'] . "-" . $location['state'];
-    $state = CartController::getStateByCode($state_code);
-    $mobile_code = CartController::getMobileCodeByIso($location['iso_code']);
+    $state = getStateByCode($state_code);
 
 
     ?>

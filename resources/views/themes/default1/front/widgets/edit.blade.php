@@ -63,7 +63,7 @@ Edit Widget
 
                     <div class="col-md-4 form-group {{ $errors->has('type') ? 'has-error' : '' }}">
                         <!-- last name -->
-                        {!! Form::label('type',Lang::get('message.type')) !!}
+                        {!! Form::label('type',Lang::get('message.type'),['class'=>'required']) !!}
                         <select name="type"  class="form-control">
                             <option selected="selected">{{$widget->type}}</option>
                              <option value="">Choose</option>

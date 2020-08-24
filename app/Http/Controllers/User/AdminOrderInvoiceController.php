@@ -22,7 +22,7 @@ class AdminOrderInvoiceController extends Controller
                             return "<input type='checkbox' class='invoice_checkbox' 
                             value=".$model->id.' name=select[] id=check>';
                         })
-                        ->addColumn('date', function ($model) use ($client) {
+                        ->addColumn('date', function ($model) {
                             return getDateHtml($model->date);
                         })
                         ->addColumn('invoice_no', function ($model) {

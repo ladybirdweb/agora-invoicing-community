@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Auth;
 
 use App\ApiKey;
-use App\User;
 use App\Http\Controllers\Controller;
 use App\Model\Common\Bussiness;
 use App\Model\Common\StatusSetting;
+use App\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 
@@ -56,22 +56,16 @@ class LoginController extends Controller
         }
     }
 
-
-
-
-
-   
-
     public function login(Request $request)
     {
-       $this->validate($request, [
-        'email1' => 'required',
-        'password1' => 'required',
-        'g-recaptcha-response' => 'sometimes|required|captcha',
-    ], [
-        'g-recaptcha-response.required' => 'Robot Verification Failed. Please Try Again.',
-        'email1.required'    => 'Username/Email is required',
-        'password1.required' => 'Password is required',
+        $this->validate($request, [
+            'email1' => 'required',
+            'password1' => 'required',
+            'g-recaptcha-response' => 'sometimes|required|captcha',
+        ], [
+            'g-recaptcha-response.required' => 'Robot Verification Failed. Please Try Again.',
+            'email1.required'    => 'Username/Email is required',
+            'password1.required' => 'Password is required',
         ]);
         $usernameinput = $request->input('email1');
         $password = $request->input('password1');
@@ -82,15 +76,15 @@ class LoginController extends Controller
             $auth = \Auth::attempt($credentialsForusername, $request->has('remember'));
         }
         if (! $auth) {//Check for correct username
-             $user = User::where('email', $usernameinput)->orWhere('user_name', $usernameinput)->first();
-              if(!$user){
-                        return redirect()->back()
+            $user = User::where('email', $usernameinput)->orWhere('user_name', $usernameinput)->first();
+            if (! $user) {
+                return redirect()->back()
                             ->withInput($request->only('email1', 'remember'))
                             ->withErrors([
                                 'email1' => 'Invalid Email and/or Password',
-            ]);  
-            } 
-           
+                            ]);
+            }
+
             if (! \Hash::check($password, $user->password)) {//Check for correct password
                 return redirect()->back()
                 ->withInput($request->only('email1', 'remember'))
@@ -112,9 +106,7 @@ class LoginController extends Controller
         activity()->log('Logged In');
 
         return redirect()->intended($this->redirectPath());
-    } 
-        
-    
+    }
 
     /**
      * Get the post register / login redirect path.

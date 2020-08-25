@@ -195,7 +195,6 @@ class BaseAuthController extends Controller
         }
     }
 
-    
     protected function addUserToPipedrive($user, $pipeDriveStatus)
     {
         if ($pipeDriveStatus) {

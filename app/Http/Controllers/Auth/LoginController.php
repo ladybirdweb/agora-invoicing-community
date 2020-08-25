@@ -112,10 +112,10 @@ class LoginController extends Controller
     {
         if (\Session::has('session-url')) {
             $url = \Session::get('session-url');
+
             return property_exists($this, 'redirectTo') ? $this->redirectTo : '/'.$url;
         } else {
             return property_exists($this, 'redirectTo') ? $this->redirectTo : '/';
         }
     }
-
 }

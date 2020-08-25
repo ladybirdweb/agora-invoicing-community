@@ -221,9 +221,18 @@ Users
             // if in request sort field is present, it will take that else default order
             // need to stringify the sort_order, else it will be considered as a javascript variable
             order: [[ {!! $request->sort_field ?: 5 !!}, {!! "'".$request->sort_order."'" ?: "'desc'" !!} ]],
+            ajax: {
+            "url":  '{!! route('get-clients',"company=$request->company&country=$request->country&industry=$request->industry&role=$request->role&position=$request->position&reg_from=$request->reg_from&reg_till=$request->reg_till&actmanager=$request->actmanager&salesmanager=$request->salesmanager" ) !!}',
+               error: function(xhr) {
+               if(xhr.status == 401) {
+                alert('Your session has expired. Please login again to continue.')
+                window.location.href = '/login';
+               }
+            }
 
-            ajax: '{!! route('get-clients',"company=$request->company&country=$request->country&industry=$request->industry&role=$request->role&position=$request->position&reg_from=$request->reg_from&reg_till=$request->reg_till&actmanager=$request->actmanager&salesmanager=$request->salesmanager" ) !!}',
+            },
 
+          
             "oLanguage": {
                 "sLengthMenu": "_MENU_ Records per page",
                 "sSearch": "Search: ",

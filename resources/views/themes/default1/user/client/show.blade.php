@@ -178,7 +178,17 @@ User
                                     serverSide: true,
                                     stateSave: false,
                                     order: [[ 0, "desc" ]],
-                                    ajax: '{{url("get-client-invoice/".$id)}}',
+                                    ajax: {
+                                    "url":  '{{url("get-client-invoice/".$id)}}',
+                                       error: function(xhr) {
+                                       if(xhr.status == 401) {
+                                        alert('Your session has expired. Please login again to continue.')
+                                        window.location.href = '/login';
+                                       }
+                                    }
+
+                                    },
+                                   
 
 
                                     "oLanguage": {
@@ -388,8 +398,17 @@ User
                                     serverSide: true,
                                     stateSave: false,
                                     order: [[ 0, "desc" ]],
-                                    ajax: '{!! url("getPaymentDetail/".$client->id) !!}',
+                                    ajax: {
+                                    "url":  '{{url("getPaymentDetail/".$client->id)}}',
+                                       error: function(xhr) {
+                                       if(xhr.status == 401) {
+                                        alert('Your session has expired. Please login again to continue.')
+                                        window.location.href = '/login';
+                                       }
+                                    }
 
+                                    },
+                                  
 
                                     "oLanguage": {
                                         "sLengthMenu": "_MENU_ Records per page",
@@ -499,8 +518,16 @@ User
                                         serverSide: true,
                                         stateSave: true,
                                         order: [[ 0, "desc" ]],
-                                        ajax: '{!! url("getOrderDetail/".$client->id ) !!}',
+                                        ajax: {
+                                        "url":  '{{url("getOrderDetail/".$client->id)}}',
+                                           error: function(xhr) {
+                                           if(xhr.status == 401) {
+                                            alert('Your session has expired. Please login again to continue.')
+                                            window.location.href = '/login';
+                                           }
+                                        }
 
+                                        },
 
                                         "oLanguage": {
                                             "sLengthMenu": "_MENU_ Records per page",

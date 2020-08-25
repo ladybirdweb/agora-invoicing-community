@@ -252,10 +252,20 @@ Orders
             processing: true,
             serverSide: true,
             stateSave: false,
+            ajax: {
+            "url":  '{!! route('get-orders',"order_no=$request->order_no&product_id=$request->product_id&expiry=$request->expiry&expiryTill=$request->expiryTill&from=$request->from&till=$request->till&sub_from=$request->sub_from&sub_till=$request->sub_till&ins_not_ins=$request->ins_not_ins&domain=$request->domain&p_un=$request->p_un&act_ins=$request->act_inst&renewal=$request->renewal&inact_ins=$request->inact_inst&version_from=$request->version_from&version_till=$request->version_till" ) !!}',
+               error: function(xhr) {
+               if(xhr.status == 401) {
+                alert('Your session has expired. Please login again to continue.')
+                window.location.href = '/login';
+               }
+            }
+
+            },
+
             // if in request sort field is present, it will take that else default order
             // need to stringify the sort_order, else it will be considered as a javascript variable
-            order: [[ {!! $request->sort_field ?: 7 !!}, {!! "'".$request->sort_order."'" ?: "'desc'" !!} ]],
-             ajax: '{!! route('get-orders',"order_no=$request->order_no&product_id=$request->product_id&expiry=$request->expiry&expiryTill=$request->expiryTill&from=$request->from&till=$request->till&sub_from=$request->sub_from&sub_till=$request->sub_till&ins_not_ins=$request->ins_not_ins&domain=$request->domain&p_un=$request->p_un&act_ins=$request->act_inst&renewal=$request->renewal&inact_ins=$request->inact_inst&version_from=$request->version_from&version_till=$request->version_till" ) !!}',
+           
             "oLanguage": {
                 "sLengthMenu": "_MENU_ Records per page",
                 "sSearch"    : "Search: ",

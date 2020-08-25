@@ -59,7 +59,16 @@ Plugins
         $('#plugin').DataTable({
             processing: true,
             serverSide: true,
-            ajax: '{!! route('get-plugin') !!}',
+            ajax: {
+            "url":  '{!! route('get-plugin') !!}',
+               error: function(xhr) {
+               if(xhr.status == 401) {
+                alert('Your session has expired. Please login again to continue.')
+                window.location.href = '/login';
+               }
+            }
+
+            },
             "oLanguage": {
                 "sLengthMenu": "_MENU_ Records per page",
                 "sSearch"    : "Search: ",

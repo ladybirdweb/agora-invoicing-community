@@ -68,7 +68,16 @@ Templates
         $('#templates-table').DataTable({
             processing: true,
             serverSide: true,
-            ajax: '{!! route('get-templates') !!}',
+            ajax: {
+            "url":  '{!! route('get-templates') !!}',
+               error: function(xhr) {
+               if(xhr.status == 401) {
+                alert('Your session has expired. Please login again to continue.')
+                window.location.href = '/login';
+               }
+            }
+
+            },
             "oLanguage": {
                 "sLengthMenu": "_MENU_ Records per page",
                 "sSearch"    : "Search: ",

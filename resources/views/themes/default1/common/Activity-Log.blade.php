@@ -191,7 +191,17 @@ Activity Log
             serverSide: true,
              stateSave: false,
               order: [[ 0, "desc" ]],
-            ajax: '{!! route('get-activity',"log_from=$from&log_till=$till&delFrom=$delFrom&delTill=$delTill") !!}',
+              ajax: {
+            "url":  '{!! route('get-activity',"log_from=$from&log_till=$till&delFrom=$delFrom&delTill=$delTill") !!}',
+               error: function(xhr) {
+               if(xhr.status == 401) {
+                alert('Your session has expired. Please login again to continue.')
+                window.location.href = '/login';
+               }
+            }
+
+            },
+
             "oLanguage": {
                 "sLengthMenu": "_MENU_ Records per page",
                 "sSearch"    : "Search: ",

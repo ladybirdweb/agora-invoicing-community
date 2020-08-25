@@ -51,7 +51,16 @@ License Permission
             serverSide: true,
              stateSave: false,
               order: [[ 0, "desc" ]],
-            ajax: '{!! route('get-license-permission') !!}',
+              ajax: {
+            "url":  '{!! route('get-license-permission') !!}',
+               error: function(xhr) {
+               if(xhr.status == 401) {
+                alert('Your session has expired. Please login again to continue.')
+                window.location.href = '/login';
+               }
+            }
+
+            },
             "oLanguage": {
                 "sLengthMenu": "_MENU_ Records per page",
                 "sSearch"    : "Search: ",

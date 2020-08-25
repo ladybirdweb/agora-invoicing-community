@@ -46,7 +46,16 @@ active
             processing: true,
             serverSide: true,
             order: [[ 0, "desc" ]],
-            ajax: '{!! route('get-my-invoices') !!}',
+            ajax: {
+            "url":  '{!! route('get-my-invoices') !!}',
+               error: function(xhr) {
+               if(xhr.status == 401) {
+                alert('Your session has expired. Please login again to continue.')
+                window.location.href = '/login';
+               }
+            }
+
+            },
             "oLanguage": {
                 "sLengthMenu": "_MENU_ Records per page",
                 "sSearch"    : "Search: ",

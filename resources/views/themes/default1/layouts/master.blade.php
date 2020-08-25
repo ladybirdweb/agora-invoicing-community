@@ -473,7 +473,7 @@
         <script type="text/javascript">
         var csrfToken = $('[name="csrf_token"]').attr('content');
 
-        setInterval(refreshToken, 3600000); // 1 hour 
+        setInterval(refreshToken, 360000); // 1 hour 
 
         function refreshToken(){
                $.get('refresh-csrf').done(function(data){

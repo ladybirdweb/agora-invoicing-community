@@ -185,7 +185,18 @@ Invoices
             serverSide: true,
              stateSave: false,
             order: [[ 0, "desc" ]],
-            ajax: '{!! route('get-invoices',"name=$name&invoice_no=$invoice_no&status=$status&currency_id=$currency_id&from=$from&till=$till") !!}',
+            ajax: {
+            "url":  '{!! route('get-invoices',"name=$name&invoice_no=$invoice_no&status=$status&currency_id=$currency_id&from=$from&till=$till") !!}',
+               error: function(xhr) {
+               if(xhr.status == 401) {
+                alert('Your session has expired. Please login again to continue.')
+                window.location.href = '/login';
+               }
+            }
+
+            },
+
+
             "oLanguage": {
                 "sLengthMenu": "_MENU_ Records per page",
                 "sSearch"    : "Search: ",

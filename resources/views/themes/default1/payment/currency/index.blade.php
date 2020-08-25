@@ -124,7 +124,16 @@ input:checked + .slider:before {
             processing: true,
             serverSide: true,
             bDestroy: true,
-            ajax: '{!! route('get-currency.datatable') !!}',
+            ajax: {
+              "url":  '{!! route('get-currency.datatable') !!}',
+                 error: function(xhr) {
+                 if(xhr.status == 401) {
+                  alert('Your session has expired. Please login again to continue.')
+                  window.location.href = '/login';
+                 }
+              }
+
+              },
             "oLanguage": {
                 "sLengthMenu": "_MENU_ Records per page",
                 "sSearch"    : "Search: ",

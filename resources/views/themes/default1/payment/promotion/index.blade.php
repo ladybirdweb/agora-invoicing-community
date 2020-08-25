@@ -68,7 +68,16 @@ Promotions
             serverSide: true,
              stateSave: true,
               order: [[ 0, "desc" ]],
-            ajax: '{!! route('get-promotions') !!}',
+              ajax: {
+            "url":  '{!! route('get-promotions') !!}',
+               error: function(xhr) {
+               if(xhr.status == 401) {
+                alert('Your session has expired. Please login again to continue.')
+                window.location.href = '/login';
+               }
+            }
+
+            },
             "oLanguage": {
                 "sLengthMenu": "_MENU_ Records per page",
                 "sSearch"    : "Search: ",

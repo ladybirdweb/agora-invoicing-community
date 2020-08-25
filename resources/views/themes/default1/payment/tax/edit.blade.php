@@ -162,7 +162,16 @@ Edit Tax
             processing: true,
             serverSide: true,
              stateSave: true,
-             ajax: '{!! route('get-taxtable') !!}',
+             ajax: {
+              "url":  '{!! route('get-taxtable') !!}',
+                 error: function(xhr) {
+                 if(xhr.status == 401) {
+                  alert('Your session has expired. Please login again to continue.')
+                  window.location.href = '/login';
+                 }
+              }
+
+              },
             "oLanguage": {
                 "sLengthMenu": "_MENU_ Records per page",
                 "sSearch"    : "Search: ",

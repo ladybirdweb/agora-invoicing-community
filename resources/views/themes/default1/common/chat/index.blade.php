@@ -59,7 +59,16 @@ Create Script
         $('#script-table').DataTable({
             processing: true,
             serverSide: true,
-            ajax: '{!! route('get-script') !!}',
+             ajax: {
+            "url":  '{!! route('get-script') !!}',
+               error: function(xhr) {
+               if(xhr.status == 401) {
+                alert('Your session has expired. Please login again to continue.')
+                window.location.href = '/login';
+               }
+            }
+
+            },
             "oLanguage": {
                 "sLengthMenu": "_MENU_ Records per page",
                 "sSearch"    : "Search: ",

@@ -68,6 +68,7 @@ class RegisterController extends Controller
             $user->first_name = strip_tags($request->input('first_name'));
             $user->last_name = strip_tags($request->input('last_name'));
             $user->company = strip_tags($request->input('company'));
+            $user->address = strip_tags($request->input('address'));
             $user->email = strip_tags($request->input('email'));
             $user->user_name = strip_tags($request->input('email'));
 

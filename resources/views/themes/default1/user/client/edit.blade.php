@@ -143,7 +143,7 @@ Edit User
                 </div>
                 <div class="form-group {{ $errors->has('address') ? 'has-error' : '' }}">
                     <!-- phone number -->
-                    {!! Form::label('address',Lang::get('message.address')) !!}
+                    {!! Form::label('address',Lang::get('message.address'),['class'=>'required']) !!}
                     {!! Form::textarea('address',null,['class' => 'form-control']) !!}
 
                 </div>

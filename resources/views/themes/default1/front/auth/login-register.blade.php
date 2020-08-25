@@ -253,6 +253,17 @@ Sign in or Register
                                                     </div>
 
 
+                                                     <div class="row">
+                                                   
+                                                        <div class="form-group col {{ $errors->has('address') ? 'has-error' : '' }}">
+                                                            <label class="required">Address</label>
+                                                            {!! Form::textarea('address',null,['class'=>'form-control','rows'=>4, 'id'=>'address']) !!}
+
+                                                       <span id="addresscheck"></span>
+                                                    </div>
+                                                </div>
+
+
                                                     <div class="form-row">
                                                         <div class="form-group col {{ $errors->has('country') ? 'has-error' : '' }}">
                                                             {!! Form::label('country',Lang::get('message.country'),['class'=>'required']) !!}
@@ -1226,6 +1237,27 @@ Sign in or Register
         }
 
 
+            function addresscheck(){
+                var address_val = $('#address').val();
+                if(address_val.length == ''){
+                    $('#addresscheck').show();
+                    $('#addresscheck').html("Please Enter Address ");
+                    $('#addresscheck').focus();
+                     $('#address').css("border-color","red");
+                    $('#addresscheck').css({"color":"red","margin-top":"5px"});
+                    // userErr =false;
+                   $('html, body').animate({
+                    scrollTop: $("#addresscheck").offset().top -200
+                }, 1000)
+                }
+                else{
+                     $('#addresscheck').hide();
+                      $('#address').css("border-color","");
+                     return true;
+                }
+               }
+
+
 
 
 
@@ -1437,6 +1469,7 @@ Sign in or Register
             $('#companycheck').hide();
             $('#countrycheck').hide();
             $('#mobile_codecheck').hide();
+            $('#addresscheck').hide();
             $('#towncheck').hide();
             $('#statecheck').hide();
             $('#password1check').hide();
@@ -1449,13 +1482,14 @@ Sign in or Register
             var emailErr = true;
             var companyeErr = true;
             var countryErr = true;
+            var addressErr = true;
             var mobile_codeErr = true;
             var password1Err = true;
             var conPassErr = true;
             var termsErr = true;
             // con_password_check();
 
-            if(first_namecheck() && last_namecheck() && emailcheck() && companycheck()  && mobile_codecheck()  && countrycheck()  && password1check() && conpasscheck()  && terms() && gcaptcha())
+            if(first_namecheck() && last_namecheck() && emailcheck() && companycheck() && addresscheck() && mobile_codecheck()  && countrycheck()  && password1check() && conpasscheck()  && terms() && gcaptcha())
             {
                 // gtag_report_conversion();
                 $("#register").attr('disabled',true);

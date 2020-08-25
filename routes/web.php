@@ -160,6 +160,7 @@
             // // 'password' => 'Auth\PasswordController',
             //     ]);
             Route::auth();
+            Route::post('auth/register', 'Auth\RegisterController@postRegister')->name('auth/register');
             Route::get('auth/logout', 'Auth\LoginController@logout')->name('logout');
             Route::get('/', 'DashboardController@index');
 

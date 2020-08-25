@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Admin;
+namespace Tests\Unit\Admin\User;
 
 use App\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;

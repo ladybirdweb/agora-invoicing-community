@@ -67,7 +67,7 @@ class Admin
             if ($request->ajax()) {
                 return response('Unauthorized.', 401);
             } else {
-                return redirect('auth/login')->with('fails', 'Unauthorized');
+                return redirect('login')->with('fails', 'Unauthorized');
             }
         }
     }

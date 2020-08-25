@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Client\Account;
+namespace Tests\Unit\Client\Product;
 
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;

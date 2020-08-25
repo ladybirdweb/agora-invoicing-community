@@ -91,7 +91,7 @@ class CheckoutController extends InfoController
             }
             \Session::put('content', $content);
 
-            return redirect('auth/login')->with('fails', 'Please login');
+            return redirect('login')->with('fails', 'Please login');
         }
 
         if (\Cart::isEmpty()) {//During renewal when payment fails due to some reason

@@ -110,7 +110,7 @@ Create Group
 
                      <tr>
                           
-                        <td><b>{!! Form::label('design',Lang::get('message.select_design')) !!}</b></td>
+                        <td><b>{!! Form::label('design',Lang::get('message.select_design'),['class'=>'required']) !!}</b></td>
                         <td>
 
                            <div class="form-group">

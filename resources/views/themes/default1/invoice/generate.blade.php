@@ -27,7 +27,6 @@ Create Invoice
             <h5>{{ucfirst($user->first_name)}} {{ucfirst($user->last_name)}}, ({{$user->email}}) </h5>
             @else 
             {!! Form::open(['url'=>'generate/invoice','id'=>'formoid']) !!}
-            <h5>Place Order</h5>
             @endif
         <div id="error">
         </div>

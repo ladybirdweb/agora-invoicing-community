@@ -143,7 +143,7 @@ class Order extends BaseModel
         return strtolower($domain);
     }
 
-    public function getOrderLink($orderId, $url = 'orders')
+    public static function getOrderLink($orderId, $url = 'orders')
     {
         $link = '--';
         $order = Order::where('id', $orderId)->select('id', 'number')->first();

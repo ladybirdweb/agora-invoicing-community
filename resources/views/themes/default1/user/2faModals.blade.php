@@ -1,6 +1,6 @@
 <div class="modal fade" id="2fa-modal1" data-backdrop="static" data-keyboard="false">
 <div class="modal-dialog">
-  <div class="modal-content">
+  <div class="modal-content" style="width:700px;">
     <div class="modal-header">
       <h4 class="modal-title">Set up Authenticator</h4>
     </div>
@@ -25,7 +25,7 @@
 
 <div class="modal fade" id="2fa-recover-code-modal" data-backdrop="static" data-keyboard="false">
 <div class="modal-dialog">
-  <div class="modal-content">
+  <div class="modal-content" style="width:700px;">
     <div class="modal-header">
       <h4 class="modal-title">Recovery Code</h4>
     </div>
@@ -86,7 +86,7 @@
 
 <div class="modal fade" id="2fa-modal2" data-backdrop="static" data-keyboard="false">
 <div class="modal-dialog">
-  <div class="modal-content">
+  <div class="modal-content" style="width:700px;">
     <div class="modal-header">
       <h4 class="modal-title">Set up Authenticator</h4>
     </div>
@@ -134,7 +134,7 @@
 
 <div class="modal fade" id="2fa-modal3" data-backdrop="static" data-keyboard="false">
 <div class="modal-dialog">
-  <div class="modal-content">
+  <div class="modal-content" style="width:700px;">
     <div class="modal-header">
       <h4 class="modal-title">Set up Authenticator</h4>
     </div>
@@ -170,7 +170,7 @@
 
 <div class="modal fade" id="2fa-modal4" data-backdrop="static" data-keyboard="false">
 <div class="modal-dialog">
-  <div class="modal-content">
+  <div class="modal-content" style="width:700px;">
     <div class="modal-header">
       <h4 class="modal-title">Set up Authenticator</h4>
     </div>
@@ -191,7 +191,7 @@
 
 <div class="modal fade" id="2fa-modal5" data-backdrop="static" data-keyboard="false">
 <div class="modal-dialog">
-  <div class="modal-content">
+  <div class="modal-content" style="width:700px;">
     <div class="modal-header">
       <h4 class="modal-title">Turn off Two-Factor-Authentication</h4>
      
@@ -216,7 +216,7 @@
 
 <div class="modal fade" id="2fa-view-code-modal" data-backdrop="static" data-keyboard="false">
 <div class="modal-dialog">
-  <div class="modal-content">
+  <div class="modal-content" style="width:700px;">
     <div class="modal-header">
       <h4 class="modal-title">Recovery Code</h4>
     </div>
@@ -231,7 +231,7 @@
             <input type="text" id="newrecoverycode" readonly="readonly" class="form-control">
 
           </div>
-          <div class="col-md-2">
+          <div class="col-md-4">
            
            <button class="btn btn-primary" id="generateNewCode">Generate New</button>
 

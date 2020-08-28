@@ -181,7 +181,7 @@ function getStatusLabel($status, $badge = 'badge')
 function currencyFormat($amount = null, $currency = null, $include_symbol = true)
 {
     if ($currency == 'INR') {
-        return getIndianCurrencyFormat($amount);
+        return '₹'.getIndianCurrencyFormat($amount);
     }
 
     return app('currency')->format($amount, $currency, $include_symbol);

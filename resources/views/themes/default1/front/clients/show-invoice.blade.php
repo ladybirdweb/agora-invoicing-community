@@ -103,7 +103,8 @@ active
                             $orderForThisItem = $item->order()->first();
                             @endphp
                             @if($orderForThisItem)
-                            <td> {!! getOrderLink($orderForThisItem->id,'my-order') !!}
+
+                            <td> {!! $orderForThisItem->getOrderLink($orderForThisItem->id,'my-order') !!}
                            
                                 @elseif($order)
                                 <td>{!! $order !!}</td>

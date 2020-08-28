@@ -232,7 +232,9 @@ class BaseClientController extends Controller
                 throw new \Exception('Cannot view invoice. Invalid modification of data.');
             }
             $items = $invoice->invoiceItem()->get();
-            $order = getOrderLink($invoice->orderRelation()->value('order_id'), 'my-order');
+            $orderId = $invoice->orderRelation()->value('order_id');
+            
+            $order = Order::find($orderId)->first()->getOrderLink($orderId,'my-order');
             $currency = CartController::currency($user->id);
             $symbol = $currency['symbol'];
 

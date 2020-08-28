@@ -86,8 +86,6 @@ Invoice
                             <br>
 
 
-                            <b>Order:</b>   #{!! $order !!}
-                            <br>
 
 
                             <b>GSTIN:</b>  &nbsp; #{{$gst->Gst_No}}
@@ -120,7 +118,7 @@ Invoice
                                         $orderForThisItem = $item->order()->first();
                                         @endphp
                                         @if($orderForThisItem)
-                                        <td> {!! getOrderLink($orderForThisItem->id) !!}
+                                        <td>{!! $orderForThisItem->getOrderLink($orderForThisItem->id,'orders') !!}</td>
                                        
                                             @elseif($order)
                                             <td>{!! $order !!}</td>

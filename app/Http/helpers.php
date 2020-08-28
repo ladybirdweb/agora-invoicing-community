@@ -156,16 +156,6 @@ function getVersionAndLabel($productVersion, $productId, $badge = 'label')
     }
 }
 
-function getOrderLink($orderId, $url = 'orders')
-{
-    $link = '--';
-    $order = Order::where('id', $orderId)->select('id', 'number')->first();
-    if ($order) {
-        $link = '<a href='.url($url.'/'.$order->id).'>'.$order->number.'</a>';
-    }
-
-    return $link;
-}
 
 function tooltip($tootipText = '')
 {

@@ -87,17 +87,16 @@ class ClientController extends BaseClientController
                                     return '<a href='.url('my-invoice/'.$model->id).'>'.$model->number.'</a>';
                                 }
                             })
-                            ->addColumn('orderNo', function ($model) {
+                           ->addColumn('orderNo', function ($model) {
                                 if ($model->is_renewed) {
-                                    return getOrderLink($model->order_id, 'my-order');
+                                    return Order::find($model->order_id)->first()->getOrderLink($model->order_id,'my-order');
                                 } else {
                                     $allOrders = $model->order()->select('id', 'number')->get();
-                                    $orderArray[] = '';
-                                    foreach ($allOrders as $orders) {
-                                        $orderArray[] = getOrderLink($orders->id, 'my-order');
-                                    }
-
-                                    return implode(' ', $orderArray);
+                                   $orderArray = '';
+                                 foreach ($allOrders as $orders) {
+                                     $orderArray .= $orders->getOrderLink($orders->id,'orders');
+                                 }
+                                 return $orderArray;
                                 }
                             })
                             ->addColumn('date', function ($model) {

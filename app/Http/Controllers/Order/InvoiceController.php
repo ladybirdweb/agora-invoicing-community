@@ -211,7 +211,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $invoiceItems = $invoice->invoiceItem()->get();
             $user = $this->user->find($invoice->user_id);
             $currency = CartController::currency($user->id);
-            $order = getOrderLink($invoice->order_id);
+            $order = Order::find($invoice->order_id)->first()->getOrderLink($invoice->order_id,'orders');
             $symbol = $currency['symbol'];
 
             return view('themes.default1.invoice.show', compact('invoiceItems', 'invoice', 'user', 'currency', 'symbol', 'order'));

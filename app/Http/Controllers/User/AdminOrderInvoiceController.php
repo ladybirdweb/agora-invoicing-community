@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Model\Order\Invoice;
+use App\Model\Order\Order;
 
 class AdminOrderInvoiceController extends Controller
 {
@@ -35,18 +36,16 @@ class AdminOrderInvoiceController extends Controller
                         })
                          ->addColumn('order_no', function ($model) {
                              if ($model->is_renewed) {
-                                 return getOrderLink($model->order_id, 'my-order');
+                                return Order::find($model->order_id)->first()->getOrderLink($model->order_id,'orders');
                              } else {
                                  $allOrders = ($model->order()->select('id', 'number')->get());
-                                 $orderArray[] = '';
+                                 $orderArray = '';
                                  foreach ($allOrders as $orders) {
-                                     $orderArray[] = getOrderLink($orders->id);
+                                     $orderArray .= $orders->getOrderLink($orders->id,'orders');
                                  }
-
-                                 return implode(' ', $orderArray);
+                                 return $orderArray;
                              }
 
-                             // return getOrderLink($model->order_id);
                          })
                         ->addColumn('total', function ($model) use ($client) {
                             return currencyFormat($model->grand_total, $code = $client->currency);

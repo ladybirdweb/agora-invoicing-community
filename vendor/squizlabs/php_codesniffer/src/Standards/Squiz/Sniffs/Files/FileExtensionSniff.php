@@ -9,8 +9,8 @@
 
 namespace PHP_CodeSniffer\Standards\Squiz\Sniffs\Files;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
 
 class FileExtensionSniff implements Sniff
 {
@@ -40,7 +40,7 @@ class FileExtensionSniff implements Sniff
     public function process(File $phpcsFile, $stackPtr)
     {
         $tokens    = $phpcsFile->getTokens();
-        $fileName  = $phpcsFile->getFileName();
+        $fileName  = $phpcsFile->getFilename();
         $extension = substr($fileName, strrpos($fileName, '.'));
         $nextClass = $phpcsFile->findNext([T_CLASS, T_INTERFACE, T_TRAIT], $stackPtr);
 

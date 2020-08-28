@@ -3,54 +3,32 @@
 Products
 @stop
 @section('content-header')
-<h1>
-All Products
-</h1>
-  <ol class="breadcrumb">
-        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li class="active">All Products</li>
-      </ol>
+    <div class="col-sm-6">
+        <h1>All Products</h1>
+    </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="breadcrumb-item active">All Products</li>
+        </ol>
+    </div><!-- /.col -->
 @stop
 @section('content')
 
-    <div class="box box-primary">
+    <div class="card card-primary card-outline">
 
-    <div class="box-header">
-        @if (count($errors) > 0)
-        <div class="alert alert-danger alert-dismissable">
-             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            <strong>Whoops!</strong> There were some problems with your input.<br><br>
-            <ul>
-                @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-        @endif
+    <div class="card-header">
+        <h3 class="card-title">Products</h3>
+        <div class="card-tools">
+            <a href="{{url('products/create')}}" class="btn btn-primary btn-sm pull-right"><span class="fas fa-plus"></span>&nbsp;Add Product</a>
 
-        @if(Session::has('success'))
-        <div class="alert alert-success alert-dismissable">
-            <i class="fa fa-check"></i>
-             <b>{{Lang::get('message.success')}}!</b>
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            {{Session::get('success')}}
+
         </div>
-        @endif
-        <!-- fail message -->
-        @if(Session::has('fails'))
-        <div class="alert alert-danger alert-dismissable">
-            <i class="fa fa-ban"></i>
-            <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.failed')}}.
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            {{Session::get('fails')}}
-        </div>
-        @endif
-        <div id="response"></div>
-        <h4>{{Lang::get('message.products')}}
-            <a href="{{url('products/create')}}" class="btn btn-primary btn-sm pull-right"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;{{Lang::get('message.create')}}</a></h4>
+
+
     </div>
-      
-       <div class="box-body">
+        <div id="response"></div>
+       <div class="card-body table-responsive">
              
              <div class="row">
             
@@ -76,19 +54,28 @@ All Products
 </div>
 <div id="gif"></div>
 
-<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
-<script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript">
         $('#products-table').DataTable({
             processing: true,
             serverSide: true,
              stateSave: true,
               order: [[ 0, "desc" ]],
-            ajax: '{!! route('get-products') !!}',
+              ajax: {
+            "url":  '{!! route('get-products') !!}',
+               error: function(xhr) {
+               if(xhr.status == 401) {
+                alert('Your session has expired. Please login again to continue.')
+                window.location.href = '/login';
+               }
+            }
+
+            },
             "oLanguage": {
                 "sLengthMenu": "_MENU_ Records per page",
                 "sSearch"    : "Search: ",
-                "sProcessing": '<img id="blur-bg" class="backgroundfadein" style="top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;" src="{!! asset("lb-faveo/media/images/gifloader3.gif") !!}">'
+                "sProcessing": ' <div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="text-bold pt-2">Loading...</div></div>'
             },
             columnDefs: [
                 { 
@@ -106,6 +93,11 @@ All Products
                 {data: 'Action', name: 'Action'}
             ],
             "fnDrawCallback": function( oSettings ) {
+                $(function () {
+                    $('[data-toggle="tooltip"]').tooltip({
+                        container : 'body'
+                    });
+                });
                 $('.loader').css('display', 'none');
             },
             "fnPreDrawCallback": function(oSettings, json) {

@@ -9,8 +9,8 @@
 
 namespace PHP_CodeSniffer\Standards\Squiz\Sniffs\CSS;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Util\Tokens;
 
 class ClassDefinitionNameSpacingSniff implements Sniff
@@ -48,6 +48,11 @@ class ClassDefinitionNameSpacingSniff implements Sniff
     public function process(File $phpcsFile, $stackPtr)
     {
         $tokens = $phpcsFile->getTokens();
+
+        if (isset($tokens[$stackPtr]['bracket_closer']) === false) {
+            // Syntax error or live coding, bow out.
+            return;
+        }
 
         // Do not check nested style definitions as, for example, in @media style rules.
         $nested = $phpcsFile->findNext(T_OPEN_CURLY_BRACKET, ($stackPtr + 1), $tokens[$stackPtr]['bracket_closer']);

@@ -157,8 +157,8 @@ php composer.phar update "vendor/*"
 * **--no-progress:** Removes the progress display that can mess with some
   terminals or scripts which don't handle backspace characters.
 * **--no-suggest:** Skips suggested packages in the output.
-* **--with-dependencies:** Add also dependencies of whitelisted packages to the whitelist, except those that are root requirements.
-* **--with-all-dependencies:** Add also all dependencies of whitelisted packages to the whitelist, including those that are root requirements.
+* **--with-dependencies:** Add also dependencies of allowed packages to the allow list, except those that are root requirements.
+* **--with-all-dependencies:** Add also all dependencies of allowed packages to the allow list, including those that are root requirements.
 * **--optimize-autoloader (-o):** Convert PSR-0/4 autoloading to classmap to get a faster
   autoloader. This is recommended especially for production, but can take
   a bit of time to run so it is currently not done by default.
@@ -173,6 +173,8 @@ php composer.phar update "vendor/*"
   versions of requirements, generally used with `--prefer-stable`.
 * **--interactive:** Interactive interface with autocompletion to select the packages to update.
 * **--root-reqs:** Restricts the update to your first degree dependencies.
+
+Specifying one of the words `mirrors`, `lock`, or `nothing` as an argument has the same effect as specifying the option `--lock`, for example `composer update mirrors` is exactly the same as `composer update --lock`.
 
 ## require
 
@@ -190,7 +192,7 @@ If you do not want to choose requirements interactively, you can pass them
 to the command.
 
 ```sh
-php composer.phar require vendor/package:2.* vendor/package2:dev-master
+php composer.phar require "vendor/package:2.*" vendor/package2:dev-master
 ```
 
 If you do not specify a package, composer will prompt you to search for a package, and given results, provide a list of  matches to require.
@@ -420,6 +422,11 @@ This implies `--by-package --by-suggestion`, showing both lists.
 * **--by-suggestion:** Groups output by suggested package.
 * **--no-dev:** Excludes suggestions from `require-dev` packages.
 
+## fund
+
+Discover how to help fund the maintenance of your dependencies. This lists
+all funding links from the installed dependencies.
+
 ## depends (why)
 
 The `depends` command tells you which other packages depend on a certain
@@ -647,7 +654,7 @@ provide a version as third argument, otherwise the latest version is used.
 If the directory does not currently exist, it will be created during installation.
 
 ```sh
-php composer.phar create-project doctrine/orm path 2.2.*
+php composer.phar create-project doctrine/orm path "2.2.*"
 ```
 
 It is also possible to run the command without params in a directory with an
@@ -665,6 +672,7 @@ By default the command checks for the packages on packagist.org.
   to a `composer` repository, a path to a local `packages.json` file, or a
   JSON string which similar to what the [repositories](04-schema.md#repositories)
   key accepts.
+* **--add-repository:** Add the repository option to the composer.json.
 * **--dev:** Install packages listed in `require-dev`.
 * **--no-dev:** Disables installation of require-dev packages.
 * **--no-scripts:** Disables the execution of the scripts defined in the root
@@ -706,7 +714,7 @@ performance.
 * **--apcu:** Use APCu to cache found/not-found classes.
 * **--no-dev:** Disables autoload-dev rules.
 
-## clear-cache (clearcache)
+## clear-cache / clearcache / cc
 
 Deletes all content from Composer's cache directories.
 
@@ -808,6 +816,10 @@ If set to 1, this env disables the warning about running commands as root/super 
 It also disables automatic clearing of sudo sessions, so you should really only set this
 if you use Composer as super user at all times like in docker containers.
 
+### COMPOSER_ALLOW_XDEBUG
+
+If set to 1, this env allows running Composer when the Xdebug extension is enabled, without restarting PHP without it.
+
 ### COMPOSER_AUTH
 
 The `COMPOSER_AUTH` var allows you to set up authentication as an environment variable.
@@ -832,6 +844,10 @@ By default it points to `$COMPOSER_HOME/cache` on \*nix and macOS, and
 
 By setting this environmental value, you can set a path to a certificate bundle
 file to be used during SSL/TLS peer verification.
+
+### COMPOSER_DISABLE_XDEBUG_WARN
+
+If set to 1, this env suppresses a warning when Composer is running with the Xdebug extension enabled.
 
 ### COMPOSER_DISCARD_CHANGES
 

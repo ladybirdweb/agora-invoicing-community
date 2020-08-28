@@ -107,7 +107,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $from = $request->input('from');
             $till = $request->input('till');
 
-            return view('themes.default1.invoice.index', compact('name','invoice_no','status','currencies','currency_id','from',
+            return view('themes.default1.invoice.index', compact('request','name','invoice_no','status','currencies','currency_id','from',
 
                 'till'));
         } catch (\Exception $ex) {
@@ -149,7 +149,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                             return getDateHtml($model->created_at);
                         })
                          ->addColumn('grand_total', function ($model) {
-                             return currency_format($model->grand_total, $code = $model->currency);
+                             return currencyFormat($model->grand_total, $code = $model->currency);
                          })
                           ->addColumn('status', function ($model) {
                               return getStatusLabel($model->status);
@@ -161,12 +161,12 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                             $check = $this->checkExecution($model->id);
                             if ($check == false) {
                                 $action = '<form method="post" action='.url('order/execute?invoiceid='.$model->id).'>'.'<input type="hidden" name="_token" value='.\Session::token().'>'.'
-                                    <button type="submit" class="btn btn-sm btn-primary btn-xs"><i class="fa fa-tasks" style="color:white;"></i>&nbsp;&nbsp; Execute Order</button></form>';
+                                    <button type="submit" class="btn btn-sm success btn-xs"'.tooltip('Execute&nbsp;Order').'<i class="fa fa-tasks" style="color:white;"></i></button></form>';
                             }
 
                             return '<a href='.url('invoices/show?invoiceid='.$model->id)
-                            ." class='btn btn-sm btn-primary btn-xs'><i class='fa fa-eye' 
-                            style='color:white;'> </i>&nbsp;&nbsp;View</a>"
+                            ." class='btn btn-sm btn-primary btn-xs'".tooltip('View')."<i class='fa fa-eye' 
+                            style='color:white;'> </i></a>"
                                     ."   $action";
                         })
                          ->filterColumn('user_id', function ($query, $keyword) {
@@ -208,12 +208,10 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 ->select('invoices.id', 'invoices.user_id', 'invoices.date', 'invoices.currency', 'invoices.number', 'invoices.discount', 'invoices.grand_total', 'order_invoice_relations.order_id')
                 ->where('invoices.id', '=', $request->input('invoiceid'))
                 ->first();
-            $invoiceItems = $this->invoiceItem->where('invoice_id', $request->input('invoiceid'))
-            ->select('product_name', 'quantity', 'regular_price', 'tax_name', 'tax_percentage', 'subtotal')
-            ->get();
+            $invoiceItems = $invoice->invoiceItem()->get();
             $user = $this->user->find($invoice->user_id);
             $currency = CartController::currency($user->id);
-            $order = getOrderLink($invoice->order_id);
+            $order = Order::find($invoice->order_id)->first()->getOrderLink($invoice->order_id, 'orders');
             $symbol = $currency['symbol'];
 
             return view('themes.default1.invoice.show', compact('invoiceItems', 'invoice', 'user', 'currency', 'symbol', 'order'));
@@ -359,7 +357,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
     public function invoiceGenerateByForm(Request $request, $user_id = '')
     {
         $this->validate($request, [
-            'date'      => 'required',
+            'date'      => 'required|date',
             'domain'    => 'sometimes|nullable|regex:/^(?!:\/\/)(?=.{1,255}$)((.{1,63}\.){1,127}(?![0-9]*$)[a-z0-9-]+\.?)$/i',
             'plan'      => 'required_if:subscription,true',
             'price'     => 'required',
@@ -420,13 +418,14 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $items = $this->createInvoiceItemsByAdmin($invoice->id, $productid,
              $code, $total, $currency, $qty, $agents, $plan, $user_id, $tax_name, $tax_rate);
             $result = $this->getMessage($items, $user_id);
+
+            return successResponse($result);
         } catch (\Exception $ex) {
             app('log')->info($ex->getMessage());
-            Bugsnag::notifyException($ex);
-            $result = ['fails' => $ex->getMessage()];
-        }
+            Bugsnag::notifyException($ex->getMessage());
 
-        return response()->json(compact('result'));
+            return errorResponse([$ex->getMessage()]);
+        }
     }
 
     public function createInvoiceItemsByAdmin($invoiceid, $productid, $code, $price,

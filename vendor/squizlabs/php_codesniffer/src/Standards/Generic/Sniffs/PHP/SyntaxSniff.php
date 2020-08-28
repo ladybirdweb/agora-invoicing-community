@@ -10,9 +10,9 @@
 
 namespace PHP_CodeSniffer\Standards\Generic\Sniffs\PHP;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
-use PHP_CodeSniffer\Files\File;
 use PHP_CodeSniffer\Config;
+use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
 
 class SyntaxSniff implements Sniff
 {
@@ -50,25 +50,12 @@ class SyntaxSniff implements Sniff
     {
         if ($this->phpPath === null) {
             $this->phpPath = Config::getExecutablePath('php');
-            if ($this->phpPath === null) {
-                // PHP_BINARY is available in PHP 5.4+.
-                if (defined('PHP_BINARY') === true) {
-                    $this->phpPath = PHP_BINARY;
-                } else {
-                    return;
-                }
-            }
         }
 
         $fileName = escapeshellarg($phpcsFile->getFilename());
-        if (defined('HHVM_VERSION') === false) {
-            $cmd = escapeshellcmd($this->phpPath)." -l -d error_prepend_string='' $fileName 2>&1";
-        } else {
-            $cmd = escapeshellcmd($this->phpPath)." -l $fileName 2>&1";
-        }
-
-        $output  = shell_exec($cmd);
-        $matches = [];
+        $cmd      = escapeshellcmd($this->phpPath)." -l -d display_errors=1 -d error_prepend_string='' $fileName 2>&1";
+        $output   = shell_exec($cmd);
+        $matches  = [];
         if (preg_match('/^.*error:(.*) in .* on line ([0-9]+)/m', trim($output), $matches) === 1) {
             $error = trim($matches[1]);
             $line  = (int) $matches[2];

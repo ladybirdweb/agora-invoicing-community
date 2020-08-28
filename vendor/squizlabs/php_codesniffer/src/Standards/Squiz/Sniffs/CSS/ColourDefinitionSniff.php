@@ -9,8 +9,8 @@
 
 namespace PHP_CodeSniffer\Standards\Squiz\Sniffs\CSS;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
 
 class ColourDefinitionSniff implements Sniff
 {
@@ -68,8 +68,8 @@ class ColourDefinitionSniff implements Sniff
             return;
         }
 
-        if ($colour{1} === $colour{2} && $colour{3} === $colour{4} && $colour{5} === $colour{6}) {
-            $expected = '#'.$colour{1}.$colour{3}.$colour{5};
+        if ($colour[1] === $colour[2] && $colour[3] === $colour[4] && $colour[5] === $colour[6]) {
+            $expected = '#'.$colour[1].$colour[3].$colour[5];
             $error    = 'CSS colours must use shorthand if available; expected %s but found %s';
             $data     = [
                 $expected,

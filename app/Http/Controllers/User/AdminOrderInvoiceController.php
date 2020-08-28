@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Model\Order\Invoice;
+use App\Model\Order\Order;
 
 class AdminOrderInvoiceController extends Controller
 {
@@ -12,6 +13,7 @@ class AdminOrderInvoiceController extends Controller
         $client = $this->user->where('id', $id)->select('currency')->first();
         $invoices = Invoice::leftJoin('order_invoice_relations', 'invoices.id', '=', 'order_invoice_relations.invoice_id')
         ->select('invoices.id', 'invoices.user_id', 'invoices.date', 'invoices.number', 'invoices.grand_total', 'order_invoice_relations.order_id', 'invoices.is_renewed', 'invoices.status')
+        ->groupBy('invoices.number')
         ->where('invoices.user_id', '=', $id)
         ->orderBy('invoices.created_at', 'desc')
         ->get();
@@ -21,7 +23,7 @@ class AdminOrderInvoiceController extends Controller
                             return "<input type='checkbox' class='invoice_checkbox' 
                             value=".$model->id.' name=select[] id=check>';
                         })
-                        ->addColumn('date', function ($model) use ($client) {
+                        ->addColumn('date', function ($model) {
                             return getDateHtml($model->date);
                         })
                         ->addColumn('invoice_no', function ($model) {
@@ -33,10 +35,20 @@ class AdminOrderInvoiceController extends Controller
                             return $label;
                         })
                          ->addColumn('order_no', function ($model) {
-                             return getOrderLink($model->order_id);
+                             if ($model->is_renewed) {
+                                 return Order::find($model->order_id)->first()->getOrderLink($model->order_id, 'orders');
+                             } else {
+                                 $allOrders = ($model->order()->select('id', 'number')->get());
+                                 $orderArray = '';
+                                 foreach ($allOrders as $orders) {
+                                     $orderArray .= $orders->getOrderLink($orders->id, 'orders');
+                                 }
+
+                                 return $orderArray;
+                             }
                          })
                         ->addColumn('total', function ($model) use ($client) {
-                            return currency_format($model->grand_total, $code = $client->currency);
+                            return currencyFormat($model->grand_total, $code = $client->currency);
                         })
                          ->addColumn('paid', function ($model) use ($client) {
                              $payment = \App\Model\Order\Payment::where('invoice_id', $model->id)->select('amount')->get();
@@ -47,7 +59,7 @@ class AdminOrderInvoiceController extends Controller
                                  $sum = $sum + $payment[$i]->amount;
                              }
 
-                             return currency_format($sum, $code = $client->currency);
+                             return currencyFormat($sum, $code = $client->currency);
                          })
                          ->addColumn('balance', function ($model) use ($client) {
                              $payment = \App\Model\Order\Payment::where('invoice_id', $model->id)->select('amount')->get();
@@ -59,7 +71,7 @@ class AdminOrderInvoiceController extends Controller
                              }
                              $pendingAmount = ($model->grand_total) - ($sum);
 
-                             return currency_format($pendingAmount, $code = $client->currency);
+                             return currencyFormat($pendingAmount, $code = $client->currency);
                          })
                           ->addColumn('status', function ($model) {
                               return getStatusLabel($model->status);
@@ -69,17 +81,17 @@ class AdminOrderInvoiceController extends Controller
                             $cont = new \App\Http\Controllers\Order\TaxRatesAndCodeExpiryController();
                             $check = $cont->checkExecution($model->id);
                             if ($check == false) {
-                                $action = '<form method="post" action='.url('order/execute?invoiceid='.$model->id).'>'.'<input type="hidden" name="_token" value='.\Session::token().'>'.'
-                                    <button type="submit" class="btn btn-sm btn-primary btn-xs"><i class="fa fa-tasks" style="color:white;"></i>&nbsp;&nbsp; Execute Order</button></form>';
+                                $action = '<p><form method="post" action='.url('order/execute?invoiceid='.$model->id).'>'.'<input type="hidden" name="_token" value='.\Session::token().'>'.'
+                                    <button type="submit" style="margin-top:-10px;" class="btn btn-sm btn-info btn-xs"'.tooltip('Execute&nbsp;Order').'<i class="fa fa-tasks" style="color:white;"></i></button></form></p>';
                             }
                             $editAction = '<a href='.url('invoices/edit/'.$model->id)
-                                ." class='btn btn-sm btn-primary btn-xs'>
+                                ." class='btn btn-sm btn-secondary btn-xs'".tooltip('Edit')."
                                 <i class='fa fa-edit' style='color:white;'>
-                                 </i>&nbsp;&nbsp; Edit</a>";
+                                 </i></a>";
 
                             return '<a href='.url('invoices/show?invoiceid='.$model->id)
-                            ." class='btn btn-sm btn-primary btn-xs'><i class='fa fa-eye' 
-                            style='color:white;'> </i>&nbsp;&nbsp;View</a>"
+                            ." class='btn btn-sm btn-primary btn-xs' ".tooltip('View')."<i class='fa fa-eye' 
+                            style='color:white;'></i></a>"
                                     ."   $editAction $action";
                         })
                          ->rawColumns(['checkbox', 'date', 'invoice_no', 'order_no', 'total', 'paid', 'balance', 'status', 'action'])
@@ -117,8 +129,8 @@ class AdminOrderInvoiceController extends Controller
                          })
                         ->addColumn('action', function ($model) {
                             return '<a href='.url('orders/'.$model->id)." 
-                            class='btn btn-sm btn-primary btn-xs'><i class='fa fa-eye' 
-                            style='color:white;'> </i>&nbsp;&nbsp;View</a>";
+                            class='btn btn-sm btn-primary btn-xs'".tooltip('View')."<i class='fa fa-eye' 
+                            style='color:white;'> </i></a>";
                         })
                         ->rawColumns(['checkbox', 'date', 'product', 'number', 'total', 'status', 'action'])
                         ->make(true);
@@ -148,9 +160,9 @@ class AdminOrderInvoiceController extends Controller
 
                          ->addColumn('total', function ($model) use ($client, $extraAmt) {
                              if ($model->invoice_id == 0) {
-                                 $amount = currency_format($extraAmt, $code = $client->currency);
+                                 $amount = currencyFormat($extraAmt, $code = $client->currency);
                              } else {
-                                 $amount = currency_format($model->amount, $code = $client->currency);
+                                 $amount = currencyFormat($model->amount, $code = $client->currency);
                              }
 
                              return $amount;
@@ -162,7 +174,7 @@ class AdminOrderInvoiceController extends Controller
                          ->addColumn('action', function ($model) {
                              '<input type="hidden" class="paymentid" value="{{$model->id}}">';
                              if ($model->invoice_id == 0) {
-                                 return '<a href='.url('payments/'.$model->id.'/edit/')." class='btn btn-sm btn-primary btn-xs'> <i class='fa fa-edit' style='color:white;'> </i>&nbsp;&nbsp;Edit</a>";
+                                 return '<a href='.url('payments/'.$model->id.'/edit/')." class='btn btn-sm btn-secondary btn-xs' ".tooltip('Edit')." <i class='fa fa-edit' style='color:white;'> </i></a>";
                              } else {
                                  return '--';
                              }

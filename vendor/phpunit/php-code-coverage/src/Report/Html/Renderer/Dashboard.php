@@ -1,6 +1,6 @@
-<?php
+<?php declare(strict_types=1);
 /*
- * This file is part of the php-code-coverage package.
+ * This file is part of phpunit/php-code-coverage.
  *
  * (c) Sebastian Bergmann <sebastian@phpunit.de>
  *
@@ -11,6 +11,7 @@ namespace SebastianBergmann\CodeCoverage\Report\Html;
 
 use SebastianBergmann\CodeCoverage\Node\AbstractNode;
 use SebastianBergmann\CodeCoverage\Node\Directory as DirectoryNode;
+use SebastianBergmann\Template\Template;
 
 /**
  * Renders the dashboard for a directory node.
@@ -24,7 +25,7 @@ final class Dashboard extends Renderer
     public function render(DirectoryNode $node, string $file): void
     {
         $classes  = $node->getClassesAndTraits();
-        $template = new \Text_Template(
+        $template = new Template(
             $this->templatePath . 'dashboard.html',
             '{{',
             '}}'

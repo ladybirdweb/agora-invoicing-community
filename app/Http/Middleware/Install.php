@@ -20,7 +20,7 @@ class Install
         if (\File::exists($env) && \Config('database.DB_INSTALL') == 1) {
             return $next($request);
         } else {
-            return redirect()->route('LaravelInstaller::welcome');
+            return redirect()->route('AgoraInstaller::welcome');
         }
     }
 }

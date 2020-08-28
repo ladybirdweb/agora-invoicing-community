@@ -6,7 +6,7 @@ use PHPUnit\Framework\TestCase;
 
 // When class is used in related repositories we need to add autoloader for PHPUnit 8 compatibility
 if (!trait_exists(TestCaseTrait::class)) {
-    require __DIR__ . '/../autoload.php';
+    require __DIR__ . '/../tests/autoload.php';
 }
 
 /**
@@ -262,7 +262,7 @@ abstract class AbstractMockTest extends TestCase
     public function testImplicitDefine()
     {
         $functionName = $this->buildPrivateFunctionName("testDefine");
-        $fqfn         = __NAMESPACE__."\\$functionName";
+        $fqfn         = __NAMESPACE__ . "\\$functionName";
         $this->assertFalse(function_exists($fqfn));
         $this->mockFunction(__NAMESPACE__, $functionName, "sqrt");
         $this->assertTrue(function_exists($fqfn));

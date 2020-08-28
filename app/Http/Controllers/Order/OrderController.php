@@ -79,7 +79,7 @@ class OrderController extends BaseOrderController
             $products = $this->product->where('id', '!=', 1)->pluck('name', 'id')->toArray();
 
             $paidUnpaidOptions = ['paid'=>'Paid Products', 'unpaid'=>'Unpaid Products'];
-            $insNotIns = ['installed'=>'Installed', 'not_installed'=>'Not Installed'];
+            $insNotIns = ['installed'=>'Yes', 'not_installed'=>'No'];
             $activeInstallationOptions = ['paid_ins'=>'For Paid Products', 'unpaid_ins'=>'For Unpaid Products', 'all_ins'=>'All Products'];
             $inactiveInstallationOptions = ['paid_inactive_ins'=>'For Paid Products', 'unpaid_inactive_ins'=>'For Unpaid Products', 'all_inactive_ins'=>'All Products'];
             $renewal = ['expired_subscription'=>'Expired Subscriptions', 'active_subscription'=> 'Active Subscriptions'];
@@ -247,8 +247,8 @@ class OrderController extends BaseOrderController
 
     public function installationStatusLabel($lastConnectionDate)
     {
-        return $lastConnectionDate->toDateTimeString() > (new Carbon('-30 days'))->toDateTimeString() ? "&nbsp;<span class='label label-primary' style='background-color:darkcyan !important;' <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Installation is Active'>
-                     </label>Active</span>" : "&nbsp;<span class='label label-info' <label data-toggle='tooltip' style='font-weight:500;background-color:crimson;' data-placement='top' title='Installation inactive for more than 30 days'>
+        return $lastConnectionDate->toDateTimeString() > (new Carbon('-30 days'))->toDateTimeString() ? "&nbsp;<span class='badge badge-primary' style='background-color:darkcyan !important;' <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Installation is Active'>
+                     </label>Active</span>" : "&nbsp;<span class='badge badge-info' <label data-toggle='tooltip' style='font-weight:500;background-color:crimson;' data-placement='top' title='Installation inactive for more than 30 days'>
                     </label>Inactive</span>";
     }
 

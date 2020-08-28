@@ -12,18 +12,18 @@ class MyClass
     $_varName = 'hello';
 
     public $varName  = 'hello';
-    public $var_name = 'hello';
+    public bool $var_name = false;
     public $varname  = 'hello';
     public $_varName = 'hello';
 
     protected $varName  = 'hello';
-    protected $var_name = 'hello';
+    protected string $var_name = 'hello';
     protected $varname  = 'hello';
-    protected $_varName = 'hello';
+    protected ?string $_varName = 'hello';
 
     private $_varName  = 'hello';
     private $_var_name = 'hello';
-    private $_varname  = 'hello';
+    private int $_varname  = 1;
     private $varName   = 'hello';
 }
 
@@ -106,6 +106,12 @@ class a
         $_sheet,
         $_FieldParser,
         $_key;
+
+    private
+        $varN = true,
+        $varO = array( 'a', 'b' ),
+        $varP = 'string',
+        $varQ = 123;
 }
 
 var_dump($http_response_header);
@@ -117,3 +123,22 @@ trait MyTrait
     public $_varName = 'hello';
     private $_varName = 'hello';
 }
+
+class TestClass
+{
+    /**
+     * Comment goes here.
+     *
+     * @var array
+     */
+    private static $_foo = [];
+}
+
+$anonClass = new class() {
+    public function foo($foo, $_foo, $foo_bar) {
+        $bar = 1;
+        $_bar = 2;
+        $bar_foo = 3;
+    }
+};
+

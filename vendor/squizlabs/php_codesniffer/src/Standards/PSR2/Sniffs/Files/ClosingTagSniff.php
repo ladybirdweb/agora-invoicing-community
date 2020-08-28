@@ -9,8 +9,8 @@
 
 namespace PHP_CodeSniffer\Standards\PSR2\Sniffs\Files;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Util\Tokens;
 
 class ClosingTagSniff implements Sniff
@@ -36,7 +36,7 @@ class ClosingTagSniff implements Sniff
      * @param int                         $stackPtr  The position of the current token in
      *                                               the stack passed in $tokens.
      *
-     * @return void
+     * @return int
      */
     public function process(File $phpcsFile, $stackPtr)
     {

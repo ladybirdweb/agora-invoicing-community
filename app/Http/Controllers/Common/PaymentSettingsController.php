@@ -36,11 +36,13 @@ class PaymentSettingsController extends Controller
                                                     </div>
                                                     <div class=modal-body>
                                                        <p>Are you Sure ?</p>
-                                                        <div class=modal-footer>
+
+                                                        <div class=modal-footer justify-content-between>
                                                             <button type=button class='btn btn-default pull-left' data-dismiss=modal id=dismis>".\Lang::get('lang.close').'</button>
                                                             <form method="delete" action='.url('plugin/delete/'.$model['name']).'>'.'<input type="hidden" name="_token" value='.\Session::token().'>'.'
                                     <button type="submit" class="btn btn-danger">Delete</button></form>
                                                             
+
                                                         </div>
 
 

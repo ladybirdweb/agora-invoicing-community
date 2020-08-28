@@ -201,4 +201,95 @@ class BaseHomeController extends Controller
             return $result;
         }
     }
+
+    public function updateLicenseCode(Request $request)
+    {
+        try {
+            $licCode = $request->input('licenseCode'); //The license code already existing for older client
+            $lastFour = $this->getLastFourDigistsOfLicenseCode($request->input('product'));
+            $existingLicense = Order::select('id', 'client', 'product', 'serial_key')->get()
+                ->filter(function ($order) use ($licCode) {
+                    return $order->serial_key == $licCode;
+                })->first();
+
+            if ($existingLicense) {//If the license code that is sent in the request exists in billing
+                $cont = new \App\Http\Controllers\License\LicenseController();
+                $cont->updateInstalledDomain($licCode, $existingLicense->product); //Delete the installation first for the current license before updating license so that no Faveo installation exists on the user domain/IP path
+
+                $serial_key = substr($licCode, 0, 12).$lastFour; //The new License Code
+                //Create new license in license manager with the new license code which has no. of agents in the last 4 digits.
+                $cont->createNewLicene(
+                    $existingLicense->id,
+                    $existingLicense->product,
+                    $existingLicense->client,
+                    $this->getLicenseExpiryDate($existingLicense),
+                    $this->getUpdatesExpiryDate($existingLicense),
+                    $this->getSupportExpiryDate($existingLicense),
+                    $serial_key
+                );
+                //Update the old license code with new one in billing.
+                $existingLicense->serial_key = \Crypt::encrypt(substr($licCode, 0, 12).$lastFour);
+                $existingLicense->save();
+                //send the newly updated license code in response
+                $result = ['status'=>'success', 'updatedLicenseCode'=>$existingLicense->serial_key];
+
+                return response()->json($result);
+            }
+        } catch (\Exception $ex) {
+            $result = ['status'=>'fails', 'error' => $ex->getMessage()];
+
+            return response()->json($result);
+        }
+    }
+
+    public function getLastFourDigistsOfLicenseCode($productName)
+    {
+        switch ($productName) {
+            case strpos($productName, 'Enterprise') > 0:
+            case strpos($productName, 'Company') > 0:
+                return '0000';
+
+            case strpos($productName, 'Freelancer') > 0:
+                return '0002';
+
+            case strpos($productName, 'Startup') > 0:
+                return '0005';
+
+            case strpos($productName, 'SME') > 0:
+                return '0010';
+
+            default:
+                throw new \Exception(\Lang::get('message.product_not_found'));
+        }
+    }
+
+    public function getUpdatesExpiryDate($existingLicense)
+    {
+        $updatesDate = \Carbon\Carbon::parse(Subscription::where('order_id', $existingLicense->id)->value('update_ends_at'));
+        if (strtotime($updatesDate) < 0) {
+            $updatesDate = '';
+        }
+
+        return $updatesDate;
+    }
+
+    public function getLicenseExpiryDate($existingLicense)
+    {
+        $licenseDate = \Carbon\Carbon::parse(Subscription::where('order_id', $existingLicense->id)->value('ends_at'));
+        if (strtotime($licenseDate) < 0) {
+            $licenseDate = '';
+        }
+
+        return $licenseDate;
+    }
+
+    public function getSupportExpiryDate($existingLicense)
+    {
+        $supportDate = \Carbon\Carbon::parse(Subscription::where('order_id', $existingLicense->id)->value('support_ends_at'));
+        if (strtotime($supportDate) < 0) {
+            $supportDate = '';
+        }
+
+        return $supportDate;
+    }
 }

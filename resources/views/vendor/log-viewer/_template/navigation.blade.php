@@ -3,12 +3,12 @@
         <!-- SlimScroll -->
          <script src="{{asset('admin/plugins/slimScroll/jquery.slimscroll.min.js')}}" type="text/javascript"></script>
         <!-- FastClick -->
-     
+
         <!-- icheck -->
-       
-        
-      
-   
+
+
+
+
       <header class="main-header">
                 <!-- Logo -->
                 <a href="{{url('/')}}" class="logo">
@@ -20,7 +20,7 @@
                     @else
                     <span class="logo-lg">
                         <img src='{{ asset("admin/images/$set->admin_logo")}}' class="img-rounded" alt="Admin-Logo"  height="45">
-                       
+
 
                     </span>
                     @endif
@@ -39,17 +39,17 @@
 
                             <li class="dropdown user user-menu">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                    
+
                                     <img src="{{Auth::user()->profile_pic}}" class="user-image" alt="User Image" />
-                                    
+
                                     <span class="hidden-xs">{{ucfirst(Auth::user()->first_name)}} {{ucfirst(Auth::user()->last_name)}}</span>
                                 </a>
                                 <ul class="dropdown-menu">
                                     <!-- User image -->
                                     <li class="user-header">
-                                        
+
                                         <img src="{{Auth::user()->profile_pic}}" class="img-circle" alt="User Image" />
-                                        
+
                                         <p>
                                             {{ucfirst(Auth::user()->first_name)}} {{ucfirst(Auth::user()->last_name)}}
                                         </p>

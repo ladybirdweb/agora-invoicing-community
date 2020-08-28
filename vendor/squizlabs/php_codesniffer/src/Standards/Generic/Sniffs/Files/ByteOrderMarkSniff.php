@@ -1,6 +1,6 @@
 <?php
 /**
- * A simple sniff for detecting BOMs that may corrupt application work.
+ * A simple sniff for detecting a BOM definition that may corrupt application work.
  *
  * @author    Piotr Karas <office@mediaself.pl>
  * @author    Greg Sherwood <gsherwood@squiz.net>
@@ -10,8 +10,8 @@
 
 namespace PHP_CodeSniffer\Standards\Generic\Sniffs\Files;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
 
 class ByteOrderMarkSniff implements Sniff
 {

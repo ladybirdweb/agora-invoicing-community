@@ -1,4 +1,4 @@
-# jQuery DataTables API for Laravel 4|5|6
+# jQuery DataTables API for Laravel 4|5|6|7
 
 [![Join the chat at https://gitter.im/yajra/laravel-datatables](https://badges.gitter.im/yajra/laravel-datatables.svg)](https://gitter.im/yajra/laravel-datatables?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Donate](https://img.shields.io/badge/donate-paypal-blue.svg)](https://www.paypal.me/yajra)
@@ -34,10 +34,14 @@ return datatables(User::all())->toJson();
 - [jQuery DataTables v1.10.x](http://datatables.net/)
 
 ## Documentations
+
+- [Github Docs](https://github.com/yajra/laravel-datatables-docs)
 - [Laravel DataTables Quick Starter](https://yajrabox.com/docs/laravel-datatables/master/quick-starter)
-- [Laravel DataTables Documentation](http://yajrabox.com/docs/laravel-datatables)
-- [Laravel DataTables API](https://datatables.net/reference/api/)
-- [Laravel 5.0 - 5.3 Demo Application](http://datatables.yajrabox.com)
+- [Laravel DataTables Documentation](https://yajrabox.com/docs/laravel-datatables)
+- [Laravel 5.0 - 5.3 Demo Application](https://datatables.yajrabox.com)
+
+**NOTE: Documentation links below are currently offline.**
+
 - [Laravel 5.4 Demo Application](http://dt54.yajrabox.com)
 
 ## Laravel Version Compatibility
@@ -55,6 +59,7 @@ return datatables(User::all())->toJson();
  5.7.x    | 8.x
  5.8.x    | 9.x
  6.x.x    | 9.x
+ 7.x.x    | 9.x
 
 ## DataTables 8.x Upgrade Guide
 There are breaking changes since DataTables v8.x.

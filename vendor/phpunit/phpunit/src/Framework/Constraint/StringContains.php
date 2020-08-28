@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -18,7 +18,7 @@ namespace PHPUnit\Framework\Constraint;
  *
  * The sub-string is passed in the constructor.
  */
-class StringContains extends Constraint
+final class StringContains extends Constraint
 {
     /**
      * @var string
@@ -32,8 +32,6 @@ class StringContains extends Constraint
 
     public function __construct(string $string, bool $ignoreCase = false)
     {
-        parent::__construct();
-
         $this->string     = $string;
         $this->ignoreCase = $ignoreCase;
     }
@@ -44,7 +42,7 @@ class StringContains extends Constraint
     public function toString(): string
     {
         if ($this->ignoreCase) {
-            $string = \mb_strtolower($this->string);
+            $string = \mb_strtolower($this->string, 'UTF-8');
         } else {
             $string = $this->string;
         }
@@ -68,9 +66,21 @@ class StringContains extends Constraint
         }
 
         if ($this->ignoreCase) {
-            return \mb_stripos($other, $this->string) !== false;
+            /*
+             * We must use the multi byte safe version so we can accurately compare non latin upper characters with
+             * their lowercase equivalents.
+             */
+            return \mb_stripos($other, $this->string, 0, 'UTF-8') !== false;
         }
 
-        return \mb_strpos($other, $this->string) !== false;
+        /*
+         * Use the non multi byte safe functions to see if the string is contained in $other.
+         *
+         * This function is very fast and we don't care about the character position in the string.
+         *
+         * Additionally, we want this method to be binary safe so we can check if some binary data is in other binary
+         * data.
+         */
+        return \strpos($other, $this->string) !== false;
     }
 }

@@ -130,8 +130,8 @@ class TemplateController extends BaseTemplateController
                         })
                         ->addColumn('action', function ($model) {
                             return '<a href='.url('templates/'.$model->id.'/edit').
-                            " class='btn btn-sm btn-primary btn-xs'><i class='fa fa-edit'
-                                 style='color:white;'> </i>&nbsp;&nbsp;Edit</a>";
+                            " class='btn btn-sm btn-secondary btn-xs'".tooltip('Edit')."<i class='fa fa-edit'
+                                 style='color:white;'> </i></a>";
                         })
                         ->rawColumns(['checkbox', 'name', 'type', 'action'])
                         ->make(true);
@@ -383,7 +383,7 @@ class TemplateController extends BaseTemplateController
                     $prices[] = $value->planPrice()->where('currency', $currencyAndSymbol['currency'])->min('add_price');
                 }
                 $price = min($prices);
-                $format = currency_format($price, $code = $currencyAndSymbol['currency']);
+                $format = currencyFormat($price, $code = $currencyAndSymbol['currency']);
                 $finalPrice = str_replace($currencyAndSymbol['symbol'], '', $format);
                 $cost = '<span class="price-unit">'.$currencyAndSymbol['symbol'].'</span>'.$finalPrice;
             }

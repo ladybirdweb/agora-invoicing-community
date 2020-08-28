@@ -3,13 +3,15 @@
 Settings
 @stop
 @section('content-header')
-<h1>
-Application Settings
-</h1>
-  <ol class="breadcrumb">
-        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-         <li class="active">Settings</li>
-      </ol>
+    <div class="col-sm-6">
+        <h1>Application Settings</h1>
+    </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="breadcrumb-item active">Settings</li>
+        </ol>
+    </div><!-- /.col -->
 @stop
 @section('content')
 <style>
@@ -25,30 +27,28 @@ Application Settings
     }
     .settingiconblue p {
         text-align: center;
-        font-size: 17px;
         word-wrap: break-word;
         font-variant: small-caps;
         font-weight: bold;
         line-height: 30px;
     }
     .settingdivblue {
-        width: 70px;
-        height: 70px;
+        width: 85px;
+        height: 75px;
         margin: 0 auto;
         text-align: center;
         border: 5px solid #C4D8E4;
         border-radius: 100%;
-        padding-top: 5px;
     }
 </style>
-<div class="box box-primary">
-    <div class="box-header with-border">
-        <h3 class="box-title">Settings</h3>
-    </div>
+<div class="card card-primary card-outline">
+
     <!-- /.box-header -->
-    <div class="box-body">
+        <div class="card-header">
+            <h3 class="card-title">Settings</h3>
+        </div>
+    <div class="card-body">
         <div class="row">
-            <div class="col-md-12">
                 <!--/.col-md-2-->
                 <div class="col-md-2 col-sm-6">
                     <div class="settingiconblue">
@@ -69,7 +69,7 @@ Application Settings
                         <div class="settingdivblue">
                             <a href="{{url('job-scheduler')}}">
                                 <span class="fa-stack fa-2x">
-                                    <i class="fa fa-tachometer fa-stack-1x"></i>
+                                    <i class="fas fa-tachometer-alt fa-stack-1x"></i>
                                 </span>
                             </a>
                         </div>
@@ -110,7 +110,7 @@ Application Settings
                         <div class="settingdivblue">
                             <a href="{{url('file-storage')}}">
                                 <span class="fa-stack fa-2x">
-                                    <i class="fa fa-file-archive-o fa-stack-1x"></i>
+                                    <i class="fas fa-file-archive fa-stack-1x"></i>
                                 </span>
                             </a>
                         </div>
@@ -147,21 +147,20 @@ Application Settings
                  <!--/.col-md-2-->
                   
             </div>
-        </div>
-        <!-- /.row -->
     </div>
+        <!-- /.row -->
+
     <!-- ./box-body -->
 </div>
 <!-- /.box -->
 
-<div class="box box-primary">
-    <div class="box-header with-border">
-        <h3 class="box-title">{{Lang::get('message.log_setting')}}</h3>
+<div class="card card-primary card-outline">
+    <div class="card-header">
+        <h3 class="card-title">{{Lang::get('message.log_setting')}}</h3>
     </div>
     <!-- /.box-header -->
-    <div class="box-body">
+    <div class="card-body">
         <div class="row">
-            <div class="col-md-12">
                 <!--/.col-md-2-->
                
                
@@ -223,7 +222,6 @@ Application Settings
 
                  <!--/.col-md-2-->
                   
-            </div>
         </div>
         <!-- /.row -->
     </div>
@@ -232,14 +230,13 @@ Application Settings
 
 
 
-<div class="box box-primary">
-    <div class="box-header with-border">
-        <h3 class="box-title">Email</h3>
+<div class="card card-primary card-outline">
+    <div class="card-header">
+        <h3 class="card-title">Email</h3>
     </div>
     <!-- /.box-header -->
-    <div class="box-body">
+    <div class="card-body">
         <div class="row">
-            <div class="col-md-12">
                 <!--col-md-2-->
                 <div class="col-md-2 col-sm-6">
                     <div class="settingiconblue">
@@ -274,7 +271,7 @@ Application Settings
                         <div class="settingdivblue">
                             <a href="{{url('templates')}}">
                                 <span class="fa-stack fa-2x">
-                                    <i class="fa fa-file-text fa-stack-1x"></i>
+                                    <i class="fas fa-file-alt fa-stack-1x"></i>
                                 </span>
                             </a>
                         </div>
@@ -283,28 +280,26 @@ Application Settings
                 </div>
                 <!--/.col-md-2-->
                
-            </div>
         </div>
         <!-- /.row -->
     </div>
     <!-- ./box-body -->
 </div>
 
-<div class="box box-primary">
-    <div class="box-header with-border">
-        <h3 class="box-title">Api</h3>
+<div class="card card-primary card-outline">
+    <div class="card-header">
+        <h3 class="card-title">Api</h3>
     </div>
     <!-- /.box-header -->
-    <div class="box-body">
+    <div class="card-body">
         <div class="row">
-            <div class="col-md-12">
                 <!--col-md-2-->
                 <div class="col-md-2 col-sm-6">
                     <div class="settingiconblue">
                         <div class="settingdivblue">
                             <a href="{{ url('github') }}">
                                 <span class="fa-stack fa-2x">
-                                    <i class="fa fa-github fa-stack-1x"></i>
+                                    <i class="fab fa-github-square fa-stack-1x"></i>
                                 </span>
                             </a>
                         </div>
@@ -322,7 +317,7 @@ Application Settings
                         <div class="settingdivblue">
                             <a href="{{ url('mailchimp') }}">
                                 <span class="fa-stack fa-2x">
-                                    <i class="fa fa-mail-forward fa-stack-1x"></i>
+                                    <i class="fab fa-mailchimp fa-stack-1x"></i>
                                 </span>
                             </a>
                         </div>
@@ -343,28 +338,26 @@ Application Settings
                         <p class="box-title" >Api Keys</p>
                     </div>
                 </div>
-            </div>
         </div>
         <!-- /.row -->
     </div>
     <!-- ./box-body -->
 </div>
 
-<div class="box box-primary">
-    <div class="box-header with-border">
-        <h3 class="box-title">Common</h3>
+<div class="card card-primary card-outline">
+    <div class="card-header">
+        <h3 class="card-title">Common</h3>
     </div>
     <!-- /.box-header -->
-    <div class="box-body">
+    <div class="card-body">
         <div class="row">
-            <div class="col-md-12">
                 <!--/.col-md-2-->
                 <div class="col-md-2 col-sm-6">
                     <div class="settingiconblue">
                         <div class="settingdivblue">
                             <a href="{{url('tax')}}">
                                 <span class="fa-stack fa-2x">
-                                    <i class="fa fa-dollar fa-stack-1x"></i>
+                                    <i class="fas fa-money-check-alt fa-stack-1x"></i>
                                 </span>
                             </a>
                         </div>
@@ -378,7 +371,7 @@ Application Settings
                         <div class="settingdivblue">
                             <a href="{{url('currency')}}">
                                 <span class="fa-stack fa-2x">
-                                    <i class="fa fa-money fa-stack-1x"></i>
+                                    <i class="fas fa-dollar-sign fa-stack-1x"></i>
                                 </span>
                             </a>
                         </div>
@@ -400,20 +393,18 @@ Application Settings
                 </div>
                 
                
-            </div>
         </div>
         <!-- /.row -->
     </div>
     <!-- ./box-body -->
 </div>
-<div class="box box-primary">
-    <div class="box-header with-border">
-        <h3 class="box-title">Widgets</h3>
+<div class="card card-primary card-outline">
+    <div class="card-header">
+        <h3 class="card-title">Widgets</h3>
     </div>
     <!-- /.box-header -->
-    <div class="box-body">
+    <div class="card-body">
         <div class="row">
-            <div class="col-md-12">
                 <!--/.col-md-2-->
                 <div class="col-md-2 col-sm-6">
                     <div class="settingiconblue">
@@ -448,14 +439,13 @@ Application Settings
                         <div class="settingdivblue">
                             <a href="{{ url('chat') }}">
                                 <span class="fa-stack fa-2x">
-                                    <i class="fa fa-wechat fa-stack-1x"></i>
+                                    <i class="fas fa-code fa-stack-1x"></i>
                                 </span>
                             </a>
                         </div>
                         <p class="box-title" >Analytics/Custom Code</p>
                     </div>
                 </div>                                       
-            </div>
         </div>
         <!-- /.row -->
     </div>

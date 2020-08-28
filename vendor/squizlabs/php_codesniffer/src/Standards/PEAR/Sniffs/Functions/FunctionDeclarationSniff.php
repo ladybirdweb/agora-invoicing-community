@@ -9,11 +9,11 @@
 
 namespace PHP_CodeSniffer\Standards\PEAR\Sniffs\Functions;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
-use PHP_CodeSniffer\Util\Tokens;
-use PHP_CodeSniffer\Standards\Generic\Sniffs\Functions\OpeningFunctionBraceKernighanRitchieSniff;
+use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Standards\Generic\Sniffs\Functions\OpeningFunctionBraceBsdAllmanSniff;
+use PHP_CodeSniffer\Standards\Generic\Sniffs\Functions\OpeningFunctionBraceKernighanRitchieSniff;
+use PHP_CodeSniffer\Util\Tokens;
 
 class FunctionDeclarationSniff implements Sniff
 {
@@ -80,7 +80,7 @@ class FunctionDeclarationSniff implements Sniff
             if ($tokens[($stackPtr + 1)]['content'] === $phpcsFile->eolChar) {
                 $spaces = 'newline';
             } else if ($tokens[($stackPtr + 1)]['code'] === T_WHITESPACE) {
-                $spaces = strlen($tokens[($stackPtr + 1)]['content']);
+                $spaces = $tokens[($stackPtr + 1)]['length'];
             } else {
                 $spaces = 0;
             }
@@ -105,12 +105,12 @@ class FunctionDeclarationSniff implements Sniff
         // Unfinished closures are tokenized as T_FUNCTION however, and can be excluded
         // by checking for the scope_opener.
         if ($tokens[$stackPtr]['code'] === T_FUNCTION
-            && isset($tokens[$stackPtr]['scope_opener']) === true
+            && (isset($tokens[$stackPtr]['scope_opener']) === true || $phpcsFile->getMethodProperties($stackPtr)['has_body'] === false)
         ) {
             if ($tokens[($openBracket - 1)]['content'] === $phpcsFile->eolChar) {
                 $spaces = 'newline';
             } else if ($tokens[($openBracket - 1)]['code'] === T_WHITESPACE) {
-                $spaces = strlen($tokens[($openBracket - 1)]['content']);
+                $spaces = $tokens[($openBracket - 1)]['length'];
             } else {
                 $spaces = 0;
             }
@@ -121,6 +121,27 @@ class FunctionDeclarationSniff implements Sniff
                 $fix   = $phpcsFile->addFixableError($error, $openBracket, 'SpaceBeforeOpenParen', $data);
                 if ($fix === true) {
                     $phpcsFile->fixer->replaceToken(($openBracket - 1), '');
+                }
+            }
+
+            // Must be no space before semicolon in abstract/interface methods.
+            if ($phpcsFile->getMethodProperties($stackPtr)['has_body'] === false) {
+                $end = $phpcsFile->findNext(T_SEMICOLON, $closeBracket);
+                if ($tokens[($end - 1)]['content'] === $phpcsFile->eolChar) {
+                    $spaces = 'newline';
+                } else if ($tokens[($end - 1)]['code'] === T_WHITESPACE) {
+                    $spaces = $tokens[($end - 1)]['length'];
+                } else {
+                    $spaces = 0;
+                }
+
+                if ($spaces !== 0) {
+                    $error = 'Expected 0 spaces before semicolon; %s found';
+                    $data  = [$spaces];
+                    $fix   = $phpcsFile->addFixableError($error, $end, 'SpaceBeforeSemicolon', $data);
+                    if ($fix === true) {
+                        $phpcsFile->fixer->replaceToken(($end - 1), '');
+                    }
                 }
             }
         }//end if
@@ -134,7 +155,7 @@ class FunctionDeclarationSniff implements Sniff
                 } else if ($tokens[($use + 1)]['content'] === "\t") {
                     $length = '\t';
                 } else {
-                    $length = strlen($tokens[($use + 1)]['content']);
+                    $length = $tokens[($use + 1)]['length'];
                 }
 
                 if ($length !== 1) {
@@ -155,7 +176,7 @@ class FunctionDeclarationSniff implements Sniff
                 } else if ($tokens[($use - 1)]['content'] === "\t") {
                     $length = '\t';
                 } else {
-                    $length = strlen($tokens[($use - 1)]['content']);
+                    $length = $tokens[($use - 1)]['length'];
                 }
 
                 if ($length !== 1) {
@@ -193,7 +214,7 @@ class FunctionDeclarationSniff implements Sniff
      * @param array                       $tokens      The stack of tokens that make up
      *                                                 the file.
      *
-     * @return void
+     * @return bool
      */
     public function isMultiLineDeclaration($phpcsFile, $stackPtr, $openBracket, $tokens)
     {
@@ -261,137 +282,16 @@ class FunctionDeclarationSniff implements Sniff
      */
     public function processMultiLineDeclaration($phpcsFile, $stackPtr, $tokens)
     {
-        // We need to work out how far indented the function
-        // declaration itself is, so we can work out how far to
-        // indent parameters.
-        $functionIndent = 0;
-        for ($i = ($stackPtr - 1); $i >= 0; $i--) {
-            if ($tokens[$i]['line'] !== $tokens[$stackPtr]['line']) {
-                break;
-            }
-        }
+        $this->processArgumentList($phpcsFile, $stackPtr, $this->indent);
 
-        // Move $i back to the line the function is or to 0.
-        $i++;
-
-        if ($tokens[$i]['code'] === T_WHITESPACE) {
-            $functionIndent = strlen($tokens[$i]['content']);
-        }
-
-        // The closing parenthesis must be on a new line, even
-        // when checking abstract function definitions.
         $closeBracket = $tokens[$stackPtr]['parenthesis_closer'];
-        $prev         = $phpcsFile->findPrevious(
-            T_WHITESPACE,
-            ($closeBracket - 1),
-            null,
-            true
-        );
-
-        if ($tokens[$closeBracket]['line'] !== $tokens[$tokens[$closeBracket]['parenthesis_opener']]['line']) {
-            if ($tokens[$prev]['line'] === $tokens[$closeBracket]['line']) {
-                $error = 'The closing parenthesis of a multi-line function declaration must be on a new line';
-                $fix   = $phpcsFile->addFixableError($error, $closeBracket, 'CloseBracketLine');
-                if ($fix === true) {
-                    $phpcsFile->fixer->addNewlineBefore($closeBracket);
-                }
-            }
-        }
-
-        // If this is a closure and is using a USE statement, the closing
-        // parenthesis we need to look at from now on is the closing parenthesis
-        // of the USE statement.
         if ($tokens[$stackPtr]['code'] === T_CLOSURE) {
             $use = $phpcsFile->findNext(T_USE, ($closeBracket + 1), $tokens[$stackPtr]['scope_opener']);
             if ($use !== false) {
                 $open         = $phpcsFile->findNext(T_OPEN_PARENTHESIS, ($use + 1));
                 $closeBracket = $tokens[$open]['parenthesis_closer'];
-
-                $prev = $phpcsFile->findPrevious(
-                    T_WHITESPACE,
-                    ($closeBracket - 1),
-                    null,
-                    true
-                );
-
-                if ($tokens[$closeBracket]['line'] !== $tokens[$tokens[$closeBracket]['parenthesis_opener']]['line']) {
-                    if ($tokens[$prev]['line'] === $tokens[$closeBracket]['line']) {
-                        $error = 'The closing parenthesis of a multi-line use declaration must be on a new line';
-                        $fix   = $phpcsFile->addFixableError($error, $closeBracket, 'UseCloseBracketLine');
-                        if ($fix === true) {
-                            $phpcsFile->fixer->addNewlineBefore($closeBracket);
-                        }
-                    }
-                }
-            }//end if
-        }//end if
-
-        // Each line between the parenthesis should be indented 4 spaces.
-        $openBracket = $tokens[$stackPtr]['parenthesis_opener'];
-        $lastLine    = $tokens[$openBracket]['line'];
-        for ($i = ($openBracket + 1); $i < $closeBracket; $i++) {
-            if ($tokens[$i]['line'] !== $lastLine) {
-                if ($i === $tokens[$stackPtr]['parenthesis_closer']
-                    || ($tokens[$i]['code'] === T_WHITESPACE
-                    && (($i + 1) === $closeBracket
-                    || ($i + 1) === $tokens[$stackPtr]['parenthesis_closer']))
-                ) {
-                    // Closing braces need to be indented to the same level
-                    // as the function.
-                    $expectedIndent = $functionIndent;
-                } else {
-                    $expectedIndent = ($functionIndent + $this->indent);
-                }
-
-                // We changed lines, so this should be a whitespace indent token.
-                if ($tokens[$i]['code'] !== T_WHITESPACE) {
-                    $foundIndent = 0;
-                } else if ($tokens[$i]['line'] !== $tokens[($i + 1)]['line']) {
-                    // This is an empty line, so don't check the indent.
-                    $foundIndent = $expectedIndent;
-
-                    $error = 'Blank lines are not allowed in a multi-line function declaration';
-                    $fix   = $phpcsFile->addFixableError($error, $i, 'EmptyLine');
-                    if ($fix === true) {
-                        $phpcsFile->fixer->replaceToken($i, '');
-                    }
-                } else {
-                    $foundIndent = strlen($tokens[$i]['content']);
-                }
-
-                if ($expectedIndent !== $foundIndent) {
-                    $error = 'Multi-line function declaration not indented correctly; expected %s spaces but found %s';
-                    $data  = [
-                        $expectedIndent,
-                        $foundIndent,
-                    ];
-
-                    $fix = $phpcsFile->addFixableError($error, $i, 'Indent', $data);
-                    if ($fix === true) {
-                        $spaces = str_repeat(' ', $expectedIndent);
-                        if ($foundIndent === 0) {
-                            $phpcsFile->fixer->addContentBefore($i, $spaces);
-                        } else {
-                            $phpcsFile->fixer->replaceToken($i, $spaces);
-                        }
-                    }
-                }
-
-                $lastLine = $tokens[$i]['line'];
-            }//end if
-
-            if ($tokens[$i]['code'] === T_ARRAY || $tokens[$i]['code'] === T_OPEN_SHORT_ARRAY) {
-                // Skip arrays as they have their own indentation rules.
-                if ($tokens[$i]['code'] === T_OPEN_SHORT_ARRAY) {
-                    $i = $tokens[$i]['bracket_closer'];
-                } else {
-                    $i = $tokens[$i]['parenthesis_closer'];
-                }
-
-                $lastLine = $tokens[$i]['line'];
-                continue;
             }
-        }//end for
+        }
 
         if (isset($tokens[$stackPtr]['scope_opener']) === false) {
             return;
@@ -455,6 +355,157 @@ class FunctionDeclarationSniff implements Sniff
         }//end if
 
     }//end processMultiLineDeclaration()
+
+
+    /**
+     * Processes multi-line argument list declarations.
+     *
+     * @param \PHP_CodeSniffer\Files\File $phpcsFile The file being scanned.
+     * @param int                         $stackPtr  The position of the current token
+     *                                               in the stack passed in $tokens.
+     * @param int                         $indent    The number of spaces code should be indented.
+     * @param string                      $type      The type of the token the brackets
+     *                                               belong to.
+     *
+     * @return void
+     */
+    public function processArgumentList($phpcsFile, $stackPtr, $indent, $type='function')
+    {
+        $tokens = $phpcsFile->getTokens();
+
+        // We need to work out how far indented the function
+        // declaration itself is, so we can work out how far to
+        // indent parameters.
+        $functionIndent = 0;
+        for ($i = ($stackPtr - 1); $i >= 0; $i--) {
+            if ($tokens[$i]['line'] !== $tokens[$stackPtr]['line']) {
+                break;
+            }
+        }
+
+        // Move $i back to the line the function is or to 0.
+        $i++;
+
+        if ($tokens[$i]['code'] === T_WHITESPACE) {
+            $functionIndent = $tokens[$i]['length'];
+        }
+
+        // The closing parenthesis must be on a new line, even
+        // when checking abstract function definitions.
+        $closeBracket = $tokens[$stackPtr]['parenthesis_closer'];
+        $prev         = $phpcsFile->findPrevious(
+            T_WHITESPACE,
+            ($closeBracket - 1),
+            null,
+            true
+        );
+
+        if ($tokens[$closeBracket]['line'] !== $tokens[$tokens[$closeBracket]['parenthesis_opener']]['line']
+            && $tokens[$prev]['line'] === $tokens[$closeBracket]['line']
+        ) {
+            $error = 'The closing parenthesis of a multi-line '.$type.' declaration must be on a new line';
+            $fix   = $phpcsFile->addFixableError($error, $closeBracket, 'CloseBracketLine');
+            if ($fix === true) {
+                $phpcsFile->fixer->addNewlineBefore($closeBracket);
+            }
+        }
+
+        // If this is a closure and is using a USE statement, the closing
+        // parenthesis we need to look at from now on is the closing parenthesis
+        // of the USE statement.
+        if ($tokens[$stackPtr]['code'] === T_CLOSURE) {
+            $use = $phpcsFile->findNext(T_USE, ($closeBracket + 1), $tokens[$stackPtr]['scope_opener']);
+            if ($use !== false) {
+                $open         = $phpcsFile->findNext(T_OPEN_PARENTHESIS, ($use + 1));
+                $closeBracket = $tokens[$open]['parenthesis_closer'];
+
+                $prev = $phpcsFile->findPrevious(
+                    T_WHITESPACE,
+                    ($closeBracket - 1),
+                    null,
+                    true
+                );
+
+                if ($tokens[$closeBracket]['line'] !== $tokens[$tokens[$closeBracket]['parenthesis_opener']]['line']
+                    && $tokens[$prev]['line'] === $tokens[$closeBracket]['line']
+                ) {
+                    $error = 'The closing parenthesis of a multi-line use declaration must be on a new line';
+                    $fix   = $phpcsFile->addFixableError($error, $closeBracket, 'UseCloseBracketLine');
+                    if ($fix === true) {
+                        $phpcsFile->fixer->addNewlineBefore($closeBracket);
+                    }
+                }
+            }//end if
+        }//end if
+
+        // Each line between the parenthesis should be indented 4 spaces.
+        $openBracket = $tokens[$stackPtr]['parenthesis_opener'];
+        $lastLine    = $tokens[$openBracket]['line'];
+        for ($i = ($openBracket + 1); $i < $closeBracket; $i++) {
+            if ($tokens[$i]['line'] !== $lastLine) {
+                if ($i === $tokens[$stackPtr]['parenthesis_closer']
+                    || ($tokens[$i]['code'] === T_WHITESPACE
+                    && (($i + 1) === $closeBracket
+                    || ($i + 1) === $tokens[$stackPtr]['parenthesis_closer']))
+                ) {
+                    // Closing braces need to be indented to the same level
+                    // as the function.
+                    $expectedIndent = $functionIndent;
+                } else {
+                    $expectedIndent = ($functionIndent + $indent);
+                }
+
+                // We changed lines, so this should be a whitespace indent token.
+                if ($tokens[$i]['code'] !== T_WHITESPACE) {
+                    $foundIndent = 0;
+                } else if ($tokens[$i]['line'] !== $tokens[($i + 1)]['line']) {
+                    // This is an empty line, so don't check the indent.
+                    $foundIndent = $expectedIndent;
+
+                    $error = 'Blank lines are not allowed in a multi-line '.$type.' declaration';
+                    $fix   = $phpcsFile->addFixableError($error, $i, 'EmptyLine');
+                    if ($fix === true) {
+                        $phpcsFile->fixer->replaceToken($i, '');
+                    }
+                } else {
+                    $foundIndent = $tokens[$i]['length'];
+                }
+
+                if ($expectedIndent !== $foundIndent) {
+                    $error = 'Multi-line '.$type.' declaration not indented correctly; expected %s spaces but found %s';
+                    $data  = [
+                        $expectedIndent,
+                        $foundIndent,
+                    ];
+
+                    $fix = $phpcsFile->addFixableError($error, $i, 'Indent', $data);
+                    if ($fix === true) {
+                        $spaces = str_repeat(' ', $expectedIndent);
+                        if ($foundIndent === 0) {
+                            $phpcsFile->fixer->addContentBefore($i, $spaces);
+                        } else {
+                            $phpcsFile->fixer->replaceToken($i, $spaces);
+                        }
+                    }
+                }
+
+                $lastLine = $tokens[$i]['line'];
+            }//end if
+
+            if ($tokens[$i]['code'] === T_ARRAY || $tokens[$i]['code'] === T_OPEN_SHORT_ARRAY) {
+                // Skip arrays as they have their own indentation rules.
+                if ($tokens[$i]['code'] === T_OPEN_SHORT_ARRAY) {
+                    $i = $tokens[$i]['bracket_closer'];
+                } else {
+                    $i = $tokens[$i]['parenthesis_closer'];
+                }
+
+                $lastLine = $tokens[$i]['line'];
+                continue;
+            }
+        }//end for
+
+    }//end processArgumentList()
 
 
 }//end class

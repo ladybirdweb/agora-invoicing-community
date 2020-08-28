@@ -2,89 +2,24 @@
 @section('title')
 Edit User
 @stop
-@section('content-header')
-<h1>
-Edit User
-</h1>
-  <ol class="breadcrumb">
-        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-         <li><a href="{{url('clients')}}">All Users</a></li>
-        <li class="active">Edit User</li>
-      </ol>
-@stop
+    @section('content-header')
+        <div class="col-sm-6">
+            <h1>Edit User</h1>
+        </div>
+        <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+                <li class="breadcrumb-item active">Edit User</li>
+            </ol>
+        </div><!-- /.col -->
+    @stop
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
-<style>
-    .bootstrap-select.btn-group .dropdown-menu li a {
-    margin-left: -10px !important;
-}
- .btn-group>.btn:first-child {
-    margin-left: 0;
-    background-color: white;
 
-    select {
-  -webkit-appearance: none;
-  -webkit-border-radius: -6px;
-}
-.bootstrap-select.btn-group .dropdown-toggle .filter-option {
-    color:#555;
-}
-.caret {
-    border-top: 6px dashed;
-    border-right: 3px solid transparent;
-    border-left: 3px solid transparent;
-}
-
-
-</style>
 @section('content')
-<div class="box box-primary">
+<div class="card card-primary card-outline">
+    <div class="card-body">
 
-    <div class="box-header">
-
-        @if (count($errors) > 0)
-        <div class="alert alert-danger">
-            <strong>Whoops!</strong> There were some problems with your input.<br><br>
-            <ul>
-                @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-        @endif
-        @if(Session::has('success'))
-        <div class="alert alert-success alert-dismissable">
-              <i class="fa fa-check"></i>
-            <b>{{Lang::get('message.success')}}!</b>
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            {{Session::get('success')}}
-        </div>
-        @endif
-        
-        @if(Session::has('warning'))
-        <div class="alert alert-warning alert-dismissable">
-           <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            {{Session::get('warning')}}
-        </div>
-        @endif
-        
-        <!-- fail message -->
-        @if(Session::has('fails'))
-        <div class="alert alert-danger alert-dismissable">
-            <i class="fa fa-ban"></i>
-            <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.failed')}}.
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            {{Session::get('fails')}}
-        </div>
-        @endif
-       
-
-    </div>
-    
-
-    <div class="box-body">
          {!! Form::model($user,['url'=>'clients/'.$user->id,'method'=>'PATCH']) !!}
-
-        <h4>{{Lang::get('message.client')}}<button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-refresh">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button></h4>
 
         <div class="row">
 
@@ -138,7 +73,7 @@ Edit User
                     <div class="col-md-3 form-group {{ $errors->has('bussiness') ? 'has-error' : '' }}">
                         <!-- company -->
                         {!! Form::label('bussiness','Industry') !!}
-                        <select name="bussiness"  class="form-control">
+                        <select name="bussiness"  class="form-control select2">
                             <option value="">Choose</option>
                          @foreach($bussinesses as $key=>$bussiness)
                          
@@ -152,7 +87,7 @@ Edit User
 
                     <div class="col-md-3 form-group {{ $errors->has('active') ? 'has-error' : '' }}">
                         <!-- mobile -->
-                        {!! Form::label('active',Lang::get('message.active')) !!}
+                        {!! Form::label('active',Lang::get('message.email')) !!}
                         <p>{!! Form::radio('active',1,true) !!}&nbsp;Active&nbsp;&nbsp;{!! Form::radio('active',0) !!}&nbsp;Inactive</p>
 
                     </div>
@@ -208,7 +143,7 @@ Edit User
                 </div>
                 <div class="form-group {{ $errors->has('address') ? 'has-error' : '' }}">
                     <!-- phone number -->
-                    {!! Form::label('address',Lang::get('message.address')) !!}
+                    {!! Form::label('address',Lang::get('message.address'),['class'=>'required']) !!}
                     {!! Form::textarea('address',null,['class' => 'form-control']) !!}
 
                 </div>
@@ -227,7 +162,7 @@ Edit User
                         {!! Form::label('country',Lang::get('message.country'),['class'=>'required']) !!}
                         <?php $countries = \App\Model\Common\Country::pluck('nicename', 'country_code_char2')->toArray(); ?>
 
-                        {!! Form::select('country',[Lang::get('message.choose')=>$countries],null,['class' => 'form-control selectpicker','id'=>'country','onChange'=>'getCountryAttr(this.value)','data-live-search'=>'true','required','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false','data-size'=>'10']) !!}
+                        {!! Form::select('country',[Lang::get('message.choose')=>$countries],null,['class' => 'form-control select2','id'=>'country','onChange'=>'getCountryAttr(this.value)','data-live-search'=>'true','required','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false','data-size'=>'10']) !!}
 
                     </div>
                     <div class="col-md-3 form-group {{ $errors->has('state') ? 'has-error' : '' }}">
@@ -258,7 +193,7 @@ Edit User
                         <!-- mobile -->
                         {!! Form::label('timezone_id',Lang::get('message.timezone'),['class'=>'required']) !!}
 
-                         {!! Form::select('timezone_id', ['Timezones'=>$timezones],null,['class' => 'form-control chosen-select selectpicker','data-live-search'=>'true','required','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false','data-size'=>'10']) !!}
+                         {!! Form::select('timezone_id', ['Timezones'=>$timezones],null,['class' => 'form-control chosen-select select2','data-live-search'=>'true','required','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false']) !!}
 
                     </div>
                     <?php 
@@ -297,14 +232,14 @@ Edit User
                     <div class="col-md-3 form-group {{ $errors->has('manager') ? 'has-error' : '' }}">
                         <!-- mobile -->
                         {!! Form::label('manager','Sales Manager') !!}
-                        {!! Form::select('manager',[''=>'Select','Managers'=>$managers],null,['class' => 'form-control']) !!}
+                        {!! Form::select('manager',[''=>'Choose','Managers'=>$managers],null,['class' => 'form-control']) !!}
 
                     </div>
 
                      <div class="col-md-3 form-group {{ $errors->has('manager') ? 'has-error' : '' }}">
                         <!-- mobile -->
                         {!! Form::label('account_manager','Account Manager') !!}
-                        {!! Form::select('account_manager',[''=>'Select','Managers'=>$acc_managers],null,['class' => 'form-control']) !!}
+                        {!! Form::select('account_manager',[''=>'Choose','Managers'=>$acc_managers],null,['class' => 'form-control']) !!}
 
                     </div>
                     @endif
@@ -312,7 +247,9 @@ Edit User
               
             </div>
         </div>
- {!! Form::close() !!}
+        <h4><button type="submit" class="btn btn-primary pull-right" id="submit"><i class="fas fa-sync-alt">&nbsp;</i>{!!Lang::get('message.update')!!}</button></h4>
+
+        {!! Form::close() !!}
     </div>
      
 </div>
@@ -328,7 +265,10 @@ Edit User
 
    
      $(document).ready(function(){
-
+         $(function () {
+             //Initialize Select2 Elements
+             $('.select2').select2()
+         });
     var country = $('#country').val();
     var telInput = $('#mobile_code'),
      addressDropdown = $("#country");

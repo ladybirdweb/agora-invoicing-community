@@ -9,8 +9,8 @@
 
 namespace PHP_CodeSniffer\Standards\Squiz\Sniffs\Commenting;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
 
 class LongConditionClosingCommentSniff implements Sniff
 {
@@ -93,7 +93,7 @@ class LongConditionClosingCommentSniff implements Sniff
         $endBrace       = $tokens[$stackPtr];
 
         // We are only interested in some code blocks.
-        if (in_array($startCondition['code'], self::$openers) === false) {
+        if (in_array($startCondition['code'], self::$openers, true) === false) {
             return;
         }
 
@@ -145,7 +145,7 @@ class LongConditionClosingCommentSniff implements Sniff
                 if ($tokens[$nextToken]['code'] === T_CATCH
                     || $tokens[$nextToken]['code'] === T_FINALLY
                 ) {
-                    // The end brace becomes the CATCH's end brace.
+                    // The end brace becomes the CATCH end brace.
                     $stackPtr = $tokens[$nextToken]['scope_closer'];
                     $endBrace = $tokens[$stackPtr];
                 } else {

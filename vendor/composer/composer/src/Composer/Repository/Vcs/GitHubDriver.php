@@ -34,6 +34,8 @@ class GitHubDriver extends VcsDriver
     protected $hasIssues;
     protected $infoCache = array();
     protected $isPrivate = false;
+    private $isArchived = false;
+    private $fundingInfo;
 
     /**
      * Git Driver
@@ -162,6 +164,12 @@ class GitHubDriver extends VcsDriver
                 if (!isset($composer['support']['issues']) && $this->hasIssues) {
                     $composer['support']['issues'] = sprintf('https://%s/%s/%s/issues', $this->originUrl, $this->owner, $this->repository);
                 }
+                if (!isset($composer['abandoned']) && $this->isArchived) {
+                    $composer['abandoned'] = true;
+                }
+                if (!isset($composer['funding']) && $funding = $this->getFundingInfo()) {
+                    $composer['funding'] = $funding;
+                }
             }
 
             if ($this->shouldCache($identifier)) {
@@ -172,6 +180,91 @@ class GitHubDriver extends VcsDriver
         }
 
         return $this->infoCache[$identifier];
+    }
+
+    private function getFundingInfo()
+    {
+        if (null !== $this->fundingInfo) {
+            return $this->fundingInfo;
+        }
+
+        if ($this->originUrl !== 'github.com') {
+            return $this->fundingInfo = false;
+        }
+
+        foreach (array($this->getApiUrl() . '/repos/'.$this->owner.'/'.$this->repository.'/contents/.github/FUNDING.yml', $this->getApiUrl() . '/repos/'.$this->owner.'/.github/contents/FUNDING.yml') as $file) {
+
+            try {
+                $result = $this->remoteFilesystem->getContents($this->originUrl, $file, false, array(
+                    'retry-auth-failure' => false,
+                ));
+                $response = json_decode($result, true);
+            } catch (TransportException $e) {
+                continue;
+            }
+            if (empty($response['content']) || $response['encoding'] !== 'base64' || !($funding = base64_decode($response['content']))) {
+                continue;
+            }
+            break;
+        }
+        if (empty($funding)) {
+            return $this->fundingInfo = false;
+        }
+
+        $result = array();
+        $key = null;
+        foreach (preg_split('{\r?\n}', $funding) as $line) {
+            $line = preg_replace('{#.*}', '', $line);
+            $line = trim($line);
+            if (preg_match('{^(\w+)\s*:\s*(.+)$}', $line, $match)) {
+                if (preg_match('{^\[.*\]$}', $match[2])) {
+                    foreach (array_map('trim', preg_split('{[\'"]?\s*,\s*[\'"]?}', substr($match[2], 1, -1))) as $item) {
+                        $result[] = array('type' => $match[1], 'url' => trim($item, '"\' '));
+                    }
+                } else {
+                    $result[] = array('type' => $match[1], 'url' => trim($match[2], '"\' '));
+                }
+                $key = null;
+            } elseif (preg_match('{^(\w+)\s*:$}', $line, $match)) {
+                $key = $match[1];
+            } elseif ($key && preg_match('{^-\s*(.+)$}', $line, $match)) {
+                $result[] = array('type' => $key, 'url' => trim($match[1], '"\' '));
+            }
+        }
+
+        foreach ($result as $key => $item) {
+            switch ($item['type']) {
+                case 'tidelift':
+                    $result[$key]['url'] = 'https://tidelift.com/funding/github/' . $item['url'];
+                    break;
+                case 'github':
+                    $result[$key]['url'] = 'https://github.com/' . basename($item['url']);
+                    break;
+                case 'patreon':
+                    $result[$key]['url'] = 'https://www.patreon.com/' . basename($item['url']);
+                    break;
+                case 'otechie':
+                    $result[$key]['url'] = 'https://otechie.com/' . basename($item['url']);
+                    break;
+                case 'open_collective':
+                    $result[$key]['url'] = 'https://opencollective.com/' . basename($item['url']);
+                    break;
+                case 'liberapay':
+                    $result[$key]['url'] = 'https://liberapay.com/' . basename($item['url']);
+                    break;
+                case 'ko_fi':
+                    $result[$key]['url'] = 'https://ko-fi.com/' . basename($item['url']);
+                    break;
+                case 'issuehunt':
+                    $result[$key]['url'] = 'https://issuehunt.io/r/' . $item['url'];
+                    break;
+                case 'community_bridge':
+                    $result[$key]['url'] = 'https://funding.communitybridge.org/projects/' . basename($item['url']);
+                    break;
+            }
+        }
+
+        return $this->fundingInfo = $result;
     }
 
     /**
@@ -244,13 +337,11 @@ class GitHubDriver extends VcsDriver
             $this->branches = array();
             $resource = $this->getApiUrl() . '/repos/'.$this->owner.'/'.$this->repository.'/git/refs/heads?per_page=100';
 
-            $branchBlacklist = array('gh-pages');
-
             do {
                 $branchData = JsonFile::parseJson($this->getContents($resource), $resource);
                 foreach ($branchData as $branch) {
                     $name = substr($branch['ref'], 11);
-                    if (!in_array($name, $branchBlacklist)) {
+                    if ($name !== 'gh-pages') {
                         $this->branches[$name] = $branch['object']['sha'];
                     }
                 }
@@ -425,6 +516,7 @@ class GitHubDriver extends VcsDriver
             $this->rootIdentifier = 'master';
         }
         $this->hasIssues = !empty($this->repoData['has_issues']);
+        $this->isArchived = !empty($this->repoData['archived']);
     }
 
     protected function attemptCloneFallback()

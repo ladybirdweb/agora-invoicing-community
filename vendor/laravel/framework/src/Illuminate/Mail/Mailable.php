@@ -4,8 +4,8 @@ namespace Illuminate\Mail;
 
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Filesystem\Factory as FilesystemFactory;
+use Illuminate\Contracts\Mail\Factory as MailFactory;
 use Illuminate\Contracts\Mail\Mailable as MailableContract;
-use Illuminate\Contracts\Mail\Mailer as MailerContract;
 use Illuminate\Contracts\Queue\Factory as Queue;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Support\Collection;
@@ -133,6 +133,20 @@ class Mailable implements MailableContract, Renderable
     public $callbacks = [];
 
     /**
+     * The name of the theme that should be used when formatting the message.
+     *
+     * @var string|null
+     */
+    public $theme;
+
+    /**
+     * The name of the mailer that should send the message.
+     *
+     * @var string
+     */
+    public $mailer;
+
+    /**
      * The callback that should be invoked while building the view data.
      *
      * @var callable
@@ -142,13 +156,17 @@ class Mailable implements MailableContract, Renderable
     /**
      * Send the message using the given mailer.
      *
-     * @param  \Illuminate\Contracts\Mail\Mailer  $mailer
+     * @param  \Illuminate\Contracts\Mail\Factory|\Illuminate\Contracts\Mail\Mailer  $mailer
      * @return void
      */
-    public function send(MailerContract $mailer)
+    public function send($mailer)
     {
         return $this->withLocale($this->locale, function () use ($mailer) {
             Container::getInstance()->call([$this, 'build']);
+
+            $mailer = $mailer instanceof MailFactory
+                            ? $mailer->mailer($this->mailer)
+                            : $mailer;
 
             return $mailer->send($this->buildView(), $this->buildViewData(), function ($message) {
                 $this->buildFrom($message)
@@ -177,7 +195,7 @@ class Mailable implements MailableContract, Renderable
         $queueName = property_exists($this, 'queue') ? $this->queue : null;
 
         return $queue->connection($connection)->pushOn(
-            $queueName ?: null, new SendQueuedMailable($this)
+            $queueName ?: null, $this->newQueuedJob()
         );
     }
 
@@ -195,8 +213,18 @@ class Mailable implements MailableContract, Renderable
         $queueName = property_exists($this, 'queue') ? $this->queue : null;
 
         return $queue->connection($connection)->laterOn(
-            $queueName ?: null, $delay, new SendQueuedMailable($this)
+            $queueName ?: null, $delay, $this->newQueuedJob()
         );
+    }
+
+    /**
+     * Make the queued mailable job instance.
+     *
+     * @return mixed
+     */
+    protected function newQueuedJob()
+    {
+        return new SendQueuedMailable($this);
     }
 
     /**
@@ -785,7 +813,7 @@ class Mailable implements MailableContract, Renderable
             'name' => $name ?? basename($path),
             'options' => $options,
         ])->unique(function ($file) {
-            return $file['disk'].$file['path'];
+            return $file['name'].$file['disk'].$file['path'];
         })->all();
 
         return $this;
@@ -803,8 +831,22 @@ class Mailable implements MailableContract, Renderable
     {
         $this->rawAttachments = collect($this->rawAttachments)
                 ->push(compact('data', 'name', 'options'))
-                ->unique('data')
-                ->all();
+                ->unique(function ($file) {
+                    return $file['name'].$file['data'];
+                })->all();
+
+        return $this;
+    }
+
+    /**
+     * Set the name of the mailer that should send the message.
+     *
+     * @param  string  $mailer
+     * @return $this
+     */
+    public function mailer($mailer)
+    {
+        $this->mailer = $mailer;
 
         return $this;
     }
@@ -831,6 +873,25 @@ class Mailable implements MailableContract, Renderable
     public static function buildViewDataUsing(callable $callback)
     {
         static::$viewDataCallback = $callback;
+    }
+
+    /**
+     * Apply the callback's message changes if the given "value" is true.
+     *
+     * @param  mixed  $value
+     * @param  callable  $callback
+     * @param  mixed  $default
+     * @return mixed|$this
+     */
+    public function when($value, $callback, $default = null)
+    {
+        if ($value) {
+            return $callback($this, $value) ?: $this;
+        } elseif ($default) {
+            return $default($this, $value) ?: $this;
+        }
+
+        return $this;
     }
 
     /**

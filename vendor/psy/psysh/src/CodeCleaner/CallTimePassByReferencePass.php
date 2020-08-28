@@ -3,7 +3,7 @@
 /*
  * This file is part of Psy Shell.
  *
- * (c) 2012-2018 Justin Hileman
+ * (c) 2012-2020 Justin Hileman
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -31,7 +31,7 @@ class CallTimePassByReferencePass extends CodeCleanerPass
     /**
      * Validate of use call-time pass-by-reference.
      *
-     * @throws RuntimeException if the user used call-time pass-by-reference
+     * @throws FatalErrorException if the user used call-time pass-by-reference
      *
      * @param Node $node
      */

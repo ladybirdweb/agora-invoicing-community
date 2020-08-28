@@ -11,9 +11,9 @@
 
 namespace PHP_CodeSniffer\Standards\Generic\Sniffs\PHP;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
-use PHP_CodeSniffer\Files\File;
 use PHP_CodeSniffer\Config;
+use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
 
 class DisallowAlternativePHPTagsSniff implements Sniff
 {
@@ -48,7 +48,7 @@ class DisallowAlternativePHPTagsSniff implements Sniff
         }
 
         if ($this->phpVersion < 70000) {
-            $this->aspTags = (boolean) ini_get('asp_tags');
+            $this->aspTags = (bool) ini_get('asp_tags');
         }
 
         return [
@@ -131,9 +131,8 @@ class DisallowAlternativePHPTagsSniff implements Sniff
         }//end if
 
         // Account for incorrect script open tags.
-        // The "(?:<s)?" in the regex is to work-around a bug in PHP 5.2.
         if ($openTag['code'] === T_INLINE_HTML
-            && preg_match('`((?:<s)?cript (?:[^>]+)?language=[\'"]?php[\'"]?(?:[^>]+)?>)`i', $content, $match) === 1
+            && preg_match('`(<script (?:[^>]+)?language=[\'"]?php[\'"]?(?:[^>]+)?>)`i', $content, $match) === 1
         ) {
             $error   = 'Script style opening tag used; expected "<?php" but found "%s"';
             $snippet = $this->getSnippet($content, $match[1]);

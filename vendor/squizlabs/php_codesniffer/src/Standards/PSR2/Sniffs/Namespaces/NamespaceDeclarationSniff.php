@@ -9,8 +9,8 @@
 
 namespace PHP_CodeSniffer\Standards\PSR2\Sniffs\Namespaces;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
 
 class NamespaceDeclarationSniff implements Sniff
 {
@@ -41,8 +41,9 @@ class NamespaceDeclarationSniff implements Sniff
     {
         $tokens = $phpcsFile->getTokens();
 
-        for ($i = ($stackPtr + 1); $i < ($phpcsFile->numTokens - 1); $i++) {
-            if ($tokens[$i]['line'] === $tokens[$stackPtr]['line']) {
+        $end = $phpcsFile->findEndOfStatement($stackPtr);
+        for ($i = ($end + 1); $i < ($phpcsFile->numTokens - 1); $i++) {
+            if ($tokens[$i]['line'] === $tokens[$end]['line']) {
                 continue;
             }
 

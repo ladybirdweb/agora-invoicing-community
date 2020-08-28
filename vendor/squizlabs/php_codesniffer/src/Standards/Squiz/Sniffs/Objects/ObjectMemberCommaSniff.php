@@ -9,8 +9,8 @@
 
 namespace PHP_CodeSniffer\Standards\Squiz\Sniffs\Objects;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Util\Tokens;
 
 class ObjectMemberCommaSniff implements Sniff
@@ -52,7 +52,7 @@ class ObjectMemberCommaSniff implements Sniff
         $prev = $phpcsFile->findPrevious(Tokens::$emptyTokens, ($stackPtr - 1), null, true);
         if ($tokens[$prev]['code'] === T_COMMA) {
             $error = 'Last member of object must not be followed by a comma';
-            $fix   = $phpcsFile->addFixableError($error, $prev, 'Missing');
+            $fix   = $phpcsFile->addFixableError($error, $prev, 'Found');
             if ($fix === true) {
                 $phpcsFile->fixer->replaceToken($prev, '');
             }

@@ -3,7 +3,7 @@
 /*
  * This file is part of Psy Shell.
  *
- * (c) 2012-2018 Justin Hileman
+ * (c) 2012-2020 Justin Hileman
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -22,6 +22,7 @@ use Psy\Command\ListCommand\VariableEnumerator;
 use Psy\Exception\RuntimeException;
 use Psy\Input\CodeArgument;
 use Psy\Input\FilterOptions;
+use Psy\Output\ShellOutput;
 use Psy\VarDumper\Presenter;
 use Psy\VarDumper\PresenterAware;
 use Symfony\Component\Console\Formatter\OutputFormatter;
@@ -57,7 +58,7 @@ class ListCommand extends ReflectingCommand implements PresenterAware
 
         $this
             ->setName('ls')
-            ->setAliases(['list', 'dir'])
+            ->setAliases(['dir'])
             ->setDefinition([
                 new CodeArgument('target', CodeArgument::OPTIONAL, 'A target class or object to list.'),
 
@@ -126,7 +127,7 @@ HELP
         }
 
         // @todo something cleaner than this :-/
-        if ($input->getOption('long')) {
+        if ($output instanceof ShellOutput && $input->getOption('long')) {
             $output->startPaging();
         }
 
@@ -134,7 +135,7 @@ HELP
             $this->$method($output, $enumerator->enumerate($input, $reflector, $target));
         }
 
-        if ($input->getOption('long')) {
+        if ($output instanceof ShellOutput && $input->getOption('long')) {
             $output->stopPaging();
         }
 
@@ -171,11 +172,11 @@ HELP
      * Write the list items to $output.
      *
      * @param OutputInterface $output
-     * @param null|array      $result List of enumerated items
+     * @param array           $result List of enumerated items
      */
-    protected function write(OutputInterface $output, array $result = null)
+    protected function write(OutputInterface $output, array $result)
     {
-        if ($result === null) {
+        if (\count($result) === 0) {
             return;
         }
 
@@ -191,11 +192,11 @@ HELP
      * Items are listed one per line, and include the item signature.
      *
      * @param OutputInterface $output
-     * @param null|array      $result List of enumerated items
+     * @param array           $result List of enumerated items
      */
-    protected function writeLong(OutputInterface $output, array $result = null)
+    protected function writeLong(OutputInterface $output, array $result)
     {
-        if ($result === null) {
+        if (\count($result) === 0) {
             return;
         }
 
@@ -257,13 +258,14 @@ HELP
             $input->setOption('vars', true);
         } else {
             // if a target is passed, classes, functions, etc don't make sense
-            foreach (['vars', 'globals', 'functions', 'classes', 'interfaces', 'traits'] as $option) {
+            foreach (['vars', 'globals'] as $option) {
                 if ($input->getOption($option)) {
                     throw new RuntimeException('--' . $option . ' does not make sense with a specified target');
                 }
             }
 
-            foreach (['constants', 'properties', 'methods'] as $option) {
+            // @todo ensure that 'functions', 'classes', 'interfaces', 'traits' only accept namespace target?
+            foreach (['constants', 'properties', 'methods', 'functions', 'classes', 'interfaces', 'traits'] as $option) {
                 if ($input->getOption($option)) {
                     return;
                 }

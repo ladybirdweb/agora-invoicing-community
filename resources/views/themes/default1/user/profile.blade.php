@@ -65,21 +65,21 @@ input:checked + .slider:before {
     height:600px;
 }
 </style>
-<h1>
-Edit Profile
-</h1>
-  <ol class="breadcrumb">
-        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li class="active">Edit Profile</li>
-      </ol>
-@stop
+
+    <div class="col-sm-6">
+        <h1>User Profile</h1>
+    </div>
+    <div class="col-sm-6">
+
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="breadcrumb-item active">Edit Profile</li>
+        </ol>
+    </div><!-- /.col -->
+
+
 <style>
-  
-    .required:after{ 
-        content:'*'; 
-        color:red; 
-        padding-left:5px;
-    }
+
         .bootstrap-select.btn-group .dropdown-menu li a {
     margin-left: -12px !important;
 }
@@ -94,23 +94,9 @@ Edit Profile
 
 
 </style>
+
+@section('content')
 <div class="row">
-
-    <div class="col-md-12">
-
-        @if (count($errors) > 0)
-        <div class="alert alert-danger">
-            <strong>Whoops!</strong> There were some problems with your input.<br><br>
-            <ul>
-                @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-        @endif
-
-    </div>
-
 
     <div class="col-md-6">
 
@@ -118,37 +104,15 @@ Edit Profile
         {!! Form::model($user,['url'=>'profile', 'method' => 'PATCH','files'=>true]) !!}
 
 
-        <div class="box box-primary">
-
-            <div class="content-header">
-
-                <h4>{{Lang::get('message.profile')}}    
-                <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></h4>
+        <div class="card card-primary card-outline">
+            <div class="card-header">
+                <h3 class="card-title">Edit Profile</h3>
 
 
             </div>
 
-            <div class="box-body">
 
-
-
-                @if(Session::has('success'))
-                <div class="alert alert-success alert-dismissable">
-                    <i class="fa fa-check"></i>
-                    <b>{{Lang::get('message.success')}}!</b>
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    {{Session::get('success')}}
-                </div>
-                @endif
-                <!-- fail message -->
-                @if(Session::has('fails'))
-                <div class="alert alert-danger alert-dismissable">
-                    <i class="fa fa-ban"></i>
-                    <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.failed')}}.
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    {{Session::get('fails')}}
-                </div>
-                @endif
+            <div class="card-body">
 
                 <div class="form-group {{ $errors->has('first_name') ? 'has-error' : '' }}">
                     <!-- first name -->
@@ -174,7 +138,7 @@ Edit Profile
                     <!-- email -->
                     {!! Form::label('email',null,['class' => 'required'],Lang::get('message.email')) !!}
                      {!! Form::text('email',null,['class' => 'form-control']) !!}
-                  
+
                 </div>
 
                 <div class="form-group {{ $errors->has('company') ? 'has-error' : '' }}">
@@ -183,7 +147,7 @@ Edit Profile
                     {!! Form::text('company',null,['class' => 'form-control']) !!}
 
                 </div>
-            
+
 
                 <div class="form-group {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
                   {!! Form::label('mobile',null,['class' => 'required'],Lang::get('message.mobile'),['class'=>'required']) !!}
@@ -192,7 +156,7 @@ Edit Profile
                        {!! Form::hidden('mobile_code',null,['class'=>'form-control input-lg','disabled','id'=>'mobile_code']) !!}
                     <!-- {!! Form::text('mobil',null,['class'=>'form-control', 'id'=>'mobile_code']) !!} -->
                 </div>
-                
+
 
                 <div class="form-group {{ $errors->has('address') ? 'has-error' : '' }}">
                     <!-- phone number -->
@@ -228,9 +192,9 @@ Edit Profile
 
                         {!! Form::select('country',[Lang::get('message.choose')=>$countries],null,['class' => 'form-control selectpicker','id'=>'country','onChange'=>'getCountryAttr(this.value)','data-live-search'=>'true','required','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false','data-size'=>'10']) !!}
                         <!-- name -->
-                       
-                     
-                        
+
+
+
 
                     </div>
                     <div class="col-md-6 form-group {{ $errors->has('state') ? 'has-error' : '' }}">
@@ -264,6 +228,7 @@ Edit Profile
                     {!! Form::file('profile_pic') !!}
 
                 </div>
+                <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-save">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></h4>
 
                 {!! Form::token() !!}
                 {!! Form::close() !!}
@@ -278,15 +243,17 @@ Edit Profile
 
 
 
-        <div class="box box-primary">
+        <div class="card card-primary card-outline">
+            <div class="card-header">
+                <h3 class="card-title">{{Lang::get('message.change-password')}}</h3>
 
-            <div class="content-header">
-
-                <h4>{{Lang::get('message.change-password')}}    <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></h4>
 
             </div>
 
-            <div class="box-body">
+
+
+
+            <div class="card-body">
                 @if(Session::has('success1'))
                 <div class="alert alert-success alert-dismissable">
                     <i class="fa fa-ban"></i>
@@ -322,24 +289,27 @@ Edit Profile
                     {!! Form::password('confirm_password',['placeholder'=>'Confirm Password','class' => 'form-control']) !!}
                     <span class="glyphicon glyphicon-lock form-control-feedback"></span>
                 </div>
-
+                    <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-save">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button>
+                {!! Form::close() !!}
             </div>
         </div>
-         {!! Form::close() !!}
-    </div>
+
+
+
     @include('themes.default1.user.2faModals')
-   
-    <div class="col-md-6">
 
 
 
-        <div class="box box-primary">
-            <div class="content-header">
 
-                <h4>{{Lang::get('message.setup_2fa')}}</h4>
+
+        <div class="card card-primary card-outline">
+            <div class="card-header">
+                <h3 class="card-title">{{Lang::get('message.setup_2fa')}}</h3>
+
 
             </div>
-        <div class="box-body">
+
+        <div class="card-body">
             <div class="row">
                 <div class="col-md-10">
                 <h5>
@@ -358,19 +328,19 @@ Edit Profile
                 </div>
                 <div class="col-md-2">
                   <label class="switch toggle_event_editing pull-right">
-                          
-                         <input type="checkbox" value="{{$is2faEnabled}}"  name="modules_settings" 
+
+                         <input type="checkbox" value="{{$is2faEnabled}}"  name="modules_settings"
                           class="checkbox" id="2fa">
                           <span class="slider round"></span>
                     </label>
                  </div>
 
             </div>
-        </div>  
+        </div>
         </div>
     </div>
-
 </div>
+@stop
 
 
 {!! Form::close() !!}

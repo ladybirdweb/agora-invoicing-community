@@ -3,61 +3,34 @@
 Edit Promotion
 @stop
 @section('content-header')
-<h1>
-Edit Promotion
-</h1>
-  <ol class="breadcrumb">
-        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="{{url('promotions')}}">All Promotions</a></li>
-        <li class="active">Edit Promotion</li>
-      </ol>
+    <div class="col-sm-6">
+        <h1>Edit Promotion</h1>
+    </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="breadcrumb-item"><a href="{{url('promotions')}}"><i class="fa fa-dashboard"></i> All Promotions</a></li>
+            <li class="breadcrumb-item active">Edit Promotion</li>
+        </ol>
+    </div><!-- /.col -->
+
+
 @stop
+
 @section('content')
 
 <div class="row">
 
     <div class="col-md-12">
-        <div class="box box-primary">
+        <div class="card card-primary card-outline">
 
                         
-            <div class="box-header">
-                @if (count($errors) > 0)
-                <div class="alert alert-danger">
-                    <strong>Whoops!</strong> There were some problems with your input.<br><br>
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-                @endif
 
-                @if(Session::has('success'))
-                <div class="alert alert-success alert-dismissable">
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    {{Session::get('success')}}
-                </div>
-                @endif
-                <!-- fail message -->
-                @if(Session::has('fails'))
-                <div class="alert alert-danger alert-dismissable">
-                    <i class="fa fa-ban"></i>
-                    <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.failed')}}.
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    {{Session::get('fails')}}
-                </div>
-                @endif
-
-            </div>
-
-            <div class="box-body">
+            <div class="card-body table-responsive">
                 {!! Form::model($promotion,['url'=>'promotions/'.$promotion->id,'method'=>'patch']) !!}
 
-                <div class="box-header">
-                    <h3 class="box-title">{{Lang::get('message.promotion')}}</h3>
-                    <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button>
-                    
-                </div>
+
+
 
                 <table class="table table-condensed">
 
@@ -142,8 +115,13 @@ Edit Promotion
                         <td><b>{!! Form::label('start',Lang::get('message.start')) !!}</b></td>
                         <td>
                             <div class="form-group {{ $errors->has('start') ? 'has-error' : '' }}">
+                                <div class="input-group date" id="startDate" data-target-input="nearest">
+                                    <input type="text" name="start" class="form-control datetimepicker-input" autocomplete="off"  value="{{$startDate}}" title="Date from which Coupon is Valid" data-target="#startDate"/>
+                                    <div class="input-group-append" data-target="#startDate" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
 
-                                {!! Form::text('start',null,['class'=>'form-control','id'=>'datepicker1']) !!}
+                                </div>
 
                             </div>
                         </td>
@@ -157,8 +135,13 @@ Edit Promotion
                         <td>
                             <div class="form-group {{ $errors->has('expiry') ? 'has-error' : '' }}">
 
+                                <div class="input-group date" id="endDate" data-target-input="nearest">
+                                    <input type="text" name="expiry" class="form-control datetimepicker-input" autocomplete="off"  value="{{$expiryDate}}" title="Date from which Coupon Expires" data-target="#endDate"/>
+                                    <div class="input-group-append" data-target="#endDate" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
 
-                                {!! Form::text('expiry',null,['class' => 'form-control','id'=>'datepicker2']) !!}
+                                </div>
 
                             </div>
                         </td>
@@ -169,9 +152,11 @@ Edit Promotion
                     
 
                     {!! Form::close() !!}
+
                 </table>
 
 
+                <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-save">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button>
 
             </div>
 
@@ -191,7 +176,7 @@ Edit Promotion
 
         $.ajax({
             type: "GET",
-            url: "{{url('get-code')}}",
+            url: "{{url('get-promotion-code')}}",
             success: function (data) {
                 $("#code").val(data)
             }
@@ -204,11 +189,11 @@ Edit Promotion
 @section('datepicker')
 <script type="text/javascript">
 
- $('#datepicker1').datepicker({
-      autoclose: true
+    $('#startDate').datetimepicker({
+        format: 'L'
     });
-  $('#datepicker2').datepicker({
-      autoclose: true
+    $('#endDate').datetimepicker({
+        format: 'L'
     });
 
 </script>

@@ -3,51 +3,25 @@
 Edit Page
 @stop
 @section('content-header')
-<h1>
-Edit Page
-</h1>
-  <ol class="breadcrumb">
-        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="{{url('pages')}}">All Pages</a></li>
-        <li class="active">Edit Page</li>
-      </ol>
-@stop
-@section('content')
-<div class="box box-primary">
-
-    <div class="content-header">
-        @if (count($errors) > 0)
-        <div class="alert alert-danger">
-            <strong>Whoops!</strong> There were some problems with your input.<br><br>
-            <ul>
-                @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-        @endif
-
-        @if(Session::has('success'))
-        <div class="alert alert-success alert-dismissable">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            {{Session::get('success')}}
-        </div>
-        @endif
-        <!-- fail message -->
-        @if(Session::has('fails'))
-        <div class="alert alert-danger alert-dismissable">
-            <i class="fa fa-ban"></i>
-            <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.failed')}}.
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            {{Session::get('fails')}}
-        </div>
-        @endif
-        {!! Form::model($page,['url'=>'pages/'.$page->id,'method'=>'patch']) !!}
-        <h4>{{Lang::get('message.pages')}}	<button type="submit" class="btn btn-primary pull-right" id="submit"><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></h4>
-
+    <div class="col-sm-6">
+        <h1>Edit Page</h1>
     </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="breadcrumb-item"><a href="{{url('pages')}}"><i class="fa fa-dashboard"></i> Pages</a></li>
+            <li class="breadcrumb-item active">Edit Page</li>
+        </ol>
+    </div><!-- /.col -->
+@stop
 
-    <div class="box-body">
+@section('content')
+<div class="card card-primary card-outline">
+
+      {!! Form::model($page,['url'=>'pages/'.$page->id,'method'=>'patch']) !!}
+
+
+    <div class="card-body table-responsive">
 
         <div class="row">
 
@@ -127,14 +101,30 @@ Edit Page
                     <div class="col-md-6 form-group {{ $errors->has('parent_page_id') ? 'has-error' : '' }}">
                         <!-- last name -->
                         {!! Form::label('publish_date',Lang::get('message.publish-date')) !!}
-                        <div class="form-group">
-                         <div class="input-group date">
-                             <div class="input-group-addon">
-                      <i class="fa fa-calendar"></i>
-                         </div>
-                     <input name="created_at" type="text" value="{{$publishingDate}}" class="form-control" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask>
+
+                        <div class="input-group date" id="publishing_date" data-target-input="nearest">
+                        <input type="text" name="created_at" value="{{$publishingDate}}" class="form-control datetimepicker-input" autocomplete="off"  data-target="#publishing_date"/>
+
+                        <div class="input-group-append" data-target="#publishing_date"  data-toggle="datetimepicker">
+                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                         </div>
-                      </div>
+
+                        </div>
+
+                         <!--  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                    </div>
+                    <input type="text" class="form-control" data-inputmask-alias="datetime" data-inputmask-inputformat="dd/mm/yyyy" data-mask>
+                  </div> -->
+                       <!--  <div class="form-group">
+                         <div class="input-group">
+                             <div class="input-group-prepend">
+                      <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                         </div>
+                     <input name="created_at" type="text" value="{{$publishingDate}}" class="form-control" data-inputmask-alias="datetime" data-inputmask-inputformat="dd/mm/yyyy" data-mask>
+                        </div>
+                      </div> -->
 
                           <!-- <div class="form-group">
                                     <div class='input-group date' id='datetimepicker1'>
@@ -195,7 +185,7 @@ Edit Page
             </div>
 
         </div>
-
+        <button type="submit" class="btn btn-primary pull-right" id="submit"><i class="fa fa-sync-alt">&nbsp;</i>&nbsp;{!!Lang::get('message.update')!!}</button>
     </div>
 
 </div>
@@ -203,11 +193,7 @@ Edit Page
 
 {!! Form::close() !!}
 
-<script>
-  $(function () {
-   //Datemask dd/mm/yyyy
-  $('[data-mask]').inputmask()
-  });
+  <script>
     $(document).on('input', '#name', function () {
 
         $.ajax({
@@ -231,5 +217,12 @@ Edit Page
         });
     });
 </script>
+@section('icheck')
+<script>
+  $('#publishing_date').datetimepicker({
+        format: 'L'
+    });
+  </script>
+  @stop
 @stop
 

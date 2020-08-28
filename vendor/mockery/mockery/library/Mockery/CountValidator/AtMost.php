@@ -14,7 +14,7 @@
  *
  * @category   Mockery
  * @package    Mockery
- * @copyright  Copyright (c) 2010-2014 Pádraic Brady (http://blog.astrumfutura.com)
+ * @copyright  Copyright (c) 2010 Pádraic Brady (http://blog.astrumfutura.com)
  * @license    http://github.com/padraic/mockery/blob/master/LICENSE New BSD License
  */
 
@@ -24,7 +24,6 @@ use Mockery;
 
 class AtMost extends CountValidatorAbstract
 {
-
     /**
      * Validate the call count against this validator
      *

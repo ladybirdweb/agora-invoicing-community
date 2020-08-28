@@ -3,20 +3,20 @@
 [![Latest Version](https://img.shields.io/packagist/v/league/commonmark.svg?style=flat-square)](https://packagist.org/packages/league/commonmark)
 [![Total Downloads](https://img.shields.io/packagist/dt/league/commonmark.svg?style=flat-square)](https://packagist.org/packages/league/commonmark)
 [![Software License](https://img.shields.io/badge/License-BSD--3-brightgreen.svg?style=flat-square)](LICENSE)
-[![Build Status](https://img.shields.io/travis/thephpleague/commonmark/master.svg?style=flat-square)](https://travis-ci.org/thephpleague/commonmark)
+[![Build Status](https://img.shields.io/travis/thephpleague/commonmark/1.5.svg?style=flat-square)](https://travis-ci.org/thephpleague/commonmark)
 [![Coverage Status](https://img.shields.io/scrutinizer/coverage/g/thephpleague/commonmark.svg?style=flat-square)](https://scrutinizer-ci.com/g/thephpleague/commonmark/code-structure)
 [![Quality Score](https://img.shields.io/scrutinizer/g/thephpleague/commonmark.svg?style=flat-square)](https://scrutinizer-ci.com/g/thephpleague/commonmark)
 [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/126/badge)](https://bestpractices.coreinfrastructure.org/projects/126)
 
-[![Support development with Patreon](https://img.shields.io/badge/patreon-donate-red.svg)](https://www.patreon.com/colinodell)
+[![Sponsor development of this project](https://img.shields.io/badge/sponsor%20this%20package-%E2%9D%A4-ff69b4.svg?style=flat-square)](https://www.colinodell.com/sponsor)
 
 ![league/commonmark](commonmark-banner.png)
 
-**league/commonmark** is a highly-extensible PHP Markdown parser created by [Colin O'Dell][@colinodell] which supports the full [CommonMark] spec.  It is based on the [CommonMark JS reference implementation][commonmark.js] by [John MacFarlane] \([@jgm]\).
+**league/commonmark** is a highly-extensible PHP Markdown parser created by [Colin O'Dell][@colinodell] which supports the full [CommonMark] spec and [Github-Flavored Markdown].  It is based on the [CommonMark JS reference implementation][commonmark.js] by [John MacFarlane] \([@jgm]\).
 
 ## 📦 Installation & Basic Usage
 
-This project can be installed via [Composer]:
+This project requires PHP 7.1 or higher with the `mbstring` extension.  To install it via [Composer] simply run:
 
 ``` bash
 $ composer require league/commonmark
@@ -28,6 +28,21 @@ The `CommonMarkConverter` class provides a simple wrapper for converting CommonM
 use League\CommonMark\CommonMarkConverter;
 
 $converter = new CommonMarkConverter([
+    'html_input' => 'strip',
+    'allow_unsafe_links' => false,
+]);
+
+echo $converter->convertToHtml('# Hello World!');
+
+// <h1>Hello World!</h1>
+```
+
+Or if you want Github-Flavored Markdown, use the `GithubFlavoredMarkdownConverter` class instead:
+
+```php
+use League\CommonMark\GithubFlavoredMarkdownConverter;
+
+$converter = new GithubFlavoredMarkdownConverter([
     'html_input' => 'strip',
     'allow_unsafe_links' => false,
 ]);
@@ -49,12 +64,24 @@ Full documentation on advanced usage, configuration, and customization can be fo
 
 Information on how to upgrade to newer versions of this library can be found at <https://commonmark.thephpleague.com/releases>.
 
+## 💻 Github-Flavored Markdown
+
+The `GithubFlavoredMarkdownConverter` shown earlier is a drop-in replacement for the `CommonMarkConverter` which adds additional features found in the GFM spec:
+
+ - Autolinks
+ - Disallowed raw HTML
+ - Strikethrough
+ - Tables
+ - Task Lists
+
+See the [Extensions documentation](https://commonmark.thephpleague.com/customization/extensions/) for more details on how to include only certain GFM features if you don't want them all.
+
 ## 🗃️ Related Packages
 
 ### Integrations
 
 - [CakePHP 3](https://github.com/gourmet/common-mark)
-- [Drupal 7 & 8](https://www.drupal.org/project/markdown)
+- [Drupal](https://www.drupal.org/project/markdown)
 - [Laravel 4 & 5](https://github.com/GrahamCampbell/Laravel-Markdown)
 - [Sculpin](https://github.com/bcremer/sculpin-commonmark-bundle)
 - [Symfony 2 & 3](https://github.com/webuni/commonmark-bundle)
@@ -62,34 +89,17 @@ Information on how to upgrade to newer versions of this library can be found at 
 - [Twig Markdown extension](https://github.com/twigphp/markdown-extension)
 - [Twig filter and tag](https://github.com/aptoma/twig-markdown)
 
-### GFM Extensions
+### Included Extensions
 
-You can easily add support for Github-Flavored Markdown by installing the [`league/commonmark-extras`](https://github.com/thephpleague/commonmark-extras) package, which includes bundles all of the extensions listed below:
-
-| Feature | Package Name | Description |
-| ------- | ------------ | ----------- |
-| Autolinks | [`league/commonmark-ext-autolink`](https://github.com/thephpleague/commonmark-ext-autolink) | Automatically links URLs, emails, and (optionally) @-mentions without needing to use `<...>` |
-| Smart Punctuation | [`league/commonmark-ext-smartpunct`](https://github.com/thephpleague/commonmark-ext-smartpunct) | Intelligently converts ASCII quotes, dashes, and ellipses to their Unicode equivalents |
-| Strikethrough | [`league/commonmark-ext-strikethrough`](https://github.com/thephpleague/commonmark-ext-strikethrough) | Adds support for `~~strikethrough~~` syntax |
-| Task Lists | [`league/commonmark-ext-task-list`](https://github.com/thephpleague/commonmark-ext-task-list) | Support for Github-style task lists |
-| Tables | [`league/commonmark-ext-table`](https://github.com/thephpleague/commonmark-ext-table) | GFM-style tables |
-
-### Other PHP League Extensions
-
- - [`league/commonmark-ext-inlines-only`](https://github.com/thephpleague/commonmark-ext-inlines-only) - Renders inline text without paragraph tags or other block-level elements
- - [`league/commonmark-ext-external-link`](https://github.com/thephpleague/commonmark-ext-external-link) - Mark external links, make them open in new windows, etc.
-
-You can add them to your project or use them as examples to [develop your own custom features](https://commonmark.thephpleague.com/customization/overview/).
+See [our extension documentation](https://commonmark.thephpleague.com/extensions/overview) for a full list of extensions bundled with this library.
 
 ### Community Extensions
 
 Custom parsers/renderers can be bundled into extensions which extend CommonMark.  Here are some that you may find interesting:
 
- - [CommonMark Attributes Extension](https://github.com/webuni/commonmark-attributes-extension) - Adds a syntax to define attributes on the various HTML elements.
  - [Alt Three Emoji](https://github.com/AltThree/Emoji) An emoji parser for CommonMark.
  - [Sup Sub extensions](https://github.com/OWS/commonmark-sup-sub-extensions) - Adds support of superscript and subscript (`<sup>` and `<sub>` HTML tags)
  - [YouTube iframe extension](https://github.com/zoonru/commonmark-ext-youtube-iframe) - Replaces youtube link with iframe.
- - [Footnotes extension](https://github.com/rezozero/commonmark-ext-footnotes) - Adds support for referencing footnotes inline and rendering them at the bottom of your content
 
 Others can be found on [Packagist under the `commonmark-extension` package type](https://packagist.org/packages/league/commonmark?type=commonmark-extension).
 
@@ -130,7 +140,7 @@ Contributions to this library are **welcome**, especially ones that:
 
 Major refactoring to core parsing logic should be avoided if possible so that we can easily follow updates made to [the reference implementation][commonmark.js]. That being said, we will absolutely consider changes which don't deviate too far from the reference spec or which are favored by other popular CommonMark implementations.
 
-Please see [CONTRIBUTING](https://github.com/thephpleague/commonmark/blob/master/.github/CONTRIBUTING.md) for additional details.
+Please see [CONTRIBUTING](https://github.com/thephpleague/commonmark/blob/latest/.github/CONTRIBUTING.md) for additional details.
 
 ## 🧪 Testing
 
@@ -164,7 +174,7 @@ We'd also like to extend our sincere thanks the following sponsors who support o
  - [RIPS Technologies](https://www.ripstech.com/) for supporting this project with a complimentary [RIPS SaaS](https://www.ripstech.com/product/) license
  - [JetBrains](https://www.jetbrains.com/) for supporting this project with complimentary [PhpStorm](https://www.jetbrains.com/phpstorm/) licenses
 
-Are you interested in sponsoring development of this project? [Make a pledge](https://www.patreon.com/join/colinodell) of $10 or more and we'll include your name [on our website](https://commonmark.thephpleague.com/#sponsors)!
+Are you interested in sponsoring development of this project? See <https://www.colinodell.com/sponsor> for a list of ways to contribute.
 
 ## 📄 License
 
@@ -176,7 +186,7 @@ This project is primarily maintained by [Colin O'Dell][@colinodell].  Members of
 
 ## 🗺️  Who Uses It?
 
-This project is used by [Laravel Framework](https://laravel.com/), [Cachet](https://cachethq.io/), [Firefly III](https://firefly-iii.org/), [Neos](https://www.neos.io/), [Daux.io](https://daux.io/), and [more](https://packagist.org/packages/league/commonmark/dependents)!
+This project is used by [Drupal](https://www.drupal.org/project/markdown), [Laravel Framework](https://laravel.com/), [Cachet](https://cachethq.io/), [Firefly III](https://firefly-iii.org/), [Neos](https://www.neos.io/), [Daux.io](https://daux.io/), and [more](https://packagist.org/packages/league/commonmark/dependents)!
 
 ---
 
@@ -193,6 +203,7 @@ This project is used by [Laravel Framework](https://laravel.com/), [Cachet](http
 [CommonMark]: http://commonmark.org/
 [CommonMark spec]: http://spec.commonmark.org/
 [commonmark.js]: https://github.com/jgm/commonmark.js
+[Github-Flavored Markdown]: https://github.github.com/gfm/
 [John MacFarlane]: http://johnmacfarlane.net
 [docs]: https://commonmark.thephpleague.com/
 [docs-examples]: https://commonmark.thephpleague.com/customization/overview/#examples

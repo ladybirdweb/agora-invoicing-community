@@ -20,16 +20,23 @@ use League\CommonMark\Block\Element\ListItem;
 use League\CommonMark\Block\Element\Paragraph;
 use League\CommonMark\ContextInterface;
 use League\CommonMark\Cursor;
+use League\CommonMark\Util\ConfigurationAwareInterface;
+use League\CommonMark\Util\ConfigurationInterface;
 use League\CommonMark\Util\RegexHelper;
 
-final class ListParser implements BlockParserInterface
+final class ListParser implements BlockParserInterface, ConfigurationAwareInterface
 {
-    /**
-     * @param ContextInterface $context
-     * @param Cursor           $cursor
-     *
-     * @return bool
-     */
+    /** @var ConfigurationInterface|null */
+    private $config;
+
+    /** @var string|null */
+    private $listMarkerRegex;
+
+    public function setConfiguration(ConfigurationInterface $configuration)
+    {
+        $this->config = $configuration;
+    }
+
     public function parse(ContextInterface $context, Cursor $cursor): bool
     {
         if ($cursor->isIndented() && !($context->getContainer() instanceof ListBlock)) {
@@ -45,10 +52,10 @@ final class ListParser implements BlockParserInterface
         $tmpCursor->advanceToNextNonSpaceOrTab();
         $rest = $tmpCursor->getRemainder();
 
-        if (\preg_match('/^[*+-]/', $rest) === 1) {
+        if (\preg_match($this->listMarkerRegex ?? $this->generateListMarkerRegex(), $rest) === 1) {
             $data = new ListData();
             $data->markerOffset = $indent;
-            $data->type = ListBlock::TYPE_UNORDERED;
+            $data->type = ListBlock::TYPE_BULLET;
             $data->delimiter = null;
             $data->bulletChar = $rest[0];
             $markerLength = 1;
@@ -120,5 +127,21 @@ final class ListParser implements BlockParserInterface
         }
 
         return $markerLength + $spacesAfterMarker;
+    }
+
+    private function generateListMarkerRegex(): string
+    {
+        // No configuration given - use the defaults
+        if ($this->config === null) {
+            return $this->listMarkerRegex = '/^[*+-]/';
+        }
+
+        $markers = $this->config->get('unordered_list_markers', ['*', '+', '-']);
+
+        if (!\is_array($markers)) {
+            throw new \RuntimeException('Invalid configuration option "unordered_list_markers": value must be an array of strings');
+        }
+
+        return $this->listMarkerRegex = '/^[' . \preg_quote(\implode('', $markers), '/') . ']/';
     }
 }

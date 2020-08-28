@@ -3,73 +3,71 @@
 Create Product
 @stop
 @section('content-header')
-<h1>
-Create New Product
-</h1>
-  <ol class="breadcrumb">
-        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="{{url('products')}}">All Products</a></li>
-        <li class="active">Create Product</li>
-      </ol>
+    <div class="col-sm-6">
+        <h1>Create New Product</h1>
+    </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="breadcrumb-item"><a href="{{url('products')}}"><i class="fa fa-dashboard"></i> All Products</a></li>
+            <li class="breadcrumb-item active">Edit Product</li>
+        </ol>
+    </div><!-- /.col -->
 @stop
 @section('content')
 <head>
-    <link src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js">
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-</head> 
-<div class="box box-primary">
+    <link rel="stylesheet" href="{{asset('admin/css/select2.min.css')}}">
 
-    <div class="box-header">
-        @if (count($errors) > 0)
-        
-        <div class="alert alert-danger alert-dismissable">
-            <strong>Whoops!</strong> There were some problems with your input.<br><br>
-            <ul>
-                @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-        @endif
+    <script>
+        $(function() {
+            $('#agent').click(function(){
+                if($('#agent').is(":checked")) {
+                    $("#allowmulagent").show();
+                    $("#allowmulproduct").hide();
+                }
+            })
 
-        @if(Session::has('success'))
-        <div class="alert alert-success alert-dismissable">
-            <i class="fa fa-check"></i>
-            <b>{{Lang::get('message.success')}}!</b> 
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            {{Session::get('success')}}
-        </div>
-        @endif
-        <!-- fail message -->
-        @if(Session::has('fails'))
-        <div class="alert alert-danger alert-dismissable">
-            <i class="fa fa-ban"></i>
-            <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.failed')}}.
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            {{Session::get('fails')}}
-        </div>
-        @endif
-        {!! Form::open(['url'=>'products','method'=>'post','files' => true,'id'=>'createproduct']) !!}
-        <h4>{{Lang::get('message.product')}}    <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></h4>
+        })
+
+        $(function() {
+            $('#quantity').click(function(){
+                if($('#quantity').is(":checked")) {
+                    $("#allowmulagent").hide();
+                    $("#allowmulproduct").show();
+                }
+            })
+
+        })
+ </script>
+    <style>
+        .select2-container--default .select2-selection--multiple .select2-selection__choice {
+            background-color: #1b1818 !important;
+    </style>
+
+</head>
+<div class="card card-primary card-tabs">
+    {!! Form::open(['url'=>'products','method'=>'post','files' => true,'id'=>'createproduct']) !!}
+
+    <div class="card-header p-0 pt-1">
+        <ul class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="custom-tabs-detail-tab" data-toggle="pill" href="#custom-tabs-detail" role="tab" aria-controls="custom-tabs-detail" aria-selected="true">Details</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="custom-tabs-plan-tab" data-toggle="pill" href="#custom-tabs-plan" role="tab" aria-controls="custom-tabs-plan" aria-selected="false">Tax</a>
+            </li>
+        </ul>
 
     </div>
 
-    <div class="box-body">
-
-        <div class="row">
-
-            <div class="col-md-12">
+    <div class="card-body table-responsive">
 
 
 
-                <div class="nav-tabs-custom">
-                    <ul class="nav nav-tabs">
-                        <li class="active"><a href="#tab_1" data-toggle="tab">{{Lang::get('message.details')}}</a></li>
-                        <li><a href="#tab_2" data-toggle="tab">{{Lang::get('message.plans')}}</a></li>
-                        <!-- <li><a href="#tab_3" data-toggle="tab">Plans</a></li> -->
-                    </ul>
-                    <div class="tab-content">
-                        <div class="tab-pane active" id="tab_1">
+
+
+                    <div class="tab-content" id="custom-tabs-one-tabContent">
+                        <div class="tab-pane fade show active" id="custom-tabs-detail" Role="tabpanel" aria-labelledby="custom-tabs-detail-tab">
                             <div class="row">
 
                                 <div class="col-md-3 form-group {{ $errors->has('name') ? 'has-error' : '' }}">
@@ -90,12 +88,15 @@ Create New Product
 
                                 <div class="col-md-3 form-group {{ $errors->has('group') ? 'has-error' : '' }}">
                                     <!-- last name -->
-                                    {!! Form::label('group',Lang::get('message.group')) !!}
+                                    {!! Form::label('group',Lang::get('message.group'),['class'=>'required']) !!}
                           <select name="group" value= "Choose" class="form-control">
                              <option>Choose</option>
                            @foreach($group as $key=>$value)
-
+                               @if (Request::old('group') == $key)
+                             <option value={{$key}} selected>{{$value}}</option>
+                             @else
                              <option value={{$key}}>{{$value}}</option>
+                             @endif
                           @endforeach
                           </select>
   
@@ -110,10 +111,13 @@ Create New Product
                                    <!--  {!! Form::select('category',['helpdesk'=>'Helpdesk','servicedesk'=>'ServiceDesk','service'=>'Service','satellite helpdesk'=>'Satellite Helpdesk','plugin'=>'Plugins','helpdeskvps'=>'HelpDesk VPS','servicedesk vps'=>'ServiceDesk VPS'],null,['class' => 'form-control']) !!} -->
 
                                      <select name="category" value= "Choose" class="form-control">
-                             <option value="">Choose</option>
+                             <option>Choose</option>
                            @foreach($type as $key=>$types)
-
-                             <option value={{$types}}>{{$types}}</option>
+                             @if (Request::old('category') == $key)
+                             <option value={{$key}} selected>{{$types}}</option>
+                             @else
+                             <option value={{$key}}>{{$types}}</option>
+                             @endif
                           @endforeach
                           </select>
 
@@ -160,13 +164,11 @@ Create New Product
                                     {!! Form::textarea('description',null,['class' => 'form-control','id'=>'textarea']) !!}
                                 <h6 id= "descheck"></h6>
                                 </div>
-                                 <div class="form-group {{ $errors->has('image') ? 'has-error' : '' }}">
-                                                        <!-- last name -->
-                                                {!! Form::label('image',Lang::get('message.image')) !!}
-                                                {!! Form::file('image') !!}
-
-                                        </div>
                                 <div class="col-md-6">
+
+
+
+
                                     <ul class="list-unstyled">
                                           <li>
                                             <div class="form-group {{ $errors->has('parent') ? 'has-error' : '' }}">
@@ -185,8 +187,14 @@ Create New Product
 
                                             </div>
                                         </li>
+                                        <li>
+                                        <div class="form-group {{ $errors->has('image') ? 'has-error' : '' }}">
+                                            <!-- last name -->
+                                            {!! Form::label('image',Lang::get('message.image')) !!}
+                                            {!! Form::file('image') !!}
 
-                                       
+                                        </div>
+                                        </li>
                            
                                         <li>
                                             <div class="form-group {{ $errors->has('require_domain') ? 'has-error' : '' }}">
@@ -217,16 +225,16 @@ Create New Product
                                             </div>
                                         </li>
                                     </ul>
-                                </div>
 
+                                </div>
                             </div>
 
                            
                         </div>
                         <!-- /.tab-pane -->
-                        <div class="tab-pane" id="tab_2">
-                            <table class="table table-responsive">
-                                <br/>
+                        <div class="tab-pane fade" id="custom-tabs-plan" role="tabpanel"  aria-labelledby="custom-tabs-plan-tab">
+
+                        <table class="table">
                                 <span>Show on Cart Page</span>
                                  <tr>
                                       <div class="row">
@@ -270,7 +278,7 @@ Create New Product
                                             <div class="row">
                                                 <div class="col-md-2" >
                                                      
-                                                    <select id="Tax" placeholder="Select Taxes" name="tax[]" style="width:500px;" class="select2" multiple="true">
+                                                    <select id="Tax" placeholder="Select Taxes" name="tax[]" style="width:500px;" class="select2" multiple="multiple">
                                                        <option></option>
                                                        @foreach($taxes as $key => $value)
                                                         <option value={{$key}}>{{$value}}</option> 
@@ -295,63 +303,20 @@ Create New Product
 
  
                                         
-                              <h3>  Plans &nbsp;
-                               <!--  <a href="#create-plan-option" data-toggle="modal" data-target="#create-plan-option" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp; Add new</a>  -->
-                                 
-                               </h3>
-                           
-                                      @include('themes.default1.product.plan.create') 
+
                                   
                                     </div>
+                        <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-save">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button>
+                    </div>
+    </div>
 
-
-
+    <script>
+        $(document).ready(function() {
+            $("#Tax").select2({
+                placeholder: 'Select Taxes',
+                tags:true
+            });
+        });
+    </script>
 @stop
- @section('icheck')
-  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/js/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
-     
-    <!-- <script type="text/javascript">
-        $("#editTax").select2();
-    </script> -->
-<link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css" rel="stylesheet" />
-<script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"></script>
 
-
-<script>
-    $(function() {
-        $('#agent').click(function(){
-            if($('#agent').is(":checked")) {
-               $("#allowmulagent").show();
-               $("#allowmulproduct").hide();
-            } 
-        })
-
-    })
-
-    $(function() {
-        $('#quantity').click(function(){
-            if($('#quantity').is(":checked")) {
-               $("#allowmulagent").hide();
-               $("#allowmulproduct").show();
-            } 
-        })
-
-    })
-   
-
-
-
-
-
-</script>
-
-<script>
-    $(document).ready(function() {
-    $("#Tax").select2({
-        placeholder: 'Select Taxes',
-        tags:true
-    });
-});
-</script>
-@stop

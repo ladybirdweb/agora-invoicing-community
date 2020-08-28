@@ -3,19 +3,24 @@
 Log-Viewer
 @stop
 @section('content-header')
-<h1>
- <h1 class="page-header">Log [{{ $log->date }}]</h1>
-</h1>
-<ol class="breadcrumb">
-        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="{{url('settings')}}">Settings</a></li>
-        <li><a href="{{url('log-viewer')}}">Dashboard</a></li>
-        <li class="active">View Logs</li>
-      </ol>
-      @stop
+    <div class="col-sm-6">
+        <h1 class="m-0 text-dark">Log [{{ $log->date }}]</h1>
+    </div><!-- /.col -->
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+        <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="breadcrumb-item"><a href="{{url('settings')}}">Settings</a></li>
+        <li class="breadcrumb-item"><a href="{{url('log-viewer')}}">Log Viewer</a></li>
+        <li class="breadcrumb-item active">View Logs</li>
+        </ol>
+    </div><!-- /.col -->
+
+
+
+@stop
 @section('content')
-<div class="box box-primary">
-   <div class="box-body">
+<div class="card card-primary card-outline">
+   <div class="card-body table-responsive">
 
     <div class="row">
         <div class="col-md-2">
@@ -36,7 +41,7 @@ Log-Viewer
                         </a>
                     </div>
                 </div>
-                <div class="table-responsive">
+                <div class="card-body table-responsive">
                     <table class="table table-condensed">
                         <thead>
                             <tr>
@@ -72,11 +77,12 @@ Log-Viewer
                         <div class=form-group">
                             <div class="input-group">
                                 <input id="query" name="query" class="form-control"  value="{!! request('query') !!}" placeholder="typing something to search">
+                                &nbsp;&nbsp;    
                                 <span class="input-group-btn">
                                     @if (request()->has('query'))
-                                        <a href="{{ route('log-viewer::logs.show', [$log->date]) }}" class="btn btn-default"><span class="glyphicon glyphicon-remove"></span></a>
+                                        <a href="{{ route('log-viewer::logs.show', [$log->date]) }}" class="btn btn-default"><i class="fas fa-sync-alt"></i></a>
                                     @endif
-                                    <button id="search-btn" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></button>
+                                    <button id="search-btn" class="btn btn-primary"><i class="fa fa-search"></i></button>
                                 </span>
                             </div>
                         </div>

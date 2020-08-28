@@ -10,8 +10,8 @@
 namespace PHP_CodeSniffer\Standards\Generic\Sniffs\VersionControl;
 
 use PHP_CodeSniffer\Exceptions\RuntimeException;
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
 
 class SubversionPropertiesSniff implements Sniff
 {
@@ -54,7 +54,7 @@ class SubversionPropertiesSniff implements Sniff
      */
     public function process(File $phpcsFile, $stackPtr)
     {
-        $path       = $phpcsFile->getFileName();
+        $path       = $phpcsFile->getFilename();
         $properties = $this->getProperties($path);
         if ($properties === null) {
             // Not under version control.

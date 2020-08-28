@@ -62,6 +62,11 @@ class Application extends BaseApplication
     private $hasPluginCommands = false;
     private $disablePluginsByDefault = false;
 
+    /**
+     * @var string Store the initial working directory at startup time
+     */
+    private $initialWorkingDirectory = '';
+
     public function __construct()
     {
         static $shutdownRegistered = false;
@@ -90,6 +95,8 @@ class Application extends BaseApplication
         }
 
         $this->io = new NullIO();
+
+        $this->initialWorkingDirectory = getcwd();
 
         parent::__construct('Composer', Composer::getVersion());
     }
@@ -124,13 +131,15 @@ class Application extends BaseApplication
 
         if ($input->hasParameterOption('--no-cache')) {
             $io->writeError('Disabling cache usage', true, IOInterface::DEBUG);
-            putenv('COMPOSER_CACHE_DIR='.(Platform::isWindows() ? 'nul' : '/dev/null'));
+            $_SERVER['COMPOSER_CACHE_DIR'] = Platform::isWindows() ? 'nul' : '/dev/null';
+            putenv('COMPOSER_CACHE_DIR='.$_SERVER['COMPOSER_CACHE_DIR']);
         }
 
         // switch working dir
         if ($newWorkDir = $this->getNewWorkingDir($input)) {
             $oldWorkingDir = getcwd();
             chdir($newWorkDir);
+            $this->initialWorkingDirectory = $newWorkDir;
             $io->writeError('Changed CWD to ' . getcwd(), true, IOInterface::DEBUG);
         }
 
@@ -147,7 +156,7 @@ class Application extends BaseApplication
         }
 
         // prompt user for dir change if no composer.json is present in current dir
-        if ($io->isInteractive() && !$newWorkDir && !in_array($commandName, array('', 'list', 'init', 'about', 'help', 'diagnose', 'self-update', 'global', 'create-project'), true) && !file_exists(Factory::getComposerFile())) {
+        if ($io->isInteractive() && !$newWorkDir && !in_array($commandName, array('', 'list', 'init', 'about', 'help', 'diagnose', 'self-update', 'global', 'create-project', 'outdated'), true) && !file_exists(Factory::getComposerFile())) {
             $dir = dirname(getcwd());
             $home = realpath(getenv('HOME') ?: getenv('USERPROFILE') ?: '/');
 
@@ -205,14 +214,19 @@ class Application extends BaseApplication
             }
 
             if (extension_loaded('xdebug') && !getenv('COMPOSER_DISABLE_XDEBUG_WARN')) {
-                $io->writeError('<warning>You are running composer with xdebug enabled. This has a major impact on runtime performance. See https://getcomposer.org/xdebug</warning>');
+                $io->writeError('<warning>You are running composer with Xdebug enabled. This has a major impact on runtime performance. See https://getcomposer.org/xdebug</warning>');
             }
 
             if (defined('COMPOSER_DEV_WARNING_TIME') && $commandName !== 'self-update' && $commandName !== 'selfupdate' && time() > COMPOSER_DEV_WARNING_TIME) {
                 $io->writeError(sprintf('<warning>Warning: This development build of composer is over 60 days old. It is recommended to update it by running "%s self-update" to get the latest version.</warning>', $_SERVER['PHP_SELF']));
             }
 
-            if (!Platform::isWindows() && function_exists('exec') && !getenv('COMPOSER_ALLOW_SUPERUSER') && !file_exists('/.dockerenv')) {
+            if (
+                !Platform::isWindows()
+                && function_exists('exec')
+                && !getenv('COMPOSER_ALLOW_SUPERUSER')
+                && (ini_get('open_basedir') || !file_exists('/.dockerenv'))
+            ) {
                 if (function_exists('posix_getuid') && posix_getuid() === 0) {
                     if ($commandName !== 'self-update' && $commandName !== 'selfupdate') {
                         $io->writeError('<warning>Do not run Composer as root/super user! See https://getcomposer.org/root for details</warning>');
@@ -423,6 +437,7 @@ class Application extends BaseApplication
             new Command\ExecCommand(),
             new Command\OutdatedCommand(),
             new Command\CheckPlatformReqsCommand(),
+            new Command\FundCommand(),
         ));
 
         if ('phar:' === substr(__FILE__, 0, 5)) {
@@ -490,5 +505,15 @@ class Application extends BaseApplication
         }
 
         return $commands;
+    }
+
+    /**
+     * Get the working directoy at startup time
+     *
+     * @return string
+     */
+    public function getInitialWorkingDirectory()
+    {
+        return $this->initialWorkingDirectory;
     }
 }

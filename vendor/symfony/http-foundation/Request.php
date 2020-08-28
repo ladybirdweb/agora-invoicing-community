@@ -20,6 +20,7 @@ class_exists(AcceptHeader::class);
 class_exists(FileBag::class);
 class_exists(HeaderBag::class);
 class_exists(HeaderUtils::class);
+class_exists(InputBag::class);
 class_exists(ParameterBag::class);
 class_exists(ServerBag::class);
 
@@ -84,14 +85,14 @@ class Request
     /**
      * Request body parameters ($_POST).
      *
-     * @var ParameterBag
+     * @var InputBag|ParameterBag
      */
     public $request;
 
     /**
      * Query string parameters ($_GET).
      *
-     * @var ParameterBag
+     * @var InputBag
      */
     public $query;
 
@@ -112,7 +113,7 @@ class Request
     /**
      * Cookies ($_COOKIE).
      *
-     * @var ParameterBag
+     * @var InputBag
      */
     public $cookies;
 
@@ -207,6 +208,11 @@ class Request
     private $isHostValid = true;
     private $isForwardedValid = true;
 
+    /**
+     * @var bool|null
+     */
+    private $isSafeContentPreferred;
+
     private static $trustedHeaderSet = -1;
 
     private static $forwardedParams = [
@@ -263,9 +269,9 @@ class Request
     public function initialize(array $query = [], array $request = [], array $attributes = [], array $cookies = [], array $files = [], array $server = [], $content = null)
     {
         $this->request = new ParameterBag($request);
-        $this->query = new ParameterBag($query);
+        $this->query = new InputBag($query);
         $this->attributes = new ParameterBag($attributes);
-        $this->cookies = new ParameterBag($cookies);
+        $this->cookies = new InputBag($cookies);
         $this->files = new FileBag($files);
         $this->server = new ServerBag($server);
         $this->headers = new HeaderBag($this->server->getHeaders());
@@ -292,11 +298,13 @@ class Request
     {
         $request = self::createRequestFromFactory($_GET, $_POST, [], $_COOKIE, $_FILES, $_SERVER);
 
-        if (0 === strpos($request->headers->get('CONTENT_TYPE'), 'application/x-www-form-urlencoded')
+        if ($_POST) {
+            $request->request = new InputBag($_POST);
+        } elseif (0 === strpos($request->headers->get('CONTENT_TYPE'), 'application/x-www-form-urlencoded')
             && \in_array(strtoupper($request->server->get('REQUEST_METHOD', 'GET')), ['PUT', 'DELETE', 'PATCH'])
         ) {
             parse_str($request->getContent(), $data);
-            $request->request = new ParameterBag($data);
+            $request->request = new InputBag($data);
         }
 
         return $request;
@@ -318,7 +326,7 @@ class Request
      *
      * @return static
      */
-    public static function create($uri, $method = 'GET', $parameters = [], $cookies = [], $files = [], $server = [], $content = null)
+    public static function create(string $uri, string $method = 'GET', array $parameters = [], array $cookies = [], array $files = [], array $server = [], $content = null)
     {
         $server = array_replace([
             'SERVER_NAME' => 'localhost',
@@ -416,10 +424,8 @@ class Request
      * This is mainly useful when you need to override the Request class
      * to keep BC with an existing system. It should not be used for any
      * other purpose.
-     *
-     * @param callable|null $callable A PHP callable
      */
-    public static function setFactory($callable)
+    public static function setFactory(?callable $callable)
     {
         self::$requestFactory = $callable;
     }
@@ -440,7 +446,7 @@ class Request
     {
         $dup = clone $this;
         if (null !== $query) {
-            $dup->query = new ParameterBag($query);
+            $dup->query = new InputBag($query);
         }
         if (null !== $request) {
             $dup->request = new ParameterBag($request);
@@ -449,7 +455,7 @@ class Request
             $dup->attributes = new ParameterBag($attributes);
         }
         if (null !== $cookies) {
-            $dup->cookies = new ParameterBag($cookies);
+            $dup->cookies = new InputBag($cookies);
         }
         if (null !== $files) {
             $dup->files = new FileBag($files);
@@ -646,11 +652,9 @@ class Request
      * It builds a normalized query string, where keys/value pairs are alphabetized,
      * have consistent escaping and unneeded delimiters are removed.
      *
-     * @param string $qs Query string
-     *
      * @return string A normalized query string for the Request
      */
-    public static function normalizeQueryString($qs)
+    public static function normalizeQueryString(?string $qs)
     {
         if ('' === ($qs ?? '')) {
             return '';
@@ -697,23 +701,22 @@ class Request
      *
      * Order of precedence: PATH (routing placeholders or custom attributes), GET, BODY
      *
-     * @param string $key     The key
-     * @param mixed  $default The default value if the parameter key does not exist
+     * @param mixed $default The default value if the parameter key does not exist
      *
      * @return mixed
      */
-    public function get($key, $default = null)
+    public function get(string $key, $default = null)
     {
         if ($this !== $result = $this->attributes->get($key, $this)) {
             return $result;
         }
 
-        if ($this !== $result = $this->query->get($key, $this)) {
-            return $result;
+        if ($this->query->has($key)) {
+            return $this->query->all()[$key];
         }
 
-        if ($this !== $result = $this->request->get($key, $this)) {
-            return $result;
+        if ($this->request->has($key)) {
+            return $this->request->all()[$key];
         }
 
         return $default;
@@ -732,8 +735,7 @@ class Request
         }
 
         if (null === $session) {
-            @trigger_error(sprintf('Calling "%s()" when no session has been set is deprecated since Symfony 4.1 and will throw an exception in 5.0. Use "hasSession()" instead.', __METHOD__), E_USER_DEPRECATED);
-            // throw new \BadMethodCallException('Session has not been set.');
+            throw new \BadMethodCallException('Session has not been set.');
         }
 
         return $session;
@@ -1049,7 +1051,7 @@ class Request
      *
      * @return string The normalized URI for the path
      */
-    public function getUriForPath($path)
+    public function getUriForPath(string $path)
     {
         return $this->getSchemeAndHttpHost().$this->getBaseUrl().$path;
     }
@@ -1069,11 +1071,9 @@ class Request
      * - "/a/b/c/other" -> "other"
      * - "/a/x/y"       -> "../../x/y"
      *
-     * @param string $path The target path
-     *
      * @return string The relative target path
      */
-    public function getRelativeUriForPath($path)
+    public function getRelativeUriForPath(string $path)
     {
         // be sure that we are dealing with an absolute path
         if (!isset($path[0]) || '/' !== $path[0]) {
@@ -1211,10 +1211,8 @@ class Request
 
     /**
      * Sets the request method.
-     *
-     * @param string $method
      */
-    public function setMethod($method)
+    public function setMethod(string $method)
     {
         $this->method = null;
         $this->server->set('REQUEST_METHOD', $method);
@@ -1285,11 +1283,9 @@ class Request
     /**
      * Gets the mime type associated with the format.
      *
-     * @param string $format The format
-     *
      * @return string|null The associated mime type (null if not found)
      */
-    public function getMimeType($format)
+    public function getMimeType(string $format)
     {
         if (null === static::$formats) {
             static::initializeFormats();
@@ -1301,11 +1297,9 @@ class Request
     /**
      * Gets the mime types associated with the format.
      *
-     * @param string $format The format
-     *
      * @return array The associated mime types
      */
-    public static function getMimeTypes($format)
+    public static function getMimeTypes(string $format)
     {
         if (null === static::$formats) {
             static::initializeFormats();
@@ -1317,11 +1311,9 @@ class Request
     /**
      * Gets the format associated with the mime type.
      *
-     * @param string $mimeType The associated mime type
-     *
      * @return string|null The format (null if not found)
      */
-    public function getFormat($mimeType)
+    public function getFormat(?string $mimeType)
     {
         $canonicalMimeType = null;
         if (false !== $pos = strpos($mimeType, ';')) {
@@ -1347,10 +1339,9 @@ class Request
     /**
      * Associates a format with mime types.
      *
-     * @param string       $format    The format
      * @param string|array $mimeTypes The associated mime types (the preferred one must be the first as it will be used as the content type)
      */
-    public function setFormat($format, $mimeTypes)
+    public function setFormat(?string $format, $mimeTypes)
     {
         if (null === static::$formats) {
             static::initializeFormats();
@@ -1370,11 +1361,9 @@ class Request
      *
      * @see getPreferredFormat
      *
-     * @param string|null $default The default format
-     *
      * @return string|null The request format
      */
-    public function getRequestFormat($default = 'html')
+    public function getRequestFormat(?string $default = 'html')
     {
         if (null === $this->format) {
             $this->format = $this->attributes->get('_format');
@@ -1385,10 +1374,8 @@ class Request
 
     /**
      * Sets the request format.
-     *
-     * @param string $format The request format
      */
-    public function setRequestFormat($format)
+    public function setRequestFormat(?string $format)
     {
         $this->format = $format;
     }
@@ -1405,10 +1392,8 @@ class Request
 
     /**
      * Sets the default locale.
-     *
-     * @param string $locale
      */
-    public function setDefaultLocale($locale)
+    public function setDefaultLocale(string $locale)
     {
         $this->defaultLocale = $locale;
 
@@ -1429,10 +1414,8 @@ class Request
 
     /**
      * Sets the locale.
-     *
-     * @param string $locale
      */
-    public function setLocale($locale)
+    public function setLocale(string $locale)
     {
         $this->setPhpDefaultLocale($this->locale = $locale);
     }
@@ -1454,7 +1437,7 @@ class Request
      *
      * @return bool
      */
-    public function isMethod($method)
+    public function isMethod(string $method)
     {
         return $this->getMethod() === strtoupper($method);
     }
@@ -1468,10 +1451,6 @@ class Request
      */
     public function isMethodSafe()
     {
-        if (\func_num_args() > 0) {
-            @trigger_error(sprintf('Passing arguments to "%s()" has been deprecated since Symfony 4.4; use "%s::isMethodCacheable()" to check if the method is cacheable instead.', __METHOD__, __CLASS__), E_USER_DEPRECATED);
-        }
-
         return \in_array($this->getMethod(), ['GET', 'HEAD', 'OPTIONS', 'TRACE']);
     }
 
@@ -1530,7 +1509,7 @@ class Request
      *
      * @throws \LogicException
      */
-    public function getContent($asResource = false)
+    public function getContent(bool $asResource = false)
     {
         $currentContentIsResource = \is_resource($this->content);
 
@@ -1588,8 +1567,8 @@ class Request
 
     /**
      * Gets the preferred format for the response by inspecting, in the following order:
-     *   * the request format set using setRequestFormat
-     *   * the values of the Accept HTTP header
+     *   * the request format set using setRequestFormat;
+     *   * the values of the Accept HTTP header.
      *
      * Note that if you use this method, you should send the "Vary: Accept" header
      * in the response to prevent any issues with intermediary HTTP caches.
@@ -1739,6 +1718,29 @@ class Request
     public function isXmlHttpRequest()
     {
         return 'XMLHttpRequest' == $this->headers->get('X-Requested-With');
+    }
+
+    /**
+     * Checks whether the client browser prefers safe content or not according to RFC8674.
+     *
+     * @see https://tools.ietf.org/html/rfc8674
+     */
+    public function preferSafeContent(): bool
+    {
+        if (null !== $this->isSafeContentPreferred) {
+            return $this->isSafeContentPreferred;
+        }
+
+        if (!$this->isSecure()) {
+            // see https://tools.ietf.org/html/rfc8674#section-3
+            $this->isSafeContentPreferred = false;
+
+            return $this->isSafeContentPreferred;
+        }
+
+        $this->isSafeContentPreferred = AcceptHeader::fromString($this->headers->get('Prefer'))->has('safe');
+
+        return $this->isSafeContentPreferred;
     }
 
     /*

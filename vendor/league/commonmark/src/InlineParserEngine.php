@@ -28,6 +28,7 @@ use League\CommonMark\Util\RegexHelper;
  */
 final class InlineParserEngine
 {
+    /** @var EnvironmentInterface */
     protected $environment;
 
     public function __construct(EnvironmentInterface $environment)
@@ -38,11 +39,14 @@ final class InlineParserEngine
     /**
      * @param AbstractStringContainerBlock $container
      * @param ReferenceMapInterface        $referenceMap
+     *
+     * @return void
      */
     public function parse(AbstractStringContainerBlock $container, ReferenceMapInterface $referenceMap)
     {
         $inlineParserContext = new InlineParserContext($container, $referenceMap);
-        while (($character = $inlineParserContext->getCursor()->getCharacter()) !== null) {
+        $cursor = $inlineParserContext->getCursor();
+        while (($character = $cursor->getCharacter()) !== null) {
             if (!$this->parseCharacter($character, $inlineParserContext)) {
                 $this->addPlainText($character, $container, $inlineParserContext);
             }
@@ -76,10 +80,10 @@ final class InlineParserEngine
 
     private function parseDelimiters(DelimiterProcessorInterface $delimiterProcessor, InlineParserContext $inlineContext): bool
     {
-        $character = $inlineContext->getCursor()->getCharacter();
+        $cursor = $inlineContext->getCursor();
+        $character = $cursor->getCharacter();
         $numDelims = 0;
 
-        $cursor = $inlineContext->getCursor();
         $charBefore = $cursor->peek(-1);
         if ($charBefore === null) {
             $charBefore = "\n";
@@ -118,6 +122,8 @@ final class InlineParserEngine
 
     /**
      * @param InlineParserContext $inlineParserContext
+     *
+     * @return void
      */
     private function processInlines(InlineParserContext $inlineParserContext)
     {
@@ -132,6 +138,8 @@ final class InlineParserEngine
      * @param string              $character
      * @param Node                $container
      * @param InlineParserContext $inlineParserContext
+     *
+     * @return void
      */
     private function addPlainText(string $character, Node $container, InlineParserContext $inlineParserContext)
     {

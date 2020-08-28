@@ -25,6 +25,8 @@ class AddStatusToEmailLog extends Migration
      */
     public function down()
     {
-        //
+        Schema::table('email_log', function (Blueprint $table) {
+            $table->dropColumn('status');
+        });
     }
 }

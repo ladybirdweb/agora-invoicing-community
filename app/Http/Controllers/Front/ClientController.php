@@ -74,6 +74,7 @@ class ClientController extends BaseClientController
         try {
             $invoices = Invoice::leftJoin('order_invoice_relations', 'invoices.id', '=', 'order_invoice_relations.invoice_id')
             ->select('invoices.id', 'invoices.user_id', 'invoices.date', 'invoices.number', 'invoices.grand_total', 'order_invoice_relations.order_id', 'invoices.is_renewed', 'invoices.status')
+            ->groupBy('invoices.number')
             ->where('invoices.user_id', '=', \Auth::user()->id)
             ->orderBy('invoices.created_at', 'desc')
             ->get();
@@ -86,14 +87,24 @@ class ClientController extends BaseClientController
                                     return '<a href='.url('my-invoice/'.$model->id).'>'.$model->number.'</a>';
                                 }
                             })
-                            ->addColumn('orderNo', function ($model) {
-                                return getOrderLink($model->order_id, 'my-order');
-                            })
+                           ->addColumn('orderNo', function ($model) {
+                               if ($model->is_renewed) {
+                                   return Order::find($model->order_id)->first()->getOrderLink($model->order_id, 'my-order');
+                               } else {
+                                   $allOrders = $model->order()->select('id', 'number')->get();
+                                   $orderArray = '';
+                                   foreach ($allOrders as $orders) {
+                                       $orderArray .= $orders->getOrderLink($orders->id, 'orders');
+                                   }
+
+                                   return $orderArray;
+                               }
+                           })
                             ->addColumn('date', function ($model) {
                                 return getDateHtml($model->created_at);
                             })
                             ->addColumn('total', function ($model) {
-                                return  currency_format($model->grand_total, $code = \Auth::user()->currency);
+                                return  currencyFormat($model->grand_total, $code = \Auth::user()->currency);
                             })
                              ->addColumn('status', function ($model) {
                                  return  getStatusLabel($model->status, 'badge');
@@ -449,7 +460,7 @@ class ClientController extends BaseClientController
                             })
                             ->addColumn('amount', function ($model) {
                                 $currency = $model->invoice()->first()->currency;
-                                $total = currency_format($model->amount, $code = $currency);
+                                $total = currencyFormat($model->amount, $code = $currency);
 
                                 return $total;
                             })

@@ -23,7 +23,7 @@ trait ApiKeySettings
         StatusSetting::where('id', 1)->update(['license_status'=>$status]);
         ApiKey::where('id', 1)->update(['license_api_secret'=>$licenseApiSecret, 'license_api_url'=>$licenseApiUrl]);
 
-        return ['message' => 'success', 'update'=>'Licensing Settings Updated'];
+        return ['message' => 'success', 'update'=>'Licensing settings saved'];
     }
 
     //Save Auto Update status in Database
@@ -35,7 +35,7 @@ trait ApiKeySettings
         StatusSetting::where('id', 1)->update(['update_settings'=>$status]);
         ApiKey::where('id', 1)->update(['update_api_secret'=>$updateApiSecret, 'update_api_url'=>$updateApiUrl]);
 
-        return ['message' => 'success', 'update'=>'Auto Update Settings Updated'];
+        return ['message' => 'success', 'update'=>'Auto update settings saved'];
     }
 
     /*
@@ -48,7 +48,7 @@ trait ApiKeySettings
         StatusSetting::find(1)->update(['msg91_status'=>$status]);
         ApiKey::find(1)->update(['msg91_auth_key'=>$key, 'msg91_sender'=>$request->input('msg91_sender')]);
 
-        return ['message' => 'success', 'update'=>'Msg91 Settings Updated'];
+        return ['message' => 'success', 'update'=>'Msg91 settings saved'];
     }
 
     /*
@@ -61,7 +61,7 @@ trait ApiKeySettings
         StatusSetting::find(1)->update(['zoho_status'=>$status]);
         ApiKey::find(1)->update(['zoho_api_key'=>$key]);
 
-        return ['message' => 'success', 'update'=>'Zoho Settings Updated'];
+        return ['message' => 'success', 'update'=>'Zoho settings saved'];
     }
 
     /*
@@ -72,7 +72,7 @@ trait ApiKeySettings
         $status = $request->input('status');
         StatusSetting::find(1)->update(['emailverification_status'=>$status]);
 
-        return ['message' => 'success', 'update'=>'Email Verification Status Updated'];
+        return ['message' => 'success', 'update'=>'Email verification status saved'];
     }
 
     /*
@@ -83,7 +83,7 @@ trait ApiKeySettings
         $status = $request->input('status');
         StatusSetting::find(1)->update(['domain_check'=>$status]);
 
-        return ['message' => 'success', 'update'=>'Domain Check Status Updated'];
+        return ['message' => 'success', 'update'=>'Domain check status saved'];
     }
 
     /*
@@ -99,7 +99,7 @@ trait ApiKeySettings
         StatusSetting::find(1)->update(['twitter_status'=>$status]);
         ApiKey::find(1)->update(['twitter_consumer_key'=>$consumer_key, 'twitter_consumer_secret'=>$consumer_secret, 'twitter_access_token'=>$access_token, 'access_tooken_secret'=>$token_secret]);
 
-        return ['message' => 'success', 'update'=>'Twitter Settings Updated'];
+        return ['message' => 'success', 'update'=>'Twitter settings saved'];
     }
 
     /*
@@ -114,7 +114,7 @@ trait ApiKeySettings
         StatusSetting::find(1)->update(['rzp_status'=>$status]);
         ApiKey::find(1)->update(['rzp_key'=>$rzp_key, 'rzp_secret'=>$rzp_secret, 'apilayer_key'=>$apilayer_key]);
 
-        return ['message' => 'success', 'update'=>'Razorpay Settings Updated'];
+        return ['message' => 'success', 'update'=>'Razorpay settings saved'];
     }
 
     public function updatepipedriveDetails(Request $request)
@@ -129,14 +129,14 @@ trait ApiKeySettings
     {
         StatusSetting::first()->update(['mailchimp_product_status'=>$request->input('status')]);
 
-        return ['message' => 'success', 'update'=>'Mailchimp Products Group Status Updated'];
+        return ['message' => 'success', 'update'=>'Mailchimp products group status saved'];
     }
 
     public function updateMailchimpIsPaidStatus(Request $request)
     {
         StatusSetting::first()->update(['mailchimp_ispaid_status'=>$request->input('status')]);
 
-        return ['message' => 'success', 'update'=>'Mailchimp is Paid Status Updated'];
+        return ['message' => 'success', 'update'=>'Mailchimp is paid status saved'];
     }
 
     public function updateMailchimpDetails(Request $request)
@@ -146,7 +146,7 @@ trait ApiKeySettings
         StatusSetting::find(1)->update(['mailchimp_status'=>$status]);
         MailchimpSetting::find(1)->update(['api_key'=>$chimp_auth_key]);
 
-        return ['message' => 'success', 'update'=>'Mailchimp Settings Updated'];
+        return ['message' => 'success', 'update'=>'Mailchimp settings saved'];
     }
 
     public function updateTermsDetails(Request $request)
@@ -156,7 +156,7 @@ trait ApiKeySettings
         StatusSetting::find(1)->update(['terms'=>$status]);
         ApiKey::find(1)->update(['terms_url'=>$terms_url]);
 
-        return ['message' => 'success', 'update'=>'Terms Url Updated'];
+        return ['message' => 'success', 'update'=>'Terms url saved'];
     }
 
     /**

@@ -31,6 +31,19 @@ class SelfMemberReferenceUnitTestExample
         $testResults[] = self::  selfMemberReferenceUnitTestFunction();
         $testResults[] = self  :: selfMemberReferenceUnitTestFunction();
 
+        // Remove ALL the newlines
+        $testResults[] = self
+
+
+
+
+            ::
+
+
+
+
+            selfMemberReferenceUnitTestFunction();
+
     }
 
 
@@ -53,7 +66,7 @@ class MyClass {
 
     public static function walk() {
         $callback = function($value, $key) {
-                        // This is valid because you cant use self:: in a closure
+                        // This is valid because you can't use self:: in a closure.
                         MyClass::test($value);
                     };
 
@@ -117,5 +130,45 @@ class Baz {
     {
         \Foo\Bar\Whatever::something();
         \Foo\Bar\Baz::something();
+    }
+}
+
+class Nested_Anon_Class {
+    public function getAnonymousClass() {
+        // Spacing/comments should not cause false negatives for the NotUsed error.
+        Nested_Anon_Class      ::       $prop;
+        Nested_Anon_Class
+        /* some comment */
+
+        ::
+
+        // phpcs:ignore Standard.Category.SniffName -- for reasons.
+        Bar();
+
+        // Anonymous class is a different scope.
+        return new class() {
+            public function nested_function() {
+                Nested_Anon_Class::$prop;
+                Nested_Anon_Class::BAR;
+            }
+        };
+    }
+}
+
+// Test dealing with scoped namespaces.
+namespace Foo\Baz {
+    class BarFoo {
+        public function foo() {
+            echo Foo\Baz\BarFoo::$prop;
+        }
+    }
+}
+
+// Prevent false negative when namespace has whitespace/comments.
+namespace Foo /*comment*/ \ Bah {
+    class BarFoo {
+        public function foo() {
+            echo Foo \ /*comment*/ Bah\BarFoo::$prop;
+        }
     }
 }

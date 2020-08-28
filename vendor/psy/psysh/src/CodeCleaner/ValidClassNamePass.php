@@ -3,7 +3,7 @@
 /*
  * This file is part of Psy Shell.
  *
- * (c) 2012-2018 Justin Hileman
+ * (c) 2012-2020 Justin Hileman
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -39,12 +39,6 @@ class ValidClassNamePass extends NamespaceAwarePass
     const TRAIT_TYPE     = 'trait';
 
     private $conditionalScopes = 0;
-    private $atLeastPhp55;
-
-    public function __construct()
-    {
-        $this->atLeastPhp55 = \version_compare(PHP_VERSION, '5.5', '>=');
-    }
 
     /**
      * Validate class, interface and trait definitions.
@@ -163,8 +157,8 @@ class ValidClassNamePass extends NamespaceAwarePass
      */
     protected function validateClassConstFetchExpression(ClassConstFetch $stmt)
     {
-        // there is no need to check exists for ::class const for php 5.5 or newer
-        if (\strtolower($stmt->name) === 'class' && $this->atLeastPhp55) {
+        // there is no need to check exists for ::class const
+        if (\strtolower($stmt->name) === 'class') {
             return;
         }
 

@@ -83,6 +83,6 @@ class Handler extends ExceptionHandler
             return response()->json(['error' => 'Unauthenticated.'], 401);
         }
 
-        return redirect()->guest(route('login'))->with('fails', 'Your session has expired. Please login');
+        return redirect()->guest(route('login'));
     }
 }

@@ -96,7 +96,7 @@ User
                     <a class="btn btn-sm btn-secondary" href="{{url('newPayment/receive?clientid='.$client->id)}}"> <i class="fa fa-bars"></i> &nbsp;{{Lang::get('message.create-payment')}}</a>
                      <a class="btn btn-sm btn-secondary" href="{{url('clients/'.$client->id.'/edit')}}"> <i class="fas fa-edit"></i> Edit Details</a>
                     @if($is2faEnabled)
-                        <button id="disable2fa" value="{{$client->id}}" class="btn btn-sm btn-danger"><i class="fa fa-ban"></i>&nbsp;
+                        <button id="disable2fa" value="{{$client->id}}" class="btn btn-sm btn-secondary"><i class="fa fa-ban"></i>&nbsp;
                             Disable 2FA
                         </button>
 
@@ -112,7 +112,7 @@ User
                         <a class="nav-link" id="customer_detail" data-toggle="pill" href="#settings" role="tab"  aria-selected="false">{{Lang::get('message.customer_detail')}}</a>
                         <a class="nav-link" id="payment" data-toggle="pill" href="#timeline" role="tab"  aria-selected="false">{{Lang::get('message.payment_detail')}}</a>
                         <a class="nav-link" id="orderdetail" data-toggle="pill" href="#order" role="tab" aria-controls="vert-tabs-settings" aria-selected="false">{{Lang::get('message.order_detail')}}</a>
-                        <a class="nav-link" id="vert-tabs-comment-tab" data-toggle="pill" href="#comment" role="tab" aria-controls="vert-tabs-settings" aria-selected="false">{{Lang::get('message.comment')}}&nbsp;<span class="badge bg-red">{{count($comments)}}</span></a>
+                        <a class="nav-link" id="vert-tabs-comment-tab" data-toggle="pill" href="#comment" role="tab" aria-controls="vert-tabs-settings" aria-selected="false">{{Lang::get('message.comment')}}&nbsp;<span class="badge bg-green">{{count($comments)}}</span></a>
 
                     </div>
                 </div>

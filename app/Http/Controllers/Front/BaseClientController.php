@@ -234,7 +234,7 @@ class BaseClientController extends Controller
             $items = $invoice->invoiceItem()->get();
             $orderId = $invoice->orderRelation()->value('order_id');
 
-            $order = Order::find($orderId)->first()->getOrderLink($orderId, 'my-order');
+            $order = Order::getOrderLink($orderId, 'my-order');
             $currency = CartController::currency($user->id);
             $symbol = $currency['symbol'];
 

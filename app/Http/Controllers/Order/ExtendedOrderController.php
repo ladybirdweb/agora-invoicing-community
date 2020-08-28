@@ -44,8 +44,6 @@ class ExtendedOrderController extends Controller
             $this->allRenewals($request->input('renewal'), $baseQuery);
             $this->getSelectedVersionOrders($baseQuery, $request->input('version_from'), $request->input('version_till'));
 
-
-
             return $baseQuery->orderBy('orders.created_at', 'desc');
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());

@@ -1,6 +1,5 @@
 <?php
 
-use App\Model\Order\Order;
 use App\Model\Product\ProductUpload;
 use Carbon\Carbon;
 
@@ -155,7 +154,6 @@ function getVersionAndLabel($productVersion, $productId, $badge = 'label')
         }
     }
 }
-
 
 function tooltip($tootipText = '')
 {

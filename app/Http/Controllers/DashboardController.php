@@ -342,9 +342,9 @@ class DashboardController extends Controller
             ->get()->map(function ($element) {
                 $element->balance = (int) ($element->grand_total - $element->paid);
                 $element->status = getStatusLabel($element->status);
-                $element->grand_total = currency_format((int) $element->grand_total, $element->currency_code);
-                $element->paid = currency_format((int) $element->paid, $element->currency_code);
-                $element->balance = currency_format((int) $element->balance, $element->currency_code);
+                $element->grand_total = currencyFormat((int) $element->grand_total, $element->currency_code);
+                $element->paid = currencyFormat((int) $element->paid, $element->currency_code);
+                $element->balance = currencyFormat((int) $element->balance, $element->currency_code);
                 $element->client_name = $element->user->first_name.' '.$element->user->last_name;
                 $element->client_profile_link = \Config('app.url').'/clients/'.$element->user->id;
                 unset($element->user);

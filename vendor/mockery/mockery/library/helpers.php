@@ -1,5 +1,8 @@
 <?php
 
+use Mockery\Matcher\AndAnyOtherArgs;
+use Mockery\Matcher\AnyArgs;
+
 /**
  * Mockery
  *
@@ -20,22 +23,43 @@
  */
 
 if (!function_exists("mock")) {
-    function mock()
+    function mock(...$args)
     {
-        return call_user_func_array(array('Mockery', 'mock'), func_get_args());
+        return Mockery::mock(...$args);
     }
 }
 
 if (!function_exists("spy")) {
-    function spy()
+    function spy(...$args)
     {
-        return call_user_func_array(array('Mockery', 'spy'), func_get_args());
+        return Mockery::spy(...$args);
     }
 }
 
 if (!function_exists("namedMock")) {
-    function namedMock()
+    function namedMock(...$args)
     {
-        return call_user_func_array(array('Mockery', 'namedMock'), func_get_args());
+        return Mockery::namedMock(...$args);
+    }
+}
+
+if (!function_exists("anyArgs")) {
+    function anyArgs()
+    {
+        return new AnyArgs();
+    }
+}
+
+if (!function_exists("andAnyOtherArgs")) {
+    function andAnyOtherArgs()
+    {
+        return new AndAnyOtherArgs();
+    }
+}
+
+if (!function_exists("andAnyOthers")) {
+    function andAnyOthers()
+    {
+        return new AndAnyOtherArgs();
     }
 }

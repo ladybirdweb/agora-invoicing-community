@@ -30,21 +30,6 @@ class PageController extends GetPageTemplateController
         }
     }
 
-    public function getLocation()
-    {
-        try {
-            $location = \GeoIP::getLocation();
-
-            return $location;
-        } catch (Exception $ex) {
-            app('log')->error($ex->getMessage());
-            Bugsnag::notifyException($ex->getMessage());
-            $location = \Config::get('geoip.default_location');
-
-            return $location;
-        }
-    }
-
     public function getPages()
     {
         return \DataTables::of($this->page->get())
@@ -64,8 +49,8 @@ class PageController extends GetPageTemplateController
 
                         ->addColumn('action', function ($model) {
                             return '<a href='.url('pages/'.$model->id.'/edit')
-                            ." class='btn btn-sm btn-primary btn-xs'><i class='fa fa-edit'
-                                 style='color:white;'> </i>&nbsp;&nbsp;Edit</a>";
+                            ." class='btn btn-sm btn-secondary btn-xs'".tooltip('Edit')."<i class='fa fa-edit'
+                                 style='color:white;'> </i></a>";
                         })
 
                           ->rawColumns(['checkbox', 'name', 'url',  'created_at', 'action'])

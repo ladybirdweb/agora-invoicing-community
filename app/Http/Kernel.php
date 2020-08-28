@@ -33,7 +33,7 @@ class Kernel extends HttpKernel
      */
     protected $middlewareGroups = [
         'web' => [
-            \App\Http\Middleware\Install::class,
+            // \App\Http\Middleware\Install::class,
             \App\Http\Middleware\EncryptCookies::class,
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
 
@@ -49,7 +49,8 @@ class Kernel extends HttpKernel
         'guest'       => [\App\Http\Middleware\RedirectIfAuthenticated::class],
         'auth'       => [\Illuminate\Auth\Middleware\Authenticate::class],
         'auth.basic'    => [\Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class],
-
+        'install'    => [\App\Http\Middleware\Install::class],
+        'isInstalled' => [\App\Http\Middleware\IsInstalled::class],
         'api' => [
             'throttle:60,1',
             'bindings',
@@ -71,5 +72,6 @@ class Kernel extends HttpKernel
         'guest'      => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle'   => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'install'    => \App\Http\Middleware\Install::class,
+        'isInstalled' => [\App\Http\Middleware\IsInstalled::class],
     ];
 }

@@ -63,27 +63,31 @@ class VersionGuesser
      */
     public function guessVersion(array $packageConfig, $path)
     {
-        if (function_exists('proc_open')) {
-            $versionData = $this->guessGitVersion($packageConfig, $path);
-            if (null !== $versionData && null !== $versionData['version']) {
-                return $this->postprocess($versionData);
-            }
-
-            $versionData = $this->guessHgVersion($packageConfig, $path);
-            if (null !== $versionData && null !== $versionData['version']) {
-                return $this->postprocess($versionData);
-            }
-
-            $versionData = $this->guessFossilVersion($packageConfig, $path);
-            if (null !== $versionData && null !== $versionData['version']) {
-                return $this->postprocess($versionData);
-            }
-
-            $versionData = $this->guessSvnVersion($packageConfig, $path);
-            if (null !== $versionData && null !== $versionData['version']) {
-                return $this->postprocess($versionData);
-            }
+        if (!function_exists('proc_open')) {
+            return null;
         }
+
+        $versionData = $this->guessGitVersion($packageConfig, $path);
+        if (null !== $versionData && null !== $versionData['version']) {
+            return $this->postprocess($versionData);
+        }
+
+        $versionData = $this->guessHgVersion($packageConfig, $path);
+        if (null !== $versionData && null !== $versionData['version']) {
+            return $this->postprocess($versionData);
+        }
+
+        $versionData = $this->guessFossilVersion($packageConfig, $path);
+        if (null !== $versionData && null !== $versionData['version']) {
+            return $this->postprocess($versionData);
+        }
+
+        $versionData = $this->guessSvnVersion($packageConfig, $path);
+        if (null !== $versionData && null !== $versionData['version']) {
+            return $this->postprocess($versionData);
+        }
+
+        return null;
     }
 
     private function postprocess(array $versionData)
@@ -165,7 +169,7 @@ class VersionGuesser
         }
 
         if (!$commit) {
-            $command = 'git log --pretty="%H" -n1 HEAD';
+            $command = 'git log --pretty="%H" -n1 HEAD'.GitUtil::getNoShowSignatureFlag($this->process);
             if (0 === $this->process->execute($command, $output, $path)) {
                 $commit = trim($output) ?: null;
             }

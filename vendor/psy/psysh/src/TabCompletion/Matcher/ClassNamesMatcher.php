@@ -3,7 +3,7 @@
 /*
  * This file is part of Psy Shell.
  *
- * (c) 2012-2018 Justin Hileman
+ * (c) 2012-2020 Justin Hileman
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -40,7 +40,7 @@ class ClassNamesMatcher extends AbstractMatcher
                 return \implode('\\', \array_slice($pieces, $nsPos, \count($pieces)));
             },
             \array_filter(
-                \get_declared_classes(),
+                \array_merge(\get_declared_classes(), \get_declared_interfaces()),
                 function ($className) use ($quotedClass) {
                     return AbstractMatcher::startsWith($quotedClass, $className);
                 }

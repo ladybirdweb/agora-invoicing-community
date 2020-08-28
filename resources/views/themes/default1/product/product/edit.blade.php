@@ -3,23 +3,27 @@
 Edit Product
 @stop
 @section('content-header')
-<h1>
-Edit Product
-</h1>
-  <ol class="breadcrumb">
-        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="{{url('products')}}">All Products</a></li>
-        <li class="active">Edit Product</li>
-      </ol>
+    <div class="col-sm-6">
+        <h1>Edit Product</h1>
+    </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="breadcrumb-item"><a href="{{url('products')}}"><i class="fa fa-dashboard"></i> All Products</a></li>
+            <li class="breadcrumb-item active">Edit Product</li>
+        </ol>
+    </div><!-- /.col -->
 @stop
+
 @section('content')
 <style>
     .more-text{
      display:none;
 }
 </style>
+<link rel="stylesheet" href="{{asset('admin/css/select2.min.css')}}">
+
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
- <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/js/jquery.min.js"></script>
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
 
 <script type="text/javascript">
@@ -57,53 +61,24 @@ Edit Product
     .select2-container--default .select2-selection--multiple .select2-selection__choice {
     background-color: #1b1818 !important;
 </style>
-<div class="box box-primary">
+<div class="card card-primary card-tabs">
 
-    <div class="box-header">
-        @if (count($errors) > 0)
-                <div class="alert alert-danger">
-                    <strong>Whoops!</strong> There were some problems with your input.<br><br>
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-                @endif
+    {!! Form::model($product,['url'=>'products/'.$product->id,'method'=>'patch','files' => true,'id'=>'editproduct']) !!}
 
-                @if(Session::has('success'))
-                <div class="alert alert-success alert-dismissable">
-                     <i class="fa fa-check"></i>
-                     <b>{{Lang::get('message.success')}}!</b> 
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    {{Session::get('success')}}
-                </div>
-                @endif
-                <!-- fail message -->
-                @if(Session::has('fails'))
-                <div class="alert alert-danger alert-dismissable">
-                    <i class="fa fa-ban"></i>
-                    <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.failed')}}.
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    {{Session::get('fails')}}
-                </div>
-                @endif
-                {!! Form::model($product,['url'=>'products/'.$product->id,'method'=>'patch','files' => true,'id'=>'editproduct']) !!}
-                <h4>{{Lang::get('message.product')}}	
-                    <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button>
-                </h4>
+    <div class="card-header p-0 pt-1">
+        <ul class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="custom-tabs-detail-tab" data-toggle="pill" href="#custom-tabs-detail" role="tab" aria-controls="custom-tabs-detail" aria-selected="true">Details</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="custom-tabs-plan-tab" data-toggle="pill" href="#custom-tabs-plan" role="tab" aria-controls="custom-tabs-plan" aria-selected="false">Plans</a>
+            </li>
+        </ul>
+    </div>
+       <div class="card-body table-responsive">
 
-       </div>
-       <div class="box-body">
-         <div class="row">
-            <div class="col-md-12">
-                <div class="nav-tabs-custom">
-                    <ul class="nav nav-tabs">
-                        <li class="active"><a href="#tab_1" data-toggle="tab">{{Lang::get('message.details')}}</a></li>
-                        <li><a href="#tab_2" data-toggle="tab">{{Lang::get('message.plans')}}</a></li>
-                        </ul>
-                    <div class="tab-content">
-                        <div class="tab-pane active" id="tab_1">
+                    <div class="tab-content" id="custom-tabs-one-tabContent">
+                        <div class="tab-pane fade show active" id="custom-tabs-detail" Role="tabpanel" aria-labelledby="custom-tabs-detail-tab">
                             <div class="row">
                                 <div class="col-md-3 form-group {{ $errors->has('name') ? 'has-error' : '' }}">
                                     <!-- first name -->
@@ -195,7 +170,7 @@ Edit Product
                                                 </li>
                                       
                                        
-                                            <table class="table table-responsive">
+                                            <table class="table">
                                                 <input type="hidden" value="{{$checkowner}}" id="checkowner">
                                               <span>Where do you want to retrieve your files from?</span>
                                              </br>
@@ -203,7 +178,7 @@ Edit Product
                                                 <tr>  
                                                       
                                                     <td>
-                                                        <label for="chkYes" style="display: block;">
+                                                        <label for="chkYes" style="">
                                                         <input type="radio" id="chkYes" name="chkTax" />
                                                         Github
                                                     </label>
@@ -290,10 +265,9 @@ Edit Product
                         </div>
 
                          <!-- /.tab-pane -->
-                        <div class="tab-pane" id="tab_2">
-                            <table class="table table-responsive">
+                        <div class="tab-pane fade" id="custom-tabs-plan" role="tabpanel"  aria-labelledby="custom-tabs-plan-tab">
+                            <table class="table>
 
-                                    <br/>
                                 <span>Show on Cart Page</span>
                                  <tr>
                                     <div class="row">
@@ -315,20 +289,20 @@ Edit Product
                                 </tr>
                                 <tr>
                                     <td>
-                                        <div><label>
+                                        <div>
+                                            <label>
                                              {!! Form::radio('show_agent',0,null,['id'=>'quantity']) !!}
                                             Product Quantity
                                          </label>
-                                     </div>
+                                        </div>
                                          <br/>
                                      <div class="col-md-10" id="allowmulproduct" style="display:none">
                                        <p>{!! Form::checkbox('can_modify_quantity',1,null,['id'=>'product_multiple_quantity']) !!}  {{Lang::get('message.allow_multiple_product_quantity')}} </p>
                                     </div>
                                   
                                     </td>
-                                      </div>
                                 </tr>
-                                  </table>
+                        </table>
                                 
                                 <tr>
                                     <td><b>{!! Form::label('tax',Lang::get('message.taxes')) !!}</b></td>
@@ -370,14 +344,49 @@ Edit Product
                                                    
                                                    
                                                 </div>
+
                                                
                                             </div>
+                                            <br>
+                                            <h3>  Plans &nbsp;
+                                                <!-- <a href="#create-plan-option" data-toggle="modal" data-target="#create-plan-option" class="btn btn-default">Add new</a> -->
+                                            </h3>
 
+                                            @include('themes.default1.product.plan.create')
+
+                                            @if($product->plan())
+                                                <table class="table">
+
+                                                    <tr>
+                                                        <th>Name</th>
+                                                        <th>Months</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                    @foreach($product->plan()->where('product',$product->id)->get() as $plan)
+                                                        <tr>
+
+                                                            <td>{{$plan->name}}</td>
+                                                            <?php
+                                                            if ($plan->days != '') {
+                                                                $months = $plan->days / 30;
+                                                            } else {
+                                                                $months = 'No Period Selected';
+                                                            }
+
+                                                            ?>
+                                                            <td>{{round($months)}}</td>
+                                                            <td><a href="{{url('plans/'.$plan->id.'/edit')}}" class="btn btn-secondary btn-xs".{!! tooltip('Edit') !!}<i class='fa fa-edit' style='color:white;'></i></a></td>
+                                                        </tr>
+                                                     @endforeach
+                                                </table>
+                                    @else
+                                        <td>No Plans Created</td>
+                            @endif
                                         </div>
                                     </td>
                                 </tr>
 
-                           
+       </div>
                       
                 <!-- nav-tabs-custom -->
 
@@ -385,67 +394,31 @@ Edit Product
 
           {!! Form::close() !!}
 
-           <h3>  Plans &nbsp;
-            <!-- <a href="#create-plan-option" data-toggle="modal" data-target="#create-plan-option" class="btn btn-default">Add new</a> -->
-        </h3>
-                           
-                            @include('themes.default1.product.plan.create') 
 
-                              @if($product->plan())
-                            <table class="table table-responsive">
-                                
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Months</th>
-                                    <th>Action</th>
-                                </tr>
-                                 @foreach($product->plan()->where('product',$product->id)->get() as $plan)
-                                <tr>
-
-                                    <td>{{$plan->name}}</td> 
-                                    <?php
-                                    if ($plan->days != '') {
-                                        $months = $plan->days / 30;
-                                    } else {
-                                         $months = 'No Period Selected';
-                                    } 
-                                   
-                                    ?>
-                                    <td>{{round($months)}}</td> 
-                                    <td><a href="{{url('plans/'.$plan->id.'/edit')}}" class="btn btn-primary btn-xs"><i class='fa fa-edit' style='color:white;'></i>&nbsp;&nbsp;Edit</a></td> 
-                                </tr>
-                                @endforeach
-                            </table>
-                            @else
-                            <td>No Plans Created</td>
-                            @endif
                               </div>
-                       
-                           <!-- /.tab-pane -->
-                        
 
-                        <!-- /.tab-pane -->
-                    </div>
-                    <!-- /.tab-content -->
-                </div>
-                </div>
-                 </div>
+
+
+           <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-save">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button>
+
+       </div>
                    </div>
-                   </div>
-     
+
         <div class="row" id="hide" style="display:none">
         <div class="col-md-12">
-        <div class="box box-primary" id="uploads">
-            <div class="box-header with-border" >
-                <h3 class="box-title">Upload Files</h3>
-                
-                 <a href="#create-upload-option" id="create" class="btn btn-primary  btn-sm pull-right" data-toggle="modal" data-target="#create-upload-option"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;{{Lang::get('message.add-file')}}</a>
-                            @include('themes.default1.product.product.create-upload-option')
-                            
-             
+        <div class="card card-primary card-outline" id="uploads">
+            <div class="card-header">
+                <h3 class="card-title">Upload Files</h3>
+
+                <div class="card-tools">
+                    <a href="#create-upload-option" id="create" class="btn btn-primary  btn-sm pull-right" data-toggle="modal" data-target="#create-upload-option"><span class="fa fa-plus"></span>&nbsp;&nbsp;{{Lang::get('message.add-file')}}</a>
+                    @include('themes.default1.product.product.create-upload-option')
+
+                </div>
             </div>
+
             <!-- <div id="response"></div> -->
-            <div class="box-body" >
+            <div class="card-body table-responsive">
                 <div class="row" >
                     <div class="col-md-12" >
                          <table id="upload-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
@@ -467,12 +440,18 @@ Edit Product
     </div>
 </div>
 
+<script>
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip({
+            container : 'body'
+        });
+    });
+</script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
 
-
-<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
 <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script> -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
-<script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+<script src="//cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 <script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
 <script>
                                         $(function(){
@@ -528,7 +507,7 @@ Edit Product
                                     });
                                               tinymce.init({
                                          selector: '#textarea3',
-                                         height: 200,
+                                         height: 100,
                                        //  theme: 'modern',
                                          relative_urls: true,
                                          remove_script_host: false,
@@ -581,7 +560,7 @@ Edit Product
             "oLanguage": {
                 "sLengthMenu": "_MENU_ Records per page",
                 "sSearch"    : "Search: ",
-                "sProcessing": '<img id="blur-bg" class="backgroundfadein" style="top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;" src="{!! asset("lb-faveo/media/images/gifloader3.gif") !!}">'
+                "sProcessing": ' <div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="text-bold pt-2">Loading...</div></div>'
             },
                 columnDefs: [
                 { 
@@ -610,6 +589,9 @@ Edit Product
   
      
         function bindEditButton() {
+                $('[data-toggle="tooltip"]').tooltip({
+                    container : 'body'
+                });
         $('.editUploadsOption').click(function(){
         var upload_id = $(this).attr('data-id');
         var title =  $(this).attr('data-title');
@@ -704,7 +686,6 @@ Edit Product
    
 
 
- <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/js/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
   <link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css" rel="stylesheet" />
 <script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"></script>
@@ -911,7 +892,7 @@ if ($fileUpload.length > 0 && $fileUploadDrop.length > 0) {
 
 
  $("#uploadVersion").on('click',function(){
-      $("#uploadVersion").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
+      $("#uploadVersion").html("<i class='fas fa-circle-notch fa-spin'></i>Please Wait...");
      var filename = $('#file_ids').val();
     var productname = $('#productname').val();
     var producttitle = $('#producttitle').val();
@@ -921,16 +902,16 @@ if ($fileUpload.length > 0 && $fileUploadDrop.length > 0) {
        type : "POST",
        url  :  "{!! route('upload/save') !!}",
        data :  {'filename': filename , 'productname': productname , 'producttitle': producttitle, 
-       'description': description,'version':version},
+       'description': description,'version':version,'_token': '{!! csrf_token() !!}'},
        success: function(response) {
-         $("#uploadVersion").html("<i class='fa fa-floppy-o'>&nbsp;&nbsp;</i>Save");
+         $("#uploadVersion").html("<i class='fa fa-save'>&nbsp;&nbsp;</i>Save");
         $('#alertMessage1').show();
         $('#error').hide();
         var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="far fa-check"></i> Success! </strong>'+response.message+'.</div>';
         $('#alertMessage1').html(result+ ".");
        } ,
        error: function(ex) {
-         $("#uploadVersion").html("<i class='fa fa-floppy-o'>&nbsp;&nbsp;</i>Save");
+         $("#uploadVersion").html("<i class='fa fa-save'>&nbsp;&nbsp;</i>Save");
         var html = '<div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<br><br><ul>';
         for (key in ex.responseJSON.errors) {
            html += '<li>'+ ex.responseJSON.errors[key][0] + '</li>'

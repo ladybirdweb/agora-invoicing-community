@@ -19,10 +19,8 @@ use Bugsnag\Request\ResolverInterface;
 use Bugsnag\Shutdown\PhpShutdownStrategy;
 use Bugsnag\Shutdown\ShutdownStrategyInterface;
 use Composer\CaBundle\CaBundle;
-use GuzzleHttp\Client as Guzzle;
+use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\ClientInterface;
-use ReflectionClass;
-use ReflectionException;
 
 class Client
 {
@@ -141,7 +139,7 @@ class Client
      */
     public static function makeGuzzle($base = null, array $options = [])
     {
-        $key = version_compare(ClientInterface::VERSION, '6') === 1 ? 'base_uri' : 'base_url';
+        $key = method_exists(ClientInterface::class, 'request') ? 'base_uri' : 'base_url';
 
         $options[$key] = $base ?: static::ENDPOINT;
 
@@ -149,7 +147,7 @@ class Client
             $options['verify'] = $path;
         }
 
-        return new Guzzle($options);
+        return new GuzzleClient($options);
     }
 
     /**
@@ -159,7 +157,7 @@ class Client
      */
     protected static function getCaBundlePath()
     {
-        if (!class_exists(CaBundle::class)) {
+        if (version_compare(PHP_VERSION, '5.6.0') >= 0 || !class_exists(CaBundle::class)) {
             return false;
         }
 
@@ -242,12 +240,6 @@ class Client
      */
     public function leaveBreadcrumb($name, $type = null, array $metaData = [])
     {
-        try {
-            $name = (new ReflectionClass($name))->getShortName();
-        } catch (ReflectionException $e) {
-            //
-        }
-
         $type = in_array($type, Breadcrumb::getTypes(), true) ? $type : Breadcrumb::MANUAL_TYPE;
 
         $this->recorder->record(new Breadcrumb($name, $type, $metaData));
@@ -806,7 +798,7 @@ class Client
     /**
      * Get the session client.
      *
-     * @return \Guzzle\ClientInterface
+     * @return \GuzzleHttp\ClientInterface
      */
     public function getSessionClient()
     {

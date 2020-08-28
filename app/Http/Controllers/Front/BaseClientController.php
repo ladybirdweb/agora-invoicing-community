@@ -188,7 +188,7 @@ class BaseClientController extends Controller
                 return getDateHtml($model->created_at);
             })
             ->addColumn('total', function ($model) {
-                return currency_format($model->grand_total, $code = $model->currency);
+                return currencyFormat($model->grand_total, $code = $model->currency);
             })
             ->addColumn('status', function ($model) {
                 if (\Auth::user()->role == 'admin') {
@@ -201,8 +201,8 @@ class BaseClientController extends Controller
                 $url = $this->getInvoiceLinkUrl($model->id);
 
                 return '<a href='.url($url)." 
-                class='btn btn-sm btn-primary btn-xs'><i class='fa fa-eye' 
-                style='color:white;'> </i>&nbsp;&nbsp;View</a>";
+                class='btn btn-sm btn-primary btn-xs'".tooltip('View')."<i class='fa fa-eye' 
+                style='color:white;'> </i></a>";
             })
                             ->rawColumns(['number', 'products', 'date', 'total', 'status', 'action'])
                             ->make(true);
@@ -232,7 +232,9 @@ class BaseClientController extends Controller
                 throw new \Exception('Cannot view invoice. Invalid modification of data.');
             }
             $items = $invoice->invoiceItem()->get();
-            $order = getOrderLink($invoice->orderRelation()->value('order_id'), 'my-order');
+            $orderId = $invoice->orderRelation()->value('order_id');
+
+            $order = Order::find($orderId)->first()->getOrderLink($orderId, 'my-order');
             $currency = CartController::currency($user->id);
             $symbol = $currency['symbol'];
 

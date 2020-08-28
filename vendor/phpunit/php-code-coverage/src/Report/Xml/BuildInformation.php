@@ -1,6 +1,6 @@
-<?php
+<?php declare(strict_types=1);
 /*
- * This file is part of the php-code-coverage package.
+ * This file is part of phpunit/php-code-coverage.
  *
  * (c) Sebastian Bergmann <sebastian@phpunit.de>
  *
@@ -42,9 +42,14 @@ final class BuildInformation
             $driverNode->setAttribute('name', 'xdebug');
             $driverNode->setAttribute('version', \phpversion('xdebug'));
         }
+
+        if ($runtime->hasPCOV()) {
+            $driverNode->setAttribute('name', 'pcov');
+            $driverNode->setAttribute('version', \phpversion('pcov'));
+        }
     }
 
-    public function setBuildTime(\DateTime $date): void
+    public function setBuildTime(\DateTimeImmutable $date): void
     {
         $this->contextNode->setAttribute('time', $date->format('D M j G:i:s T Y'));
     }

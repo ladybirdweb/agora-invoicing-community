@@ -114,7 +114,7 @@ if (count($attributes) > 0) {
                                                     </td>
                                                     <td class="product-price">
                                                          <span class="amount">
-                                                            {{currency_format($item->price,$code = $attributes[0]['currency']['currency'])}}
+                                                            {{currencyFormat($item->price,$code = $attributes[0]['currency']['currency'])}}
                                                          <!-- {{\App\Http\Controllers\Front\CartController::rounding($item->getPriceSumWithConditions())}} -->
                                                      </span>
                                                        <div id="response"></div>
@@ -162,7 +162,7 @@ if (count($attributes) > 0) {
                                                          
                                                     <td class="product-subtotal">
                                                       <span class="amount">
-                                                        {{currency_format($item->getPriceSum(),$code = $attributes[0]['currency']['currency'])}}
+                                                        {{currencyFormat($item->getPriceSum(),$code = $attributes[0]['currency']['currency'])}}
                                                     </span>
 
 
@@ -204,7 +204,7 @@ if (count($attributes) > 0) {
 
 
                                             <strong><span class="amount"><small>&nbsp;</small>  
-                                                {{currency_format(Cart::getSubTotalWithoutConditions(),$code= $attributes[0]['currency']['currency'])}}
+                                                {{currencyFormat(Cart::getSubTotalWithoutConditions(),$code= $attributes[0]['currency']['currency'])}}
                                            </span></strong>
 
 

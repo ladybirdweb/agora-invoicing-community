@@ -1,5 +1,4 @@
 <?php
-/* @codingStandardsIgnoreFile */
 
 /* testPassByReference */
 function passByReference(&$var) {}
@@ -20,7 +19,8 @@ function defaultValues($var1=1, $var2='value') {}
 function typeHint(foo $var1, bar $var2) {}
 
 class MyClass {
-/* testSelfTypeHint */ function typeSelfHint(self $var) {}
+    /* testSelfTypeHint */
+    function typeSelfHint(self $var) {}
 }
 
 /* testNullableTypeHint */
@@ -28,3 +28,6 @@ function nullableTypeHint(?int $var1, ?\bar $var2) {}
 
 /* testBitwiseAndConstantExpressionDefaultValue */
 function myFunction($a = 10 & 20) {}
+
+/* testArrowFunction */
+fn(int $a, ...$b) => $b;

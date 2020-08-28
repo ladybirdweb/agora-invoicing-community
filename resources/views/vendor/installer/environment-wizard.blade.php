@@ -34,7 +34,7 @@
             {{ trans('installer_messages.environment.wizard.tabs.application') }}
         </label>
 
-        <form method="post" action="{{ route('LaravelInstaller::environmentSaveWizard') }}" id="setup" class="tabs-wrap">
+        <form method="post" action="{{ route('AgoraInstaller::environmentSaveWizard') }}" id="setup" class="tabs-wrap">
             <div class="tab" id="tab1content">
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
 

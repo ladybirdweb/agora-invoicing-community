@@ -1,4 +1,8 @@
-<?php namespace Arcanedev\Support\Providers;
+<?php
+
+declare(strict_types=1);
+
+namespace Arcanedev\Support\Providers;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider;
 use Illuminate\Support\Facades\Gate;

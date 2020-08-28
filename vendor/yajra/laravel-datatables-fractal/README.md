@@ -21,7 +21,7 @@ This package is a plugin of [Laravel DataTables](https://github.com/yajra/larave
 
 ## Quick Installation
 
-`composer require yajra/laravel-datatables-fractal:^1.0`
+`composer require yajra/laravel-datatables-fractal`
 
 ### Register Service Provider (Optional on Laravel 5.5+)
 

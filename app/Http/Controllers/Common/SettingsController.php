@@ -165,8 +165,8 @@ class SettingsController extends BaseSettingsController
     public function postSettingsSystem(Setting $settings, Request $request)
     {
         $this->validate($request, [
-            'company'         => 'required',
-            'company_email'   => 'required',
+            'company'         => 'required|max:50',
+            'company_email'   => 'required|email',
             'website'         => 'required',
             'phone'           => 'required',
             'address'         => 'required',
@@ -221,7 +221,7 @@ class SettingsController extends BaseSettingsController
     public function postSettingsEmail(Setting $settings, Request $request)
     {
         $this->validate($request, [
-            'email'     => 'required',
+            'email'     => 'required|email',
             'password'  => 'required',
             'driver'    => 'required',
             'port'      => 'required',

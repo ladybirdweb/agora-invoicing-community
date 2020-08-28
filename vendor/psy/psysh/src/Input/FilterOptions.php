@@ -3,7 +3,7 @@
 /*
  * This file is part of Psy Shell.
  *
- * (c) 2012-2018 Justin Hileman
+ * (c) 2012-2020 Justin Hileman
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -97,9 +97,9 @@ class FilterOptions
     /**
      * Validate that grep, invert and insensitive input options are consistent.
      *
-     * @param InputInterface $input
+     * @throws RuntimeException if input is invalid
      *
-     * @return bool
+     * @param InputInterface $input
      */
     private function validateInput(InputInterface $input)
     {
@@ -127,19 +127,19 @@ class FilterOptions
     /**
      * Validate that $pattern is a valid regular expression.
      *
-     * @param string $pattern
+     * @throws RuntimeException if pattern is invalid
      *
-     * @return bool
+     * @param string $pattern
      */
     private function validateRegex($pattern)
     {
-        \set_error_handler(['Psy\Exception\ErrorException', 'throwException']);
+        \set_error_handler([ErrorException::class, 'throwException']);
         try {
             \preg_match($pattern, '');
         } catch (ErrorException $e) {
-            \restore_error_handler();
             throw new RuntimeException(\str_replace('preg_match(): ', 'Invalid regular expression: ', $e->getRawMessage()));
+        } finally {
+            \restore_error_handler();
         }
-        \restore_error_handler();
     }
 }

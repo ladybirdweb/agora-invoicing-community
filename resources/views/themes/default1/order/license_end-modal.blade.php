@@ -14,20 +14,26 @@
                     <!-- name -->
                     {!! Form::label('license',Lang::get('message.license_end'),['class'=>'required']) !!}
                    
-                         <div class="input-group date">
-                             <div class="input-group-addon">
-                      <i class="fa fa-calendar"></i>
+
                          </div>
                           <div id="response3"></div>
-                     <input name="ends_at" type="text" value="" class="form-control" id="newDate2" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask>
+
+                    <div class="input-group date" id="licenseEnds" data-target-input="nearest">
+                        <input type="text" name="ends_at" id="newDate" class="form-control datetimepicker-input" autocomplete="off"  data-target="#licenseEnds"/>
+                        <div class="input-group-append" data-target="#licenseEnds" data-toggle="datetimepicker">
+                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+
                         </div>
-              </div>
+
+
+                    </div>
+
         
 		</div>
 		
-		  <div class="modal-footer">
-                <button type="button" id="close" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-                <button type="submit" id="licenseExpSave" class="btn btn-primary">Save</button>
+		  <div class="modal-footer justify-content-between">
+                <button type="button" id="close" class="btn btn-default " data-dismiss="modal"><i class="fa fa-times"></i>&nbsp;Close</button>
+                <button type="submit" id="licenseExpSave" class="btn btn-primary"><i class="fas fa-save"></i>&nbsp;Save</button>
             </div>
 	</div>
 </div>

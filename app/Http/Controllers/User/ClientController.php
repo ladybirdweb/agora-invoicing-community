@@ -45,6 +45,18 @@ class ClientController extends AdvanceSearchController
      */
     public function index(Request $request)
     {
+        $validator = \Validator::make($request->all(), [
+            'reg_from'     => 'nullable',
+            'reg_till'     => 'nullable|after:reg_from',
+
+        ]);
+        if ($validator->fails()) {
+            $request->reg_from = '';
+            $request->reg_till = '';
+
+            return redirect('clients')->with('fails', 'Registered from should be before registered till date');
+        }
+
         return view('themes.default1.user.client.index', compact('request'));
     }
 
@@ -85,11 +97,11 @@ class ClientController extends AdvanceSearchController
                         })
                         ->addColumn('action', function ($model) {
                             return '<a href='.url('clients/'.$model->id.'/edit')
-                            ." class='btn btn-sm btn-primary btn-xs'>
-                            <i class='fa fa-edit' style='color:white;'> </i>&nbsp;&nbsp;Edit</a>"
+                            ." class='btn btn-sm btn-secondary btn-xs'".tooltip('Edit')."
+                            <i class='fa fa-edit' style='color:white;'> </i></a>"
                                     .'  <a href='.url('clients/'.$model->id)
-                                    ." class='btn btn-sm btn-primary btn-xs'>
-                                    <i class='fa fa-eye' style='color:white;'> </i>&nbsp;&nbsp;View</a>";
+                                    ." class='btn btn-sm btn-primary btn-xs'".tooltip('View')."
+                                    <i class='fa fa-eye' style='color:white;'> </i></a>";
                         })
 
                         ->filterColumn('name', function ($model, $keyword) {
@@ -121,17 +133,17 @@ class ClientController extends AdvanceSearchController
 
     public function getActiveLabel($mobileActive, $emailActive, $twoFaActive)
     {
-        $emailLabel = "<span class='glyphicon glyphicon-envelope'  style='color:red'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Unverified email'> </label></span>";
-        $mobileLabel = "<span class='glyphicon glyphicon-phone'  style='color:red'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Unverified mobile'>  </label></span>";
-        $twoFalabel = "<span class='glyphicon glyphicon-qrcode'  style='color:red'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='2FA not enabled'> </label></span>";
+        $emailLabel = "<i class='fas fa-envelope'  style='color:red'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Unverified email'> </label></i>";
+        $mobileLabel = "<i class='fas fa-phone'  style='color:red'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Unverified mobile'>  </label></i>";
+        $twoFalabel = "<i class='fas fa-qrcode'  style='color:red'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='2FA not enabled'> </label></i>";
         if ($mobileActive) {
-            $mobileLabel = "<span class='glyphicon glyphicon-phone'  style='color:green'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Mobile verified'></label></span>";
+            $mobileLabel = "<i class='fas fa-phone'  style='color:green'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Mobile verified'></label></i>";
         }
         if ($emailActive) {
-            $emailLabel = "<span class='glyphicon glyphicon-envelope'  style='color:green'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Email verified'> </label></span>";
+            $emailLabel = "<i class='fas fa-envelope'  style='color:green'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Email verified'> </label></i>";
         }
         if ($twoFaActive) {
-            $twoFalabel = "<span class='glyphicon glyphicon-qrcode'  style='color:green'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='2FA Enabled'> </label></span>";
+            $twoFalabel = "<i class='fas fa-qrcode'  style='color:green'  <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='2FA Enabled'> </label></i>";
         }
 
         return $emailLabel.'&nbsp;&nbsp;'.$mobileLabel.'&nbsp;&nbsp;'.$twoFalabel;
@@ -185,9 +197,8 @@ class ClientController extends AdvanceSearchController
             } else {
                 $mobile_code = str_replace('+', '', $request->input('mobile_code'));
             }
-            $cont = new \App\Http\Controllers\Front\PageController();
             $currency_symbol = Currency::where('code', $request->input('currency'))->pluck('symbol')->first();
-            $location = $cont->getLocation();
+            $location = getLocation();
             $user->user_name = $request->input('user_name');
             $user->first_name = $request->input('first_name');
             $user->last_name = $request->input('last_name');

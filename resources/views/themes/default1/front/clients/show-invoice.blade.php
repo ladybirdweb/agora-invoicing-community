@@ -76,10 +76,6 @@ active
                         <div class="col-md-6">
                             <div class="bill-data text-right">
                                 <p class="mb-0">
-                                    <span class="text-dark">Order:</span>
-                                    <span class="value">#{!! $order !!}</span>
-                                </p>
-                                <p class="mb-0">
                                     <span class="text-dark">GSTIN:</span>
                                     <span class="value">#{{$gst->Gst_No}}</span>
                                 </p>
@@ -91,6 +87,7 @@ active
                 <table class="table table-responsive-md invoice-items">
                     <thead>
                     <tr class="text-dark">
+                        <th class="font-weight-semibold">Order No</th>
                         <th class="font-weight-semibold">Product</th>
                         <th class="font-weight-semibold">Quantity</th>
                         <th class="font-weight-semibold">Price</th>
@@ -102,9 +99,23 @@ active
                     <tbody>
                     @foreach($items as $item)
                         <tr>
+                            @php
+                            $orderForThisItem = $item->order()->first();
+                            @endphp
+                            @if($orderForThisItem)
+
+                            <td> {!! $orderForThisItem->getOrderLink($orderForThisItem->id,'my-order') !!}
+                           
+                                @elseif($order)
+                                <td>{!! $order !!}</td>
+                                <span>Renewed</span>
+                                @else
+                                <td>--</td>
+                               
+                            @endif
                             <td>{{$item->product_name}}</td>
                             <td>{{$item->quantity}}</td>
-                            <td>{{currency_format(intval($item->regular_price),$code = $symbol)}}</td>
+                            <td>{{currencyFormat(intval($item->regular_price),$code = $symbol)}}</td>
                             <td>
                                 <?php $taxes = explode(',', $item->tax_name); ?>
                                 <ul class="list-unstyled">
@@ -127,7 +138,7 @@ active
                             </td>
 
 
-                            <td>{{currency_format($item->subtotal,$code = $symbol)}}</td>
+                            <td>{{currencyFormat($item->subtotal,$code = $symbol)}}</td>
                         </tr>
                     @endforeach
                     </tbody>
@@ -139,7 +150,7 @@ active
                             <table class="table h6 text-dark"  style="text-align: right">
                                 @if($invoice->discount != null)
                                     <th>Discount</th>
-                                    <td>{{currency_format($invoice->discount,$code=$symbol)}}</td>
+                                    <td>{{currencyFormat($invoice->discount,$code=$symbol)}}</td>
                                 @endif
                                 <?php
                                 $tax_name = [];
@@ -184,8 +195,8 @@ active
                                                     $cgst = \App\Http\Controllers\Front\CartController::taxValue($taxes['tax_attributes'][0]['c_gst'],$item->regular_price);
                                                     $sgst = App\Http\Controllers\Front\CartController::taxValue($taxes['tax_attributes'][0]['s_gst'],$item->regular_price);
                                                     ?>
-                                                    {{currency_format($cgst,$code = $symbol)}} <br/>
-                                                    {{currency_format($sgst,$code = $symbol)}} <br/> <br/>
+                                                    {{currencyFormat($cgst,$code = $symbol)}} <br/>
+                                                    {{currencyFormat($sgst,$code = $symbol)}} <br/> <br/>
                                                 </td>
                                             </tr>
                                         @endif
@@ -200,7 +211,7 @@ active
                                                     <?php
                                                     $igst =  \App\Http\Controllers\Front\CartController::taxValue($taxes['tax_attributes'][0]['i_gst'],$item->regular_price);
                                                     ?>
-                                                    {{currency_format($igst,$code = $symbol)}}  <br/>
+                                                    {{currencyFormat($igst,$code = $symbol)}}  <br/>
 
                                                 </td>
                                             </tr>
@@ -218,8 +229,8 @@ active
                                                     $utgst = \App\Http\Controllers\Front\CartController::taxValue($taxes['tax_attributes'][0]['ut_gst'],$item->regular_price);
                                                     $cgst = \App\Http\Controllers\Front\CartController::taxValue($taxes['tax_attributes'][0]['c_gst'],$item->regular_price);
                                                     ?>
-                                                    {{currency_format($utgst,$code = $symbol)}}<br/>
-                                                    {{currency_format($cgst,$code = $symbol)}}<br/>
+                                                    {{currencyFormat($utgst,$code = $symbol)}}<br/>
+                                                    {{currencyFormat($cgst,$code = $symbol)}}<br/>
 
 
                                                 </td>
@@ -240,7 +251,7 @@ active
                                             }
                                             $value = \App\Http\Controllers\Front\CartController::taxValue($tax_percentage[0],$item->regular_price);
                                             ?>
-                                            {{currency_format($value,$code = $symbol)}}
+                                            {{currencyFormat($value,$code = $symbol)}}
 
                                         </td>
 
@@ -250,7 +261,7 @@ active
 
                                 <tr class="h4">
                                     <th>Total</th>
-                                    <td>{{currency_format($invoice->grand_total,$code = $symbol)}}</td>
+                                    <td>{{currencyFormat($invoice->grand_total,$code = $symbol)}}</td>
                                 </tr>
                             </table>
 

@@ -12,7 +12,7 @@
 }
 </style>
 @stop
-<div class="box-body table-responsive"style="overflow:hidden;">
+
       {{-- alert block --}}
         <div class="alert alert-success cron-success alert-dismissable" style="display: none;">
             <i class="fa  fa-check-circle"></i>
@@ -31,13 +31,17 @@
         </div>
         @endif
 
-{!! Form::model($status,['url' => 'post-scheduler', 'method' => 'PATCH','id'=>'Form']) !!}
 
-    <div class="box-header with-border">
-       <h4>{{Lang::get('message.cron')}}  <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></h4>
+    
+
+    {!! Form::model($status,['url' => 'post-scheduler', 'method' => 'PATCH','id'=>'Form']) !!}
+    <div class="card-header">
+        <h4 class="card-title">{{Lang::get('message.cron')}} </h4>
+
+
     </div>
 
-    <div class="box-body table-responsive"style="overflow:hidden;">
+    <div class="card-body table-responsive"style="overflow:hidden;">
   <div class="row">
                 <div class="col-md-12">
                    <p>{{ Lang::get('message.copy-cron-command-description')}} </p>
@@ -75,11 +79,10 @@
             </div>
         </div>
         
-     
+     <div class="row">
         <div class="col-md-6">
             <div class="info-box">
                 <!-- Apply any bg-* class to to the icon to color it -->
-                <span class="info-box-icon bg-aqua" style="padding-top: 15px"><i class="fa  fa-envelope"></i></span>
                 <div class="info-box-content">
 
                     <div class="col-md-6">
@@ -105,7 +108,6 @@
         <div class="col-md-6">
             <div class="info-box">
                 <!-- Apply any bg-* class to to the icon to color it -->
-                <span class="info-box-icon bg-aqua" style="padding-top: 15px"><i class="fa  fa-close"></i></span>
                 <div class="info-box-content">
                     <div class="col-md-6">
                         <div class="form-group">
@@ -125,10 +127,14 @@
                 </div><!-- /.info-box-content -->
             </div><!-- /.info-box -->
         </div>
-    
+    </div>
+    <h4><button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-sync-alt">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button></h4>
         </div>
     </div>
+
  {!! Form::close() !!}
+
+
 
 <script>
     $(document).ready(function () {

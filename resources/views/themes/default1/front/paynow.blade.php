@@ -84,7 +84,7 @@ Checkout
                                 </td>
                                 <td class="product-name">
                                     
-                                    <span class="amount">{{currency_format(intval($item->subtotal),$code = $currency)}}</span>
+                                    <span class="amount">{{currencyFormat(intval($item->subtotal),$code = $currency)}}</span>
                                 </td>
                             </tr>
                             @empty 
@@ -168,7 +168,7 @@ Checkout
                         <strong>Cart Subtotal</strong>
                     </th>
                     <td>
-                       <span class="amount">{{currency_format($subtotal,$code = $currency)}}</span>
+                       <span class="amount">{{currencyFormat($subtotal,$code = $currency)}}</span>
                     </td>
                 </tr>
                   @foreach($items->toArray() as $attribute)
@@ -191,7 +191,7 @@ Checkout
                     <?php
                      $value = \App\Http\Controllers\Front\CartController::taxValue($attribute['tax_percentage'],$subtotal);
                      ?>
-                      {{currency_format($value,$code = $currency)}}
+                      {{currencyFormat($value,$code = $currency)}}
                         
                        
                        
@@ -208,7 +208,7 @@ Checkout
                     </th>
                     <td>
 
-                        <strong><span class="amount"> {{currency_format($invoice->grand_total,$code = $currency)}}</span></strong>
+                        <strong><span class="amount"> {{currencyFormat($invoice->grand_total,$code = $currency)}}</span></strong>
                     </td>
                 </tr>
             </tbody>

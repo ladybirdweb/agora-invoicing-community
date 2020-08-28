@@ -176,7 +176,16 @@ active
         $('#showorder-table').DataTable({
             processing: true,
             serverSide: true,
-            ajax: '{!! Url('get-my-invoices/'.$order->id.'/'.$user->id) !!}',
+             ajax: {
+                "url":  '{!! Url('get-my-invoices/'.$order->id.'/'.$user->id) !!}',
+                   error: function(xhr) {
+                   if(xhr.status == 401) {
+                    alert('Your session has expired. Please login again to continue.')
+                    window.location.href = '/login';
+                   }
+                }
+
+                },
             "oLanguage": {
                 "sLengthMenu": "_MENU_ Records per page",
                 "sSearch"    : "Search: ",
@@ -211,7 +220,16 @@ active
              $('#showpayment-table').DataTable({
                     processing: true,
                     serverSide: true,
-                     ajax: '{!! Url('get-my-payment-client/'.$order->id.'/'.$user->id) !!}',
+                    ajax: {
+                        "url":  '{!! Url('get-my-payment-client/'.$order->id.'/'.$user->id) !!}',
+                           error: function(xhr) {
+                           if(xhr.status == 401) {
+                            alert('Your session has expired. Please login again to continue.')
+                            window.location.href = '/login';
+                           }
+                        }
+
+                        },
 
                     "oLanguage": {
                         "sLengthMenu": "_MENU_ Records per page",

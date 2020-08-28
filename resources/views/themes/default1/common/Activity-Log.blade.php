@@ -3,37 +3,36 @@
 Activity Log
 @stop
 @section('content-header')
-<h1>
-Activity Log
-</h1>
-  <ol class="breadcrumb">
-        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="{{url('settings')}}">Settings</a></li>
-        <li class="active">Activity Log</li>
-      </ol>
+    <div class="col-sm-6">
+        <h1>All Users</h1>
+    </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="breadcrumb-item"><a href="{{url('settings')}}"><i class="fa fa-dashboard"></i> Settings</a></li>
+            <li class="breadcrumb-item active">Activity Log</li>
+        </ol>
+    </div><!-- /.col -->
 @stop
+
 @section('content')
 
+    <div class="row">
+        <div class="col-12">
+            <div class="card card-danger card-outline collapsed-card">
+                <div class="card-header">
+                    <h3 class="card-title">{{Lang::get('message.filters')}}</h3>
 
-<style type="text/css">
-    table { table-layout:fixed; word-break:break-all; word-wrap:break-word; }
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                            <i class="fas fa-plus"></i></button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove" data-toggle="tooltip" title="Remove">
+                            <i class="fas fa-times"></i></button>
+                    </div>
+                </div>
 
-    .more-text{
-     display:none;
-}
-</style>
-<div class="box box-success">
-    <div class="box-header with-border">
-        <h3 class="box-title">{{Lang::get('message.filters')}}</h3>
-
-        <div class="box-tools pull-right">
-            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-            </button>
-            <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
-        </div>
-    </div>
     <!-- /.box-header -->
-    <div class="box-body">
+    <div class="card-body">
         {!! Form::open(['method'=>'get']) !!}
 
         <div class="row">
@@ -42,45 +41,58 @@ Activity Log
             <div class="col-md-3 form-group">
                 <!-- first name -->
                 {!! Form::label('from','View Logs From') !!}
-                <div class="input-group date">
-                  <div class="input-group-addon">
-                    <i class="fa fa-calendar"></i>
-                  </div>
-                  <input type="text" name="from" class="form-control log_from" id="datepicker1">
+                <div class="input-group date" id="log_from" data-target-input="nearest">
+                    <input type="text" name="from" value="{{$from}}" id="from" class="form-control datetimepicker-input" autocomplete="off"  data-target="#log_from"/>
+
+                    <div class="input-group-append" data-target="#log_from" data-toggle="datetimepicker">
+                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                    </div>
+
                 </div>
 
             </div>
             <div class="col-md-3 form-group">
                 <!-- first name -->
                 {!! Form::label('till','View Logs Till') !!}
-                <div class="input-group date">
-                  <div class="input-group-addon">
-                    <i class="fa fa-calendar"></i>
-                  </div>
-                  <input type="text" name="till" class="form-control log_till" id="datepicker2">
+
+                <div class="input-group date" id="log_till" data-target-input="nearest">
+                    <input type="text" name="till" value="{{$till}}" id="till" class="form-control datetimepicker-input" autocomplete="off"  data-target="#log_till"/>
+
+                    <div class="input-group-append" data-target="#log_till" data-toggle="datetimepicker">
+                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                    </div>
+
                 </div>
+
 
             </div>
             <div class="col-md-3 form-group">
                 <!-- first name -->
                 {!! Form::label('delFrom','Delete Logs From') !!}
-                <div class="input-group date">
-                  <div class="input-group-addon">
-                    <i class="fa fa-calendar"></i>
-                  </div>
-                  <input type="text" name="delFrom" class="form-control del_from" id="datepicker3">
+                <div class="input-group date" id="del_from" data-target-input="nearest">
+                    <input type="text" name="delFrom" id="delfrom" class="form-control datetimepicker-input" autocomplete="off"  data-target="#del_from"/>
+
+                    <div class="input-group-append" data-target="#del_from" data-toggle="datetimepicker">
+                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                    </div>
+
                 </div>
+
+
+
 
             </div>
               <div class="col-md-3 form-group">
                 <!-- first name -->
                 {!! Form::label('delTill','Delete Logs Till') !!}
-                 <div class="input-group date">
-                  <div class="input-group-addon">
-                    <i class="fa fa-calendar"></i>
+                  <div class="input-group date" id="del_till" data-target-input="nearest">
+                      <input type="text" name="delTill" id="deltill" class="form-control datetimepicker-input" autocomplete="off"  data-target="#del_till"/>
+
+                      <div class="input-group-append" data-target="#del_till" data-toggle="datetimepicker">
+                          <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                      </div>
+
                   </div>
-                  <input type="text" name="delTill" class="form-control del_till" id="datepicker4">
-                </div>
 
 
             </div>
@@ -91,7 +103,7 @@ Activity Log
                     <!-- {!! Form::submit('Search',['class'=>'btn btn-primary']) !!} -->
                       <button name="Search" type="submit"  class="btn btn-primary" data-loading-text="<i class='fa fa-search fa-spin fa-1x fa-fw'>&nbsp;</i> updating..."><i class="fa fa-search">&nbsp;</i>{!!Lang::get('message.apply')!!}</button>
                     <!-- {!! Form::submit('Reset',['class'=>'btn btn-danger','id'=>'reset']) !!} -->
-                     <button name="Reset" type="submit" id="reset" class="btn btn-danger" data-loading-text="<i class='fa fa-refresh fa-spin fa-1x fa-fw'>&nbsp;</i> updating..."><i class="fa fa-refresh">&nbsp;</i>{!!Lang::get('Reset')!!}</button>
+                     <button name="Reset" type="submit" id="reset" class="btn btn-danger" data-loading-text="<i class='fa fa-refresh fa-spin fa-1x fa-fw'>&nbsp;</i> updating..."><i class="fa fa-sync-alt">&nbsp;</i>{!!Lang::get('Reset')!!}</button>
 
 
                 </div>
@@ -102,10 +114,10 @@ Activity Log
                     $(function () {
                     $('#reset').on('click', function () {
                       
-                        $('.log_from').val('');
-                        $('.log_till').val('');
-                         $('.del_from').val('');
-                         $('.del_till').val('');
+                        $('#from').val('');
+                        $('#till').val('');
+                         $('#delfrom').val('');
+                         $('#deltill').val('');
                        
                     });
                 });
@@ -116,41 +128,13 @@ Activity Log
     </div>
 </div>
 
-
-    <div class="box box-primary">
- <div class="box-header">
-       @if (count($errors) > 0)
-        <div class="alert alert-danger alert-dismissable">
-            <strong>Whoops!</strong> There were some problems with your input.<br><br>
-            <ul>
-                @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-                @endforeach
-            </ul>
         </div>
-        @endif
+    </div>
+    <div id="response"></div>
+    <div class="card card-primary card-outline">
 
-        @if(Session::has('success'))
-        <div class="alert alert-success alert-dismissable">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            {{Session::get('success')}}
-        </div>
-        @endif
-        <!-- fail message -->
-        @if(Session::has('fails'))
-        <div class="alert alert-danger alert-dismissable">
-            <i class="fa fa-ban"></i>
-            <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.failed')}}.
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            {{Session::get('fails')}}
-        </div>
-        @endif
-        <div id="response"></div>
-         
 
- </div>
-
-<div class="box-body">
+<div class="card-body table-responsive">
 
   <div class="row">
           <div class="col-md-12">
@@ -158,17 +142,17 @@ Activity Log
                      <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_delete"><i class="fa fa-trash">&nbsp;&nbsp;</i> Delete Selected</button><br /><br />
                      
                     <thead><tr>
-                        <th class="no-sort" style="width:1px"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
-                            <th style="width:50px;">Module</th>
-                            <th style="width:110px;">Description/Event</th>
-                             <th style="width:50px;">Name</th>   
-                              <th style="width:30px;">Role</th>      
+                        <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
+                            <th>Module</th>
+                            <th>Description/Event</th>
+                             <th>Name</th>
+                              <th>Role</th>
                             <!-- <th>Subject id</th> -->
                             <!-- <th>Subject type</th> -->
                                                                                                              
-                             <th style="width:190px;">Previous</th>
-                             <th style="width:190px;">Updated</th>
-                              <th style="width:40px;">Date</th>
+                             <th>Previous</th>
+                             <th>Updated</th>
+                              <th>Date</th>
                         </tr></thead>
 
                    </table>
@@ -180,8 +164,8 @@ Activity Log
 </div>
 </div>
 </div>
-<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
-<script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 
 <script type="text/javascript">
      function readmore(){
@@ -207,11 +191,21 @@ Activity Log
             serverSide: true,
              stateSave: false,
               order: [[ 0, "desc" ]],
-            ajax: '{!! route('get-activity',"log_from=$from&log_till=$till&delFrom=$delFrom&delTill=$delTill") !!}',
+              ajax: {
+            "url":  '{!! route('get-activity',"log_from=$from&log_till=$till&delFrom=$delFrom&delTill=$delTill") !!}',
+               error: function(xhr) {
+               if(xhr.status == 401) {
+                alert('Your session has expired. Please login again to continue.')
+                window.location.href = '/login';
+               }
+            }
+
+            },
+
             "oLanguage": {
                 "sLengthMenu": "_MENU_ Records per page",
                 "sSearch"    : "Search: ",
-                "sProcessing": '<img id="blur-bg" class="backgroundfadein" style="top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;" src="{!! asset("lb-faveo/media/images/gifloader3.gif") !!}">'
+                "sProcessing": ' <div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="text-bold pt-2">Loading...</div></div>'
             },
             columnDefs: [
                 { 
@@ -235,6 +229,11 @@ Activity Log
                 {data: 'created_at', name: 'created_at'}
             ],
             "fnDrawCallback": function( oSettings ) {
+                $(function () {
+                    $('[data-toggle="tooltip"]').tooltip({
+                        container : 'body'
+                    });
+                });
                 $('.loader').css('display', 'none');
             },
             "fnPreDrawCallback": function(oSettings, json) {
@@ -294,19 +293,18 @@ Activity Log
    </script>
    @section('datepicker')
 <script type="text/javascript">
-
- $('#datepicker1').datepicker({
-      autoclose: true
-    });
- $('#datepicker2').datepicker({
-      autoclose: true
-    });
-  $('#datepicker3').datepicker({
-      autoclose: true
-    });
-   $('#datepicker4').datepicker({
-      autoclose: true
-    });
+    $('#log_from').datetimepicker({
+        format: 'L'
+    })
+    $('#log_till').datetimepicker({
+        format: 'L'
+    })
+    $('#del_from').datetimepicker({
+        format: 'L'
+    })
+    $('#del_till').datetimepicker({
+        format: 'L'
+    })
 </script>
 @stop
    @stop

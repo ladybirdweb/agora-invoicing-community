@@ -29,4 +29,9 @@ class InvoiceItem extends BaseModel
 
         return strtolower($domain);
     }
+
+    public function order()
+    {
+        return $this->hasOne('App\Model\Order\Order');
+    }
 }

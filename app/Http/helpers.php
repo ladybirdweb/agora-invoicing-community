@@ -1,8 +1,21 @@
 <?php
 
-use App\Model\Order\Order;
 use App\Model\Product\ProductUpload;
 use Carbon\Carbon;
+
+function getLocation()
+{
+    try {
+        $location = \GeoIP::getLocation();
+
+        return $location;
+    } catch (Exception $ex) {
+        app('log')->error($ex->getMessage());
+        $location = \Config::get('geoip.default_location');
+
+        return $location;
+    }
+}
 
 function checkArray($key, $array)
 {
@@ -114,7 +127,7 @@ function getDateHtml(string $dateTimeString = null)
     }
 }
 
-function getExpiryLabel($expiryDate, $badge = 'label')
+function getExpiryLabel($expiryDate, $badge = 'badge')
 {
     if ($expiryDate < (new Carbon())->toDateTimeString()) {
         return getDateHtml($expiryDate).'&nbsp;<span class="'.$badge.' '.$badge.'-danger"  <label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="Order has Expired">
@@ -142,18 +155,13 @@ function getVersionAndLabel($productVersion, $productId, $badge = 'label')
     }
 }
 
-function getOrderLink($orderId, $url = 'orders')
+function tooltip($tootipText = '')
 {
-    $link = '--';
-    $order = Order::where('id', $orderId)->select('id', 'number')->first();
-    if ($order) {
-        $link = '<a href='.url($url.'/'.$order->id).'>'.$order->number.'</a>';
-    }
-
-    return $link;
+    return '<label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title='.$tootipText.'>
+             </label>';
 }
 
-function getStatusLabel($status, $badge = 'label')
+function getStatusLabel($status, $badge = 'badge')
 {
     switch ($status) {
         case 'Success':
@@ -167,5 +175,49 @@ function getStatusLabel($status, $badge = 'label')
 
             default:
             return '<span class='.'"'.$badge.' '.$badge.'-warning">Partially paid</span>';
+    }
+}
+
+function currencyFormat($amount = null, $currency = null, $include_symbol = true)
+{
+    if ($currency == 'INR') {
+        return getIndianCurrencyFormat($amount);
+    }
+
+    return app('currency')->format($amount, $currency, $include_symbol);
+}
+
+function getIndianCurrencyFormat($number)
+{
+    $explrestunits = '';
+    $number = explode('.', $number);
+    $num = $number[0];
+    if (strlen($num) > 3) {
+        $lastthree = substr($num, strlen($num) - 3, strlen($num));
+        $restunits = substr($num, 0, strlen($num) - 3); // extracts the last three digits
+      $restunits = (strlen($restunits) % 2 == 1) ? '0'.$restunits : $restunits; // explodes the remaining digits in 2's formats, adds a zero in the beginning to maintain the 2's grouping.
+      $expunit = str_split($restunits, 2);
+        for ($i = 0; $i < sizeof($expunit); $i++) {
+            // creates each of the 2's group and adds a comma to the end
+            if ($i == 0) {
+                $explrestunits .= (int) $expunit[$i].','; // if is first value , convert into integer
+            } else {
+                $explrestunits .= $expunit[$i].',';
+            }
+        }
+        $thecash = $explrestunits.$lastthree;
+    } else {
+        $thecash = $num;
+    }
+    if (! empty($number[1])) {
+        if (strlen($number[1]) == 1) {
+            return $thecash.'.'.$number[1].'0';
+        } elseif (strlen($number[1]) == 2) {
+            return $thecash.'.'.$number[1];
+        } else {
+            return 'cannot handle decimal values more than two digits...';
+        }
+    } else {
+        return $thecash;
     }
 }

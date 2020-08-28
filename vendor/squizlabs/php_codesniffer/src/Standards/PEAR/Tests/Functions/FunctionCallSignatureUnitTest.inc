@@ -65,7 +65,7 @@ $something
 
 // This is not a function call.
 function &testFunction($arg1,
-    $arg2,
+    $arg2
 ) {
 }
 
@@ -105,7 +105,7 @@ $foo = new stdClass(
     2,
     3);
 
-public function doSomething()
+function doSomething()
 {
     return $this->getFoo()
         ->doBar(
@@ -142,7 +142,7 @@ $bar = new stdClass(
     4, /* thanks */ 5, /* PSR-2 */ 6
 );
 
-public function doSomething()
+function doSomething()
 {
     return $this->getFoo()
         ->doBar(
@@ -204,7 +204,7 @@ function foo()
         /* comment
          * comment
         */
-        'string'.
+        'string'
     );
 }
 
@@ -345,7 +345,7 @@ $x = $var('y',
 $obj->{$x}(1,
   2);
 
-(function ($a, $b) {
+return (function ($a, $b) {
     return function ($c, $d) use ($a, $b) {
         echo $a, $b, $c, $d;
     };
@@ -366,7 +366,7 @@ class Foo
     }
 }
 
-(function ($a, $b) {
+return (function ($a, $b) {
     return function ($c, $d) use ($a, $b) {
         echo $a, $b, $c, $d;
     };
@@ -390,8 +390,135 @@ $deprecated_functions = [
 
 $deprecated_functions = [
     'the_category_ID'
-         => function_call( // 7 spaces, not 8. This is the problem line.
+         => function_call( // 9 spaces, not 8. This is the problem line.
         $a,
         $b
     ),
 ];
+
+// phpcs:set PEAR.Functions.FunctionCallSignature allowMultipleArguments false
+
+printf(
+    '<select name="%1$s" id="%2$s">%3$s</select>',
+    $obj->getName(), // Trailing comment.
+    $obj->getID(), // phpcs:ignore Standard.Category.SniffName -- for reasons.
+    $option
+);
+
+// Handling of PHP 7.3 trailing comma's.
+functionCall($args, $foo,);
+functionCall(
+    $args, $foo,
+);
+functionCall(
+    $args,
+    $foo,
+);
+
+// phpcs:set PEAR.Functions.FunctionCallSignature allowMultipleArguments true
+
+$this->foo(
+
+    ['a','b'],
+    true
+
+);
+
+$this->foo(
+
+    // Comment
+    ['a','b'],
+    true
+
+);
+
+function m()
+{
+    $t = '
+    ' . (empty(true) ? '
+    ' . f(
+                '1',
+                '2',
+            ) . '
+    ' : '');
+}
+
+class C
+{
+
+    public function m()
+    {
+        $a = [];
+        $t =
+            "SELECT * FROM t
+WHERE f IN(" . implode(
+                ",",
+                $a
+            ) . ")";
+    }
+}
+
+$notices = array(
+    'index' => sprintf(
+        translation_function('a text string with %s placeholder'),
+    'replacement'
+    ),
+);
+
+$componentType = $this->componentTypeRepository->findByType($this->identifier) ?:
+    $this->componentTypeFactory->createForType(
+        $this->identifier,
+        $this->className,
+        true,
+        $this->isPrototypal
+    );
+
+return [
+    'export-path' => 'exports/database/'
+        . env(
+            'APP_CUSTOMER',
+            'not-configured'
+        )
+        . '/' . env(
+            'APP_IDENTIFIER',
+            'not-configured'
+        ),
+];
+
+$methods .=
+    str_replace(
+        array_keys($replacements),
+        array_values($replacements),
+        $methodTemplate
+    )
+    . PHP_EOL . PHP_EOL . str_repeat(' ', 4);
+
+$rangeValues['min'] =
+    $this->adjustLowerThreshold(
+        $this->normalizeRatingForFilter($rangeValues['min'])
+    );
+
+$salesOrderThresholdTransfer->fromArray($salesOrderThresholdEntity->toArray(), true)
+    ->setSalesOrderThresholdValue(
+        $this->mapSalesOrderThresholdValueTransfer($salesOrderThresholdTransfer, $salesOrderThresholdEntity)
+    )->setCurrency(
+        (new CurrencyTransfer())->fromArray($salesOrderThresholdEntity->getCurrency()->toArray(), true)
+    )->setStore(
+        (new StoreTransfer())->fromArray($salesOrderThresholdEntity->getStore()->toArray(), true)
+    );
+
+return trim(preg_replace_callback(
+            // sprintf replaces IGNORED_CHARS multiple times: for %s as well as %1$s (argument numbering)
+            // /[%s]*([^%1$s]+)/ results in /[IGNORED_CHARS]*([^IGNORED_CHARS]+)/
+                sprintf('/[%s]*([^%1$s]+)/', self::IGNORED_CHARS),
+                function (array $term) use ($mode): string {
+                    // query pieces have to bigger than one char, otherwise they are too expensive for the search
+                    if (mb_strlen($term[1], 'UTF-8') > 1) {
+                        // in boolean search mode '' (empty) means OR, '-' means NOT
+                        return sprintf('%s%s ', $mode === 'AND' ? '+' : '', self::extractUmlauts($term[1]));
+                    }
+
+                    return '';
+                },
+                $search
+            ));

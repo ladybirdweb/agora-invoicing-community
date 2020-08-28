@@ -24,6 +24,7 @@ main
             
             <div class="row">
                  <div class="col-lg-6 offset-lg-3">
+
                      <div class="featured-box featured-box-primary text-left mt-5">
                         <div class="box-content">
                                

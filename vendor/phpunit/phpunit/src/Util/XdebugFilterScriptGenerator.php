@@ -9,20 +9,23 @@
  */
 namespace PHPUnit\Util;
 
+use PHPUnit\TextUI\Configuration\Filter as FilterConfiguration;
+
+/**
+ * @internal This class is not covered by the backward compatibility promise for PHPUnit
+ */
 final class XdebugFilterScriptGenerator
 {
-    public function generate(array $filterData): string
+    public function generate(FilterConfiguration $filter): string
     {
-        $items = $this->getWhitelistItems($filterData);
-
         $files = \array_map(
-            function ($item) {
+            static function ($item) {
                 return \sprintf(
                     "        '%s'",
                     $item
                 );
             },
-            $items
+            $this->getWhitelistItems($filter)
         );
 
         $files = \implode(",\n", $files);
@@ -44,27 +47,23 @@ $files
 EOF;
     }
 
-    private function getWhitelistItems(array $filterData): array
+    private function getWhitelistItems(FilterConfiguration $filter): array
     {
         $files = [];
 
-        if (isset($filterData['include']['directory'])) {
-            foreach ($filterData['include']['directory'] as $directory) {
-                $path = \realpath($directory['path']);
+        foreach ($filter->directories() as $directory) {
+            $path = \realpath($directory->path());
 
-                if (\is_string($path)) {
-                    $files[] = \sprintf(
-                        \addslashes('%s' . \DIRECTORY_SEPARATOR),
-                        $path
-                    );
-                }
+            if (\is_string($path)) {
+                $files[] = \sprintf(
+                    \addslashes('%s' . \DIRECTORY_SEPARATOR),
+                    $path
+                );
             }
         }
 
-        if (isset($filterData['include']['directory'])) {
-            foreach ($filterData['include']['file'] as $file) {
-                $files[] = $file;
-            }
+        foreach ($filter->files() as $file) {
+            $files[] = $file->path();
         }
 
         return $files;

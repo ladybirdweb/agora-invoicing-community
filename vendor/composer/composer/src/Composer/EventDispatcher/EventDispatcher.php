@@ -145,27 +145,15 @@ class EventDispatcher
      */
     protected function doDispatch(Event $event)
     {
-        $pathStr = 'PATH';
-        if (!isset($_SERVER[$pathStr]) && isset($_SERVER['Path'])) {
-            $pathStr = 'Path';
-        }
-
-        // add the bin dir to the PATH to make local binaries of deps usable in scripts
-        $binDir = $this->composer->getConfig()->get('bin-dir');
-        if (is_dir($binDir)) {
-            $binDir = realpath($binDir);
-            if (isset($_SERVER[$pathStr]) && !preg_match('{(^|'.PATH_SEPARATOR.')'.preg_quote($binDir).'($|'.PATH_SEPARATOR.')}', $_SERVER[$pathStr])) {
-                $_SERVER[$pathStr] = $binDir.PATH_SEPARATOR.getenv($pathStr);
-                putenv($pathStr.'='.$_SERVER[$pathStr]);
-            }
-        }
-
         $listeners = $this->getListeners($event);
 
         $this->pushEvent($event);
 
         $return = 0;
         foreach ($listeners as $callable) {
+
+            $this->ensureBinDirIsInPath();
+
             if (!is_string($callable)) {
                 if (!is_callable($callable)) {
                     $className = is_object($callable[0]) ? get_class($callable[0]) : $callable[0];
@@ -244,14 +232,26 @@ class EventDispatcher
                     }
                 }
 
-                if (substr($exec, 0, 5) === '@php ') {
+                if (substr($exec, 0, 8) === '@putenv ') {
+                    putenv(substr($exec, 8));
+
+                    continue;
+                } elseif (substr($exec, 0, 5) === '@php ') {
                     $exec = $this->getPhpExecCommand() . ' ' . substr($exec, 5);
                 } else {
                     $finder = new PhpExecutableFinder();
                     $phpPath = $finder->find(false);
                     if ($phpPath) {
-                        putenv('PHP_BINARY=' . $phpPath);
+                        $_SERVER['PHP_BINARY'] = $phpPath;
+                        putenv('PHP_BINARY=' . $_SERVER['PHP_BINARY']);
                     }
+                }
+
+                // if composer is being executed, make sure it runs the expected composer from current path
+                // resolution, even if bin-dir contains composer too because the project requires composer/composer
+                // see https://github.com/composer/composer/issues/8748
+                if (substr($exec, 0, 9) === 'composer ') {
+                    $exec = $this->getPhpExecCommand() . ' ' . ProcessExecutor::escape(getenv('COMPOSER_BINARY')) . substr($exec, 8);
                 }
 
                 if (0 !== ($exitCode = $this->process->execute($exec))) {
@@ -326,13 +326,22 @@ class EventDispatcher
             return $event;
         }
 
-        $typehint = $reflected->getClass();
-
-        if (!$typehint instanceof \ReflectionClass) {
-            return $event;
+        $expected = null;
+        $isClass = false;
+        if (\PHP_VERSION_ID >= 70000) {
+            $reflectionType = $reflected->getType();
+            if ($reflectionType) {
+                $expected = $reflectionType instanceof \ReflectionNamedType ? $reflectionType->getName() : (string)$reflectionType;
+                $isClass = !$reflectionType->isBuiltin();
+            }
+        } else {
+            $expected = $reflected->getClass() ? $reflected->getClass()->getName() : null;
+            $isClass = null !== $expected;
         }
 
-        $expected = $typehint->getName();
+        if (!$isClass) {
+            return $event;
+        }
 
         // BC support
         if (!$event instanceof $expected && $expected === 'Composer\Script\CommandEvent') {
@@ -512,7 +521,7 @@ class EventDispatcher
      */
     protected function isComposerScript($callable)
     {
-        return '@' === substr($callable, 0, 1) && '@php ' !== substr($callable, 0, 5);
+        return '@' === substr($callable, 0, 1) && '@php ' !== substr($callable, 0, 5) && '@putenv ' !== substr($callable, 0, 8);
     }
 
     /**
@@ -540,5 +549,23 @@ class EventDispatcher
     protected function popEvent()
     {
         return array_pop($this->eventStack);
+    }
+
+    private function ensureBinDirIsInPath()
+    {
+        $pathStr = 'PATH';
+        if (!isset($_SERVER[$pathStr]) && isset($_SERVER['Path'])) {
+            $pathStr = 'Path';
+        }
+
+        // add the bin dir to the PATH to make local binaries of deps usable in scripts
+        $binDir = $this->composer->getConfig()->get('bin-dir');
+        if (is_dir($binDir)) {
+            $binDir = realpath($binDir);
+            if (isset($_SERVER[$pathStr]) && !preg_match('{(^|'.PATH_SEPARATOR.')'.preg_quote($binDir).'($|'.PATH_SEPARATOR.')}', $_SERVER[$pathStr])) {
+                $_SERVER[$pathStr] = $binDir.PATH_SEPARATOR.getenv($pathStr);
+                putenv($pathStr.'='.$_SERVER[$pathStr]);
+            }
+        }
     }
 }

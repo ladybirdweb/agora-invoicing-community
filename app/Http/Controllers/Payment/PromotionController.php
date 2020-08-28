@@ -84,8 +84,8 @@ class PromotionController extends BasePromotionController
                         })
                         ->addColumn('action', function ($model) {
                             return '<a href='.url('promotions/'.$model->id.'/edit')
-                            ." class='btn btn-sm btn-primary btn-xs'><i class='fa fa-edit' 
-                            style='color:white;'> </i>&nbsp;&nbsp;Edit</a>";
+                            ." class='btn btn-sm btn-secondary btn-xs'".tooltip('Edit')."<i class='fa fa-edit' 
+                            style='color:white;'> </i></a>";
                         })
                          ->rawColumns(['checkbox', 'code', 'products', 'action'])
 
@@ -154,14 +154,15 @@ class PromotionController extends BasePromotionController
             $promotion = $this->promotion->where('id', $id)->first();
             $product = $this->product->pluck('name', 'id')->toArray();
             $type = $this->type->pluck('name', 'id')->toArray();
+            $startDate = date('d/m/Y', strtotime($this->promotion->where('id', $id)->pluck('start')->first()));
+            $expiryDate = date('d/m/Y', strtotime($this->promotion->where('id', $id)->pluck('expiry')->first()));
             $selectedProduct = $this->promoRelation
             ->where('promotion_id', $id)
             ->pluck('product_id', 'product_id')->toArray();
 
             return view(
                 'themes.default1.payment.promotion.edit',
-                compact('product', 'promotion', 'selectedProduct', 'type')
-            );
+                compact('product', 'promotion', 'selectedProduct', 'type', 'startDate', 'expiryDate'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }

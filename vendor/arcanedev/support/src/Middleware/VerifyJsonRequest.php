@@ -1,8 +1,11 @@
-<?php namespace Arcanedev\Support\Middleware;
+<?php
 
-use Arcanedev\Support\Http\Middleware;
+declare(strict_types=1);
+
+namespace Arcanedev\Support\Middleware;
+
 use Closure;
-use Illuminate\Http\Request;
+use Illuminate\Http\{Request, Response};
 
 /**
  * Class     VerifyJsonRequest
@@ -10,22 +13,24 @@ use Illuminate\Http\Request;
  * @package  Arcanedev\Support\Middleware
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
-class VerifyJsonRequest extends Middleware
+class VerifyJsonRequest
 {
-    /* ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
      |  Properties
-     | ------------------------------------------------------------------------------------------------
+     | -----------------------------------------------------------------
      */
+
     /**
      *
      * @var array
      */
     protected $methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
 
-    /* ------------------------------------------------------------------------------------------------
-     |  Main Functions
-     | ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
+     |  Main Methods
+     | -----------------------------------------------------------------
      */
+
     /**
      * Handle an incoming request.
      *
@@ -41,17 +46,14 @@ class VerifyJsonRequest extends Middleware
             return $next($request);
         }
 
-        return response()->json([
-            'status'  => 'error',
-            'code'    => 400,
-            'message' => 'Request must be json',
-        ], 400);
+        return $this->jsonErrorResponse();
     }
 
-    /* ------------------------------------------------------------------------------------------------
-     |  Check Functions
-     | ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
+     |  Check Methods
+     | -----------------------------------------------------------------
      */
+
     /**
      * Validate json Request.
      *
@@ -60,14 +62,36 @@ class VerifyJsonRequest extends Middleware
      *
      * @return bool
      */
-    private function isJsonRequestValid(Request $request, $methods)
+    protected function isJsonRequestValid(Request $request, $methods)
     {
         $methods = $this->getMethods($methods);
 
-        return ! (
-            in_array($request->method(), $methods) &&
-            ! $request->isJson()
-        );
+        if ( ! in_array($request->method(), $methods)) {
+            return false;
+        }
+
+        return $request->isJson();
+    }
+
+    /* -----------------------------------------------------------------
+     |  Other Methods
+     | -----------------------------------------------------------------
+     */
+
+    /**
+     * Get the error as json response.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    protected function jsonErrorResponse()
+    {
+        $data = [
+            'status'  => 'error',
+            'code'    => $statusCode = Response::HTTP_BAD_REQUEST,
+            'message' => 'Request must be JSON',
+        ];
+
+        return response()->json($data, $statusCode);
     }
 
     /**
@@ -77,12 +101,13 @@ class VerifyJsonRequest extends Middleware
      *
      * @return array
      */
-    private function getMethods($methods)
+    protected function getMethods($methods): array
     {
         $methods = $methods ?? $this->methods;
 
-        if (is_string($methods))
+        if (is_string($methods)) {
             $methods = (array) $methods;
+        }
 
         return is_array($methods) ? array_map('strtoupper', $methods) : [];
     }

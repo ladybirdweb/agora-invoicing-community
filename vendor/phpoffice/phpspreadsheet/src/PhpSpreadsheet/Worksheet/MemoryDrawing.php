@@ -53,7 +53,7 @@ class MemoryDrawing extends BaseDrawing
         $this->imageResource = null;
         $this->renderingFunction = self::RENDERING_DEFAULT;
         $this->mimeType = self::MIMETYPE_DEFAULT;
-        $this->uniqueName = md5(rand(0, 9999) . time() . rand(0, 9999));
+        $this->uniqueName = md5(mt_rand(0, 9999) . time() . mt_rand(0, 9999));
 
         // Initialize parent
         parent::__construct();
@@ -74,7 +74,7 @@ class MemoryDrawing extends BaseDrawing
      *
      * @param resource $value
      *
-     * @return MemoryDrawing
+     * @return $this
      */
     public function setImageResource($value)
     {
@@ -104,7 +104,7 @@ class MemoryDrawing extends BaseDrawing
      *
      * @param string $value see self::RENDERING_*
      *
-     * @return MemoryDrawing
+     * @return $this
      */
     public function setRenderingFunction($value)
     {
@@ -128,7 +128,7 @@ class MemoryDrawing extends BaseDrawing
      *
      * @param string $value see self::MIMETYPE_*
      *
-     * @return MemoryDrawing
+     * @return $this
      */
     public function setMimeType($value)
     {

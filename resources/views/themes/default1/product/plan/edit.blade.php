@@ -3,53 +3,26 @@
 Edit Plan
 @stop
 @section('content-header')
-<h1>
-Edit Plan
-</h1>
-  <ol class="breadcrumb">
-        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="{{url('plans')}}">All Plans</a></li>
-        <li class="active">Edit Plan</li>
-      </ol>
+    <div class="col-sm-6">
+        <h1>Edit Plan</h1>
+    </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="breadcrumb-item"><a href="{{url('plans')}}"><i class="fa fa-dashboard"></i> All Plans</a></li>
+            <li class="breadcrumb-item active">Edit Plan</li>
+        </ol>
+    </div><!-- /.col -->
 @stop
 @section('content')
-<div class="box box-primary">
+<div class="card card-primary card-outline">
 
-    <div class="content-header">
-            @if (count($errors) > 0)
-                <div class="alert alert-danger">
-                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    <strong>Whoops!</strong> There were some problems with your input.<br><br>
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-                @endif
 
-                @if(Session::has('success'))
-                <div class="alert alert-success alert-dismissable">
-                    <i class="fa fa-check"></i>
-                    <b>{{Lang::get('message.success')}}!</b>
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    {{Session::get('success')}}
-                </div>
-                @endif
-                <!-- fail message -->
-                @if(Session::has('fails'))
-                <div class="alert alert-danger alert-dismissable">
-                    <i class="fa fa-ban"></i>
-                    <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.failed')}}.
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    {{Session::get('fails')}}
-                </div>
-                @endif
+
          {!! Form::model($plan,['url'=>'plans/'.$plan->id,'method'=>'patch']) !!}
-        <h4>{{Lang::get('message.plan')}}	<button type="submit" class="btn btn-primary pull-right"><i class="fa fa-refresh">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button></h4>
 
-    </div>
-    <div class="box-body">
+
+    <div class="card-body">
 
         <div class="row">
 
@@ -95,12 +68,12 @@ Edit Plan
                     </div>
 
                     <div class="col-md-12">
-                        <table class="table table-responsive">
+
                             <tr>
                                 
                                 <td>
 
-                                    <table class="table table-responsive">
+                                    <table class="table">
                                         <tr>
                                             <th><b>{!! Form::label('currency',Lang::get('message.currency')) !!}</b></th>
                                             <th>{{Lang::get('message.regular-price')}}</th>
@@ -144,7 +117,6 @@ Edit Plan
 
                                 </td>
                             </tr>  
-                        </table>
                         </div>
                         <div class="col-md-4 form-group">
                         <!-- last name -->
@@ -178,7 +150,7 @@ Edit Plan
             </div>
 
         </div>
-
+        <button type="submit" class="btn btn-primary pull-right"><i class="fa fa-sync-alt">&nbsp;</i>{!!Lang::get('message.update')!!}</button>
     </div>
 
 </div>

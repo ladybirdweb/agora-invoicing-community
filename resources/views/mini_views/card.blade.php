@@ -1,11 +1,12 @@
 <div class="col-md-6">
-    <div class="box box-primary">
-        <div class="box-header with-border">
-            <h3 class="box-title">{{$title}}</h3>
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">{{$title}}</h3>
         </div>
         <!-- /.box-header -->
-        <div class="box-body">
+
             <div class="scrollit">
+                <div class="card-body table-responsive p-0">
                 @if(!count($collection))
                     <tr>
                         <td><p class="text-center">No records found</p></td>
@@ -13,7 +14,7 @@
                 @elseif($layout == 'table')
 
                     {{--  table view --}}
-                    <table class="table no-margin">
+                    <table class="table table-head-fixed text-nowrap">
                         <thead>
                         <tr>
                             @foreach($columns as $column)
@@ -40,9 +41,9 @@
             </div>
         </div>
         <!-- /.box-body -->
-        <div class="box-footer clearfix">
-            <a href="{!! array_values($linkLeft)[0] !!}" class="btn btn-sm btn-info btn-flat pull-left">{!! array_keys($linkLeft)[0] !!}</a>
-            <a href="{!! array_values($linkRight)[0] !!}" class="btn btn-sm btn-default btn-flat pull-right">{!! array_keys($linkRight)[0] !!}</a>
+        <div class="card-footer clearfix">
+            <a href="{!! array_values($linkLeft)[0] !!}" class="btn btn-sm btn-info btn-flat float-left">{!! array_keys($linkLeft)[0] !!}</a>
+            <a href="{!! array_values($linkRight)[0] !!}" class="btn btn-sm btn-default btn-flat float-right">{!! array_keys($linkRight)[0] !!}</a>
         </div>
         <!-- /.box-footer -->
     </div>

@@ -44,6 +44,7 @@ class ExtendedBaseInvoiceController extends Controller
 
     public function postNewPayment($clientid, Request $request)
     {
+        dd('dwe');
         $this->validate($request, [
             'payment_date'  => 'required',
             'payment_method'=> 'required',
@@ -104,10 +105,12 @@ class ExtendedBaseInvoiceController extends Controller
             'payment_date'  => 'required',
             'payment_method'=> 'required',
             'totalAmt'      => 'required|numeric|not_in:0',
+        ], [
+            'totalAmt.required'=> 'The amount field is required',
         ]);
 
         try {
-            $payment_date = $request->payment_date;
+            $payment_date = \Carbon\Carbon::parse($request->payment_date);
             $payment_method = $request->payment_method;
             $totalAmt = $request->totalAmt;
             $invoiceChecked = $request->invoiceChecked;
@@ -207,7 +210,7 @@ class ExtendedBaseInvoiceController extends Controller
         );
 
         try {
-            $payment_date = $request->payment_date;
+            $payment_date = \Carbon\Carbon::parse($request->payment_date);
             $payment_method = $request->payment_method;
             $totalAmt = $request->totalAmt;
             $invoiceChecked = $request->invoiceChecked;

@@ -195,22 +195,6 @@ class BaseAuthController extends Controller
         }
     }
 
-    /**
-     * Get the post register / login redirect path.
-     *
-     * @return string
-     */
-    public function redirectPath()
-    {
-        if (\Session::has('session-url')) {
-            $url = \Session::get('session-url');
-
-            return property_exists($this, 'redirectTo') ? $this->redirectTo : '/'.$url;
-        } else {
-            return property_exists($this, 'redirectTo') ? $this->redirectTo : '/';
-        }
-    }
-
     protected function addUserToPipedrive($user, $pipeDriveStatus)
     {
         if ($pipeDriveStatus) {

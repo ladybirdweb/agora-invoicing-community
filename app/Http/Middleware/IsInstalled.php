@@ -16,7 +16,8 @@ class IsInstalled
      */
     public function handle($request, Closure $next)
     {
-        if (! isInstall()) {
+        $env = base_path('.env');
+        if (! $this->alreadyInstalled()) {
             return $next($request);
         } else {
             if ($request->isJson()) {
@@ -28,5 +29,10 @@ class IsInstalled
                 return redirect('/');
             }
         }
+    }
+
+    public function alreadyInstalled()
+    {
+        return file_exists(storage_path('installed'));
     }
 }

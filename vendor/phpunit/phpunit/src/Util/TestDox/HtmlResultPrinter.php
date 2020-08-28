@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -9,8 +9,10 @@
  */
 namespace PHPUnit\Util\TestDox;
 
+use PHPUnit\Framework\TestResult;
+
 /**
- * Prints TestDox documentation in HTML format.
+ * @internal This class is not covered by the backward compatibility promise for PHPUnit
  */
 final class HtmlResultPrinter extends ResultPrinter
 {
@@ -76,6 +78,10 @@ EOT;
 </html>
 EOT;
 
+    public function printResult(TestResult $result): void
+    {
+    }
+
     /**
      * Handler for 'start run' event.
      */
@@ -101,7 +107,7 @@ EOT;
     /**
      * Handler for 'on test' event.
      */
-    protected function onTest($name, bool $success = true): void
+    protected function onTest(string $name, bool $success = true): void
     {
         $this->write(
             \sprintf(

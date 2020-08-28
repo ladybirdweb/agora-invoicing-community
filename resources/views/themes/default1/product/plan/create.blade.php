@@ -1,11 +1,13 @@
 <div class="modal fade" id="create-plan-option">
     <div class="modal-dialog">
         <div class="modal-content">
-           
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title">Create Plans</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
+
             <div class="modal-body">
 
 
@@ -13,7 +15,7 @@
    
     {!! Form::open(['url'=>'plans','method'=>'post','id'=> 'plan']) !!}
 
-      <div class="box-body">
+
 
         <div class="row">
 
@@ -33,7 +35,7 @@
                      <div class="col-md-4 form-group {{ $errors->has('product') ? 'has-error' : '' }}">
                         <!-- first name -->
                         {!! Form::label('product',Lang::get('message.product'),['class'=>'required']) !!}
-                        <select name="product" value= "Choose" class="form-control" id="planproduct" onchange="myProduct()">
+                        <select name="product" value= "Choose" class="form-control" id="planproduct" onchange="myProduct()" required>
                              <option value="">Choose</option>
                            @foreach($products as $key=>$product)
                               <option value={{$key}}>{{$product}}</option>
@@ -53,7 +55,10 @@
                               <option value={{$key}}>{{$period}}</option>
                           @endforeach
                           </select>
-                           <span class="input-group-addon" id="period"><i class="fa fa-plus"></i></span>
+                          <div class="input-group-append" >
+                              <div class="input-group-text" id="period"><i class="fa fa-plus"></i></div>
+                          </div>
+
                         </div>
                            <h6 id="dayscheck"></h6>
                     
@@ -146,10 +151,10 @@
 
         </div>
 
-    </div>
-      <div class="modal-footer">
-                <button type="button" id="close" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary " id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('Save')!!}</button>
+
+      <div class="modal-footer justify-content-between">
+                <button type="button" id="close" class="btn btn-default pull-left" data-dismiss="modal"><i class="fa fa-times"></i>&nbsp;Close</button>
+                <button type="submit" class="btn btn-primary " id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-save">&nbsp;</i>{!!Lang::get('Save')!!}</button>
                 </div>
 
 </div>
@@ -176,7 +181,7 @@
         $("#period-modal-show").modal();
       })
       $('.save-periods').on('click',function(){
-        $("#submit1").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
+        $("#submit1").html("<i class='fas fa-circle-notch fa-spin'></i>Please Wait...");
         $.ajax ({
           type : 'POST',
           url: "{{url('postInsertPeriod')}}",

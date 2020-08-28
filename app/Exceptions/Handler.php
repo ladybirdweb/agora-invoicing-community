@@ -2,10 +2,12 @@
 
 namespace App\Exceptions;
 
+use Bugsnag;
 use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Log;
+use Throwable;
 
 class Handler extends ExceptionHandler
 {
@@ -32,9 +34,26 @@ class Handler extends ExceptionHandler
      *
      * @return void
      */
-    public function report(Exception $exception)
+    public function report(Throwable $exception)
     {
         parent::report($exception);
+
+        // Send unhandled exceptions to bugsnag
+        $this->reportToBugsnag($exception);
+    }
+
+    /**
+     * Report to Bugsnag.
+     *
+     * @param Exception $exception Exception instance
+     * @return void
+     */
+    protected function reportToBugsnag(Exception $exception)
+    {
+        // Check bugsnag reporting is active
+        if (config('app.bugsnag_reporting')) {
+            Bugsnag::notifyException($exception);
+        }
     }
 
     /**
@@ -45,7 +64,7 @@ class Handler extends ExceptionHandler
      *
      * @return \Illuminate\Http\Response
      */
-    public function render($request, Exception $exception)
+    public function render($request, Throwable $exception)
     {
         return parent::render($request, $exception);
     }
@@ -64,6 +83,6 @@ class Handler extends ExceptionHandler
             return response()->json(['error' => 'Unauthenticated.'], 401);
         }
 
-        return redirect()->guest(route('login'));
+        return redirect()->guest(route('login'))->with('fails', 'Your session has expired. Please login');
     }
 }

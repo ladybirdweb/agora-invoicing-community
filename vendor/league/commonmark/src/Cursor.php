@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace League\CommonMark;
 
+use League\CommonMark\Exception\UnexpectedEncodingException;
+
 class Cursor
 {
     public const INDENT_LEVEL = 4;
@@ -80,6 +82,10 @@ class Cursor
      */
     public function __construct(string $line)
     {
+        if (!\mb_check_encoding($line, 'UTF-8')) {
+            throw new UnexpectedEncodingException('Unexpected encoding - UTF-8 or ASCII was expected');
+        }
+
         $this->line = $line;
         $this->length = \mb_strlen($line, 'UTF-8') ?: 0;
         $this->isMultibyte = $this->length !== \strlen($line);
@@ -203,6 +209,8 @@ class Cursor
 
     /**
      * Move the cursor forwards
+     *
+     * @return void
      */
     public function advance()
     {
@@ -214,6 +222,8 @@ class Cursor
      *
      * @param int  $characters       Number of characters to advance by
      * @param bool $advanceByColumns Whether to advance by columns instead of spaces
+     *
+     * @return void
      */
     public function advanceBy(int $characters, bool $advanceByColumns = false)
     {
@@ -231,7 +241,8 @@ class Cursor
             $nextFewChars = $this->isMultibyte ?
                 \mb_substr($this->line, $this->currentPosition, $characters, 'UTF-8') :
                 \substr($this->line, $this->currentPosition, $characters),
-            "\t")) {
+            "\t"
+        )) {
             $length = \min($characters, $this->length - $this->currentPosition);
             $this->partiallyConsumedTab = false;
             $this->currentPosition += $length;
@@ -354,9 +365,6 @@ class Cursor
         return $this->currentPosition - $this->previousPosition;
     }
 
-    /**
-     * @return string
-     */
     public function getRemainder(): string
     {
         if ($this->currentPosition >= $this->length) {
@@ -378,17 +386,11 @@ class Cursor
         return $prefix . $subString;
     }
 
-    /**
-     * @return string
-     */
     public function getLine(): string
     {
         return $this->line;
     }
 
-    /**
-     * @return bool
-     */
     public function isAtEnd(): bool
     {
         return $this->currentPosition >= $this->length;
@@ -416,7 +418,7 @@ class Cursor
 
         if ($this->isMultibyte) {
             // PREG_OFFSET_CAPTURE always returns the byte offset, not the char offset, which is annoying
-            $offset = \mb_strlen(\mb_strcut($subject, 0, $matches[0][1], 'UTF-8'), 'UTF-8');
+            $offset = \mb_strlen(\substr($subject, 0, $matches[0][1]), 'UTF-8');
             $matchLength = \mb_strlen($matches[0][0], 'UTF-8');
         } else {
             $offset = $matches[0][1];
@@ -437,7 +439,7 @@ class Cursor
      * passing it back into restoreState(), as the number of values and their
      * contents may change in any future release without warning.
      *
-     * @return array
+     * @return array<mixed>
      */
     public function saveState()
     {
@@ -456,7 +458,9 @@ class Cursor
      *
      * Pass in the value previously obtained by calling saveState().
      *
-     * @param array $state
+     * @param array<mixed> $state
+     *
+     * @return void
      */
     public function restoreState($state)
     {
@@ -470,28 +474,16 @@ class Cursor
           ) = $state;
     }
 
-    /**
-     * @return int
-     */
     public function getPosition(): int
     {
         return $this->currentPosition;
     }
 
-    /**
-     * @return string
-     */
     public function getPreviousText(): string
     {
         return \mb_substr($this->line, $this->previousPosition, $this->currentPosition - $this->previousPosition, 'UTF-8');
     }
 
-    /**
-     * @param int      $start
-     * @param int|null $length
-     *
-     * @return string
-     */
     public function getSubstring(int $start, ?int $length = null): string
     {
         if ($this->isMultibyte) {
@@ -503,9 +495,6 @@ class Cursor
         return \substr($this->line, $start);
     }
 
-    /**
-     * @return int
-     */
     public function getColumn(): int
     {
         return $this->column;

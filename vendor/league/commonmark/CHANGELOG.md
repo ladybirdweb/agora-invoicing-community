@@ -4,7 +4,147 @@ Updates should follow the [Keep a CHANGELOG](https://keepachangelog.com/) princi
 
 ## [Unreleased][unreleased]
 
-## [1.2.2] - 2019-01-15
+## [1.5.1] - 2020-06-27
+
+### Fixed
+
+ - Fixed UTF-8 encoding not being checked in the `UrlEncoder` utility (#509) or the `Cursor`
+
+## [1.5.0] - 2020-06-21
+
+### Added
+
+ - Added new `AttributesExtension` based on <https://github.com/webuni/commonmark-attributes-extension> (#474)
+ - Added new `FootnoteExtension` based on <https://github.com/rezozero/commonmark-ext-footnotes> (#474)
+ - Added new `MentionExtension` to replace `InlineMentionParser` with more flexibility and customization
+ - Added the ability to render `TableOfContents` nodes anywhere in a document (given by a placeholder)
+ - Added the ability to properly clone `Node` objects
+ - Added options to customize the value of `rel` attributes set via the `ExternalLink` extension (#476)
+ - Added a new `heading_permalink/slug_normalizer` configuration option to allow custom slug generation (#460)
+ - Added a new `heading_permalink/symbol` configuration option to replace the now deprecated `heading_permalink/inner_contents` configuration option (#505)
+ - Added `SlugNormalizer` and `TextNormalizer` classes to make normalization reusable by extensions (#485)
+ - Added new classes:
+   - `TableOfContentsGenerator`
+   - `TableOfContentsGeneratorInterface`
+   - `TableOfContentsPlaceholder`
+   - `TableOfContentsPlaceholderParser`
+   - `TableOfContentsPlaceholderRenderer`
+
+### Changed
+
+ - "Moved" the `TableOfContents` class into a new `Node` sub-namespace (with backward-compatibility)
+ - Reference labels are now generated and stored in lower-case instead of upper-case
+ - Reference labels are no longer normalized inside the `Reference`, only the `ReferenceMap`
+
+### Fixed
+
+ - Fixed reference label case folding polyfill not being consistent between different PHP versions
+
+### Deprecated
+
+ - Deprecated the `CommonMarkConverter::VERSION` constant (#496)
+ - Deprecated `League\CommonMark\Extension\Autolink\InlineMentionParser` (use `League\CommonMark\Extension\Mention\MentionParser` instead)
+ - Deprecated everything under `League\CommonMark\Extension\HeadingPermalink\Slug` (use the classes under `League\CommonMark\Normalizer` instead)
+ - Deprecated `League\CommonMark\Extension\TableOfContents\TableOfContents` (use the one in the new `Node` sub-namespace instead)
+ - Deprecated the `STYLE_` and `NORMALIZE_` constants in `TableOfContentsBuilder` (use the ones in `TableOfContentsGenerator` instead)
+ - Deprecated the `\League\CommonMark\Extension\HeadingPermalink\HeadingPermalinkRenderer::DEFAULT_INNER_CONTENTS` constant (#505)
+ - Deprecated the `heading_permalink/inner_contents` configuration option in the `HeadingPermalink` extension (use the new `heading_permalink/symbol` configuration option instead) (#505)
+
+## [1.4.3] - 2020-05-04
+
+### Fixed
+
+ - Fixed certain Unicode letters, numbers, and marks not being preserved when generating URL slugs (#467)
+
+## [1.4.2] - 2020-04-24
+
+### Fixed
+
+ - Fixed inline code blocks not be included within heading permalinks (#457)
+
+## [1.4.1] - 2020-04-20
+
+### Fixed
+
+ - Fixed BC break caused by ConverterInterface alias not being used by some DI containers (#454)
+
+## [1.4.0] - 2020-04-18
+
+### Added
+
+ - Added new [Heading Permalink extension](https://commonmark.thephpleague.com/extensions/heading-permalinks/) (#420)
+ - Added new [Table of Contents extension](https://commonmark.thephpleague.com/extensions/table-of-contents/) (#441)
+ - Added new `MarkdownConverterInterface` as a long-term replacement for `ConverterInterface` (#439)
+ - Added new `DocumentPreParsedEvent` event (#427, #359, #399)
+ - Added new `ListBlock::TYPE_BULLET` constant as a replacement for `ListBlock::TYPE_UNORDERED`
+ - Added new `MarkdownInput` class and `MarkdownInputInterface` to handle pre-parsing and allow listeners to replace Markdown contents
+
+### Changed
+
+ - Block & inline renderers will now render child classes automatically (#222, #209)
+ - The `ListBlock` constants now use fully-lowercased values instead of titlecased values
+ - Significantly improved typing
+
+### Fixed
+
+ - Fixed loose comparison when checking for table alignment
+ - Fixed `StaggeredDelimiterProcessor` returning from a `void` function
+
+### Deprecated
+
+ - The `Converter` class has been deprecated; use `CommonMarkConverter` instead (#438, #439)
+ - The `ConverterInterface` has been deprecated; use `MarkdownConverterInterface` instead (#438, #439)
+ - The `bin/commonmark` script has been deprecated
+ - The following methods of `ArrayCollection` have been deprecated:
+   - `add()`
+   - `set()`
+   - `get()`
+   - `remove()`
+   - `isEmpty()`
+   - `contains()`
+   - `indexOf()`
+   - `containsKey()`
+   - `replaceWith()`
+   - `removeGaps()`
+ - The `ListBlock::TYPE_UNORDERED` constant has been deprecated, use `ListBlock::TYPE_BULLET` instead
+
+## [1.3.4] - 2020-04-13
+
+### Fixed
+
+ - Fixed configuration/environment not being injected into event listeners when adding them via `[$instance, 'method']` callable syntax (#440)
+
+## [1.3.3] - 2020-04-05
+
+### Fixed
+
+ - Fixed event listeners not having the environment or configuration injected if they implemented the `EnvironmentAwareInterface` or `ConfigurationAwareInterface` (#423)
+
+## [1.3.2] - 2020-03-25
+
+### Fixed
+
+ - Optimized URL normalization in cases where URLs don't contain special characters (#417, #418)
+
+## [1.3.1] - 2020-02-28
+
+### Fixed
+
+ - Fixed return types of `Environment::createCommonMarkEnvironment()` and `Environment::createGFMEnvironment()`
+
+## [1.3.0] - 2020-02-08
+
+### Added
+
+ - Added (optional) **full GFM support!** 🎉🎉🎉 (#409)
+ - Added check to ensure Markdown input is valid UTF-8 (#401, #405)
+ - Added new `unordered_list_markers` configuration option (#408, #411)
+
+### Changed
+
+ - Introduced several micro-optimizations for a 5-10% performance boost
+
+## [1.2.2] - 2020-01-15
 
 This release contains the same changes as 1.1.3:
 
@@ -12,7 +152,7 @@ This release contains the same changes as 1.1.3:
 
  - Fixed link parsing edge case (#403)
 
-## [1.1.3] - 2019-01-15
+## [1.1.3] - 2020-01-15
 
 ### Fixed
 
@@ -207,7 +347,18 @@ No changes were made since 1.0.0-rc1.
    - Removed `DelimiterStack::iterateByCharacters()` (use the new `processDelimiters()` method instead)
    - Removed the protected `DelimiterStack::findMatchingOpener()` method
 
-[unreleased]: https://github.com/thephpleague/commonmark/compare/1.2.2...HEAD
+[unreleased]: https://github.com/thephpleague/commonmark/compare/1.5.1...1.5
+[1.5.1]: https://github.com/thephpleague/commonmark/compare/1.5.0...1.5.1
+[1.5.0]: https://github.com/thephpleague/commonmark/compare/1.4.3...1.5.0
+[1.4.3]: https://github.com/thephpleague/commonmark/compare/1.4.2...1.4.3
+[1.4.2]: https://github.com/thephpleague/commonmark/compare/1.4.1...1.4.2
+[1.4.1]: https://github.com/thephpleague/commonmark/compare/1.4.0...1.4.1
+[1.4.0]: https://github.com/thephpleague/commonmark/compare/1.3.4...1.4.0
+[1.3.4]: https://github.com/thephpleague/commonmark/compare/1.3.3...1.3.4
+[1.3.3]: https://github.com/thephpleague/commonmark/compare/1.3.2...1.3.3
+[1.3.2]: https://github.com/thephpleague/commonmark/compare/1.3.1...1.3.2
+[1.3.1]: https://github.com/thephpleague/commonmark/compare/1.3.0...1.3.1
+[1.3.0]: https://github.com/thephpleague/commonmark/compare/1.2.2...1.3.0
 [1.2.2]: https://github.com/thephpleague/commonmark/compare/1.2.1...1.2.2
 [1.2.1]: https://github.com/thephpleague/commonmark/compare/1.2.0...1.2.1
 [1.2.0]: https://github.com/thephpleague/commonmark/compare/1.1.2...1.2.0

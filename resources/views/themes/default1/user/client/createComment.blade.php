@@ -2,8 +2,9 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
+                  <h4 class="modal-title">{{Lang::get('message.add_new_comment')}}</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">{{Lang::get('message.add_new_comment')}}</h4>
+              
             </div>
             {!! Form::open(['url'=>'comment']) !!} 
             <div class="modal-body">
@@ -15,9 +16,9 @@
                     <input type="hidden" name="updated_by_user_id" value="{{\Auth::user()->id}}"> 
                 </div>
             </div>
-            <div class="modal-footer">
-                 <button type="button" id="close" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary " id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('Save')!!}</button>
+            <div class="modal-footer justify-content-between">
+                 <button type="button" id="close" class="btn btn-default btn-sm" data-dismiss="modal"><i class="fas fa-times">&nbsp;</i>Close</button>
+                <button type="submit" class="btn btn-primary btn-sm" id="submit"><i class="fas fa-save">&nbsp;</i>{!!Lang::get('Save')!!}</button>
             </div>
             {!! Form::close() !!}
         </div>

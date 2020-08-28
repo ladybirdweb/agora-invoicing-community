@@ -149,7 +149,7 @@
                                                     <tr>
                                                           
                                                     <th>Discount</th>
-                                                    <td>{{currency_format($invoice->discount,$code=$symbol)}}</td>
+                                                    <td>{{currencyFormat($invoice->discount,$code=$symbol)}}</td>
                                                     </tr>
                                                      @endif
                                 @if($tax_name[0] !='null' && $tax_percentage[0] !=null)

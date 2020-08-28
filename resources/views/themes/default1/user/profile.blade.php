@@ -2,7 +2,7 @@
 @section('title')
 User Profile
 @stop
-@section('content')
+
 @section('content-header')
 <style>
 .switch {
@@ -94,7 +94,7 @@ input:checked + .slider:before {
 
 
 </style>
-
+@endsection
 @section('content')
 <div class="row">
 
@@ -296,10 +296,10 @@ input:checked + .slider:before {
 
 
 
-    @include('themes.default1.user.2faModals')
+   
 
 
-
+ @include('themes.default1.user.2faModals')
 
 
         <div class="card card-primary card-outline">
@@ -314,12 +314,13 @@ input:checked + .slider:before {
                 <div class="col-md-10">
                 <h5>
                     @if($is2faEnabled ==0)
+                    
                     <img src="{{asset('common/images/authenticator.png')}}" alt="Authenticator" style="margin-top: -6px!important;" class="img-responsive img-circle img-sm">&nbsp;Authenticator App
                     @else
                     <img src="{{asset('common/images/authenticator.png')}}" alt="Authenticator" style="margin-top: -6px!important;" class="img-responsive img-circle img-sm">&nbsp;2-Step Verification is ON since {{getTimeInLoggedInUserTimeZone($dateSinceEnabled)}}
                     <br><br><br>
                     <div class="row">
-                 <div class="col-md-4">
+                 <div class="col-md-6">
                      <button class="btn btn-primary" id="viewRecCode">View Recovery Code</button>
                  </div>
              </div>
@@ -340,7 +341,6 @@ input:checked + .slider:before {
         </div>
     </div>
 </div>
-@stop
 
 
 {!! Form::close() !!}

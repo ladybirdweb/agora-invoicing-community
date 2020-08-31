@@ -80,7 +80,6 @@ class RegisterController extends Controller
             $user->save();
             $emailMobileStatusResponse = $this->getEmailMobileStatusResponse($user);
 
-            
             activity()->log('User <strong>'.$user->first_name.' '.$user->last_name.'</strong> was created');
 
             return response()->json($emailMobileStatusResponse);

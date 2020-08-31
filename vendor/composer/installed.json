@@ -664,6 +664,63 @@
         ]
     },
     {
+        "name": "cakephp/chronos",
+        "version": "2.0.6",
+        "version_normalized": "2.0.6.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/cakephp/chronos.git",
+            "reference": "30baea51824076719921c6c2d720bfd6b49e6dca"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/cakephp/chronos/zipball/30baea51824076719921c6c2d720bfd6b49e6dca",
+            "reference": "30baea51824076719921c6c2d720bfd6b49e6dca",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=7.2"
+        },
+        "require-dev": {
+            "cakephp/cakephp-codesniffer": "^4.0",
+            "phpbench/phpbench": "^1.0@dev",
+            "phpunit/phpunit": "^8.0"
+        },
+        "time": "2020-08-22T02:42:12+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Cake\\Chronos\\": "src/"
+            },
+            "files": [
+                "src/carbon_compat.php"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Brian Nesbitt",
+                "email": "brian@nesbot.com",
+                "homepage": "http://nesbot.com"
+            },
+            {
+                "name": "The CakePHP Team",
+                "homepage": "http://cakephp.org"
+            }
+        ],
+        "description": "A simple API extension for DateTime.",
+        "homepage": "http://cakephp.org",
+        "keywords": [
+            "date",
+            "datetime",
+            "time"
+        ]
+    },
+    {
         "name": "cartalyst/stripe",
         "version": "v2.4.1",
         "version_normalized": "2.4.1.0",
@@ -2754,6 +2811,81 @@
         "keywords": [
             "helpers",
             "laravel"
+        ]
+    },
+    {
+        "name": "laravel/horizon",
+        "version": "v4.3.4",
+        "version_normalized": "4.3.4.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/laravel/horizon.git",
+            "reference": "ffce0a8f69c19bdd63a22d972e605388903d70b4"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/laravel/horizon/zipball/ffce0a8f69c19bdd63a22d972e605388903d70b4",
+            "reference": "ffce0a8f69c19bdd63a22d972e605388903d70b4",
+            "shasum": ""
+        },
+        "require": {
+            "cakephp/chronos": "^2.0",
+            "ext-json": "*",
+            "ext-pcntl": "*",
+            "ext-posix": "*",
+            "illuminate/contracts": "^7.0",
+            "illuminate/queue": "^7.0",
+            "illuminate/support": "^7.0",
+            "php": "^7.2",
+            "ramsey/uuid": "^3.5|^4.0",
+            "symfony/error-handler": "^5.0",
+            "symfony/process": "^5.0"
+        },
+        "require-dev": {
+            "mockery/mockery": "^1.0",
+            "orchestra/testbench": "^5.0",
+            "phpunit/phpunit": "^8.0",
+            "predis/predis": "^1.1"
+        },
+        "suggest": {
+            "ext-redis": "Required to use the Redis PHP driver.",
+            "predis/predis": "Required when not using the Redis PHP driver (^1.1)."
+        },
+        "time": "2020-09-01T16:09:46+00:00",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "4.x-dev"
+            },
+            "laravel": {
+                "providers": [
+                    "Laravel\\Horizon\\HorizonServiceProvider"
+                ],
+                "aliases": {
+                    "Horizon": "Laravel\\Horizon\\Horizon"
+                }
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Laravel\\Horizon\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Taylor Otwell",
+                "email": "taylor@laravel.com"
+            }
+        ],
+        "description": "Dashboard and code-driven configuration for Laravel queues.",
+        "keywords": [
+            "laravel",
+            "queue"
         ]
     },
     {
@@ -5158,12 +5290,7 @@
         "keywords": [
             "tokenizer"
         ],
-        "funding": [
-            {
-                "url": "https://github.com/sebastianbergmann",
-                "type": "github"
-            }
-        ]
+        "abandoned": true
     },
     {
         "name": "phpunit/phpunit",
@@ -5501,6 +5628,83 @@
             "google2fa",
             "qr code",
             "qrcode"
+        ]
+    },
+    {
+        "name": "predis/predis",
+        "version": "v1.1.3",
+        "version_normalized": "1.1.3.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/predis/predis.git",
+            "reference": "2ce537d75e610550f5337e41b2a971417999b028"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/predis/predis/zipball/2ce537d75e610550f5337e41b2a971417999b028",
+            "reference": "2ce537d75e610550f5337e41b2a971417999b028",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.9"
+        },
+        "require-dev": {
+            "cweagans/composer-patches": "^1.6",
+            "phpunit/phpunit": "~4.8"
+        },
+        "suggest": {
+            "ext-curl": "Allows access to Webdis when paired with phpiredis",
+            "ext-phpiredis": "Allows faster serialization and deserialization of the Redis protocol"
+        },
+        "time": "2020-08-18T21:00:59+00:00",
+        "type": "library",
+        "extra": {
+            "composer-exit-on-patch-failure": true,
+            "patches": {
+                "phpunit/phpunit-mock-objects": {
+                    "Fix PHP 7 and 8 compatibility": "./tests/phpunit_mock_objects.patch"
+                },
+                "phpunit/phpunit": {
+                    "Fix PHP 7 compatibility": "./tests/phpunit_php7.patch",
+                    "Fix PHP 8 compatibility": "./tests/phpunit_php8.patch"
+                }
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Predis\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Daniele Alessandri",
+                "email": "suppakilla@gmail.com",
+                "homepage": "http://clorophilla.net",
+                "role": "Creator & Maintainer"
+            },
+            {
+                "name": "Till Krüss",
+                "homepage": "https://till.im",
+                "role": "Maintainer"
+            }
+        ],
+        "description": "Flexible and feature-complete Redis client for PHP and HHVM",
+        "homepage": "http://github.com/predis/predis",
+        "keywords": [
+            "nosql",
+            "predis",
+            "redis"
+        ],
+        "funding": [
+            {
+                "url": "https://github.com/sponsors/tillkruss",
+                "type": "github"
+            }
         ]
     },
     {

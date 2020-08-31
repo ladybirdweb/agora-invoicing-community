@@ -207,37 +207,7 @@ class SettingsController extends BaseSettingsController
         }
     }
 
-    public function settingsEmail(Setting $settings)
-    {
-        try {
-            $set = $settings->find(1);
-
-            return view('themes.default1.common.setting.email', compact('set'));
-        } catch (\Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
-
-    public function postSettingsEmail(Setting $settings, Request $request)
-    {
-        $this->validate($request, [
-            'email'     => 'required',
-            'password'  => 'required',
-            'driver'    => 'required',
-            'port'      => 'required',
-            'encryption'=> 'required',
-            'host'      => 'required',
-        ]);
-
-        try {
-            $setting = $settings->find(1);
-            $setting->fill($request->input())->save();
-
-            return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
-        } catch (\Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
+    
 
     public function settingsTemplate(Setting $settings)
     {

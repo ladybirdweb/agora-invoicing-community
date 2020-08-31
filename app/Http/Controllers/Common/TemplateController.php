@@ -32,6 +32,7 @@ class TemplateController extends BaseTemplateController
     public $tax_class;
     public $tax_rule;
     public $currency;
+    protected $commonMailer;
 
     public function __construct()
     {
@@ -70,40 +71,11 @@ class TemplateController extends BaseTemplateController
 
         $currency = new Currency();
         $this->currency = $currency;
-        $this->smtp();
+
+        $this->commonMailer = new CommonMailer;
     }
 
-    public function smtp()
-    {
-        $settings = new Setting();
-        $fields = $settings->find(1);
-        $password = '';
-        // $name = '';
-        if ($fields) {
-            $driver = $fields->driver;
-            $port = $fields->port;
-            $host = $fields->host;
-            $enc = $fields->encryption;
-            $email = $fields->email;
-            $password = $fields->password;
-            $name = $fields->company;
-        }
 
-        return $this->smtpConfig($driver, $port, $host, $enc, $email, $password, $name);
-    }
-
-    public function smtpConfig($driver, $port, $host, $enc, $email, $password, $name)
-    {
-        Config::set('mail.driver', $driver);
-        Config::set('mail.password', $password);
-        Config::set('mail.username', $email);
-        Config::set('mail.encryption', $enc);
-        Config::set('mail.from', ['address' => $email, 'name' => $name]);
-        Config::set('mail.port', intval($port));
-        Config::set('mail.host', $host);
-
-        return 'success';
-    }
 
     public function index()
     {
@@ -277,11 +249,11 @@ class TemplateController extends BaseTemplateController
             $data = $page_controller->transform($type, $data, $transform);
             $settings = \App\Model\Common\Setting::find(1);
             $fromname = $settings->company;
+            $this->setMailConfig($settings);
             \Mail::send('emails.mail', ['data' => $data], function ($m) use ($from, $to, $subject, $fromname, $toname, $cc, $attach, $bcc) {
                 $m->from($from, $fromname);
 
                 $m->to($to, $toname)->subject($subject);
-
                 /* if cc is need  */
                 if (! empty($cc)) {
                     foreach ($cc as $address) {
@@ -313,6 +285,7 @@ class TemplateController extends BaseTemplateController
 
             return 'success';
         } catch (\Exception $ex) {
+            dd($ex);
             \DB::table('email_log')->insert([
                 'date'     => date('Y-m-d H:i:s'),
                 'from'     => $from,
@@ -323,12 +296,40 @@ class TemplateController extends BaseTemplateController
             ]);
             Bugsnag::notifyException($ex);
             if ($ex instanceof \Swift_TransportException) {
+                dd('dsf');
                 throw new \Exception('We can not reach to this email address');
             }
 
             throw new \Exception('mailing problem');
         }
     }
+
+    /**
+     * set the email configuration
+     * @param Email $from_address
+     */
+    public function setMailConfig($mail) {
+        switch ($mail->driver) {
+            case "smtp":
+                $config = [ "host" => $mail->host,
+                    "port" => $mail->port,
+                    "security" => $mail->encryption,
+                    'username' => $mail->email,
+                    'password' => $mail->password
+                ];
+                if (!$this->commonMailer->setSmtpDriver($config)) {
+                    \Log::info("Invaid configuration :- ".$config);
+                    return "invalid mail configuration";
+                }
+
+                break;
+
+        default:
+                break;
+        }
+
+    }
+
 
     public function checkPriceWithTaxClass($productid, $currency)
     {

@@ -31,6 +31,7 @@
         "php-mock/php-mock": "^2.1.2",
         "pion/laravel-chunk-upload": "^1.3",
         "pragmarx/google2fa-laravel": "^1.3",
+        "predis/predis": "^1.1",
         "rachidlaasri/laravel-installer": "^4.0.2",
         "razorpay/razorpay": "^2.5",
         "shvetsgroup/laravel-email-database-log": "^1.3",

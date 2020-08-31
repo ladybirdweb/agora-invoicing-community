@@ -136,8 +136,8 @@
         Route::get('settings', 'Common\SettingsController@settings');
         Route::get('settings/system', 'Common\SettingsController@settingsSystem');
         Route::patch('settings/system', 'Common\SettingsController@postSettingsSystem');
-        Route::get('settings/email', 'Common\SettingsController@settingsEmail');
-        Route::patch('settings/email', 'Common\SettingsController@postSettingsEmail');
+        Route::get('settings/email', 'Common\EmailSettingsController@settingsEmail');
+        Route::patch('settings/email', 'Common\EmailSettingsController@postSettingsEmail');
         Route::get('settings/template', 'Common\SettingsController@settingsTemplate');
         Route::patch('settings/template', 'Common\SettingsController@postSettingsTemplate');
         Route::patch('settings/error', 'Common\SettingsController@postSettingsError');

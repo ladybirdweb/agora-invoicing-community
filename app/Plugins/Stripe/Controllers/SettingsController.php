@@ -229,6 +229,7 @@ class SettingsController extends Controller
         $setting = Setting::find(1);
         $templateController = new \App\Http\Controllers\Common\TemplateController();
         $paymentSuccessdata = 'Payment for'.' '.$productName.' '.'of'.' '.$currency.' '.$total.' '.'successful by'.' '.$user->first_name.' '.$user->last_name.' '.'Email:'.' '.$user->email;
-        $templateController->mailing($setting->email, $setting->company_email, $paymentSuccessdata, 'Payment Successful ');
-    }
+        $job = new \App\Jobs\SendEmail($setting->email, $setting->company_email, $paymentSuccessdata, 'Payment Successful ');
+        dispatch($job);
+     }
 }

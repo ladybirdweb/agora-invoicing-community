@@ -2,7 +2,6 @@
 
 use App\Model\Common\Country;
 use App\Model\Common\Setting;
-use App\Model\Order\Order;
 use App\Model\Payment\TaxByState;
 use App\Model\Product\ProductUpload;
 use App\Traits\TaxCalculation;
@@ -187,7 +186,6 @@ function currencyFormat($amount = null, $currency = null, $include_symbol = true
 {
     $amount = rounding($amount);
     if ($currency == 'INR') {
-
         $symbol = getIndianCurrencySymbol($currency);
 
         return $symbol.getIndianCurrencyFormat($amount);

@@ -76,7 +76,6 @@ class RegisterController extends Controller
             $user->timezone_id = getTimezoneByName($location['timezone']);
             $user->referrer = Referer::get(); // 'google.com'
             $user->save();
-            
 
             $emailMobileStatusResponse = $this->getEmailMobileStatusResponse($user);
 

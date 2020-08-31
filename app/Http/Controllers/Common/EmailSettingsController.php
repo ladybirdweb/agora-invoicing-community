@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Common;
 
 use App\Http\Controllers\Controller;
+
 use App\Model\Common\Setting;
 use Illuminate\Http\Request;
 
@@ -17,9 +18,11 @@ class EmailSettingsController extends Controller
         } catch (Exception $e) {
             $this->error = $e;
 
+
             return false;
         }
     }
+
 
     public function settingsEmail(Setting $settings)
     {
@@ -39,6 +42,7 @@ class EmailSettingsController extends Controller
             'password'  => 'required',
             'driver'    => 'required',
         ]);
+
         if ($request->input('driver') == 'smtp') {
             $this->validate($request, [
                 'port'      => 'required',
@@ -47,14 +51,17 @@ class EmailSettingsController extends Controller
             ]);
         }
 
+
         try {
             $emailSettings = $request->all();
             $this->emailConfig = Setting::first();
+
             $this->emailConfig->fill($emailSettings);
             if (! $this->checkSendConnection($this->emailConfig)) {
                 return errorResponse($this->errorhandler());
             }
             $this->emailConfig->save();
+
 
             return successResponse('Email Settings saved successfully');
         } catch (\Exception $ex) {
@@ -64,7 +71,9 @@ class EmailSettingsController extends Controller
 
     /**
      * takes care of exception handling in this class.
+
      * NOTE: to make errors user friendly, more and more cases has to be added to it.
+
      * @return string   returns formatted message
      */
     private function errorhandler()
@@ -75,15 +84,19 @@ class EmailSettingsController extends Controller
     }
 
     /**
+
      * checks send connection based on the mail driver.
+
      * @param Emails $emailConfig emailConfig object
      * @return bool
      */
     protected function checkSendConnection(Setting $emailConfig)
     {
         try {
+
             if (! $emailConfig->driver) {
                 throw new \Exception('sending protocol must be provided');
+
             }
 
             $this->emailConfig = $emailConfig;
@@ -93,18 +106,22 @@ class EmailSettingsController extends Controller
                 return $this->checkMailConnection();
             }
 
+
             //set outgoing mail configuation to the passed one
             setServiceConfig($this->emailConfig);
 
             if ($this->emailConfig->driver == 'smtp') {
                 return $this->checkSMTPConnection();
             }
+
         } catch (Exception $e) {
             $this->error = $e;
+
 
             return false;
         }
     }
+
 
     /**
      * checks if php's mail function is enabled on current server.
@@ -123,6 +140,7 @@ class EmailSettingsController extends Controller
     private function checkSMTPConnection()
     {
         try {
+
             $https = [];
             $https['ssl']['verify_peer'] = false;
             $https['ssl']['verify_peer_name'] = false;
@@ -138,9 +156,11 @@ class EmailSettingsController extends Controller
         } catch (\Swift_TransportException $e) {
             $this->error = $e;
 
+
             return false;
         } catch (\Exception $e) {
             $this->error = $e;
+
 
             return false;
         }

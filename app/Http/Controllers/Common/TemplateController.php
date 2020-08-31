@@ -73,6 +73,7 @@ class TemplateController extends BaseTemplateController
         $this->commonMailer = new CommonMailer;
     }
 
+
     public function index()
     {
         try {
@@ -234,6 +235,7 @@ class TemplateController extends BaseTemplateController
                 </div>';
         }
     }
+
 
     public function plans($url, $id)
     {

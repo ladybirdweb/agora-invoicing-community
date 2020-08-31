@@ -330,10 +330,8 @@ class AuthController extends BaseAuthController
                 'manager_mobile'     => $manager->mobile,
                 'manager_skype'      => $manager->skype,
             ];
-            $job = new \App\Jobs\SendEmail($from, $to, $template_data, $template_name, $replace, 'sales_manager_email', $bcc);
-            dispatch($job);
-            //dd($from, $to, $template_data, $template_name, $replace);
-            // $template_controller->mailing($from, $to, $template_data, $template_name, $replace, 'sales_manager_email');
+            $mail = new \App\Http\Controllers\Common\PhpMailController();
+            $mail->sendEmail($from, $to, $template_data, $template_name, $replace, 'sales_manager_email', $bcc);
         }
     }
 
@@ -367,10 +365,8 @@ class AuthController extends BaseAuthController
                 'manager_mobile'     => $manager->mobile,
                 'manager_skype'      => $manager->skype,
             ];
-            $job = new \App\Jobs\SendEmail($from, $to, $template_data, $template_name, $replace, 'account_manager_email', $bcc);
-            dispatch($job);
-            //dd($from, $to, $template_data, $template_name, $replace);
-            // $template_controller->mailing($from, $to, $template_data, $template_name, $replace, 'account__manager_email',$bcc);
+            $mail = new \App\Http\Controllers\Common\PhpMailController();
+            $mail->sendEmail($from, $to, $template_data, $template_name, $replace, 'account_manager_email', $bcc);
         }
     }
 }

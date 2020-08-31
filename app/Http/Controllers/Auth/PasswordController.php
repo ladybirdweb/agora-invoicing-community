@@ -146,8 +146,8 @@ class PasswordController extends Controller
             $temp_type = new \App\Model\Common\TemplateType();
             $type = $temp_type->where('id', $type_id)->first()->name;
         }
-        $templateController = new \App\Http\Controllers\Common\TemplateController();
-        $mail = $templateController->mailing($from, $to, $data, $subject, $replace, $type);
+        $mail = new \App\Http\Controllers\Common\PhpMailController();
+        $mail->sendEmail($from, $to, $data, $subject, $replace, $type);
 
         return redirect()->back()->with('success', "Reset instructions have been mailed to $to
 Be sure to check your Junk folder if you do not see an email from us in your Inbox within a few minutes.");

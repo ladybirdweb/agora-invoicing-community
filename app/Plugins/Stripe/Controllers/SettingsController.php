@@ -233,5 +233,5 @@ class SettingsController extends Controller
 
         $job = new \App\Jobs\SendEmail($setting->email, $setting->company_email, $paymentSuccessdata, 'Payment Successful ');
         dispatch($job);
-     }
+    }
 }

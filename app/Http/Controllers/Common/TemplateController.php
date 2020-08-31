@@ -302,21 +302,23 @@ class TemplateController extends BaseTemplateController
     }
 
     /**
-     * set the email configuration
+     * set the email configuration.
      * @param Email $from_address
      */
-    public function setMailConfig($mail) {
+    public function setMailConfig($mail)
+    {
         switch ($mail->driver) {
-            case "smtp":
-                $config = [ "host" => $mail->host,
-                    "port" => $mail->port,
-                    "security" => $mail->encryption,
+            case 'smtp':
+                $config = ['host' => $mail->host,
+                    'port' => $mail->port,
+                    'security' => $mail->encryption,
                     'username' => $mail->email,
-                    'password' => $mail->password
+                    'password' => $mail->password,
                 ];
-                if (!$this->commonMailer->setSmtpDriver($config)) {
-                    \Log::info("Invaid configuration :- ".$config);
-                    return "invalid mail configuration";
+                if (! $this->commonMailer->setSmtpDriver($config)) {
+                    \Log::info('Invaid configuration :- '.$config);
+
+                    return 'invalid mail configuration';
                 }
 
                 break;
@@ -324,9 +326,7 @@ class TemplateController extends BaseTemplateController
         default:
                 break;
         }
-
     }
-
 
     public function checkPriceWithTaxClass($productid, $currency)
     {

@@ -64,6 +64,7 @@ class RegisterController extends Controller
             $user->active = 0;
             $user->mobile_verified = 0;
             $user->mobile = ltrim($request->input('mobile'), '0');
+            $user->mobile_code = $request->input('mobile_code');
             $user->role = 'user';
             $user->first_name = strip_tags($request->input('first_name'));
             $user->last_name = strip_tags($request->input('last_name'));
@@ -76,9 +77,10 @@ class RegisterController extends Controller
             $user->ip = $location['ip'];
             $user->referrer = Referer::get(); // 'google.com'
             $user->timezone_id = CartController::getTimezoneByName($location['timezone']);
+            $user->save();
             $emailMobileStatusResponse = $this->getEmailMobileStatusResponse($user);
 
-            $user->save();
+            
             activity()->log('User <strong>'.$user->first_name.' '.$user->last_name.'</strong> was created');
 
             return response()->json($emailMobileStatusResponse);

@@ -72,7 +72,9 @@ class EmailSettingsController extends Controller
     /**
      * takes care of exception handling in this class.
 
+
      * NOTE: to make errors user friendly, more and more cases has to be added to it.
+
 
      * @return string   returns formatted message
      */
@@ -85,7 +87,9 @@ class EmailSettingsController extends Controller
 
     /**
 
+
      * checks send connection based on the mail driver.
+
 
      * @param Emails $emailConfig emailConfig object
      * @return bool
@@ -106,14 +110,12 @@ class EmailSettingsController extends Controller
                 return $this->checkMailConnection();
             }
 
-
             //set outgoing mail configuation to the passed one
             setServiceConfig($this->emailConfig);
 
             if ($this->emailConfig->driver == 'smtp') {
                 return $this->checkSMTPConnection();
             }
-
         } catch (Exception $e) {
             $this->error = $e;
 
@@ -140,7 +142,6 @@ class EmailSettingsController extends Controller
     private function checkSMTPConnection()
     {
         try {
-
             $https = [];
             $https['ssl']['verify_peer'] = false;
             $https['ssl']['verify_peer_name'] = false;

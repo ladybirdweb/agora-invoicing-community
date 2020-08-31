@@ -688,7 +688,7 @@ Sign in or Register
                         $('#error2').hide();
                         $('#error').hide();
                         $('#alertMessage2').show();
-                        var result =  '<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Well Done! </strong>'+response.message+'!.</div>';
+                        var result =  '<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Well Done! </strong>'+response.message+'!</div>';
                         // $('#alertMessage3').show();
                         $('#successMessage2').hide();
                         $('#success').html(result);

@@ -319,7 +319,9 @@ class CheckoutController extends InfoController
     private function getProcessingFee($paymentMethod, $currency)
     {
         try {
-            return $paymentMethod == 'razorpay' ? 0 : \DB::table(strtolower($paymentMethod))->where('currencies', $currency)->value('processing_fee');
+            if ($paymentMethod) {
+                return $paymentMethod == 'razorpay' ? 0 : \DB::table(strtolower($paymentMethod))->where('currencies', $currency)->value('processing_fee');
+            }
         } catch (\Exception $e) {
             throw new \Exception('Invalid modification of data');
         }

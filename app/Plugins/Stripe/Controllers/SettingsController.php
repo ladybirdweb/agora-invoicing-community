@@ -231,5 +231,5 @@ class SettingsController extends Controller
         $paymentSuccessdata = 'Payment for'.' '.$productName.' '.'of'.' '.$currency.' '.$total.' '.'successful by'.' '.$user->first_name.' '.$user->last_name.' '.'Email:'.' '.$user->email;
         $job = new \App\Jobs\SendEmail($setting->email, $setting->company_email, $paymentSuccessdata, 'Payment Successful ');
         dispatch($job);
-     }
+    }
 }

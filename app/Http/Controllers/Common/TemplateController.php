@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Common;
 
 use App\Http\Controllers\Product\ProductController;
-use App\Model\Common\Setting;
 use App\Model\Common\Template;
 use App\Model\Common\TemplateType;
 use App\Model\Payment\Currency;
@@ -16,7 +15,6 @@ use App\Model\Product\Price;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
 use Bugsnag;
-use Config;
 use Illuminate\Http\Request;
 
 class TemplateController extends BaseTemplateController
@@ -74,8 +72,6 @@ class TemplateController extends BaseTemplateController
 
         $this->commonMailer = new CommonMailer;
     }
-
-
 
     public function index()
     {
@@ -305,21 +301,23 @@ class TemplateController extends BaseTemplateController
     }
 
     /**
-     * set the email configuration
+     * set the email configuration.
      * @param Email $from_address
      */
-    public function setMailConfig($mail) {
+    public function setMailConfig($mail)
+    {
         switch ($mail->driver) {
-            case "smtp":
-                $config = [ "host" => $mail->host,
-                    "port" => $mail->port,
-                    "security" => $mail->encryption,
+            case 'smtp':
+                $config = ['host' => $mail->host,
+                    'port' => $mail->port,
+                    'security' => $mail->encryption,
                     'username' => $mail->email,
-                    'password' => $mail->password
+                    'password' => $mail->password,
                 ];
-                if (!$this->commonMailer->setSmtpDriver($config)) {
-                    \Log::info("Invaid configuration :- ".$config);
-                    return "invalid mail configuration";
+                if (! $this->commonMailer->setSmtpDriver($config)) {
+                    \Log::info('Invaid configuration :- '.$config);
+
+                    return 'invalid mail configuration';
                 }
 
                 break;
@@ -327,9 +325,7 @@ class TemplateController extends BaseTemplateController
         default:
                 break;
         }
-
     }
-
 
     public function checkPriceWithTaxClass($productid, $currency)
     {

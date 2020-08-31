@@ -220,8 +220,9 @@ class SettingsController extends Controller
     {
         $setting = Setting::find(1);
         $paymentFailData = 'Payment for'.' '.'of'.' '.\Auth::user()->currency.' '.$amount.' '.'failed by'.' '.\Auth::user()->first_name.' '.\Auth::user()->last_name.' '.'. User Email:'.' '.\Auth::user()->email.'<br>'.'Reason:'.$exceptionMessage;
-        $templateController = new \App\Http\Controllers\Common\TemplateController();
-        $templateController->mailing($setting->email, $setting->company_email, $paymentFailData, 'Paymemt failed');
+
+        $mail = new \App\Http\Controllers\Common\PhpMailController();
+        $mail->sendEmail($setting->email, $setting->company_email, $paymentFailData, 'Payment failed ');
     }
 
     public static function sendPaymentSuccessMailtoAdmin($currency, $total, $user, $productName)
@@ -229,6 +230,8 @@ class SettingsController extends Controller
         $setting = Setting::find(1);
         $templateController = new \App\Http\Controllers\Common\TemplateController();
         $paymentSuccessdata = 'Payment for'.' '.$productName.' '.'of'.' '.$currency.' '.$total.' '.'successful by'.' '.$user->first_name.' '.$user->last_name.' '.'Email:'.' '.$user->email;
-        $templateController->mailing($setting->email, $setting->company_email, $paymentSuccessdata, 'Payment Successful ');
+
+        $mail = new \App\Http\Controllers\Common\PhpMailController();
+        $mail->sendEmail($setting->email, $setting->company_email, $paymentSuccessdata, 'Payment Successful ');
     }
 }

@@ -231,8 +231,10 @@ class SettingsController extends Controller
         $templateController = new \App\Http\Controllers\Common\TemplateController();
         $paymentSuccessdata = 'Payment for'.' '.$productName.' '.'of'.' '.$currency.' '.$total.' '.'successful by'.' '.$user->first_name.' '.$user->last_name.' '.'Email:'.' '.$user->email;
 
+
         $mail = new \App\Http\Controllers\Common\PhpMailController();
         $mail->sendEmail($setting->email, $setting->company_email, $paymentSuccessdata, 'Payment Successful ');
     }
+
 
 }

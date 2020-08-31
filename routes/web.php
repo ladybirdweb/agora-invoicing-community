@@ -100,12 +100,7 @@
             Route::get('get-my-invoices', 'Front\ClientController@getInvoices')->name('get-my-invoices');
             Route::get('get-my-invoices/{orderid}/{userid}', 'Front\ClientController@getInvoicesByOrderId');
 
-            // Route::get('get-my-invoices/{orderid}/{userid}', ['uses' => 'Front\ClientController@getInvoicesByOrderId', 'as' => 'get-my-invoices']);
-
             Route::get('get-my-payment/{orderid}/{userid}', ['uses' => 'Front\ClientController@getPaymentByOrderId', 'as' => 'get-my-payment']);
-
-            // Route::get('get-my-payment/{orderid}/{userid}', 'Front\ClientController@getPaymentByOrderId');
-            // Route::get('get-my-payment-client/{orderid}/{userid}', 'Front\ClientController@getPaymentByOrderIdClient');
 
             Route::get('get-my-payment-client/{orderid}/{userid}', ['uses' => 'Front\ClientController@getPaymentByOrderIdClient', 'as' => 'get-my-payment-client']);
 
@@ -152,19 +147,28 @@
              */
             Route::get('twitter', 'Common\SocialMediaController@getTweets')->name('twitter');
 
-            /*
-             * Authentication
-             */
-            //     Route::get([
-            // // 'auth'     => 'Auth\AuthController',
-            // // 'password' => 'Auth\PasswordController',
-            //     ]);
             Route::auth();
             Route::post('auth/register', 'Auth\RegisterController@postRegister')->name('auth/register');
             Route::get('auth/logout', 'Auth\LoginController@logout')->name('logout');
             Route::get('/', 'DashboardController@index');
 
             Route::get('activate/{token}', 'Auth\AuthController@activate');
+
+            /*
+             * Client
+             */
+
+            /*
+             * Client
+             */
+
+            /*
+             * Client
+             */
+
+            /*
+             * Client
+             */
 
             /*
              * Profile Process
@@ -180,8 +184,8 @@
             Route::get('settings', 'Common\SettingsController@settings');
             Route::get('settings/system', 'Common\SettingsController@settingsSystem');
             Route::patch('settings/system', 'Common\SettingsController@postSettingsSystem');
-            Route::get('settings/email', 'Common\SettingsController@settingsEmail');
-            Route::patch('settings/email', 'Common\SettingsController@postSettingsEmail');
+            Route::get('settings/email', 'Common\EmailSettingsController@settingsEmail');
+            Route::patch('settings/email', 'Common\EmailSettingsController@postSettingsEmail');
             Route::get('settings/template', 'Common\SettingsController@settingsTemplate');
             Route::patch('settings/template', 'Common\SettingsController@postSettingsTemplate');
             Route::patch('settings/error', 'Common\SettingsController@postSettingsError');
@@ -338,6 +342,17 @@
             // Route::get('get-templates', 'Common\TemplateController@GetTemplates');
             Route::delete('templates-delete', 'Common\TemplateController@destroy')->name('templates-delete');
 
+            /**
+             * Queue.
+             */
+            Route::get('queue', ['as' => 'queue', 'uses' => 'Jobs\QueueController@index']);
+            Route::get('get-queue', 'Jobs\QueueController@getQueues')->name('get-queue');
+            Route::get('queue/{id}', ['as' => 'queue.edit', 'uses' => 'Jobs\QueueController@edit']);
+            Route::post('queue/{id}', ['as' => 'queue.update', 'uses' => 'Jobs\QueueController@update']);
+
+            Route::post('queue/{queue}/activate', 'Jobs\QueueController@activate');
+            Route::get('form/queue', ['as' => 'queue.form', 'uses' => 'Jobs\QueueController@getForm']);
+
             /*
              * Chat Script
              */
@@ -435,7 +450,7 @@
             Route::get('job-scheduler', ['as'=>'get.job.scheduler', 'uses'=>'Common\SettingsController@getScheduler']);
             Route::patch('post-scheduler', ['as' => 'post.job.scheduler', 'uses' => 'Common\SettingsController@postSchedular'])->name('post-scheduler'); //to update job scheduler
             Route::patch('cron-days', ['as'=>'cron-days', 'uses'=>'Common\SettingsController@saveCronDays'])->name('cron-days');
-            Route::get('verify-php-path', ['as' => 'verify-cron', 'uses' => 'Common\SettingsController@checkPHPExecutablePath']);
+            Route::post('verify-php-path', ['as' => 'verify-cron', 'uses' => 'Common\SettingsController@checkPHPExecutablePath']);
             Route::get('file-storage', 'Common\SettingsController@showFileStorage');
             Route::post('file-storage-path', 'Common\SettingsController@updateStoragePath');
             Route::get('expired-subscriptions', 'Common\CronController@eachSubscription');

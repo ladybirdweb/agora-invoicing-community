@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Common;
 
 use App\Http\Controllers\Product\ProductController;
-use App\Model\Common\Setting;
 use App\Model\Common\Template;
 use App\Model\Common\TemplateType;
 use App\Model\Payment\Currency;
@@ -16,7 +15,6 @@ use App\Model\Product\Price;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
 use Bugsnag;
-use Config;
 use Illuminate\Http\Request;
 
 class TemplateController extends BaseTemplateController
@@ -32,6 +30,7 @@ class TemplateController extends BaseTemplateController
     public $tax_class;
     public $tax_rule;
     public $currency;
+    protected $commonMailer;
 
     public function __construct()
     {
@@ -70,39 +69,8 @@ class TemplateController extends BaseTemplateController
 
         $currency = new Currency();
         $this->currency = $currency;
-        $this->smtp();
-    }
 
-    public function smtp()
-    {
-        $settings = new Setting();
-        $fields = $settings->find(1);
-        $password = '';
-        // $name = '';
-        if ($fields) {
-            $driver = $fields->driver;
-            $port = $fields->port;
-            $host = $fields->host;
-            $enc = $fields->encryption;
-            $email = $fields->email;
-            $password = $fields->password;
-            $name = $fields->company;
-        }
-
-        return $this->smtpConfig($driver, $port, $host, $enc, $email, $password, $name);
-    }
-
-    public function smtpConfig($driver, $port, $host, $enc, $email, $password, $name)
-    {
-        Config::set('mail.driver', $driver);
-        Config::set('mail.password', $password);
-        Config::set('mail.username', $email);
-        Config::set('mail.encryption', $enc);
-        Config::set('mail.from', ['address' => $email, 'name' => $name]);
-        Config::set('mail.port', intval($port));
-        Config::set('mail.host', $host);
-
-        return 'success';
+        $this->commonMailer = new CommonMailer;
     }
 
     public function index()
@@ -264,91 +232,6 @@ class TemplateController extends BaseTemplateController
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         '.$e->getMessage().'
                 </div>';
-        }
-    }
-
-    public function mailing($from, $to, $data, $subject, $replace = [],
-     $type = '', $bcc = [], $fromname = '', $toname = '', $cc = [], $attach = [])
-    {
-        try {
-            $transform = [];
-            $page_controller = new \App\Http\Controllers\Front\PageController();
-            $transform[0] = $replace;
-            $data = $page_controller->transform($type, $data, $transform);
-            $settings = \App\Model\Common\Setting::find(1);
-            $fromname = $settings->company;
-            \Mail::send('emails.mail', ['data' => $data], function ($m) use ($from, $to, $subject, $fromname, $toname, $cc, $attach, $bcc) {
-                $m->from($from, $fromname);
-
-                $m->to($to, $toname)->subject($subject);
-
-                /* if cc is need  */
-                if (! empty($cc)) {
-                    foreach ($cc as $address) {
-                        $m->cc($address['address'], $address['name']);
-                    }
-                }
-
-                if (! empty($bcc)) {
-                    foreach ($bcc as $address) {
-                        $m->bcc($address);
-                    }
-                }
-
-                /*  if attachment is need */
-                if (! empty($attach)) {
-                    foreach ($attach as $file) {
-                        $m->attach($file['path'], $options = []);
-                    }
-                }
-            });
-            \DB::table('email_log')->insert([
-                'date'       => date('Y-m-d H:i:s'),
-                'from'       => $from,
-                'to'         => $to,
-                'subject'   => $subject,
-                'body'       => $data,
-                'status'     => 'success',
-            ]);
-
-            return 'success';
-        } catch (\Exception $ex) {
-            \DB::table('email_log')->insert([
-                'date'     => date('Y-m-d H:i:s'),
-                'from'     => $from,
-                'to'       => $to,
-                'subject' => $subject,
-                'body'     => $data,
-                'status'   => 'failed',
-            ]);
-            Bugsnag::notifyException($ex);
-            if ($ex instanceof \Swift_TransportException) {
-                throw new \Exception('We can not reach to this email address');
-            }
-
-            throw new \Exception('mailing problem');
-        }
-    }
-
-    public function checkPriceWithTaxClass($productid, $currency)
-    {
-        try {
-            $product = $this->product->findOrFail($productid);
-            // dd($product);
-            if ($product->tax_apply == 1) {
-                $price = $this->checkTax($product->id, $currency);
-            } else {
-                $price = $product->price()->where('currency', $currency)->first()->sales_price;
-                if (! $price) {
-                    $price = $product->price()->where('currency', $currency)->first()->price;
-                }
-            }
-
-            return $price;
-        } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
-
-            throw new \Exception($ex->getMessage());
         }
     }
 

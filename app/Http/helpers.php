@@ -178,6 +178,7 @@ function getStatusLabel($status, $badge = 'badge')
     }
 }
 
+
 function currencyFormat($amount = null, $currency = null, $include_symbol = true)
 {
     if ($currency == 'INR') {
@@ -220,6 +221,44 @@ function getIndianCurrencyFormat($number)
     } else {
         return $thecash;
     }
+
+/**
+ * sets mail config and reloads the config into the container
+ * NOTE: this is getting used outside the class to set service config
+ * @return void
+ */
+function setServiceConfig($emailConfig)
+{
+    $sendingProtocol = $emailConfig->driver;
+    if($sendingProtocol && $sendingProtocol != 'smtp' && $sendingProtocol != 'mail'){
+
+        $services = \Config::get("services.$sendingProtocol");
+        $dynamicServiceConfig = [];
+
+        //loop over it and assign according to the keys given by user
+        foreach($services as $key => $value){
+            $dynamicServiceConfig[$key] = isset($emailConfig[$key]) ? $emailConfig[$key] : $value;
+        }
+
+        //setting that service configuration
+        \Config::set("services.$sendingProtocol", $dynamicServiceConfig);
+    }
+    else {
+        \Config::set('mail.host',$emailConfig['host']);
+        \Config::set('mail.port', $emailConfig['port']);
+        \Config::set('mail.password', $emailConfig['password']);
+        \Config::set('mail.security', $emailConfig['encryption']);
+    }
+
+    //setting mail driver as $sending protocol
+    \Config::set('mail.driver', $sendingProtocol);
+    \Config::set('mail.from.address', $emailConfig['email']);
+    \Config::set('mail.from.name',  $emailConfig['company']);
+    \Config::set('mail.username', $emailConfig['email']);
+
+    //setting the config again in the service container
+    (new \Illuminate\Mail\MailServiceProvider(app()))->register();
+
 }
 
 /**

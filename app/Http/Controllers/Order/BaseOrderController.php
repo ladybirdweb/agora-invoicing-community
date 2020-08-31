@@ -301,12 +301,14 @@ class BaseOrderController extends ExtendedOrderController
                 $temp_type = new \App\Model\Common\TemplateType();
                 $type = $temp_type->where('id', $type_id)->first()->name;
             }
-            $mail = new \App\Http\Controllers\Common\PhpMailController();
-            $mail->sendEmail($from, $to, $data, $subject, $replace, $type);
 
+            $templateController = new \App\Http\Controllers\Common\TemplateController();
+            $job = new \App\Jobs\SendEmail($from, $to, $data, $subject, $replace, $type);
+            dispatch($job);
             if ($order->invoice->grand_total) {
                 SettingsController::sendPaymentSuccessMailtoAdmin($order->invoice->currency, $order->invoice->grand_total, $user, $product);
             }
+
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());
         }

@@ -27,7 +27,8 @@ class SendEmail implements ShouldQueue
      *
      * @return void
      */
-    public function __construct($from, $to, $template_data, $template_name, $replace = [], $type = '', $bcc = [])
+
+    public function __construct($from, $to, $template_data, $template_name, $replace=[], $type='', $bcc=[])
     {
         $this->from = $from;
         $this->to = $to;

@@ -18,11 +18,13 @@ Email
  <div id="alertMessage"></div>
 
 
-<div class="card card-primary card-outline">
+    <div class="col-md-12">
 
-       
-            <div class="card-body">
+        <div id="alertMessage"></div>
+        <div class="box box-primary">
 
+            <div class="box-body">
+              <button type="submit" class="form-group btn btn-primary pull-right"  id="emailSetting"><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button>
                   <div class="col-md-12">
 
 
@@ -137,7 +139,7 @@ Email
 
 
 
-            $("#emailSetting").html("<i class='fas fa-circle-notch fa-spin'></i>Please Wait...");
+            $("#emailSetting").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
             $.ajax({
 
                 url : '{{url("settings/email")}}',

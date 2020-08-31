@@ -32,4 +32,5 @@ class CommonMailer
             return $e->getMessage();
         }
     }
+
 }

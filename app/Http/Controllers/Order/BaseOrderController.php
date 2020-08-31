@@ -300,12 +300,12 @@ class BaseOrderController extends ExtendedOrderController
                 $type = $temp_type->where('id', $type_id)->first()->name;
             }
             $templateController = new \App\Http\Controllers\Common\TemplateController();
-            $mail = $templateController->mailing($from, $to, $data, $subject, $replace, $type);
+            $job = new \App\Jobs\SendEmail($from, $to, $data, $subject, $replace, $type);
+            dispatch($job);
             if ($order->invoice->grand_total) {
                 SettingsController::sendPaymentSuccessMailtoAdmin($order->invoice->currency, $order->invoice->grand_total, $user, $product);
             }
 
-            return $mail;
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());
         }

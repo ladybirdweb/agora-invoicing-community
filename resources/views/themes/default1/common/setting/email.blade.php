@@ -17,11 +17,13 @@ Email
 @section('content')
  <div id="alertMessage"></div>
 
+
 <div class="card card-primary card-outline">
 
        
             <div class="card-body">
              
+
                   <div class="col-md-12">
 
 
@@ -135,7 +137,9 @@ Email
         $('#emailSetting').on('click',function(){
 
 
+
             $("#emailSetting").html("<i class='fas fa-circle-notch fa-spin'></i>Please Wait...");
+
             $.ajax({
 
                 url : '{{url("settings/email")}}',

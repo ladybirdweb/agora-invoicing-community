@@ -9,6 +9,7 @@ class CommonMailer
     public function setSmtpDriver($config)
     {
         try {
+
             if (! $config) {
                 return false;
             }
@@ -31,4 +32,5 @@ class CommonMailer
             return $e->getMessage();
         }
     }
+
 }

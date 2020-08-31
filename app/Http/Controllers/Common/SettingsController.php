@@ -207,6 +207,7 @@ class SettingsController extends BaseSettingsController
         }
     }
 
+
     public function settingsEmail(Setting $settings)
     {
         try {
@@ -217,6 +218,7 @@ class SettingsController extends BaseSettingsController
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
+
 
     public function settingsTemplate(Setting $settings)
     {

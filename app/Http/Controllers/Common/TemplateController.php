@@ -73,7 +73,6 @@ class TemplateController extends BaseTemplateController
         $this->commonMailer = new CommonMailer;
     }
 
-
     public function index()
     {
         try {

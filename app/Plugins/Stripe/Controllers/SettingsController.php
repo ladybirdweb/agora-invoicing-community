@@ -235,6 +235,4 @@ class SettingsController extends Controller
         $mail = new \App\Http\Controllers\Common\PhpMailController();
         $mail->sendEmail($setting->email, $setting->company_email, $paymentSuccessdata, 'Payment Successful ');
     }
-
-
 }

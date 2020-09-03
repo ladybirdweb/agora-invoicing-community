@@ -7,10 +7,9 @@ use Illuminate\Http\Request;
 
 class PHPController extends Controller
 {
-
     /**
      * Check if exec() function is available.
-
+     *
      *
      * @return bool
      */
@@ -51,7 +50,6 @@ class PHPController extends Controller
         $paths = array_values(array_filter($paths, function ($path) {
             try {
                 return is_executable($path) && preg_match("/php[0-9\.a-z]{0,3}$/i", $path);
-
             } catch (\Exception $e) {
                 // in case of open_basedir, just throw skip it
                 return true;
@@ -63,9 +61,7 @@ class PHPController extends Controller
 
     public function checkPHPExecutablePath(Request $request)
     {
-
         try {
-
             $path = $request->get('path');
             $version = '7.2';
             if (! file_exists($path) || ! is_executable($path)) {
@@ -80,7 +76,6 @@ class PHPController extends Controller
             }
 
             return errorResponse(\Lang::get('message.please_enable_php_exec_for_cronjob_check'));
-
         } catch (\Exception $e) {
             return errorResponse($e->getMessage());
         }

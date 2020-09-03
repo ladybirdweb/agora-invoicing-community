@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Jobs;
 
-
 use App\Http\Controllers\Common\PHPController as Controller;
 use App\Http\Requests\Queue\QueueRequest;
 use App\Model\Mailjob\FaveoQueue;
@@ -109,7 +108,6 @@ class QueueController extends Controller
         }
     }
 
-
     public function getForm(Request $request)
     {
         $queueid = $request->input('queueid');
@@ -215,7 +213,6 @@ class QueueController extends Controller
             return errorResponse($e->getMessage());
         }
     }
-
 
     public function form($short, $label, $name, $class, $placeholder = '')
     {

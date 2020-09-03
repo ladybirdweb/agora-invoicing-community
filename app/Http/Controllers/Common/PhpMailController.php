@@ -4,33 +4,31 @@ namespace App\Http\Controllers\Common;
 
 use App\Http\Controllers\Controller;
 
-use Illuminate\Http\Request;
+
 
 class PhpMailController extends Controller
 {
+    protected $commonMailer;
+    protected $queueManager;
 
-	protected $commonMailer, $queueManager;
-
-	public function __construct()
+    public function __construct()
     {
         $this->commonMailer = new CommonMailer();
-    	$this->queueManager = app('queue');
-
+        $this->queueManager = app('queue');
     }
-    
+
+
     public function sendEmail($from, $to, $template_data, $template_name, $replace = [], $type = '', $bcc = [])
     {
-    	$this->setQueue();
-    	$job = new \App\Jobs\SendEmail($from, $to, $template_data, $template_name, $replace, $type);
-
+        $this->setQueue();
+        $job = new \App\Jobs\SendEmail($from, $to, $template_data, $template_name, $replace, $type);
         dispatch($job);
     }
 
     /**
 
 
-     * set the queue service
-
+     * set the queue service.
      */
     public function setQueue()
     {
@@ -41,9 +39,9 @@ class PhpMailController extends Controller
     {
 
 
-        return persistentCache('queue_configuration', function(){
-            $short        = 'database';
-            $field        = [
+        return persistentCache('queue_configuration', function () {
+            $short = 'database';
+            $field = [
                 'driver' => 'database',
                 'table'  => 'jobs',
                 'queue'  => 'default',
@@ -51,14 +49,16 @@ class PhpMailController extends Controller
             ];
 
 
-            $queue        = new \App\Model\MailJob\QueueService();
+            $queue = new \App\Model\MailJob\QueueService();
             $active_queue = $queue->where('status', 1)->first();
             if ($active_queue) {
-                $short  = $active_queue->short_name;
+                $short = $active_queue->short_name;
                 $fields = new \App\Model\MailJob\FaveoQueue();
-                $field  = $fields->where('service_id', $active_queue->id)->pluck('value', 'key')->toArray();
+                $field = $fields->where('service_id', $active_queue->id)->pluck('value', 'key')->toArray();
             }
-            return (object)['driver'=> $short,'config'=>$field];
+
+
+            return (object) ['driver'=> $short, 'config'=>$field];
 
         });
     }

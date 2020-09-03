@@ -101,9 +101,7 @@
             Route::get('get-my-invoices/{orderid}/{userid}', 'Front\ClientController@getInvoicesByOrderId');
 
 
-
             Route::get('get-my-payment/{orderid}/{userid}', ['uses' => 'Front\ClientController@getPaymentByOrderId', 'as' => 'get-my-payment']);
-
 
 
             Route::get('get-my-payment-client/{orderid}/{userid}', ['uses' => 'Front\ClientController@getPaymentByOrderIdClient', 'as' => 'get-my-payment-client']);
@@ -158,8 +156,6 @@
             Route::get('/', 'DashboardController@index');
 
             Route::get('activate/{token}', 'Auth\AuthController@activate');
-
-
 
             /*
              * Client
@@ -351,8 +347,8 @@
 
 
 
-             /**
-             * Queue
+            /**
+             * Queue.
              */
             Route::get('queue', ['as' => 'queue', 'uses' => 'Jobs\QueueController@index']);
             Route::get('get-queue', 'Jobs\QueueController@getQueues')->name('get-queue');
@@ -360,7 +356,7 @@
             Route::post('queue/{id}', ['as' => 'queue.update', 'uses' => 'Jobs\QueueController@update']);
 
 
-            Route::post('queue/{queue}/activate',  'Jobs\QueueController@activate');
+            Route::post('queue/{queue}/activate', 'Jobs\QueueController@activate');
             Route::get('form/queue', ['as' => 'queue.form', 'uses' => 'Jobs\QueueController@getForm']);
 
             /*

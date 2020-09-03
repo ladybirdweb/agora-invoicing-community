@@ -100,9 +100,7 @@
             Route::get('get-my-invoices', 'Front\ClientController@getInvoices')->name('get-my-invoices');
             Route::get('get-my-invoices/{orderid}/{userid}', 'Front\ClientController@getInvoicesByOrderId');
 
-
             Route::get('get-my-payment/{orderid}/{userid}', ['uses' => 'Front\ClientController@getPaymentByOrderId', 'as' => 'get-my-payment']);
-
 
             Route::get('get-my-payment-client/{orderid}/{userid}', ['uses' => 'Front\ClientController@getPaymentByOrderIdClient', 'as' => 'get-my-payment-client']);
 
@@ -149,15 +147,12 @@
              */
             Route::get('twitter', 'Common\SocialMediaController@getTweets')->name('twitter');
 
-           
             Route::auth();
             Route::post('auth/register', 'Auth\RegisterController@postRegister')->name('auth/register');
             Route::get('auth/logout', 'Auth\LoginController@logout')->name('logout');
             Route::get('/', 'DashboardController@index');
 
             Route::get('activate/{token}', 'Auth\AuthController@activate');
-
-
 
             /*
              * Client
@@ -335,14 +330,14 @@
             // Route::get('get-templates', 'Common\TemplateController@GetTemplates');
             Route::delete('templates-delete', 'Common\TemplateController@destroy')->name('templates-delete');
 
-             /**
-             * Queue
+            /**
+             * Queue.
              */
             Route::get('queue', ['as' => 'queue', 'uses' => 'Jobs\QueueController@index']);
             Route::get('get-queue', 'Jobs\QueueController@getQueues')->name('get-queue');
             Route::get('queue/{id}', ['as' => 'queue.edit', 'uses' => 'Jobs\QueueController@edit']);
             Route::post('queue/{id}', ['as' => 'queue.update', 'uses' => 'Jobs\QueueController@update']);
-            Route::post('queue/{queue}/activate',  'Jobs\QueueController@activate');
+            Route::post('queue/{queue}/activate', 'Jobs\QueueController@activate');
             Route::get('form/queue', ['as' => 'queue.form', 'uses' => 'Jobs\QueueController@getForm']);
 
             /*

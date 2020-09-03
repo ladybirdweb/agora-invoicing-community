@@ -367,7 +367,6 @@ class AuthController extends BaseAuthController
             ];
             $mail = new \App\Http\Controllers\Common\PhpMailController();
             $mail->sendEmail($from, $to, $template_data, $template_name, $replace, 'account_manager_email', $bcc);
-            
         }
     }
 }

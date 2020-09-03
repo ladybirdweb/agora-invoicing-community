@@ -289,6 +289,7 @@ class CartController extends BaseCartController
             $subject = 'Faveo billing enquiry';
             $mail = new \App\Http\Controllers\Common\PhpMailController();
             $mail->sendEmail($from, $to, $data, $subject, [], $fromname, $toname);
+
             return redirect()->back()->with('success', 'Your message was sent successfully. Thanks.');
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());

@@ -221,6 +221,5 @@ class BaseCronController extends Controller
         }
         $mail = new \App\Http\Controllers\Common\PhpMailController();
         $mail->sendEmail($from, $to, $data, $subject, $replace, $type);
-
     }
 }

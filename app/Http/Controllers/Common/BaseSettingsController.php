@@ -10,6 +10,7 @@ use App\Model\Mailjob\ExpiryMailDay;
 use App\Traits\ApiKeySettings;
 use Illuminate\Http\Request;
 use Spatie\Activitylog\Models\Activity;
+use App\Http\Controllers\Common\PHPController as PaymentSettingsController;
 
 class BaseSettingsController extends PaymentSettingsController
 {
@@ -234,69 +235,8 @@ class BaseSettingsController extends PaymentSettingsController
         /* redirect to Index page with Success Message */
         return redirect('job-scheduler')->with('success', \Lang::get('message.updated-successfully'));
     }
-
-    /**
-     * Check if exec() function is available.
-     *
-     * @return bool
-     */
-    private function execEnabled()
-    {
-        try {
-            // make a small test
-            return function_exists('exec') && ! in_array('exec', array_map('trim', explode(', ', ini_get('disable_functions'))));
-        } catch (\Exception $ex) {
-            return false;
-        }
-    }
-
-    private function getPHPBinPath()
-    {
-        $paths = [
-            '/usr/bin/php',
-            '/usr/local/bin/php',
-            '/bin/php',
-            '/usr/bin/php7',
-            '/usr/bin/php7.1',
-            '/usr/bin/php71',
-            '/opt/plesk/php/7.1/bin/php',
-        ];
-        // try to detect system's PHP CLI
-        if ($this->execEnabled()) {
-            try {
-                $paths = array_unique(array_merge($paths, explode(' ', exec('whereis php'))));
-            } catch (\Exception $e) {
-                // @todo: system logging here
-                echo $e->getMessage();
-            }
-        }
-
-        // validate detected / default PHP CLI
-        // Because array_filter() preserves keys, you should consider the resulting array to be an associative array even if the original array had integer keys for there may be holes in your sequence of keys. This means that, for example, json_encode() will convert your result array into an object instead of an array. Call array_values() on the result array to guarantee json_encode() gives you an array.
-        $paths = array_values(array_filter($paths, function ($path) {
-            return is_executable($path) && preg_match("/php[0-9\.a-z]{0,3}$/i", $path);
-        }));
-
-        return $paths;
-    }
-
-    protected function checkPHPExecutablePath(Request $request)
-    {
-        $path = $request->get('path');
-        $version = '5.6';
-        if (! file_exists($path) || ! is_executable($path)) {
-            return errorResponse(\Lang::get('message.invalid-php-path'));
-        }
-
-        if ($this->execEnabled()) {
-            $exec_script = $path.' '.public_path('cron-test.php');
-            $version = exec($exec_script, $output);
-
-            return (version_compare($version, '7.1.3', '>=') == 1) ? successResponse(\Lang::get('message.valid-php-path')) : errorResponse(\Lang::get('message.invalid-php-version-or-path'));
-        } else {
-            return successResponse(\Lang::get('message.please_enable_php_exec_for_cronjob_check'));
-        }
-    }
+ 
+    
 
     //Save the Cron Days for expiry Mails and Activity Log
     public function saveCronDays(Request $request)

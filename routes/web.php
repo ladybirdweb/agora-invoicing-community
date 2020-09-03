@@ -342,7 +342,6 @@
             // Route::get('get-templates', 'Common\TemplateController@GetTemplates');
             Route::delete('templates-delete', 'Common\TemplateController@destroy')->name('templates-delete');
 
-
             /**
              * Queue.
              */
@@ -350,7 +349,6 @@
             Route::get('get-queue', 'Jobs\QueueController@getQueues')->name('get-queue');
             Route::get('queue/{id}', ['as' => 'queue.edit', 'uses' => 'Jobs\QueueController@edit']);
             Route::post('queue/{id}', ['as' => 'queue.update', 'uses' => 'Jobs\QueueController@update']);
-
 
             Route::post('queue/{queue}/activate', 'Jobs\QueueController@activate');
             Route::get('form/queue', ['as' => 'queue.form', 'uses' => 'Jobs\QueueController@getForm']);

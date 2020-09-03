@@ -23,7 +23,6 @@ class PhpMailController extends Controller
     }
 
     /**
-
      * set the queue service.
      */
     public function setQueue()
@@ -33,7 +32,6 @@ class PhpMailController extends Controller
 
     private function getActiveQueue()
     {
-
         return persistentCache('queue_configuration', function () {
             $short = 'database';
             $field = [
@@ -42,7 +40,6 @@ class PhpMailController extends Controller
                 'queue'  => 'default',
                 'expire' => 60,
             ];
-
 
             $queue = new \App\Model\MailJob\QueueService();
             $active_queue = $queue->where('status', 1)->first();

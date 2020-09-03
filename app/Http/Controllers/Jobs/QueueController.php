@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Jobs;
 
-
 use App\Http\Controllers\Common\PHPController as Controller;
 use App\Http\Requests\Queue\QueueRequest;
 use App\Model\Mailjob\FaveoQueue;
@@ -76,14 +75,12 @@ class QueueController extends Controller
         }
     }
 
-
     public function update($id, QueueRequest $request)
     {
         try {
             $values = $request->except('_token');
             $queues = new QueueService();
             $queue = $queues->find($id);
-
 
             if (! $queue) {
                 throw new Exception('Sorry we can not find your request');
@@ -110,7 +107,6 @@ class QueueController extends Controller
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-
 
     public function getForm(Request $request)
     {
@@ -224,7 +220,6 @@ class QueueController extends Controller
         $queues = new QueueService();
         $queue = $queues->find($queueid);
         if ($queue) {
-
             $form = "<div class='".$class."'>".Form::label($name, $label)."<span class='text-red'> *</span>".
                     Form::text($name, $queue->getExtraField($name), ['class' => 'form-control', 'placeholder' => $placeholder]).'</div>';
         } else {

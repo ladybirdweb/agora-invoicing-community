@@ -9,7 +9,7 @@ class PHPController extends Controller
 {
     /**
      * Check if exec() function is available.
-
+     *
      *
      *
      * @return bool
@@ -38,7 +38,6 @@ class PHPController extends Controller
         ];
         // try to detect system's PHP CLI
 
-
         if ($this->execEnabled()) {
             try {
                 $paths = array_unique(array_merge($paths, explode(' ', exec('whereis php'))));
@@ -64,7 +63,6 @@ class PHPController extends Controller
 
     public function checkPHPExecutablePath(Request $request)
     {
-
         try {
             $path = $request->get('path');
             $version = '7.2';
@@ -80,7 +78,6 @@ class PHPController extends Controller
             }
 
             return errorResponse(\Lang::get('message.please_enable_php_exec_for_cronjob_check'));
-
         } catch (\Exception $e) {
             return errorResponse($e->getMessage());
         }

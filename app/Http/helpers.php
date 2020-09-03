@@ -258,7 +258,6 @@ function setServiceConfig($emailConfig)
     (new \Illuminate\Mail\MailServiceProvider(app()))->register();
 }
 
-
 function persistentCache($key, Closure $closure, $noOfSeconds = 30, array $variables = [])
 {
     $keySalt = json_encode($variables);

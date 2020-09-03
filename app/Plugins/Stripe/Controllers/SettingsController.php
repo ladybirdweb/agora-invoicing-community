@@ -221,7 +221,6 @@ class SettingsController extends Controller
         $setting = Setting::find(1);
         $paymentFailData = 'Payment for'.' '.'of'.' '.\Auth::user()->currency.' '.$amount.' '.'failed by'.' '.\Auth::user()->first_name.' '.\Auth::user()->last_name.' '.'. User Email:'.' '.\Auth::user()->email.'<br>'.'Reason:'.$exceptionMessage;
 
-
         $mail = new \App\Http\Controllers\Common\PhpMailController();
         $mail->sendEmail($setting->email, $setting->company_email, $paymentFailData, 'Payment failed ');
     }

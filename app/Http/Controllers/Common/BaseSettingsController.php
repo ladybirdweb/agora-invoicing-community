@@ -11,6 +11,7 @@ use App\Model\Mailjob\ExpiryMailDay;
 use App\Traits\ApiKeySettings;
 use Illuminate\Http\Request;
 use Spatie\Activitylog\Models\Activity;
+use App\Http\Controllers\Common\PHPController as PaymentSettingsController;
 
 class BaseSettingsController extends PaymentSettingsController
 {
@@ -235,6 +236,7 @@ class BaseSettingsController extends PaymentSettingsController
         /* redirect to Index page with Success Message */
         return redirect('job-scheduler')->with('success', \Lang::get('message.updated-successfully'));
     }
+
 
     //Save the Cron Days for expiry Mails and Activity Log
     public function saveCronDays(Request $request)

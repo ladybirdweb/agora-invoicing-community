@@ -22,7 +22,6 @@ Email
 
        
             <div class="card-body">
-             
 
                   <div class="col-md-12">
 
@@ -139,7 +138,6 @@ Email
 
 
             $("#emailSetting").html("<i class='fas fa-circle-notch fa-spin'></i>Please Wait...");
-
             $.ajax({
 
                 url : '{{url("settings/email")}}',

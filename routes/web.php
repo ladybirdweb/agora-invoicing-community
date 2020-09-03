@@ -100,9 +100,7 @@
             Route::get('get-my-invoices', 'Front\ClientController@getInvoices')->name('get-my-invoices');
             Route::get('get-my-invoices/{orderid}/{userid}', 'Front\ClientController@getInvoicesByOrderId');
 
-
             Route::get('get-my-payment/{orderid}/{userid}', ['uses' => 'Front\ClientController@getPaymentByOrderId', 'as' => 'get-my-payment']);
-
 
             Route::get('get-my-payment-client/{orderid}/{userid}', ['uses' => 'Front\ClientController@getPaymentByOrderIdClient', 'as' => 'get-my-payment-client']);
 
@@ -148,7 +146,6 @@
              * Tweeter api
              */
             Route::get('twitter', 'Common\SocialMediaController@getTweets')->name('twitter');
-
 
             Route::auth();
             Route::post('auth/register', 'Auth\RegisterController@postRegister')->name('auth/register');
@@ -336,7 +333,6 @@
             Route::get('get-templates', ['as' => 'get-templates', 'uses' => 'Common\TemplateController@getTemplates']);
             // Route::get('get-templates', 'Common\TemplateController@GetTemplates');
             Route::delete('templates-delete', 'Common\TemplateController@destroy')->name('templates-delete');
-
 
             /**
              * Queue.

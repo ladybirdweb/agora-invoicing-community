@@ -4,8 +4,6 @@ namespace App\Http\Controllers\Common;
 
 use App\Http\Controllers\Controller;
 
-
-
 class PhpMailController extends Controller
 {
     protected $commonMailer;
@@ -17,7 +15,6 @@ class PhpMailController extends Controller
         $this->queueManager = app('queue');
     }
 
-
     public function sendEmail($from, $to, $template_data, $template_name, $replace = [], $type = '', $bcc = [])
     {
         $this->setQueue();
@@ -26,7 +23,6 @@ class PhpMailController extends Controller
     }
 
     /**
-
      * set the queue service.
      */
     public function setQueue()
@@ -36,7 +32,6 @@ class PhpMailController extends Controller
 
     private function getActiveQueue()
     {
-
         return persistentCache('queue_configuration', function () {
             $short = 'database';
             $field = [
@@ -55,9 +50,7 @@ class PhpMailController extends Controller
                 $field = $fields->where('service_id', $active_queue->id)->pluck('value', 'key')->toArray();
             }
 
-
             return (object) ['driver'=> $short, 'config'=>$field];
-
         });
     }
 
@@ -117,7 +110,6 @@ class PhpMailController extends Controller
             ]);
             \Bugsnag::notifyException($ex);
             if ($ex instanceof \Swift_TransportException) {
-
                 throw new \Exception('We can not reach to this email address');
             }
 

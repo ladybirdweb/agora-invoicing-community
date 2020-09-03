@@ -219,26 +219,7 @@ class SettingsController extends BaseSettingsController
     }
 
 
-    public function postSettingsEmail(Setting $settings, Request $request)
-    {
-        $this->validate($request, [
-            'email'     => 'required|email',
-            'password'  => 'required',
-            'driver'    => 'required',
-            'port'      => 'required',
-            'encryption'=> 'required',
-            'host'      => 'required',
-        ]);
-
-        try {
-            $setting = $settings->find(1);
-            $setting->fill($request->input())->save();
-
-            return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
-        } catch (\Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
+   
 
     public function settingsTemplate(Setting $settings)
     {

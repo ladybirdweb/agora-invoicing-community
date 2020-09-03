@@ -100,7 +100,11 @@
             Route::get('get-my-invoices', 'Front\ClientController@getInvoices')->name('get-my-invoices');
             Route::get('get-my-invoices/{orderid}/{userid}', 'Front\ClientController@getInvoicesByOrderId');
 
+
+
             Route::get('get-my-payment/{orderid}/{userid}', ['uses' => 'Front\ClientController@getPaymentByOrderId', 'as' => 'get-my-payment']);
+
+
 
             Route::get('get-my-payment-client/{orderid}/{userid}', ['uses' => 'Front\ClientController@getPaymentByOrderIdClient', 'as' => 'get-my-payment-client']);
 
@@ -154,41 +158,7 @@
 
             Route::get('activate/{token}', 'Auth\AuthController@activate');
 
-            /*
-             * Settings
-             */
-            Route::get('settings', 'Common\SettingsController@settings');
-            Route::get('settings/system', 'Common\SettingsController@settingsSystem');
-            Route::patch('settings/system', 'Common\SettingsController@postSettingsSystem');
-            Route::get('settings/email', 'Common\EmailSettingsController@settingsEmail');
-            Route::patch('settings/email', 'Common\EmailSettingsController@postSettingsEmail');
-            Route::get('settings/template', 'Common\SettingsController@settingsTemplate');
-            Route::patch('settings/template', 'Common\SettingsController@postSettingsTemplate');
-            Route::patch('settings/error', 'Common\SettingsController@postSettingsError');
-            Route::get('settings/activitylog', 'Common\SettingsController@settingsActivity');
-            Route::get('settings/maillog', 'Common\SettingsController@settingsMail');
-            Route::get('get-activity', ['as' => 'get-activity', 'uses' => 'Common\SettingsController@getActivity']);
-            Route::get('get-email', ['as' => 'get-email', 'uses' => 'Common\SettingsController@getMails']);
-            Route::delete('activity-delete', 'Common\SettingsController@destroy')->name('activity-delete');
-            Route::delete('email-delete', 'Common\SettingsController@destroyEmail')->name('email-delete');
-            Route::post('licenseDetails', 'Common\BaseSettingsController@licenseDetails')->name('licenseDetails');
-            Route::post('updateDetails', 'Common\BaseSettingsController@updateDetails')->name('updateDetails');
-            Route::post('captchaDetails', 'Common\BaseSettingsController@captchaDetails')->name('captchaDetails');
-            Route::post('updatemobileDetails', 'Common\BaseSettingsController@updateMobileDetails')->name('updatemobileDetails');
-            Route::post('updateemailDetails', 'Common\BaseSettingsController@updateEmailDetails')->name('updateemailDetails');
-            Route::post('updatetwitterDetails', 'Common\BaseSettingsController@updateTwitterDetails')->name('updatetwitterDetails');
-            Route::post('updateMailchimpDetails', 'Common\BaseSettingsController@updateMailchimpDetails')->name('updateMailchimpDetails');
-            Route::post('updateTermsDetails', 'Common\BaseSettingsController@updateTermsDetails')->name('updateTermsDetails');
-            Route::post('updaterzpDetails', 'Common\BaseSettingsController@updateRazorpayDetails')->name('updaterzpDetails');
-            Route::post('updatezohoDetails', 'Common\BaseSettingsController@updateZohoDetails')->name('updatezohoDetails');
-            Route::post('updatepipedriveDetails', 'Common\BaseSettingsController@updatepipedriveDetails')->name('updatepipedriveDetails');
-            Route::post('mailchimp-prod-status', 'Common\BaseSettingsController@updateMailchimpProductStatus')->name('mailchimp-prod-status');
-            Route::post('mailchimp-paid-status', 'Common\BaseSettingsController@updateMailchimpIsPaidStatus')->name('mailchimp-paid-status');
-            Route::post('updatedomainCheckDetails', 'Common\BaseSettingsController@updatedomainCheckDetails')->name('updatedomainCheckDetails');
-            Route::get('system-managers', 'Common\SystemManagerController@getSystemManagers')->name('system-managers');
-            Route::get('search-admins', 'Common\SystemManagerController@searchAdmin')->name('search-admins');
-            Route::post('replace-acc-manager', 'Common\SystemManagerController@replaceAccountManager')->name('replace-acc-manager');
-            Route::post('replace-sales-manager', 'Common\SystemManagerController@replaceSalesManager')->name('replace-sales-manager');
+
 
             /*
              * Client
@@ -374,15 +344,16 @@
             // Route::get('get-templates', 'Common\TemplateController@GetTemplates');
             Route::delete('templates-delete', 'Common\TemplateController@destroy')->name('templates-delete');
 
-            /**
-             * Queue.
+
+             /**
+             * Queue
              */
             Route::get('queue', ['as' => 'queue', 'uses' => 'Jobs\QueueController@index']);
             Route::get('get-queue', 'Jobs\QueueController@getQueues')->name('get-queue');
             Route::get('queue/{id}', ['as' => 'queue.edit', 'uses' => 'Jobs\QueueController@edit']);
             Route::post('queue/{id}', ['as' => 'queue.update', 'uses' => 'Jobs\QueueController@update']);
 
-            Route::post('queue/{queue}/activate', 'Jobs\QueueController@activate');
+            Route::post('queue/{queue}/activate',  'Jobs\QueueController@activate');
             Route::get('form/queue', ['as' => 'queue.form', 'uses' => 'Jobs\QueueController@getForm']);
 
             /*

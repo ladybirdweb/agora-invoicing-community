@@ -221,6 +221,7 @@ function getIndianCurrencyFormat($number)
     } else {
         return $thecash;
     }
+}
 
 /**
  * sets mail config and reloads the config into the container
@@ -259,4 +260,10 @@ function setServiceConfig($emailConfig)
     //setting the config again in the service container
     (new \Illuminate\Mail\MailServiceProvider(app()))->register();
 
+}
+
+function persistentCache($key, Closure $closure, $noOfSeconds = 30, array $variables = [])
+{
+    $keySalt = json_encode($variables);
+    return Cache::remember($key.$keySalt, $noOfSeconds, $closure);
 }

@@ -15,15 +15,13 @@ Email
     </div><!-- /.col -->
 @stop
 @section('content')
-<div class="row">
+ <div id="alertMessage"></div>
 
-    <div class="col-md-12">
+<div class="card card-primary card-outline">
 
-        <div id="alertMessage"></div>
-        <div class="box box-primary">
-
-            <div class="box-body">
-              <button type="submit" class="form-group btn btn-primary pull-right"  id="emailSetting"><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button>
+       
+            <div class="card-body">
+             
                   <div class="col-md-12">
 
 
@@ -111,13 +109,9 @@ Email
                         </td>
                     </tr>
                     <br>
-                      <button type="submit" class="btn btn-primary pull-right" id="submit" style="margin-top:-40px;"><i class="fa fa-sync-alt">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button>
-
+                     <button type="submit" class="form-group btn btn-primary pull-right"  id="emailSetting"><i class="fa fa-save">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button>
+                     
                   </div>
-
-            </div>
-        </div>
-    </div>
 </div>
     <script>
         $(document).ready(function(){
@@ -141,7 +135,7 @@ Email
         $('#emailSetting').on('click',function(){
 
 
-            $("#emailSetting").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
+            $("#emailSetting").html("<i class='fas fa-circle-notch fa-spin'></i>Please Wait...");
             $.ajax({
 
                 url : '{{url("settings/email")}}',

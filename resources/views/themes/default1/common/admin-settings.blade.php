@@ -279,6 +279,19 @@ Settings
                     </div>
                 </div>
                 <!--/.col-md-2-->
+
+                 <div class="col-md-2 col-sm-6">
+                    <div class="settingiconblue">
+                        <div class="settingdivblue">
+                            <a href="{{url('queue')}}">
+                                <span class="fa-stack fa-2x">
+                                    <i class="fa fa-upload fa-stack-1x"></i>
+                                </span>
+                            </a>
+                        </div>
+                        <p class="box-title" >Queues</p>
+                    </div>
+                </div>
                
         </div>
         <!-- /.row -->

@@ -219,7 +219,6 @@ class SettingsController extends BaseSettingsController
     }
 
 
-
     public function settingsTemplate(Setting $settings)
     {
         try {

@@ -28,17 +28,15 @@ class QueueRequest extends FormRequest
 
         return $rules;
     }
-
-    public function setRule($request)
-    {
+    
+    public function setRule($request){
         $rules = ['input' => 'required'];
-        if (count($request) > 0) {
+        if(count($request)>0){
             unset($rules['input']);
-            foreach ($request as $key=>$value) {
-                $rules[$key] = 'required';
+            foreach($request as $key=>$value){
+                $rules[$key]='required';
             }
         }
-
         return $rules;
     }
 }

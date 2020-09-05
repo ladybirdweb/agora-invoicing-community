@@ -23,54 +23,52 @@ class EmailSettingRequest extends FormRequest
      */
     public function rules()
     {
-        if($this->driver == 'smtp') {
+        if ($this->driver == 'smtp') {
             return [
-            'driver'    => 'required',
-            'email' => 'required',
-            'password'=> 'required',
-            'port'      => 'required',
-            'encryption'=> 'required',
-            'host'      => 'required',
-        ];
-        } elseif($this->driver == 'mailgun') {
-            return [
-            'driver'    => 'required',
-            'email' => 'required',
-            'password'=> 'required',
-            'secret'      => 'required',
-            'domain'      => 'required',
-        ];
-        } elseif($this->driver == 'mandrill') {
-            return [
-            'driver'    => 'required',
-            'email' => 'required',
-            'password'=> 'required',
-            'secret'      => 'required',
+                'driver'    => 'required',
+                'email' => 'required',
+                'password'=> 'required',
+                'port'      => 'required',
+                'encryption'=> 'required',
+                'host'      => 'required',
             ];
-        } elseif($this->driver == 'ses') {
+        } elseif ($this->driver == 'mailgun') {
             return [
-            'driver'    => 'required',
-            'email' => 'required',
-            'password'=> 'required',
-            'secret'      => 'required',
-            'key'         => 'required',
-            'region'      => 'required',
+                'driver'    => 'required',
+                'email' => 'required',
+                'password'=> 'required',
+                'secret'      => 'required',
+                'domain'      => 'required',
             ];
-        } elseif($this->driver == 'sparkpost') {
+        } elseif ($this->driver == 'mandrill') {
             return [
-            'driver'    => 'required',
-            'email' => 'required',
-            'password'=> 'required',
-            'secret'      => 'required',
+                'driver'    => 'required',
+                'email' => 'required',
+                'password'=> 'required',
+                'secret'      => 'required',
             ];
-            
+        } elseif ($this->driver == 'ses') {
+            return [
+                'driver'    => 'required',
+                'email' => 'required',
+                'password'=> 'required',
+                'secret'      => 'required',
+                'key'         => 'required',
+                'region'      => 'required',
+            ];
+        } elseif ($this->driver == 'sparkpost') {
+            return [
+                'driver'    => 'required',
+                'email' => 'required',
+                'password'=> 'required',
+                'secret'      => 'required',
+            ];
         } else {
             return [
-            'driver'    => 'required',
-            'email' => 'required',
-            'password'=> 'required',
-        ];
-        } 
-        
+                'driver'    => 'required',
+                'email' => 'required',
+                'password'=> 'required',
+            ];
+        }
     }
 }

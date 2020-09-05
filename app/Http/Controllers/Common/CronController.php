@@ -258,7 +258,7 @@ class CronController extends BaseCronController
             $invoice = $this->getInvoiceByOrderId($value->order_id);
             $item = $this->getInvoiceItemByInvoiceId($invoice->id);
             $product = $item->product_name;
-            if(emailSendingStatus()) {
+            if (emailSendingStatus()) {
                 $this->mail($user, $end, $product, $order, $value->id);
             }
         }

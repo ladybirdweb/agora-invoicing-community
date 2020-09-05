@@ -142,8 +142,6 @@ class BaseCartController extends ExtendedBaseCartController
         }
     }
 
-    
-
     /**
      * Reduce No. of Agents When Minus button Is Clicked.
      *

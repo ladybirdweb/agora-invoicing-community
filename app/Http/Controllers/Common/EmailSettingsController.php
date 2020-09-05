@@ -3,9 +3,8 @@
 namespace App\Http\Controllers\Common;
 
 use App\Http\Controllers\Controller;
-use App\Model\Common\Setting;
-use Illuminate\Http\Request;
 use App\Http\Requests\Email\EmailSettingRequest;
+use App\Model\Common\Setting;
 
 class EmailSettingsController extends Controller
 {
@@ -78,7 +77,6 @@ class EmailSettingsController extends Controller
     protected function checkSendConnection(Setting $emailConfig)
     {
         try {
-            
             $this->emailConfig = $emailConfig;
 
             //if sending protocol is mail, no connection check is required
@@ -116,33 +114,32 @@ class EmailSettingsController extends Controller
     }
 
     /**
-     * Checks services status by raw sending mail and waiting for the response
-     * @return boolean      true if success else false
+     * Checks services status by raw sending mail and waiting for the response.
+     * @return bool      true if success else false
      */
-    private function checkServices(){
-        try{
-
+    private function checkServices()
+    {
+        try {
             $protocolName = $this->emailConfig->sending_protocol;
 
             //sending a text message and checking if respond comes. If yes, connection is considered to be successful
-            \Mail::raw("This is a test mail for successful $protocolName connection", function ($message){
-                 $message->to($this->emailConfig->email_address);
+            \Mail::raw("This is a test mail for successful $protocolName connection", function ($message) {
+                $message->to($this->emailConfig->email_address);
             });
 
-            if(count(\Mail::failures()) > 0) {
+            if (count(\Mail::failures()) > 0) {
                 $this->error = Lang::get('message.unknown_error_occured');
+
                 return false;
             }
 
             return true;
-
-        }catch(\Exception $e){
-
+        } catch (\Exception $e) {
             $this->error = $e;
+
             return false;
         }
     }
-
 
     private function checkSMTPConnection()
     {

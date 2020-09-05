@@ -107,7 +107,7 @@ class SystemManagerController extends Controller
                 User::where('id', $accManager->id)->update(['account_manager'=>$newAccountManager]);
             }
             $arrayOfBccEmails = User::where('account_manager', $newAccountManager)->pluck('email')->toArray();
-            if (count($arrayOfBccEmails) > 0) {
+            if (count($arrayOfBccEmails) > 0 && emailSendingStatus()) {
                 $user = User::where('email', $arrayOfBccEmails[0])->first();
                 $cont = new AuthController();
                 $sendMail = $cont->accountManagerMail($user, $arrayOfBccEmails);
@@ -154,7 +154,7 @@ class SystemManagerController extends Controller
                 User::where('id', $saleManager->id)->update(['manager'=>$newSalesManager]);
             }
             $arrayOfBccEmails = User::where('manager', $newSalesManager)->pluck('email')->toArray();
-            if (count($arrayOfBccEmails) > 0) {
+            if (count($arrayOfBccEmails) > 0 && emailSendingStatus()) {
                 $user = User::where('email', $arrayOfBccEmails[0])->first();
                 $cont = new AuthController();
                 $sendMail = $cont->salesManagerMail($user, $arrayOfBccEmails);

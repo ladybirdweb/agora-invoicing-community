@@ -189,7 +189,7 @@ class SettingsController extends Controller
                     $control->successRenew($invoice);
                     $payment = new \App\Http\Controllers\Order\InvoiceController();
                     $payment->postRazorpayPayment($invoice);
-                    if ($invoice->grand_total) {
+                    if ($invoice->grand_total && emailSendingStatus()) {
                         $this->sendPaymentSuccessMailtoAdmin($invoice->currency, $invoice->grand_total, \Auth::user(), $invoice->invoiceItem()->first()->product_name);
                     }
                     $view = $cont->getViewMessageAfterRenew($invoice, $state, $currency);
@@ -202,11 +202,15 @@ class SettingsController extends Controller
                 return redirect('checkout')->with('fails', 'Your Payment was declined. Please try making payment with other gateway');
             }
         } catch (\Cartalyst\Stripe\Exception\ApiLimitExceededException | \Cartalyst\Stripe\Exception\BadRequestException | \Cartalyst\Stripe\Exception\MissingParameterException | \Cartalyst\Stripe\Exception\NotFoundException | \Cartalyst\Stripe\Exception\ServerErrorException | \Cartalyst\Stripe\Exception\StripeException | \Cartalyst\Stripe\Exception\UnauthorizedException $e) {
-            $this->sendFailedPaymenttoAdmin($request['amount'], $e->getMessage());
+            if(emailSendingStatus()) {
+                $this->sendFailedPaymenttoAdmin($request['amount'], $e->getMessage());
+            }
 
             return redirect('checkout')->with('fails', 'Your Payment was declined. '.$e->getMessage().'. Please try again or try the other gateway');
         } catch (\Cartalyst\Stripe\Exception\CardErrorException $e) {
+            if(emailSendingStatus()) {
             $this->sendFailedPaymenttoAdmin($request['amount'], $e->getMessage());
+        }
             \Session::put('amount', $request['amount']);
             \Session::put('error', $e->getMessage());
 

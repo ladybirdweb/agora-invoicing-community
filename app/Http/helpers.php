@@ -2,6 +2,7 @@
 
 use App\Model\Product\ProductUpload;
 use Carbon\Carbon;
+use App\Model\Common\Setting;
 
 function getLocation()
 {
@@ -263,4 +264,13 @@ function persistentCache($key, Closure $closure, $noOfSeconds = 30, array $varia
     $keySalt = json_encode($variables);
 
     return Cache::remember($key.$keySalt, $noOfSeconds, $closure);
+}
+
+function emailSendingStatus()
+{
+    $status = false;
+    if(Setting::value('sending_status')) {
+        $status = true;
+    }
+    return $status;
 }

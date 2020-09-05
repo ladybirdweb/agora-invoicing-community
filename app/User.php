@@ -218,12 +218,12 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         $changed = $this->isDirty() ? $this->getDirty() : false;
         parent::save($options);
         $role = $this->role;
-        if ($changed && checkArray('manager', $changed) && $role == 'user') {
+        if ($changed && checkArray('manager', $changed) && $role == 'user' && emailSendingStatus()) {
             $auth = new Http\Controllers\Auth\AuthController();
             $auth->salesManagerMail($this);
         }
 
-        if ($changed && checkArray('account_manager', $changed) && $role == 'user') {
+        if ($changed && checkArray('account_manager', $changed) && $role == 'user' && emailSendingStatus()) {
             $auth = new Http\Controllers\Auth\AuthController();
             $auth->accountManagerMail($this);
         }

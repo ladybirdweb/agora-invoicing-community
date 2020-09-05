@@ -303,7 +303,9 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             foreach (\Cart::getContent() as $cart) {
                 $this->createInvoiceItems($invoice->id, $cart, $codevalue);
             }
-            $this->sendMail($user_id, $invoice->id);
+            if(emailSendingStatus()) {
+                $this->sendMail($user_id, $invoice->id);
+            }
 
             return $invoice;
         } catch (\Exception $ex) {

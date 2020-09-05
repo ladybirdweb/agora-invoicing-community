@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Common;
 use App\Http\Controllers\Controller;
 use App\Model\Common\Setting;
 use Illuminate\Http\Request;
+use App\Http\Requests\Email\EmailSettingRequest;
 
 class EmailSettingsController extends Controller
 {
@@ -32,22 +33,8 @@ class EmailSettingsController extends Controller
         }
     }
 
-    public function postSettingsEmail(Request $request)
+    public function postSettingsEmail(EmailSettingRequest $request)
     {
-        $this->validate($request, [
-            'email'     => 'required',
-            'password'  => 'required',
-            'driver'    => 'required',
-        ]);
-
-        if ($request->input('driver') == 'smtp') {
-            $this->validate($request, [
-                'port'      => 'required',
-                'encryption'=> 'required',
-                'host'      => 'required',
-            ]);
-        }
-
         try {
             $emailSettings = $request->all();
             $this->emailConfig = Setting::first();
@@ -56,6 +43,7 @@ class EmailSettingsController extends Controller
             if (! $this->checkSendConnection($this->emailConfig)) {
                 return errorResponse($this->errorhandler());
             }
+            $this->emailConfig->sending_status = 1;
             $this->emailConfig->save();
 
             return successResponse('Email Settings saved successfully');
@@ -90,10 +78,7 @@ class EmailSettingsController extends Controller
     protected function checkSendConnection(Setting $emailConfig)
     {
         try {
-            if (! $emailConfig->driver) {
-                throw new \Exception('sending protocol must be provided');
-            }
-
+            
             $this->emailConfig = $emailConfig;
 
             //if sending protocol is mail, no connection check is required
@@ -107,6 +92,8 @@ class EmailSettingsController extends Controller
             if ($this->emailConfig->driver == 'smtp') {
                 return $this->checkSMTPConnection();
             }
+
+            return $this->checkServices();
         } catch (Exception $e) {
             $this->error = $e;
 
@@ -127,6 +114,35 @@ class EmailSettingsController extends Controller
 
         return false;
     }
+
+    /**
+     * Checks services status by raw sending mail and waiting for the response
+     * @return boolean      true if success else false
+     */
+    private function checkServices(){
+        try{
+
+            $protocolName = $this->emailConfig->sending_protocol;
+
+            //sending a text message and checking if respond comes. If yes, connection is considered to be successful
+            \Mail::raw("This is a test mail for successful $protocolName connection", function ($message){
+                 $message->to($this->emailConfig->email_address);
+            });
+
+            if(count(\Mail::failures()) > 0) {
+                $this->error = Lang::get('message.unknown_error_occured');
+                return false;
+            }
+
+            return true;
+
+        }catch(\Exception $e){
+
+            $this->error = $e;
+            return false;
+        }
+    }
+
 
     private function checkSMTPConnection()
     {

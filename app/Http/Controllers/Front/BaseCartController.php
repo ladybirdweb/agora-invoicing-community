@@ -142,42 +142,7 @@ class BaseCartController extends ExtendedBaseCartController
         }
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return type
-     */
-    public function postContactUs(Request $request)
-    {
-        $this->validate($request, [
-            'name'    => 'required',
-            'email'   => 'required|email',
-            'message' => 'required',
-        ]);
-
-        $set = new \App\Model\Common\Setting();
-        $set = $set->findOrFail(1);
-
-        try {
-            $from = $set->email;
-            $fromname = $set->company;
-            $toname = '';
-            $to = 'support@faveohelpdesk.com';
-            $data = '';
-            $data .= 'Name: '.$request->input('name').'<br/s>';
-            $data .= 'Email: '.$request->input('email').'<br/>';
-            $data .= 'Message: '.$request->input('message').'<br/>';
-            $data .= 'Mobile: '.$request->input('Mobile').'<br/>';
-
-            $subject = 'Faveo billing enquiry';
-            $mail = new \App\Http\Controllers\Common\PhpMailController();
-            $mail->sendEmail($from, $to, $data, $subject, [], $fromname, $toname);
-
-            return redirect()->back()->with('success', 'Your message was sent successfully. Thanks.');
-        } catch (\Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
+    
 
     /**
      * Reduce No. of Agents When Minus button Is Clicked.

@@ -654,5 +654,6 @@ return [
      'inactive'                     => 'Inactive',
      'activate'                     => 'Activate',
      'extension_required_error' => "PHP's :extension extension is required for this functionality.",
+     'unknown_error_occured'   => 'Unknown error occured',
 
 ];

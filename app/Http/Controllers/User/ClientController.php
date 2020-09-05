@@ -228,7 +228,9 @@ class ClientController extends AdvanceSearchController
             $user->ip = $location['ip'];
 
             $user->save();
-            $this->sendWelcomeMail($user);
+            if(emailSendingStatus()){
+                $this->sendWelcomeMail($user);
+            }
             $mailchimpStatus = StatusSetting::first()->value('mailchimp_status');
             if ($mailchimpStatus == 1) {
                 $mailchimp = new \App\Http\Controllers\Common\MailChimpController();

@@ -103,14 +103,16 @@ class BaseOrderController extends ExtendedOrderController
                 $this->addSubscription($order->id, $plan_id, $version, $product, $serial_key);
             }
 
+            if(emailSendingStatus()) {
             $this->sendOrderMail($user_id, $order->id, $item->id);
-
+            }
             //Update Subscriber To Mailchimp
             $mailchimpStatus = StatusSetting::pluck('mailchimp_status')->first();
-            if ($mailchimpStatus == 1) {
+            if ($mailchimpStatus) {
                 $this->addtoMailchimp($product, $user_id, $item);
             }
         } catch (\Exception $ex) {
+            dd($ex);
             Bugsnag::notifyException($ex);
             app('log')->error($ex->getMessage());
 
@@ -308,6 +310,7 @@ class BaseOrderController extends ExtendedOrderController
                 SettingsController::sendPaymentSuccessMailtoAdmin($order->invoice->currency, $order->invoice->grand_total, $user, $product);
             }
         } catch (\Exception $ex) {
+            dd($ex);
             throw new \Exception($ex->getMessage());
         }
     }

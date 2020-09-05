@@ -90,9 +90,9 @@ class SystemManagerController extends Controller
             }
             $arrayOfBccEmails = User::where('account_manager', $newAccountManager)->get();
             if ($arrayOfBccEmails && emailSendingStatus()) {
-                foreach($arrayOfBccEmails as $user) {
-                $cont = new AuthController();
-                $sendMail = $cont->accountManagerMail($user);
+                foreach ($arrayOfBccEmails as $user) {
+                    $cont = new AuthController();
+                    $sendMail = $cont->accountManagerMail($user);
                 }
             }
 
@@ -131,16 +131,16 @@ class SystemManagerController extends Controller
             }
             //First make the selected Admin as sales Manager-
             User::where('id', $newSalesManager)->update(['position'=>'manager']);
-            
+
             $saleManagers = User::where('manager', $existingSaleManager)->get();
             foreach ($saleManagers as $saleManager) {
                 User::where('id', $saleManager->id)->update(['manager'=>$newSalesManager]);
             }
             $arrayOfBccEmails = User::where('manager', $newSalesManager)->get();
             if ($arrayOfBccEmails && emailSendingStatus()) {
-                foreach($arrayOfBccEmails as $user) {
-                $cont = new AuthController();
-                $sendMail = $cont->salesManagerMail($user);
+                foreach ($arrayOfBccEmails as $user) {
+                    $cont = new AuthController();
+                    $sendMail = $cont->salesManagerMail($user);
                 }
             }
 

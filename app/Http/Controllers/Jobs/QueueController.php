@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Jobs;
 use App\Http\Controllers\Common\PHPController as Controller;
 use App\Http\Requests\Queue\QueueRequest;
 use App\Model\Mailjob\FaveoQueue;
-use App\Model\MailJob\QueueService;
+use App\Model\Mailjob\QueueService;
 use Form;
 use Illuminate\Http\Request;
 

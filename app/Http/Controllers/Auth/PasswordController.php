@@ -147,7 +147,7 @@ class PasswordController extends Controller
             $type = $temp_type->where('id', $type_id)->first()->name;
         }
         $mail = new \App\Http\Controllers\Common\PhpMailController();
-        if($emailSendingStatus) {
+        if ($emailSendingStatus) {
             $mail->sendEmail($from, $to, $data, $subject, $replace, $type);
         }
 

@@ -27,7 +27,7 @@ class PhpMailController extends Controller
      */
     public function setQueue()
     {
-        $this->queueManager->setDefaultDriver('sync');
+        $this->queueManager->setDefaultDriver($this->getActiveQueue()->driver);
     }
 
     private function getActiveQueue()
@@ -41,11 +41,11 @@ class PhpMailController extends Controller
                 'expire' => 60,
             ];
 
-            $queue = new \App\Model\MailJob\QueueService();
+            $queue = new \App\Model\Mailjob\QueueService();
             $active_queue = $queue->where('status', 1)->first();
             if ($active_queue) {
                 $short = $active_queue->short_name;
-                $fields = new \App\Model\MailJob\FaveoQueue();
+                $fields = new \App\Model\Mailjob\FaveoQueue();
                 $field = $fields->where('service_id', $active_queue->id)->pluck('value', 'key')->toArray();
             }
 

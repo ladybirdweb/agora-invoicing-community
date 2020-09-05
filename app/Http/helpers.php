@@ -1,8 +1,8 @@
 <?php
 
+use App\Model\Common\Setting;
 use App\Model\Product\ProductUpload;
 use Carbon\Carbon;
-use App\Model\Common\Setting;
 
 function getLocation()
 {
@@ -269,8 +269,9 @@ function persistentCache($key, Closure $closure, $noOfSeconds = 30, array $varia
 function emailSendingStatus()
 {
     $status = false;
-    if(Setting::value('sending_status')) {
+    if (Setting::value('sending_status')) {
         $status = true;
     }
+
     return $status;
 }

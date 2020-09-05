@@ -288,7 +288,7 @@ class CartController extends BaseCartController
             $data .= 'Mobile: '.strip_tags($request->input('country_code').$request->input('Mobile')).'<br/>';
             $subject = 'Faveo billing enquiry';
             $mail = new \App\Http\Controllers\Common\PhpMailController();
-            if(emailSendingStatus()) {
+            if (emailSendingStatus()) {
                 $mail->sendEmail($from, $to, $data, $subject, [], $fromname, $toname);
             }
 

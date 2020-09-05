@@ -116,31 +116,32 @@ class PhpMailController extends Controller
         }
     }
 
-    public function setMailConfig($mail) 
+    public function setMailConfig($mail)
     {
         switch ($mail->driver) {
-            case "smtp":
-                $config = [ "host" => $mail->host,
-                            "port" => $mail->port,
-                            "security" => $mail->encryption,
-                            'username' => $mail->email,
-                            'password' => $mail->password
-                        ];
-                if (!$this->commonMailer->setSmtpDriver($config)) {
-                    \Log::info("Invaid configuration :- ".$config);
-                    return "invalid mail configuration";
+            case 'smtp':
+                $config = ['host' => $mail->host,
+                    'port' => $mail->port,
+                    'security' => $mail->encryption,
+                    'username' => $mail->email,
+                    'password' => $mail->password,
+                ];
+                if (! $this->commonMailer->setSmtpDriver($config)) {
+                    \Log::info('Invaid configuration :- '.$config);
+
+                    return 'invalid mail configuration';
                 }
 
                 break;
 
-            case "send_mail":
+            case 'send_mail':
                 $config = [
-                            "host" => \Config::get('mail.host'),
-                            "port" => \Config::get('mail.port'),
-                            "security" => \Config::get('mail.encryption'),
-                            'username' => \Config::get('mail.username'),
-                            'password' => \Config::get('mail.password')
-                        ];
+                    'host' => \Config::get('mail.host'),
+                    'port' => \Config::get('mail.port'),
+                    'security' => \Config::get('mail.encryption'),
+                    'username' => \Config::get('mail.username'),
+                    'password' => \Config::get('mail.password'),
+                ];
                 $this->commonMailer->setSmtpDriver($config);
                 break;
 
@@ -148,7 +149,5 @@ class PhpMailController extends Controller
                 setServiceConfig($mail);
                 break;
         }
-
     }
-
 }

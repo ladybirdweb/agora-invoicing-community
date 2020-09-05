@@ -202,15 +202,15 @@ class SettingsController extends Controller
                 return redirect('checkout')->with('fails', 'Your Payment was declined. Please try making payment with other gateway');
             }
         } catch (\Cartalyst\Stripe\Exception\ApiLimitExceededException | \Cartalyst\Stripe\Exception\BadRequestException | \Cartalyst\Stripe\Exception\MissingParameterException | \Cartalyst\Stripe\Exception\NotFoundException | \Cartalyst\Stripe\Exception\ServerErrorException | \Cartalyst\Stripe\Exception\StripeException | \Cartalyst\Stripe\Exception\UnauthorizedException $e) {
-            if(emailSendingStatus()) {
+            if (emailSendingStatus()) {
                 $this->sendFailedPaymenttoAdmin($request['amount'], $e->getMessage());
             }
 
             return redirect('checkout')->with('fails', 'Your Payment was declined. '.$e->getMessage().'. Please try again or try the other gateway');
         } catch (\Cartalyst\Stripe\Exception\CardErrorException $e) {
-            if(emailSendingStatus()) {
-            $this->sendFailedPaymenttoAdmin($request['amount'], $e->getMessage());
-        }
+            if (emailSendingStatus()) {
+                $this->sendFailedPaymenttoAdmin($request['amount'], $e->getMessage());
+            }
             \Session::put('amount', $request['amount']);
             \Session::put('error', $e->getMessage());
 

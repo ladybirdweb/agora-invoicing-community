@@ -30,11 +30,11 @@ class AddDriverFieldsToSettingsTable extends Migration
     public function down()
     {
         Schema::table('settings', function (Blueprint $table) {
-           $table->dropColumn('key');
-           $table->dropColumn('secret');
-           $table->dropColumn('region');
-           $table->dropColumn('domain');
-           $table->dropColumn('sending_status');
+            $table->dropColumn('key');
+            $table->dropColumn('secret');
+            $table->dropColumn('region');
+            $table->dropColumn('domain');
+            $table->dropColumn('sending_status');
         });
     }
 }

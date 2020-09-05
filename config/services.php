@@ -33,6 +33,5 @@ return [
         'model' => 'User',
         'secret' => '',
     ],
-    
-    
+
 ];

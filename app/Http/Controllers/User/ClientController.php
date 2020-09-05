@@ -229,7 +229,7 @@ class ClientController extends AdvanceSearchController
             $user->ip = $location['ip'];
 
             $user->save();
-            if(emailSendingStatus()){
+            if (emailSendingStatus()) {
                 $this->sendWelcomeMail($user);
             }
             $mailchimpStatus = StatusSetting::first()->value('mailchimp_status');

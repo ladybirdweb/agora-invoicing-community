@@ -334,7 +334,7 @@ input:checked + .slider:before {
                 </tr>
 
    
-
+                @if($mailSendingStatus)
                 
                 <tr>
                  
@@ -356,6 +356,7 @@ input:checked + .slider:before {
                   </td>
                   <td class="col-md-2" ><button type="submit" class="form-group btn btn-primary"  id="submit4"><i class="fa fa-save">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
                 </tr>
+                @endif
 
 
                 <tr>

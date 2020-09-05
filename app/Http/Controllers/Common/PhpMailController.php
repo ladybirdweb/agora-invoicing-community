@@ -27,7 +27,7 @@ class PhpMailController extends Controller
      */
     public function setQueue()
     {
-        $this->queueManager->setDefaultDriver($this->getActiveQueue()->driver);
+        $this->queueManager->setDefaultDriver('sync');
     }
 
     private function getActiveQueue()
@@ -109,37 +109,46 @@ class PhpMailController extends Controller
             ]);
             \Bugsnag::notifyException($ex);
             if ($ex instanceof \Swift_TransportException) {
-                throw new \Exception('We can not reach to this email address');
+                throw new \Exception($ex->getMessage());
             }
 
             throw new \Exception($ex->getMessage());
         }
     }
 
-    /**
-     * set the email configuration.
-     * @param Email $from_address
-     */
-    public function setMailConfig($mail)
+    public function setMailConfig($mail) 
     {
         switch ($mail->driver) {
-            case 'smtp':
-                $config = ['host' => $mail->host,
-                    'port' => $mail->port,
-                    'security' => $mail->encryption,
-                    'username' => $mail->email,
-                    'password' => $mail->password,
-                ];
-                if (! $this->commonMailer->setSmtpDriver($config)) {
-                    \Log::info('Invaid configuration :- '.$config);
-
-                    return 'invalid mail configuration';
+            case "smtp":
+                $config = [ "host" => $mail->host,
+                            "port" => $mail->port,
+                            "security" => $mail->encryption,
+                            'username' => $mail->email,
+                            'password' => $mail->password
+                        ];
+                if (!$this->commonMailer->setSmtpDriver($config)) {
+                    \Log::info("Invaid configuration :- ".$config);
+                    return "invalid mail configuration";
                 }
 
                 break;
 
-        default:
+            case "send_mail":
+                $config = [
+                            "host" => \Config::get('mail.host'),
+                            "port" => \Config::get('mail.port'),
+                            "security" => \Config::get('mail.encryption'),
+                            'username' => \Config::get('mail.username'),
+                            'password' => \Config::get('mail.password')
+                        ];
+                $this->commonMailer->setSmtpDriver($config);
+                break;
+
+            default:
+                setServiceConfig($mail);
                 break;
         }
+
     }
+
 }

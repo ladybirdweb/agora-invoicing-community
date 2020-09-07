@@ -624,8 +624,12 @@ User
                                      <div class="timeline">
                                         <?php
                                         $userId = $comment ->updated_by_user_id;
-                                        $user = \App\User::where('id', $userId)->first();
-                                        ?>
+                                         $user = \App\User::where('id', $userId)->first();
+                                         if(\App\User::onlyTrashed()->find($userId)) {
+                                             $user = \App\User::onlyTrashed()->find($userId);
+                                        }
+                                        
+                                       ?>
                                         <div>
                                       
 

@@ -262,6 +262,9 @@ class RenewController extends BaseRenewController
         try {
             $sub = $this->sub->find($id);
             $userid = $sub->user_id;
+             if(User::onlyTrashed()->find($userid)) {//If User is soft deleted for this order
+                throw new \Exception("The user for this order is deleted from the system. Restore the user to renew.");
+            }
             $productid = $sub->product_id;
             $plans = $this->plan->pluck('name', 'id')->toArray();
 

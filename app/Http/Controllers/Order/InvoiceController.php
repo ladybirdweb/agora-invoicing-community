@@ -137,8 +137,14 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                         ->addColumn('user_id', function ($model) {
                             $first = $this->user->where('id', $model->user_id)->value('first_name');
                             $last = $this->user->where('id', $model->user_id)->value('last_name');
-                            $id = $this->user->where('id', $model->user_id)->first()->id;
-
+                            $id = $this->user->where('id', $model->user_id)->first();
+                            if($id) {
+                                $id =  $id->id;
+                            } else {
+                                $id= User::onlyTrashed()->find($model->user_id)->id;
+                                $first = User::onlyTrashed()->find($model->user_id)->first_name;
+                                $last = User::onlyTrashed()->find($model->user_id)->last_name;
+                            }
                             return '<a href='.url('clients/'.$id).'>'.ucfirst($first).' '.ucfirst($last).'</a>';
                         })
                          ->addColumn('number', function ($model) {
@@ -208,6 +214,9 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 ->select('invoices.id', 'invoices.user_id', 'invoices.date', 'invoices.currency', 'invoices.number', 'invoices.discount', 'invoices.grand_total', 'order_invoice_relations.order_id')
                 ->where('invoices.id', '=', $request->input('invoiceid'))
                 ->first();
+                if(User::onlyTrashed()->find($invoice->user_id)) {
+                throw new \Exception("This user is deleted from system. Restore the user to view invoice details.");
+            }
             $invoiceItems = $invoice->invoiceItem()->get();
             $user = $this->user->find($invoice->user_id);
             $currency = CartController::currency($user->id);

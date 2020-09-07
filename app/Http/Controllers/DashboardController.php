@@ -288,8 +288,8 @@ class DashboardController extends Controller
             ->orderBy('orders.id', 'desc')
             ->get()->map(function ($element) {
                 $element->order_created_at = getDateHtml($element->order_created_at);
-                $element->client_name = $element->user->first_name.' '.$element->user->last_name;
-                $element->client_profile_link = \Config('app.url').'/clients/'.$element->user->id;
+                $element->client_name = $element->user ? $element->user->first_name.' '.$element->user->last_name : User::onlyTrashed()->find($element->client)->first_name.' '. User::onlyTrashed()->find($element->client)->last_name;
+                $element->client_profile_link = \Config('app.url').'/clients/'.$element->client;
                 unset($element->user);
 
                 return $element;
@@ -324,8 +324,8 @@ class DashboardController extends Controller
         }
 
         return $baseQuery->get()->map(function ($element) {
-            $element->client_name = $element->user->first_name.' '.$element->user->last_name;
-            $element->client_profile_link = \Config('app.url').'/clients/'.$element->user->id;
+            $element->client_name = $element->user ? $element->user->first_name.' '.$element->user->last_name : User::onlyTrashed()->find($element->user_id)->first_name.' '. User::onlyTrashed()->find($element->user_id)->last_name;;
+            $element->client_profile_link = \Config('app.url').'/clients/'.$element->user_id;
             $element->order_link = \Config('app.url').'/orders/'.$element->order_id;
             $element->days_difference = date_diff(new DateTime(), new DateTime($element->subscription_ends_at))->format('%a days');
             $element->subscription_ends_at = getDateHtml($element->subscription_ends_at);
@@ -358,8 +358,8 @@ class DashboardController extends Controller
                 $element->grand_total = currencyFormat((int) $element->grand_total, $element->currency_code);
                 $element->paid = currencyFormat((int) $element->paid, $element->currency_code);
                 $element->balance = currencyFormat((int) $element->balance, $element->currency_code);
-                $element->client_name = $element->user->first_name.' '.$element->user->last_name;
-                $element->client_profile_link = \Config('app.url').'/clients/'.$element->user->id;
+                $element->client_name = $element->user ? $element->user->first_name.' '.$element->user->last_name : User::onlyTrashed()->find($element->user_id)->first_name.' '. User::onlyTrashed()->find($element->user_id)->last_name;
+                $element->client_profile_link = \Config('app.url').'/clients/'.$element->user_id;
                 unset($element->user);
 
                 return $element;

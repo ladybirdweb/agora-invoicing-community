@@ -17,7 +17,6 @@ use App\User;
 use Bugsnag;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Order\OrderSearchController;
 
 class OrderController extends BaseOrderController
 {
@@ -81,7 +80,7 @@ class OrderController extends BaseOrderController
 
             $paidUnpaidOptions = ['paid'=>'Paid Products', 'unpaid'=>'Unpaid Products'];
             $insNotIns = ['installed'=>'Yes (Installed atleast once)', 'not_installed'=>'No (Not Installed)'];
-            $activeInstallationOptions = ['paid_ins'=>'Active installation',];
+            $activeInstallationOptions = ['paid_ins'=>'Active installation'];
             $inactiveInstallationOptions = ['paid_inactive_ins'=>'Inactive installation'];
             $renewal = ['expired_subscription'=>'Expired Subscriptions', 'active_subscription'=> 'Active Subscriptions'];
             $allVersions = Subscription::where('version', '!=', '')->whereNotNull('version')

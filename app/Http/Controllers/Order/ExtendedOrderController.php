@@ -2,21 +2,14 @@
 
 namespace App\Http\Controllers\Order;
 
-use App\Http\Controllers\Common\BaseSettingsController;
 use App\Http\Controllers\Controller;
 use App\Model\Common\StatusSetting;
 use App\Model\Order\Order;
-use App\Model\Product\Subscription;
 use Bugsnag;
-use Carbon\Carbon;
-use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
 
 class ExtendedOrderController extends Controller
 {
-    
-
-
     /**
      * Create orders.
      *

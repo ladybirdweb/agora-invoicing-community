@@ -4,21 +4,20 @@ namespace App\Http\Controllers\Order;
 
 use App\Http\Controllers\Common\BaseSettingsController;
 use App\Http\Controllers\Controller;
-use App\Model\Common\StatusSetting;
 use App\Model\Order\Order;
 use App\Model\Product\Subscription;
-use Bugsnag;
 use Carbon\Carbon;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
 
 class OrderSearchController extends Controller
 {
-	 public function __construct()
+    public function __construct()
     {
-    	$this->middleware('auth');
+        $this->middleware('auth');
         $this->middleware('admin');
     }
+
     /**
      * Perform Advance Search for Orders Page.
      *
@@ -41,7 +40,7 @@ class OrderSearchController extends Controller
             $this->subFrom($request->input('sub_till'), $request->input('sub_from'), $baseQuery);
             $this->subTill($request->input('sub_from'), $request->input('sub_till'), $baseQuery);
             $this->domain($request->input('domain'), $baseQuery);
-			$this->allInstallations($request->input('act_ins'), $baseQuery);
+            $this->allInstallations($request->input('act_ins'), $baseQuery);
             $this->allRenewals($request->input('renewal'), $baseQuery);
             $this->getSelectedVersionOrders($baseQuery, $request->input('version_from'), $request->input('version_till'));
 
@@ -51,7 +50,7 @@ class OrderSearchController extends Controller
         }
     }
 
-        /**
+    /**
      * Gets base query for orders.
      * @return Builder
      */
@@ -68,7 +67,6 @@ class OrderSearchController extends Controller
             );
     }
 
-    
     /**
      * Searches for order for selected versions.
      *
@@ -105,31 +103,27 @@ class OrderSearchController extends Controller
      */
     public function allInstallations($allInstallation, $join)
     {
-
-    	if ($allInstallation) {
-        	$dayUtc = new Carbon('-30 days');
+        if ($allInstallation) {
+            $dayUtc = new Carbon('-30 days');
             $minus30Day = $dayUtc->toDateTimeString();
-        	 if ($allInstallation == 'installed') {
+            if ($allInstallation == 'installed') {
                 return $join->whereColumn('subscriptions.created_at', '!=', 'subscriptions.updated_at');
-            } elseif($allInstallation == 'not_installed') {
-            	return $join->whereColumn('subscriptions.created_at', '=', 'subscriptions.updated_at');
-			} elseif ($allInstallation == 'paid_inactive_ins') {
-				$baseQuery = $join->whereHas('subscription', function ($q) use ($minus30Day) {
-                $q->where('updated_at', '<', $minus30Day);
-            });
+            } elseif ($allInstallation == 'not_installed') {
+                return $join->whereColumn('subscriptions.created_at', '=', 'subscriptions.updated_at');
+            } elseif ($allInstallation == 'paid_inactive_ins') {
+                $baseQuery = $join->whereHas('subscription', function ($q) use ($minus30Day) {
+                    $q->where('updated_at', '<', $minus30Day);
+                });
 
-            return $baseQuery;
+                return $baseQuery;
             }
-             $baseQuery = $join->whereHas('subscription', function ($q) use ($minus30Day) {
+            $baseQuery = $join->whereHas('subscription', function ($q) use ($minus30Day) {
                 $q->where('updated_at', '>', $minus30Day);
             });
 
             return $baseQuery;
         }
-       
-	}
-
-   
+    }
 
     /**
      * Searches for Renewals.
@@ -154,8 +148,6 @@ class OrderSearchController extends Controller
             });
         }
     }
-
-    
 
     /**
      * Searches for Order No.
@@ -185,15 +177,14 @@ class OrderSearchController extends Controller
     private function product($product_id, $join)
     {
         if ($product_id) {
-        	if ($product_id == 'paid') {
+            if ($product_id == 'paid') {
                 $join = $join->where('price_override', '>', 0);
             } elseif ($product_id == 'unpaid') {
                 $join = $join->where('price_override', '=', 0);
             } else {
-            $join = $join->where('product', $product_id);
-
+                $join = $join->where('product', $product_id);
             }
-		}
+        }
 
         return $join;
     }
@@ -366,5 +357,4 @@ class OrderSearchController extends Controller
 
         return $froms;
     }
-
 }

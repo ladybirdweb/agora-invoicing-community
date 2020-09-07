@@ -141,6 +141,7 @@ class BaseProductController extends ExtendedBaseProductController
                 $price = $controller->cost($productid, $userid);
             }
             $result = ['price' => $price, 'field' => $field];
+
             return response()->json($result);
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());

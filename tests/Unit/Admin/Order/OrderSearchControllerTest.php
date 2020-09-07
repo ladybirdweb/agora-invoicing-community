@@ -18,7 +18,7 @@ class OrderSearchControllerTest extends DBTestCase
         $this->classObject = new OrderSearchController();
     }
 
-     /** @group orderFilter */
+    /** @group orderFilter */
     public function test_getBaseQueryForOrders_givesRequiredColumnsWhenCalled()
     {
         $this->getLoggedInUser('admin');
@@ -117,7 +117,6 @@ class OrderSearchControllerTest extends DBTestCase
         $this->assertEquals(1, $records->count());
         $this->assertEquals('v3.1.0', $records[0]->product_version);
     }
-
 
     public function test_allInstallations_seachInstalledProducts_shouldGiveInstalledProduct()
     {

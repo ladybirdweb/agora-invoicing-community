@@ -3,8 +3,6 @@
 namespace App\Http\Controllers\User;
 
 use App\User;
-use App\Http\Controllers\User\ClientController;
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class SoftDeleteController extends ClientController
@@ -15,10 +13,9 @@ class SoftDeleteController extends ClientController
         $this->middleware('admin');
     }
 
-
     public function index(Request $request)
     {
-       return view('themes.default1.user.client.softDelete', compact('request'));
+        return view('themes.default1.user.client.softDelete', compact('request'));
     }
 
     public function softDeletedUsers(Request $request)
@@ -29,13 +26,13 @@ class SoftDeleteController extends ClientController
                 \DB::raw("CONCAT(first_name, ' ', last_name) as name"),
                 'country_name as country', 'created_at', 'active', 'mobile_verified', 'is_2fa_enabled', 'role', 'position')
             ->onlyTrashed()->get();
-           
+
         return\ DataTables::of($baseQuery)
                         ->addColumn('checkbox', function ($model) {
                             return "<input type='checkbox' class='user_checkbox' value=".$model->id.' name=select[] id=check>';
                         })
                         ->addColumn('name', function ($model) {
-                        	return ucfirst($model->first_name.' '.$model->last_name);
+                            return ucfirst($model->first_name.' '.$model->last_name);
                         })
                          ->addColumn('email', function ($model) {
                              return $model->email;
@@ -61,37 +58,35 @@ class SoftDeleteController extends ClientController
                             <i class='fas fa-sync-alt' style='color:white;'> </i></a>";
                         })
 
-                        
-                     
                         ->rawColumns(['checkbox', 'name', 'email',  'created_at', 'active', 'action'])
                         ->make(true);
     }
 
     public function restoreUser($id)
     {
-    	$user = User::onlyTrashed()->find($id);
-    	if (!is_null($user)) {
-    		$user->restore();
-    	}
-    	return redirect()->back()->with('success','User restored successfully');
+        $user = User::onlyTrashed()->find($id);
+        if (! is_null($user)) {
+            $user->restore();
+        }
+
+        return redirect()->back()->with('success', 'User restored successfully');
     }
 
     public function permanentDeleteUser(Request $request)
     {
-	 try {
+        try {
             $ids = $request->input('select');
             if (! empty($ids)) {
                 foreach ($ids as $id) {
-                	$user = User::onlyTrashed()->find($id);
-                    if (!is_null($user)) {
-                        
+                    $user = User::onlyTrashed()->find($id);
+                    if (! is_null($user)) {
                         $user->invoiceItem()->delete();
-				        $user->orderRelation()->delete();
-				        $user->invoice()->delete();
-				        $user->order()->delete();
-				        $user->subscription()->delete();
-				        $user->comments()->delete();
-				        $user->forceDelete();
+                        $user->orderRelation()->delete();
+                        $user->invoice()->delete();
+                        $user->order()->delete();
+                        $user->subscription()->delete();
+                        $user->comments()->delete();
+                        $user->forceDelete();
                     } else {
                         echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
@@ -131,5 +126,4 @@ class SoftDeleteController extends ClientController
                 </div>';
         }
     }
-            
 }

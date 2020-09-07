@@ -36,7 +36,7 @@ class BaseProductController extends ExtendedBaseProductController
                 $value = Product::find($productid)->planRelation->find($planid)->planPrice->first()->product_quantity;
                 $value = $value == null ? 1 : $value;
 
-                return "<div class='col-md-4 form-group'>
+                return "<div>
 	                        <label class='required'>"./* @scrutinizer ignore-type */
                             \Lang::get('message.quantity')."</label>
 	                        <input type='text' name='quantity' class='form-control' id='quantity' value='$value'>
@@ -76,7 +76,7 @@ class BaseProductController extends ExtendedBaseProductController
                 $value = Product::find($productid)->planRelation->find($planid)->planPrice->first()->no_of_agents;
                 $value = $value == null ? 0 : $value;
 
-                return "<div class='col-md-4 form-group'>
+                return "<div>
                             <label class='required'>"./* @scrutinizer ignore-type */
                             \Lang::get('message.agent')."</label>
                             <input type='text' name='agents' class='form-control' id='agents' value='$value'>
@@ -126,7 +126,7 @@ class BaseProductController extends ExtendedBaseProductController
             $plan = new Plan();
             $plans = $plan->where('product', $productid)->pluck('name', 'id')->toArray();
             if (count($plans) > 0) {//If Plan Exist For A product, Display Dropdown for Plans
-                $field = "<div class='col-md-4 form-group'>
+                $field = "<div>
                         <label class='required'>"./* @scrutinizer ignore-type */
                         \Lang::get('message.subscription').'</label>
                        '.\Form::select(
@@ -141,7 +141,6 @@ class BaseProductController extends ExtendedBaseProductController
                 $price = $controller->cost($productid, $userid);
             }
             $result = ['price' => $price, 'field' => $field];
-
             return response()->json($result);
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());

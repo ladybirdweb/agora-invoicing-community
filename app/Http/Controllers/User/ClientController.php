@@ -12,6 +12,7 @@ use App\Model\Payment\Currency;
 use App\Model\User\AccountActivate;
 use App\Traits\PaymentsAndInvoices;
 use App\User;
+use App\Comment;
 use Bugsnag;
 use Illuminate\Http\Request;
 
@@ -254,6 +255,9 @@ class ClientController extends AdvanceSearchController
     public function show($id)
     {
         try {
+            if(User::onlyTrashed()->find($id)) {
+                throw new \Exception("This user is deleted from system. Restore the user to view details.");
+            }
             $invoice = new Invoice();
             $order = new Order();
             $invoices = $invoice->where('user_id', $id)->orderBy('created_at', 'desc')->get();
@@ -266,11 +270,18 @@ class ClientController extends AdvanceSearchController
             // }
             $extraAmt = $this->getExtraAmt($id);
             $client = $this->user->where('id', $id)->first();
+            
+            if(User::onlyTrashed()->find($id)) {
+                 $client = User::onlyTrashed()->find($id);
+            }
+           
+            
+        
             $is2faEnabled = $client->is_2fa_enabled;
             // $client = "";
             $currency = $client->currency;
             $orders = $order->where('client', $id)->get();
-            $comments = $client->comments()->where('user_id', $client->id)->get();
+            $comments = Comment::where('user_id', $client->id)->get();
 
             return view(
                 'themes.default1.user.client.show',

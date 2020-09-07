@@ -228,7 +228,6 @@ class PageController extends GetPageTemplateController
                     if ($id != $defaultPageId) {
                         $page = $this->page->where('id', $id)->first();
                         if ($page) {
-                            // dd($page);
                             $page->delete();
                         } else {
                             echo "<div class='alert alert-danger alert-dismissable'>

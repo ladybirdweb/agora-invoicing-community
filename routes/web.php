@@ -215,6 +215,10 @@
              */
 
             Route::resource('clients', 'User\ClientController');
+            Route::get('deleted-users', 'User\SoftDeleteController@index');
+            Route::get('soft-delete', 'User\SoftDeleteController@softDeletedUsers')->name('soft-delete');
+            Route::get('clients/{id}/restore', 'User\SoftDeleteController@restoreUser');
+            Route::delete('permanent-delete-client', 'User\SoftDeleteController@permanentDeleteUser');
             Route::get('getClientDetail/{id}', 'User\ClientController@getClientDetail');
             Route::get('getPaymentDetail/{id}', 'User\ClientController@getPaymentDetail');
             Route::get('getOrderDetail/{id}', 'User\ClientController@getOrderDetail');

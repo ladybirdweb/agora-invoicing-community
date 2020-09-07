@@ -202,7 +202,11 @@ class OrderController extends BaseOrderController
     public function show($id)
     {
         try {
+
             $order = $this->order->findOrFail($id);
+             if(User::onlyTrashed()->find($order->client)) {//If User is soft deleted for this order
+                throw new \Exception("The user for this order is deleted from the system. Restore the user to view order details.");
+            }
             $subscription = $order->subscription()->first();
 
             $date = '--';

@@ -44,7 +44,7 @@ Orders
             <div class="col-md-3 form-group">
                 <!-- first name -->
                 {!! Form::label('product_id','Product') !!} <br>
-                {!! Form::select('product_id',[null => 'Choose']+ $products, $request->product_id, ['class' => 'form-control select2','style'=>'width:265px;','id'=>'product_id']) !!}
+                {!! Form::select('product_id',[null => 'Choose']+ $paidUnpaidOptions + $products, $request->product_id, ['class' => 'form-control select2','style'=>'width:265px;','id'=>'product_id']) !!}
             </div>
             <div class="col-md-3 form-group">
                 <!-- first name -->
@@ -103,12 +103,7 @@ Orders
                 </div>
             </div>
 
-              <div class="col-md-3 form-group">
-                <!-- first name -->
-                {!! Form::label('ins_not_ins','Installed') !!}
-                {!! Form::select('ins_not_ins',[null => 'Choose']+ $insNotIns, $request->ins_not_ins, ['class' => 'form-control','id'=>'ins_not_ins']) !!}
-            </div>
-
+            
             <div class="col-md-3 form-group">
                 <!-- first name -->
                 {!! Form::label('from','Order From') !!}
@@ -148,21 +143,11 @@ Orders
 
             <div class="col-md-3 form-group">
                 <!-- first name -->
-                {!! Form::label('p_un','Paid/Unpaid Products') !!}
-                {!! Form::select('p_un',[null => 'Choose']+ $paidUnpaidOptions, $request->p_un, ['class' => 'form-control','id'=>'p_un']) !!}
+                {!! Form::label('act_inst','Installations') !!}
+                {!! Form::select('act_inst',[null => 'Choose']+ $insNotIns + $activeInstallationOptions + $inactiveInstallationOptions, $request->act_inst, ['class' => 'form-control','id'=>'act_inst']) !!}
             </div>
 
-            <div class="col-md-3 form-group">
-                <!-- first name -->
-                {!! Form::label('act_inst','Active Installations') !!}
-                {!! Form::select('act_inst',[null => 'Choose']+ $activeInstallationOptions, $request->act_inst, ['class' => 'form-control','id'=>'act_inst']) !!}
-            </div>
-
-             <div class="col-md-3 form-group">
-                <!-- first name -->
-                {!! Form::label('inact_inst','Inactive Installations') !!}
-                {!! Form::select('inact_inst',[null => 'Choose']+ $inactiveInstallationOptions, $request->inact_inst, ['class' => 'form-control','id'=>'inact_inst']) !!}
-            </div>
+           
 
             <div class="col-md-3 form-group">
                 <!-- first name -->

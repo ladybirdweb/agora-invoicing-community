@@ -17,6 +17,7 @@ use App\User;
 use Bugsnag;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Order\OrderSearchController;
 
 class OrderController extends BaseOrderController
 {
@@ -79,9 +80,9 @@ class OrderController extends BaseOrderController
             $products = $this->product->where('id', '!=', 1)->pluck('name', 'id')->toArray();
 
             $paidUnpaidOptions = ['paid'=>'Paid Products', 'unpaid'=>'Unpaid Products'];
-            $insNotIns = ['installed'=>'Yes', 'not_installed'=>'No'];
-            $activeInstallationOptions = ['paid_ins'=>'For Paid Products', 'unpaid_ins'=>'For Unpaid Products', 'all_ins'=>'All Products'];
-            $inactiveInstallationOptions = ['paid_inactive_ins'=>'For Paid Products', 'unpaid_inactive_ins'=>'For Unpaid Products', 'all_inactive_ins'=>'All Products'];
+            $insNotIns = ['installed'=>'Yes (Installed atleast once)', 'not_installed'=>'No (Not Installed)'];
+            $activeInstallationOptions = ['paid_ins'=>'Active installation',];
+            $inactiveInstallationOptions = ['paid_inactive_ins'=>'Inactive installation'];
             $renewal = ['expired_subscription'=>'Expired Subscriptions', 'active_subscription'=> 'Active Subscriptions'];
             $allVersions = Subscription::where('version', '!=', '')->whereNotNull('version')
                 ->orderBy('version', 'desc')->groupBy('version')
@@ -98,7 +99,8 @@ class OrderController extends BaseOrderController
 
     public function getOrders(Request $request)
     {
-        $query = $this->advanceSearch($request);
+        $orderSearch = new OrderSearchController();
+        $query = $orderSearch->advanceOrderSearch($request);
 
         return \DataTables::of($query)
             ->setTotalRecords($query->count())

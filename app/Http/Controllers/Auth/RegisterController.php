@@ -8,7 +8,6 @@ use App\Http\Requests\User\ProfileRequest;
 use App\Model\Common\Country;
 use App\Model\Common\Setting;
 use App\Model\Common\StatusSetting;
-use App\Model\User\AccountActivate;
 use App\User;
 use Facades\Spatie\Referer\Referer;
 use Illuminate\Foundation\Auth\RegistersUsers;

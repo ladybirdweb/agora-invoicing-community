@@ -59,7 +59,7 @@ class LoginController extends Controller
     public function login(Request $request)
     {
         $apiKeys = StatusSetting::value('recaptcha_status');
-        $captchaRule =  $apiKeys ? 'required|' : 'sometimes|' ;
+        $captchaRule = $apiKeys ? 'required|' : 'sometimes|';
         $this->validate($request, [
             'email1' => 'required',
             'password1' => 'required',

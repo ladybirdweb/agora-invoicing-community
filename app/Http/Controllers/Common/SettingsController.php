@@ -386,6 +386,7 @@ class SettingsController extends BaseSettingsController
              })
                            ->addColumn('date', function ($model) {
                                $date = $model->date;
+
                                return getDateHtml($date);
                            })
                              ->addColumn('from', function ($model) {
@@ -405,24 +406,24 @@ class SettingsController extends BaseSettingsController
                               ->addColumn('status', function ($model) {
                                   return ucfirst($model->status);
                               })
-                               ->filterColumn('from', function($query, $keyword) {
-                                $sql = "`from` like ?";
-                                $query->whereRaw($sql, ["%{$keyword}%"]);
-                            })
-                               ->filterColumn('to', function($query, $keyword) {
-                                $sql = "`to` like ?";
-                                $query->whereRaw($sql, ["%{$keyword}%"]);
-                            })
-                               ->filterColumn('subject', function($query, $keyword) {
-                                $sql = "`subject` like ?";
-                                $query->whereRaw($sql, ["%{$keyword}%"]);
-                            })
-                               ->filterColumn('status', function($query, $keyword) {
-                                $sql = "`status` like ?";
-                                $query->whereRaw($sql, ["%{$keyword}%"]);
-                            })
+                               ->filterColumn('from', function ($query, $keyword) {
+                                   $sql = '`from` like ?';
+                                   $query->whereRaw($sql, ["%{$keyword}%"]);
+                               })
+                               ->filterColumn('to', function ($query, $keyword) {
+                                   $sql = '`to` like ?';
+                                   $query->whereRaw($sql, ["%{$keyword}%"]);
+                               })
+                               ->filterColumn('subject', function ($query, $keyword) {
+                                   $sql = '`subject` like ?';
+                                   $query->whereRaw($sql, ["%{$keyword}%"]);
+                               })
+                               ->filterColumn('status', function ($query, $keyword) {
+                                   $sql = '`status` like ?';
+                                   $query->whereRaw($sql, ["%{$keyword}%"]);
+                               })
                               ->rawColumns(['checkbox', 'date', 'from', 'to',
-                                'bcc', 'subject',  'status', ])
+                                  'bcc', 'subject',  'status', ])
                             ->make(true);
         } catch (\Exception $e) {
             Bugsnag::notifyException($e);

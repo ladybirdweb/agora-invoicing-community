@@ -210,7 +210,7 @@ Edit Product
                                                 </li>
                                                       </div>
                                                    </td>
-                                                 </tr>
+                                               </tr>
                                                 <tr>
                                                     <td><label for="chkNo">
                                                         <input type="radio" id="chkNo" name="chkTax" />
@@ -266,7 +266,7 @@ Edit Product
 
                          <!-- /.tab-pane -->
                         <div class="tab-pane fade" id="custom-tabs-plan" role="tabpanel"  aria-labelledby="custom-tabs-plan-tab">
-                            <table class="table>
+                            <table class="table">
 
                                 <span>Show on Cart Page</span>
                                  <tr>
@@ -347,12 +347,16 @@ Edit Product
 
                                                
                                             </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                 
+                                       
+
                                             <br>
                                             <h3>  Plans &nbsp;
                                                 <!-- <a href="#create-plan-option" data-toggle="modal" data-target="#create-plan-option" class="btn btn-default">Add new</a> -->
                                             </h3>
-
-                                            @include('themes.default1.product.plan.create')
 
                                             @if($product->plan())
                                                 <table class="table">
@@ -382,24 +386,25 @@ Edit Product
                                     @else
                                         <td>No Plans Created</td>
                             @endif
+
                                         </div>
-                                    </td>
-                                </tr>
+                                   
 
        </div>
+        <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-save">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button>
+
+          {!! Form::close() !!}
                       
                 <!-- nav-tabs-custom -->
 
-           
-
-          {!! Form::close() !!}
+          
 
 
                               </div>
 
 
 
-           <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-save">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button>
+          
 
        </div>
                    </div>

@@ -2,18 +2,16 @@
 
 namespace App\Http\Controllers\Installer;
 
-use RachidLaasri\LaravelInstaller\Controllers\DatabaseController as BaseDatabaseController;
-use RachidLaasri\LaravelInstaller\Helpers\DatabaseManager;
 use Exception;
 use Illuminate\Database\SQLiteConnection;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
+use RachidLaasri\LaravelInstaller\Controllers\DatabaseController as BaseDatabaseController;
 use Symfony\Component\Console\Output\BufferedOutput;
 
 class DatabaseController extends BaseDatabaseController
 {
-    
     /**
      * Migrate and seed the database.
      *
@@ -57,7 +55,7 @@ class DatabaseController extends BaseDatabaseController
         try {
             Artisan::call('migrate', ['--force'=> true], $outputLog);
         } catch (Exception $e) {
-             throw new Exception($e->getMessage());
+            throw new Exception($e->getMessage());
         }
 
         return $this->seed($outputLog);
@@ -74,7 +72,7 @@ class DatabaseController extends BaseDatabaseController
         try {
             Artisan::call('db:seed', ['--force' => true], $outputLog);
         } catch (Exception $e) {
-             throw new Exception($e->getMessage());
+            throw new Exception($e->getMessage());
         }
 
         return $this->response(trans('installer_messages.final.finished'), 'success', $outputLog);

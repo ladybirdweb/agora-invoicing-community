@@ -36,7 +36,7 @@ class LicenseType extends Model
 
     public function products()
     {
-        return $this->hasMany('App\Model\Product\Product');
+        return $this->hasMany('App\Model\Product\Product','type');
     }
 
     public function delete()

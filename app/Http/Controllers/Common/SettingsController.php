@@ -377,22 +377,16 @@ class SettingsController extends BaseSettingsController
     public function getMails()
     {
         try {
-            $email_log = \DB::table('email_log')->orderBy('date', 'desc')->get();
+            $email_log = \DB::table('email_log')->orderBy('date', 'desc')->take(50);
 
             return\ DataTables::of($email_log)
+            ->setTotalRecords($email_log->count())
              ->addColumn('checkbox', function ($model) {
                  return "<input type='checkbox' class='email' value=".$model->id.' name=select[] id=check>';
              })
                            ->addColumn('date', function ($model) {
                                $date = $model->date;
-                               if ($date) {
-                                   $date1 = new \DateTime($date);
-                                   $tz = \Auth::user()->timezone()->first()->name;
-                                   $date1->setTimezone(new \DateTimeZone($tz));
-                                   $finalDate = $date1->format('M j, Y, g:i a ');
-                               }
-
-                               return $finalDate;
+                               return getDateHtml($date);
                            })
                              ->addColumn('from', function ($model) {
                                  $from = Markdown::convertToHtml($model->from);
@@ -411,8 +405,23 @@ class SettingsController extends BaseSettingsController
                               ->addColumn('status', function ($model) {
                                   return ucfirst($model->status);
                               })
-
-                            ->rawColumns(['checkbox', 'date', 'from', 'to',
+                               ->filterColumn('from', function($query, $keyword) {
+                                $sql = "`from` like ?";
+                                $query->whereRaw($sql, ["%{$keyword}%"]);
+                            })
+                               ->filterColumn('to', function($query, $keyword) {
+                                $sql = "`to` like ?";
+                                $query->whereRaw($sql, ["%{$keyword}%"]);
+                            })
+                               ->filterColumn('subject', function($query, $keyword) {
+                                $sql = "`subject` like ?";
+                                $query->whereRaw($sql, ["%{$keyword}%"]);
+                            })
+                               ->filterColumn('status', function($query, $keyword) {
+                                $sql = "`status` like ?";
+                                $query->whereRaw($sql, ["%{$keyword}%"]);
+                            })
+                              ->rawColumns(['checkbox', 'date', 'from', 'to',
                                 'bcc', 'subject',  'status', ])
                             ->make(true);
         } catch (\Exception $e) {

@@ -46,7 +46,7 @@ class RegisterController extends Controller
         $this->middleware('guest');
     }
 
-    public function postRegister(ProfileRequest $request, User $user, AccountActivate $activate)
+    public function postRegister(ProfileRequest $request, User $user)
     {
         try {
             $location = getLocation();

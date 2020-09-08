@@ -58,10 +58,12 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
+        $apiKeys = StatusSetting::value('recaptcha_status');
+        $captchaRule =  $apiKeys ? 'required|' : 'sometimes|' ;
         $this->validate($request, [
             'email1' => 'required',
             'password1' => 'required',
-            'g-recaptcha-response' => 'sometimes|required|captcha',
+            'g-recaptcha-response' => $captchaRule.'captcha',
         ], [
             'g-recaptcha-response.required' => 'Robot Verification Failed. Please Try Again.',
             'email1.required'    => 'Username/Email is required',

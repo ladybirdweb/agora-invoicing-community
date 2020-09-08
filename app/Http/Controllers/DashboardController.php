@@ -5,10 +5,10 @@ namespace App\Http\Controllers;
 use App\Model\Common\Setting;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
+use App\Model\Order\Payment;
 use App\Model\Payment\Currency;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
-use App\Model\Order\Payment;
 use App\User;
 use Carbon\Carbon;
 use DateTime;
@@ -97,9 +97,9 @@ class DashboardController extends Controller
      */
     public function getTotalSalesInCur2($allowedCurrencies2)
     {
-         $total = Invoice::leftJoin('payments','invoices.id','=','payments.invoice_id')
+        $total = Invoice::leftJoin('payments', 'invoices.id', '=', 'payments.invoice_id')
                  ->where('invoices.status', '=', 'success')
-                 ->orWhere('invoices.status','=','partially paid')
+                 ->orWhere('invoices.status', '=', 'partially paid')
                  ->where('invoices.currency', $allowedCurrencies2)
                  ->pluck('payments.amount')->all();
         $grandTotal = array_sum($total);
@@ -114,13 +114,13 @@ class DashboardController extends Controller
      */
     public function getTotalSalesInCur1($allowedCurrencies1)
     {
-        $total = Invoice::leftJoin('payments','invoices.id','=','payments.invoice_id')
+        $total = Invoice::leftJoin('payments', 'invoices.id', '=', 'payments.invoice_id')
                  ->where('invoices.status', '=', 'success')
-                 ->orWhere('invoices.status','=','partially paid')
+                 ->orWhere('invoices.status', '=', 'partially paid')
                  ->where('invoices.currency', $allowedCurrencies1)
                  ->pluck('payments.amount')->all();
         $grandTotal = array_sum($total);
-       
+
         return $grandTotal;
     }
 
@@ -132,14 +132,13 @@ class DashboardController extends Controller
     public function getYearlySalesCur2($allowedCurrencies2)
     {
         $currentYear = date('Y');
-        $yearlytotal = Invoice::leftJoin('payments','invoices.id','=','payments.invoice_id')
+        $yearlytotal = Invoice::leftJoin('payments', 'invoices.id', '=', 'payments.invoice_id')
                 ->whereYear('invoices.created_at', '=', $currentYear)
                  ->where('invoices.status', '=', 'success')
-                 ->orWhere('invoices.status','=','partially paid')
+                 ->orWhere('invoices.status', '=', 'partially paid')
                  ->where('invoices.currency', $allowedCurrencies2)
                  ->pluck('payments.amount')->all();
         $grandTotal = array_sum($yearlytotal);
-       
 
         return $grandTotal;
     }
@@ -152,13 +151,14 @@ class DashboardController extends Controller
     public function getYearlySalesCur1($allowedCurrencies1)
     {
         $currentYear = date('Y');
-        $total = Invoice::leftJoin('payments','invoices.id','=','payments.invoice_id')
+        $total = Invoice::leftJoin('payments', 'invoices.id', '=', 'payments.invoice_id')
                 ->whereYear('invoices.created_at', '=', $currentYear)
                  ->where('invoices.status', '=', 'success')
-                 ->orWhere('invoices.status','=','partially paid')
+                 ->orWhere('invoices.status', '=', 'partially paid')
                  ->where('invoices.currency', $allowedCurrencies1)
                  ->pluck('payments.amount')->all();
         $grandTotal = array_sum($total);
+
         return $grandTotal;
     }
 
@@ -171,10 +171,10 @@ class DashboardController extends Controller
     {
         $currentMonth = date('m');
         $currentYear = date('Y');
-       $total = Invoice::leftJoin('payments','invoices.id','=','payments.invoice_id')
+        $total = Invoice::leftJoin('payments', 'invoices.id', '=', 'payments.invoice_id')
                 ->whereYear('invoices.created_at', '=', $currentYear)->whereMonth('invoices.created_at', '=', $currentMonth)
                  ->where('invoices.status', '=', 'success')
-                 ->orWhere('invoices.status','=','partially paid')
+                 ->orWhere('invoices.status', '=', 'partially paid')
                  ->where('invoices.currency', $allowedCurrencies2)
                  ->pluck('payments.amount')->all();
         $grandTotal = array_sum($total);
@@ -192,13 +192,13 @@ class DashboardController extends Controller
         $currentMonth = date('m');
         $currentYear = date('Y');
         // dd($currentYear,$currentMonth );
-        $total = Invoice::leftJoin('payments','invoices.id','=','payments.invoice_id')
+        $total = Invoice::leftJoin('payments', 'invoices.id', '=', 'payments.invoice_id')
                 ->whereYear('invoices.created_at', '=', $currentYear)->whereMonth('invoices.created_at', '=', $currentMonth)
                  ->where('invoices.status', '=', 'success')
-                 ->orWhere('invoices.status','=','partially paid')
+                 ->orWhere('invoices.status', '=', 'partially paid')
                  ->where('invoices.currency', $allowedCurrencies1)
                  ->pluck('payments.amount')->all();
-         $grandTotal = array_sum($total);
+        $grandTotal = array_sum($total);
 
         return $grandTotal;
     }

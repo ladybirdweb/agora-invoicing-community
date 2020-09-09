@@ -220,7 +220,6 @@ function findStateByRegionId($iso)
     }
 }
 
-
 function checkPlanSession()
 {
     try {
@@ -233,7 +232,6 @@ function checkPlanSession()
         throw new \Exception($ex->getMessage());
     }
 }
-
 
 function getStateByCode($code)
 {
@@ -396,9 +394,6 @@ function bifurcateTax($taxName, $taxValue, $currency, $state, $price = '')
     }
 }
 
-
-
-
 /**
  * sets mail config and reloads the config into the container
  * NOTE: this is getting used outside the class to set service config.
@@ -450,8 +445,4 @@ function emailSendingStatus()
     }
 
     return $status;
-
-
-
-
 }

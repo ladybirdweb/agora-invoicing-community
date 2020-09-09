@@ -12,7 +12,6 @@ class ExtendedOrderController extends Controller
 {
 
     /**
-
      * Perform Advance Search for Orders Page.
      *
      * @param Request $request
@@ -406,7 +405,6 @@ class ExtendedOrderController extends Controller
     }
 
     /**
-
      * Create orders.
      *
      * @param Request $request

@@ -162,7 +162,7 @@ class ClientController extends BaseClientController
                 throw new \Exception('Cannot view invoice. Invalid modification of data.');
             }
             $items = $invoice->invoiceItem()->get();
-            $order = getOrderLink($invoice->orderRelation()->value('order_id'), 'my-order');
+            $order = $this->order->getOrderLink($invoice->orderRelation()->value('order_id'), 'my-order');
             $currency = userCurrency($user->id);
             $symbol = $currency['symbol'];
 

@@ -243,6 +243,8 @@ class BaseClientController extends Controller
             return view('themes.default1.front.clients.show-invoice', compact('invoice', 'items', 'user', 'currency', 'symbol', 'order'));
         } catch (Exception $ex) {
             Bugsnag::notifyException($ex);
+        }
+    }
 
 
 

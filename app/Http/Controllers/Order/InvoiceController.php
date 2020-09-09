@@ -483,7 +483,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             if (! $user) {
                 return redirect()->back()->with('fails', 'No User');
             }
-            $order = getOrderLink($invoice->order_id);
+            $order = Order::getOrderLink($invoice->order_id);
             $currency = userCurrency($user->id);
             $gst = TaxOption::select('tax_enable', 'Gst_No')->first();
             $symbol = $currency['currency'];

@@ -61,7 +61,7 @@ class OrderSearchController extends Controller
             ->leftJoin('products', 'orders.product', '=', 'products.id')
             ->select(
                 'orders.id', 'orders.created_at', 'price_override', 'order_status', 'product', 'number', 'serial_key',
-                'subscriptions.update_ends_at as subscription_ends_at', 'subscriptions.id as subscription_id', 'subscriptions.version as product_version', 'subscriptions.updated_at',
+                'subscriptions.update_ends_at as subscription_ends_at', 'subscriptions.id as subscription_id', 'subscriptions.version as product_version', 'subscriptions.updated_at as subscription_updated_at','subscriptions.created_at as subscription_created_at',
                 'products.name as product_name', \DB::raw("concat(first_name, ' ', last_name) as client_name"), 'client as client_id',
                 'users.currency'
             );
@@ -104,25 +104,28 @@ class OrderSearchController extends Controller
     public function allInstallations($allInstallation, $join)
     {
         if ($allInstallation) {
-            $dayUtc = new Carbon('-30 days');
-            $minus30Day = $dayUtc->toDateTimeString();
-            if ($allInstallation == 'installed') {
-                return $join->whereColumn('subscriptions.created_at', '!=', 'subscriptions.updated_at');
-            } elseif ($allInstallation == 'not_installed') {
-                return $join->whereColumn('subscriptions.created_at', '=', 'subscriptions.updated_at');
-            } elseif ($allInstallation == 'paid_inactive_ins') {
-                $baseQuery = $join->whereHas('subscription', function ($q) use ($minus30Day) {
-                    $q->where('updated_at', '<', $minus30Day);
-                });
-
-                return $baseQuery;
-            }
+        $dayUtc = new Carbon('-30 days');
+        $minus30Day = $dayUtc->toDateTimeString();
+        if ($allInstallation == 'installed') {
+            return $join->whereColumn('subscriptions.created_at', '!=', 'subscriptions.updated_at');
+        } elseif ($allInstallation == 'not_installed') {
+            return $join->whereColumn('subscriptions.created_at', '=', 'subscriptions.updated_at');
+        } elseif ($allInstallation == 'paid_inactive_ins') {
             $baseQuery = $join->whereHas('subscription', function ($q) use ($minus30Day) {
-                $q->where('updated_at', '>', $minus30Day);
+                $q->where('subscriptions.updated_at', '<', $minus30Day);
             });
 
             return $baseQuery;
+        } elseif($allInstallation == 'paid_ins') {
+             $baseQuery = $join->whereHas('subscription', function ($q) use ($minus30Day) {
+            $q->whereColumn('subscriptions.created_at','!=','subscriptions.updated_at')->where('subscriptions.updated_at', '>', $minus30Day);
+        });
         }
+       
+
+        return $baseQuery;
+        }
+        
     }
 
     /**

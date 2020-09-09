@@ -31,7 +31,9 @@
 
             <div class="col-12">
 
-                <?php $set = App\Model\Common\Setting::where('id', '1')->first(); 
+                <?php 
+                use App\Model\Order\Order;
+                $set = App\Model\Common\Setting::where('id', '1')->first(); 
                 $date = getDateHtml($invoice->date);
                  $symbol = $invoice->currency;
                 $itemsSubtotal = 0;
@@ -67,10 +69,6 @@
                         </div><!-- /.col -->
                          <div class="col-sm-4" style="float:right!important">
                             <b>Invoice   #{{$invoice->number}}</b><br>
-                            <br>
-
-
-                            <b>Order:</b>   #{!! $order !!}
                             <br>
 
 
@@ -123,6 +121,7 @@
                                     @foreach($invoiceItems as $item)
                                     <tr>
                                         @php
+
                                          $taxName[] =  $item->tax_name.'@'.$item->tax_percentage;
                                         if ($item->tax_name != 'null') {
                                             $taxAmt +=  $item->subtotal;
@@ -131,7 +130,7 @@
                                         $itemsSubtotal += $item->subtotal;
                                         @endphp
                                         @if($orderForThisItem)
-                                        <td> {!! getOrderLink($orderForThisItem->id) !!} </td>
+                                        <td> {!! Order::getOrderLink($orderForThisItem->id) !!} </td>
                                        
                                             @elseif($order != '--')
                                             <td>{!! $order !!}</td>

@@ -9,7 +9,6 @@ use Illuminate\Http\Request;
 
 class BaseCartController extends Controller
 {
-
     /**
      * Reduce No. of Agents When Minus button Is Clicked.
      *

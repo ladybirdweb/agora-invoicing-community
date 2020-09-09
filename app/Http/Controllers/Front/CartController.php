@@ -167,7 +167,6 @@ class CartController extends BaseCartController
         return 'success';
     }
 
-
     public function clearCart()
     {
         foreach (Cart::getContent() as $item) {

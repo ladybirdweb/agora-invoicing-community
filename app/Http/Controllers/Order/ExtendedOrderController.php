@@ -10,8 +10,6 @@ use Illuminate\Http\Request;
 
 class ExtendedOrderController extends Controller
 {
-
-
     /**
      * Create orders.
      *

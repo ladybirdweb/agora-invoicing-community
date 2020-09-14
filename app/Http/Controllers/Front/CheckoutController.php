@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Front;
 
-use App\ApiKey;
 use App\Http\Controllers\Common\MailChimpController;
 use App\Http\Controllers\Common\TemplateController;
 use App\Model\Common\Setting;
@@ -209,61 +208,52 @@ class CheckoutController extends InfoController
             ]);
         }
         // try {
-            $invoice_controller = new \App\Http\Controllers\Order\InvoiceController();
-            $info_cont = new \App\Http\Controllers\Front\InfoController();
-            $payment_method = $request->input('payment_gateway');
-            \Session::put('payment_method', $payment_method);
-            $paynow = $this->checkregularPaymentOrRenewal($request->input('invoice_id'));
-            $cost = $request->input('cost');
-            $state = $this->getState();
-            if ($paynow === false) {//When regular payment
-                $invoice = $invoice_controller->generateInvoice();
-                $amount = intval(Cart::getSubTotal());
-                if ($amount) {//If payment is for paid product
-                \Event::dispatch(new \App\Events\PaymentGateway(['request' => $request , 'invoice' => $invoice]));
-                } else {
-                    $date = getDateHtml($invoice->date);
-                    $product = $this->product($invoice->id);
-                    $items = $invoice->invoiceItem()->get();
-                    $url = '';
-                    $this->checkoutAction($invoice);//For free product generate invoice without payment
-                      $url = view('themes.default1.front.postCheckoutTemplate', compact('invoice', 'date','product', 'items',))->render();
-                    // }
-                     \Cart::clear();
-                    return redirect('checkout')->with('success', $url);
-                }
+        $invoice_controller = new \App\Http\Controllers\Order\InvoiceController();
+        $info_cont = new \App\Http\Controllers\Front\InfoController();
+        $payment_method = $request->input('payment_gateway');
+        \Session::put('payment_method', $payment_method);
+        $paynow = $this->checkregularPaymentOrRenewal($request->input('invoice_id'));
+        $cost = $request->input('cost');
+        $state = $this->getState();
+        if ($paynow === false) {//When regular payment
+            $invoice = $invoice_controller->generateInvoice();
+            $amount = intval(Cart::getSubTotal());
+            if ($amount) {//If payment is for paid product
+                \Event::dispatch(new \App\Events\PaymentGateway(['request' => $request, 'invoice' => $invoice]));
+            } else {
+                $date = getDateHtml($invoice->date);
+                $product = $this->product($invoice->id);
+                $items = $invoice->invoiceItem()->get();
+                $url = '';
+                $this->checkoutAction($invoice); //For free product generate invoice without payment
+                $url = view('themes.default1.front.postCheckoutTemplate', compact('invoice', 'date', 'product', 'items', ))->render();
+                // }
+                \Cart::clear();
 
-            } else {//When renewal, pending payments
-                        $invoiceid = $request->input('invoice_id');
-                        $invoice = $this->invoice->find($invoiceid);
-                        $amount = intval($invoice->grand_total);
-                if ($amount) {//If payment is for paid product
-                \Event::dispatch(new \App\Events\PaymentGateway(['request' => $request , 'invoice' => $invoice]));
-                } else {
-                        
-                        $control = new \App\Http\Controllers\Order\RenewController();
-                        $payment = new \App\Http\Controllers\Order\InvoiceController();
-                        $payment->postRazorpayPayment($invoice);
-                        $date = getDateHtml($invoice->date);
-                        $product = $this->product($invoice->id);
-                        $items = $invoice->invoiceItem()->get();
-                        $url = '';
-                        $this->checkoutAction($invoice);//For free product generate invoice without payment
-                          $url = view('themes.default1.front.postCheckoutTemplate', compact('invoice', 'date','product', 'items',))->render();
-                     \Cart::clear();
-                    return redirect('checkout')->with('success', $url);
-                }
-                    
+                return redirect('checkout')->with('success', $url);
             }
-                
+        } else {//When renewal, pending payments
+            $invoiceid = $request->input('invoice_id');
+            $invoice = $this->invoice->find($invoiceid);
+            $amount = intval($invoice->grand_total);
+            if ($amount) {//If payment is for paid product
+                \Event::dispatch(new \App\Events\PaymentGateway(['request' => $request, 'invoice' => $invoice]));
+            } else {
+                $control = new \App\Http\Controllers\Order\RenewController();
+                $payment = new \App\Http\Controllers\Order\InvoiceController();
+                $payment->postRazorpayPayment($invoice);
+                $date = getDateHtml($invoice->date);
+                $product = $this->product($invoice->id);
+                $items = $invoice->invoiceItem()->get();
+                $url = '';
+                $this->checkoutAction($invoice); //For free product generate invoice without payment
+                $url = view('themes.default1.front.postCheckoutTemplate', compact('invoice', 'date', 'product', 'items', ))->render();
+                \Cart::clear();
 
-           
+                return redirect('checkout')->with('success', $url);
+            }
+        }
 
-                    
-                   
-                
-                
-                
         //          catch (\Exception $ex) {
         //     app('log')->error($ex->getMessage());
         //     Bugsnag::notifyException($ex);

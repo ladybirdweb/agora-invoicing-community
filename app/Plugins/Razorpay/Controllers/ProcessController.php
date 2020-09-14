@@ -2,12 +2,12 @@
 
 namespace App\Plugins\Razorpay\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\ApiKey;
-use App\Model\Product\Product;
+use App\Http\Controllers\Controller;
 use App\Model\Order\InvoiceItem;
-use Darryldecode\Cart\CartCondition;
+use App\Model\Product\Product;
 use App\Plugins\Razorpay\Model\RazorpayPayment;
+use Darryldecode\Cart\CartCondition;
 use Illuminate\Http\Request;
 
 class ProcessController extends Controller
@@ -60,7 +60,7 @@ class ProcessController extends Controller
             $rzp_key = ApiKey::where('id', 1)->value('rzp_key');
             $rzp_secret = ApiKey::where('id', 1)->value('rzp_secret');
             $apilayer_key = ApiKey::where('id', 1)->value('apilayer_key');
-             $payment_method = \Session::get('payment_method');
+            $payment_method = \Session::get('payment_method');
             $path = app_path().'/Plugins/Razorpay/views';
             $total = intval(\Cart::getTotal());
             $regularPayment = true;
@@ -69,22 +69,22 @@ class ProcessController extends Controller
                 // $total = \Session::get('totalToBePaid');
                 $regularPayment = false;
                 $invoice = \Session::get('invoice');
-            $items = $invoice->invoiceItem()->get();
-            $product = $this->product($invoice->id);
-            $amount = $invoice->grand_total;
-           
-            $processingFee = $this->getProcessingFee($payment_method, $invoice->currency);
+                $items = $invoice->invoiceItem()->get();
+                $product = $this->product($invoice->id);
+                $amount = $invoice->grand_total;
+
+                $processingFee = $this->getProcessingFee($payment_method, $invoice->currency);
                 $invoice->processing_fee = $processingFee;
-            $invoice->grand_total = intval($invoice->grand_total * (1 + $processingFee / 100));
-            $totalPaid = $invoice->grand_total;
-            if (count($invoice->payment()->get())) {//If partial payment is made
-                $paid = array_sum($invoice->payment()->pluck('amount')->toArray());
-                $totalPaid = $invoice->grand_total - $paid;
-            }
-            \Session::put('totalToBePaid', $totalPaid);
-            \View::addNamespace('plugins', $path);
-            
-            echo view('plugins::middle-page', compact('total','rzp_key','rzp_secret','apilayer_key','invoice','regularPayment','items','product','amount','paid','totalPaid'));
+                $invoice->grand_total = intval($invoice->grand_total * (1 + $processingFee / 100));
+                $totalPaid = $invoice->grand_total;
+                if (count($invoice->payment()->get())) {//If partial payment is made
+                    $paid = array_sum($invoice->payment()->pluck('amount')->toArray());
+                    $totalPaid = $invoice->grand_total - $paid;
+                }
+                \Session::put('totalToBePaid', $totalPaid);
+                \View::addNamespace('plugins', $path);
+
+                echo view('plugins::middle-page', compact('total', 'rzp_key', 'rzp_secret', 'apilayer_key', 'invoice', 'regularPayment', 'items', 'product', 'amount', 'paid', 'totalPaid'));
             } else {
                 $invoice_controller = new \App\Http\Controllers\Order\InvoiceController();
                 $invoice = $invoice_controller->generateInvoice();
@@ -96,16 +96,14 @@ class ProcessController extends Controller
                 $this->updateFinalPrice(new Request(['processing_fee'=>$processingFee]));
                 $amount = \Cart::getTotal();
                 \View::addNamespace('plugins', $path);
-            
-            echo view('plugins::middle-page', compact('invoice', 'amount', 'invoice_no', 'payment_method', 'invoice', 'regularPayment', 'rzp_key', 'rzp_secret', 'apilayer_key'))->render();
 
+                echo view('plugins::middle-page', compact('invoice', 'amount', 'invoice_no', 'payment_method', 'invoice', 'regularPayment', 'rzp_key', 'rzp_secret', 'apilayer_key'))->render();
             }
         } catch (\Exception $ex) {
             dd($ex);
             throw new \Exception($ex->getMessage());
         }
     }
-
 
     public static function updateFinalPrice(Request $request)
     {
@@ -123,7 +121,6 @@ class ProcessController extends Controller
         \Cart::condition($updateValue);
     }
 
-
     public function payment($payment_method, $status)
     {
         if (! $payment_method) {
@@ -133,7 +130,6 @@ class ProcessController extends Controller
 
         return ['payment'=>$payment_method, 'status'=>$status];
     }
-
 
     public function product($invoiceid)
     {
@@ -220,5 +216,4 @@ class ProcessController extends Controller
 
         return redirect($url)->with('fails', 'Thank you for your order. However,the transaction has been declined. Try again.');
     }
-
 }

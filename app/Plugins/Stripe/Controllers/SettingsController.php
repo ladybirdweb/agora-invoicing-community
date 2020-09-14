@@ -128,7 +128,7 @@ class SettingsController extends Controller
             // $invoiceTotal = \Session::get('totalToBePaid');
             $amount = rounding(\Cart::getTotal());
             if (! $amount) {//During renewal
-               $amount = rounding(\Session::get('totalToBePaid'));
+                $amount = rounding(\Session::get('totalToBePaid'));
             }
             $stripeSecretKey = ApiKey::pluck('stripe_secret')->first();
             $stripe = Stripe::make($stripeSecretKey);

@@ -8,4 +8,3 @@ Route::get('payment-gateway/razorpay', 'App\Plugins\Razorpay\Controllers\Setting
 Route::patch('payment-gateway/stripe', 'App\Plugins\Stripe\Controllers\SettingsController@postSettings');
 Route::post('change-base-currency/payment-gateway/stripe', 'App\Plugins\Stripe\Controllers\SettingsController@changeBaseCurrency');
 Route::get('update-api-key/payment-gateway/razorpay', 'App\Plugins\Razorpay\Controllers\SettingsController@updateApiKey');
-

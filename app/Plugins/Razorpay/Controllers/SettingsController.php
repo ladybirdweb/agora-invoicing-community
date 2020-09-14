@@ -5,9 +5,9 @@ namespace App\Plugins\Razorpay\Controllers;
 use App\ApiKey;
 use App\Http\Controllers\Controller;
 use App\Model\Common\Setting;
+use App\Model\Common\StatusSetting;
 use App\Plugins\Razorpay\Model\RazorpayPayment;
 use Cartalyst\Stripe\Laravel\Facades\Stripe;
-use App\Model\Common\StatusSetting;
 use Illuminate\Http\Request;
 use Razorpay\Api\Api;
 use Schema;
@@ -93,31 +93,31 @@ class SettingsController extends Controller
     * Update Razorpay Details In Database
     */
     public function updateApiKey(Request $request)
-    {  
+    {
         try {
             $rzp_key = $request->input('rzp_key');
             $rzp_secret = $request->input('rzp_secret');
             $api = new Api($rzp_key, $rzp_secret);
             $orderData = [
-            'receipt'         => 3456,
-            'amount'          => 2000 * 100, // 2000 rupees in paise
-            'currency'        => 'INR',
-            'payment_capture' => 1 // auto capture
-        ];
+                'receipt'         => 3456,
+                'amount'          => 2000 * 100, // 2000 rupees in paise
+                'currency'        => 'INR',
+                'payment_capture' => 1, // auto capture
+            ];
 
-        $razorpayOrder = $api->order->create($orderData);
-        $status = $request->input('status');
-        $apilayer_key = $request->input('apilayer_key');
-         StatusSetting::find(1)->update(['rzp_status'=>$status]);
-        ApiKey::find(1)->update(['rzp_key'=>$rzp_key, 'rzp_secret'=>$rzp_secret, 'apilayer_key'=>$apilayer_key]);
-        return successResponse(['success'=>'true', 'message'=>'Razorpay Settings updated successfully']);
-        
+            $razorpayOrder = $api->order->create($orderData);
+            $status = $request->input('status');
+            $apilayer_key = $request->input('apilayer_key');
+            StatusSetting::find(1)->update(['rzp_status'=>$status]);
+            ApiKey::find(1)->update(['rzp_key'=>$rzp_key, 'rzp_secret'=>$rzp_secret, 'apilayer_key'=>$apilayer_key]);
+
+            return successResponse(['success'=>'true', 'message'=>'Razorpay Settings updated successfully']);
         } catch (\Razorpay\Api\Errors\BadRequestError $e) {
             return errorResponse($e->getMessage());
         } catch (\Exception $e) {
             return errorResponse($e->getMessage());
         }
-        
+
         // $apilayer_key = $request->input('apilayer_key');
         // $status = $request->input('status');
         // StatusSetting::find(1)->update(['rzp_status'=>$status]);
@@ -125,9 +125,6 @@ class SettingsController extends Controller
 
         // return successResponse(['success'=>'true', 'message'=>'Razorpay Settings updated successfully']);
     }
-
-
- 
 
     /**
      * success response method.

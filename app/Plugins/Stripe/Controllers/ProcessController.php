@@ -3,12 +3,11 @@
 namespace App\Plugins\Stripe\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Plugins\Stripe\Model\StripePayment;
-use Illuminate\Http\Request;
-use App\Model\Product\Product;
 use App\Model\Order\InvoiceItem;
-
+use App\Model\Product\Product;
+use App\Plugins\Stripe\Model\StripePayment;
 use Darryldecode\Cart\CartCondition;
+use Illuminate\Http\Request;
 
 class ProcessController extends Controller
 {
@@ -66,21 +65,21 @@ class ProcessController extends Controller
                 // $total = \Session::get('totalToBePaid');
                 $regularPayment = false;
                 $invoice = \Session::get('invoice');
-            $items = $invoice->invoiceItem()->get();
-            $product = $this->product($invoice->id);
-            $processingFee = $this->getProcessingFee($payment_method, $invoice->currency);
+                $items = $invoice->invoiceItem()->get();
+                $product = $this->product($invoice->id);
+                $processingFee = $this->getProcessingFee($payment_method, $invoice->currency);
                 $invoice->processing_fee = $processingFee;
-            $invoice->grand_total = intval($invoice->grand_total * (1 + $processingFee / 100));
-            $amount = rounding($invoice->grand_total);
-            if (count($invoice->payment()->get())) {//If partial payment is made
-                $paid = array_sum($invoice->payment()->pluck('amount')->toArray());
-                $amount = rounding($invoice->grand_total - $paid);
-            }
-               \Session::put('totalToBePaid', $amount);
+                $invoice->grand_total = intval($invoice->grand_total * (1 + $processingFee / 100));
+                $amount = rounding($invoice->grand_total);
+                if (count($invoice->payment()->get())) {//If partial payment is made
+                    $paid = array_sum($invoice->payment()->pluck('amount')->toArray());
+                    $amount = rounding($invoice->grand_total - $paid);
+                }
+                \Session::put('totalToBePaid', $amount);
                 \View::addNamespace('plugins', $path);
-                echo view('plugins::middle-page', compact('total','invoice','regularPayment','items','product','amount','paid'));
+                echo view('plugins::middle-page', compact('total', 'invoice', 'regularPayment', 'items', 'product', 'amount', 'paid'));
             } else {
-                 $invoice_controller = new \App\Http\Controllers\Order\InvoiceController();
+                $invoice_controller = new \App\Http\Controllers\Order\InvoiceController();
                 $invoice = $invoice_controller->generateInvoice();
                 $pay = $this->payment($payment_method, $status = 'pending');
                 $payment_method = $pay['payment'];
@@ -90,16 +89,15 @@ class ProcessController extends Controller
                 $this->updateFinalPrice(new Request(['processing_fee'=>$processingFee]));
                 $amount = rounding(\Cart::getTotal());
                 \View::addNamespace('plugins', $path);
-            
-            echo view('plugins::middle-page', compact('invoice', 'amount', 'invoice_no', 'payment_method', 'invoice', 'regularPayment', ))->render();
+
+                echo view('plugins::middle-page', compact('invoice', 'amount', 'invoice_no', 'payment_method', 'invoice', 'regularPayment', ))->render();
             }
-            
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());
         }
     }
 
-     public static function updateFinalPrice(Request $request)
+    public static function updateFinalPrice(Request $request)
     {
         $value = '0%';
         if ($request->input('processing_fee')) {
@@ -115,7 +113,6 @@ class ProcessController extends Controller
         \Cart::condition($updateValue);
     }
 
-
     public function payment($payment_method, $status)
     {
         if (! $payment_method) {
@@ -125,7 +122,6 @@ class ProcessController extends Controller
 
         return ['payment'=>$payment_method, 'status'=>$status];
     }
-
 
     public function product($invoiceid)
     {
@@ -212,5 +208,4 @@ class ProcessController extends Controller
 
         return redirect($url)->with('fails', 'Thank you for your order. However,the transaction has been declined. Try again.');
     }
-
 }

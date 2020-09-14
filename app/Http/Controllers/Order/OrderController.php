@@ -91,6 +91,7 @@ class OrderController extends BaseOrderController
             $request->expiryTill = '';
             $request->from = '';
             $request->till = '';
+
             return redirect('orders')->with('fails', 'Start date should be before end date');
         }
         try {

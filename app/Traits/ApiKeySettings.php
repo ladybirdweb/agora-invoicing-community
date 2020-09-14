@@ -102,8 +102,6 @@ trait ApiKeySettings
         return ['message' => 'success', 'update'=>'Twitter settings saved'];
     }
 
-    
-
     public function updatepipedriveDetails(Request $request)
     {
         $pipedriveKey = $request->input('pipedrive_key');

@@ -126,16 +126,19 @@ active
                             @endphp
                             @if($orderForThisItem)
 
-                            <td> {!! $orderForThisItem->getOrderLink($orderForThisItem->id,'my-order') !!}
+                            <td> {!! $orderForThisItem->getOrderLink($orderForThisItem->id,'my-order') !!}</td>
                            
                                 @elseif($order != '--')
-                                <td>{!! $order !!}</td>
-                                <span>Renewed</span>
+                                <td>{!! $order !!}
+                                <span class='badge badge-warning'>Renewed</span></td>
                                 @else
                                 <td>--</td>
                                
                             @endif
-                            <td>{{$item->product_name}}</td>
+                            <td>{{$item->product_name}}
+
+
+                            </td>
                              <td>{{currencyFormat(intval($item->regular_price),$code = $symbol)}}</td>
                             <td>{{$item->quantity}}</td>
                             <td>{{currencyFormat($item->subtotal,$code = $symbol)}}</td>

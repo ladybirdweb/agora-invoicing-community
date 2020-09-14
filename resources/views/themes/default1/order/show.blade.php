@@ -170,7 +170,7 @@ Order
                                                    <td class="brtags"> {!! $date !!} </td>
                                                    <td>
                                                        @if($date != '--')
-                                                           <button class="btn btn-sm btn-secondary btn-xs" id="updates_end" updates-id="{{$order->id}}" data-date="{{getTimeInLoggedInUserTimeZone($subscription->update_ends_at,'d/m/Y')}}" '><i class="fa fa-edit" style='color:white;' {!! tooltip('Edit') !!}</i></button>
+                                                           <button class="btn btn-sm btn-secondary btn-xs" id="updates_end" updates-id="{{$order->id}}" data-date="{{getTimeInLoggedInUserTimeZone($subscription->update_ends_at,'m/d/Y')}}" '><i class="fa fa-edit" style='color:white;' {!! tooltip('Edit') !!}</i></button>
                                                        @endif
                                                    </td>
                                                </tr>
@@ -180,7 +180,7 @@ Order
                                                    <td class="brtags">{!! $licdate !!} </td>
                                                    <td>
                                                        @if($licdate != '--')
-                                                           <button class="btn btn-sm btn-secondary btn-xs" id="license_end" license-id="{{$order->id}}" license-date="{{getTimeInLoggedInUserTimeZone($subscription->ends_at,'d/m/Y')}}"><i class="fa fa-edit" style='color:white;' {!! tooltip('Edit') !!}</i>
+                                                           <button class="btn btn-sm btn-secondary btn-xs" id="license_end" license-id="{{$order->id}}" license-date="{{getTimeInLoggedInUserTimeZone($subscription->ends_at,'m/d/Y')}}"><i class="fa fa-edit" style='color:white;' {!! tooltip('Edit') !!}</i>
                                                            </button>
                                                        @endif
                                                    </td>
@@ -191,7 +191,7 @@ Order
                                                    <td class="brtags">{!! $supdate !!}</td>
                                                    <td>
                                                        @if($supdate != '--')
-                                                           <button class="btn btn-sm btn-secondary btn-xs" id="support_end" support-id="{{$order->id}}" support-date="{{getTimeInLoggedInUserTimeZone($subscription->support_ends_at,'d/m/Y')}}" ><i class="fa fa-edit" style='color:white;' {!! tooltip('Edit') !!}</i></button>
+                                                           <button class="btn btn-sm btn-secondary btn-xs" id="support_end" support-id="{{$order->id}}" support-date="{{getTimeInLoggedInUserTimeZone($subscription->support_ends_at,'m/d/Y')}}" ><i class="fa fa-edit" style='color:white;' {!! tooltip('Edit') !!}</i></button>
                                                            </button>
                                                        @endif
                                                    </td>

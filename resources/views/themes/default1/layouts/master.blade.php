@@ -198,7 +198,7 @@
                                 <li class="nav-item">
                                     <a href="{{url('deleted-users')}}" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
-                                        <p>Deleted Users</p>
+                                        <p>Suspended Users</p>
                                     </a>
                                 </li>
                             </ul>

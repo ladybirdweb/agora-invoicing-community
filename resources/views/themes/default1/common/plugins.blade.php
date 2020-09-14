@@ -38,6 +38,7 @@ Plugins
                           <th>Author</th>
                           <th>Website</th>
                           <th>Version</th>
+                          <th>Action</th>
                         </tr></thead>
                      </table>
               
@@ -86,6 +87,7 @@ Plugins
                 {data: 'author', name: 'Author'},
                 {data: 'website', name: 'Website'},
                 {data: 'version', name: 'Version'},
+                {data: 'action', name: 'action'},
             ],
             "fnDrawCallback": function( oSettings ) {
                 $(function () {

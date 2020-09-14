@@ -75,6 +75,24 @@ class OrderController extends BaseOrderController
      */
     public function index(Request $request)
     {
+        $validator = \Validator::make($request->all(), [
+            'sub_from'     => 'nullable',
+            'sub_till'     => 'nullable|after:sub_from',
+            'expiry'       => 'nullable',
+            'expiryTill'     => 'nullable|after:expiry',
+            'from'          => 'nullable',
+            'till'          => 'nullable|after:from',
+
+        ]);
+        if ($validator->fails()) {
+            $request->sub_from = '';
+            $request->sub_till = '';
+            $request->expiry = '';
+            $request->expiryTill = '';
+            $request->from = '';
+            $request->till = '';
+            return redirect('orders')->with('fails', 'Start date should be before end date');
+        }
         try {
             $products = $this->product->where('id', '!=', 1)->pluck('name', 'id')->toArray();
 
@@ -203,7 +221,7 @@ class OrderController extends BaseOrderController
         try {
             $order = $this->order->findOrFail($id);
             if (User::onlyTrashed()->find($order->client)) {//If User is soft deleted for this order
-                throw new \Exception('The user for this order is deleted from the system. Restore the user to view order details.');
+                throw new \Exception('The user for this order is suspended from the system. Restore the user to view order details.');
             }
             $subscription = $order->subscription()->first();
 

@@ -1,23 +1,23 @@
 <?php
 
-namespace App\Plugins\Stripe\Controllers;
+namespace App\Plugins\Razorpay\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Plugins\Stripe\Model\StripePayment;
-use Illuminate\Http\Request;
+use App\ApiKey;
 use App\Model\Product\Product;
 use App\Model\Order\InvoiceItem;
-
 use Darryldecode\Cart\CartCondition;
+use App\Plugins\Razorpay\Model\RazorpayPayment;
+use Illuminate\Http\Request;
 
 class ProcessController extends Controller
 {
-    protected $stripe;
+    protected $razorpay;
 
     public function __construct()
     {
-        $stripe = new StripePayment();
-        $this->stripe = $stripe;
+        $razorpay = new RazorpayPayment();
+        $this->razorpay = $razorpay;
 
         $product = new Product();
         $this->product = $product;
@@ -37,13 +37,13 @@ class ProcessController extends Controller
             } else {
                 $invoice->grand_total = \Cart::getTotal();
             }
-            if ($request->input('payment_gateway') == 'Stripe') {
-                if (! \Schema::hasTable('stripe')) {
-                    throw new \Exception('Stripe is not configured');
+            if ($request->input('payment_gateway') == 'Razorpay') {
+                if (! \Schema::hasTable('razorpay')) {
+                    throw new \Exception('Razorpay is not configured');
                 }
-                $stripe = $this->stripe->where('id', 1)->first();
+                $stripe = $this->razorpay->where('id', 1)->first();
                 if (! $stripe) {
-                    throw new \Exception('Stripe Fields not given');
+                    throw new \Exception('Razorpay Fields not given');
                 }
                 \Session::put('invoice', $invoice);
                 \Session::save();
@@ -57,9 +57,12 @@ class ProcessController extends Controller
     public function middlePage()
     {
         try {
-            $path = app_path().'/Plugins/Stripe/views';
+            $rzp_key = ApiKey::where('id', 1)->value('rzp_key');
+            $rzp_secret = ApiKey::where('id', 1)->value('rzp_secret');
+            $apilayer_key = ApiKey::where('id', 1)->value('apilayer_key');
+             $payment_method = \Session::get('payment_method');
+            $path = app_path().'/Plugins/Razorpay/views';
             $total = intval(\Cart::getTotal());
-            $payment_method = \Session::get('payment_method');
             $regularPayment = true;
             if (! $total) {
                 $paid = 0;
@@ -68,19 +71,22 @@ class ProcessController extends Controller
                 $invoice = \Session::get('invoice');
             $items = $invoice->invoiceItem()->get();
             $product = $this->product($invoice->id);
+            $amount = $invoice->grand_total;
+           
             $processingFee = $this->getProcessingFee($payment_method, $invoice->currency);
                 $invoice->processing_fee = $processingFee;
             $invoice->grand_total = intval($invoice->grand_total * (1 + $processingFee / 100));
-            $amount = rounding($invoice->grand_total);
+            $totalPaid = $invoice->grand_total;
             if (count($invoice->payment()->get())) {//If partial payment is made
                 $paid = array_sum($invoice->payment()->pluck('amount')->toArray());
-                $amount = rounding($invoice->grand_total - $paid);
+                $totalPaid = $invoice->grand_total - $paid;
             }
-               \Session::put('totalToBePaid', $amount);
-                \View::addNamespace('plugins', $path);
-                echo view('plugins::middle-page', compact('total','invoice','regularPayment','items','product','amount','paid'));
+            \Session::put('totalToBePaid', $totalPaid);
+            \View::addNamespace('plugins', $path);
+            
+            echo view('plugins::middle-page', compact('total','rzp_key','rzp_secret','apilayer_key','invoice','regularPayment','items','product','amount','paid','totalPaid'));
             } else {
-                 $invoice_controller = new \App\Http\Controllers\Order\InvoiceController();
+                $invoice_controller = new \App\Http\Controllers\Order\InvoiceController();
                 $invoice = $invoice_controller->generateInvoice();
                 $pay = $this->payment($payment_method, $status = 'pending');
                 $payment_method = $pay['payment'];
@@ -88,18 +94,20 @@ class ProcessController extends Controller
                 $status = $pay['status'];
                 $processingFee = $this->getProcessingFee($payment_method, $invoice->currency);
                 $this->updateFinalPrice(new Request(['processing_fee'=>$processingFee]));
-                $amount = rounding(\Cart::getTotal());
+                $amount = \Cart::getTotal();
                 \View::addNamespace('plugins', $path);
             
-            echo view('plugins::middle-page', compact('invoice', 'amount', 'invoice_no', 'payment_method', 'invoice', 'regularPayment', ))->render();
+            echo view('plugins::middle-page', compact('invoice', 'amount', 'invoice_no', 'payment_method', 'invoice', 'regularPayment', 'rzp_key', 'rzp_secret', 'apilayer_key'))->render();
+
             }
-            
         } catch (\Exception $ex) {
+            dd($ex);
             throw new \Exception($ex->getMessage());
         }
     }
 
-     public static function updateFinalPrice(Request $request)
+
+    public static function updateFinalPrice(Request $request)
     {
         $value = '0%';
         if ($request->input('processing_fee')) {

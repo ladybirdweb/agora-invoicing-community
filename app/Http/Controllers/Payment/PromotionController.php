@@ -116,6 +116,14 @@ class PromotionController extends BasePromotionController
      */
     public function store(PromotionRequest $request)
     {
+         $validator = \Validator::make($request->all(), [
+            'start'     => 'required',
+            'expiry'     => 'required|after:start',
+
+        ]);
+         if ($validator->fails()) {
+            return redirect()->back()->with('fails', 'Start date should be before expiry date');
+        }
         try {
             $startdate = date_create($request->input('start'));
             $start = date_format($startdate, 'Y-m-d H:m:i');
@@ -176,6 +184,15 @@ class PromotionController extends BasePromotionController
      */
     public function update($id, PromotionRequest $request)
     {
+         $validator = \Validator::make($request->all(), [
+            'start'     => 'required',
+            'expiry'     => 'required|after:start',
+
+        ]);
+         if ($validator->fails()) {
+            return redirect()->back()->with('fails', 'Start date should be before expiry date');
+        }
+
         try {
             $startdate = date_create($request->input('start'));
             $start = date_format($startdate, 'Y-m-d H:m:i');

@@ -9,14 +9,13 @@ use Illuminate\Support\Collection;
 
 class PaymentSettingsController extends Controller
 {
-    public function     getPlugin()
+    public function getPlugin()
     {
         $plugins = $this->fetchConfig();
 
         return \DataTables::of(new Collection($plugins))
                         // ->searchColumns('name')
                         ->addColumn('name', function ($model) {
-                            
                             return ucfirst($model['name']);
                         })
                         ->addColumn('description', function ($model) {
@@ -31,14 +30,14 @@ class PaymentSettingsController extends Controller
                         ->addColumn('version', function ($model) {
                             return $model['version'];
                         })
-                        ->addColumn('action', function ($model){
+                        ->addColumn('action', function ($model) {
                             if (array_has($model, 'path')) {
                                 if ($model['status'] == 0) {
                                     $activate = '<form method="post" action='.url('plugin/status/'.$model['name']).'>'.'<input type="hidden" name="_token" value='.\Session::token().'>'.'
                                     <button type="submit" class="btn btn-info btn-sm btn-xs"'.tooltip('Activate').'<i class="fa fa-tasks" style="color:white;"></i></button></form>';
                                     $settings = ' ';
                                 } else {
-                                    $settings = '<a href='.url($model['settings']).' class="btn btn-info btn-sm btn-xs"'.tooltip("Settings").'<i class="nav-icon fa fa-fw fa-cogs" style="color:white;"></i></a> <br> ';
+                                    $settings = '<a href='.url($model['settings']).' class="btn btn-info btn-sm btn-xs"'.tooltip('Settings').'<i class="nav-icon fa fa-fw fa-cogs" style="color:white;"></i></a> <br> ';
                                     $activate = '<form method="post" action='.url('plugin/status/'.$model['name']).'>'.'<input type="hidden" name="_token" value='.\Session::token().'>'.'
                                     <button type="submit" class="btn btn-info btn-sm btn-xs"'.tooltip('Deactivate').'<i class="fa fa-tasks" style="color:white;"></i></button></form>';
                                 }
@@ -70,9 +69,10 @@ class PaymentSettingsController extends Controller
                             } else {
                                 $action = '';
                             }
+
                             return $action;
                         })
-                      ->rawColumns(['name', 'description', 'author', 'website', 'version','action'])
+                      ->rawColumns(['name', 'description', 'author', 'website', 'version', 'action'])
                             ->make(true);
     }
 

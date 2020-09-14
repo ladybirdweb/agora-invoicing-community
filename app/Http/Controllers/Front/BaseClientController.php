@@ -223,7 +223,6 @@ class BaseClientController extends Controller
         return $link;
     }
 
-
     public function subscriptions()
     {
         try {

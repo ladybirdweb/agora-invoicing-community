@@ -68,7 +68,11 @@ User
                 </div>
                 <!-- /.col -->
                 <div class="col-sm-4">
+                    @if($pendingAmount)
                     <div class="description-block" style="color:red;">
+                        @else
+                         <div class="description-block">
+                            @endif
                         <h5 class="description-header" >{{currency_format($pendingAmount,$code=$client->currency)}}</h5>
                         <span class="description-text">BALANCE</span>
                     </div>

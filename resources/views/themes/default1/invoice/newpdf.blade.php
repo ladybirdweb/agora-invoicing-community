@@ -131,18 +131,16 @@
                                         @endphp
                                         @if($orderForThisItem)
                                         <td> {!! Order::getOrderLink($orderForThisItem->id) !!} </td>
-                                       
                                             @elseif($order != '--')
-                                            <td>{!! $order !!}</td>
-                                            <span>Renewed</span>
+                                            <td>{!! $order !!} </td>
                                             @else
                                             <td>--</td>
                                            
                                         @endif
                                         <td>{{$item->product_name}}</td>
+                                         <td>{{currencyFormat($item->regular_price,$code=$symbol)}}</td>
                                         <td>{{$item->quantity}}</td>
-                                        <td>{{currencyFormat($item->regular_price,$code=$symbol)}}</td>
-                                        <td> {{currencyFormat($item->subtotal,$code=$symbol)}}</td>
+                                       <td> {{currencyFormat($item->subtotal,$code=$symbol)}}</td>
                                     </tr>
                                     @endforeach
                                 </tbody>

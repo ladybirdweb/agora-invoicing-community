@@ -258,7 +258,7 @@ class ClientController extends AdvanceSearchController
     {
         try {
             if (User::onlyTrashed()->find($id)) {
-                throw new \Exception('This user is deleted from system. Restore the user to view details.');
+                throw new \Exception('This user is suspended from system. Restore the user to view details.');
             }
             $invoice = new Invoice();
             $order = new Order();

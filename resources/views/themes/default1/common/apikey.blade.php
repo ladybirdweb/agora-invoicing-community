@@ -457,42 +457,6 @@ input:checked + .slider:before {
                   <td class="col-md-2"><button type="submit" class="form-group btn btn-primary"  id="submit13"><i class="fa fa-save">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
                 </tr>
 
-                  <tr>
-                 
-                  <td class="col-md-2">Razorpay(Payment Gateway)</td>
-                  <td class="col-md-2">
-                    <label class="switch toggle_event_editing">
-                          
-                         <input type="checkbox" value="{{$rzpStatus}}"  name="rzp_settings" 
-                          class="checkbox7" id="razorpay">
-                          <span class="slider round"></span>
-                    </label>
- 
-                  </td>
-               
-                      <td class="col-md-2 rzpverify">
-                        <input type ="hidden" id="hidden_rzp_key" value="{{$rzpKeys->rzp_key}}">
-                         <input type ="hidden" id="hidden_rzp_secret" value="{{$rzpKeys->rzp_secret}}">
-                          <input type ="hidden" id="hidden_apilayer_key" value="{{$rzpKeys->apilayer_key}}">
-                        {!! Form::label('rzp_key',Lang::get('message.rzp_key')) !!}
-                        {!! Form::text('rzp_key',$rzpKeys->rzp_key,['class' => 'form-control rzp_key','id'=>'rzp_key']) !!}
-                         <h6 id="rzp_keycheck"></h6>
-                        
-                  
-                        <!-- last name -->
-                        {!! Form::label('rzp_secret',Lang::get('message.rzp_secret')) !!} 
-                        {!! Form::text('rzp_secret',$rzpKeys->rzp_secret,['class' => 'form-control rzp_secret','id'=>'rzp_secret']) !!}
-                        <h6 id="rzp_secretcheck"></h6>
-                     
-                  
-                    
-                        {!! Form::label('apilayer_key',Lang::get('message.apilayer_key')) !!}
-                        {!! Form::text('apilayer_key',$rzpKeys->apilayer_key,['class' => 'form-control apilayer_key','id'=>'apilayer_key']) !!}
-                         <h6 id="apilayer_keycheck"></h6>
-                  </td>
-
-                  <td class="col-md-2"><button type="submit" class="form-group btn btn-primary"  id="submit6"><i class="fa fa-save">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
-                </tr>
                   </tbody>
 
       
@@ -995,101 +959,7 @@ if ($('#update').prop("checked")) {
     })
   });
 
-<!----------------------------------------------------------------------------------------------------------------------------->
 
-/*
- * Razorpay Settings
- */  
-  $(document).ready(function (){
-  var razorpaystatus =  $('.checkbox7').val();
-    if(razorpaystatus ==1)
-     {
-        $('#razorpay').prop('checked',true);
-       $('#rzp_key').attr('enabled', true);
-       $('#rzp_secret').attr('enabled', true);
-       $('#apilayer_key').attr('enabled', true);
-
-     } else if(razorpaystatus ==0){
-      $('#razorpay').prop('checked',false);
-        $('.rzp_key').attr('disabled', true);
-       $('.rzp_secret').attr('disabled', true);
-       $('.apilayer_key').attr('disabled', true);
-     }
-  });
-
-   $("#razorpay").on('change',function (){
-    if($(this).prop('checked')) {
-      var rzp_key =  $('#hidden_rzp_key').val();
-       var rzp_secret =  $('#hidden_rzp_secret').val();
-        var apilayer_key =  $('#hidden_apilayer_key').val();
-      $('.rzp_key').attr('disabled', false);
-      $('.rzp_secret').attr('disabled', false);
-      $('.apilayer_key').attr('disabled', false);
-       $('#rzp_key').val(rzp_key);
-       $('#rzp_secret').val(rzp_secret);
-       $('#apilayer_key').val(apilayer_key);
-
-     } else {
-        $('.rzp_key').attr('disabled', true);
-      $('.rzp_secret').attr('disabled', true);
-      $('.apilayer_key').attr('disabled', true);
-      $('#rzp_key').val('');
-       $('#rzp_secret').val('');
-       $('#apilayer_key').val('');
-     }
-  });
-
-  //Validate and pass value through ajax
-  $("#submit6").on('click',function (){ //When Submit button is checked
-     if ($('#razorpay').prop('checked')) {//if button is on
-             var rzpstatus = 1;
-           if ($('#rzp_key').val() == "") { //if value is not entered
-            $('#rzp_keycheck').show();
-            $('#rzp_keycheck').html("Please Enter Razorpay Key");
-            $('#rzp_key').css("border-color","red");
-            $('#rzp_keycheck').css({"color":"red","margin-top":"5px"});
-            return false;
-          } else if ($('#rzp_secret').val() == "") {
-             $('#rzp_secretcheck').show();
-            $('#rzp_secretcheck').html("Please Enter Razorpay Secret");
-            $('#rzp_secret').css("border-color","red");
-            $('#rzp_secretcheck').css({"color":"red","margin-top":"5px"});
-            return false;
-          } else if ($('#apilayer_key').val() == "") {
-             $('#apilayer_keycheck').show();
-            $('#apilayer_keycheck').html("Please Enter ApiLayer Access Key");
-            $('#apilayer_key').css("border-color","red");
-            $('#apilayer_keycheck').css({"color":"red","margin-top":"5px"});
-             return false;
-          } 
-    } else {
-       $('#rzp_keycheck').html("");
-       $('#rzp_key').css("border-color","");
-       $('#rzp_secretcheck').html("");
-       $('#rzp_secret').css("border-color","");
-        $('#apilayer_keycheck').html("");
-       $('#apilayer_key').css("border-color","");
-       var rzpstatus = 0;
-  }
-    $("#submit6").html("<i class='fas fa-circle-notch fa-spin'></i>Please Wait...");
-    $.ajax ({
-      url: '{{url("updaterzpDetails")}}',
-      type : 'post',
-      data: {
-       "status": rzpstatus,
-       "rzp_key": $('#rzp_key').val(),"rzp_secret" : $('#rzp_secret').val() ,
-        "apilayer_key":$('#apilayer_key').val() },
-       success: function (data) {
-            $('#alertMessage').show();
-            var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>'+data.update+'.</div>';
-            $('#alertMessage').html(result+ ".");
-            $("#submit6").html("<i class='fa fa-save'>&nbsp;</i>Save");
-              setInterval(function(){ 
-                $('#alertMessage').slideUp(3000); 
-            }, 1000);
-          },
-    })
-  });
 
 
 <!---------------------------------------------------------------------------------------------------------------->

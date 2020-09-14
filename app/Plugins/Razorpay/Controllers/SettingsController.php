@@ -1,13 +1,15 @@
 <?php
 
-namespace App\Plugins\Stripe\Controllers;
+namespace App\Plugins\Razorpay\Controllers;
 
 use App\ApiKey;
 use App\Http\Controllers\Controller;
 use App\Model\Common\Setting;
-use App\Plugins\Stripe\Model\StripePayment;
+use App\Plugins\Razorpay\Model\RazorpayPayment;
 use Cartalyst\Stripe\Laravel\Facades\Stripe;
+use App\Model\Common\StatusSetting;
 use Illuminate\Http\Request;
+use Razorpay\Api\Api;
 use Schema;
 use Validator;
 
@@ -16,14 +18,14 @@ class SettingsController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('admin', ['except'=>['postPaymentWithStripe']]);
+        $this->middleware('admin', ['except'=>['postPaymentWithRazorpay']]);
     }
 
     public function Settings()
     {
         try {
-            if (! Schema::hasTable('stripe')) {
-                Schema::create('stripe', function ($table) {
+            if (! Schema::hasTable('razorpay')) {
+                Schema::create('razorpay', function ($table) {
                     $table->increments('id');
                     $table->string('image_url');
                     $table->string('processing_fee');
@@ -33,21 +35,21 @@ class SettingsController extends Controller
                 });
             }
 
-            $stripe1 = new StripePayment();
+            $razorpay1 = new RazorpayPayment();
             // //dd($ccavanue);
-            $stripe = $stripe1->where('id', '1')->first();
+            $razorpay = $razorpay1->where('id', '1')->first();
 
-            if (! $stripe) {
-                \Artisan::call('db:seed', ['--class' => 'database\\seeds\\StripeSupportedCurrencySeeder', '--force' => true]);
+            if (! $razorpay) {
+                \Artisan::call('db:seed', ['--class' => 'database\\seeds\\RazorpaySupportedCurrencySeeder', '--force' => true]);
             }
-            $allCurrencies = StripePayment::pluck('currencies', 'id')->toArray();
-            $apikey = new ApiKey();
-            $stripeKeys = $apikey->select('stripe_key', 'stripe_secret')->first();
-            $baseCurrency = StripePayment::pluck('base_currency')->toArray();
-            $path = app_path().'/Plugins/Stripe/views';
+            $allCurrencies = RazorpayPayment::pluck('currencies', 'id')->toArray();
+            $rzpkey = new ApiKey();
+            $rzpKeys = $rzpkey->select('rzp_key', 'rzp_secret', 'apilayer_key')->first();
+            $baseCurrency = RazorpayPayment::pluck('base_currency')->toArray();
+            $path = app_path().'/Plugins/Razorpay/views';
             \View::addNamespace('plugins', $path);
 
-            return view('plugins::settings', compact('stripe', 'baseCurrency', 'allCurrencies', 'stripeKeys'));
+            return view('plugins::settings', compact('razorpay', 'baseCurrency', 'allCurrencies', 'rzpKeys'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -87,28 +89,52 @@ class SettingsController extends Controller
         return ['message' => 'success', 'update'=>'Base Currency Updated'];
     }
 
+    /*
+    * Update Razorpay Details In Database
+    */
     public function updateApiKey(Request $request)
-    {
+    {  
         try {
-            $stripe = Stripe::make($request->input('stripe_secret'));
-            $response = $stripe->customers()->create(['description' => 'Test Customer to Validate Secret Key']);
-            $stripe_secret = $request->input('stripe_secret');
-            ApiKey::find(1)->update(['stripe_secret'=>$stripe_secret]);
+            $rzp_key = $request->input('rzp_key');
+            $rzp_secret = $request->input('rzp_secret');
+            $api = new Api($rzp_key, $rzp_secret);
+            $orderData = [
+            'receipt'         => 3456,
+            'amount'          => 2000 * 100, // 2000 rupees in paise
+            'currency'        => 'INR',
+            'payment_capture' => 1 // auto capture
+        ];
 
-            return successResponse(['success'=>'true', 'message'=>'Secret key updated successfully']);
-        } catch (\Cartalyst\Stripe\Exception\UnauthorizedException  $e) {
+        $razorpayOrder = $api->order->create($orderData);
+        $status = $request->input('status');
+        $apilayer_key = $request->input('apilayer_key');
+         StatusSetting::find(1)->update(['rzp_status'=>$status]);
+        ApiKey::find(1)->update(['rzp_key'=>$rzp_key, 'rzp_secret'=>$rzp_secret, 'apilayer_key'=>$apilayer_key]);
+        return successResponse(['success'=>'true', 'message'=>'Razorpay Settings updated successfully']);
+        
+        } catch (\Razorpay\Api\Errors\BadRequestError $e) {
             return errorResponse($e->getMessage());
         } catch (\Exception $e) {
             return errorResponse($e->getMessage());
         }
+        
+        // $apilayer_key = $request->input('apilayer_key');
+        // $status = $request->input('status');
+        // StatusSetting::find(1)->update(['rzp_status'=>$status]);
+        // ApiKey::find(1)->update(['rzp_key'=>$rzp_key, 'rzp_secret'=>$rzp_secret, 'apilayer_key'=>$apilayer_key]);
+
+        // return successResponse(['success'=>'true', 'message'=>'Razorpay Settings updated successfully']);
     }
+
+
+ 
 
     /**
      * success response method.
      *
      * @return \Illuminate\Http\Response
      */
-    public function postPaymentWithStripe(Request $request)
+    public function postPaymentWithRazorpay(Request $request)
     {
         $validator = Validator::make($request->all(), [
         ]);
@@ -125,10 +151,13 @@ class SettingsController extends Controller
         $stripe = Stripe::make($stripeSecretKey);
         try {
             $invoice = \Session::get('invoice');
-            // $invoiceTotal = \Session::get('totalToBePaid');
+            $invoiceTotal = \Session::get('totalToBePaid');
             $amount = rounding(\Cart::getTotal());
             if (! $amount) {//During renewal
-               $amount = rounding(\Session::get('totalToBePaid'));
+                if (rounding($request->input('amount')) != rounding($invoiceTotal)) {
+                    throw new \Exception('Invalid modification of data');
+                }
+                $amount = rounding($request->input('amount'));
             }
             $stripeSecretKey = ApiKey::pluck('stripe_secret')->first();
             $stripe = Stripe::make($stripeSecretKey);
@@ -206,7 +235,7 @@ class SettingsController extends Controller
             }
         } catch (\Cartalyst\Stripe\Exception\ApiLimitExceededException | \Cartalyst\Stripe\Exception\BadRequestException | \Cartalyst\Stripe\Exception\MissingParameterException | \Cartalyst\Stripe\Exception\NotFoundException | \Cartalyst\Stripe\Exception\ServerErrorException | \Cartalyst\Stripe\Exception\StripeException | \Cartalyst\Stripe\Exception\UnauthorizedException $e) {
             if (emailSendingStatus()) {
-                $this->sendFailedPaymenttoAdmin($amount, $e->getMessage());
+                $this->sendFailedPaymenttoAdmin($request['amount'], $e->getMessage());
             }
 
             return redirect('checkout')->with('fails', 'Your Payment was declined. '.$e->getMessage().'. Please try again or try the other gateway');
@@ -214,7 +243,7 @@ class SettingsController extends Controller
             if (emailSendingStatus()) {
                 $this->sendFailedPaymenttoAdmin($request['amount'], $e->getMessage());
             }
-            \Session::put('amount', $amount);
+            \Session::put('amount', $request['amount']);
             \Session::put('error', $e->getMessage());
 
             return redirect()->route('checkout');

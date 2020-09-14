@@ -257,6 +257,20 @@ class SettingsController extends BaseSettingsController
 
     public function settingsActivity(Request $request, Activity $activities)
     {
+        $validator = \Validator::make($request->all(), [
+            'from'     => 'nullable',
+            'till'     => 'nullable|after:from',
+            'delFrom'  => 'nullable',
+            'delTill'  => 'nullable|after:delFrom',
+        ]);
+        if ($validator->fails()) {
+            $request->from = '';
+            $request->till = '';
+            $request->delFrom = '';
+            $request->delTill = '';
+
+            return redirect('settings/activitylog')->with('fails', 'Start date should be before end date');
+        }
         try {
             $activity = $activities->all();
             $from = $request->input('from');

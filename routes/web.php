@@ -202,7 +202,6 @@
             Route::post('updatetwitterDetails', 'Common\BaseSettingsController@updateTwitterDetails')->name('updatetwitterDetails');
             Route::post('updateMailchimpDetails', 'Common\BaseSettingsController@updateMailchimpDetails')->name('updateMailchimpDetails');
             Route::post('updateTermsDetails', 'Common\BaseSettingsController@updateTermsDetails')->name('updateTermsDetails');
-            Route::post('updaterzpDetails', 'Common\BaseSettingsController@updateRazorpayDetails')->name('updaterzpDetails');
             Route::post('updatezohoDetails', 'Common\BaseSettingsController@updateZohoDetails')->name('updatezohoDetails');
             Route::post('updatepipedriveDetails', 'Common\BaseSettingsController@updatepipedriveDetails')->name('updatepipedriveDetails');
             Route::post('mailchimp-prod-status', 'Common\BaseSettingsController@updateMailchimpProductStatus')->name('mailchimp-prod-status');
@@ -440,11 +439,11 @@
              */
             Route::get('plugin', 'Common\SettingsController@plugins');
 
-            Route::get('get-plugin', ['as' => 'get-plugin', 'uses' => 'Common\SettingsController@getPlugin']);
+            Route::get('get-plugin', ['as' => 'get-plugin', 'uses' => 'Common\PaymentSettingsController@getPlugin']);
             // Route::get('getplugin', 'Common\SettingsController@getPlugin');
-            Route::post('post-plugin', ['as' => 'post.plugin', 'uses' => 'Common\SettingsController@postPlugins']);
-            Route::post('plugin/delete/{slug}', ['as' => 'delete.plugin', 'uses' => 'Common\SettingsController@deletePlugin']);
-            Route::post('plugin/status/{slug}', ['as' => 'status.plugin', 'uses' => 'Common\SettingsController@statusPlugin']);
+            Route::post('post-plugin', ['as' => 'post.plugin', 'uses' => 'Common\PaymentSettingsController@postPlugins']);
+            Route::post('plugin/delete/{slug}', ['as' => 'delete.plugin', 'uses' => 'Common\PaymentSettingsController@deletePlugin']);
+            Route::post('plugin/status/{slug}', ['as' => 'status.plugin', 'uses' => 'Common\PaymentSettingsController@statusPlugin']);
 
             /*
              * Cron Jobs

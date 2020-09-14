@@ -212,7 +212,7 @@ class CheckoutController extends InfoController
                 'payment_gateway.required'=> 'Please Select a Payment Gateway',
             ]);
         }
-        try {
+        // try {
             $invoice_controller = new \App\Http\Controllers\Order\InvoiceController();
             $info_cont = new \App\Http\Controllers\Front\InfoController();
             $payment_method = $request->input('payment_gateway');
@@ -220,108 +220,60 @@ class CheckoutController extends InfoController
             $paynow = $this->checkregularPaymentOrRenewal($request->input('invoice_id'));
             $cost = $request->input('cost');
             $state = $this->getState();
-            if ($paynow === false) {
+            if ($paynow === false) {//When regular payment
                 $invoice = $invoice_controller->generateInvoice();
-                $pay = $this->payment($payment_method, $status = 'pending');
-                $payment_method = $pay['payment'];
-                $status = $pay['status'];
-                $invoice_no = $invoice->number;
-                $items = $invoice->invoiceItem()->get();
-                $processingFee = $this->getProcessingFee($payment_method, $invoice->currency);
-                $this->updateFinalPrice(new Request(['processing_fee'=>$processingFee]));
-                $amount = Cart::getTotal();
-
-                if (Cart::getSubTotal()) {
-                    if ($payment_method == 'razorpay') {
-                        $rzp_key = ApiKey::where('id', 1)->value('rzp_key');
-                        $rzp_secret = ApiKey::where('id', 1)->value('rzp_secret');
-                        $apilayer_key = ApiKey::where('id', 1)->value('apilayer_key');
-
-                        return view('themes.default1.front.postCheckout', compact('invoice', 'items', 'amount', 'invoice_no', 'payment_method', 'invoice', 'paynow', 'rzp_key', 'rzp_secret', 'apilayer_key'
-                        )
-                    );
-                    } else {
-                        \Event::dispatch(new \App\Events\PaymentGateway(['request' => $request, 'invoice' => $invoice]));
-                    }
+                $amount = intval(Cart::getSubTotal());
+                if ($amount) {//If payment is for paid product
+                \Event::dispatch(new \App\Events\PaymentGateway(['request' => $request , 'invoice' => $invoice]));
                 } else {
-                    $action = $this->checkoutAction($invoice);
                     $date = getDateHtml($invoice->date);
                     $product = $this->product($invoice->id);
-                    // $check_product_category = $this->product($invoiceid);
+                    $items = $invoice->invoiceItem()->get();
                     $url = '';
-                    // if ($check_product_category->category) {
-                    $url = view('themes.default1.front.postCheckoutTemplate', compact(
-                        'invoice',
-                        'date',
-                        'product',
-                        'items',
-                        'state'
-                    ))->render();
+                    $this->checkoutAction($invoice);//For free product generate invoice without payment
+                      $url = view('themes.default1.front.postCheckoutTemplate', compact('invoice', 'date','product', 'items',))->render();
                     // }
-
-                    \Cart::clear();
-
-                    return redirect()->back()->with('success', $url);
+                     \Cart::clear();
+                    return redirect('checkout')->with('success', $url);
                 }
-            } else {
-                $paid = 0;
-                $items = new \Illuminate\Support\Collection();
-                $invoiceid = $request->input('invoice_id');
-                $invoice = $this->invoice->find($invoiceid);
-                $processingFee = $this->getProcessingFee($payment_method, $invoice->currency);
-                $invoice->processing_fee = $processingFee;
-                $invoice->grand_total = intval($invoice->grand_total * (1 + $processingFee / 100));
-                $totalPaid = $invoice->grand_total;
-                if (count($invoice->payment()->get())) {//If partial payment is made
-                    $paid = array_sum($invoice->payment()->pluck('amount')->toArray());
-                    $totalPaid = $invoice->grand_total - $paid;
-                }
-                \Session::put('totalToBePaid', $totalPaid);
 
-                $invoice_no = $invoice->number;
-                $items = $invoice->invoiceItem()->get();
-                $product = $this->product($invoiceid);
-                $amount = $invoice->grand_total;
-                if ($amount) {
-                    if ($payment_method == 'razorpay') {
-                        $rzp_key = ApiKey::where('id', 1)->value('rzp_key');
-                        $rzp_secret = ApiKey::where('id', 1)->value('rzp_secret');
-                        $apilayer_key = ApiKey::where('id', 1)->value('apilayer_key');
-
-                        return view('themes.default1.front.postRenew', compact('invoice', 'items', 'amount', 'invoice_no', 'payment_method', 'invoice', 'product', 'paynow', 'rzp_key', 'rzp_secret', 'apilayer_key', 'paid', 'totalPaid'
-                        )
-                    );
-                    } else {
-                        \Event::dispatch(new \App\Events\PaymentGateway(['request' => $request, 'amount'=> $totalPaid, 'invoice' => $invoice]));
-                    }
+            } else {//When renewal, pending payments
+                        $invoiceid = $request->input('invoice_id');
+                        $invoice = $this->invoice->find($invoiceid);
+                        $amount = intval($invoice->grand_total);
+                if ($amount) {//If payment is for paid product
+                \Event::dispatch(new \App\Events\PaymentGateway(['request' => $request , 'invoice' => $invoice]));
                 } else {
-                    $control = new \App\Http\Controllers\Order\RenewController();
-                    $control->successRenew($invoice);
-                    $payment = new \App\Http\Controllers\Order\InvoiceController();
-                    $payment->postRazorpayPayment($invoice);
-                    $url = '';
-                    // if ($check_product_category->category) {
-                    $url = view('themes.default1.front.postCheckoutTemplate', compact(
-                        'invoice',
-                        'date',
-                        'product',
-                        'items',
-                        'attributes',
-                        'state'
-                    ))->render();
-                    // }
-
-                    \Cart::clear();
-
-                    return redirect()->back()->with('success', $url);
+                        
+                        $control = new \App\Http\Controllers\Order\RenewController();
+                        $payment = new \App\Http\Controllers\Order\InvoiceController();
+                        $payment->postRazorpayPayment($invoice);
+                        $date = getDateHtml($invoice->date);
+                        $product = $this->product($invoice->id);
+                        $items = $invoice->invoiceItem()->get();
+                        $url = '';
+                        $this->checkoutAction($invoice);//For free product generate invoice without payment
+                          $url = view('themes.default1.front.postCheckoutTemplate', compact('invoice', 'date','product', 'items',))->render();
+                     \Cart::clear();
+                    return redirect('checkout')->with('success', $url);
                 }
+                    
             }
-        } catch (\Exception $ex) {
-            app('log')->error($ex->getMessage());
-            Bugsnag::notifyException($ex);
+                
 
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
+           
+
+                    
+                   
+                
+                
+                
+        //          catch (\Exception $ex) {
+        //     app('log')->error($ex->getMessage());
+        //     Bugsnag::notifyException($ex);
+
+        //     return redirect()->back()->with('fails', $ex->getMessage());
+        // }
     }
 
     private function getProcessingFee($paymentMethod, $currency)

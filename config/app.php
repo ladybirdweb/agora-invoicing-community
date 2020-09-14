@@ -101,6 +101,7 @@ return [
     |
     | This key is used by the Illuminate encrypter service and should be set
 
+'App\Plugins\Razorpay\ServiceProvider',
 
     */
 
@@ -151,6 +152,7 @@ return [
         //
 
         'App\Plugins\Stripe\ServiceProvider',
+        'App\Plugins\Razorpay\ServiceProvider',
         /*
          * Laravel Framework Service Providers...
          */

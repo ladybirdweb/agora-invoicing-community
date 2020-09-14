@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Common;
 
 use App\ApiKey;
 use App\Http\Controllers\Common\PHPController as PaymentSettingsController;
-use App\Http\Controllers\Order\ExtendedOrderController;
+use App\Http\Controllers\Order\OrderSearchController;
 use App\Model\Common\StatusSetting;
 use App\Model\Mailjob\ActivityLogDay;
 use App\Model\Mailjob\ExpiryMailDay;
@@ -118,25 +118,25 @@ class BaseSettingsController extends PaymentSettingsController
         if ($from) {
             $from = $this->getDateFormat($from);
             $tills = $this->getDateFormat();
-            $tillDate = (new ExtendedOrderController())->getTillDate($from, $till, $tills);
+            $tillDate = (new OrderSearchController())->getTillDate($from, $till, $tills);
             $join = $join->whereBetween('created_at', [$from, $tillDate]);
         }
         if ($till) {
             $till = $this->getDateFormat($till);
             $froms = Activity::first()->created_at;
-            $fromDate = (new ExtendedOrderController())->getFromDate($from, $froms);
+            $fromDate = (new OrderSearchController())->getFromDate($from, $froms);
             $join = $join->whereBetween('created_at', [$fromDate, $till]);
         }
         if ($delFrom) {
             $from = $this->getDateFormat($delFrom);
             $tills = $this->getDateFormat();
-            $tillDate = (new ExtendedOrderController())->getTillDate($from, $delTill, $tills);
+            $tillDate = (new OrderSearchController())->getTillDate($from, $delTill, $tills);
             $join->whereBetween('created_at', [$from, $tillDate])->delete();
         }
         if ($delTill) {
             $till = $this->getDateFormat($delTill);
             $froms = Activity::first()->created_at;
-            $fromDate = (new ExtendedOrderController())->getFromDate($delFrom, $froms);
+            $fromDate = (new OrderSearchController())->getFromDate($delFrom, $froms);
             $join->whereBetween('created_at', [$fromDate, $till])->delete();
         }
         $join = $join->orderBy('created_at', 'desc')

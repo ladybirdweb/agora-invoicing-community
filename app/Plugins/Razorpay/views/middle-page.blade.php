@@ -22,7 +22,113 @@
 <?php
  $taxAmt = 0;
 $cartSubtotalWithoutCondition = 0;
-$currency = \Auth::user()->currency;
+ 
+use Razorpay\Api\Api;
+ $merchant_orderid= generateMerchantRandomString();  
+
+function generateMerchantRandomString($length = 10) {
+$characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+$charactersLength = strlen($characters);
+$randomString = '';
+for ($i = 0; $i < $length; $i++) {
+    $randomString .= $characters[rand(0, $charactersLength - 1)];
+}
+return $randomString;
+}
+ $api = new Api($rzp_key, $rzp_secret);
+$displayCurrency = \Auth::user()->currency;
+$symbol = \Auth::user()->currency;
+if ($symbol == 'INR'){
+
+
+$exchangeRate= '';
+
+
+$orderData = [
+'receipt'         => 3456,
+'amount'          => round($invoice->grand_total*100), // 2000 rupees in paise
+
+'currency'        => 'INR',
+'payment_capture' => 0 // auto capture
+ 
+];
+
+
+} else {
+ 
+ $url = "http://apilayer.net/api/live?access_key=$apilayer_key";
+ $exchange = json_decode(file_get_contents($url));
+
+ $exchangeRate = $exchange->quotes->USDINR;
+ // dd($exchangeRate);
+ $displayAmount =$exchangeRate * $invoice->grand_total ;
+
+
+ $orderData = [
+'receipt'         => 3456,
+'amount'          =>  round($displayAmount)*100, // 2000 rupees in paise
+
+'currency'        => 'INR',
+'payment_capture' => 0 // auto capture
+     
+];
+}
+$razorpayOrder = $api->order->create($orderData);
+$razorpayOrderId = $razorpayOrder['id'];
+$_SESSION['razorpay_order_id'] = $razorpayOrderId;
+$displayAmount = $amount = $orderData['amount'];
+
+
+
+$data = [
+
+
+    "key"               => $rzp_key,
+    "name"              => 'Faveo Helpdesk',
+    "currency"          => 'INR',
+     "prefill"=> [
+        "contact"=>    \Auth::user()->mobile_code .\Auth::user()->mobile,
+        "email"=>      \Auth::user()->email,
+    ],
+    "description"       =>  'Order for Invoice No' .-$invoice->number,
+    "notes"             => [
+    "First Name"         => \Auth::user()->first_name,
+    "Last Name"         =>  \Auth::user()->last_name,
+    "Company Name"      => \Auth::user()->company,
+    "Address"           =>  \Auth::user()->address,
+    "Email"             =>  \Auth::user()->email,
+    "Country"           =>  \Auth::user()->country,
+    "State"             => \Auth::user()->state,
+    "City"              => \Auth::user()->town,
+    "Zip"               => \Auth::user()->zip,
+    "Currency"          => \Auth::user()->currency,
+    "Amount Paid"   => $invoice->grand_total,
+    "Exchange Rate"   =>  $exchangeRate,
+
+
+
+    "merchant_order_id" =>  $merchant_orderid,
+    ],
+    "theme"             => [
+    "color"             => "#F37254"
+    ],
+    "order_id"          => $razorpayOrderId,
+];
+
+if ($displayCurrency !== 'INR')
+{
+    $data['display_currency']  = 'USD';
+    $data['display_amount']    =$invoice->grand_total;
+    
+}
+$json = json_encode($data);
+
+
+ $currency = \Auth::user()->currency;
+
+
+
+
 ?>
 <div class="row">
 
@@ -193,13 +299,13 @@ $currency = \Auth::user()->currency;
                 
                 @endforeach
                @endif
-                    
+                     
                 <tr class="total">
                     <th>
                         <strong>Order Total</strong>
                     </th>
                     <td>
-                    <strong><span class="amount">{{currencyFormat($amount,$code = $item->attributes->currency)}} </span></strong>
+                    <strong><span class="amount">{{currencyFormat(\Cart::getTotal(),$code = $item->attributes->currency)}} </span></strong>
 
 
                     </td>
@@ -342,17 +448,17 @@ $currency = \Auth::user()->currency;
                     </th>
                     <td>
 
-                        {{currencyFormat($amount,$code = $currency)}}
+                        {{currencyFormat($totalPaid,$code = $currency)}}
                     </td>
                 </tr>
                 @endif
-               
+                     
                 <tr class="total">
                     <th>
                         <strong>Order Total</strong>
                     </th>
                     <td>
-                    <strong><span class="amount">{{currencyFormat($amount,$code = $currency)}} </span></strong>
+                    <strong><span class="amount">{{currencyFormat($totalPaid,$code = $currency)}} </span></strong>
 
 
                     </td>
@@ -367,8 +473,8 @@ $currency = \Auth::user()->currency;
                     
                     
                  <div class="form-group">
-                   <div class="col-md-12" id="stripe-modal">
-        <input type="submit" name="submit" value="Place Your Order And Pay" id="stripe-button1" class="btn btn-primary " data-loading-text="Loading..." style="width:100%">
+                   <div class="col-md-12" id="not-razor">
+        <input type="submit" name="submit" value="Place Your Order And Pay" id="rzp-button1" class="btn btn-primary " data-loading-text="Loading..." style="width:100%">
     </div>
                 </div>
                 </div>
@@ -377,173 +483,56 @@ $currency = \Auth::user()->currency;
     </div>
 
 </div>
+ <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+ <form name='razorpayform' action="{!!url('payment/'.$invoice->id)!!}" method="POST">
+      {{ csrf_field() }}
+ <!--<button id="rzp-button1" class="btn btn-primary pull-right mb-xl" data-loading-text="Loading...">Pay Now</button>-->
+<!--<form name='razorpayform' action="verify.php" method="POST">                                -->
+<input type="hidden" name="razorpay_payment_id" id="razorpay_payment_id">
+<input type="hidden" name="razorpay_signature"  id="razorpay_signature" >
 
 
+</form>
+
+ <script>
+
+    // Checkout details as a json
+var options = <?php echo $json; ?>
 
 
+/**
+ * The entire list of Checkout fields is available at
+ * https://docs.razorpay.com/docs/checkout-form#checkout-fields
+ */
+options.handler = function (response){
+    document.getElementById('razorpay_payment_id').value = response.razorpay_payment_id;
+    document.getElementById('razorpay_signature').value = response.razorpay_signature;
+   
+    document.razorpayform.submit();
+};
 
+// Boolean whether to show image inside a white frame. (default: true)
+options.theme.image_padding = false;
 
+options.modal = {
+    ondismiss: function() {
+    },
+    // Boolean indicating whether pressing escape key 
+    // should close the checkout form. (default: true)
+    escape: true,
+    // Boolean indicating whether clicking translucent blank
+    // space outside checkout form should close the form. (default: false)
+    backdropclose: false
+};
 
+var rzp = new Razorpay(options);
 
-
-
-
-
-
-
-<div class="modal fade" id="stripeModal" data-keyboard="false" data-backdrop="static">
-    <div class="modal-dialog">
-        <div class="modal-content">
-             <div class="modal-header">
-                <h4 class="modal-title" id="defaultModalLabel">Stripe Payment</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            </div>
-            <div class="col-md-12 ">
-            <div class="modal-body">
-            <div class="card">
-                <div class="card-header">Stripe
-                 <img class="img-responsive pull-right" src="http://i76.imgup.net/accepted_c22e0.png">
-             </div>
-
-                <div class="card-body">
-                    <form method="POST" class="require-validation" id="submit_total" action="{{ url('stripe') }}" >
-                        @csrf
-                        <div class="form-group row">
-                            <div class="col-md-12">
-                                <input id="card_no" type="number" class="form-control @error('card_no') is-invalid @enderror" name="card_no" value="{{ old('card_no') }}" required autocomplete="card_no" placeholder="Card No." autofocus>
-                                @error('card_no')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-md-6">
-                                <input id="exp_month" type="number" class="form-control @error('exp_month') is-invalid @enderror" name="exp_month" value="{{ old('exp_month') }}" required autocomplete="exp_month" placeholder="Exp. Month(02)" autofocus>
-                                @error('exp_month')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                            <div class="col-md-6">
-                                <input id="exp_year" type="number" class="form-control @error('exp_year') is-invalid @enderror" name="exp_year" value="{{ old('exp_year') }}" required autocomplete="exp_year" placeholder="Exp. Year(2020)" autofocus>
-                                @error('exp_year')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-md-12">
-                                <input id="cvv" type="password" class="form-control @error('cvv') is-invalid @enderror" name="cvv" required autocomplete="current-password" placeholder="CVV">
-                                @error('cvv')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-md-12">
-                                <input id="amount" type="text" value={{currencyFormat($amount,$code = $currency)}} class="form-control @error('amount') is-invalid @enderror" required autocomplete="current-password" name="amount" placeholder="Amount" readonly>
-                                @error('amount')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="form-group row mb-0">
-                            <div class="col-md-12">
-                                <button type="submit" id="pay_now" class="btn btn-primary btn-block">
-                                    {{ __('PAY NOW') }}
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-        </div>
-            <!-- /Form -->
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->  
-
-
-
-
-
-
-
-<script>
-    $('#stripe-button1').on('click',function(){
-        $('#stripeModal').modal('show');
-    })
-
-        $('#submit_total').submit(function(){
-     $("#pay_now").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Processing...Please Wait..")
-    $("#pay_now").prop('disabled', true);
-
-  });
-$(function() {
-    var $form         = $(".require-validation");
-  $('form.require-validation').bind('submit', function(e) {
-    var $form         = $(".require-validation"),
-        inputSelector = ['input[type=email]', 'input[type=password]',
-                         'input[type=text]', 'input[type=file]',
-                         'textarea'].join(', '),
-        $inputs       = $form.find('.required').find(inputSelector),
-        $errorMessage = $form.find('div.error'),
-        valid         = true;
-        $errorMessage.addClass('hide');
- 
-        $('.has-error').removeClass('has-error');
-    $inputs.each(function(i, el) {
-      var $input = $(el);
-      if ($input.val() === '') {
-        $input.parent().addClass('has-error');
-        $errorMessage.removeClass('hide');
-        e.preventDefault();
-      }
-    });
-  
-    // if (!$form.data('cc-on-file')) {
-    //   e.preventDefault();
-    //   Stripe.setPublishableKey($form.data('stripe-publishable-key'));
-    //   Stripe.createToken({
-    //     number: $('.card-number').val(),
-    //     cvc: $('.card-cvc').val(),
-    //     exp_month: $('.card-expiry-month').val(),
-    //     exp_year: $('.card-expiry-year').val()
-    //   }, stripeResponseHandler);
-    // }
-  
-  });
-  
-  function stripeResponseHandler(status, response) {
-        if (response.error) {
-            $('.error')
-                .removeClass('hide')
-                .find('.alert')
-                .text(response.error.message);
-        } else {
-            // token contains id, last4, and card type
-            var token = response['id'];
-            // insert the token into the form so it gets submitted to the server
-            $form.find('input[type=text]').empty();
-            $form.append("<input type='hidden' name='stripeToken' value='" + token + "'/>");
-            $form.get(0).submit();
-        }
-    }
-  
-});
+document.getElementById('rzp-button1').onclick = function(e){
+    
+    rzp.open();
+    e.preventDefault();
+}
 </script>
-
-
 
 
 @endsection

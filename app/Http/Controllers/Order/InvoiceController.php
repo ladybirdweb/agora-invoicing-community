@@ -98,6 +98,17 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
     public function index(Request $request)
     {
+        $validator = \Validator::make($request->all(), [
+            'from'     => 'nullable',
+            'till'     => 'nullable|after:from',
+
+        ]);
+        if ($validator->fails()) {
+            $request->from = '';
+            $request->till = '';
+
+            return redirect('invoices')->with('fails', 'Start date should be before end date');
+        }
         try {
             $currencies = Currency::where('status', 1)->pluck('code')->toArray();
             $name = $request->input('name');
@@ -217,7 +228,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 ->where('invoices.id', '=', $request->input('invoiceid'))
                 ->first();
             if (User::onlyTrashed()->find($invoice->user_id)) {
-                throw new \Exception('This user is deleted from system. Restore the user to view invoice details.');
+                throw new \Exception('This user is suspended from the system. Restore the user to view invoice details.');
             }
             $invoiceItems = $invoice->invoiceItem()->get();
             $user = $this->user->find($invoice->user_id);
@@ -381,6 +392,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $number = rand(11111111, 99999999);
             $date = \Carbon\Carbon::parse($request->input('date'));
             $product = Product::find($productid);
+            $controller = new \App\Http\Controllers\Front\CartController();
             $cost = $controller->cost($productid, $user_id, $plan);
             $couponTotal = $this->getGrandTotal($code, $total, $cost, $productid, $currency, $user_id);
             $grandTotalAfterCoupon = $qty * $couponTotal['total'];
@@ -399,6 +411,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
             return successResponse($result);
         } catch (\Exception $ex) {
+            dd($ex);
             app('log')->info($ex->getMessage());
 
             return errorResponse([$ex->getMessage()]);
@@ -483,7 +496,8 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             if (! $user) {
                 return redirect()->back()->with('fails', 'No User');
             }
-            $order = Order::getOrderLink($invoice->order_id);
+            $order = $this->order->getOrderLink($invoice->orderRelation()->value('order_id'), 'my-order');
+            // $order = Order::getOrderLink($invoice->order_id);
             $currency = userCurrency($user->id);
             $gst = TaxOption::select('tax_enable', 'Gst_No')->first();
             $symbol = $currency['currency'];

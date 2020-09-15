@@ -1,9 +1,9 @@
 @extends('themes.default1.layouts.front.master')
 @section('title')
-    Razorpay
+    Stripe
 @stop
 @section('page-heading')
-    Razorpay
+    Stripe
 @stop
 @section('page-heading')
  Checkout

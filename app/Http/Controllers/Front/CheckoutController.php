@@ -203,7 +203,8 @@ class CheckoutController extends InfoController
 
     public function postCheckout(Request $request)
     {
-        $cost = $request->input('cost');
+        try {
+             $cost = $request->input('cost');
         if (Cart::getSubTotal() != 0 || $cost > 0) {
             $this->validate($request, [
                 'payment_gateway'=> 'required',
@@ -256,7 +257,12 @@ class CheckoutController extends InfoController
 
                 return redirect('checkout')->with('success', $url);
             }
-        }
+
+        } 
+       
+    } catch(\Exception $ex) {
+        dd($ex);
+    }
 
         //          catch (\Exception $ex) {
         //     app('log')->error($ex->getMessage());

@@ -106,7 +106,6 @@ Checkout
                   @if($invoice->grand_total > 0)
                 <h4 class="heading-primary">Payment</h4>
                     <?php $gateways = \App\Http\Controllers\Common\SettingsController::checkPaymentGateway($invoice->currency);
-                      $rzpstatus = \App\Model\Common\StatusSetting::first()->value('rzp_status');
                        ?>
                     
                 
@@ -118,7 +117,7 @@ Checkout
                         <?php
                           $processingFee = \DB::table(strtolower($gateway))->where('currencies',$invoice->currency)->value('processing_fee');
                         ?>
-                        {!! Form::radio('payment_gateway',$gateway,false,['id'=>'allow_gateway']) !!}
+                        {!! Form::radio('payment_gateway',$gateway,false,['id'=>'allow_gateway','onchange' => 'getGateway(this)','processfee'=>$processingFee]) !!}
                          <img alt="Porto" width="111"  data-sticky-width="52" data-sticky-height="10" data-sticky-top="10" src="{{asset('client/images/'.$gateway.'.png')}}">
                           <br><br>
                          <div id="fee" style="display:none"><p>An extra processing fee of <b>{{$processingFee}}%</b> will be charged on your Order Total during the time of payment</p></div>
@@ -246,14 +245,27 @@ Checkout
     $("#proceed").prop('disabled', true);
 
   });
-     $(document).ready(function(){
-        $("#rzp_selected").click(function(){
-                $('#fee').hide();
-        }); 
-        $("#allow_gateway").click(function(){
-           $('#fee').show();
-        });
-         
-    });
+    $(document).ready(function(){
+    var $gateways = $('input:radio[name = payment_gateway]');
+    if($gateways.is(':checked') === false) {
+        $gateways.filter('[value=Razorpay]').attr('checked', true);
+        $('#fee').hide();
+    } else {
+        $gateways.filter('[value=Stripe]').attr('checked', true);
+        $('#fee').show();
+    }
+  });
+
+  function getGateway($this)
+  {
+    var gateWayName = $this.value;
+    var fee = $this.getAttribute("processfee");
+    console.log(fee)
+    if (fee == '0') {
+        $('#fee').hide();
+    } else {
+        $('#fee').show();
+    }
+  }
 </script>
 @endsection

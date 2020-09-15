@@ -116,19 +116,17 @@ $cartSubtotalWithoutCondition = 0;
 
                  <?php
                 $gateways = \App\Http\Controllers\Common\SettingsController::checkPaymentGateway($item->attributes['currency']);
-                $rzpstatus = \App\Model\Common\StatusSetting::first()->value('rzp_status');
-
+                
                 ?>
                 @if($gateways)
                 <div class="row">
-
 
                     <div class="col-md-6">
                         @foreach($gateways as $gateway)
                         <?php
                         $processingFee = \DB::table(strtolower($gateway))->where('currencies',$item->attributes['currency'])->value('processing_fee');
                         ?>
-                        {!! Form::radio('payment_gateway',$gateway,false,['id'=>'allow_gateway','data-currency'=>$processingFee]) !!}
+                        {!! Form::radio('payment_gateway',$gateway,false,['id'=>'allow_gateway','onchange' => 'getGateway(this)','processfee'=>$processingFee]) !!}
                          <img alt="{{$gateway}}" width="111"  src="{{asset('client/images/'.$gateway.'.png')}}">
                           <br><br>
                        <div id="fee" style="display:none"><p>An extra processing fee of <b>{{$processingFee}}%</b> will be charged on your Order Total during the time of payment</p></div>
@@ -284,18 +282,32 @@ $cartSubtotalWithoutCondition = 0;
 @endif
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
 <script>
+
   $('#checkoutsubmitform').submit(function(){
      $("#proceed").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...")
     $("#proceed").prop('disabled', true);
 
   });
-     $(document).ready(function(){
-            $("#rzp_selected").click(function(){
-            $('#fee').hide();
-        });
-        $("#allow_gateway").click(function(){
-           $('#fee').show();
-        });
-    });
+  $(document).ready(function(){
+    var $gateways = $('input:radio[name = payment_gateway]');
+    if($gateways.is(':checked') === false) {
+        $gateways.filter('[value=Razorpay]').attr('checked', true);
+        $('#fee').hide();
+    } else {
+        $gateways.filter('[value=Stripe]').attr('checked', true);
+        $('#fee').show();
+    }
+  });
+
+  function getGateway($this)
+  {
+    var gateWayName = $this.value;
+    var fee = $this.getAttribute("processfee");
+    if (fee == '0') {
+        $('#fee').hide();
+    } else {
+        $('#fee').show();
+    }
+  }
 </script>
 @endsection

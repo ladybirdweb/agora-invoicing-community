@@ -60,11 +60,11 @@ class ProcessController extends Controller
             $total = intval(\Cart::getTotal());
             $payment_method = \Session::get('payment_method');
             $regularPayment = true;
+            $invoice = \Session::get('invoice');
             if (! $total) {
                 $paid = 0;
                 // $total = \Session::get('totalToBePaid');
                 $regularPayment = false;
-                $invoice = \Session::get('invoice');
                 $items = $invoice->invoiceItem()->get();
                 $product = $this->product($invoice->id);
                 $processingFee = $this->getProcessingFee($payment_method, $invoice->currency);
@@ -79,8 +79,6 @@ class ProcessController extends Controller
                 \View::addNamespace('plugins', $path);
                 echo view('plugins::middle-page', compact('total', 'invoice', 'regularPayment', 'items', 'product', 'amount', 'paid'));
             } else {
-                $invoice_controller = new \App\Http\Controllers\Order\InvoiceController();
-                $invoice = $invoice_controller->generateInvoice();
                 $pay = $this->payment($payment_method, $status = 'pending');
                 $payment_method = $pay['payment'];
                 $invoice_no = $invoice->number;

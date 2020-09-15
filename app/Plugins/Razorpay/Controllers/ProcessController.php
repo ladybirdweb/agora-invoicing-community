@@ -63,12 +63,12 @@ class ProcessController extends Controller
             $payment_method = \Session::get('payment_method');
             $path = app_path().'/Plugins/Razorpay/views';
             $total = intval(\Cart::getTotal());
+            $invoice = \Session::get('invoice');
             $regularPayment = true;
             if (! $total) {
                 $paid = 0;
                 // $total = \Session::get('totalToBePaid');
                 $regularPayment = false;
-                $invoice = \Session::get('invoice');
                 $items = $invoice->invoiceItem()->get();
                 $product = $this->product($invoice->id);
                 $amount = $invoice->grand_total;
@@ -86,8 +86,6 @@ class ProcessController extends Controller
 
                 echo view('plugins::middle-page', compact('total', 'rzp_key', 'rzp_secret', 'apilayer_key', 'invoice', 'regularPayment', 'items', 'product', 'amount', 'paid', 'totalPaid'));
             } else {
-                $invoice_controller = new \App\Http\Controllers\Order\InvoiceController();
-                $invoice = $invoice_controller->generateInvoice();
                 $pay = $this->payment($payment_method, $status = 'pending');
                 $payment_method = $pay['payment'];
                 $invoice_no = $invoice->number;

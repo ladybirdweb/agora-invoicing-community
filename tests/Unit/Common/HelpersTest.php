@@ -48,4 +48,45 @@ class HelpersTest extends DBTestCase
 
         $this->assertEquals('--', getDateHtml('invalid_format'));
     }
+
+    public function test_userCurrency_whenUserIsNotLoggedIn_returnsCurrencyAndSymbol()
+    {
+        $this->withoutMiddleware();
+        $currency = userCurrency();
+        $this->assertEquals($currency['currency'],'USD');
+    }
+
+    public function test_userCurrency_whenUserIsLoggedInAndRoleIsClient_returnsCurrencyAndSymbol()
+    {
+        $this->getLoggedInUser();
+        $this->withoutMiddleware();
+        $currency = userCurrency();
+        $this->assertEquals($currency['currency'],'INR');
+    }
+
+    public function test_userCurrency_whenUserIsLoggedInAndRoleIsAdmin_returnsCurrencyAndSymbol()
+    {
+        $this->getLoggedInUser('admin');
+        $this->withoutMiddleware();
+        $currency = userCurrency($this->user->id);
+        $this->assertEquals($currency['currency'],'INR');
+    }
+
+    public function test_rounding_whenRoundingIsOn_returnsRoundedOffPrice()
+    {
+        $this->getLoggedInUser();
+        $this->withoutMiddleware();
+        $price = rounding('999.90');
+        $this->assertEquals($price,1000);
+    }
+
+    public function test_rounding_whenRoundingIsOff_returnsPriceUptoTwoDecimalPlace()
+    {
+        $this->getLoggedInUser();
+        $this->withoutMiddleware();
+        $tax_rule = new \App\Model\Payment\TaxOption();
+        $rule = $tax_rule->findOrFail(1)->update(['rounding'=>0]);
+        $price = rounding('999.6677777');
+        $this->assertEquals($price,'999.67');
+    }
 }

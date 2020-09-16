@@ -273,7 +273,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
     }
 
     /**
-     * Generate invoice.
+     * Generate invoice from client panel.
      *
      * @throws \Exception
      */
@@ -351,6 +351,11 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         }
     }
 
+    /**
+     * Generate invoice from admin panel.
+     *
+     * @throws \Exception
+     */
     public function invoiceGenerateByForm(Request $request, $user_id = '')
     {
         $this->validate($request, [
@@ -367,7 +372,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $status = 'pending';
             $qty = $request->input('quantity');
             if ($user_id == '') {
-                $user_id = \Request::input('user');
+                $user_id = $request->input('user');
             }
             $productid = $request->input('product');
 
@@ -406,7 +411,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
             return successResponse($result);
         } catch (\Exception $ex) {
-            dd($ex);
             app('log')->info($ex->getMessage());
 
             return errorResponse([$ex->getMessage()]);

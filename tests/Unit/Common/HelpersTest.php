@@ -94,7 +94,7 @@ class HelpersTest extends DBTestCase
     {
         $this->withoutMiddleware();
         $currency = userCurrency();
-        $this->assertEquals($currency['currency'],'USD');
+        $this->assertEquals($currency['currency'], 'USD');
     }
 
     public function test_userCurrency_whenUserIsLoggedInAndRoleIsClient_returnsCurrencyAndSymbol()
@@ -102,7 +102,7 @@ class HelpersTest extends DBTestCase
         $this->getLoggedInUser();
         $this->withoutMiddleware();
         $currency = userCurrency();
-        $this->assertEquals($currency['currency'],'INR');
+        $this->assertEquals($currency['currency'], 'INR');
     }
 
     public function test_userCurrency_whenUserIsLoggedInAndRoleIsAdmin_returnsCurrencyAndSymbol()
@@ -110,7 +110,7 @@ class HelpersTest extends DBTestCase
         $this->getLoggedInUser('admin');
         $this->withoutMiddleware();
         $currency = userCurrency($this->user->id);
-        $this->assertEquals($currency['currency'],'INR');
+        $this->assertEquals($currency['currency'], 'INR');
     }
 
     public function test_rounding_whenRoundingIsOn_returnsRoundedOffPrice()
@@ -118,7 +118,7 @@ class HelpersTest extends DBTestCase
         $this->getLoggedInUser();
         $this->withoutMiddleware();
         $price = rounding('999.90');
-        $this->assertEquals($price,1000);
+        $this->assertEquals($price, 1000);
     }
 
     public function test_rounding_whenRoundingIsOff_returnsPriceUptoTwoDecimalPlace()
@@ -128,7 +128,7 @@ class HelpersTest extends DBTestCase
         $tax_rule = new \App\Model\Payment\TaxOption();
         $rule = $tax_rule->findOrFail(1)->update(['rounding'=>0]);
         $price = rounding('999.6677777');
-        $this->assertEquals($price,'999.67');
+        $this->assertEquals($price, '999.67');
 
     }
 }

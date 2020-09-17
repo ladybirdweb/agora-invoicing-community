@@ -289,7 +289,7 @@ Users
 
      $(document).on('click','#bulk_delete',function(){
       var id=[];
-      if (confirm("Are you sure you want to delete this?"))
+      if (confirm("Are you sure you want to suspend this user?"))
         {
             $('.user_checkbox:checked').each(function(){
               id.push($(this).val())

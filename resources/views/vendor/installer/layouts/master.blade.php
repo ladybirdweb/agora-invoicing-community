@@ -17,6 +17,13 @@
             ]); ?>
         </script>
     </head>
+      <style>
+        .required:after {
+            content:'*';
+            color:red;
+            padding-left:5px;
+        }
+    </style>
     <body>
         <div class="master">
             <div class="box">
@@ -71,33 +78,19 @@
                     <li class="step__divider"></li>
                 </ul>
                 <div class="main">
-                    @if (session('message'))
-                        <p class="alert text-center">
-                            <strong>
-                                @if(is_array(session('message')))
-                                    {{ session('message')['message'] }}
-                                @else
-                                    {{ session('message') }}
-                                @endif
-                            </strong>
-                        </p>
-                    @endif
+                    
                      @if (session('fails'))
-                        <p class="alert alert-danger text-center">
-                            <strong>
-                                @if(is_array(session('fails')))
-                                    {{ session('fails')['fails'] }}
-                                @else
-                                    {{ session('fails') }}
-                                @endif
-                            </strong>
-                        </p>
+                      <div class="alert alert-danger alert-dismissable" id="close">
+                            <i class="fa fa-ban"></i>
+                            <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.failed')}}.
+                            <button type="button" class="close" id="close_alert" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            {{Session::get('fails')}}
+                        </div>
+                       
                     @endif
                     @if(session()->has('errors'))
-                        <div class="alert alert-danger" id="error_alert">
-                            <button type="button" class="close" id="close_alert" data-dismiss="alert" aria-hidden="true">
-                                 <i class="fa fa-close" style="" aria-hidden="true"></i>
-                            </button>
+                        <div class="alert alert-danger" id="error">
+                            
                              <div>
                                 <i class="fa fa-fw fa-exclamation-triangle" aria-hidden="true"></i>
                                 {{ trans('installer_messages.forms.errorTitle') }}
@@ -117,8 +110,13 @@
         <script type="text/javascript">
             var x = document.getElementById('error_alert');
             var y = document.getElementById('close_alert');
+            var close = document.getElementById('close');
+            var validateClose = document.getElementById('error');
             y.onclick = function() {
-                x.style.display = "none";
+                close.style.display = "none";
+            };
+            x.onclick = function() {
+                validateClose.style.display = "none";
             };
         </script>
     </body>

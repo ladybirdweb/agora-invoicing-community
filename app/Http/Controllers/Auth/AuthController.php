@@ -34,7 +34,7 @@ class AuthController extends BaseAuthController
 
     /* Direct After Logout */
     protected $redirectAfterLogout = 'home';
-    protected $loginPath = 'auth/login';
+    protected $loginPath = 'login';
 
     //protected $loginPath = 'login';
 
@@ -49,7 +49,7 @@ class AuthController extends BaseAuthController
     {
         try {
             $activate = $activate->where('token', $token)->first();
-            $url = 'auth/login';
+            $url = 'login';
             if ($activate) {
                 $email = $activate->email;
             } else {

@@ -64,7 +64,7 @@
             ]);
         });
 
-        Route::group(['middleware' => ['install']], function () {
+        Route::group(['middleware' => ['installAgora']], function () {
             Route::get('pricing', 'Front\CartController@cart')->name('pricing');
             Route::get('group/{templateid}/{groupid}/', 'Front\PageController@pageTemplates');
             Route::post('cart/remove', 'Front\CartController@cartRemove');

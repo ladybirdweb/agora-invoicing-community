@@ -220,6 +220,22 @@ function findStateByRegionId($iso)
     }
 }
 
+function getTimezoneByName($name)
+{
+    try {
+        $timezone = \App\Model\Common\Timezone::where('name', $name)->first();
+        if ($timezone) {
+            $timezone = $timezone->id;
+        } else {
+            $timezone = '114';
+        }
+
+        return $timezone;
+    } catch (\Exception $ex) {
+        throw new \Exception($ex->getMessage());
+    }
+}
+
 function checkPlanSession()
 {
     try {

@@ -39,7 +39,7 @@
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
                 <div class="form-group {{ $errors->has('app_name') ? ' has-error ' : '' }}">
-                    <label for="app_name">
+                    <label for="app_name" class="required">
                         {{ trans('installer_messages.environment.wizard.form.app_name_label') }}
                     </label>
 
@@ -54,7 +54,7 @@
                 </div>
 
                 <div class="form-group {{ $errors->has('environment') ? ' has-error ' : '' }}">
-                    <label for="environment">
+                    <label for="environment" class="required">
                         {{ trans('installer_messages.environment.wizard.form.app_environment_label') }}
                     </label>
                     <select name="environment" id="environment" value="{{old('environment')}}" onchange='checkEnvironment(this.value);'>
@@ -70,7 +70,7 @@
                 </div>
 
                 <div class="form-group {{ $errors->has('app_debug') ? ' has-error ' : '' }}">
-                    <label for="app_debug">
+                    <label for="app_debug" class="required">
                         {{ trans('installer_messages.environment.wizard.form.app_debug_label') }}
                     </label>
                     <label for="app_debug_true">
@@ -90,7 +90,7 @@
                 </div>
 
                 <div class="form-group {{ $errors->has('app_log_level') ? ' has-error ' : '' }}">
-                    <label for="app_log_level">
+                    <label for="app_log_level" class="required">
                         {{ trans('installer_messages.environment.wizard.form.app_log_level_label') }}
                     </label>
                     <select name="app_log_level" id="app_log_level" style="height:36px" >
@@ -122,7 +122,7 @@
             <div class="tab" id="tab2content">
 
                 <div class="form-group {{ $errors->has('database_connection') ? ' has-error ' : '' }}">
-                    <label for="database_connection">
+                    <label for="database_connection" class="required">
                         {{ trans('installer_messages.environment.wizard.form.db_connection_label') }}
                     </label>
                     <select name="database_connection" id="database_connection">
@@ -140,7 +140,7 @@
                 </div>
 
                 <div class="form-group {{ $errors->has('database_hostname') ? ' has-error ' : '' }}">
-                    <label for="database_hostname">
+                    <label for="database_hostname" class="required">
                         {{ trans('installer_messages.environment.wizard.form.db_host_label') }}
                     </label>
                     <input type="text" name="database_hostname" id="database_hostname" value="127.0.0.1" placeholder="{{ trans('installer_messages.environment.wizard.form.db_host_placeholder') }}" />
@@ -153,7 +153,7 @@
                 </div>
 
                 <div class="form-group {{ $errors->has('database_port') ? ' has-error ' : '' }}">
-                    <label for="database_port">
+                    <label for="database_port" class="required">
                         {{ trans('installer_messages.environment.wizard.form.db_port_label') }}
                     </label>
                     <input type="number" name="database_port" id="database_port" value="3306" placeholder="{{ trans('installer_messages.environment.wizard.form.db_port_placeholder') }}" />
@@ -166,7 +166,7 @@
                 </div>
 
                 <div class="form-group {{ $errors->has('database_name') ? ' has-error ' : '' }}">
-                    <label for="database_name">
+                    <label for="database_name" class="required">
                         {{ trans('installer_messages.environment.wizard.form.db_name_label') }}
                     </label>
                     <input type="text" name="database_name" id="database_name" value="{{old('database_name')}}" />
@@ -179,7 +179,7 @@
                 </div>
 
                 <div class="form-group {{ $errors->has('database_username') ? ' has-error ' : '' }}">
-                    <label for="database_username">
+                    <label for="database_username" class="required">
                         {{ trans('installer_messages.environment.wizard.form.db_username_label') }}
                     </label>
                     <input type="text" name="database_username" id="database_username" value="{{old('database_username') }}" />
@@ -234,7 +234,7 @@
 
                     <div class="info">
                         <div class="form-group {{ $errors->has('broadcast_driver') ? ' has-error ' : '' }}">
-                            <label for="broadcast_driver">{{ trans('installer_messages.environment.wizard.form.app_tabs.broadcasting_label') }}
+                            <label for="broadcast_driver" class="required">{{ trans('installer_messages.environment.wizard.form.app_tabs.broadcasting_label') }}
                                 <sup>
                                     <a href="https://laravel.com/docs/5.4/broadcasting" target="_blank" title="{{ trans('installer_messages.environment.wizard.form.app_tabs.more_info') }}">
                                         <i class="fa fa-info-circle fa-fw" aria-hidden="true"></i>
@@ -252,7 +252,7 @@
                         </div>
 
                         <div class="form-group {{ $errors->has('cache_driver') ? ' has-error ' : '' }}">
-                            <label for="cache_driver">{{ trans('installer_messages.environment.wizard.form.app_tabs.cache_label') }}
+                            <label for="cache_driver" class="required">{{ trans('installer_messages.environment.wizard.form.app_tabs.cache_label') }}
                                 <sup>
                                     <a href="https://laravel.com/docs/5.4/cache" target="_blank" title="{{ trans('installer_messages.environment.wizard.form.app_tabs.more_info') }}">
                                         <i class="fa fa-info-circle fa-fw" aria-hidden="true"></i>
@@ -270,7 +270,7 @@
                         </div>
 
                         <div class="form-group {{ $errors->has('session_driver') ? ' has-error ' : '' }}">
-                            <label for="session_driver">{{ trans('installer_messages.environment.wizard.form.app_tabs.session_label') }}
+                            <label for="session_driver" class="required">{{ trans('installer_messages.environment.wizard.form.app_tabs.session_label') }}
                                 <sup>
                                     <a href="https://laravel.com/docs/5.4/session" target="_blank" title="{{ trans('installer_messages.environment.wizard.form.app_tabs.more_info') }}">
                                         <i class="fa fa-info-circle fa-fw" aria-hidden="true"></i>
@@ -288,7 +288,7 @@
                         </div>
 
                         <div class="form-group {{ $errors->has('queue_driver') ? ' has-error ' : '' }}">
-                            <label for="queue_driver">{{ trans('installer_messages.environment.wizard.form.app_tabs.queue_label') }}
+                            <label for="queue_driver" class="required">{{ trans('installer_messages.environment.wizard.form.app_tabs.queue_label') }}
                                 <sup>
                                     <a href="https://laravel.com/docs/5.4/queues" target="_blank" title="{{ trans('installer_messages.environment.wizard.form.app_tabs.more_info') }}">
                                         <i class="fa fa-info-circle fa-fw" aria-hidden="true"></i>
@@ -315,7 +315,7 @@
                     </label>
                     <div class="info">
                         <div class="form-group {{ $errors->has('redis_hostname') ? ' has-error ' : '' }}">
-                            <label for="redis_hostname">
+                            <label for="redis_hostname" class="required">
                                 {{ trans('installer_messages.environment.wizard.form.app_tabs.redis_host') }}
                                 <sup>
                                     <a href="https://laravel.com/docs/5.4/redis" target="_blank" title="{{ trans('installer_messages.environment.wizard.form.app_tabs.more_info') }}">
@@ -334,7 +334,7 @@
                         </div>
 
                         <div class="form-group {{ $errors->has('redis_password') ? ' has-error ' : '' }}">
-                            <label for="redis_password">{{ trans('installer_messages.environment.wizard.form.app_tabs.redis_password') }}</label>
+                            <label for="redis_password" class="required">{{ trans('installer_messages.environment.wizard.form.app_tabs.redis_password') }}</label>
                             <input type="password" name="redis_password" id="redis_password" value="null" placeholder="{{ trans('installer_messages.environment.wizard.form.app_tabs.redis_password') }}" />
                             @if ($errors->has('redis_password'))
                                 <span class="error-block">
@@ -345,7 +345,7 @@
                         </div>
 
                         <div class="form-group {{ $errors->has('redis_port') ? ' has-error ' : '' }}">
-                            <label for="redis_port">{{ trans('installer_messages.environment.wizard.form.app_tabs.redis_port') }}</label>
+                            <label for="redis_port" class="required">{{ trans('installer_messages.environment.wizard.form.app_tabs.redis_port') }}</label>
                             <input type="number" name="redis_port" id="redis_port" value="6379" placeholder="{{ trans('installer_messages.environment.wizard.form.app_tabs.redis_port') }}" />
                             @if ($errors->has('redis_port'))
                                 <span class="error-block">

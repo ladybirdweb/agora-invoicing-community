@@ -79,18 +79,16 @@ class ProfileRequest extends Request
                 'password'              => 'required|min:6',
                 'password_confirmation' => 'required|same:password',
                 'country'               => 'required|exists:countries,country_code_char2',
-                'g-recaptcha-response-1'=> 'sometimes|required|captcha',
-
             ];
         }
     }
+    
 
     public function messages()
     {
         return[
             'mobile_code.required'           => 'Enter Country code (mobile)',
             'state.required_if'           => 'The state field is required when country is India.',
-            'g-recaptcha-response-1.required'=> 'Robot Verification Failed. Please Try Again',
         ];
     }
 }

@@ -32,10 +32,10 @@ class ProfileRequest extends Request
                 'company'                => 'required',
                 'email'                  => 'required',
                 'mobile'                 => 'required',
-                'mobile_code'            => 'required',
                 'address'                => 'required',
                 'user_name'              => 'unique:users,user_name,'.$userid,
                 'country'                => 'required|exists:countries,country_code_char2',
+                'state'                  => 'required_if:country,IN',
                 'timezone_id'            => 'required',
                 'profile_pic'            => 'sometimes|mimes:jpeg,jpg,png,gif|max:100000',
 
@@ -51,10 +51,10 @@ class ProfileRequest extends Request
                 'mobile'                => 'required|regex:/[0-9]/|min:5|max:20',
                 'email'                 => 'required',
                 'company'               => 'required',
-                'mobile_code'            => 'required',
                 'address'                => 'required',
                 'mobile'                 => 'required',
                 'country'                => 'required|exists:countries,country_code_char2',
+                'state'                  => 'required_if:country,IN',
                 'profile_pic'            => 'sometimes|mimes:jpeg,jpg,png,gif|max:100000',
 
             ];
@@ -84,11 +84,13 @@ class ProfileRequest extends Request
             ];
         }
     }
+    
 
     public function messages()
     {
         return[
             'mobile_code.required'           => 'Enter Country code (mobile)',
+            'state.required_if'           => 'The state field is required when country is India.',
             'g-recaptcha-response-1.required'=> 'Robot Verification Failed. Please Try Again',
         ];
     }

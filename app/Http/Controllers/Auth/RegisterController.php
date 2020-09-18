@@ -46,6 +46,13 @@ class RegisterController extends Controller
 
     public function postRegister(ProfileRequest $request, User $user)
     {
+        $apiKeys = StatusSetting::value('recaptcha_status');
+        $captchaRule = $apiKeys ? 'required|' : 'sometimes|';
+        $this->validate($request, [
+            'g-recaptcha-response-1' => $captchaRule.'captcha',
+        ], [
+            'g-recaptcha-response-1.required' => 'Robot Verification Failed. Please Try Again.',
+        ]);
         try {
             $location = getLocation();
             $state_code = $location['iso_code'].'-'.$location['state'];

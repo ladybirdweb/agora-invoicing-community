@@ -118,7 +118,6 @@ class LicenseSettingsController extends LicensePermissionsController
                 </div>';
                         //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
                     }
-                    
                 }
                 echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>

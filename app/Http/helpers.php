@@ -236,7 +236,6 @@ function getTimezoneByName($name)
     }
 }
 
-
 function checkPlanSession()
 {
     try {

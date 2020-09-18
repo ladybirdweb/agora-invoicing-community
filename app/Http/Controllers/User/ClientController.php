@@ -227,7 +227,7 @@ class ClientController extends AdvanceSearchController
             $user->account_manager = $request->input('account_manager');
             $user->currency_symbol = $currency_symbol;
             $user->ip = $location['ip'];
-            
+
             $user->save();
             if (emailSendingStatus() && $user->active) {
                 $this->sendWelcomeMail($user);

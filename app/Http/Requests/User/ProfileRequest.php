@@ -84,7 +84,6 @@ class ProfileRequest extends Request
             ];
         }
     }
-    
 
     public function messages()
     {

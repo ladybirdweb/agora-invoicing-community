@@ -100,7 +100,7 @@ class AdminOrderInvoiceController extends Controller
 
     public function getOrderDetail($id)
     {
-        $order =  Order::leftJoin('subscriptions', 'orders.id', '=', 'subscriptions.order_id')
+        $order = Order::leftJoin('subscriptions', 'orders.id', '=', 'subscriptions.order_id')
             ->leftJoin('users', 'orders.client', '=', 'users.id')
             ->leftJoin('products', 'orders.product', '=', 'products.id')
             ->where('orders.client', '=', $id)
@@ -120,23 +120,24 @@ class AdminOrderInvoiceController extends Controller
                             return getDateHtml($model->created_at);
                         })
                         ->addColumn('product', function ($model) {
-
                             return $model->product_name;
                         })
                         ->addColumn('number', function ($model) {
-                           $orderLink = '<a href='.url('orders/'.$model->id).'>'.$model->number.'</a>';
-                        if ($model->subscription_updated_at) {//For few older clients subscription was not generated, so no updated_at column exists
-                            $orderLink = '<a href='.url('orders/'.$model->id).'>'.$model->number.'</a>'.installationStatusLabel($model->subscription_updated_at, $model->subscription_created_at);
-                        }
-                        return $orderLink;
+                            $orderLink = '<a href='.url('orders/'.$model->id).'>'.$model->number.'</a>';
+                            if ($model->subscription_updated_at) {//For few older clients subscription was not generated, so no updated_at column exists
+                                $orderLink = '<a href='.url('orders/'.$model->id).'>'.$model->number.'</a>'.installationStatusLabel($model->subscription_updated_at, $model->subscription_created_at);
+                            }
+
+                            return $orderLink;
                         })
                          ->addColumn('version', function ($model) {
-                            return getVersionAndLabel($model->product_version, $model->product);
-                        })
+                             return getVersionAndLabel($model->product_version, $model->product);
+                         })
                           ->addColumn('expiry', function ($model) {
-                             $ends_at = strtotime($model->subscription_ends_at) > 1 ? $model->subscription_ends_at : '--';
-                                return getExpiryLabel($ends_at);
-                            })
+                              $ends_at = strtotime($model->subscription_ends_at) > 1 ? $model->subscription_ends_at : '--';
+
+                              return getExpiryLabel($ends_at);
+                          })
                          ->addColumn('status', function ($model) {
                              $status = $model->order_status;
 
@@ -147,7 +148,7 @@ class AdminOrderInvoiceController extends Controller
                             class='btn btn-sm btn-primary btn-xs'".tooltip('View')."<i class='fa fa-eye' 
                             style='color:white;'> </i></a>";
                         })
-                        ->rawColumns(['checkbox', 'date', 'product', 'number', 'version','expiry', 'status', 'action'])
+                        ->rawColumns(['checkbox', 'date', 'product', 'number', 'version', 'expiry', 'status', 'action'])
                         ->make(true);
     }
 

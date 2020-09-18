@@ -138,7 +138,7 @@ class PromotionController extends BasePromotionController
             $this->promotion->save();
             $product = $request->input('applied');
 
-                $this->promoRelation->create(['product_id' => $product, 'promotion_id' => $this->promotion->id]);
+            $this->promoRelation->create(['product_id' => $product, 'promotion_id' => $this->promotion->id]);
 
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (\Exception $ex) {
@@ -212,7 +212,7 @@ class PromotionController extends BasePromotionController
             /* Update the realtion details */
             $product = $request->input('applied');
             $this->promoRelation->create(['product_id' => $product, 'promotion_id' => $id]);
-            
+
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());

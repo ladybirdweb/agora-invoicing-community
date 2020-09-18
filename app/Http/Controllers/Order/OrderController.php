@@ -15,7 +15,6 @@ use App\Model\Product\ProductUpload;
 use App\Model\Product\Subscription;
 use App\User;
 use Bugsnag;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class OrderController extends BaseOrderController
@@ -119,6 +118,7 @@ class OrderController extends BaseOrderController
     {
         $orderSearch = new OrderSearchController();
         $query = $orderSearch->advanceOrderSearch($request);
+
         return \DataTables::of($query)
             ->setTotalRecords($query->count())
             ->addColumn('checkbox', function ($model) {
@@ -265,8 +265,6 @@ class OrderController extends BaseOrderController
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-
-    
 
     /**
      * Show the form for editing the specified resource.

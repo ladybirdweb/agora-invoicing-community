@@ -65,7 +65,7 @@ class ProcessController extends Controller
             $total = intval(\Cart::getTotal());
             $invoice = \Session::get('invoice');
             $regularPayment = true;
-            if (! $total) {
+            if (! $total) {//When renewal
                 $paid = 0;
                 // $total = \Session::get('totalToBePaid');
                 $regularPayment = false;
@@ -85,7 +85,7 @@ class ProcessController extends Controller
                 \View::addNamespace('plugins', $path);
 
                 echo view('plugins::middle-page', compact('total', 'rzp_key', 'rzp_secret', 'apilayer_key', 'invoice', 'regularPayment', 'items', 'product', 'amount', 'paid', 'totalPaid'));
-            } else {
+            } else {//When regular payment
                 $pay = $this->payment($payment_method, $status = 'pending');
                 $payment_method = $pay['payment'];
                 $invoice_no = $invoice->number;
@@ -98,7 +98,6 @@ class ProcessController extends Controller
                 echo view('plugins::middle-page', compact('invoice', 'amount', 'invoice_no', 'payment_method', 'invoice', 'regularPayment', 'rzp_key', 'rzp_secret', 'apilayer_key'))->render();
             }
         } catch (\Exception $ex) {
-            dd($ex);
             throw new \Exception($ex->getMessage());
         }
     }

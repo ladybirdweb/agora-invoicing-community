@@ -462,3 +462,10 @@ function emailSendingStatus()
 
     return $status;
 }
+
+function installationStatusLabel($lastConnectionDate, $createdAt)
+{
+    return $lastConnectionDate > (new Carbon('-30 days'))->toDateTimeString() && $lastConnectionDate != $createdAt ? "&nbsp;<span class='badge badge-primary' style='background-color:darkcyan !important;' <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Installation is Active'>
+                     </label>Active</span>" : "&nbsp;<span class='badge badge-info' <label data-toggle='tooltip' style='font-weight:500;background-color:crimson;' data-placement='top' title='Installation inactive for more than 30 days'>
+                    </label>Inactive</span>";
+}

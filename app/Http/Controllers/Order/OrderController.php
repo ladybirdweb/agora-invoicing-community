@@ -119,7 +119,6 @@ class OrderController extends BaseOrderController
     {
         $orderSearch = new OrderSearchController();
         $query = $orderSearch->advanceOrderSearch($request);
-
         return \DataTables::of($query)
             ->setTotalRecords($query->count())
             ->addColumn('checkbox', function ($model) {
@@ -137,7 +136,7 @@ class OrderController extends BaseOrderController
             ->addColumn('number', function ($model) {
                 $orderLink = '<a href='.url('orders/'.$model->id).'>'.$model->number.'</a>';
                 if ($model->subscription_updated_at) {//For few older clients subscription was not generated, so no updated_at column exists
-                    $orderLink = '<a href='.url('orders/'.$model->id).'>'.$model->number.'</a>'.$this->installationStatusLabel($model->subscription_updated_at, $model->subscription_created_at);
+                    $orderLink = '<a href='.url('orders/'.$model->id).'>'.$model->number.'</a>'.installationStatusLabel($model->subscription_updated_at, $model->subscription_created_at);
                 }
 
                 return $orderLink;
@@ -236,7 +235,7 @@ class OrderController extends BaseOrderController
                 $date = strtotime($subscription->update_ends_at) > 1 ? getExpiryLabel($subscription->update_ends_at) : '--';
                 $licdate = strtotime($subscription->ends_at) > 1 ? getExpiryLabel($subscription->ends_at) : '--';
                 $supdate = strtotime($subscription->support_ends_at) > 1 ? getExpiryLabel($subscription->support_ends_at) : '--';
-                $lastActivity = getDateHtml($subscription->updated_at).'&nbsp;'.$this->installationStatusLabel($subscription->updated_at, $subscription->created_at);
+                $lastActivity = getDateHtml($subscription->updated_at).'&nbsp;'.installationStatusLabel($subscription->updated_at, $subscription->created_at);
                 $versionLabel = getVersionAndLabel($subscription->version, $order->product);
             }
             $invoice = $this->invoice->where('id', $order->invoice_id)->first();
@@ -267,12 +266,7 @@ class OrderController extends BaseOrderController
         }
     }
 
-    public function installationStatusLabel($lastConnectionDate, $createdAt)
-    {
-        return $lastConnectionDate > (new Carbon('-30 days'))->toDateTimeString() && $lastConnectionDate != $createdAt ? "&nbsp;<span class='badge badge-primary' style='background-color:darkcyan !important;' <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Installation is Active'>
-                     </label>Active</span>" : "&nbsp;<span class='badge badge-info' <label data-toggle='tooltip' style='font-weight:500;background-color:crimson;' data-placement='top' title='Installation inactive for more than 30 days'>
-                    </label>Inactive</span>";
-    }
+    
 
     /**
      * Show the form for editing the specified resource.

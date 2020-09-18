@@ -248,7 +248,15 @@ $json = json_encode($data);
                         <strong>Discount</strong>
                     </th>
                     <td>
-                         {{currencyFormat(\Session::get('codevalue'),$code = $item->attributes->currency)}}
+                         <?php
+                        if (strpos(\Session::get('codevalue'), '%') == true) {
+                                $discountValue = \Session::get('codevalue');
+                            } else {
+                                $discountValue = currencyFormat(\Session::get('codevalue'),$code = $item->attributes->currency);
+                            }
+                        ?>
+
+                        {{$discountValue}}
                     </td>
                 </tr>
                 @endif

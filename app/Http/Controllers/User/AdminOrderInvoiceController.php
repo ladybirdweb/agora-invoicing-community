@@ -100,8 +100,16 @@ class AdminOrderInvoiceController extends Controller
 
     public function getOrderDetail($id)
     {
-        $client = $this->user->where('id', $id)->first();
-        $order = $client->order()->orderBy('created_at', 'desc')->get();
+        $order =  Order::leftJoin('subscriptions', 'orders.id', '=', 'subscriptions.order_id')
+            ->leftJoin('users', 'orders.client', '=', 'users.id')
+            ->leftJoin('products', 'orders.product', '=', 'products.id')
+            ->where('orders.client', '=', $id)
+            ->select(
+                'orders.id', 'orders.created_at', 'price_override', 'order_status', 'product', 'number', 'serial_key',
+                'subscriptions.update_ends_at as subscription_ends_at', 'subscriptions.id as subscription_id', 'subscriptions.version as product_version', 'subscriptions.updated_at as subscription_updated_at', 'subscriptions.created_at as subscription_created_at',
+                'products.name as product_name', \DB::raw("concat(first_name, ' ', last_name) as client_name"), 'client as client_id',
+                'users.currency'
+            );
 
         return\ DataTables::of($order)
                         ->addColumn('checkbox', function ($model) {
@@ -112,16 +120,23 @@ class AdminOrderInvoiceController extends Controller
                             return getDateHtml($model->created_at);
                         })
                         ->addColumn('product', function ($model) {
-                            $productName = $model->product()->first() && $model->product()->first()->name ?
-                            $model->product()->first()->name : 'Unknown';
 
-                            return $productName;
+                            return $model->product_name;
                         })
                         ->addColumn('number', function ($model) {
-                            $number = $model->number;
-
-                            return $number;
+                           $orderLink = '<a href='.url('orders/'.$model->id).'>'.$model->number.'</a>';
+                        if ($model->subscription_updated_at) {//For few older clients subscription was not generated, so no updated_at column exists
+                            $orderLink = '<a href='.url('orders/'.$model->id).'>'.$model->number.'</a>'.installationStatusLabel($model->subscription_updated_at, $model->subscription_created_at);
+                        }
+                        return $orderLink;
                         })
+                         ->addColumn('version', function ($model) {
+                            return getVersionAndLabel($model->product_version, $model->product);
+                        })
+                          ->addColumn('expiry', function ($model) {
+                             $ends_at = strtotime($model->subscription_ends_at) > 1 ? $model->subscription_ends_at : '--';
+                                return getExpiryLabel($ends_at);
+                            })
                          ->addColumn('status', function ($model) {
                              $status = $model->order_status;
 
@@ -132,7 +147,7 @@ class AdminOrderInvoiceController extends Controller
                             class='btn btn-sm btn-primary btn-xs'".tooltip('View')."<i class='fa fa-eye' 
                             style='color:white;'> </i></a>";
                         })
-                        ->rawColumns(['checkbox', 'date', 'product', 'number', 'total', 'status', 'action'])
+                        ->rawColumns(['checkbox', 'date', 'product', 'number', 'version','expiry', 'status', 'action'])
                         ->make(true);
     }
 

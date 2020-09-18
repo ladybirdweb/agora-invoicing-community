@@ -500,9 +500,11 @@ User
                                 <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_order_delete"><i class= "fa fa-trash"></i>&nbsp;&nbsp;Delete Selected</button><br /><br />
                                 <thead><tr>
                                     <th class="no-sort"><input type="checkbox" name="select_all" onchange="checkingorder(this)"></th>
-                                    <th>Date</th>
+                                    <th>Order Date</th>
                                     <th>Product</th>
                                     <th>Order No</th>
+                                    <th>Version</th>
+                                    <th>Expiry</th>
                                     <th>Status</th>
                                     <th>Action</th>
                                 </tr></thead>
@@ -550,6 +552,8 @@ User
                                             {data: 'date', name: 'date'},
                                             {data: 'product', name: 'product'},
                                             {data: 'number', name: 'number'},
+                                            {data: 'version', name: 'version'},
+                                            {data: 'expiry', name: 'expiry'},
                                             {data: 'status', name: 'status'},
                                             {data: 'action', name: 'action'}
                                         ],

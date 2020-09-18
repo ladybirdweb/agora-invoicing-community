@@ -27,6 +27,8 @@ class PromotionRequest extends Request
             'code'    => 'required',
             'type'    => 'required',
             'applied' => 'required',
+            'value'   => 'required',
+            'uses'    => 'required',
 
         ];
     }

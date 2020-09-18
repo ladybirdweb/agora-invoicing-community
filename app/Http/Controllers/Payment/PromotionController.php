@@ -136,11 +136,9 @@ class PromotionController extends BasePromotionController
             $this->promotion->start = $start;
             $this->promotion->expiry = $expiry;
             $this->promotion->save();
-            $products = $request->input('applied');
+            $product = $request->input('applied');
 
-            foreach ($products as $product) {
                 $this->promoRelation->create(['product_id' => $product, 'promotion_id' => $this->promotion->id]);
-            }
 
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (\Exception $ex) {
@@ -212,11 +210,9 @@ class PromotionController extends BasePromotionController
                 $delete->delete();
             }
             /* Update the realtion details */
-            $products = $request->input('applied');
-            foreach ($products as $product) {
-                $this->promoRelation->create(['product_id' => $product, 'promotion_id' => $id]);
-            }
-
+            $product = $request->input('applied');
+            $this->promoRelation->create(['product_id' => $product, 'promotion_id' => $id]);
+            
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());

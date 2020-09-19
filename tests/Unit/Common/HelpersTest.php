@@ -49,7 +49,6 @@ class HelpersTest extends DBTestCase
         $this->assertEquals('--', getDateHtml('invalid_format'));
     }
 
-
     public function test_bifurcateTax_whenIntraStateTaxPassed_returnsArrayOfTaxAndValue()
     {
         $this->getLoggedInUser();
@@ -129,6 +128,5 @@ class HelpersTest extends DBTestCase
         $rule = $tax_rule->findOrFail(1)->update(['rounding'=>0]);
         $price = rounding('999.6677777');
         $this->assertEquals($price, '999.67');
-
     }
 }

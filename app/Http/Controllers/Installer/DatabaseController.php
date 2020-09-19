@@ -39,7 +39,7 @@ class DatabaseController extends BaseDatabaseController
     {
         $outputLog = new BufferedOutput;
 
-        $this->sqlite($outputLog);
+        // $this->sqlite($outputLog);
 
         return $this->migrate($outputLog);
     }
@@ -95,20 +95,20 @@ class DatabaseController extends BaseDatabaseController
         ];
     }
 
-    /**
-     * Check database type. If SQLite, then create the database file.
-     *
-     * @param \Symfony\Component\Console\Output\BufferedOutput $outputLog
-     */
-    private function sqlite(BufferedOutput $outputLog)
-    {
-        if (DB::connection() instanceof SQLiteConnection) {
-            $database = DB::connection()->getDatabaseName();
-            if (! file_exists($database)) {
-                touch($database);
-                DB::reconnect(Config::get('database.default'));
-            }
-            $outputLog->write('Using SqlLite database: '.$database, 1);
-        }
-    }
+    // /**
+    //  * Check database type. If SQLite, then create the database file.
+    //  *
+    //  * @param \Symfony\Component\Console\Output\BufferedOutput $outputLog
+    //  */
+    // private function sqlite(BufferedOutput $outputLog)
+    // {
+    //     if (DB::connection() instanceof SQLiteConnection) {
+    //         $database = DB::connection()->getDatabaseName();
+    //         if (! file_exists($database)) {
+    //             touch($database);
+    //             DB::reconnect(Config::get('database.default'));
+    //         }
+    //         $outputLog->write('Using SqlLite database: '.$database, 1);
+    //     }
+    // }
 }

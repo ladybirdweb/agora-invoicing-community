@@ -22,20 +22,29 @@ class DashboardController extends Controller
         $this->middleware('admin', ['only' => ['index']]);
     }
 
+    /**
+     * The method returns all the data required to be displayed on the dashboard.
+     *
+     * $allowedCurrencies1 The default currency of the system. This can be changed from Admin system  settings
+     * $allowedCurrencies2 The currency that is activated from currency settings.
+     *
+     * Only two currencies are allowed to be displayed on the dashboard. One is system deafult currency. Other is the activated
+     * currency from the system.
+     */
     public function index(Request $request)
     {
         $allowedCurrencies1 = Setting::find(1)->value('default_currency');
         $currency1Symbol = Setting::find(1)->value('default_symbol');
         $allowedCurrencies2 = Currency::where('dashboard_currency', 1)->pluck('code')->first();
         $currency2Symbol = Currency::where('dashboard_currency', 1)->pluck('symbol')->first();
-        $totalSalesCurrency1 = $this->getTotalSalesInCur1($allowedCurrencies1);
-        $totalSalesCurrency2 = $this->getTotalSalesInCur2($allowedCurrencies2);
-        $yearlySalesCurrency2 = $this->getYearlySalesCur2($allowedCurrencies2);
-        $yearlySalesCurrency1 = $this->getYearlySalesCur1($allowedCurrencies1);
-        $monthlySalesCurrency2 = $this->getMonthlySalesCur2($allowedCurrencies2);
-        $monthlySalesCurrency1 = $this->getMonthlySalesInCur1($allowedCurrencies1);
-        $pendingPaymentCurrency2 = $this->getPendingPaymentsCur2($allowedCurrencies2);
-        $pendingPaymentCurrency1 = $this->getPendingPaymentsCur1($allowedCurrencies1);
+        $totalSalesCurrency1 = $this->getTotalSales($allowedCurrencies1);
+        $totalSalesCurrency2 = $this->getTotalSales($allowedCurrencies2);
+        $yearlySalesCurrency2 = $this->getYearlySales($allowedCurrencies2);
+        $yearlySalesCurrency1 = $this->getYearlySales($allowedCurrencies1);
+        $monthlySalesCurrency2 = $this->getMonthlySales($allowedCurrencies2);
+        $monthlySalesCurrency1 = $this->getMonthlySales($allowedCurrencies1);
+        $pendingPaymentCurrency2 = $this->getPendingPayments($allowedCurrencies2);
+        $pendingPaymentCurrency1 = $this->getPendingPayments($allowedCurrencies1);
         $getLast30DaysInstallation = $this->getLast30DaysInstallation();
 
         $users = $this->getAllUsers();
@@ -62,6 +71,11 @@ class DashboardController extends Controller
             'pendingPaymentCurrency1', 'status', 'startSubscriptionDate', 'endSubscriptionDate', 'clientsUsingOldVersion', 'getLast30DaysInstallation', 'conversionRate'));
     }
 
+    /**
+     * Get all the orders that got converted into paid orders in last 30 days
+     *
+     * @return array
+     */
     private function getConversionRate()
     {
         $dayUtc = new Carbon('-30 days');
@@ -76,6 +90,11 @@ class DashboardController extends Controller
         return ['all_orders'=>$allOrders, 'paid_orders'=>$paidOrders, 'rate'=>$rate];
     }
 
+    /**
+     * Get all the installations and their percentage that got active in the last 30 days with respect to inactive installation.
+     *
+     * @return array
+     */
     public function getLast30DaysInstallation()
     {
         $dayUtc = new Carbon('-30 days');
@@ -91,126 +110,77 @@ class DashboardController extends Controller
     }
 
     /**
-     * Get Total Sales in Allowed Dashboard Currency.
+     * Calculates total sales
      *
-     * @return float
+     * @param $allowedCurrencies The currency in which total needs to be calculated
+     * @return float|int
+     *
      */
-    public function getTotalSalesInCur2($allowedCurrencies2)
+    public function getTotalSales($allowedCurrencies)
     {
         $total = Invoice::leftJoin('payments', 'invoices.id', '=', 'payments.invoice_id')
-                 ->where('invoices.status', '=', 'success')
-                 ->orWhere('invoices.status', '=', 'partially paid')
-                 ->where('invoices.currency', $allowedCurrencies2)
+                 ->where('invoices.currency', $allowedCurrencies)
+                 ->where('invoices.status', '!=', 'pending')
                  ->pluck('payments.amount')->all();
         $grandTotal = array_sum($total);
-
+     
         return $grandTotal;
     }
 
-    /**
-     * Get total sales in Default Currency.
-     *
-     * @return float
-     */
-    public function getTotalSalesInCur1($allowedCurrencies1)
-    {
-        $total = Invoice::leftJoin('payments', 'invoices.id', '=', 'payments.invoice_id')
-                 ->where('invoices.status', '=', 'success')
-                 ->orWhere('invoices.status', '=', 'partially paid')
-                 ->where('invoices.currency', $allowedCurrencies1)
-                 ->pluck('payments.amount')->all();
-        $grandTotal = array_sum($total);
-
-        return $grandTotal;
-    }
 
     /**
-     * Get  Total yearly sale of present year IN Allowed Dashboard Currency.
+     * Calculates yearly sales
      *
-     * @return type
+     * @param $allowedCurrencies The currency in which yearly sales needs to be calculated
+     * @return float|int
+     *
      */
-    public function getYearlySalesCur2($allowedCurrencies2)
+    public function getYearlySales($allowedCurrencies)
     {
         $currentYear = date('Y');
         $yearlytotal = Invoice::leftJoin('payments', 'invoices.id', '=', 'payments.invoice_id')
                 ->whereYear('invoices.created_at', '=', $currentYear)
-                 ->where('invoices.status', '=', 'success')
-                 ->orWhere('invoices.status', '=', 'partially paid')
-                 ->where('invoices.currency', $allowedCurrencies2)
+                ->where('invoices.currency', $allowedCurrencies)
+                 ->where('invoices.status', '!=', 'pending')
                  ->pluck('payments.amount')->all();
         $grandTotal = array_sum($yearlytotal);
 
         return $grandTotal;
     }
 
-    /**
-     * Get  Total yearly sale of present year in USD.
-     *
-     * @return type
-     */
-    public function getYearlySalesCur1($allowedCurrencies1)
-    {
-        $currentYear = date('Y');
-        $total = Invoice::leftJoin('payments', 'invoices.id', '=', 'payments.invoice_id')
-                ->whereYear('invoices.created_at', '=', $currentYear)
-                 ->where('invoices.status', '=', 'success')
-                 ->orWhere('invoices.status', '=', 'partially paid')
-                 ->where('invoices.currency', $allowedCurrencies1)
-                 ->pluck('payments.amount')->all();
-        $grandTotal = array_sum($total);
-
-        return $grandTotal;
-    }
 
     /**
-     * Get  Total Monthly sale of present month in Allowed Dashboard Currency.
+     * Calculates monthly sales
      *
-     * @return type
+     * @param $allowedCurrencies Currency in which monthly sales needs to be calculated
+     * @return float|int
+     *
      */
-    public function getMonthlySalesCur2($allowedCurrencies2)
+    public function getMonthlySales($allowedCurrencies)
     {
         $currentMonth = date('m');
         $currentYear = date('Y');
         $total = Invoice::leftJoin('payments', 'invoices.id', '=', 'payments.invoice_id')
                 ->whereYear('invoices.created_at', '=', $currentYear)->whereMonth('invoices.created_at', '=', $currentMonth)
-                 ->where('invoices.status', '=', 'success')
-                 ->orWhere('invoices.status', '=', 'partially paid')
-                 ->where('invoices.currency', $allowedCurrencies2)
+                ->where('invoices.currency', $allowedCurrencies)
+                 ->where('invoices.status', '!=', 'pending')
                  ->pluck('payments.amount')->all();
         $grandTotal = array_sum($total);
 
         return $grandTotal;
     }
 
-    /**
-     * Get  Total Monthly sale of present month in System Default Currency.
-     *
-     * @return type
-     */
-    public function getMonthlySalesInCur1($allowedCurrencies1)
-    {
-        $currentMonth = date('m');
-        $currentYear = date('Y');
-        // dd($currentYear,$currentMonth );
-        $total = Invoice::leftJoin('payments', 'invoices.id', '=', 'payments.invoice_id')
-                ->whereYear('invoices.created_at', '=', $currentYear)->whereMonth('invoices.created_at', '=', $currentMonth)
-                 ->where('invoices.status', '=', 'success')
-                 ->orWhere('invoices.status', '=', 'partially paid')
-                 ->where('invoices.currency', $allowedCurrencies1)
-                 ->pluck('payments.amount')->all();
-        $grandTotal = array_sum($total);
-
-        return $grandTotal;
-    }
 
     /**
-     * Get  Total Pending Payment Inr.
+     * Calculates pending payments in the system
      *
-     * @return type
+     * @param $allowedCurrencies Currency in which pending payment need to be calculated
+     * @return float|int
+     *
      */
-    public function getPendingPaymentsCur2($allowedCurrencies2)
+    public function getPendingPayments($allowedCurrencies)
     {
-        $total = Invoice::where('currency', $allowedCurrencies2)
+        $total = Invoice::where('currency', $allowedCurrencies)
         ->where('status', '=', 'pending')
         ->pluck('grand_total')->all();
         $grandTotal = array_sum($total);
@@ -218,20 +188,7 @@ class DashboardController extends Controller
         return $grandTotal;
     }
 
-    /**
-     * Get  Total Pending Payment Inr.
-     *
-     * @return type
-     */
-    public function getPendingPaymentsCur1($allowedCurrencies1)
-    {
-        $total = Invoice::where('currency', $allowedCurrencies1)
-        ->where('status', '=', 'pending')
-        ->pluck('grand_total')->all();
-        $grandTotal = array_sum($total);
 
-        return $grandTotal;
-    }
 
     /**
      * Get the list of previous 20 registered users.

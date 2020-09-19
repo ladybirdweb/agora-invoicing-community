@@ -48,4 +48,46 @@ class HelpersTest extends DBTestCase
 
         $this->assertEquals('--', getDateHtml('invalid_format'));
     }
+
+
+    public function test_bifurcateTax_whenIntraStateTaxPassed_returnsArrayOfTaxAndValue()
+    {
+        $this->getLoggedInUser();
+        $this->user->country = 'IN';
+        $this->withoutMiddleware();
+
+        $a = bifurcateTax('CGST+SGST','18%','INR','IN-KA','1000');
+       $this->assertEquals($a, ["html" => "CGST@9%<br>SGST@9%" , "tax" => "₹90<br>₹90"]);
+    }
+
+    public function test_bifurcateTax_whenInterStateTaxPassed_returnsArrayOfTaxAndValue()
+    {
+        $this->getLoggedInUser();
+        $this->user->country = 'IN';
+        $this->withoutMiddleware();
+
+        $a = bifurcateTax('IGST','18%','INR','IN-AP','1000');
+       $this->assertEquals($a, ["html" => "IGST@18%" , "tax" => "₹180"]);
+    }
+
+    public function test_bifurcateTax_whenUnionTerretoryTaxPassed_returnsArrayOfTaxAndValue()
+    {
+        $this->getLoggedInUser();
+        $this->user->country = 'IN';
+        $this->withoutMiddleware();
+
+        $a = bifurcateTax('CGST+UTGST','18%','INR','IN-AN','1000');
+       $this->assertEquals($a, ["html" => "CGST@9%<br>UTGST@9%" , "tax" => "₹90<br>₹90"]);
+    }
+
+    public function test_bifurcateTax_whenUserFromOtherCountry_returnsArrayOfTaxAndValue()
+    {
+        $this->getLoggedInUser();
+        $this->user->country = 'US';
+        $this->withoutMiddleware();
+
+        $a = bifurcateTax('VAT','20%','INR','US-VA','1000');
+        $this->assertEquals($a, ["html" => "VAT@20%" , "tax" => "₹200"]);
+    }
+
 }

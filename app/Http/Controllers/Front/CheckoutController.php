@@ -104,15 +104,11 @@ class CheckoutController extends InfoController
                 return redirect('paynow/'.$invoice->id)->with('fails', 'Payment cannot be processed. Please try the other gateway.');
             }
         }
-        if (\Session::has('items')) {
-            $content = \Session::get('items');
-            $taxConditions = $this->getAttributes($content);
-        } else {
+        
             $content = Cart::getContent();
             $taxConditions = $this->getAttributes($content);
 
             $content = Cart::getContent();
-        }
         try {
             $domain = $request->input('domain');
             if ($domain) {//Store the Domain  in session when user Logged In

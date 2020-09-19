@@ -72,7 +72,7 @@ class DashboardController extends Controller
     }
 
     /**
-     * Get all the orders that got converted into paid orders in last 30 days
+     * Get all the orders that got converted into paid orders in last 30 days.
      *
      * @return array
      */
@@ -110,11 +110,10 @@ class DashboardController extends Controller
     }
 
     /**
-     * Calculates total sales
+     * Calculates total sales.
      *
      * @param $allowedCurrencies The currency in which total needs to be calculated
      * @return float|int
-     *
      */
     public function getTotalSales($allowedCurrencies)
     {
@@ -123,17 +122,15 @@ class DashboardController extends Controller
                  ->where('invoices.status', '!=', 'pending')
                  ->pluck('payments.amount')->all();
         $grandTotal = array_sum($total);
-     
+
         return $grandTotal;
     }
 
-
     /**
-     * Calculates yearly sales
+     * Calculates yearly sales.
      *
      * @param $allowedCurrencies The currency in which yearly sales needs to be calculated
      * @return float|int
-     *
      */
     public function getYearlySales($allowedCurrencies)
     {
@@ -148,13 +145,11 @@ class DashboardController extends Controller
         return $grandTotal;
     }
 
-
     /**
-     * Calculates monthly sales
+     * Calculates monthly sales.
      *
      * @param $allowedCurrencies Currency in which monthly sales needs to be calculated
      * @return float|int
-     *
      */
     public function getMonthlySales($allowedCurrencies)
     {
@@ -170,13 +165,11 @@ class DashboardController extends Controller
         return $grandTotal;
     }
 
-
     /**
-     * Calculates pending payments in the system
+     * Calculates pending payments in the system.
      *
      * @param $allowedCurrencies Currency in which pending payment need to be calculated
      * @return float|int
-     *
      */
     public function getPendingPayments($allowedCurrencies)
     {
@@ -187,8 +180,6 @@ class DashboardController extends Controller
 
         return $grandTotal;
     }
-
-
 
     /**
      * Get the list of previous 20 registered users.

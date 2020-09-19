@@ -136,12 +136,12 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                             value=".$model->id.' name=select[] id=check>';
          })
                         ->addColumn('user_id', function ($model) {
-                        $user = $this->user->where('id', $model->user_id)->first() ? : User::onlyTrashed()->find($model->user_id);
-                                
-                                $id = $user->id;
-                                $first = $user->first_name;
-                                $last = $user->last_name;
-                           
+                            $user = $this->user->where('id', $model->user_id)->first() ?: User::onlyTrashed()->find($model->user_id);
+
+                            $id = $user->id;
+                            $first = $user->first_name;
+                            $last = $user->last_name;
+
                             return '<a href='.url('clients/'.$id).'>'.ucfirst($first).' '.ucfirst($last).'</a>';
                         })
                          ->addColumn('number', function ($model) {
@@ -376,7 +376,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $number = rand(11111111, 99999999);
             $date = \Carbon\Carbon::parse($request->input('date'));
             $product = Product::find($productid);
-            $cost =  $this->cartController->cost($productid, $user_id, $plan);
+            $cost = $this->cartController->cost($productid, $user_id, $plan);
             $couponTotal = $this->getGrandTotal($code, $total, $cost, $productid, $currency, $user_id);
             $grandTotalAfterCoupon = $qty * $couponTotal['total'];
             if (! $grandTotalAfterCoupon) {

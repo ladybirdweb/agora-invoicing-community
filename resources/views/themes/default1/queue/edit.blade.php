@@ -18,7 +18,7 @@ Configure Queue
 @section('content')
  <div id="alertMessage"></div>
 
-<div class="card card-primary card-outline">
+<div class="card card-secondary card-outline">
 
        
             <div class="card-body">

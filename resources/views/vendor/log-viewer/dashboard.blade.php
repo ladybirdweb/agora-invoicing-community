@@ -14,7 +14,7 @@
 @stop
 @section('content')
 
-    <div class="box box-primary">
+    <div class="box box-secondary">
         <div class="box-body">
             <div class="row">
                 <div class="col-md-3">

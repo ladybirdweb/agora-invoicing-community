@@ -15,11 +15,11 @@ Edit Product Uploads
     </div><!-- /.col -->
 @stop
 @section('content')
-<div class="card card-primary card-outline">
+<div class="card card-secondary card-outline">
     <div class="card-header">
 
          {!! Form::model($model,['url'=>'upload/'.$model->id,'method'=>'patch']) !!}
-        <h4>{{Lang::get('message.plan')}} </h4>
+        <h4>Edit Product </h4>
 
     </div>
 

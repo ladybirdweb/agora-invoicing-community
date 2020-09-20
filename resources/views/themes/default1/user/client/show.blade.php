@@ -91,7 +91,7 @@ User
 
 
 
-    <div class="card card-primary card-outline">
+    <div class="card card-secondary card-outline">
         <div class="card-header">
             <h3 class="card-title">
 
@@ -128,7 +128,7 @@ User
 
                         <div class="tab-pane text-left fade show active" id="activity" role="tabpanel" aria-labelledby="vert-tabs-home-tab">
                             <table id="invoice-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
-                                <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_invoice_delete"><i class= "fa fa-trash"></i>&nbsp;&nbsp;Delete Selected</button><br /><br />
+                                <button  value="" class="btn btn-secondary btn-sm btn-alldell" id="bulk_invoice_delete"><i class= "fa fa-trash"></i>&nbsp;&nbsp;Delete Selected</button><br /><br />
                                 <thead><tr>
                                     <th class="no-sort"><input type="checkbox" name="select_all" onchange="checkinginvoice(this)"></th>
                                     <th style="width: 100px;">Date</th>
@@ -376,7 +376,7 @@ User
                             <!---------------------- Payment Detail tab---------------------------------------->
                         <div class="tab-pane fade" id="timeline" role="tabpanel" aria-labelledby="vert-tabs-messages-tab">
                             <table id="payment-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
-                                <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_payment_delete"><i class= "fa fa-trash"></i>&nbsp;&nbsp;Delete Selected</button><br /><br />
+                                <button  value="" class="btn btn-secondary btn-sm btn-alldell" id="bulk_payment_delete"><i class= "fa fa-trash"></i>&nbsp;&nbsp;Delete Selected</button><br /><br />
                                 <thead><tr>
                                     <th class="no-sort"><input type="checkbox" name="select_all" onchange="checkingpayment(this)"></th>
                                     <th>Invoice No</th>
@@ -497,7 +497,7 @@ User
 
                         <div class="tab-pane fade" id="order" role="tabpanel" aria-labelledby="vert-tabs-settings-tab">
                             <table id="orderdetail-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
-                                <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_order_delete"><i class= "fa fa-trash"></i>&nbsp;&nbsp;Delete Selected</button><br /><br />
+                                <button  value="" class="btn btn-secondary btn-sm btn-alldell" id="bulk_order_delete"><i class= "fa fa-trash"></i>&nbsp;&nbsp;Delete Selected</button><br /><br />
                                 <thead><tr>
                                     <th class="no-sort"><input type="checkbox" name="select_all" onchange="checkingorder(this)"></th>
                                     <th>Order Date</th>
@@ -616,7 +616,7 @@ User
                         </div>
                        
                         <div class="tab-pane fade" id="comment" role="tabpanel" aria-labelledby="vert-tabs-settings-tab">
-                            <a href="#comment" class="btn btn-primary btn-sm pull-right" data-toggle="modal" data-target="#createComment">
+                            <a href="#comment" class="btn btn-default btn-sm pull-right" data-toggle="modal" data-target="#createComment">
                                 <span class="fas fa-plus"></span>&nbsp;&nbsp;{{Lang::get('message.add_comment')}}</a>
                             @include('themes.default1.user.client.createComment')
 

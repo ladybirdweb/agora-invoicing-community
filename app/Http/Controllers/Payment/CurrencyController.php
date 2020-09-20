@@ -60,7 +60,7 @@ class CurrencyController extends Controller
 
                                   return $showButton;
                               } else {
-                                  return  '<a class="btn btn-sm btn-primary btn-xs disabled"><i class="fa fa-eye"
+                                  return  '<a class="btn btn-sm btn-secondary btn-xs disabled"><i class="fa fa-eye"
                                 style="color:white;"> </i>&nbsp;&nbsp;Show on Dashboard</a>';
                               }
                           })

@@ -76,7 +76,7 @@ input:checked + .slider:before {
     height:600px;
 }
 </style>
-<div class="card card-primary card-outline">
+<div class="card card-secondary card-outline">
 
     <div class="card-body">
           <div id="alertMessage"></div>

@@ -18,7 +18,7 @@ Email Logs
 
 
 </style>
-    <div class="card card-primary card-outline">
+    <div class="card card-secondary card-outline">
 
 
 <div class="card-body table-responsive">
@@ -30,7 +30,7 @@ Email Logs
          
                            
              <table id="email-table" class="table display" cellspacing="0"  styleClass="borderless">
-                     <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_delete"><i class="fa fa-trash">&nbsp;&nbsp;</i> Delete Selected</button><br /><br />
+                     <button  value="" class="btn btn-secondary btn-sm btn-alldell" id="bulk_delete"><i class="fa fa-trash">&nbsp;&nbsp;</i> Delete Selected</button><br /><br />
                      
                     <thead><tr>
 

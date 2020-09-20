@@ -22,7 +22,7 @@ Create Group
 <div class="row">
 
     <div class="col-md-12">
-        <div class="card card-primary card-outline">
+        <div class="card card-secondary card-outline">
 
           
 

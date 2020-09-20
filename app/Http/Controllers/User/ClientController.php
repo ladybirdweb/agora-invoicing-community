@@ -98,10 +98,10 @@ class ClientController extends AdvanceSearchController
                         })
                         ->addColumn('action', function ($model) {
                             return '<a href='.url('clients/'.$model->id.'/edit')
-                            ." class='btn btn-sm btn-secondary btn-xs'".tooltip('Edit')."
+                            ." class='btn btn-sm btn-secondary'".tooltip('Edit')."
                             <i class='fa fa-edit' style='color:white;'> </i></a>"
                                     .'  <a href='.url('clients/'.$model->id)
-                                    ." class='btn btn-sm btn-primary btn-xs'".tooltip('View')."
+                                    ." class='btn btn-sm btn-secondary'".tooltip('View')."
                                     <i class='fa fa-eye' style='color:white;'> </i></a>";
                         })
 

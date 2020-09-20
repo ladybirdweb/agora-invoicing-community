@@ -50,7 +50,7 @@ Tax
 
 
       
-       <div class="card card-primary card-outline">
+       <div class="card card-secondary card-outline">
            <div class="card-header">
                <h3 class="card-title">{{Lang::get('Options')}}</h3>
                {!! Form::model($options,['url'=>'taxes/option','method'=>'post']) !!}
@@ -121,7 +121,7 @@ Tax
                     </table>
 
 
-                       <button type="submit" class="btn btn-primary pull-right" id="submit" ><i class="fa fa-save"></i>&nbsp;{!!Lang::get('message.save')!!}</button>
+                       <button type="submit" class="btn btn-default pull-right" id="submit" ><i class="fa fa-save"></i>&nbsp;{!!Lang::get('message.save')!!}</button>
 
                        {!! Form::close() !!}
               </div>
@@ -129,13 +129,13 @@ Tax
               </div>
             </div>
 
-             <div class="card card-primary card-outline">
+             <div class="card card-secondary card-outline">
 
                   <div class="card-header">
                       <h3 class="card-title">{{Lang::get('Tax Classes')}}</h3>
 
                       <div class="card-tools">
-                          <a href="#create-tax-option" class="btn btn-primary pull-right btn-sm" data-toggle="modal" data-target="#create-tax-option"><span class="fa fa-plus"></span>&nbsp;&nbsp;{{Lang::get('message.create')}}</a>
+                          <a href="#create-tax-option" class="btn btn-default pull-right btn-sm" data-toggle="modal" data-target="#create-tax-option"><span class="fa fa-plus"></span>&nbsp;&nbsp;{{Lang::get('message.create')}}</a>
 
 
                       </div>
@@ -145,7 +145,7 @@ Tax
                   <div class="row">
                 <div class="col-md-12">
                     <table id="tax-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
-                    <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_delete"><i class="fa fa-trash">&nbsp;&nbsp;</i> Delete Selected</button><br /><br />
+                    <button  value="" class="btn btn-secondary btn-sm btn-alldell" id="bulk_delete"><i class="fa fa-trash">&nbsp;&nbsp;</i> Delete Selected</button><br /><br />
                         <thead><tr>
                             <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
                              <th>Tax Type</th>

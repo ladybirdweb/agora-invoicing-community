@@ -81,7 +81,7 @@ input:checked + .slider:before {
 @section('content')
 
 
-          <div class="card card-primary card-outline">
+          <div class="card card-secondary card-outline">
 
             <!-- /.box-header -->
             <div class="card-body">

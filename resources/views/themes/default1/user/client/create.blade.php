@@ -22,7 +22,7 @@ Create User
 
 
 
-    <div class="card card-primary card-outline">
+    <div class="card card-secondary card-outline">
 
 
 
@@ -335,6 +335,15 @@ Create User
                 //Initialize Select2 Elements
                 $('.select2').select2()
             });
+            val = $('#country').val();
+            state = $('#state-list').val();
+            if(state == '') {
+                getState(val);
+            } else {
+                $('#state-list').val(state)
+            }
+             
+
 // get the country data from the plugin
 var countryData = $.fn.intlTelInput.getCountryData(),
 

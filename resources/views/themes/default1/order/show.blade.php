@@ -23,7 +23,7 @@ Order
     }
 </style>
 @section('content')
-    <div class="card card-primary card-outline">
+    <div class="card card-secondary card-outline">
 <div class="row">
 <div class="col-md-12">
          
@@ -31,7 +31,7 @@ Order
                 <div class="box-group" id="accordion">
 
                    <div class="card-header with-border">
-                    <h4 class="card-title">
+                    <h4 class="card-title" style="color:black;">
                      
                          <i class="fa fa-users"></i>
                         Overview
@@ -247,7 +247,7 @@ Order
             </div>
 </div>
 </div>
-    <div class="card card-primary card-outline">
+    <div class="card card-secondary card-outline">
         <div class="row">
             <div class="col-md-12">
             <div class="card-body table-responsive">
@@ -255,7 +255,7 @@ Order
 
                      <a data-toggle="collapse" data-parent="#accordion3" href="#collapseFour">
                    <div class="card-header with-border">
-                    <h4 class="card-title">
+                    <h4 class="card-title" style="color:black;">
                       <i class="fa fa-credit-card"></i>
                         Invoice List
                     </h4>
@@ -348,14 +348,14 @@ Order
         });
       </script>
     </div>
-    <div class="card card-primary card-outline">
+    <div class="card card-secondary card-outline">
          <div class="row">
             <div class="col-md-12">
             <div class="card-body table-responsive">
                 <div class="box-group" id="accordion4">
                      <a data-toggle="collapse" data-parent="#accordion4" href="#collapseFive">
                    <div class="card-header">
-                    <h4 class="card-title">
+                    <h4 class="card-title" style="color:black;">
                        <i class="fa fa-bars"></i>
                        Payment Receipts
                     </h4>
@@ -364,7 +364,7 @@ Order
                        <div class="card-body">
                        <div class="col-md-12">
                            <table id="order1-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
-                 <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_delete"><i class= "fa fa-trash"></i>&nbsp;&nbsp;Delete Selected</button><br /><br />
+                 <button  value="" class="btn btn-secondary btn-sm btn-alldell" id="bulk_delete"><i class= "fa fa-trash"></i>&nbsp;&nbsp;Delete Selected</button><br /><br />
                     <thead><tr>
                         <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
                          <th>Invoice No</th>

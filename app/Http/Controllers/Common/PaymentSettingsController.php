@@ -34,15 +34,15 @@ class PaymentSettingsController extends Controller
                             if (array_has($model, 'path')) {
                                 if ($model['status'] == 0) {
                                     $activate = '<form method="post" action='.url('plugin/status/'.$model['name']).'>'.'<input type="hidden" name="_token" value='.\Session::token().'>'.'
-                                    <button type="submit" class="btn btn-info btn-sm btn-xs"'.tooltip('Activate').'<i class="fa fa-tasks" style="color:white;"></i></button></form>';
+                                    <button type="submit" class="btn btn-secondary btn-sm"'.tooltip('Activate').'<i class="fa fa-tasks" style="color:white;"></i></button></form>';
                                     $settings = ' ';
                                 } else {
-                                    $settings = '<a href='.url($model['settings']).' class="btn btn-info btn-sm btn-xs"'.tooltip('Settings').'<i class="nav-icon fa fa-fw fa-cogs" style="color:white;"></i></a> <br> ';
+                                    $settings = '<a href='.url($model['settings']).' class="btn btn-secondary btn-sm"'.tooltip('Settings').'<i class="nav-icon fa fa-fw fa-cogs" style="color:white;"></i></a> <br> ';
                                     $activate = '<form method="post" action='.url('plugin/status/'.$model['name']).'>'.'<input type="hidden" name="_token" value='.\Session::token().'>'.'
-                                    <button type="submit" class="btn btn-info btn-sm btn-xs"'.tooltip('Deactivate').'<i class="fa fa-tasks" style="color:white;"></i></button></form>';
+                                    <button type="submit" class="btn btn-secondary btn-sm"'.tooltip('Deactivate').'<i class="fa fa-tasks" style="color:white;"></i></button></form>';
                                 }
 
-                                $delete = '<a href=  id=delete'.$model['name'].' class="btn btn-info btn-sm btn-xs" data-toggle=modal data-target=#del'.$model['name']."><span style='color:white'><i class='fa fa-trash' style='color:white;'></i></span></a>"
+                                $delete = '<a href=  id=delete'.$model['name'].' class="btn btn-secondary btn-sm" data-toggle=modal data-target=#del'.$model['name']."><span style='color:white'><i class='fa fa-trash' style='color:white;'></i></span></a>"
                                         ."<div class='modal fade' id=del".$model['name'].">
                                             <div class='modal-dialog'>
                                                 <div class=modal-content>  
@@ -65,7 +65,7 @@ class PaymentSettingsController extends Controller
                                                 </div>
                                             </div>
                                         </div>';
-                                $action = $delete.'&nbsp;'.$settings.$activate;
+                                $action = $delete.'<br><br>'.$settings.'&nbsp;'.$activate;
                             } else {
                                 $action = '';
                             }

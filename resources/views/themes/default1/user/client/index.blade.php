@@ -20,7 +20,7 @@ Users
     <div class="row">
         <div class="col-12">
             <!-- Default box -->
-            <div class="card card-danger card-outline collapsed-card">
+            <div class="card card-secondary card-outline collapsed-card">
                 <div class="card-header">
                     <h3 class="card-title">Advance Search</h3>
 
@@ -157,9 +157,9 @@ Users
                             </select>
                         </div>                </div>
                 <!-- /.card-body -->
-                    <button name="Search" type="submit"  class="btn btn-primary"><i class="fa fa-search"></i>&nbsp;{!!Lang::get('Search')!!}</button>
+                    <button name="Search" type="submit"  class="btn btn-secondary"><i class="fa fa-search"></i>&nbsp;{!!Lang::get('Search')!!}</button>
                     &nbsp;
-                    <a href="{!! url('clients') !!}" id="reset" class="btn btn-danger"><i class="fas fa-sync-alt"></i>&nbsp;{!!Lang::get('Reset')!!}</a>
+                    <a href="{!! url('clients') !!}" id="reset" class="btn btn-secondary"><i class="fas fa-sync-alt"></i>&nbsp;{!!Lang::get('Reset')!!}</a>
             </div>
             <!-- /.card -->
         </div>
@@ -168,13 +168,13 @@ Users
 
 
 
-<div class="card card-primary card-outline">
+<div class="card card-secondary card-outline">
 
     <div class="card-header">
         <h3 class="card-title">Users</h3>
 
         <div class="card-tools">
-            <a href="{{url('clients/create')}}" class="btn btn-primary btn-sm pull-right"><span class="fas fa-plus"></span>&nbsp;Create New User</a>
+            <a href="{{url('clients/create')}}" class="btn btn-default btn-sm pull-right"><span class="fas fa-plus"></span>&nbsp;Create New User</a>
 
 
         </div>
@@ -187,7 +187,7 @@ Users
 
             <div class="col-md-12">
                 <table id="user-table" class="table display " cellspacing="0" width="100%" styleClass="borderless">
-                 <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_delete"><i class= "fa fa-trash"></i>&nbsp;&nbsp;Suspend Selected Users</button><br /><br />
+                 <button  value="" class="btn btn-secondary btn-sm btn-alldell" id="bulk_delete"><i class= "fa fa-trash"></i>&nbsp;&nbsp;Suspend Selected Users</button><br /><br />
                     <thead><tr>
                          <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
                             <th>Name</th>
@@ -237,7 +237,7 @@ Users
                 "sLengthMenu": "_MENU_ Records per page",
                 "sSearch": "Search: ",
                 "sProcessing": ' <div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="text-bold pt-2">Loading...</div></div>'
-                    {{--'<img id="blur-bg" class="backgroundfadein" style="top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;" src="{!! asset("lb-faveo/media/images/gifloader3.gif") !!}">'--}}
+                   
             },
             columnDefs: [
                 {

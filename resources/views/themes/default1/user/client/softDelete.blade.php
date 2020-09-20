@@ -20,7 +20,7 @@ Suspended users
 
 
 
-<div class="card card-primary card-outline">
+<div class="card card-secondary card-outline">
 
    
 
@@ -31,7 +31,7 @@ Suspended users
 
             <div class="col-md-12">
                 <table id="deleted-user-table" class="table display " cellspacing="0" width="100%" styleClass="borderless">
-                 <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_delete"><i class= "fa fa-trash"></i>&nbsp;&nbsp;Delete Permanently</button><br /><br />
+                 <button  value="" class="btn btn-secondary btn-sm btn-alldell" id="bulk_delete"><i class= "fa fa-trash"></i>&nbsp;&nbsp;Delete Permanently</button><br /><br />
                     <thead><tr>
                          <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
                             <th>Name</th>

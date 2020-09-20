@@ -16,7 +16,7 @@ Create Page
 @stop
 
 @section('content')
-<div class="card card-primary card-outline">
+<div class="card card-secondary card-outline">
 
 
 

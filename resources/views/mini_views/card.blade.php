@@ -42,7 +42,7 @@
         </div>
         <!-- /.box-body -->
         <div class="card-footer clearfix">
-            <a href="{!! array_values($linkLeft)[0] !!}" class="btn btn-sm btn-info btn-flat float-left">{!! array_keys($linkLeft)[0] !!}</a>
+            <a href="{!! array_values($linkLeft)[0] !!}" class="btn btn-sm btn-secondary btn-flat float-left">{!! array_keys($linkLeft)[0] !!}</a>
             <a href="{!! array_values($linkRight)[0] !!}" class="btn btn-sm btn-default btn-flat float-right">{!! array_keys($linkRight)[0] !!}</a>
         </div>
         <!-- /.box-footer -->

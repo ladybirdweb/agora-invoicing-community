@@ -149,12 +149,12 @@ class ProductController extends BaseProductController
                                 $url = '';
                                 if ($permissions['downloadPermission'] == 1) {
                                     $url = '<a href='.url('product/download/'.$model->id).
-                                    " class='btn btn-sm btn-info btn-xs'".tooltip('Download')."<i class='fas fa-cloud-download-alt' 
+                                    " class='btn btn-sm btn-secondary'".tooltip('Download')."<i class='fas fa-cloud-download-alt' 
                                     style='color:white;'> </i></a>";
                                 }
 
                                 return '<p><a href='.url('products/'.$model->id.'/edit').
-                                " class='btn btn-sm btn-secondary btn-xs'".tooltip('Edit')."<i class='fa fa-edit'
+                                " class='btn btn-sm btn-secondary'".tooltip('Edit')."<i class='fa fa-edit'
                                  style='color:white;'> </i></a>&nbsp;$url</p>";
                             })
 

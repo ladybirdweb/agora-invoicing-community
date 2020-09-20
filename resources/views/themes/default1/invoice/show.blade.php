@@ -121,7 +121,7 @@ Invoice
                                         @endphp
                                         @if($orderForThisItem)
 
-                                        <td> {!! getOrderLink($orderForThisItem->id) !!}</td>
+                                        <td> {!! $orderForThisItem->getOrderLink($orderForThisItem->id) !!}</td>
                                         
                                             @elseif($order != '--')
 

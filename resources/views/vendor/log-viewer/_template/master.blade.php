@@ -119,19 +119,17 @@ $set = $set->findOrFail(1);
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
         <!-- Brand Logo -->
     @if ($set->title != '')
-        <!-- Brand Logo -->
-            <a href="{{url('/')}}" class="brand-link">
-                <img src="{{ asset("admin/images/$set->admin_logo")}}" height="45" alt="Admin-Logo" class="brand-image img-circle elevation-3"
-                     style="opacity: .8">
+                    <!-- Brand Logo -->
+                        <a href="{{url('/')}}" class="brand-link">
 
-                <span class="brand-text font-weight-light"><b>{{$set->title}}</b></span>
-            </a>
-        @else
-            <a href="{{url('/')}}" class="brand-link">
-                <img src="{{ asset("admin/images/$set->admin_logo")}}" alt="Admin-Logo" class="brand-image img-circle elevation-3"
-                     style="opacity: .8">
-            </a>
-    @endif
+                            <span style="margin-left: 50px;" class="brand-text font-weight-light"><b>{{$set->title}}</b></span>
+                        </a>
+                @else
+                        <a href="{{url('/')}}" class="brand-link">
+                <span style="margin-left: 50px;" class="brand-text font-weight-light"><img src='{{ asset("admin/images/$set->admin_logo")}}' alt="Admin-Logo" class="brand-image img-circle elevation-3"
+                     style="opacity: .8;"></span>
+                        </a>
+                @endif
 
     <!-- Sidebar -->
         <div class="sidebar">

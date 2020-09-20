@@ -20,7 +20,7 @@ Mailchimp
 <div class="row">
 
     <div class="col-md-12">
-        <div class="card card-primary card-outline">
+        <div class="card card-secondary card-outline">
 
 
 
@@ -92,7 +92,7 @@ Mailchimp
 
 
                                 <div class="col-md-6">
-                                    <a href="{{url('mail-chimp/mapping')}}" class="btn btn-primary">{{Lang::get('message.mapping')}}</a>
+                                    <a href="{{url('mail-chimp/mapping')}}" class="btn btn-secondary btn-sm">{{Lang::get('message.mapping')}}</a>
                                     <p><i> {{Lang::get('message.map-the-mailchimp-field-with-agora')}}</i> </p>
                                 </div>
 

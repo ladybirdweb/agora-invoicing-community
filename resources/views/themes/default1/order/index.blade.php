@@ -17,7 +17,7 @@ Orders
 
 <div class="row">
     <div class="col-12">
-        <div class="card card-danger card-outline collapsed-card">
+        <div class="card card-secondary card-outline collapsed-card">
     <div class="card-header">
         <h3 class="card-title">Advance Search</h3>
 
@@ -172,16 +172,16 @@ Orders
 
            <div class='row'>
                 <div class="col-md-6">
-                      <button name="Search" type="submit"  class="btn btn-primary"><i class="fa fa-search"></i>&nbsp;{!!Lang::get('Search')!!}</button>
+                      <button name="Search" type="submit"  class="btn btn-secondary"><i class="fa fa-search"></i>&nbsp;{!!Lang::get('Search')!!}</button>
                       &nbsp;
-                    <a class="btn btn-danger" href="{!! url('/orders') !!}"><i class="fas fa-sync-alt"></i>&nbsp;{!!Lang::get('Reset')!!}</a>
+                    <a class="btn btn-secondary" href="{!! url('/orders') !!}"><i class="fas fa-sync-alt"></i>&nbsp;{!!Lang::get('Reset')!!}</a>
                 </div>
         </div>
     </div>
 </div>
     </div>
 </div>
-<div class="card card-primary card-outline">
+<div class="card card-secondary card-outline">
 
     <div class="card-header">
 
@@ -199,7 +199,7 @@ Orders
 
 
                 <table id="order-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
-                 <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_delete"><i class="fa fa-trash"></i>&nbsp;&nbsp;Delete Selected</button><br /><br />
+                 <button  value="" class="btn btn-secondary btn-sm btn-alldell" id="bulk_delete"><i class="fa fa-trash"></i>&nbsp;&nbsp;Delete Selected</button><br /><br />
                     <thead><tr>
                         <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
                           <th>User</th>

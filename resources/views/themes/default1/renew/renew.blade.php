@@ -16,7 +16,7 @@ Renew
 @stop
 
 @section('content')
-<div class="card card-primary card-outline">
+<div class="card card-secondary card-outline">
 
         {!! Form::open(['url'=>'renew/'.$id,'method'=>'post']) !!}
 

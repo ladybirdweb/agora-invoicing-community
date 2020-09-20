@@ -501,7 +501,7 @@
                     return view('themes.default1.user.verify', compact('user'));
                 }
 
-                return redirect('auth/login');
+                return redirect('login');
             });
         });
          /*

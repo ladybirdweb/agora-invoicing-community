@@ -61,7 +61,7 @@ Edit Product
     .select2-container--default .select2-selection--multiple .select2-selection__choice {
     background-color: #1b1818 !important;
 </style>
-<div class="card card-primary card-tabs">
+<div class="card card-secondary card-tabs">
 
     {!! Form::model($product,['url'=>'products/'.$product->id,'method'=>'patch','files' => true,'id'=>'editproduct']) !!}
 
@@ -390,12 +390,12 @@ Edit Product
 
         <div class="row" id="hide" style="display:none">
         <div class="col-md-12">
-        <div class="card card-primary card-outline" id="uploads">
+        <div class="card card-secondary card-outline" id="uploads">
             <div class="card-header">
                 <h3 class="card-title">Upload Files</h3>
 
                 <div class="card-tools">
-                    <a href="#create-upload-option" id="create" class="btn btn-primary  btn-sm pull-right" data-toggle="modal" data-target="#create-upload-option"><span class="fa fa-plus"></span>&nbsp;&nbsp;{{Lang::get('message.add-file')}}</a>
+                    <a href="#create-upload-option" id="create" class="btn btn-default  btn-sm pull-right" data-toggle="modal" data-target="#create-upload-option"><span class="fa fa-plus"></span>&nbsp;&nbsp;{{Lang::get('message.add-file')}}</a>
                     @include('themes.default1.product.product.create-upload-option')
 
                 </div>
@@ -406,7 +406,7 @@ Edit Product
                 <div class="row" >
                     <div class="col-md-12" >
                          <table id="upload-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
-                          <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_delete"><i class="fa fa-trash"></i>&nbsp;&nbsp; {{Lang::get('message.delmultiple')}}</button><br /><br />
+                          <button  value="" class="btn btn-secondary btn-sm btn-alldell" id="bulk_delete"><i class="fa fa-trash"></i>&nbsp;&nbsp; {{Lang::get('message.delmultiple')}}</button><br /><br />
                     <thead><tr>
                          <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
                         <th>Title</th>

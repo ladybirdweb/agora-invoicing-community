@@ -25,7 +25,7 @@ Queues
             <i class="fa fa-ban"></i>
             <span class="alert-danger-message"></span>
         </div>
-    <div class="card card-primary card-outline">
+    <div class="card card-secondary card-outline">
       <div class="card-body table-responsive">
           @if($activeQueue->name=='Database' && $activeQueue->status=='1')
             <div class="alert  alert-dismissable noselect" style="background: #F8F8F8">

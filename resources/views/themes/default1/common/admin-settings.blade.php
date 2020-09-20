@@ -41,7 +41,7 @@ Settings
         border-radius: 100%;
     }
 </style>
-<div class="card card-primary card-outline">
+<div class="card card-secondary card-outline">
 
     <!-- /.box-header -->
         <div class="card-header">
@@ -154,7 +154,7 @@ Settings
 </div>
 <!-- /.box -->
 
-<div class="card card-primary card-outline">
+<div class="card card-secondary card-outline">
     <div class="card-header">
         <h3 class="card-title">{{Lang::get('message.log_setting')}}</h3>
     </div>
@@ -230,7 +230,7 @@ Settings
 
 
 
-<div class="card card-primary card-outline">
+<div class="card card-secondary card-outline">
     <div class="card-header">
         <h3 class="card-title">Email</h3>
     </div>
@@ -299,7 +299,7 @@ Settings
     <!-- ./box-body -->
 </div>
 
-<div class="card card-primary card-outline">
+<div class="card card-secondary card-outline">
     <div class="card-header">
         <h3 class="card-title">Api</h3>
     </div>
@@ -357,7 +357,7 @@ Settings
     <!-- ./box-body -->
 </div>
 
-<div class="card card-primary card-outline">
+<div class="card card-secondary card-outline">
     <div class="card-header">
         <h3 class="card-title">Common</h3>
     </div>
@@ -411,7 +411,7 @@ Settings
     </div>
     <!-- ./box-body -->
 </div>
-<div class="card card-primary card-outline">
+<div class="card card-secondary card-outline">
     <div class="card-header">
         <h3 class="card-title">Widgets</h3>
     </div>

@@ -22,7 +22,7 @@ Edit Promotion
 <div class="row">
 
     <div class="col-md-12">
-        <div class="card card-primary card-outline">
+        <div class="card card-secondary card-outline">
 
                         
 
@@ -38,7 +38,7 @@ Edit Promotion
 
                     <tr>
 
-                        <td><b>{!! Form::label('company',Lang::get('message.code'),['class'=>'required']) !!}</b></td>
+                        <td><b>{!! Form::label('code',Lang::get('message.code'),['class'=>'required']) !!}</b></td>
                         <td>
                             <div class="form-group {{ $errors->has('code') ? 'has-error' : '' }}">
 

@@ -3,8 +3,8 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Illuminate\Session\TokenMismatchException;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken as BaseVerifier;
+use Illuminate\Session\TokenMismatchException;
 
 class VerifyCsrfToken extends BaseVerifier
 {
@@ -32,10 +32,10 @@ class VerifyCsrfToken extends BaseVerifier
      */
     public function handle($request, Closure $next)
     {
-        try{
+        try {
             return parent::handle($request, $next);
         } catch (TokenMismatchException $e) {
-            return redirect('login')->withInput($request->input())->with('fails','Your session has expired. Please login again to continue');
+            return redirect('login')->withInput($request->input())->with('fails', 'Your session has expired. Please login again to continue');
         }
     }
 }

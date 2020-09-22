@@ -274,7 +274,6 @@ class DashboardControllerTest extends DBTestCase
         $methodResponse = $this->getPrivateMethod($this->classObject, 'getClientsUsingOldVersions');
         // dd($methodResponse);
         $this->assertCount(0, $methodResponse);
-        
     }
 
     /** @group Dashboard */
@@ -289,7 +288,6 @@ class DashboardControllerTest extends DBTestCase
         $methodResponse = $this->getPrivateMethod($this->classObject, 'getClientsUsingOldVersions');
 
         $this->assertCount(0, $methodResponse);
-        
     }
 
     /** @group Dashboard */

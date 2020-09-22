@@ -296,10 +296,11 @@ Settings
                     </div>
                 </div>
 
+                @if(!$isRedisConfigured)
                  <div class="col-md-2 col-sm-6">
                     <div class="settingiconblue">
                         <div class="settingdivblue">
-                            <a href="{{url('horizon')}}">
+                            <a href="{{url('horizon')}}" target="_blank">
                                 <span class="fa-stack fa-2x">
                                     <i class="fa fa-desktop fa-stack-1x"></i>
                                 </span>
@@ -308,6 +309,7 @@ Settings
                         <p class="box-title" >Queue Monitoring</p>
                     </div>
                 </div>
+                @endif
                
         </div>
         <!-- /.row -->

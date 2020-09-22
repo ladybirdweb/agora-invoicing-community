@@ -18,13 +18,13 @@ Groups
 
 
 
-<div class="card card-primary card-outline">
+<div class="card card-secondary card-outline">
 
     <div class="card-header">
         <h3 class="card-title">{{Lang::get('message.groups')}}</h3>
 
         <div class="card-tools">
-            <a href="{{url('groups/create')}}" class="btn btn-primary btn-sm pull-right"><span class="fa fa-plus"></span>&nbsp;&nbsp;{{Lang::get('message.create')}}</a>
+            <a href="{{url('groups/create')}}" class="btn btn-default btn-sm pull-right"><span class="fa fa-plus"></span>&nbsp;&nbsp;{{Lang::get('message.create')}}</a>
 
         </div>
     </div>
@@ -42,7 +42,7 @@ Groups
                      <div class="col-md-12">
 
 <table id="group-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
-<button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_delete"><i class="fa fa-trash"></i>&nbsp;&nbsp;Delete Selected</button><br /><br />
+<button  value="" class="btn btn-secondary btn-sm btn-alldell" id="bulk_delete"><i class="fa fa-trash"></i>&nbsp;&nbsp;Delete Selected</button><br /><br />
                     <thead><tr>
                            <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
                             <th>Name</th>

@@ -1,6 +1,10 @@
 <?php
 
+use App\Model\Common\Country;
+use App\Model\Common\Setting;
+use App\Model\Payment\TaxByState;
 use App\Model\Product\ProductUpload;
+use App\Traits\TaxCalculation;
 use Carbon\Carbon;
 
 function getLocation()
@@ -121,7 +125,7 @@ function getDateHtml(string $dateTimeString = null)
         $date = getTimeInLoggedInUserTimeZone($dateTimeString, 'M j, Y');
         $dateTime = getTimeInLoggedInUserTimeZone($dateTimeString);
 
-        return "<label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='$dateTime'>$date</label>";
+        return "<label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='".$dateTime."'>".$date.'</label>';
     } catch (Exception $e) {
         return '--';
     }
@@ -178,13 +182,164 @@ function getStatusLabel($status, $badge = 'badge')
     }
 }
 
+function getCountryByCode($code)
+{
+    try {
+        $country = \App\Model\Common\Country::where('country_code_char2', $code)->first();
+        if ($country) {
+            return $country->nicename;
+        }
+    } catch (\Exception $ex) {
+        throw new \Exception($ex->getMessage());
+    }
+}
+
+function findCountryByGeoip($iso)
+{
+    try {
+        $country = \App\Model\Common\Country::where('country_code_char2', $iso)->first();
+        if ($country) {
+            return $country->country_code_char2;
+        } else {
+            return '';
+        }
+    } catch (\Exception $ex) {
+        throw new \Exception($ex->getMessage());
+    }
+}
+
+function findStateByRegionId($iso)
+{
+    try {
+        $states = \App\Model\Common\State::where('country_code_char2', $iso)
+        ->pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
+
+        return $states;
+    } catch (\Exception $ex) {
+        throw new \Exception($ex->getMessage());
+    }
+}
+
+function getTimezoneByName($name)
+{
+    try {
+        $timezone = \App\Model\Common\Timezone::where('name', $name)->first();
+        if ($timezone) {
+            $timezone = $timezone->id;
+        } else {
+            $timezone = '114';
+        }
+
+        return $timezone;
+    } catch (\Exception $ex) {
+        throw new \Exception($ex->getMessage());
+    }
+}
+
+function checkPlanSession()
+{
+    try {
+        if (Session::has('plan')) {
+            return true;
+        }
+
+        return false;
+    } catch (\Exception $ex) {
+        throw new \Exception($ex->getMessage());
+    }
+}
+
+function getStateByCode($code)
+{
+    try {
+        $result = ['id' => '', 'name' => ''];
+
+        $subregion = \App\Model\Common\State::where('state_subdivision_code', $code)->first();
+        if ($subregion) {
+            $result = ['id' => $subregion->state_subdivision_code,
+                'name'         => $subregion->state_subdivision_name, ];
+        }
+
+        return $result;
+    } catch (\Exception $ex) {
+        throw new \Exception($ex->getMessage());
+    }
+}
+
+function userCurrency($userid = '')
+{
+    try {
+        $currency = Setting::find(1)->default_currency;
+        $currency_symbol = Setting::find(1)->default_symbol;
+        if (! \Auth::user()) {//When user is not logged in
+            $location = getLocation();
+            $country = findCountryByGeoip($location['iso_code']);
+            $userCountry = Country::where('country_code_char2', $country)->first();
+            $currencyStatus = $userCountry->currency->status;
+            if ($currencyStatus) {
+                $currency = $userCountry->currency->code;
+                $currency_symbol = $userCountry->currency->symbol;
+            }
+        }
+        if (\Auth::user()) {
+            $currency = \Auth::user()->currency;
+            $currency_symbol = \Auth::user()->currency_symbol;
+        }
+        if ($userid != '') {//For Admin Panel Clients
+            $currencyAndSymbol = getCurrency($userid);
+            $currency = $currencyAndSymbol['currency'];
+            $currency_symbol = $currencyAndSymbol['symbol'];
+        }
+
+        return ['currency'=>$currency, 'symbol'=>$currency_symbol];
+    } catch (\Exception $ex) {
+        throw new \Exception($ex->getMessage());
+    }
+}
+
+/*
+* Get Currency And Symbol For Admin Panel Clients
+*/
+function getCurrency($userid)
+{
+    $user = new \App\User();
+    $currency = $user->find($userid)->currency;
+    $symbol = $user->find($userid)->currency_symbol;
+
+    return ['currency'=>$currency, 'symbol'=>$symbol];
+}
+
 function currencyFormat($amount = null, $currency = null, $include_symbol = true)
 {
+    $amount = rounding($amount);
     if ($currency == 'INR') {
-        return '₹'.getIndianCurrencyFormat($amount);
+        $symbol = getIndianCurrencySymbol($currency);
+
+        return $symbol.getIndianCurrencyFormat($amount);
     }
 
     return app('currency')->format($amount, $currency, $include_symbol);
+}
+
+function rounding($price)
+{
+    try {
+        $tax_rule = new \App\Model\Payment\TaxOption();
+        $rule = $tax_rule->findOrFail(1);
+        $rounding = $rule->rounding;
+        if ($rounding) {
+            return round($price);
+        } else {
+            return round($price, 2);
+        }
+    } catch (\Exception $ex) {
+        Bugsnag::notifyException($ex);
+    }
+}
+
+function getIndianCurrencySymbol($currency)
+{
+    return \DB::table('format_currencies')->where('code', $currency)->value('symbol');
 }
 
 function getIndianCurrencyFormat($number)
@@ -220,4 +375,97 @@ function getIndianCurrencyFormat($number)
     } else {
         return $thecash;
     }
+}
+
+function bifurcateTax($taxName, $taxValue, $currency, $state, $price = '')
+{
+    if (\Auth::user()->country == 'IN') {
+        $gst = TaxByState::where('state_code', $state)->select('c_gst', 's_gst', 'ut_gst')->first();
+        if ($taxName == 'CGST+SGST') {
+            $html = 'CGST@'.$gst->c_gst.'%<br>SGST@'.$gst->s_gst.'%';
+
+            $cgst_value = currencyFormat(TaxCalculation::taxValue($gst->c_gst, $price), $currency);
+
+            $sgst_value = currencyFormat(TaxCalculation::taxValue($gst->s_gst, $price), $currency);
+
+            return ['html'=>$html, 'tax'=>$cgst_value.'<br>'.$sgst_value];
+        } elseif ($taxName == 'CGST+UTGST') {
+            $html = 'CGST@'.$gst->c_gst.'%<br>UTGST@'.$gst->ut_gst.'%';
+
+            $cgst_value = currencyFormat(TaxCalculation::taxValue($gst->c_gst, $price), $currency);
+            $utgst_value = currencyFormat(TaxCalculation::taxValue($gst->ut_gst, $price), $currency);
+
+            return ['html'=>$html, 'tax'=>$cgst_value.'<br>'.$utgst_value];
+        } else {
+            $html = $taxName.'@'.$taxValue;
+            $tax_value = currencyFormat(TaxCalculation::taxValue($taxValue, $price), $currency);
+
+            return ['html'=>$html, 'tax'=>$tax_value];
+        }
+    } else {
+        $html = $taxName.'@'.$taxValue;
+        $tax_value = currencyFormat(TaxCalculation::taxValue($taxValue, $price), $currency);
+
+        return ['html'=>$html, 'tax'=>$tax_value];
+    }
+}
+
+/**
+ * sets mail config and reloads the config into the container
+ * NOTE: this is getting used outside the class to set service config.
+ * @return void
+ */
+function setServiceConfig($emailConfig)
+{
+    $sendingProtocol = $emailConfig->driver;
+    if ($sendingProtocol && $sendingProtocol != 'smtp' && $sendingProtocol != 'mail') {
+        $services = \Config::get("services.$sendingProtocol");
+        $dynamicServiceConfig = [];
+
+        //loop over it and assign according to the keys given by user
+        foreach ($services as $key => $value) {
+            $dynamicServiceConfig[$key] = isset($emailConfig[$key]) ? $emailConfig[$key] : $value;
+        }
+
+        //setting that service configuration
+        \Config::set("services.$sendingProtocol", $dynamicServiceConfig);
+    } else {
+        \Config::set('mail.host', $emailConfig['host']);
+        \Config::set('mail.port', $emailConfig['port']);
+        \Config::set('mail.password', $emailConfig['password']);
+        \Config::set('mail.security', $emailConfig['encryption']);
+    }
+
+    //setting mail driver as $sending protocol
+    \Config::set('mail.driver', $sendingProtocol);
+    \Config::set('mail.from.address', $emailConfig['email']);
+    \Config::set('mail.from.name', $emailConfig['company']);
+    \Config::set('mail.username', $emailConfig['email']);
+
+    //setting the config again in the service container
+    (new \Illuminate\Mail\MailServiceProvider(app()))->register();
+}
+
+function persistentCache($key, Closure $closure, $noOfSeconds = 30, array $variables = [])
+{
+    $keySalt = json_encode($variables);
+
+    return Cache::remember($key.$keySalt, $noOfSeconds, $closure);
+}
+
+function emailSendingStatus()
+{
+    $status = false;
+    if (Setting::value('sending_status')) {
+        $status = true;
+    }
+
+    return $status;
+}
+
+function installationStatusLabel($lastConnectionDate, $createdAt)
+{
+    return $lastConnectionDate > (new Carbon('-30 days'))->toDateTimeString() && $lastConnectionDate != $createdAt ? "&nbsp;<span class='badge badge-primary' style='background-color:darkcyan !important;' <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Installation is Active'>
+                     </label>Active</span>" : "&nbsp;<span class='badge badge-info' <label data-toggle='tooltip' style='font-weight:500;background-color:crimson;' data-placement='top' title='Installation inactive for more than 30 days'>
+                    </label>Inactive</span>";
 }

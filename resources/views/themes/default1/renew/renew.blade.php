@@ -16,7 +16,7 @@ Renew
 @stop
 
 @section('content')
-<div class="card card-primary card-outline">
+<div class="card card-secondary card-outline">
 
         {!! Form::open(['url'=>'renew/'.$id,'method'=>'post']) !!}
 
@@ -86,7 +86,7 @@ Renew
             type: "get",
             url: "{{url('get-renew-cost')}}",
             data: {'user': user, 'plan': val},
-            success: function (data) {alert('dsfds');
+            success: function (data) {
                 var price = data
                 $("#price").val(price);
             }

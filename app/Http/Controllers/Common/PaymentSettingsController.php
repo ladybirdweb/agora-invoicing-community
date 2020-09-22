@@ -16,18 +16,33 @@ class PaymentSettingsController extends Controller
         return \DataTables::of(new Collection($plugins))
                         // ->searchColumns('name')
                         ->addColumn('name', function ($model) {
+                            return ucfirst($model['name']);
+                        })
+                        ->addColumn('description', function ($model) {
+                            return $model['description'];
+                        })
+                        ->addColumn('author', function ($model) {
+                            return ucfirst($model['author']);
+                        })
+                        ->addColumn('website', function ($model) {
+                            return '<a href='.$model['website'].' target=_blank>'.$model['website'].'</a>';
+                        })
+                        ->addColumn('version', function ($model) {
+                            return $model['version'];
+                        })
+                        ->addColumn('action', function ($model) {
                             if (array_has($model, 'path')) {
                                 if ($model['status'] == 0) {
                                     $activate = '<form method="post" action='.url('plugin/status/'.$model['name']).'>'.'<input type="hidden" name="_token" value='.\Session::token().'>'.'
-                                    <button type="submit" class="btn btn-primary btn-sm">Activate</button></form>';
+                                    <button type="submit" class="btn btn-secondary btn-sm btn-xs"'.tooltip('Activate').'<i class="fa fa-tasks" style="color:white;"></i></button></form>';
                                     $settings = ' ';
                                 } else {
-                                    $settings = '<a href='.url($model['settings']).' class="btn btn-primary btn-sm">Settings</a> <br> ';
+                                    $settings = '<a href='.url($model['settings']).' class="btn btn-secondary btn-sm btn-xs"'.tooltip('Settings').'<i class="nav-icon fa fa-fw fa-cogs" style="color:white;"></i></a>';
                                     $activate = '<form method="post" action='.url('plugin/status/'.$model['name']).'>'.'<input type="hidden" name="_token" value='.\Session::token().'>'.'
-                                    <button type="submit" class="btn btn-primary btn-sm">Deactivate</button></form>';
+                                    <button type="submit" class="btn btn-secondary btn-sm btn-xs"'.tooltip('Deactivate').'<i class="fa fa-tasks" style="color:white;"></i></button></form>';
                                 }
 
-                                $delete = '<a href=  id=delete'.$model['name'].' class="btn btn-danger btn-sm" data-toggle=modal data-target=#del'.$model['name']."><span style='color:white'>Delete</span></a>"
+                                $delete = '<a href=  id=delete'.$model['name'].' class="btn btn-secondary btn-sm" data-toggle=modal data-target=#del'.$model['name']."><span style='color:white'><i class='fa fa-trash' style='color:white;'></i></span></a>"
                                         ."<div class='modal fade' id=del".$model['name'].">
                                             <div class='modal-dialog'>
                                                 <div class=modal-content>  
@@ -50,26 +65,14 @@ class PaymentSettingsController extends Controller
                                                 </div>
                                             </div>
                                         </div>';
-                                $action = '<br><br>'.$delete.'<br> <br>'.$settings.'<br>'.$activate;
+                                $action = $settings.$activate;
                             } else {
                                 $action = '';
                             }
 
-                            return ucfirst($model['name']).$action;
+                            return $action;
                         })
-                        ->addColumn('description', function ($model) {
-                            return $model['description'];
-                        })
-                        ->addColumn('author', function ($model) {
-                            return ucfirst($model['author']);
-                        })
-                        ->addColumn('website', function ($model) {
-                            return '<a href='.$model['website'].' target=_blank>'.$model['website'].'</a>';
-                        })
-                        ->addColumn('version', function ($model) {
-                            return $model['version'];
-                        })
-                      ->rawColumns(['name', 'description', 'author', 'website', 'version'])
+                      ->rawColumns(['name', 'description', 'author', 'website', 'version', 'action'])
                             ->make(true);
     }
 

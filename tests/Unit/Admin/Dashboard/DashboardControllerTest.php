@@ -5,6 +5,7 @@ namespace Tests\Unit\Admin\Dashboard;
 use App\Http\Controllers\DashboardController;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
+use App\Model\Order\Payment;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
 use App\User;
@@ -32,9 +33,10 @@ class DashboardControllerTest extends DBTestCase
         $this->getLoggedInUser();
         $user = $this->user;
         $invoice = factory(Invoice::class)->create(['user_id'=>$user->id]);
+        Payment::create(['invoice_id'=>$invoice->id, 'user_id'=>$user->id, 'amount'=>'10000']);
         $controller = new \App\Http\Controllers\DashboardController();
         $allowedCurrencies2 = 'INR';
-        $response = $controller->getTotalSalesInCur2($allowedCurrencies2);
+        $response = $controller->getTotalSales($allowedCurrencies2);
         $this->assertEquals($response, '10000');
     }
 
@@ -44,11 +46,12 @@ class DashboardControllerTest extends DBTestCase
         $this->withoutMiddleware();
         $this->getLoggedInUser();
         $user = $this->user;
-        $invoice = factory(Invoice::class, 3)->create(['user_id'=>$user->id]);
+        $invoice = factory(Invoice::class)->create(['user_id'=>$user->id]);
+        Payment::create(['invoice_id'=>$invoice->id, 'user_id'=>$user->id, 'amount'=>'10000']);
         $controller = new \App\Http\Controllers\DashboardController();
         $allowedCurrencies2 = 'INR';
-        $response = $controller->getYearlySalesCur2($allowedCurrencies2);
-        $this->assertEquals($response, '30000');
+        $response = $controller->getYearlySales($allowedCurrencies2);
+        $this->assertEquals($response, '10000');
 
         // dd($response);
     }
@@ -62,7 +65,7 @@ class DashboardControllerTest extends DBTestCase
         $invoice = factory(Invoice::class, 3)->create(['created_at'=>2017, 'user_id'=>$user->id]);
         $controller = new \App\Http\Controllers\DashboardController();
         $allowedCurrencies2 = 'INR';
-        $response = $controller->getYearlySalesCur2($allowedCurrencies2);
+        $response = $controller->getYearlySales($allowedCurrencies2);
         $this->assertEquals($response, '0');
     }
 
@@ -238,18 +241,17 @@ class DashboardControllerTest extends DBTestCase
         $this->createOrder('v2.9.0');
 
         $methodResponse = $this->getPrivateMethod($this->classObject, 'getClientsUsingOldVersions');
-
         $this->assertCount(3, $methodResponse);
-        $this->assertEquals('v2.9.0', $methodResponse[0]->product_version);
+        $this->assertEquals('v3.1.0', $methodResponse[0]->product_version);
         $this->assertEquals('v3.0.0', $methodResponse[1]->product_version);
-        $this->assertEquals('v3.1.0', $methodResponse[2]->product_version);
+        $this->assertEquals('v2.9.0', $methodResponse[2]->product_version);
         $this->assertStringContainsString($this->user->first_name.' '.$this->user->last_name, $methodResponse[0]->client_name);
         $this->assertStringContainsString($this->user->first_name.' '.$this->user->last_name, $methodResponse[1]->client_name);
         $this->assertStringContainsString($this->user->first_name.' '.$this->user->last_name, $methodResponse[2]->client_name);
 
-        $this->assertEquals('Helpdesk v2.9.0', $methodResponse[0]->product_name);
+        $this->assertEquals('Helpdesk v3.1.0', $methodResponse[0]->product_name);
         $this->assertEquals('Helpdesk v3.0.0', $methodResponse[1]->product_name);
-        $this->assertEquals('Helpdesk v3.1.0', $methodResponse[2]->product_name);
+        $this->assertEquals('Helpdesk v2.9.0', $methodResponse[2]->product_name);
     }
 
     public function test_getClientsUsingOldVersions_whenUnpaidOrderArePresent_shouldExcludeThoseOrders()
@@ -263,13 +265,13 @@ class DashboardControllerTest extends DBTestCase
         $methodResponse = $this->getPrivateMethod($this->classObject, 'getClientsUsingOldVersions');
 
         $this->assertCount(2, $methodResponse);
-        $this->assertEquals('v2.9.0', $methodResponse[0]->product_version);
-        $this->assertEquals('v3.0.0', $methodResponse[1]->product_version);
+        $this->assertEquals('v3.0.0', $methodResponse[0]->product_version);
+        $this->assertEquals('v2.9.0', $methodResponse[1]->product_version);
         $this->assertStringContainsString($this->user->first_name.' '.$this->user->last_name, $methodResponse[0]->client_name);
         $this->assertStringContainsString($this->user->first_name.' '.$this->user->last_name, $methodResponse[1]->client_name);
 
-        $this->assertEquals('Helpdesk v2.9.0', $methodResponse[0]->product_name);
-        $this->assertEquals('Helpdesk v3.0.0', $methodResponse[1]->product_name);
+        $this->assertEquals('Helpdesk v3.0.0', $methodResponse[0]->product_name);
+        $this->assertEquals('Helpdesk v2.9.0', $methodResponse[1]->product_name);
     }
 
     public function test_getClientsUsingOldVersions_whenSubscriptionUpdateOlderThan30DaysArePresent_shouldExcludeThoseOrders()
@@ -283,13 +285,13 @@ class DashboardControllerTest extends DBTestCase
         $methodResponse = $this->getPrivateMethod($this->classObject, 'getClientsUsingOldVersions');
 
         $this->assertCount(2, $methodResponse);
-        $this->assertEquals('v2.9.0', $methodResponse[0]->product_version);
-        $this->assertEquals('v3.0.0', $methodResponse[1]->product_version);
+        $this->assertEquals('v3.0.0', $methodResponse[0]->product_version);
+        $this->assertEquals('v2.9.0', $methodResponse[1]->product_version);
         $this->assertStringContainsString($this->user->first_name.' '.$this->user->last_name, $methodResponse[0]->client_name);
         $this->assertStringContainsString($this->user->first_name.' '.$this->user->last_name, $methodResponse[1]->client_name);
 
-        $this->assertEquals('Helpdesk v2.9.0', $methodResponse[0]->product_name);
-        $this->assertEquals('Helpdesk v3.0.0', $methodResponse[1]->product_name);
+        $this->assertEquals('Helpdesk v3.0.0', $methodResponse[0]->product_name);
+        $this->assertEquals('Helpdesk v2.9.0', $methodResponse[1]->product_name);
     }
 
     private function createOrder($version = 'v3.0.0', $price = 1000, $subscriptionUpdatedAt = null)

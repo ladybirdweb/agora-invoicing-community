@@ -14,7 +14,7 @@ class AddGstNoColumnToTaxRulesTable extends Migration
     public function up()
     {
         Schema::table('tax_rules', function (Blueprint $table) {
-            $table->string('Gst_No');
+            $table->string('Gst_No')->nullable();
         });
     }
 
@@ -26,7 +26,7 @@ class AddGstNoColumnToTaxRulesTable extends Migration
     public function down()
     {
         Schema::table('tax_rules', function (Blueprint $table) {
-            //
+            $table->dropColumn('Gst_No');
         });
     }
 }

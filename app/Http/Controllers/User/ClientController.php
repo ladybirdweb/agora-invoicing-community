@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Comment;
 use App\Http\Controllers\License\LicenseController;
 use App\Http\Requests\User\ClientRequest;
 use App\Model\Common\Country;
@@ -72,7 +73,20 @@ class ClientController extends AdvanceSearchController
 
         return\ DataTables::of($baseQuery)
                         ->addColumn('checkbox', function ($model) {
-                            return "<input type='checkbox' class='user_checkbox' value=".$model->id.' name=select[] id=check>';
+                            $isAccountManager = User::where('account_manager', $model->id)->get();
+                            $isSalesManager = User::where('manager', $model->id)->get();
+                            if (count($isSalesManager)) {
+                                return "<input type='checkbox' disabled> &nbsp;
+                        <i class='fa fa-info-circle' style='cursor: help; font-size: small; color: rgb(60, 141, 188);' ".'<label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="This user cannot be deleted as he/she is existing sales manager for certain clients. Please replace Sales Manager from settings and then try deleting.">
+                        </label>'.'</i>';
+                            } elseif (count($isAccountManager)) {
+                                // dd("<input type='checkbox' ".tooltip('dsf')."'disabled'");
+                                return "<input type='checkbox' disabled> &nbsp;
+                        <i class='fa fa-info-circle' style='cursor: help; font-size: small; color: rgb(60, 141, 188);' ".'<label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="This user cannot be deleted as he/she is existing account manager for certain clients. Please replace Account Manager from settings and then try deleting.">
+                        </label>'.'</i>';
+                            } else {
+                                return "<input type='checkbox' class='user_checkbox' value=".$model->id.' name=select[] id=check>';
+                            }
                         })
                         ->addColumn('name', function ($model) {
                             return '<a href='.url('clients/'.$model->id).'>'.ucfirst($model->name).'</a>';
@@ -100,7 +114,7 @@ class ClientController extends AdvanceSearchController
                             ." class='btn btn-sm btn-secondary btn-xs'".tooltip('Edit')."
                             <i class='fa fa-edit' style='color:white;'> </i></a>"
                                     .'  <a href='.url('clients/'.$model->id)
-                                    ." class='btn btn-sm btn-primary btn-xs'".tooltip('View')."
+                                    ." class='btn btn-sm btn-secondary btn-xs'".tooltip('View')."
                                     <i class='fa fa-eye' style='color:white;'> </i></a>";
                         })
 
@@ -228,7 +242,9 @@ class ClientController extends AdvanceSearchController
             $user->ip = $location['ip'];
 
             $user->save();
-            $this->sendWelcomeMail($user);
+            if (emailSendingStatus() && ! $user->active) {
+                $this->sendWelcomeMail($user);
+            }
             $mailchimpStatus = StatusSetting::first()->value('mailchimp_status');
             if ($mailchimpStatus == 1) {
                 $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
@@ -254,6 +270,9 @@ class ClientController extends AdvanceSearchController
     public function show($id)
     {
         try {
+            if (User::onlyTrashed()->find($id)) {
+                throw new \Exception('This user is suspended from system. Restore the user to view details.');
+            }
             $invoice = new Invoice();
             $order = new Order();
             $invoices = $invoice->where('user_id', $id)->orderBy('created_at', 'desc')->get();
@@ -266,11 +285,16 @@ class ClientController extends AdvanceSearchController
             // }
             $extraAmt = $this->getExtraAmt($id);
             $client = $this->user->where('id', $id)->first();
+
+            if (User::onlyTrashed()->find($id)) {
+                $client = User::onlyTrashed()->find($id);
+            }
+
             $is2faEnabled = $client->is_2fa_enabled;
             // $client = "";
             $currency = $client->currency;
             $orders = $order->where('client', $id)->get();
-            $comments = $client->comments()->where('user_id', $client->id)->get();
+            $comments = Comment::where('user_id', $client->id)->get();
 
             return view(
                 'themes.default1.user.client.show',
@@ -309,7 +333,7 @@ class ClientController extends AdvanceSearchController
             }
             //for display
             $timezones = array_column($display, 'name', 'id');
-            $state = \App\Http\Controllers\Front\CartController::getStateByCode($user->state);
+            $state = getStateByCode($user->state);
             $managers = User::where('role', 'admin')
             ->where('position', 'manager')
             ->pluck('first_name', 'id')->toArray();
@@ -324,7 +348,7 @@ class ClientController extends AdvanceSearchController
             ->pluck('name', 'short')->toArray();
             $selectedCompanySize = \DB::table('company_sizes')->where('short', $user->company_size)
             ->pluck('name', 'short')->toArray();
-            $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($user->country);
+            $states = findStateByRegionId($user->country);
 
             $bussinesses = \App\Model\Common\Bussiness::pluck('name', 'short')->toArray();
 
@@ -466,11 +490,8 @@ class ClientController extends AdvanceSearchController
             $temp_type = new \App\Model\Common\TemplateType();
             $type = $temp_type->where('id', $type_id)->first()->name;
         }
-        //dd($type);
-        $templateController = new \App\Http\Controllers\Common\TemplateController();
-        $mail = $templateController->mailing($from, $to, $data, $subject, $replace, $type);
-
-        return $mail;
+        $mail = new \App\Http\Controllers\Common\PhpMailController();
+        $mail->sendEmail($from, $to, $data, $subject, $replace, $type);
     }
 
     /**

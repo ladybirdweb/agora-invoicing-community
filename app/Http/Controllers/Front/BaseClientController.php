@@ -201,7 +201,7 @@ class BaseClientController extends Controller
                 $url = $this->getInvoiceLinkUrl($model->id);
 
                 return '<a href='.url($url)." 
-                class='btn btn-sm btn-primary btn-xs'".tooltip('View')."<i class='fa fa-eye' 
+                class='btn btn-sm btn-secondary btn-xs'".tooltip('View')."<i class='fa fa-eye' 
                 style='color:white;'> </i></a>";
             })
                             ->rawColumns(['number', 'products', 'date', 'total', 'status', 'action'])
@@ -221,29 +221,6 @@ class BaseClientController extends Controller
         }
 
         return $link;
-    }
-
-    public function getInvoice($id)
-    {
-        try {
-            $invoice = $this->invoice->findOrFail($id);
-            $user = \Auth::user();
-            if ($invoice->user_id != $user->id) {
-                throw new \Exception('Cannot view invoice. Invalid modification of data.');
-            }
-            $items = $invoice->invoiceItem()->get();
-            $orderId = $invoice->orderRelation()->value('order_id');
-
-            $order = Order::getOrderLink($orderId, 'my-order');
-            $currency = CartController::currency($user->id);
-            $symbol = $currency['symbol'];
-
-            return view('themes.default1.front.clients.show-invoice', compact('invoice', 'items', 'user', 'currency', 'symbol', 'order'));
-        } catch (Exception $ex) {
-            Bugsnag::notifyException($ex);
-
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
     }
 
     public function subscriptions()

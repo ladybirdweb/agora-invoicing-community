@@ -184,12 +184,8 @@ class BaseAuthController extends Controller
                 $temp_type = new \App\Model\Common\TemplateType();
                 $type = $temp_type->where('id', $type_id)->first()->name;
             }
-
-            //dd($from, $to, $data, $subject, $replace, $type);
-            $templateController = new \App\Http\Controllers\Common\TemplateController();
-            $mail = $templateController->mailing($from, $to, $data, $subject, $replace, $type);
-
-            return $mail;
+            $mail = new \App\Http\Controllers\Common\PhpMailController();
+            $mail->sendEmail($from, $to, $data, $subject, $replace, $type);
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());
         }

@@ -7,6 +7,7 @@ use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\Models\Activity;
 use Spatie\Activitylog\Traits\LogsActivity;
 
@@ -19,6 +20,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     use Authenticatable,
     CanResetPassword;
     use LogsActivity;
+    use SoftDeletes;
 
     // use Billable;
     // use CustomerBillableTrait;
@@ -80,7 +82,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
     public function comments()
     {
-        return $this->hasMany('App\Comment');
+        return $this->hasMany('App\Comment', 'updated_by_user_id');
     }
 
     public function subscription()
@@ -175,16 +177,17 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         return $name;
     }
 
-    public function delete()
-    {
-        $this->invoiceItem()->delete();
-        $this->orderRelation()->delete();
-        $this->invoice()->delete();
-        $this->order()->delete();
-        $this->subscription()->delete();
+    // public function forceDelete()
+    // {
+    //     $this->invoiceItem()->delete();
+    //     $this->orderRelation()->delete();
+    //     $this->invoice()->delete();
+    //     $this->order()->delete();
+    //     $this->subscription()->delete();
+    //     $this->comments()->delete();
 
-        return parent::delete();
-    }
+    //     return parent::delete();
+    // }
 
     public function manager()
     {
@@ -215,12 +218,12 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         $changed = $this->isDirty() ? $this->getDirty() : false;
         parent::save($options);
         $role = $this->role;
-        if ($changed && checkArray('manager', $changed) && $role == 'user') {
+        if ($changed && checkArray('manager', $changed) && $role == 'user' && emailSendingStatus()) {
             $auth = new Http\Controllers\Auth\AuthController();
             $auth->salesManagerMail($this);
         }
 
-        if ($changed && checkArray('account_manager', $changed) && $role == 'user') {
+        if ($changed && checkArray('account_manager', $changed) && $role == 'user' && emailSendingStatus()) {
             $auth = new Http\Controllers\Auth\AuthController();
             $auth->accountManagerMail($this);
         }

@@ -17,12 +17,12 @@ Log-Viewer
 
 @section('content')
 
-  <div class="card card-primary card-outline">
+  <div class="card card-secondary card-outline">
       <div class="card-header">
           <h3 class="card-title">Log Viewer</h3>
 
           <div class="card-tools">
-              <a href="{{url('log-viewer/logs')}}" class="btn btn-primary btn-sm pull-right">&nbsp;Logs</a>
+              <a href="{{url('log-viewer/logs')}}" class="btn btn-default btn-sm pull-right">&nbsp;Logs</a>
 
 
           </div>

@@ -44,7 +44,7 @@ class ExtendedBaseProductController extends Controller
         })
         ->addColumn('action', function ($model) {
             return '<p><a href='.url('edit-upload/'.$model->id).
-                                " class='btn btn-sm btn-secondary btn-xs'".tooltip('Edit')."<i class='fa fa-edit'
+                                " class='btn btn-sm btn-secondary'".tooltip('Edit')."<i class='fa fa-edit'
                                  style='color:white;'> </i></a></p>";
         })
         ->rawcolumns(['checkbox', 'product_id', 'title', 'description', 'version', 'file', 'action'])
@@ -97,8 +97,8 @@ class ExtendedBaseProductController extends Controller
 
     public function saveTax($taxes, $product_id)
     {
+        TaxProductRelation::where('product_id', $product_id)->delete();
         if ($taxes) {
-            TaxProductRelation::where('product_id', $product_id)->delete();
             foreach ($taxes as $tax) {
                 $newTax = new TaxProductRelation();
                 $newTax->product_id = $product_id;
@@ -119,8 +119,8 @@ class ExtendedBaseProductController extends Controller
             $field = '';
             $product = Product::find($productid);
             if ($product->require_domain == 1) {
-                $field .= "<div class='col-md-4 form-group'>
-                        <label>"./* @scrutinizer ignore-type */
+                $field .= '<div>
+                        <label>'./* @scrutinizer ignore-type */
                          \Lang::get('message.domain')."</label>
                         <input type='text' name='domain' class='form-control' 
                         id='domain' placeholder='domain.com or sub.domain.com'>

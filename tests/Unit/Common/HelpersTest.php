@@ -48,4 +48,85 @@ class HelpersTest extends DBTestCase
 
         $this->assertEquals('--', getDateHtml('invalid_format'));
     }
+
+    public function test_bifurcateTax_whenIntraStateTaxPassed_returnsArrayOfTaxAndValue()
+    {
+        $this->getLoggedInUser();
+        $this->user->country = 'IN';
+        $this->withoutMiddleware();
+
+        $a = bifurcateTax('CGST+SGST', '18%', 'INR', 'IN-KA', '1000');
+        $this->assertEquals($a, ['html' => 'CGST@9%<br>SGST@9%', 'tax' => '₹90<br>₹90']);
+    }
+
+    public function test_bifurcateTax_whenInterStateTaxPassed_returnsArrayOfTaxAndValue()
+    {
+        $this->getLoggedInUser();
+        $this->user->country = 'IN';
+        $this->withoutMiddleware();
+
+        $a = bifurcateTax('IGST', '18%', 'INR', 'IN-AP', '1000');
+        $this->assertEquals($a, ['html' => 'IGST@18%', 'tax' => '₹180']);
+    }
+
+    public function test_bifurcateTax_whenUnionTerretoryTaxPassed_returnsArrayOfTaxAndValue()
+    {
+        $this->getLoggedInUser();
+        $this->user->country = 'IN';
+        $this->withoutMiddleware();
+
+        $a = bifurcateTax('CGST+UTGST', '18%', 'INR', 'IN-AN', '1000');
+        $this->assertEquals($a, ['html' => 'CGST@9%<br>UTGST@9%', 'tax' => '₹90<br>₹90']);
+    }
+
+    public function test_bifurcateTax_whenUserFromOtherCountry_returnsArrayOfTaxAndValue()
+    {
+        $this->getLoggedInUser();
+        $this->user->country = 'US';
+        $this->withoutMiddleware();
+
+        $a = bifurcateTax('VAT', '20%', 'INR', 'US-VA', '1000');
+        $this->assertEquals($a, ['html' => 'VAT@20%', 'tax' => '₹200']);
+    }
+
+    public function test_userCurrency_whenUserIsNotLoggedIn_returnsCurrencyAndSymbol()
+    {
+        $this->withoutMiddleware();
+        $currency = userCurrency();
+        $this->assertEquals($currency['currency'], 'USD');
+    }
+
+    public function test_userCurrency_whenUserIsLoggedInAndRoleIsClient_returnsCurrencyAndSymbol()
+    {
+        $this->getLoggedInUser();
+        $this->withoutMiddleware();
+        $currency = userCurrency();
+        $this->assertEquals($currency['currency'], 'INR');
+    }
+
+    public function test_userCurrency_whenUserIsLoggedInAndRoleIsAdmin_returnsCurrencyAndSymbol()
+    {
+        $this->getLoggedInUser('admin');
+        $this->withoutMiddleware();
+        $currency = userCurrency($this->user->id);
+        $this->assertEquals($currency['currency'], 'INR');
+    }
+
+    public function test_rounding_whenRoundingIsOn_returnsRoundedOffPrice()
+    {
+        $this->getLoggedInUser();
+        $this->withoutMiddleware();
+        $price = rounding('999.90');
+        $this->assertEquals($price, 1000);
+    }
+
+    public function test_rounding_whenRoundingIsOff_returnsPriceUptoTwoDecimalPlace()
+    {
+        $this->getLoggedInUser();
+        $this->withoutMiddleware();
+        $tax_rule = new \App\Model\Payment\TaxOption();
+        $rule = $tax_rule->findOrFail(1)->update(['rounding'=>0]);
+        $price = rounding('999.6677777');
+        $this->assertEquals($price, '999.67');
+    }
 }

@@ -102,21 +102,6 @@ trait ApiKeySettings
         return ['message' => 'success', 'update'=>'Twitter settings saved'];
     }
 
-    /*
-    * Update Razorpay Details In Database
-    */
-    public function updateRazorpayDetails(Request $request)
-    {
-        $rzp_key = $request->input('rzp_key');
-        $rzp_secret = $request->input('rzp_secret');
-        $apilayer_key = $request->input('apilayer_key');
-        $status = $request->input('status');
-        StatusSetting::find(1)->update(['rzp_status'=>$status]);
-        ApiKey::find(1)->update(['rzp_key'=>$rzp_key, 'rzp_secret'=>$rzp_secret, 'apilayer_key'=>$apilayer_key]);
-
-        return ['message' => 'success', 'update'=>'Razorpay settings saved'];
-    }
-
     public function updatepipedriveDetails(Request $request)
     {
         $pipedriveKey = $request->input('pipedrive_key');

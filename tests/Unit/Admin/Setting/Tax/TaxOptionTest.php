@@ -15,7 +15,7 @@ class TaxOptionTest extends TestCase
     {
         $this->withoutMiddleware();
         $rule = TaxOption::where('id', 1)->update(['tax_enable'=>'1']);
-        $response = $this->call('PATCH', 'taxes/option', [
+        $response = $this->call('POST', 'taxes/option', [
             'Gst_no' => '2323244',
         ]);
         $response->assertSessionHas('success');

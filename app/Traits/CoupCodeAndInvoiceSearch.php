@@ -3,10 +3,6 @@
 namespace App\Traits;
 
 use App\Model\Order\Invoice;
-use App\Model\Payment\Plan;
-use App\Model\Payment\PlanPrice;
-use App\Model\Payment\Promotion;
-use App\Model\Product\Product;
 use Bugsnag;
 use Illuminate\Http\Request;
 
@@ -16,84 +12,6 @@ use Illuminate\Http\Request;
 
 trait CoupCodeAndInvoiceSearch
 {
-    public function checkCode($code, $productid, $currency)
-    {
-        try {
-            if ($code != '') {
-                $promo = $this->promotion->where('code', $code)->first();
-                //check promotion code is valid
-                if (! $promo) {
-                    throw new \Exception(\Lang::get('message.no-such-code'));
-                }
-                $relation = $promo->relation()->get();
-                //check the relation between code and product
-                if (count($relation) == 0) {
-                    throw new \Exception(\Lang::get('message.no-product-related-to-this-code'));
-                }
-                //check the usess
-                $cont = new \App\Http\Controllers\Payment\PromotionController();
-                $uses = $cont->checkNumberOfUses($code);
-                if ($uses != 'success') {
-                    throw new \Exception(\Lang::get('message.usage-of-code-completed'));
-                }
-                //check for the expiry date
-                $expiry = $this->checkExpiry($code);
-                if ($expiry != 'success') {
-                    throw new \Exception(\Lang::get('message.usage-of-code-expired'));
-                }
-                $value = $this->findCostAfterDiscount($promo->id, $productid, $currency);
-
-                return $value;
-            } else {
-                $product = $this->product->find($productid);
-                $plans = Plan::where('product', $product)->pluck('id')->first();
-                $price = PlanPrice::where('currency', $currency)->where('plan_id', $plans)->pluck('add_price')->first();
-
-                return $price;
-            }
-        } catch (\Exception $ex) {
-            throw new \Exception($ex->getMessage());
-        }
-    }
-
-    public function findCostAfterDiscount($promoid, $productid, $currency)
-    {
-        try {
-            $promotion = Promotion::findOrFail($promoid);
-            $product = Product::findOrFail($productid);
-            $promotion_type = $promotion->type;
-            $promotion_value = $promotion->value;
-            $planId = Plan::where('product', $productid)->pluck('id')->first();
-            // dd($planId);
-            $product_price = PlanPrice::where('plan_id', $planId)
-            ->where('currency', $currency)->pluck('add_price')->first();
-            $updated_price = $this->findCost($promotion_type, $promotion_value, $product_price, $productid);
-
-            return $updated_price;
-        } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
-
-            throw new \Exception(\Lang::get('message.find-discount-error'));
-        }
-    }
-
-    public function findCost($type, $value, $price, $productid)
-    {
-        $price = intval($price);
-        switch ($type) {
-            case 1:
-                $percentage = $price * ($value / 100);
-
-                return $price - $percentage;
-            case 2:
-                return $price - $value;
-            case 3:
-                return $value;
-            case 4:
-                return 0;
-        }
-    }
-
     public function advanceSearch($name = '', $invoice_no = '', $currency = '', $status = '', $from = '', $till = '')
     {
         $join = Invoice::leftJoin('users', 'invoices.user_id', '=', 'users.id');
@@ -187,26 +105,6 @@ trait CoupCodeAndInvoiceSearch
         }
     }
 
-    public function getExpiryStatus($start, $end, $now)
-    {
-        $whenDateNotSet = $this->whenDateNotSet($start, $end);
-        if ($whenDateNotSet) {
-            return $whenDateNotSet;
-        }
-        $whenStartDateSet = $this->whenStartDateSet($start, $end, $now);
-        if ($whenStartDateSet) {
-            return $whenStartDateSet;
-        }
-        $whenEndDateSet = $this->whenEndDateSet($start, $end, $now);
-        if ($whenEndDateSet) {
-            return $whenEndDateSet;
-        }
-        $whenBothAreSet = $this->whenBothSet($start, $end, $now);
-        if ($whenBothAreSet) {
-            return $whenBothAreSet;
-        }
-    }
-
     public function getTillDate($from, $till, $tills)
     {
         if ($till) {
@@ -231,6 +129,10 @@ trait CoupCodeAndInvoiceSearch
     {
         try {
             $invoice = Invoice::find($invoiceid);
+            $processingFee = '';
+            foreach (\Cart::getConditionsByType('fee') as $processFee) {
+                $processingFee = $processFee->getValue();
+            }
             $invoice_status = 'pending';
 
             $payment = $this->payment->create([
@@ -250,6 +152,12 @@ trait CoupCodeAndInvoiceSearch
                 $invoice_status = 'success';
             }
             if ($invoice) {
+                $sessionValue = $this->getCodeFromSession();
+                $code = $sessionValue['code'];
+                $codevalue = $sessionValue['codevalue'];
+                $invoice->discount = $codevalue;
+                $invoice->coupon_code = $code;
+                $invoice->processing_fee = $processingFee;
                 $invoice->status = $invoice_status;
                 $invoice->save();
             }

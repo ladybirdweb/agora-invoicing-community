@@ -31,7 +31,7 @@ trait UpdateDates
             $permissions = LicensePermissionsController::getPermissionsForProduct($productId);
             if ($permissions['generateUpdatesxpiryDate'] == 1) {
                 $newDate = $request->input('date');
-                $date = \DateTime::createFromFormat('d/m/Y', $newDate);
+                $date = \DateTime::createFromFormat('m/d/Y', $newDate);
                 $date = $date->format('Y-m-d H:i:s');
                 Subscription::where('order_id', $request->input('orderid'))->update(['update_ends_at'=>$date]);
                 $checkUpdateStatus = StatusSetting::first()->pluck('license_status')->first();
@@ -83,7 +83,7 @@ trait UpdateDates
             $permissions = LicensePermissionsController::getPermissionsForProduct($productId);
             if ($permissions['generateLicenseExpiryDate'] == 1) {
                 $newDate = $request->input('date');
-                $date = \DateTime::createFromFormat('d/m/Y', $newDate);
+                $date = \DateTime::createFromFormat('m/d/Y', $newDate);
                 $date = $date->format('Y-m-d H:i:s');
                 Subscription::where('order_id', $request->input('orderid'))->update(['ends_at'=>$date]);
                 $checkUpdateStatus = StatusSetting::first()->pluck('license_status')->first();
@@ -135,7 +135,7 @@ trait UpdateDates
             $permissions = LicensePermissionsController::getPermissionsForProduct($productId);
             if ($permissions['generateSupportExpiryDate'] == 1) {
                 $newDate = $request->input('date');
-                $date = \DateTime::createFromFormat('d/m/Y', $newDate);
+                $date = \DateTime::createFromFormat('m/d/Y', $newDate);
                 $date = $date->format('Y-m-d H:i:s');
                 Subscription::where('order_id', $request->input('orderid'))->update(['support_ends_at'=>$date]);
                 $checkUpdateStatus = StatusSetting::first()->pluck('license_status')->first();

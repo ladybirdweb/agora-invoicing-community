@@ -13,14 +13,16 @@ System Managers
             <li class="breadcrumb-item active">System Managers</li>
         </ol>
     </div><!-- /.col -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
-    <link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css" rel="stylesheet" />
-    <script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"></script>
+     <link rel="stylesheet" href="{{asset('admin/css/select2.min.css')}}">
+     <script src="{{asset('admin/plugins/select2.full.min.js')}}"></script>
 
 @stop
-
+ <style>
+  .select2-container--default .select2-selection--multiple .select2-selection__choice {
+      background-color: #1b1818 !important;
+</style>
 @section('content')
-<div class="card card-primary card-outline">
+<div class="card card-secondary card-outline">
 
 
 
@@ -53,7 +55,7 @@ System Managers
                             {!! Form::label('replace_with',Lang::get('message.replace_with'),['class'=>'required']) !!}
                         
                            
-                            {!! Form::select('account_manager', [Lang::get('User')=>$users],null,['multiple'=>true,'class'=>"form-control select2" ,'id'=>"users",'required','style'=>"width:100%!important",'oninvalid'=>"setCustomValidity('Please Select Client')", 
+                            {!! Form::select('account_manager', [Lang::get('User')=>$users],null,['multiple'=>true,'class'=>"form-control select2" ,'id'=>"users",'required','style'=>"width:100%!important;",'oninvalid'=>"setCustomValidity('Please Select Client')", 
                   'onchange'=>"setCustomValidity('')"]) !!}
                        
 

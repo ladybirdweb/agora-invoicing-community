@@ -45,7 +45,7 @@ Create Product
     </style>
 
 </head>
-<div class="card card-primary card-tabs">
+<div class="card card-secondary card-tabs">
     {!! Form::open(['url'=>'products','method'=>'post','files' => true,'id'=>'createproduct']) !!}
 
     <div class="card-header p-0 pt-1">

@@ -5,8 +5,6 @@ namespace App\Http\Controllers\Front;
 use App\Http\Controllers\Controller;
 use App\Model\Common\State;
 use App\Model\Payment\TaxByState;
-use DateTime;
-use DateTimeZone;
 
 class InfoController extends Controller
 {
@@ -25,18 +23,6 @@ class InfoController extends Controller
         }
 
         return $states;
-    }
-
-    /**
-     * Get The Date.
-     */
-    public function getDate($invoice)
-    {
-        $date1 = new DateTime($invoice->date);
-        $date1->setTimezone(new DateTimeZone(\Auth::user()->timezone()->first()->name));
-        $date = $date1->format('M j, Y, g:i a ');
-
-        return $date;
     }
 
     public function payment($payment_method, $status)

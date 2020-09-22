@@ -44,7 +44,6 @@ class ExtendedBaseInvoiceController extends Controller
 
     public function postNewPayment($clientid, Request $request)
     {
-        dd('dwe');
         $this->validate($request, [
             'payment_date'  => 'required',
             'payment_method'=> 'required',
@@ -142,6 +141,7 @@ class ExtendedBaseInvoiceController extends Controller
                 if ($key != 0) {//If Payment is linked to Invoice
                     $invoice = Invoice::find($value);
                     $invoice_status = 'pending';
+                    $invoicAmount[$key] = $invoicAmount[$key] == '' ? 0 : $invoicAmount[$key];
                     $payment = Payment::where('invoice_id', $value)->create([
                         'invoice_id'     => $value,
                         'user_id'        => $clientid,

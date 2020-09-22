@@ -61,7 +61,7 @@ Edit Product
     .select2-container--default .select2-selection--multiple .select2-selection__choice {
     background-color: #1b1818 !important;
 </style>
-<div class="card card-primary card-tabs">
+<div class="card card-secondary card-tabs">
 
     {!! Form::model($product,['url'=>'products/'.$product->id,'method'=>'patch','files' => true,'id'=>'editproduct']) !!}
 
@@ -210,7 +210,7 @@ Edit Product
                                                 </li>
                                                       </div>
                                                    </td>
-                                                 </tr>
+                                               </tr>
                                                 <tr>
                                                     <td><label for="chkNo">
                                                         <input type="radio" id="chkNo" name="chkTax" />
@@ -266,7 +266,7 @@ Edit Product
 
                          <!-- /.tab-pane -->
                         <div class="tab-pane fade" id="custom-tabs-plan" role="tabpanel"  aria-labelledby="custom-tabs-plan-tab">
-                            <table class="table>
+                            <table class="table">
 
                                 <span>Show on Cart Page</span>
                                  <tr>
@@ -309,34 +309,12 @@ Edit Product
                                     <td>
                                         <div class="form-group {{ $errors->has('taxes') ? 'has-error' : '' }}">
                                             <div class="row">
-                                                <?php
-                                                if (count($saved_taxes) > 0) {
-                                                    foreach ($saved_taxes as $tax) {
-                                                        $saved[$tax->tax_class_id] = 'true';
-                                                    }
-                                                } else {
-                                                    $saved=[];
-                                                }
-                                               
-                                                if (count($saved) > 0) {
-                                                    foreach ($saved as $key => $value) {
-                                                        $savedkey[]=$key;
-                                                    }
-                                                    $saved1=$savedkey?$savedkey:[];
-                                                } else {
-                                                    $saved1=[];
-                                                }
-                                                  
-                                        
-                                                ?>
                                                 
-                                                        
                                                 <div class="col-md-2">
                                                    <select id="editTax" placeholder="Select Taxes" name="tax[]" style="width:500px;" class="select2" multiple="true">
-                                                      
-                                                       @foreach($taxes as $taxkey => $taxvalue)
-                                                  
-                                                        <option value={{$taxkey}} <?php echo (in_array($taxkey, $savedTaxes)) ?  "selected" : "" ;  ?>>{{$taxvalue}}</option> 
+                                                    
+                                                       @foreach($taxes as $value)
+                                                        <option value={{$value['id']}} <?php echo (in_array($value['id'], $savedTaxes)) ?  "selected" : "" ;  ?>>{{$value['name'].'('.$value['tax'][0]['name'].')'}}</option> 
                                                         
                                                        @endforeach
                                                     </select>
@@ -347,12 +325,17 @@ Edit Product
 
                                                
                                             </div>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                 
+                                       
+
                                             <br>
                                             <h3>  Plans &nbsp;
                                                 <!-- <a href="#create-plan-option" data-toggle="modal" data-target="#create-plan-option" class="btn btn-default">Add new</a> -->
                                             </h3>
-
-                                            @include('themes.default1.product.plan.create')
 
                                             @if($product->plan())
                                                 <table class="table">
@@ -382,36 +365,37 @@ Edit Product
                                     @else
                                         <td>No Plans Created</td>
                             @endif
+
                                         </div>
-                                    </td>
-                                </tr>
+                                   
 
        </div>
+        <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-save">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button>
+
+          {!! Form::close() !!}
                       
                 <!-- nav-tabs-custom -->
 
-           
 
-          {!! Form::close() !!}
 
 
                               </div>
 
 
 
-           <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-save">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button>
+          
 
        </div>
                    </div>
 
         <div class="row" id="hide" style="display:none">
         <div class="col-md-12">
-        <div class="card card-primary card-outline" id="uploads">
+        <div class="card card-secondary card-outline" id="uploads">
             <div class="card-header">
                 <h3 class="card-title">Upload Files</h3>
 
                 <div class="card-tools">
-                    <a href="#create-upload-option" id="create" class="btn btn-primary  btn-sm pull-right" data-toggle="modal" data-target="#create-upload-option"><span class="fa fa-plus"></span>&nbsp;&nbsp;{{Lang::get('message.add-file')}}</a>
+                    <a href="#create-upload-option" id="create" class="btn btn-default  btn-sm pull-right" data-toggle="modal" data-target="#create-upload-option"><span class="fa fa-plus"></span>&nbsp;&nbsp;{{Lang::get('message.add-file')}}</a>
                     @include('themes.default1.product.product.create-upload-option')
 
                 </div>
@@ -422,7 +406,7 @@ Edit Product
                 <div class="row" >
                     <div class="col-md-12" >
                          <table id="upload-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
-                          <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_delete"><i class="fa fa-trash"></i>&nbsp;&nbsp; {{Lang::get('message.delmultiple')}}</button><br /><br />
+                          <button  value="" class="btn btn-secondary btn-sm btn-alldell" id="bulk_delete"><i class="fa fa-trash"></i>&nbsp;&nbsp; {{Lang::get('message.delmultiple')}}</button><br /><br />
                     <thead><tr>
                          <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
                         <th>Title</th>

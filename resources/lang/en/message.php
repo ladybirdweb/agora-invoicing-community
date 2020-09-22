@@ -650,5 +650,10 @@ return [
       '2fa_disabled'                => '2 Factor Authentication has been disabled',
      'no_permission_for_action'     => 'This user does not have permission for this action',
      'product_not_found'            => 'Product Not Found',
+     'active'                       => 'Active',
+     'inactive'                     => 'Inactive',
+     'activate'                     => 'Activate',
+     'extension_required_error' => "PHP's :extension extension is required for this functionality.",
+     'unknown_error_occured'   => 'Unknown error occured',
 
 ];

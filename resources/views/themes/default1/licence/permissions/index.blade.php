@@ -16,7 +16,7 @@ License Permission
 @stop
 @section('content')
     <link rel="stylesheet" href="{{asset('admin/plugins/iCheck/all.css')}}">
-    <div class="card card-primary card-outline">
+    <div class="card card-secondary card-outline">
 
 
        @include('themes.default1.licence.permissions.create')

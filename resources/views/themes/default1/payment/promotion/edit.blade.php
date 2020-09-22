@@ -22,7 +22,7 @@ Edit Promotion
 <div class="row">
 
     <div class="col-md-12">
-        <div class="card card-primary card-outline">
+        <div class="card card-secondary card-outline">
 
                         
 
@@ -38,7 +38,7 @@ Edit Promotion
 
                     <tr>
 
-                        <td><b>{!! Form::label('company',Lang::get('message.code'),['class'=>'required']) !!}</b></td>
+                        <td><b>{!! Form::label('code',Lang::get('message.code'),['class'=>'required']) !!}</b></td>
                         <td>
                             <div class="form-group {{ $errors->has('code') ? 'has-error' : '' }}">
 
@@ -72,7 +72,7 @@ Edit Promotion
                     </tr>
                     <tr>
 
-                        <td><b>{!! Form::label('value',Lang::get('message.value')) !!}</b></td>
+                        <td><b>{!! Form::label('value',Lang::get('message.value'),['class'=>'required']) !!}</b></td>
                         <td>
                             <div class="form-group {{ $errors->has('value') ? 'has-error' : '' }}">
 
@@ -86,7 +86,7 @@ Edit Promotion
                     </tr>
                     <tr>
 
-                        <td><b>{!! Form::label('uses',Lang::get('message.uses')) !!}</b></td>
+                        <td><b>{!! Form::label('uses',Lang::get('message.uses'),['class'=>'required']) !!}</b></td>
                         <td>
                             <div class="form-group {{ $errors->has('uses') ? 'has-error' : '' }}">
 
@@ -104,19 +104,23 @@ Edit Promotion
                         <td>
                             <div class="form-group {{ $errors->has('applied') ? 'has-error' : '' }}">
 
-                                {!! Form::select('applied[]',[''=>$product],$selectedProduct,['class' => 'form-control','multiple'=>true]) !!}
+                                 {!! Form::select('applied',[''=>'Choose','Products'=>$product],$selectedProduct,['class' => 'form-control select2','data-live-search'=>'true','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false','data-size'=>'10','title'=>'Products for which coupon is Applied']) !!}
+
+                                
 
                             </div>
                         </td>
 
                     </tr>
-                    <tr>
+                    <tr>    
 
-                        <td><b>{!! Form::label('start',Lang::get('message.start')) !!}</b></td>
+                        <td><b>{!! Form::label('start',Lang::get('message.start'),['class'=>'required']) !!}</b></td>
                         <td>
                             <div class="form-group {{ $errors->has('start') ? 'has-error' : '' }}">
                                 <div class="input-group date" id="startDate" data-target-input="nearest">
-                                    <input type="text" name="start" class="form-control datetimepicker-input" autocomplete="off"  value="{{$startDate}}" title="Date from which Coupon is Valid" data-target="#startDate"/>
+                                     {!! Form::text('start',$startDate,['class' => 'form-control datetimepicker-input','title'=>'Date from which Coupon is Valid','data-target'=>'#startDate']) !!}
+
+                                   
                                     <div class="input-group-append" data-target="#startDate" data-toggle="datetimepicker">
                                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                     </div>
@@ -131,12 +135,15 @@ Edit Promotion
 
                     <tr>
 
-                        <td><b>{!! Form::label('expiry',Lang::get('message.expiry')) !!}</b></td>
+                        <td><b>{!! Form::label('expiry',Lang::get('message.expiry'),['class'=>'required']) !!}</b></td>
                         <td>
                             <div class="form-group {{ $errors->has('expiry') ? 'has-error' : '' }}">
 
                                 <div class="input-group date" id="endDate" data-target-input="nearest">
-                                    <input type="text" name="expiry" class="form-control datetimepicker-input" autocomplete="off"  value="{{$expiryDate}}" title="Date from which Coupon Expires" data-target="#endDate"/>
+
+                                     {!! Form::text('expiry',$expiryDate,['class' => 'form-control datetimepicker-input','title'=>'Date on which Coupon Expires','data-target'=>'#endDate']) !!}
+
+                                    
                                     <div class="input-group-append" data-target="#endDate" data-toggle="datetimepicker">
                                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                     </div>
@@ -168,9 +175,15 @@ Edit Promotion
 
 </div>
 
-@stop
+
 
 <script>
+     $(document).ready(function(){
+            $(function () {
+                //Initialize Select2 Elements
+                $('.select2').select2()
+            });
+        })
     function getCode() {
 
 
@@ -183,8 +196,8 @@ Edit Promotion
         });
     }
 </script>
-
-<script src="{{asset("plugins/moment-develop/moment.js")}}" type="text/javascript"></script>
+@stop
+<!-- <script src="{{asset("plugins/moment-develop/moment.js")}}" type="text/javascript"></script> -->
 
 @section('datepicker')
 <script type="text/javascript">

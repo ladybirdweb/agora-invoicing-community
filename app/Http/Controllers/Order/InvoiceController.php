@@ -15,11 +15,11 @@ use App\Model\Payment\Promotion;
 use App\Model\Payment\Tax;
 use App\Model\Payment\TaxByState;
 use App\Model\Payment\TaxOption;
-use App\Model\Payment\TaxProductRelation;
 use App\Model\Product\Price;
 use App\Model\Product\Product;
 use App\Traits\CoupCodeAndInvoiceSearch;
 use App\Traits\PaymentsAndInvoices;
+use App\Traits\TaxCalculation;
 use App\User;
 use Bugsnag;
 use Illuminate\Http\Request;
@@ -28,6 +28,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 {
     use  CoupCodeAndInvoiceSearch;
     use  PaymentsAndInvoices;
+    use TaxCalculation;
 
     public $invoice;
     public $invoiceItem;
@@ -97,6 +98,17 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
     public function index(Request $request)
     {
+        $validator = \Validator::make($request->all(), [
+            'from'     => 'nullable',
+            'till'     => 'nullable|after:from',
+
+        ]);
+        if ($validator->fails()) {
+            $request->from = '';
+            $request->till = '';
+
+            return redirect('invoices')->with('fails', 'Start date should be before end date');
+        }
         try {
             $currencies = Currency::where('status', 1)->pluck('code')->toArray();
             $name = $request->input('name');
@@ -135,9 +147,11 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                             value=".$model->id.' name=select[] id=check>';
          })
                         ->addColumn('user_id', function ($model) {
-                            $first = $this->user->where('id', $model->user_id)->value('first_name');
-                            $last = $this->user->where('id', $model->user_id)->value('last_name');
-                            $id = $this->user->where('id', $model->user_id)->first()->id;
+                            $user = $this->user->where('id', $model->user_id)->first() ?: User::onlyTrashed()->find($model->user_id);
+
+                            $id = $user->id;
+                            $first = $user->first_name;
+                            $last = $user->last_name;
 
                             return '<a href='.url('clients/'.$id).'>'.ucfirst($first).' '.ucfirst($last).'</a>';
                         })
@@ -161,11 +175,11 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                             $check = $this->checkExecution($model->id);
                             if ($check == false) {
                                 $action = '<form method="post" action='.url('order/execute?invoiceid='.$model->id).'>'.'<input type="hidden" name="_token" value='.\Session::token().'>'.'
-                                    <button type="submit" class="btn btn-sm success btn-xs"'.tooltip('Execute&nbsp;Order').'<i class="fa fa-tasks" style="color:white;"></i></button></form>';
+                                    <button type="submit" class="btn btn-sm secondary btn-xs"'.tooltip('Execute&nbsp;Order').'<i class="fa fa-tasks" style="color:white;"></i></button></form>';
                             }
 
                             return '<a href='.url('invoices/show?invoiceid='.$model->id)
-                            ." class='btn btn-sm btn-primary btn-xs'".tooltip('View')."<i class='fa fa-eye' 
+                            ." class='btn btn-sm btn-secondary btn-xs'".tooltip('View')."<i class='fa fa-eye' 
                             style='color:white;'> </i></a>"
                                     ."   $action";
                         })
@@ -208,9 +222,12 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 ->select('invoices.id', 'invoices.user_id', 'invoices.date', 'invoices.currency', 'invoices.number', 'invoices.discount', 'invoices.grand_total', 'order_invoice_relations.order_id')
                 ->where('invoices.id', '=', $request->input('invoiceid'))
                 ->first();
+            if (User::onlyTrashed()->find($invoice->user_id)) {
+                throw new \Exception('This user is suspended from the system. Restore the user to view invoice details.');
+            }
             $invoiceItems = $invoice->invoiceItem()->get();
             $user = $this->user->find($invoice->user_id);
-            $currency = CartController::currency($user->id);
+            $currency = userCurrency($user->id);
             $order = Order::getOrderLink($invoice->order_id, 'orders');
             $symbol = $currency['symbol'];
 
@@ -256,44 +273,33 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
     }
 
     /**
-     * Generate invoice.
+     * Generate invoice from client panel.
      *
      * @throws \Exception
      */
     public function generateInvoice()
     {
         try {
-            $sessionValue = $this->getCodeFromSession();
-            $code = $sessionValue['code'];
-            $codevalue = $sessionValue['codevalue'];
             $tax_rule = new \App\Model\Payment\TaxOption();
             $rule = $tax_rule->findOrFail(1);
             $rounding = $rule->rounding;
             $user_id = \Auth::user()->id;
-            if (\Auth::user()->currency == 'INR') {
-                $grand_total = \Cart::getSubTotal();
-            } else {
-                foreach (\Cart::getContent() as $cart) {
-                    $grand_total = \Cart::getSubTotal();
-                }
-            }
+
+            $grand_total = \Cart::getTotal();
             $number = rand(11111111, 99999999);
             $date = \Carbon\Carbon::now();
-            if ($rounding == 1) {
+            if ($rounding) {
                 $grand_total = round($grand_total);
             }
-            $content = \Cart::getContent();
-            $attributes = [];
-            foreach ($content as $key => $item) {
-                $attributes[] = $item->attributes;
-            }
-            $invoice = $this->invoice->create(['user_id' => $user_id, 'number' => $number, 'date'=> $date, 'discount'=>$codevalue, 'grand_total' => $grand_total, 'coupon_code'=>$code, 'status' => 'pending',
-                'currency' => \Auth::user()->currency, ]);
 
+            $invoice = $this->invoice->create(['user_id' => $user_id, 'number' => $number, 'date'=> $date, 'grand_total' => $grand_total, 'status' => 'pending',
+                'currency' => \Auth::user()->currency, ]);
             foreach (\Cart::getContent() as $cart) {
-                $this->createInvoiceItems($invoice->id, $cart, $codevalue);
+                $this->createInvoiceItems($invoice->id, $cart);
             }
-            $this->sendMail($user_id, $invoice->id);
+            if (emailSendingStatus()) {
+                $this->sendMail($user_id, $invoice->id);
+            }
 
             return $invoice;
         } catch (\Exception $ex) {
@@ -301,11 +307,10 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
-            throw new \Exception('Can not Generate Invoice');
         }
     }
 
-    public function createInvoiceItems($invoiceid, $cart, $codevalue = '')
+    public function createInvoiceItems($invoiceid, $cart)
     {
         try {
             $planid = 0;
@@ -314,8 +319,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $quantity = $cart->quantity;
             $agents = $cart->attributes->agents;
             $domain = $this->domain($cart->id);
-            $cart_cont = new \App\Http\Controllers\Front\CartController();
-            if ($cart_cont->checkPlanSession() === true) {
+            if (checkPlanSession()) {
                 $planid = \Session::get('plan');
             }
             if ($planid == 0) {
@@ -323,22 +327,15 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 $planid = Plan::where('product', $cart->id)->pluck('id')->first();
             }
             $user_currency = \Auth::user()->currency;
-            $subtotal = $this->getSubtotal($user_currency, $cart);
-
-            $tax_name = '';
-            $tax_percentage = '';
-
-            foreach ($cart->attributes['tax'] as $tax) {
-                $tax_name .= $tax['name'].',';
-                $tax_percentage .= $tax['rate'].',';
-            }
+            $subtotal = $cart->getPriceSum();
+            $tax_name = $cart->conditions->getName();
+            $tax_percentage = $cart->conditions->getValue();
             $invoiceItem = $this->invoiceItem->create([
                 'invoice_id'     => $invoiceid,
                 'product_name'   => $product_name,
                 'regular_price'  => $regular_price,
                 'quantity'       => $quantity,
                 'tax_name'       => $tax_name,
-                'discount'       => $codevalue,
                 'tax_percentage' => $tax_percentage,
                 'subtotal'       => $subtotal,
                 'domain'         => $domain,
@@ -354,6 +351,11 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         }
     }
 
+    /**
+     * Generate invoice from admin panel.
+     *
+     * @throws \Exception
+     */
     public function invoiceGenerateByForm(Request $request, $user_id = '')
     {
         $this->validate($request, [
@@ -370,7 +372,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $status = 'pending';
             $qty = $request->input('quantity');
             if ($user_id == '') {
-                $user_id = \Request::input('user');
+                $user_id = $request->input('user');
             }
             $productid = $request->input('product');
 
@@ -385,84 +387,51 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 $domain = $request->input('domain');
                 $this->setDomain($productid, $domain);
             }
-            $controller = new \App\Http\Controllers\Front\CartController();
-            $userCurrency = $controller->currency($user_id);
+            $userCurrency = userCurrency($user_id);
             $currency = $userCurrency['currency'];
             $number = rand(11111111, 99999999);
             $date = \Carbon\Carbon::parse($request->input('date'));
             $product = Product::find($productid);
-            $cost = $controller->cost($productid, $user_id, $plan);
-            $grand_total = $this->getGrandTotal($code, $total, $cost, $productid, $currency);
-            $promo = $this->promotion->where('code', $code)->first();
-            $codeValue = $this->getCodeValue($promo, $code); //get coupon code value to be added to Invoice
-            $grand_total = $qty * $grand_total;
-            if ($grand_total == 0) {
+            $cost = $this->cartController->cost($productid, $user_id, $plan);
+
+            $couponTotal = $this->getGrandTotal($code, $total, $cost, $productid, $currency, $user_id);
+            $grandTotalAfterCoupon = $qty * $couponTotal['total'];
+            if (! $grandTotalAfterCoupon) {
                 $status = 'success';
             }
-            $tax = $this->checkTax($product->id, $user_id);
-            $tax_name = '';
-            $tax_rate = '';
-            if (! empty($tax)) {
-                $tax_name = $tax[0];
-                $tax_rate = $tax[1];
-            }
-
-            $grand_total = $this->calculateTotal($tax_rate, $grand_total);
-            $grand_total = \App\Http\Controllers\Front\CartController::rounding($grand_total);
-
+            $user = User::where('id', $user_id)->select('state', 'country')->first();
+            $tax = $this->calculateTax($product->id, $user->state, $user->country, true);
+            $grand_total = rounding($this->calculateTotal($tax['value'], $grandTotalAfterCoupon));
             $invoice = Invoice::create(['user_id' => $user_id, 'number' => $number, 'date' => $date,
-
-                'coupon_code'  => $code, 'discount'=>$codeValue,
-                'grand_total'  => $grand_total,  'currency'  => $currency, 'status' => $status, 'description' => $description, ]);
+                'coupon_code'  => $couponTotal['code'], 'discount'=>$couponTotal['value'], 'discount_mode'  => $couponTotal['mode'], 'grand_total'  => $grand_total,  'currency'  => $currency, 'status' => $status, 'description' => $description, ]);
 
             $items = $this->createInvoiceItemsByAdmin($invoice->id, $productid,
-             $code, $total, $currency, $qty, $agents, $plan, $user_id, $tax_name, $tax_rate);
+              $total, $currency, $qty, $agents, $plan, $user_id, $tax['name'], $tax['value'], $grandTotalAfterCoupon);
             $result = $this->getMessage($items, $user_id);
 
             return successResponse($result);
         } catch (\Exception $ex) {
             app('log')->info($ex->getMessage());
-            Bugsnag::notifyException($ex->getMessage());
 
             return errorResponse([$ex->getMessage()]);
         }
     }
 
-    public function createInvoiceItemsByAdmin($invoiceid, $productid, $code, $price,
-        $currency, $qty, $agents, $planid = '', $userid = '', $tax_name = '', $tax_rate = '')
+    public function createInvoiceItemsByAdmin($invoiceid, $productid, $price,
+        $currency, $qty, $agents, $planid = '', $userid = '', $tax_name = '', $tax_rate = '', $grandTotalAfterCoupon)
     {
         try {
-            $discount = '';
-            $mode = '';
             $product = $this->product->findOrFail($productid);
             $plan = Plan::where('product', $productid)->first();
-            $subtotal = $qty * intval($price);
-            if ($code) {
-                $subtotal = $this->checkCode($code, $productid, $currency);
-                $mode = 'coupon';
-                $discount = $price - $subtotal;
-            }
-            $userid = \Auth::user()->id;
-            if (\Auth::user()->role == 'user') {
-                $tax = $this->checkTax($product->id, $userid);
-                $tax_name = '';
-                $tax_rate = '';
-                if (! empty($tax)) {
-                    $tax_name = $tax[0];
-                    $tax_rate = $tax[1];
-                }
-            }
+            $subtotal = $qty * intval($grandTotalAfterCoupon);
 
-            $subtotal = $this->calculateTotal($tax_rate, $subtotal);
             $domain = $this->domain($productid);
             $items = $this->invoiceItem->create([
                 'invoice_id'     => $invoiceid,
                 'product_name'   => $product->name,
                 'regular_price'  => $price,
                 'quantity'       => $qty,
-                'discount'       => $discount,
-                'discount_mode'  => $mode,
-                'subtotal'       => \App\Http\Controllers\Front\CartController::rounding($subtotal),
+                'subtotal'       => rounding($subtotal),
                 'tax_name'       => $tax_name,
                 'tax_percentage' => $tax_rate,
                 'domain'         => $domain,
@@ -476,109 +445,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
-    }
-
-    public function checkTax($productid, $userid)
-    {
-        try {
-            $taxs = [];
-            $taxs[0] = ['name' => 'null', 'rate' => 0];
-            $geoip_state = User::where('id', $userid)->pluck('state')->first();
-            $geoip_country = User::where('id', $userid)->pluck('country')->first();
-            $product = $this->product->findOrFail($productid);
-            $cartController = new CartController();
-            if ($this->tax_option->findOrFail(1)->inclusive == 0) {
-                $tax_class_id = TaxProductRelation::where('product_id', $productid)->pluck('tax_class_id')->toArray();
-                if (count($tax_class_id) > 0) {
-                    if ($this->tax_option->findOrFail(1)->tax_enable == 1) {
-                        $taxs = $this->getTaxWhenEnable($productid, $taxs[0], $userid);
-                    } elseif ($this->tax_option->tax_enable == 0) {//if tax_enable is 0
-
-                        $taxClassId = Tax::where('country', '')->where('state', 'Any State')
-                     ->pluck('tax_classes_id')->first(); //In case of India when
-                        //other tax is available and tax is not enabled
-                        if ($taxClassId) {
-                            $rate = $this->getTotalRate($taxClassId, $productid, $taxs);
-                            $taxs = $rate['taxes'];
-                            $rate = $rate['rate'];
-                        } elseif ($geoip_country != 'IN') {//In case of other country
-                            // when tax is available and tax is not enabled(Applicable
-                            //when Global Tax class for any country and state is not there)
-
-                            $taxClassId = Tax::where('state', $geoip_state)
-                        ->orWhere('country', $geoip_country)->pluck('tax_classes_id')->first();
-                            if ($taxClassId) { //if state equals the user State
-                                $rate = $this->getTotalRate($taxClassId, $productid, $taxs);
-                                $taxs = $rate['taxes'];
-                                $rate = $rate['rate'];
-                            }
-                            $taxs = ([$taxs[0]['name'], $taxs[0]['rate']]);
-
-                            return $taxs;
-                        }
-                        $taxs = ([$taxs[0]['name'], $taxs[0]['rate']]);
-                    }
-                } else {
-                    $taxs = ([$taxs[0]['name'], $taxs[0]['rate']]);
-                }
-            }
-
-            return $taxs;
-        } catch (\Exception $ex) {
-            throw new \Exception(\Lang::get('message.check-tax-error'));
-        }
-    }
-
-    public function getRate($productid, $taxs, $userid)
-    {
-        $tax_attribute = [];
-        $tax_attribute[0] = ['name' => 'null', 'rate' => 0, 'tax_enable' =>0];
-        $tax_value = '0';
-
-        $geoip_state = User::where('id', $userid)->pluck('state')->first();
-        $geoip_country = User::where('id', $userid)->pluck('country')->first();
-        $user_state = $this->tax_by_state::where('state_code', $geoip_state)->first();
-        $origin_state = $this->setting->first()->state; //Get the State of origin
-        $cartController = new CartController();
-        $rate = 0;
-        $name1 = 'CGST';
-        $name2 = 'SGST';
-        $name3 = 'IGST';
-        $name4 = 'UTGST';
-        $c_gst = 0;
-        $s_gst = 0;
-        $i_gst = 0;
-        $ut_gst = 0;
-        $state_code = '';
-        if ($user_state != '') {//Get the CGST,SGST,IGST,STATE_CODE of the user
-            $tax = $this->getTaxWhenState($user_state, $productid, $origin_state);
-            $taxes = $tax['taxes'];
-            $value = $tax['value'];
-        } else {//If user from other Country
-            $tax = $this->getTaxWhenOtherCountry($geoip_state, $geoip_country, $productid);
-            $taxes = $tax['taxes'];
-            $value = $tax['value'];
-            $rate = $tax['rate'];
-        }
-
-        foreach ($taxes as $key => $tax) {
-            if ($taxes[0]) {
-                $tax_attribute[$key] = ['name' => $tax->name, 'name1' => $name1,
-                    'name2'                       => $name2, 'name3' => $name3, 'name4' => $name4,
-                    'rate'                        => $value, 'rate1'=>$c_gst, 'rate2'=>$s_gst,
-                    'rate3'                       => $i_gst, 'rate4'=>$ut_gst, 'state'=>$state_code,
-                    'origin_state'               => $origin_state, ];
-
-                $rate = $tax->rate;
-
-                $tax_value = $value;
-            } else {
-                $tax_attribute[0] = ['name' => 'null', 'rate' => 0, 'tax_enable' =>0];
-                $tax_value = '0%';
-            }
-        }
-
-        return ['taxs'=>$tax_attribute, 'value'=>$tax_value];
     }
 
     public function setDomain($productid, $domain)
@@ -607,6 +473,42 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             Bugsnag::notifyException($ex);
 
             throw new \Exception($ex->getMessage());
+        }
+    }
+
+    public function pdf(Request $request)
+    {
+        try {
+            $id = $request->input('invoiceid');
+            if (! $id) {
+                return redirect()->back()->with('fails', \Lang::get('message.no-invoice-id'));
+            }
+            $invoice = $this->invoice->where('id', $id)->first();
+            if (! $invoice) {
+                return redirect()->back()->with('fails', \Lang::get('message.invalid-invoice-id'));
+            }
+            $invoiceItems = $this->invoiceItem->where('invoice_id', $id)->get();
+            if ($invoiceItems->count() == 0) {
+                return redirect()->back()->with('fails', \Lang::get('message.invalid-invoice-id'));
+            }
+            $user = $this->user->find($invoice->user_id);
+            if (! $user) {
+                return redirect()->back()->with('fails', 'No User');
+            }
+            $order = $this->order->getOrderLink($invoice->orderRelation()->value('order_id'), 'my-order');
+            // $order = Order::getOrderLink($invoice->order_id);
+            $currency = userCurrency($user->id);
+            $gst = TaxOption::select('tax_enable', 'Gst_No')->first();
+            $symbol = $currency['currency'];
+            ini_set('max_execution_time', '0');
+
+            $pdf = \PDF::loadView('themes.default1.invoice.newpdf', compact('invoiceItems', 'invoice', 'user', 'currency', 'symbol', 'gst', 'order'));
+
+            return $pdf->download($user->first_name.'-invoice.pdf');
+        } catch (\Exception $ex) {
+            Bugsnag::notifyException($ex);
+
+            return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 }

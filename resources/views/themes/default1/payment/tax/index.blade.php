@@ -35,7 +35,6 @@ Tax
 </style>
 <head>
 
-  <!-- <script src="{{asset('bootstrap/js/bootstrap.min.js')}}" type="text/javascript"></script> -->
   </head>
   
 
@@ -44,18 +43,17 @@ Tax
 
 
             
-                <!--<a href="{{url('currency/create')}}" class="btn btn-primary pull-right   ">{{Lang::get('message.create')}}</a>-->
-                <!--<a href="#create" class="btn btn-primary pull-right" data-toggle="modal" data-target="#create">{{Lang::get('message.create')}}</a>-->
+             
                 
 
             @include('themes.default1.payment.tax.create-tax-option')
 
 
       
-       <div class="card card-primary card-outline">
+       <div class="card card-secondary card-outline">
            <div class="card-header">
                <h3 class="card-title">{{Lang::get('Options')}}</h3>
-               {!! Form::model($options,['url'=>'taxes/option','method'=>'patch']) !!}
+               {!! Form::model($options,['url'=>'taxes/option','method'=>'post']) !!}
            </div>
         <div class="card-body">
             <div class="row">
@@ -78,9 +76,9 @@ Tax
                                  <!-- <input id="toggle-event" type="checkbox" data-toggle="toggle" name="tax_enable"> -->
                                 <div class="btn-group btn-group-toggle"  data-toggle="buttons" >
                                     <label class="btn btn-default btn-on-1 btn-sm ">
-                                    <input type="radio" id="chkYes" value="1" name="tax_enable" onchange="getTaxValue(this)">ENABLED</label>
+                                    <input type="radio" id="chkYes" value="1" name="tax_enable" >ENABLED</label>
                                     <label class="btn btn-default btn-off-1 btn-sm  ">
-                                    <input type="radio" id="chkNo" value="0" name="tax_enable" onchange="getTaxValue(this)">DISABLED</label>
+                                    <input type="radio" id="chkNo" value="0" name="tax_enable" >DISABLED</label>
                                     <span class="slider"></span>
                                   </div>
                                     
@@ -88,18 +86,6 @@ Tax
                                
                             </td>
                         
-
-                        <tr class="form-group gstshow hide">
-                              
-                                 <td>
-                                    {!! Form::label('GSTIN',Lang::get('GSTIN')) !!}
-                                </td>
-
-                                 <td>
-                                     <input type='text' name="Gst_no"  class="form-control col-md-6" value="{{$gstNo->Gst_No}}">
-                                 </td>
-                          
-                        </tr>
 
                         <tr>
                             <td>
@@ -135,7 +121,7 @@ Tax
                     </table>
 
 
-                       <button type="submit" class="btn btn-primary pull-right" id="submit" ><i class="fa fa-save"></i>&nbsp;{!!Lang::get('message.save')!!}</button>
+                       <button type="submit" class="btn btn-default pull-right" id="submit" ><i class="fa fa-save"></i>&nbsp;{!!Lang::get('message.save')!!}</button>
 
                        {!! Form::close() !!}
               </div>
@@ -143,13 +129,13 @@ Tax
               </div>
             </div>
 
-             <div class="card card-primary card-outline">
+             <div class="card card-secondary card-outline">
 
                   <div class="card-header">
                       <h3 class="card-title">{{Lang::get('Tax Classes')}}</h3>
 
                       <div class="card-tools">
-                          <a href="#create-tax-option" class="btn btn-primary pull-right btn-sm" data-toggle="modal" data-target="#create-tax-option"><span class="fa fa-plus"></span>&nbsp;&nbsp;{{Lang::get('message.create')}}</a>
+                          <a href="#create-tax-option" class="btn btn-default pull-right btn-sm" data-toggle="modal" data-target="#create-tax-option"><span class="fa fa-plus"></span>&nbsp;&nbsp;{{Lang::get('message.create')}}</a>
 
 
                       </div>
@@ -159,7 +145,7 @@ Tax
                   <div class="row">
                 <div class="col-md-12">
                     <table id="tax-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
-                    <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_delete"><i class="fa fa-trash">&nbsp;&nbsp;</i> Delete Selected</button><br /><br />
+                    <button  value="" class="btn btn-secondary btn-sm btn-alldell" id="bulk_delete"><i class="fa fa-trash">&nbsp;&nbsp;</i> Delete Selected</button><br /><br />
                         <thead><tr>
                             <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
                              <th>Tax Type</th>
@@ -183,52 +169,48 @@ Tax
     <script src="//cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript">
       $(document).ready(function(){
-              var btn = {{($options->tax_enable)}};
+      var btn = {{($options->tax_enable)}};
      if(btn== '1'){
 $('.btn-on-1').addClass('active');
-$('.gstshow').show();
-
+$('.btn-on-1').css("background-color", "#006FFC","color", "white");
      }
      else{
 $('.btn-off-1').addClass('active');
-$('.gstshow').hide();
+$('.btn-off-1').css("background-color", "#DA4F49","color", "white");
 // $('.gstshow').removeAttribute("style");
      }
     var btn1 = {{($options->inclusive)}};
      if(btn1== '1'){
 $('.btn-on-2').addClass('active');
+$('.btn-on-2').css("background-color", "#006FFC","color", "white");
 // $('.gstshow').removeClass("hide");
 
      }
      else{
 $('.btn-off-2').addClass('active');
+$('.btn-off-2').css("background-color", "#DA4F49","color", "white");
 // $('.gstshow').addClass('hide');
 // $('.gstshow').removeAttribute("style");
      }
        var btn2 = {{($options->rounding)}};
      if(btn2== '1'){
 $('.btn-on-3').addClass('active');
+$('.btn-on-3').css("background-color", "#006FFC","color", "white");
 // $('.gstshow').removeClass("hide");
 
      }
      else{
 $('.btn-off-3').addClass('active');
+$('.btn-off-3').css("background-color", "#DA4F49","color", "white");
 // $('.gstshow').addClass('hide');
 // $('.gstshow').removeAttribute("style");
      }
 
-      })
+    })
 
 
 
-   function getTaxValue(x){
-        if($(x).val()==1){
-              $('.gstshow').show();
-        }
-        else{
-               $('.gstshow').hide();
-        }
-   }
+   
      // $('#chkYes').click
 
 

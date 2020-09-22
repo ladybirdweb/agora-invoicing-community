@@ -16,16 +16,17 @@ class SettingsSeeder extends Seeder
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         \App\Model\Common\Setting::create([
-            'company'                   => 'Ladybird Web Solution',
+            'company'                   => '',
             'city'                      => 'Bangalore',
             'state'                     => 'IN-KA',
             'country'                   => 'IN',
             'default_currency'          => 'USD',
             'default_symbol'            => '$',
-            'website'                   => 'https://www.ladybirdweb.com',
+            'website'                   => '',
             'logo'                      => 'faveo1.png',
             'admin_logo'                => 'faveo1.png',
             'fav_icon'                  => 'faveo.png',
+            'title'                     => 'Billing Application',
             'error_log'                 => 1,
             'invoice'                   => 8,
             'subscription_over'         => 7,

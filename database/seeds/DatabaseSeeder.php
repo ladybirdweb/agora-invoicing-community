@@ -104,6 +104,7 @@ class DatabaseSeeder extends Seeder
         $this->call(StatesSeeder::class);
         $this->call(TaxByStatesSeeder::class);
         $this->call(TimezoneSeeder::class);
+        $this->call(QueueServiceSeeder::class);
 
         // \DB::unprepared(file_get_contents(storage_path('agora.sql')));
         // \DB::unprepared(file_get_contents(storage_path('states.sql')));
@@ -201,8 +202,6 @@ class PromotionTypeTableSeeder extends Seeder
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         PromotionType::create(['id' => 1, 'name' => 'Percentage']);
         PromotionType::create(['id' => 2, 'name' => 'Fixed Amount']);
-        PromotionType::create(['id' => 3, 'name' => 'Price Override']);
-        PromotionType::create(['id' => 4, 'name' => 'Free Setup']);
     }
 }
 
@@ -864,12 +863,13 @@ class UserTableSeeder extends Seeder
             'active'          => 1,
             'mobile_verified' => 1,
             'currency'        => 'INR',
-            'company'         => 'ladybird',
+            'company'         => 'My Company Name',
             'mobile'          => '',
             'mobile_code'     => '',
             'address'         => '',
             'town'            => '',
-            'state'           => '',
+            'country'         => 'IN',
+            'state'           => 'IN-KA',
             'zip'             => '',
             'profile_pic'     => '',
             'debit'           => 0,

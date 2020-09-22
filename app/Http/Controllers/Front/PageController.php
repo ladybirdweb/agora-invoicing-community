@@ -228,7 +228,6 @@ class PageController extends GetPageTemplateController
                     if ($id != $defaultPageId) {
                         $page = $this->page->where('id', $id)->first();
                         if ($page) {
-                            // dd($page);
                             $page->delete();
                         } else {
                             echo "<div class='alert alert-danger alert-dismissable'>
@@ -282,18 +281,6 @@ class PageController extends GetPageTemplateController
         }
     }
 
-    public function search(Request $request)
-    {
-        try {
-            $search = $request->input('q');
-            $model = $this->result($search, $this->page);
-
-            return view('themes.default1.front.page.search', compact('model'));
-        } catch (\Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
-
     public function transform($type, $data, $trasform = [])
     {
         $config = \Config::get("transform.$type");
@@ -335,8 +322,7 @@ class PageController extends GetPageTemplateController
     public function pageTemplates(int $templateid, int $groupid)
     {
         try {
-            $cont = new CartController();
-            $currency = $cont->currency();
+            $currency = userCurrency();
             \Session::put('currency', $currency);
             if (! \Session::has('currency')) {
                 \Session::put('currency', 'INR');
@@ -354,6 +340,46 @@ class PageController extends GetPageTemplateController
             app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
 
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
+    public function contactUs()
+    {
+        try {
+            return view('themes.default1.front.contact');
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
+    public function postContactUs(Request $request)
+    {
+        $this->validate($request, [
+            'name'    => 'required',
+            'email'   => 'required|email',
+            'message' => 'required',
+        ]);
+
+        $set = new \App\Model\Common\Setting();
+        $set = $set->findOrFail(1);
+
+        try {
+            $from = $set->email;
+            $fromname = $set->company;
+            $toname = '';
+            $to = $set->company_email;
+            $data = '';
+            $data .= 'Name: '.strip_tags($request->input('name')).'<br/>';
+            $data .= 'Email: '.strip_tags($request->input('email')).'<br/>';
+            $data .= 'Message: '.strip_tags($request->input('message')).'<br/>';
+            $data .= 'Mobile: '.strip_tags($request->input('country_code').$request->input('Mobile')).'<br/>';
+            $subject = 'Faveo billing enquiry';
+            $cont = new \App\Http\Controllers\Common\TemplateController();
+            $cont->mailing($from, $to, $data, $subject, [], $fromname, $toname);
+            //$this->templateController->Mailing($from, $to, $data, $subject);
+            return redirect()->back()->with('success', 'Your message was sent successfully. Thanks.');
+        } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

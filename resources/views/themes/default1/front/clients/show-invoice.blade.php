@@ -24,15 +24,17 @@ active
     <section class="box-content">
         @php
             $set = App\Model\Common\Setting::where('id', '1')->first();
-            $gst =  App\Model\Payment\TaxOption::where('id', '1')->first();
+             $date = getDateHtml($invoice->date);
             $symbol = Auth::user()->currency;
-            $logo = \App\Model\Common\Setting::where('id', 1)->value('logo');
+            $itemsSubtotal = 0;
+            $taxAmt = 0;
         @endphp
 
         <div>
-            @if($logo)
-                <img alt="Logo" width="100" height="50" src="{{asset('common/images/'.$logo)}}" style="margin-top: -2px">
+            @if($set->logo)
+                <img alt="Logo" width="100" height="50" src="{{asset('common/images/'.$set->logo)}}" style="margin-top: -2px">
             @endif
+             <h4 class="float-right" >Date: {!! $date !!}</h4>
             <div class="invoice">
 
                 <header class="clearfix">
@@ -63,36 +65,51 @@ active
                                         {{$user->address}}<br/>
                                     @endif
                                     {{$user->town}}<br/>
-                                    @if(key_exists('name',App\Http\Controllers\Front\CartController::getStateByCode($user->state)))
-                                        {{App\Http\Controllers\Front\CartController::getStateByCode($user->state)['name']}}
+                                    @if(key_exists('name',getStateByCode($user->state)))
+                                        {{getStateByCode($user->state)['name']}}
                                     @endif
                                     {{$user->zip}}<br/>
-                                    Country : {{App\Http\Controllers\Front\CartController::getCountryByCode($user->country)}}<br/>
+                                    Country : {{getCountryByCode($user->country)}}<br/>
                                     Mobile: @if($user->mobile_code)<b>+</b>{{$user->mobile_code}}@endif{{$user->mobile}}<br/>
                                     Email : {{$user->email}}
                                 </address>
                             </div>
                         </div>
+                        
                         <div class="col-md-6">
+                             @if($set->gstin)
                             <div class="bill-data text-right">
                                 <p class="mb-0">
                                     <span class="text-dark">GSTIN:</span>
-                                    <span class="value">#{{$gst->Gst_No}}</span>
+                                    <span class="value">#{{$set->gstin}}</span>
                                 </p>
                             </div>
+                            @endif
+
+                             @if($set->cin_no)
+                             <div class="bill-data text-right">
+                                <p class="mb-0">
+                                    <span class="text-dark">CIN:</span>
+                                    <span class="value">#{{$set->cin_no}}</span>
+                                </p>
+                            </div>
+                             @endif
                         </div>
+                        
+
+                       
+                        
                     </div>
                 </div>
 
-                <table class="table table-responsive-md invoice-items">
+                <table class="table table-striped table-responsive-md invoice-items">
                     <thead>
                     <tr class="text-dark">
                         <th class="font-weight-semibold">Order No</th>
                         <th class="font-weight-semibold">Product</th>
-                        <th class="font-weight-semibold">Quantity</th>
                         <th class="font-weight-semibold">Price</th>
-                        <th class="font-weight-semibold">Taxes</th>
-                        <th class="font-weight-semibold">Tax Rates</th>
+                        <th class="font-weight-semibold">Quantity</th>
+                        
                         <th class="font-weight-semibold">Subtotal</th>
                     </tr>
                     </thead>
@@ -100,77 +117,52 @@ active
                     @foreach($items as $item)
                         <tr>
                             @php
+                            $taxName[] =  $item->tax_name.'@'.$item->tax_percentage;
+                            if ($item->tax_name != 'null') {
+                                $taxAmt +=  $item->subtotal;
+                             }
                             $orderForThisItem = $item->order()->first();
+                            $itemsSubtotal += $item->subtotal;
                             @endphp
                             @if($orderForThisItem)
 
-                            <td> {!! $orderForThisItem->getOrderLink($orderForThisItem->id,'my-order') !!}
+                            <td> {!! $orderForThisItem->getOrderLink($orderForThisItem->id,'my-order') !!}</td>
                            
-                                @elseif($order)
-                                <td>{!! $order !!}</td>
-                                <span>Renewed</span>
+                                @elseif($order != '--')
+                                <td>{!! $order !!}
+                                <span class='badge badge-warning'>Renewed</span></td>
                                 @else
                                 <td>--</td>
                                
                             @endif
-                            <td>{{$item->product_name}}</td>
+                            <td>{{$item->product_name}}
+
+
+                            </td>
+                             <td>{{currencyFormat(intval($item->regular_price),$code = $symbol)}}</td>
                             <td>{{$item->quantity}}</td>
-                            <td>{{currencyFormat(intval($item->regular_price),$code = $symbol)}}</td>
-                            <td>
-                                <?php $taxes = explode(',', $item->tax_name); ?>
-                                <ul class="list-unstyled">
-                                    @forelse($taxes as $tax)
-                                        <li>{{$tax}}</li>
-                                    @empty
-                                        <li>No Tax</li>
-                                    @endif
-                                </ul>
-                            </td>
-                            <td>
-                                <?php $taxes = explode(',', $item->tax_percentage); ?>
-                                <ul class="list-unstyled">
-                                    @forelse($taxes as $tax)
-                                        <li>{{$tax}}</li>
-                                    @empty
-                                        <li>No Tax Rates</li>
-                                    @endif
-                                </ul>
-                            </td>
-
-
                             <td>{{currencyFormat($item->subtotal,$code = $symbol)}}</td>
                         </tr>
                     @endforeach
                     </tbody>
                 </table>
-
                 <div class="invoice-summary">
                     <div class="row justify-content-end">
                         <div class="col-sm-4">
-                            <table class="table h6 text-dark"  style="text-align: right">
+                            <table class="table h6 text-dark" >
+                                 <tr>
+                                 <th>Subtotal</th>
+                                    <td>{{currencyFormat($itemsSubtotal,$code=$symbol)}}</td>
+                                </tr>
                                 @if($invoice->discount != null)
+                                <tr>
                                     <th>Discount</th>
                                     <td>{{currencyFormat($invoice->discount,$code=$symbol)}}</td>
+                                </tr>
                                 @endif
-                                <?php
-                                $tax_name = [];
-                                $tax_percentage = [];
-                                foreach($items as $key=>$item){
-                                    if(str_finish(',', $item->tax_name)){
-                                        $name = $item->tax_name;
+                          
 
-                                    }
-                                    if(str_finish(',', $item->tax_percentage)){
-                                        $rate = substr_replace($item->tax_percentage,'',-1);
-
-                                    }
-                                    $tax_name = explode(',',$name);
-                                    $tax_percentage = explode(',',$rate);
-                                }
-
-                                ?>
-
-                                @if(count($tax_name)>0 &&$tax_name[0] !='null')
+                                
                                     <?php
                                     $order = \App\Model\Order\Order::where('invoice_item_id',$item->id)->first();
                                     if($order != null) {
@@ -178,86 +170,44 @@ active
                                     } else {
                                         $productId =  App\Model\Product\Product::where('name',$item->product_name)->pluck('id')->first();
                                     }
-                                    $taxInstance= new \App\Http\Controllers\Front\CartController();
-                                    $taxes= $taxInstance->checkTax($productId);
+                                    $taxName = array_unique($taxName);
                                     ?>
-
-                                    @if ($currency['currency'] == 'INR' && $user->country == 'IN')
-                                        @if($set->state == $user->state)
-                                            <tr class="Taxes">
-                                                <th>
-                                                    <strong>CGST<span>@</span>{{$taxes['tax_attributes'][0]['c_gst']}}%</strong><br/>
-                                                    <strong>SGST<span>@</span>{{$taxes['tax_attributes'][0]['s_gst']}}%</strong><br/>
-
-                                                </th>
-                                                <td>
-                                                    <?php
-                                                    $cgst = \App\Http\Controllers\Front\CartController::taxValue($taxes['tax_attributes'][0]['c_gst'],$item->regular_price);
-                                                    $sgst = App\Http\Controllers\Front\CartController::taxValue($taxes['tax_attributes'][0]['s_gst'],$item->regular_price);
-                                                    ?>
-                                                    {{currencyFormat($cgst,$code = $symbol)}} <br/>
-                                                    {{currencyFormat($sgst,$code = $symbol)}} <br/> <br/>
-                                                </td>
-                                            </tr>
-                                        @endif
-                                        @if($set->state != $user->state && $taxes['tax_attributes'][0]['ut_gst'] == "NULL")
+                                    @foreach($taxName as $tax)
+                                    <?php
+                                    $taxDetails = explode('@', $tax);
+                                    ?>
+                                    @if ($taxDetails[0]!= 'null')
+                                            
+                                       
                                             <tr>
+                                                 <?php
+                                                $bifurcateTax = bifurcateTax($taxDetails[0],$taxDetails[1],\Auth::user()->currency, \Auth::user()->state, $taxAmt);
+                                                ?>
                                                 <th>
 
-                                                    <strong>IGST<span>@</span>{{$taxes['tax_attributes'][0]['i_gst']}}%</strong><br/>
+                                                    <strong>{!! $bifurcateTax['html'] !!}</strong>
+
 
                                                 </th>
                                                 <td>
-                                                    <?php
-                                                    $igst =  \App\Http\Controllers\Front\CartController::taxValue($taxes['tax_attributes'][0]['i_gst'],$item->regular_price);
-                                                    ?>
-                                                    {{currencyFormat($igst,$code = $symbol)}}  <br/>
+                                                   
+                                                    {!! $bifurcateTax['tax'] !!}
 
                                                 </td>
                                             </tr>
-                                        @endif
-                                        <tr>
-                                            @if($set->state != $user->state && $taxes['tax_attributes'][0]['ut_gst'] != "NULL")
-                                                <th>
-                                                    <strong>UTGST<span>@</span>{{$taxes['tax_attributes'][0]['ut_gst']}}%</strong><br/>
-                                                    <strong>CGST<span>@</span>{{$taxes['tax_attributes'][0]['c_gst']}}%</strong><br/>
-
-
-                                                </th>
-                                                <td>
-                                                    <?php
-                                                    $utgst = \App\Http\Controllers\Front\CartController::taxValue($taxes['tax_attributes'][0]['ut_gst'],$item->regular_price);
-                                                    $cgst = \App\Http\Controllers\Front\CartController::taxValue($taxes['tax_attributes'][0]['c_gst'],$item->regular_price);
-                                                    ?>
-                                                    {{currencyFormat($utgst,$code = $symbol)}}<br/>
-                                                    {{currencyFormat($cgst,$code = $symbol)}}<br/>
-
-
-                                                </td>
-                                        </tr>
+                                     
+                                       
                                     @endif
+                                    @endforeach
+                                @if($invoice->processing_fee != null && $invoice->processing_fee != '0%')
+                                <tr>
+                                    <th>Processing fee</th>
+                                    <td>{{$invoice->processing_fee}}</td>
+                                </tr>
                                 @endif
 
-                                @if ($currency['currency'] != 'INR')
-                                    <tr>
-                                        <th>
-                                            <strong>{{ucfirst($tax_name[0])}}<span>@</span>{{$tax_percentage[0]}} </strong>
-                                        </th>
-                                        <td>
-                                            <?php
-                                            //   dd()
-                                            if($tax_percentage[0] == "") {
-                                                $tax_percentage[0] = 0;
-                                            }
-                                            $value = \App\Http\Controllers\Front\CartController::taxValue($tax_percentage[0],$item->regular_price);
-                                            ?>
-                                            {{currencyFormat($value,$code = $symbol)}}
-
-                                        </td>
-
-                                    </tr>
-                                @endif
-                                @endif
+                                
+                               
 
                                 <tr class="h4">
                                     <th>Total</th>

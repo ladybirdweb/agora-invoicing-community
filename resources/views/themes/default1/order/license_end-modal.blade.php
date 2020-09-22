@@ -19,7 +19,7 @@
                           <div id="response3"></div>
 
                     <div class="input-group date" id="licenseEnds" data-target-input="nearest">
-                        <input type="text" name="ends_at" id="newDate" class="form-control datetimepicker-input" autocomplete="off"  data-target="#licenseEnds"/>
+                        <input type="text" name="ends_at" id="newDate2" class="form-control datetimepicker-input" autocomplete="off"  data-target="#licenseEnds"/>
                         <div class="input-group-append" data-target="#licenseEnds" data-toggle="datetimepicker">
                             <div class="input-group-text"><i class="fa fa-calendar"></i></div>
 

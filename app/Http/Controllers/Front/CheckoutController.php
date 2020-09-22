@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Front;
 
-use App\ApiKey;
 use App\Http\Controllers\Common\MailChimpController;
 use App\Http\Controllers\Common\TemplateController;
 use App\Model\Common\Setting;
@@ -14,13 +13,17 @@ use App\Model\Payment\Plan;
 use App\Model\Product\Price;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
+use App\Traits\TaxCalculation;
 use App\User;
 use Bugsnag;
 use Cart;
+use Darryldecode\Cart\CartCondition;
 use Illuminate\Http\Request;
 
 class CheckoutController extends InfoController
 {
+    use TaxCalculation;
+
     public $subscription;
     public $plan;
     public $templateController;
@@ -100,16 +103,11 @@ class CheckoutController extends InfoController
                 return redirect('paynow/'.$invoice->id)->with('fails', 'Payment cannot be processed. Please try the other gateway.');
             }
         }
-        if (\Session::has('items')) {
-            $content = \Session::get('items');
-            $attributes = $this->getAttributes($content);
-        } else {
-            $content = Cart::getContent();
-            $attributes = $this->getAttributes($content);
 
-            $content = Cart::getContent();
-        }
+        $content = Cart::getContent();
+        $taxConditions = $this->getAttributes($content);
 
+        $content = Cart::getContent();
         try {
             $domain = $request->input('domain');
             if ($domain) {//Store the Domain  in session when user Logged In
@@ -118,7 +116,7 @@ class CheckoutController extends InfoController
                 }
             }
 
-            return view('themes.default1.front.checkout', compact('content', 'attributes'));
+            return view('themes.default1.front.checkout', compact('content', 'taxConditions'));
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
@@ -138,29 +136,29 @@ class CheckoutController extends InfoController
     {
         try {
             if (count($content) > 0) {//after ProductPurchase this is not true as cart is cleared
-                foreach ($content as $key => $item) {
-                    $attributes[] = $item->attributes;
-                    $cart_currency = $attributes[0]['currency']['currency']; //Get the currency of Product in the cart
+                foreach ($content as $item) {
+                    $cart_currency = $item->attributes->currency; //Get the currency of Product in the cart
                     $currency = \Auth::user()->currency != $cart_currency ? \Auth::user()->currency : $cart_currency; //If User Currency and cart currency are different the currency es set to user currency.
                     if ($cart_currency != $currency) {
                         $id = $item->id;
                         Cart::remove($id);
                     }
-                    $require_domain = $this->product->where('id', $item->id)->first()->require_domain;
+                    $require_domain = $item->associatedModel->require_domain;
                     $require = [];
-                    if ($require_domain == 1) {
+                    if ($require_domain) {
                         $require[$key] = $item->id;
                     }
-                    $cont = new CartController();
-                    $taxConditions = $cont->checkTax($item->id); //Calculate Tax Condition by passing ProductId
+                    $taxConditions = $this->calculateTax($item->id, \Auth::user()->state, \Auth::user()->country); //Calculate Tax Condition by passing ProductId
+                    Cart::condition($taxConditions);
                     Cart::remove($item->id);
 
                     //Return array of Product Details,attributes and their conditions
                     $items[] = ['id' => $item->id, 'name' => $item->name, 'price' => $item->price,
-                        'quantity'       => $item->quantity, 'attributes' => ['currency'=> $attributes[0]['currency'],
-                            'agents'                                                        => $attributes[0]['agents'], 'tax'=>$taxConditions['tax_attributes'], ], 'conditions'=>$taxConditions['conditions'], ];
+                        'quantity'       => $item->quantity, 'attributes' => ['currency'=> $cart_currency, 'symbol'=>$item->attributes->symbol, 'agents'=> $item->attributes->agents], 'associatedModel' => Product::find($item->id), 'conditions' => $taxConditions, ];
                 }
                 Cart::add($items);
+
+                return $taxConditions;
             }
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
@@ -173,12 +171,16 @@ class CheckoutController extends InfoController
     public function payNow($invoiceid)
     {
         try {
+            $paid = 0;
             $invoice = $this->invoice->find($invoiceid);
             if ($invoice->user_id != \Auth::user()->id) {
                 throw new \Exception('Cannot initiate payment. Invalid modification of data');
             }
+            if (count($invoice->payment()->get())) {//If partial payment is made
+                $paid = array_sum($invoice->payment()->pluck('amount')->toArray());
+                $invoice->grand_total = $invoice->grand_total - $paid;
+            }
             $items = new \Illuminate\Support\Collection();
-            // dd($items);
             if ($invoice) {
                 $items = $invoice->invoiceItem()->get();
                 if (count($items) > 0) {
@@ -186,7 +188,7 @@ class CheckoutController extends InfoController
                 }
             }
 
-            return view('themes.default1.front.paynow', compact('invoice', 'items', 'product'));
+            return view('themes.default1.front.paynow', compact('invoice', 'items', 'product', 'paid'));
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
@@ -197,15 +199,16 @@ class CheckoutController extends InfoController
 
     public function postCheckout(Request $request)
     {
-        $cost = $request->input('cost');
-        if (Cart::getSubTotal() != 0 || $cost > 0) {
-            $this->validate($request, [
-                'payment_gateway'=> 'required',
-            ], [
-                'payment_gateway.required'=> 'Please Select a Payment Gateway',
-            ]);
-        }
         try {
+            $cost = $request->input('cost');
+            if (Cart::getSubTotal() != 0 || $cost > 0) {
+                $this->validate($request, [
+                    'payment_gateway'=> 'required',
+                ], [
+                    'payment_gateway.required'=> 'Please Select a Payment Gateway',
+                ]);
+            }
+            // try {
             $invoice_controller = new \App\Http\Controllers\Order\InvoiceController();
             $info_cont = new \App\Http\Controllers\Front\InfoController();
             $payment_method = $request->input('payment_gateway');
@@ -213,107 +216,54 @@ class CheckoutController extends InfoController
             $paynow = $this->checkregularPaymentOrRenewal($request->input('invoice_id'));
             $cost = $request->input('cost');
             $state = $this->getState();
-
-            if ($paynow === false) {
-                /*
-                 * Do order, invoicing etc
-                 */
-
+            if ($paynow === false) {//When regular payment
                 $invoice = $invoice_controller->generateInvoice();
-
-                $pay = $this->payment($payment_method, $status = 'pending');
-                $payment_method = $pay['payment'];
-                $status = $pay['status'];
-                $invoice_no = $invoice->number;
-                $date = $this->getDate($invoice);
-                $invoiceid = $invoice->id;
-                $processingFee = $this->getProcessingFee($payment_method, $invoice->currency);
-                CartController::updateFinalPrice(new Request(['processing_fee'=>$processingFee]));
-                $amount = Cart::getTotal();
-                $url = '';
-                $cart = Cart::getContent();
-                $invoices = $this->invoice->find($invoiceid);
-                $items = new \Illuminate\Support\Collection();
-                if ($invoices) {
+                $amount = intval(Cart::getSubTotal());
+                if ($amount) {//If payment is for paid product
+                    \Event::dispatch(new \App\Events\PaymentGateway(['request' => $request, 'invoice' => $invoice]));
+                } else {
+                    $date = getDateHtml($invoice->date);
+                    $product = $this->product($invoice->id);
                     $items = $invoice->invoiceItem()->get();
-                    $product = $this->product($invoiceid);
-                    $content = Cart::getContent();
-                    $attributes = $this->getAttributes($content);
+                    $url = '';
+                    $this->checkoutAction($invoice); //For free product generate invoice without payment
+                    $url = view('themes.default1.front.postCheckoutTemplate', compact('invoice', 'date', 'product', 'items', ))->render();
+                    // }
+                    \Cart::clear();
+
+                    return redirect('checkout')->with('success', $url);
                 }
-            } else {
-                $items = new \Illuminate\Support\Collection();
+            } else {//When renewal, pending payments
                 $invoiceid = $request->input('invoice_id');
                 $invoice = $this->invoice->find($invoiceid);
-                $processingFee = $this->getProcessingFee($payment_method, $invoice->currency);
-                $invoice->grand_total = intval($invoice->grand_total * (1 + $processingFee / 100));
-                $invoice_no = $invoice->number;
-                $date = $this->getDate($invoice);
-                $items = $invoice->invoiceItem()->get();
-                $product = $this->product($invoiceid);
-                $amount = $invoice->grand_total;
-                $content = Cart::getContent();
-                $attributes = $this->getAttributes($content);
-            }
-            if (Cart::getSubTotal() != 0 || $amount > 0) {
-                if ($payment_method == 'razorpay') {
-                    $rzp_key = ApiKey::where('id', 1)->value('rzp_key');
-                    $rzp_secret = ApiKey::where('id', 1)->value('rzp_secret');
-                    $apilayer_key = ApiKey::where('id', 1)->value('apilayer_key');
-
-                    return view(
-                        'themes.default1.front.postCheckout',
-                        compact(
-                            'amount',
-                            'invoice_no',
-                            'invoiceid',
-                            'payment_method',
-                            'invoice',
-                            'items',
-                            'product',
-                            'paynow',
-                            'content',
-                            'attributes',
-                            'rzp_key',
-                            'rzp_secret',
-                            'apilayer_key'
-                        )
-                    );
+                $amount = intval($invoice->grand_total);
+                if ($amount) {//If payment is for paid product
+                    \Event::dispatch(new \App\Events\PaymentGateway(['request' => $request, 'invoice' => $invoice]));
                 } else {
-                    \Event::dispatch(new \App\Events\PaymentGateway(['request' => $request, 'cart' => Cart::getContent(), 'order' => $invoice]));
-                }
-            } else {
-                if ($paynow == false) {//Regular Payment for free Product
-                    $action = $this->checkoutAction($invoice);
-                } else {//Renewal Payment for free Product
                     $control = new \App\Http\Controllers\Order\RenewController();
-                    $control->successRenew($invoice);
                     $payment = new \App\Http\Controllers\Order\InvoiceController();
                     $payment->postRazorpayPayment($invoice);
+                    $date = getDateHtml($invoice->date);
+                    $product = $this->product($invoice->id);
+                    $items = $invoice->invoiceItem()->get();
+                    $url = '';
+                    $this->checkoutAction($invoice); //For free product generate invoice without payment
+                    $url = view('themes.default1.front.postCheckoutTemplate', compact('invoice', 'date', 'product', 'items', ))->render();
+                    \Cart::clear();
+
+                    return redirect('checkout')->with('success', $url);
                 }
-
-                // $check_product_category = $this->product($invoiceid);
-                $url = '';
-                // if ($check_product_category->category) {
-                $url = view('themes.default1.front.postCheckoutTemplate', compact(
-                        'invoice',
-                        'date',
-                        'product',
-                        'items',
-                        'attributes',
-                        'state'
-                    ))->render();
-                // }
-
-                \Cart::clear();
-
-                return redirect()->back()->with('success', $url);
             }
         } catch (\Exception $ex) {
-            app('log')->error($ex->getMessage());
-            Bugsnag::notifyException($ex);
-
-            return redirect()->back()->with('fails', $ex->getMessage());
+            dd($ex);
         }
+
+        //          catch (\Exception $ex) {
+        //     app('log')->error($ex->getMessage());
+        //     Bugsnag::notifyException($ex);
+
+        //     return redirect()->back()->with('fails', $ex->getMessage());
+        // }
     }
 
     private function getProcessingFee($paymentMethod, $currency)
@@ -325,6 +275,22 @@ class CheckoutController extends InfoController
         } catch (\Exception $e) {
             throw new \Exception('Invalid modification of data');
         }
+    }
+
+    public static function updateFinalPrice(Request $request)
+    {
+        $value = '0%';
+        if ($request->input('processing_fee')) {
+            $value = $request->input('processing_fee').'%';
+        }
+
+        $updateValue = new CartCondition([
+            'name'   => 'Processing fee',
+            'type'   => 'fee',
+            'target' => 'total',
+            'value'  => $value,
+        ]);
+        \Cart::condition($updateValue);
     }
 
     public function checkregularPaymentOrRenewal($invoiceid)
@@ -347,6 +313,11 @@ class CheckoutController extends InfoController
             //get elements from invoice
             $invoice_number = $invoice->number;
             $invoice_id = $invoice->id;
+
+            foreach (\Cart::getConditionsByType('fee') as $value) {
+                $invoice->processing_fee = $value->getValue();
+            }
+            // $invoice->processing_fee =
             $invoice->status = 'success';
             $invoice->save();
             $user_id = \Auth::user()->id;

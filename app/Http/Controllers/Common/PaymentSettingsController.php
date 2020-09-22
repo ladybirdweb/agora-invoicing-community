@@ -65,7 +65,7 @@ class PaymentSettingsController extends Controller
                                                 </div>
                                             </div>
                                         </div>';
-                                $action = $settings .$activate;
+                                $action = $settings.$activate;
                             } else {
                                 $action = '';
                             }

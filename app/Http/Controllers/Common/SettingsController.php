@@ -7,10 +7,10 @@ use App\Model\Common\Mailchimp\MailchimpSetting;
 use App\Model\Common\Setting;
 use App\Model\Common\StatusSetting;
 use App\Model\Common\Template;
+use App\Model\Mailjob\QueueService;
 use App\Model\Payment\Currency;
 use App\Model\Plugin;
 use App\User;
-use App\Model\Mailjob\QueueService;
 use Bugsnag;
 use GrahamCampbell\Markdown\Facades\Markdown;
 use Illuminate\Http\Request;
@@ -38,9 +38,9 @@ class SettingsController extends BaseSettingsController
         if (! $settings->where('id', '1')->first()) {
             $settings->create(['company' => '']);
         }
-        $isRedisConfigured = QueueService::where('short_name','redis')->value('status');
+        $isRedisConfigured = QueueService::where('short_name', 'redis')->value('status');
 
-        return view('themes.default1.common.admin-settings',compact('isRedisConfigured'));
+        return view('themes.default1.common.admin-settings', compact('isRedisConfigured'));
         //return view('themes.default1.common.settings', compact('setting', 'template'));
     }
 

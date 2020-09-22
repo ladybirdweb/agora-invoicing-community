@@ -5,9 +5,9 @@ namespace Tests\Unit\Admin\Dashboard;
 use App\Http\Controllers\DashboardController;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
+use App\Model\Order\Payment;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
-use App\Model\Order\Payment;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -33,7 +33,7 @@ class DashboardControllerTest extends DBTestCase
         $this->getLoggedInUser();
         $user = $this->user;
         $invoice = factory(Invoice::class)->create(['user_id'=>$user->id]);
-        Payment::create(['invoice_id'=>$invoice->id,'user_id'=>$user->id, 'amount'=>'10000']);
+        Payment::create(['invoice_id'=>$invoice->id, 'user_id'=>$user->id, 'amount'=>'10000']);
         $controller = new \App\Http\Controllers\DashboardController();
         $allowedCurrencies2 = 'INR';
         $response = $controller->getTotalSales($allowedCurrencies2);
@@ -47,7 +47,7 @@ class DashboardControllerTest extends DBTestCase
         $this->getLoggedInUser();
         $user = $this->user;
         $invoice = factory(Invoice::class)->create(['user_id'=>$user->id]);
-        Payment::create(['invoice_id'=>$invoice->id,'user_id'=>$user->id, 'amount'=>'10000']);
+        Payment::create(['invoice_id'=>$invoice->id, 'user_id'=>$user->id, 'amount'=>'10000']);
         $controller = new \App\Http\Controllers\DashboardController();
         $allowedCurrencies2 = 'INR';
         $response = $controller->getYearlySales($allowedCurrencies2);

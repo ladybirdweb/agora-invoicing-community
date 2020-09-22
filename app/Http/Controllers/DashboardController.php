@@ -335,9 +335,9 @@ class DashboardController extends Controller
             ->where('subscriptions.version', '!=', '')
             ->select('orders.id', \DB::raw("concat(first_name, ' ', last_name) as client_name"), 'products.name as product_name',
                 'subscriptions.version as product_version', 'client as client_id', 'subscriptions.update_ends_at as subscription_ends_at')
-            ->orderBy('subscriptions.version', 'asc')
+            ->orderBy('subscription_ends_at', 'asc')
             ->take(30)->get()->map(function ($element) {
-                $element->subscription_ends_at = getDateHtml($element->subscription_ends_at);
+                $element->subscription_ends_at = $element->subscription_ends_at;
                 $appUrl = \Config::get('app.url');
                 $clientProfileUrl = $appUrl.'/clients/'.$element->client_id;
                 $element->client_name = "<a href=$clientProfileUrl>$element->client_name</a>";

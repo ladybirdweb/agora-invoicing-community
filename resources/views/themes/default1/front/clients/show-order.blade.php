@@ -69,7 +69,7 @@ active
                                     <button class="btn btn-danger mb-2 btn-sm"  id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}">
                                         Reissue License</button></td>
                             </tr>
-                            <tr><td><b>Installation Path:</b></td>
+                            <tr><td><b>Installation Path | IP:</b></td>
                                 @if($installationDetails)
 
                                     <td>@foreach($installationDetails['installed_path'] as $paths)
@@ -85,21 +85,7 @@ active
                             </tr>
 
 
-                            <tr><td><b>Installation IP:</b></td>
-                                @if($installationDetails)
-                                    <td>
-                                        @foreach($installationDetails['installed_ip'] as $paths)
-                                            {{$paths}}<br>
-                                        @endforeach
-                                    </td>
-                                @else
-                                    <td>
-                                        --
-                                    </td>
-                                @endif
-
-                                <td></td>
-                            </tr>
+                            
                         @endif
                         <tr>
                             <td><b>Version:</b></td>

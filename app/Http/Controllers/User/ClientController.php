@@ -98,10 +98,10 @@ class ClientController extends AdvanceSearchController
                         })
                         ->addColumn('action', function ($model) {
                             return '<a href='.url('clients/'.$model->id.'/edit')
-                            ." class='btn btn-sm btn-secondary'".tooltip('Edit')."
+                            ." class='btn btn-sm btn-secondary btn-xs'".tooltip('Edit')."
                             <i class='fa fa-edit' style='color:white;'> </i></a>"
                                     .'  <a href='.url('clients/'.$model->id)
-                                    ." class='btn btn-sm btn-secondary'".tooltip('View')."
+                                ." class='btn btn-sm btn-secondary btn-xs'".tooltip('View')."
                                     <i class='fa fa-eye' style='color:white;'> </i></a>";
                         })
 
@@ -229,7 +229,7 @@ class ClientController extends AdvanceSearchController
             $user->ip = $location['ip'];
 
             $user->save();
-            if (emailSendingStatus() && $user->active) {
+            if (emailSendingStatus() && !$user->active) {
                 $this->sendWelcomeMail($user);
             }
             $mailchimpStatus = StatusSetting::first()->value('mailchimp_status');

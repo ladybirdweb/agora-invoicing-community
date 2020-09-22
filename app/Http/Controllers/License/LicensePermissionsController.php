@@ -62,7 +62,7 @@ class LicensePermissionsController extends Controller
 
                 return "<p><button data-toggle='modal' 
              data-id=".$model->id." data-permission= '$selectedPermission' 
-             class='btn btn-sm btn-secondary addPermission'><i class='fa fa-plus'
+             class='btn btn-sm btn-secondary get-license-type addPermission'><i class='fa fa-plus'
              style='color:white;'> </i>&nbsp;&nbsp;Add Permissions</button>&nbsp;</p>";
             })
             ->rawColumns(['checkbox', 'type_name', 'permissions', 'action'])

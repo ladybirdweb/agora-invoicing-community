@@ -146,7 +146,7 @@ Sign in or Register
                                                             </div>
 
                                                         </div>
-                                                        <h6 id="usercheck"></h6>
+                                                        <!-- <h6 id="usercheck"></h6> -->
 
 
                                                     </div>
@@ -163,7 +163,7 @@ Sign in or Register
                                                             </div>
 
                                                         </div>
-                                                        <h6 id="passcheck"></h6>
+                                                        <!-- <h6 id="passcheck"></h6> -->
                                                         <!--<input type="password" value="" class="form-control input-lg">-->
 
                                                     </div>
@@ -566,86 +566,6 @@ Sign in or Register
 
 
 
-
-        //Login Form Jquery validation
-        $(document).ready(function(){
-            $('#usercheck').hide();
-            $('#passcheck').hide();
-
-            var userErr = true;
-            var passErr = true;
-
-            $('#formoid').submit(function(){
-                function username_check(){
-                    var user_val = $('#username').val();
-                    if(user_val.length == ''){
-                        $('#usercheck').show();
-                        $('#usercheck').html("Please Enter Username/Email");
-                        $('#usercheck').focus();
-                        $('#username').css("border-color","red");
-                        $('#usercheck').css({"color":"red","margin-top":"5px"});
-
-                        // userErr =false;
-                        // return false;
-                    }
-                    else if((user_val.length < 3) || (user_val.length > 50))  {
-                        $('#usercheck').show();
-                        $('#usercheck').html("Username Length must be between 3 to 20 characters");
-                        $('#usercheck').focus();
-                        $('#username').css("border-color","red");
-                        $('#usercheck').css({"color":"red","margin-top":"5px"});
-
-                        // userErr =false;
-                        // return false;
-                    }
-                    else{
-                        $('#usercheck').hide();
-                        $('#username').css("border-color","");
-                        return true;
-                    }
-                }
-
-
-                function password_check(){
-                    var passStore= $('#pass').val()
-                    if(passStore.length == ''){
-                        $('#passcheck').show();
-                        $('#passcheck').html("Please Enter Password");
-                        $('#passcheck').focus();
-                        $('#pass').css("border-color","red");
-                        $('#passcheck').css({"color":"red","margin-top":"5px"});
-                        passErr =false;
-                        return false;
-                    }
-                    else if((passStore.length < 3) || (passStore.length > 20)){
-                        $('#passcheck').show();
-                        $('#passcheck').html("Password Length must be between 3 and 10");
-                        $('#passcheck').focus();
-
-                        $('#pass').css("border-color","red");
-                        $('#passcheck').css({"color":"red","margin-top":"5px"});
-                        passErr =false;
-                        return false;
-                    }
-                    else{
-                        $('#passcheck').hide();
-                        $('#pass').css("border-color","");
-                        return true;
-                    }
-                }
-                username_check();
-                password_check();
-                if(username_check() && password_check()){
-                    return true;
-                }
-                else{
-                    return false;
-                }
-            });
-
-        });
-
-
         function verify_otp_check(){
             var userOtp = $('#oneTimePassword').val();
             if (userOtp.length < 4){
@@ -990,84 +910,7 @@ Sign in or Register
 
         }
 
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        $(document).ready(function(){
-            $('#usercheck').hide();
-            $('#passcheck').hide();
-
-            var userErr = true;
-            var passErr = true;
-
-            $('#formoid').submit(function(){
-                function username_check(){
-                    var user_val = $('#username').val();
-                    if(user_val.length == ''){
-                        $('#usercheck').show();
-                        $('#usercheck').html("Please Enter Username/Email");
-                        $('#usercheck').focus();
-                        $('#username').css("border-color","red");
-                        $('#usercheck').css({"color":"red","margin-top":"5px"});
-
-                        // userErr =false;
-                        // return false;
-                    }
-                    else if((user_val.length < 3) || (user_val.length > 50))  {
-                        $('#usercheck').show();
-                        $('#usercheck').html("Username Length must be between 3 to 20 characters");
-                        $('#usercheck').focus();
-                        $('#username').css("border-color","red");
-                        $('#usercheck').css({"color":"red","margin-top":"5px"});
-
-                        // userErr =false;
-                        // return false;
-                    }
-                    else{
-                        $('#usercheck').hide();
-                        $('#username').css("border-color","");
-                        return true;
-                    }
-                }
-
-
-                function password_check(){
-                    var passStore= $('#pass').val()
-                    if(passStore.length == ''){
-                        $('#passcheck').show();
-                        $('#passcheck').html("Please Enter Password");
-                        $('#passcheck').focus();
-                        $('#pass').css("border-color","red");
-                        $('#passcheck').css({"color":"red","margin-top":"5px"});
-                        passErr =false;
-                        return false;
-                    }
-                    else if((passStore.length < 3) || (passStore.length > 20)){
-                        $('#passcheck').show();
-                        $('#passcheck').html("Password Length must be between 3 and 10");
-                        $('#passcheck').focus();
-
-                        $('#pass').css("border-color","red");
-                        $('#passcheck').css({"color":"red","margin-top":"5px"});
-                        passErr =false;
-                        return false;
-                    }
-                    else{
-                        $('#passcheck').hide();
-                        $('#pass').css("border-color","");
-                        return true;
-                    }
-                }
-                username_check();
-                password_check();
-                if(username_check() && password_check()){
-                    return true;
-                }
-                else{
-                    return false;
-                }
-            });
-
-        });
+  
 
 
         //robot validation for Login Form

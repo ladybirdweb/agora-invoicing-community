@@ -56,10 +56,10 @@ class QueueService extends Model
         $id = $this->attributes['id'];
         $status = $this->attributes['status'];
         $html = '<form method="post" action='.url('queue/'.$id.'/activate').'>'.'<input type="hidden" name="_token" value='.\Session::token().'>'.'
-                                <button type="submit"  class="btn btn-secondary btn-sm"><i class="fa fa-check-circle">&nbsp;&nbsp;</i>'.\Lang::get('message.activate').'</button></form>';
+                                <button type="submit"  class="btn btn-secondary btn-sm btn-xs"><i class="fa fa-check-circle">&nbsp;&nbsp;</i>'.\Lang::get('message.activate').'</button></form>';
 
         if ($status == 1) {
-            $html = "<a href='#' class='btn btn-secondary btn-sm disabled' ><i class='fa fa-check-circle'>&nbsp;&nbsp;</i>".\Lang::get('message.activate').'</a>';
+            $html = "<a href='#' class='btn btn-secondary btn-sm btn-xs disabled' ><i class='fa fa-check-circle'>&nbsp;&nbsp;</i>".\Lang::get('message.activate').'</a>';
         }
 
         return $html;

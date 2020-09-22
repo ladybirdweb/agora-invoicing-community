@@ -84,7 +84,7 @@ class PromotionController extends BasePromotionController
                         })
                         ->addColumn('action', function ($model) {
                             return '<a href='.url('promotions/'.$model->id.'/edit')
-                            ." class='btn btn-sm btn-secondary'".tooltip('Edit')."<i class='fa fa-edit' 
+                            ." class='btn btn-sm btn-secondary btn-xs'".tooltip('Edit')."<i class='fa fa-edit' 
                             style='color:white;'> </i></a>";
                         })
                          ->rawColumns(['checkbox', 'code', 'products', 'action'])

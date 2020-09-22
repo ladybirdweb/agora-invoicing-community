@@ -48,7 +48,7 @@ class LicenseSettingsController extends LicensePermissionsController
             ->addColumn('action', function ($model) {
                 return "<p><button data-toggle='modal' 
              data-id=".$model->id." data-name= '$model->name' 
-             class='btn btn-sm btn-secondary editType'".tooltip('Edit')."<i class='fa fa-edit'
+             class='btn btn-sm btn-secondary btn-xs editType'".tooltip('Edit')."<i class='fa fa-edit'
              style='color:white;'> </i></button>&nbsp;</p>";
             })
             ->rawColumns(['checkbox', 'type_name', 'action'])

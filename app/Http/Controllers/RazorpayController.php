@@ -81,7 +81,7 @@ class RazorpayController extends Controller
                     if ($invoice->grand_total) {
                         SettingsController::sendPaymentSuccessMailtoAdmin($invoice->currency, $invoice->grand_total, \Auth::user(), $invoice->invoiceItem()->first()->product_name);
                     }
-
+                    
                     $view = $this->getViewMessageAfterRenew($invoice, $state, $currency);
                     $status = $view['status'];
                     $message = $view['message'];
@@ -90,10 +90,12 @@ class RazorpayController extends Controller
 
                 return redirect('checkout')->with($status, $message);
             } catch (\Razorpay\Api\Errors\SignatureVerificationError | \Razorpay\Api\Errors\BadRequestError | \Razorpay\Api\Errors\GatewayError | \Razorpay\Api\Errors\ServerError $e) {
+                dd($e);
                 SettingsController::sendFailedPaymenttoAdmin($invoice->grand_total, $e->getMessage());
 
                 return redirect('checkout')->with('fails', 'Your Payment was declined. '.$e->getMessage().'. Please try again or try the other gateway');
             } catch (\Exception $e) {
+                dd($e);
                 return redirect('checkout')->with('fails', 'Your Payment was declined. '.$e->getMessage().'. Please try again or try the other gateway');
             }
         }

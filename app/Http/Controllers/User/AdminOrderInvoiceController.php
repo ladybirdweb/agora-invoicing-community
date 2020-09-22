@@ -82,15 +82,15 @@ class AdminOrderInvoiceController extends Controller
                             $check = $cont->checkExecution($model->id);
                             if ($check == false) {
                                 $action = '<p><form method="post" action='.url('order/execute?invoiceid='.$model->id).'>'.'<input type="hidden" name="_token" value='.\Session::token().'>'.'
-                                    <button type="submit" style="margin-top:-10px;" class="btn btn-sm btn-secondary"'.tooltip('Execute&nbsp;Order').'<i class="fa fa-tasks" style="color:white;"></i></button></form></p>';
+                                    <button type="submit" style="margin-top:-10px;" class="btn btn-sm btn-secondary btn-xs"'.tooltip('Execute&nbsp;Order').'<i class="fa fa-tasks" style="color:white;"></i></button></form></p>';
                             }
                             $editAction = '<a href='.url('invoices/edit/'.$model->id)
-                                ." class='btn btn-sm btn-secondary'".tooltip('Edit')."
+                                ." class='btn btn-sm btn-secondary btn-xs'".tooltip('Edit')."
                                 <i class='fa fa-edit' style='color:white;'>
                                  </i></a>";
 
                             return '<a href='.url('invoices/show?invoiceid='.$model->id)
-                            ." class='btn btn-sm btn-secondary' ".tooltip('View')."<i class='fa fa-eye' 
+                            ." class='btn btn-sm btn-secondary btn-xs' ".tooltip('View')."<i class='fa fa-eye' 
                             style='color:white;'></i></a>"
                                     ."   $editAction $action";
                         })
@@ -145,7 +145,7 @@ class AdminOrderInvoiceController extends Controller
                          })
                         ->addColumn('action', function ($model) {
                             return '<a href='.url('orders/'.$model->id)." 
-                            class='btn btn-sm btn-secondary'".tooltip('View')."<i class='fa fa-eye' 
+                            class='btn btn-sm btn-secondary btn-xs'".tooltip('View')."<i class='fa fa-eye' 
                             style='color:white;'> </i></a>";
                         })
                         ->rawColumns(['checkbox', 'date', 'product', 'number', 'version', 'expiry', 'status', 'action'])
@@ -190,7 +190,7 @@ class AdminOrderInvoiceController extends Controller
                          ->addColumn('action', function ($model) {
                              '<input type="hidden" class="paymentid" value="{{$model->id}}">';
                              if ($model->invoice_id == 0) {
-                                 return '<a href='.url('payments/'.$model->id.'/edit/')." class='btn btn-sm btn-secondary' ".tooltip('Edit')." <i class='fa fa-edit' style='color:white;'> </i></a>";
+                                 return '<a href='.url('payments/'.$model->id.'/edit/')." class='btn btn-sm btn-secondary btn-xs' ".tooltip('Edit')." <i class='fa fa-edit' style='color:white;'> </i></a>";
                              } else {
                                  return '--';
                              }

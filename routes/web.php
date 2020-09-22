@@ -354,6 +354,7 @@
 
             Route::post('queue/{queue}/activate', 'Jobs\QueueController@activate');
             Route::get('form/queue', ['as' => 'queue.form', 'uses' => 'Jobs\QueueController@getForm']);
+            // Route::get('queue-monitoring', 'Jobs\QueueController@monitorQueues']);
 
             /*
              * Chat Script

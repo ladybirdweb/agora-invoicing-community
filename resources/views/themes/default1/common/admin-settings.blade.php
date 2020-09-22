@@ -33,12 +33,15 @@ Settings
         line-height: 30px;
     }
     .settingdivblue {
-        width: 52%;
+        width: 45%;
         height: 75px;
         margin: 0 auto;
         text-align: center;
         border: 5px solid #C4D8E4;
         border-radius: 100%;
+    }
+    .fa-stack {
+        position:inherit;
     }
 </style>
 <div class="card card-secondary card-outline">
@@ -136,7 +139,7 @@ Settings
                         <div class="settingdivblue">
                             <a href="{{url('system-managers')}}">
                                 <span class="fa-stack fa-2x">
-                                    <i class="fa fa-users"></i>
+                                    <i class="fa fa-users fa-stack-1x"></i>
                                 </span>
                             </a>
                         </div>
@@ -292,6 +295,19 @@ Settings
                         <p class="box-title" >Queues</p>
                     </div>
                 </div>
+
+                 <div class="col-md-2 col-sm-6">
+                    <div class="settingiconblue">
+                        <div class="settingdivblue">
+                            <a href="{{url('horizon')}}">
+                                <span class="fa-stack fa-2x">
+                                    <i class="fa fa-desktop fa-stack-1x"></i>
+                                </span>
+                            </a>
+                        </div>
+                        <p class="box-title" >Queue Monitoring</p>
+                    </div>
+                </div>
                
         </div>
         <!-- /.row -->
@@ -344,7 +360,7 @@ Settings
                         <div class="settingdivblue">
                             <a href="{{ url('apikeys') }}">
                                 <span class="fa-stack fa-2x">
-                                    <i class="fa fa-cogs"></i>
+                                    <i class="fa fa-cogs fa-stack-1x"></i>
                                 </span>
                             </a>
                         </div>
@@ -397,7 +413,7 @@ Settings
                         <div class="settingdivblue">
                             <a href="{{url('get-country')}}">
                                 <span class="fa-stack fa-2x">
-                                    <i class="fa fa-flag-checkered"></i>
+                                    <i class="fa fa-flag-checkered fa-stack-1x"></i>
                                 </span>
                             </a>
                         </div>

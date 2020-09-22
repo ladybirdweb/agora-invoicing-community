@@ -107,10 +107,10 @@ Order
                                                        </td>
                                                    </tr>
                                                    <tr>
-                                                       <td><b>Installation Path:</b></td>
+                                                       <td><b>Installation Path | IP:</b></td>
                                                        @if(count($installationDetails['installed_path']) > 0)
                                                            <td>@foreach($installationDetails['installed_path'] as $paths)
-                                                                   <li>{{$paths}}</li>
+                                                                   <li>{!! $paths !!}</li>
                                                                @endforeach
                                                            </td>
                                                        @else
@@ -121,22 +121,7 @@ Order
                                                        <td></td>
                                                    </tr>
 
-                                                   <tr>
-                                                       <td><b>Installation IP:</b></td>
-                                                       @if(count($installationDetails['installed_path']) > 0)
-                                                           <td>
-                                                               @foreach($installationDetails['installed_ip'] as $paths)
-                                                                   <li>{{$paths}}</li>
-                                                               @endforeach
-                                                           </td>
-                                                       @else
-                                                           <td>
-                                                               --
-                                                           </td>
-
-                                                           <td></td>
-                                                   </tr>
-                                                    @endif
+                                                  
                                                    <tr>
                                                        <td><b>Installation Limit:</b></td>
                                                        <td>

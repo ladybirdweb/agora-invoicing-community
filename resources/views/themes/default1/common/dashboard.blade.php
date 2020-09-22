@@ -217,15 +217,15 @@ Dashboard
             'layout' => 'table',
             'collection'=> $expiredSubscriptions,
             'columns'=> ['User', 'Order No', 'Expiry', 'Days Passed', 'Product'],
-            'linkLeft'=> ['Place New Order' => url('invoice/generate')],
-            'linkRight'=> ['View Orders Expired' => url('orders?expiry='.$expiredSubscriptionDate.'&expiryTill='.$currentDate.'&p_un=paid')]
+            'linkRight'=> ['Place New Order' => url('invoice/generate')],
+            'linkLeft'=> ['View Orders Expired' => url('orders?expiry='.$expiredSubscriptionDate.'&expiryTill='.$currentDate.'&p_un=paid')]
      ])
 
          @foreach($expiredSubscriptions as $element)
              <tr>
                  <td><a href="{{$element->client_profile_link}}">{{ $element->client_name }}</a></td>
                  <td><a href="{{$element->order_link}}">{{$element->order_number}}</a></td>
-                 <td>{!! $element->subscription_ends_at !!}</td>
+                 <td style="color: red";>{!! $element->subscription_ends_at !!}</td>
                  <td>{{$element->days_difference}}</td>
                  <td>{{$element->product_name}}</td>
              </tr>
@@ -238,15 +238,15 @@ Dashboard
             'layout' => 'table',
             'collection'=> $subscriptions,
             'columns'=> ['User', 'Order No', 'Expiry', 'Days Left', 'Product'],
-            'linkLeft'=> ['Place New Order' => url('invoice/generate')],
-            'linkRight'=> ['View Orders Expiring Soon' => url('orders?expiry='.$currentDate.'&expiryTill='.$expiringSubscriptionDate.'&p_un=paid')]
+            'linkRight'=> ['Place New Order' => url('invoice/generate')],
+            'linkLeft'=> ['View Orders Expiring Soon' => url('orders?expiry='.$currentDate.'&expiryTill='.$expiringSubscriptionDate.'&p_un=paid')]
      ])
 
          @foreach($subscriptions as $element)
              <tr>
                  <td><a href="{{$element->client_profile_link}}">{{ $element->client_name }}</a></td>
                  <td><a href="{{$element->order_link}}">{{$element->order_number}}</a></td>
-                 <td style="color: red";>{!! $element->subscription_ends_at !!}</td>
+                 <td>{!! $element->subscription_ends_at !!}</td>
                  <td>{{$element->days_difference}}</td>
                  <td>{{$element->product_name}}</td>
              </tr>
@@ -261,7 +261,7 @@ Dashboard
      @php
         // NOTE: adding a filter between latest and olderst version for paid products for seeing outdated versions and sorting them in ascending order
         $latestVersion = \App\Model\Product\Subscription::orderBy("version", "desc")->groupBy("version")->skip(1)->value('version');
-        $oldestVersion = \App\Model\Product\Subscription::where('version', '!=', null)->where('version', '!=', '')->orderBy("version", "asc")->groupBy("version")->value('version');
+        $oldestVersion = \App\Model\Product\Subscription::where('version', '!=', null)->where('version', '!=', '')->orderBy("update_ends_at", "asc")->groupBy("version")->value('version');
      @endphp
 
      @component('mini_views.card', [
@@ -277,7 +277,11 @@ Dashboard
                  <td>{!! $element->client_name !!}</td>
                  <td>{!! $element->product_version !!}</td>
                  <td>{!! $element->product_name !!}</td>
-                 <td style="color: red;">{!! $element->subscription_ends_at !!}</td>
+                 @if($element->subscription_ends_at < Carbon\Carbon::now()->toDateTimeString())
+                 <td style="color: red;">{!! getDateHtml($element->subscription_ends_at) !!}</td>
+                 @else
+                 <td>{!! getDateHtml($element->subscription_ends_at) !!}</td>
+                 @endif
              </tr>
          @endforeach
      @endcomponent

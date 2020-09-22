@@ -30,13 +30,13 @@ class BaseOrderController extends ExtendedOrderController
         if ($status == 'success') {
             if ($subscriptionId) {
                 $url = '<a href='.url('renew/'.$subscriptionId)." 
-                class='btn btn-sm btn-secondary'".tooltip('Renew')."<i class='fas fa-credit-card'
+                class='btn btn-sm btn-secondary btn-xs'".tooltip('Renew')."<i class='fas fa-credit-card'
                  style='color:white;'> </i></a>";
             }
         }
 
         return '<p><a href='.url('orders/'.$model->id)." 
-        class='btn btn-sm btn-secondary'".tooltip('View')."<i class='fas fa-eye'
+        class='btn btn-sm btn-secondary btn-xs'".tooltip('View')."<i class='fas fa-eye'
          style='color:white;'> </i></a> $url</p>";
     }
 
@@ -112,7 +112,6 @@ class BaseOrderController extends ExtendedOrderController
                 $this->addtoMailchimp($product, $user_id, $item);
             }
         } catch (\Exception $ex) {
-            dd($ex);
             Bugsnag::notifyException($ex);
             app('log')->error($ex->getMessage());
 
@@ -310,7 +309,6 @@ class BaseOrderController extends ExtendedOrderController
                 SettingsController::sendPaymentSuccessMailtoAdmin($order->invoice->currency, $order->invoice->grand_total, $user, $product);
             }
         } catch (\Exception $ex) {
-            dd($ex);
             throw new \Exception($ex->getMessage());
         }
     }

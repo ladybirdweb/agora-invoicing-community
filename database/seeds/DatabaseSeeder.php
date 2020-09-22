@@ -863,7 +863,7 @@ class UserTableSeeder extends Seeder
             'active'          => 1,
             'mobile_verified' => 1,
             'currency'        => 'INR',
-            'company'         => 'ladybird',
+            'company'         => 'My Company Name',
             'mobile'          => '',
             'mobile_code'     => '',
             'address'         => '',

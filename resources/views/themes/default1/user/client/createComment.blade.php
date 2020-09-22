@@ -9,7 +9,7 @@
             {!! Form::open(['url'=>'comment']) !!} 
             <div class="modal-body">
                 
-                <div class= "form-group {{ $errors->has('name') ? 'has-error' : '' }}">
+                <div class= "form-group">
                     {!! Form::label('name',Lang::get('message.comment'),['class'=>'required']) !!}
                     <textarea name="description" class="form-control" required="required" rows="6" cols="50"></textarea>
                     <input type="hidden" name="user_id" value="{{$client->id}}"> 

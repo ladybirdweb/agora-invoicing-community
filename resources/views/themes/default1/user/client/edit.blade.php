@@ -306,7 +306,7 @@ Edit User
             });
         },
           separateDialCode: true,
-          utilsScript: "../../js/intl/js/utils.js"
+          utilsScript: "{{asset('js/intl/js/utils.js')}}"
     });
       var reset = function() {
       errorMsg.innerHTML = "";

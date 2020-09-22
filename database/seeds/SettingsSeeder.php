@@ -26,6 +26,7 @@ class SettingsSeeder extends Seeder
             'logo'                      => 'faveo1.png',
             'admin_logo'                => 'faveo1.png',
             'fav_icon'                  => 'faveo.png',
+            'title'                     => 'Billing Application',
             'error_log'                 => 1,
             'invoice'                   => 8,
             'subscription_over'         => 7,

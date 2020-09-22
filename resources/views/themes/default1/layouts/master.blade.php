@@ -139,7 +139,7 @@
                     <!-- Brand Logo -->
                         <a href="{{url('/')}}" class="brand-link">
 
-                            <span style="margin-left: 50px;" class="brand-text font-weight-light"><b>{{$set->title}}</b></span>
+                            <span style="margin-left: 40px;" class="brand-text font-weight-light"><b>{{$set->title}}</b></span>
                         </a>
                 @else
                         <a href="{{url('/')}}" class="brand-link">
@@ -151,7 +151,7 @@
             <!-- Sidebar -->
             <div class="sidebar">
                 <!-- Sidebar user panel (optional) -->
-                <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+               <!--  <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                     <div class="image">
                         <a href="{{url('/clients/'.Auth::user()->id)}}"><img src="{{Auth::user()->profile_pic}}" class="img-circle elevation-2" alt="User Image"></a>
                     </div>
@@ -159,7 +159,7 @@
                         <a href="{{url('/clients/'.Auth::user()->id)}}" class="d-block">{{ucfirst(Auth::user()->first_name)}} {{ucfirst(Auth::user()->last_name)}}</a>
                     </div>
                 </div>
-
+ -->
                 <!-- Sidebar Menu -->
                 <nav class="mt-2">
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">

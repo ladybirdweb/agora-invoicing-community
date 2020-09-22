@@ -67,13 +67,27 @@ class ClientController extends AdvanceSearchController
      * @return
      * @throws \Exception
      */
-    public function getClients(Request $request)
+        public function getClients(Request $request)
     {
         $baseQuery = $this->getBaseQueryForUserSearch($request);
 
         return\ DataTables::of($baseQuery)
                         ->addColumn('checkbox', function ($model) {
-                            return "<input type='checkbox' class='user_checkbox' value=".$model->id.' name=select[] id=check>';
+                        $isAccountManager = User::where('account_manager', $model->id)->get();
+                        $isSalesManager = User::where('manager', $model->id)->get();
+                        if (count($isSalesManager)) {
+                            return "<input type='checkbox' disabled> &nbsp;
+                        <i class='fa fa-info-circle' style='cursor: help; font-size: small; color: rgb(60, 141, 188);' ".'<label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="This user cannot be deleted as he/she is existing sales manager for certain clients. Please replace Sales Manager from settings and then try deleting.">
+                        </label>'."</i>";
+                        } elseif (count($isAccountManager)) {
+                        // dd("<input type='checkbox' ".tooltip('dsf')."'disabled'");
+                        return "<input type='checkbox' disabled> &nbsp;
+                        <i class='fa fa-info-circle' style='cursor: help; font-size: small; color: rgb(60, 141, 188);' ".'<label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="This user cannot be deleted as he/she is existing account manager for certain clients. Please replace Account Manager from settings and then try deleting.">
+                        </label>'."</i>";
+                    } else {
+                     return "<input type='checkbox' class='user_checkbox' value=".$model->id.' name=select[] id=check>';
+
+                    }
                         })
                         ->addColumn('name', function ($model) {
                             return '<a href='.url('clients/'.$model->id).'>'.ucfirst($model->name).'</a>';
@@ -101,7 +115,7 @@ class ClientController extends AdvanceSearchController
                             ." class='btn btn-sm btn-secondary btn-xs'".tooltip('Edit')."
                             <i class='fa fa-edit' style='color:white;'> </i></a>"
                                     .'  <a href='.url('clients/'.$model->id)
-                                ." class='btn btn-sm btn-secondary btn-xs'".tooltip('View')."
+                                    ." class='btn btn-sm btn-secondary btn-xs'".tooltip('View')."
                                     <i class='fa fa-eye' style='color:white;'> </i></a>";
                         })
 

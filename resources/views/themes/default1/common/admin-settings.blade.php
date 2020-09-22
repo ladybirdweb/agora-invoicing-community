@@ -33,7 +33,7 @@ Settings
         line-height: 30px;
     }
     .settingdivblue {
-        width: 45%;
+        width: 48%;
         height: 75px;
         margin: 0 auto;
         text-align: center;
@@ -296,7 +296,7 @@ Settings
                     </div>
                 </div>
 
-                @if(!$isRedisConfigured)
+                @if($isRedisConfigured)
                  <div class="col-md-2 col-sm-6">
                     <div class="settingiconblue">
                         <div class="settingdivblue">

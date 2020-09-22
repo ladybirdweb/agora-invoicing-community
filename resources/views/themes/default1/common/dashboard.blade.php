@@ -207,9 +207,9 @@ Dashboard
  <div class="row">
      {{-- Paid Orders Expired in Last 30 days --}}
      @php
-        $currentDate = date('Y-m-d');
-        $expiringSubscriptionDate = date('Y-m-d', strtotime('+3 months'));
-        $expiredSubscriptionDate = date('Y-m-d', strtotime('-3 months'));
+        $currentDate = date('m/d/Y');
+        $expiringSubscriptionDate = date('m/d/Y', strtotime('+3 months'));
+        $expiredSubscriptionDate = date('m/d/Y', strtotime('-3 months'));
      @endphp
 
      @component('mini_views.card', [
@@ -260,6 +260,7 @@ Dashboard
      {{--   Clients With outdated Product Version (Last 30) --}}
      @php
         // NOTE: adding a filter between latest and olderst version for paid products for seeing outdated versions and sorting them in ascending order
+        $expiringSubscriptionDate = date('m/d/Y', strtotime('+1 months'));
         $latestVersion = \App\Model\Product\Subscription::orderBy("version", "desc")->groupBy("version")->skip(1)->value('version');
         $oldestVersion = \App\Model\Product\Subscription::where('version', '!=', null)->where('version', '!=', '')->orderBy("update_ends_at", "asc")->groupBy("version")->value('version');
      @endphp
@@ -269,7 +270,7 @@ Dashboard
             'layout' => 'table',
             'collection'=> $clientsUsingOldVersion,
             'columns'=> ['User', 'Version', 'Product', 'Expiry'],
-            'linkLeft'=> ['View All' => url('orders')."?version_from=$oldestVersion&version_till=$latestVersion&act_inst=paid_ins&sort_field=4&sort_order=asc"],
+            'linkLeft'=> ['View All' => url('orders')."?version_from=$oldestVersion&version_till=$latestVersion&expiryTill=$expiringSubscriptionDate&act_inst=paid_ins&sort_field=4&sort_order=desc"],
             'linkRight'=> ['Create New Product' => url('products/create')]
      ])
          @foreach($clientsUsingOldVersion as $element)

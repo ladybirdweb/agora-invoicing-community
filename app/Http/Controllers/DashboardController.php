@@ -322,6 +322,7 @@ class DashboardController extends Controller
     private function getClientsUsingOldVersions()
     {
         $date = new Carbon('-30 days');
+        $next30Days = new Carbon('+30 days');
         $latestVersion = (string) Subscription::orderBy('version', 'desc')->value('version');
 
         // query the latest version and query for rest of the versions
@@ -330,12 +331,13 @@ class DashboardController extends Controller
             ->leftJoin('products', 'orders.product', '=', 'products.id')
             ->where('price_override', '>', 0)
             ->where('subscriptions.updated_at', '>', $date)
+            ->where('subscriptions.update_ends_at', '<', $next30Days)
             ->where('subscriptions.version', '<', $latestVersion)
             ->where('subscriptions.version', '!=', null)
             ->where('subscriptions.version', '!=', '')
             ->select('orders.id', \DB::raw("concat(first_name, ' ', last_name) as client_name"), 'products.name as product_name',
                 'subscriptions.version as product_version', 'client as client_id', 'subscriptions.update_ends_at as subscription_ends_at')
-            ->orderBy('subscription_ends_at', 'asc')
+            ->orderBy('subscription_ends_at', 'desc')
             ->take(30)->get()->map(function ($element) {
                 $element->subscription_ends_at = $element->subscription_ends_at;
                 $appUrl = \Config::get('app.url');

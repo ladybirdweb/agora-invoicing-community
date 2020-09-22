@@ -37,7 +37,7 @@ class QueueController extends Controller
 
     // public function monitorQueues()
     // {
-        
+
     // }
 
     public function getQueues()

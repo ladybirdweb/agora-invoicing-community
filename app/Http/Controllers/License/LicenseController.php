@@ -272,7 +272,6 @@ class LicenseController extends Controller
         return $getInstallId;
     }
 
-   
     public function searchInstallationPath($licenseCode, $productId)
     {
         $installation_domain = [];
@@ -281,8 +280,9 @@ class LicenseController extends Controller
         if ($details->api_error_detected == 0 && is_array($details->page_message)) {
             foreach ($details->page_message as $detail) {
                 if ($detail->product_id == $productId) {
-                    $installation_domain[] = "<a href=https://$detail->installation_domain target = '_blank'>  "."$detail->installation_domain</a>" ." | ".$detail->installation_ip;
-                    $installation_ip[] = $detail->installation_ip;                }
+                    $installation_domain[] = "<a href=https://$detail->installation_domain target = '_blank'>  "."$detail->installation_domain</a>".' | '.$detail->installation_ip;
+                    $installation_ip[] = $detail->installation_ip;
+                }
             }
         }
 

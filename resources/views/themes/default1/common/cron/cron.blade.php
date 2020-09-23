@@ -20,7 +20,7 @@ Cron Setting
 
 
 
-    <div class="card card-primary card-outline">
+    <div class="card card-secondary card-outline">
       <div class="row">
     <div class="col-md-12">
         <!-- Custom Tabs -->
@@ -45,7 +45,7 @@ Cron Setting
     <div class="col-md-12">
         <!-- Custom Tabs -->
   
-     <div class="card card-primary card-outline">
+     <div class="card card-secondary card-outline">
         
         <!-- /.box-header -->
        

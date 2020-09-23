@@ -20,54 +20,56 @@
 @section('main-class') "main shop" @stop
 @section('content')
 <?php
+
+$cartSubtotalWithoutCondition = 0;
  
-    use Razorpay\Api\Api;
-     $merchant_orderid= generateMerchantRandomString();  
-  
-   function generateMerchantRandomString($length = 10) {
-    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    $charactersLength = strlen($characters);
-    $randomString = '';
-    for ($i = 0; $i < $length; $i++) {
-        $randomString .= $characters[rand(0, $charactersLength - 1)];
-    }
-    return $randomString;
+use Razorpay\Api\Api;
+ $merchant_orderid= generateMerchantRandomString();  
+
+function generateMerchantRandomString($length = 10) {
+$characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+$charactersLength = strlen($characters);
+$randomString = '';
+for ($i = 0; $i < $length; $i++) {
+    $randomString .= $characters[rand(0, $charactersLength - 1)];
 }
-     $api = new Api($rzp_key, $rzp_secret);
-    $displayCurrency = \Auth::user()->currency;
-    $symbol = \Auth::user()->currency;
-    if ($symbol == 'INR'){
+return $randomString;
+}
+ $api = new Api($rzp_key, $rzp_secret);
+$displayCurrency = \Auth::user()->currency;
+$symbol = \Auth::user()->currency;
+if ($symbol == 'INR'){
 
 
 $exchangeRate= '';
 
 
 $orderData = [
-    'receipt'         => 3456,
-    'amount'          => round($invoice->grand_total*100), // 2000 rupees in paise
+'receipt'         => 3456,
+'amount'          => round($invoice->grand_total*100), // 2000 rupees in paise
 
-    'currency'        => 'INR',
-    'payment_capture' => 0 // auto capture
-     
+'currency'        => 'INR',
+'payment_capture' => 0 // auto capture
+ 
 ];
 
 
 } else {
  
-     $url = "http://apilayer.net/api/live?access_key=$apilayer_key";
-     $exchange = json_decode(file_get_contents($url));
+ $url = "http://apilayer.net/api/live?access_key=$apilayer_key";
+ $exchange = json_decode(file_get_contents($url));
 
-     $exchangeRate = $exchange->quotes->USDINR;
-     // dd($exchangeRate);
-     $displayAmount =$exchangeRate * $invoice->grand_total ;
+ $exchangeRate = $exchange->quotes->USDINR;
+ // dd($exchangeRate);
+ $displayAmount =$exchangeRate * $invoice->grand_total ;
 
 
-     $orderData = [
-    'receipt'         => 3456,
-    'amount'          =>  round($displayAmount)*100, // 2000 rupees in paise
+ $orderData = [
+'receipt'         => 3456,
+'amount'          =>  round($displayAmount)*100, // 2000 rupees in paise
 
-    'currency'        => 'INR',
-    'payment_capture' => 0 // auto capture
+'currency'        => 'INR',
+'payment_capture' => 0 // auto capture
      
 ];
 }
@@ -82,8 +84,6 @@ $data = [
 
 
     "key"               => $rzp_key,
-
-
     "name"              => 'Faveo Helpdesk',
     "currency"          => 'INR',
      "prefill"=> [
@@ -91,11 +91,7 @@ $data = [
         "email"=>      \Auth::user()->email,
     ],
     "description"       =>  'Order for Invoice No' .-$invoice->number,
-    
-
-
-
-     "notes"             => [
+    "notes"             => [
     "First Name"         => \Auth::user()->first_name,
     "Last Name"         =>  \Auth::user()->last_name,
     "Company Name"      => \Auth::user()->company,
@@ -149,46 +145,9 @@ $json = json_encode($data);
 
             <div class="panel-body">
 
-                @if(Session::has('success'))
-                <div class="alert alert-success alert-dismissable">
-
-
-         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-         <strong><i class="far fa-thumbs-up"></i> Well done!</strong>
-                    {{Lang::get('message.success')}}.
-
-
-                    {!!Session::get('success')!!}
-                </div>
-                @endif
-                <!-- fail message -->
-                @if(Session::has('fails'))
-                <div class="alert alert-danger alert-dismissable">
-
-                      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                     <strong><i class="fas fa-exclamation-triangle"></i>Oh snap!</strong> 
-                    <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.failed')}}.
-                   
-
-
-                    {{Session::get('fails')}}
-                </div>
-                @endif
-                @if (count($errors) > 0)
-                <div class="alert alert-danger">
-
-
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <strong><i class="fas fa-exclamation-triangle"></i>Oh snap!</strong> There were some problems with your input.<br><br>
-
-
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-                @endif
+    
+       
+        
                 <div>
                     <table class="shop_table cart">
                         <thead>
@@ -216,26 +175,28 @@ $json = json_encode($data);
                             </tr>
                         </thead>
                         <tbody>
-                             @forelse($items as $item)
-                            
+                             @forelse(Cart::getContent() as $item)
+                               @php
+                            $cartSubtotalWithoutCondition += $item->getPriceSum();
+                            @endphp
                             <tr class="cart_table_item">
 
                                 <td class="product-thumbnail">
                                     
-                                    <img width="100" height="100" alt="" class="img-responsive" src="{{$product->image}}">
+                                    <img width="100" height="100" alt="" class="img-responsive" src="{{$item->associatedModel->image}}">
 
                                 </td>
 
                                 <td class="product-name">
-                                    {{$item->product_name}}
+                                    {{$item->name}}
                                 </td>
                                 <td class="product-invoice">
                                     <a href="{{url('my-invoice/'.$invoice->id)}}" target="_blank">{{$invoice->number}}</a>
                                 </td>
                                 <td class="product-version">
-                                    @if($product->version)
-                                    {{$product->version}}
-                                    @else 
+                                    @if($item->associatedModel->version)
+                                    {{$item->associatedModel->version}}
+                                    @else
                                     Not available
                                     @endif
                                 </td>
@@ -245,7 +206,7 @@ $json = json_encode($data);
                                     {{$item->quantity}}
                                 </td>
                                 <td class="product-total">
-                                    <span class="amount">{{currencyFormat(intval($item->regular_price),$code = $currency)}}</span>
+                                    <span class="amount">{{currencyFormat($item->price,$code = $item->attributes->currency)}}</span>
                                 </td>
                             </tr>
                             @empty 
@@ -256,35 +217,10 @@ $json = json_encode($data);
 
                     </table>
                     
-                    <div class="col-md-12">
-
-                <div class="form-group">
-                   
-                  
-                   
-                    <div class="col-md-6">
-                        
-                        {!! Form::hidden('invoice_id',$invoice->id) !!}
-                        {!! Form::hidden('cost',$invoice->grand_total) !!}
-                    </div>
-                </div>
-                   </div>
+                    
 
                 </div>
-               
-                    <div class="col-md-12">
-
-
-
-
-                    </div>
-                
-                
-                
-               
-               
-
-            </div>
+               </div>
         </div>
     </div>
     <div class="col-md-4">
@@ -293,186 +229,79 @@ $json = json_encode($data);
         <table class="cart-totals">
             <tbody>
                 <tr class="cart-subtotal">
-                    <?php 
-                    $subtotals = App\Model\Order\InvoiceItem::where('invoice_id',$invoice->id)->pluck('regular_price')->toArray();
-                    $subtotal = array_sum($subtotals);
-                    ?>
+                  
                     <th>
                         <strong>Cart Subtotal</strong>
                     </th>
                     <td>
-                        <span class="amount">{{currencyFormat($subtotal,$code = $currency)}}</span>
+                        <span class="amount">{{currencyFormat($cartSubtotalWithoutCondition,$code = $currency)}}</span>
                     </td>
                 </tr>
-                @foreach($content as $attributes)
-                <?php
-                    $tax_attribute =  $attributes['attributes']['tax'];
-                    $currency = $attributes['attributes']['currency']['currency'];
-                    $symbol = $attributes['attributes']['currency']['symbol'];
-                   ?>
-                    @if ($tax_attribute[0]['name'] != null)
-                @if($tax_attribute[0]['name']!='null' &&  $currency == "INR" && $tax_attribute[0]['tax_enable'] ==1)
-                 @if($tax_attribute[0]['state']==$tax_attribute[0]['origin_state'] && $tax_attribute[0]['ut_gst']=='NULL' && $tax_attribute[0]['status'] ==1)
-                <tr class="Taxes">
+                 @if(Session::has('code'))
+                  <tr class="cart-subtotal">
+
                     <th>
-                        <strong>CGST<span>@</span>{{$tax_attribute[0]['c_gst']}}%</strong><br/>
-                        <strong>SGST<span>@</span>{{$tax_attribute[0]['s_gst']}}%</strong><br/>
-                       
+                        <strong>Discount</strong>
                     </th>
                     <td>
-                        <?php 
-                        $cgst =  \App\Http\Controllers\Front\CartController::taxValue($tax_attribute[0]['c_gst'],$subtotal);
-                        $sgst = \App\Http\Controllers\Front\CartController::taxValue($tax_attribute[0]['s_gst'],$subtotal);
-                        ?>
-                        {{currencyFormat( $cgst,$code = $currency)}} <br/>
-                        {{currencyFormat($sgst,$code = $currency)}}<br/>
-                       
-                       
+                         {{currencyFormat(\Session::get('codevalue'),$code = $item->attributes->currency)}}
                     </td>
-
-
                 </tr>
                 @endif
                
-                @if ($tax_attribute[0]['state']!=$tax_attribute[0]['origin_state'] && $tax_attribute[0]['ut_gst']=='NULL' && $tax_attribute[0]['status'] ==1)
-               
+                @if(count(\Cart::getConditionsByType('tax')) == 1)
+                @foreach(\Cart::getConditionsByType('tax') as $tax)
+
+
+
+                 @if($tax->getName()!= 'null')
                 <tr class="Taxes">
-                    <th>
-                        <strong>{{$tax_attribute[0]['name']}}<span>@</span>{{$tax_attribute[0]['i_gst']}}%</strong>
-                     
+                    <?php
+                    $bifurcateTax = bifurcateTax($tax->getName(),$tax->getValue(),$item->attributes->currency, \Auth::user()->state, \Cart::getContent()->sum('price'));
+                    ?>
+                   <th>
+                        
+                        <strong>{!! $bifurcateTax['html'] !!}</strong><br/>
+
                     </th>
                     <td>
-                        <?php
-                        $igst = \App\Http\Controllers\Front\CartController::taxValue($tax_attribute[0]['i_gst'],$subtotal);
-                        ?>
-                        {{currencyFormat( $igst,$code = $currency)}}  <br/>
-                      
-                    </td>
-
-
-                </tr>
-                @endif
-
-                @if ($tax_attribute[0]['state']!=$tax_attribute[0]['origin_state'] && $tax_attribute[0]['ut_gst']!='NULL' && $tax_attribute[0]['status'] ==1)
-              
-                <tr class="Taxes">
-                    <th>
-                       <strong>CGST<span>@</span>{{$tax_attribute[0]['c_gst']}}%</strong><br/>
-                        <strong>UTGST<span>@</span>{{$tax_attribute[0]['ut_gst']}}%</strong>
-                       
-                    </th>
-                    <td>
-                        <?php
-                        $cgst = \App\Http\Controllers\Front\CartController::taxValue($tax_attribute[0]['c_gst'],$subtotal);
-                        $utgst = \App\Http\Controllers\Front\CartController::taxValue($tax_attribute[0]['ut_gst'],$subtotal);
-                        ?>
-                         {{currencyFormat( $cgst,$code = $currency)}}  <br/>
-                          {{currencyFormat( $utgst,$code = $currency)}}  <br/>
-                       
-                    </td>
-
-
-                </tr>
-                @endif
-                @endif
-
-                 @if($tax_attribute[0]['name']!='null' && ($currency == "INR" && $tax_attribute[0]['tax_enable'] ==0 && $tax_attribute[0]['status'] ==1))
-                 <tr class="Taxes">
-                    <th>
-                        <strong>{{$tax_attribute[0]['name']}}<span>@</span>{{$tax_attribute[0]['rate']}}</strong><br/>
-                       
-                         
-                    </th>
-                    <td>
-                        <?php
-                        $value = \App\Http\Controllers\Front\CartController::taxValue($tax_attribute[0]['rate'],$subtotal);
-                        ?>
-                         {{currencyFormat( $value,$code = $currency)}} <br/>
-                         
-                       
-                    </td>
-                  </tr>
-                 @endif
-           
-                @if($tax_attribute[0]['name']!='null' && ($currency != "INR" && $tax_attribute[0]['tax_enable']==1 && $tax_attribute[0]['status'] ==1))
-                  <tr class="Taxes">
-                    <th>
-                        <strong>{{$tax_attribute[0]['name']}}<span>@</span>{{$tax_attribute[0]['rate']}}</strong><br/>
-                       
-                         
-                    </th>
-                    <td>
-                <?php
-                 $value = \App\Http\Controllers\Front\CartController::taxValue($tax_attribute[0]['rate'],Cart::getSubTotalWithoutConditions())
-                 ?>
-                        {{currencyFormat( $value,$code = $currency)}} <br/>
-                         
-                       
-                    </td>
-                  </tr>
-                 @endif
-                  @if($tax_attribute[0]['name']!='null' && ($currency != "INR" && $tax_attribute[0]['tax_enable'] ==0 && $tax_attribute[0]['status'] ==1))
-
-                  <tr class="Taxes">
-                
-                    <th>
-                        <strong>{{$tax_attribute[0]['name']}}<span>@</span>{{$tax_attribute[0]['rate']}}</strong><br/>
-                       
-                         
-                    </th>
-                    <td>
-                 <?php
-                 $value = \App\Http\Controllers\Front\CartController::taxValue($tax_attribute[0]['rate'],$subtotal);
-                 ?>
-                        {{currencyFormat( $value,$code = $currency)}} <br/>
-                         
-                       
-                    </td>
+                     {!! $bifurcateTax['tax'] !!}
+                  </td>
                   
-                  </tr>
-                 @endif
-                 @endif
+                   
+                </tr>
+                @endif
                 @endforeach
-                <?php
-                $items=$invoice->invoiceItem()->get();
-                ?>
-                     
-                @if ($attributes == null)
-                 
-                @foreach ($items as $item)
-                 @if($item->tax_name !='null' )
-               <tr class="Taxes">
-                  <th>
-                        <strong>{{$item->tax_name}}<span>@</span>{{$item->tax_percentage}}</strong><br/>
-                       
-                         
+
+                @else
+                @foreach(Cart::getContent() as $tax)
+                @if($tax->conditions->getName() != 'null')
+                <tr class="Taxes">
+                    <?php
+                    $bifurcateTax = bifurcateTax($tax->conditions->getName(),$tax->conditions->getValue(),$item->attributes->currency, \Auth::user()->state, $tax->price*$tax->quantity);
+                    ?>
+                   <th>
+                        
+                        <strong>{!! $bifurcateTax['html'] !!}</strong><br/>
+
                     </th>
                     <td>
-                 <?php
-                 $value = \App\Http\Controllers\Front\CartController::taxValue($item->tax_percentage,$item->regular_price);
-                 ?>
-                       {{currencyFormat($value,$code = $currency)}} <br/>
-                         
-                       
-                    </td>
+                     {!! $bifurcateTax['tax'] !!}
+                  </td>
                   
-                  </tr>
-                  @endif
-                  @endforeach
+                   
+                </tr>
                 @endif
-
-               
-               
-
-
+                
+                @endforeach
+               @endif
+                     
                 <tr class="total">
                     <th>
                         <strong>Order Total</strong>
                     </th>
                     <td>
-
-
-                        <strong><span class="amount">{{currencyFormat( $invoice->grand_total,$code = $currency)}} </span></strong>
+                    <strong><span class="amount">{{currencyFormat(\Cart::getTotal(),$code = $item->attributes->currency)}} </span></strong>
 
 
                     </td>
@@ -484,8 +313,8 @@ $json = json_encode($data);
         <br />
         <div class="form-group">
                    <div class="col-md-12" id="not-razor">
-                                                            <input type="submit" name="submit" value="Place Your Order And Pay" id="rzp-button1" class="btn btn-primary " data-loading-text="Loading..." style="width:100%">
-                                                        </div>
+        <input type="submit" name="submit" value="Place Your Order And Pay" id="rzp-button1" class="btn btn-primary " data-loading-text="Loading..." style="width:100%">
+    </div>
                 </div>
     </div>
 </div>

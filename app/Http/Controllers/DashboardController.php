@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Model\Common\Setting;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
+use App\Model\Order\Payment;
 use App\Model\Payment\Currency;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
@@ -21,20 +22,29 @@ class DashboardController extends Controller
         $this->middleware('admin', ['only' => ['index']]);
     }
 
+    /**
+     * The method returns all the data required to be displayed on the dashboard.
+     *
+     * $allowedCurrencies1 The default currency of the system. This can be changed from Admin system  settings
+     * $allowedCurrencies2 The currency that is activated from currency settings.
+     *
+     * Only two currencies are allowed to be displayed on the dashboard. One is system deafult currency. Other is the activated
+     * currency from the system.
+     */
     public function index(Request $request)
     {
         $allowedCurrencies1 = Setting::find(1)->value('default_currency');
         $currency1Symbol = Setting::find(1)->value('default_symbol');
         $allowedCurrencies2 = Currency::where('dashboard_currency', 1)->pluck('code')->first();
         $currency2Symbol = Currency::where('dashboard_currency', 1)->pluck('symbol')->first();
-        $totalSalesCurrency1 = $this->getTotalSalesInCur1($allowedCurrencies1);
-        $totalSalesCurrency2 = $this->getTotalSalesInCur2($allowedCurrencies2);
-        $yearlySalesCurrency2 = $this->getYearlySalesCur2($allowedCurrencies2);
-        $yearlySalesCurrency1 = $this->getYearlySalesCur1($allowedCurrencies1);
-        $monthlySalesCurrency2 = $this->getMonthlySalesCur2($allowedCurrencies2);
-        $monthlySalesCurrency1 = $this->getMonthlySalesInCur1($allowedCurrencies1);
-        $pendingPaymentCurrency2 = $this->getPendingPaymentsCur2($allowedCurrencies2);
-        $pendingPaymentCurrency1 = $this->getPendingPaymentsCur1($allowedCurrencies1);
+        $totalSalesCurrency1 = $this->getTotalSales($allowedCurrencies1);
+        $totalSalesCurrency2 = $this->getTotalSales($allowedCurrencies2);
+        $yearlySalesCurrency2 = $this->getYearlySales($allowedCurrencies2);
+        $yearlySalesCurrency1 = $this->getYearlySales($allowedCurrencies1);
+        $monthlySalesCurrency2 = $this->getMonthlySales($allowedCurrencies2);
+        $monthlySalesCurrency1 = $this->getMonthlySales($allowedCurrencies1);
+        $pendingPaymentCurrency2 = $this->getPendingPayments($allowedCurrencies2);
+        $pendingPaymentCurrency1 = $this->getPendingPayments($allowedCurrencies1);
         $getLast30DaysInstallation = $this->getLast30DaysInstallation();
 
         $users = $this->getAllUsers();
@@ -61,6 +71,11 @@ class DashboardController extends Controller
             'pendingPaymentCurrency1', 'status', 'startSubscriptionDate', 'endSubscriptionDate', 'clientsUsingOldVersion', 'getLast30DaysInstallation', 'conversionRate'));
     }
 
+    /**
+     * Get all the orders that got converted into paid orders in last 30 days.
+     *
+     * @return array
+     */
     private function getConversionRate()
     {
         $dayUtc = new Carbon('-30 days');
@@ -75,6 +90,11 @@ class DashboardController extends Controller
         return ['all_orders'=>$allOrders, 'paid_orders'=>$paidOrders, 'rate'=>$rate];
     }
 
+    /**
+     * Get all the installations and their percentage that got active in the last 30 days with respect to inactive installation.
+     *
+     * @return array
+     */
     public function getLast30DaysInstallation()
     {
         $dayUtc = new Carbon('-30 days');
@@ -90,129 +110,70 @@ class DashboardController extends Controller
     }
 
     /**
-     * Get Total Sales in Allowed Dashboard Currency.
+     * Calculates total sales.
      *
-     * @return float
+     * @param $allowedCurrencies The currency in which total needs to be calculated
+     * @return float|int
      */
-    public function getTotalSalesInCur2($allowedCurrencies2)
+    public function getTotalSales($allowedCurrencies)
     {
-        $total = Invoice::where('currency', $allowedCurrencies2)
-        ->where('status', '=', 'success')
-        ->pluck('grand_total')->all();
+        $total = Invoice::leftJoin('payments', 'invoices.id', '=', 'payments.invoice_id')
+                 ->where('invoices.currency', $allowedCurrencies)
+                 ->where('invoices.status', '!=', 'pending')
+                 ->pluck('payments.amount')->all();
         $grandTotal = array_sum($total);
 
         return $grandTotal;
     }
 
     /**
-     * Get total sales in Default Currency.
+     * Calculates yearly sales.
      *
-     * @return float
+     * @param $allowedCurrencies The currency in which yearly sales needs to be calculated
+     * @return float|int
      */
-    public function getTotalSalesInCur1($allowedCurrencies1)
-    {
-        $total = Invoice::where('currency', $allowedCurrencies1)
-        ->where('status', '=', 'success')
-        ->pluck('grand_total')->all();
-        $grandTotal = array_sum($total);
-
-        return $grandTotal;
-    }
-
-    /**
-     * Get  Total yearly sale of present year IN Allowed Dashboard Currency.
-     *
-     * @return type
-     */
-    public function getYearlySalesCur2($allowedCurrencies2)
+    public function getYearlySales($allowedCurrencies)
     {
         $currentYear = date('Y');
-        $total = Invoice::whereYear('created_at', '=', $currentYear)
-        ->where('status', '=', 'success')
-        ->where('currency', $allowedCurrencies2)
-        ->pluck('grand_total')->all();
-        $grandTotal = array_sum($total);
+        $yearlytotal = Invoice::leftJoin('payments', 'invoices.id', '=', 'payments.invoice_id')
+                ->whereYear('invoices.created_at', '=', $currentYear)
+                ->where('invoices.currency', $allowedCurrencies)
+                 ->where('invoices.status', '!=', 'pending')
+                 ->pluck('payments.amount')->all();
+        $grandTotal = array_sum($yearlytotal);
 
         return $grandTotal;
     }
 
     /**
-     * Get  Total yearly sale of present year in USD.
+     * Calculates monthly sales.
      *
-     * @return type
+     * @param $allowedCurrencies Currency in which monthly sales needs to be calculated
+     * @return float|int
      */
-    public function getYearlySalesCur1($allowedCurrencies1)
-    {
-        $currentYear = date('Y');
-        $total = Invoice::whereYear('created_at', '=', $currentYear)
-        ->where('status', '=', 'success')
-        ->where('currency', $allowedCurrencies1)
-        ->pluck('grand_total')->all();
-        $grandTotal = array_sum($total);
-
-        return $grandTotal;
-    }
-
-    /**
-     * Get  Total Monthly sale of present month in Allowed Dashboard Currency.
-     *
-     * @return type
-     */
-    public function getMonthlySalesCur2($allowedCurrencies2)
+    public function getMonthlySales($allowedCurrencies)
     {
         $currentMonth = date('m');
         $currentYear = date('Y');
-        $total = Invoice::whereYear('created_at', '=', $currentYear)->whereMonth('created_at', '=', $currentMonth)
-                ->where('currency', $allowedCurrencies2)
-                ->where('status', '=', 'success')
-                ->pluck('grand_total')->all();
+        $total = Invoice::leftJoin('payments', 'invoices.id', '=', 'payments.invoice_id')
+                ->whereYear('invoices.created_at', '=', $currentYear)->whereMonth('invoices.created_at', '=', $currentMonth)
+                ->where('invoices.currency', $allowedCurrencies)
+                 ->where('invoices.status', '!=', 'pending')
+                 ->pluck('payments.amount')->all();
         $grandTotal = array_sum($total);
 
         return $grandTotal;
     }
 
     /**
-     * Get  Total Monthly sale of present month in System Default Currency.
+     * Calculates pending payments in the system.
      *
-     * @return type
+     * @param $allowedCurrencies Currency in which pending payment need to be calculated
+     * @return float|int
      */
-    public function getMonthlySalesInCur1($allowedCurrencies1)
+    public function getPendingPayments($allowedCurrencies)
     {
-        $currentMonth = date('m');
-        $currentYear = date('Y');
-        // dd($currentYear,$currentMonth );
-        $total = Invoice::whereYear('created_at', '=', $currentYear)->whereMonth('created_at', '=', $currentMonth)
-                ->where('currency', $allowedCurrencies1)
-                 ->where('status', '=', 'success')
-                ->pluck('grand_total')->all();
-        $grandTotal = array_sum($total);
-
-        return $grandTotal;
-    }
-
-    /**
-     * Get  Total Pending Payment Inr.
-     *
-     * @return type
-     */
-    public function getPendingPaymentsCur2($allowedCurrencies2)
-    {
-        $total = Invoice::where('currency', $allowedCurrencies2)
-        ->where('status', '=', 'pending')
-        ->pluck('grand_total')->all();
-        $grandTotal = array_sum($total);
-
-        return $grandTotal;
-    }
-
-    /**
-     * Get  Total Pending Payment Inr.
-     *
-     * @return type
-     */
-    public function getPendingPaymentsCur1($allowedCurrencies1)
-    {
-        $total = Invoice::where('currency', $allowedCurrencies1)
+        $total = Invoice::where('currency', $allowedCurrencies)
         ->where('status', '=', 'pending')
         ->pluck('grand_total')->all();
         $grandTotal = array_sum($total);
@@ -275,8 +236,8 @@ class DashboardController extends Controller
             ->orderBy('orders.id', 'desc')
             ->get()->map(function ($element) {
                 $element->order_created_at = getDateHtml($element->order_created_at);
-                $element->client_name = $element->user->first_name.' '.$element->user->last_name;
-                $element->client_profile_link = \Config('app.url').'/clients/'.$element->user->id;
+                $element->client_name = $element->user ? $element->user->first_name.' '.$element->user->last_name : User::onlyTrashed()->find($element->client)->first_name.' '.User::onlyTrashed()->find($element->client)->last_name;
+                $element->client_profile_link = \Config('app.url').'/clients/'.$element->client;
                 unset($element->user);
 
                 return $element;
@@ -311,8 +272,8 @@ class DashboardController extends Controller
         }
 
         return $baseQuery->get()->map(function ($element) {
-            $element->client_name = $element->user->first_name.' '.$element->user->last_name;
-            $element->client_profile_link = \Config('app.url').'/clients/'.$element->user->id;
+            $element->client_name = $element->user ? $element->user->first_name.' '.$element->user->last_name : User::onlyTrashed()->find($element->user_id)->first_name.' '.User::onlyTrashed()->find($element->user_id)->last_name;
+            $element->client_profile_link = \Config('app.url').'/clients/'.$element->user_id;
             $element->order_link = \Config('app.url').'/orders/'.$element->order_id;
             $element->days_difference = date_diff(new DateTime(), new DateTime($element->subscription_ends_at))->format('%a days');
             $element->subscription_ends_at = getDateHtml($element->subscription_ends_at);
@@ -345,8 +306,8 @@ class DashboardController extends Controller
                 $element->grand_total = currencyFormat((int) $element->grand_total, $element->currency_code);
                 $element->paid = currencyFormat((int) $element->paid, $element->currency_code);
                 $element->balance = currencyFormat((int) $element->balance, $element->currency_code);
-                $element->client_name = $element->user->first_name.' '.$element->user->last_name;
-                $element->client_profile_link = \Config('app.url').'/clients/'.$element->user->id;
+                $element->client_name = $element->user ? $element->user->first_name.' '.$element->user->last_name : User::onlyTrashed()->find($element->user_id)->first_name.' '.User::onlyTrashed()->find($element->user_id)->last_name;
+                $element->client_profile_link = \Config('app.url').'/clients/'.$element->user_id;
                 unset($element->user);
 
                 return $element;
@@ -361,6 +322,7 @@ class DashboardController extends Controller
     private function getClientsUsingOldVersions()
     {
         $date = new Carbon('-30 days');
+        $next30Days = new Carbon('+30 days');
         $latestVersion = (string) Subscription::orderBy('version', 'desc')->value('version');
 
         // query the latest version and query for rest of the versions
@@ -369,14 +331,15 @@ class DashboardController extends Controller
             ->leftJoin('products', 'orders.product', '=', 'products.id')
             ->where('price_override', '>', 0)
             ->where('subscriptions.updated_at', '>', $date)
+            ->where('subscriptions.update_ends_at', '<', $next30Days)
             ->where('subscriptions.version', '<', $latestVersion)
             ->where('subscriptions.version', '!=', null)
             ->where('subscriptions.version', '!=', '')
-            ->select('orders.id', \DB::raw("concat(first_name, ' ', last_name) as client_name"), 'products.name as product_name',
+            ->select('orders.id', \DB::raw("concat(first_name, ' ', last_name) as client_name"), 'products.name as product_name','products.id as product_id',
                 'subscriptions.version as product_version', 'client as client_id', 'subscriptions.update_ends_at as subscription_ends_at')
-            ->orderBy('subscriptions.version', 'asc')
+            ->orderBy('subscription_ends_at', 'desc')
             ->take(30)->get()->map(function ($element) {
-                $element->subscription_ends_at = getDateHtml($element->subscription_ends_at);
+                $element->subscription_ends_at = $element->subscription_ends_at;
                 $appUrl = \Config::get('app.url');
                 $clientProfileUrl = $appUrl.'/clients/'.$element->client_id;
                 $element->client_name = "<a href=$clientProfileUrl>$element->client_name</a>";

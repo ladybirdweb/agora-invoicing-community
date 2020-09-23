@@ -15,7 +15,6 @@ use App\Model\Product\ProductUpload;
 use App\Model\Product\Subscription;
 use App\User;
 use Bugsnag;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class OrderController extends BaseOrderController
@@ -75,13 +74,32 @@ class OrderController extends BaseOrderController
      */
     public function index(Request $request)
     {
+        $validator = \Validator::make($request->all(), [
+            'sub_from'     => 'nullable',
+            'sub_till'     => 'nullable|after:sub_from',
+            'expiry'       => 'nullable',
+            'expiryTill'     => 'nullable|after:expiry',
+            'from'          => 'nullable',
+            'till'          => 'nullable|after:from',
+
+        ]);
+        if ($validator->fails()) {
+            $request->sub_from = '';
+            $request->sub_till = '';
+            $request->expiry = '';
+            $request->expiryTill = '';
+            $request->from = '';
+            $request->till = '';
+
+            return redirect('orders')->with('fails', 'Start date should be before end date');
+        }
         try {
             $products = $this->product->where('id', '!=', 1)->pluck('name', 'id')->toArray();
 
             $paidUnpaidOptions = ['paid'=>'Paid Products', 'unpaid'=>'Unpaid Products'];
-            $insNotIns = ['installed'=>'Yes', 'not_installed'=>'No'];
-            $activeInstallationOptions = ['paid_ins'=>'For Paid Products', 'unpaid_ins'=>'For Unpaid Products', 'all_ins'=>'All Products'];
-            $inactiveInstallationOptions = ['paid_inactive_ins'=>'For Paid Products', 'unpaid_inactive_ins'=>'For Unpaid Products', 'all_inactive_ins'=>'All Products'];
+            $insNotIns = ['installed'=>'Yes (Installed atleast once)', 'not_installed'=>'No (Not Installed)'];
+            $activeInstallationOptions = ['paid_ins'=>'Active installation'];
+            $inactiveInstallationOptions = ['paid_inactive_ins'=>'Inactive installation'];
             $renewal = ['expired_subscription'=>'Expired Subscriptions', 'active_subscription'=> 'Active Subscriptions'];
             $allVersions = Subscription::where('version', '!=', '')->whereNotNull('version')
                 ->orderBy('version', 'desc')->groupBy('version')
@@ -98,7 +116,8 @@ class OrderController extends BaseOrderController
 
     public function getOrders(Request $request)
     {
-        $query = $this->advanceSearch($request);
+        $orderSearch = new OrderSearchController();
+        $query = $orderSearch->advanceOrderSearch($request);
 
         return \DataTables::of($query)
             ->setTotalRecords($query->count())
@@ -116,9 +135,8 @@ class OrderController extends BaseOrderController
             })
             ->addColumn('number', function ($model) {
                 $orderLink = '<a href='.url('orders/'.$model->id).'>'.$model->number.'</a>';
-
-                if ($model->updated_at) {//For few older clients subscription was not generated, so no updated_at column exists
-                    $orderLink = '<a href='.url('orders/'.$model->id).'>'.$model->number.'</a>'.$this->installationStatusLabel($model->updated_at);
+                if ($model->subscription_updated_at) {//For few older clients subscription was not generated, so no updated_at column exists
+                    $orderLink = '<a href='.url('orders/'.$model->id).'>'.$model->number.'</a>'.installationStatusLabel($model->subscription_updated_at, $model->subscription_created_at);
                 }
 
                 return $orderLink;
@@ -202,6 +220,9 @@ class OrderController extends BaseOrderController
     {
         try {
             $order = $this->order->findOrFail($id);
+            if (User::onlyTrashed()->find($order->client)) {//If User is soft deleted for this order
+                throw new \Exception('The user for this order is suspended from the system. Restore the user to view order details.');
+            }
             $subscription = $order->subscription()->first();
 
             $date = '--';
@@ -214,7 +235,7 @@ class OrderController extends BaseOrderController
                 $date = strtotime($subscription->update_ends_at) > 1 ? getExpiryLabel($subscription->update_ends_at) : '--';
                 $licdate = strtotime($subscription->ends_at) > 1 ? getExpiryLabel($subscription->ends_at) : '--';
                 $supdate = strtotime($subscription->support_ends_at) > 1 ? getExpiryLabel($subscription->support_ends_at) : '--';
-                $lastActivity = getDateHtml($subscription->updated_at).'&nbsp;'.$this->installationStatusLabel($subscription->updated_at);
+                $lastActivity = getDateHtml($subscription->updated_at).'&nbsp;'.installationStatusLabel($subscription->updated_at, $subscription->created_at);
                 $versionLabel = getVersionAndLabel($subscription->version, $order->product);
             }
             $invoice = $this->invoice->where('id', $order->invoice_id)->first();
@@ -243,13 +264,6 @@ class OrderController extends BaseOrderController
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
-    }
-
-    public function installationStatusLabel($lastConnectionDate)
-    {
-        return $lastConnectionDate->toDateTimeString() > (new Carbon('-30 days'))->toDateTimeString() ? "&nbsp;<span class='badge badge-primary' style='background-color:darkcyan !important;' <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Installation is Active'>
-                     </label>Active</span>" : "&nbsp;<span class='badge badge-info' <label data-toggle='tooltip' style='font-weight:500;background-color:crimson;' data-placement='top' title='Installation inactive for more than 30 days'>
-                    </label>Inactive</span>";
     }
 
     /**

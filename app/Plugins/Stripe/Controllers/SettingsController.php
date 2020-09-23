@@ -98,6 +98,8 @@ class SettingsController extends Controller
             return successResponse(['success'=>'true', 'message'=>'Secret key updated successfully']);
         } catch (\Cartalyst\Stripe\Exception\UnauthorizedException  $e) {
             return errorResponse($e->getMessage());
+        } catch (\Exception $e) {
+            return errorResponse($e->getMessage());
         }
     }
 
@@ -123,12 +125,10 @@ class SettingsController extends Controller
         $stripe = Stripe::make($stripeSecretKey);
         try {
             $invoice = \Session::get('invoice');
-            $amount = \Cart::getTotal();
+            // $invoiceTotal = \Session::get('totalToBePaid');
+            $amount = rounding(\Cart::getTotal());
             if (! $amount) {//During renewal
-                if ($request->input('amount') != $invoice->grand_total) {
-                    throw new \Exception('Invalid modification of data');
-                }
-                $amount = $request->input('amount');
+                $amount = rounding(\Session::get('totalToBePaid'));
             }
             $stripeSecretKey = ApiKey::pluck('stripe_secret')->first();
             $stripe = Stripe::make($stripeSecretKey);
@@ -181,33 +181,40 @@ class SettingsController extends Controller
                     $view = $cont->getViewMessageAfterPayment($invoice, $state, $currency);
                     $status = $view['status'];
                     $message = $view['message'];
-                    \Session::forget('items');
-                    \Session::forget('code');
-                    \Session::forget('codevalue');
                 } else {
                     //Afer Renew
                     $control->successRenew($invoice);
                     $payment = new \App\Http\Controllers\Order\InvoiceController();
                     $payment->postRazorpayPayment($invoice);
-                    if ($invoice->grand_total) {
+                    if ($invoice->grand_total && emailSendingStatus()) {
                         $this->sendPaymentSuccessMailtoAdmin($invoice->currency, $invoice->grand_total, \Auth::user(), $invoice->invoiceItem()->first()->product_name);
                     }
                     $view = $cont->getViewMessageAfterRenew($invoice, $state, $currency);
                     $status = $view['status'];
                     $message = $view['message'];
                 }
+                \Session::forget('items');
+                \Session::forget('code');
+                \Session::forget('codevalue');
+                \Session::forget('totalToBePaid');
+                \Session::forget('invoice');
+                \Cart::removeCartCondition('Processing fee');
 
                 return redirect('checkout')->with($status, $message);
             } else {
                 return redirect('checkout')->with('fails', 'Your Payment was declined. Please try making payment with other gateway');
             }
         } catch (\Cartalyst\Stripe\Exception\ApiLimitExceededException | \Cartalyst\Stripe\Exception\BadRequestException | \Cartalyst\Stripe\Exception\MissingParameterException | \Cartalyst\Stripe\Exception\NotFoundException | \Cartalyst\Stripe\Exception\ServerErrorException | \Cartalyst\Stripe\Exception\StripeException | \Cartalyst\Stripe\Exception\UnauthorizedException $e) {
-            $this->sendFailedPaymenttoAdmin($request['amount'], $e->getMessage());
+            if (emailSendingStatus()) {
+                $this->sendFailedPaymenttoAdmin($amount, $e->getMessage());
+            }
 
             return redirect('checkout')->with('fails', 'Your Payment was declined. '.$e->getMessage().'. Please try again or try the other gateway');
         } catch (\Cartalyst\Stripe\Exception\CardErrorException $e) {
-            $this->sendFailedPaymenttoAdmin($request['amount'], $e->getMessage());
-            \Session::put('amount', $request['amount']);
+            if (emailSendingStatus()) {
+                $this->sendFailedPaymenttoAdmin($request['amount'], $e->getMessage());
+            }
+            \Session::put('amount', $amount);
             \Session::put('error', $e->getMessage());
 
             return redirect()->route('checkout');
@@ -220,8 +227,9 @@ class SettingsController extends Controller
     {
         $setting = Setting::find(1);
         $paymentFailData = 'Payment for'.' '.'of'.' '.\Auth::user()->currency.' '.$amount.' '.'failed by'.' '.\Auth::user()->first_name.' '.\Auth::user()->last_name.' '.'. User Email:'.' '.\Auth::user()->email.'<br>'.'Reason:'.$exceptionMessage;
-        $templateController = new \App\Http\Controllers\Common\TemplateController();
-        $templateController->mailing($setting->email, $setting->company_email, $paymentFailData, 'Paymemt failed');
+
+        $mail = new \App\Http\Controllers\Common\PhpMailController();
+        $mail->sendEmail($setting->email, $setting->company_email, $paymentFailData, 'Payment failed ');
     }
 
     public static function sendPaymentSuccessMailtoAdmin($currency, $total, $user, $productName)
@@ -229,6 +237,8 @@ class SettingsController extends Controller
         $setting = Setting::find(1);
         $templateController = new \App\Http\Controllers\Common\TemplateController();
         $paymentSuccessdata = 'Payment for'.' '.$productName.' '.'of'.' '.$currency.' '.$total.' '.'successful by'.' '.$user->first_name.' '.$user->last_name.' '.'Email:'.' '.$user->email;
-        $templateController->mailing($setting->email, $setting->company_email, $paymentSuccessdata, 'Payment Successful ');
+
+        $mail = new \App\Http\Controllers\Common\PhpMailController();
+        $mail->sendEmail($setting->email, $setting->company_email, $paymentSuccessdata, 'Payment Successful ');
     }
 }

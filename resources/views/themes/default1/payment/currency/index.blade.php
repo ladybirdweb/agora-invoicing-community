@@ -81,7 +81,7 @@ input:checked + .slider:before {
     </div>
     <div id="response"></div>
 
-<div class="card card-primary card-outline">
+<div class="card card-secondary card-outline">
 
 
 

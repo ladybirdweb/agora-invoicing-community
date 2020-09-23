@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Common;
 
 use App\Http\Controllers\Product\ProductController;
-use App\Model\Common\Setting;
 use App\Model\Common\Template;
 use App\Model\Common\TemplateType;
 use App\Model\Payment\Currency;
@@ -16,7 +15,6 @@ use App\Model\Product\Price;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
 use Bugsnag;
-use Config;
 use Illuminate\Http\Request;
 
 class TemplateController extends BaseTemplateController
@@ -32,6 +30,7 @@ class TemplateController extends BaseTemplateController
     public $tax_class;
     public $tax_rule;
     public $currency;
+    protected $commonMailer;
 
     public function __construct()
     {
@@ -70,39 +69,8 @@ class TemplateController extends BaseTemplateController
 
         $currency = new Currency();
         $this->currency = $currency;
-        $this->smtp();
-    }
 
-    public function smtp()
-    {
-        $settings = new Setting();
-        $fields = $settings->find(1);
-        $password = '';
-        // $name = '';
-        if ($fields) {
-            $driver = $fields->driver;
-            $port = $fields->port;
-            $host = $fields->host;
-            $enc = $fields->encryption;
-            $email = $fields->email;
-            $password = $fields->password;
-            $name = $fields->company;
-        }
-
-        return $this->smtpConfig($driver, $port, $host, $enc, $email, $password, $name);
-    }
-
-    public function smtpConfig($driver, $port, $host, $enc, $email, $password, $name)
-    {
-        Config::set('mail.driver', $driver);
-        Config::set('mail.password', $password);
-        Config::set('mail.username', $email);
-        Config::set('mail.encryption', $enc);
-        Config::set('mail.from', ['address' => $email, 'name' => $name]);
-        Config::set('mail.port', intval($port));
-        Config::set('mail.host', $host);
-
-        return 'success';
+        $this->commonMailer = new CommonMailer;
     }
 
     public function index()
@@ -330,28 +298,6 @@ class TemplateController extends BaseTemplateController
         }
     }
 
-    public function checkPriceWithTaxClass($productid, $currency)
-    {
-        try {
-            $product = $this->product->findOrFail($productid);
-            // dd($product);
-            if ($product->tax_apply == 1) {
-                $price = $this->checkTax($product->id, $currency);
-            } else {
-                $price = $product->price()->where('currency', $currency)->first()->sales_price;
-                if (! $price) {
-                    $price = $product->price()->where('currency', $currency)->first()->price;
-                }
-            }
-
-            return $price;
-        } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
-
-            throw new \Exception($ex->getMessage());
-        }
-    }
-
     public function plans($url, $id)
     {
         $plan = new Plan();
@@ -375,8 +321,7 @@ class TemplateController extends BaseTemplateController
             $price = '';
             $plan = new Plan();
             $plans = $plan->where('product', $id)->get();
-            $cart_controller = new \App\Http\Controllers\Front\CartController();
-            $currencyAndSymbol = $cart_controller->currency();
+            $currencyAndSymbol = userCurrency();
             $prices = [];
             if ($plans->count() > 0) {
                 foreach ($plans as $value) {

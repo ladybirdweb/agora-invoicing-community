@@ -16,7 +16,7 @@ Edit Page
 @stop
 
 @section('content')
-<div class="card card-primary card-outline">
+<div class="card card-secondary card-outline">
 
       {!! Form::model($page,['url'=>'pages/'.$page->id,'method'=>'patch']) !!}
 

@@ -81,7 +81,7 @@ input:checked + .slider:before {
 <div class="row">
 
     <div class="col-md-12">
-        <div class="card card-primary card-outline">
+        <div class="card card-secondary card-outline">
 
             <div class="card-header">
                 <h3 class="card-title">{{Lang::get('message.list-fields')}}</h3>
@@ -164,7 +164,7 @@ input:checked + .slider:before {
         </div>
         <!-- /.box -->
     <div class="col-md-12">
-         <div class="card card-primary card-outline">
+         <div class="card card-secondary card-outline">
 
          
                         
@@ -505,7 +505,7 @@ input:checked + .slider:before {
 
     </div>
     <div class="col-md-12">
-        <div class="card card-primary card-outline">
+        <div class="card card-secondary card-outline">
            <div id="alertMessage1"></div>
              <div class="card-body">
                   <h3 class="card-title">Map Is Paid Group</h3><br>

@@ -25,7 +25,7 @@
                 </li>
 
                 <li class="woocommerce-order-overview__date date">
-                    Date:                    <strong>{{$date}}</strong>
+                    Date:                    <strong>{!! $date !!}</strong>
                 </li>
 
                                     <li class="woocommerce-order-overview__email email">
@@ -75,7 +75,7 @@
                     </tr>
                                         <tr>
                         <th scope="row">Payment method:</th>
-                        <td>Session::get('payment_method')</td>
+                        <td>{{Session::get('payment_method')}}</td>
                     </tr>
                                         <tr>
                         <th scope="row">Total:</th>

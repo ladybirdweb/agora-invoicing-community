@@ -16,7 +16,7 @@ Settings
 @stop
 @section('content')
 
-<div class="card card-primary card-outline">
+<div class="card card-secondary card-outline">
 
 
         <div class="alert alert-success alert-dismissable" style="display: none;">

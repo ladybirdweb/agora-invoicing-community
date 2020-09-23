@@ -64,7 +64,7 @@
             ]);
         });
 
-        Route::group(['middleware' => ['install']], function () {
+        Route::group(['middleware' => ['installAgora']], function () {
             Route::get('pricing', 'Front\CartController@cart')->name('pricing');
             Route::get('group/{templateid}/{groupid}/', 'Front\PageController@pageTemplates');
             Route::post('cart/remove', 'Front\CartController@cartRemove');
@@ -76,10 +76,9 @@
             Route::get('show/cart', 'Front\CartController@showCart');
 
             Route::get('checkout', 'Front\CheckoutController@checkoutForm');
-            Route::match(['post', 'patch'], 'checkout', 'Front\CheckoutController@postCheckout');
+            Route::match(['post', 'patch'], 'checkout-and-pay', 'Front\CheckoutController@postCheckout');
 
             Route::post('pricing/update', 'Front\CartController@addCouponUpdate');
-            Route::post('update-final-price', 'Front\CartController@updateFinalPrice');
             Route::post('mail-chimp/subcribe', 'Common\MailChimpController@addSubscriberByClientPanel');
             Route::get('mailchimp', 'Common\MailChimpController@mailChimpSettings')->middleware('admin');
             Route::patch('mailchimp', 'Common\MailChimpController@postMailChimpSettings');
@@ -88,8 +87,8 @@
             Route::patch('mailchimp-ispaid/mapping', 'Common\MailChimpController@postIsPaidMapField');
             Route::patch('mailchimp-group/mapping', 'Common\MailChimpController@postGroupMapField');
             Route::get('get-group-field/{value}', 'Common\MailChimpController@addInterestFieldsToAgora');
-            Route::get('contact-us', 'Front\CartController@contactUs');
-            Route::post('contact-us', 'Front\CartController@postContactUs');
+            Route::get('contact-us', 'Front\PageController@contactUs');
+            Route::post('contact-us', 'Front\PageController@postContactUs');
 
             /*
              * Front Client Pages
@@ -100,12 +99,7 @@
             Route::get('get-my-invoices', 'Front\ClientController@getInvoices')->name('get-my-invoices');
             Route::get('get-my-invoices/{orderid}/{userid}', 'Front\ClientController@getInvoicesByOrderId');
 
-            // Route::get('get-my-invoices/{orderid}/{userid}', ['uses' => 'Front\ClientController@getInvoicesByOrderId', 'as' => 'get-my-invoices']);
-
             Route::get('get-my-payment/{orderid}/{userid}', ['uses' => 'Front\ClientController@getPaymentByOrderId', 'as' => 'get-my-payment']);
-
-            // Route::get('get-my-payment/{orderid}/{userid}', 'Front\ClientController@getPaymentByOrderId');
-            // Route::get('get-my-payment-client/{orderid}/{userid}', 'Front\ClientController@getPaymentByOrderIdClient');
 
             Route::get('get-my-payment-client/{orderid}/{userid}', ['uses' => 'Front\ClientController@getPaymentByOrderIdClient', 'as' => 'get-my-payment-client']);
 
@@ -152,19 +146,28 @@
              */
             Route::get('twitter', 'Common\SocialMediaController@getTweets')->name('twitter');
 
-            /*
-             * Authentication
-             */
-            //     Route::get([
-            // // 'auth'     => 'Auth\AuthController',
-            // // 'password' => 'Auth\PasswordController',
-            //     ]);
             Route::auth();
             Route::post('auth/register', 'Auth\RegisterController@postRegister')->name('auth/register');
             Route::get('auth/logout', 'Auth\LoginController@logout')->name('logout');
             Route::get('/', 'DashboardController@index');
 
             Route::get('activate/{token}', 'Auth\AuthController@activate');
+
+            /*
+             * Client
+             */
+
+            /*
+             * Client
+             */
+
+            /*
+             * Client
+             */
+
+            /*
+             * Client
+             */
 
             /*
              * Profile Process
@@ -180,8 +183,8 @@
             Route::get('settings', 'Common\SettingsController@settings');
             Route::get('settings/system', 'Common\SettingsController@settingsSystem');
             Route::patch('settings/system', 'Common\SettingsController@postSettingsSystem');
-            Route::get('settings/email', 'Common\SettingsController@settingsEmail');
-            Route::patch('settings/email', 'Common\SettingsController@postSettingsEmail');
+            Route::get('settings/email', 'Common\EmailSettingsController@settingsEmail');
+            Route::patch('settings/email', 'Common\EmailSettingsController@postSettingsEmail');
             Route::get('settings/template', 'Common\SettingsController@settingsTemplate');
             Route::patch('settings/template', 'Common\SettingsController@postSettingsTemplate');
             Route::patch('settings/error', 'Common\SettingsController@postSettingsError');
@@ -199,7 +202,6 @@
             Route::post('updatetwitterDetails', 'Common\BaseSettingsController@updateTwitterDetails')->name('updatetwitterDetails');
             Route::post('updateMailchimpDetails', 'Common\BaseSettingsController@updateMailchimpDetails')->name('updateMailchimpDetails');
             Route::post('updateTermsDetails', 'Common\BaseSettingsController@updateTermsDetails')->name('updateTermsDetails');
-            Route::post('updaterzpDetails', 'Common\BaseSettingsController@updateRazorpayDetails')->name('updaterzpDetails');
             Route::post('updatezohoDetails', 'Common\BaseSettingsController@updateZohoDetails')->name('updatezohoDetails');
             Route::post('updatepipedriveDetails', 'Common\BaseSettingsController@updatepipedriveDetails')->name('updatepipedriveDetails');
             Route::post('mailchimp-prod-status', 'Common\BaseSettingsController@updateMailchimpProductStatus')->name('mailchimp-prod-status');
@@ -215,6 +217,10 @@
              */
 
             Route::resource('clients', 'User\ClientController');
+            Route::get('deleted-users', 'User\SoftDeleteController@index');
+            Route::get('soft-delete', 'User\SoftDeleteController@softDeletedUsers')->name('soft-delete');
+            Route::get('clients/{id}/restore', 'User\SoftDeleteController@restoreUser');
+            Route::delete('permanent-delete-client', 'User\SoftDeleteController@permanentDeleteUser');
             Route::get('getClientDetail/{id}', 'User\ClientController@getClientDetail');
             Route::get('getPaymentDetail/{id}', 'User\ClientController@getPaymentDetail');
             Route::get('getOrderDetail/{id}', 'User\ClientController@getOrderDetail');
@@ -271,8 +277,8 @@
             // Route::get('get-tax', 'Payment\TaxController@GetTax');
 
             Route::delete('tax-delete', 'Payment\TaxController@destroy')->name('tax-delete');
-            Route::patch('taxes/option', 'Payment\TaxController@options')->name('taxes/option');
-            Route::post('taxes/option', 'Payment\TaxController@options');
+            Route::post('taxes/option', 'Payment\TaxController@saveTaxOptionSetting')->name('taxes/option');
+            Route::post('taxes/class', 'Payment\TaxController@saveTaxClassSetting');
 
             /*
              * Promotion
@@ -337,6 +343,18 @@
             Route::get('get-templates', ['as' => 'get-templates', 'uses' => 'Common\TemplateController@getTemplates']);
             // Route::get('get-templates', 'Common\TemplateController@GetTemplates');
             Route::delete('templates-delete', 'Common\TemplateController@destroy')->name('templates-delete');
+
+            /**
+             * Queue.
+             */
+            Route::get('queue', ['as' => 'queue', 'uses' => 'Jobs\QueueController@index']);
+            Route::get('get-queue', 'Jobs\QueueController@getQueues')->name('get-queue');
+            Route::get('queue/{id}', ['as' => 'queue.edit', 'uses' => 'Jobs\QueueController@edit']);
+            Route::post('queue/{id}', ['as' => 'queue.update', 'uses' => 'Jobs\QueueController@update']);
+
+            Route::post('queue/{queue}/activate', 'Jobs\QueueController@activate');
+            Route::get('form/queue', ['as' => 'queue.form', 'uses' => 'Jobs\QueueController@getForm']);
+            // Route::get('queue-monitoring', 'Jobs\QueueController@monitorQueues']);
 
             /*
              * Chat Script
@@ -422,11 +440,11 @@
              */
             Route::get('plugin', 'Common\SettingsController@plugins');
 
-            Route::get('get-plugin', ['as' => 'get-plugin', 'uses' => 'Common\SettingsController@getPlugin']);
+            Route::get('get-plugin', ['as' => 'get-plugin', 'uses' => 'Common\PaymentSettingsController@getPlugin']);
             // Route::get('getplugin', 'Common\SettingsController@getPlugin');
-            Route::post('post-plugin', ['as' => 'post.plugin', 'uses' => 'Common\SettingsController@postPlugins']);
-            Route::post('plugin/delete/{slug}', ['as' => 'delete.plugin', 'uses' => 'Common\SettingsController@deletePlugin']);
-            Route::post('plugin/status/{slug}', ['as' => 'status.plugin', 'uses' => 'Common\SettingsController@statusPlugin']);
+            Route::post('post-plugin', ['as' => 'post.plugin', 'uses' => 'Common\PaymentSettingsController@postPlugins']);
+            Route::post('plugin/delete/{slug}', ['as' => 'delete.plugin', 'uses' => 'Common\PaymentSettingsController@deletePlugin']);
+            Route::post('plugin/status/{slug}', ['as' => 'status.plugin', 'uses' => 'Common\PaymentSettingsController@statusPlugin']);
 
             /*
              * Cron Jobs
@@ -435,7 +453,7 @@
             Route::get('job-scheduler', ['as'=>'get.job.scheduler', 'uses'=>'Common\SettingsController@getScheduler']);
             Route::patch('post-scheduler', ['as' => 'post.job.scheduler', 'uses' => 'Common\SettingsController@postSchedular'])->name('post-scheduler'); //to update job scheduler
             Route::patch('cron-days', ['as'=>'cron-days', 'uses'=>'Common\SettingsController@saveCronDays'])->name('cron-days');
-            Route::get('verify-php-path', ['as' => 'verify-cron', 'uses' => 'Common\SettingsController@checkPHPExecutablePath']);
+            Route::post('verify-php-path', ['as' => 'verify-cron', 'uses' => 'Common\SettingsController@checkPHPExecutablePath']);
             Route::get('file-storage', 'Common\SettingsController@showFileStorage');
             Route::post('file-storage-path', 'Common\SettingsController@updateStoragePath');
             Route::get('expired-subscriptions', 'Common\CronController@eachSubscription');
@@ -484,7 +502,7 @@
                     return view('themes.default1.user.verify', compact('user'));
                 }
 
-                return redirect('auth/login');
+                return redirect('login');
             });
         });
          /*

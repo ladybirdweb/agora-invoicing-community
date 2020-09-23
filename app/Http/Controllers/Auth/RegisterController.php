@@ -3,12 +3,10 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Front\CartController;
 use App\Http\Requests\User\ProfileRequest;
 use App\Model\Common\Country;
 use App\Model\Common\Setting;
 use App\Model\Common\StatusSetting;
-use App\Model\User\AccountActivate;
 use App\User;
 use Facades\Spatie\Referer\Referer;
 use Illuminate\Foundation\Auth\RegistersUsers;
@@ -46,12 +44,19 @@ class RegisterController extends Controller
         $this->middleware('guest');
     }
 
-    public function postRegister(ProfileRequest $request, User $user, AccountActivate $activate)
+    public function postRegister(ProfileRequest $request, User $user)
     {
+        $apiKeys = StatusSetting::value('recaptcha_status');
+        $captchaRule = $apiKeys ? 'required|' : 'sometimes|';
+        $this->validate($request, [
+            'g-recaptcha-response-1' => $captchaRule.'captcha',
+        ], [
+            'g-recaptcha-response-1.required' => 'Robot Verification Failed. Please Try Again.',
+        ]);
         try {
             $location = getLocation();
             $state_code = $location['iso_code'].'-'.$location['state'];
-            $state = CartController::getStateByCode($state_code);
+            $state = getStateByCode($state_code);
             $user->state = $state['id'];
             $password = \Hash::make($request->input('password'));
             $user->country = $request->input('country');
@@ -75,9 +80,10 @@ class RegisterController extends Controller
 
             $user->manager = $user->assignSalesManager();
             $user->ip = $location['ip'];
+            $user->timezone_id = getTimezoneByName($location['timezone']);
             $user->referrer = Referer::get(); // 'google.com'
-            $user->timezone_id = CartController::getTimezoneByName($location['timezone']);
             $user->save();
+
             $emailMobileStatusResponse = $this->getEmailMobileStatusResponse($user);
 
             activity()->log('User <strong>'.$user->first_name.' '.$user->last_name.'</strong> was created');

@@ -22,7 +22,7 @@ Create User
 
 
 
-    <div class="card card-primary card-outline">
+    <div class="card card-secondary card-outline">
 
 
 
@@ -168,7 +168,7 @@ Create User
 
                 <div class="form-group {{ $errors->has('address') ? 'has-error' : '' }}">
                     <!-- phone number -->
-                    {!! Form::label('address',Lang::get('message.address')) !!}
+                    {!! Form::label('address',Lang::get('message.address'),['class'=>'required']) !!}
                     {!! Form::textarea('address',null,['class' => 'form-control']) !!}
 
                 </div>
@@ -208,7 +208,7 @@ Create User
                     ?>
                     <div class="col-md-3 form-group {{ $errors->has('state') ? 'has-error' : '' }}">
                         <!-- name -->
-                        {!! Form::label('state',Lang::get('message.state')) !!}
+                        {!! Form::label('state',Lang::get('message.state'),['class'=>'required']) !!}
                         <!--{!! Form::select('state',[],null,['class' => 'form-control','id'=>'state-list']) !!}-->
                           <select name="state" id="state-list" class="form-control">
                         @if(old('state') != null)
@@ -335,6 +335,15 @@ Create User
                 //Initialize Select2 Elements
                 $('.select2').select2()
             });
+            val = $('#country').val();
+            state = $('#state-list').val();
+            if(state == '') {
+                getState(val);
+            } else {
+                $('#state-list').val(state)
+            }
+             
+
 // get the country data from the plugin
 var countryData = $.fn.intlTelInput.getCountryData(),
 

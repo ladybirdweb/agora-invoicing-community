@@ -18,17 +18,20 @@ Stripe
 
 @section('content')
 
-<div class="row">
 
     <div class="col-md-12">
-        <div class="card card-primary card-outline">
+        <div class="card card-secondary card-outline">
+           <div class="card-header">
+        <h3 class="card-title">Api Keys</h3>
+
+        
+      </div>
 
 
-
-            <div class="card-body">
+             <div class="card-body table-responsive">
                 <div id="alertMessage"></div>
-
-                <table class="table">
+                <div class="row">
+               
 
 
                     
@@ -36,17 +39,18 @@ Stripe
                     
                     <tr>
 
-                        <td><b>{!! Form::label('api_key','Api Keys',['class'=>'required']) !!}</b></td>
                         <td>
                           <!-- last name -->
-                        {!! Form::label('stripe_secret','Stripe Secret Key') !!} 
+                        {!! Form::label('stripe_secret','Stripe Secret Key',['class'=>'required']) !!} 
                         {!! Form::text('stripe_secret',$stripeKeys->stripe_secret,['class' => 'form-control rzp_secret','id'=>'stripe_secret']) !!}
                            <span id="stripe_keycheck"></span>
                          </td>
                        
                     </tr>
 
-                </table>
+              
+              </div>
+              <br>
                 <button type="submit" class="btn btn-primary btn-sm" id="key_update"><i class="fa fa-sync-alt"></i>&nbsp;Update</button>
 
 
@@ -59,7 +63,6 @@ Stripe
     </div>
 
 
-</div>
 <script type="text/javascript">
            
              $('#b_currency_update').on('click',function(){

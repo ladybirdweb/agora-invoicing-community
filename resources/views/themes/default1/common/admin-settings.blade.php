@@ -40,8 +40,11 @@ Settings
         border: 5px solid #C4D8E4;
         border-radius: 100%;
     }
+    .fa-stack {
+        position:inherit;
+    }
 </style>
-<div class="card card-primary card-outline">
+<div class="card card-secondary card-outline">
 
     <!-- /.box-header -->
         <div class="card-header">
@@ -136,7 +139,7 @@ Settings
                         <div class="settingdivblue">
                             <a href="{{url('system-managers')}}">
                                 <span class="fa-stack fa-2x">
-                                    <i class="fa fa-users"></i>
+                                    <i class="fa fa-users fa-stack-1x"></i>
                                 </span>
                             </a>
                         </div>
@@ -154,7 +157,7 @@ Settings
 </div>
 <!-- /.box -->
 
-<div class="card card-primary card-outline">
+<div class="card card-secondary card-outline">
     <div class="card-header">
         <h3 class="card-title">{{Lang::get('message.log_setting')}}</h3>
     </div>
@@ -230,7 +233,7 @@ Settings
 
 
 
-<div class="card card-primary card-outline">
+<div class="card card-secondary card-outline">
     <div class="card-header">
         <h3 class="card-title">Email</h3>
     </div>
@@ -279,6 +282,34 @@ Settings
                     </div>
                 </div>
                 <!--/.col-md-2-->
+
+                 <div class="col-md-2 col-sm-6">
+                    <div class="settingiconblue">
+                        <div class="settingdivblue">
+                            <a href="{{url('queue')}}">
+                                <span class="fa-stack fa-2x">
+                                    <i class="fa fa-upload fa-stack-1x"></i>
+                                </span>
+                            </a>
+                        </div>
+                        <p class="box-title" >Queues</p>
+                    </div>
+                </div>
+
+                @if($isRedisConfigured)
+                 <div class="col-md-2 col-sm-6">
+                    <div class="settingiconblue">
+                        <div class="settingdivblue">
+                            <a href="{{url('horizon')}}" target="_blank">
+                                <span class="fa-stack fa-2x">
+                                    <i class="fa fa-desktop fa-stack-1x"></i>
+                                </span>
+                            </a>
+                        </div>
+                        <p class="box-title" >Queue Monitoring</p>
+                    </div>
+                </div>
+                @endif
                
         </div>
         <!-- /.row -->
@@ -286,7 +317,7 @@ Settings
     <!-- ./box-body -->
 </div>
 
-<div class="card card-primary card-outline">
+<div class="card card-secondary card-outline">
     <div class="card-header">
         <h3 class="card-title">Api</h3>
     </div>
@@ -331,7 +362,7 @@ Settings
                         <div class="settingdivblue">
                             <a href="{{ url('apikeys') }}">
                                 <span class="fa-stack fa-2x">
-                                    <i class="fa fa-cogs"></i>
+                                    <i class="fa fa-cogs fa-stack-1x"></i>
                                 </span>
                             </a>
                         </div>
@@ -344,7 +375,7 @@ Settings
     <!-- ./box-body -->
 </div>
 
-<div class="card card-primary card-outline">
+<div class="card card-secondary card-outline">
     <div class="card-header">
         <h3 class="card-title">Common</h3>
     </div>
@@ -384,7 +415,7 @@ Settings
                         <div class="settingdivblue">
                             <a href="{{url('get-country')}}">
                                 <span class="fa-stack fa-2x">
-                                    <i class="fa fa-flag-checkered"></i>
+                                    <i class="fa fa-flag-checkered fa-stack-1x"></i>
                                 </span>
                             </a>
                         </div>
@@ -398,7 +429,7 @@ Settings
     </div>
     <!-- ./box-body -->
 </div>
-<div class="card card-primary card-outline">
+<div class="card card-secondary card-outline">
     <div class="card-header">
         <h3 class="card-title">Widgets</h3>
     </div>

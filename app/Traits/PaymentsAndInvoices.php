@@ -125,6 +125,9 @@ use Illuminate\Http\Request;
         {
             try {
                 $invoice = $this->invoice->findOrFail($invoiceid);
+                foreach (\Cart::getConditionsByType('fee') as $value) {
+                    $invoice->processing_fee = $value->getValue();
+                }
                 $payment = $this->payment->where('invoice_id', $invoiceid)
             ->where('payment_status', 'success')->pluck('amount')->toArray();
                 $total = array_sum($payment);
@@ -152,6 +155,11 @@ use Illuminate\Http\Request;
         public function postRazorpayPayment($invoice)
         {
             try {
+                $totalPayment = $invoice->grand_total;
+                if (count($invoice->payment()->get())) {//If partial payment is made
+                    $paid = array_sum($invoice->payment()->pluck('amount')->toArray());
+                    $totalPayment = $invoice->grand_total - $paid;
+                }
                 $payment_method = \Session::get('payment_method');
                 $payment_status = 'success';
                 $payment_date = \Carbon\Carbon::now()->toDateTimeString();
@@ -160,7 +168,7 @@ use Illuminate\Http\Request;
                 $payment_method,
                 $payment_status,
                 $payment_date,
-                $invoice->grand_total
+                $totalPayment
             );
 
                 return redirect()->back()->with('success', 'Payment Accepted Successfully');
@@ -229,38 +237,6 @@ use Illuminate\Http\Request;
                 }
 
                 return redirect()->back();
-            } catch (\Exception $ex) {
-                Bugsnag::notifyException($ex);
-
-                return redirect()->back()->with('fails', $ex->getMessage());
-            }
-        }
-
-        public function pdf(Request $request)
-        {
-            try {
-                $id = $request->input('invoiceid');
-                if (! $id) {
-                    return redirect()->back()->with('fails', \Lang::get('message.no-invoice-id'));
-                }
-                $invoice = $this->invoice->where('id', $id)->first();
-                if (! $invoice) {
-                    return redirect()->back()->with('fails', \Lang::get('message.invalid-invoice-id'));
-                }
-                $invoiceItems = $this->invoiceItem->where('invoice_id', $id)->get();
-                if ($invoiceItems->count() == 0) {
-                    return redirect()->back()->with('fails', \Lang::get('message.invalid-invoice-id'));
-                }
-                $user = $this->user->find($invoice->user_id);
-                if (! $user) {
-                    return redirect()->back()->with('fails', 'No User');
-                }
-                $cont = new \App\Http\Controllers\Front\CartController();
-                $currency = $cont->currency($user->id);
-                $symbol = $currency['currency'];
-                $pdf = \PDF::loadView('themes.default1.invoice.newpdf', compact('invoiceItems', 'invoice', 'user', 'currency', 'symbol'));
-
-                return $pdf->download($user->first_name.'-invoice.pdf');
             } catch (\Exception $ex) {
                 Bugsnag::notifyException($ex);
 

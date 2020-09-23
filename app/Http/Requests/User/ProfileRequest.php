@@ -32,10 +32,10 @@ class ProfileRequest extends Request
                 'company'                => 'required',
                 'email'                  => 'required',
                 'mobile'                 => 'required',
-                'mobile_code'            => 'required',
                 'address'                => 'required',
                 'user_name'              => 'unique:users,user_name,'.$userid,
                 'country'                => 'required|exists:countries,country_code_char2',
+                'state'                  => 'required_if:country,IN',
                 'timezone_id'            => 'required',
                 'profile_pic'            => 'sometimes|mimes:jpeg,jpg,png,gif|max:100000',
 
@@ -51,10 +51,10 @@ class ProfileRequest extends Request
                 'mobile'                => 'required|regex:/[0-9]/|min:5|max:20',
                 'email'                 => 'required',
                 'company'               => 'required',
-                'mobile_code'            => 'required',
                 'address'                => 'required',
                 'mobile'                 => 'required',
                 'country'                => 'required|exists:countries,country_code_char2',
+                'state'                  => 'required_if:country,IN',
                 'profile_pic'            => 'sometimes|mimes:jpeg,jpg,png,gif|max:100000',
 
             ];
@@ -79,8 +79,6 @@ class ProfileRequest extends Request
                 'password'              => 'required|min:6',
                 'password_confirmation' => 'required|same:password',
                 'country'               => 'required|exists:countries,country_code_char2',
-                'g-recaptcha-response-1'=> 'sometimes|required|captcha',
-
             ];
         }
     }
@@ -89,7 +87,7 @@ class ProfileRequest extends Request
     {
         return[
             'mobile_code.required'           => 'Enter Country code (mobile)',
-            'g-recaptcha-response-1.required'=> 'Robot Verification Failed. Please Try Again',
+            'state.required_if'           => 'The state field is required when country is India.',
         ];
     }
 }

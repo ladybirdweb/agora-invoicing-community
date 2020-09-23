@@ -2,61 +2,32 @@
 
 namespace App\Http\Controllers\Order;
 
-use App\Http\Controllers\Front\CartController;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
 use App\Model\Order\Payment;
 use App\Model\Payment\Currency;
-use App\Model\Payment\Promotion;
-use App\Model\Payment\Tax;
-use App\Model\Payment\TaxOption;
 use App\User;
 use Bugsnag;
 
 class TaxRatesAndCodeExpiryController extends BaseInvoiceController
 {
     /**
-     * Get tax when enabled.
-     */
-    public function getTaxWhenEnable($productid, $taxs, $userid)
-    {
-        $rate = $this->getRate($productid, $taxs, $userid);
-        $taxs = ([$rate['taxs']['0']['name'], $rate['taxs']['0']['rate']]);
-
-        return $taxs;
-    }
-
-    /**
-     * GeT Total Rate.
-     */
-    public function getTotalRate($taxClassId, $productid, $taxs)
-    {
-        $cartController = new CartController();
-        $taxs = $cartController->getTaxByPriority($taxClassId);
-        $value = $cartController->getValueForOthers($productid, $taxClassId, $taxs);
-        if ($value == 0) {
-            $status = 0;
-        }
-        $rate = $value;
-
-        return ['rate'=>$rate, 'taxes'=>$taxs];
-    }
-
-    /**
      * Get Grandtotal.
      **/
-    public function getGrandTotal($code, $total, $cost, $productid, $currency)
+    public function getGrandTotal($code, $total, $cost, $productid, $currency, $user_id = '')
     {
-        $grand_total = $total;
-        if ($code) {
-            $grand_total = $this->checkCode($code, $productid, $currency);
-        } else {
-            if ($total != 0) {
-                $grand_total = $total;
-            }
+        if (! $total) {
+            return ['total'=>$total, 'code'=>'', 'value'=>'', 'mode'=>''];
         }
+        if ($code) {
+            $cont = new \App\Http\Controllers\Payment\PromotionController();
+            $promo = $cont->getPromotionDetails($code);
+            $total = $cont->findCostAfterDiscount($promo->id, $productid, $user_id);
 
-        return $grand_total;
+            return ['total'=>$total, 'code'=>$promo->code, 'value'=>$promo->value, 'mode'=>'coupon'];
+        } else {
+            return ['total'=>$total, 'code'=>'', 'value'=>'', 'mode'=>''];
+        }
     }
 
     /**
@@ -72,45 +43,6 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
         }
 
         return $result;
-    }
-
-    /**
-     * get Subtotal.
-     */
-    public function getSubtotal($user_currency, $cart)
-    {
-        if ($user_currency == 'INR') {
-            $subtotal = \App\Http\Controllers\Front\CartController::rounding($cart->getPriceSumWithConditions());
-        } else {
-            $subtotal = \App\Http\Controllers\Front\CartController::rounding($cart->getPriceSumWithConditions());
-        }
-
-        return $subtotal;
-    }
-
-    public function calculateTotal($rate, $total)
-    {
-        try {
-            $total = intval($total);
-            $rates = explode(',', $rate);
-            $rule = new TaxOption();
-            $rule = $rule->findOrFail(1);
-            if ($rule->inclusive == 0) {
-                foreach ($rates as $rate1) {
-                    if ($rate1 != '') {
-                        $rateTotal = str_replace('%', '', $rate1);
-                        $total += $total * ($rateTotal / 100);
-                    }
-                }
-            }
-
-            return intval(round($total));
-        } catch (\Exception $ex) {
-            app('log')->warning($ex->getMessage());
-            Bugsnag::notifyException($ex);
-
-            throw new \Exception($ex->getMessage());
-        }
     }
 
     public function checkExecution($invoiceid)
@@ -212,11 +144,8 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
             $temp_type = new \App\Model\Common\TemplateType();
             $type = $temp_type->where('id', $type_id)->first()->name;
         }
-        //dd($type);
-        $templateController = new \App\Http\Controllers\Common\TemplateController();
-        $mail = $templateController->mailing($from, $to, $data, $subject, $replace, $type);
-
-        return $mail;
+        $mail = new \App\Http\Controllers\Common\PhpMailController();
+        $mail->sendEmail($from, $to, $data, $subject, $replace, $type);
     }
 
     public function invoiceUrl($invoiceid)
@@ -277,33 +206,5 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
 
             return redirect()->back()->with('fails', $e->getMessage());
         }
-    }
-
-    public function getPromotionDetails($code)
-    {
-        $promo = Promotion::where('code', $code)->first();
-        //check promotion code is valid
-        if (! $promo) {
-            throw new \Exception(\Lang::get('message.no-such-code'));
-        }
-        $relation = $promo->relation()->get();
-        //check the relation between code and product
-        if (count($relation) == 0) {
-            throw new \Exception(\Lang::get('message.no-product-related-to-this-code'));
-        }
-        //check the usess
-        $cont = new \App\Http\Controllers\Payment\PromotionController();
-        $uses = $cont->checkNumberOfUses($code);
-        //dd($uses);
-        if ($uses != 'success') {
-            throw new \Exception(\Lang::get('message.usage-of-code-completed'));
-        }
-        //check for the expiry date
-        $expiry = $this->checkExpiry($code);
-        if ($expiry != 'success') {
-            throw new \Exception(\Lang::get('message.usage-of-code-expired'));
-        }
-
-        return $promo;
     }
 }

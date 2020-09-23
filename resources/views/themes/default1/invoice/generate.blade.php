@@ -18,7 +18,7 @@ Create Invoice
 @stop
 @section('content')
 <div class="col-md-12">
-<div class="card card-primary card-outline">
+<div class="card card-secondary card-outline">
 
     <div class="card-header">
          @if($user!='')
@@ -81,7 +81,7 @@ Create Invoice
 
                 <div class="col-md-4 lg-4 form-group">
                     {!! Form::label('product',Lang::get('message.product'),['class'=>'required']) !!}
-                     <select name="product" value= "Choose" onChange="getSubscription(this.value)" id="product" class="form-control" required="required">
+                     <select name="product" value= "Choose" id="product" class="form-control" required="required">
                              <option value="">Choose</option>
                            @foreach($products as $key=>$product)
                               <option value={{$key}}>{{$product}}</option>
@@ -91,13 +91,7 @@ Create Invoice
                 </div>
 
           
-                <div id="fields1">
-                </div>
-                 <div id="qty">
-                </div>
-                 <div id="agents">
-                </div>
-                <div id="fields">
+                <div id="fields1" class="col-md-4">
                 </div>
 
                 <div class="col-md-4 form-group">
@@ -109,7 +103,14 @@ Create Invoice
                     {!! Form::label('code',Lang::get('message.promotion-code')) !!}
                     {!! Form::text('code',null,['class'=>'form-control']) !!}
                 </div>
-           
+
+                 <div id="qty" class="col-md-4">
+                </div>
+                 <div id="agents" class="col-md-4">
+                </div>
+                <div id="fields" class="col-md-4">
+                </div>
+
                 <!-- <div class="col-md-6 form-group">
                     {!! Form::label('send_mail',Lang::get('message.send-mail')) !!}
                     <p>{!! Form::checkbox('client',1) !!} To Client&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{!! Form::checkbox('agent',1) !!} To Agent</p>
@@ -119,6 +120,7 @@ Create Invoice
 
 
             </div>
+            <br>
              <h4> <button name="generate" type="submit" id="generate" class="btn btn-primary pull-right" ><i class="fas fa-sync-alt">&nbsp;</i>{!!Lang::get('message.generate')!!}</button></h4>
              
             {!! Form::close() !!}
@@ -158,28 +160,43 @@ Create Invoice
                 //console.log(field);
                 $("#price").val(price);
                 $("#fields").replaceWith(field);
-                $("#qty").replaceWith(qty);
-                $("#agents").replaceWith(agents);
+                const element1 = document.getElementById('qty')
+                if (element1) {
+                    element1.innerHTML = qty
+                }
+
+                const element2 = document.getElementById('agents')
+                if (element2) {
+                    element2.innerHTML = agents
+                }
+                // $("#qty").replaceWith(qty);
+                // $("#agents").replaceWith(agents);
             }
         });
     }
 
-    function getSubscription(val) {
-        $.ajax({
+        $('#product').on('change',function(){
+            val = $('#product').val();
+             $.ajax({
             type: "GET",
             url: "{{url('get-subscription')}}" + '/' + val,
             success: function (data) {
                 var price = data['price'];
                 var field = data['field'];
-               
                 
                 $("#price").val(price);
-                $("#fields1").replaceWith(field);
+                
+                const element = document.getElementById('fields1')
+                if (element) {
+                    element.innerHTML = field
+                }
                 
 
             }
         });
-    }
+        })
+       
+    
 
 </script>
 <script type='text/javascript'>

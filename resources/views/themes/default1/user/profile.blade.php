@@ -104,7 +104,7 @@ input:checked + .slider:before {
         {!! Form::model($user,['url'=>'profile', 'method' => 'PATCH','files'=>true]) !!}
 
 
-        <div class="card card-primary card-outline">
+        <div class="card card-secondary card-outline">
             <div class="card-header">
                 <h3 class="card-title">Edit Profile</h3>
 
@@ -150,17 +150,19 @@ input:checked + .slider:before {
 
 
                 <div class="form-group {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
-                  {!! Form::label('mobile',null,['class' => 'required'],Lang::get('message.mobile'),['class'=>'required']) !!}
+                  {!! Form::label('mobile',null,Lang::get('message.mobile')) !!}
                      {!! Form::hidden('mobile_code',null,['id'=>'mobile_code_hidden']) !!}
-                      <input class="form-control"  id="mobile_code" value="{{$user->mobile}}" name="mobile" type="tel">
-                       {!! Form::hidden('mobile_code',null,['class'=>'form-control input-lg','disabled','id'=>'mobile_code']) !!}
-                    <!-- {!! Form::text('mobil',null,['class'=>'form-control', 'id'=>'mobile_code']) !!} -->
+                     <!--  <input class="form-control selected-dial-code"  id="mobile_code" value="{{$user->mobile}}" name="mobile" type="tel"> -->
+                        
+                    {!! Form::text('mobile',$user->mobile,['class'=>'form-control selected-dial-code', 'type'=>'tel','id'=>'mobile_code']) !!}
+                    <span id="valid-msg" class="hide"></span>
+                       <span id="error-msg" class="hide"></span>
                 </div>
 
 
                 <div class="form-group {{ $errors->has('address') ? 'has-error' : '' }}">
                     <!-- phone number -->
-                    {!! Form::label('address',null,Lang::get('message.address')) !!}
+                    {!! Form::label('address',null,['class' => 'required'],Lang::get('message.address')) !!}
                     {!! Form::textarea('address',null,['class' => 'form-control']) !!}
 
                 </div>
@@ -190,7 +192,9 @@ input:checked + .slider:before {
                     <div class="col-md-6 form-group {{ $errors->has('country') ? 'has-error' : '' }}">
                          {!! Form::label('country',Lang::get('message.country'),['class' => 'required']) !!}
 
-                        {!! Form::select('country',[Lang::get('message.choose')=>$countries],null,['class' => 'form-control selectpicker','id'=>'country','onChange'=>'getCountryAttr(this.value)','data-live-search'=>'true','required','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false','data-size'=>'10']) !!}
+
+
+                        {!! Form::select('country',[Lang::get('message.choose')=>$countries],null,['class' => 'form-control select2','id'=>'country','onChange'=>'getCountryAttr(this.value)','data-live-search'=>'true','required','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false','data-size'=>'10']) !!}
                         <!-- name -->
 
 
@@ -199,7 +203,7 @@ input:checked + .slider:before {
                     </div>
                     <div class="col-md-6 form-group {{ $errors->has('state') ? 'has-error' : '' }}">
                         <!-- name -->
-                        {!! Form::label('state',Lang::get('message.state')) !!}
+                        {!! Form::label('state',Lang::get('message.state'),['class' => 'required']) !!}
                         <!--{!! Form::select('state',[],null,['class' => 'form-control','id'=>'state-list']) !!}-->
                         <select name="state" id="state-list" class="form-control">
                             @if(count($state)>0)
@@ -243,7 +247,7 @@ input:checked + .slider:before {
 
 
 
-        <div class="card card-primary card-outline">
+        <div class="card card-secondary card-outline">
             <div class="card-header">
                 <h3 class="card-title">{{Lang::get('message.change-password')}}</h3>
 
@@ -302,7 +306,7 @@ input:checked + .slider:before {
  @include('themes.default1.user.2faModals')
 
 
-        <div class="card card-primary card-outline">
+        <div class="card card-secondary card-outline">
             <div class="card-header">
                 <h3 class="card-title">{{Lang::get('message.setup_2fa')}}</h3>
 
@@ -348,8 +352,17 @@ input:checked + .slider:before {
 <script>
 // get the country data from the plugin
      $(document).ready(function(){
+         $(function () {
+             //Initialize Select2 Elements
+             $('.select2').select2()
+         });
     var country = $('#country').val();
+    getCode(country);
     var telInput = $('#mobile_code');
+    addressDropdown = $("#country");
+     errorMsg = document.querySelector("#error-msg"),
+    validMsg = document.querySelector("#valid-msg");
+    var errorMap = [ "Invalid number", "Invalid country code", "Number Too short", "Number Too long", "Invalid number"];
      let currentCountry="";
     telInput.intlTelInput({
         initialCountry: "auto",
@@ -364,17 +377,49 @@ input:checked + .slider:before {
             });
         },
         separateDialCode: true,
-        // utilsScript: "{{asset('js/intl/js/utils.js')}}",
+       utilsScript: "{{asset('js/intl/js/utils.js')}}"
     });
+     var reset = function() {
+      errorMsg.innerHTML = "";
+      errorMsg.classList.add("hide");
+      validMsg.classList.add("hide");
+    };
     setTimeout(()=>{
          telInput.intlTelInput("setCountry", currentCountry);
     },500)
-    $('.intl-tel-input').css('width', '100%');
-
+     $('.intl-tel-input').css('width', '100%');
     telInput.on('blur', function () {
+      reset();
         if ($.trim(telInput.val())) {
-            if (!telInput.intlTelInput("isValidNumber")) {
-                telInput.parent().addClass('has-error');
+            if (telInput.intlTelInput("isValidNumber")) {
+              $('#mobile_code').css("border-color","");
+              validMsg.classList.remove("hide");
+              $('#submit').attr('disabled',false);
+            } else {
+              var errorCode = telInput.intlTelInput("getValidationError");
+             errorMsg.innerHTML = errorMap[errorCode];
+             $('#mobile_code').css("border-color","red");
+             $('#error-msg').css({"color":"red","margin-top":"5px"});
+             errorMsg.classList.remove("hide");
+             $('#submit').attr('disabled',true);
+            }
+        }
+    });
+
+     addressDropdown.change(function() {
+     telInput.intlTelInput("setCountry", $(this).val());
+             if ($.trim(telInput.val())) {
+            if (telInput.intlTelInput("isValidNumber")) {
+              $('#mobile_code').css("border-color","");
+              errorMsg.classList.add("hide");
+              $('#submit').attr('disabled',false);
+            } else {
+              var errorCode = telInput.intlTelInput("getValidationError");
+             errorMsg.innerHTML = errorMap[errorCode];
+             $('#mobile_code').css("border-color","red");
+             $('#error-msg').css({"color":"red","margin-top":"5px"});
+             errorMsg.classList.remove("hide");
+             $('#submit').attr('disabled',true);
             }
         }
     });
@@ -383,7 +428,7 @@ input:checked + .slider:before {
     });
 
     $('form').on('submit', function (e) {
-        $('input[name=country_code]').attr('value', $('.selected-dial-code').text());
+        $('input[name=mobileds]').attr('value', $('.selected-dial-code').text());
     });
 
 

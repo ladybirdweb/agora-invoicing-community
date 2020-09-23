@@ -7,6 +7,7 @@ use App\Model\Common\Mailchimp\MailchimpSetting;
 use App\Model\Common\Setting;
 use App\Model\Common\StatusSetting;
 use App\Model\Common\Template;
+use App\Model\Mailjob\QueueService;
 use App\Model\Payment\Currency;
 use App\Model\Plugin;
 use App\User;
@@ -37,8 +38,9 @@ class SettingsController extends BaseSettingsController
         if (! $settings->where('id', '1')->first()) {
             $settings->create(['company' => '']);
         }
+        $isRedisConfigured = QueueService::where('short_name', 'redis')->value('status');
 
-        return view('themes.default1.common.admin-settings');
+        return view('themes.default1.common.admin-settings', compact('isRedisConfigured'));
         //return view('themes.default1.common.settings', compact('setting', 'template'));
     }
 
@@ -82,9 +84,10 @@ class SettingsController extends BaseSettingsController
             $pipedriveKey = $apikeys->pluck('pipedrive_api_key')->first();
             $pipedriveStatus = StatusSetting::pluck('pipedrive_status')->first();
             $domainCheckStatus = StatusSetting::pluck('domain_check')->first();
+            $mailSendingStatus = Setting::value('sending_status');
             $model = $apikeys->find(1);
 
-            return view('themes.default1.common.apikey', compact('model', 'status', 'licenseSecret', 'licenseUrl', 'siteKey', 'secretKey', 'captchaStatus', 'updateStatus', 'updateSecret', 'updateUrl', 'mobileStatus', 'mobileauthkey', 'msg91Sender', 'emailStatus', 'twitterStatus', 'twitterKeys', 'zohoStatus', 'zohoKey', 'rzpStatus', 'rzpKeys', 'mailchimpSetting', 'mailchimpKey', 'termsStatus', 'termsUrl', 'pipedriveKey', 'pipedriveStatus', 'domainCheckStatus'));
+            return view('themes.default1.common.apikey', compact('model', 'status', 'licenseSecret', 'licenseUrl', 'siteKey', 'secretKey', 'captchaStatus', 'updateStatus', 'updateSecret', 'updateUrl', 'mobileStatus', 'mobileauthkey', 'msg91Sender', 'emailStatus', 'twitterStatus', 'twitterKeys', 'zohoStatus', 'zohoKey', 'rzpStatus', 'rzpKeys', 'mailchimpSetting', 'mailchimpKey', 'termsStatus', 'termsUrl', 'pipedriveKey', 'pipedriveStatus', 'domainCheckStatus', 'mailSendingStatus'));
         } catch (\Exception $ex) {
             return redirect('/')->with('fails', $ex->getMessage());
         }
@@ -146,12 +149,12 @@ class SettingsController extends BaseSettingsController
     {
         try {
             $set = $settings->find(1);
-            $state = \App\Http\Controllers\Front\CartController::getStateByCode($set->state);
+            $state = getStateByCode($set->state);
             $selectedCountry = \DB::table('countries')->where('country_code_char2', $set->country)
             ->pluck('nicename', 'country_code_char2')->toArray();
             $selectedCurrency = \DB::table('currencies')->where('code', $set->default_currency)
             ->pluck('name', 'symbol')->toArray();
-            $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($set->country);
+            $states = findStateByRegionId($set->country);
 
             return view(
                 'themes.default1.common.setting.system',
@@ -170,6 +173,7 @@ class SettingsController extends BaseSettingsController
             'website'         => 'required',
             'phone'           => 'required',
             'address'         => 'required',
+            'state'           => 'required',
             'country'         => 'required',
             'default_currency'=> 'required',
             'admin-logo'      => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
@@ -218,27 +222,6 @@ class SettingsController extends BaseSettingsController
         }
     }
 
-    public function postSettingsEmail(Setting $settings, Request $request)
-    {
-        $this->validate($request, [
-            'email'     => 'required|email',
-            'password'  => 'required',
-            'driver'    => 'required',
-            'port'      => 'required',
-            'encryption'=> 'required',
-            'host'      => 'required',
-        ]);
-
-        try {
-            $setting = $settings->find(1);
-            $setting->fill($request->input())->save();
-
-            return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
-        } catch (\Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
-
     public function settingsTemplate(Setting $settings)
     {
         try {
@@ -276,6 +259,20 @@ class SettingsController extends BaseSettingsController
 
     public function settingsActivity(Request $request, Activity $activities)
     {
+        $validator = \Validator::make($request->all(), [
+            'from'     => 'nullable',
+            'till'     => 'nullable|after:from',
+            'delFrom'  => 'nullable',
+            'delTill'  => 'nullable|after:delFrom',
+        ]);
+        if ($validator->fails()) {
+            $request->from = '';
+            $request->till = '';
+            $request->delFrom = '';
+            $request->delTill = '';
+
+            return redirect('settings/activitylog')->with('fails', 'Start date should be before end date');
+        }
         try {
             $activity = $activities->all();
             $from = $request->input('from');
@@ -377,22 +374,17 @@ class SettingsController extends BaseSettingsController
     public function getMails()
     {
         try {
-            $email_log = \DB::table('email_log')->orderBy('date', 'desc')->get();
+            $email_log = \DB::table('email_log')->orderBy('date', 'desc')->take(50);
 
             return\ DataTables::of($email_log)
+            ->setTotalRecords($email_log->count())
              ->addColumn('checkbox', function ($model) {
                  return "<input type='checkbox' class='email' value=".$model->id.' name=select[] id=check>';
              })
                            ->addColumn('date', function ($model) {
                                $date = $model->date;
-                               if ($date) {
-                                   $date1 = new \DateTime($date);
-                                   $tz = \Auth::user()->timezone()->first()->name;
-                                   $date1->setTimezone(new \DateTimeZone($tz));
-                                   $finalDate = $date1->format('M j, Y, g:i a ');
-                               }
 
-                               return $finalDate;
+                               return getDateHtml($date);
                            })
                              ->addColumn('from', function ($model) {
                                  $from = Markdown::convertToHtml($model->from);
@@ -411,9 +403,24 @@ class SettingsController extends BaseSettingsController
                               ->addColumn('status', function ($model) {
                                   return ucfirst($model->status);
                               })
-
-                            ->rawColumns(['checkbox', 'date', 'from', 'to',
-                                'bcc', 'subject',  'status', ])
+                               ->filterColumn('from', function ($query, $keyword) {
+                                   $sql = '`from` like ?';
+                                   $query->whereRaw($sql, ["%{$keyword}%"]);
+                               })
+                               ->filterColumn('to', function ($query, $keyword) {
+                                   $sql = '`to` like ?';
+                                   $query->whereRaw($sql, ["%{$keyword}%"]);
+                               })
+                               ->filterColumn('subject', function ($query, $keyword) {
+                                   $sql = '`subject` like ?';
+                                   $query->whereRaw($sql, ["%{$keyword}%"]);
+                               })
+                               ->filterColumn('status', function ($query, $keyword) {
+                                   $sql = '`status` like ?';
+                                   $query->whereRaw($sql, ["%{$keyword}%"]);
+                               })
+                              ->rawColumns(['checkbox', 'date', 'from', 'to',
+                                  'bcc', 'subject',  'status', ])
                             ->make(true);
         } catch (\Exception $e) {
             Bugsnag::notifyException($e);

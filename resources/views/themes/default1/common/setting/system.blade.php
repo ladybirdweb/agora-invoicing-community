@@ -19,7 +19,7 @@ System Setting
 <div class="row">
 
     <div class="col-md-12">
-        <div class="card card-primary card-outline">
+        <div class="card card-secondary card-outline">
             <div class="box-header">
 
             </div>
@@ -148,7 +148,7 @@ System Setting
                                 <!-- <p><i> {{Lang::get('message.country')}}</i> </p> -->
                                   <?php $countries = \App\Model\Common\Country::pluck('nicename', 'country_code_char2')->toArray(); ?>
 
-                     <select name="country" value= "Choose" onChange="getCountryAttr(this.value)" class="form-control selectpicker" data-live-search="true" data-live-search-placeholder="Search" data-dropup-auto="false" data-size="10">
+                     <select name="country" value= "Choose" id="country" onChange="getCountryAttr(this.value)" class="form-control selectpicker" data-live-search="true" data-live-search-placeholder="Search" data-dropup-auto="false" data-size="10">
                              <option value="">Choose</option>
                            @foreach($countries as $key=>$country)
                               <option value="{{$key}}" <?php  if(in_array($country, $selectedCountry) ) { echo "selected";} ?>>{{$country}}</option>
@@ -162,6 +162,40 @@ System Setting
                         </td>
 
                     </tr>
+
+                     <tr class="form-group ">
+                              
+                               
+
+                             <div class="form-group cin">
+                                  <td>
+                                    {!! Form::label('CIN No.',Lang::get('CIN')) !!}
+                                </td>
+
+                                 <td>
+                                {!! Form::text('cin_no',null,['class' => 'form-control','id'=>'cin']) !!}
+
+                            </div>
+                                     
+                                 </td>
+                          
+                        </tr>
+
+                     <tr class="form-group ">
+                              <div class="form-group gstin">
+                                 <td>
+                                    {!! Form::label('GSTIN',Lang::get('GSTIN')) !!}
+                                </td>
+
+                                 <td>
+                                     
+                                    {!! Form::text('gstin',null,['class' => 'form-control','id'=>'gstin']) !!}
+                                 </div>
+                                 </td>
+                          
+                        </tr>
+
+                        
 
                     <tr>
 
@@ -205,7 +239,7 @@ System Setting
                                 {!! Form::file('admin-logo') !!}
                                 <p><i> {{Lang::get('message.enter-the-admin-panel-logo')}}</i> </p>
                                 @if($set->admin_logo) 
-                                <img src='{{ asset("admin/images/$set->admin_logo")}}' class="img-thumbnail" style="height: 50;">
+                                <img src='{{ asset("admin/images/$set->admin_logo")}}' class="img-thumbnail" style="height: 50px;">
                                 @endif
                             </div>
                         </td>
@@ -222,7 +256,7 @@ System Setting
                                 {!! Form::file('fav-icon') !!}
                                 <p><i> {{Lang::get('message.enter-the-favicon')}}</i> </p>
                                 @if($set->fav_icon) 
-                                <img src='{{asset("common/images/$set->fav_icon")}}' class="img-thumbnail" style="height: 50;">
+                                <img src='{{asset("common/images/$set->fav_icon")}}' class="img-thumbnail" style="height: 50px;">
                                 @endif
                             </div>
                         </td>
@@ -270,7 +304,7 @@ System Setting
                                 {!! Form::file('logo') !!}
                                 <p><i> {{Lang::get('message.enter-the-company-logo')}}</i> </p>
                                 @if($set->logo) 
-                                <img src='{{asset("common/images/$set->logo")}}' class="img-thumbnail" style="height: 50;">
+                                <img src='{{asset("common/images/$set->logo")}}' class="img-thumbnail" style="height: 50px;">
                                 @endif
                             </div>
                         </td>
@@ -287,6 +321,31 @@ System Setting
     </div>
 </div>
 <script>
+    $(document).ready(function(){
+        var country = $('#country').val();
+        if (country == 'IN')
+        {
+            $('.cin').show();
+            $('.gstin').show();
+        } else {
+            $('.cin').hide();
+            $('.gstin').hide();
+        }
+    })
+
+    $('#country').on('change', function (){
+       if($(this).val() == 'IN'){
+        $('.cin').show();
+        $('.gstin').show();
+       } else {
+         $('.cin').hide();
+        $('.gstin').hide();
+        $('#cin').val('');
+        $('#gstin').val('');
+       }
+    })
+
+
      function getCountryAttr(val) {
         getState(val);
     

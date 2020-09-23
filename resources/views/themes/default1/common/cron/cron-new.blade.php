@@ -74,7 +74,7 @@
                 </div>
                 <div class="col-md-1">
                     <span style="font-size: 20px" id="copyBtn" title="{{Lang::get('message.verify-and-copy-command')}}" onclick="verifyPHPExecutableAndCopyCommand()"><i class="fa fa-clipboard"></i></span>
-                    <span style="font-size: 20px; display:none;" id="loader"><i class="fa fa-circle-o-notch fa-spin"></i></span>
+                    <span style="font-size: 20px; display:none;" id="loader"><i class="fas fa-circle-notch fa-spin"></i></span>
                 </div>
             </div>
         </div>
@@ -290,9 +290,10 @@ $('#tab2url').click(function(){
         copyToClipboard(text);
 
         $.ajax({
-            'method': 'get',
+            'method': 'post',
             'url': "{{route('verify-cron')}}",
             data: {
+                 "_token": "{{ csrf_token() }}",
                 "path": path
             },
             beforeSend: function() {

@@ -16,12 +16,12 @@ License Types
 @stop
 @section('content')
 
-    <div class="card card-primary card-outline">
+    <div class="card card-secondary card-outline">
         <div class="card-header">
             <h3 class="card-title">{{Lang::get('message.types')}}</h3>
 
             <div class="card-tools">
-                <a href="#create-type" data-toggle="modal" data-target="#create-type" class="btn btn-primary btn-sm"><span class="fa fa-plus"></span>&nbsp;&nbsp;{{Lang::get('message.create')}}</a>
+                <a href="#create-type" data-toggle="modal" data-target="#create-type" class="btn btn-default btn-sm"><span class="fa fa-plus"></span>&nbsp;&nbsp;{{Lang::get('message.create')}}</a>
 
 
             </div>
@@ -37,7 +37,7 @@ License Types
             <div class="col-md-12">
                
                  <table id="products-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
-                     <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_delete"><i class="fa fa-trash"></i>&nbsp;&nbsp;{{Lang::get('message.delmultiple')}}</button><br /><br />
+                     <button  value="" class="btn btn-secondary btn-sm btn-alldell" id="bulk_delete"><i class="fa fa-trash"></i>&nbsp;&nbsp;{{Lang::get('message.delmultiple')}}</button><br /><br />
                     <thead><tr>
                         <th class="no-sort" style="width:20px"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
                             <th>Name</th>

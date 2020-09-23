@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Common;
 
+use App\Model\Common\Setting;
 use App\Model\Payment\Currency;
 use App\Model\Payment\Plan;
 use Bugsnag;
@@ -21,8 +22,7 @@ class BaseTemplateController extends ExtendedBaseTemplateController
         try {
             $plans = Plan::where('product', $id)->orderBy('id', 'desc')->get();
             $price = [];
-            $cart_controller = new \App\Http\Controllers\Front\CartController();
-            $currencyAndSymbol = $cart_controller->currency();
+            $currencyAndSymbol = userCurrency();
             $currency = $currencyAndSymbol['currency'];
             $symbol = $currencyAndSymbol['symbol'];
             if ($symbol == '') {  //If user has no currency symbol(In case of old customers)
@@ -41,7 +41,7 @@ class BaseTemplateController extends ExtendedBaseTemplateController
                 }
                 $priceDescription = $value->planPrice->first();
                 $priceDescription = $priceDescription ? $priceDescription->price_description : '';
-                $cost = \App\Http\Controllers\Front\CartController::rounding($cost);
+                $cost = rounding($cost);
                 $duration = $value->periods;
                 $months = count($duration) > 0 ? $duration->first()->name : '';
                 $price = $this->getPrice($months, $price, $priceDescription, $value, $cost, $currency);

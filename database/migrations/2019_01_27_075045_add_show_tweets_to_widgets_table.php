@@ -27,7 +27,8 @@ class AddShowTweetsToWidgetsTable extends Migration
     public function down()
     {
         Schema::table('widgets', function (Blueprint $table) {
-            Schema::dropIfExists('widgets');
+            $table->dropColumn('allow_tweets');
+            $table->dropColumn('allow_mailchimp');
         });
     }
 }

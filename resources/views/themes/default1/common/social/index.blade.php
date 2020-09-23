@@ -15,12 +15,12 @@ Social Media
     </div><!-- /.col -->
 @stop
 @section('content')
-<div class="card card-primary card-outline">
+<div class="card card-secondary card-outline">
     <div class="card-header">
         <h3 class="card-title">Social Media</h3>
 
         <div class="card-tools">
-            <a href="{{url('social-media/create')}}" class="btn btn-primary btn-sm pull-right"><span class="fa fa-plus"></span>&nbsp;&nbsp;{{Lang::get('message.create')}}</a>
+            <a href="{{url('social-media/create')}}" class="btn btn-default btn-sm pull-right"><span class="fa fa-plus"></span>&nbsp;&nbsp;{{Lang::get('message.create')}}</a>
 
         </div>
     </div>

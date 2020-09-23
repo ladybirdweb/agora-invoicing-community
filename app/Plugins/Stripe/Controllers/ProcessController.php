@@ -3,7 +3,10 @@
 namespace App\Plugins\Stripe\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Model\Order\InvoiceItem;
+use App\Model\Product\Product;
 use App\Plugins\Stripe\Model\StripePayment;
+use Darryldecode\Cart\CartCondition;
 use Illuminate\Http\Request;
 
 class ProcessController extends Controller
@@ -14,28 +17,25 @@ class ProcessController extends Controller
     {
         $stripe = new StripePayment();
         $this->stripe = $stripe;
-    }
 
-    public function payWithStripe(Request $request)
-    {
-        $path = app_path().'/Plugins/Stripe/views';
-        \View::addNamespace('plugins', $path);
-        echo view('plugins::middle-page');
+        $product = new Product();
+        $this->product = $product;
+
+        $invoiceItem = new InvoiceItem();
+        $this->invoiceItem = $invoiceItem;
     }
 
     public function PassToPayment($requests)
     {
         try {
             $request = $requests['request'];
-            $invoice = $requests['order'];
-            $cart = $requests['cart'];
-            if ($cart->count() > 0) {
-                $invoice->grand_total = intval(\Cart::getTotal());
-            } else {
+            $invoice = $requests['invoice'];
+            $cart = \Cart::getContent();
+            if (! $cart->count()) {
                 \Cart::clear();
-                \Session::put('invoiceid', $invoice->id);
+            } else {
+                $invoice->grand_total = \Cart::getTotal();
             }
-            // dd(\Session::get('invoiceid');
             if ($request->input('payment_gateway') == 'Stripe') {
                 if (! \Schema::hasTable('stripe')) {
                     throw new \Exception('Stripe is not configured');
@@ -44,90 +44,107 @@ class ProcessController extends Controller
                 if (! $stripe) {
                     throw new \Exception('Stripe Fields not given');
                 }
-                $data = $this->getFields($invoice);
                 \Session::put('invoice', $invoice);
-                \Session::put('amount', $data['amount']);
-
-                $this->middlePage($data);
+                \Session::save();
+                $this->middlePage();
             }
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage(), $ex->getCode(), $ex->getPrevious());
         }
     }
 
-    public function getFields($invoice)
-    {
-        try {
-            $item = [];
-            $data = [];
-            $user = \Auth::user();
-            if (! $user) {
-                throw new \Exception('No autherized user');
-            }
-            $config = $this->stripe->where('id', 1)->first();
-            if ($config) {
-                $image_url = $config->image_url;
-                $currency_code = $invoice->currency;
-                $invoice_id = $invoice->id;
-                $first_name = $user->first_name;
-                $last_name = $user->last_name;
-                $address1 = $user->address;
-                $city = $user->town;
-                $zip = $user->zip;
-                $email = $user->email;
-                $product_name = '';
-                if ($invoice->invoiceItem()->first()) {
-                    $product_name = str_replace(' ', '-', $invoice->invoiceItem()->first()->product_name);
-                }
-
-                $data = [
-                    'image_url'     => $image_url,
-                    'currency_code' => $currency_code, //$currency_code,
-                    'invoice'       => $invoice_id,
-                    'first_name'    => $first_name,
-                    'last_name'     => $last_name,
-                    'address1'      => $address1,
-                    'city'          => $city,
-                    'zip'           => $zip,
-                    'email'         => $email,
-                    'item_name'     => $product_name,
-                ];
-
-                $items = $invoice->invoiceItem()->get()->toArray();
-                //dd($items);
-                $c = count($items);
-                if (count($items) > 0) {
-                    for ($i = 0; $i < $c; $i++) {
-                        $n = $i + 1;
-                        $item = [
-                            "item_name_$n" => $items[$i]['product_name'],
-                            "quantity_$n"  => $items[$i]['quantity'],
-                        ];
-                    }
-                    $data = array_merge($data, $item);
-                    $total = ['amount' => $invoice->grand_total];
-                    $data = array_merge($data, $total);
-                }
-            }
-
-            return $data;
-        } catch (\Exception $ex) {
-            throw new \Exception($ex->getMessage(), $ex->getCode(), $ex->getPrevious());
-        }
-    }
-
-    public function middlePage($data)
+    public function middlePage()
     {
         try {
             $path = app_path().'/Plugins/Stripe/views';
-            $total = \Cart::getTotal();
+            $total = intval(\Cart::getTotal());
+            $payment_method = \Session::get('payment_method');
+            $regularPayment = true;
+            $invoice = \Session::get('invoice');
             if (! $total) {
-                $total = $data['amount'];
+                $paid = 0;
+                // $total = \Session::get('totalToBePaid');
+                $regularPayment = false;
+                $items = $invoice->invoiceItem()->get();
+                $product = $this->product($invoice->id);
+                $processingFee = $this->getProcessingFee($payment_method, $invoice->currency);
+                $invoice->processing_fee = $processingFee;
+                $invoice->grand_total = intval($invoice->grand_total * (1 + $processingFee / 100));
+                $amount = rounding($invoice->grand_total);
+                if (count($invoice->payment()->get())) {//If partial payment is made
+                    $paid = array_sum($invoice->payment()->pluck('amount')->toArray());
+                    $amount = rounding($invoice->grand_total - $paid);
+                }
+                \Session::put('totalToBePaid', $amount);
+                \View::addNamespace('plugins', $path);
+                echo view('plugins::middle-page', compact('total', 'invoice', 'regularPayment', 'items', 'product', 'amount', 'paid'));
+            } else {
+                $pay = $this->payment($payment_method, $status = 'pending');
+                $payment_method = $pay['payment'];
+                $invoice_no = $invoice->number;
+                $status = $pay['status'];
+                $processingFee = $this->getProcessingFee($payment_method, $invoice->currency);
+                $this->updateFinalPrice(new Request(['processing_fee'=>$processingFee]));
+                $amount = rounding(\Cart::getTotal());
+                \View::addNamespace('plugins', $path);
+
+                echo view('plugins::middle-page', compact('invoice', 'amount', 'invoice_no', 'payment_method', 'invoice', 'regularPayment', ))->render();
             }
-            $total = intval($total);
-            \View::addNamespace('plugins', $path);
-            echo view('plugins::middle-page', compact('data', 'total'));
         } catch (\Exception $ex) {
+            throw new \Exception($ex->getMessage());
+        }
+    }
+
+    public static function updateFinalPrice(Request $request)
+    {
+        $value = '0%';
+        if ($request->input('processing_fee')) {
+            $value = $request->input('processing_fee').'%';
+        }
+
+        $updateValue = new CartCondition([
+            'name'   => 'Processing fee',
+            'type'   => 'fee',
+            'target' => 'total',
+            'value'  => $value,
+        ]);
+        \Cart::condition($updateValue);
+    }
+
+    public function payment($payment_method, $status)
+    {
+        if (! $payment_method) {
+            $payment_method = '';
+            $status = 'success';
+        }
+
+        return ['payment'=>$payment_method, 'status'=>$status];
+    }
+
+    public function product($invoiceid)
+    {
+        try {
+            $invoice = $this->invoiceItem->where('invoice_id', $invoiceid)->first();
+            $name = $invoice->product_name;
+            $product = $this->product->where('name', $name)->first();
+
+            return $product;
+        } catch (\Exception $ex) {
+            app('log')->error($ex->getMessage());
+            \Bugsnag::notifyException($ex);
+
+            throw new \Exception($ex->getMessage());
+        }
+    }
+
+    private function getProcessingFee($paymentMethod, $currency)
+    {
+        try {
+            if ($paymentMethod) {
+                return $paymentMethod == 'razorpay' ? 0 : \DB::table(strtolower($paymentMethod))->where('currencies', $currency)->value('processing_fee');
+            }
+        } catch (\Exception $e) {
+            throw new \Exception('Invalid modification of data');
         }
     }
 
@@ -188,10 +205,5 @@ class ProcessController extends Controller
         \Session::forget('invoiceid');
 
         return redirect($url)->with('fails', 'Thank you for your order. However,the transaction has been declined. Try again.');
-    }
-
-    public function notify(Request $request)
-    {
-        dd($request);
     }
 }

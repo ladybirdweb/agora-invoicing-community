@@ -15,7 +15,7 @@ Checkout
 
     $currency = $invoice->currency;
     $symbol = \App\Model\Payment\Currency::where('code',$invoice->currency)->pluck('symbol')->first();
-
+    $taxAmt = 0;
 ?>
 <div class="container">
 <div class="row">
@@ -58,7 +58,13 @@ Checkout
                         <tbody>
                             
                             @forelse($items as $item)
-                            
+                            @php
+                            Session::forget('code');
+                            $taxName[] =  $item->tax_name.'@'.$item->tax_percentage;
+                            if ($item->tax_name != 'null') {
+                                $taxAmt +=  $item->subtotal;
+                             }
+                             @endphp
                             <tr class="cart_table_item">
 
                                 <td class="product-thumbnail">
@@ -84,7 +90,7 @@ Checkout
                                 </td>
                                 <td class="product-name">
                                     
-                                    <span class="amount">{{currencyFormat(intval($item->subtotal),$code = $currency)}}</span>
+                                    <span class="amount">{{currencyFormat(($item->regular_price),$code = $currency)}}</span>
                                 </td>
                             </tr>
                             @empty 
@@ -96,11 +102,10 @@ Checkout
                     </table>
 
                 </div>
-                {!! Form::open(['url'=>'checkout','method'=>'post','id' => 'checkoutsubmitform']) !!}
+                {!! Form::open(['url'=>'checkout-and-pay','method'=>'post','id' => 'checkoutsubmitform']) !!}
                   @if($invoice->grand_total > 0)
                 <h4 class="heading-primary">Payment</h4>
                     <?php $gateways = \App\Http\Controllers\Common\SettingsController::checkPaymentGateway($invoice->currency);
-                      $rzpstatus = \App\Model\Common\StatusSetting::first()->value('rzp_status');
                        ?>
                     
                 
@@ -112,7 +117,7 @@ Checkout
                         <?php
                           $processingFee = \DB::table(strtolower($gateway))->where('currencies',$invoice->currency)->value('processing_fee');
                         ?>
-                        {!! Form::radio('payment_gateway',$gateway,false,['id'=>'allow_gateway']) !!}
+                        {!! Form::radio('payment_gateway',$gateway,false,['id'=>'allow_gateway','onchange' => 'getGateway(this)','processfee'=>$processingFee]) !!}
                          <img alt="Porto" width="111"  data-sticky-width="52" data-sticky-height="10" data-sticky-top="10" src="{{asset('client/images/'.$gateway.'.png')}}">
                           <br><br>
                          <div id="fee" style="display:none"><p>An extra processing fee of <b>{{$processingFee}}%</b> will be charged on your Order Total during the time of payment</p></div>
@@ -126,21 +131,14 @@ Checkout
                  
             
             
-             @if($rzpstatus ==1)
-                <div class="row">
-                    
-                    <div class="col-md-6">
-                        {!! Form::radio('payment_gateway','razorpay',false,['id'=>'rzp_selected']) !!}&nbsp;&nbsp;&nbsp;
-                         <img alt="Porto" width="111" data-sticky-width="82" data-sticky-height="40" data-sticky-top="33" src="{{asset('client/images/Razorpay.png')}}"><br><br>
-                  </div>
-                  </div>
-                @endif
+            
                   @endif
-                   <div class="col-md-6">
+                     <div class="col-md-6">
                         
                         {!! Form::hidden('invoice_id',$invoice->id) !!}
                         {!! Form::hidden('cost',$invoice->grand_total) !!}
                     </div>
+
                 <div class="row">
                     <div class="col-md-6 col-md-offset-4">
                         <button type="submit" id="proceed" class="btn btn-primary">
@@ -171,37 +169,61 @@ Checkout
                        <span class="amount">{{currencyFormat($subtotal,$code = $currency)}}</span>
                     </td>
                 </tr>
-                  @foreach($items->toArray() as $attribute)
-                  @if($attribute['tax_name']!='null')
-                <?php 
-                $tax_name = "";
-                $tax_percentage="";
-                if(str_finish($attribute['tax_name'], ',')){
-                    $tax_name = str_replace(',','',$attribute['tax_name']);
-                }
-                if(str_finish($attribute['tax_percentage'], ',')){
-                    $tax_percentage = str_replace(',','',$attribute['tax_percentage']);
-                }
-                ?>
-                <tr class="Taxes">
-                    <th>
-                        <strong>{{$tax_name}}<span>@</span>{{$tax_percentage}}</strong><br/>
-                         </th>
-                    <td>
-                    <?php
-                     $value = \App\Http\Controllers\Front\CartController::taxValue($attribute['tax_percentage'],$subtotal);
-                     ?>
-                      {{currencyFormat($value,$code = $currency)}}
-                        
-                       
-                       
-                    </td>
+                 @php
+                $taxName = array_unique($taxName);
+                @endphp
+                  @foreach($taxName as $tax)
+                  @php
+                  $taxDetails = explode('@', $tax);
+                  @endphp
+                  @if ($taxDetails[0]!= 'null')
+                                            
+                                       
+                    <tr>
+                         <?php
+                        $bifurcateTax = bifurcateTax($taxDetails[0],$taxDetails[1],\Auth::user()->currency, \Auth::user()->state, $taxAmt);
+                        ?>
+                        <th>
+
+                            <strong>{!! $bifurcateTax['html'] !!}</strong>
 
 
-                </tr>
+                        </th>
+                        <td>
+                           
+                            {!! $bifurcateTax['tax'] !!}
+
+                        </td>
+                    </tr>
+             
                
+                    @endif
+                    @endforeach
+
+
+                    @if($paid)
+
+                    <tr class="total">
+                    <th>
+                        <strong>Paid</strong>
+                    </th>
+                    <td>
+
+                        {{currencyFormat($paid,$code = $currency)}}
+                    </td>
+                </tr>
+
+                <tr class="total">
+                    <th>
+                        <strong>Balance</strong>
+                    </th>
+                    <td>
+
+                        {{currencyFormat($invoice->grand_total,$code = $currency)}}
+                    </td>
+                </tr>
                 @endif
-                @endforeach
+                
                 <tr class="total">
                     <th>
                         <strong>Order Total</strong>
@@ -223,14 +245,27 @@ Checkout
     $("#proceed").prop('disabled', true);
 
   });
-     $(document).ready(function(){
-        $("#rzp_selected").click(function(){
-                $('#fee').hide();
-        }); 
-        $("#allow_gateway").click(function(){
-           $('#fee').show();
-        });
-         
-    });
+    $(document).ready(function(){
+    var $gateways = $('input:radio[name = payment_gateway]');
+    if($gateways.is(':checked') === false) {
+        $gateways.filter('[value=Razorpay]').attr('checked', true);
+        $('#fee').hide();
+    } else {
+        $gateways.filter('[value=Stripe]').attr('checked', true);
+        $('#fee').show();
+    }
+  });
+
+  function getGateway($this)
+  {
+    var gateWayName = $this.value;
+    var fee = $this.getAttribute("processfee");
+    console.log(fee)
+    if (fee == '0') {
+        $('#fee').hide();
+    } else {
+        $('#fee').show();
+    }
+  }
 </script>
 @endsection

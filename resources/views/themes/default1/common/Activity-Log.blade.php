@@ -19,7 +19,7 @@ Activity Log
 
     <div class="row">
         <div class="col-12">
-            <div class="card card-danger card-outline collapsed-card">
+            <div class="card card-secondary card-outline collapsed-card">
                 <div class="card-header">
                     <h3 class="card-title">{{Lang::get('message.filters')}}</h3>
 
@@ -101,9 +101,9 @@ Activity Log
           
                 <div class="col-md-6">
                     <!-- {!! Form::submit('Search',['class'=>'btn btn-primary']) !!} -->
-                      <button name="Search" type="submit"  class="btn btn-primary" data-loading-text="<i class='fa fa-search fa-spin fa-1x fa-fw'>&nbsp;</i> updating..."><i class="fa fa-search">&nbsp;</i>{!!Lang::get('message.apply')!!}</button>
+                      <button name="Search" type="submit"  class="btn btn-secondary" data-loading-text="<i class='fa fa-search fa-spin fa-1x fa-fw'>&nbsp;</i> updating..."><i class="fa fa-search">&nbsp;</i>{!!Lang::get('message.apply')!!}</button>
                     <!-- {!! Form::submit('Reset',['class'=>'btn btn-danger','id'=>'reset']) !!} -->
-                     <button name="Reset" type="submit" id="reset" class="btn btn-danger" data-loading-text="<i class='fa fa-refresh fa-spin fa-1x fa-fw'>&nbsp;</i> updating..."><i class="fa fa-sync-alt">&nbsp;</i>{!!Lang::get('Reset')!!}</button>
+                     <button name="Reset" type="submit" id="reset" class="btn btn-secondary" data-loading-text="<i class='fa fa-refresh fa-spin fa-1x fa-fw'>&nbsp;</i> updating..."><i class="fa fa-sync-alt">&nbsp;</i>{!!Lang::get('Reset')!!}</button>
 
 
                 </div>
@@ -131,7 +131,7 @@ Activity Log
         </div>
     </div>
     <div id="response"></div>
-    <div class="card card-primary card-outline">
+    <div class="card card-secondary card-outline">
 
 
 <div class="card-body table-responsive">
@@ -139,7 +139,7 @@ Activity Log
   <div class="row">
           <div class="col-md-12">
             <table id="activity-table" class="table display" cellspacing="0"  styleClass="borderless">
-                     <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_delete"><i class="fa fa-trash">&nbsp;&nbsp;</i> Delete Selected</button><br /><br />
+                     <button  value="" class="btn btn-secondary btn-sm btn-alldell" id="bulk_delete"><i class="fa fa-trash">&nbsp;&nbsp;</i> Delete Selected</button><br /><br />
                      
                     <thead><tr>
                         <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>

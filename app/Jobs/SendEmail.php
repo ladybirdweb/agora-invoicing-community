@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Http\Controllers\Common\TemplateController;
+use App\Http\Controllers\Common\PhpMailController;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -27,7 +27,7 @@ class SendEmail implements ShouldQueue
      *
      * @return void
      */
-    public function __construct($from, $to, $template_data, $template_name, $replace, $type, $bcc)
+    public function __construct($from, $to, $template_data, $template_name, $replace = [], $type = '', $bcc = [])
     {
         $this->from = $from;
         $this->to = $to;
@@ -43,9 +43,9 @@ class SendEmail implements ShouldQueue
      *
      * @return void
      */
-    public function handle(TemplateController $templateController)
+    public function handle(PhpMailController $phpMailController)
     {
-        $p = $templateController->mailing(
+        $p = $phpMailController->mailing(
            $this->from,
            $this->to,
            $this->template_data,

@@ -16,7 +16,7 @@ Edit User
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
 
 @section('content')
-<div class="card card-primary card-outline">
+<div class="card card-secondary card-outline">
     <div class="card-body">
 
          {!! Form::model($user,['url'=>'clients/'.$user->id,'method'=>'PATCH']) !!}
@@ -73,14 +73,18 @@ Edit User
                     <div class="col-md-3 form-group {{ $errors->has('bussiness') ? 'has-error' : '' }}">
                         <!-- company -->
                         {!! Form::label('bussiness','Industry') !!}
-                        <select name="bussiness"  class="form-control select2">
+
+                        {!! Form::select('bussiness', [''=>'Choose','Industries'=>$bussinesses],null,['class' => 'form-control chosen-select select2','data-live-search'=>'true','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false']) !!}
+
+
+                       <!--  <select name="bussiness"  class="form-control select2">
                             <option value="">Choose</option>
                          @foreach($bussinesses as $key=>$bussiness)
                          
                         <option value="{{$key}}" <?php  if(in_array($bussiness, $selectedIndustry) ) 
                         { echo "selected";} ?>>{{$bussiness}}</option>
                             @endforeach
-                         </select>
+                         </select> -->
                            
                     </div>
 
@@ -118,26 +122,32 @@ Edit User
                      <div class="col-md-3 form-group {{ $errors->has('company_type') ? 'has-error' : '' }}">
                         <!-- email -->
                         {!! Form::label('company_type','Company Type') !!}
-                      
-                          <select name="company_type"  class="form-control">
+                        
+                         {!! Form::select('company_type', [''=>'Choose','Company Type'=>$types],null,['class' => 'form-control chosen-select select2','data-live-search'=>'true','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false']) !!}
+
+
+                          <!-- <select name="company_type"  class="form-control">
                             <option value="">Choose</option>
                          @foreach($types as $key=>$type)
                                    <option value="{{$key}}" <?php  if(in_array($type, $selectedCompany) ) { echo "selected";} ?>>{{$type}}</option>
                            
                              @endforeach
-                              </select>
+                              </select> -->
 
                     </div>
                      <div class="col-md-3 form-group {{ $errors->has('company_size') ? 'has-error' : '' }}">
                         <!-- email -->
                         {!! Form::label('company_size','Company Size') !!}
-                        <select name="company_size"  class="form-control">
+
+                        {!! Form::select('company_size', [''=>'Choose','Company Size'=>$sizes],null,['class' => 'form-control chosen-select select2','data-live-search'=>'true','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false']) !!}
+
+                       <!--  <select name="company_size"  class="form-control">
                             <option value="">Choose</option>
                         @foreach($sizes as $key=>$size)
                         <option value="{{$key}}" <?php  if(in_array($size, $selectedCompanySize) ) { echo "selected";} ?>>{{$size}}</option>
                            
                              @endforeach
-                              </select>
+                              </select> -->
 
                     </div>
                 </div>
@@ -167,8 +177,10 @@ Edit User
                     </div>
                     <div class="col-md-3 form-group {{ $errors->has('state') ? 'has-error' : '' }}">
                         <!-- name -->
-                        {!! Form::label('state',Lang::get('message.state')) !!}
+                        {!! Form::label('state',Lang::get('message.state'),['class' => 'required']) !!}
                         <!--{!! Form::select('state',[],null,['class' => 'form-control','id'=>'state-list']) !!}-->
+
+
 
                         <select name="state" id="state-list" class="form-control">
 
@@ -202,19 +214,24 @@ Edit User
                     <div class="col-md-3 form-group {{ $errors->has('currency') ? 'has-error' : '' }}">
                         <!-- mobile -->
                         {!! Form::label('currency',Lang::get('message.currency'),['class'=>'required']) !!}
-                         <select name="currency" id="plan" class="form-control" onchange="myFunction()">
+
+                         {!! Form::select('currency', ['Currencies'=>$currencies],null,['class' => 'form-control chosen-select select2','data-live-search'=>'true','required','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false']) !!}
+                        <!--  <select name="currency" id="plan" class="form-control" onchange="myFunction()">
                             <option value="">Choose</option>
                          @foreach($currencies as $key=>$currency)
-                                   <option value="{{$key}}" <?php  if(in_array($currency, $selectedCurrency) ) { echo "selected";} ?>>{{$currency}}</option>
+
+                                   <option value="{{$key}}" {{ old($currency) == 1 ? 'selected' : '' }}>
+                                   <?php  if(in_array($currency, $selectedCurrency) ) { echo "selected";} ?>{{$currency}}</option>
                            
                              @endforeach
-                              </select>
+                              </select> -->
 
                     </div>
                        <div class="col-md-3 form-group {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
                   {!! Form::label('mobile',null,['class' => 'required'],Lang::get('message.mobile'),['class'=>'required']) !!}
                      {!! Form::hidden('mobile_code',null,['id'=>'mobile_code_hidden']) !!}
-                      <input class="form-control selected-dial-code"  id="mobile_code" value="{{$user->mobile}}" name="mobile" type="tel">
+                      {!! Form::text('mobile',$user->mobile,['class'=>'form-control selected-dial-code', 'type'=>'tel','id'=>'mobile_code']) !!}
+                     <!--  <input class="form-control selected-dial-code"  id="mobile_code" value="{{$user->mobile}}" name="mobile" type="tel"> -->
                        <!-- {!! Form::hidden('mobile_code',null,['class'=>'form-control input-lg','disabled','id'=>'mobile_code']) !!} -->
                        <span id="valid-msg" class="hide"></span>
                        <span id="error-msg" class="hide"></span>
@@ -270,6 +287,8 @@ Edit User
              $('.select2').select2()
          });
     var country = $('#country').val();
+    getCode(country);
+
     var telInput = $('#mobile_code'),
      addressDropdown = $("#country");
      errorMsg = document.querySelector("#error-msg"),
@@ -287,7 +306,7 @@ Edit User
             });
         },
           separateDialCode: true,
-          utilsScript: "../../js/intl/js/utils.js"
+          utilsScript: "{{asset('js/intl/js/utils.js')}}"
     });
       var reset = function() {
       errorMsg.innerHTML = "";
@@ -338,7 +357,7 @@ Edit User
     });
 
     $('form').on('submit', function (e) {
-        $('input[name=mobile]').attr('value', $('.selected-dial-code').text());
+        $('input[name=sds]').attr('value', $('.selected-dial-code').text());
     });
 });
 

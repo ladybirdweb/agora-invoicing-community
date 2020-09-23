@@ -139,7 +139,7 @@
                     <!-- Brand Logo -->
                         <a href="{{url('/')}}" class="brand-link">
 
-                            <span style="margin-left: 40px;" class="brand-text font-weight-light"><b>{{$set->title}}</b></span>
+                            <span style="margin-left: 50px;" class="brand-text font-weight-light"><b>{{$set->title}}</b></span>
                         </a>
                 @else
                         <a href="{{url('/')}}" class="brand-link">

@@ -276,7 +276,7 @@ Dashboard
          @foreach($clientsUsingOldVersion as $element)
              <tr>
                  <td>{!! $element->client_name !!}</td>
-                 <td>{!! $element->product_version !!}</td>
+                 <td>{!! getVersionAndLabel($element->product_version,$element->product_id) !!}</td>
                  <td>{!! $element->product_name !!}</td>
                  @if($element->subscription_ends_at < Carbon\Carbon::now()->toDateTimeString())
                  <td style="color: red;">{!! getDateHtml($element->subscription_ends_at) !!}</td>
@@ -365,4 +365,11 @@ Dashboard
         @endforeach
     @endcomponent
 </div>
+<script type="text/javascript">
+  $(document).ready(function(){
+        $('[data-toggle="tooltip"]').tooltip({
+        container : 'body'
+    });
+  })
+</script>
 @stop

@@ -335,7 +335,7 @@ class DashboardController extends Controller
             ->where('subscriptions.version', '<', $latestVersion)
             ->where('subscriptions.version', '!=', null)
             ->where('subscriptions.version', '!=', '')
-            ->select('orders.id', \DB::raw("concat(first_name, ' ', last_name) as client_name"), 'products.name as product_name',
+            ->select('orders.id', \DB::raw("concat(first_name, ' ', last_name) as client_name"), 'products.name as product_name','products.id as product_id',
                 'subscriptions.version as product_version', 'client as client_id', 'subscriptions.update_ends_at as subscription_ends_at')
             ->orderBy('subscription_ends_at', 'desc')
             ->take(30)->get()->map(function ($element) {

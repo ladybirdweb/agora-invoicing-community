@@ -104,7 +104,7 @@ input:checked + .slider:before {
         {!! Form::model($user,['url'=>'profile', 'method' => 'PATCH','files'=>true]) !!}
 
 
-        <div class="card card-primary card-outline">
+        <div class="card card-secondary card-outline">
             <div class="card-header">
                 <h3 class="card-title">Edit Profile</h3>
 
@@ -247,7 +247,7 @@ input:checked + .slider:before {
 
 
 
-        <div class="card card-primary card-outline">
+        <div class="card card-secondary card-outline">
             <div class="card-header">
                 <h3 class="card-title">{{Lang::get('message.change-password')}}</h3>
 
@@ -306,7 +306,7 @@ input:checked + .slider:before {
  @include('themes.default1.user.2faModals')
 
 
-        <div class="card card-primary card-outline">
+        <div class="card card-secondary card-outline">
             <div class="card-header">
                 <h3 class="card-title">{{Lang::get('message.setup_2fa')}}</h3>
 

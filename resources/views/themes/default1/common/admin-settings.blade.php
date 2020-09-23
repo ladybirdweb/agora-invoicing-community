@@ -33,7 +33,7 @@ Settings
         line-height: 30px;
     }
     .settingdivblue {
-        width: 48%;
+        width: 52%;
         height: 75px;
         margin: 0 auto;
         text-align: center;

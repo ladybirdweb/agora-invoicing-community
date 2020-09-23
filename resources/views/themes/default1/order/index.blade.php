@@ -44,7 +44,7 @@ Orders
             <div class="col-md-3 form-group">
                 <!-- first name -->
                 {!! Form::label('product_id','Product') !!} <br>
-                {!! Form::select('product_id',[null => 'Choose']+ $paidUnpaidOptions + $products, $request->product_id, ['class' => 'form-control select2','style'=>'width:265px;','id'=>'product_id']) !!}
+                {!! Form::select('product_id',[null => 'Choose']+ $paidUnpaidOptions + $products, $request->product_id, ['class' => 'form-control select2','style'=>'width:100%','id'=>'product_id']) !!}
             </div>
             <div class="col-md-3 form-group">
                 <!-- first name -->

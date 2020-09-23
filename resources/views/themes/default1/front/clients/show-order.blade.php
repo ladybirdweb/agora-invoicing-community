@@ -73,7 +73,7 @@ active
                                 @if($installationDetails)
 
                                     <td>@foreach($installationDetails['installed_path'] as $paths)
-                                            {{$paths}}<br>
+                                            {!! $paths !!}<br>
                                         @endforeach
                                     </td>
                                 @else

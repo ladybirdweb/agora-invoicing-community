@@ -18,7 +18,7 @@ class AdvanceSearchController extends AdminOrderInvoiceController
 
             $from = date_format($fromdate, 'Y-m-d H:m:i');
             $tills = date('Y-m-d H:m:i');
-            $cont = new \App\Http\Controllers\Order\ExtendedOrderController();
+            $cont = new \App\Http\Controllers\Order\OrderSearchController();
             $tillDate = $cont->getTillDate($from, $reg_till, $tills);
             $join = $join->whereBetween('created_at', [$from, $tillDate]);
         }
@@ -26,7 +26,7 @@ class AdvanceSearchController extends AdminOrderInvoiceController
             $tilldate = date_create($reg_till);
             $till = date_format($tilldate, 'Y-m-d H:m:i');
             $froms = User::first()->created_at;
-            $cont = new \App\Http\Controllers\Order\ExtendedOrderController();
+            $cont = new \App\Http\Controllers\Order\OrderSearchController();
             $fromDate = $cont->getFromDate($reg_from, $froms);
             $join = $join->whereBetween('created_at', [$fromDate, $till]);
         }

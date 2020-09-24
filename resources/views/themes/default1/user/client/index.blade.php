@@ -48,7 +48,7 @@ Users
                         <div class="col-md-3 form-group">
                             <!-- first name -->
                             {!! Form::label('country','Country') !!}<br>
-                            <select style="width:265px;" name="country" value= "Choose" onChange="getCountryAttr(this.value)" class="form-control select2" data-live-search="true" data-live-search-placeholder="Search" data-dropup-auto="false" data-size="10">
+                            <select style="width:100%;" name="country" value= "Choose" onChange="getCountryAttr(this.value)" class="form-control select2" data-live-search="true" data-live-search-placeholder="Search" data-dropup-auto="false" data-size="10">
                                 <option value="" style="">Choose</option>
                                 @foreach($countries as $key=> $country)
                                     @if($key == $request->country)
@@ -74,7 +74,7 @@ Users
                         ?>
                         <!-- {!! Form::select('industry',['Choose',''=>DB::table('bussinesses')->pluck('name','short')->toarray(),'old'=>$old],null,['class' => 'form-control','data-live-search'=>'true','data-live-search-placeholder'=>'Search','data-dropup-auto'=>'false','data-size'=>'10','id'=>'industry']) !!} -->
 
-                            <select name="industry"  style="width:265px;" class="form-control select2" data-live-search="true",data-live-search-placeholder="Search" data-dropup-auto="false"  data-size="10" id="industry">
+                            <select name="industry"  style="width:100%;" class="form-control select2" data-live-search="true",data-live-search-placeholder="Search" data-dropup-auto="false"  data-size="10" id="industry">
                                 <option value="">Choose</option>
                                 @foreach($bussinesses as $key=>$bussines)
                                     @if($key == $request->industry)

@@ -199,7 +199,7 @@ class CheckoutController extends InfoController
 
     public function postCheckout(Request $request)
     {
-        try {
+        
             $cost = $request->input('cost');
             if (Cart::getSubTotal() != 0 || $cost > 0) {
                 $this->validate($request, [
@@ -208,7 +208,7 @@ class CheckoutController extends InfoController
                     'payment_gateway.required'=> 'Please Select a Payment Gateway',
                 ]);
             }
-            // try {
+            try {
             $invoice_controller = new \App\Http\Controllers\Order\InvoiceController();
             $info_cont = new \App\Http\Controllers\Front\InfoController();
             $payment_method = $request->input('payment_gateway');
@@ -255,15 +255,10 @@ class CheckoutController extends InfoController
                 }
             }
         } catch (\Exception $ex) {
-            dd($ex);
+            return redirect()->back()->with('fails', $ex->getMessage());
         }
 
-        //          catch (\Exception $ex) {
-        //     app('log')->error($ex->getMessage());
-        //     Bugsnag::notifyException($ex);
-
-        //     return redirect()->back()->with('fails', $ex->getMessage());
-        // }
+        
     }
 
     private function getProcessingFee($paymentMethod, $currency)

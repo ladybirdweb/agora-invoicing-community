@@ -21,6 +21,9 @@ Order
         overflow:scroll;
         height:300px;
     }
+    .btn-xs{
+        padding:.300rem!important;
+    }
 </style>
 @section('content')
     <div class="card card-secondary card-outline">

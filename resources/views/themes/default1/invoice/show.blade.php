@@ -59,9 +59,25 @@ Invoice
 
                                 <strong>{{$set->company}}</strong><br>
                                 {{$set->address}}<br>
-                                Phone: {{$set->phone}}<br/>
+                                {{$set->city}}<br/>
+                                @if(key_exists('name',getStateByCode($set->state)))
+                                {{getStateByCode($set->state)['name']}}
+                                @endif
+                                {{$set->zip}}<br/>
+                                Country : {{getCountryByCode($set->country)}}<br/>
+                                Mobile: {{$set->phone}}<br/>
                                 Email: {{$set->email}}
                             </address>
+                             @if($set->gstin)
+                            <b>GSTIN:</b>  &nbsp; #{{$set->gstin}}
+                            <br>
+                            @endif
+
+                            @if($set->cin_no)
+                            <b>CIN:</b>  &nbsp; #{{$set->cin_no}}
+                            <br>
+                            @endif<br>
+
                         </div><!-- /.col -->
                         <div class="col-sm-4 invoice-col">
                             To
@@ -78,23 +94,14 @@ Invoice
                                 Mobile: @if($user->mobile_code)<b>+</b>{{$user->mobile_code}}@endif{{$user->mobile}}<br/>
                                 Email : {{$user->email}}
                             </address>
+                             @if($user->gstin)
+                            <b>GSTIN:</b>  &nbsp; #{{$user->gstin}}
+                            <br>
+                            @endif
                         </div><!-- /.col -->
                         <div class="col-sm-4 invoice-col">
                             <b>Invoice   #{{$invoice->number}}</b><br>
-                            <br>
-
-
-
-                            @if($set->gstin)
-                            <b>GSTIN:</b>  &nbsp; #{{$set->gstin}}
-                            <br>
-                            @endif
-
-                            @if($set->cin_no)
-                            <b>CIN:</b>  &nbsp; #{{$set->cin_no}}
-                            <br>
-                            @endif
-
+                           
                         </div><!-- /.col -->
                     </div><!-- /.row -->
 

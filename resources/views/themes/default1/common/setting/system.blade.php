@@ -133,6 +133,21 @@ System Setting
                         </td>
 
                     </tr>
+
+                    <tr>
+
+                        <td><b>{!! Form::label('zip','Zip') !!}</b></td>
+                        <td>
+                            <div class="form-group {{ $errors->has('zip') ? 'has-error' : '' }}">
+
+
+                                {!! Form::text('zip',null,['class' => 'form-control']) !!}
+                                
+
+                            </div>
+                        </td>
+
+                    </tr>
              
             </div>
             <div class="col-md-6">

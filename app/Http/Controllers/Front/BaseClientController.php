@@ -113,6 +113,7 @@ class BaseClientController extends Controller
             $user->email = strip_tags($request->input('email'));
             $user->company = strip_tags($request->input('company'));
             $user->mobile_code = strip_tags($request->input('mobile_code'));
+            $user->gstin = strip_tags($request->input('gstin'));
             $user->mobile = strip_tags($request->input('mobile'));
             $user->address = strip_tags($request->input('address'));
             $user->town = strip_tags($request->input('town'));

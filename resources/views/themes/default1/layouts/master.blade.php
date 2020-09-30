@@ -56,6 +56,8 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
+
+
         </script>
         <!-- AdminLTE Skins. Choose a skin from the css/skins
              folder instead of downloading all of them to reduce the load. -->
@@ -165,8 +167,9 @@
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                         <!-- Add icons to the links using the .nav-icon class
                              with font-awesome or any other icon font library -->
-                        <li class="nav-item has-treeview menu-open">
-                            <a href="{{url('/')}}" class="nav-link active">
+                            
+                        <li class="nav-item has-treeview">
+                            <a href="{{url('/')}}" class="nav-link">
                                 <i class="nav-icon fas fa-tachometer-alt"></i>
                                 <p>
                                     {{Lang::get('message.dashboard')}}
@@ -467,7 +470,20 @@
     <script src="{{asset('admin/plugins/jquery-file-upload/resumable.js')}}"></script>
     <script src="{{asset('admin/plugins/bootstrap-switch.min.js')}}"></script>
 
+    <script>
+    var url = window.location;
 
+    // for sidebar menu entirely but not cover treeview
+    $('ul.nav-sidebar a').filter(function() {
+        return this.href == url;
+    }).addClass('active');
+
+    // for treeview
+    $('ul.nav-treeview a').filter(function() {
+        return this.href == url;
+    }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
+    </script>
+    
     @yield('icheck')
     @yield('datepicker')
 
@@ -494,6 +510,8 @@
                   'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
               }
           });
+
+
           </script>
 
 

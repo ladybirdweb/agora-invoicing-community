@@ -61,9 +61,15 @@
                             From
                             <address>
 
-                                <strong>{{$set->company}}</strong><br>
+                                 <strong>{{$set->company}}</strong><br>
                                 {{$set->address}}<br>
-                                Phone: {{$set->phone}}<br>
+                                {{$set->city}}<br/>
+                                @if(key_exists('name',getStateByCode($set->state)))
+                                {{getStateByCode($set->state)['name']}}
+                                @endif
+                                {{$set->zip}}<br/>
+                                Country : {{getCountryByCode($set->country)}}<br/>
+                                Mobile: {{$set->phone}}<br/>
                                 Email: {{$set->email}}
                             </address>
                         </div><!-- /.col -->

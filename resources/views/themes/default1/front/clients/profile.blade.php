@@ -274,10 +274,16 @@ input:checked + .slider:before {
 
             </div>
             <div class="form-row">
-                <div class="form-group col {{ $errors->has('zip') ? 'has-error' : '' }}">
+                <div class="col-md-6 form-group {{ $errors->has('zip') ? 'has-error' : '' }}">
                     <label for"zip">Zip/Postal Code</label>
                     {!! Form::text('zip',null,['class' => 'form-control input-lg','id'=>'Zip']) !!}
                     <h6 id="zipCheck"></h6>
+                </div>
+
+                <div class="col-md-6 form-group" id= "gstin">
+                    <label for"gstin">GSTIN</label>
+                    {!! Form::text('gstin',null,['class' => 'form-control input-lg']) !!}
+                    <h6 id="gstincheck"></h6>
                 </div>
             </div>
 
@@ -502,6 +508,11 @@ input:checked + .slider:before {
 <script type="text/javascript">
      $(document).ready(function(){
     var country = $('#country').val();
+    if(country == 'IN') {
+        $('#gstin').show()
+    } else {
+        $('#gstin').hide();
+    }
     var telInput = $('#mobile_code'),
      addressDropdown = $("#country");
      errorMsg = document.querySelector("#error-msg"),
@@ -578,6 +589,11 @@ input:checked + .slider:before {
 });
 
    function getCountryAttr(val) {
+        if(val == 'IN') {
+            $('#gstin').show()
+        } else {
+            $('#gstin').hide()
+        }
         getState(val);
         getCode(val);
 //        getCurrency(val);

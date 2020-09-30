@@ -27,6 +27,9 @@ User
     .hide_content{
       display: none;
     }
+    .btn-xs{
+        padding:.300rem!important;
+    }
  
 }
 </style>

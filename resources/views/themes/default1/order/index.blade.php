@@ -25,8 +25,7 @@ Orders
 
             <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
                 <i class="fas fa-plus"></i></button>
-            <button type="button" class="btn btn-tool" data-card-widget="remove" data-toggle="tooltip" title="Remove">
-                <i class="fas fa-times"></i></button>
+            
         </div>
     </div>
     <!-- /.box-header -->
@@ -44,69 +43,14 @@ Orders
             <div class="col-md-3 form-group">
                 <!-- first name -->
                 {!! Form::label('product_id','Product') !!} <br>
-                {!! Form::select('product_id',[null => 'Choose']+ $paidUnpaidOptions + $products, $request->product_id, ['class' => 'form-control select2','style'=>'width:100%','id'=>'product_id']) !!}
+                {!! Form::select('product_id',[null => 'Choose']+ $paidUnpaidOptions + $products, $request->product_id, ['class' => 'form-control select2','style'=>'width:100%','id'=>'product_id','onChange'=>'getProductVersion(this.value)']) !!}
             </div>
-            <div class="col-md-3 form-group">
-                <!-- first name -->
-                {!! Form::label('expiry','Updates Expiry From') !!}
-                <div class="input-group date" id="update_expiry" data-target-input="nearest">
-                    <input type="text" name="expiry" class="form-control datetimepicker-input" autocomplete="off" value="{!! $request->expiry !!}" data-target="#update_expiry"/>
-
-                    <div class="input-group-append" data-target="#update_expiry" data-toggle="datetimepicker">
-                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                    </div>
-
-                </div>
-
-            </div>
-             <div class="col-md-3 form-group">
-                <!-- first name -->
-                {!! Form::label('expiry','Updates Expiry Till') !!}
-                 <div class="input-group date" id="update_expiry_till" data-target-input="nearest">
-                     <input type="text" name="expiryTill" class="form-control datetimepicker-input" autocomplete="off" value="{!! $request->expiryTill !!}" data-target="#update_expiry_till"/>
-
-                     <div class="input-group-append" data-target="#update_expiry_till" data-toggle="datetimepicker">
-                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                     </div>
-
-                 </div>
-
-
-            </div>
-
-             <div class="col-md-3 form-group">
-                <!-- first name -->
-                {!! Form::label('from','Subscription From') !!}
-                 <div class="input-group date" id="subs_from" data-target-input="nearest">
-                     <input type="text" name="sub_from" class="form-control datetimepicker-input" autocomplete="off" value="{!! $request->sub_from !!}" data-target="#subs_from"/>
-
-
-                     <div class="input-group-append" data-target="#subs_from" data-toggle="datetimepicker">
-                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                     </div>
-
-                 </div>
-
-            </div>
-
-            <div class="col-md-3 form-group">
-                <!-- first name -->
-                {!! Form::label('till','Subcription Till') !!}
-                <div class="input-group date" id="subs_till" data-target-input="nearest">
-                    <input type="text" name="sub_till" class="form-control datetimepicker-input" autocomplete="off" value="{!! $request->sub_till !!}" data-target="#subs_till"/>
-
-
-                    <div class="input-group-append" data-target="#subs_till" data-toggle="datetimepicker">
-                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                    </div>
-
-                </div>
-            </div>
+            
 
             
             <div class="col-md-3 form-group">
                 <!-- first name -->
-                {!! Form::label('from','Order From') !!}
+                {!! Form::label('from','From') !!}
                 <div class="input-group date" id="order_from" data-target-input="nearest">
                     <input type="text" name="from" class="form-control datetimepicker-input" autocomplete="off" value="{!! $request->from !!}" data-target="#order_from"/>
 
@@ -121,7 +65,7 @@ Orders
             </div>
             <div class="col-md-3 form-group">
                 <!-- first name -->
-                {!! Form::label('till','Order Till') !!}
+                {!! Form::label('till','Till') !!}
                 <div class="input-group date" id="order_till" data-target-input="nearest">
                     <input type="text" name="till" class="form-control datetimepicker-input" autocomplete="off" value="{!! $request->till !!}" data-target="#order_till"/>
 
@@ -154,19 +98,36 @@ Orders
                 {!! Form::label('renewal','Subscriptions') !!}
                 {!! Form::select('renewal',[null => 'Choose']+ $renewal, $request->renewal, ['class' => 'form-control','id'=>'renewal']) !!}
             </div>
+            <?php
+             $selectedVersions = \App\Model\Product\Subscription::where('product_id',$request->product_id)->select('version')->get();
 
-            <div class="col-md-3 form-group">
-                {!! Form::label('version_from','Version From') !!}
-                {!! Form::select('version_from',[null => 'Choose']+ array_combine($allVersions, $allVersions), $request->version_from,
-                ['class' => 'form-control','id'=>'version_from']) !!}
-            </div>
+            ?>
+            {!! Form::hidden('select',$request->version,['class' => 'form-control','id'=>'select']) !!}
+             <div class="col-md-3 form-group {{ $errors->has('state') ? 'has-error' : '' }}">
+                        <!-- name -->
+                        {!! Form::label('version','Version') !!}
+                        <!--{!! Form::select('state',[],null,['class' => 'form-control','id'=>'state-list']) !!}-->
+                          <select name="version" id="version-list" class="form-control">
+                        @if(old('version') != null)
+                             @foreach($selectedVersions as $key=>$version)
+                             @if (Request::old('version') == $version->version)
+                             <option value="{{old('version')}}" selected>{{$version->version}}</option>
+                             @endif
+                             @endforeach
+                             @else
+                      
+                            <option value="">Choose A Product</option>
+                            @endif
 
-            <div class="col-md-3 form-group">
-                 {!! Form::label('version_till','Version Till') !!}
-                 {!! Form::select('version_till',[null => 'Choose']+ array_combine($allVersions, $allVersions), $request->version_till,
-                ['class' => 'form-control','id'=>'version_till']) !!}
+                        </select>
 
-             </div>
+                    </div>
+
+           
+
+            
+
+       
 
         </div>
 
@@ -187,6 +148,11 @@ Orders
 
         <div id="response"></div>
         <h3 class="card-title">Orders</h3>
+        <div class="card-tools">
+            <a href="{{url('invoice/generate')}}" class="btn btn-default btn-sm pull-right"><span class="fas fa-plus"></span>&nbsp;Place New Order</a>
+
+
+        </div>
             <!--<a href="{{url('orders/create')}}" class="btn btn-primary pull-right   ">{{Lang::get('message.create')}}</a></h4>-->
     </div>
 
@@ -227,6 +193,14 @@ Orders
 
 <script type="text/javascript">
     $(document).ready(function() {
+        val = $('#product_id').val();
+         if(val == '') {
+                $('#version-list').val('Choose a product');
+            } else {
+                getProductVersion(val);
+            }
+        
+
         $(function () {
             //Initialize Select2 Elements
             $('.select2').select2()
@@ -238,7 +212,7 @@ Orders
             serverSide: true,
             stateSave: false,
             ajax: {
-            "url":  '{!! route('get-orders',"order_no=$request->order_no&product_id=$request->product_id&expiry=$request->expiry&expiryTill=$request->expiryTill&from=$request->from&till=$request->till&sub_from=$request->sub_from&sub_till=$request->sub_till&ins_not_ins=$request->ins_not_ins&domain=$request->domain&p_un=$request->p_un&act_ins=$request->act_inst&renewal=$request->renewal&inact_ins=$request->inact_inst&version_from=$request->version_from&version_till=$request->version_till" ) !!}',
+            "url":  '{!! route('get-orders',"order_no=$request->order_no&product_id=$request->product_id&expiry=$request->expiry&expiryTill=$request->expiryTill&from=$request->from&till=$request->till&sub_from=$request->sub_from&sub_till=$request->sub_till&ins_not_ins=$request->ins_not_ins&domain=$request->domain&p_un=$request->p_un&act_ins=$request->act_inst&renewal=$request->renewal&inact_ins=$request->inact_inst&version=$request->version" ) !!}',
                error: function(xhr) {
                if(xhr.status == 401) {
                 alert('Your session has expired. Please login again to continue.')
@@ -284,6 +258,22 @@ Orders
                 $('.loader').css('display', 'block');
             },
         });
+
+        function getProductVersion(val) {
+        getAllVersions(val);
+      }
+
+      function getAllVersions(val) {
+        selectver = $('#select').val()
+        $.ajax({
+            type: "GET",
+              url: "{{url('get-product-versions')}}/" + val,
+            data: 'select_id=' + selectver,
+            success: function (data) {
+                $("#version-list").html(data);
+            }
+        });
+      }
     </script>
 
 

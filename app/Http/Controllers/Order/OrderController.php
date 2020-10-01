@@ -75,19 +75,11 @@ class OrderController extends BaseOrderController
     public function index(Request $request)
     {
         $validator = \Validator::make($request->all(), [
-            'sub_from'     => 'nullable',
-            'sub_till'     => 'nullable|after:sub_from',
-            'expiry'       => 'nullable',
-            'expiryTill'     => 'nullable|after:expiry',
             'from'          => 'nullable',
             'till'          => 'nullable|after:from',
 
         ]);
         if ($validator->fails()) {
-            $request->sub_from = '';
-            $request->sub_till = '';
-            $request->expiry = '';
-            $request->expiryTill = '';
             $request->from = '';
             $request->till = '';
 
@@ -101,14 +93,15 @@ class OrderController extends BaseOrderController
             $activeInstallationOptions = ['paid_ins'=>'Active installation'];
             $inactiveInstallationOptions = ['paid_inactive_ins'=>'Inactive installation'];
             $renewal = ['expired_subscription'=>'Expired Subscriptions', 'active_subscription'=> 'Active Subscriptions'];
+            $selectedVersion = $request->version;
             $allVersions = Subscription::where('version', '!=', '')->whereNotNull('version')
                 ->orderBy('version', 'desc')->groupBy('version')
-                ->pluck('version')->toArray();
+                ->select('version')->get();
 
             return view('themes.default1.order.index',
-                compact('request', 'products', 'allVersions', 'activeInstallationOptions', 'paidUnpaidOptions', 'inactiveInstallationOptions', 'renewal', 'insNotIns'));
+                compact('request', 'products', 'allVersions', 'activeInstallationOptions', 'paidUnpaidOptions', 'inactiveInstallationOptions', 'renewal', 'insNotIns','selectedVersion'));
         } catch (\Exception $e) {
-            Bugsnag::notifyExeption($e);
+            Bugsnag::notifyException($e);
 
             return redirect('orders')->with('fails', $e->getMessage());
         }

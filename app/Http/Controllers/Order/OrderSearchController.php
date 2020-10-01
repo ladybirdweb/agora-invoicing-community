@@ -33,16 +33,12 @@ class OrderSearchController extends Controller
             $baseQuery = $this->getBaseQueryForOrders();
             $this->orderNum($request->input('order_no'), $baseQuery);
             $this->product($request->input('product_id'), $baseQuery);
-            $this->expiry($request->input('expiryTill'), $request->input('expiry'), $baseQuery);
-            $this->expiryTill($request->input('expiry'), $request->input('expiryTill'), $baseQuery);
             $this->orderFrom($request->input('till'), $request->input('from'), $baseQuery);
             $this->orderTill($request->input('from'), $request->input('till'), $baseQuery);
-            $this->subFrom($request->input('sub_till'), $request->input('sub_from'), $baseQuery);
-            $this->subTill($request->input('sub_from'), $request->input('sub_till'), $baseQuery);
             $this->domain($request->input('domain'), $baseQuery);
             $this->allInstallations($request->input('act_ins'), $baseQuery);
             $this->allRenewals($request->input('renewal'), $baseQuery);
-            $this->getSelectedVersionOrders($baseQuery, $request->input('version_from'), $request->input('version_till'));
+            $this->getSelectedVersionOrders($baseQuery, $request->input('version'),$request->input('product_id'));
 
             return $baseQuery->orderBy('orders.created_at', 'desc');
         } catch (\Exception $ex) {
@@ -67,6 +63,36 @@ class OrderSearchController extends Controller
             );
     }
 
+
+    public function getProductVersions(Request $request, $productId)
+    {
+     try {
+        $id = $productId;
+        if(($productId !== "paid") && ($productId !== "unpaid")) {
+            $allVersions = Subscription::where('product_id',$productId)->where('product_id','!=',0)->where('version', '!=', '')->whereNotNull('version')
+                ->orderBy('version', 'desc')->groupBy('version')->get();
+        // $states = \App\Model\Common\State::where('country_code_char2', $id)
+        // ->orderBy('state_subdivision_name', 'asc')->get();
+                if($request->select_id != '') {
+                    echo '<option name="version" value='.$request->select_id.'>'.$request->select_id.'</option>';
+                } else {
+                    echo '<option value=""> Choose</option>';
+                }
+        
+        echo '<option value="Outdated">Outdated</option>';
+        foreach ($allVersions as $version) {
+            echo '<option value='.$version->version.'>'.$version->version.'</option>';
+        }
+        } else {
+            echo '<option value=""> Choose a product</option>';
+        }
+        } catch (\Exception $ex) {
+            echo "<option value=''>Problem while loading</option>";
+
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
     /**
      * Searches for order for selected versions.
      *
@@ -76,16 +102,19 @@ class OrderSearchController extends Controller
      * @return Builder
      * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
      */
-    private function getSelectedVersionOrders($baseQuery, $versionFrom, $versionTill)
+    private function getSelectedVersionOrders($baseQuery, $version, $productId)
     {
-        if ($versionFrom) {
-            $baseQuery->where('subscriptions.version', '>=', $versionFrom);
-        }
 
-        if ($versionTill) {
-            $baseQuery->where('subscriptions.version', '<=', $versionTill);
-        }
+        if($version) {
+            if($version == 'Outdated') {
+                $latestVersion = Subscription::where('product_id', $productId)->orderBy('version', 'desc')->value('version');
+               
+            $baseQuery->where('subscriptions.version', '<', $latestVersion);
 
+        } else {
+            $baseQuery->where('subscriptions.version', '=', $version);
+            }
+        }
         return $baseQuery;
     }
 
@@ -190,91 +219,8 @@ class OrderSearchController extends Controller
         return $join;
     }
 
-    /**
-     * Searches for Expiry From.
-     *
-     * @param string $expiry The Expiry From Date
-     * @param object $join
-     *
-     * @return Query
-     */
-    private function expiry($expiryTill, $expiry, $join)
-    {
-        if ($expiry) {
-            $expiryFrom = (new BaseSettingsController())->getDateFormat($expiry);
-            $tills = (new BaseSettingsController())->getDateFormat();
-
-            $tillDate = $this->getTillDate($expiryFrom, $expiryTill, $tills);
-            $join = $join->whereBetween('subscriptions.update_ends_at', [$expiryFrom, $tillDate]);
-
-            return $join;
-        }
-    }
-
-    /**
-     * Searches for Expiry Till.
-     *
-     * @param string $expiry The Expiry Till Date
-     * @param object $join
-     *
-     * @return Query
-     */
-    private function expiryTill($expiry, $expiryTill, $join)
-    {
-        if ($expiryTill) {
-            $exptill = (new BaseSettingsController())->getDateFormat($expiryTill);
-            $froms = Subscription::first()->ends_at;
-            $fromDate = $this->getFromDate($expiry, $froms);
-            $join = $join->whereBetween('subscriptions.update_ends_at', [$fromDate, $exptill]);
-
-            return $join;
-        }
-    }
-
-    /**
-     * Searches for Subcription From Date.
-     *
-     * @param string $expiry The Subcription From Date
-     * @param object $join
-     *
-     * @return Query
-     */
-    private function subFrom($till, $from, $join)
-    {
-        if ($from) {
-            $fromdate = date_create($from);
-
-            $from = date_format($fromdate, 'Y-m-d H:m:i');
-            $tills = date('Y-m-d H:m:i');
-
-            $tillDate = $this->getTillDate($from, $till, $tills);
-            $join = $join->whereBetween('subscriptions.created_at', [$from, $tillDate]);
-
-            return $join;
-        }
-    }
-
-    /**
-     * Searches for Order Till Date.
-     *
-     * @param string $expiry The Order Till Date
-     * @param object $join
-     *
-     * @return Query
-     */
-    private function subTill($from, $till, $join)
-    {
-        if ($till) {
-            $tilldate = date_create($till);
-            $till = date_format($tilldate, 'Y-m-d H:m:i');
-            $froms = date_format(Subscription::first()->created_at, 'Y-m-d H:m:i');
-            $fromDate = $this->getFromDate($from, $froms);
-            $join = $join->whereBetween('subscriptions.created_at', [$fromDate, $till]);
-
-            return $join;
-        }
-    }
-
+   
+    
     /**
      * Searches for Order From Date.
      *

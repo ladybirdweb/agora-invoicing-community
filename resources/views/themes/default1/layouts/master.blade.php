@@ -221,12 +221,12 @@
                                         <p>{{Lang::get('message.all-orders')}}</p>
                                     </a>
                                 </li>
-                                <li class="nav-item">
+                               <!--  <li class="nav-item">
                                     <a href="{{url('invoice/generate')}}" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>{{Lang::get('message.add-new')}}</p>
                                     </a>
-                                </li>
+                                </li> -->
                             </ul>
                         </li>
                         <li class="nav-item has-treeview">
@@ -471,7 +471,7 @@
     <script src="{{asset('admin/plugins/bootstrap-switch.min.js')}}"></script>
 
     <script>
-    var url = window.location;
+    var url = window.location && window.location.href.split('?')[0];
 
     // for sidebar menu entirely but not cover treeview
     $('ul.nav-sidebar a').filter(function() {

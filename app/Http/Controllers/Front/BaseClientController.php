@@ -109,6 +109,7 @@ class BaseClientController extends Controller
                 $user->profile_pic = $fileName;
             }
             $user->first_name = strip_tags($request->input('first_name'));
+            $user->user_name = strip_tags($request->input('user_name'));
             $user->last_name = strip_tags($request->input('last_name'));
             $user->email = strip_tags($request->input('email'));
             $user->company = strip_tags($request->input('company'));

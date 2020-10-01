@@ -99,7 +99,7 @@ class OrderController extends BaseOrderController
                 ->select('version')->get();
 
             return view('themes.default1.order.index',
-                compact('request', 'products', 'allVersions', 'activeInstallationOptions', 'paidUnpaidOptions', 'inactiveInstallationOptions', 'renewal', 'insNotIns','selectedVersion'));
+                compact('request', 'products', 'allVersions', 'activeInstallationOptions', 'paidUnpaidOptions', 'inactiveInstallationOptions', 'renewal', 'insNotIns', 'selectedVersion'));
         } catch (\Exception $e) {
             Bugsnag::notifyException($e);
 

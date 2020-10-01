@@ -320,7 +320,7 @@
 
             Route::resource('orders', 'Order\OrderController');
             Route::get('get-orders', 'Order\OrderController@getOrders')->name('get-orders');
-             Route::get('get-product-versions/{product}', 'Order\OrderSearchController@getProductVersions')->name('get-product-versions');
+            Route::get('get-product-versions/{product}', 'Order\OrderSearchController@getProductVersions')->name('get-product-versions');
             Route::delete('orders-delete', 'Order\OrderController@destroy')->name('orders-delete');
             Route::patch('change-domain', 'Order\ExtendedOrderController@changeDomain');
             Route::patch('reissue-license', 'Order\ExtendedOrderController@reissueLicense');

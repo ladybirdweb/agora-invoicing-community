@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Order;
 
-use App\Http\Controllers\Common\BaseSettingsController;
 use App\Http\Controllers\Controller;
 use App\Model\Order\Order;
 use App\Model\Product\Subscription;
@@ -38,7 +37,7 @@ class OrderSearchController extends Controller
             $this->domain($request->input('domain'), $baseQuery);
             $this->allInstallations($request->input('act_ins'), $baseQuery);
             $this->allRenewals($request->input('renewal'), $baseQuery);
-            $this->getSelectedVersionOrders($baseQuery, $request->input('version'),$request->input('product_id'));
+            $this->getSelectedVersionOrders($baseQuery, $request->input('version'), $request->input('product_id'));
 
             return $baseQuery->orderBy('orders.created_at', 'desc');
         } catch (\Exception $ex) {
@@ -63,29 +62,28 @@ class OrderSearchController extends Controller
             );
     }
 
-
     public function getProductVersions(Request $request, $productId)
     {
-     try {
-        $id = $productId;
-        if(($productId !== "paid") && ($productId !== "unpaid")) {
-            $allVersions = Subscription::where('product_id',$productId)->where('product_id','!=',0)->where('version', '!=', '')->whereNotNull('version')
+        try {
+            $id = $productId;
+            if (($productId !== 'paid') && ($productId !== 'unpaid')) {
+                $allVersions = Subscription::where('product_id', $productId)->where('product_id', '!=', 0)->where('version', '!=', '')->whereNotNull('version')
                 ->orderBy('version', 'desc')->groupBy('version')->get();
-        // $states = \App\Model\Common\State::where('country_code_char2', $id)
-        // ->orderBy('state_subdivision_name', 'asc')->get();
-                if($request->select_id != '') {
+                // $states = \App\Model\Common\State::where('country_code_char2', $id)
+                // ->orderBy('state_subdivision_name', 'asc')->get();
+                if ($request->select_id != '') {
                     echo '<option name="version" value='.$request->select_id.'>'.$request->select_id.'</option>';
                 } else {
                     echo '<option value=""> Choose</option>';
                 }
-        
-        echo '<option value="Outdated">Outdated</option>';
-        foreach ($allVersions as $version) {
-            echo '<option value='.$version->version.'>'.$version->version.'</option>';
-        }
-        } else {
-            echo '<option value=""> Choose a product</option>';
-        }
+
+                echo '<option value="Outdated">Outdated</option>';
+                foreach ($allVersions as $version) {
+                    echo '<option value='.$version->version.'>'.$version->version.'</option>';
+                }
+            } else {
+                echo '<option value=""> Choose a product</option>';
+            }
         } catch (\Exception $ex) {
             echo "<option value=''>Problem while loading</option>";
 
@@ -104,17 +102,16 @@ class OrderSearchController extends Controller
      */
     private function getSelectedVersionOrders($baseQuery, $version, $productId)
     {
-
-        if($version) {
-            if($version == 'Outdated') {
+        if ($version) {
+            if ($version == 'Outdated') {
                 $latestVersion = Subscription::where('product_id', $productId)->orderBy('version', 'desc')->value('version');
-               
-            $baseQuery->where('subscriptions.version', '<', $latestVersion);
 
-        } else {
-            $baseQuery->where('subscriptions.version', '=', $version);
+                $baseQuery->where('subscriptions.version', '<', $latestVersion);
+            } else {
+                $baseQuery->where('subscriptions.version', '=', $version);
             }
         }
+
         return $baseQuery;
     }
 
@@ -219,8 +216,6 @@ class OrderSearchController extends Controller
         return $join;
     }
 
-   
-    
     /**
      * Searches for Order From Date.
      *

@@ -265,7 +265,16 @@ $('.btn-off-3').css("background-color", "#DA4F49","color", "white");
    
    
       
+<script>
+     $('ul.nav-sidebar a').filter(function() {
+        return this.id == 'setting';
+    }).addClass('active');
 
+    // for treeview
+    $('ul.nav-treeview a').filter(function() {
+        return this.id == 'setting';
+    }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
+</script>
 
 
     @stop

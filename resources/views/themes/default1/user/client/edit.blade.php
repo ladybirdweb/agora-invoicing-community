@@ -270,7 +270,16 @@ Edit User
     </div>
      
 </div>
+<script>
+  $('ul.nav-sidebar a').filter(function() {
+        return this.id == 'all_user';
+    }).addClass('active');
 
+    // for treeview
+    $('ul.nav-treeview a').filter(function() {
+        return this.id == 'all_user';
+    }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
+</script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
 <script type="text/javascript">

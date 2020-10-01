@@ -130,7 +130,16 @@ Create Invoice
 </div>
 
 
+<script>
+     $('ul.nav-sidebar a').filter(function() {
+        return this.id == 'add_invoice';
+    }).addClass('active');
 
+    // for treeview
+    $('ul.nav-treeview a').filter(function() {
+        return this.id == 'add_invoice';
+    }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
+</script>
 
 <script>
     function getPrice(val) {

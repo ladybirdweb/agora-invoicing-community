@@ -329,6 +329,15 @@ Create User
 
 
 <script>
+     $('ul.nav-sidebar a').filter(function() {
+      console.log('id-=== ', this.id)
+        return this.id == 'add_new_user';
+    }).addClass('active');
+
+    // for treeview
+    $('ul.nav-treeview a').filter(function() {
+        return this.id == 'add_new_user';
+    }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
 
         $(document).ready(function(){
             $(function () {

@@ -366,6 +366,14 @@ Dashboard
     @endcomponent
 </div>
 <script type="text/javascript">
+  $('ul.nav-sidebar a').filter(function() {
+        return this.id == 'dashboard';
+    }).addClass('active');
+
+    // for treeview
+    $('ul.nav-treeview a').filter(function() {
+        return this.id == 'dashboard';
+    }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
   $(document).ready(function(){
         $('[data-toggle="tooltip"]').tooltip({
         container : 'body'

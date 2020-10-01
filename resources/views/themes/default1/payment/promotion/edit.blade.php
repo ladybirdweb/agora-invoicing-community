@@ -175,7 +175,16 @@ Edit Promotion
 
 </div>
 
+<script>
+     $('ul.nav-sidebar a').filter(function() {
+        return this.id == 'coupon';
+    }).addClass('active');
 
+    // for treeview
+    $('ul.nav-treeview a').filter(function() {
+        return this.id == 'coupon';
+    }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
+</script>
 
 <script>
      $(document).ready(function(){

@@ -318,5 +318,15 @@ Create Product
             });
         });
     </script>
+    <script>
+     $('ul.nav-sidebar a').filter(function() {
+        return this.id == 'add_product';
+    }).addClass('active');
+
+    // for treeview
+    $('ul.nav-treeview a').filter(function() {
+        return this.id == 'add_product';
+    }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
+</script>
 @stop
 

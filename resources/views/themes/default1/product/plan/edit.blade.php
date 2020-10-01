@@ -157,7 +157,16 @@ Edit Plan
 
 
 {!! Form::close() !!}
+<script>
+     $('ul.nav-sidebar a').filter(function() {
+        return this.id == 'plan';
+    }).addClass('active');
 
+    // for treeview
+    $('ul.nav-treeview a').filter(function() {
+        return this.id == 'plan';
+    }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
+</script>
 <script>
     $( document ).ready(function() {
          var product = document.getElementById('planproduct').value;

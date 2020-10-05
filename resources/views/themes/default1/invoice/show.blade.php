@@ -222,6 +222,16 @@ Invoice
 
 </div>
     </div>
+    <script>
+     $('ul.nav-sidebar a').filter(function() {
+        return this.id == 'all_invoice';
+    }).addClass('active');
+
+    // for treeview
+    $('ul.nav-treeview a').filter(function() {
+        return this.id == 'all_invoice';
+    }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
+</script>
 <script>
     $(document).ready(function(){
          $(function () {

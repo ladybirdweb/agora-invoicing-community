@@ -58,8 +58,44 @@ Order
                             </div>
                         </div>
                            <div class="row">
-                               <div class="col-md-6">
-                                   <div class="card card-info card-outline">
+
+
+                             <div class="col-md-12">
+                             <div class="card card-secondary card-outline">
+                                 <div class="scrollit">
+                           <div class="card-body table-responsive">
+                               <div class="card-header">
+                              <h5 class="card-title">
+                              User Details
+                             </h5>
+                               </div>
+
+                        
+                              
+                            <table class="table table-hover">
+
+                                <tbody><tr><td><b>Name:</b></td><td><a href="{{url('clients/'.$user->id)}}">{{ucfirst($user->first_name)}}</a></td></tr>
+                                    <tr><td><b>Email:</b></td><td>{{$user->email}}</td></tr>
+                                    <tr><td><b>Mobile:</b></td><td>@if($user->mobile_code)(<b>+</b>{{$user->mobile_code}})@endif&nbsp;{{$user->mobile}}</td></tr>
+                                    <tr><td><b>Address:</b></td><td>{{$user->address}}, 
+                                            {{ucfirst($user->town)}}, 
+                                            @if(key_exists('name',getStateByCode($user->state)))
+                                            {{getStateByCode($user->state)['name']}}
+                                            @endif
+                                        </td></tr>
+                                    <tr><td><b>Country:</b></td><td>{{getCountryByCode($user->country)}}</td></tr>
+
+                                </tbody>
+                              </table>
+                             </div>
+                                 </div>
+
+                             </div>
+                       </div>
+
+
+                               <div class="col-md-12">
+                                   <div class="card card-secondary card-outline">
                                        <div class="scrollit">
                                        <div class="card-body table-responsive">
                                            @include('themes.default1.front.clients.reissue-licenseModal')
@@ -95,8 +131,8 @@ Order
 
                                                    </td>
                                                </tr>
-                                               @if ($licenseStatus == 1)
-                                                   <tr>
+                                               @if ($licenseStatus)
+                                                   <!-- <tr>
 
                                                        <td>
                                                            <label name="domain">
@@ -108,8 +144,8 @@ Order
                                                            <button class='class="btn btn-sm btn-danger btn-xs' style="width:max-content;border:none;" id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}"><i class="fas fa-file-import" style='color:white;' {!! tooltip('Reissue&nbsp;License') !!}</i>
                                                            </button>
                                                        </td>
-                                                   </tr>
-                                                   <tr>
+                                                   </tr> -->
+                                                   <!-- <tr>
                                                        <td><b>Installation Path | IP:</b></td>
                                                        @if(count($installationDetails['installed_path']) > 0)
                                                            <td>@foreach($installationDetails['installed_path'] as $paths)
@@ -122,7 +158,7 @@ Order
                                                            </td>
                                                        @endif
                                                        <td></td>
-                                                   </tr>
+                                                   </tr> -->
 
                                                   
                                                    <tr>
@@ -137,19 +173,19 @@ Order
 
                                                    </tr>
                                               
-                                               <tr>
+                                              <!--  <tr>
                                                    <td><b>Current Version:</b></td>
                                                    <td>{!! $versionLabel !!} </td>
                                                    <td></td>
-                                               </tr>
+                                               </tr> -->
 
-                                               <tr>
+                                             <!--   <tr>
                                                    <td><b><label data-toggle="tooltip" data-placement="top" title="" data-original-title="Last connection with License Manager">Last Active:</label></b></td>
                                                    <td>
                                                        {!! $lastActivity !!}
                                                    </td>
                                                    <td></td>
-                                               </tr>
+                                               </tr> -->
                                                @endif
 
 
@@ -195,7 +231,81 @@ Order
                                    </div>
 
                                </div>
-                           <div class="col-md-6">
+
+           @if($licenseStatus)
+            <div class="col-md-12">
+            
+            <div class="card card-secondary card-outline">
+               <div class="scrollit">
+              <div class="card-body table-responsive">
+               <div class="card-header">
+                   <h4 class="card-title">
+                       Installation Details
+                   </h4>
+               </div>
+              <!-- /.card-header -->
+              <div class="card-body p-0">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Installation Path</th>
+                      <th>Installation IP</th>
+                      <th>Current Version</th>
+                       <th>Last Active</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                     
+                    <tr>
+                      @if(count($installationDetails['installed_path']) > 0)
+                       <td>@foreach($installationDetails['installed_path'] as $paths)
+                               <li>{!! $paths !!}</li>
+                           @endforeach
+                       </td>
+                   @else
+                       <td>
+                           No Active Installation
+                       </td>
+                   @endif
+                     @if(count($installationDetails['installed_ip']) > 0)
+                       <td>@foreach($installationDetails['installed_ip'] as $paths)
+                               <li>{!! $paths !!}</li>
+                           @endforeach
+                       </td>
+                   @else
+                       <td>
+                           No Active Installation
+                       </td>
+                   @endif
+                      <td>{!! $versionLabel !!} </td>
+                    
+                     <td>
+                         {!! $lastActivity !!}
+                     </td>
+                    </tr>
+                     
+                  </tbody>
+                  
+                </table>
+              </div>
+            </div>
+          </div>
+              <!-- /.card-body -->
+            
+            <!-- /.card -->
+
+     
+            <!-- /.card -->
+          </div>
+
+
+
+
+
+
+
+                          <!--  <div class="col-md-6">
                              <div class="card card-info card-outline">
                                  <div class="scrollit">
                            <div class="card-body table-responsive">
@@ -207,7 +317,6 @@ Order
 
                         
 
-    
                             <table class="table table-hover">
 
                                 <tbody><tr><td><b>Name:</b></td><td><a href="{{url('clients/'.$user->id)}}">{{ucfirst($user->first_name)}}</a></td></tr>
@@ -221,23 +330,24 @@ Order
                                         </td></tr>
                                     <tr><td><b>Country:</b></td><td>{{getCountryByCode($user->country)}}</td></tr>
 
-                                </tbody></table>
+                                </tbody>
+                              </table>
                              </div>
                                  </div>
 
                              </div>
-                       </div>
+                       </div> -->
 
         </div>
+        @endif
         </div>
-                    </div>
-    </div>
-            </div>
-</div>
-</div>
+ 
+           
+
+
     <div class="card card-secondary card-outline">
-        <div class="row">
-            <div class="col-md-12">
+        <div class="col-md-12">
+            <div class="row">
             <div class="card-body table-responsive">
                 <div class="box-group" id="accordion3">
 
@@ -277,6 +387,7 @@ Order
             </div>
           </div>
         </div>
+        
 
  <script>
      $('ul.nav-sidebar a').filter(function() {
@@ -384,7 +495,7 @@ Order
             </div>
           </div>
         </div>
-
+        </div>
 <script>
 
     $(document).ready(function(){

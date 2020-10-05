@@ -13,7 +13,7 @@ class CreateTaxByStatesTable extends Migration
      */
     public function up()
     {
-        if(!Schema::hasTable('tax_by_states')){
+        if (! Schema::hasTable('tax_by_states')) {
             Schema::create('tax_by_states', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('state');

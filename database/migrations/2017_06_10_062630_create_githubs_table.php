@@ -13,7 +13,7 @@ class CreateGithubsTable extends Migration
      */
     public function up()
     {
-        if(!Schema::hasTable('githubs')) {
+        if (! Schema::hasTable('githubs')) {
             Schema::create('githubs', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('client_id')->nullable();

@@ -13,14 +13,14 @@ class CreatePeriodsTable extends Migration
      */
     public function up()
     {
-       if(!Schema::hasTable('periods')) {
-           Schema::create('periods', function (Blueprint $table) {
-               $table->increments('id');
-               $table->string('name');
-               $table->string('days');
-               $table->timestamps();
-           });
-       }
+        if (! Schema::hasTable('periods')) {
+            Schema::create('periods', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('name');
+                $table->string('days');
+                $table->timestamps();
+            });
+        }
     }
 
     /**

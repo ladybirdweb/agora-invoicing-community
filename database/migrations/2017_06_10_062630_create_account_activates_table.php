@@ -13,7 +13,7 @@ class CreateAccountActivatesTable extends Migration
      */
     public function up()
     {
-        if(!Schema::hasTable('account_activates')) {
+        if (! Schema::hasTable('account_activates')) {
             Schema::create('account_activates', function (Blueprint $table) {
                 $table->string('email')->index();
                 $table->string('token')->index();

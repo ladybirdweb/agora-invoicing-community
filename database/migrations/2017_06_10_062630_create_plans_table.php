@@ -13,16 +13,16 @@ class CreatePlansTable extends Migration
      */
     public function up()
     {
-       if(!Schema::hasTable('plans')) {
-           Schema::create('plans', function (Blueprint $table) {
-               $table->increments('id');
-               $table->string('name');
-               $table->integer('product');
-               $table->integer('allow_tax');
-               $table->string('days')->nullable();
-               $table->timestamps();
-           });
-       }
+        if (! Schema::hasTable('plans')) {
+            Schema::create('plans', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('name');
+                $table->integer('product');
+                $table->integer('allow_tax');
+                $table->string('days')->nullable();
+                $table->timestamps();
+            });
+        }
     }
 
     /**

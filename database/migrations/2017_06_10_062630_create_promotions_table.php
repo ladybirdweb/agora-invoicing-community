@@ -13,7 +13,7 @@ class CreatePromotionsTable extends Migration
      */
     public function up()
     {
-        if(!Schema::hasTable('promotions')){
+        if (! Schema::hasTable('promotions')) {
             Schema::create('promotions', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('code')->unique('code');

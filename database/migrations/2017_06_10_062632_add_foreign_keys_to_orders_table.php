@@ -15,14 +15,12 @@ class AddForeignKeysToOrdersTable extends Migration
         Schema::table('orders', function (Blueprint $table) {
             $sm = Schema::getConnection()->getDoctrineSchemaManager();
             $indexesFound = $sm->listTableIndexes('orders');
-            if(!array_key_exists("orders_client_foreign", $indexesFound)){
+            if (! array_key_exists('orders_client_foreign', $indexesFound)) {
                 $table->foreign('client')->references('id')->on('users')->onUpdate('RESTRICT')->onDelete('RESTRICT');
-
             }
-            if(!array_key_exists("orders_product_foreign", $indexesFound)){
+            if (! array_key_exists('orders_product_foreign', $indexesFound)) {
                 $table->foreign('product')->references('id')->on('products')->onUpdate('RESTRICT')->onDelete('RESTRICT');
             }
-
         });
     }
 

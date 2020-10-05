@@ -13,7 +13,7 @@ class CreateTimezoneTable extends Migration
      */
     public function up()
     {
-        if(!Schema::hasTable('timezone')){
+        if (! Schema::hasTable('timezone')) {
             Schema::create('timezone', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('name')->nullable();

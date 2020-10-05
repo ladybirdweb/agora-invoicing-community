@@ -13,7 +13,7 @@ class CreateProductBundlesTable extends Migration
      */
     public function up()
     {
-        if(!Schema::hasTable('product_bundles')){
+        if (! Schema::hasTable('product_bundles')) {
             Schema::create('product_bundles', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('name');

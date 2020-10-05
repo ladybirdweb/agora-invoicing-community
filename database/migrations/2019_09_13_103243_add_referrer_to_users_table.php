@@ -13,7 +13,7 @@ class AddReferrerToUsersTable extends Migration
      */
     public function up()
     {
-        if(!Schema::hasColumn('users','referrer')){
+        if (! Schema::hasColumn('users', 'referrer')) {
             Schema::table('users', function (Blueprint $table) {
                 $table->string('referrer')->nullable();
             });

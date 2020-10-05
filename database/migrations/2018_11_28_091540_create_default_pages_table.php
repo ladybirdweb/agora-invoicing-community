@@ -13,7 +13,7 @@ class CreateDefaultPagesTable extends Migration
      */
     public function up()
     {
-        if(!Schema::hasTable('default_pages')){
+        if (! Schema::hasTable('default_pages')) {
             Schema::create('default_pages', function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('page_id');

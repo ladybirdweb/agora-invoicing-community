@@ -14,7 +14,6 @@ use App\Model\Product\Product;
 use App\Model\Product\Subscription;
 use Bugsnag;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class PlanController extends ExtendedPlanController
 {
@@ -48,13 +47,14 @@ class PlanController extends ExtendedPlanController
      */
     public function index()
     {
-        $countries = Country::get(['country_id','country_name'])->toArray();
+        $countries = Country::get(['country_id', 'country_name'])->toArray();
         $currency = $this->currency->where('status', '1')->pluck('name', 'code')->toArray();
         $periods = $this->period->pluck('name', 'days')->toArray();
         $products = $this->product->pluck('name', 'id')->toArray();
+
         return view(
             'themes.default1.product.plan.index',
-            compact('currency', 'periods', 'products','countries')
+            compact('currency', 'periods', 'products', 'countries')
         );
     }
 
@@ -142,7 +142,6 @@ class PlanController extends ExtendedPlanController
      * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
      *
      * @date   2019-01-08T13:32:57+0530
-     *
      */
     public function store(PlanRequest $request)
     {
@@ -170,9 +169,9 @@ class PlanController extends ExtendedPlanController
             }
             $this->plan->planPrice()->insert($dataForCreating);
         }
+
         return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
     }
-
 
     /**
      * Show the form for editing the specified resource.
@@ -182,8 +181,8 @@ class PlanController extends ExtendedPlanController
     public function edit(Plan $plan)
     {
         $currency = $this->currency->where('status', '1')->pluck('name', 'code')->toArray();
-        $countries = Country::get(['country_id','country_name'])->toArray();
-        $planPrices =$plan->planPrice()->get()->toArray();
+        $countries = Country::get(['country_id', 'country_name'])->toArray();
+        $planPrices = $plan->planPrice()->get()->toArray();
         $periods = $this->period->pluck('name', 'days')->toArray();
         $products = $this->product->pluck('name', 'id')->toArray();
         $priceDescription = $planPrices[0]['price_description'];
@@ -223,7 +222,6 @@ class PlanController extends ExtendedPlanController
      */
     public function update(Plan $plan, PlanRequest $request)
     {
-
         $add_prices = $request->add_price;
         $renew_prices = $request->renew_price;
         $plan->fill($request->input())->save();
@@ -244,6 +242,7 @@ class PlanController extends ExtendedPlanController
             }
             $plan->planPrice()->insert($dataForCreating);
         }
+
         return redirect()->back()->with('success', trans('message.updated-successfully'));
     }
 

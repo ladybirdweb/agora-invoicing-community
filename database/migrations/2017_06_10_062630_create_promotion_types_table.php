@@ -13,7 +13,7 @@ class CreatePromotionTypesTable extends Migration
      */
     public function up()
     {
-        if(!Schema::hasTable('promotion_types')){
+        if (! Schema::hasTable('promotion_types')) {
             Schema::create('promotion_types', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('name');

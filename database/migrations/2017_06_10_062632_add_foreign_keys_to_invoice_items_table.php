@@ -16,9 +16,8 @@ class AddForeignKeysToInvoiceItemsTable extends Migration
         Schema::table('invoice_items', function (Blueprint $table) {
             $sm = Schema::getConnection()->getDoctrineSchemaManager();
             $indexesFound = $sm->listTableIndexes('invoice_items');
-            if(!array_key_exists("invoice_items_invoice_id_foreign", $indexesFound)){
+            if (! array_key_exists('invoice_items_invoice_id_foreign', $indexesFound)) {
                 $table->foreign('invoice_id')->references('id')->on('invoices')->onUpdate('RESTRICT')->onDelete('RESTRICT');
-
             }
         });
     }

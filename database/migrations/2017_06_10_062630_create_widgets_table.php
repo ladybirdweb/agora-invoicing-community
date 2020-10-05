@@ -13,16 +13,16 @@ class CreateWidgetsTable extends Migration
      */
     public function up()
     {
-       if(!Schema::hasTable('widgets'))   {
-           Schema::create('widgets', function (Blueprint $table) {
-               $table->increments('id');
-               $table->string('name');
-               $table->string('type');
-               $table->integer('publish');
-               $table->text('content');
-               $table->timestamps();
-           });
-       }
+        if (! Schema::hasTable('widgets')) {
+            Schema::create('widgets', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('name');
+                $table->string('type');
+                $table->integer('publish');
+                $table->text('content');
+                $table->timestamps();
+            });
+        }
     }
 
     /**

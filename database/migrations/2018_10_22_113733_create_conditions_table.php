@@ -13,7 +13,7 @@ class CreateConditionsTable extends Migration
      */
     public function up()
     {
-        if(!Schema::hasTable('conditions')){
+        if (! Schema::hasTable('conditions')) {
             Schema::create('conditions', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('job', 255)->nullable();

@@ -13,14 +13,14 @@ class CreateMailchimpListsTable extends Migration
      */
     public function up()
     {
-       if(!Schema::hasTable('mailchimp_lists')) {
-           Schema::create('mailchimp_lists', function (Blueprint $table) {
-               $table->increments('id');
-               $table->string('name');
-               $table->string('list_id');
-               $table->timestamps();
-           });
-       }
+        if (! Schema::hasTable('mailchimp_lists')) {
+            Schema::create('mailchimp_lists', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('name');
+                $table->string('list_id');
+                $table->timestamps();
+            });
+        }
     }
 
     /**

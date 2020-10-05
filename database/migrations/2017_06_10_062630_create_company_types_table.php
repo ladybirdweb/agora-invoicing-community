@@ -13,14 +13,14 @@ class CreateCompanyTypesTable extends Migration
      */
     public function up()
     {
-       if(!Schema::hasTable('company_types')) {
-           Schema::create('company_types', function (Blueprint $table) {
-               $table->increments('id');
-               $table->string('name');
-               $table->string('short');
-               $table->timestamps();
-           });
-       }
+        if (! Schema::hasTable('company_types')) {
+            Schema::create('company_types', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('name');
+                $table->string('short');
+                $table->timestamps();
+            });
+        }
     }
 
     /**

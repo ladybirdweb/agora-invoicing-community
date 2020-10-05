@@ -13,7 +13,7 @@ class CreateCountriesTable extends Migration
      */
     public function up()
     {
-        if(!Schema::hasTable('countries')) {
+        if (! Schema::hasTable('countries')) {
             Schema::create('countries', function (Blueprint $table) {
                 $table->integer('country_id', true);
                 $table->char('country_code_char2', 2);
@@ -24,8 +24,6 @@ class CreateCountriesTable extends Migration
                 $table->integer('phonecode');
             });
         }
-
-
     }
 
     /**

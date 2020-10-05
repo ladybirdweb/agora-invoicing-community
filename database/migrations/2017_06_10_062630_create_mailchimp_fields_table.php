@@ -13,7 +13,7 @@ class CreateMailchimpFieldsTable extends Migration
      */
     public function up()
     {
-        if(!Schema::hasTable('mailchimp_fields')) {
+        if (! Schema::hasTable('mailchimp_fields')) {
             Schema::create('mailchimp_fields', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('list_id');

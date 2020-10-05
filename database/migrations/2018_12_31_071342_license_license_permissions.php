@@ -13,7 +13,7 @@ class LicenseLicensePermissions extends Migration
      */
     public function up()
     {
-        if(!Schema::hasTable('license_license_permissions')){
+        if (! Schema::hasTable('license_license_permissions')) {
             Schema::create('license_license_permissions', function (Blueprint $table) {
                 $table->increments('id');
                 $table->unsignedInteger('license_type_id');

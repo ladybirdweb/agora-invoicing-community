@@ -13,7 +13,7 @@ class CreateProductTypesTable extends Migration
      */
     public function up()
     {
-        if(!Schema::hasTable('product_types')){
+        if (! Schema::hasTable('product_types')) {
             Schema::create('product_types', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('name');

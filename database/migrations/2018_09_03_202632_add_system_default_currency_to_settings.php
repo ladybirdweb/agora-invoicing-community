@@ -14,12 +14,15 @@ class AddSystemDefaultCurrencyToSettings extends Migration
     public function up()
     {
         Schema::table('settings', function (Blueprint $table) {
-            if(!Schema::hasColumn('settings','default_currency'))
+            if (! Schema::hasColumn('settings', 'default_currency')) {
                 $table->string('default_currency', 255)->nullable();
-            if(!Schema::hasColumn('settings','default_symbol'))
+            }
+            if (! Schema::hasColumn('settings', 'default_symbol')) {
                 $table->string('default_symbol', 255)->nullable();
-            if(!Schema::hasColumn('settings','file_storage'))
+            }
+            if (! Schema::hasColumn('settings', 'file_storage')) {
                 $table->string('file_storage', 255)->nullable();
+            }
         });
     }
 
@@ -30,7 +33,7 @@ class AddSystemDefaultCurrencyToSettings extends Migration
      */
     public function down()
     {
-        Schema::table('settings',function(Blueprint $table){
+        Schema::table('settings', function (Blueprint $table) {
             $table->dropColumn('file_storage');
             $table->dropColumn('default_symbol');
             $table->dropColumn('default_currency');

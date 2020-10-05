@@ -13,7 +13,7 @@ class CreateStatusSettingsTable extends Migration
      */
     public function up()
     {
-        if(!Schema::hasTable('status_settings')){
+        if (! Schema::hasTable('status_settings')) {
             Schema::create('status_settings', function (Blueprint $table) {
                 $table->increments('id');
                 $table->boolean('expiry_mail');

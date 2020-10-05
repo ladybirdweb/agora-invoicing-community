@@ -13,16 +13,16 @@ class CreatePluginsTable extends Migration
      */
     public function up()
     {
-       if(!Schema::hasTable('plugins')){
-           Schema::create('plugins', function (Blueprint $table) {
-               $table->increments('id');
-               $table->string('name');
-               $table->string('path');
-               $table->integer('status');
-               $table->string('type');
-               $table->timestamps();
-           });
-       }
+        if (! Schema::hasTable('plugins')) {
+            Schema::create('plugins', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('name');
+                $table->string('path');
+                $table->integer('status');
+                $table->string('type');
+                $table->timestamps();
+            });
+        }
     }
 
     /**

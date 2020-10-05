@@ -13,11 +13,11 @@ class AddPerpetualLicenseToProductsTable extends Migration
      */
     public function up()
     {
-       if(!Schema::hasColumn('products','perpetual_license')){
-           Schema::table('products', function (Blueprint $table) {
-               $table->boolean('perpetual_license')->nullable();
-           });
-       }
+        if (! Schema::hasColumn('products', 'perpetual_license')) {
+            Schema::table('products', function (Blueprint $table) {
+                $table->boolean('perpetual_license')->nullable();
+            });
+        }
     }
 
     /**

@@ -14,9 +14,9 @@ class AddFavIconToSettings extends Migration
     public function up()
     {
         Schema::table('settings', function (Blueprint $table) {
-            if(!Schema::hasColumn('settings','fav_icon'))
+            if (! Schema::hasColumn('settings', 'fav_icon')) {
                 $table->string('fav_icon', 255)->nullable();
-
+            }
         });
     }
 
@@ -27,8 +27,8 @@ class AddFavIconToSettings extends Migration
      */
     public function down()
     {
-        Schema::table('settings',function (Blueprint $table){
-           $table->dropColumn('fave_icon');
+        Schema::table('settings', function (Blueprint $table) {
+            $table->dropColumn('fave_icon');
         });
     }
 }

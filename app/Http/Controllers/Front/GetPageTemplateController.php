@@ -30,7 +30,7 @@ class GetPageTemplateController extends Controller
                 $form = \Form::open(['method' => 'get', 'url' => $product['shoping_cart_link']]);
                 $form .= \Form::select(
                     'subscription', ['Plans' => [
-                        $trasform[$product['id']]['price'].' '.$trasform[$product['id']]['price-description']]
+                        $trasform[$product['id']]['price'].' '.$trasform[$product['id']]['price-description'], ],
                     ], null
                 );
                 $form .= \Form::hidden('id', $product['id']);
@@ -40,6 +40,7 @@ class GetPageTemplateController extends Controller
             }
             $template = $this->transform('cart', $data, $trasform);
         }
+
         return $template;
     }
 

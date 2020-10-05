@@ -13,7 +13,7 @@ class CreateTaxProductRelationsTable extends Migration
      */
     public function up()
     {
-        if(!Schema::hasTable('tax_product_relations')){
+        if (! Schema::hasTable('tax_product_relations')) {
             Schema::create('tax_product_relations', function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('product_id')->unsigned()->index('tax_product_relations_product_id_foreign');

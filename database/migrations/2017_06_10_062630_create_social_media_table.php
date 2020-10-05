@@ -13,7 +13,7 @@ class CreateSocialMediaTable extends Migration
      */
     public function up()
     {
-        if(!Schema::hasTable('social_media')){
+        if (! Schema::hasTable('social_media')) {
             Schema::create('social_media', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('class');

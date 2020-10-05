@@ -13,7 +13,7 @@ class CreateMobileTable extends Migration
      */
     public function up()
     {
-        if(!Schema::hasTable('mobile')){
+        if (! Schema::hasTable('mobile')) {
             Schema::create('mobile', function (Blueprint $table) {
                 $table->integer('id', true);
                 $table->char('iso', 2);

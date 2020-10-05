@@ -13,7 +13,7 @@ class AddProductSkuToProducts extends Migration
      */
     public function up()
     {
-        if(!Schema::hasColumn('products','product_sku')){
+        if (! Schema::hasColumn('products', 'product_sku')) {
             Schema::table('products', function (Blueprint $table) {
                 $table->string('product_sku', 255)->nullable();
             });

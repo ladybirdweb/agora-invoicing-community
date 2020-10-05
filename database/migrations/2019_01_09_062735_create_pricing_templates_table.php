@@ -13,7 +13,7 @@ class CreatePricingTemplatesTable extends Migration
      */
     public function up()
     {
-        if(!Schema::hasTable('pricing_templates')){
+        if (! Schema::hasTable('pricing_templates')) {
             Schema::create('pricing_templates', function (Blueprint $table) {
                 $table->increments('id');
                 $table->longText('data');

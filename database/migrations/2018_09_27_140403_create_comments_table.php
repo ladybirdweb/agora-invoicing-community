@@ -13,7 +13,7 @@ class CreateCommentsTable extends Migration
      */
     public function up()
     {
-        if(!Schema::hasTable('comments')){
+        if (! Schema::hasTable('comments')) {
             Schema::create('comments', function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('user_id')->unsigned();

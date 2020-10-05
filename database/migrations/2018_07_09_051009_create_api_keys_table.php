@@ -13,7 +13,7 @@ class CreateApiKeysTable extends Migration
      */
     public function up()
     {
-        if(!Schema::hasTable('api_keys')){
+        if (! Schema::hasTable('api_keys')) {
             Schema::create('api_keys', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('rzp_key', 255)->nullable();

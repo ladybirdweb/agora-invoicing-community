@@ -14,7 +14,7 @@ class AddFaviconTitleToSettings extends Migration
     public function up()
     {
         Schema::table('settings', function (Blueprint $table) {
-            if(!Schema::hasColumn('settings','favicon_title')){
+            if (! Schema::hasColumn('settings', 'favicon_title')) {
                 $table->string('favicon_title', 255)->nullable();
             }
         });

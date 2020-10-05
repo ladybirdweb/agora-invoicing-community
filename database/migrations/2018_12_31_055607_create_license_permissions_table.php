@@ -13,7 +13,7 @@ class CreateLicensePermissionsTable extends Migration
      */
     public function up()
     {
-        if(!Schema::hasTable('license_permissions')){
+        if (! Schema::hasTable('license_permissions')) {
             Schema::create('license_permissions', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('permissions')->nullable();

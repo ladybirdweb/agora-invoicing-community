@@ -13,7 +13,7 @@ class AddAgentsToInvoiceItems extends Migration
      */
     public function up()
     {
-        if(!Schema::hasColumn('invoice_items','agents')){
+        if (! Schema::hasColumn('invoice_items', 'agents')) {
             Schema::table('invoice_items', function (Blueprint $table) {
                 $table->string('agents')->nullable();
             });

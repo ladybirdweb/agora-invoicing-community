@@ -13,7 +13,7 @@ class CreateTemplatesTable extends Migration
      */
     public function up()
     {
-        if(!Schema::hasTable('templates')){
+        if (! Schema::hasTable('templates')) {
             Schema::create('templates', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('name');

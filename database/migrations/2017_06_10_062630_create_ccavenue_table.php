@@ -13,7 +13,7 @@ class CreateCcavenueTable extends Migration
      */
     public function up()
     {
-        if(!Schema::hasTable('ccavenue')){
+        if (! Schema::hasTable('ccavenue')) {
             Schema::create('ccavenue', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('merchant_id');

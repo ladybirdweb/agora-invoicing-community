@@ -13,7 +13,7 @@ class CreateMailchimpSettingsTable extends Migration
      */
     public function up()
     {
-        if(!Schema::hasTable('mailchimp_settings')){
+        if (! Schema::hasTable('mailchimp_settings')) {
             Schema::create('mailchimp_settings', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('api_key')->nullable();

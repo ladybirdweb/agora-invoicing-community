@@ -13,7 +13,7 @@ class AddStatusToCurrencies extends Migration
      */
     public function up()
     {
-        if(!Schema::hasColumn('currencies','status')){
+        if (! Schema::hasColumn('currencies', 'status')) {
             Schema::table('currencies', function (Blueprint $table) {
                 $table->boolean('status')->nullable();
             });

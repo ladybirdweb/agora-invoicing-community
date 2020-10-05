@@ -28,7 +28,7 @@ class CreateCurrencyTable extends Migration
      */
     public function up()
     {
-        if(!Schema::hasTable($this->table_name)) {
+        if (! Schema::hasTable($this->table_name)) {
             Schema::create($this->table_name, function (Blueprint $table) {
                 $table->increments('id')->unsigned();
                 $table->string('name');

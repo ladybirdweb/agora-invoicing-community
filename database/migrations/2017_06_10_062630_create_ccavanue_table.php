@@ -13,7 +13,7 @@ class CreateCcavanueTable extends Migration
      */
     public function up()
     {
-        if(!Schema::hasTable('ccavanue')){
+        if (! Schema::hasTable('ccavanue')) {
             Schema::create('ccavanue', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('merchant_id');

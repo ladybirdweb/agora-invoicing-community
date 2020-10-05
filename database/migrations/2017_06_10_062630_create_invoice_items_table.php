@@ -13,7 +13,7 @@ class CreateInvoiceItemsTable extends Migration
      */
     public function up()
     {
-        if(!Schema::hasTable('invoice_items')) {
+        if (! Schema::hasTable('invoice_items')) {
             Schema::create('invoice_items', function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('invoice_id')->unsigned()->index('invoice_items_invoice_id_foreign');
@@ -31,7 +31,6 @@ class CreateInvoiceItemsTable extends Migration
                 $table->timestamps();
             });
         }
-
     }
 
     /**

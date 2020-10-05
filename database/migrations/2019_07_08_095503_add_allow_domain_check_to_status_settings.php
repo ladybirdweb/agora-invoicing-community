@@ -13,7 +13,7 @@ class AddAllowDomainCheckToStatusSettings extends Migration
      */
     public function up()
     {
-        if(!Schema::hasColumn('status_settings','domain_check')){
+        if (! Schema::hasColumn('status_settings', 'domain_check')) {
             Schema::table('status_settings', function (Blueprint $table) {
                 $table->boolean('domain_check')->default(0);
             });

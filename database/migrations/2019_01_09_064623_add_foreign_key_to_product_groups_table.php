@@ -14,7 +14,7 @@ class AddForeignKeyToProductGroupsTable extends Migration
     public function up()
     {
         Schema::table('product_groups', function (Blueprint $table) {
-            if(!Schema::hasColumn('product_groups','pricing_templates_id')){
+            if (! Schema::hasColumn('product_groups', 'pricing_templates_id')) {
                 $table->unsignedInteger('pricing_templates_id');
                 $table->foreign('pricing_templates_id')->references('id')->on('pricing_templates');
             }

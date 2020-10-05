@@ -16,10 +16,10 @@ class AddForeignKeysToOrderInvoiceRelationsTable extends Migration
         Schema::table('order_invoice_relations', function (Blueprint $table) {
             $sm = Schema::getConnection()->getDoctrineSchemaManager();
             $indexesFound = $sm->listTableIndexes('order_invoice_relations');
-            if(!array_key_exists("order_invoice_relations_invoice_id_foreign", $indexesFound)){
+            if (! array_key_exists('order_invoice_relations_invoice_id_foreign', $indexesFound)) {
                 $table->foreign('invoice_id')->references('id')->on('invoices')->onUpdate('RESTRICT')->onDelete('RESTRICT');
             }
-            if(!array_key_exists("order_invoice_relations_order_id_foreign", $indexesFound)){
+            if (! array_key_exists('order_invoice_relations_order_id_foreign', $indexesFound)) {
                 $table->foreign('order_id')->references('id')->on('orders')->onUpdate('RESTRICT')->onDelete('RESTRICT');
             }
         });

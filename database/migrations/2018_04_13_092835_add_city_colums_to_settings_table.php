@@ -13,7 +13,7 @@ class AddCityColumsToSettingsTable extends Migration
      */
     public function up()
     {
-        if(!Schema::hasColumn('settings','city')) {
+        if (! Schema::hasColumn('settings', 'city')) {
             Schema::table('settings', function (Blueprint $table) {
                 $table->string('city');
             });

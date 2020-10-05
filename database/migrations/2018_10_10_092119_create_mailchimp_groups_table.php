@@ -13,7 +13,7 @@ class CreateMailchimpGroupsTable extends Migration
      */
     public function up()
     {
-        if(!Schema::hasTable('mailchimp_groups')){
+        if (! Schema::hasTable('mailchimp_groups')) {
             Schema::create('mailchimp_groups', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('category_id', 255)->nullable();

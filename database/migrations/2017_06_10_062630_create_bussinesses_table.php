@@ -13,7 +13,7 @@ class CreateBussinessesTable extends Migration
      */
     public function up()
     {
-        if(!Schema::hasTable('bussinesses')) {
+        if (! Schema::hasTable('bussinesses')) {
             Schema::create('bussinesses', function (Blueprint $table) {
                 $table->integer('id', true);
                 $table->string('name', 225)->nullable();

@@ -13,7 +13,7 @@ class CreateJobsTable extends Migration
      */
     public function up()
     {
-        if(!Schema::hasTable('jobs')){
+        if (! Schema::hasTable('jobs')) {
             Schema::create('jobs', function (Blueprint $table) {
                 $table->bigInteger('id', true)->unsigned();
                 $table->string('queue');
@@ -26,7 +26,6 @@ class CreateJobsTable extends Migration
                 $table->index(['queue', 'reserved', 'reserved_at']);
             });
         }
-
     }
 
     /**

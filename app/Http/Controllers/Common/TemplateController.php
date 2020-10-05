@@ -3,9 +3,7 @@
 namespace App\Http\Controllers\Common;
 
 use App\Http\Controllers\Product\ProductController;
-
 use App\Model\Common\Country;
-use App\Model\Common\Setting;
 use App\Model\Common\Template;
 use App\Model\Common\TemplateType;
 use App\Model\Order\Invoice;
@@ -322,11 +320,12 @@ class TemplateController extends BaseTemplateController
 
     private function getCountryAndCurrencySymbol($countryName)
     {
-        $country = Country::where('country_code_char2',$countryName)->first();
-        $currency = Currency::where('id',$country->currency_id)->first();
+        $country = Country::where('country_code_char2', $countryName)->first();
+        $currency = Currency::where('id', $country->currency_id)->first();
         $currencySymbol = $currency->symbol;
         $currencyCode = $currency->code;
-        return compact('country','currencySymbol','currencyCode');
+
+        return compact('country', 'currencySymbol', 'currencyCode');
     }
 
     public function leastAmount($id)
@@ -336,19 +335,18 @@ class TemplateController extends BaseTemplateController
             $cost = 'Free';
 
             $plans = Plan::where('product', $id)->get();
-            if(\Auth::check()) {
-                $currencyInInvoiceModel = Invoice::where('user_id',\Auth::user()->id)->first();
-                if($currencyInInvoiceModel) {
+            if (\Auth::check()) {
+                $currencyInInvoiceModel = Invoice::where('user_id', \Auth::user()->id)->first();
+                if ($currencyInInvoiceModel) {
                     $currency = $currencyInInvoiceModel->currency;
                     $countryCheck = false;
                 } else {
-                    $countryName = User::where('id',\Auth::user()->id)->first()->country;
+                    $countryName = User::where('id', \Auth::user()->id)->first()->country;
                     $countryInfo = $this->getCountryAndCurrencySymbol($countryName);
                     $country = $countryInfo['country'];
                     $currencySymbol = $countryInfo['currencySymbol'];
                     $currency = $countryInfo['currencyCode'];
                 }
-
             } else {
                 $ipLocation = \GeoIP::getLocation()['iso_code'];
                 $countryInfo = $this->getCountryAndCurrencySymbol($ipLocation);
@@ -360,13 +358,13 @@ class TemplateController extends BaseTemplateController
             if ($plans->count() > 0) {
                 foreach ($plans as $plan) {
                     $prices[] = ($countryCheck)
-                        ? $plan->planPrice()->where(function($q) use ($country){
-                            return $q->where('country_id',$country->country_id)->orWhere('country_id',0);
+                        ? $plan->planPrice()->where(function ($q) use ($country) {
+                            return $q->where('country_id', $country->country_id)->orWhere('country_id', 0);
                         })->min('add_price')
                         : $plan->planPrice()->where('currency', $currency)->min('add_price');
                 }
 
-                $format = currency_format(min($prices), $code=$currency);
+                $format = currency_format(min($prices), $code = $currency);
                 $finalPrice = str_replace($currencySymbol, '', $format);
                 $cost = '<span class="price-unit">'.$currencySymbol.'</span>'.$finalPrice;
             }
@@ -374,6 +372,7 @@ class TemplateController extends BaseTemplateController
             return $cost;
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

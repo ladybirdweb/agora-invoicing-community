@@ -13,7 +13,7 @@ class CreateProductUploadsTable extends Migration
      */
     public function up()
     {
-        if(!Schema::hasTable('product_uploads')){
+        if (! Schema::hasTable('product_uploads')) {
             Schema::create('product_uploads', function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('product_id')->unsigned();

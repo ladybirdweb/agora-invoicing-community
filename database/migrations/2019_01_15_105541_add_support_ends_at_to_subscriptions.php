@@ -13,12 +13,11 @@ class AddSupportEndsAtToSubscriptions extends Migration
      */
     public function up()
     {
-        if(!Schema::hasColumn('subscriptions','support_ends_at')){
+        if (! Schema::hasColumn('subscriptions', 'support_ends_at')) {
             Schema::table('subscriptions', function (Blueprint $table) {
                 $table->string('support_ends_at')->nullable();
             });
         }
-
     }
 
     /**

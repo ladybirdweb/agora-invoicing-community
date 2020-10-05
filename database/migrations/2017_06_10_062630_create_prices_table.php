@@ -13,7 +13,7 @@ class CreatePricesTable extends Migration
      */
     public function up()
     {
-        if(!Schema::hasTable('prices')){
+        if (! Schema::hasTable('prices')) {
             Schema::create('prices', function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('product_id')->unsigned()->index('prices_product_id_foreign');

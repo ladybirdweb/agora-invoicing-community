@@ -13,7 +13,7 @@ class CreateTaxesTable extends Migration
      */
     public function up()
     {
-        if(!Schema::hasTable('taxes')){
+        if (! Schema::hasTable('taxes')) {
             Schema::create('taxes', function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('tax_classes_id')->default(1);

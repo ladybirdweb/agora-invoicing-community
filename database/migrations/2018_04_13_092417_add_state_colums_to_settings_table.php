@@ -13,7 +13,7 @@ class AddStateColumsToSettingsTable extends Migration
      */
     public function up()
     {
-        if(!Schema::hasColumn('settings','state')){
+        if (! Schema::hasColumn('settings', 'state')) {
             Schema::table('settings', function (Blueprint $table) {
                 $table->string('state');
             });

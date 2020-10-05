@@ -13,7 +13,7 @@ class CreateInvoicesTable extends Migration
      */
     public function up()
     {
-        if(!Schema::hasTable('invoices')) {
+        if (! Schema::hasTable('invoices')) {
             Schema::create('invoices', function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('user_id')->unsigned()->index('invoices_user_id_foreign');

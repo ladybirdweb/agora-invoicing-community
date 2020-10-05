@@ -13,7 +13,7 @@ class CreateGroupFeaturesTable extends Migration
      */
     public function up()
     {
-        if(!Schema::hasTable('group_features')){
+        if (! Schema::hasTable('group_features')) {
             Schema::create('group_features', function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('group_id')->unsigned()->index('group_features_group_id_foreign');
@@ -21,7 +21,6 @@ class CreateGroupFeaturesTable extends Migration
                 $table->timestamps();
             });
         }
-
     }
 
     /**

@@ -13,12 +13,11 @@ class AddFaviconTitleClientToSettings extends Migration
      */
     public function up()
     {
-        if(!Schema::hasColumn('settings','favicon_title_client')){
+        if (! Schema::hasColumn('settings', 'favicon_title_client')) {
             Schema::table('settings', function (Blueprint $table) {
                 $table->string('favicon_title_client', 255)->nullable();
             });
         }
-
     }
 
     /**

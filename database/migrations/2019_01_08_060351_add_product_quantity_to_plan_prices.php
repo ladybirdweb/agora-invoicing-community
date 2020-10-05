@@ -14,13 +14,15 @@ class AddProductQuantityToPlanPrices extends Migration
     public function up()
     {
         Schema::table('plan_prices', function (Blueprint $table) {
-
-            if(!Schema::hasColumn('plan_prices','price_description'))
+            if (! Schema::hasColumn('plan_prices', 'price_description')) {
                 $table->string('price_description', 225)->nullable();
-            if(!Schema::hasColumn('plan_prices','product_quantity'))
+            }
+            if (! Schema::hasColumn('plan_prices', 'product_quantity')) {
                 $table->string('product_quantity')->nullable();
-            if(!Schema::hasColumn('plan_prices','no_of_agents'))
+            }
+            if (! Schema::hasColumn('plan_prices', 'no_of_agents')) {
                 $table->string('no_of_agents')->nullable();
+            }
         });
     }
 

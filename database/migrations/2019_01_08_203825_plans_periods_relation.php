@@ -13,7 +13,7 @@ class PlansPeriodsRelation extends Migration
      */
     public function up()
     {
-        if(!Schema::hasTable('plans_periods_relation')){
+        if (! Schema::hasTable('plans_periods_relation')) {
             Schema::create('plans_periods_relation', function (Blueprint $table) {
                 $table->increments('id');
                 $table->unsignedInteger('plan_id');

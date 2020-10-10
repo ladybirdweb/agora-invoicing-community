@@ -82,15 +82,15 @@ class BaseRenewController extends Controller
             $planid = $request->input('plan');
             $userid = $request->input('user');
             $plan = Plan::find($planid);
-            $planDetails = userCurrencyAndPrice($userid,$plan);
+            $planDetails = userCurrencyAndPrice($userid, $plan);
             $price = $planDetails['plan']->renew_price;
+
             return $price;
         } catch (Exception $ex) {
             throw new \Exception($ex->getMessage());
         }
     }
 
-   
     public function generateInvoice($product, $user, $orderid, $planid, $cost, $code = '', $agents = '', $currency)
     {
         try {

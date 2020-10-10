@@ -13,11 +13,11 @@ class AddGstinToUsers extends Migration
      */
     public function up()
     {
-        if(!Schema::hasColumn('users','gstin')) {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('gstin')->nullable();
-        });
-    }
+        if (! Schema::hasColumn('users', 'gstin')) {
+            Schema::table('users', function (Blueprint $table) {
+                $table->string('gstin')->nullable();
+            });
+        }
     }
 
     /**

@@ -9,10 +9,10 @@ use App\Model\Github\Github;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
 use App\Model\Order\Payment;
+use App\Model\Payment\Currency;
 use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
 use App\Model\Product\Subscription;
-use App\Model\Payment\Currency;
 use App\User;
 use Bugsnag;
 use Exception;
@@ -74,7 +74,7 @@ class ClientController extends BaseClientController
     {
         try {
             $invoices = Invoice::leftJoin('order_invoice_relations', 'invoices.id', '=', 'order_invoice_relations.invoice_id')
-            ->select('invoices.id', 'invoices.user_id', 'invoices.date', 'invoices.number', 'invoices.grand_total', 'order_invoice_relations.order_id', 'invoices.is_renewed', 'invoices.status','invoices.currency')
+            ->select('invoices.id', 'invoices.user_id', 'invoices.date', 'invoices.number', 'invoices.grand_total', 'order_invoice_relations.order_id', 'invoices.is_renewed', 'invoices.status', 'invoices.currency')
             ->groupBy('invoices.number')
             ->where('invoices.user_id', '=', \Auth::user()->id)
             ->orderBy('invoices.created_at', 'desc')
@@ -115,6 +115,7 @@ class ClientController extends BaseClientController
                                 for ($i = 0; $i <= $c - 1; $i++) {
                                     $sum = $sum + $payment[$i]->amount;
                                 }
+
                                 return currencyFormat($sum, $code = $model->currency);
                             })
                              ->addColumn('balance', function ($model) {
@@ -164,7 +165,7 @@ class ClientController extends BaseClientController
             $items = $invoice->invoiceItem()->get();
             $order = $this->order->getOrderLink($invoice->orderRelation()->value('order_id'), 'my-order');
             $currency = getCurrencyForClient($user->country);
-            $symbol = Currency::where('code',$currency)->value('symbol');
+            $symbol = Currency::where('code', $currency)->value('symbol');
 
             return view('themes.default1.front.clients.show-invoice', compact('invoice', 'items', 'user', 'currency', 'symbol', 'order'));
         } catch (Exception $ex) {

@@ -228,7 +228,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $invoiceItems = $invoice->invoiceItem()->get();
             $user = $this->user->find($invoice->user_id);
             $order = Order::getOrderLink($invoice->order_id, 'orders');
-            $symbol = Currency::where('code',$currency)->value('symbol');
+            $symbol = Currency::where('code', $currency)->value('symbol');
 
             return view('themes.default1.invoice.show', compact('invoiceItems', 'invoice', 'user', 'currency', 'symbol', 'order'));
         } catch (\Exception $ex) {
@@ -385,7 +385,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 $domain = $request->input('domain');
                 $this->setDomain($productid, $domain);
             }
-            $planObj = Plan::where('id',$plan)->first();
+            $planObj = Plan::where('id', $plan)->first();
             $userCurrency = userCurrencyAndPrice($user_id, $planObj);
             $currency = $userCurrency['currency'];
             $number = rand(11111111, 99999999);

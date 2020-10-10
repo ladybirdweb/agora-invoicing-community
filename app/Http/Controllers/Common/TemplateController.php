@@ -2,17 +2,11 @@
 
 namespace App\Http\Controllers\Common;
 
-use App\Http\Controllers\Product\ProductController;
-use App\Model\Common\Country;
-
 use App\Http\Controllers\Controller;
-use App\Model\Common\Setting;
+use App\Http\Controllers\Product\ProductController;
 use App\Model\Common\Template;
 use App\Model\Common\TemplateType;
-use App\Model\Order\Invoice;
-use App\Model\Payment\Currency;
 use App\Model\Payment\Plan;
-use App\User;
 use Bugsnag;
 use Illuminate\Http\Request;
 
@@ -31,7 +25,6 @@ class TemplateController extends Controller
 
         $type = new TemplateType();
         $this->type = $type;
-
     }
 
     public function index()
@@ -196,32 +189,28 @@ class TemplateController extends Controller
         }
     }
 
-
-
     public function plans($url, $id)
     {
         try {
-        $plan = new Plan();
-        $plan_form = 'Free'; //No Subscription
-        $plans = $plan->where('product', '=', $id)->pluck('name', 'id')->toArray();
-        $plans = $this->prices($id);
-        if ($plans) {
-            $plan_form = \Form::select('subscription', ['Plans' => $plans], null);
-        }
-        $form = \Form::open(['method' => 'get', 'url' => $url]).
+            $plan = new Plan();
+            $plan_form = 'Free'; //No Subscription
+            $plans = $plan->where('product', '=', $id)->pluck('name', 'id')->toArray();
+            $plans = $this->prices($id);
+            if ($plans) {
+                $plan_form = \Form::select('subscription', ['Plans' => $plans], null);
+            }
+            $form = \Form::open(['method' => 'get', 'url' => $url]).
         $plan_form.
         \Form::hidden('id', $id);
 
-        return $form;
+            return $form;
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
-       
     }
 
-
     /**
-     * Gets the least amount to be displayed on pricing page on the top
+     * Gets the least amount to be displayed on pricing page on the top.
      * @param  int $id    Product id
      * @return string     Product price with html
      */
@@ -239,12 +228,12 @@ class TemplateController extends Controller
                     $prices[] = $planDetails['plan']->add_price;
                     $prices[] .= $planDetails['symbol'];
                     $prices[] .= $planDetails['currency'];
-                   
                 }
-                $format = currencyFormat(min([$prices[0]]), $code=$prices[2]);
+                $format = currencyFormat(min([$prices[0]]), $code = $prices[2]);
                 $finalPrice = str_replace($prices[1], '', $format);
                 $cost = '<span class="price-unit">'.$prices[1].'</span>'.$finalPrice;
             }
+
             return $cost;
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
@@ -261,14 +250,13 @@ class TemplateController extends Controller
         return $price;
     }
 
-
     public function prices($id)
-    {   
+    {
         try {
             $plans = Plan::where('product', $id)->orderBy('id', 'desc')->get();
             $price = [];
             foreach ($plans as $value) {
-                $currencyAndSymbol = userCurrencyAndPrice('',$value);
+                $currencyAndSymbol = userCurrencyAndPrice('', $value);
                 $currency = $currencyAndSymbol['currency'];
                 $symbol = $currencyAndSymbol['symbol'];
                 $cost = $currencyAndSymbol['plan']->add_price;
@@ -279,6 +267,7 @@ class TemplateController extends Controller
                 $price = $this->getPrice($months, $price, $priceDescription, $value, $cost, $currency);
                 // $price = currencyFormat($cost, $code = $currency);
             }
+
             return $price;
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());

@@ -138,7 +138,7 @@ class CheckoutController extends InfoController
             if (count($content) > 0) {//after ProductPurchase this is not true as cart is cleared
                 foreach ($content as $item) {
                     $cart_currency = $item->attributes->currency; //Get the currency of Product in the cart
-                    \Session::put('cart_currency',$cart_currency);
+                    \Session::put('cart_currency', $cart_currency);
                     $currency = getCurrencyForClient(\Auth::user()->country) != $cart_currency ? getCurrencyForClient(\Auth::user()->country) : $cart_currency; //If User Currency and cart currency are different the currency es set to user currency.
                     if ($cart_currency != $currency) {
                         $id = $item->id;

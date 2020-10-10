@@ -172,7 +172,7 @@ Edit User
                         {!! Form::label('country',Lang::get('message.country'),['class'=>'required']) !!}
                         <?php $countries = \App\Model\Common\Country::pluck('nicename', 'country_code_char2')->toArray(); ?>
 
-                        {!! Form::select('country',[Lang::get('message.choose')=>$countries],null,['class' => 'form-control select2','id'=>'country','onChange'=>'getCountryAttr(this.value)','data-live-search'=>'true','required','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false','data-size'=>'10']) !!}
+                        {!! Form::select('country',[Lang::get('message.choose')=>$countries],null,['class' => 'form-control select2','id'=>'country','onChange'=>'getCountryAttr(this.value)','data-live-search'=>'true','required','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false','data-size'=>'10','disabled'=>'disabled']) !!}
 
                     </div>
                     <div class="col-md-3 form-group {{ $errors->has('state') ? 'has-error' : '' }}">
@@ -208,25 +208,7 @@ Edit User
                          {!! Form::select('timezone_id', ['Timezones'=>$timezones],null,['class' => 'form-control chosen-select select2','data-live-search'=>'true','required','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false']) !!}
 
                     </div>
-                    <?php 
-                   $currencies = DB::table('currencies')->where('status',1)->pluck('name','code')->toArray() ; 
-                    ?>
-                    <div class="col-md-3 form-group {{ $errors->has('currency') ? 'has-error' : '' }}">
-                        <!-- mobile -->
-                        {!! Form::label('currency',Lang::get('message.currency'),['class'=>'required']) !!}
-
-                         {!! Form::select('currency', ['Currencies'=>$currencies],null,['class' => 'form-control chosen-select select2','data-live-search'=>'true','required','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false']) !!}
-                        <!--  <select name="currency" id="plan" class="form-control" onchange="myFunction()">
-                            <option value="">Choose</option>
-                         @foreach($currencies as $key=>$currency)
-
-                                   <option value="{{$key}}" {{ old($currency) == 1 ? 'selected' : '' }}>
-                                   <?php  if(in_array($currency, $selectedCurrency) ) { echo "selected";} ?>{{$currency}}</option>
-                           
-                             @endforeach
-                              </select> -->
-
-                    </div>
+                    
                        <div class="col-md-3 form-group {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
                   {!! Form::label('mobile',null,['class' => 'required'],Lang::get('message.mobile'),['class'=>'required']) !!}
                      {!! Form::hidden('mobile_code',null,['id'=>'mobile_code_hidden']) !!}

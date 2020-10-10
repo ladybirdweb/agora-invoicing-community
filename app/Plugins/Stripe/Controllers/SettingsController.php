@@ -5,6 +5,7 @@ namespace App\Plugins\Stripe\Controllers;
 use App\ApiKey;
 use App\Http\Controllers\Controller;
 use App\Model\Common\Setting;
+use App\Model\Payment\Currency;
 use App\Plugins\Stripe\Model\StripePayment;
 use Cartalyst\Stripe\Laravel\Facades\Stripe;
 use Illuminate\Http\Request;
@@ -157,7 +158,7 @@ class SettingsController extends Controller
                 ],
             ]);
             $stripeCustomerId = $customer['id'];
-            $currency = strtolower(\Auth::user()->currency);
+            $currency = strtolower($invoice->currency);
             $card = $stripe->cards()->create($stripeCustomerId, $token['id']);
             $charge = $stripe->charges()->create([
                 'customer' => $customer['id'],
@@ -170,7 +171,7 @@ class SettingsController extends Controller
                 $stateCode = \Auth::user()->state;
                 $cont = new \App\Http\Controllers\RazorpayController();
                 $state = $cont->getState($stateCode);
-                $currency = $cont->getCurrency();
+                $currency = Currency::where('code',$currency)->pluck('symbol')->first();;
 
                 $control = new \App\Http\Controllers\Order\RenewController();
                 //After Regular Payment
@@ -198,19 +199,20 @@ class SettingsController extends Controller
                 \Session::forget('codevalue');
                 \Session::forget('totalToBePaid');
                 \Session::forget('invoice');
+                \Session::forget('cart_currency');
                 \Cart::removeCartCondition('Processing fee');
 
                 return redirect('checkout')->with($status, $message);
             } else {
                 return redirect('checkout')->with('fails', 'Your Payment was declined. Please try making payment with other gateway');
             }
-        } catch (\Cartalyst\Stripe\Exception\ApiLimitExceededException | \Cartalyst\Stripe\Exception\BadRequestException | \Cartalyst\Stripe\Exception\MissingParameterException | \Cartalyst\Stripe\Exception\NotFoundException | \Cartalyst\Stripe\Exception\ServerErrorException | \Cartalyst\Stripe\Exception\StripeException | \Cartalyst\Stripe\Exception\UnauthorizedException $e) {
+        } catch (\Cartalyst\Stripe\Exception\ApiLimitExceededException | \Cartalyst\Stripe\Exception\BadRequestException | \Cartalyst\Stripe\Exception\MissingParameterException | \Cartalyst\Stripe\Exception\NotFoundException | \Cartalyst\Stripe\Exception\ServerErrorException | \Cartalyst\Stripe\Exception\StripeException | \Cartalyst\Stripe\Exception\UnauthorizedException $e) {dd($e);
             if (emailSendingStatus()) {
                 $this->sendFailedPaymenttoAdmin($amount, $e->getMessage());
             }
 
             return redirect('checkout')->with('fails', 'Your Payment was declined. '.$e->getMessage().'. Please try again or try the other gateway');
-        } catch (\Cartalyst\Stripe\Exception\CardErrorException $e) {
+        } catch (\Cartalyst\Stripe\Exception\CardErrorException $e) {dd($e);
             if (emailSendingStatus()) {
                 $this->sendFailedPaymenttoAdmin($request['amount'], $e->getMessage());
             }
@@ -218,7 +220,7 @@ class SettingsController extends Controller
             \Session::put('error', $e->getMessage());
 
             return redirect()->route('checkout');
-        } catch (\Exception $e) {
+        } catch (\Exception $e) {dd($e);
             return redirect('checkout')->with('fails', 'Your payment was declined. '.$e->getMessage().'. Please try again or try the other gateway.');
         }
     }

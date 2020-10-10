@@ -145,7 +145,8 @@ class PlanController extends ExtendedPlanController
      */
     public function store(PlanRequest $request)
     {
-        $add_prices = $request->add_price;
+        try {
+            $add_prices = $request->add_price;
         $renew_prices = $request->renew_price;
         $this->plan->fill($request->input())->save();
         if ($request->input('days') != '') {
@@ -171,6 +172,10 @@ class PlanController extends ExtendedPlanController
         }
 
         return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
+        } catch(Exception $ex) {
+            return redirect()->back()->withj('fails', $ex->getMessage());
+        }
+        
     }
 
     /**

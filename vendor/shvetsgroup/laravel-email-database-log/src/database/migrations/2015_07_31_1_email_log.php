@@ -12,6 +12,7 @@ class EmailLog extends Migration
      */
     public function up()
     {
+        if(!Schema::hasTable('email_log')) {
         Schema::create('email_log', function (Blueprint $table) {
             $table->increments('id');
             $table->dateTime('date');
@@ -24,6 +25,7 @@ class EmailLog extends Migration
             $table->text('headers')->nullable();
             $table->text('attachments')->nullable();
         });
+        }
     }
 
     /**

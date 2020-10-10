@@ -60,9 +60,6 @@ class RegisterController extends Controller
             $user->state = $state['id'];
             $password = \Hash::make($request->input('password'));
             $user->country = $request->input('country');
-            $userCountry = Country::where('country_code_char2', $request->input('country'))->first();
-            $user->currency = $this->getUserCurrency($userCountry);
-            $user->currency_symbol = $this->getUserCurrencySymbol($userCountry);
             $user->password = $password;
             $user->town = $location['city'];
             $user->profile_pic = '';

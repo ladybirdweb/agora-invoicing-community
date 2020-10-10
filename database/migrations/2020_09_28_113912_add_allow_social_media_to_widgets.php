@@ -13,9 +13,11 @@ class AddAllowSocialMediaToWidgets extends Migration
      */
     public function up()
     {
+        if(!Schema::hasColumn('widgets','allow_social_media')) {
         Schema::table('widgets', function (Blueprint $table) {
             $table->boolean('allow_social_media')->default(0);
         });
+        }
     }
 
     /**

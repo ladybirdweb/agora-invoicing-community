@@ -272,7 +272,7 @@ class BaseProductController extends ExtendedBaseProductController
             $userid = $request->input('user');
             $plan = $request->input('plan');
             $controller = new \App\Http\Controllers\Front\CartController();
-            $price = $controller->cost($id, $userid, $plan);
+            $price = $controller->cost($id, $plan, $userid);
             $field = $this->getProductField($id);
             $quantity = $this->getProductQtyCheck($id, $plan);
             $agents = $this->getAgentQtyCheck($id, $plan);

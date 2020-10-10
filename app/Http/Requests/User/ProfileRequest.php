@@ -34,7 +34,6 @@ class ProfileRequest extends Request
                 'mobile'                 => 'required',
                 'address'                => 'required',
                 'user_name'              => 'unique:users,user_name,'.$userid,
-                'country'                => 'required|exists:countries,country_code_char2',
                 'state'                  => 'required_if:country,IN',
                 'timezone_id'            => 'required',
                 'profile_pic'            => 'sometimes|mimes:jpeg,jpg,png,gif|max:100000',

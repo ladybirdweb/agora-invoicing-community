@@ -10,9 +10,9 @@ class AdminOrderInvoiceController extends Controller
 {
     public function getClientInvoice($id)
     {
-        $client = $this->user->where('id', $id)->select('currency')->first();
+        $client = $this->user->where('id', $id)->first();
         $invoices = Invoice::leftJoin('order_invoice_relations', 'invoices.id', '=', 'order_invoice_relations.invoice_id')
-        ->select('invoices.id', 'invoices.user_id', 'invoices.date', 'invoices.number', 'invoices.grand_total', 'order_invoice_relations.order_id', 'invoices.is_renewed', 'invoices.status')
+        ->select('invoices.id', 'invoices.user_id', 'invoices.date', 'invoices.number', 'invoices.grand_total', 'order_invoice_relations.order_id', 'invoices.is_renewed', 'invoices.status', 'invoices.currency')
         ->groupBy('invoices.number')
         ->where('invoices.user_id', '=', $id)
         ->orderBy('invoices.created_at', 'desc')
@@ -47,10 +47,10 @@ class AdminOrderInvoiceController extends Controller
                                  return $orderArray;
                              }
                          })
-                        ->addColumn('total', function ($model) use ($client) {
-                            return currencyFormat($model->grand_total, $code = $client->currency);
+                        ->addColumn('total', function ($model)  {
+                            return currencyFormat($model->grand_total, $code = $model->currency);
                         })
-                         ->addColumn('paid', function ($model) use ($client) {
+                         ->addColumn('paid', function ($model) {
                              $payment = \App\Model\Order\Payment::where('invoice_id', $model->id)->select('amount')->get();
                              $c = count($payment);
                              $sum = 0;
@@ -59,9 +59,9 @@ class AdminOrderInvoiceController extends Controller
                                  $sum = $sum + $payment[$i]->amount;
                              }
 
-                             return currencyFormat($sum, $code = $client->currency);
+                             return currencyFormat($sum, $code = $model->currency);
                          })
-                         ->addColumn('balance', function ($model) use ($client) {
+                         ->addColumn('balance', function ($model)  {
                              $payment = \App\Model\Order\Payment::where('invoice_id', $model->id)->select('amount')->get();
                              $c = count($payment);
                              $sum = 0;
@@ -71,7 +71,7 @@ class AdminOrderInvoiceController extends Controller
                              }
                              $pendingAmount = ($model->grand_total) - ($sum);
 
-                             return currencyFormat($pendingAmount, $code = $client->currency);
+                             return currencyFormat($pendingAmount, $code = $model->currency);
                          })
                           ->addColumn('status', function ($model) {
                               return getStatusLabel($model->status);
@@ -108,7 +108,6 @@ class AdminOrderInvoiceController extends Controller
                 'orders.id', 'orders.created_at', 'price_override', 'order_status', 'product', 'number', 'serial_key',
                 'subscriptions.update_ends_at as subscription_ends_at', 'subscriptions.id as subscription_id', 'subscriptions.version as product_version', 'subscriptions.updated_at as subscription_updated_at', 'subscriptions.created_at as subscription_created_at',
                 'products.name as product_name', \DB::raw("concat(first_name, ' ', last_name) as client_name"), 'client as client_id',
-                'users.currency'
             );
 
         return\ DataTables::of($order)
@@ -173,12 +172,14 @@ class AdminOrderInvoiceController extends Controller
                         ->addColumn('payment_method', function ($model) {
                             return $model->payment_method;
                         })
-
+                        
                          ->addColumn('total', function ($model) use ($client, $extraAmt) {
+                            
                              if ($model->invoice_id == 0) {
-                                 $amount = currencyFormat($extraAmt, $code = $client->currency);
+                                 $amount = currencyFormat($extraAmt, $code = getCurrencyForClient($client->country));
                              } else {
-                                 $amount = currencyFormat($model->amount, $code = $client->currency);
+                                $currency = Invoice::find($model->invoice_id)->currency;
+                                 $amount = currencyFormat($model->amount, $code = $currency);
                              }
 
                              return $amount;

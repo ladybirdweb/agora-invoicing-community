@@ -25,7 +25,7 @@ active
         @php
             $set = App\Model\Common\Setting::where('id', '1')->first();
              $date = getDateHtml($invoice->date);
-            $symbol = Auth::user()->currency;
+            $symbol = $invoice->currency;
             $itemsSubtotal = 0;
             $taxAmt = 0;
         @endphp

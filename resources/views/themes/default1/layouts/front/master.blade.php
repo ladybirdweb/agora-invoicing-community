@@ -227,15 +227,15 @@ if($script){
                                                                         <tbody>
 
                                                                         @forelse(Cart::getContent() as $key=>$item)
-
+                                                                        
                                                                             <?php
+                                                                            // dd($item);
                                                                             $product = App\Model\Product\Product::where('id', $item->id)->first();
                                                                             if ($product->require_domain == 1) {
                                                                                 $domain[$key] = $item->id;
                                                                             }
                                                                            
-                                                                            $currency = userCurrency();
-                                                                            $currency =  $currency['currency'];
+                                                                          $currency =  $item->attributes['currency'];
                                                                           ?>
                                                                             <tr>
 

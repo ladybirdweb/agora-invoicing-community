@@ -56,7 +56,7 @@ User
             <div class="row">
                 <div class="col-sm-4 border-right">
                     <div class="description-block">
-                        <h5 class="description-header">{{currency_format($invoiceSum,$code=$client->currency)}}</h5>
+                        <h5 class="description-header">{{currency_format($invoiceSum,$code=$currency)}}</h5>
                         <span class="description-text">INVOICE TOTAL</span>
                     </div>
                     <!-- /.description-block -->
@@ -64,7 +64,7 @@ User
                 <!-- /.col -->
                 <div class="col-sm-4 border-right">
                     <div class="description-block">
-                        <h5 class="description-header">{{currency_format($amountReceived,$code=$client->currency)}}</h5>
+                        <h5 class="description-header">{{currency_format($amountReceived,$code=$currency)}}</h5>
                         <span class="description-text">PAID</span>
                     </div>
                     <!-- /.description-block -->
@@ -76,7 +76,7 @@ User
                         @else
                          <div class="description-block">
                             @endif
-                        <h5 class="description-header" >{{currency_format($pendingAmount,$code=$client->currency)}}</h5>
+                        <h5 class="description-header" >{{currency_format($pendingAmount,$code=$currency)}}</h5>
                         <span class="description-text">BALANCE</span>
                     </div>
                     <!-- /.description-block -->

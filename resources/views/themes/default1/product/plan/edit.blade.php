@@ -3,57 +3,25 @@
   Edit Plan
 @stop
 @section('content-header')
-
-  <h1>
-    Edit Plan
-  </h1>
-  <ol class="breadcrumb">
-    <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-    <li><a href="{{url('plans')}}">All Plans</a></li>
-    <li class="active">Edit Plan</li>
-  </ol>
+  <div class="col-sm-6">
+        <h1>Edit Plan</h1>
+    </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="breadcrumb-item"><a href="{{url('plans')}}"><i class="fa fa-dashboard"></i> All Plans</a></li>
+            <li class="breadcrumb-item active">Edit Plan</li>
+        </ol>
+    </div><!-- /.col -->
 @stop
 @section('content')
-  <div class="box box-primary">
+  <div class="card card-secondary card-outline">
 
-    <div class="box-header with-border">
-      <h2 class="box-title">{{Lang::get('message.plan')}}</h2>
-    </div>
+  
 
-    <div class="content-header">
-      @if (count($errors) > 0)
-        <div class="alert alert-danger">
-          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-          <strong>Whoops!</strong> There were some problems with your input.<br><br>
-          <ul>
-            @foreach ($errors->all() as $error)
-              <li>{{ $error }}</li>
-            @endforeach
-          </ul>
-        </div>
-      @endif
-
-      @if(Session::has('success'))
-        <div class="alert alert-success alert-dismissable">
-          <i class="fa fa-check"></i>
-          <b>{{Lang::get('message.success')}}!</b>
-          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-          {{Session::get('success')}}
-        </div>
-      @endif
-    <!-- fail message -->
-      @if(Session::has('fails'))
-        <div class="alert alert-danger alert-dismissable">
-          <i class="fa fa-ban"></i>
-          <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.failed')}}.
-          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-          {{Session::get('fails')}}
-        </div>
-      @endif
-
-    </div>
+    
     {!! Form::model($plan,['url'=>'plans/'.$plan->id,'method'=>'patch']) !!}
-    <div class="box-body">
+    <div class="card-body">
 
 
       <div class="row">
@@ -102,10 +70,10 @@
                 <table class="table table-responsive table-bordered table-hover" id="dynamic_table">
                   <thead>
                     <tr>
-                      <th class="col-sm-3">{{ Lang::get('message.country') }} <span class="text-red">*</span> </th>
-                      <th class="col-sm-3">{{ Lang::get('message.currency') }} <span class="text-red">*</span> </th>
-                      <th class="col-sm-3">{{ Lang::get('message.regular-price') }} <span class="text-red">*</span> </th>
-                      <th class="col-sm-3">
+                      <th class="col-sm-3" style="width:35%">{{ Lang::get('message.country') }} <span class="text-red">*</span> </th>
+                      <th class="col-sm-3" style="width:25%">{{ Lang::get('message.currency') }} <span class="text-red">*</span> </th>
+                      <th class="col-sm-3" style="width:25%">{{ Lang::get('message.regular-price') }} <span class="text-red">*</span> </th>
+                      <th class="col-sm-3" style="width:25%">
                         {{ Lang::get('message.renew-price') }} <span class="text-red">*</span>
                       </th>
                     </tr>
@@ -150,9 +118,9 @@
 
                         <td>
                           <div class="{{ ($row['country_id'] != 0) ? 'input-group' : '' }}">
-                            <input type="text" class="form-control" name="renew_price[{{ $row['id'] }}]" value="{{ $row['renew_price'] }}">
+                            <input type="text" class="form-control" name="renew_price[{{ $row['id'] }}]" value="{{ $row['renew_price'] }}"> &nbsp;&nbsp;
                             @if($row['country_id'] != 0)
-                              <span class="input-group-addon btn_remove" id="{{$loop->iteration}}"><i class="fa fa-minus"></i></span>
+                              <span class="input-group-text btn_remove" id="{{$loop->iteration}}"><i class="fa fa-minus"></i></span>
                             @endif
                           </div>
                         </td>
@@ -196,13 +164,14 @@
 
 
       </div>
+      <div class="box-footer">
+      <button type="submit" class="btn btn-primary pull-left"><i class="fas fa-sync-alt">&nbsp;</i>{!!Lang::get('message.update')!!}</button>
 
     </div>
 
-    <div class="box-footer">
-      <button type="submit" class="btn btn-primary pull-left"><i class="fa fa-refresh">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button>
-
     </div>
+
+    
 
   </div>
 
@@ -211,6 +180,15 @@
   {!! Form::close() !!}
 
   <script>
+     $('ul.nav-sidebar a').filter(function() {
+        return this.id == 'plan';
+    }).addClass('active');
+
+    // for treeview
+    $('ul.nav-treeview a').filter(function() {
+        return this.id == 'plan';
+    }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
+
 
     $( document ).ready(function() {
       var product = document.getElementById('planproduct').value;
@@ -269,8 +247,8 @@
 
           <td>
             <div class="input-group">
-              <input type="text" class="form-control" name="renew_price[]">
-              <span id="` + i + `" class="input-group-addon btn_remove"><i class="fa fa-minus"></i></span>
+              <input type="text" class="form-control" name="renew_price[]">&nbsp;&nbsp;
+              <span id="` + i + `" class="input-group-text btn_remove"><i class="fa fa-minus"></i></span>
             </div>
           </td>
 

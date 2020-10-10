@@ -13,9 +13,11 @@ class AddZipToSettings extends Migration
      */
     public function up()
     {
+        if(!Schema::hasColumn('settings','zip')) {
         Schema::table('settings', function (Blueprint $table) {
             $table->string('zip')->nullable();
         });
+    }
     }
 
     /**

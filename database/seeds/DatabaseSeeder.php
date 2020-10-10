@@ -105,6 +105,7 @@ class DatabaseSeeder extends Seeder
         $this->call(TaxByStatesSeeder::class);
         $this->call(TimezoneSeeder::class);
         $this->call(QueueServiceSeeder::class);
+        $this->call(PlanPriceSeeder::class);
 
         // \DB::unprepared(file_get_contents(storage_path('agora.sql')));
         // \DB::unprepared(file_get_contents(storage_path('states.sql')));

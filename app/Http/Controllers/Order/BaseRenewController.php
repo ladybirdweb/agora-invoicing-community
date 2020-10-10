@@ -14,13 +14,13 @@ use Illuminate\Http\Request;
 
 class BaseRenewController extends Controller
 {
-    public function invoiceBySubscriptionId($id, $planid, $cost)
+    public function invoiceBySubscriptionId($id, $planid, $cost, $currency)
     {
         try {
             $sub = Subscription::find($id);
             $order_id = $sub->order_id;
 
-            return $this->getInvoiceByOrderId($order_id, $planid, $cost);
+            return $this->getInvoiceByOrderId($order_id, $planid, $cost, $currency);
         } catch (Exception $ex) {
             throw new Exception($ex->getMessage());
         }
@@ -32,8 +32,9 @@ class BaseRenewController extends Controller
      * @param int $orderid The Order ID
      * @param int $planid  The Plan Id related t the Subscription
      * @param int $cost    The Renew cost for for the Paln
+     * @param string $currency    Currency of ther plan
      */
-    public function getInvoiceByOrderId(int $orderid, int $planid, $cost)
+    public function getInvoiceByOrderId(int $orderid, int $planid, $cost, $currency)
     {
         try {
             $order = Order::find($orderid);
@@ -53,7 +54,7 @@ class BaseRenewController extends Controller
                 throw new Exception('Product has removed from database');
             }
 
-            return $this->generateInvoice($product, $user, $orderid, $planid, $cost, $code = '', $item->agents);
+            return $this->generateInvoice($product, $user, $orderid, $planid, $cost, $code = '', $item->agents, $currency);
         } catch (Exception $ex) {
             throw new Exception($ex->getMessage());
         }
@@ -80,31 +81,20 @@ class BaseRenewController extends Controller
         try {
             $planid = $request->input('plan');
             $userid = $request->input('user');
-
-            return $this->planCost($planid, $userid);
-        } catch (Exception $ex) {
-            throw new \Exception($ex->getMessage());
-        }
-    }
-
-    public function planCost($planid, $userid)
-    {
-        try {
-            $currency = $this->getUserCurrencyById($userid);
             $plan = Plan::find($planid);
-            $price = $plan->planPrice()->where('currency', $currency)->first()->renew_price;
-
+            $planDetails = userCurrencyAndPrice($userid,$plan);
+            $price = $planDetails['plan']->renew_price;
             return $price;
         } catch (Exception $ex) {
             throw new \Exception($ex->getMessage());
         }
     }
 
-    public function generateInvoice($product, $user, $orderid, $planid, $cost, $code = '', $agents = '')
+   
+    public function generateInvoice($product, $user, $orderid, $planid, $cost, $code = '', $agents = '', $currency)
     {
         try {
             $controller = new InvoiceController();
-            $currency = $user->currency;
             if ($code != '') {
                 $product_cost = $controller->checkCode($code, $product->id, $currency);
             }
@@ -114,7 +104,6 @@ class BaseRenewController extends Controller
             $tax_name = $tax->getName();
             $tax_rate = $tax->getValue();
             $cost = rounding($controller->calculateTotal($tax_rate, $cost));
-            $currency = $this->getUserCurrencyById($user->id);
             $number = rand(11111111, 99999999);
             $date = \Carbon\Carbon::now();
             $invoice = Invoice::create([

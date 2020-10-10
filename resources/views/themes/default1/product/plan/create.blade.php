@@ -1,12 +1,10 @@
 <div class="modal fade" id="create-plan-option" style="overflow-y: auto !important">
   <div class="modal-dialog">
-    <div class="modal-content">
+    <div class="modal-content" style="width:700px;">
 
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-            aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Create Plans</h4>
-      </div>
+      <h4 class="modal-title">Create Plans</h4>
+    </div>
       <div class="modal-body">
 
 
@@ -57,8 +55,8 @@
                       @foreach($periods as $key=>$period)
                         <option value={{ $key }}>{{ $period }}</option>
                       @endforeach
-                    </select>
-                    <span class="input-group-addon" id="period"><i class="fa fa-plus"></i></span>
+                    </select>&nbsp;
+                    <span class="input-group-text" id="period"><i class="fa fa-plus"></i></span>
                   </div>
                   <h6 id="dayscheck"></h6>
 
@@ -69,10 +67,10 @@
                   <table class="table table-responsive table-bordered table-hover" id="dynamic_table">
                     <thead>
                     <tr>
-                      <th class="col-sm-3">{{ Lang::get('message.country') }} <span class="text-red">*</span></th>
-                      <th class="col-sm-3">{{ Lang::get('message.currency') }} <span class="text-red">*</span></th>
-                      <th class="col-sm-3">{{ Lang::get('message.regular-price') }} <span class="text-red">*</span></th>
-                      <th class="col-sm-3">
+                      <th class="col-sm-3" style="width:25%">{{ Lang::get('message.country') }} <span class="text-red">*</span></th>
+                      <th class="col-sm-3" style="width:20%">{{ Lang::get('message.currency') }} <span class="text-red">*</span></th>
+                      <th class="col-sm-3" style="width:20%">{{ Lang::get('message.regular-price') }} <span class="text-red">*</span></th>
+                      <th class="col-sm-3" style="width:20%">
                         {{ Lang::get('message.renew-price') }} <span class="text-red">*</span>
                       </th>
                     </tr>
@@ -120,8 +118,7 @@
                 <div class="col-md-12 form-group">
                   <!-- last name -->
                   {!! Form::label('description','Price Description') !!}
-                  {!! Form::text("price_description",null,['class' => 'form-control' ,'placeholder'=>'Enter Price
-                  Description to be Shown on Pricing Page. eg: Yearly,Monthly,One-Time']) !!}
+                  {!! Form::text("price_description",null,['class' => 'form-control' ,'placeholder'=>'Enter Price Description to be Shown on Pricing Page. eg: Yearly,Monthly,One-Time']) !!}
                   <h6 id="dayscheck"></h6>
 
                   <!-- {!! Form::select('days',[''=>'Select','Periods'=>$periods],null,['class' => 'form-control','id'=>'plandays']) !!} -->
@@ -151,12 +148,12 @@
           </div>
 
         </div>
-        <div class="modal-footer">
-          <button type="button" id="close" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-primary " id="submit"
-            data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i
-              class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('Save')!!}</button>
-        </div>
+         <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default " data-dismiss="modal"><i class="fa fa-times"></i>&nbsp;Close</button>
+                <button type="submit"  class="btn btn-primary"><i class="fas fa-save"></i>&nbsp;Save</button>
+
+            </div>
+       
 
 
       </div>
@@ -214,8 +211,8 @@
 
           <td>
             <div class="input-group">
-              <input type="text" class="form-control" name="renew_price[]">
-              <span id="` + i + `" class="input-group-addon btn_remove"><i class="fa fa-minus"></i></span>
+              <input type="text" class="form-control" style="width:25%" name="renew_price[]">&nbsp;&nbsp;
+              <span id="` + i + `" class="input-group-text btn_remove"><i class="fa fa-minus"></i></span>
             </div>
           </td>
 

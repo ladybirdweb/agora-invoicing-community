@@ -16,7 +16,7 @@
                     <div>
 <div>
           <?php
-          $currency = \Auth::user()->currency;
+          $currency = $invoice->currency;
           $cont = new \App\Http\Controllers\License\LicensePermissionsController();
             $downloadPermission = $cont->getPermissionsForProduct($product->id);
           ?>

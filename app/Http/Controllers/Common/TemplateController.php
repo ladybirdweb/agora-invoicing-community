@@ -4,41 +4,27 @@ namespace App\Http\Controllers\Common;
 
 use App\Http\Controllers\Product\ProductController;
 use App\Model\Common\Country;
+
+use App\Http\Controllers\Controller;
+use App\Model\Common\Setting;
 use App\Model\Common\Template;
 use App\Model\Common\TemplateType;
 use App\Model\Order\Invoice;
 use App\Model\Payment\Currency;
 use App\Model\Payment\Plan;
-use App\Model\Payment\Tax;
-use App\Model\Payment\TaxClass;
-use App\Model\Payment\TaxOption;
-use App\Model\Payment\TaxProductRelation;
-use App\Model\Product\Price;
-use App\Model\Product\Product;
-use App\Model\Product\Subscription;
 use App\User;
 use Bugsnag;
 use Illuminate\Http\Request;
 
-class TemplateController extends BaseTemplateController
+class TemplateController extends Controller
 {
     public $template;
     public $type;
-    public $product;
-    public $price;
-    public $subscription;
-    public $plan;
-    public $tax_relation;
-    public $tax;
-    public $tax_class;
-    public $tax_rule;
-    public $currency;
-    protected $commonMailer;
 
     public function __construct()
     {
-        $this->middleware('auth', ['except' => ['show']]);
-        $this->middleware('admin', ['except' => ['show']]);
+        $this->middleware('auth');
+        $this->middleware('admin');
 
         $template = new Template();
         $this->template = $template;
@@ -46,34 +32,6 @@ class TemplateController extends BaseTemplateController
         $type = new TemplateType();
         $this->type = $type;
 
-        $product = new Product();
-        $this->product = $product;
-
-        $price = new Price();
-        $this->price = $price;
-
-        $subscription = new Subscription();
-        $this->subscription = $subscription;
-
-        $plan = new Plan();
-        $this->plan = $plan;
-
-        $tax_relation = new TaxProductRelation();
-        $this->tax_relation = $tax_relation;
-
-        $tax = new Tax();
-        $this->tax = $tax;
-
-        $tax_class = new TaxClass();
-        $this->tax_class = $tax_class;
-
-        $tax_rule = new TaxOption();
-        $this->tax_rule = $tax_rule;
-
-        $currency = new Currency();
-        $this->currency = $currency;
-
-        $this->commonMailer = new CommonMailer;
     }
 
     public function index()
@@ -238,76 +196,15 @@ class TemplateController extends BaseTemplateController
         }
     }
 
-    public function mailing($from, $to, $data, $subject, $replace = [],
-     $type = '', $bcc = [], $fromname = '', $toname = '', $cc = [], $attach = [])
-    {
-        try {
-            $transform = [];
-            $page_controller = new \App\Http\Controllers\Front\PageController();
-            $transform[0] = $replace;
-            $data = $page_controller->transform($type, $data, $transform);
-            $settings = \App\Model\Common\Setting::find(1);
-            $fromname = $settings->company;
-            \Mail::send('emails.mail', ['data' => $data], function ($m) use ($from, $to, $subject, $fromname, $toname, $cc, $attach, $bcc) {
-                $m->from($from, $fromname);
 
-                $m->to($to, $toname)->subject($subject);
-
-                /* if cc is need  */
-                if (! empty($cc)) {
-                    foreach ($cc as $address) {
-                        $m->cc($address['address'], $address['name']);
-                    }
-                }
-
-                if (! empty($bcc)) {
-                    foreach ($bcc as $address) {
-                        $m->bcc($address);
-                    }
-                }
-
-                /*  if attachment is need */
-                if (! empty($attach)) {
-                    foreach ($attach as $file) {
-                        $m->attach($file['path'], $options = []);
-                    }
-                }
-            });
-            \DB::table('email_log')->insert([
-                'date'       => date('Y-m-d H:i:s'),
-                'from'       => $from,
-                'to'         => $to,
-                'subject'   => $subject,
-                'body'       => $data,
-                'status'     => 'success',
-            ]);
-
-            return 'success';
-        } catch (\Exception $ex) {
-            \DB::table('email_log')->insert([
-                'date'     => date('Y-m-d H:i:s'),
-                'from'     => $from,
-                'to'       => $to,
-                'subject' => $subject,
-                'body'     => $data,
-                'status'   => 'failed',
-            ]);
-            Bugsnag::notifyException($ex);
-            if ($ex instanceof \Swift_TransportException) {
-                throw new \Exception('We can not reach to this email address');
-            }
-
-            throw new \Exception('mailing problem');
-        }
-    }
 
     public function plans($url, $id)
     {
+        try {
         $plan = new Plan();
         $plan_form = 'Free'; //No Subscription
         $plans = $plan->where('product', '=', $id)->pluck('name', 'id')->toArray();
         $plans = $this->prices($id);
-        dump($plans);
         if ($plans) {
             $plan_form = \Form::select('subscription', ['Plans' => $plans], null);
         }
@@ -316,61 +213,75 @@ class TemplateController extends BaseTemplateController
         \Form::hidden('id', $id);
 
         return $form;
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+       
     }
 
-    private function getCountryAndCurrencySymbol($countryName)
-    {
-        $country = Country::where('country_code_char2', $countryName)->first();
-        $currency = Currency::where('id', $country->currency_id)->first();
-        $currencySymbol = $currency->symbol;
-        $currencyCode = $currency->code;
 
-        return compact('country', 'currencySymbol', 'currencyCode');
-    }
-
+    /**
+     * Gets the least amount to be displayed on pricing page on the top
+     * @param  int $id    Product id
+     * @return string     Product price with html
+     */
     public function leastAmount($id)
     {
         $countryCheck = true;
         try {
             $cost = 'Free';
-
             $plans = Plan::where('product', $id)->get();
-            if (\Auth::check()) {
-                $currencyInInvoiceModel = Invoice::where('user_id', \Auth::user()->id)->first();
-                if ($currencyInInvoiceModel) {
-                    $currency = $currencyInInvoiceModel->currency;
-                    $countryCheck = false;
-                } else {
-                    $countryName = User::where('id', \Auth::user()->id)->first()->country;
-                    $countryInfo = $this->getCountryAndCurrencySymbol($countryName);
-                    $country = $countryInfo['country'];
-                    $currencySymbol = $countryInfo['currencySymbol'];
-                    $currency = $countryInfo['currencyCode'];
-                }
-            } else {
-                $ipLocation = \GeoIP::getLocation()['iso_code'];
-                $countryInfo = $this->getCountryAndCurrencySymbol($ipLocation);
-                $country = $countryInfo['country'];
-                $currencySymbol = $countryInfo['currencySymbol'];
-                $currency = $countryInfo['currencyCode'];
-            }
+
             $prices = [];
             if ($plans->count() > 0) {
                 foreach ($plans as $plan) {
-                    $prices[] = ($countryCheck)
-                        ? $plan->planPrice()->where(function ($q) use ($country) {
-                            return $q->where('country_id', $country->country_id)->orWhere('country_id', 0);
-                        })->min('add_price')
-                        : $plan->planPrice()->where('currency', $currency)->min('add_price');
+                    $planDetails = userCurrencyAndPrice('', $plan);
+                    $prices[] = $planDetails['plan']->add_price;
+                    $prices[] .= $planDetails['symbol'];
+                    $prices[] .= $planDetails['currency'];
+                   
                 }
-
-                $format = currency_format(min($prices), $code = $currency);
-                $finalPrice = str_replace($currencySymbol, '', $format);
-                $cost = '<span class="price-unit">'.$currencySymbol.'</span>'.$finalPrice;
+                $format = currencyFormat(min([$prices[0]]), $code=$prices[2]);
+                $finalPrice = str_replace($prices[1], '', $format);
+                $cost = '<span class="price-unit">'.$prices[1].'</span>'.$finalPrice;
             }
-
             return $cost;
         } catch (\Exception $ex) {
+            Bugsnag::notifyException($ex);
+
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
+    public function getPrice($months, $price, $priceDescription, $value, $cost, $currency)
+    {
+        $price1 = currencyFormat($cost, $code = $currency);
+        $price[$value->id] = $months.'  '.$price1.' '.$priceDescription;
+
+        return $price;
+    }
+
+
+    public function prices($id)
+    {   
+        try {
+            $plans = Plan::where('product', $id)->orderBy('id', 'desc')->get();
+            $price = [];
+            foreach ($plans as $value) {
+                $currencyAndSymbol = userCurrencyAndPrice('',$value);
+                $currency = $currencyAndSymbol['currency'];
+                $symbol = $currencyAndSymbol['symbol'];
+                $cost = $currencyAndSymbol['plan']->add_price;
+                $priceDescription = $currencyAndSymbol['plan']->price_description;
+                $cost = rounding($cost);
+                $duration = $value->periods;
+                $months = count($duration) > 0 ? $duration->first()->name : '';
+                $price = $this->getPrice($months, $price, $priceDescription, $value, $cost, $currency);
+                // $price = currencyFormat($cost, $code = $currency);
+            }
+            return $price;
+        } catch (\Exception $ex) {
+            app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());

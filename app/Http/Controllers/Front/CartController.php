@@ -67,8 +67,8 @@ class CartController extends BaseCartController
         try {
             $plan = '';
             if ($request->has('subscription')) {//put he Plan id sent into session variable
-                $plan = $request->get('subscription');
-                Session::put('plan', $plan);
+                $subscription = $request->get('subscription');
+                Session::put('plan_id', $subscription);
             }
             $id = $request->input('id');
             if (! property_exists($id, Cart::getContent())) {
@@ -78,6 +78,7 @@ class CartController extends BaseCartController
 
             return redirect('show/cart');
         } catch (\Exception $ex) {
+            
             app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex->getMessage());
 
@@ -101,9 +102,15 @@ class CartController extends BaseCartController
         try {
             $qty = 1;
             $agents = 0; //Unlmited Agents
-            $planid = checkPlanSession() ? Session::get('plan') : Plan::where('product', $id)->pluck('id')->first(); //Get Plan id From Session
+            if(\Session::has('plan_id')) { //If a plan is selected from dropdown in pricing page, this is true
+                $planid = \Session::get('plan_id');
+            } else {
+                $planid =  Plan::where('product', $id)->pluck('id')->first(); 
+            }
             $product = Product::find($id);
             $plan = $product->planRelation->find($planid);
+            // dd($plan);
+            // dd($product->planRelation,$plan,$planid);
             if ($plan) { //If Plan For a Product exists
                 $quantity = $plan->planPrice->first()->product_quantity;
                 //If Product quantity is null(when show agent in Product Seting Selected),then set quantity as 1;
@@ -111,14 +118,18 @@ class CartController extends BaseCartController
                 $agtQty = $plan->planPrice->first()->no_of_agents;
                 // //If Agent qty is null(when show quantity in Product Setting Selected),then set Agent as 0,ie Unlimited Agents;
                 $agents = $agtQty != null ? $agtQty : 0;
+                $currency = userCurrencyAndPrice('',$plan);
+            } else {
+                throw new \Exception("Product cannot be added to cart. No plan exists.");
+                
             }
-            $currency = userCurrency();
-            $actualPrice = $this->cost($product->id);
+            $actualPrice = $this->cost($product->id, $planid);
             $items = ['id'     => $id, 'name' => $product->name, 'price' => $actualPrice,
                 'quantity'    => $qty, 'attributes' => ['currency' => $currency['currency'], 'symbol'=>$currency['symbol'], 'agents'=> $agents], 'associatedModel' => $product, ];
 
             return $items;
         } catch (\Exception $e) {
+            // return redirect()->back()->with('fails', $e->getMessage());
             app('log')->error($e->getMessage());
             Bugsnag::notifyException($e);
             throw new \Exception($e->getMessage());
@@ -136,15 +147,7 @@ class CartController extends BaseCartController
             foreach ($cartCollection as $item) {
                 $cart_currency = $item->attributes->currency;
                 \Session::put('currency', $cart_currency);
-                if (\Auth::user()) {//If User is Logged in and his currency changes after logging in then remove his previous order from cart
-                    $currency = \Auth::user()->currency;
-                    if ($cart_currency != $currency) {
-                        $id = $item->id;
-                        Cart::session(\Auth::user()->id)->remove($id);
-                        $items = $this->addProduct($id);
-                        Cart::add($items);
-                    }
-                }
+               
             }
 
             return view('themes.default1.front.cart', compact('cartCollection'));
@@ -170,6 +173,7 @@ class CartController extends BaseCartController
     public function clearCart()
     {
         foreach (Cart::getContent() as $item) {
+            Cart::remove($item->id);
             Cart::clearItemConditions($item->id);
             if (\Session::has('domain'.$item->id)) {
                 \Session::forget('domain'.$item->id);
@@ -194,11 +198,10 @@ class CartController extends BaseCartController
      *
      * @return string
      */
-    public function cost($productid, $userid = '', $planid = '')
+    public function cost($productid, $planid='',  $userid = '')
     {
         try {
             $cost = $this->planCost($productid, $userid, $planid);
-
             return $cost;
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex->getMessage());
@@ -218,31 +221,30 @@ class CartController extends BaseCartController
      *
      * @return int
      */
-    public function planCost($productid, $userid, $planid = '')
+    public function planCost($productid, $userid = '', $planid = '')
     {
         try {
             $cost = 0;
             $months = 0;
-            $currency = userCurrency($userid);
             if (! $planid) {//When Product Is Added from Cart
                 $planid = Plan::where('product', $productid)->pluck('id')->first();
             } elseif (checkPlanSession() && ! $planid) {
-                $planid = Session::get('plan');
+                $planid = Session::get('plan_id');
             }
             $plan = Plan::where('id', $planid)->where('product', $productid)->first();
             if ($plan) { //Get the Total Plan Cost if the Plan Exists For a Product
+                $currency = userCurrencyAndPrice($userid, $plan);
                 $months = 1;
-                $currency = userCurrency($userid);
                 $product = Product::find($productid);
                 $days = $plan->periods->pluck('days')->first();
-                $price = ($product->planRelation->find($planid)->planPrice->where('currency', $currency['currency'])->first()->add_price);
+                $price =  $currency['plan']->add_price;
                 if ($days) { //If Period Is defined for a Particular Plan ie no. of Days Generated
                     $months = $days >= '365' ? $days / 30 / 12 : $days / 30;
                 }
                 $finalPrice = str_replace(',', '', $price);
                 $cost = round($months) * $finalPrice;
             } else {
-                throw new \Exception('Product cannot be added to cart. No such plan exists.');
+                throw new \Exception('Product cannot be added to cart. No plan exists.');
             }
 
             return $cost;

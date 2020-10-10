@@ -183,7 +183,7 @@ class SettingsController extends Controller
                 ],
             ]);
             $stripeCustomerId = $customer['id'];
-            $currency = strtolower(\Auth::user()->currency);
+            $currency = strtolower($invoice->currency);
             $card = $stripe->cards()->create($stripeCustomerId, $token['id']);
             $charge = $stripe->charges()->create([
                 'customer' => $customer['id'],
@@ -224,6 +224,7 @@ class SettingsController extends Controller
                 \Session::forget('codevalue');
                 \Session::forget('totalToBePaid');
                 \Session::forget('invoice');
+                 \Session::forget('cart_currency');
                 \Cart::removeCartCondition('Processing fee');
 
                 return redirect('checkout')->with($status, $message);

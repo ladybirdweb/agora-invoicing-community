@@ -227,9 +227,8 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             }
             $invoiceItems = $invoice->invoiceItem()->get();
             $user = $this->user->find($invoice->user_id);
-            $currency = userCurrency($user->id);
             $order = Order::getOrderLink($invoice->order_id, 'orders');
-            $symbol = $currency['symbol'];
+            $symbol = Currency::where('code',$currency)->value('symbol');
 
             return view('themes.default1.invoice.show', compact('invoiceItems', 'invoice', 'user', 'currency', 'symbol', 'order'));
         } catch (\Exception $ex) {
@@ -291,9 +290,9 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             if ($rounding) {
                 $grand_total = round($grand_total);
             }
-
+            $currency = \Session::has('cart_currency') ? \Session::get('cart_currency') : getCurrencyForClient(\Auth::user()->country);
             $invoice = $this->invoice->create(['user_id' => $user_id, 'number' => $number, 'date'=> $date, 'grand_total' => $grand_total, 'status' => 'pending',
-                'currency' => \Auth::user()->currency, ]);
+                'currency' => $currency, ]);
             foreach (\Cart::getContent() as $cart) {
                 $this->createInvoiceItems($invoice->id, $cart);
             }
@@ -326,7 +325,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 //When Product is added from Faveo Website
                 $planid = Plan::where('product', $cart->id)->pluck('id')->first();
             }
-            $user_currency = \Auth::user()->currency;
             $subtotal = $cart->getPriceSum();
             $tax_name = $cart->conditions->getName();
             $tax_percentage = $cart->conditions->getValue();
@@ -387,11 +385,13 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 $domain = $request->input('domain');
                 $this->setDomain($productid, $domain);
             }
-            $userCurrency = userCurrency($user_id);
+            $planObj = Plan::where('id',$plan)->first();
+            $userCurrency = userCurrencyAndPrice($user_id, $planObj);
             $currency = $userCurrency['currency'];
             $number = rand(11111111, 99999999);
             $date = \Carbon\Carbon::parse($request->input('date'));
             $product = Product::find($productid);
+
             $cost = $this->cartController->cost($productid, $user_id, $plan);
 
             $couponTotal = $this->getGrandTotal($code, $total, $cost, $productid, $currency, $user_id);

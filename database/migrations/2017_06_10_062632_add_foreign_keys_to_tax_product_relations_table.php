@@ -10,11 +10,21 @@ class AddForeignKeysToTaxProductRelationsTable extends Migration
      *
      * @return void
      */
+
+
     public function up()
     {
         Schema::table('tax_product_relations', function (Blueprint $table) {
-            $table->foreign('product_id')->references('id')->on('products')->onUpdate('RESTRICT')->onDelete('RESTRICT');
-            $table->foreign('tax_class_id', 'tax_product_relations_tax_id_foreign')->references('id')->on('tax_classes')->onUpdate('RESTRICT')->onDelete('RESTRICT');
+            $sm = Schema::getConnection()->getDoctrineSchemaManager();
+            $indexesFound = $sm->listTableIndexes('tax_product_relations');
+            if(!array_key_exists("tax_product_relations_product_id_foreign", $indexesFound)){
+                $table->foreign('product_id')->references('id')->on('products')->onUpdate('RESTRICT')->onDelete('RESTRICT');
+
+            }
+            if(!array_key_exists("tax_product_relations_tax_class_id_foreign", $indexesFound)){
+                $table->foreign('tax_class_id')->references('id')->on('tax_classes')->onUpdate('RESTRICT')->onDelete('RESTRICT');
+            }
+
         });
     }
 

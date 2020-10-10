@@ -211,7 +211,6 @@ class ClientController extends AdvanceSearchController
             } else {
                 $mobile_code = str_replace('+', '', $request->input('mobile_code'));
             }
-            $currency_symbol = Currency::where('code', $request->input('currency'))->pluck('symbol')->first();
             $location = getLocation();
             $user->user_name = $request->input('user_name');
             $user->first_name = $request->input('first_name');
@@ -232,13 +231,11 @@ class ClientController extends AdvanceSearchController
             $user->state = $request->input('state');
             $user->zip = $request->input('zip');
             $user->timezone_id = $request->input('timezone_id');
-            $user->currency = $request->input('currency');
             $user->mobile_code = $mobile_code;
             $user->mobile = $request->input('mobile');
             $user->skype = $request->input('skype');
             $user->manager = $request->input('manager');
             $user->account_manager = $request->input('account_manager');
-            $user->currency_symbol = $currency_symbol;
             $user->ip = $location['ip'];
 
             $user->save();
@@ -254,7 +251,7 @@ class ClientController extends AdvanceSearchController
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (\Swift_TransportException $e) {
             return redirect()->back()->with('warning', 'User has been created successfully
-             But email configuration has some problem!');
+             But email configuration has some problem!!'.$e->getMessage());
         } catch (\Exception $e) {
             return redirect()->back()->with('fails', $e->getMessage());
         }
@@ -291,8 +288,7 @@ class ClientController extends AdvanceSearchController
             }
 
             $is2faEnabled = $client->is_2fa_enabled;
-            // $client = "";
-            $currency = $client->currency;
+            $currency = getCurrencyForClient($client->country);
             $orders = $order->where('client', $id)->get();
             $comments = Comment::where('user_id', $client->id)->get();
 
@@ -386,8 +382,6 @@ class ClientController extends AdvanceSearchController
     {
         try {
             $user = $this->user->where('id', $id)->first();
-            $symbol = Currency::where('code', $request->input('currency'))->pluck('symbol')->first();
-            $user->currency_symbol = $symbol;
             $user->fill($request->input())->save();
             // \Session::put('test', 1000);
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));

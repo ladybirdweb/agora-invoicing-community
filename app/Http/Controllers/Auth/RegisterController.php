@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\ProfileRequest;
-use App\Model\Common\Country;
 use App\Model\Common\Setting;
 use App\Model\Common\StatusSetting;
 use App\User;

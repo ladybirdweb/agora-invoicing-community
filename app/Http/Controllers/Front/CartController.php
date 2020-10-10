@@ -78,7 +78,6 @@ class CartController extends BaseCartController
 
             return redirect('show/cart');
         } catch (\Exception $ex) {
-            
             app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex->getMessage());
 
@@ -102,10 +101,10 @@ class CartController extends BaseCartController
         try {
             $qty = 1;
             $agents = 0; //Unlmited Agents
-            if(\Session::has('plan_id')) { //If a plan is selected from dropdown in pricing page, this is true
+            if (\Session::has('plan_id')) { //If a plan is selected from dropdown in pricing page, this is true
                 $planid = \Session::get('plan_id');
             } else {
-                $planid =  Plan::where('product', $id)->pluck('id')->first(); 
+                $planid = Plan::where('product', $id)->pluck('id')->first();
             }
             $product = Product::find($id);
             $plan = $product->planRelation->find($planid);
@@ -118,10 +117,9 @@ class CartController extends BaseCartController
                 $agtQty = $plan->planPrice->first()->no_of_agents;
                 // //If Agent qty is null(when show quantity in Product Setting Selected),then set Agent as 0,ie Unlimited Agents;
                 $agents = $agtQty != null ? $agtQty : 0;
-                $currency = userCurrencyAndPrice('',$plan);
+                $currency = userCurrencyAndPrice('', $plan);
             } else {
-                throw new \Exception("Product cannot be added to cart. No plan exists.");
-                
+                throw new \Exception('Product cannot be added to cart. No plan exists.');
             }
             $actualPrice = $this->cost($product->id, $planid);
             $items = ['id'     => $id, 'name' => $product->name, 'price' => $actualPrice,
@@ -147,7 +145,6 @@ class CartController extends BaseCartController
             foreach ($cartCollection as $item) {
                 $cart_currency = $item->attributes->currency;
                 \Session::put('currency', $cart_currency);
-               
             }
 
             return view('themes.default1.front.cart', compact('cartCollection'));
@@ -198,10 +195,11 @@ class CartController extends BaseCartController
      *
      * @return string
      */
-    public function cost($productid, $planid='',  $userid = '')
+    public function cost($productid, $planid = '', $userid = '')
     {
         try {
             $cost = $this->planCost($productid, $userid, $planid);
+
             return $cost;
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex->getMessage());
@@ -237,7 +235,7 @@ class CartController extends BaseCartController
                 $months = 1;
                 $product = Product::find($productid);
                 $days = $plan->periods->pluck('days')->first();
-                $price =  $currency['plan']->add_price;
+                $price = $currency['plan']->add_price;
                 if ($days) { //If Period Is defined for a Particular Plan ie no. of Days Generated
                     $months = $days >= '365' ? $days / 30 / 12 : $days / 30;
                 }

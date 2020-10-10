@@ -47,7 +47,7 @@ class AdminOrderInvoiceController extends Controller
                                  return $orderArray;
                              }
                          })
-                        ->addColumn('total', function ($model)  {
+                        ->addColumn('total', function ($model) {
                             return currencyFormat($model->grand_total, $code = $model->currency);
                         })
                          ->addColumn('paid', function ($model) {
@@ -61,7 +61,7 @@ class AdminOrderInvoiceController extends Controller
 
                              return currencyFormat($sum, $code = $model->currency);
                          })
-                         ->addColumn('balance', function ($model)  {
+                         ->addColumn('balance', function ($model) {
                              $payment = \App\Model\Order\Payment::where('invoice_id', $model->id)->select('amount')->get();
                              $c = count($payment);
                              $sum = 0;
@@ -172,13 +172,12 @@ class AdminOrderInvoiceController extends Controller
                         ->addColumn('payment_method', function ($model) {
                             return $model->payment_method;
                         })
-                        
+
                          ->addColumn('total', function ($model) use ($client, $extraAmt) {
-                            
                              if ($model->invoice_id == 0) {
                                  $amount = currencyFormat($extraAmt, $code = getCurrencyForClient($client->country));
                              } else {
-                                $currency = Invoice::find($model->invoice_id)->currency;
+                                 $currency = Invoice::find($model->invoice_id)->currency;
                                  $amount = currencyFormat($model->amount, $code = $currency);
                              }
 

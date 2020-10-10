@@ -171,7 +171,7 @@ class SettingsController extends Controller
                 $stateCode = \Auth::user()->state;
                 $cont = new \App\Http\Controllers\RazorpayController();
                 $state = $cont->getState($stateCode);
-                $currency = Currency::where('code',$currency)->pluck('symbol')->first();;
+                $currency = Currency::where('code', $currency)->pluck('symbol')->first();
 
                 $control = new \App\Http\Controllers\Order\RenewController();
                 //After Regular Payment
@@ -206,13 +206,15 @@ class SettingsController extends Controller
             } else {
                 return redirect('checkout')->with('fails', 'Your Payment was declined. Please try making payment with other gateway');
             }
-        } catch (\Cartalyst\Stripe\Exception\ApiLimitExceededException | \Cartalyst\Stripe\Exception\BadRequestException | \Cartalyst\Stripe\Exception\MissingParameterException | \Cartalyst\Stripe\Exception\NotFoundException | \Cartalyst\Stripe\Exception\ServerErrorException | \Cartalyst\Stripe\Exception\StripeException | \Cartalyst\Stripe\Exception\UnauthorizedException $e) {dd($e);
+        } catch (\Cartalyst\Stripe\Exception\ApiLimitExceededException | \Cartalyst\Stripe\Exception\BadRequestException | \Cartalyst\Stripe\Exception\MissingParameterException | \Cartalyst\Stripe\Exception\NotFoundException | \Cartalyst\Stripe\Exception\ServerErrorException | \Cartalyst\Stripe\Exception\StripeException | \Cartalyst\Stripe\Exception\UnauthorizedException $e) {
+            dd($e);
             if (emailSendingStatus()) {
                 $this->sendFailedPaymenttoAdmin($amount, $e->getMessage());
             }
 
             return redirect('checkout')->with('fails', 'Your Payment was declined. '.$e->getMessage().'. Please try again or try the other gateway');
-        } catch (\Cartalyst\Stripe\Exception\CardErrorException $e) {dd($e);
+        } catch (\Cartalyst\Stripe\Exception\CardErrorException $e) {
+            dd($e);
             if (emailSendingStatus()) {
                 $this->sendFailedPaymenttoAdmin($request['amount'], $e->getMessage());
             }
@@ -220,7 +222,9 @@ class SettingsController extends Controller
             \Session::put('error', $e->getMessage());
 
             return redirect()->route('checkout');
-        } catch (\Exception $e) {dd($e);
+        } catch (\Exception $e) {
+            dd($e);
+
             return redirect('checkout')->with('fails', 'Your payment was declined. '.$e->getMessage().'. Please try again or try the other gateway.');
         }
     }

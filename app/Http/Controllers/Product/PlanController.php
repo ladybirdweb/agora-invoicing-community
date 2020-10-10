@@ -147,35 +147,34 @@ class PlanController extends ExtendedPlanController
     {
         try {
             $add_prices = $request->add_price;
-        $renew_prices = $request->renew_price;
-        $this->plan->fill($request->input())->save();
-        if ($request->input('days') != '') {
-            $period = Period::where('days', $request->input('days'))->first()->id;
-            $this->plan->periods()->attach($period);
-        }
-
-        if (count($add_prices) > 0) {
-            $dataForCreating = [];
-            foreach ($add_prices as $key => $value) {
-                $dataForCreating[] = [
-                    'plan_id' => $this->plan->id,
-                    'country_id' => $request->country_id[$key],
-                    'currency' => $request->currency[$key],
-                    'add_price' => $value,
-                    'renew_price' => $renew_prices[$key],
-                    'price_description' => $request->price_description,
-                    'product_quantity' => $request->product_quantity,
-                    'no_of_agents' => $request->no_of_agents,
-                ];
+            $renew_prices = $request->renew_price;
+            $this->plan->fill($request->input())->save();
+            if ($request->input('days') != '') {
+                $period = Period::where('days', $request->input('days'))->first()->id;
+                $this->plan->periods()->attach($period);
             }
-            $this->plan->planPrice()->insert($dataForCreating);
-        }
 
-        return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
-        } catch(Exception $ex) {
+            if (count($add_prices) > 0) {
+                $dataForCreating = [];
+                foreach ($add_prices as $key => $value) {
+                    $dataForCreating[] = [
+                        'plan_id' => $this->plan->id,
+                        'country_id' => $request->country_id[$key],
+                        'currency' => $request->currency[$key],
+                        'add_price' => $value,
+                        'renew_price' => $renew_prices[$key],
+                        'price_description' => $request->price_description,
+                        'product_quantity' => $request->product_quantity,
+                        'no_of_agents' => $request->no_of_agents,
+                    ];
+                }
+                $this->plan->planPrice()->insert($dataForCreating);
+            }
+
+            return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
+        } catch (Exception $ex) {
             return redirect()->back()->withj('fails', $ex->getMessage());
         }
-        
     }
 
     /**

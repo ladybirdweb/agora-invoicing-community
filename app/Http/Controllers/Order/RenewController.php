@@ -60,7 +60,7 @@ class RenewController extends BaseRenewController
             $plan = $this->plan->find($planid);
             $days = $plan->days;
             $sub = $this->sub->find($id);
-            $currency = userCurrencyAndPrice($sub->user_id,$plan)['currency'];
+            $currency = userCurrencyAndPrice($sub->user_id, $plan)['currency'];
             $permissions = LicensePermissionsController::getPermissionsForProduct($sub->product_id);
             $licenseExpiry = $this->getExpiryDate($permissions['generateLicenseExpiryDate'], $sub, $days);
             $updatesExpiry = $this->getUpdatesExpiryDate($permissions['generateUpdatesxpiryDate'], $sub, $days);
@@ -193,7 +193,6 @@ class RenewController extends BaseRenewController
         }
     }
 
-
     public function tax($product, $cost, $user)
     {
         try {
@@ -277,7 +276,7 @@ class RenewController extends BaseRenewController
             $planid = $request->input('plan');
             $code = $request->input('code');
             $plan = Plan::find($planid);
-            $planDetails = userCurrencyAndPrice($request->input('user'),$plan);
+            $planDetails = userCurrencyAndPrice($request->input('user'), $plan);
             $cost = $planDetails['plan']->renew_price;
             $currency = $planDetails['currency'];
             $items = $this->invoiceBySubscriptionId($id, $planid, $cost, $currency);

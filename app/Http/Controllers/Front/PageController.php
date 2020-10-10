@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Front;
 
 use App\DefaultPage;
-use App\Model\Common\PricingTemplate;
-use App\Http\Controllers\Controller;
 use App\Http\Controllers\Common\TemplateController;
+use App\Http\Controllers\Controller;
+use App\Model\Common\PricingTemplate;
 use App\Model\Front\FrontendPage;
 use App\Model\Product\Product;
 use App\Model\Product\ProductGroup;
@@ -302,7 +302,6 @@ class PageController extends Controller
         return $result;
     }
 
-
     /**
      * Get Page Template when Group in Store Dropdown is
      * selected on the basis of Group id.
@@ -331,6 +330,7 @@ class PageController extends Controller
             ->orderBy('created_at', 'desc')->get(); //Get ALL the Products Related to the Group
             $trasform = [];
             $templates = $this->getTemplateOne($productsRelatedToGroup, $data, $trasform);
+
             return view('themes.default1.common.template.shoppingcart', compact('templates', 'headline', 'tagline'));
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
@@ -356,11 +356,10 @@ class PageController extends Controller
      * @param $trasform
      * @return string
      */
-
     public function getTemplateOne($helpdesk_products, $data, $trasform)
     {
         try {
-             $template = '';
+            $template = '';
             $temp_controller = new TemplateController();
             if (count($helpdesk_products) > 0) {
                 foreach ($helpdesk_products as $product) {
@@ -374,17 +373,16 @@ class PageController extends Controller
                     $trasform[$product['id']]['url'] = "<input type='submit' 
                     value='Order Now' class='btn btn-dark btn-modern btn-outline py-2 px-4'></form>";
 
-                    
                     $trasform[$product['id']]['url'] = "<input type='submit' 
                     value='Order Now' class='btn btn-dark btn-modern btn-outline py-2 px-4'></form>";
                 }
                 $template = $this->transform('cart', $data, $trasform);
+            }
+
+            return $template;
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
         }
-        return $template;
-    } catch(\Exception $ex) {
-       return redirect()->back()->with('fails', $ex->getMessage());
-    }
-       
     }
 
     /**

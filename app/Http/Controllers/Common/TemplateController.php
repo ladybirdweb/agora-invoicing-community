@@ -70,7 +70,6 @@ class TemplateController extends Controller
 
             return view('themes.default1.common.template.create', compact('type', 'cartUrl'));
         } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -89,7 +88,6 @@ class TemplateController extends Controller
 
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -108,7 +106,6 @@ class TemplateController extends Controller
 
             return view('themes.default1.common.template.edit', compact('type', 'template', 'cartUrl'));
         } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -129,8 +126,6 @@ class TemplateController extends Controller
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -236,8 +231,6 @@ class TemplateController extends Controller
 
             return $cost;
         } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -271,7 +264,6 @@ class TemplateController extends Controller
             return $price;
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
-            Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }

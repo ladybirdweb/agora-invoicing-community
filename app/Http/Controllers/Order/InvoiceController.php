@@ -123,7 +123,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
                 'till'));
         } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -233,7 +232,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             return view('themes.default1.invoice.show', compact('invoiceItems', 'invoice', 'user', 'currency', 'symbol', 'order'));
         } catch (\Exception $ex) {
             app('log')->warning($ex->getMessage());
-            Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -265,7 +263,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             return view('themes.default1.invoice.generate', compact('user', 'products', 'currency'));
         } catch (\Exception $ex) {
             app('log')->info($ex->getMessage());
-            Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -303,7 +300,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             return $invoice;
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
-            Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -343,7 +339,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
             return $invoiceItem;
         } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex->getMessage());
 
             throw new \Exception('Can not create Invoice Items');
         }
@@ -441,7 +436,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
             return $items;
         } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -455,7 +449,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             }
             \Session::put('domain'.$productid, $domain);
         } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
 
             throw new \Exception($ex->getMessage());
         }
@@ -470,8 +463,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
             return $this->sendInvoiceMail($userid, $number, $total, $invoiceid);
         } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
-
+   
             throw new \Exception($ex->getMessage());
         }
     }
@@ -506,8 +498,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
             return $pdf->download($user->first_name.'-invoice.pdf');
         } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

@@ -174,7 +174,6 @@ class BaseInvoiceController extends ExtendedBaseInvoiceController
 
             return redirect()->back()->with('success', 'Payment Accepted Successfully');
         } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -191,7 +190,6 @@ class BaseInvoiceController extends ExtendedBaseInvoiceController
 
             return $domain;
         } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
         }
     }
 
@@ -247,7 +245,6 @@ class BaseInvoiceController extends ExtendedBaseInvoiceController
             return intval(round($total));
         } catch (\Exception $ex) {
             app('log')->warning($ex->getMessage());
-            Bugsnag::notifyException($ex);
 
             throw new \Exception($ex->getMessage());
         }

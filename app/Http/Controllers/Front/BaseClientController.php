@@ -153,7 +153,6 @@ class BaseClientController extends Controller
         } catch (\Exception $e) {
             app('log')->error($e->getMessage());
             $result = [$e->getMessage()];
-            Bugsnag::notifyException($result);
 
             return response()->json(compact('result'), 500);
         }
@@ -209,7 +208,6 @@ class BaseClientController extends Controller
                             ->rawColumns(['number', 'products', 'date', 'total', 'status', 'action'])
                             ->make(true);
         } catch (Exception $ex) {
-            Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -230,7 +228,6 @@ class BaseClientController extends Controller
         try {
             return view('themes.default1.front.clients.subscription');
         } catch (Exception $ex) {
-            Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -272,7 +269,6 @@ class BaseClientController extends Controller
         try {
             return view('themes.default1.front.clients.order1');
         } catch (Exception $ex) {
-            Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }

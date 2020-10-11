@@ -100,7 +100,6 @@ class ProductController extends BaseProductController
         try {
             return view('themes.default1.product.product.index');
         } catch (\Exception $e) {
-            Bugsnag::notifyException($e);
 
             return redirect('/')->with('fails', $e->getMessage());
         }
@@ -161,9 +160,7 @@ class ProductController extends BaseProductController
                             ->rawColumns(['checkbox', 'name', 'image', 'type', 'group', 'Action'])
                             ->make(true);
         } catch (\Exception $e) {
-            Bugsnag::notifyException($e);
-
-            return redirect()->back()->with('fails', $e->getMessage());
+           return redirect()->back()->with('fails', $e->getMessage());
         }
     }
 
@@ -201,7 +198,6 @@ class ProductController extends BaseProductController
             return $response;
         } catch (\Exception $e) {
             app('log')->error($e->getMessage());
-            Bugsnag::notifyException($e);
             $message = [$e->getMessage()];
             $response = ['success'=>'false', 'message'=>$message];
 
@@ -246,8 +242,6 @@ class ProductController extends BaseProductController
                 )
             );
         } catch (\Exception $e) {
-            Bugsnag::notifyException($e);
-
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
@@ -312,7 +306,6 @@ class ProductController extends BaseProductController
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (\Exception $e) {
             app('log')->error($e->getMessage());
-            Bugsnag::notifyException($e);
 
             return redirect()->back()->with('fails', $e->getMessage());
         }
@@ -378,7 +371,6 @@ class ProductController extends BaseProductController
                 )
             );
         } catch (\Exception $e) {
-            Bugsnag::notifyException($e);
 
             return redirect()->back()->with('fails', $e->getMessage());
         }
@@ -436,7 +428,6 @@ class ProductController extends BaseProductController
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $e) {
-            Bugsnag::notifyException($e);
 
             return redirect()->back()->with('fails', $e->getMessage());
         }
@@ -575,7 +566,6 @@ class ProductController extends BaseProductController
 
             return $relese;
         } catch (\Exception $e) {
-            Bugsnag::notifyException($e);
 
             return redirect()->back()->with('fails', $e->getMessage());
         }

@@ -54,7 +54,6 @@ class LicenseSettingsController extends LicensePermissionsController
             ->rawColumns(['checkbox', 'type_name', 'action'])
             ->make(true);
         } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -86,7 +85,6 @@ class LicenseSettingsController extends LicensePermissionsController
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }

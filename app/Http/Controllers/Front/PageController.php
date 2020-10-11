@@ -71,7 +71,6 @@ class PageController extends Controller
             return view('themes.default1.front.page.create', compact('parents'));
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
-            Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -122,7 +121,6 @@ class PageController extends Controller
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
-            Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -334,7 +332,6 @@ class PageController extends Controller
             return view('themes.default1.common.template.shoppingcart', compact('templates', 'headline', 'tagline'));
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
-            Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -405,7 +402,6 @@ class PageController extends Controller
 
             return  $priceDescription;
         } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex->getMessage());
             app('log')->error($ex->getMessage());
 
             return redirect()->back()->with('fails', $ex->getMessage());

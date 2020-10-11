@@ -320,7 +320,6 @@ class PlanController extends ExtendedPlanController
 
             return response()->json($result);
         } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
             $result = ['subscription' => $ex->getMessage()];
 
             return response()->json($result);

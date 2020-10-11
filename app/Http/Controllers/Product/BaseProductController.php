@@ -43,7 +43,6 @@ class BaseProductController extends ExtendedBaseProductController
 	                </div>";
             }
         } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
 
             return $ex->getMessage();
         }
@@ -83,7 +82,6 @@ class BaseProductController extends ExtendedBaseProductController
                     </div>";
             }
         } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
 
             return $ex->getMessage();
         }
@@ -145,7 +143,6 @@ class BaseProductController extends ExtendedBaseProductController
             return response()->json($result);
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
-            Bugsnag::notifyException($ex);
 
             return $ex->getMessage();
         }
@@ -193,7 +190,6 @@ class BaseProductController extends ExtendedBaseProductController
             }
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
-            Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -252,8 +248,6 @@ class BaseProductController extends ExtendedBaseProductController
                 return $relese;
             }
         } catch (\Exception $e) {
-            Bugsnag::notifyException($e);
-
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
@@ -280,7 +274,6 @@ class BaseProductController extends ExtendedBaseProductController
 
             return response()->json($result);
         } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
             $result = ['price' => $ex->getMessage(), 'field' => ''];
 
             return response()->json($result);
@@ -296,7 +289,6 @@ class BaseProductController extends ExtendedBaseProductController
             $product->version = $version;
             $product->save();
         } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
 
             throw new \Exception($ex->getMessage());
         }

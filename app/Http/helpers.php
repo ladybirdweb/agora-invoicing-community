@@ -357,7 +357,6 @@ function rounding($price)
             return round($price, 2);
         }
     } catch (\Exception $ex) {
-        Bugsnag::notifyException($ex);
     }
 }
 

@@ -222,7 +222,6 @@ trait TaxCalculation
 
             return $value;
         } catch (Exception $ex) {
-            Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -284,7 +283,6 @@ trait TaxCalculation
 
             return $taxe_relation;
         } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
 
             throw new \Exception($ex->getMessage());
         }

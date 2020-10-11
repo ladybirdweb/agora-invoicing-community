@@ -299,7 +299,6 @@ class ClientController extends AdvanceSearchController
             );
         } catch (\Exception $ex) {
             app('log')->info($ex->getMessage());
-            Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -387,7 +386,6 @@ class ClientController extends AdvanceSearchController
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
-            Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }

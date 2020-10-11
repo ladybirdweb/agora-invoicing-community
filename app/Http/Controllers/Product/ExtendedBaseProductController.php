@@ -87,7 +87,6 @@ class ExtendedBaseProductController extends Controller
             return redirect()->back()->with('success', 'Product Updated Successfully');
         } catch (\Exception $ex) {
             app('log')->error($e->getMessage());
-            Bugsnag::notifyException($e);
             $message = [$e->getMessage()];
             $response = ['success'=>'false', 'message'=>$message];
 
@@ -129,7 +128,6 @@ class ExtendedBaseProductController extends Controller
 
             return $field;
         } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
 
             return $ex->getMessage();
         }
@@ -156,7 +154,6 @@ class ExtendedBaseProductController extends Controller
                 throw new \Exception(\Lang::get('message.no_permission_for_action'));
             }
         } catch (\Exception $e) {
-            Bugsnag::notifyException($e);
 
             return redirect()->back()->with('fails', $e->getMessage());
         }

@@ -72,86 +72,82 @@ class ClientController extends BaseClientController
 
     public function getInvoices()
     {
-        try {
-            $invoices = Invoice::leftJoin('order_invoice_relations', 'invoices.id', '=', 'order_invoice_relations.invoice_id')
-            ->select('invoices.id', 'invoices.user_id', 'invoices.date', 'invoices.number', 'invoices.grand_total', 'order_invoice_relations.order_id', 'invoices.is_renewed', 'invoices.status', 'invoices.currency')
-            ->groupBy('invoices.number')
-            ->where('invoices.user_id', '=', \Auth::user()->id)
-            ->orderBy('invoices.created_at', 'desc')
-            ->get();
+    $invoices = Invoice::leftJoin('order_invoice_relations', 'invoices.id', '=', 'order_invoice_relations.invoice_id')
+    ->select('invoices.id', 'invoices.user_id', 'invoices.date', 'invoices.number', 'invoices.grand_total', 'order_invoice_relations.order_id', 'invoices.is_renewed', 'invoices.status', 'invoices.currency')
+    ->groupBy('invoices.number')
+    ->where('invoices.user_id', '=', \Auth::user()->id)
+    ->orderBy('invoices.created_at', 'desc')
+    ->get();
 
-            return \DataTables::of($invoices)
-                            ->addColumn('number', function ($model) {
-                                if ($model->is_renewed) {
-                                    return '<a href='.url('my-invoice/'.$model->id).'>'.$model->number.'</a>&nbsp;'.getStatusLabel('renewed', 'badge');
-                                } else {
-                                    return '<a href='.url('my-invoice/'.$model->id).'>'.$model->number.'</a>';
-                                }
-                            })
-                           ->addColumn('orderNo', function ($model) {
-                               if ($model->is_renewed) {
-                                   return Order::find($model->order_id)->first()->getOrderLink($model->order_id, 'my-order');
-                               } else {
-                                   $allOrders = $model->order()->select('id', 'number')->get();
-                                   $orderArray = '';
-                                   foreach ($allOrders as $orders) {
-                                       $orderArray .= $orders->getOrderLink($orders->id, 'my-order');
-                                   }
+    return \DataTables::of($invoices)
+                    ->addColumn('number', function ($model) {
+                        if ($model->is_renewed) {
+                            return '<a href='.url('my-invoice/'.$model->id).'>'.$model->number.'</a>&nbsp;'.getStatusLabel('renewed', 'badge');
+                        } else {
+                            return '<a href='.url('my-invoice/'.$model->id).'>'.$model->number.'</a>';
+                        }
+                    })
+                   ->addColumn('orderNo', function ($model) {
+                       if ($model->is_renewed) {
+                           return Order::find($model->order_id)->first()->getOrderLink($model->order_id, 'my-order');
+                       } else {
+                           $allOrders = $model->order()->select('id', 'number')->get();
+                           $orderArray = '';
+                           foreach ($allOrders as $orders) {
+                               $orderArray .= $orders->getOrderLink($orders->id, 'my-order');
+                           }
 
-                                   return $orderArray;
-                               }
-                           })
-                            ->addColumn('date', function ($model) {
-                                return getDateHtml($model->created_at);
-                            })
-                            ->addColumn('total', function ($model) {
-                                return  currencyFormat($model->grand_total, $code = $model->currency);
-                            })
-                            ->addColumn('paid', function ($model) {
-                                $payment = \App\Model\Order\Payment::where('invoice_id', $model->id)->select('amount')->get();
-                                $c = count($payment);
-                                $sum = 0;
+                           return $orderArray;
+                       }
+                   })
+                    ->addColumn('date', function ($model) {
+                        return getDateHtml($model->created_at);
+                    })
+                    ->addColumn('total', function ($model) {
+                        return  currencyFormat($model->grand_total, $code = $model->currency);
+                    })
+                    ->addColumn('paid', function ($model) {
+                        $payment = \App\Model\Order\Payment::where('invoice_id', $model->id)->select('amount')->get();
+                        $c = count($payment);
+                        $sum = 0;
 
-                                for ($i = 0; $i <= $c - 1; $i++) {
-                                    $sum = $sum + $payment[$i]->amount;
-                                }
+                        for ($i = 0; $i <= $c - 1; $i++) {
+                            $sum = $sum + $payment[$i]->amount;
+                        }
 
-                                return currencyFormat($sum, $code = $model->currency);
-                            })
-                             ->addColumn('balance', function ($model) {
-                                 $payment = \App\Model\Order\Payment::where('invoice_id', $model->id)->select('amount')->get();
-                                 $c = count($payment);
-                                 $sum = 0;
+                        return currencyFormat($sum, $code = $model->currency);
+                    })
+                     ->addColumn('balance', function ($model) {
+                         $payment = \App\Model\Order\Payment::where('invoice_id', $model->id)->select('amount')->get();
+                         $c = count($payment);
+                         $sum = 0;
 
-                                 for ($i = 0; $i <= $c - 1; $i++) {
-                                     $sum = $sum + $payment[$i]->amount;
-                                 }
-                                 $pendingAmount = ($model->grand_total) - ($sum);
+                         for ($i = 0; $i <= $c - 1; $i++) {
+                             $sum = $sum + $payment[$i]->amount;
+                         }
+                         $pendingAmount = ($model->grand_total) - ($sum);
 
-                                 return currencyFormat($pendingAmount, $code = $model->currency);
-                             })
-                             ->addColumn('status', function ($model) {
-                                 return  getStatusLabel($model->status, 'badge');
-                             })
-                            ->addColumn('Action', function ($model) {
-                                $status = $model->status;
-                                $payment = '';
-                                if ($status != 'Success' && $model->grand_total > 0) {
-                                    $payment = '  <a href='.url('paynow/'.$model->id).
-                                    " class='btn btn-primary btn-xs'><i class='fa fa-credit-card'></i>&nbsp;Pay Now</a>";
-                                }
+                         return currencyFormat($pendingAmount, $code = $model->currency);
+                     })
+                     ->addColumn('status', function ($model) {
+                         return  getStatusLabel($model->status, 'badge');
+                     })
+                    ->addColumn('Action', function ($model) {
+                        $status = $model->status;
+                        $payment = '';
+                        if ($status != 'Success' && $model->grand_total > 0) {
+                            $payment = '  <a href='.url('paynow/'.$model->id).
+                            " class='btn btn-primary btn-xs'><i class='fa fa-credit-card'></i>&nbsp;Pay Now</a>";
+                        }
 
-                                return '<p><a href='.url('my-invoice/'.$model->id).
-                                " class='btn btn-primary btn-xs'><i class='fa fa-eye'></i>&nbsp;View</a>".$payment.'</p>';
-                            })
+                        return '<p><a href='.url('my-invoice/'.$model->id).
+                        " class='btn btn-primary btn-xs'><i class='fa fa-eye'></i>&nbsp;View</a>".$payment.'</p>';
+                    })
 
-                            ->rawColumns(['number', 'orderNo', 'date', 'total', 'status', 'Action'])
-                            // ->orderColumns('number', 'created_at', 'total')
-                            ->make(true);
-        } catch (Exception $ex) {
-            Bugsnag::notifyException($ex);
-            echo $ex->getMessage();
-        }
+                    ->rawColumns(['number', 'orderNo', 'date', 'total', 'status', 'Action'])
+                    // ->orderColumns('number', 'created_at', 'total')
+                    ->make(true);
+        
     }
 
     public function getInvoice($id)
@@ -169,7 +165,6 @@ class ClientController extends BaseClientController
 
             return view('themes.default1.front.clients.show-invoice', compact('invoice', 'items', 'user', 'currency', 'symbol', 'order'));
         } catch (Exception $ex) {
-            Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -256,7 +251,6 @@ class ClientController extends BaseClientController
                             ->rawColumns(['version', 'title', 'description', 'file'])
                             ->make(true);
         } catch (Exception $ex) {
-            Bugsnag::notifyException($ex);
             echo $ex->getMessage();
         }
     }
@@ -330,7 +324,6 @@ class ClientController extends BaseClientController
                             ->rawColumns(['version', 'name', 'description', 'file'])
                             ->make(true);
         } catch (Exception $ex) {
-            Bugsnag::notifyException($ex);
             echo $ex->getMessage();
         }
     }
@@ -379,7 +372,6 @@ class ClientController extends BaseClientController
                             ->make(true);
         } catch (Exception $ex) {
             app('log')->error($ex->getMessage());
-            Bugsnag::notifyException($ex);
             echo $ex->getMessage();
         }
     }
@@ -432,8 +424,7 @@ class ClientController extends BaseClientController
                 compact('user', 'timezones', 'state', 'states', 'bussinesses', 'is2faEnabled', 'dateSinceEnabled', 'selectedIndustry', 'selectedCompany', 'selectedCompanySize')
             );
         } catch (Exception $ex) {
-            Bugsnag::notifyException($ex);
-
+         
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -474,8 +465,6 @@ class ClientController extends BaseClientController
                 compact('invoice', 'order', 'user', 'product', 'subscription', 'licenseStatus', 'installationDetails', 'allowDomainStatus', 'date', 'licdate', 'versionLabel')
             );
         } catch (Exception $ex) {
-            Bugsnag::notifyException($ex);
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -522,8 +511,6 @@ class ClientController extends BaseClientController
                                 'payment_method', 'payment_status', 'created_at', ])
                             ->make(true);
         } catch (Exception $ex) {
-            Bugsnag::notifyException($ex);
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -562,7 +549,6 @@ class ClientController extends BaseClientController
                             ->rawColumns(['number', 'total', 'payment_method', 'payment_status', 'created_at'])
                             ->make(true);
         } catch (Exception $ex) {
-            Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }

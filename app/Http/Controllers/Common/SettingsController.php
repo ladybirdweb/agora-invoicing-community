@@ -365,7 +365,6 @@ class SettingsController extends BaseSettingsController
                                 'username', 'role', 'new', 'old', 'created_at', ])
                             ->make(true);
         } catch (\Exception $e) {
-            Bugsnag::notifyException($e);
 
             return redirect()->back()->with('fails', $e->getMessage());
         }
@@ -423,7 +422,6 @@ class SettingsController extends BaseSettingsController
                                   'bcc', 'subject',  'status', ])
                             ->make(true);
         } catch (\Exception $e) {
-            Bugsnag::notifyException($e);
 
             return redirect()->back()->with('fails', $e->getMessage());
         }

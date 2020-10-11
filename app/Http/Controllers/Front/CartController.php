@@ -79,7 +79,6 @@ class CartController extends BaseCartController
             return redirect('show/cart');
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
-            Bugsnag::notifyException($ex->getMessage());
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -129,7 +128,6 @@ class CartController extends BaseCartController
         } catch (\Exception $e) {
             // return redirect()->back()->with('fails', $e->getMessage());
             app('log')->error($e->getMessage());
-            Bugsnag::notifyException($e);
             throw new \Exception($e->getMessage());
         }
     }
@@ -150,8 +148,6 @@ class CartController extends BaseCartController
             return view('themes.default1.front.cart', compact('cartCollection'));
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
-            Bugsnag::notifyException($ex->getMessage());
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -202,7 +198,6 @@ class CartController extends BaseCartController
 
             return $cost;
         } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex->getMessage());
             app('log')->error($ex->getMessage());
             throw new \Exception($ex->getMessage());
         }
@@ -266,8 +261,7 @@ class CartController extends BaseCartController
 
             return redirect()->back();
         } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
-
+            
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

@@ -10,7 +10,6 @@ use App\Model\Payment\Tax;
 use App\Model\Payment\TaxClass;
 use App\Model\Payment\TaxOption;
 use App\User;
-use Bugsnag;
 use Illuminate\Http\Request;
 
 class BaseInvoiceController extends ExtendedBaseInvoiceController
@@ -174,7 +173,6 @@ class BaseInvoiceController extends ExtendedBaseInvoiceController
 
             return redirect()->back()->with('success', 'Payment Accepted Successfully');
         } catch (\Exception $ex) {
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

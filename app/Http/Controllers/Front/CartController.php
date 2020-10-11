@@ -11,7 +11,6 @@ use App\Model\Payment\Tax;
 use App\Model\Payment\TaxByState;
 use App\Model\Payment\TaxOption;
 use App\Model\Product\Product;
-use Bugsnag;
 use Cart;
 use Illuminate\Http\Request;
 use Session;
@@ -148,6 +147,7 @@ class CartController extends BaseCartController
             return view('themes.default1.front.cart', compact('cartCollection'));
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -261,7 +261,6 @@ class CartController extends BaseCartController
 
             return redirect()->back();
         } catch (\Exception $ex) {
-            
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

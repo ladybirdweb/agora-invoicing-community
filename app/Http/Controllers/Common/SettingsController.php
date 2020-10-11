@@ -11,7 +11,6 @@ use App\Model\Mailjob\QueueService;
 use App\Model\Payment\Currency;
 use App\Model\Plugin;
 use App\User;
-use Bugsnag;
 use GrahamCampbell\Markdown\Facades\Markdown;
 use Illuminate\Http\Request;
 use Spatie\Activitylog\Models\Activity;
@@ -365,7 +364,6 @@ class SettingsController extends BaseSettingsController
                                 'username', 'role', 'new', 'old', 'created_at', ])
                             ->make(true);
         } catch (\Exception $e) {
-
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
@@ -422,7 +420,6 @@ class SettingsController extends BaseSettingsController
                                   'bcc', 'subject',  'status', ])
                             ->make(true);
         } catch (\Exception $e) {
-
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }

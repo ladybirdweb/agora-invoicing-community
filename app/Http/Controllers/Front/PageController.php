@@ -9,7 +9,6 @@ use App\Model\Common\PricingTemplate;
 use App\Model\Front\FrontendPage;
 use App\Model\Product\Product;
 use App\Model\Product\ProductGroup;
-use Bugsnag;
 use Illuminate\Http\Request;
 
 class PageController extends Controller

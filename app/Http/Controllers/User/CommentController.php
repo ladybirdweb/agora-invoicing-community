@@ -5,7 +5,6 @@ namespace App\Http\Controllers\User;
 use App\Comment;
 use App\Http\Controllers\Controller;
 use App\User;
-use Bugsnag;
 use Illuminate\Http\Request;
 
 class CommentController extends Controller
@@ -100,6 +99,7 @@ class CommentController extends Controller
             // return redirect()->back()->with('success', \Lang::get('message.deleted-successfully'));
         } catch (Exception $e) {
             app('log')->error($ex->getMessage());
+
             return errorResponse($ex->getMessage());
         }
     }

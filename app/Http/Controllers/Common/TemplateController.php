@@ -7,7 +7,6 @@ use App\Http\Controllers\Product\ProductController;
 use App\Model\Common\Template;
 use App\Model\Common\TemplateType;
 use App\Model\Payment\Plan;
-use Bugsnag;
 use Illuminate\Http\Request;
 
 class TemplateController extends Controller
@@ -70,7 +69,6 @@ class TemplateController extends Controller
 
             return view('themes.default1.common.template.create', compact('type', 'cartUrl'));
         } catch (\Exception $ex) {
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -88,7 +86,6 @@ class TemplateController extends Controller
 
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (\Exception $ex) {
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -106,7 +103,6 @@ class TemplateController extends Controller
 
             return view('themes.default1.common.template.edit', compact('type', 'template', 'cartUrl'));
         } catch (\Exception $ex) {
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

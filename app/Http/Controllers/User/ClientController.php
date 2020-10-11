@@ -13,7 +13,6 @@ use App\Model\Payment\Currency;
 use App\Model\User\AccountActivate;
 use App\Traits\PaymentsAndInvoices;
 use App\User;
-use Bugsnag;
 use Illuminate\Http\Request;
 
 class ClientController extends AdvanceSearchController

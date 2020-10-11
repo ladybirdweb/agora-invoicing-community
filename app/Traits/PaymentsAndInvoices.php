@@ -5,7 +5,6 @@ namespace App\Traits;
 use App\Model\Order\Invoice;
 use App\Model\Order\Payment;
 use App\Model\Product\Product;
-use Bugsnag;
 use Illuminate\Http\Request;
 
 //////////////////////////////////////////////////////////////////////////////
@@ -83,7 +82,6 @@ use Illuminate\Http\Request;
                     $this->updateInvoice($invoiceid);
                 }
             } catch (\Exception $ex) {
-
                 throw new \Exception($ex->getMessage());
             }
         }

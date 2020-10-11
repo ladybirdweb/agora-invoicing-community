@@ -15,7 +15,6 @@ use App\Model\Product\Product;
 use App\Model\Product\Subscription;
 use App\Traits\TaxCalculation;
 use App\User;
-use Bugsnag;
 use Cart;
 use Darryldecode\Cart\CartCondition;
 use Illuminate\Http\Request;
@@ -190,6 +189,7 @@ class CheckoutController extends InfoController
             return view('themes.default1.front.paynow', compact('invoice', 'items', 'product', 'paid'));
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

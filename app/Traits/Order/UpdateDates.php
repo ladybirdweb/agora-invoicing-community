@@ -6,7 +6,6 @@ use App\Http\Controllers\License\LicensePermissionsController;
 use App\Model\Common\StatusSetting;
 use App\Model\Order\Order;
 use App\Model\Product\Subscription;
-use Bugsnag;
 use Illuminate\Http\Request;
 
 ////////////////////////////////////////////////////////////////////////////

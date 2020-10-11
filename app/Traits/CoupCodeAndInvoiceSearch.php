@@ -3,7 +3,6 @@
 namespace App\Traits;
 
 use App\Model\Order\Invoice;
-use Bugsnag;
 use Illuminate\Http\Request;
 
 //////////////////////////////////////////////////////////////////////////////
@@ -164,7 +163,6 @@ trait CoupCodeAndInvoiceSearch
 
             return $payment;
         } catch (\Exception $ex) {
-
             throw new \Exception($ex->getMessage());
         }
     }

@@ -101,7 +101,6 @@ class OrderController extends BaseOrderController
             return view('themes.default1.order.index',
                 compact('request', 'products', 'allVersions', 'activeInstallationOptions', 'paidUnpaidOptions', 'inactiveInstallationOptions', 'renewal', 'insNotIns', 'selectedVersion'));
         } catch (\Exception $e) {
-
             return redirect('orders')->with('fails', $e->getMessage());
         }
     }
@@ -252,7 +251,6 @@ class OrderController extends BaseOrderController
             return view('themes.default1.order.show',
                 compact('user', 'order', 'subscription', 'licenseStatus', 'installationDetails', 'allowDomainStatus', 'noOfAllowedInstallation', 'getInstallPreference', 'lastActivity', 'versionLabel', 'date', 'licdate', 'supdate'));
         } catch (\Exception $ex) {
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -370,7 +368,6 @@ class OrderController extends BaseOrderController
 
             return $planid;
         } catch (\Exception $ex) {
-
             throw new \Exception($ex->getMessage());
         }
     }
@@ -392,7 +389,6 @@ class OrderController extends BaseOrderController
 
             return $status;
         } catch (\Exception $ex) {
-
             throw new \Exception($ex->getMessage());
         }
     }

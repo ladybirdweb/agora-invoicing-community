@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Model\License\LicensePermission;
 use App\Model\License\LicenseType;
 use App\Model\Product\Product;
-use Bugsnag;
 use Illuminate\Http\Request;
 
 /*

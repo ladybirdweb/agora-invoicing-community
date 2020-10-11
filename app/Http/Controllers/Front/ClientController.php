@@ -14,7 +14,6 @@ use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
 use App\Model\Product\Subscription;
 use App\User;
-use Bugsnag;
 use Exception;
 use GrahamCampbell\Markdown\Facades\Markdown;
 
@@ -72,14 +71,14 @@ class ClientController extends BaseClientController
 
     public function getInvoices()
     {
-    $invoices = Invoice::leftJoin('order_invoice_relations', 'invoices.id', '=', 'order_invoice_relations.invoice_id')
+        $invoices = Invoice::leftJoin('order_invoice_relations', 'invoices.id', '=', 'order_invoice_relations.invoice_id')
     ->select('invoices.id', 'invoices.user_id', 'invoices.date', 'invoices.number', 'invoices.grand_total', 'order_invoice_relations.order_id', 'invoices.is_renewed', 'invoices.status', 'invoices.currency')
     ->groupBy('invoices.number')
     ->where('invoices.user_id', '=', \Auth::user()->id)
     ->orderBy('invoices.created_at', 'desc')
     ->get();
 
-    return \DataTables::of($invoices)
+        return \DataTables::of($invoices)
                     ->addColumn('number', function ($model) {
                         if ($model->is_renewed) {
                             return '<a href='.url('my-invoice/'.$model->id).'>'.$model->number.'</a>&nbsp;'.getStatusLabel('renewed', 'badge');
@@ -147,7 +146,6 @@ class ClientController extends BaseClientController
                     ->rawColumns(['number', 'orderNo', 'date', 'total', 'status', 'Action'])
                     // ->orderColumns('number', 'created_at', 'total')
                     ->make(true);
-        
     }
 
     public function getInvoice($id)
@@ -165,7 +163,6 @@ class ClientController extends BaseClientController
 
             return view('themes.default1.front.clients.show-invoice', compact('invoice', 'items', 'user', 'currency', 'symbol', 'order'));
         } catch (Exception $ex) {
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -424,7 +421,6 @@ class ClientController extends BaseClientController
                 compact('user', 'timezones', 'state', 'states', 'bussinesses', 'is2faEnabled', 'dateSinceEnabled', 'selectedIndustry', 'selectedCompany', 'selectedCompanySize')
             );
         } catch (Exception $ex) {
-         
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -549,7 +545,6 @@ class ClientController extends BaseClientController
                             ->rawColumns(['number', 'total', 'payment_method', 'payment_status', 'created_at'])
                             ->make(true);
         } catch (Exception $ex) {
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

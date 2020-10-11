@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Order;
 use App\Http\Controllers\Controller;
 use App\Model\Common\StatusSetting;
 use App\Model\Order\Order;
-use Bugsnag;
 use Illuminate\Http\Request;
 
 class ExtendedOrderController extends Controller
@@ -28,7 +27,6 @@ class ExtendedOrderController extends Controller
                 return redirect()->back()->with('fails', \Lang::get('message.not-saved-successfully'));
             }
         } catch (\Exception $ex) {
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

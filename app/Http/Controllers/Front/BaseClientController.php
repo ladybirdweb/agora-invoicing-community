@@ -8,7 +8,6 @@ use App\Http\Requests\User\ProfileRequest;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
 use App\Model\Product\Product;
-use Bugsnag;
 use Exception;
 use Hash;
 
@@ -208,7 +207,6 @@ class BaseClientController extends Controller
                             ->rawColumns(['number', 'products', 'date', 'total', 'status', 'action'])
                             ->make(true);
         } catch (Exception $ex) {
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -228,7 +226,6 @@ class BaseClientController extends Controller
         try {
             return view('themes.default1.front.clients.subscription');
         } catch (Exception $ex) {
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -269,7 +266,6 @@ class BaseClientController extends Controller
         try {
             return view('themes.default1.front.clients.order1');
         } catch (Exception $ex) {
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

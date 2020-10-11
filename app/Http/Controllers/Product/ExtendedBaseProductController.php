@@ -8,7 +8,6 @@ use App\Model\Order\Invoice;
 use App\Model\Payment\TaxProductRelation;
 use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
-use Bugsnag;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -128,7 +127,6 @@ class ExtendedBaseProductController extends Controller
 
             return $field;
         } catch (\Exception $ex) {
-
             return $ex->getMessage();
         }
     }
@@ -154,7 +152,6 @@ class ExtendedBaseProductController extends Controller
                 throw new \Exception(\Lang::get('message.no_permission_for_action'));
             }
         } catch (\Exception $e) {
-
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }

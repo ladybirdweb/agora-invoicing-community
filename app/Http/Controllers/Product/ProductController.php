@@ -22,7 +22,6 @@ namespace App\Http\Controllers\Product;
     use App\Model\Product\Subscription;
     use App\Model\Product\Type;
     use App\Traits\Upload\ChunkUpload;
-    use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Input;
     use Spatie\Activitylog\Models\Activity;
@@ -100,7 +99,6 @@ class ProductController extends BaseProductController
         try {
             return view('themes.default1.product.product.index');
         } catch (\Exception $e) {
-
             return redirect('/')->with('fails', $e->getMessage());
         }
     }
@@ -160,7 +158,7 @@ class ProductController extends BaseProductController
                             ->rawColumns(['checkbox', 'name', 'image', 'type', 'group', 'Action'])
                             ->make(true);
         } catch (\Exception $e) {
-           return redirect()->back()->with('fails', $e->getMessage());
+            return redirect()->back()->with('fails', $e->getMessage());
         }
     }
 
@@ -371,7 +369,6 @@ class ProductController extends BaseProductController
                 )
             );
         } catch (\Exception $e) {
-
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
@@ -428,7 +425,6 @@ class ProductController extends BaseProductController
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $e) {
-
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
@@ -566,7 +562,6 @@ class ProductController extends BaseProductController
 
             return $relese;
         } catch (\Exception $e) {
-
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }

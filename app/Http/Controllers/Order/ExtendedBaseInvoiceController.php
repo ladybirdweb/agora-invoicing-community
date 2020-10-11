@@ -7,7 +7,6 @@ use App\Model\Order\Invoice;
 use App\Model\Order\Order;
 use App\Model\Order\Payment;
 use App\Model\Payment\Currency;
-use Bugsnag;
 use Exception;
 use Illuminate\Http\Request;
 

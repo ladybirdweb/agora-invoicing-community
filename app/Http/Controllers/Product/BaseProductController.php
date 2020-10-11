@@ -7,7 +7,6 @@ use App\Model\Common\Setting;
 use App\Model\Payment\Plan;
 use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
-use Bugsnag;
 use Illuminate\Http\Request;
 
 class BaseProductController extends ExtendedBaseProductController
@@ -43,7 +42,6 @@ class BaseProductController extends ExtendedBaseProductController
 	                </div>";
             }
         } catch (\Exception $ex) {
-
             return $ex->getMessage();
         }
     }
@@ -82,7 +80,6 @@ class BaseProductController extends ExtendedBaseProductController
                     </div>";
             }
         } catch (\Exception $ex) {
-
             return $ex->getMessage();
         }
     }
@@ -289,7 +286,6 @@ class BaseProductController extends ExtendedBaseProductController
             $product->version = $version;
             $product->save();
         } catch (\Exception $ex) {
-
             throw new \Exception($ex->getMessage());
         }
     }

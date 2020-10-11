@@ -9,7 +9,6 @@ use App\Model\Product\Product;
 use App\Plugins\Stripe\Controllers\SettingsController;
 use App\Traits\Order\UpdateDates;
 use App\User;
-use Bugsnag;
 use Crypt;
 
 class BaseOrderController extends ExtendedOrderController
@@ -235,7 +234,6 @@ class BaseOrderController extends ExtendedOrderController
             $relation = new \App\Model\Order\OrderInvoiceRelation();
             $relation->create(['order_id' => $orderid, 'invoice_id' => $invoiceid]);
         } catch (\Exception $ex) {
-
             throw new \Exception($ex->getMessage());
         }
     }
@@ -333,7 +331,6 @@ class BaseOrderController extends ExtendedOrderController
         try {
             return $this->price->where('product_id', $product_id)->first();
         } catch (\Exception $ex) {
-
             throw new \Exception($ex->getMessage());
         }
     }

@@ -21,7 +21,6 @@ use App\Traits\CoupCodeAndInvoiceSearch;
 use App\Traits\PaymentsAndInvoices;
 use App\Traits\TaxCalculation;
 use App\User;
-use Bugsnag;
 use Illuminate\Http\Request;
 
 class InvoiceController extends TaxRatesAndCodeExpiryController
@@ -123,7 +122,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
                 'till'));
         } catch (\Exception $ex) {
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -339,7 +337,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
             return $invoiceItem;
         } catch (\Exception $ex) {
-
             throw new \Exception('Can not create Invoice Items');
         }
     }
@@ -436,7 +433,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
             return $items;
         } catch (\Exception $ex) {
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -449,7 +445,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             }
             \Session::put('domain'.$productid, $domain);
         } catch (\Exception $ex) {
-
             throw new \Exception($ex->getMessage());
         }
     }
@@ -463,7 +458,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
             return $this->sendInvoiceMail($userid, $number, $total, $invoiceid);
         } catch (\Exception $ex) {
-   
             throw new \Exception($ex->getMessage());
         }
     }

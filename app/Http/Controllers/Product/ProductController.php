@@ -184,6 +184,8 @@ class ProductController extends BaseProductController
             $this->product_upload->description = $request->input('description');
             $this->product_upload->version = $request->input('version');
             $this->product_upload->file = $request->input('filename');
+            $this->product_upload->is_private = $request->input('is_private');
+            $this->product_upload->is_restricted = $request->input('is_restricted');
             $this->product_upload->save();
             $this->product->where('id', $product_id->id)->update(['version'=>$request->input('version')]);
             $autoUpdateStatus = StatusSetting::pluck('update_settings')->first();

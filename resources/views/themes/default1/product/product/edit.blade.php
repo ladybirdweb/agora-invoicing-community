@@ -882,6 +882,25 @@ if ($fileUpload.length > 0 && $fileUploadDrop.length > 0) {
 
  //------------------------------------------------------------------------------------------------------------//
  
+function privateRelease()
+{
+    // val = $('#p_release').val();
+    if ($('#p_release').attr('checked',true)) {
+        $('#p_release').val('1');
+    } else {
+        $('#p_release').val('0');
+    }
+}
+
+function resrictedRelease()
+{
+    // val = $('#p_release').val();
+    if ($('#r_release').attr('checked',true)) {
+        $('#r_release').val('1');
+    } else {
+        $('#r_release').val('0');
+    }
+}
 
 
  $("#uploadVersion").on('click',function(){
@@ -891,11 +910,13 @@ if ($fileUpload.length > 0 && $fileUploadDrop.length > 0) {
     var producttitle = $('#producttitle').val();
     var description = tinyMCE.get('textarea3').getContent()
     var version = $('#productver').val();
+    var private = $('#p_release').val();
+    var restricted = $('#r_release').val();
     $.ajax({
        type : "POST",
        url  :  "{!! route('upload/save') !!}",
        data :  {'filename': filename , 'productname': productname , 'producttitle': producttitle, 
-       'description': description,'version':version,'_token': '{!! csrf_token() !!}'},
+       'description': description,'version':version,'is_private': private,'is_restricted': restricted,'_token': '{!! csrf_token() !!}'},
        success: function(response) {
          $("#uploadVersion").html("<i class='fa fa-save'>&nbsp;&nbsp;</i>Save");
         $('#alertMessage1').show();

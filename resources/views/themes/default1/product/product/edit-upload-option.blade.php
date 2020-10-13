@@ -61,6 +61,22 @@ Edit Product Uploads
                      <h6 id= "descheck"></h6>
                      </div>
 
+                    <div class="col-md-6 form-group {{ $errors->has('is_private') ? 'has-error' : '' }}">
+                      <i class='fa fa-info-circle' style='cursor: help; font-size: small; color: rgb(60, 141, 188);' <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title="If the release is kept private, product users won't receive notification for this release.">
+                        </label></i>
+                                    
+                    {!! Form::label('is_private','Private Release') !!}
+                    {!! Form::checkbox('is_private',1) !!}
+                     </div>
+
+                    <div class="col-md-6 form-group {{ $errors->has('is_restricted') ? 'has-error' : '' }}">
+                     <i class="fa fa-info-circle" style="cursor: help; font-size: small; color: rgb(60, 141, 188);" <label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="If update is kept restricted for this release, product users need to update their versions upto this release first before updating to further releases.">
+                        </label></i>
+
+                    {!! Form::label('is_restricted','Restrict update') !!}
+                    {!! Form::checkbox('is_restricted',1) !!}
+                     </div>
+
 
         
 
@@ -78,8 +94,15 @@ Edit Product Uploads
     </div>
   </div>
  <script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
-   
+   <script>
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip({
+            container : 'body'
+        });
+    });
+</script>
 <script>
+  
     $(function(){
 
 

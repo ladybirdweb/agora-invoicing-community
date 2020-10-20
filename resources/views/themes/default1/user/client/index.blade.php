@@ -166,7 +166,6 @@ Users
 </div>
 
 
-
 <div class="card card-secondary card-outline">
 
     <div class="card-header">
@@ -206,13 +205,15 @@ Users
     </div>
 <div id="gif"></div>
 
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
+        <!-- <script src="https://code.jquery.com/jquery-3.5.1.js"></script> -->
+                <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.0.3/css/buttons.dataTables.min.css">
+<script src="https://cdn.datatables.net/buttons/1.0.3/js/dataTables.buttons.min.js"></script> 
 
-    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
 
 <script type="text/javascript">
      $('ul.nav-sidebar a').filter(function() {
-      console.log('id-=== ', this.id)
         return this.id == 'all_user';
     }).addClass('active');
 
@@ -244,7 +245,7 @@ Users
             "oLanguage": {
                 "sLengthMenu": "_MENU_ Records per page",
                 "sSearch": "Search: ",
-                "sProcessing": ' <div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="text-bold pt-2">Loading...</div></div>'
+                "sProcessing": ' <div class="overlay dataTables_processing"><i class="fas fa-3x fa-sync-alt fa-spin" style=" margin-top: -25px;"></i><div class="text-bold pt-2">Loading...</div></div>'
                    
             },
             columnDefs: [

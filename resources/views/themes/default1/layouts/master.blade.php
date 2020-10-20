@@ -73,6 +73,10 @@
             color:red;
             padding-left:5px;
         }
+        [type=search] {
+        outline-offset: 0px;
+        -webkit-appearance: none;
+    }
     </style>
     <?php
     $set = new \App\Model\Common\Setting();

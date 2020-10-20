@@ -105,7 +105,7 @@ input:checked + .slider:before {
  <link rel="stylesheet" href="{{asset('client/css/selectpicker.css')}}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/css/bootstrap-select.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 
 
      <div id= "alertMessage"></div>
@@ -375,7 +375,7 @@ input:checked + .slider:before {
     @endcomponent
 
 <script src="{{asset('common/js/2fa.js')}}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/js/bootstrap-select.min.js"></script>
 
                     <script>
 
@@ -503,7 +503,7 @@ input:checked + .slider:before {
              }
 
                                 </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 <script src="{{asset('common/js/intlTelInput.js')}}"></script>
 <script type="text/javascript">
      $(document).ready(function(){

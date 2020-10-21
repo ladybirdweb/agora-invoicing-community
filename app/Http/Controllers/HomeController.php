@@ -347,29 +347,26 @@ class HomeController extends BaseHomeController
 
         try {
             $title = $request->input('title');
-            if($request->has('version')) {
+            if ($request->has('version')) {
                 $product = $product->where('name', $title)->first();
-                if($product) {
-                        $productVersion = $request->version;
-                        $baseQuery = ProductUpload::where([['product_id',$product->id],['version' ,'>', $productVersion]]);
-                        $clonedBaseQuery = clone $baseQuery;
-                        $productVersion = $request->version;
-                        $latestVersion = $baseQuery->orderBy('id', 'desc')->first();
-                        $inBetweenVersions = $clonedBaseQuery->when($latestVersion, function($query) use($productVersion, $latestVersion) {
-                            $query->whereBetween('version', [$productVersion, $latestVersion->version]);
-                        })->orderBy('id', 'asc')->select('version','description','created_at','is_restricted','is_private')->get();
+                if ($product) {
+                    $productVersion = $request->version;
+                    $baseQuery = ProductUpload::where([['product_id', $product->id], ['version', '>', $productVersion]]);
+                    $clonedBaseQuery = clone $baseQuery;
+                    $productVersion = $request->version;
+                    $latestVersion = $baseQuery->orderBy('id', 'desc')->first();
+                    $inBetweenVersions = $clonedBaseQuery->when($latestVersion, function ($query) use ($productVersion, $latestVersion) {
+                        $query->whereBetween('version', [$productVersion, $latestVersion->version]);
+                    })->orderBy('id', 'asc')->select('version', 'description', 'created_at', 'is_restricted', 'is_private')->get();
                     $message = ['version' => $inBetweenVersions];
-                   
-            } else {
-                 $message = ['error' => 'product_not_found'];
-            }
-               
-
+                } else {
+                    $message = ['error' => 'product_not_found'];
+                }
             } else {//For older clients in which version is not sent as parameter
                 $product = $product->where('name', $title)->first();
                 if ($product) {
                     $productId = $product->id;
-                    $product = ProductUpload::where('product_id',$productId)->where('is_restricted','!=',1)->orderBy('id', 'desc')->first();
+                    $product = ProductUpload::where('product_id', $productId)->where('is_restricted', '!=', 1)->orderBy('id', 'desc')->first();
                     // dd($product);
                     $message = ['version' => str_replace('v', '', $product->version)];
                 } else {
@@ -380,13 +377,13 @@ class HomeController extends BaseHomeController
         } catch (\Exception $e) {
             $message = ['error' => $e->getMessage()];
         }
+
         return response()->json($message);
     }
 
-
     public function isNewVersionAvailable(Request $request, Product $product)
     {
-         $v = \Validator::make($request->all(), [
+        $v = \Validator::make($request->all(), [
             'title' => 'required',
         ]);
         if ($v->fails()) {
@@ -394,19 +391,20 @@ class HomeController extends BaseHomeController
 
             return response()->json(compact('error'));
         }
-         try {
-         $title = $request->input('title');
-         $product = $product->where('name', $title)->first();
-         $isLatestAvailable = ProductUpload::where('product_id', $product->id)->where('version','>',$request->version)->where('is_private','!=', 1)->first();
-         if($isLatestAvailable ) {
-            $message =  ['status' => 'success', 'message' => 'new-version-available'];
-         } else {
-            $message =  ['status' => 'fails', 'message' => 'no-new-version-available'];
-         }
-     } catch(\Exception $ex) {
-         $message = ['error' => $e->getMessage()];
-     }
-      return response()->json($message);
+        try {
+            $title = $request->input('title');
+            $product = $product->where('name', $title)->first();
+            $isLatestAvailable = ProductUpload::where('product_id', $product->id)->where('version', '>', $request->version)->where('is_private', '!=', 1)->first();
+            if ($isLatestAvailable) {
+                $message = ['status' => 'success', 'message' => 'new-version-available'];
+            } else {
+                $message = ['status' => 'fails', 'message' => 'no-new-version-available'];
+            }
+        } catch (\Exception $ex) {
+            $message = ['error' => $e->getMessage()];
+        }
+
+        return response()->json($message);
     }
 
     /*

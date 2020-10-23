@@ -171,11 +171,11 @@ class ProductController extends BaseProductController
                 'producttitle'  => 'required',
                 'version'      => 'required',
                 'filename'      => 'required',
+                'dependencies'  =>'required'
             ],
        ['filename.required' => 'Please Uplaod A file',
        ]
         );
-
         try {
             $product_id = Product::where('name', $request->input('productname'))->select('id')->first();
 
@@ -186,6 +186,7 @@ class ProductController extends BaseProductController
             $this->product_upload->file = $request->input('filename');
             $this->product_upload->is_private = $request->input('is_private');
             $this->product_upload->is_restricted = $request->input('is_restricted');
+            $this->product_upload->dependencies = json_encode($request->input('dependencies'));
             $this->product_upload->save();
             $this->product->where('id', $product_id->id)->update(['version'=>$request->input('version')]);
             $autoUpdateStatus = StatusSetting::pluck('update_settings')->first();

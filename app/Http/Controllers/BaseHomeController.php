@@ -153,7 +153,7 @@ class BaseHomeController extends Controller
                 if ($orderId) {
                     $expiryDate = Subscription::where('order_id', $orderId)->pluck('update_ends_at')->first();
                     if (\Carbon\Carbon::now()->toDateTimeString() < $expiryDate) {
-                        return ['status' => 'success', 'message' => 'allow-auto-update'];
+                        return ['status' => 'success', 'message' => 'Updates Available'];
                     }
                 }
             } elseif ($licenseCode) {
@@ -165,12 +165,12 @@ class BaseHomeController extends Controller
                 if (count($orderForLicense) > 0) {
                     $expiryDate = Subscription::where('order_id', $orderForLicense->first()->id)->pluck('update_ends_at')->first();
                     if (\Carbon\Carbon::now()->toDateTimeString() < $expiryDate) {
-                        return ['status' => 'success', 'message' => 'allow-auto-update'];
+                        return ['status' => 'success', 'message' => 'Updates Available'];
                     }
                 }
             }
 
-            return ['status' => 'fails', 'message' => 'do-not-allow-auto-update'];
+            return ['status' => 'fails', 'message' => 'Update not permitted'];
         } catch (\Exception $e) {
             $result = ['status'=>'fails', 'error' => $e->getMessage()];
 

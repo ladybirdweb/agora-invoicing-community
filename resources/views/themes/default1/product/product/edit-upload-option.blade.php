@@ -61,6 +61,14 @@ Edit Product Uploads
                      <h6 id= "descheck"></h6>
                      </div>
 
+                   <div class="col-md-12 form-group {{ $errors->has('description') ? 'has-error' : '' }}">
+                    <i class='fa fa-info-circle' style='cursor: help; font-size: small; color: rgb(60, 141, 188);' <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title="Enter JSON format.">
+                        </label></i>                
+                    {!! Form::label('dependencies',Lang::get('message.dependencies'),['class'=>'required']) !!}
+                    {!! Form::textarea('dependencies',null,['class' => 'form-control','rows'=>'5']) !!}
+                     <h6 id= "descheck"></h6>
+                     </div>
+
                     <div class="col-md-6 form-group {{ $errors->has('is_private') ? 'has-error' : '' }}">
                       <i class='fa fa-info-circle' style='cursor: help; font-size: small; color: rgb(60, 141, 188);' <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title="If the release is kept private, product users won't receive notification for this release.">
                         </label></i>

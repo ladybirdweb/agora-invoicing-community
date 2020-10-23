@@ -31,6 +31,16 @@
                 {!! Form::label('description',Lang::get('message.description')) !!}
                 <textarea class="form-control" id= "textarea3" name="description"></textarea>
                </div>
+
+                 <div class="form-group {{ $errors->has('description') ? 'has-error' : '' }}">
+                        <i class='fa fa-info-circle' style='cursor: help; font-size: small; color: rgb(60, 141, 188);' <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title="Enter JSON format.">
+                        </label></i>             
+                    {!! Form::label('dependencies',Lang::get('message.dependencies'),['class'=>'required']) !!}
+
+                    {!! Form::textarea('dependencies',null,['class' => 'form-control','id'=>'dependencies','rows'=>'5']) !!}
+                     <h6 id= "descheck"></h6>
+                     </div>
+
                <div class="row">
                 <div class="form-group col-md-6{{ $errors->has('version') ? 'has-error' : '' }}">
                     <!-- name -->

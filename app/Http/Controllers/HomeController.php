@@ -357,7 +357,7 @@ class HomeController extends BaseHomeController
                     $latestVersion = $baseQuery->orderBy('id', 'desc')->first();
                     $inBetweenVersions = $clonedBaseQuery->when($latestVersion, function ($query) use ($productVersion, $latestVersion) {
                         $query->whereBetween('version', [$productVersion, $latestVersion->version]);
-                    })->orderBy('id', 'asc')->select('version', 'description', 'created_at', 'is_restricted', 'is_private')->get();
+                    })->orderBy('id', 'desc')->select('version', 'description', 'created_at', 'is_restricted', 'is_private')->get();
                     $message = ['version' => $inBetweenVersions];
                 } else {
                     $message = ['error' => 'product_not_found'];

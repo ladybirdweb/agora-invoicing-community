@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Model\Order\Order;
 use App\Model\Product\Subscription;
 use Carbon\Carbon;
+use App\Model\Product\ProductUpload;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
 
@@ -81,7 +82,7 @@ class OrderSearchController extends Controller
                     echo '<option value='.$version->version.'>'.$version->version.'</option>';
                 }
             } else {
-                echo '<option value=""> Choose a product</option>';
+                echo '<option value=""> Choose</option><option value="Latest"> Latest</option><option value="Outdated"> Outdated</option>';
             }
         } catch (\Exception $ex) {
             echo "<option value=''>Problem while loading</option>";
@@ -102,7 +103,22 @@ class OrderSearchController extends Controller
     private function getSelectedVersionOrders($baseQuery, $version, $productId)
     {
         if ($version) {
-            if ($version == 'Outdated') {
+            if( $productId == 'paid') {
+                $latestVersion = ProductUpload::orderBy('version', 'desc')->value('version');
+                if($version == 'Latest') {
+                    $baseQuery->where('subscriptions.version', '=', $latestVersion);
+                } elseif($version == 'Outdated') {
+                    $baseQuery->where('subscriptions.version', '<', $latestVersion);
+                }
+                
+            } elseif ($productId == 'unpaid') {
+                $latestVersion = ProductUpload::orderBy('version', 'desc')->value('version');
+                if($version == 'Latest') {
+                    $baseQuery->where('subscriptions.version', '=', $latestVersion);
+                } elseif($version == 'Outdated') {
+                    $baseQuery->where('subscriptions.version', '<', $latestVersion);
+                }
+            } elseif ($version == 'Outdated') {
                 $latestVersion = Subscription::where('product_id', $productId)->orderBy('version', 'desc')->value('version');
 
                 $baseQuery->where('subscriptions.version', '<', $latestVersion);

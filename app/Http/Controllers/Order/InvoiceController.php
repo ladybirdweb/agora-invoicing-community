@@ -384,7 +384,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $date = \Carbon\Carbon::parse($request->input('date'));
             $product = Product::find($productid);
 
-            $cost = $this->cartController->cost($productid, $user_id, $plan);
+            $cost = $this->cartController->cost($productid, $plan, $user_id);
 
             $couponTotal = $this->getGrandTotal($code, $total, $cost, $productid, $currency, $user_id);
             $grandTotalAfterCoupon = $qty * $couponTotal['total'];

@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Order;
 
 use App\Http\Controllers\Controller;
 use App\Model\Order\Order;
+use App\Model\Product\ProductUpload;
 use App\Model\Product\Subscription;
 use Carbon\Carbon;
-use App\Model\Product\ProductUpload;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
 
@@ -103,19 +103,18 @@ class OrderSearchController extends Controller
     private function getSelectedVersionOrders($baseQuery, $version, $productId)
     {
         if ($version) {
-            if( $productId == 'paid') {
+            if ($productId == 'paid') {
                 $latestVersion = ProductUpload::orderBy('version', 'desc')->value('version');
-                if($version == 'Latest') {
+                if ($version == 'Latest') {
                     $baseQuery->where('subscriptions.version', '=', $latestVersion);
-                } elseif($version == 'Outdated') {
+                } elseif ($version == 'Outdated') {
                     $baseQuery->where('subscriptions.version', '<', $latestVersion);
                 }
-                
             } elseif ($productId == 'unpaid') {
                 $latestVersion = ProductUpload::orderBy('version', 'desc')->value('version');
-                if($version == 'Latest') {
+                if ($version == 'Latest') {
                     $baseQuery->where('subscriptions.version', '=', $latestVersion);
-                } elseif($version == 'Outdated') {
+                } elseif ($version == 'Outdated') {
                     $baseQuery->where('subscriptions.version', '<', $latestVersion);
                 }
             } elseif ($version == 'Outdated') {

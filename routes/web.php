@@ -519,7 +519,6 @@
         Route::post('update/lic-code', 'HomeController@updateLicenseCode');
         Route::get('new-version-available', 'HomeController@isNewVersionAvailable');
         Route::post('update-installation-detail', 'HomeController@updateInstallationDetails');
-        
 
         Route::get('404', ['as' => 'error404', function () {
             return view('errors.404');

@@ -12,7 +12,6 @@ use App\Model\Payment\Promotion;
 use App\Model\Product\Price;
 use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
-use App\Model\Order\InstallationDetail;
 use App\Model\Product\Subscription;
 use App\User;
 use Bugsnag;
@@ -182,9 +181,6 @@ class OrderController extends BaseOrderController
             ->make(true);
     }
 
-
-
-
     /**
      * Show the form for creating a new resource.
      *
@@ -206,53 +202,49 @@ class OrderController extends BaseOrderController
         }
     }
 
-
     public function getInstallationDetails($orderId)
     {
         $order = $this->order->findOrFail($orderId);
-         $licenseStatus = StatusSetting::pluck('license_status')->first();
-            $installationDetails = [];
-            $noOfAllowedInstallation = '';
-            $getInstallPreference = '';
-            if ($licenseStatus == 1) {
-                $cont = new \App\Http\Controllers\License\LicenseController();
-                $installationDetails = $cont->searchInstallationPath($order->serial_key, $order->product);
-                $noOfAllowedInstallation = $cont->getNoOfAllowedInstallation($order->serial_key, $order->product);
-                $getInstallPreference = $cont->getInstallPreference($order->serial_key, $order->product);
-            }
+        $licenseStatus = StatusSetting::pluck('license_status')->first();
+        $installationDetails = [];
+        $noOfAllowedInstallation = '';
+        $getInstallPreference = '';
+        if ($licenseStatus == 1) {
+            $cont = new \App\Http\Controllers\License\LicenseController();
+            $installationDetails = $cont->searchInstallationPath($order->serial_key, $order->product);
+            $noOfAllowedInstallation = $cont->getNoOfAllowedInstallation($order->serial_key, $order->product);
+            $getInstallPreference = $cont->getInstallPreference($order->serial_key, $order->product);
+        }
 
-            return \DataTables::of($installationDetails['installed_ip']) 
+        return \DataTables::of($installationDetails['installed_ip'])
             ->addColumn('path', function ($ip) {
                 $details = getInstallationDetail($ip);
-                if($details) {
+                if ($details) {
                     return $details->installation_path;
-                } 
+                }
             })
             ->addColumn('ip', function ($ip) {
                 $ip = getInstallationDetail($ip);
-                if($ip) {
+                if ($ip) {
                     return $ip->installation_ip;
                 }
             })
             ->addColumn('version', function ($ip) {
                 $version = getInstallationDetail($ip);
-                if($version) {
+                if ($version) {
                     return $version->version;
-                } 
-
+                }
             })
               ->addColumn('active', function ($ip) {
-                $version = getInstallationDetail($ip);
-                if($version) {
-                    return $version->updated_at;
-                } 
-            })
+                  $version = getInstallationDetail($ip);
+                  if ($version) {
+                      return $version->updated_at;
+                  }
+              })
 
                ->rawColumns(['path', 'ip', 'version', 'active'])
             ->make(true);
-
     }
-
 
     /**
      * Store a newly created resource in storage.

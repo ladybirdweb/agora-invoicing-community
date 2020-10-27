@@ -20,6 +20,7 @@ class VerifyCsrfToken extends BaseVerifier
         'v1/checkUpdatesExpiry',
         'v2/serial',
         'update/lic-code',
+        'update-installation-detail',
     ];
 
     /**

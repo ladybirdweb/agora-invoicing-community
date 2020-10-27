@@ -328,6 +328,7 @@
             Route::post('edit-license-expiry', 'Order\BaseOrderController@editLicenseExpiry');
             Route::post('edit-support-expiry', 'Order\BaseOrderController@editSupportExpiry');
             Route::post('edit-installation-limit', 'Order\BaseOrderController@editInstallationLimit');
+            Route::get('get-installation-details/{orderId}', 'Order\OrderController@getInstallationDetails');
             /*
              * Groups
              */
@@ -517,6 +518,8 @@
         Route::post('v1/checkUpdatesExpiry', 'HomeController@checkUpdatesExpiry');
         Route::post('update/lic-code', 'HomeController@updateLicenseCode');
         Route::get('new-version-available', 'HomeController@isNewVersionAvailable');
+        Route::post('update-installation-detail', 'HomeController@updateInstallationDetails');
+        
 
         Route::get('404', ['as' => 'error404', function () {
             return view('errors.404');

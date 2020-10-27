@@ -7,6 +7,7 @@ use App\Model\Payment\Plan;
 use App\Model\Payment\TaxByState;
 use App\Model\Product\ProductUpload;
 use App\Traits\TaxCalculation;
+use App\Model\Order\InstallationDetail;
 use App\User;
 use Carbon\Carbon;
 
@@ -161,6 +162,13 @@ function getVersionAndLabel($productVersion, $productId, $badge = 'label')
         }
     }
 }
+
+function getInstallationDetail($ip)
+{
+    return InstallationDetail::where('installation_ip',$ip)->first();
+
+}
+
 
 function tooltip($tootipText = '')
 {

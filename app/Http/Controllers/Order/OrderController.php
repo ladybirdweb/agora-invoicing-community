@@ -12,6 +12,7 @@ use App\Model\Payment\Promotion;
 use App\Model\Product\Price;
 use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
+use App\Model\Order\InstallationDetail;
 use App\Model\Product\Subscription;
 use App\User;
 use Bugsnag;
@@ -181,6 +182,9 @@ class OrderController extends BaseOrderController
             ->make(true);
     }
 
+
+
+
     /**
      * Show the form for creating a new resource.
      *
@@ -201,6 +205,54 @@ class OrderController extends BaseOrderController
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
+
+
+    public function getInstallationDetails($orderId)
+    {
+        $order = $this->order->findOrFail($orderId);
+         $licenseStatus = StatusSetting::pluck('license_status')->first();
+            $installationDetails = [];
+            $noOfAllowedInstallation = '';
+            $getInstallPreference = '';
+            if ($licenseStatus == 1) {
+                $cont = new \App\Http\Controllers\License\LicenseController();
+                $installationDetails = $cont->searchInstallationPath($order->serial_key, $order->product);
+                $noOfAllowedInstallation = $cont->getNoOfAllowedInstallation($order->serial_key, $order->product);
+                $getInstallPreference = $cont->getInstallPreference($order->serial_key, $order->product);
+            }
+
+            return \DataTables::of($installationDetails['installed_ip']) 
+            ->addColumn('path', function ($ip) {
+                $details = getInstallationDetail($ip);
+                if($details) {
+                    return $details->installation_path;
+                } 
+            })
+            ->addColumn('ip', function ($ip) {
+                $ip = getInstallationDetail($ip);
+                if($ip) {
+                    return $ip->installation_ip;
+                }
+            })
+            ->addColumn('version', function ($ip) {
+                $version = getInstallationDetail($ip);
+                if($version) {
+                    return $version->version;
+                } 
+
+            })
+              ->addColumn('active', function ($ip) {
+                $version = getInstallationDetail($ip);
+                if($version) {
+                    return $version->updated_at;
+                } 
+            })
+
+               ->rawColumns(['path', 'ip', 'version', 'active'])
+            ->make(true);
+
+    }
+
 
     /**
      * Store a newly created resource in storage.
@@ -245,7 +297,7 @@ class OrderController extends BaseOrderController
                 $noOfAllowedInstallation = $cont->getNoOfAllowedInstallation($order->serial_key, $order->product);
                 $getInstallPreference = $cont->getInstallPreference($order->serial_key, $order->product);
             }
-
+            // dd($installationDetails);
             $allowDomainStatus = StatusSetting::pluck('domain_check')->first();
 
             return view('themes.default1.order.show',

@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Model\Order\Order;
 use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
-use App\Model\Order\InstallationDetail;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -407,5 +406,4 @@ class HomeController extends BaseHomeController
 
         return response()->json($message);
     }
-
 }

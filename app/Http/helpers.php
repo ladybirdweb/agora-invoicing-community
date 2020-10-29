@@ -166,8 +166,9 @@ function getVersionAndLabel($productVersion, $productId, $badge = 'label')
 function getInstallationDetail($ip)
 {
     $ipAndDomain = explode(',', $ip);
-    return InstallationDetail::where('installation_path', 'like', '%' . $ipAndDomain[0]. '%')
-    ->where('installation_ip',$ipAndDomain[1])->first();
+
+    return InstallationDetail::where('installation_path', 'like', '%'.$ipAndDomain[0].'%')
+    ->where('installation_ip', $ipAndDomain[1])->first();
 }
 
 function tooltip($tootipText = '')

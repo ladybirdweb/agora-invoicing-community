@@ -123,9 +123,9 @@ class OrderController extends BaseOrderController
                 return $model->product_name;
             })
             ->addColumn('version', function ($model) {
-                $installedVersions = InstallationDetail::where('order_id',$model->id)->pluck('version')->toArray();
-                if(count($installedVersions)) {
-                       return max($installedVersions);
+                $installedVersions = InstallationDetail::where('order_id', $model->id)->pluck('version')->toArray();
+                if (count($installedVersions)) {
+                    return max($installedVersions);
                 } else {
                     return '--';
                 }
@@ -214,9 +214,10 @@ class OrderController extends BaseOrderController
         $order = $this->order->findOrFail($orderId);
         $licenseStatus = StatusSetting::pluck('license_status')->first();
         $installationDetails = [];
-        
+
         $cont = new \App\Http\Controllers\License\LicenseController();
         $installationDetails = $cont->searchInstallationPath($order->serial_key, $order->product);
+
         return \DataTables::of($installationDetails['installed_path'])
             ->addColumn('path', function ($ip) {
                 // $installationDetails
@@ -235,10 +236,11 @@ class OrderController extends BaseOrderController
                     return '--';
                 }
             })
-            ->addColumn('version', function ($ip) use($order){
+            ->addColumn('version', function ($ip) use ($order) {
                 $version = getInstallationDetail($ip);
                 if ($version) {
                     $versionLabel = getVersionAndLabel($version->version, $order->product);
+
                     return $versionLabel;
                 } else {
                     return '--';
@@ -247,10 +249,10 @@ class OrderController extends BaseOrderController
               ->addColumn('active', function ($ip) {
                   $version = getInstallationDetail($ip);
                   if ($version) {
-                    return getDateHtml($version->updated_at).'&nbsp;'.installationStatusLabel($version->updated_at, $version->created_at);
+                      return getDateHtml($version->updated_at).'&nbsp;'.installationStatusLabel($version->updated_at, $version->created_at);
                   } else {
-                    return '--';
-                }
+                      return '--';
+                  }
               })
 
                ->rawColumns(['path', 'ip', 'version', 'active'])
@@ -281,8 +283,6 @@ class OrderController extends BaseOrderController
                 $date = strtotime($subscription->update_ends_at) > 1 ? getExpiryLabel($subscription->update_ends_at) : '--';
                 $licdate = strtotime($subscription->ends_at) > 1 ? getExpiryLabel($subscription->ends_at) : '--';
                 $supdate = strtotime($subscription->support_ends_at) > 1 ? getExpiryLabel($subscription->support_ends_at) : '--';
-                
-                
             }
             $invoice = $this->invoice->where('id', $order->invoice_id)->first();
 

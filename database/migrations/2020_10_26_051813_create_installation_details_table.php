@@ -18,7 +18,9 @@ class CreateInstallationDetailsTable extends Migration
             $table->string('installation_path')->nullable();
             $table->string('installation_ip')->nullable();
             $table->string('version')->nullable();
-            $table->timestamp('last_actve')->nullable();
+            $table->timestamp('last_active')->nullable();
+            $table->integer('order_id')->unsigned();
+            $table->foreign('order_id')->references('id')->on('orders');
             $table->timestamps();
         });
     }

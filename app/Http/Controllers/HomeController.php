@@ -408,40 +408,4 @@ class HomeController extends BaseHomeController
         return response()->json($message);
     }
 
-    
-   public function updateInstallationDetails(Request $request)
-   {
-      $v = \Validator::make($request->all(), [
-            'lic_code' => 'required',
-            'version' => 'required',
-            'path' => 'required',
-            'ip' => 'required',
-        ]);
-        if ($v->fails()) {
-            $error = $v->errors();
-
-            return response()->json(compact('error'));
-        }
-    try{
-        $licCode = $request->input('lic_code')
-        $version = $request->input('version');
-        $path = $request->input('path');
-        $ip = $request->input('ip');
-        $orderForLicense = Order::all()->filter(function ($order) use ($licCode) {
-                    if ($order->serial_key == $licenseCode) {
-                        return $order;
-                    }
-                });
-        if (count($orderForLicense) > 0) {
-        InstallationDetail::updateOrCreate(['installation_path'=>$path],['installation_path'=>$path, 'installation_ip'=>$ip,'version'=>$version]);
-         $message = ['status' => 'success', 'message' => 'Installation details saved'];
-        } else {
-            $message = ['status' => 'success', 'message' => 'Installation details not saved'];
-        }
-
-    } catch(\Exception $ex) {
-        $message = ['fails' => 'success', 'message' => $ex->getMessage()];
-    }
-    return response()->json($message);
-   }
 }

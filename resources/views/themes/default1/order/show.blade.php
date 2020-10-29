@@ -132,7 +132,7 @@ Order
                                                    </td>
                                                </tr>
                                                @if ($licenseStatus)
-                                                   <!-- <tr>
+                                                   <tr>
 
                                                        <td>
                                                            <label name="domain">
@@ -144,21 +144,8 @@ Order
                                                            <button class='class="btn btn-sm btn-danger btn-xs' style="width:max-content;border:none;" id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}"><i class="fas fa-file-import" style='color:white;' {!! tooltip('Reissue&nbsp;License') !!}</i>
                                                            </button>
                                                        </td>
-                                                   </tr> -->
-                                                   <!-- <tr>
-                                                       <td><b>Installation Path | IP:</b></td>
-                                                       @if(count($installationDetails['installed_path']) > 0)
-                                                           <td>@foreach($installationDetails['installed_path'] as $paths)
-                                                                   <li>{!! $paths !!}</li>
-                                                               @endforeach
-                                                           </td>
-                                                       @else
-                                                           <td>
-                                                               No Active Installation
-                                                           </td>
-                                                       @endif
-                                                       <td></td>
-                                                   </tr> -->
+                                                   </tr>
+                                                
 
                                                   
                                                    <tr>

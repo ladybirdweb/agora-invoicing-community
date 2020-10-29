@@ -442,14 +442,14 @@ class ClientController extends BaseClientController
             if ($subscription) {
                 $date = strtotime($subscription->update_ends_at) > 1 ? getExpiryLabel($subscription->update_ends_at, 'badge') : '--';
                 $licdate = strtotime($subscription->ends_at) > 1 ? getExpiryLabel($subscription->ends_at, 'badge') : '--';
-                $versionLabel = getVersionAndLabel($subscription->version, $order->product, 'badge');
+                // $versionLabel = getVersionAndLabel($subscription->version, $order->product, 'badge');
             }
 
             $installationDetails = [];
             $licenseStatus = StatusSetting::pluck('license_status')->first();
             if ($licenseStatus == 1) {
-                $cont = new \App\Http\Controllers\License\LicenseController();
-                $installationDetails = $cont->searchInstallationPath($order->serial_key, $order->product);
+                // $cont = new \App\Http\Controllers\License\LicenseController();
+                // $installationDetails = $cont->searchInstallationPath($order->serial_key, $order->product);
             }
             $product = $order->product()->first();
             $price = $product->price()->first();

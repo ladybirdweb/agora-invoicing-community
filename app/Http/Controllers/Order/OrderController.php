@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Order;
 
 use App\Http\Requests\Order\OrderRequest;
 use App\Model\Common\StatusSetting;
+use App\Model\Order\InstallationDetail;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
 use App\Model\Order\Order;
@@ -122,7 +123,13 @@ class OrderController extends BaseOrderController
                 return $model->product_name;
             })
             ->addColumn('version', function ($model) {
-                return getVersionAndLabel($model->product_version, $model->product);
+                $installedVersions = InstallationDetail::where('order_id',$model->id)->pluck('version')->toArray();
+                if(count($installedVersions)) {
+                       return max($installedVersions);
+                } else {
+                    return '--';
+                }
+                // return getVersionAndLabel($model->product_version, $model->product);
             })
             ->addColumn('number', function ($model) {
                 $orderLink = '<a href='.url('orders/'.$model->id).'>'.$model->number.'</a>';
@@ -207,39 +214,43 @@ class OrderController extends BaseOrderController
         $order = $this->order->findOrFail($orderId);
         $licenseStatus = StatusSetting::pluck('license_status')->first();
         $installationDetails = [];
-        $noOfAllowedInstallation = '';
-        $getInstallPreference = '';
-        if ($licenseStatus == 1) {
-            $cont = new \App\Http\Controllers\License\LicenseController();
-            $installationDetails = $cont->searchInstallationPath($order->serial_key, $order->product);
-            $noOfAllowedInstallation = $cont->getNoOfAllowedInstallation($order->serial_key, $order->product);
-            $getInstallPreference = $cont->getInstallPreference($order->serial_key, $order->product);
-        }
-
-        return \DataTables::of($installationDetails['installed_ip'])
+        
+        $cont = new \App\Http\Controllers\License\LicenseController();
+        $installationDetails = $cont->searchInstallationPath($order->serial_key, $order->product);
+        return \DataTables::of($installationDetails['installed_path'])
             ->addColumn('path', function ($ip) {
+                // $installationDetails
                 $details = getInstallationDetail($ip);
                 if ($details) {
                     return $details->installation_path;
+                } else {
+                    return '--';
                 }
             })
             ->addColumn('ip', function ($ip) {
                 $ip = getInstallationDetail($ip);
                 if ($ip) {
                     return $ip->installation_ip;
+                } else {
+                    return '--';
                 }
             })
-            ->addColumn('version', function ($ip) {
+            ->addColumn('version', function ($ip) use($order){
                 $version = getInstallationDetail($ip);
                 if ($version) {
-                    return $version->version;
+                    $versionLabel = getVersionAndLabel($version->version, $order->product);
+                    return $versionLabel;
+                } else {
+                    return '--';
                 }
             })
               ->addColumn('active', function ($ip) {
                   $version = getInstallationDetail($ip);
                   if ($version) {
-                      return $version->updated_at;
-                  }
+                    return getDateHtml($version->updated_at).'&nbsp;'.installationStatusLabel($version->updated_at, $version->created_at);
+                  } else {
+                    return '--';
+                }
               })
 
                ->rawColumns(['path', 'ip', 'version', 'active'])
@@ -270,8 +281,8 @@ class OrderController extends BaseOrderController
                 $date = strtotime($subscription->update_ends_at) > 1 ? getExpiryLabel($subscription->update_ends_at) : '--';
                 $licdate = strtotime($subscription->ends_at) > 1 ? getExpiryLabel($subscription->ends_at) : '--';
                 $supdate = strtotime($subscription->support_ends_at) > 1 ? getExpiryLabel($subscription->support_ends_at) : '--';
-                $lastActivity = getDateHtml($subscription->updated_at).'&nbsp;'.installationStatusLabel($subscription->updated_at, $subscription->created_at);
-                $versionLabel = getVersionAndLabel($subscription->version, $order->product);
+                
+                
             }
             $invoice = $this->invoice->where('id', $order->invoice_id)->first();
 
@@ -285,15 +296,12 @@ class OrderController extends BaseOrderController
             $getInstallPreference = '';
             if ($licenseStatus == 1) {
                 $cont = new \App\Http\Controllers\License\LicenseController();
-                $installationDetails = $cont->searchInstallationPath($order->serial_key, $order->product);
                 $noOfAllowedInstallation = $cont->getNoOfAllowedInstallation($order->serial_key, $order->product);
-                $getInstallPreference = $cont->getInstallPreference($order->serial_key, $order->product);
             }
-            // dd($installationDetails);
             $allowDomainStatus = StatusSetting::pluck('domain_check')->first();
 
             return view('themes.default1.order.show',
-                compact('user', 'order', 'subscription', 'licenseStatus', 'installationDetails', 'allowDomainStatus', 'noOfAllowedInstallation', 'getInstallPreference', 'lastActivity', 'versionLabel', 'date', 'licdate', 'supdate'));
+                compact('user', 'order', 'subscription', 'licenseStatus', 'installationDetails', 'allowDomainStatus', 'noOfAllowedInstallation', 'lastActivity', 'versionLabel', 'date', 'licdate', 'supdate'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }

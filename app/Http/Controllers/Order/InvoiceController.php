@@ -225,9 +225,8 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $invoiceItems = $invoice->invoiceItem()->get();
             $user = $this->user->find($invoice->user_id);
             $order = Order::getOrderLink($invoice->order_id, 'orders');
-            $symbol = Currency::where('code', $currency)->value('symbol');
 
-            return view('themes.default1.invoice.show', compact('invoiceItems', 'invoice', 'user', 'currency', 'symbol', 'order'));
+            return view('themes.default1.invoice.show', compact('invoiceItems', 'invoice', 'user', 'order'));
         } catch (\Exception $ex) {
             app('log')->warning($ex->getMessage());
 
@@ -483,11 +482,10 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             }
             $order = $this->order->getOrderLink($invoice->orderRelation()->value('order_id'), 'my-order');
             // $order = Order::getOrderLink($invoice->order_id);
-            $currency = userCurrency($user->id);
+            $currency = $invoice->currency;
             $gst = TaxOption::select('tax_enable', 'Gst_No')->first();
-            $symbol = $currency['currency'];
-            ini_set('max_execution_time', '0');
-
+            $symbol = $invoice->currency;;
+            // ini_set('max_execution_time', '0');
             $pdf = \PDF::loadView('themes.default1.invoice.newpdf', compact('invoiceItems', 'invoice', 'user', 'currency', 'symbol', 'gst', 'order'));
 
             return $pdf->download($user->first_name.'-invoice.pdf');

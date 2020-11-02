@@ -185,7 +185,7 @@
                                        
                                             <tr>
                                                  <?php
-                                                $bifurcateTax = bifurcateTax($taxDetails[0],$taxDetails[1],\Auth::user()->currency, \Auth::user()->state, $taxAmt);
+                                                $bifurcateTax = bifurcateTax($taxDetails[0],$taxDetails[1],$symbol, \Auth::user()->state, $taxAmt);
                                                 ?>
                                                 <th>
 

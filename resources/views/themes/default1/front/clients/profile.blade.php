@@ -102,8 +102,7 @@ input:checked + .slider:before {
     color:#555;
 }
 </style>
- <link rel="stylesheet" href="{{asset('client/css/selectpicker.css')}}" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/css/bootstrap-select.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/css/bootstrap-select.min.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 
@@ -250,7 +249,7 @@ input:checked + .slider:before {
                     <!-- name -->
                     <label for"country" class="required">Country</label>
                     <?php $countries = \App\Model\Common\Country::pluck('nicename', 'country_code_char2')->toArray(); ?>
-                    {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],null,['class' => 'form-control input-lg selectpicker','data-live-search-style'=>"startsWith",'data-live-search'=>'true','data-live-search-placeholder'=>'Search','data-dropup-auto'=>'false','data-size'=>'10','id'=>'country','onChange'=>'getCountryAttr(this.value);','disabled'=>'disabled']) !!}
+                    {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],null,['class' => 'form-control input-lg selectpicker','data-live-search-style'=>"startsWith",'data-live-search'=>'true','data-live-search-placeholder'=>'Search','data-dropup-auto'=>'false','data-size'=>'10','id'=>'country','onChange'=>'getCountryAttr(this.value);','readonly'=>'readonly']) !!}
 
 
                     <h6 id="countryCheck"></h6>
@@ -628,7 +627,7 @@ input:checked + .slider:before {
 
 
 </script>
-<script src="{{asset('common/js/licCode.js')}}"></script>
+<!-- <script src="{{asset('common/js/licCode.js')}}"></script> -->
 
 @stop
 

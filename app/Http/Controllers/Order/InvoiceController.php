@@ -484,7 +484,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             // $order = Order::getOrderLink($invoice->order_id);
             $currency = $invoice->currency;
             $gst = TaxOption::select('tax_enable', 'Gst_No')->first();
-            $symbol = $invoice->currency;;
+            $symbol = $invoice->currency;
             // ini_set('max_execution_time', '0');
             $pdf = \PDF::loadView('themes.default1.invoice.newpdf', compact('invoiceItems', 'invoice', 'user', 'currency', 'symbol', 'gst', 'order'));
 

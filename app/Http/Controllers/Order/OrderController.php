@@ -35,7 +35,7 @@ class OrderController extends BaseOrderController
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('admin',['except'=>['getInstallationDetails']]);
+        $this->middleware('admin', ['except'=>['getInstallationDetails']]);
 
         $order = new Order();
         $this->order = $order;

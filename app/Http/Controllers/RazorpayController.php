@@ -94,7 +94,6 @@ class RazorpayController extends Controller
 
                 return redirect('checkout')->with('fails', 'Your Payment was declined. '.$e->getMessage().'. Please try again or try the other gateway');
             } catch (\Exception $e) {
-
                 return redirect('checkout')->with('fails', 'Your Payment was declined. '.$e->getMessage().'. Please try again or try the other gateway');
             }
         }

@@ -20,7 +20,7 @@
 @section('main-class') "main shop" @stop
 @section('content')
 <?php
- $taxAmt = 0;
+$taxAmt = 0;
 $cartSubtotalWithoutCondition = 0;
  
 use Razorpay\Api\Api;
@@ -36,13 +36,8 @@ for ($i = 0; $i < $length; $i++) {
 return $randomString;
 }
  $api = new Api($rzp_key, $rzp_secret);
-$displayCurrency = \Auth::user()->currency;
-$symbol = \Auth::user()->currency;
-if ($symbol == 'INR'){
-
-
-$exchangeRate= '';
-
+$currency = $invoice->currency;
+if ($currency == 'INR'){
 
 $orderData = [
 'receipt'         => 3456,
@@ -55,37 +50,25 @@ $orderData = [
 
 
 } else {
- 
- $url = "http://apilayer.net/api/live?access_key=$apilayer_key";
- $exchange = json_decode(file_get_contents($url));
-
- $exchangeRate = $exchange->quotes->USDINR;
- // dd($exchangeRate);
- $displayAmount =$exchangeRate * $invoice->grand_total ;
-
 
  $orderData = [
 'receipt'         => 3456,
-'amount'          =>  round($displayAmount)*100, // 2000 rupees in paise
+'amount'          =>  round($invoice->grand_total*100), // 2000 rupees in paise
 
-'currency'        => 'INR',
+'currency'        => $currency,
 'payment_capture' => 0 // auto capture
      
 ];
 }
 $razorpayOrder = $api->order->create($orderData);
 $razorpayOrderId = $razorpayOrder['id'];
-$_SESSION['razorpay_order_id'] = $razorpayOrderId;
-$displayAmount = $amount = $orderData['amount'];
+
 
 
 
 $data = [
-
-
     "key"               => $rzp_key,
     "name"              => 'Faveo Helpdesk',
-    "currency"          => 'INR',
      "prefill"=> [
         "contact"=>    \Auth::user()->mobile_code .\Auth::user()->mobile,
         "email"=>      \Auth::user()->email,
@@ -101,9 +84,7 @@ $data = [
     "State"             => \Auth::user()->state,
     "City"              => \Auth::user()->town,
     "Zip"               => \Auth::user()->zip,
-    "Currency"          => \Auth::user()->currency,
-    "Amount Paid"   => $invoice->grand_total,
-    "Exchange Rate"   =>  $exchangeRate,
+    "Amount Paid"       => $invoice->grand_total*100,
 
 
 
@@ -115,16 +96,8 @@ $data = [
     "order_id"          => $razorpayOrderId,
 ];
 
-if ($displayCurrency !== 'INR')
-{
-    $data['display_currency']  = 'USD';
-    $data['display_amount']    =$invoice->grand_total;
-    
-}
+
 $json = json_encode($data);
-
-
- $currency = \Auth::user()->currency;
 
 
 

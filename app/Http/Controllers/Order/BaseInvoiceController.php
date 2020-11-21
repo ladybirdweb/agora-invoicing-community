@@ -2,19 +2,14 @@
 
 namespace App\Http\Controllers\Order;
 
-use App\Http\Controllers\Front\CartController;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
 use App\Model\Payment\Promotion;
-use App\Model\Payment\Tax;
-use App\Model\Payment\TaxClass;
 use App\Model\Payment\TaxOption;
-use App\User;
 use Illuminate\Http\Request;
 
 class BaseInvoiceController extends ExtendedBaseInvoiceController
 {
-
     public function getExpiryStatus($start, $end, $now)
     {
         $whenDateNotSet = $this->whenDateNotSet($start, $end);

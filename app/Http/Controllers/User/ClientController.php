@@ -70,7 +70,7 @@ class ClientController extends AdvanceSearchController
     {
         $baseQuery = $this->getBaseQueryForUserSearch($request);
 
-        return\ DataTables::of($baseQuery)
+        return\DataTables::of($baseQuery)
                         ->addColumn('checkbox', function ($model) {
                             $isAccountManager = User::where('account_manager', $model->id)->get();
                             $isSalesManager = User::where('manager', $model->id)->get();

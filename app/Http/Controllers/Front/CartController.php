@@ -70,7 +70,7 @@ class CartController extends BaseCartController
                 Session::put('plan_id', $subscription);
             }
             $id = $request->input('id');
-            
+
             if (! property_exists($id, Cart::getContent())) {
                 $items = $this->addProduct($id);
                 \Cart::add($items); //Add Items To the Cart Collection
@@ -107,7 +107,7 @@ class CartController extends BaseCartController
             }
             $product = Product::find($id);
             $plan = $product->planRelation->find($planid);
-           
+
             if ($plan) { //If Plan For a Product exists
                 $quantity = $plan->planPrice->first()->product_quantity;
                 //If Product quantity is null(when show agent in Product Seting Selected),then set quantity as 1;
@@ -117,7 +117,6 @@ class CartController extends BaseCartController
                 $agents = $agtQty != null ? $agtQty : 0;
                 $currency = userCurrencyAndPrice('', $plan);
                 $this->checkProductsHaveSimilarCurrency($currency['currency']);
-                
             } else {
                 throw new \Exception('Product cannot be added to cart. No plan exists.');
             }
@@ -133,16 +132,15 @@ class CartController extends BaseCartController
     }
 
     /**
-     * If multiple products are being added to cart, this method checks all the products have similar currency
+     * If multiple products are being added to cart, this method checks all the products have similar currency.
      * @param  string $currency Currency of the product to be added to cart
      */
     private function checkProductsHaveSimilarCurrency($currency)
     {
-       $carts = \Cart::getContent();
+        $carts = \Cart::getContent();
         foreach ($carts as $cart) {
-            if($cart->attributes['currency'] != $currency) {
-                throw new \Exception("All products added to the cart should have similar currency");
-                
+            if ($cart->attributes['currency'] != $currency) {
+                throw new \Exception('All products added to the cart should have similar currency');
             }
         }
     }

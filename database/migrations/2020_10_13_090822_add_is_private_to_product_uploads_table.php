@@ -15,10 +15,10 @@ class AddIsPrivateToProductUploadsTable extends Migration
     {
         Schema::table('product_uploads', function (Blueprint $table) {
             if (! Schema::hasColumn('product_uploads', 'is_private')) {
-            $table->boolean('is_private')->default(0);
+                $table->boolean('is_private')->default(0);
             }
             if (! Schema::hasColumn('product_uploads', 'is_restricted')) {
-            $table->boolean('is_restricted')->default(0);
+                $table->boolean('is_restricted')->default(0);
             }
         });
     }

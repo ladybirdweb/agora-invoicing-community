@@ -15,7 +15,7 @@ class AddSoftDeletesToUsersTable extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             if (! Schema::hasColumn('users', 'deleted_at')) {
-            $table->softDeletes();
+                $table->softDeletes();
             }
         });
     }

@@ -363,8 +363,6 @@ class PageController extends Controller
                     ->plans($product['shoping_cart_link'], $product['id']);
                     $trasform[$product['id']]['url'] = "<input type='submit' 
                     value='Order Now' class='btn btn-dark btn-modern btn-outline py-2 px-4'></form>";
-
-                  
                 }
                 $template = $this->transform('cart', $data, $trasform);
             }

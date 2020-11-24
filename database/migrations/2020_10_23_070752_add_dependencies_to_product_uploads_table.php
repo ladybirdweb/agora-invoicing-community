@@ -15,7 +15,7 @@ class AddDependenciesToProductUploadsTable extends Migration
     {
         Schema::table('product_uploads', function (Blueprint $table) {
             if (! Schema::hasColumn('product_uploads', 'dependencies')) {
-            $table->json('dependencies')->nullable();
+                $table->json('dependencies')->nullable();
             }
         });
     }

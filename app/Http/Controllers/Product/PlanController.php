@@ -65,7 +65,7 @@ class PlanController extends ExtendedPlanController
         $new_plan = Plan::select('id', 'name', 'days', 'product')->get();
         $defaultCurrency = Setting::where('id', 1)->value('default_currency');
 
-        return\ DataTables::of($new_plan)
+        return\DataTables::of($new_plan)
                         ->addColumn('checkbox', function ($model) {
                             return "<input type='checkbox' class='plan_checkbox' 
                             value=".$model->id.' name=select[] id=check>';
@@ -275,7 +275,7 @@ class PlanController extends ExtendedPlanController
                     //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
                 }
             }
-             echo "<div class='alert alert-success alert-dismissable'>
+            echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
                     <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
                     /* @scrutinizer ignore-type */\Lang::get('message.success').'

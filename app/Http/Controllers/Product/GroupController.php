@@ -49,7 +49,7 @@ class GroupController extends Controller
     {
         $product_group = ProductGroup::select('id', 'name')->get();
 
-        return\ DataTables::of($product_group)
+        return\DataTables::of($product_group)
         // return \Datatable::of($this->group->select('id', 'name')->get())
 
                        ->addColumn('checkbox', function ($model) {

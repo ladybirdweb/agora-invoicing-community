@@ -315,11 +315,6 @@ class PageController extends Controller
     public function pageTemplates(int $templateid, int $groupid)
     {
         try {
-            // $currency = userCurrency();
-            // \Session::put('currency', $currency);
-            // if (! \Session::has('currency')) {
-            //     \Session::put('currency', 'INR');
-            // }
             $data = PricingTemplate::findorFail($templateid)->data;
             $headline = ProductGroup::findorFail($groupid)->headline;
             $tagline = ProductGroup::findorFail($groupid)->tagline;
@@ -369,8 +364,7 @@ class PageController extends Controller
                     $trasform[$product['id']]['url'] = "<input type='submit' 
                     value='Order Now' class='btn btn-dark btn-modern btn-outline py-2 px-4'></form>";
 
-                    $trasform[$product['id']]['url'] = "<input type='submit' 
-                    value='Order Now' class='btn btn-dark btn-modern btn-outline py-2 px-4'></form>";
+                  
                 }
                 $template = $this->transform('cart', $data, $trasform);
             }

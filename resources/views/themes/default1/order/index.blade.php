@@ -122,14 +122,7 @@ Orders
                         </select>
 
                     </div>
-
-           
-
-            
-
-       
-
-        </div>
+                </div>
 
            <div class='row'>
                 <div class="col-md-6">
@@ -149,7 +142,7 @@ Orders
         <div id="response"></div>
         <h3 class="card-title">Orders</h3>
         <div class="card-tools">
-            <a href="{{url('invoice/generate')}}" class="btn btn-default btn-sm pull-right"><span class="fas fa-plus"></span>&nbsp;Place New Order</a>
+            <a href="{{url('invoice/generate')}}" class="btn btn-default btn-sm pull-right"><span class="fas fa-plus"></span>&nbsp;Generate new invoice</a>
 
 
         </div>

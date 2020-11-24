@@ -788,7 +788,7 @@ class PricingTemplateSeeder extends Seeder
                                      
                                 </div>
                                 <div class="plan-footer">
-                                <div class="subscription">{{subscription}}</div><br/>
+                                <div class="subscription table-responsive">{{subscription}}</div><br/>
                                 <div>{{url}} </div>
                                 </div>
                                 

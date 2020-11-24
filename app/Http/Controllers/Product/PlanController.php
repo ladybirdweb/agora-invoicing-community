@@ -275,7 +275,7 @@ class PlanController extends ExtendedPlanController
                     //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
                 }
             }
-            echo "<div class='alert alertcomposer require felixkiss/uniquewith-validator-success alert-dismissable'>
+             echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
                     <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
                     /* @scrutinizer ignore-type */\Lang::get('message.success').'

@@ -110,8 +110,9 @@ input:checked + .slider:before {
                     <div class="col-md-6 form-group {{ $errors->has('password') ? 'has-error' : '' }}">
                         <!-- last name -->
                         {!! Form::label('password',Lang::get('message.password'),['class'=>'required']) !!}
-                        <!-- {!! Form::password('password',null,['class' => 'form-control']) !!} -->
-                        <input type= "password" value="{{$githubFileds->password}}" name="password" id="git_password" class="form-control git_password">
+                         <!-- {!! Form::password('password',['class' => 'form-control', 'id'=>'password']) !!}
+                        {!! Form::password('password',null,['class' => 'form-control']) !!} -->
+                        <input type= "password" value="" name="password" id="git_password" class="form-control git_password">
                         <h6 id="pass"></h6>
                     </div>
 

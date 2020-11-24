@@ -14,6 +14,7 @@ class AddProcessingFeeToInvoices extends Migration
     public function up()
     {
         Schema::table('invoices', function (Blueprint $table) {
+            if (! Schema::hasColumn('invoices', 'processing_fee')) {
             $table->string('processing_fee')->nullable();
         });
     }

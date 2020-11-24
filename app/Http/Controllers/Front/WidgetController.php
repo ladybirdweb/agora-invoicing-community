@@ -91,7 +91,7 @@ class WidgetController extends Controller
 
         try {
             $mailchimpTextBox = Widgets::where('allow_mailchimp', 1)->count();
-            if ($mailchimpTextBox) {
+            if ($mailchimpTextBox && $request->allow_mailchimp == 1) {
                 throw new \Exception('Allow Mailchimp textbox can be selected as Yes only for one of the footers. It has alrerady been selected for a footer. Please change it to No to activate mailchimp for this footer.');
             }
             $this->widget->fill($request->input())->save();

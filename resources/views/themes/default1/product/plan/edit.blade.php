@@ -152,8 +152,9 @@
 
             <div class="col-md-4 form-group">
               <!-- last name -->
-              <label data-toggle="tooltip" data-placement="top" title="If '0' Agents Selected, Plan will be for Unlimited Agents">
-                {!! Form::label('agents','No. of Agents',['class'=>'required']) !!}</label>
+                 <i class='fa fa-info-circle' style='cursor: help; font-size: small; color: rgb(60, 141, 188)'<label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="If '0' Agents Selected, Plan will be for Unlimited Agents.">
+                        </label></i>
+                {!! Form::label('agents','No. of Agents',['class'=>'required']) !!}
               {!! Form::number("no_of_agents",$agentQuantity,['class' => 'form-control' ,'disabled'=>'disabled','id'=>'agentquant','placeholder'=>'Pricing for No. of Agents']) !!}
 
             </div>
@@ -180,6 +181,12 @@
   {!! Form::close() !!}
 
   <script>
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip({
+            container : 'body'
+        });
+    });
+
      $('ul.nav-sidebar a').filter(function() {
         return this.id == 'plan';
     }).addClass('active');

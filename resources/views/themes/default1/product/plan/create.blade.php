@@ -37,7 +37,11 @@
                   <select name="product" value="Choose" class="form-control" id="planproduct" onchange="myProduct()">
                     <option value="">Choose</option>
                     @foreach($products as $key=>$product)
-                      <option value={{ $key }}>{{ $product }}</option>
+                     @if (Request::old('product') == $key)
+                     <option value={{$key}} selected>{{$product}}</option>
+                     @else
+                     <option value={{$key}}>{{$product}}</option>
+                     @endif
                     @endforeach
                   </select>
                   <!--  {!! Form::select('product',[''=>'Select','Products'=>$products],null,['class' => 'form-control','id'=>'planproduct']) !!} -->
@@ -53,7 +57,11 @@
                     <select name="days" value="Choose" class="form-control" id="plandays">
                       <option value="">Choose</option>
                       @foreach($periods as $key=>$period)
-                        <option value={{ $key }}>{{ $period }}</option>
+                       @if (Request::old('days') == $key)
+                     <option value={{$key}} selected>{{$period}}</option>
+                     @else
+                     <option value={{$key}}>{{$period}}</option>
+                     @endif
                       @endforeach
                     </select>&nbsp;
                     <span class="input-group-text" id="period"><i class="fa fa-plus"></i></span>
@@ -84,13 +92,20 @@
 
                           </select>
                         </td>
-
                         <td>
                           <select name="currency[]" class="form-control">
+                             <option value="">
+                                Choose
+                              </option>
                             @foreach ($currency as $code => $name)
+                            @if (Request::old('currency') && in_array($code, Request::old('currency')))
+                             <option value={{$code}} selected>{{$name}}</option>
+                             @else
                               <option value="{{ $code }}">
                                 {{ $name }}
                               </option>
+                               @endif
+                             
                             @endforeach
                           </select>
 
@@ -135,9 +150,10 @@
 
                 <div class="col-md-6 form-group">
                   <!-- last name -->
-                  <label data-toggle="tooltip" data-placement="top"
-                    title="If '0' Agents Selected, Plan will be for Unlimited Agents">
-                    {!! Form::label('agents','No. of Agents',['class'=>'required']) !!}</label>
+                  <i class='fa fa-info-circle' style='cursor: help; font-size: small; color: rgb(60, 141, 188)'<label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="If '0' Agents Selected, Plan will be for Unlimited Agents.">
+                        </label></i>
+                  
+                    {!! Form::label('agents','No. of Agents',['class'=>'required']) !!}
                   {!! Form::number("no_of_agents",null,['class' => 'form-control'
                   ,'disabled'=>'disabled','id'=>'agentquant','placeholder'=>'Pricing for No. of Agents']) !!}
 
@@ -168,6 +184,9 @@
 
 
 <script>
+  $(document).ready(function(){
+    myProduct();
+  })
   /**
    * Add Periods In the same Modal as Create Plan
    *
@@ -197,6 +216,9 @@
 
           <td>
             <select name="currency[]" class="form-control">
+            <option value="">
+                  Choose
+                </option>
               @foreach ($currency as $code => $name)
                 <option value="{{ $code }}">
                   {{ $name }}

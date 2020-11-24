@@ -419,7 +419,7 @@ if($script){
                             $mailchimpKey = \App\Model\Common\Mailchimp\MailchimpSetting::value('api_key');
                             ?>
                            @if($widgets != null)
-                                 @component('mini_views.footer_widget', ['title'=> $widgets->name,'ulClass'=> 'social-icons', 'colClass'=>"col-md-6 col-lg-$class mb-$class mb-lg-0"])
+                                 @component('mini_views.footer_widget', ['title'=> $widgets->name, 'colClass'=>"col-md-6 col-lg-$class mb-$class mb-lg-0"])
                                      <p class="pr-1"> {!! $widgets->content !!}</p>
                                      {!! $tweetDetails !!}
 
@@ -436,9 +436,11 @@ if($script){
                                          </div>
                                      @endif
                                      @if($widgets->allow_social_media)
+                                     <ul class="social-icons">
                                       @foreach($social as $media)
                                 <li class="{{$media->class}}"><a href="{{$media->link}}" target="_blank" title="{{ucfirst($media->name)}}"><i class="{{$media->fa_class}}"></i></a></li>
                             @endforeach
+                          </ul>
                             @endif
                                  @endcomponent
                             @endif
@@ -451,7 +453,7 @@ if($script){
                           }
                             ?>
                             @if($widgets != null)
-                                 @component('mini_views.footer_widget', ['title'=> $widgets->name,'ulClass'=> 'social-icons','colClass'=>"col-md-6 col-lg-$class mb-$class mb-lg-0"])
+                                 @component('mini_views.footer_widget', ['title'=> $widgets->name,'colClass'=>"col-md-6 col-lg-$class mb-$class mb-lg-0"])
                                  <p class="pr-1"> {!! $widgets->content !!}</p>
                                      {!! $tweetDetails !!}
                                      @if($mailchimpKey != null && $widgets->allow_mailchimp ==1)
@@ -462,10 +464,15 @@ if($script){
                                 </span>
                                          </div>
                                          @endif
+                                         <br>
                                          @if($widgets->allow_social_media)
+                                         <ul class="social-icons">
                                           @foreach($social as $media)
-                                <li class="{{$media->class}}"><a href="{{$media->link}}" target="_blank" title="{{ucfirst($media->name)}}"><i class="{{$media->fa_class}}"></i></a></li>
+                                          
+                                <li style="display:inline-block;" class="{{$media->class}}"><a href="{{$media->link}}" target="_blank" title="{{ucfirst($media->name)}}"><i class="{{$media->fa_class}}"></i></a></li>
+                              
                             @endforeach
+                            </ul>
                             @endif
                                  @endcomponent
                             @endif
@@ -479,7 +486,7 @@ if($script){
 
                             ?>
                        @if($widgets != null)
-                            @component('mini_views.footer_widget', ['title'=> $widgets->name, 'ulClass'=> 'social-icons','colClass'=>"col-md-6 col-lg-$class mb-$class mb-lg-0"])
+                            @component('mini_views.footer_widget', ['title'=> $widgets->name,'colClass'=>"col-md-6 col-lg-$class mb-$class mb-lg-0"])
                             <p class="pr-1"> {!! $widgets->content !!}</p>
                               {!! $tweetDetails !!}
                               @if($mailchimpKey != null && $widgets->allow_mailchimp ==1)
@@ -492,10 +499,12 @@ if($script){
                                          @endif
                                          <br>
                                          @if($widgets->allow_social_media)
+                                          <ul class="social-icons">
                                           @foreach($social as $media)
 
                                 <li class="{{$media->class}}"><a href="{{$media->link}}" target="_blank" title="{{ucfirst($media->name)}}"><i class="{{$media->fa_class}}"></i></a></li>
                             @endforeach
+                          </ul>
                             @endif
                                  <!-- @if($set->company_email != NULL)
                                      <li class="mb-1">
@@ -533,7 +542,7 @@ if($script){
                             ?>
 
                       @if($widgets != null)
-                        @component('mini_views.footer_widget', ['title'=> $widgets->name, 'ulClass'=> 'social-icons', 'colClass'=>"col-md-6 col-lg-$class mb-$class mb-lg-0"])
+                        @component('mini_views.footer_widget', ['title'=> $widgets->name,'colClass'=>"col-md-6 col-lg-$class mb-$class mb-lg-0"])
                         <p class="pr-1"> {!! $widgets->content !!}</p>
                                      {!! $tweetDetails !!}
                                       @if($mailchimpKey != null && $widgets->allow_mailchimp ==1)
@@ -546,10 +555,11 @@ if($script){
                                          @endif
                                          <br>
                             @if($widgets->allow_social_media)
-
+                             <ul class="social-icons">
                             @foreach($social as $media)
                                 <li class="{{$media->class}}"><a href="{{$media->link}}" target="_blank" title="{{ucfirst($media->name)}}"><i class="{{$media->fa_class}}"></i></a></li>
                             @endforeach
+                          </ul>
                             @endif
                         @endcomponent
                       @endif

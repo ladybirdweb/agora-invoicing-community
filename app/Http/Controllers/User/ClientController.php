@@ -238,7 +238,7 @@ class ClientController extends AdvanceSearchController
             $user->ip = $location['ip'];
 
             $user->save();
-            if (emailSendingStatus() && ! $user->active) {
+            if (emailSendingStatus()) {
                 $this->sendWelcomeMail($user);
             }
             $mailchimpStatus = StatusSetting::first()->value('mailchimp_status');
@@ -457,20 +457,23 @@ class ClientController extends AdvanceSearchController
 
     public function sendWelcomeMail($user)
     {
+        $settings = new \App\Model\Common\Setting();
+        $setting = $settings->where('id', 1)->first();
+        $from = $setting->email;
+        $to = $user->email;
+        if(! $user->active) {
         $activate_model = new AccountActivate();
         $str = str_random(40);
         $activate = $activate_model->create(['email' => $user->email, 'token' => $str]);
         $token = $activate->token;
         $url = url("activate/$token");
         //check in the settings
-        $settings = new \App\Model\Common\Setting();
-        $setting = $settings->where('id', 1)->first();
+       
         //template
         $templates = new \App\Model\Common\Template();
         $temp_id = $setting->welcome_mail;
         $template = $templates->where('id', $temp_id)->first();
-        $from = $setting->email;
-        $to = $user->email;
+        
         $subject = $template->name;
         $data = $template->data;
         $replace = ['name' => $user->first_name.' '.$user->last_name,
@@ -483,6 +486,13 @@ class ClientController extends AdvanceSearchController
         }
         $mail = new \App\Http\Controllers\Common\PhpMailController();
         $mail->sendEmail($from, $to, $data, $subject, $replace, $type);
+        } else {
+        $loginData = "You have been successfully registered. Your login details are:<br>Email:$user->email<br> Password:demopass";
+
+        $mail = new \App\Http\Controllers\Common\PhpMailController();
+        $mail->sendEmail($from, $to , $loginData, 'Login details '); 
+        }
+       
     }
 
     /**

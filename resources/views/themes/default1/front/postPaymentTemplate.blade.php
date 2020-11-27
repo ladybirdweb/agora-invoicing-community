@@ -15,7 +15,7 @@
            
             @foreach($invoiceItems as $invoiceItem)
             <?php 
-            $currency = \Auth::user()->currency;
+            $currency = $invoice->currency;
             $date = getDateHtml($invoiceItem->created_at);   
             ?>
             <ul>

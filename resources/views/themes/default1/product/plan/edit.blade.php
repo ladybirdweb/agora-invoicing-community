@@ -102,6 +102,9 @@
 
                         <td>
                           <select name="currency[{{ $row['id'] }}]" class="form-control">
+                            <option value="">
+                                Choose
+                              </option>
                             @foreach ($currency as $code => $name)
                               <option value="{{ $code }}" @if ($code === $row['currency'])
                                   {{ 'selected' }}
@@ -228,7 +231,7 @@
         $('#dynamic_table tr:last').after(`
         <tr id="row` + i + `">
           <td>
-            <select name="country_id[]" class="form-control" >
+            <select name="country_id[]" class="form-control selectpicker" >
               <option value="" selected disabled>Choose Country</option>
               @foreach ($countries as $country)
                 <option value="{{$country['country_id']}}">
@@ -240,6 +243,9 @@
 
           <td>
             <select name="currency[]" class="form-control">
+            <option value="">
+              Choose
+            </option>
               @foreach ($currency as $code => $name)
                 <option value="{{ $code }}">
                   {{ $name }}

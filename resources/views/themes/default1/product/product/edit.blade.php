@@ -91,7 +91,7 @@ Edit Product
                                 <div class="col-md-3 form-group {{ $errors->has('type') ? 'has-error' : '' }}">
                                     <!-- last name -->
                                     {!! Form::label('type',Lang::get('message.lic_type')) !!}
-                                    {!! Form::select('type',['Types'=>$type],null,['class' => 'form-control']) !!}
+                                    {!! Form::select('type',[''=>'Choose','Types'=>$type],null,['class' => 'form-control']) !!}
 
                                 </div>
                                 <?php
@@ -155,7 +155,7 @@ Edit Product
                                             <div class="form-group {{ $errors->has('parent') ? 'has-error' : '' }}">
                                                 <!-- last name -->
                                                 {!! Form::label('parent',Lang::get('message.parent')) !!}
-                                                {!! Form::select('parent[]',['Products'=>$products],null,['class' => 'form-control']) !!}
+                                                {!! Form::select('parent[]',[''=>'Choose','Products'=>$products],null,['class' => 'form-control']) !!}
 
                                             </div>
                                         </li>

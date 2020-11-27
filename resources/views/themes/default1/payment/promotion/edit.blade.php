@@ -1,16 +1,16 @@
 @extends('themes.default1.layouts.master')
 @section('title')
-Edit Promotion
+Edit Coupon
 @stop
 @section('content-header')
     <div class="col-sm-6">
-        <h1>Edit Promotion</h1>
+        <h1>Edit Coupon</h1>
     </div>
     <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-            <li class="breadcrumb-item"><a href="{{url('promotions')}}"><i class="fa fa-dashboard"></i> All Promotions</a></li>
-            <li class="breadcrumb-item active">Edit Promotion</li>
+            <li class="breadcrumb-item"><a href="{{url('promotions')}}"><i class="fa fa-dashboard"></i> All Coupons</a></li>
+            <li class="breadcrumb-item active">Edit Coupon</li>
         </ol>
     </div><!-- /.col -->
 

@@ -132,8 +132,8 @@ $json = json_encode($data);
                                 <th class="product-name">
                                     Product
                                 </th>
-                                <th class="product-invoice">
-                                    Invoice No.
+                                <th>
+                                    Invoice
                                 </th>
                                 <th class="product-version">
                                     Version
@@ -455,7 +455,7 @@ $json = json_encode($data);
                     
                  <div class="form-group">
                    <div class="col-md-12" id="not-razor">
-        <input type="submit" name="submit" value="Place Your Order And Pay" id="rzp-button1" class="btn btn-primary " data-loading-text="Loading..." style="width:100%">
+        <input type="submit" name="submit" value="Place Your Order And Pay" id="rzp-button1" class="btn btn-primary " data-loading-text="Loading..." style="width:100%;margin-left: -6px">
     </div>
                 </div>
                 </div>

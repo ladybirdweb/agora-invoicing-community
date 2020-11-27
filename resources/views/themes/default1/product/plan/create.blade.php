@@ -110,7 +110,6 @@
                           </select>
 
                         </td>
-
                         <td>
                           <input type="text" class="form-control" name="add_price[]" class="{{ $errors->has('add_prices') ? 'has-error' : '' }}">
                         </td>

@@ -81,7 +81,7 @@ Create Product
                                  <div class="col-md-3 form-group {{ $errors->has('type') ? 'has-error' : '' }}">
                                     <!-- last name -->
                                     {!! Form::label('type',Lang::get('message.lic_type'),['class'=>'required']) !!}
-                                    {!! Form::select('type',['Types'=>$type],null,['class' => 'form-control']) !!}
+                                    {!! Form::select('type',[''=>'Choose','Types'=>$type],null,['class' => 'form-control']) !!}
 
                                 </div>
 
@@ -109,17 +109,9 @@ Create Product
                                     <!-- last name -->
                                     {!! Form::label('category',Lang::get('message.category'),['class'=>'required']) !!}
                                    <!--  {!! Form::select('category',['helpdesk'=>'Helpdesk','servicedesk'=>'ServiceDesk','service'=>'Service','satellite helpdesk'=>'Satellite Helpdesk','plugin'=>'Plugins','helpdeskvps'=>'HelpDesk VPS','servicedesk vps'=>'ServiceDesk VPS'],null,['class' => 'form-control']) !!} -->
+                                    {!! Form::select('type',[''=>'Choose','Types'=>$type],null,['class' => 'form-control']) !!}
 
-                                     <select name="category" value= "Choose" class="form-control">
-                             <option>Choose</option>
-                           @foreach($type as $key=>$types)
-                             @if (Request::old('category') == $key)
-                             <option value={{$key}} selected>{{$types}}</option>
-                             @else
-                             <option value={{$key}}>{{$types}}</option>
-                             @endif
-                          @endforeach
-                          </select>
+                                    
 
                                 </div>
 
@@ -183,7 +175,7 @@ Create Product
                                             <div class="form-group {{ $errors->has('parent') ? 'has-error' : '' }}">
                                                 <!-- last name -->
                                                 {!! Form::label('parent',Lang::get('message.parent')) !!}
-                                                {!! Form::select('parent[]',['Products'=>$products],null,['class' => 'form-control']) !!}
+                                                {!! Form::select('parent[]',[''=>'Choose','Products'=>$products],null,['class' => 'form-control']) !!}
 
                                             </div>
                                         </li>

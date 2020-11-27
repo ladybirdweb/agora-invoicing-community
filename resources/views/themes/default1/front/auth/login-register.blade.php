@@ -67,6 +67,9 @@ Sign in or Register
         .inner>.dropdown-menu{
             margin-top: 0px;
         }
+        .bootstrap-select .dropdown-toggle .caret {
+            right: 14px!important;
+        }
 
 
 

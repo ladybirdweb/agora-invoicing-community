@@ -100,7 +100,7 @@ Create Invoice
                       <h6 id ="pricecheck"></h6>
                 </div>
                 <div class="col-md-4 form-group">
-                    {!! Form::label('code',Lang::get('message.promotion-code')) !!}
+                    {!! Form::label('code','Coupon code') !!}
                     {!! Form::text('code',null,['class'=>'form-control']) !!}
                 </div>
 

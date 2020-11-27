@@ -54,7 +54,7 @@ $currency = $invoice->currency;
                                     Product
                                 </th>
                                 <th class="product-invoice">
-                                    Invoice No.
+                                    Invoice No
                                 </th>
                                 <th class="product-version">
                                     Version
@@ -391,7 +391,7 @@ $currency = $invoice->currency;
                     
                  <div class="form-group">
                    <div class="col-md-12" id="stripe-modal">
-        <input type="submit" name="submit" value="Place Your Order And Pay" id="stripe-button1" class="btn btn-primary " data-loading-text="Loading..." style="width:100%">
+        <input type="submit" name="submit" value="Place Your Order And Pay" id="stripe-button1" class="btn btn-primary " data-loading-text="Loading..." style="width:100%;margin-left: -6px">
     </div>
                 </div>
                 </div>

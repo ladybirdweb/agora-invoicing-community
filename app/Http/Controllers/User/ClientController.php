@@ -461,38 +461,37 @@ class ClientController extends AdvanceSearchController
         $setting = $settings->where('id', 1)->first();
         $from = $setting->email;
         $to = $user->email;
-        if(! $user->active) {
-        $activate_model = new AccountActivate();
-        $str = str_random(40);
-        $activate = $activate_model->create(['email' => $user->email, 'token' => $str]);
-        $token = $activate->token;
-        $url = url("activate/$token");
-        //check in the settings
-       
-        //template
-        $templates = new \App\Model\Common\Template();
-        $temp_id = $setting->welcome_mail;
-        $template = $templates->where('id', $temp_id)->first();
-        
-        $subject = $template->name;
-        $data = $template->data;
-        $replace = ['name' => $user->first_name.' '.$user->last_name,
-            'username'         => $user->email, 'password' => $str, 'url' => $url, ];
-        $type = '';
-        if ($template) {
-            $type_id = $template->type;
-            $temp_type = new \App\Model\Common\TemplateType();
-            $type = $temp_type->where('id', $type_id)->first()->name;
-        }
-        $mail = new \App\Http\Controllers\Common\PhpMailController();
-        $mail->sendEmail($from, $to, $data, $subject, $replace, $type);
-        } else {
-        $loginData = "You have been successfully registered. Your login details are:<br>Email:$user->email<br> Password:demopass";
+        if (! $user->active) {
+            $activate_model = new AccountActivate();
+            $str = str_random(40);
+            $activate = $activate_model->create(['email' => $user->email, 'token' => $str]);
+            $token = $activate->token;
+            $url = url("activate/$token");
+            //check in the settings
 
-        $mail = new \App\Http\Controllers\Common\PhpMailController();
-        $mail->sendEmail($from, $to , $loginData, 'Login details '); 
+            //template
+            $templates = new \App\Model\Common\Template();
+            $temp_id = $setting->welcome_mail;
+            $template = $templates->where('id', $temp_id)->first();
+
+            $subject = $template->name;
+            $data = $template->data;
+            $replace = ['name' => $user->first_name.' '.$user->last_name,
+                'username'         => $user->email, 'password' => $str, 'url' => $url, ];
+            $type = '';
+            if ($template) {
+                $type_id = $template->type;
+                $temp_type = new \App\Model\Common\TemplateType();
+                $type = $temp_type->where('id', $type_id)->first()->name;
+            }
+            $mail = new \App\Http\Controllers\Common\PhpMailController();
+            $mail->sendEmail($from, $to, $data, $subject, $replace, $type);
+        } else {
+            $loginData = "You have been successfully registered. Your login details are:<br>Email:$user->email<br> Password:demopass";
+
+            $mail = new \App\Http\Controllers\Common\PhpMailController();
+            $mail->sendEmail($from, $to, $loginData, 'Login details ');
         }
-       
     }
 
     /**

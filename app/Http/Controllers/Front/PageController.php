@@ -17,7 +17,7 @@ class PageController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth', ['except'=>['pageTemplates','contactUs']]);
+        $this->middleware('auth', ['except'=>['pageTemplates', 'contactUs']]);
 
         $page = new FrontendPage();
         $this->page = $page;

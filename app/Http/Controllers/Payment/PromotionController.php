@@ -116,7 +116,6 @@ class PromotionController extends BasePromotionController
      */
     public function store(PromotionRequest $request)
     {
-       
         try {
             $startdate = date_create($request->input('start'));
             $start = date_format($startdate, 'Y-m-d H:m:i');

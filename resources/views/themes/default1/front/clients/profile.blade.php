@@ -282,6 +282,7 @@ input:checked + .slider:before {
                 <div class="col-md-6 form-group" id= "gstin">
                     <label for"gstin">GSTIN</label>
                     {!! Form::text('gstin',null,['class' => 'form-control input-lg']) !!}
+
                     <h6 id="gstincheck"></h6>
                 </div>
             </div>
@@ -291,6 +292,10 @@ input:checked + .slider:before {
                     <!-- profile pic -->
                     <label for"profile_pic" class="">Profile Picture</label>
                     {!! Form::file('profile_pic',['id'=>'profilePic']) !!}
+                    <br>
+                     @if($user->profile_pic) 
+                    <img src='{{ asset("$user->profile_pic")}}' class="img-thumbnail" style="height: 50px;">
+                    @endif
                     <h6 id="profilePicCheck"></h6>
 
                 </div>

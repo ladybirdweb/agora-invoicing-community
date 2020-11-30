@@ -169,8 +169,8 @@ class SettingsController extends BaseSettingsController
         $this->validate($request, [
             'company'         => 'required|max:50',
             'company_email'   => 'required|email',
-            'website'         => 'required',
-            'phone'           => 'required',
+            'website'         => 'required|url',
+            'phone'           => 'required|integer',
             'address'         => 'required',
             'state'           => 'required',
             'country'         => 'required',

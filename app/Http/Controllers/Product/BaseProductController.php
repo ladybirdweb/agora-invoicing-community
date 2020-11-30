@@ -140,8 +140,8 @@ class BaseProductController extends ExtendedBaseProductController
             return response()->json($result);
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
-
-            return $ex->getMessage();
+            $result = [$ex->getMessage()];
+            return response()->json($result);
         }
     }
 

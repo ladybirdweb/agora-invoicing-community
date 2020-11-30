@@ -87,6 +87,7 @@ Categories
                 {data: 'action', name: 'action'}
             ],
             "fnDrawCallback": function( oSettings ) {
+              '<label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="safdsf"></label>'
                 bindEditButton();
                 $('.loader').css('display', 'none');
             },
@@ -102,11 +103,7 @@ Categories
 
 
     function bindEditButton() {
-        $(function () {
-            $('[data-toggle="tooltip"]').tooltip({
-                container : 'body'
-            });
-        });
+        
         $('.editCat').click(function(){
            var catName = $(this).attr('data-name');
            var catId   = $(this).attr('data-id');
@@ -148,6 +145,7 @@ Categories
 
      });
  </script>
+
 
 @stop
 

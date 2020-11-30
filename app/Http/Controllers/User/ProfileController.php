@@ -50,7 +50,7 @@ class ProfileController extends Controller
             if ($request->hasFile('profile_pic')) {
                 $file = $request->file('profile_pic');
                 $name = \Request::file('profile_pic')->getClientOriginalName();
-                $destinationPath = public_path('common\images\users');
+                $destinationPath = public_path('common/images/users');
                 $fileName = rand(0000, 9999).'.'.$name;
                 $file->move($destinationPath, $fileName);
                 $user->profile_pic = $fileName;
@@ -61,6 +61,11 @@ class ProfileController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()->with('fails', $e->getMessage());
         }
+    }
+
+    public function removeImage(Request $request)
+    {
+        dd($request->all());
     }
 
     public function updatePassword(ProfileRequest $request)

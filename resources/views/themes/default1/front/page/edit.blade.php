@@ -100,7 +100,7 @@ Edit Page
                     </div>
                     <div class="col-md-6 form-group {{ $errors->has('parent_page_id') ? 'has-error' : '' }}">
                         <!-- last name -->
-                        {!! Form::label('publish_date',Lang::get('message.publish-date')) !!}
+                        {!! Form::label('publish_date',Lang::get('message.publish-date'),['class'=>'required']) !!}
 
                         <div class="input-group date" id="publishing_date" data-target-input="nearest">
                         <input type="text" name="created_at" value="{{$publishingDate}}" class="form-control datetimepicker-input" autocomplete="off"  data-target="#publishing_date"/>

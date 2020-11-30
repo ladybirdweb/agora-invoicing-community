@@ -77,12 +77,8 @@ License Types
                 "sProcessing": ' <div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="text-bold pt-2">Loading...</div></div>'
             },
             columnDefs: [
-                { 
-                    targets: 'no-sort', 
-                    orderable: false,
-                    order: []
-                }
-            ],
+             { orderable: false, targets:2 }
+          ],
             columns: [
                 {data: 'checkbox', name: 'checkbox'},
                 {data: 'type_name', name: 'type_name'},

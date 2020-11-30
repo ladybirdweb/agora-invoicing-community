@@ -325,7 +325,7 @@ Dashboard
         @foreach($productSoldInLast30Days as $element)
             <li class="item">
                 <div class="product-img">
-                    <img src="{{$element->product_image}}" alt="Product Image">
+                    &nbsp;&nbsp;<img src="{{$element->product_image}}" alt="Product Image">
                 </div>
                 <div class="product-info">
                     <a href="#" class="product-title">{{$element->product_name}}<strong> &nbsp; &nbsp;  <td><span class="label label-success">{{$element->order_count}}</span></td></strong>
@@ -351,7 +351,7 @@ Dashboard
         @foreach($allSoldProducts as $element)
             <li class="item">
                 <div class="product-img">
-                    <img src="{{$element->product_image}}" alt="Product Image">
+                    &nbsp;&nbsp;<img src="{{$element->product_image}}" alt="Product Image">
                 </div>
                 <div class="product-info">
                     <a href="#" class="product-title">{{$element->product_name}}<strong> &nbsp; &nbsp;  <td><span class="label label-success">{{$element->order_count}}</span></td></strong>

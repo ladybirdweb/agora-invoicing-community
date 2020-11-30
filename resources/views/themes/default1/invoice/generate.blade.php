@@ -190,16 +190,29 @@ Create Invoice
             type: "GET",
             url: "{{url('get-subscription')}}" + '/' + val,
             success: function (data) {
-                var price = data['price'];
+                if(data[0] == 'Product cannot be added to cart. No plan exists.') {
+                       var html = '<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong>Whoops! </strong>Something went wrong<ul>';
+                    html += '<li>' + 'Add a plan for the product' + '</li>'
+                    html += '</ul></div>';
+                 $('#error').show();
+                  document.getElementById('error').innerHTML = html;
+                  $('#generate').attr('disabled',true)
+                } else {
+                    $('#generate').attr('disabled',false)
+                     var price = data['price'];
                 var field = data['field'];
                 
                 $("#price").val(price);
                 
-                const element = document.getElementById('fields1')
+                const element = document.getElementById('fields1');
                 if (element) {
-                    element.innerHTML = field
+                    element.innerHTML = field;
                 }
                 
+                }
+                 
+
+               
 
             }
         });

@@ -360,7 +360,7 @@ Sign in or Register
 
                                                                     <input type="checkbox" value="false" name="terms" id="term" > {{Lang::get('message.i-agree-to-the')}} <a href="{{$apiKeys->terms_url}}" target="_blank">{{Lang::get('message.terms')}}</a>
                                                                 </label>
-                                                                <span id="termscheck"></span>
+                                                                <br><span id="termscheck"></span>
                                                             </div>
                                                         @endif
 

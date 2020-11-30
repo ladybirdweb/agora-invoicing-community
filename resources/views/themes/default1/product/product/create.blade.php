@@ -9,7 +9,7 @@ Create Product
     <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-            <li class="breadcrumb-item"><a href="{{url('products')}}"><i class="fa fa-dashboard"></i> All Products</a></li>
+            <li class="breadcrumb-item"><a href="{{url('products')}}"><i class="fa fa-dashboard"></i>Products</a></li>
             <li class="breadcrumb-item active">Edit Product</li>
         </ol>
     </div><!-- /.col -->

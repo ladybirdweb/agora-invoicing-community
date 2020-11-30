@@ -352,6 +352,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             'domain'    => 'sometimes|nullable|regex:/^(?!:\/\/)(?=.{1,255}$)((.{1,63}\.){1,127}(?![0-9]*$)[a-z0-9-]+\.?)$/i',
             'plan'      => 'required_if:subscription,true',
             'price'     => 'required',
+            'product'   => 'required',
         ], [
             'plan.required_if' => 'Select a Plan',
         ]);

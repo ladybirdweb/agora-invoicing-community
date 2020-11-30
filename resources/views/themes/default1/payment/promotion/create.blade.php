@@ -10,7 +10,7 @@ Create Coupon
         <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
             <li class="breadcrumb-item"><a href="{{url('promotions')}}"><i class="fa fa-dashboard"></i> All Coupons</a></li>
-            <li class="breadcrumb-item active">Create Coupon</li>
+            <li class="breadcrumb-item active">Create New Coupon</li>
         </ol>
     </div><!-- /.col -->
 

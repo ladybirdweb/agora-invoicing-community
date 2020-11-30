@@ -110,8 +110,6 @@ input:checked + .slider:before {
 
 
             </div>
-
-
             <div class="card-body">
 
                 <div class="form-group {{ $errors->has('first_name') ? 'has-error' : '' }}">
@@ -239,6 +237,10 @@ input:checked + .slider:before {
                     <!-- profile pic -->
                     {!! Form::label('profile_pic',Lang::get('message.profile-picture')) !!}
                     {!! Form::file('profile_pic') !!}
+                    <br>
+                    @if($user->profile_pic) 
+                    <img src='{{ asset("$user->profile_pic")}}' class="img-thumbnail" style="height: 50px;">
+                    @endif
 
                 </div>
                 <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-save">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></h4>

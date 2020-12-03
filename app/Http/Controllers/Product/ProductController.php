@@ -259,7 +259,6 @@ class ProductController extends BaseProductController
             'name'       => 'required|unique:products,name',
             'type'       => 'required',
             'description'=> 'required',
-            'category'   => 'required',
             'image'      => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
             'product_sku'=> 'required|unique:products,product_sku',
             'group'      => 'required',
@@ -328,6 +327,7 @@ class ProductController extends BaseProductController
             $currency = $this->currency->pluck('name', 'code')->toArray();
             $group = $this->group->pluck('name', 'id')->toArray();
             $products = $this->product->pluck('name', 'id')->toArray();
+
             $checkowner = Product::where('id', $id)->value('github_owner');
             $periods = $this->period->pluck('name', 'days')->toArray();
             // $url = $this->GetMyUrl();
@@ -336,8 +336,6 @@ class ProductController extends BaseProductController
             $product = $this->product->where('id', $id)->first();
             $selectedGroup = ProductGroup:: where('id', $product->group)->pluck('name')->toArray();
             $taxes = $this->tax_class->pluck('name', 'id')->toArray();
-            $selectedCategory = \App\Model\Product\ProductCategory::
-                where('category_name', $product->category)->pluck('category_name')->toArray();
             $taxes = $this->tax_class->with('tax:tax_classes_id,id,name')->get()->toArray();
             $saved_taxes = $this->tax_relation->where('product_id', $id)->get();
             $savedTaxes = $this->tax_relation->where('product_id', $id)->pluck('tax_class_id')->toArray();
@@ -361,7 +359,6 @@ class ProductController extends BaseProductController
                     'taxes',
                     'saved_taxes',
                     'savedTaxes',
-                    'selectedCategory',
                     'selectedGroup',
                     'showagent',
                     'showProductQuantity',

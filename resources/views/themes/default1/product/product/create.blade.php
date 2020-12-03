@@ -70,7 +70,7 @@ Create Product
                         <div class="tab-pane fade show active" id="custom-tabs-detail" Role="tabpanel" aria-labelledby="custom-tabs-detail-tab">
                             <div class="row">
 
-                                <div class="col-md-3 form-group {{ $errors->has('name') ? 'has-error' : '' }}">
+                                <div class="col-md-4 form-group {{ $errors->has('name') ? 'has-error' : '' }}">
                                     <!-- first name -->
                                     {!! Form::label('name',Lang::get('message.name'),['class'=>'required']) !!}
                                     {!! Form::text('name',null,['class' => 'form-control', 'id' =>'productname']) !!}
@@ -78,7 +78,7 @@ Create Product
 
                                 </div>
 
-                                 <div class="col-md-3 form-group {{ $errors->has('type') ? 'has-error' : '' }}">
+                                 <div class="col-md-4 form-group {{ $errors->has('type') ? 'has-error' : '' }}">
                                     <!-- last name -->
                                     {!! Form::label('type',Lang::get('message.lic_type'),['class'=>'required']) !!}
                                     {!! Form::select('type',[''=>'Choose','Types'=>$type],null,['class' => 'form-control']) !!}
@@ -86,11 +86,11 @@ Create Product
                                 </div>
 
 
-                                <div class="col-md-3 form-group {{ $errors->has('group') ? 'has-error' : '' }}">
+                                <div class="col-md-4 form-group {{ $errors->has('group') ? 'has-error' : '' }}">
                                     <!-- last name -->
                                     {!! Form::label('group',Lang::get('message.group'),['class'=>'required']) !!}
                           <select name="group" value= "Choose" class="form-control">
-                             <option>Choose</option>
+                             <option value="">Choose</option>
                            @foreach($group as $key=>$value)
                                @if (Request::old('group') == $key)
                              <option value={{$key}} selected>{{$value}}</option>
@@ -101,20 +101,7 @@ Create Product
                           </select>
   
                                 </div>
-                                <div class="col-md-3 form-group {{ $errors->has('category') ? 'has-error' : '' }}">
-                                     <?php
-                                        $type = DB::table('product_categories')->pluck('category_name')->toarray();
-                                       
-                                        ?>
-                                    <!-- last name -->
-                                    {!! Form::label('category',Lang::get('message.category'),['class'=>'required']) !!}
-                                   <!--  {!! Form::select('category',['helpdesk'=>'Helpdesk','servicedesk'=>'ServiceDesk','service'=>'Service','satellite helpdesk'=>'Satellite Helpdesk','plugin'=>'Plugins','helpdeskvps'=>'HelpDesk VPS','servicedesk vps'=>'ServiceDesk VPS'],null,['class' => 'form-control']) !!} -->
-                                    {!! Form::select('category',[''=>'Choose','Types'=>$type],null,['class' => 'form-control']) !!}
-
-                                    
-
-                                </div>
-
+                                
 
                             </div>
 
@@ -227,7 +214,7 @@ Create Product
                         <div class="tab-pane fade" id="custom-tabs-plan" role="tabpanel"  aria-labelledby="custom-tabs-plan-tab">
 
                         <table class="table">
-                                <span>Show on Cart Page</span>
+                                <span class='required'>Show on Cart Page</span>
                                  <tr>
                                       <div class="row">
                                     <td>

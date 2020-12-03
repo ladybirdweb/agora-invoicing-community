@@ -301,12 +301,7 @@
                                         <p>{{Lang::get('message.add-products')}}</p>
                                     </a>
                                 </li>
-                                <li class="nav-item">
-                                    <a href="{{url('category')}}" class="nav-link" id="category">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>{{Lang::get('message.category')}}</p>
-                                    </a>
-                                </li>
+                                
                                 <li class="nav-item">
                                     <a href="{{url('plans')}}" class="nav-link" id="plan">
                                         <i class="far fa-circle nav-icon"></i>

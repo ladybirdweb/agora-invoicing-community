@@ -80,7 +80,7 @@ Edit Product
                     <div class="tab-content" id="custom-tabs-one-tabContent">
                         <div class="tab-pane fade show active" id="custom-tabs-detail" Role="tabpanel" aria-labelledby="custom-tabs-detail-tab">
                             <div class="row">
-                                <div class="col-md-3 form-group {{ $errors->has('name') ? 'has-error' : '' }}">
+                                <div class="col-md-4 form-group {{ $errors->has('name') ? 'has-error' : '' }}">
                                     <!-- first name -->
                                     {!! Form::label('name',Lang::get('message.name'),['class'=>'required']) !!}
                                     {!! Form::text('name',null,['class' => 'form-control', 'id'=>'productname']) !!}
@@ -88,7 +88,7 @@ Edit Product
 
                                 </div>
                    
-                                <div class="col-md-3 form-group {{ $errors->has('type') ? 'has-error' : '' }}">
+                                <div class="col-md-4 form-group {{ $errors->has('type') ? 'has-error' : '' }}">
                                     <!-- last name -->
                                     {!! Form::label('type',Lang::get('message.lic_type'),['class'=>'required']) !!}
                                     {!! Form::select('type',[''=>'Choose','Types'=>$type],null,['class' => 'form-control']) !!}
@@ -97,11 +97,11 @@ Edit Product
                                 <?php
                                $groups = DB::table('product_groups')->pluck('name', 'id')->toarray();
                                 ?>
-                                <div class="col-md-3 form-group {{ $errors->has('group') ? 'has-error' : '' }}">
+                                <div class="col-md-4 form-group {{ $errors->has('group') ? 'has-error' : '' }}">
                                     <!-- last name -->
                                     {!! Form::label('group',Lang::get('message.group'),['class'=>'required']) !!}
                                         <select name="group"  class="form-control">
-                            <option>Choose</option>
+                            <option >Choose</option>
                             @foreach($groups as $key=>$group)
                                    <option value="{{$key}}" <?php  if (in_array($group, $selectedGroup)) {
                                     echo "selected";
@@ -110,26 +110,8 @@ Edit Product
                              @endforeach
                               </select>
                                 </div>
-                                <?php
-                               $types = DB::table('product_categories')->pluck('category_name')->toarray();
-                                ?>
-                                <div class="col-md-3 form-group {{ $errors->has('category') ? 'has-error' : '' }}">
-                                    <!-- last name -->
-                                    {!! Form::label('category',Lang::get('message.category'),['class'=>'required']) !!}
-
-                                   <!--  {!! Form::select('category',['helpdesk'=>'Helpdesk','servicedesk'=>'ServiceDesk','service'=>'Service','satellite helpdesk'=>'Satellite Helpdesk','helpdeskvps'=>'HelpDesk VPS','servicedesk vps'=>'ServiceDesk VPS'],null,['class' => 'form-control']) !!} -->
-                            <select name="category"  class="form-control">
-                            <option value="">Choose</option>
-                            @foreach($types as $key=>$type)
-                                   <option value="{{$type}}" <?php  if (in_array($type, $selectedCategory)) {
-                                    echo "selected";
-                                } ?>>{{$type}}</option>
-                           
-                             @endforeach
-                              </select>
-
-
-                                </div>
+                                
+                                
 
                             </div>
 
@@ -268,7 +250,7 @@ Edit Product
                         <div class="tab-pane fade" id="custom-tabs-plan" role="tabpanel"  aria-labelledby="custom-tabs-plan-tab">
                             <table class="table">
 
-                                <span>Show on Cart Page</span>
+                                <span class="required">Show on Cart Page</span>
                                  <tr>
                                     <div class="row">
                                     <td>

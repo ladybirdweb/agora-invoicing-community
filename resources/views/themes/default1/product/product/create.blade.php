@@ -10,7 +10,7 @@ Create Product
         <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
             <li class="breadcrumb-item"><a href="{{url('products')}}"><i class="fa fa-dashboard"></i>Products</a></li>
-            <li class="breadcrumb-item active">Edit Product</li>
+            <li class="breadcrumb-item active">Create New Product</li>
         </ol>
     </div><!-- /.col -->
 @stop
@@ -109,7 +109,7 @@ Create Product
                                     <!-- last name -->
                                     {!! Form::label('category',Lang::get('message.category'),['class'=>'required']) !!}
                                    <!--  {!! Form::select('category',['helpdesk'=>'Helpdesk','servicedesk'=>'ServiceDesk','service'=>'Service','satellite helpdesk'=>'Satellite Helpdesk','plugin'=>'Plugins','helpdeskvps'=>'HelpDesk VPS','servicedesk vps'=>'ServiceDesk VPS'],null,['class' => 'form-control']) !!} -->
-                                    {!! Form::select('type',[''=>'Choose','Types'=>$type],null,['class' => 'form-control']) !!}
+                                    {!! Form::select('category',[''=>'Choose','Types'=>$type],null,['class' => 'form-control']) !!}
 
                                     
 

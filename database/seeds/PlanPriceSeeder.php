@@ -21,13 +21,11 @@ class PlanPriceSeeder extends Seeder
     private function mapCountriesToCurrency()
     {
         $nonDefaultCurrencies = PlanPrice::where(
-            'currency', "!=", (new Setting())->first()->default_currency
+            'currency', "=", (new Setting())->first()->default_currency
         )->get(['id', 'currency']);
         if ($nonDefaultCurrencies) {
             foreach ($nonDefaultCurrencies as $currency) {
-                $currencyId = Currency::where('code',$currency->currency)->first()->id;
-                $countryId = Country::where('currency_id',$currencyId)->first()->country_id;
-                $currency->update(['country_id'=>$countryId]);
+                $currency->update(['country_id'=>0]);
             }
         }
     }

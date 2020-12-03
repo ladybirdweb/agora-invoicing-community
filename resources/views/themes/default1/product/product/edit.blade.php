@@ -90,7 +90,7 @@ Edit Product
                    
                                 <div class="col-md-3 form-group {{ $errors->has('type') ? 'has-error' : '' }}">
                                     <!-- last name -->
-                                    {!! Form::label('type',Lang::get('message.lic_type')) !!}
+                                    {!! Form::label('type',Lang::get('message.lic_type'),['class'=>'required']) !!}
                                     {!! Form::select('type',[''=>'Choose','Types'=>$type],null,['class' => 'form-control']) !!}
 
                                 </div>
@@ -99,7 +99,7 @@ Edit Product
                                 ?>
                                 <div class="col-md-3 form-group {{ $errors->has('group') ? 'has-error' : '' }}">
                                     <!-- last name -->
-                                    {!! Form::label('group',Lang::get('message.group')) !!}
+                                    {!! Form::label('group',Lang::get('message.group'),['class'=>'required']) !!}
                                         <select name="group"  class="form-control">
                             <option>Choose</option>
                             @foreach($groups as $key=>$group)
@@ -115,7 +115,7 @@ Edit Product
                                 ?>
                                 <div class="col-md-3 form-group {{ $errors->has('category') ? 'has-error' : '' }}">
                                     <!-- last name -->
-                                    {!! Form::label('category',Lang::get('message.category')) !!}
+                                    {!! Form::label('category',Lang::get('message.category'),['class'=>'required']) !!}
 
                                    <!--  {!! Form::select('category',['helpdesk'=>'Helpdesk','servicedesk'=>'ServiceDesk','service'=>'Service','satellite helpdesk'=>'Satellite Helpdesk','helpdeskvps'=>'HelpDesk VPS','servicedesk vps'=>'ServiceDesk VPS'],null,['class' => 'form-control']) !!} -->
                             <select name="category"  class="form-control">

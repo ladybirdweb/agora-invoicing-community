@@ -35,7 +35,8 @@ class VerifyCsrfToken extends BaseVerifier
         try {
             return parent::handle($request, $next);
         } catch (TokenMismatchException $e) {
-            return redirect('login')->withInput($request->input())->with('fails', 'Your session has expired. Please login again to continue');
+             $request->session()->regenerateToken();
+            return redirect('login')->withInput($request->input())->with('fails', 'Your session has expired. Please refresh this page and login again to continue');
         }
     }
 }

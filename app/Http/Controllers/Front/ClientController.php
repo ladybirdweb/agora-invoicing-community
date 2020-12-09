@@ -88,8 +88,8 @@ class ClientController extends BaseClientController
                     })
                    ->addColumn('orderNo', function ($model) {
                        if ($model->is_renewed) {
-                           $order =  Order::find($model->order_id);
-                           if($order) {
+                           $order = Order::find($model->order_id);
+                           if ($order) {
                                return $order->first()->getOrderLink($model->order_id, 'my-order');
                            } else {
                                return '--';
@@ -425,7 +425,7 @@ class ClientController extends BaseClientController
 
             return view(
                 'themes.default1.front.clients.profile',
-                compact('user', 'timezones', 'state', 'states', 'bussinesses', 'is2faEnabled', 'dateSinceEnabled', 'selectedIndustry', 'selectedCompany', 'selectedCompanySize','selectedCountry')
+                compact('user', 'timezones', 'state', 'states', 'bussinesses', 'is2faEnabled', 'dateSinceEnabled', 'selectedIndustry', 'selectedCompany', 'selectedCompanySize', 'selectedCountry')
             );
         } catch (Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());

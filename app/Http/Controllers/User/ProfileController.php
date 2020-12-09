@@ -63,8 +63,6 @@ class ProfileController extends Controller
         }
     }
 
-   
-
     public function updatePassword(ProfileRequest $request)
     {
         try {

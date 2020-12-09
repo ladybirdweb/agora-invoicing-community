@@ -459,7 +459,7 @@ class PageController extends Controller
                 $mail = new \App\Http\Controllers\Common\PhpMailController();
                 $mail->sendEmail($from, $to, $data, $subject);
             }
-            
+
             //$this->templateController->Mailing($from, $to, $data, $subject);
             return redirect()->back()->with('success', 'Your message was sent successfully. Thanks.');
         } catch (\Exception $ex) {

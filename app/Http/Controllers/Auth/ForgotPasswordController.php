@@ -96,19 +96,15 @@ class ForgotPasswordController extends Controller
                 $response = ['type' => 'fails',   'message' =>'System email is not configured. Please contact admin.'];
             }
 
-            
-
             return response()->json($response);
         } catch (\Exception $ex) {
             // dd($ex,$ex->getCode());
             if ($ex instanceof \Illuminate\Validation\ValidationException) {
                 $errors = ['Reset instructions have been mailed to you.
                 .Be sure to check your Junk folder if you do not see an email from us in your Inbox within a few minutes. '];
-                
-             } else {
+            } else {
                 $errors = ['System email is not configured. Please contact admin.'];
-
-             }
+            }
             $result = [$ex->getMessage()];
 
             return response()->json(compact('result', 'errors'), 500);

@@ -53,12 +53,13 @@ Edit Templates
                 <div class="row">
                     <div class="col-md-12 form-group">
 
-                        <script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
+                         <script src="https://cdn.tiny.cloud/1/oiio010oipuw2n6qyq3li1h993tyg25lu28kgt1trxnjczpn/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+                                    
                         <script>
                       tinymce.init({
                           selector: 'textarea',
                           height: 500,
-                          theme: 'modern',
+                          theme: 'silver',
                           relative_urls: true,
                           remove_script_host: false,
                           convert_urls: false,

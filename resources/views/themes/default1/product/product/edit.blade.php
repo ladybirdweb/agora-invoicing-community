@@ -427,12 +427,13 @@ Edit Product
 <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script> -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
 <script src="//cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-<script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
+ <script src="https://cdn.tiny.cloud/1/oiio010oipuw2n6qyq3li1h993tyg25lu28kgt1trxnjczpn/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+                                    
 <script>
                                         $(function(){
                                           tinymce.init({
                                          selector: '#product-description',
-                                         height: 200,
+                                         height: 500,
                                        //  theme: 'modern',
                                          relative_urls: true,
                                          remove_script_host: false,
@@ -457,7 +458,7 @@ Edit Product
                                           });
                                           tinymce.init({
                                          selector: '#textarea1',
-                                         height: 200,
+                                         height: 500,
                                        //  theme: 'modern',
                                          relative_urls: true,
                                          remove_script_host: false,
@@ -482,7 +483,7 @@ Edit Product
                                     });
                                               tinymce.init({
                                          selector: '#textarea3',
-                                         height: 100,
+                                         height: 300,
                                        //  theme: 'modern',
                                          relative_urls: true,
                                          remove_script_host: false,

@@ -455,8 +455,11 @@ class PageController extends Controller
             $data .= 'Message: '.strip_tags($request->input('message')).'<br/>';
             $data .= 'Mobile: '.strip_tags($request->input('country_code').$request->input('Mobile')).'<br/>';
             $subject = 'Faveo billing enquiry';
-            $cont = new \App\Http\Controllers\Common\TemplateController();
-            $cont->mailing($from, $to, $data, $subject, [], $fromname, $toname);
+            if (emailSendingStatus()) {
+                $mail = new \App\Http\Controllers\Common\PhpMailController();
+                $mail->sendEmail($from, $to, $data, $subject);
+            }
+            
             //$this->templateController->Mailing($from, $to, $data, $subject);
             return redirect()->back()->with('success', 'Your message was sent successfully. Thanks.');
         } catch (\Exception $ex) {

@@ -91,7 +91,7 @@ active
 
 
                     </table>
-
+                        <script src="{{asset('common/js/licCode.js')}}"></script>
 
 
                  <table id="installationDetail-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
@@ -125,9 +125,9 @@ active
                           return this.id == 'all_order';
                       }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
                   </script>
-                  <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
+                 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
 
-                  <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+                  <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
                   <script type="text/javascript">
                           $('#installationDetail-table').DataTable({
                               processing: true,
@@ -225,9 +225,11 @@ active
     </div>
 
 
-<script src="{{asset('common/js/licCode.js')}}"></script>
-<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
-<script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+
+<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+
+
 <script type="text/javascript">
         $('#showorder-table').DataTable({
             processing: true,
@@ -270,8 +272,10 @@ active
         });
         </script>
 
-         <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css" />
-        <script src="//cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+         <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+
+        <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    
         <script type="text/javascript">
              $('#showpayment-table').DataTable({
                     processing: true,

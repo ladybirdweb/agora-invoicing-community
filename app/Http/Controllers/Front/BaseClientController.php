@@ -118,7 +118,6 @@ class BaseClientController extends Controller
             $user->address = strip_tags($request->input('address'));
             $user->town = strip_tags($request->input('town'));
             $user->timezone_id = strip_tags($request->input('timezone_id'));
-            $user->country = ($request->input('country'));
             $user->state = ($request->input('state'));
             $user->zip = strip_tags($request->input('zip'));
             $user->save();

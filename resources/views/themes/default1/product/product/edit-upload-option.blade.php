@@ -101,7 +101,8 @@ Edit Product Uploads
 
     </div>
   </div>
- <script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
+ <script src="https://cdn.tiny.cloud/1/oiio010oipuw2n6qyq3li1h993tyg25lu28kgt1trxnjczpn/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+                                    
    <script>
     $(function () {
         $('[data-toggle="tooltip"]').tooltip({
@@ -116,8 +117,8 @@ Edit Product Uploads
 
       tinymce.init({
      selector: '#desc-textarea',
-     height: 200,
-   //  theme: 'modern',
+     height: 500,
+    theme: 'silver',
      relative_urls: true,
      remove_script_host: false,
      convert_urls: false,

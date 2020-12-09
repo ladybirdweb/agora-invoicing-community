@@ -63,10 +63,7 @@ class ProfileController extends Controller
         }
     }
 
-    public function removeImage(Request $request)
-    {
-        dd($request->all());
-    }
+   
 
     public function updatePassword(ProfileRequest $request)
     {

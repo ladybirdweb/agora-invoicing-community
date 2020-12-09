@@ -88,7 +88,12 @@ class ClientController extends BaseClientController
                     })
                    ->addColumn('orderNo', function ($model) {
                        if ($model->is_renewed) {
-                           return Order::find($model->order_id)->first()->getOrderLink($model->order_id, 'my-order');
+                           $order =  Order::find($model->order_id);
+                           if($order) {
+                               return $order->first()->getOrderLink($model->order_id, 'my-order');
+                           } else {
+                               return '--';
+                           }
                        } else {
                            $allOrders = $model->order()->select('id', 'number')->get();
                            $orderArray = '';
@@ -415,10 +420,12 @@ class ClientController extends BaseClientController
             ->pluck('name', 'short')->toArray();
             $selectedCompanySize = \DB::table('company_sizes')->where('short', $user->company_size)
             ->pluck('name', 'short')->toArray();
+            $selectedCountry = \DB::table('countries')->where('country_code_char2', $user->country)
+            ->value('nicename');
 
             return view(
                 'themes.default1.front.clients.profile',
-                compact('user', 'timezones', 'state', 'states', 'bussinesses', 'is2faEnabled', 'dateSinceEnabled', 'selectedIndustry', 'selectedCompany', 'selectedCompanySize')
+                compact('user', 'timezones', 'state', 'states', 'bussinesses', 'is2faEnabled', 'dateSinceEnabled', 'selectedIndustry', 'selectedCompany', 'selectedCompanySize','selectedCountry')
             );
         } catch (Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());

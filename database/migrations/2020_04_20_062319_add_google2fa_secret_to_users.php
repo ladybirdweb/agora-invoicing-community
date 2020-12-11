@@ -14,11 +14,21 @@ class AddGoogle2faSecretToUsers extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->text('google2fa_secret')->nullable();
-            $table->timestamp('google2fa_activation_date')->nullable();
-            $table->boolean('is_2fa_enabled')->default(0);
-            $table->string('backup_code')->nullable();
-            $table->integer('code_usage_count')->default(0);
+            if (! Schema::hasColumn('users', 'google2fa_secret')) {
+                $table->text('google2fa_secret')->nullable();
+            }
+            if (! Schema::hasColumn('users', 'google2fa_activation_date')) {
+                $table->timestamp('google2fa_activation_date')->nullable();
+            }
+            if (! Schema::hasColumn('users', 'is_2fa_enabled')) {
+                $table->boolean('is_2fa_enabled')->default(0);
+            }
+            if (! Schema::hasColumn('users', 'backup_code')) {
+                $table->string('backup_code')->nullable();
+            }
+            if (! Schema::hasColumn('users', 'code_usage_count')) {
+                $table->integer('code_usage_count')->default(0);
+            }
         });
     }
 

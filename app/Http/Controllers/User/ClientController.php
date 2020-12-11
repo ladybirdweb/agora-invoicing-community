@@ -13,7 +13,6 @@ use App\Model\Payment\Currency;
 use App\Model\User\AccountActivate;
 use App\Traits\PaymentsAndInvoices;
 use App\User;
-use Bugsnag;
 use Illuminate\Http\Request;
 
 class ClientController extends AdvanceSearchController
@@ -71,7 +70,7 @@ class ClientController extends AdvanceSearchController
     {
         $baseQuery = $this->getBaseQueryForUserSearch($request);
 
-        return\ DataTables::of($baseQuery)
+        return\DataTables::of($baseQuery)
                         ->addColumn('checkbox', function ($model) {
                             $isAccountManager = User::where('account_manager', $model->id)->get();
                             $isSalesManager = User::where('manager', $model->id)->get();
@@ -211,7 +210,6 @@ class ClientController extends AdvanceSearchController
             } else {
                 $mobile_code = str_replace('+', '', $request->input('mobile_code'));
             }
-            $currency_symbol = Currency::where('code', $request->input('currency'))->pluck('symbol')->first();
             $location = getLocation();
             $user->user_name = $request->input('user_name');
             $user->first_name = $request->input('first_name');
@@ -232,17 +230,15 @@ class ClientController extends AdvanceSearchController
             $user->state = $request->input('state');
             $user->zip = $request->input('zip');
             $user->timezone_id = $request->input('timezone_id');
-            $user->currency = $request->input('currency');
             $user->mobile_code = $mobile_code;
             $user->mobile = $request->input('mobile');
             $user->skype = $request->input('skype');
             $user->manager = $request->input('manager');
             $user->account_manager = $request->input('account_manager');
-            $user->currency_symbol = $currency_symbol;
             $user->ip = $location['ip'];
 
             $user->save();
-            if (emailSendingStatus() && ! $user->active) {
+            if (emailSendingStatus()) {
                 $this->sendWelcomeMail($user);
             }
             $mailchimpStatus = StatusSetting::first()->value('mailchimp_status');
@@ -254,7 +250,7 @@ class ClientController extends AdvanceSearchController
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (\Swift_TransportException $e) {
             return redirect()->back()->with('warning', 'User has been created successfully
-             But email configuration has some problem!');
+             But email configuration has some problem!!'.$e->getMessage());
         } catch (\Exception $e) {
             return redirect()->back()->with('fails', $e->getMessage());
         }
@@ -291,8 +287,7 @@ class ClientController extends AdvanceSearchController
             }
 
             $is2faEnabled = $client->is_2fa_enabled;
-            // $client = "";
-            $currency = $client->currency;
+            $currency = getCurrencyForClient($client->country);
             $orders = $order->where('client', $id)->get();
             $comments = Comment::where('user_id', $client->id)->get();
 
@@ -303,7 +298,6 @@ class ClientController extends AdvanceSearchController
             );
         } catch (\Exception $ex) {
             app('log')->info($ex->getMessage());
-            Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -386,14 +380,11 @@ class ClientController extends AdvanceSearchController
     {
         try {
             $user = $this->user->where('id', $id)->first();
-            $symbol = Currency::where('code', $request->input('currency'))->pluck('symbol')->first();
-            $user->currency_symbol = $symbol;
             $user->fill($request->input())->save();
             // \Session::put('test', 1000);
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
-            Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -466,32 +457,41 @@ class ClientController extends AdvanceSearchController
 
     public function sendWelcomeMail($user)
     {
-        $activate_model = new AccountActivate();
-        $str = str_random(40);
-        $activate = $activate_model->create(['email' => $user->email, 'token' => $str]);
-        $token = $activate->token;
-        $url = url("activate/$token");
-        //check in the settings
         $settings = new \App\Model\Common\Setting();
         $setting = $settings->where('id', 1)->first();
-        //template
-        $templates = new \App\Model\Common\Template();
-        $temp_id = $setting->welcome_mail;
-        $template = $templates->where('id', $temp_id)->first();
         $from = $setting->email;
         $to = $user->email;
-        $subject = $template->name;
-        $data = $template->data;
-        $replace = ['name' => $user->first_name.' '.$user->last_name,
-            'username'         => $user->email, 'password' => $str, 'url' => $url, ];
-        $type = '';
-        if ($template) {
-            $type_id = $template->type;
-            $temp_type = new \App\Model\Common\TemplateType();
-            $type = $temp_type->where('id', $type_id)->first()->name;
+        if (! $user->active) {
+            $activate_model = new AccountActivate();
+            $str = str_random(40);
+            $activate = $activate_model->create(['email' => $user->email, 'token' => $str]);
+            $token = $activate->token;
+            $url = url("activate/$token");
+            //check in the settings
+
+            //template
+            $templates = new \App\Model\Common\Template();
+            $temp_id = $setting->welcome_mail;
+            $template = $templates->where('id', $temp_id)->first();
+
+            $subject = $template->name;
+            $data = $template->data;
+            $replace = ['name' => $user->first_name.' '.$user->last_name,
+                'username'         => $user->email, 'password' => $str, 'url' => $url, ];
+            $type = '';
+            if ($template) {
+                $type_id = $template->type;
+                $temp_type = new \App\Model\Common\TemplateType();
+                $type = $temp_type->where('id', $type_id)->first()->name;
+            }
+            $mail = new \App\Http\Controllers\Common\PhpMailController();
+            $mail->sendEmail($from, $to, $data, $subject, $replace, $type);
+        } else {
+            $loginData = "You have been successfully registered. Your login details are:<br>Email:$user->email<br> Password:demopass";
+
+            $mail = new \App\Http\Controllers\Common\PhpMailController();
+            $mail->sendEmail($from, $to, $loginData, 'Login details ');
         }
-        $mail = new \App\Http\Controllers\Common\PhpMailController();
-        $mail->sendEmail($from, $to, $data, $subject, $replace, $type);
     }
 
     /**

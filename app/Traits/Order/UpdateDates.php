@@ -6,7 +6,6 @@ use App\Http\Controllers\License\LicensePermissionsController;
 use App\Model\Common\StatusSetting;
 use App\Model\Order\Order;
 use App\Model\Product\Subscription;
-use Bugsnag;
 use Illuminate\Http\Request;
 
 ////////////////////////////////////////////////////////////////////////////
@@ -42,7 +41,6 @@ trait UpdateDates
 
             return ['message'=>'success', 'update'=>'Updates Expiry Date Updated Successfully'];
         } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex->getMessage());
             $result = [$ex->getMessage()];
 
             return response()->json(compact('result'), 500);
@@ -94,7 +92,6 @@ trait UpdateDates
 
             return ['message'=>'success', 'update'=>'License Expiry Date Updated Successfully'];
         } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex->getMessage());
             $result = [$ex->getMessage()];
 
             return response()->json(compact('result'), 500);
@@ -146,7 +143,6 @@ trait UpdateDates
 
             return ['message'=>'success', 'update'=>'Support Expiry Date Updated Successfully'];
         } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex->getMessage());
             $result = [$ex->getMessage()];
 
             return response()->json(compact('result'), 500);

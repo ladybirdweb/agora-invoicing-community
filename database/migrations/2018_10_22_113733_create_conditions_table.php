@@ -13,12 +13,14 @@ class CreateConditionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('conditions', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('job', 255)->nullable();
-            $table->string('value', 255)->nullable();
-            $table->timestamps();
-        });
+        if (! Schema::hasTable('conditions')) {
+            Schema::create('conditions', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('job', 255)->nullable();
+                $table->string('value', 255)->nullable();
+                $table->timestamps();
+            });
+        }
     }
 
     /**

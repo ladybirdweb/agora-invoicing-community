@@ -13,9 +13,11 @@ class AddUpdateStatusToStatusSettings extends Migration
      */
     public function up()
     {
-        Schema::table('status_settings', function (Blueprint $table) {
-            $table->boolean('update_settings')->nullable();
-        });
+        if (! Schema::hasColumn('status_settings', 'update_settings')) {
+            Schema::table('status_settings', function (Blueprint $table) {
+                $table->boolean('update_settings')->nullable();
+            });
+        }
     }
 
     /**
@@ -25,6 +27,8 @@ class AddUpdateStatusToStatusSettings extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('status_settings');
+        Schema::table('status_settings', function (Blueprint $table) {
+            $table->dropColumn('update_settings');
+        });
     }
 }

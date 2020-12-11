@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Product;
 
 use App\Http\Controllers\License\LicensePermissionsController;
+use App\Http\Requests\PlanRequest;
+use App\Model\Common\Country;
 use App\Model\Common\Setting;
 use App\Model\Payment\Currency;
 use App\Model\Payment\Period;
@@ -10,7 +12,6 @@ use App\Model\Payment\Plan;
 use App\Model\Payment\PlanPrice;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
-use Bugsnag;
 use Illuminate\Http\Request;
 
 class PlanController extends ExtendedPlanController
@@ -41,15 +42,19 @@ class PlanController extends ExtendedPlanController
     /**
      * Display a listing of the resource.
      *
-     * @return \Response
+     * @return \Illuminate\View\View
      */
     public function index()
     {
+        $countries = Country::get(['country_id', 'country_name'])->toArray();
         $currency = $this->currency->where('status', '1')->pluck('name', 'code')->toArray();
         $periods = $this->period->pluck('name', 'days')->toArray();
         $products = $this->product->pluck('name', 'id')->toArray();
 
-        return view('themes.default1.product.plan.index', compact('currency', 'periods', 'products'));
+        return view(
+            'themes.default1.product.plan.index',
+            compact('currency', 'periods', 'products', 'countries')
+        );
     }
 
     /**
@@ -60,7 +65,7 @@ class PlanController extends ExtendedPlanController
         $new_plan = Plan::select('id', 'name', 'days', 'product')->get();
         $defaultCurrency = Setting::where('id', 1)->value('default_currency');
 
-        return\ DataTables::of($new_plan)
+        return\DataTables::of($new_plan)
                         ->addColumn('checkbox', function ($model) {
                             return "<input type='checkbox' class='plan_checkbox' 
                             value=".$model->id.' name=select[] id=check>';
@@ -115,7 +120,7 @@ class PlanController extends ExtendedPlanController
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function create()
     {
@@ -129,81 +134,63 @@ class PlanController extends ExtendedPlanController
     /**
      * Store the Plans Details While Plan Creation.
      *
-     * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
-     *
-     * @date   2019-01-08T13:32:57+0530
-     *
      * @param Request $request Plan Form Details
      *
      * @return [type] Saves Plan
+     * @throws \Illuminate\Validation\ValidationException
+     * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
+     *
+     * @date   2019-01-08T13:32:57+0530
      */
-    public function store(Request $request)
+    public function store(PlanRequest $request)
     {
-        $permissions = LicensePermissionsController::getPermissionsForProduct($request->input('product'));
-        $subs = $permissions['generateUpdatesxpiryDate'] != 0 || $permissions['generateLicenseExpiryDate'] != 0
-           || $permissions['generateSupportExpiryDate'] != 0 ? 1 : 0;
-        $days_rule = $subs == 1 ? 'required|' : 'sometimes|';
-
-        $this->validate($request, [
-            'name'             => 'required',
-            'days'             => $days_rule.'numeric',
-            'add_price.*'      => 'required',
-            'product'          => 'required',
-            'product_quantity' => 'required_without:no_of_agents|integer|min:1',
-            'no_of_agents'     => 'required_without:product_quantity|integer|min:0',
-        ]);
-        $product_quantity = $request->input('product_quantity');
-        $no_of_agents = $request->input('no_of_agents');
-        $this->plan->fill($request->input())->save();
-        if ($request->input('days') != '') {
-            $period = Period::where('days', $request->input('days'))->first()->id;
-            $this->plan->periods()->attach($period);
-        }
-
-        $add_prices = $request->input('add_price');
-        $renew_prices = $request->input('renew_price');
-        $product = $request->input('product');
-        $priceDescription = $request->input('price_description');
-
-        if (count($add_prices) > 0) {
-            foreach ($add_prices as $key => $price) {
-                $renew_price = '';
-                if (array_key_exists($key, $renew_prices)) {
-                    $renew_price = $renew_prices[$key];
-                }
-                $this->price->create([
-                    'plan_id'           => $this->plan->id,
-                    'currency'          => $key,
-                    'add_price'         => $price,
-                    'renew_price'       => $renew_price,
-                    'price_description' => $priceDescription,
-                    'product_quantity'  => $product_quantity,
-                    'no_of_agents'      => $no_of_agents,
-                ]);
+        try {
+            $add_prices = $request->add_price;
+            $renew_prices = $request->renew_price;
+            $this->plan->fill($request->input())->save();
+            if ($request->input('days') != '') {
+                $period = Period::where('days', $request->input('days'))->first()->id;
+                $this->plan->periods()->attach($period);
             }
-        }
 
-        return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
+            if (count($add_prices) > 0) {
+                $dataForCreating = [];
+                foreach ($add_prices as $key => $value) {
+                    $dataForCreating[] = [
+                        'plan_id' => $this->plan->id,
+                        'country_id' => $request->country_id[$key],
+                        'currency' => $request->currency[$key],
+                        'add_price' => $value,
+                        'renew_price' => $renew_prices[$key],
+                        'price_description' => $request->price_description,
+                        'product_quantity' => $request->product_quantity,
+                        'no_of_agents' => $request->no_of_agents,
+                    ];
+                }
+                $this->plan->planPrice()->insert($dataForCreating);
+            }
+
+            return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
+        } catch (Exception $ex) {
+            return redirect()->back()->withj('fails', $ex->getMessage());
+        }
     }
 
     /**
      * Show the form for editing the specified resource.
-     *
-     * @param int $id
-     *
-     * @return \Response
+     * @param Plan $plan
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function edit($id)
+    public function edit(Plan $plan)
     {
-        $plan = $this->plan->where('id', $id)->first();
         $currency = $this->currency->where('status', '1')->pluck('name', 'code')->toArray();
-        $add_price = $this->price->where('plan_id', $id)->pluck('add_price', 'currency')->toArray();
-        $renew_price = $this->price->where('plan_id', $id)->pluck('renew_price', 'currency')->toArray();
+        $countries = Country::get(['country_id', 'country_name'])->toArray();
+        $planPrices = $plan->planPrice()->get()->toArray();
         $periods = $this->period->pluck('name', 'days')->toArray();
         $products = $this->product->pluck('name', 'id')->toArray();
-        $priceDescription = $plan->planPrice->first()->price_description;
-        $productQunatity = $plan->planPrice->first()->product_quantity;
-        $agentQuantity = $plan->planPrice->first()->no_of_agents;
+        $priceDescription = $planPrices[0]['price_description'];
+        $productQuantity = $planPrices[0]['product_quantity'];
+        $agentQuantity = $planPrices[0]['no_of_agents'];
         foreach ($products as $key => $product) {
             $selectedProduct = $this->product->where('id', $plan->product)
           ->pluck('name', 'id', 'subscription')->toArray();
@@ -216,15 +203,15 @@ class PlanController extends ExtendedPlanController
             compact(
                 'plan',
                 'currency',
-                'add_price',
-                'renew_price',
                 'periods',
                 'products',
                 'selectedPeriods',
                 'selectedProduct',
                 'priceDescription',
-                'productQunatity',
-                'agentQuantity'
+                'productQuantity',
+                'agentQuantity',
+                'countries',
+                'planPrices'
             )
         );
     }
@@ -232,61 +219,34 @@ class PlanController extends ExtendedPlanController
     /**
      * Update the specified resource in storage.
      *
-     * @param int $id
-     *
-     * @return \Response
+     * @param Plan $plan
+     * @param PlanRequest $request
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function update($id, Request $request)
+    public function update(Plan $plan, PlanRequest $request)
     {
-        $permissions = LicensePermissionsController::getPermissionsForProduct($request->input('product'));
-        $subs = $permissions['generateUpdatesxpiryDate'] != 0 || $permissions['generateLicenseExpiryDate'] != 0
-           || $permissions['generateSupportExpiryDate'] != 0 ? 1 : 0;
-        $days_rule = $subs == 1 ? 'required|' : 'sometimes|';
-
-        $this->validate($request, [
-            'name'                => 'required',
-            'add_price.*'         => 'required',
-            'product'             => 'required',
-            'days'              => $days_rule.'numeric',
-            'product_quantity' => 'required_without:no_of_agents|integer|min:0',
-            'no_of_agents'        => 'required_without:product_quantity|integer|min:0',
-        ]);
-        $product_quantity = $request->input('product_quantity');
-        $no_of_agents = $request->input('no_of_agents');
-        $priceDescription = $request->input('price_description');
-        $plan = $this->plan->where('id', $id)->first();
+        $add_prices = $request->add_price;
+        $renew_prices = $request->renew_price;
         $plan->fill($request->input())->save();
-        $add_prices = $request->input('add_price');
-        $renew_prices = $request->input('renew_price');
-        $product = $request->input('product');
-        $period = $request->input('days');
-
         if (count($add_prices) > 0) {
-            $price = $this->price->where('plan_id', $id)->get();
-
-            if (count($price) > 0) {
-                foreach ($price as $delete) {
-                    $delete->delete();
-                }
+            $dataForCreating = [];
+            $plan->planPrice()->delete();
+            foreach ($add_prices as $key => $value) {
+                $dataForCreating[] = [
+                    'plan_id' => $plan->id,
+                    'country_id' => $request->country_id[$key],
+                    'currency' => $request->currency[$key],
+                    'add_price' => $value,
+                    'renew_price' => $renew_prices[$key],
+                    'price_description' => $request->price_description,
+                    'product_quantity' => $request->product_quantity,
+                    'no_of_agents' => $request->no_of_agents,
+                ];
             }
-            foreach ($add_prices as $key => $price) {
-                $renew_price = '';
-                if (array_key_exists($key, $renew_prices)) {
-                    $renew_price = $renew_prices[$key];
-                }
-                $this->price->create([
-                    'plan_id'           => $plan->id,
-                    'currency'          => $key,
-                    'add_price'         => $price,
-                    'renew_price'       => $renew_price,
-                    'price_description' => $priceDescription,
-                    'product_quantity'  => $product_quantity,
-                    'no_of_agents'      => $no_of_agents,
-                ]);
-            }
+            $plan->planPrice()->insert($dataForCreating);
         }
 
-        return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
+        return redirect()->back()->with('success', trans('message.updated-successfully'));
     }
 
     /**
@@ -359,7 +319,6 @@ class PlanController extends ExtendedPlanController
 
             return response()->json($result);
         } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
             $result = ['subscription' => $ex->getMessage()];
 
             return response()->json($result);

@@ -21,7 +21,6 @@ use App\Traits\CoupCodeAndInvoiceSearch;
 use App\Traits\PaymentsAndInvoices;
 use App\Traits\TaxCalculation;
 use App\User;
-use Bugsnag;
 use Illuminate\Http\Request;
 
 class InvoiceController extends TaxRatesAndCodeExpiryController
@@ -123,8 +122,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
                 'till'));
         } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -227,14 +224,11 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             }
             $invoiceItems = $invoice->invoiceItem()->get();
             $user = $this->user->find($invoice->user_id);
-            $currency = userCurrency($user->id);
             $order = Order::getOrderLink($invoice->order_id, 'orders');
-            $symbol = $currency['symbol'];
 
-            return view('themes.default1.invoice.show', compact('invoiceItems', 'invoice', 'user', 'currency', 'symbol', 'order'));
+            return view('themes.default1.invoice.show', compact('invoiceItems', 'invoice', 'user', 'order'));
         } catch (\Exception $ex) {
             app('log')->warning($ex->getMessage());
-            Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -266,7 +260,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             return view('themes.default1.invoice.generate', compact('user', 'products', 'currency'));
         } catch (\Exception $ex) {
             app('log')->info($ex->getMessage());
-            Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -291,9 +284,9 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             if ($rounding) {
                 $grand_total = round($grand_total);
             }
-
+            $currency = \Session::has('cart_currency') ? \Session::get('cart_currency') : getCurrencyForClient(\Auth::user()->country);
             $invoice = $this->invoice->create(['user_id' => $user_id, 'number' => $number, 'date'=> $date, 'grand_total' => $grand_total, 'status' => 'pending',
-                'currency' => \Auth::user()->currency, ]);
+                'currency' => $currency, ]);
             foreach (\Cart::getContent() as $cart) {
                 $this->createInvoiceItems($invoice->id, $cart);
             }
@@ -304,7 +297,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             return $invoice;
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
-            Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -326,7 +318,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 //When Product is added from Faveo Website
                 $planid = Plan::where('product', $cart->id)->pluck('id')->first();
             }
-            $user_currency = \Auth::user()->currency;
             $subtotal = $cart->getPriceSum();
             $tax_name = $cart->conditions->getName();
             $tax_percentage = $cart->conditions->getValue();
@@ -345,8 +336,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
             return $invoiceItem;
         } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex->getMessage());
-
             throw new \Exception('Can not create Invoice Items');
         }
     }
@@ -363,6 +352,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             'domain'    => 'sometimes|nullable|regex:/^(?!:\/\/)(?=.{1,255}$)((.{1,63}\.){1,127}(?![0-9]*$)[a-z0-9-]+\.?)$/i',
             'plan'      => 'required_if:subscription,true',
             'price'     => 'required',
+            'product'   => 'required',
         ], [
             'plan.required_if' => 'Select a Plan',
         ]);
@@ -387,12 +377,14 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 $domain = $request->input('domain');
                 $this->setDomain($productid, $domain);
             }
-            $userCurrency = userCurrency($user_id);
+            $planObj = Plan::where('id', $plan)->first();
+            $userCurrency = userCurrencyAndPrice($user_id, $planObj);
             $currency = $userCurrency['currency'];
             $number = rand(11111111, 99999999);
             $date = \Carbon\Carbon::parse($request->input('date'));
             $product = Product::find($productid);
-            $cost = $this->cartController->cost($productid, $user_id, $plan);
+
+            $cost = $this->cartController->cost($productid, $plan, $user_id);
 
             $couponTotal = $this->getGrandTotal($code, $total, $cost, $productid, $currency, $user_id);
             $grandTotalAfterCoupon = $qty * $couponTotal['total'];
@@ -441,8 +433,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
             return $items;
         } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -455,8 +445,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             }
             \Session::put('domain'.$productid, $domain);
         } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
-
             throw new \Exception($ex->getMessage());
         }
     }
@@ -470,8 +458,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
             return $this->sendInvoiceMail($userid, $number, $total, $invoiceid);
         } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
-
             throw new \Exception($ex->getMessage());
         }
     }
@@ -497,17 +483,14 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             }
             $order = $this->order->getOrderLink($invoice->orderRelation()->value('order_id'), 'my-order');
             // $order = Order::getOrderLink($invoice->order_id);
-            $currency = userCurrency($user->id);
+            $currency = $invoice->currency;
             $gst = TaxOption::select('tax_enable', 'Gst_No')->first();
-            $symbol = $currency['currency'];
-            ini_set('max_execution_time', '0');
-
+            $symbol = $invoice->currency;
+            // ini_set('max_execution_time', '0');
             $pdf = \PDF::loadView('themes.default1.invoice.newpdf', compact('invoiceItems', 'invoice', 'user', 'currency', 'symbol', 'gst', 'order'));
 
             return $pdf->download($user->first_name.'-invoice.pdf');
         } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

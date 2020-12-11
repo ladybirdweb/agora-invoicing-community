@@ -227,15 +227,15 @@ if($script){
                                                                         <tbody>
 
                                                                         @forelse(Cart::getContent() as $key=>$item)
-
+                                                                        
                                                                             <?php
+                                                                            // dd($item);
                                                                             $product = App\Model\Product\Product::where('id', $item->id)->first();
                                                                             if ($product->require_domain == 1) {
                                                                                 $domain[$key] = $item->id;
                                                                             }
                                                                            
-                                                                            $currency = userCurrency();
-                                                                            $currency =  $currency['currency'];
+                                                                          $currency =  $item->attributes['currency'];
                                                                           ?>
                                                                             <tr>
 
@@ -390,22 +390,40 @@ if($script){
                 <div class="container">
 
                     <div class="footer-ribbon"><span>Get in Touch</span></div>
-                     
+                      <div id="mailchimp-message"></div>
                     <div class="row py-5 my-4">
                          <?php
-                       $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer1')->select('name','content','allow_tweets','allow_mailchimp')->first();
+                         $count  = \App\Model\Front\Widgets::where('publish', 1)->count();
+                         switch ($count) {
+                           case '1':
+                             $class = 12;
+                             break;
+                           case '2':
+                            $class = 6;
+                            break;
+                            case '3':
+                            $class = 4;
+                            break;
+                            case '4':
+                            $class = 3;
+                            break;
+                           default:
+                            $class = 12;
+                             break;
+                         }
+                       $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer1')->select('name','content','allow_tweets','allow_mailchimp','allow_social_media')->first();
                           if ($widgets) {
                               $tweetDetails = $widgets->allow_tweets ==1 ?  '<div id="tweets" class="twitter" >
                             </div>' : '';
                            }
-                            $mailchimpKey = \App\Model\Common\Mailchimp\MailchimpSetting::find(1);
+                            $mailchimpKey = \App\Model\Common\Mailchimp\MailchimpSetting::value('api_key');
                             ?>
                            @if($widgets != null)
-                                 @component('mini_views.footer_widget', ['title'=> $widgets->name, 'colClass'=>"col-md-6 col-lg-4 mb-4 mb-lg-0"])
+                                 @component('mini_views.footer_widget', ['title'=> $widgets->name, 'colClass'=>"col-md-6 col-lg-$class mb-$class mb-lg-0"])
                                      <p class="pr-1"> {!! $widgets->content !!}</p>
                                      {!! $tweetDetails !!}
 
-                                     <div id="mailchimp-message"></div>
+                                    
 
                                     
                                      <div class="alert alert-danger d-none" id="newsletterError"></div>
@@ -417,23 +435,49 @@ if($script){
                                 </span>
                                          </div>
                                      @endif
+                                     @if($widgets->allow_social_media)
+                                     <ul class="social-icons">
+                                      @foreach($social as $media)
+                                <li class="{{$media->class}}"><a href="{{$media->link}}" target="_blank" title="{{ucfirst($media->name)}}"><i class="{{$media->fa_class}}"></i></a></li>
+                            @endforeach
+                          </ul>
+                            @endif
                                  @endcomponent
                             @endif
                           <?php
 
-                          $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer2')->select('name','content','allow_tweets','allow_mailchimp')->first();
+                          $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer2')->select('name','content','allow_tweets','allow_mailchimp','allow_social_media')->first();
                           if ($widgets) {
                            $tweetDetails =  $widgets->allow_tweets ==1 ?  '<div id="tweets" class="twitter" >
                             </div>' : '';
                           }
                             ?>
                             @if($widgets != null)
-                                 @component('mini_views.footer_widget', ['title'=> $widgets->name])
+                                 @component('mini_views.footer_widget', ['title'=> $widgets->name,'colClass'=>"col-md-6 col-lg-$class mb-$class mb-lg-0"])
+                                 <p class="pr-1"> {!! $widgets->content !!}</p>
                                      {!! $tweetDetails !!}
+                                     @if($mailchimpKey != null && $widgets->allow_mailchimp ==1)
+                                         <div class="input-group input-group-rounded">
+                                             <input class="form-control form-control-sm" placeholder="Email Address" name="email" id="newsletterEmail" type="text">
+                                             <span class="input-group-append">
+                                    <button class="btn btn-light text-color-dark" id="mailchimp-subscription" type="submit"><strong>Go!</strong></button>
+                                </span>
+                                         </div>
+                                         @endif
+                                         <br>
+                                         @if($widgets->allow_social_media)
+                                         <ul class="social-icons">
+                                          @foreach($social as $media)
+                                          
+                                <li style="display:inline-block;" class="{{$media->class}}"><a href="{{$media->link}}" target="_blank" title="{{ucfirst($media->name)}}"><i class="{{$media->fa_class}}"></i></a></li>
+                              
+                            @endforeach
+                            </ul>
+                            @endif
                                  @endcomponent
                             @endif
                         <?php
-                         $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer3')->select('name','content','allow_tweets','allow_mailchimp')->first();
+                         $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer3')->select('name','content','allow_tweets','allow_mailchimp','allow_social_media')->first();
                         if ($widgets) {
                            $tweetDetails = $widgets->allow_tweets   ==1 ?  '<div id="tweets" class="twitter" >
                             </div>' : '';
@@ -442,9 +486,27 @@ if($script){
 
                             ?>
                        @if($widgets != null)
-                            @component('mini_views.footer_widget', ['title'=> $widgets->name, 'ulClass'=>'list list-icons list-icons-lg'])
+                            @component('mini_views.footer_widget', ['title'=> $widgets->name,'colClass'=>"col-md-6 col-lg-$class mb-$class mb-lg-0"])
+                            <p class="pr-1"> {!! $widgets->content !!}</p>
+                              {!! $tweetDetails !!}
+                              @if($mailchimpKey != null && $widgets->allow_mailchimp ==1)
+                                         <div class="input-group input-group-rounded">
+                                             <input class="form-control form-control-sm" placeholder="Email Address" name="email" id="newsletterEmail" type="text">
+                                             <span class="input-group-append">
+                                    <button class="btn btn-light text-color-dark" id="mailchimp-subscription" type="submit"><strong>Go!</strong></button>
+                                </span>
+                                         </div>
+                                         @endif
+                                         <br>
+                                         @if($widgets->allow_social_media)
+                                          <ul class="social-icons">
+                                          @foreach($social as $media)
 
-                                 @if($set->company_email != NULL)
+                                <li class="{{$media->class}}"><a href="{{$media->link}}" target="_blank" title="{{ucfirst($media->name)}}"><i class="{{$media->fa_class}}"></i></a></li>
+                            @endforeach
+                          </ul>
+                            @endif
+                                 <!-- @if($set->company_email != NULL)
                                      <li class="mb-1">
                                          <i class="fas fa-envelope"></i>
                                          <p class="m-0">
@@ -465,24 +527,40 @@ if($script){
                                          <i class="fa fa-map-marker"></i>
                                          <p class="m-0">{{$set->address}}</p>
                                      </li>
-                                 @endif
+                                 @endif -->
                             @endcomponent
                         @endif
 
                          <?php
 
-                         $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer4')->select('name','content','allow_tweets','allow_mailchimp')->first();
+                         $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer4')->select('name','content','allow_tweets','allow_mailchimp','allow_social_media')->first();
                          if ($widgets) {
                           $tweetDetails = $widgets->allow_tweets   ==1 ?  '<div id="tweets" class="twitter" >
                             </div>' : '';
+                            
                           }
                             ?>
 
                       @if($widgets != null)
-                        @component('mini_views.footer_widget', ['title'=> $widgets->name, 'ulClass'=> 'social-icons', 'colClass'=>'col-md-6 col-lg-2'])
+                        @component('mini_views.footer_widget', ['title'=> $widgets->name,'colClass'=>"col-md-6 col-lg-$class mb-$class mb-lg-0"])
+                        <p class="pr-1"> {!! $widgets->content !!}</p>
+                                     {!! $tweetDetails !!}
+                                      @if($mailchimpKey != null && $widgets->allow_mailchimp ==1)
+                                         <div class="input-group input-group-rounded">
+                                             <input class="form-control form-control-sm" placeholder="Email Address" name="email" id="newsletterEmail" type="text">
+                                             <span class="input-group-append">
+                                    <button class="btn btn-light text-color-dark" id="mailchimp-subscription" type="submit"><strong>Go!</strong></button>
+                                </span>
+                                         </div>
+                                         @endif
+                                         <br>
+                            @if($widgets->allow_social_media)
+                             <ul class="social-icons">
                             @foreach($social as $media)
                                 <li class="{{$media->class}}"><a href="{{$media->link}}" target="_blank" title="{{ucfirst($media->name)}}"><i class="{{$media->fa_class}}"></i></a></li>
                             @endforeach
+                          </ul>
+                            @endif
                         @endcomponent
                       @endif
 
@@ -508,7 +586,16 @@ if($script){
           <script src="{{asset('client/js/jquery.appear.min.js')}}"></script>
           <script src="{{asset('client/js/jquery.easing.min.js')}}"></script>
           <script src="{{asset('client/js/jquery-cookie.min.js')}}"></script>
-          <script src="{{asset('client/js/popper.min.js')}}"></script>
+          <!-- <script src="{{asset('client/js/popper.js')}}"></script> -->
+          <!-- <script src="{{asset('client/js/popper.min.js')}}"></script> -->
+           <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+          <!-- Popper JS -->
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+
+          <!-- Latest compiled JavaScript -->
+          <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> 
+
           <script src="{{asset('client/js/bootstrap.min.js')}}"></script>
           <script src="{{asset('client/js/common.min.js')}}"></script>
           <script src="{{asset('client/js/jquery.validation.min.js')}}"></script>
@@ -604,7 +691,7 @@ if($script){
      url: "{{route('twitter')}}",
      dataType: "html",
        success: function (returnHTML) {
-             $('#tweets').html(returnHTML);
+             $('.twitter').html(returnHTML);
               
           }
     });

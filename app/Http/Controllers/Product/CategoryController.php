@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Product;
 
 use App\Http\Controllers\Controller;
 use App\Model\Product\ProductCategory;
-use Bugsnag;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -83,8 +82,6 @@ class CategoryController extends Controller
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

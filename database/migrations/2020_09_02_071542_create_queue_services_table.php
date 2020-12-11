@@ -13,13 +13,15 @@ class CreateQueueServicesTable extends Migration
      */
     public function up()
     {
-        Schema::create('queue_services', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name');
-            $table->string('short_name');
-            $table->integer('status');
-            $table->timestamps();
-        });
+        if (! Schema::hasTable('queue_services')) {
+            Schema::create('queue_services', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('name');
+                $table->string('short_name');
+                $table->integer('status');
+                $table->timestamps();
+            });
+        }
     }
 
     /**

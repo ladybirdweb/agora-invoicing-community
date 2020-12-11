@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Model\License\LicensePermission;
 use App\Model\License\LicenseType;
 use App\Model\Product\Product;
-use Bugsnag;
 use Illuminate\Http\Request;
 
 /*
@@ -68,7 +67,6 @@ class LicensePermissionsController extends Controller
             ->rawColumns(['checkbox', 'type_name', 'permissions', 'action'])
             ->make(true);
         } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
             app('log')->error($ex->getMessage());
 
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -108,7 +106,6 @@ class LicensePermissionsController extends Controller
 
             return ['message' =>'success', 'update'=> 'Permissions Updated Successfully'];
         } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
             app('log')->error($ex->getMessage());
             $result = [$ex->getMessage()];
 
@@ -176,7 +173,6 @@ class LicensePermissionsController extends Controller
                 'generateSupportExpiryDate'       => $generateSupportExpiryDate, 'downloadPermission'=>$downloadPermission, 'noPermissions'=>$noPermissions,
                 'allowDownloadTillExpiry'         => $allowDownloadTillExpiry, ];
         } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex->getMessage());
             app('log')->error($ex->getMessage());
 
             return redirect()->back()->with('fails', $ex->getMessage());

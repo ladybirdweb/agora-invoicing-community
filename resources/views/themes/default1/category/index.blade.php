@@ -50,7 +50,16 @@ Categories
     </div>
 
 </div>
+<script>
+     $('ul.nav-sidebar a').filter(function() {
+        return this.id == 'category';
+    }).addClass('active');
 
+    // for treeview
+    $('ul.nav-treeview a').filter(function() {
+        return this.id == 'category';
+    }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
+</script>
 <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" />
 <script src="//cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript">
@@ -78,6 +87,7 @@ Categories
                 {data: 'action', name: 'action'}
             ],
             "fnDrawCallback": function( oSettings ) {
+              '<label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="safdsf"></label>'
                 bindEditButton();
                 $('.loader').css('display', 'none');
             },
@@ -93,11 +103,7 @@ Categories
 
 
     function bindEditButton() {
-        $(function () {
-            $('[data-toggle="tooltip"]').tooltip({
-                container : 'body'
-            });
-        });
+        
         $('.editCat').click(function(){
            var catName = $(this).attr('data-name');
            var catId   = $(this).attr('data-id');
@@ -139,6 +145,7 @@ Categories
 
      });
  </script>
+
 
 @stop
 

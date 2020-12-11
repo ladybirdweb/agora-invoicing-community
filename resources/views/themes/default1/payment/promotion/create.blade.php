@@ -1,16 +1,16 @@
 @extends('themes.default1.layouts.master')
 @section('title')
-Create Promotion
+Create Coupon
 @stop
 @section('content-header')
     <div class="col-sm-6">
-        <h1>Create New Promotion</h1>
+        <h1>Create New Coupon</h1>
     </div>
     <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-            <li class="breadcrumb-item"><a href="{{url('promotions')}}"><i class="fa fa-dashboard"></i> All Promotions</a></li>
-            <li class="breadcrumb-item active">Create Promotion</li>
+            <li class="breadcrumb-item"><a href="{{url('promotions')}}"><i class="fa fa-dashboard"></i> All Coupons</a></li>
+            <li class="breadcrumb-item active">Create New Coupon</li>
         </ol>
     </div><!-- /.col -->
 
@@ -178,7 +178,16 @@ Create Promotion
 </div>
 
 
+<script>
+     $('ul.nav-sidebar a').filter(function() {
+        return this.id == 'coupon';
+    }).addClass('active');
 
+    // for treeview
+    $('ul.nav-treeview a').filter(function() {
+        return this.id == 'coupon';
+    }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
+</script>
 <script>
    $(document).ready(function(){
             $(function () {

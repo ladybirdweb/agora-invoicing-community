@@ -110,8 +110,6 @@ input:checked + .slider:before {
 
 
             </div>
-
-
             <div class="card-body">
 
                 <div class="form-group {{ $errors->has('first_name') ? 'has-error' : '' }}">
@@ -194,7 +192,7 @@ input:checked + .slider:before {
 
 
 
-                        {!! Form::select('country',[Lang::get('message.choose')=>$countries],null,['class' => 'form-control select2','id'=>'country','onChange'=>'getCountryAttr(this.value)','data-live-search'=>'true','required','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false','data-size'=>'10']) !!}
+                        {!! Form::select('country',[Lang::get('message.choose')=>$countries],null,['class' => 'form-control select2','id'=>'country','onChange'=>'getCountryAttr(this.value)','data-live-search'=>'true','required','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false','data-size'=>'10','disabled'=>'disabled']) !!}
                         <!-- name -->
 
 
@@ -219,17 +217,30 @@ input:checked + .slider:before {
 
 
                 </div>
-                <div class="form-group {{ $errors->has('zip') ? 'has-error' : '' }}">
+                 <div class="row">
+                <div class="col-md-6 form-group {{ $errors->has('zip') ? 'has-error' : '' }}">
                     <!-- mobile -->
                     {!! Form::label('zip',null,Lang::get('message.zip')) !!}
                     {!! Form::text('zip',null,['class' => 'form-control']) !!}
 
                 </div>
 
+                <div class="col-md-6 form-group" id= "gstin">
+                    <!-- mobile -->
+                    {!! Form::label('GSTIN',null,'GSTIN') !!}
+                    {!! Form::text('gstin',null,['class' => 'form-control']) !!}
+
+                </div>
+              </div>
+
                 <div class="form-group {{ $errors->has('profile_pic') ? 'has-error' : '' }}">
                     <!-- profile pic -->
                     {!! Form::label('profile_pic',Lang::get('message.profile-picture')) !!}
                     {!! Form::file('profile_pic') !!}
+                    <br>
+                    @if($user->profile_pic) 
+                    <img src='{{ asset("$user->profile_pic")}}' class="img-thumbnail" style="height: 50px;">
+                    @endif
 
                 </div>
                 <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-save">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></h4>
@@ -357,6 +368,11 @@ input:checked + .slider:before {
              $('.select2').select2()
          });
     var country = $('#country').val();
+    if(country == 'IN') {
+        $('#gstin').show()
+    } else {
+        $('#gstin').hide();
+    }
     getCode(country);
     var telInput = $('#mobile_code');
     addressDropdown = $("#country");
@@ -439,6 +455,11 @@ input:checked + .slider:before {
 
 
        function getCountryAttr(val) {
+        if(val == 'IN') {
+            $('#gstin').show()
+        } else {
+            $('#gstin').hide()
+        }
         getState(val);
         getCode(val);
 //        getCurrency(val);

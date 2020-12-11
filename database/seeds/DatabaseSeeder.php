@@ -105,6 +105,7 @@ class DatabaseSeeder extends Seeder
         $this->call(TaxByStatesSeeder::class);
         $this->call(TimezoneSeeder::class);
         $this->call(QueueServiceSeeder::class);
+        $this->call(PlanPriceSeeder::class);
 
         // \DB::unprepared(file_get_contents(storage_path('agora.sql')));
         // \DB::unprepared(file_get_contents(storage_path('states.sql')));
@@ -787,7 +788,7 @@ class PricingTemplateSeeder extends Seeder
                                      
                                 </div>
                                 <div class="plan-footer">
-                                <div class="subscription">{{subscription}}</div><br/>
+                                <div class="subscription table-responsive">{{subscription}}</div><br/>
                                 <div>{{url}} </div>
                                 </div>
                                 

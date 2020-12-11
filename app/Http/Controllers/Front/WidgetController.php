@@ -90,6 +90,10 @@ class WidgetController extends Controller
         ]);
 
         try {
+            $mailchimpTextBox = Widgets::where('allow_mailchimp', 1)->count();
+            if ($mailchimpTextBox && $request->allow_mailchimp == 1) {
+                throw new \Exception('Allow Mailchimp textbox can be selected as Yes only for one of the footers. It has alrerady been selected for a footer. Please change it to No to activate mailchimp for this footer.');
+            }
             $this->widget->fill($request->input())->save();
 
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
@@ -104,10 +108,14 @@ class WidgetController extends Controller
             'name'    => 'required',
             'publish' => 'required',
             // 'content' => 'required',
-            'type'    => 'required',
+            'type'    => 'required|unique:widgets,type,'.$id,
         ]);
 
         try {
+            $mailchimpTextBox = Widgets::where('allow_mailchimp', 1)->where('id', '!=', $id)->count();
+            if ($mailchimpTextBox) {
+                throw new \Exception('Allow Mailchimp textbox can be selected as Yes only for one of the footers. It has alrerady been selected for a footer. Please change it to No to activate mailchimp for this footer.');
+            }
             $widget = $this->widget->where('id', $id)->first();
             $widget->fill($request->input())->save();
 

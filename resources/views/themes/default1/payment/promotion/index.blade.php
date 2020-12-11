@@ -4,12 +4,12 @@ Promotions
 @stop
 @section('content-header')
     <div class="col-sm-6">
-        <h1>Promotion</h1>
+        <h1>Coupon</h1>
     </div>
     <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-            <li class="breadcrumb-item active">Promotions</li>
+            <li class="breadcrumb-item active">Coupons</li>
         </ol>
     </div><!-- /.col -->
 @stop
@@ -20,7 +20,7 @@ Promotions
     <div class="card card-secondary card-outline">
 
     <div class="card-header">
-        <h3 class="card-title">{{Lang::get('message.promotions')}}</h3>
+        <h3 class="card-title">Coupons</h3>
 
         <div class="card-tools">
             <a href="{{url('promotions/create')}}" class="btn btn-default btn-sm pull-right"><span class="fa fa-plus"></span>&nbsp;&nbsp;{{Lang::get('message.create')}}</a>
@@ -111,7 +111,16 @@ Promotions
         });
     </script>
 
+<script>
+     $('ul.nav-sidebar a').filter(function() {
+        return this.id == 'coupon';
+    }).addClass('active');
 
+    // for treeview
+    $('ul.nav-treeview a').filter(function() {
+        return this.id == 'coupon';
+    }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
+</script>
 
 @stop
 

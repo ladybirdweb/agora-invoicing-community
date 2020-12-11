@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateCompanyTypesTable extends Migration
 {
@@ -12,12 +13,14 @@ class CreateCompanyTypesTable extends Migration
      */
     public function up()
     {
-        Schema::create('company_types', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name');
-            $table->string('short');
-            $table->timestamps();
-        });
+        if (! Schema::hasTable('company_types')) {
+            Schema::create('company_types', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('name');
+                $table->string('short');
+                $table->timestamps();
+            });
+        }
     }
 
     /**

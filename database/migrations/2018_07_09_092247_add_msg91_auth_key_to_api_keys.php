@@ -14,8 +14,12 @@ class AddMsg91AuthKeyToApiKeys extends Migration
     public function up()
     {
         Schema::table('api_keys', function (Blueprint $table) {
-            $table->string('msg91_auth_key', 255)->nullable();
-            $table->string('msg91_sender', 50)->nullable();
+            if (! Schema::hasColumn('api_keys', 'msg91_auth_key')) {
+                $table->string('msg91_auth_key', 255)->nullable();
+            }
+            if (! Schema::hasColumn('api_keys', 'msg91_sender')) {
+                $table->string('msg91_sender', 50)->nullable();
+            }
         });
     }
 
@@ -26,6 +30,9 @@ class AddMsg91AuthKeyToApiKeys extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('api_keys');
+        Schema::table('api_keys', function (Blueprint $table) {
+            $table->dropColumn('msg91_auth_key');
+            $table->dropColumn('msg91_sender');
+        });
     }
 }

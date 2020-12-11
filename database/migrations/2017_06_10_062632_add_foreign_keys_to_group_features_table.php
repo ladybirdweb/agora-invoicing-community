@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class AddForeignKeysToGroupFeaturesTable extends Migration
 {
@@ -13,7 +14,11 @@ class AddForeignKeysToGroupFeaturesTable extends Migration
     public function up()
     {
         Schema::table('group_features', function (Blueprint $table) {
-            $table->foreign('group_id')->references('id')->on('product_groups')->onUpdate('RESTRICT')->onDelete('RESTRICT');
+            $sm = Schema::getConnection()->getDoctrineSchemaManager();
+            $indexesFound = $sm->listTableIndexes('group_features');
+            if (! array_key_exists('group_features_group_id_foreign', $indexesFound)) {
+                $table->foreign('group_id')->references('id')->on('product_groups')->onUpdate('RESTRICT')->onDelete('RESTRICT');
+            }
         });
     }
 

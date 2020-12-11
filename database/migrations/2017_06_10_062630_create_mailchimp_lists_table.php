@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateMailchimpListsTable extends Migration
 {
@@ -12,12 +13,14 @@ class CreateMailchimpListsTable extends Migration
      */
     public function up()
     {
-        Schema::create('mailchimp_lists', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name');
-            $table->string('list_id');
-            $table->timestamps();
-        });
+        if (! Schema::hasTable('mailchimp_lists')) {
+            Schema::create('mailchimp_lists', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('name');
+                $table->string('list_id');
+                $table->timestamps();
+            });
+        }
     }
 
     /**

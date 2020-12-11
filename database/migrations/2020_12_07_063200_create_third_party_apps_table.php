@@ -16,7 +16,7 @@ class CreateThirdPartyAppsTable extends Migration
         Schema::create('third_party_apps', function (Blueprint $table) {
             $table->id();
             $table->string('app_name')->nullable();
-            $table->char('app_key',32)->nullable();
+            $table->char('app_key', 32)->nullable();
             $table->timestamps();
         });
     }

@@ -17,6 +17,7 @@ class ThirdPartyAppController extends Controller
         $thirdParty = new ThirdPartyApp();
         $this->thirdParty = $thirdParty;
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -77,12 +78,13 @@ class ThirdPartyAppController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request,[
+        $this->validate($request, [
             'app_name' => 'required',
             'app_key'  => 'required|size:32',
         ]);
-       $this->thirdParty->fill($request->all())->save();
-       return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));    
+        $this->thirdParty->fill($request->all())->save();
+
+        return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
     }
 
     public function getAppKey()
@@ -126,15 +128,15 @@ class ThirdPartyAppController extends Controller
      */
     public function update(Request $request, ThirdPartyApp $thirdPartyApp, $id)
     {
-         $this->validate($request,[
+        $this->validate($request, [
             'app_name' => 'required',
             'app_key'  => 'required|size:32',
         ]);
-         $app_name = $request->input('app_name');
-         $app_key = $request->input('app_key');
-         $this->thirdParty->where('id', $id)->update(['app_name' =>$app_name, 'app_key'=>$app_key]);
-         return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));    
+        $app_name = $request->input('app_name');
+        $app_key = $request->input('app_key');
+        $this->thirdParty->where('id', $id)->update(['app_name' =>$app_name, 'app_key'=>$app_key]);
 
+        return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
     }
 
     /**

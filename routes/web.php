@@ -12,14 +12,11 @@
 */
 
         // VisitStats::routes();
-            Route::post('refresh-csrf', function() {
+            Route::post('refresh-csrf', function () {
                 return response()->json([
-                'token'=>csrf_token()],
+                    'token'=>csrf_token(), ],
               200);
             });
-          
-        
-        
 
          /*
          * Installer Routes

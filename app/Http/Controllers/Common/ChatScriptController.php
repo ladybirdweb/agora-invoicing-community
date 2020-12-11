@@ -127,6 +127,8 @@ class ChatScriptController extends Controller
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $ex) {
+            Bugsnag::notifyException($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 
 class CreateProductTypesTable extends Migration
 {
@@ -13,14 +12,12 @@ class CreateProductTypesTable extends Migration
      */
     public function up()
     {
-        if (! Schema::hasTable('product_types')) {
-            Schema::create('product_types', function (Blueprint $table) {
-                $table->increments('id');
-                $table->string('name');
-                $table->string('description');
-                $table->timestamps();
-            });
-        }
+        Schema::create('product_types', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');
+            $table->string('description');
+            $table->timestamps();
+        });
     }
 
     /**

@@ -82,14 +82,11 @@
      <div class="row">
         <div class="col-md-6">
             <div class="info-box">
-                <span class="info-box-icon bg-info" style="height: 70px;"><i class="fa fa-envelope"></i></span>
                 <!-- Apply any bg-* class to to the icon to color it -->
                 <div class="info-box-content">
-               
+
                     <div class="col-md-6">
-
                         <div class="form-group">
-
                             {!! Form::label('email_fetching',Lang::get('message.expiry_mail')) !!}<br>
                             {!! Form::checkbox('expiry_cron',1,$condition->checkActiveJob()['expiryMail'],['id'=>'email_fetching']) !!}&nbsp;{{Lang::get('message.enable_expiry-cron')}}
                         </div>
@@ -110,7 +107,6 @@
 
         <div class="col-md-6">
             <div class="info-box">
-                <span class="info-box-icon bg-info" style="height: 70px;"><i class="fa fa-archive"></i></span>
                 <!-- Apply any bg-* class to to the icon to color it -->
                 <div class="info-box-content">
                     <div class="col-md-6">

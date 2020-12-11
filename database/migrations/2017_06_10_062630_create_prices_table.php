@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 
 class CreatePricesTable extends Migration
 {
@@ -13,17 +12,15 @@ class CreatePricesTable extends Migration
      */
     public function up()
     {
-        if (! Schema::hasTable('prices')) {
-            Schema::create('prices', function (Blueprint $table) {
-                $table->increments('id');
-                $table->integer('product_id')->unsigned()->index('prices_product_id_foreign');
-                $table->string('currency');
-                $table->integer('subscription')->unsigned()->index('prices_subscription_foreign');
-                $table->string('price');
-                $table->string('sales_price');
-                $table->timestamps();
-            });
-        }
+        Schema::create('prices', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('product_id')->unsigned()->index('prices_product_id_foreign');
+            $table->string('currency');
+            $table->integer('subscription')->unsigned()->index('prices_subscription_foreign');
+            $table->string('price');
+            $table->string('sales_price');
+            $table->timestamps();
+        });
     }
 
     /**

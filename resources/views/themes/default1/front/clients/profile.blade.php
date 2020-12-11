@@ -102,9 +102,10 @@ input:checked + .slider:before {
     color:#555;
 }
 </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/css/bootstrap-select.min.css" />
+ <link rel="stylesheet" href="{{asset('client/css/selectpicker.css')}}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/css/bootstrap-select.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 
 
      <div id= "alertMessage"></div>
@@ -249,7 +250,7 @@ input:checked + .slider:before {
                     <!-- name -->
                     <label for"country" class="required">Country</label>
                     <?php $countries = \App\Model\Common\Country::pluck('nicename', 'country_code_char2')->toArray(); ?>
-                    {!! Form::text('country',$selectedCountry,['class' => 'form-control input-lg','id'=>'country','onChange'=>'getCountryAttr(this.value);','readonly'=>'readonly']) !!}
+                    {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],null,['class' => 'form-control input-lg selectpicker','data-live-search-style'=>"startsWith",'data-live-search'=>'true','data-live-search-placeholder'=>'Search','data-dropup-auto'=>'false','data-size'=>'10','id'=>'country','onChange'=>'getCountryAttr(this.value);']) !!}
 
 
                     <h6 id="countryCheck"></h6>
@@ -273,17 +274,10 @@ input:checked + .slider:before {
 
             </div>
             <div class="form-row">
-                <div class="col-md-6 form-group {{ $errors->has('zip') ? 'has-error' : '' }}">
+                <div class="form-group col {{ $errors->has('zip') ? 'has-error' : '' }}">
                     <label for"zip">Zip/Postal Code</label>
                     {!! Form::text('zip',null,['class' => 'form-control input-lg','id'=>'Zip']) !!}
                     <h6 id="zipCheck"></h6>
-                </div>
-
-                <div class="col-md-6 form-group" id= "gstin">
-                    <label for"gstin">GSTIN</label>
-                    {!! Form::text('gstin',null,['class' => 'form-control input-lg']) !!}
-
-                    <h6 id="gstincheck"></h6>
                 </div>
             </div>
 
@@ -292,10 +286,6 @@ input:checked + .slider:before {
                     <!-- profile pic -->
                     <label for"profile_pic" class="">Profile Picture</label>
                     {!! Form::file('profile_pic',['id'=>'profilePic']) !!}
-                    <br>
-                     @if($user->profile_pic) 
-                    <img src='{{ asset("$user->profile_pic")}}' class="img-thumbnail" style="height: 50px;">
-                    @endif
                     <h6 id="profilePicCheck"></h6>
 
                 </div>
@@ -379,7 +369,7 @@ input:checked + .slider:before {
     @endcomponent
 
 <script src="{{asset('common/js/2fa.js')}}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/js/bootstrap-select.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
 
                     <script>
 
@@ -507,17 +497,11 @@ input:checked + .slider:before {
              }
 
                                 </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 <script src="{{asset('common/js/intlTelInput.js')}}"></script>
 <script type="text/javascript">
      $(document).ready(function(){
     var country = $('#country').val();
-    console.log(country,'sdfs')
-    if(country == 'India') {
-        $('#gstin').show()
-    } else {
-        $('#gstin').hide();
-    }
     var telInput = $('#mobile_code'),
      addressDropdown = $("#country");
      errorMsg = document.querySelector("#error-msg"),
@@ -594,11 +578,6 @@ input:checked + .slider:before {
 });
 
    function getCountryAttr(val) {
-        if(val == 'IN') {
-            $('#gstin').show()
-        } else {
-            $('#gstin').hide()
-        }
         getState(val);
         getCode(val);
 //        getCurrency(val);
@@ -633,7 +612,7 @@ input:checked + .slider:before {
 
 
 </script>
-<!-- <script src="{{asset('common/js/licCode.js')}}"></script> -->
+<script src="{{asset('common/js/licCode.js')}}"></script>
 
 @stop
 

@@ -13,16 +13,14 @@ class CreateMailchimpGroupsTable extends Migration
      */
     public function up()
     {
-        if (! Schema::hasTable('mailchimp_groups')) {
-            Schema::create('mailchimp_groups', function (Blueprint $table) {
-                $table->increments('id');
-                $table->string('category_id', 255)->nullable();
-                $table->string('list_id', 255)->nullable();
-                $table->string('category_option_id', 255)->nullable();
-                $table->string('category_name', 255)->nullable();
-                $table->timestamps();
-            });
-        }
+        Schema::create('mailchimp_groups', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('category_id', 255)->nullable();
+            $table->string('list_id', 255)->nullable();
+            $table->string('category_option_id', 255)->nullable();
+            $table->string('category_name', 255)->nullable();
+            $table->timestamps();
+        });
     }
 
     /**

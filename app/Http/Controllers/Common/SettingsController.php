@@ -11,6 +11,7 @@ use App\Model\Mailjob\QueueService;
 use App\Model\Payment\Currency;
 use App\Model\Plugin;
 use App\User;
+use Bugsnag;
 use GrahamCampbell\Markdown\Facades\Markdown;
 use Illuminate\Http\Request;
 use Spatie\Activitylog\Models\Activity;
@@ -169,8 +170,8 @@ class SettingsController extends BaseSettingsController
         $this->validate($request, [
             'company'         => 'required|max:50',
             'company_email'   => 'required|email',
-            'website'         => 'required|url',
-            'phone'           => 'required|integer',
+            'website'         => 'required',
+            'phone'           => 'required',
             'address'         => 'required',
             'state'           => 'required',
             'country'         => 'required',
@@ -364,6 +365,8 @@ class SettingsController extends BaseSettingsController
                                 'username', 'role', 'new', 'old', 'created_at', ])
                             ->make(true);
         } catch (\Exception $e) {
+            Bugsnag::notifyException($e);
+
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
@@ -373,7 +376,7 @@ class SettingsController extends BaseSettingsController
         try {
             $email_log = \DB::table('email_log')->orderBy('date', 'desc')->take(50);
 
-            return\DataTables::of($email_log)
+            return\ DataTables::of($email_log)
             ->setTotalRecords($email_log->count())
              ->addColumn('checkbox', function ($model) {
                  return "<input type='checkbox' class='email' value=".$model->id.' name=select[] id=check>';
@@ -420,6 +423,8 @@ class SettingsController extends BaseSettingsController
                                   'bcc', 'subject',  'status', ])
                             ->make(true);
         } catch (\Exception $e) {
+            Bugsnag::notifyException($e);
+
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }

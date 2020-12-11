@@ -58,6 +58,7 @@ class QueueController extends Controller
         ->rawColumns(['checkbox', 'name', 'status', 'action'])
         ->make(true);
         } catch (\Exception $ex) {
+            Bugsnag::notifyException($ex);
             app('log')->error($ex->getMessage());
 
             return redirect()->back()->with('fails', $ex->getMessage());

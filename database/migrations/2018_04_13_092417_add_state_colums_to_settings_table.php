@@ -13,11 +13,9 @@ class AddStateColumsToSettingsTable extends Migration
      */
     public function up()
     {
-        if (! Schema::hasColumn('settings', 'state')) {
-            Schema::table('settings', function (Blueprint $table) {
-                $table->string('state');
-            });
-        }
+        Schema::table('settings', function (Blueprint $table) {
+            $table->string('state');
+        });
     }
 
     /**
@@ -28,7 +26,7 @@ class AddStateColumsToSettingsTable extends Migration
     public function down()
     {
         Schema::table('settings', function (Blueprint $table) {
-            $table->dropColumn('state');
+            //
         });
     }
 }

@@ -132,16 +132,7 @@ Create Page
     </div>
 
 </div>
-<script>
-     $('ul.nav-sidebar a').filter(function() {
-        return this.id == 'all_new_page';
-    }).addClass('active');
 
-    // for treeview
-    $('ul.nav-treeview a').filter(function() {
-        return this.id == 'all_new_page';
-    }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
-</script>
 
 {!! Form::close() !!}
 

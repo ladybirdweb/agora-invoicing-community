@@ -100,7 +100,7 @@ Create Invoice
                       <h6 id ="pricecheck"></h6>
                 </div>
                 <div class="col-md-4 form-group">
-                    {!! Form::label('code','Coupon code') !!}
+                    {!! Form::label('code',Lang::get('message.promotion-code')) !!}
                     {!! Form::text('code',null,['class'=>'form-control']) !!}
                 </div>
 
@@ -130,16 +130,7 @@ Create Invoice
 </div>
 
 
-<script>
-     $('ul.nav-sidebar a').filter(function() {
-        return this.id == 'add_invoice';
-    }).addClass('active');
 
-    // for treeview
-    $('ul.nav-treeview a').filter(function() {
-        return this.id == 'add_invoice';
-    }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
-</script>
 
 <script>
     function getPrice(val) {
@@ -190,29 +181,16 @@ Create Invoice
             type: "GET",
             url: "{{url('get-subscription')}}" + '/' + val,
             success: function (data) {
-                if(data[0] == 'Product cannot be added to cart. No plan exists.') {
-                       var html = '<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong>Whoops! </strong>Something went wrong<ul>';
-                    html += '<li>' + 'Add a plan for the product' + '</li>'
-                    html += '</ul></div>';
-                 $('#error').show();
-                  document.getElementById('error').innerHTML = html;
-                  $('#generate').attr('disabled',true)
-                } else {
-                    $('#generate').attr('disabled',false)
-                     var price = data['price'];
+                var price = data['price'];
                 var field = data['field'];
                 
                 $("#price").val(price);
                 
-                const element = document.getElementById('fields1');
+                const element = document.getElementById('fields1')
                 if (element) {
-                    element.innerHTML = field;
+                    element.innerHTML = field
                 }
                 
-                }
-                 
-
-               
 
             }
         });

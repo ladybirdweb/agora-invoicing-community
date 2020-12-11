@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 
 class CreatePromotionTypesTable extends Migration
 {
@@ -13,13 +12,11 @@ class CreatePromotionTypesTable extends Migration
      */
     public function up()
     {
-        if (! Schema::hasTable('promotion_types')) {
-            Schema::create('promotion_types', function (Blueprint $table) {
-                $table->increments('id');
-                $table->string('name');
-                $table->timestamps();
-            });
-        }
+        Schema::create('promotion_types', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');
+            $table->timestamps();
+        });
     }
 
     /**

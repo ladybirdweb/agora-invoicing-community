@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 
 class CreateTaxClassesTable extends Migration
 {
@@ -13,13 +12,11 @@ class CreateTaxClassesTable extends Migration
      */
     public function up()
     {
-        if (! Schema::hasTable('tax_classes')) {
-            Schema::create('tax_classes', function (Blueprint $table) {
-                $table->increments('id');
-                $table->string('name');
-                $table->timestamps();
-            });
-        }
+        Schema::create('tax_classes', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');
+            $table->timestamps();
+        });
     }
 
     /**

@@ -320,7 +320,6 @@
 
             Route::resource('orders', 'Order\OrderController');
             Route::get('get-orders', 'Order\OrderController@getOrders')->name('get-orders');
-            Route::get('get-product-versions/{product}', 'Order\OrderSearchController@getProductVersions')->name('get-product-versions');
             Route::delete('orders-delete', 'Order\OrderController@destroy')->name('orders-delete');
             Route::patch('change-domain', 'Order\ExtendedOrderController@changeDomain');
             Route::patch('reissue-license', 'Order\ExtendedOrderController@reissueLicense');
@@ -328,7 +327,6 @@
             Route::post('edit-license-expiry', 'Order\BaseOrderController@editLicenseExpiry');
             Route::post('edit-support-expiry', 'Order\BaseOrderController@editSupportExpiry');
             Route::post('edit-installation-limit', 'Order\BaseOrderController@editInstallationLimit');
-            Route::get('get-installation-details/{orderId}', 'Order\OrderController@getInstallationDetails');
             /*
              * Groups
              */
@@ -517,8 +515,6 @@
         Route::post('update-latest-version', 'HomeController@updateLatestVersion');
         Route::post('v1/checkUpdatesExpiry', 'HomeController@checkUpdatesExpiry');
         Route::post('update/lic-code', 'HomeController@updateLicenseCode');
-        Route::get('new-version-available', 'HomeController@isNewVersionAvailable');
-        Route::post('update-installation-detail', 'HomeController@updateInstallationDetails');
 
         Route::get('404', ['as' => 'error404', function () {
             return view('errors.404');

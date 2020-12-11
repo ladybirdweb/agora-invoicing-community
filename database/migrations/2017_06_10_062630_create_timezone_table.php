@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 
 class CreateTimezoneTable extends Migration
 {
@@ -13,13 +12,11 @@ class CreateTimezoneTable extends Migration
      */
     public function up()
     {
-        if (! Schema::hasTable('timezone')) {
-            Schema::create('timezone', function (Blueprint $table) {
-                $table->increments('id');
-                $table->string('name')->nullable();
-                $table->string('location')->nullable();
-            });
-        }
+        Schema::create('timezone', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name')->nullable();
+            $table->string('location')->nullable();
+        });
     }
 
     /**

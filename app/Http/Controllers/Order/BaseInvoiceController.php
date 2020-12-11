@@ -2,14 +2,95 @@
 
 namespace App\Http\Controllers\Order;
 
+use App\Http\Controllers\Front\CartController;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
 use App\Model\Payment\Promotion;
+use App\Model\Payment\Tax;
+use App\Model\Payment\TaxClass;
 use App\Model\Payment\TaxOption;
+use App\User;
+use Bugsnag;
 use Illuminate\Http\Request;
 
 class BaseInvoiceController extends ExtendedBaseInvoiceController
 {
+    /**
+     *Tax When state is not empty.
+     */
+    public function getTaxWhenState($user_state, $productid, $origin_state)
+    {
+        $taxes = [];
+        $value = [];
+        $cartController = new CartController();
+        $c_gst = $user_state->c_gst;
+        $s_gst = $user_state->s_gst;
+        $i_gst = $user_state->i_gst;
+        $ut_gst = $user_state->ut_gst;
+        $state_code = $user_state->state_code;
+        if ($state_code == $origin_state) {//If user and origin state are same
+            $taxClassId = TaxClass::where('name', 'Intra State GST')
+             ->pluck('id')->toArray(); //Get the class Id  of state
+            if ($taxClassId) {
+                $taxes = $cartController->getTaxByPriority($taxClassId);
+                $value = $cartController->getValueForSameState($productid, $c_gst, $s_gst, $taxClassId, $taxes);
+            } else {
+                $taxes = [0];
+            }
+        } elseif ($state_code != $origin_state && $ut_gst == 'NULL') {//If user is from other state
+            $taxClassId = TaxClass::where('name', 'Inter State GST')
+            ->pluck('id')->toArray(); //Get the class Id  of state
+            if ($taxClassId) {
+                $taxes = $cartController->getTaxByPriority($taxClassId);
+                $value = $cartController->getValueForOtherState($productid, $i_gst, $taxClassId, $taxes);
+            } else {
+                $taxes = [0];
+            }
+        } elseif ($state_code != $origin_state && $ut_gst != 'NULL') {//if user from Union Territory
+            $taxClassId = TaxClass::where('name', 'Union Territory GST')
+            ->pluck('id')->toArray(); //Get the class Id  of state
+            if ($taxClassId) {
+                $taxes = $cartController->getTaxByPriority($taxClassId);
+                $value = $cartController->getValueForUnionTerritory($productid, $c_gst, $ut_gst, $taxClassId, $taxes);
+            } else {
+                $taxes = [0];
+            }
+        }
+
+        return ['taxes'=>$taxes, 'value'=>$value];
+    }
+
+    /**
+     *Tax When from other Country.
+     */
+    public function getTaxWhenOtherCountry($geoip_state, $geoip_country, $productid)
+    {
+        $cartController = new CartController();
+        $taxClassId = Tax::where('state', $geoip_state)
+        ->orWhere('country', $geoip_country)
+        ->pluck('tax_classes_id')->first();
+        $value = '';
+        $rate = '';
+        if ($taxClassId) { //if state equals the user State
+            $taxes = $cartController->getTaxByPriority($taxClassId);
+
+            // $taxes = $this->cartController::getTaxByPriority($taxClassId);
+            $value = $cartController->getValueForOthers($productid, $taxClassId, $taxes);
+            $rate = $value;
+        } else {//if Tax is selected for Any State Any Country
+            $taxClassId = Tax::where('country', '')->where('state', 'Any State')->pluck('tax_classes_id')->first();
+            if ($taxClassId) {
+                $taxes = $cartController->getTaxByPriority($taxClassId);
+                $value = $cartController->getValueForOthers($productid, $taxClassId, $taxes);
+                $rate = $value;
+            } else {
+                $taxes = [0];
+            }
+        }
+
+        return ['taxes'=>$taxes, 'value'=>$value, 'rate'=>$rate];
+    }
+
     public function getExpiryStatus($start, $end, $now)
     {
         $whenDateNotSet = $this->whenDateNotSet($start, $end);
@@ -93,6 +174,8 @@ class BaseInvoiceController extends ExtendedBaseInvoiceController
 
             return redirect()->back()->with('success', 'Payment Accepted Successfully');
         } catch (\Exception $ex) {
+            Bugsnag::notifyException($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -108,6 +191,7 @@ class BaseInvoiceController extends ExtendedBaseInvoiceController
 
             return $domain;
         } catch (\Exception $ex) {
+            Bugsnag::notifyException($ex);
         }
     }
 
@@ -163,6 +247,7 @@ class BaseInvoiceController extends ExtendedBaseInvoiceController
             return intval(round($total));
         } catch (\Exception $ex) {
             app('log')->warning($ex->getMessage());
+            Bugsnag::notifyException($ex);
 
             throw new \Exception($ex->getMessage());
         }

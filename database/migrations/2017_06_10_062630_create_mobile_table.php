@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 
 class CreateMobileTable extends Migration
 {
@@ -13,17 +12,15 @@ class CreateMobileTable extends Migration
      */
     public function up()
     {
-        if (! Schema::hasTable('mobile')) {
-            Schema::create('mobile', function (Blueprint $table) {
-                $table->integer('id', true);
-                $table->char('iso', 2);
-                $table->string('name', 80);
-                $table->string('nicename', 80);
-                $table->char('iso3', 3)->nullable();
-                $table->smallInteger('numcode')->nullable();
-                $table->integer('phonecode');
-            });
-        }
+        Schema::create('mobile', function (Blueprint $table) {
+            $table->integer('id', true);
+            $table->char('iso', 2);
+            $table->string('name', 80);
+            $table->string('nicename', 80);
+            $table->char('iso3', 3)->nullable();
+            $table->smallInteger('numcode')->nullable();
+            $table->integer('phonecode');
+        });
     }
 
     /**

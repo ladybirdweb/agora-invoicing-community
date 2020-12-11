@@ -14,12 +14,8 @@ class AddStripeApiKeyToApiKeysTable extends Migration
     public function up()
     {
         Schema::table('api_keys', function (Blueprint $table) {
-            if (! Schema::hasColumn('api_keys', 'stripe_key')) {
-                $table->string('stripe_key')->nullable();
-            }
-            if (! Schema::hasColumn('api_keys', 'stripe_secret')) {
-                $table->string('stripe_secret')->nullable();
-            }
+            $table->string('stripe_key')->nullable();
+            $table->string('stripe_secret')->nullable();
         });
     }
 

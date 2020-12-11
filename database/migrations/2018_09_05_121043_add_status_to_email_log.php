@@ -13,11 +13,9 @@ class AddStatusToEmailLog extends Migration
      */
     public function up()
     {
-        if (! Schema::hasColumn('email_log', 'status')) {
-            Schema::table('email_log', function (Blueprint $table) {
-                $table->string('status', 255)->nullable();
-            });
-        }
+        Schema::table('email_log', function (Blueprint $table) {
+            $table->string('status', 255)->nullable();
+        });
     }
 
     /**

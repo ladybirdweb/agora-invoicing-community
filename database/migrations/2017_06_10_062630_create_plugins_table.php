@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 
 class CreatePluginsTable extends Migration
 {
@@ -13,16 +12,14 @@ class CreatePluginsTable extends Migration
      */
     public function up()
     {
-        if (! Schema::hasTable('plugins')) {
-            Schema::create('plugins', function (Blueprint $table) {
-                $table->increments('id');
-                $table->string('name');
-                $table->string('path');
-                $table->integer('status');
-                $table->string('type');
-                $table->timestamps();
-            });
-        }
+        Schema::create('plugins', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');
+            $table->string('path');
+            $table->integer('status');
+            $table->string('type');
+            $table->timestamps();
+        });
     }
 
     /**

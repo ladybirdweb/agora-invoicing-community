@@ -27,8 +27,6 @@ class ExtendedPlanController extends Controller
         $this->validate($request, [
             'name' => 'required',
             'days' => 'required|numeric',
-        ], [
-            'name.required' => 'Please enter period',
         ]);
 
         try {

@@ -13,11 +13,9 @@ class AddCompanyEmailToSettings extends Migration
      */
     public function up()
     {
-        if (! Schema::hasColumn('settings', 'company_email')) {
-            Schema::table('settings', function (Blueprint $table) {
-                $table->string('company_email', 255)->nullable();
-            });
-        }
+        Schema::table('settings', function (Blueprint $table) {
+            $table->string('company_email', 255)->nullable();
+        });
     }
 
     /**
@@ -27,8 +25,6 @@ class AddCompanyEmailToSettings extends Migration
      */
     public function down()
     {
-        Schema::table('settings', function (Blueprint $table) {
-            $table->dropColumn('company_email');
-        });
+        Schema::dropIfExists('settings');
     }
 }

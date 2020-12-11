@@ -23,7 +23,8 @@ Invoices
                 <div class="card-tools">
                     <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
                         <i class="fas fa-plus"></i></button>
-                   
+                    <button type="button" class="btn btn-tool" data-card-widget="remove" data-toggle="tooltip" title="Remove">
+                        <i class="fas fa-times"></i></button>
                 </div>
     </div>
     <!-- /.box-header -->
@@ -173,19 +174,9 @@ Invoices
     </div>
 
 </div>
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
-    <script>
-     $('ul.nav-sidebar a').filter(function() {
-        return this.id == 'all_invoice';
-    }).addClass('active');
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
 
-    // for treeview
-    $('ul.nav-treeview a').filter(function() {
-        return this.id == 'all_invoice';
-    }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
-</script>
-
-    <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 
 <script type="text/javascript">
 

@@ -153,16 +153,7 @@ Edit Group
 
 
 </div>
-<script>
-     $('ul.nav-sidebar a').filter(function() {
-        return this.id == 'group';
-    }).addClass('active');
 
-    // for treeview
-    $('ul.nav-treeview a').filter(function() {
-        return this.id == 'group';
-    }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
-</script>
 @stop
 <script src="{{asset('plugins/jQuery/jquery.js')}}"></script>
 

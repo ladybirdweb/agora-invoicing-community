@@ -27,7 +27,7 @@ class SoftDeleteController extends ClientController
                 'country_name as country', 'created_at', 'active', 'mobile_verified', 'is_2fa_enabled', 'role', 'position')
             ->onlyTrashed()->get();
 
-        return\DataTables::of($baseQuery)
+        return\ DataTables::of($baseQuery)
                         ->addColumn('checkbox', function ($model) {
                             return "<input type='checkbox' class='user_checkbox' value=".$model->id.' name=select[] id=check>';
                         })

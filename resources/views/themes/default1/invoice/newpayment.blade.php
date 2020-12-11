@@ -157,18 +157,7 @@ Payment
                           <h3>Amount To Credit : {{$symbol}} <span class="creditAmount">0</span></h3>
                     </div>
     </div>
-       <script>
-       $('ul.nav-sidebar a').filter(function() {
-        return this.id == 'all_user';
-    }).addClass('active');
-
-    // for treeview
-    $('ul.nav-treeview a').filter(function() {
-        return this.id == 'all_user';
-    }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
-    </script>
     @stop
- 
     @section('datepicker')
     <script type="text/javascript">
     $(function () {

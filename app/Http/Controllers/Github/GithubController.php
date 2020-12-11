@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Model\Common\StatusSetting;
 use App\Model\Github\Github;
 use App\Model\Product\Subscription;
+use Bugsnag;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -263,6 +264,8 @@ class GithubController extends Controller
 
             return $link['header'];
         } catch (Exception $ex) {
+            Bugsnag::notifyException($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

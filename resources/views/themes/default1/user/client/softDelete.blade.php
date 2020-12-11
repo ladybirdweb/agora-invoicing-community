@@ -10,7 +10,6 @@ Suspended users
     <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-            <li class="breadcrumb-item"><a href="{{url('clients')}}"><i class="fa fa-dashboard"></i> Users</a></li>
             <li class="breadcrumb-item active">Suspended Users</li>
         </ol>
     </div><!-- /.col -->
@@ -56,15 +55,6 @@ Suspended users
 <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 
 <script type="text/javascript">
-  $('ul.nav-sidebar a').filter(function() {
-      console.log('id-=== ', this.id)
-        return this.id == 'soft_delete_user';
-    }).addClass('active');
-
-    // for treeview
-    $('ul.nav-treeview a').filter(function() {
-        return this.id == 'soft_delete_user';
-    }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
 
         $('#deleted-user-table').DataTable({
 

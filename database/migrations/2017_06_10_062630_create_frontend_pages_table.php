@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 
 class CreateFrontendPagesTable extends Migration
 {
@@ -13,20 +12,18 @@ class CreateFrontendPagesTable extends Migration
      */
     public function up()
     {
-        if (! Schema::hasTable('frontend_pages')) {
-            Schema::create('frontend_pages', function (Blueprint $table) {
-                $table->increments('id');
-                $table->integer('parent_page_id');
-                $table->string('slug');
-                $table->string('name');
-                $table->longtext('content');
-                $table->string('url');
-                $table->string('type', 225);
-                $table->integer('publish');
-                $table->integer('hidden');
-                $table->timestamps();
-            });
-        }
+        Schema::create('frontend_pages', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('parent_page_id');
+            $table->string('slug');
+            $table->string('name');
+            $table->longtext('content');
+            $table->string('url');
+            $table->string('type', 225);
+            $table->integer('publish');
+            $table->integer('hidden');
+            $table->timestamps();
+        });
     }
 
     /**

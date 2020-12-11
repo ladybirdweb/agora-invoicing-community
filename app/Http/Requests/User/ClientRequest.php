@@ -36,6 +36,7 @@ class ClientRequest extends Request
                         'state'            => 'required_if:country,in',
                         'timezone_id'      => 'required',
                         'user_name'        => 'unique:users,user_name',
+                        'currency'         => 'required',
                     ];
 
             case 'PATCH':
@@ -49,7 +50,9 @@ class ClientRequest extends Request
                         'address'          => 'required',
                         'mobile'           => 'required',
                         'timezone_id'      => 'required',
+                        'currency'         => 'required',
                         'timezone_id'      => 'required',
+                        'country'                => 'required|exists:countries,country_code_char2',
                         'state'                  => 'required_if:country,IN',
                         'user_name'        => 'unique:users,user_name,'.$id,
                     ];

@@ -63,7 +63,7 @@
     </td>
 
     <td class="woocommerce-table__product-total product-total">
-        <span class="woocommerce-Price-amount amount"> {{currencyFormat($invoice->grand_total,$code=$invoice->currency)}}</span>    </td>
+        <span class="woocommerce-Price-amount amount"> {{currencyFormat($invoice->grand_total,$code=\Auth::user()->currency)}}</span>    </td>
 
 </tr>
 

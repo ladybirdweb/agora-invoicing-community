@@ -49,7 +49,7 @@ $set = $set->findOrFail(1);
            
             <div class="form-row">
                     <div class="form-group col">
-                        <label class="required">Mobile No</label>
+                        <label>Mobile No</label>
                         {!! Form::hidden('mobile',null,['id'=>'mobile_code_hidden','name'=>'country_code']) !!}
                         <input type="text" value=""  id="mobilenum" data-msg-required="Please enter the mobile No." maxlength="10" class="form-control" name="Mobile"  required>
                        

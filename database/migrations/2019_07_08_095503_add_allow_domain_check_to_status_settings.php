@@ -13,11 +13,9 @@ class AddAllowDomainCheckToStatusSettings extends Migration
      */
     public function up()
     {
-        if (! Schema::hasColumn('status_settings', 'domain_check')) {
-            Schema::table('status_settings', function (Blueprint $table) {
-                $table->boolean('domain_check')->default(0);
-            });
-        }
+        Schema::table('status_settings', function (Blueprint $table) {
+            $table->boolean('domain_check')->default(0);
+        });
     }
 
     /**
@@ -27,8 +25,6 @@ class AddAllowDomainCheckToStatusSettings extends Migration
      */
     public function down()
     {
-        Schema::table('status_settings', function (Blueprint $table) {
-            $table->dropColumn('domain_check');
-        });
+        Schema::dropIfExists('status_settings');
     }
 }

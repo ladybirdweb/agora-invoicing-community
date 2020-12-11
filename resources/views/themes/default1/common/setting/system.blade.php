@@ -133,21 +133,6 @@ System Setting
                         </td>
 
                     </tr>
-
-                    <tr>
-
-                        <td><b>{!! Form::label('zip','Zip') !!}</b></td>
-                        <td>
-                            <div class="form-group {{ $errors->has('zip') ? 'has-error' : '' }}">
-
-
-                                {!! Form::text('zip',null,['class' => 'form-control']) !!}
-                                
-
-                            </div>
-                        </td>
-
-                    </tr>
              
             </div>
             <div class="col-md-6">
@@ -335,16 +320,6 @@ System Setting
         </div>
     </div>
 </div>
-<script>
-     $('ul.nav-sidebar a').filter(function() {
-        return this.id == 'setting';
-    }).addClass('active');
-
-    // for treeview
-    $('ul.nav-treeview a').filter(function() {
-        return this.id == 'setting';
-    }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
-</script>
 <script>
     $(document).ready(function(){
         var country = $('#country').val();

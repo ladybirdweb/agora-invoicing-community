@@ -13,11 +13,9 @@ class AddGstNoColumnToTaxRulesTable extends Migration
      */
     public function up()
     {
-        if (! Schema::hasColumn('tax_rules', 'Gst_No')) {
-            Schema::table('tax_rules', function (Blueprint $table) {
-                $table->string('Gst_No');
-            });
-        }
+        Schema::table('tax_rules', function (Blueprint $table) {
+            $table->string('Gst_No')->nullable();
+        });
     }
 
     /**

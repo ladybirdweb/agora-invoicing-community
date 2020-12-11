@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use App\Model\Order\Invoice;
+use Bugsnag;
 use Illuminate\Http\Request;
 
 //////////////////////////////////////////////////////////////////////////////
@@ -163,6 +164,8 @@ trait CoupCodeAndInvoiceSearch
 
             return $payment;
         } catch (\Exception $ex) {
+            Bugsnag::notifyException($ex);
+
             throw new \Exception($ex->getMessage());
         }
     }
@@ -268,6 +271,7 @@ trait CoupCodeAndInvoiceSearch
                 //echo \Lang::get('message.select-a-row');
             }
         } catch (\Exception $e) {
+            Bugsnag::notifyException($e);
             echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
                     <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.

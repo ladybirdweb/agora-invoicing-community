@@ -13,14 +13,12 @@ class CreateDefaultPagesTable extends Migration
      */
     public function up()
     {
-        if (! Schema::hasTable('default_pages')) {
-            Schema::create('default_pages', function (Blueprint $table) {
-                $table->increments('id');
-                $table->integer('page_id');
-                $table->string('page_url', 255);
-                $table->timestamps();
-            });
-        }
+        Schema::create('default_pages', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('page_id');
+            $table->string('page_url', 255);
+            $table->timestamps();
+        });
     }
 
     /**

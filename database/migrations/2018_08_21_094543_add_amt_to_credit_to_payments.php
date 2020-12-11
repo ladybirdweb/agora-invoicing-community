@@ -13,11 +13,9 @@ class AddAmtToCreditToPayments extends Migration
      */
     public function up()
     {
-        if (! Schema::hasColumn('payments', 'amt_to_credit')) {
-            Schema::table('payments', function (Blueprint $table) {
-                $table->string('amt_to_credit', 255)->nullable();
-            });
-        }
+        Schema::table('payments', function (Blueprint $table) {
+            $table->string('amt_to_credit', 255)->nullable();
+        });
     }
 
     /**
@@ -28,7 +26,7 @@ class AddAmtToCreditToPayments extends Migration
     public function down()
     {
         Schema::table('payments', function (Blueprint $table) {
-            $table->dropColumn('amt_to_credit');
+            //
         });
     }
 }

@@ -47,4 +47,3 @@ storage/products
 .Trashes
 ehthumbs.db
 Thumbs.db
-app/Http/Controllers/Front/GetPageTemplateController.php

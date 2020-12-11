@@ -13,15 +13,13 @@ class CreateFaveoQueuesTable extends Migration
      */
     public function up()
     {
-        if (! Schema::hasTable('faveo_queues')) {
-            Schema::create('faveo_queues', function (Blueprint $table) {
-                $table->increments('id');
-                $table->integer('service_id');
-                $table->string('key');
-                $table->string('value');
-                $table->timestamps();
-            });
-        }
+        Schema::create('faveo_queues', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('service_id');
+            $table->string('key');
+            $table->string('value');
+            $table->timestamps();
+        });
     }
 
     /**

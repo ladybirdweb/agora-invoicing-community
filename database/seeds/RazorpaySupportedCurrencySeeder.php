@@ -21,11 +21,5 @@ class RazorpaySupportedCurrencySeeder extends Seeder
             'processing_fee'               => '0',
         ]);
 
-        RazorpayPayment::create([
-            'currencies'             => 'USD',
-            'base_currency'               => 'INR',
-            'processing_fee'               => '0',
-        ]);
-
     }
 }

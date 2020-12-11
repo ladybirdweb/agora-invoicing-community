@@ -27,9 +27,6 @@ User
     .hide_content{
       display: none;
     }
-    .btn-xs{
-        padding:.300rem!important;
-    }
  
 }
 </style>
@@ -56,7 +53,7 @@ User
             <div class="row">
                 <div class="col-sm-4 border-right">
                     <div class="description-block">
-                        <h5 class="description-header">{{currency_format($invoiceSum,$code=$currency)}}</h5>
+                        <h5 class="description-header">{{currency_format($invoiceSum,$code=$client->currency)}}</h5>
                         <span class="description-text">INVOICE TOTAL</span>
                     </div>
                     <!-- /.description-block -->
@@ -64,7 +61,7 @@ User
                 <!-- /.col -->
                 <div class="col-sm-4 border-right">
                     <div class="description-block">
-                        <h5 class="description-header">{{currency_format($amountReceived,$code=$currency)}}</h5>
+                        <h5 class="description-header">{{currency_format($amountReceived,$code=$client->currency)}}</h5>
                         <span class="description-text">PAID</span>
                     </div>
                     <!-- /.description-block -->
@@ -76,7 +73,7 @@ User
                         @else
                          <div class="description-block">
                             @endif
-                        <h5 class="description-header" >{{currency_format($pendingAmount,$code=$currency)}}</h5>
+                        <h5 class="description-header" >{{currency_format($pendingAmount,$code=$client->currency)}}</h5>
                         <span class="description-text">BALANCE</span>
                     </div>
                     <!-- /.description-block -->
@@ -147,9 +144,9 @@ User
                         </div>
 
 
-                        <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
+                        <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
 
-                        <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+                        <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
                         <script type="text/javascript">
                             $(document).ready(function(){//Stay On the Selected Tab after Page Refresh
                                 $("#invoice").trigger('click');
@@ -702,15 +699,6 @@ User
     </div>
 
     <script type="text/javascript">
-
-    $('ul.nav-sidebar a').filter(function() {
-        return this.id == 'all_user';
-    }).addClass('active');
-
-    // for treeview
-    $('ul.nav-treeview a').filter(function() {
-        return this.id == 'all_user';
-    }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
     // Hide the extra content initially, using JS so that if JS is disabled, no problemo:
                 $('.read-more-content').addClass('hide_content')
                 $('.read-more-show, .read-more-hide').removeClass('hide_content')

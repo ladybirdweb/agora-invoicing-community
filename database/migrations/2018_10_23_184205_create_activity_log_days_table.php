@@ -13,13 +13,11 @@ class CreateActivityLogDaysTable extends Migration
      */
     public function up()
     {
-        if (! Schema::hasTable('activity_log_days')) {
-            Schema::create('activity_log_days', function (Blueprint $table) {
-                $table->increments('id');
-                $table->string('days', 255)->nullable();
-                $table->timestamps();
-            });
-        }
+        Schema::create('activity_log_days', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('days', 255)->nullable();
+            $table->timestamps();
+        });
     }
 
     /**

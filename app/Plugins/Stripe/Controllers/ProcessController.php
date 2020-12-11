@@ -131,6 +131,7 @@ class ProcessController extends Controller
             return $product;
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
+            \Bugsnag::notifyException($ex);
 
             throw new \Exception($ex->getMessage());
         }

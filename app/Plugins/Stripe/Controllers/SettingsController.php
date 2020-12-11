@@ -5,7 +5,6 @@ namespace App\Plugins\Stripe\Controllers;
 use App\ApiKey;
 use App\Http\Controllers\Controller;
 use App\Model\Common\Setting;
-use App\Model\Payment\Currency;
 use App\Plugins\Stripe\Model\StripePayment;
 use Cartalyst\Stripe\Laravel\Facades\Stripe;
 use Illuminate\Http\Request;
@@ -158,7 +157,7 @@ class SettingsController extends Controller
                 ],
             ]);
             $stripeCustomerId = $customer['id'];
-            $currency = strtolower($invoice->currency);
+            $currency = strtolower(\Auth::user()->currency);
             $card = $stripe->cards()->create($stripeCustomerId, $token['id']);
             $charge = $stripe->charges()->create([
                 'customer' => $customer['id'],
@@ -171,7 +170,7 @@ class SettingsController extends Controller
                 $stateCode = \Auth::user()->state;
                 $cont = new \App\Http\Controllers\RazorpayController();
                 $state = $cont->getState($stateCode);
-                $currency = Currency::where('code', $currency)->pluck('symbol')->first();
+                $currency = $cont->getCurrency();
 
                 $control = new \App\Http\Controllers\Order\RenewController();
                 //After Regular Payment
@@ -199,7 +198,6 @@ class SettingsController extends Controller
                 \Session::forget('codevalue');
                 \Session::forget('totalToBePaid');
                 \Session::forget('invoice');
-                \Session::forget('cart_currency');
                 \Cart::removeCartCondition('Processing fee');
 
                 return redirect('checkout')->with($status, $message);

@@ -22,6 +22,7 @@ namespace App\Http\Controllers\Product;
     use App\Model\Product\Subscription;
     use App\Model\Product\Type;
     use App\Traits\Upload\ChunkUpload;
+    use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Input;
     use Spatie\Activitylog\Models\Activity;
@@ -99,6 +100,8 @@ class ProductController extends BaseProductController
         try {
             return view('themes.default1.product.product.index');
         } catch (\Exception $e) {
+            Bugsnag::notifyException($e);
+
             return redirect('/')->with('fails', $e->getMessage());
         }
     }
@@ -113,7 +116,7 @@ class ProductController extends BaseProductController
         try {
             $new_product = Product::select('id', 'name', 'type', 'image', 'group', 'image')->get();
 
-            return\DataTables::of($new_product)
+            return\ DataTables::of($new_product)
 
                             ->addColumn('checkbox', function ($model) {
                                 return "<input type='checkbox' class='product_checkbox' 
@@ -158,6 +161,8 @@ class ProductController extends BaseProductController
                             ->rawColumns(['checkbox', 'name', 'image', 'type', 'group', 'Action'])
                             ->make(true);
         } catch (\Exception $e) {
+            Bugsnag::notifyException($e);
+
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
@@ -171,11 +176,11 @@ class ProductController extends BaseProductController
                 'producttitle'  => 'required',
                 'version'      => 'required',
                 'filename'      => 'required',
-                'dependencies'  =>'required',
             ],
        ['filename.required' => 'Please Uplaod A file',
        ]
         );
+
         try {
             $product_id = Product::where('name', $request->input('productname'))->select('id')->first();
 
@@ -184,9 +189,6 @@ class ProductController extends BaseProductController
             $this->product_upload->description = $request->input('description');
             $this->product_upload->version = $request->input('version');
             $this->product_upload->file = $request->input('filename');
-            $this->product_upload->is_private = $request->input('is_private');
-            $this->product_upload->is_restricted = $request->input('is_restricted');
-            $this->product_upload->dependencies = json_encode($request->input('dependencies'));
             $this->product_upload->save();
             $this->product->where('id', $product_id->id)->update(['version'=>$request->input('version')]);
             $autoUpdateStatus = StatusSetting::pluck('update_settings')->first();
@@ -199,6 +201,7 @@ class ProductController extends BaseProductController
             return $response;
         } catch (\Exception $e) {
             app('log')->error($e->getMessage());
+            Bugsnag::notifyException($e);
             $message = [$e->getMessage()];
             $response = ['success'=>'false', 'message'=>$message];
 
@@ -243,6 +246,8 @@ class ProductController extends BaseProductController
                 )
             );
         } catch (\Exception $e) {
+            Bugsnag::notifyException($e);
+
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
@@ -259,6 +264,7 @@ class ProductController extends BaseProductController
             'name'       => 'required|unique:products,name',
             'type'       => 'required',
             'description'=> 'required',
+            'category'   => 'required',
             'image'      => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
             'product_sku'=> 'required|unique:products,product_sku',
             'group'      => 'required',
@@ -306,6 +312,7 @@ class ProductController extends BaseProductController
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (\Exception $e) {
             app('log')->error($e->getMessage());
+            Bugsnag::notifyException($e);
 
             return redirect()->back()->with('fails', $e->getMessage());
         }
@@ -327,7 +334,6 @@ class ProductController extends BaseProductController
             $currency = $this->currency->pluck('name', 'code')->toArray();
             $group = $this->group->pluck('name', 'id')->toArray();
             $products = $this->product->pluck('name', 'id')->toArray();
-
             $checkowner = Product::where('id', $id)->value('github_owner');
             $periods = $this->period->pluck('name', 'days')->toArray();
             // $url = $this->GetMyUrl();
@@ -336,6 +342,8 @@ class ProductController extends BaseProductController
             $product = $this->product->where('id', $id)->first();
             $selectedGroup = ProductGroup:: where('id', $product->group)->pluck('name')->toArray();
             $taxes = $this->tax_class->pluck('name', 'id')->toArray();
+            $selectedCategory = \App\Model\Product\ProductCategory::
+                where('category_name', $product->category)->pluck('category_name')->toArray();
             $taxes = $this->tax_class->with('tax:tax_classes_id,id,name')->get()->toArray();
             $saved_taxes = $this->tax_relation->where('product_id', $id)->get();
             $savedTaxes = $this->tax_relation->where('product_id', $id)->pluck('tax_class_id')->toArray();
@@ -359,6 +367,7 @@ class ProductController extends BaseProductController
                     'taxes',
                     'saved_taxes',
                     'savedTaxes',
+                    'selectedCategory',
                     'selectedGroup',
                     'showagent',
                     'showProductQuantity',
@@ -369,6 +378,8 @@ class ProductController extends BaseProductController
                 )
             );
         } catch (\Exception $e) {
+            Bugsnag::notifyException($e);
+
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
@@ -425,6 +436,8 @@ class ProductController extends BaseProductController
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $e) {
+            Bugsnag::notifyException($e);
+
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
@@ -562,6 +575,8 @@ class ProductController extends BaseProductController
 
             return $relese;
         } catch (\Exception $e) {
+            Bugsnag::notifyException($e);
+
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }

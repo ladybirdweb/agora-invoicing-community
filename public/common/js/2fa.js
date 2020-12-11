@@ -1,4 +1,4 @@
-$(document).ready(function(){
+     $(document).ready(function(){
      	 var status = $('.checkbox').val();
          if(status ==1) {
          $('#2fa').prop('checked',true)
@@ -31,10 +31,9 @@ $(document).ready(function(){
 
 
 
-        $('#2fa').on('change',function () {
+        $('#2fa').change(function () {
         if ($(this).prop("checked")) {
             // checked
-            
             $('#2fa-modal1').modal('show');
             $('#verify_password').on('click',function(){
                 var password = $('#user_password').val();

@@ -1,16 +1,16 @@
 @extends('themes.default1.layouts.master')
 @section('title')
-Edit Coupon
+Edit Promotion
 @stop
 @section('content-header')
     <div class="col-sm-6">
-        <h1>Edit Coupon</h1>
+        <h1>Edit Promotion</h1>
     </div>
     <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-            <li class="breadcrumb-item"><a href="{{url('promotions')}}"><i class="fa fa-dashboard"></i> All Coupons</a></li>
-            <li class="breadcrumb-item active">Edit Coupon</li>
+            <li class="breadcrumb-item"><a href="{{url('promotions')}}"><i class="fa fa-dashboard"></i> All Promotions</a></li>
+            <li class="breadcrumb-item active">Edit Promotion</li>
         </ol>
     </div><!-- /.col -->
 
@@ -163,7 +163,7 @@ Edit Coupon
                 </table>
 
 
-                <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fas fa-sync-alt">&nbsp;</i>{!!Lang::get('message.update')!!}</button>
+                <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-save">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button>
 
             </div>
 
@@ -175,16 +175,7 @@ Edit Coupon
 
 </div>
 
-<script>
-     $('ul.nav-sidebar a').filter(function() {
-        return this.id == 'coupon';
-    }).addClass('active');
 
-    // for treeview
-    $('ul.nav-treeview a').filter(function() {
-        return this.id == 'coupon';
-    }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
-</script>
 
 <script>
      $(document).ready(function(){

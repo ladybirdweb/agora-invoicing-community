@@ -14,12 +14,8 @@ class AddTitleToSettings extends Migration
     public function up()
     {
         Schema::table('settings', function (Blueprint $table) {
-            if (! Schema::hasColumn('settings', 'title')) {
-                $table->string('title', 255)->nullable();
-            }
-            if (! Schema::hasColumn('settings', 'admin_logo')) {
-                $table->string('admin_logo', 255)->nullable();
-            }
+            $table->string('title', 255)->nullable();
+            $table->string('admin_logo', 255)->nullable();
         });
     }
 
@@ -30,9 +26,6 @@ class AddTitleToSettings extends Migration
      */
     public function down()
     {
-        Schema::table('settings', function (Blueprint $table) {
-            $table->dropColumn('title');
-            $table->dropColumn('admin_logo');
-        });
+        Schema::dropIfExists('settings');
     }
 }

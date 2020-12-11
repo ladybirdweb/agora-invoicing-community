@@ -100,7 +100,7 @@ Edit Page
                     </div>
                     <div class="col-md-6 form-group {{ $errors->has('parent_page_id') ? 'has-error' : '' }}">
                         <!-- last name -->
-                        {!! Form::label('publish_date',Lang::get('message.publish-date'),['class'=>'required']) !!}
+                        {!! Form::label('publish_date',Lang::get('message.publish-date')) !!}
 
                         <div class="input-group date" id="publishing_date" data-target-input="nearest">
                         <input type="text" name="created_at" value="{{$publishingDate}}" class="form-control datetimepicker-input" autocomplete="off"  data-target="#publishing_date"/>
@@ -189,16 +189,7 @@ Edit Page
     </div>
 
 </div>
-<script>
-     $('ul.nav-sidebar a').filter(function() {
-        return this.id == 'all_page';
-    }).addClass('active');
 
-    // for treeview
-    $('ul.nav-treeview a').filter(function() {
-        return this.id == 'all_page';
-    }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
-</script>
 
 {!! Form::close() !!}
 

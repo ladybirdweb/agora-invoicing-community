@@ -18,7 +18,6 @@
     </div>
 </div>
     </div>
-     @include('themes.default1.user.2faModals')
     <div class="col col-md-9">
 
       

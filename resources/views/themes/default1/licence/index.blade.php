@@ -77,8 +77,12 @@ License Types
                 "sProcessing": ' <div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="text-bold pt-2">Loading...</div></div>'
             },
             columnDefs: [
-             { orderable: false, targets:2 }
-          ],
+                { 
+                    targets: 'no-sort', 
+                    orderable: false,
+                    order: []
+                }
+            ],
             columns: [
                 {data: 'checkbox', name: 'checkbox'},
                 {data: 'type_name', name: 'type_name'},
@@ -144,16 +148,7 @@ License Types
 
      });
  </script>
-<script>
-     $('ul.nav-sidebar a').filter(function() {
-        return this.id == 'setting';
-    }).addClass('active');
 
-    // for treeview
-    $('ul.nav-treeview a').filter(function() {
-        return this.id == 'setting';
-    }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
-</script>
 @stop
 
 

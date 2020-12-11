@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 
 class CreateAccountActivatesTable extends Migration
 {
@@ -13,13 +12,11 @@ class CreateAccountActivatesTable extends Migration
      */
     public function up()
     {
-        if (! Schema::hasTable('account_activates')) {
-            Schema::create('account_activates', function (Blueprint $table) {
-                $table->string('email')->index();
-                $table->string('token')->index();
-                $table->timestamps();
-            });
-        }
+        Schema::create('account_activates', function (Blueprint $table) {
+            $table->string('email')->index();
+            $table->string('token')->index();
+            $table->timestamps();
+        });
     }
 
     /**

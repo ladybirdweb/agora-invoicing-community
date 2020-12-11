@@ -9,7 +9,7 @@ Edit Product
     <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-            <li class="breadcrumb-item"><a href="{{url('products')}}"><i class="fa fa-dashboard"></i> Products</a></li>
+            <li class="breadcrumb-item"><a href="{{url('products')}}"><i class="fa fa-dashboard"></i> All Products</a></li>
             <li class="breadcrumb-item active">Edit Product</li>
         </ol>
     </div><!-- /.col -->
@@ -80,7 +80,7 @@ Edit Product
                     <div class="tab-content" id="custom-tabs-one-tabContent">
                         <div class="tab-pane fade show active" id="custom-tabs-detail" Role="tabpanel" aria-labelledby="custom-tabs-detail-tab">
                             <div class="row">
-                                <div class="col-md-4 form-group {{ $errors->has('name') ? 'has-error' : '' }}">
+                                <div class="col-md-3 form-group {{ $errors->has('name') ? 'has-error' : '' }}">
                                     <!-- first name -->
                                     {!! Form::label('name',Lang::get('message.name'),['class'=>'required']) !!}
                                     {!! Form::text('name',null,['class' => 'form-control', 'id'=>'productname']) !!}
@@ -88,20 +88,20 @@ Edit Product
 
                                 </div>
                    
-                                <div class="col-md-4 form-group {{ $errors->has('type') ? 'has-error' : '' }}">
+                                <div class="col-md-3 form-group {{ $errors->has('type') ? 'has-error' : '' }}">
                                     <!-- last name -->
-                                    {!! Form::label('type',Lang::get('message.lic_type'),['class'=>'required']) !!}
-                                    {!! Form::select('type',[''=>'Choose','Types'=>$type],null,['class' => 'form-control']) !!}
+                                    {!! Form::label('type',Lang::get('message.lic_type')) !!}
+                                    {!! Form::select('type',['Types'=>$type],null,['class' => 'form-control']) !!}
 
                                 </div>
                                 <?php
                                $groups = DB::table('product_groups')->pluck('name', 'id')->toarray();
                                 ?>
-                                <div class="col-md-4 form-group {{ $errors->has('group') ? 'has-error' : '' }}">
+                                <div class="col-md-3 form-group {{ $errors->has('group') ? 'has-error' : '' }}">
                                     <!-- last name -->
-                                    {!! Form::label('group',Lang::get('message.group'),['class'=>'required']) !!}
+                                    {!! Form::label('group',Lang::get('message.group')) !!}
                                         <select name="group"  class="form-control">
-                            <option >Choose</option>
+                            <option>Choose</option>
                             @foreach($groups as $key=>$group)
                                    <option value="{{$key}}" <?php  if (in_array($group, $selectedGroup)) {
                                     echo "selected";
@@ -110,8 +110,26 @@ Edit Product
                              @endforeach
                               </select>
                                 </div>
-                                
-                                
+                                <?php
+                               $types = DB::table('product_categories')->pluck('category_name')->toarray();
+                                ?>
+                                <div class="col-md-3 form-group {{ $errors->has('category') ? 'has-error' : '' }}">
+                                    <!-- last name -->
+                                    {!! Form::label('category',Lang::get('message.category')) !!}
+
+                                   <!--  {!! Form::select('category',['helpdesk'=>'Helpdesk','servicedesk'=>'ServiceDesk','service'=>'Service','satellite helpdesk'=>'Satellite Helpdesk','helpdeskvps'=>'HelpDesk VPS','servicedesk vps'=>'ServiceDesk VPS'],null,['class' => 'form-control']) !!} -->
+                            <select name="category"  class="form-control">
+                            <option value="">Choose</option>
+                            @foreach($types as $key=>$type)
+                                   <option value="{{$type}}" <?php  if (in_array($type, $selectedCategory)) {
+                                    echo "selected";
+                                } ?>>{{$type}}</option>
+                           
+                             @endforeach
+                              </select>
+
+
+                                </div>
 
                             </div>
 
@@ -137,7 +155,7 @@ Edit Product
                                             <div class="form-group {{ $errors->has('parent') ? 'has-error' : '' }}">
                                                 <!-- last name -->
                                                 {!! Form::label('parent',Lang::get('message.parent')) !!}
-                                                {!! Form::select('parent[]',[''=>'Choose','Products'=>$products],null,['class' => 'form-control']) !!}
+                                                {!! Form::select('parent[]',['Products'=>$products],null,['class' => 'form-control']) !!}
 
                                             </div>
                                         </li>
@@ -250,7 +268,7 @@ Edit Product
                         <div class="tab-pane fade" id="custom-tabs-plan" role="tabpanel"  aria-labelledby="custom-tabs-plan-tab">
                             <table class="table">
 
-                                <span class="required">Show on Cart Page</span>
+                                <span>Show on Cart Page</span>
                                  <tr>
                                     <div class="row">
                                     <td>
@@ -352,7 +370,7 @@ Edit Product
                                    
 
        </div>
-        <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fas fa-sync-alt">&nbsp;</i>{!!Lang::get('message.update')!!}</button>
+        <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-save">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button>
 
           {!! Form::close() !!}
                       
@@ -405,16 +423,7 @@ Edit Product
         </div>
     </div>
 </div>
-<script>
-     $('ul.nav-sidebar a').filter(function() {
-        return this.id == 'all_product';
-    }).addClass('active');
 
-    // for treeview
-    $('ul.nav-treeview a').filter(function() {
-        return this.id == 'all_product';
-    }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
-</script>
 <script>
     $(function () {
         $('[data-toggle="tooltip"]').tooltip({
@@ -427,13 +436,12 @@ Edit Product
 <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script> -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
 <script src="//cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
- <script src="https://cdn.tiny.cloud/1/oiio010oipuw2n6qyq3li1h993tyg25lu28kgt1trxnjczpn/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
-                                    
+<script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
 <script>
                                         $(function(){
                                           tinymce.init({
                                          selector: '#product-description',
-                                         height: 500,
+                                         height: 200,
                                        //  theme: 'modern',
                                          relative_urls: true,
                                          remove_script_host: false,
@@ -458,7 +466,7 @@ Edit Product
                                           });
                                           tinymce.init({
                                          selector: '#textarea1',
-                                         height: 500,
+                                         height: 200,
                                        //  theme: 'modern',
                                          relative_urls: true,
                                          remove_script_host: false,
@@ -483,7 +491,7 @@ Edit Product
                                     });
                                               tinymce.init({
                                          selector: '#textarea3',
-                                         height: 300,
+                                         height: 100,
                                        //  theme: 'modern',
                                          relative_urls: true,
                                          remove_script_host: false,
@@ -865,25 +873,6 @@ if ($fileUpload.length > 0 && $fileUploadDrop.length > 0) {
 
  //------------------------------------------------------------------------------------------------------------//
  
-function privateRelease()
-{
-    // val = $('#p_release').val();
-    if ($('#p_release').attr('checked',true)) {
-        $('#p_release').val('1');
-    } else {
-        $('#p_release').val('0');
-    }
-}
-
-function resrictedRelease()
-{
-    // val = $('#p_release').val();
-    if ($('#r_release').attr('checked',true)) {
-        $('#r_release').val('1');
-    } else {
-        $('#r_release').val('0');
-    }
-}
 
 
  $("#uploadVersion").on('click',function(){
@@ -893,14 +882,11 @@ function resrictedRelease()
     var producttitle = $('#producttitle').val();
     var description = tinyMCE.get('textarea3').getContent()
     var version = $('#productver').val();
-    var dependencies = $('#dependencies').val();
-    var private = $('#p_release').val();
-    var restricted = $('#r_release').val();
     $.ajax({
        type : "POST",
        url  :  "{!! route('upload/save') !!}",
        data :  {'filename': filename , 'productname': productname , 'producttitle': producttitle, 
-       'description': description,'dependencies':dependencies,'version':version,'is_private': private,'is_restricted': restricted,'_token': '{!! csrf_token() !!}'},
+       'description': description,'version':version,'_token': '{!! csrf_token() !!}'},
        success: function(response) {
          $("#uploadVersion").html("<i class='fa fa-save'>&nbsp;&nbsp;</i>Save");
         $('#alertMessage1').show();

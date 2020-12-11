@@ -13,11 +13,9 @@ class AddCurrencySymbolToUsers extends Migration
      */
     public function up()
     {
-        if (! Schema::hasColumn('users', 'currency_symbol')) {
-            Schema::table('users', function (Blueprint $table) {
-                $table->string('currency_symbol', 255)->nullable();
-            });
-        }
+        Schema::table('users', function (Blueprint $table) {
+            $table->string('currency_symbol', 255)->nullable();
+        });
     }
 
     /**
@@ -28,7 +26,7 @@ class AddCurrencySymbolToUsers extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('currency_symbol');
+            //
         });
     }
 }

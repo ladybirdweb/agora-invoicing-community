@@ -3,21 +3,19 @@
 namespace App\Http\Controllers\Front;
 
 use App\DefaultPage;
-use App\Http\Controllers\Common\TemplateController;
-use App\Http\Controllers\Controller;
 use App\Model\Common\PricingTemplate;
 use App\Model\Front\FrontendPage;
-use App\Model\Product\Product;
 use App\Model\Product\ProductGroup;
+use Bugsnag;
 use Illuminate\Http\Request;
 
-class PageController extends Controller
+class PageController extends GetPageTemplateController
 {
     public $page;
 
     public function __construct()
     {
-        $this->middleware('auth', ['except'=>['pageTemplates', 'contactUs']]);
+        $this->middleware('auth', ['except'=>['pageTemplates']]);
 
         $page = new FrontendPage();
         $this->page = $page;
@@ -70,6 +68,7 @@ class PageController extends Controller
             return view('themes.default1.front.page.create', compact('parents'));
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
+            Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -120,6 +119,7 @@ class PageController extends Controller
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
+            Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -299,6 +299,13 @@ class PageController extends Controller
         return $result;
     }
 
+    public function checkString($data, $string)
+    {
+        if (strpos($data, $string) !== false) {
+            return true;
+        }
+    }
+
     /**
      * Get Page Template when Group in Store Dropdown is
      * selected on the basis of Group id.
@@ -315,9 +322,14 @@ class PageController extends Controller
     public function pageTemplates(int $templateid, int $groupid)
     {
         try {
-            $data = PricingTemplate::findorFail($templateid)->data;
-            $headline = ProductGroup::findorFail($groupid)->headline;
-            $tagline = ProductGroup::findorFail($groupid)->tagline;
+            $currency = userCurrency();
+            \Session::put('currency', $currency);
+            if (! \Session::has('currency')) {
+                \Session::put('currency', 'INR');
+            }
+            $data = PricingTemplate::find($templateid)->data;
+            $headline = ProductGroup::find($groupid)->headline;
+            $tagline = ProductGroup::find($groupid)->tagline;
             $productsRelatedToGroup = ProductGroup::find($groupid)->product()->where('hidden', '!=', 1)
             ->orderBy('created_at', 'desc')->get(); //Get ALL the Products Related to the Group
             $trasform = [];
@@ -326,6 +338,7 @@ class PageController extends Controller
             return view('themes.default1.common.template.shoppingcart', compact('templates', 'headline', 'tagline'));
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
+            Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -338,99 +351,6 @@ class PageController extends Controller
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
-    }
-
-    /**
-     * Get  Template For Products.
-     * @param $helpdesk_products
-     * @param $data
-     * @param $trasform
-     * @return string
-     */
-    public function getTemplateOne($helpdesk_products, $data, $trasform)
-    {
-        try {
-            $template = '';
-            $temp_controller = new TemplateController();
-            if (count($helpdesk_products) > 0) {
-                foreach ($helpdesk_products as $product) {
-                    //Store all the values in $trasform variable for shortcodes to read from
-                    $trasform[$product['id']]['price'] = $temp_controller->leastAmount($product['id']);
-                    $trasform[$product['id']]['price-description'] = self::getPriceDescription($product['id']);
-                    $trasform[$product['id']]['name'] = $product['name'];
-                    $trasform[$product['id']]['feature'] = $product['description'];
-                    $trasform[$product['id']]['subscription'] = $temp_controller
-                    ->plans($product['shoping_cart_link'], $product['id']);
-                    $trasform[$product['id']]['url'] = "<input type='submit' 
-                    value='Order Now' class='btn btn-dark btn-modern btn-outline py-2 px-4'></form>";
-                }
-                $template = $this->transform('cart', $data, $trasform);
-            }
-
-            return $template;
-        } catch (\Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
-
-    /**
-     * Get Price Description(eg: Per Year,Per Month ,One-Time) for a Product.
-     *
-     * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
-     *
-     * @date   2019-01-09T00:20:09+0530
-     *
-     * @param int $productid Id of the Product
-     *
-     * @return string $priceDescription        The Description of the Price
-     */
-    public function getPriceDescription(int $productid)
-    {
-        try {
-            $plan = Product::find($productid)->plan();
-            $description = $plan ? $plan->planPrice->first() : '';
-            $priceDescription = $description ? $description->price_description : '';
-
-            return  $priceDescription;
-        } catch (\Exception $ex) {
-            app('log')->error($ex->getMessage());
-
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
-
-    public function checkConfigKey($config, $transform)
-    {
-        $result = [];
-        if ($config) {
-            foreach ($config as $key => $value) {
-                if (array_key_exists($key, $transform)) {
-                    $result[$value] = $transform[$key];
-                }
-            }
-        }
-
-        return $result;
-    }
-
-    public function keyArray($array)
-    {
-        $result = [];
-        foreach ($array as $key => $value) {
-            $result[] = $key;
-        }
-
-        return $result;
-    }
-
-    public function valueArray($array)
-    {
-        $result = [];
-        foreach ($array as $key => $value) {
-            $result[] = $value;
-        }
-
-        return $result;
     }
 
     public function postContactUs(Request $request)
@@ -455,11 +375,8 @@ class PageController extends Controller
             $data .= 'Message: '.strip_tags($request->input('message')).'<br/>';
             $data .= 'Mobile: '.strip_tags($request->input('country_code').$request->input('Mobile')).'<br/>';
             $subject = 'Faveo billing enquiry';
-            if (emailSendingStatus()) {
-                $mail = new \App\Http\Controllers\Common\PhpMailController();
-                $mail->sendEmail($from, $to, $data, $subject);
-            }
-
+            $cont = new \App\Http\Controllers\Common\TemplateController();
+            $cont->mailing($from, $to, $data, $subject, [], $fromname, $toname);
             //$this->templateController->Mailing($from, $to, $data, $subject);
             return redirect()->back()->with('success', 'Your message was sent successfully. Thanks.');
         } catch (\Exception $ex) {

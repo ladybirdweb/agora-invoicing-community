@@ -61,30 +61,6 @@ Edit Product Uploads
                      <h6 id= "descheck"></h6>
                      </div>
 
-                   <div class="col-md-12 form-group {{ $errors->has('description') ? 'has-error' : '' }}">
-                    <i class='fa fa-info-circle' style='cursor: help; font-size: small; color: rgb(60, 141, 188);' <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title="Enter JSON format.">
-                        </label></i>                
-                    {!! Form::label('dependencies',Lang::get('message.dependencies'),['class'=>'required']) !!}
-                    {!! Form::textarea('dependencies',null,['class' => 'form-control','rows'=>'5']) !!}
-                     <h6 id= "descheck"></h6>
-                     </div>
-
-                    <div class="col-md-6 form-group {{ $errors->has('is_private') ? 'has-error' : '' }}">
-                      <i class='fa fa-info-circle' style='cursor: help; font-size: small; color: rgb(60, 141, 188);' <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title="If the release is kept private, product users won't receive notification for this release.">
-                        </label></i>
-                                    
-                    {!! Form::label('is_private','Private Release') !!}
-                    {!! Form::checkbox('is_private',1) !!}
-                     </div>
-
-                    <div class="col-md-6 form-group {{ $errors->has('is_restricted') ? 'has-error' : '' }}">
-                     <i class="fa fa-info-circle" style="cursor: help; font-size: small; color: rgb(60, 141, 188);" <label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="If update is kept restricted for this release, product users need to update their versions upto this release first before updating to further releases.">
-                        </label></i>
-
-                    {!! Form::label('is_restricted','Restrict update') !!}
-                    {!! Form::checkbox('is_restricted',1) !!}
-                     </div>
-
 
         
 
@@ -101,24 +77,16 @@ Edit Product Uploads
 
     </div>
   </div>
- <script src="https://cdn.tiny.cloud/1/oiio010oipuw2n6qyq3li1h993tyg25lu28kgt1trxnjczpn/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
-                                    
-   <script>
-    $(function () {
-        $('[data-toggle="tooltip"]').tooltip({
-            container : 'body'
-        });
-    });
-</script>
+ <script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
+   
 <script>
-  
     $(function(){
 
 
       tinymce.init({
      selector: '#desc-textarea',
-     height: 500,
-    theme: 'silver',
+     height: 200,
+   //  theme: 'modern',
      relative_urls: true,
      remove_script_host: false,
      convert_urls: false,

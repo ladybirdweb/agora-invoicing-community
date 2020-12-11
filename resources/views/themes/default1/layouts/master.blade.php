@@ -56,8 +56,6 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
-
-
         </script>
         <!-- AdminLTE Skins. Choose a skin from the css/skins
              folder instead of downloading all of them to reduce the load. -->
@@ -73,10 +71,6 @@
             color:red;
             padding-left:5px;
         }
-        [type=search] {
-        outline-offset: 0px;
-        -webkit-appearance: none;
-    }
     </style>
     <?php
     $set = new \App\Model\Common\Setting();
@@ -171,9 +165,8 @@
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                         <!-- Add icons to the links using the .nav-icon class
                              with font-awesome or any other icon font library -->
-                            
-                        <li class="nav-item has-treeview">
-                            <a href="{{url('/')}}" class="nav-link" id="dashboard">
+                        <li class="nav-item has-treeview menu-open">
+                            <a href="{{url('/')}}" class="nav-link active">
                                 <i class="nav-icon fas fa-tachometer-alt"></i>
                                 <p>
                                     {{Lang::get('message.dashboard')}}
@@ -191,19 +184,19 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="{{url('clients')}}" class="nav-link" id="all_user">
+                                    <a href="{{url('clients')}}" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>All Users</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{url('clients/create')}}" class="nav-link" id="add_new_user">
+                                    <a href="{{url('clients/create')}}" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Add New</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{url('deleted-users')}}" class="nav-link" id="soft_delete_user">
+                                    <a href="{{url('deleted-users')}}" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Suspended Users</p>
                                     </a>
@@ -220,17 +213,17 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="{{url('orders')}}" class="nav-link" id="all_order">
+                                    <a href="{{url('orders')}}" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>{{Lang::get('message.all-orders')}}</p>
                                     </a>
                                 </li>
-                               <!--  <li class="nav-item">
+                                <li class="nav-item">
                                     <a href="{{url('invoice/generate')}}" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>{{Lang::get('message.add-new')}}</p>
                                     </a>
-                                </li> -->
+                                </li>
                             </ul>
                         </li>
                         <li class="nav-item has-treeview">
@@ -243,13 +236,13 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="{{url('invoices')}}" class="nav-link" id="all_invoice">
+                                    <a href="{{url('invoices')}}" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>{{Lang::get('message.all-invoices')}}</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{url('invoice/generate')}}" class="nav-link" id="add_invoice">
+                                    <a href="{{url('invoice/generate')}}" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>{{Lang::get('message.add-new')}}</p>
                                     </a>
@@ -266,13 +259,13 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="{{url('pages')}}" class="nav-link" id="all_page">
+                                    <a href="{{url('pages')}}" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>{{Lang::get('message.all-pages')}}</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{url('pages/create')}}" class="nav-link" id="all_new_page">
+                                    <a href="{{url('pages/create')}}" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>{{Lang::get('message.add-new')}}</p>
                                     </a>
@@ -289,33 +282,38 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="{{url('products')}}" class="nav-link" id="all_product">
+                                    <a href="{{url('products')}}" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>{{Lang::get('message.all-products')}}</p>
                                     </a>
                                 </li>
 
                                 <li class="nav-item">
-                                    <a href="{{url('products/create')}}" class="nav-link" id="add_product">
+                                    <a href="{{url('products/create')}}" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>{{Lang::get('message.add-products')}}</p>
                                     </a>
                                 </li>
-                                
                                 <li class="nav-item">
-                                    <a href="{{url('plans')}}" class="nav-link" id="plan">
+                                    <a href="{{url('category')}}" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>{{Lang::get('message.category')}}</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{url('plans')}}" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Plans</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{url('promotions')}}" class="nav-link" id="coupon">
+                                    <a href="{{url('promotions')}}" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>{{Lang::get('message.coupons')}}</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{url('groups')}}" class="nav-link" id="group">
+                                    <a href="{{url('groups')}}" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>{{Lang::get('message.groups')}}</p>
                                     </a>
@@ -323,7 +321,7 @@
                             </ul>
                         </li>
                         <li class="nav-item has-treeview">
-                            <a href="{{url('settings')}}" class="nav-link" id="setting">
+                            <a href="{{url('settings')}}" class="nav-link">
                                 <i class="nav-icon fa fa-fw fa-cogs"></i>
                                 <p>
                                     {{Lang::get('message.settings')}}
@@ -469,12 +467,7 @@
     <script src="{{asset('admin/plugins/jquery-file-upload/resumable.js')}}"></script>
     <script src="{{asset('admin/plugins/bootstrap-switch.min.js')}}"></script>
 
-    <script>
 
-    // for sidebar menu entirely but not cover treeview
-    
-    </script>
-    
     @yield('icheck')
     @yield('datepicker')
 
@@ -501,8 +494,6 @@
                   'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
               }
           });
-
-
           </script>
 
 

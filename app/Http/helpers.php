@@ -2,13 +2,9 @@
 
 use App\Model\Common\Country;
 use App\Model\Common\Setting;
-use App\Model\Order\InstallationDetail;
-use App\Model\Payment\Currency;
-use App\Model\Payment\Plan;
 use App\Model\Payment\TaxByState;
 use App\Model\Product\ProductUpload;
 use App\Traits\TaxCalculation;
-use App\User;
 use Carbon\Carbon;
 
 function getLocation()
@@ -163,14 +159,6 @@ function getVersionAndLabel($productVersion, $productId, $badge = 'label')
     }
 }
 
-function getInstallationDetail($ip)
-{
-    $ipAndDomain = explode(',', $ip);
-
-    return InstallationDetail::where('installation_path', 'like', '%'.$ipAndDomain[0].'%')
-    ->where('installation_ip', $ipAndDomain[1])->first();
-}
-
 function tooltip($tootipText = '')
 {
     return '<label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title='.$tootipText.'>
@@ -278,68 +266,47 @@ function getStateByCode($code)
     }
 }
 
-function userCurrencyAndPrice($userid = '', $plan, $productid = '')
+function userCurrency($userid = '')
 {
     try {
+        $currency = Setting::find(1)->default_currency;
+        $currency_symbol = Setting::find(1)->default_symbol;
         if (! \Auth::user()) {//When user is not logged in
             $location = getLocation();
             $country = findCountryByGeoip($location['iso_code']);
-            $currencyAndSymbol = getCurrencySymbolAndPriceForPlans($country, $plan);
+            $userCountry = Country::where('country_code_char2', $country)->first();
+            $currencyStatus = $userCountry->currency->status;
+            if ($currencyStatus) {
+                $currency = $userCountry->currency->code;
+                $currency_symbol = $userCountry->currency->symbol;
+            }
         }
-        if (\Auth::user() && ! $userid) {
-            $country = \Auth::user()->country;
-            $currencyAndSymbol = getCurrencySymbolAndPriceForPlans($country, $plan);
+        if (\Auth::user()) {
+            $currency = \Auth::user()->currency;
+            $currency_symbol = \Auth::user()->currency_symbol;
+        }
+        if ($userid != '') {//For Admin Panel Clients
+            $currencyAndSymbol = getCurrency($userid);
+            $currency = $currencyAndSymbol['currency'];
+            $currency_symbol = $currencyAndSymbol['symbol'];
         }
 
-        if ($userid) {//For Admin Panel Clients
-            $userCountry = User::where('id', $userid)->first()->country;
-            $currencyAndSymbol = getCurrencySymbolAndPriceForPlans($userCountry, $plan);
-        }
-        $currency = $currencyAndSymbol['currency'];
-        $symbol = $currencyAndSymbol['currency_symbol'];
-        $plan = $currencyAndSymbol['userPlan'];
-
-        return ['currency'=>$currency, 'symbol'=>$symbol, 'plan'=>$plan];
+        return ['currency'=>$currency, 'symbol'=>$currency_symbol];
     } catch (\Exception $ex) {
-        return redirect()->back()->with('fails', $ex->getMessage());
+        throw new \Exception($ex->getMessage());
     }
 }
 
-/**
- * Fetches currency and price for a plan. If the country code sent has a price defined for them in a plan then
- * that price will be displayed in the respective currency of that country else the default price for that plan will be displayed along with the default currency.
- *
- * @param  string $countryCode Code of the country
- * @param  obj    $plan   Plan for which price is to be fetched
- * @return array          Currency, symbol and plan details
- */
-function getCurrencySymbolAndPriceForPlans($countryCode, $plan)
+/*
+* Get Currency And Symbol For Admin Panel Clients
+*/
+function getCurrency($userid)
 {
-    $country = Country::where('country_code_char2', $countryCode)->first();
-    $userPlan = $plan->planPrice->where('country_id', $country->country_id)->first() ?: $plan->planPrice->where('country_id', 0)->first();
-    $currency = $userPlan->currency;
-    $currency_symbol = Currency::where('code', $currency)->value('symbol');
+    $user = new \App\User();
+    $currency = $user->find($userid)->currency;
+    $symbol = $user->find($userid)->currency_symbol;
 
-    return compact('currency', 'currency_symbol', 'userPlan');
-}
-
-/**
- * Get client currency on the basis of country. This is applicable when client logs in to detect his currency.
- * @param  string $countryCode The country code('IN','US')
- * @return string              The currency code('INR','USD')
- */
-function getCurrencyForClient($countryCode)
-{
-    $defaultCurrency = Setting::find(1)->default_currency;
-    $country = Country::where('country_code_char2', $countryCode)->first();
-    $currencyStatus = $country->currency->status;
-    if ($currencyStatus) {
-        $currency = Currency::where('id', $country->currency_id)->first();
-
-        return $currency->code;
-    }
-
-    return $defaultCurrency;
+    return ['currency'=>$currency, 'symbol'=>$symbol];
 }
 
 function currencyFormat($amount = null, $currency = null, $include_symbol = true)
@@ -366,19 +333,8 @@ function rounding($price)
             return round($price, 2);
         }
     } catch (\Exception $ex) {
+        Bugsnag::notifyException($ex);
     }
-}
-
-function userCountryId()
-{
-    if (\Auth::check()) {
-        $country = Country::where('country_code_char2', \Auth::user()->country)->first()->country_id;
-    } else {
-        $location = getLocation();
-        $country = Country::where('country_code_char2', $location['iso_code'])->first()->country_id;
-    }
-
-    return $country;
 }
 
 function getIndianCurrencySymbol($currency)

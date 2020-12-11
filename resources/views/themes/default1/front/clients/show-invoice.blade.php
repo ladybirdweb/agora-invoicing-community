@@ -25,7 +25,7 @@ active
         @php
             $set = App\Model\Common\Setting::where('id', '1')->first();
              $date = getDateHtml($invoice->date);
-            $symbol = $invoice->currency;
+            $symbol = Auth::user()->currency;
             $itemsSubtotal = 0;
             $taxAmt = 0;
         @endphp
@@ -47,32 +47,9 @@ active
                             <address class="ib" style="margin-bottom: 0px">
                                 <strong>{{$set->company}}</strong><br>
                                 {{$set->address}}<br>
-                                {{$set->city}}<br/>
-                                @if(key_exists('name',getStateByCode($set->state)))
-                                {{getStateByCode($set->state)['name']}}
-                                @endif
-                                {{$set->zip}}<br/>
-                                Country : {{getCountryByCode($set->country)}}<br/>
-                                Mobile: {{$set->phone}}<br/>
-                                Email: {{$set->email}}
-                            </address><br>
-                             @if($set->gstin)
-                            <div class="bill-data text-right">
-                                <p class="mb-0">
-                                    <span class="text-dark">GSTIN:</span>
-                                    <span class="value">#{{$set->gstin}}</span>
-                                </p>
-                            </div>
-                            @endif
-
-                             @if($set->cin_no)
-                             <div class="bill-data text-right">
-                                <p class="mb-0">
-                                    <span class="text-dark">CIN:</span>
-                                    <span class="value">#{{$set->cin_no}}</span>
-                                </p>
-                            </div>
-                             @endif
+                                {{$set->phone}}<br/>
+                                {{$set->email}}
+                            </address>
                         </div>
                     </div>
                 </header>
@@ -96,18 +73,28 @@ active
                                     Mobile: @if($user->mobile_code)<b>+</b>{{$user->mobile_code}}@endif{{$user->mobile}}<br/>
                                     Email : {{$user->email}}
                                 </address>
-                                @if($user->gstin)
-                            <div class="bill-data">
-                                <p class="mb-0">
-                                    <span class="text-dark">GSTIN:</span>
-                                    <span class="value">#{{$user->gstin}}</span>
-                                </p>
-                            </div>
-                            @endif <br>
                             </div>
                         </div>
                         
-                        
+                        <div class="col-md-6">
+                             @if($set->gstin)
+                            <div class="bill-data text-right">
+                                <p class="mb-0">
+                                    <span class="text-dark">GSTIN:</span>
+                                    <span class="value">#{{$set->gstin}}</span>
+                                </p>
+                            </div>
+                            @endif
+
+                             @if($set->cin_no)
+                             <div class="bill-data text-right">
+                                <p class="mb-0">
+                                    <span class="text-dark">CIN:</span>
+                                    <span class="value">#{{$set->cin_no}}</span>
+                                </p>
+                            </div>
+                             @endif
+                        </div>
                         
 
                        

@@ -31,16 +31,6 @@
                 {!! Form::label('description',Lang::get('message.description')) !!}
                 <textarea class="form-control" id= "textarea3" name="description"></textarea>
                </div>
-
-                 <div class="form-group {{ $errors->has('description') ? 'has-error' : '' }}">
-                        <i class='fa fa-info-circle' style='cursor: help; font-size: small; color: rgb(60, 141, 188);' <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title="Enter JSON format.">
-                        </label></i>             
-                    {!! Form::label('dependencies',Lang::get('message.dependencies'),['class'=>'required']) !!}
-
-                    {!! Form::textarea('dependencies',null,['class' => 'form-control','id'=>'dependencies','rows'=>'5']) !!}
-                     <h6 id= "descheck"></h6>
-                     </div>
-
                <div class="row">
                 <div class="form-group col-md-6{{ $errors->has('version') ? 'has-error' : '' }}">
                     <!-- name -->
@@ -60,29 +50,6 @@
                 <ul id="file-upload-list" class="list-unstyled"  style="display: none">
 
                </ul>
-                
-              </div>
-            </div>
-
-            <div class="row">
-                <div class="form-group col-md-6{{ $errors->has('is_private') ? 'has-error' : '' }}">
-                    <i class='fa fa-info-circle' style='cursor: help; font-size: small; color: rgb(60, 141, 188);' <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title="If the release is kept private, product users won't receive notification for this release.">
-                        </label></i>
-                    <!-- name -->
-                    {!! Form::label('p_release','Private Release') !!}&nbsp;
-                    <input type="checkbox" value="0" name= "is_private" id="p_release" onclick="privateRelease()">
-                    
-                 </div>
-
-                     
-                 
-              <div class="form-group col-md-6{{ $errors->has('version') ? 'has-error' : '' }}">
-                    <i class='fa fa-info-circle' style='cursor: help; font-size: small; color: rgb(60, 141, 188);' <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title="If update is kept restricted for this release, product users need to update their versions upto this release first before updating to further releases.">
-                        </label></i>
-                    {!! Form::label('restrict','Restrict update') !!}&nbsp;
-                    <input type="checkbox" value="0" name= "is_restricted" id="r_release" onclick="resrictedRelease()">
-                </div>
-               
                 
               </div>
             </div>

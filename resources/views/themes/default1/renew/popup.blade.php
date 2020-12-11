@@ -32,7 +32,7 @@
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default pull-left closebutton" id="closebutton" data-dismiss="modal"><i class="fa fa-times">&nbsp;&nbsp;</i>Close</button>
+                <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="fa fa-times">&nbsp;&nbsp;</i>Close</button>
                  <button type="submit"  class="btn btn-primary"><i class="fa fa-check">&nbsp;&nbsp;</i>Save</button>
                 {!! Form::close()  !!}
             </div>
@@ -42,10 +42,6 @@
 </div><!-- /.modal -->  
   
 <script>
-    $('.closebutton').on('click',function(){
-        location.reload();
-    });
-
     function getPrice(val) {
         
         var user = document.getElementsByName('user')[0].value;

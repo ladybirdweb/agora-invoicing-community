@@ -14,12 +14,8 @@ class AddCinToSettingsTable extends Migration
     public function up()
     {
         Schema::table('settings', function (Blueprint $table) {
-            if (! Schema::hasColumn('settings', 'cin_no')) {
-                $table->string('cin_no')->nullable();
-            }
-            if (! Schema::hasColumn('settings', 'gstin')) {
-                $table->string('gstin')->nullable();
-            }
+            $table->string('cin_no')->nullable();
+            $table->string('gstin')->nullable();
         });
     }
 

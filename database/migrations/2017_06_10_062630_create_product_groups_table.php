@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 
 class CreateProductGroupsTable extends Migration
 {
@@ -13,18 +12,16 @@ class CreateProductGroupsTable extends Migration
      */
     public function up()
     {
-        if (! Schema::hasTable('product_groups')) {
-            Schema::create('product_groups', function (Blueprint $table) {
-                $table->increments('id');
-                $table->string('name')->nullable();
-                $table->string('headline')->nullable();
-                $table->string('tagline')->nullable();
-                $table->string('available_payment')->nullable();
-                $table->integer('hidden')->nullable();
-                $table->string('cart_link')->nullable();
-                $table->timestamps();
-            });
-        }
+        Schema::create('product_groups', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name')->nullable();
+            $table->string('headline')->nullable();
+            $table->string('tagline')->nullable();
+            $table->string('available_payment')->nullable();
+            $table->integer('hidden')->nullable();
+            $table->string('cart_link')->nullable();
+            $table->timestamps();
+        });
     }
 
     /**

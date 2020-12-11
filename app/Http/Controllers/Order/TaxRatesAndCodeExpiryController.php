@@ -7,6 +7,7 @@ use App\Model\Order\Order;
 use App\Model\Order\Payment;
 use App\Model\Payment\Currency;
 use App\User;
+use Bugsnag;
 
 class TaxRatesAndCodeExpiryController extends BaseInvoiceController
 {
@@ -61,6 +62,8 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
 
             return $response;
         } catch (\Exception $e) {
+            Bugsnag::notifyException($e);
+
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
@@ -170,6 +173,8 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
 
             return redirect()->back()->with('success', "Payment for invoice no: $invoice_no has Deleted Successfully");
         } catch (\Exception $e) {
+            Bugsnag::notifyException($e);
+
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
@@ -197,6 +202,8 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
                 compact('amountReceived','clientid', 'client', 'invoices',  'orders',
                   'invoiceSum', 'amountReceived', 'pendingAmount', 'currency', 'symbol'));
         } catch (\Exception $e) {
+            Bugsnag::notifyException($e);
+
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }

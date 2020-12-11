@@ -29,8 +29,6 @@ class PromotionRequest extends Request
             'applied' => 'required',
             'value'   => 'required',
             'uses'    => 'required',
-            'start'     => 'required',
-            'expiry'     => 'required|after:start',
 
         ];
     }

@@ -53,26 +53,24 @@ Create Widget
                         {!! Form::select('allow_tweets',[1=>'Yes',0=>'No'],null,['class' => 'form-control']) !!}
 
                     </div>
+
                     <div class="col-md-4 form-group {{ $errors->has('allow_mailchimp') ? 'has-error' : '' }}">
                         <!-- last name -->
                         {!! Form::label('allow_mailchimp',Lang::get('message.allow_mailchimp'),['class'=>'required']) !!}
                         {!! Form::select('allow_mailchimp',[1=>'Yes',0=>'No'],null,['class' => 'form-control']) !!}
 
                     </div>
-
-                    <div class="col-md-4 form-group {{ $errors->has('allow_mailchimp') ? 'has-error' : '' }}">
-                        <!-- last name -->
-                        {!! Form::label('allow_social_media','Allow social media icons',['class'=>'required']) !!}
-                        {!! Form::select('allow_social_media',[1=>'Yes',0=>'No'],null,['class' => 'form-control']) !!}
-
-                    </div>
                     
                     <div class="col-md-4 form-group {{ $errors->has('type') ? 'has-error' : '' }}">
                         <!-- last name -->
                         {!! Form::label('type',Lang::get('message.type'),['class'=>'required']) !!}
-                        {!! Form::select('type', [''=>'Choose','footer1'=>'Footer 1','footer2'=>'Footer 2','footer3'=>'Footer 3','footer4'=>'Footer 4'],null,['class' => 'form-control']) !!}
-
-                        
+                         <select name="type" value= "Choose" class="form-control">
+                             <option value="">Choose</option>
+                            <option value="footer1">footer1</option>
+                             <option value="footer2">footer2</option>
+                              <option value="footer3">footer3</option>
+                               <option value="footer4">footer4</option>
+                          </select>
 
 
                     </div>
@@ -115,7 +113,7 @@ Create Widget
 </script>
 
 
-                        {!! Form::label('content',Lang::get('message.content')) !!}
+                        {!! Form::label('content',Lang::get('message.content'),['class'=>'required']) !!}
                         {!! Form::textarea('content',null,['class'=>'form-control','id'=>'textarea']) !!}
 
                     </div>
@@ -134,16 +132,7 @@ Create Widget
 
 
 {!! Form::close() !!}
-<script>
-     $('ul.nav-sidebar a').filter(function() {
-        return this.id == 'setting';
-    }).addClass('active');
 
-    // for treeview
-    $('ul.nav-treeview a').filter(function() {
-        return this.id == 'setting';
-    }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
-</script>
 <script>
 
     $(document).on('input', '#name', function () {

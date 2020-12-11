@@ -7,6 +7,7 @@ use App\Model\Common\Setting;
 use App\Model\Payment\Plan;
 use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
+use Bugsnag;
 use Illuminate\Http\Request;
 
 class BaseProductController extends ExtendedBaseProductController
@@ -42,6 +43,8 @@ class BaseProductController extends ExtendedBaseProductController
 	                </div>";
             }
         } catch (\Exception $ex) {
+            Bugsnag::notifyException($ex);
+
             return $ex->getMessage();
         }
     }
@@ -80,6 +83,8 @@ class BaseProductController extends ExtendedBaseProductController
                     </div>";
             }
         } catch (\Exception $ex) {
+            Bugsnag::notifyException($ex);
+
             return $ex->getMessage();
         }
     }
@@ -140,9 +145,9 @@ class BaseProductController extends ExtendedBaseProductController
             return response()->json($result);
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
-            $result = [$ex->getMessage()];
+            Bugsnag::notifyException($ex);
 
-            return response()->json($result);
+            return $ex->getMessage();
         }
     }
 
@@ -188,6 +193,7 @@ class BaseProductController extends ExtendedBaseProductController
             }
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
+            Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -246,6 +252,8 @@ class BaseProductController extends ExtendedBaseProductController
                 return $relese;
             }
         } catch (\Exception $e) {
+            Bugsnag::notifyException($e);
+
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
@@ -264,7 +272,7 @@ class BaseProductController extends ExtendedBaseProductController
             $userid = $request->input('user');
             $plan = $request->input('plan');
             $controller = new \App\Http\Controllers\Front\CartController();
-            $price = $controller->cost($id, $plan, $userid);
+            $price = $controller->cost($id, $userid, $plan);
             $field = $this->getProductField($id);
             $quantity = $this->getProductQtyCheck($id, $plan);
             $agents = $this->getAgentQtyCheck($id, $plan);
@@ -272,6 +280,7 @@ class BaseProductController extends ExtendedBaseProductController
 
             return response()->json($result);
         } catch (\Exception $ex) {
+            Bugsnag::notifyException($ex);
             $result = ['price' => $ex->getMessage(), 'field' => ''];
 
             return response()->json($result);
@@ -287,6 +296,8 @@ class BaseProductController extends ExtendedBaseProductController
             $product->version = $version;
             $product->save();
         } catch (\Exception $ex) {
+            Bugsnag::notifyException($ex);
+
             throw new \Exception($ex->getMessage());
         }
     }

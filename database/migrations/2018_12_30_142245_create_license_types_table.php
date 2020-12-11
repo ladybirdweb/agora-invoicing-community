@@ -13,13 +13,11 @@ class CreateLicenseTypesTable extends Migration
      */
     public function up()
     {
-        if (! Schema::hasTable('license_types')) {
-            Schema::create('license_types', function (Blueprint $table) {
-                $table->increments('id');
-                $table->string('name')->nullable();
-                $table->timestamps();
-            });
-        }
+        Schema::create('license_types', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name')->nullable();
+            $table->timestamps();
+        });
     }
 
     /**

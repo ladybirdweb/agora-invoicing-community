@@ -136,7 +136,7 @@ class DashboardController extends Controller
     {
         $currentYear = date('Y');
         $yearlytotal = Invoice::leftJoin('payments', 'invoices.id', '=', 'payments.invoice_id')
-                ->whereYear('invoices.date', '=', $currentYear)
+                ->whereYear('invoices.created_at', '=', $currentYear)
                 ->where('invoices.currency', $allowedCurrencies)
                  ->where('invoices.status', '!=', 'pending')
                  ->pluck('payments.amount')->all();
@@ -156,7 +156,7 @@ class DashboardController extends Controller
         $currentMonth = date('m');
         $currentYear = date('Y');
         $total = Invoice::leftJoin('payments', 'invoices.id', '=', 'payments.invoice_id')
-                ->whereYear('invoices.date', '=', $currentYear)->whereMonth('invoices.date', '=', $currentMonth)
+                ->whereYear('invoices.created_at', '=', $currentYear)->whereMonth('invoices.created_at', '=', $currentMonth)
                 ->where('invoices.currency', $allowedCurrencies)
                  ->where('invoices.status', '!=', 'pending')
                  ->pluck('payments.amount')->all();

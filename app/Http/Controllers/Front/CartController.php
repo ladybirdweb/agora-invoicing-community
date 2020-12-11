@@ -11,6 +11,7 @@ use App\Model\Payment\Tax;
 use App\Model\Payment\TaxByState;
 use App\Model\Payment\TaxOption;
 use App\Model\Product\Product;
+use Bugsnag;
 use Cart;
 use Illuminate\Http\Request;
 use Session;
@@ -66,11 +67,10 @@ class CartController extends BaseCartController
         try {
             $plan = '';
             if ($request->has('subscription')) {//put he Plan id sent into session variable
-                $subscription = $request->get('subscription');
-                Session::put('plan_id', $subscription);
+                $plan = $request->get('subscription');
+                Session::put('plan', $plan);
             }
             $id = $request->input('id');
-
             if (! property_exists($id, Cart::getContent())) {
                 $items = $this->addProduct($id);
                 \Cart::add($items); //Add Items To the Cart Collection
@@ -79,6 +79,7 @@ class CartController extends BaseCartController
             return redirect('show/cart');
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
+            Bugsnag::notifyException($ex->getMessage());
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -100,14 +101,9 @@ class CartController extends BaseCartController
         try {
             $qty = 1;
             $agents = 0; //Unlmited Agents
-            if (\Session::has('plan_id')) { //If a plan is selected from dropdown in pricing page, this is true
-                $planid = \Session::get('plan_id');
-            } else {
-                $planid = Plan::where('product', $id)->pluck('id')->first();
-            }
+            $planid = checkPlanSession() ? Session::get('plan') : Plan::where('product', $id)->pluck('id')->first(); //Get Plan id From Session
             $product = Product::find($id);
             $plan = $product->planRelation->find($planid);
-
             if ($plan) { //If Plan For a Product exists
                 $quantity = $plan->planPrice->first()->product_quantity;
                 //If Product quantity is null(when show agent in Product Seting Selected),then set quantity as 1;
@@ -115,33 +111,17 @@ class CartController extends BaseCartController
                 $agtQty = $plan->planPrice->first()->no_of_agents;
                 // //If Agent qty is null(when show quantity in Product Setting Selected),then set Agent as 0,ie Unlimited Agents;
                 $agents = $agtQty != null ? $agtQty : 0;
-                $currency = userCurrencyAndPrice('', $plan);
-                $this->checkProductsHaveSimilarCurrency($currency['currency']);
-            } else {
-                throw new \Exception('Product cannot be added to cart. No plan exists.');
             }
-            $actualPrice = $this->cost($product->id, $planid);
+            $currency = userCurrency();
+            $actualPrice = $this->cost($product->id);
             $items = ['id'     => $id, 'name' => $product->name, 'price' => $actualPrice,
                 'quantity'    => $qty, 'attributes' => ['currency' => $currency['currency'], 'symbol'=>$currency['symbol'], 'agents'=> $agents], 'associatedModel' => $product, ];
 
             return $items;
         } catch (\Exception $e) {
             app('log')->error($e->getMessage());
+            Bugsnag::notifyException($e);
             throw new \Exception($e->getMessage());
-        }
-    }
-
-    /**
-     * If multiple products are being added to cart, this method checks all the products have similar currency.
-     * @param  string $currency Currency of the product to be added to cart
-     */
-    private function checkProductsHaveSimilarCurrency($currency)
-    {
-        $carts = \Cart::getContent();
-        foreach ($carts as $cart) {
-            if ($cart->attributes['currency'] != $currency) {
-                throw new \Exception('All products added to the cart should have similar currency');
-            }
         }
     }
 
@@ -156,11 +136,21 @@ class CartController extends BaseCartController
             foreach ($cartCollection as $item) {
                 $cart_currency = $item->attributes->currency;
                 \Session::put('currency', $cart_currency);
+                if (\Auth::user()) {//If User is Logged in and his currency changes after logging in then remove his previous order from cart
+                    $currency = \Auth::user()->currency;
+                    if ($cart_currency != $currency) {
+                        $id = $item->id;
+                        Cart::session(\Auth::user()->id)->remove($id);
+                        $items = $this->addProduct($id);
+                        Cart::add($items);
+                    }
+                }
             }
 
             return view('themes.default1.front.cart', compact('cartCollection'));
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
+            Bugsnag::notifyException($ex->getMessage());
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -180,7 +170,6 @@ class CartController extends BaseCartController
     public function clearCart()
     {
         foreach (Cart::getContent() as $item) {
-            Cart::remove($item->id);
             Cart::clearItemConditions($item->id);
             if (\Session::has('domain'.$item->id)) {
                 \Session::forget('domain'.$item->id);
@@ -205,13 +194,14 @@ class CartController extends BaseCartController
      *
      * @return string
      */
-    public function cost($productid, $planid = '', $userid = '')
+    public function cost($productid, $userid = '', $planid = '')
     {
         try {
             $cost = $this->planCost($productid, $userid, $planid);
 
             return $cost;
         } catch (\Exception $ex) {
+            Bugsnag::notifyException($ex->getMessage());
             app('log')->error($ex->getMessage());
             throw new \Exception($ex->getMessage());
         }
@@ -228,30 +218,31 @@ class CartController extends BaseCartController
      *
      * @return int
      */
-    public function planCost($productid, $userid = '', $planid = '')
+    public function planCost($productid, $userid, $planid = '')
     {
         try {
             $cost = 0;
             $months = 0;
+            $currency = userCurrency($userid);
             if (! $planid) {//When Product Is Added from Cart
                 $planid = Plan::where('product', $productid)->pluck('id')->first();
             } elseif (checkPlanSession() && ! $planid) {
-                $planid = Session::get('plan_id');
+                $planid = Session::get('plan');
             }
             $plan = Plan::where('id', $planid)->where('product', $productid)->first();
             if ($plan) { //Get the Total Plan Cost if the Plan Exists For a Product
-                $currency = userCurrencyAndPrice($userid, $plan);
                 $months = 1;
+                $currency = userCurrency($userid);
                 $product = Product::find($productid);
                 $days = $plan->periods->pluck('days')->first();
-                $price = $currency['plan']->add_price;
+                $price = ($product->planRelation->find($planid)->planPrice->where('currency', $currency['currency'])->first()->add_price);
                 if ($days) { //If Period Is defined for a Particular Plan ie no. of Days Generated
                     $months = $days >= '365' ? $days / 30 / 12 : $days / 30;
                 }
                 $finalPrice = str_replace(',', '', $price);
                 $cost = round($months) * $finalPrice;
             } else {
-                throw new \Exception('Product cannot be added to cart. No plan exists.');
+                throw new \Exception('Product cannot be added to cart. No such plan exists.');
             }
 
             return $cost;
@@ -275,6 +266,8 @@ class CartController extends BaseCartController
 
             return redirect()->back();
         } catch (\Exception $ex) {
+            Bugsnag::notifyException($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

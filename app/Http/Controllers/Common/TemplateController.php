@@ -2,28 +2,75 @@
 
 namespace App\Http\Controllers\Common;
 
-use App\Http\Controllers\Controller;
 use App\Http\Controllers\Product\ProductController;
 use App\Model\Common\Template;
 use App\Model\Common\TemplateType;
+use App\Model\Payment\Currency;
 use App\Model\Payment\Plan;
+use App\Model\Payment\Tax;
+use App\Model\Payment\TaxClass;
+use App\Model\Payment\TaxOption;
+use App\Model\Payment\TaxProductRelation;
+use App\Model\Product\Price;
+use App\Model\Product\Product;
+use App\Model\Product\Subscription;
+use Bugsnag;
 use Illuminate\Http\Request;
 
-class TemplateController extends Controller
+class TemplateController extends BaseTemplateController
 {
     public $template;
     public $type;
+    public $product;
+    public $price;
+    public $subscription;
+    public $plan;
+    public $tax_relation;
+    public $tax;
+    public $tax_class;
+    public $tax_rule;
+    public $currency;
+    protected $commonMailer;
 
     public function __construct()
     {
-        $this->middleware('auth');
-        $this->middleware('admin');
+        $this->middleware('auth', ['except' => ['show']]);
+        $this->middleware('admin', ['except' => ['show']]);
 
         $template = new Template();
         $this->template = $template;
 
         $type = new TemplateType();
         $this->type = $type;
+
+        $product = new Product();
+        $this->product = $product;
+
+        $price = new Price();
+        $this->price = $price;
+
+        $subscription = new Subscription();
+        $this->subscription = $subscription;
+
+        $plan = new Plan();
+        $this->plan = $plan;
+
+        $tax_relation = new TaxProductRelation();
+        $this->tax_relation = $tax_relation;
+
+        $tax = new Tax();
+        $this->tax = $tax;
+
+        $tax_class = new TaxClass();
+        $this->tax_class = $tax_class;
+
+        $tax_rule = new TaxOption();
+        $this->tax_rule = $tax_rule;
+
+        $currency = new Currency();
+        $this->currency = $currency;
+
+        $this->commonMailer = new CommonMailer;
     }
 
     public function index()
@@ -69,6 +116,8 @@ class TemplateController extends Controller
 
             return view('themes.default1.common.template.create', compact('type', 'cartUrl'));
         } catch (\Exception $ex) {
+            Bugsnag::notifyException($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -86,6 +135,8 @@ class TemplateController extends Controller
 
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (\Exception $ex) {
+            Bugsnag::notifyException($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -103,6 +154,8 @@ class TemplateController extends Controller
 
             return view('themes.default1.common.template.edit', compact('type', 'template', 'cartUrl'));
         } catch (\Exception $ex) {
+            Bugsnag::notifyException($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -122,6 +175,8 @@ class TemplateController extends Controller
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $ex) {
+            Bugsnag::notifyException($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -180,86 +235,107 @@ class TemplateController extends Controller
         }
     }
 
-    public function plans($url, $id)
+    public function mailing($from, $to, $data, $subject, $replace = [],
+     $type = '', $bcc = [], $fromname = '', $toname = '', $cc = [], $attach = [])
     {
         try {
-            $plan = new Plan();
-            $plan_form = 'Free'; //No Subscription
-            $plans = $plan->where('product', '=', $id)->pluck('name', 'id')->toArray();
-            $plans = $this->prices($id);
-            if ($plans) {
-                $plan_form = \Form::select('subscription', ['Plans' => $plans], null);
-            }
-            $form = \Form::open(['method' => 'get', 'url' => $url]).
-        $plan_form.
-        \Form::hidden('id', $id);
+            $transform = [];
+            $page_controller = new \App\Http\Controllers\Front\PageController();
+            $transform[0] = $replace;
+            $data = $page_controller->transform($type, $data, $transform);
+            $settings = \App\Model\Common\Setting::find(1);
+            $fromname = $settings->company;
+            \Mail::send('emails.mail', ['data' => $data], function ($m) use ($from, $to, $subject, $fromname, $toname, $cc, $attach, $bcc) {
+                $m->from($from, $fromname);
 
-            return $form;
+                $m->to($to, $toname)->subject($subject);
+
+                /* if cc is need  */
+                if (! empty($cc)) {
+                    foreach ($cc as $address) {
+                        $m->cc($address['address'], $address['name']);
+                    }
+                }
+
+                if (! empty($bcc)) {
+                    foreach ($bcc as $address) {
+                        $m->bcc($address);
+                    }
+                }
+
+                /*  if attachment is need */
+                if (! empty($attach)) {
+                    foreach ($attach as $file) {
+                        $m->attach($file['path'], $options = []);
+                    }
+                }
+            });
+            \DB::table('email_log')->insert([
+                'date'       => date('Y-m-d H:i:s'),
+                'from'       => $from,
+                'to'         => $to,
+                'subject'   => $subject,
+                'body'       => $data,
+                'status'     => 'success',
+            ]);
+
+            return 'success';
         } catch (\Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
+            \DB::table('email_log')->insert([
+                'date'     => date('Y-m-d H:i:s'),
+                'from'     => $from,
+                'to'       => $to,
+                'subject' => $subject,
+                'body'     => $data,
+                'status'   => 'failed',
+            ]);
+            Bugsnag::notifyException($ex);
+            if ($ex instanceof \Swift_TransportException) {
+                throw new \Exception('We can not reach to this email address');
+            }
+
+            throw new \Exception('mailing problem');
         }
     }
 
-    /**
-     * Gets the least amount to be displayed on pricing page on the top.
-     * @param  int $id    Product id
-     * @return string     Product price with html
-     */
+    public function plans($url, $id)
+    {
+        $plan = new Plan();
+        $plan_form = 'Free'; //No Subscription
+        $plans = $plan->where('product', '=', $id)->pluck('name', 'id')->toArray();
+        $plans = $this->prices($id);
+        if ($plans) {
+            $plan_form = \Form::select('subscription', ['Plans' => $plans], null);
+        }
+        $form = \Form::open(['method' => 'get', 'url' => $url]).
+        $plan_form.
+        \Form::hidden('id', $id);
+
+        return $form;
+    }
+
     public function leastAmount($id)
     {
-        $countryCheck = true;
         try {
             $cost = 'Free';
-            $plans = Plan::where('product', $id)->get();
-
+            $price = '';
+            $plan = new Plan();
+            $plans = $plan->where('product', $id)->get();
+            $currencyAndSymbol = userCurrency();
             $prices = [];
             if ($plans->count() > 0) {
-                foreach ($plans as $plan) {
-                    $planDetails = userCurrencyAndPrice('', $plan);
-                    $prices[] = $planDetails['plan']->add_price;
-                    $prices[] .= $planDetails['symbol'];
-                    $prices[] .= $planDetails['currency'];
+                foreach ($plans as $value) {
+                    $prices[] = $value->planPrice()->where('currency', $currencyAndSymbol['currency'])->min('add_price');
                 }
-                $format = currencyFormat(min([$prices[0]]), $code = $prices[2]);
-                $finalPrice = str_replace($prices[1], '', $format);
-                $cost = '<span class="price-unit">'.$prices[1].'</span>'.$finalPrice;
+                $price = min($prices);
+                $format = currencyFormat($price, $code = $currencyAndSymbol['currency']);
+                $finalPrice = str_replace($currencyAndSymbol['symbol'], '', $format);
+                $cost = '<span class="price-unit">'.$currencyAndSymbol['symbol'].'</span>'.$finalPrice;
             }
 
             return $cost;
         } catch (\Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
-
-    public function getPrice($months, $price, $priceDescription, $value, $cost, $currency)
-    {
-        $price1 = currencyFormat($cost, $code = $currency);
-        $price[$value->id] = $months.'  '.$price1.' '.$priceDescription;
-
-        return $price;
-    }
-
-    public function prices($id)
-    {
-        try {
-            $plans = Plan::where('product', $id)->orderBy('id', 'desc')->get();
-            $price = [];
-            foreach ($plans as $value) {
-                $currencyAndSymbol = userCurrencyAndPrice('', $value);
-                $currency = $currencyAndSymbol['currency'];
-                $symbol = $currencyAndSymbol['symbol'];
-                $cost = $currencyAndSymbol['plan']->add_price;
-                $priceDescription = $currencyAndSymbol['plan']->price_description;
-                $cost = rounding($cost);
-                $duration = $value->periods;
-                $months = count($duration) > 0 ? $duration->first()->name : '';
-                $price = $this->getPrice($months, $price, $priceDescription, $value, $cost, $currency);
-                // $price = currencyFormat($cost, $code = $currency);
-            }
-
-            return $price;
-        } catch (\Exception $ex) {
-            app('log')->error($ex->getMessage());
+            Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }

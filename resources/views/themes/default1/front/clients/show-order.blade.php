@@ -69,12 +69,29 @@ active
                                     <button class="btn btn-danger mb-2 btn-sm"  id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}">
                                         Reissue License</button></td>
                             </tr>
-                            
+                            <tr><td><b>Installation Path | IP:</b></td>
+                                @if($installationDetails)
+
+                                    <td>@foreach($installationDetails['installed_path'] as $paths)
+                                            {!! $paths !!}<br>
+                                        @endforeach
+                                    </td>
+                                @else
+                                    <td>
+                                        No Active Installation
+                                    </td>
+                                @endif
+                                <td></td>
+                            </tr>
 
 
                             
                         @endif
-                       
+                        <tr>
+                            <td><b>Version:</b></td>
+                            <td>{!! $versionLabel !!}</td>
+                            <td></td>
+                        </tr>
                         <tr>
                             <td><b>License Expiry Date:</b></td>
                             <td>{!! $licdate !!}</td>
@@ -91,93 +108,6 @@ active
 
 
                     </table>
-                        <script src="{{asset('common/js/licCode.js')}}"></script>
-
-
-                 <table id="installationDetail-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
-                     
-
-                 <thead>
-                <tr>
-                
-                 <th >Installation Path</th>
-                  <th>Installation IP</th>
-                   
-                    <th>Current Version </th>
-                    <th>  Last Active</th>
-                    
-                </tr></thead>
-                </table>
-
-                                    
-                  
-
-                    
-                    
-
-                   <script>
-                       $('ul.nav-sidebar a').filter(function() {
-                          return this.id == 'all_order';
-                      }).addClass('active');
-
-                      // for treeview
-                      $('ul.nav-treeview a').filter(function() {
-                          return this.id == 'all_order';
-                      }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
-                  </script>
-                 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
-
-                  <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-                  <script type="text/javascript">
-                          $('#installationDetail-table').DataTable({
-                              processing: true,
-                              serverSide: true,
-                               stateSave: true,
-                                ajax: {
-                              "url":  "{{Url('get-installation-details/'.$order->id)}}",
-                                 error: function(xhr) {
-                                 if(xhr.status == 401) {
-                                  alert('Your session has expired. Please login again to continue.')
-                                  window.location.href = '/login';
-                                 }
-                              }
-
-                              },
-                             
-                              "oLanguage": {
-                                  "sLengthMenu": "_MENU_ Records per page",
-                                  "sSearch"    : "Search: ",
-                                  "sProcessing": '<div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="text-bold pt-2">Loading...</div></div>'
-                              },
-                                  columnDefs: [
-                                  { 
-                                      targets: 'no-sort', 
-                                      orderable: false,
-                                      order: []
-                                  }
-                              ],
-
-                              columns: [
-                              
-                                  {data: 'path', name: 'path'},
-                                  {data: 'ip', name: 'ip'},
-                                  {data: 'version', name: 'version'},
-                                  {data: 'active', name: 'active'},
-                                  
-                              ],
-                              "fnDrawCallback": function( oSettings ) {
-                                  $(function () {
-                                      $('[data-toggle="tooltip"]').tooltip({
-                                          container : 'body'
-                                      });
-                                  });
-                                  $('.loader').css('display', 'none');
-                              },
-                              "fnPreDrawCallback": function(oSettings, json) {
-                                  $('.loader').css('display', 'block');
-                              },
-                          });
-                        </script>
                 @endslot
                 @slot('user')
                     <table class="table">
@@ -225,11 +155,9 @@ active
     </div>
 
 
-<link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
-
-<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-
-
+<script src="{{asset('common/js/licCode.js')}}"></script>
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
+<script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript">
         $('#showorder-table').DataTable({
             processing: true,
@@ -272,10 +200,8 @@ active
         });
         </script>
 
-         <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
-
-        <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-    
+         <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
+        <script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
         <script type="text/javascript">
              $('#showpayment-table').DataTable({
                     processing: true,

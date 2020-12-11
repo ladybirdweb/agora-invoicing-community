@@ -14,21 +14,11 @@ class AddDriverFieldsToSettingsTable extends Migration
     public function up()
     {
         Schema::table('settings', function (Blueprint $table) {
-            if (! Schema::hasColumn('settings', 'key')) {
-                $table->string('key')->nullable();
-            }
-            if (! Schema::hasColumn('settings', 'secret')) {
-                $table->string('secret')->nullable();
-            }
-            if (! Schema::hasColumn('settings', 'region')) {
-                $table->string('region')->nullable();
-            }
-            if (! Schema::hasColumn('settings', 'domain')) {
-                $table->string('domain')->nullable();
-            }
-            if (! Schema::hasColumn('settings', 'sending_status')) {
-                $table->boolean('sending_status')->default(0);
-            }
+            $table->string('key')->nullable();
+            $table->string('secret')->nullable();
+            $table->string('region')->nullable();
+            $table->string('domain')->nullable();
+            $table->boolean('sending_status')->default(0);
         });
     }
 

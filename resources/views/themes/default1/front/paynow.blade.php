@@ -12,6 +12,7 @@ Checkout
 @section('main-class') "main shop" @stop
 @section('content')
 <?php
+
     $currency = $invoice->currency;
     $symbol = \App\Model\Payment\Currency::where('code',$invoice->currency)->pluck('symbol')->first();
     $taxAmt = 0;

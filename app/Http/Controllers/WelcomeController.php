@@ -52,7 +52,7 @@ class WelcomeController extends Controller
                 ->get()
                 ->sortByDesc('count');
 
-        return\ DataTables::of($users)
+        return\DataTables::of($users)
                             ->addColumn('country', function ($model) {
                                 return ucfirst($model->country);
                             })

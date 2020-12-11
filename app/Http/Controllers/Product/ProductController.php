@@ -116,7 +116,7 @@ class ProductController extends BaseProductController
         try {
             $new_product = Product::select('id', 'name', 'type', 'image', 'group', 'image')->get();
 
-            return\ DataTables::of($new_product)
+            return\DataTables::of($new_product)
 
                             ->addColumn('checkbox', function ($model) {
                                 return "<input type='checkbox' class='product_checkbox' 

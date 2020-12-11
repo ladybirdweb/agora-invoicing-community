@@ -60,7 +60,7 @@ class PlanController extends ExtendedPlanController
         $new_plan = Plan::select('id', 'name', 'days', 'product')->get();
         $defaultCurrency = Setting::where('id', 1)->value('default_currency');
 
-        return\ DataTables::of($new_plan)
+        return\DataTables::of($new_plan)
                         ->addColumn('checkbox', function ($model) {
                             return "<input type='checkbox' class='plan_checkbox' 
                             value=".$model->id.' name=select[] id=check>';

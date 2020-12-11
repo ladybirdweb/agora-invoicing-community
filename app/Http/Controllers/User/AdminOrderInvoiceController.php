@@ -18,7 +18,7 @@ class AdminOrderInvoiceController extends Controller
         ->orderBy('invoices.created_at', 'desc')
         ->get();
 
-        return\ DataTables::of($invoices)
+        return\DataTables::of($invoices)
                         ->addColumn('checkbox', function ($model) {
                             return "<input type='checkbox' class='invoice_checkbox' 
                             value=".$model->id.' name=select[] id=check>';
@@ -111,7 +111,7 @@ class AdminOrderInvoiceController extends Controller
                 'users.currency'
             );
 
-        return\ DataTables::of($order)
+        return\DataTables::of($order)
                         ->addColumn('checkbox', function ($model) {
                             return "<input type='checkbox' class='order_checkbox' 
                             value=".$model->id.' name=select[] id=checkorder>';
@@ -159,7 +159,7 @@ class AdminOrderInvoiceController extends Controller
         $payments = $client->payment()->orderBy('created_at', 'desc')->get();
         $extraAmt = $this->getExtraAmtPaid($id);
 
-        return\ DataTables::of($payments)
+        return\DataTables::of($payments)
                         ->addColumn('checkbox', function ($model) {
                             return "<input type='checkbox' class='payment_checkbox' 
                             value=".$model->id.' name=select[] id=checkpayment>';

@@ -249,9 +249,9 @@ input:checked + .slider:before {
                     <!-- name -->
                     <label for"country" class="required">Country</label>
                     <?php $countries = \App\Model\Common\Country::pluck('nicename', 'country_code_char2')->toArray(); ?>
-                    {!! Form::text('country',$selectedCountry,['class' => 'form-control input-lg','id'=>'country','onChange'=>'getCountryAttr(this.value);','readonly'=>'readonly']) !!}
-
-
+                    {!! Form::text('country',$selectedCountry,['class' => 'form-control input-lg','onChange'=>'getCountryAttr(this.value);','readonly'=>'readonly']) !!}
+                    {!! Form::hidden('country',null,['class' => 'form-control input-lg', 'id'=>'country']) !!}
+                 
                     <h6 id="countryCheck"></h6>
                 </div>
                 <div class="col-md-6 form-group {{ $errors->has('state') ? 'has-error' : '' }}">
@@ -512,8 +512,7 @@ input:checked + .slider:before {
 <script type="text/javascript">
      $(document).ready(function(){
     var country = $('#country').val();
-    console.log(country,'sdfs')
-    if(country == 'India') {
+    if(country == 'IN') {
         $('#gstin').show()
     } else {
         $('#gstin').hide();

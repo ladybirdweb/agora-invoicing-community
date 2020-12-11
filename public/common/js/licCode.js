@@ -21,9 +21,9 @@ document.querySelectorAll('span[data-type="copy"]')
       tmp.select();
       document.execCommand('copy');
       document.body.removeChild(tmp);
-      $("#copied").css("display", "block");
+      $("#copied1").css("display", "block");
       
-      $('#copied').fadeIn("slow","swing");
-      $('#copied').fadeOut("slow","swing");
+      $('#copied1').fadeIn("slow","swing");
+      $('#copied1').fadeOut("slow","swing");
       })
     })

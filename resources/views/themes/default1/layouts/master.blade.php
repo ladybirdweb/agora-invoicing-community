@@ -477,20 +477,13 @@
     
     @yield('icheck')
     @yield('datepicker')
-
-
-
-
-        </div><!-- ./wrapper -->
-       
-        <!-- Bootstrap 3.3.2 JS -->
-        <script type="text/javascript">
+            <script type="text/javascript">
         var csrfToken = $('[name="csrf_token"]').attr('content');
 
         setInterval(refreshToken, 360000); // 1 hour 
 
         function refreshToken(){
-               $.get('refresh-csrf').done(function(data){
+               $.post('refresh-csrf').done(function(data){
                    csrfToken = data; // the new token
                });
         }
@@ -504,6 +497,13 @@
 
 
           </script>
+
+
+
+        </div><!-- ./wrapper -->
+       
+        <!-- Bootstrap 3.3.2 JS -->
+       
 
 
     </body>

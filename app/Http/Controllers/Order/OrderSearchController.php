@@ -140,7 +140,7 @@ class OrderSearchController extends Controller
             $dayUtc = new Carbon();
             $now = $dayUtc->toDateTimeString();
 
-            return $join->whereHas('subscription', function ($query) use ($now,$allRenewal) {
+            return $join->whereHas('subscription', function ($query) use ($now, $allRenewal) {
                 if ($allRenewal == 'expired_subscription') {
                     return $query->where('update_ends_at', '<', $now);
                 }

@@ -36,9 +36,14 @@ class AdminOrderInvoiceController extends Controller
                         })
                          ->addColumn('order_no', function ($model) {
                              if ($model->is_renewed) {
-                                 return Order::find($model->order_id)->first()->getOrderLink($model->order_id, 'orders');
+                                 $order = Order::find($model->order_id);
+                                 if ($order) {
+                                     return $order->first()->getOrderLink($model->order_id, 'orders');
+                                 } else {
+                                     return '--';
+                                 }
                              } else {
-                                 $allOrders = ($model->order()->select('id', 'number')->get());
+                                 $allOrders = $model->order()->select('id', 'number')->get();
                                  $orderArray = '';
                                  foreach ($allOrders as $orders) {
                                      $orderArray .= $orders->getOrderLink($orders->id, 'orders');

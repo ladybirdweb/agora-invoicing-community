@@ -132,7 +132,7 @@ if($script){
                                                         @if(count($groups)>0)
                                                             @foreach($groups as $group)
                                                             <li>
-                                                                <a class="dropdown-item" href="{{url('group/'.$group->pricing_templates_id.'/'.$group->id)}}">
+                                                                <a class="dropdown-item" href="{{url("group/$group->pricing_templates_id/$group->id")}}">
                                                                     {{$group->name}}
                                                                 </a>
                                                             </li>
@@ -622,7 +622,7 @@ if($script){
           setInterval(refreshToken, 360000); // 1 hour 
 
           function refreshToken(){
-               $.get('refresh-csrf').done(function(data){
+               $.post('refresh-csrf').done(function(data){
                    csrfToken = data; // the new token
                });
           }

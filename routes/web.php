@@ -477,6 +477,18 @@
             Route::get('get-country', 'WelcomeController@getCountry')->middleware('admin');
             Route::get('country-count', 'WelcomeController@countryCount')->name('country-count')->middleware('admin');
 
+
+            /*
+            Cloud APIs
+             */
+            
+
+            Route::resource('third-party-keys', 'ThirdPartyAppController');
+            Route::get('get-third-party-app', 'ThirdPartyAppController@getThirdPartyDetails')->name('get-third-party-app');
+            Route::get('get-app-key', 'ThirdPartyAppController@getAppKey')->name('get-app-key');
+            Route::delete('third-party-delete', 'ThirdPartyAppController@destroy')->name('third-party-delete');
+
+
             /*
              * Api
              */

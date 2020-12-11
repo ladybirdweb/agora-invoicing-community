@@ -1,16 +1,16 @@
 @extends('themes.default1.layouts.master')
 @section('title')
-License Types
+Third party Apps
 @stop
 @section('content-header')
     <div class="col-sm-6">
-        <h1>License Types</h1>
+        <h1>Third party apps</h1>
     </div>
     <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
             <li class="breadcrumb-item"><a href="{{url('settings')}}"><i class="fa fa-dashboard"></i> Settings</a></li>
-            <li class="breadcrumb-item active">License Types</li>
+            <li class="breadcrumb-item active">Third party apps</li>
         </ol>
     </div><!-- /.col -->
 @stop
@@ -18,17 +18,17 @@ License Types
 
     <div class="card card-secondary card-outline">
         <div class="card-header">
-            <h3 class="card-title">{{Lang::get('message.types')}}</h3>
+            <h3 class="card-title">Third party apps</h3>
 
             <div class="card-tools">
-                <a href="#create-type" data-toggle="modal" data-target="#create-type" class="btn btn-default btn-sm"><span class="fa fa-plus"></span>&nbsp;&nbsp;{{Lang::get('message.create')}}</a>
+                <a href="#create-third-party-app" data-toggle="modal" data-target="#create-third-party-app" class="btn btn-default btn-sm"><span class="fa fa-plus"></span>&nbsp;&nbsp;{{Lang::get('message.create')}}</a>
 
 
             </div>
         </div>
 
-       @include('themes.default1.licence.create')
-        @include('themes.default1.licence.edit')
+       @include('themes.default1.third-party.create')
+       @include('themes.default1.third-party.edit')
         <div id="response"></div>
        <div class="card-body table-responsive">
              
@@ -36,12 +36,13 @@ License Types
             
             <div class="col-md-12">
                
-                 <table id="products-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
+                 <table id="third-party-app-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
                      <button  value="" class="btn btn-secondary btn-sm btn-alldell" id="bulk_delete"><i class="fa fa-trash"></i>&nbsp;&nbsp;{{Lang::get('message.delmultiple')}}</button><br /><br />
                     <thead><tr>
                         <th class="no-sort" style="width:20px"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
-                            <th>Name</th>
-                            <th>Action</th>
+                            <th>App name</th>
+                            <th>App key</th>
+                             <th>Action</th>
                         </tr></thead>
 
                    </table>
@@ -56,13 +57,13 @@ License Types
 
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript">
-        $('#products-table').DataTable({
+        $('#third-party-app-table').DataTable({
             processing: true,
             serverSide: true,
              stateSave: false,
               order: [[ 0, "desc" ]],
                ajax: {
-            "url":  '{!! route('get-license-type') !!}',
+            "url":  '{!! route('get-third-party-app') !!}',
                error: function(xhr) {
                if(xhr.status == 401) {
                 alert('Your session has expired. Please login again to continue.')
@@ -81,11 +82,12 @@ License Types
           ],
             columns: [
                 {data: 'checkbox', name: 'checkbox'},
-                {data: 'type_name', name: 'type_name'},
+                {data: 'app_name', name: 'app_name'},
+                {data: 'app_key', name: 'app_key'},
                 {data: 'action', name: 'action'}
             ],
             "fnDrawCallback": function( oSettings ) {
-                bindEditButton();
+              bindEditButton();
                 $('.loader').css('display', 'none');
             },
             "fnPreDrawCallback": function(oSettings, json) {
@@ -95,7 +97,7 @@ License Types
     </script>
  <script>
     function checking(e){
-      $('#products-table').find("td input[type='checkbox']").prop('checked',$(e).prop('checked'));
+      $('#third-party-app-table').find("td input[type='checkbox']").prop('checked',$(e).prop('checked'));
     }
 
 
@@ -103,19 +105,22 @@ License Types
         $('[data-toggle="tooltip"]').tooltip({
             container : 'body'
         });
-        $('.editType').click(function(){
-           var typeName = $(this).attr('data-name');
-           var typeId   = $(this).attr('data-id');
-            $("#edit-type").modal('show');
-            $('#tname').val(typeName);
-             var url = "{{url('license-type/')}}"+"/"+typeId
-        $("#type-edit-form").attr('action', url)
+        $('.editThirdPartyApp').on('click',function(){
+           var appName = $(this).attr('data-appName');
+           var appKey = $(this).attr('data-appKey');
+           var appId   = $(this).attr('data-id');
+           console.log(appName,appKey)
+            $("#edit-app").modal('show');
+            $("#name").val(appName);
+            $("#key").val(appKey);
+             var url = "{{url('third-party-keys/')}}"+"/"+appId
+        $("#app-edit-form").attr('action', url)
         })
     }
 
       $(document).on('click','#bulk_delete',function(){
       var id=[];
-      if (confirm("Are you sure you want to delete this? All the Products and Permissions related to this License Type would be deleted"))
+      if (confirm("Are you sure you want to delete this?"))
         {
             $('.type_checkbox:checked').each(function(){
               id.push($(this).val())
@@ -123,7 +128,7 @@ License Types
             if(id.length >0)
             {
                $.ajax({
-                      url:"{!! route('license-type-delete') !!}",
+                      url:"{!! route('third-party-delete') !!}",
                       method:"delete",
                       data: $('#check:checked').serialize(),
                       beforeSend: function () {
@@ -143,6 +148,25 @@ License Types
         }  
 
      });
+
+      $('.get-app-key').on('click',function(){
+            $.ajax({
+            type: "GET",
+            url: "{{url('get-app-key')}}",
+            success: function (data) {
+                $(".app-key").val(data)
+            }
+        });
+
+        })
+
+      $('.closebutton').on('click',function(){
+        location.reload();
+      })
+
+    
+      
+      
  </script>
 <script>
      $('ul.nav-sidebar a').filter(function() {

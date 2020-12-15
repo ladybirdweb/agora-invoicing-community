@@ -25,7 +25,6 @@ class AddCurrencyCodeToCountries extends Migration
             }
             if (! Schema::hasColumn('countries', 'currency_id')) {
                 $table->integer('currency_id')->nullable();
-                $table->foreign('currency_id')->references('id')->on('currencies');
             }
         });
     }

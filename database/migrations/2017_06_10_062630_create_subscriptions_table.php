@@ -25,6 +25,7 @@ class CreateSubscriptionsTable extends Migration
                 $table->integer('deny_after_subscription');
                 $table->string('version', 225);
                 $table->integer('product_id')->unsigned();
+                $table->foreign('product_id')->references('id')->on('products');
                 $table->timestamps();
             });
         }

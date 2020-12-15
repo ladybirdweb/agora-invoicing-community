@@ -13,9 +13,9 @@ class AddForeignKeyToSubscriptionTable extends Migration
      */
     public function up()
     {
-        Schema::table('subscriptions', function (Blueprint $table) {
-            $table->foreign('product_id')->references('id')->on('products');
-        });
+        // Schema::table('subscriptions', function (Blueprint $table) {
+        //     $table->foreign('product_id')->references('id')->on('products');
+        // });
     }
 
     /**
@@ -25,6 +25,6 @@ class AddForeignKeyToSubscriptionTable extends Migration
      */
     public function down()
     {
-        $table->dropForeign('subscriptions_product_id_foreign');
+        // $table->dropForeign('subscriptions_product_id_foreign');
     }
 }

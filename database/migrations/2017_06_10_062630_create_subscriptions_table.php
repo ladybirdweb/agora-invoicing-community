@@ -24,7 +24,7 @@ class CreateSubscriptionsTable extends Migration
                 $table->dateTime('ends_at')->nullable();
                 $table->integer('deny_after_subscription');
                 $table->string('version', 225);
-                 $table->integer('product_id')->unsigned();
+                $table->integer('product_id')->unsigned();
                 $table->timestamps();
             });
         }

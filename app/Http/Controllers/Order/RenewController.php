@@ -60,6 +60,7 @@ class RenewController extends BaseRenewController
             $plan = $this->plan->find($planid);
             $days = $plan->days;
             $sub = $this->sub->find($id);
+            $currency = userCurrencyAndPrice($sub->user_id, $plan)['currency'];
             $permissions = LicensePermissionsController::getPermissionsForProduct($sub->product_id);
             $licenseExpiry = $this->getExpiryDate($permissions['generateLicenseExpiryDate'], $sub, $days);
             $updatesExpiry = $this->getUpdatesExpiryDate($permissions['generateUpdatesxpiryDate'], $sub, $days);
@@ -73,7 +74,7 @@ class RenewController extends BaseRenewController
                 $this->editDateInAPL($sub, $updatesExpiry, $licenseExpiry, $supportExpiry);
             }
 
-            $this->invoiceBySubscriptionId($id, $planid, $cost);
+            $this->invoiceBySubscriptionId($id, $planid, $cost, $currency);
 
             return $sub;
         } catch (Exception $ex) {
@@ -192,20 +193,6 @@ class RenewController extends BaseRenewController
         }
     }
 
-    public function getUserCurrencyById($userid)
-    {
-        try {
-            $user = $this->user->find($userid);
-            if (! $user) {
-                throw new Exception('User has removed from database');
-            }
-
-            return $user->currency;
-        } catch (\Exception $ex) {
-            throw new \Exception($ex->getMessage());
-        }
-    }
-
     public function tax($product, $cost, $user)
     {
         try {
@@ -288,8 +275,11 @@ class RenewController extends BaseRenewController
         try {
             $planid = $request->input('plan');
             $code = $request->input('code');
-            $cost = $this->planCost($planid, $request->input('user'));
-            $items = $this->invoiceBySubscriptionId($id, $planid, $cost);
+            $plan = Plan::find($planid);
+            $planDetails = userCurrencyAndPrice($request->input('user'), $plan);
+            $cost = $planDetails['plan']->renew_price;
+            $currency = $planDetails['currency'];
+            $items = $this->invoiceBySubscriptionId($id, $planid, $cost, $currency);
             $invoiceid = $items->invoice_id;
             $this->setSession($id, $planid);
 

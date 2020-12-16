@@ -13,15 +13,17 @@ class LicenseLicensePermissions extends Migration
      */
     public function up()
     {
-        Schema::create('license_license_permissions', function (Blueprint $table) {
-            $table->increments('id');
-            $table->unsignedInteger('license_type_id');
-            $table->unsignedInteger('license_permission_id');
+        if (! Schema::hasTable('license_license_permissions')) {
+            Schema::create('license_license_permissions', function (Blueprint $table) {
+                $table->increments('id');
+                $table->unsignedInteger('license_type_id');
+                $table->unsignedInteger('license_permission_id');
 
-            $table->foreign('license_type_id')->references('id')->on('license_types')->onDelete('cascade');
-            $table->foreign('license_permission_id')->references('id')->on('license_permissions')->onDelete('cascade');
-            $table->timestamps();
-        });
+                $table->foreign('license_type_id')->references('id')->on('license_types')->onDelete('cascade');
+                $table->foreign('license_permission_id')->references('id')->on('license_permissions')->onDelete('cascade');
+                $table->timestamps();
+            });
+        }
     }
 
     /**

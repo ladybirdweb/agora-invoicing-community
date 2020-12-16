@@ -14,7 +14,9 @@ class AddIsRenewedToInvoices extends Migration
     public function up()
     {
         Schema::table('invoices', function (Blueprint $table) {
-            $table->boolean('is_renewed')->default(0);
+            if (! Schema::hasColumn('invoices', 'is_renewed')) {
+                $table->boolean('is_renewed')->default(0);
+            }
         });
     }
 

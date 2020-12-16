@@ -8,7 +8,6 @@ use App\Http\Requests\User\ProfileRequest;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
 use App\Model\Product\Product;
-use Bugsnag;
 use Exception;
 use Hash;
 
@@ -109,15 +108,16 @@ class BaseClientController extends Controller
                 $user->profile_pic = $fileName;
             }
             $user->first_name = strip_tags($request->input('first_name'));
+            $user->user_name = strip_tags($request->input('user_name'));
             $user->last_name = strip_tags($request->input('last_name'));
             $user->email = strip_tags($request->input('email'));
             $user->company = strip_tags($request->input('company'));
             $user->mobile_code = strip_tags($request->input('mobile_code'));
+            $user->gstin = strip_tags($request->input('gstin'));
             $user->mobile = strip_tags($request->input('mobile'));
             $user->address = strip_tags($request->input('address'));
             $user->town = strip_tags($request->input('town'));
             $user->timezone_id = strip_tags($request->input('timezone_id'));
-            $user->country = ($request->input('country'));
             $user->state = ($request->input('state'));
             $user->zip = strip_tags($request->input('zip'));
             $user->save();
@@ -151,7 +151,6 @@ class BaseClientController extends Controller
         } catch (\Exception $e) {
             app('log')->error($e->getMessage());
             $result = [$e->getMessage()];
-            Bugsnag::notifyException($result);
 
             return response()->json(compact('result'), 500);
         }
@@ -207,8 +206,6 @@ class BaseClientController extends Controller
                             ->rawColumns(['number', 'products', 'date', 'total', 'status', 'action'])
                             ->make(true);
         } catch (Exception $ex) {
-            Bugsnag::notifyException($ex);
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -228,8 +225,6 @@ class BaseClientController extends Controller
         try {
             return view('themes.default1.front.clients.subscription');
         } catch (Exception $ex) {
-            Bugsnag::notifyException($ex);
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -270,8 +265,6 @@ class BaseClientController extends Controller
         try {
             return view('themes.default1.front.clients.order1');
         } catch (Exception $ex) {
-            Bugsnag::notifyException($ex);
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

@@ -13,11 +13,13 @@ class CreateLicensePermissionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('license_permissions', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('permissions')->nullable();
-            $table->timestamps();
-        });
+        if (! Schema::hasTable('license_permissions')) {
+            Schema::create('license_permissions', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('permissions')->nullable();
+                $table->timestamps();
+            });
+        }
     }
 
     /**

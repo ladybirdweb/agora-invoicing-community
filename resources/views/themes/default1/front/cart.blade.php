@@ -227,13 +227,13 @@ $cartTotal = 0;
                         <div class="col col-md-5">
                             <form action="{{url('cart/clear')}}" method="post">
                                 {{ csrf_field() }}
-                            <a href="{{url('cart/clear')}}"><button class="btn btn-danger btn-modern" style="margin-bottom: 20px;"><i class="fa fa-angle-left ml-xs"></i>&nbsp;Clear My Cart</button></a>
+                            <a href="{{url('cart/clear')}}"><button class="btn btn-danger btn-modern" style="width: max-content;"><i class="fa fa-angle-left ml-xs"></i>&nbsp;Clear My Cart</button></a>
                         </form>
                        </div>
                         <div class="col col-md-7">
                             @if(count($domain)>0)
 
-                            <a href="#domain" data-toggle="modal" data-target="#domain"><button class="btn btn-primary btn-sm "style="margin-bottom: 20px;"> Proceed to Checkout&nbsp;<i class="fa fa-angle-right ml-xs"></i></button></a>
+                            <a href="#domain" data-toggle="modal" data-target="#domain"><button class="btn btn-primary btn-sm " > Proceed to Checkout&nbsp;<i class="fa fa-angle-right ml-xs"></i></button></a>
 
                             @else
                             <a href="{{url('checkout')}}"><button class="btn btn-primary btn-modern" style="margin-bottom: 20px;">Proceed to Checkout&nbsp;<i class="fa fa-angle-right ml-xs"></i></button></a>

@@ -107,7 +107,6 @@ class PhpMailController extends Controller
                 'body'     => $data,
                 'status'   => 'failed',
             ]);
-            \Bugsnag::notifyException($ex);
             if ($ex instanceof \Swift_TransportException) {
                 throw new \Exception($ex->getMessage());
             }

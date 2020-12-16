@@ -13,16 +13,18 @@ class CreateTaxByStatesTable extends Migration
      */
     public function up()
     {
-        Schema::create('tax_by_states', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('state');
-            $table->string('c_gst');
-            $table->string('s_gst');
-            $table->string('i_gst');
-            $table->string('ut_gst');
+        if (! Schema::hasTable('tax_by_states')) {
+            Schema::create('tax_by_states', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('state');
+                $table->string('c_gst');
+                $table->string('s_gst');
+                $table->string('i_gst');
+                $table->string('ut_gst');
 
-            $table->timestamps();
-        });
+                $table->timestamps();
+            });
+        }
     }
 
     /**

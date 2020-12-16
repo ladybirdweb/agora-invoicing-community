@@ -8,7 +8,6 @@ use App\Model\Order\Invoice;
 use App\Model\Payment\TaxProductRelation;
 use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
-use Bugsnag;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -72,11 +71,11 @@ class ExtendedBaseProductController extends Controller
         $this->validate($request, [
             'title'        => 'required',
             'version'      => 'required',
+            'dependencies'  =>'required',
         ]);
-
         try {
             $file_upload = ProductUpload::find($id);
-            $file_upload->where('id', $id)->update(['title'=>$request->input('title'), 'description'=>$request->input('description'), 'version'=> $request->input('version')]);
+            $file_upload->where('id', $id)->update(['title'=>$request->input('title'), 'description'=>$request->input('description'), 'version'=> $request->input('version'), 'dependencies'=>$request->input('dependencies')]);
             $autoUpdateStatus = StatusSetting::pluck('update_settings')->first();
             if ($autoUpdateStatus == 1) { //If License Setting Status is on,Add Product to the AutoUpdate Script
                 $productSku = $file_upload->product->product_sku;
@@ -85,13 +84,12 @@ class ExtendedBaseProductController extends Controller
             }
 
             return redirect()->back()->with('success', 'Product Updated Successfully');
-        } catch (\Exception $ex) {
+        } catch (\Exception $e) {
             app('log')->error($e->getMessage());
-            Bugsnag::notifyException($e);
             $message = [$e->getMessage()];
             $response = ['success'=>'false', 'message'=>$message];
 
-            return response()->json(compact('response'), 500);
+            return redirect()->back()->with('fails', $e->getMessage());
         }
     }
 
@@ -129,8 +127,6 @@ class ExtendedBaseProductController extends Controller
 
             return $field;
         } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
-
             return $ex->getMessage();
         }
     }
@@ -156,8 +152,6 @@ class ExtendedBaseProductController extends Controller
                 throw new \Exception(\Lang::get('message.no_permission_for_action'));
             }
         } catch (\Exception $e) {
-            Bugsnag::notifyException($e);
-
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }

@@ -14,8 +14,12 @@ class AddLicenseApiSecretToApiKeys extends Migration
     public function up()
     {
         Schema::table('api_keys', function (Blueprint $table) {
-            $table->string('license_api_secret', 255)->nullable();
-            $table->string('license_api_url', 255)->nullable();
+            if (! Schema::hasColumn('api_keys', 'license_api_secret')) {
+                $table->string('license_api_secret', 255)->nullable();
+            }
+            if (! Schema::hasColumn('api_keys', 'license_api_url')) {
+                $table->string('license_api_url', 255)->nullable();
+            }
         });
     }
 
@@ -26,6 +30,8 @@ class AddLicenseApiSecretToApiKeys extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('api_keys');
+        Schema::table('api_keys', function (Blueprint $table) {
+            $table->dropColumn(['license_api_url', 'license_api_secret']);
+        });
     }
 }

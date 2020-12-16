@@ -13,9 +13,11 @@ class AddAccountManagerToUsersTable extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('account_manager')->nullable();
-        });
+        if (! Schema::hasColumn('users', 'account_manager')) {
+            Schema::table('users', function (Blueprint $table) {
+                $table->string('account_manager')->nullable();
+            });
+        }
     }
 
     /**

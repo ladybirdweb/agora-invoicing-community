@@ -58,7 +58,7 @@ class PromotionController extends BasePromotionController
     {
         $new_promotion = $this->promotion->select('code', 'type', 'id')->get();
 
-        return\ DataTables::of($new_promotion)
+        return\DataTables::of($new_promotion)
                             ->addColumn('checkbox', function ($model) {
                                 return "<input type='checkbox' class='promotion_checkbox'
                                  value=".$model->id.' name=select[] id=check>';
@@ -116,14 +116,6 @@ class PromotionController extends BasePromotionController
      */
     public function store(PromotionRequest $request)
     {
-        $validator = \Validator::make($request->all(), [
-            'start'     => 'required',
-            'expiry'     => 'required|after:start',
-
-        ]);
-        if ($validator->fails()) {
-            return redirect()->back()->with('fails', 'Start date should be before expiry date');
-        }
         try {
             $startdate = date_create($request->input('start'));
             $start = date_format($startdate, 'Y-m-d H:m:i');
@@ -182,15 +174,6 @@ class PromotionController extends BasePromotionController
      */
     public function update($id, PromotionRequest $request)
     {
-        $validator = \Validator::make($request->all(), [
-            'start'     => 'required',
-            'expiry'     => 'required|after:start',
-
-        ]);
-        if ($validator->fails()) {
-            return redirect()->back()->with('fails', 'Start date should be before expiry date');
-        }
-
         try {
             $startdate = date_create($request->input('start'));
             $start = date_format($startdate, 'Y-m-d H:m:i');

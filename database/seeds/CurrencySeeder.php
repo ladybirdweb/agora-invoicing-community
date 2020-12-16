@@ -1014,14 +1014,6 @@ class CurrencySeeder extends Seeder
             'status'            => 0,
         ]);
 
-        Currency::create([
-            'id'                => 158,
-            'code'              => 'AUD',
-            'symbol'            => '$',
-            'name'              => 'Australian dollar',
-            'dashboard_currency'=> null,
-            'status'            => 0,
-        ]);
 
         Currency::create([
             'id'                => 160,

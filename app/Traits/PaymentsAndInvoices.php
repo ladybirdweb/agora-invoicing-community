@@ -5,7 +5,6 @@ namespace App\Traits;
 use App\Model\Order\Invoice;
 use App\Model\Order\Payment;
 use App\Model\Product\Product;
-use Bugsnag;
 use Illuminate\Http\Request;
 
 //////////////////////////////////////////////////////////////////////////////
@@ -51,7 +50,6 @@ use Illuminate\Http\Request;
         ->where('invoice_id', '=', 0)->update(['amt_to_credit'=>$creditAmt]);
             } catch (\Exception $ex) {
                 app('log')->info($ex->getMessage());
-                Bugsnag::notifyException($ex);
 
                 return redirect()->back()->with('fails', $ex->getMessage());
             }
@@ -84,8 +82,6 @@ use Illuminate\Http\Request;
                     $this->updateInvoice($invoiceid);
                 }
             } catch (\Exception $ex) {
-                Bugsnag::notifyException($ex);
-
                 throw new \Exception($ex->getMessage());
             }
         }
@@ -146,8 +142,6 @@ use Illuminate\Http\Request;
 
                 $invoice->save();
             } catch (\Exception $ex) {
-                Bugsnag::notifyException($ex);
-
                 throw new \Exception($ex->getMessage());
             }
         }
@@ -191,8 +185,6 @@ use Illuminate\Http\Request;
                 }
             } catch (\Exception $ex) {
                 app('log')->info($ex->getMessage());
-                Bugsnag::notifyException($ex);
-
                 throw new \Exception($ex->getMessage());
             }
         }
@@ -238,8 +230,6 @@ use Illuminate\Http\Request;
 
                 return redirect()->back();
             } catch (\Exception $ex) {
-                Bugsnag::notifyException($ex);
-
                 return redirect()->back()->with('fails', $ex->getMessage());
             }
         }
@@ -258,7 +248,6 @@ use Illuminate\Http\Request;
                 return $balance;
             } catch (\Exception $ex) {
                 app('log')->info($ex->getMessage());
-                Bugsnag::notifyException($ex);
 
                 return redirect()->back()->with('fails', $ex->getMessage());
             }
@@ -292,7 +281,6 @@ use Illuminate\Http\Request;
                 return $paidSum;
             } catch (\Exception $ex) {
                 app('log')->info($ex->getMessage());
-                Bugsnag::notifyException($ex);
 
                 return redirect()->back()->with('fails', $ex->getMessage());
             }

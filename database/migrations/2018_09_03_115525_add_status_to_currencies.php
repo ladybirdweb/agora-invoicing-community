@@ -13,9 +13,11 @@ class AddStatusToCurrencies extends Migration
      */
     public function up()
     {
-        Schema::table('currencies', function (Blueprint $table) {
-            $table->boolean('status')->nullable();
-        });
+        if (! Schema::hasColumn('currencies', 'status')) {
+            Schema::table('currencies', function (Blueprint $table) {
+                $table->boolean('status')->nullable();
+            });
+        }
     }
 
     /**
@@ -25,6 +27,8 @@ class AddStatusToCurrencies extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('currencies');
+        Schema::table('currencies', function (Blueprint $table) {
+            $table->dropColumn('status');
+        });
     }
 }

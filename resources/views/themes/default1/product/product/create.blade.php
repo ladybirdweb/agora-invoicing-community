@@ -9,8 +9,8 @@ Create Product
     <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-            <li class="breadcrumb-item"><a href="{{url('products')}}"><i class="fa fa-dashboard"></i> All Products</a></li>
-            <li class="breadcrumb-item active">Edit Product</li>
+            <li class="breadcrumb-item"><a href="{{url('products')}}"><i class="fa fa-dashboard"></i>Products</a></li>
+            <li class="breadcrumb-item active">Create New Product</li>
         </ol>
     </div><!-- /.col -->
 @stop
@@ -70,7 +70,7 @@ Create Product
                         <div class="tab-pane fade show active" id="custom-tabs-detail" Role="tabpanel" aria-labelledby="custom-tabs-detail-tab">
                             <div class="row">
 
-                                <div class="col-md-3 form-group {{ $errors->has('name') ? 'has-error' : '' }}">
+                                <div class="col-md-4 form-group {{ $errors->has('name') ? 'has-error' : '' }}">
                                     <!-- first name -->
                                     {!! Form::label('name',Lang::get('message.name'),['class'=>'required']) !!}
                                     {!! Form::text('name',null,['class' => 'form-control', 'id' =>'productname']) !!}
@@ -78,19 +78,19 @@ Create Product
 
                                 </div>
 
-                                 <div class="col-md-3 form-group {{ $errors->has('type') ? 'has-error' : '' }}">
+                                 <div class="col-md-4 form-group {{ $errors->has('type') ? 'has-error' : '' }}">
                                     <!-- last name -->
                                     {!! Form::label('type',Lang::get('message.lic_type'),['class'=>'required']) !!}
-                                    {!! Form::select('type',['Types'=>$type],null,['class' => 'form-control']) !!}
+                                    {!! Form::select('type',[''=>'Choose','Types'=>$type],null,['class' => 'form-control']) !!}
 
                                 </div>
 
 
-                                <div class="col-md-3 form-group {{ $errors->has('group') ? 'has-error' : '' }}">
+                                <div class="col-md-4 form-group {{ $errors->has('group') ? 'has-error' : '' }}">
                                     <!-- last name -->
                                     {!! Form::label('group',Lang::get('message.group'),['class'=>'required']) !!}
                           <select name="group" value= "Choose" class="form-control">
-                             <option>Choose</option>
+                             <option value="">Choose</option>
                            @foreach($group as $key=>$value)
                                @if (Request::old('group') == $key)
                              <option value={{$key}} selected>{{$value}}</option>
@@ -101,28 +101,7 @@ Create Product
                           </select>
   
                                 </div>
-                                <div class="col-md-3 form-group {{ $errors->has('category') ? 'has-error' : '' }}">
-                                     <?php
-                                        $type = DB::table('product_categories')->pluck('category_name')->toarray();
-                                       
-                                        ?>
-                                    <!-- last name -->
-                                    {!! Form::label('category',Lang::get('message.category'),['class'=>'required']) !!}
-                                   <!--  {!! Form::select('category',['helpdesk'=>'Helpdesk','servicedesk'=>'ServiceDesk','service'=>'Service','satellite helpdesk'=>'Satellite Helpdesk','plugin'=>'Plugins','helpdeskvps'=>'HelpDesk VPS','servicedesk vps'=>'ServiceDesk VPS'],null,['class' => 'form-control']) !!} -->
-
-                                     <select name="category" value= "Choose" class="form-control">
-                             <option>Choose</option>
-                           @foreach($type as $key=>$types)
-                             @if (Request::old('category') == $key)
-                             <option value={{$key}} selected>{{$types}}</option>
-                             @else
-                             <option value={{$key}}>{{$types}}</option>
-                             @endif
-                          @endforeach
-                          </select>
-
-                                </div>
-
+                                
 
                             </div>
 
@@ -130,12 +109,13 @@ Create Product
 
                                 <div class="col-md-6 form-group {{ $errors->has('description') ? 'has-error' : '' }}">
                                     <!-- last name -->
-                                    <script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
+                                     <script src="https://cdn.tiny.cloud/1/oiio010oipuw2n6qyq3li1h993tyg25lu28kgt1trxnjczpn/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+                                    
                                     <script>
                                     tinymce.init({
                                          selector: 'textarea',
-                                         height: 200,
-                                         theme: 'modern',
+                                         height: 500,
+                                         theme: 'silver',
                                          relative_urls: true,
                                          remove_script_host: false,
                                          convert_urls: false,
@@ -183,7 +163,7 @@ Create Product
                                             <div class="form-group {{ $errors->has('parent') ? 'has-error' : '' }}">
                                                 <!-- last name -->
                                                 {!! Form::label('parent',Lang::get('message.parent')) !!}
-                                                {!! Form::select('parent[]',['Products'=>$products],null,['class' => 'form-control']) !!}
+                                                {!! Form::select('parent[]',[''=>'Choose','Products'=>$products],null,['class' => 'form-control']) !!}
 
                                             </div>
                                         </li>
@@ -235,7 +215,7 @@ Create Product
                         <div class="tab-pane fade" id="custom-tabs-plan" role="tabpanel"  aria-labelledby="custom-tabs-plan-tab">
 
                         <table class="table">
-                                <span>Show on Cart Page</span>
+                                <span class='required'>Show on Cart Page</span>
                                  <tr>
                                       <div class="row">
                                     <td>
@@ -318,5 +298,15 @@ Create Product
             });
         });
     </script>
+    <script>
+     $('ul.nav-sidebar a').filter(function() {
+        return this.id == 'add_product';
+    }).addClass('active');
+
+    // for treeview
+    $('ul.nav-treeview a').filter(function() {
+        return this.id == 'add_product';
+    }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
+</script>
 @stop
 

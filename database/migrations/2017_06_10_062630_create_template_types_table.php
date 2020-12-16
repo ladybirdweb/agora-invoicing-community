@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateTemplateTypesTable extends Migration
 {
@@ -12,11 +13,13 @@ class CreateTemplateTypesTable extends Migration
      */
     public function up()
     {
-        Schema::create('template_types', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name');
-            $table->timestamps();
-        });
+        if (! Schema::hasTable('template_types')) {
+            Schema::create('template_types', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('name');
+                $table->timestamps();
+            });
+        }
     }
 
     /**

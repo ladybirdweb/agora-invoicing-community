@@ -1,5 +1,5 @@
 <a href="#renew" class="btn  btn-primary btn-xs" data-toggle="modal" data-target="#renew{{$id}}"><i class="fa fa-refresh"></i>&nbsp;Renew</a>
-<div class="modal fade" id="renew{{$id}}">
+<div class="modal fade" id="renew{{$id}}" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog">
         <div class="modal-content">
             {!! Form::open(['url'=>'client/renew/'.$id]) !!}
@@ -32,7 +32,7 @@
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="fa fa-times">&nbsp;&nbsp;</i>Close</button>
+                <button type="button" class="btn btn-default pull-left closebutton" id="closebutton" data-dismiss="modal"><i class="fa fa-times">&nbsp;&nbsp;</i>Close</button>
                  <button type="submit"  class="btn btn-primary"><i class="fa fa-check">&nbsp;&nbsp;</i>Save</button>
                 {!! Form::close()  !!}
             </div>
@@ -42,6 +42,10 @@
 </div><!-- /.modal -->  
   
 <script>
+    $('.closebutton').on('click',function(){
+        location.reload();
+    });
+
     function getPrice(val) {
         
         var user = document.getElementsByName('user')[0].value;

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\License;
 
 use App\Model\License\LicenseType;
-use Bugsnag;
 use Illuminate\Http\Request;
 
 class LicenseSettingsController extends LicensePermissionsController
@@ -54,8 +53,6 @@ class LicenseSettingsController extends LicensePermissionsController
             ->rawColumns(['checkbox', 'type_name', 'action'])
             ->make(true);
         } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -86,8 +83,6 @@ class LicenseSettingsController extends LicensePermissionsController
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

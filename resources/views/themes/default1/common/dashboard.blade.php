@@ -325,7 +325,7 @@ Dashboard
         @foreach($productSoldInLast30Days as $element)
             <li class="item">
                 <div class="product-img">
-                    <img src="{{$element->product_image}}" alt="Product Image">
+                    &nbsp;&nbsp;<img src="{{$element->product_image}}" alt="Product Image">
                 </div>
                 <div class="product-info">
                     <a href="#" class="product-title">{{$element->product_name}}<strong> &nbsp; &nbsp;  <td><span class="label label-success">{{$element->order_count}}</span></td></strong>
@@ -351,7 +351,7 @@ Dashboard
         @foreach($allSoldProducts as $element)
             <li class="item">
                 <div class="product-img">
-                    <img src="{{$element->product_image}}" alt="Product Image">
+                    &nbsp;&nbsp;<img src="{{$element->product_image}}" alt="Product Image">
                 </div>
                 <div class="product-info">
                     <a href="#" class="product-title">{{$element->product_name}}<strong> &nbsp; &nbsp;  <td><span class="label label-success">{{$element->order_count}}</span></td></strong>
@@ -366,6 +366,14 @@ Dashboard
     @endcomponent
 </div>
 <script type="text/javascript">
+  $('ul.nav-sidebar a').filter(function() {
+        return this.id == 'dashboard';
+    }).addClass('active');
+
+    // for treeview
+    $('ul.nav-treeview a').filter(function() {
+        return this.id == 'dashboard';
+    }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
   $(document).ready(function(){
         $('[data-toggle="tooltip"]').tooltip({
         container : 'body'

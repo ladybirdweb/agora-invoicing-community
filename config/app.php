@@ -14,7 +14,7 @@ return [
 
     'name'      => env('APP_NAME', 'Laravel'),
 
-    'version'   => 'v1.4.2',
+    'version'   => 'v1.4.3',
 
     /*
     |--------------------------------------------------------------------------
@@ -195,6 +195,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\HorizonServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        App\Providers\CustomValidationProvider::class,
 
         Collective\Html\HtmlServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,

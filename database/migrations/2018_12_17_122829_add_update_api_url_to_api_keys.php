@@ -14,10 +14,18 @@ class AddUpdateApiUrlToApiKeys extends Migration
     public function up()
     {
         Schema::table('api_keys', function (Blueprint $table) {
-            $table->string('update_api_url', 255)->nullable();
-            $table->string('update_api_secret', 255)->nullable();
-            $table->string('terms_url', 255)->nullable();
-            $table->string('pipedrive_api_key', 255)->nullable();
+            if (! Schema::hasColumn('api_keys', 'update_api_url')) {
+                $table->string('update_api_url', 255)->nullable();
+            }
+            if (! Schema::hasColumn('api_keys', 'update_api_secret')) {
+                $table->string('update_api_secret', 255)->nullable();
+            }
+            if (! Schema::hasColumn('api_keys', 'terms_url')) {
+                $table->string('terms_url', 255)->nullable();
+            }
+            if (! Schema::hasColumn('api_keys', 'pipedrive_api_key')) {
+                $table->string('pipedrive_api_key', 255)->nullable();
+            }
         });
     }
 
@@ -28,6 +36,8 @@ class AddUpdateApiUrlToApiKeys extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('api_keys');
+        Schema::table('api_keys', function (Blueprint $table) {
+            $table->dropColumn(['update_api_url', 'update_api_secret', 'terms_url', 'pipedrive_api_key']);
+        });
     }
 }

@@ -9,6 +9,7 @@ Create User
     <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+             <li class="breadcrumb-item"><a href="{{url('clients')}}"><i class="fa fa-dashboard"></i> Users</a></li>
             <li class="breadcrumb-item active">Create User</li>
         </ol>
     </div><!-- /.col -->
@@ -246,22 +247,7 @@ Create User
                           </select> -->
 
                     </div>
-                    <div class="col-md-3 form-group {{ $errors->has('currency') ? 'has-error' : '' }}">
-                        <!-- mobile -->
-                        <?php $currencies = DB::table('currencies')->where('status',1)->pluck('name','code')->toarray() ?>
-                        {!! Form::label('currency',Lang::get('message.currency'),['class'=>'required']) !!}
-                        <select name="currency" value= "Choose" class="form-control" id ="currency">
-                             <option value="">Choose</option>
-                           @foreach($currencies as $key=>$currency)
-                              @if (Request::old('currency') == $key)
-                            <option value={{$key}} selected>{{$currency}}</option>
-                             @else
-                             <option value={{$key}}>{{$currency}}</option>
-                              @endif
-                           @endforeach
-                          </select>
-
-                    </div>
+                   
                    <!--  <div class="col-md-4 form-group {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
                         <label class="required">Country code</label>
                         {!! Form::hidden('mobile_code',null,['id'=>'mobile_code_hidden']) !!}
@@ -329,6 +315,15 @@ Create User
 
 
 <script>
+     $('ul.nav-sidebar a').filter(function() {
+      console.log('id-=== ', this.id)
+        return this.id == 'add_new_user';
+    }).addClass('active');
+
+    // for treeview
+    $('ul.nav-treeview a').filter(function() {
+        return this.id == 'add_new_user';
+    }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
 
         $(document).ready(function(){
             $(function () {

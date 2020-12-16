@@ -22,7 +22,7 @@
 <?php
  $taxAmt = 0;
 $cartSubtotalWithoutCondition = 0;
-$currency = \Auth::user()->currency;
+$currency = $invoice->currency;
 ?>
 <div class="row">
 
@@ -54,7 +54,7 @@ $currency = \Auth::user()->currency;
                                     Product
                                 </th>
                                 <th class="product-invoice">
-                                    Invoice No.
+                                    Invoice No
                                 </th>
                                 <th class="product-version">
                                     Version
@@ -154,7 +154,7 @@ $currency = \Auth::user()->currency;
                     </td>
                 </tr>
                 @endif
-               
+                
                 @if(count(\Cart::getConditionsByType('tax')) == 1)
                 @foreach(\Cart::getConditionsByType('tax') as $tax)
 
@@ -201,7 +201,22 @@ $currency = \Auth::user()->currency;
                 
                 @endforeach
                @endif
-                    
+            
+
+                @if(count(\Cart::getConditionsByType('fee')))
+                 @foreach(\Cart::getConditionsByType('fee') as $fee)
+                 <tr>
+                     <th>
+                        <strong>{!! $fee->getName() !!}</strong><br/>
+
+                    </th>
+                    <td>
+                     {!! $fee->getValue() !!}
+                  </td>
+                 </tr>
+                 @endforeach
+                @endif
+                 
                 <tr class="total">
                     <th>
                         <strong>Order Total</strong>
@@ -376,7 +391,7 @@ $currency = \Auth::user()->currency;
                     
                  <div class="form-group">
                    <div class="col-md-12" id="stripe-modal">
-        <input type="submit" name="submit" value="Place Your Order And Pay" id="stripe-button1" class="btn btn-primary " data-loading-text="Loading..." style="width:100%">
+        <input type="submit" name="submit" value="Place Your Order And Pay" id="stripe-button1" class="btn btn-primary " data-loading-text="Loading..." style="width:100%;margin-left: -6px">
     </div>
                 </div>
                 </div>
@@ -456,7 +471,7 @@ $currency = \Auth::user()->currency;
                         </div>
                         <div class="form-group row">
                             <div class="col-md-12">
-                                <input id="amount" type="text" value={{currencyFormat($amount,$code = $currency)}} class="form-control @error('amount') is-invalid @enderror" required autocomplete="current-password" name="amount" placeholder="Amount" readonly>
+                                <input id="amount" type="text" value={{currencyFormat($amount,$code=$currency)}} class="form-control @error('amount') is-invalid @enderror" required autocomplete="current-password" name="amount" placeholder="Amount" readonly>
                                 @error('amount')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>

@@ -13,11 +13,13 @@ class AddForeignKeyToCountriesTable extends Migration
      */
     public function up()
     {
-        Schema::table('countries', function (Blueprint $table) {
-            $table->integer('currency_id')->unsigned();
+        // Schema::table('countries', function (Blueprint $table) {
+        //     if (! Schema::hasColumn('countries', 'currency_id')) {
+        //         $table->integer('currency_id')->unsigned();
 
-            $table->foreign('currency_id')->references('id')->on('currencies');
-        });
+        //         $table->foreign('currency_id')->references('id')->on('currencies');
+        //     }
+        // });
     }
 
     /**
@@ -27,8 +29,8 @@ class AddForeignKeyToCountriesTable extends Migration
      */
     public function down()
     {
-        Schema::table('countries', function (Blueprint $table) {
-            //
-        });
+        // Schema::table('countries', function (Blueprint $table) {
+        //     $table->dropColumn('currency_id');
+        // });
     }
 }

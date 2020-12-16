@@ -13,11 +13,13 @@ class CreateStatusSettingsTable extends Migration
      */
     public function up()
     {
-        Schema::create('status_settings', function (Blueprint $table) {
-            $table->increments('id');
-            $table->boolean('expiry_mail');
-            $table->boolean('activity_log_delete');
-        });
+        if (! Schema::hasTable('status_settings')) {
+            Schema::create('status_settings', function (Blueprint $table) {
+                $table->increments('id');
+                $table->boolean('expiry_mail');
+                $table->boolean('activity_log_delete');
+            });
+        }
     }
 
     /**

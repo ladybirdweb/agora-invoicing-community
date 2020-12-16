@@ -13,9 +13,11 @@ class AddCountryColumsToSettingsTable extends Migration
      */
     public function up()
     {
-        Schema::table('settings', function (Blueprint $table) {
-            $table->string('country');
-        });
+        if (! Schema::hasColumn('settings', 'country')) {
+            Schema::table('settings', function (Blueprint $table) {
+                $table->string('country');
+            });
+        }
     }
 
     /**
@@ -26,7 +28,7 @@ class AddCountryColumsToSettingsTable extends Migration
     public function down()
     {
         Schema::table('settings', function (Blueprint $table) {
-            //
+            $table->dropColumn('country');
         });
     }
 }

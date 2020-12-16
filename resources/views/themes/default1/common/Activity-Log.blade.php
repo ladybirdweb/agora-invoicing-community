@@ -26,8 +26,7 @@ Activity Log
                     <div class="card-tools">
                         <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
                             <i class="fas fa-plus"></i></button>
-                        <button type="button" class="btn btn-tool" data-card-widget="remove" data-toggle="tooltip" title="Remove">
-                            <i class="fas fa-times"></i></button>
+                      
                     </div>
                 </div>
 
@@ -305,6 +304,16 @@ Activity Log
     $('#del_till').datetimepicker({
         format: 'L'
     })
+</script>
+<script>
+     $('ul.nav-sidebar a').filter(function() {
+        return this.id == 'setting';
+    }).addClass('active');
+
+    // for treeview
+    $('ul.nav-treeview a').filter(function() {
+        return this.id == 'setting';
+    }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
 </script>
 @stop
    @stop

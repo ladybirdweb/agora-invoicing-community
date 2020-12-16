@@ -9,7 +9,6 @@ use App\Model\Product\Product;
 use App\Plugins\Stripe\Controllers\SettingsController;
 use App\Traits\Order\UpdateDates;
 use App\User;
-use Bugsnag;
 use Crypt;
 
 class BaseOrderController extends ExtendedOrderController
@@ -66,7 +65,6 @@ class BaseOrderController extends ExtendedOrderController
             return 'success';
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
-            Bugsnag::notifyException($ex);
 
             throw new \Exception($ex->getMessage());
         }
@@ -112,7 +110,6 @@ class BaseOrderController extends ExtendedOrderController
                 $this->addtoMailchimp($product, $user_id, $item);
             }
         } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
             app('log')->error($ex->getMessage());
 
             throw new \Exception($ex->getMessage());
@@ -168,7 +165,6 @@ class BaseOrderController extends ExtendedOrderController
                 $createNewLicense = $cont->createNewLicene($orderid, $product, $user_id, $licenseExpiry, $updatesExpiry, $supportExpiry, $serial_key);
             }
         } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
             app('log')->error($ex->getMessage());
 
             throw new \Exception('Can not Generate Subscription');
@@ -238,8 +234,6 @@ class BaseOrderController extends ExtendedOrderController
             $relation = new \App\Model\Order\OrderInvoiceRelation();
             $relation->create(['order_id' => $orderid, 'invoice_id' => $invoiceid]);
         } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
-
             throw new \Exception($ex->getMessage());
         }
     }
@@ -337,8 +331,6 @@ class BaseOrderController extends ExtendedOrderController
         try {
             return $this->price->where('product_id', $product_id)->first();
         } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
-
             throw new \Exception($ex->getMessage());
         }
     }

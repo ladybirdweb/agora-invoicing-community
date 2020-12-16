@@ -7,7 +7,6 @@ use App\Model\Order\Invoice;
 use App\Model\Order\Order;
 use App\Model\Order\Payment;
 use App\Model\Payment\Currency;
-use Bugsnag;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -123,7 +122,6 @@ class ExtendedBaseInvoiceController extends Controller
             return response()->json($response);
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
-            Bugsnag::notifyException($ex);
 
             $result = [$ex->getMessage()];
 
@@ -187,7 +185,6 @@ class ExtendedBaseInvoiceController extends Controller
             // return $payment;
         } catch (Exception $ex) {
             app('log')->error($ex->getMessage());
-            Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -224,7 +221,6 @@ class ExtendedBaseInvoiceController extends Controller
             return response()->json($response);
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
-            Bugsnag::notifyException($ex);
             $result = [$ex->getMessage()];
 
             return response()->json(compact('result'), 500);
@@ -279,9 +275,7 @@ class ExtendedBaseInvoiceController extends Controller
 
             // return $payment;
         } catch (Exception $ex) {
-            dd($ex);
             app('log')->error($ex->getMessage());
-            Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }

@@ -485,6 +485,7 @@
             Route::get('get-third-party-app', 'ThirdPartyAppController@getThirdPartyDetails')->name('get-third-party-app');
             Route::get('get-app-key', 'ThirdPartyAppController@getAppKey')->name('get-app-key');
             Route::delete('third-party-delete', 'ThirdPartyAppController@destroy')->name('third-party-delete');
+            Route::post('create/tenant', 'Tenancy\TenantController@createTenant');
 
             /*
              * Api
@@ -528,6 +529,7 @@
         Route::post('update/lic-code', 'HomeController@updateLicenseCode');
         Route::get('new-version-available', 'HomeController@isNewVersionAvailable');
         Route::post('update-installation-detail', 'HomeController@updateInstallationDetails');
+        Route::get('verify/third-party-token', 'Tenancy\TenantController@verifyThirdPartyToken');
 
         Route::get('404', ['as' => 'error404', function () {
             return view('errors.404');

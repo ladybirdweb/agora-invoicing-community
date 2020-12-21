@@ -367,6 +367,7 @@ class HomeController extends BaseHomeController
                 if ($product) {
                     $productId = $product->id;
                     $product = ProductUpload::where('product_id', $productId)->where('is_restricted', 1)->orderBy('id', 'desc')->first();
+
                     // dd($product);
                     $message = ['version' => str_replace('v', '', $product->version)];
                 } else {

@@ -27,6 +27,16 @@
                    </div>
                     </div>
                 </div>
+                 <div class= "form-group {{ $errors->has('name') ? 'has-error' : '' }}">
+                      {!! Form::label('name','App Secret',['class'=>'required']) !!}
+                    <div class="row">
+                     <div class="col-md-12">
+                    <input type="text" name="app_secret" id="secret" class="form-control app-key" required='required'>
+                    <span class="appkeycheck"></span>
+                   </div>
+                   
+                    </div>
+                  </div>
             </div>
             <div class="modal-footer justify-content-between">
                  <button type="button" id="close" class="btn btn-default pull-left closebutton" data-dismiss="modal"><i class="fa fa-times"></i>&nbsp;Close</button>

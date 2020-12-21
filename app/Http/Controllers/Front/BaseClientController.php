@@ -35,13 +35,23 @@ class BaseClientController extends Controller
             } else {
                 $listUrl = $this->downloadPopup($query->client, $query->invoice_number, $productid);
             }
+        } else {
+           $listUrl = $this->deployPopup($query->number); 
         }
 
         return $listUrl;
     }
 
+    public function deployPopup($orderNumber)
+    {
+        return view('themes.default1.front.clients.deploy-popup',compact('orderNumber'));
+    }
+
     public function downloadPopup($clientid, $invoiceid, $productid)
     {
+        return view('themes.default1.front.clients.download-list',
+            compact('clientid', 'invoiceid', 'productid'));
+
         return view('themes.default1.front.clients.download-list',
             compact('clientid', 'invoiceid', 'productid'));
     }

@@ -34,7 +34,7 @@ class ThirdPartyAppController extends Controller
     public function getThirdPartyDetails()
     {
         try {
-            $thirdPartyApps = $this->thirdParty->select('id', 'app_name', 'app_key')->get();
+            $thirdPartyApps = $this->thirdParty->select('id', 'app_name', 'app_key', 'app_secret')->get();
 
             return \DataTables::of($thirdPartyApps)
             ->addColumn('checkbox', function ($model) {
@@ -47,10 +47,12 @@ class ThirdPartyAppController extends Controller
             ->addColumn('app_key', function ($model) {
                 return $model->app_key;
             })
+             ->addColumn('app_key', function ($model) {
+                return $model->secret;
+            })
             ->addColumn('action', function ($model) {
                 return "<p><button data-toggle='modal' 
-             data-id=".$model->id." data-appName='$model->app_name'. data-appKey='$model->app_key'
-             class='btn btn-sm btn-secondary btn-xs editThirdPartyApp'".tooltip('Edit')."<i class='fa fa-edit'
+             data-id=".$model->id." data-appName='$model->app_name'. data-appKey='$model->app_key'. data-secret='$model->app_secret' class='btn btn-sm btn-secondary btn-xs editThirdPartyApp'".tooltip('Edit')."<i class='fa fa-edit'
              style='color:white;'> </i></button>&nbsp;</p>";
             })
             ->rawColumns(['checkbox', 'app_name', 'app_key', 'action'])
@@ -81,6 +83,7 @@ class ThirdPartyAppController extends Controller
         $this->validate($request, [
             'app_name' => 'required',
             'app_key'  => 'required|size:32',
+            'app_secret'  => 'required',
         ]);
         $this->thirdParty->fill($request->all())->save();
 

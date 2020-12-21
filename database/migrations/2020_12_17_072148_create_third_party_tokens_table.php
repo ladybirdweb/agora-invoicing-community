@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateThirdPartyAppsTable extends Migration
+class CreateThirdPartyTokensTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,10 @@ class CreateThirdPartyAppsTable extends Migration
      */
     public function up()
     {
-        Schema::create('third_party_apps', function (Blueprint $table) {
+        Schema::create('third_party_tokens', function (Blueprint $table) {
             $table->id();
-            $table->string('app_name')->nullable();
-            $table->char('app_key', 32)->nullable();
-            $table->string('app_secret')->nullable();
+            $table->integer('user_id')->unsigned();
+            $table->string('token');
             $table->timestamps();
         });
     }
@@ -29,6 +28,6 @@ class CreateThirdPartyAppsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('third_party_apps');
+        Schema::dropIfExists('third_party_tokens');
     }
 }

@@ -42,6 +42,7 @@ Third party Apps
                         <th class="no-sort" style="width:20px"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
                             <th>App name</th>
                             <th>App key</th>
+                            <th>App secret</th>
                              <th>Action</th>
                         </tr></thead>
 
@@ -84,6 +85,7 @@ Third party Apps
                 {data: 'checkbox', name: 'checkbox'},
                 {data: 'app_name', name: 'app_name'},
                 {data: 'app_key', name: 'app_key'},
+                {data: 'app_secret', name: 'app_secret'},
                 {data: 'action', name: 'action'}
             ],
             "fnDrawCallback": function( oSettings ) {
@@ -109,10 +111,12 @@ Third party Apps
            var appName = $(this).attr('data-appName');
            var appKey = $(this).attr('data-appKey');
            var appId   = $(this).attr('data-id');
-           console.log(appName,appKey)
+           var appSecret   = $(this).attr('data-secret');
+           console.log(appName,appKey,appSecret)
             $("#edit-app").modal('show');
             $("#name").val(appName);
             $("#key").val(appKey);
+            $("#secret").val(appSecret);
              var url = "{{url('third-party-keys/')}}"+"/"+appId
         $("#app-edit-form").attr('action', url)
         })

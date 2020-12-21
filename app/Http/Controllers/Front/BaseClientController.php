@@ -36,7 +36,7 @@ class BaseClientController extends Controller
                 $listUrl = $this->downloadPopup($query->client, $query->invoice_number, $productid);
             }
         } else {
-           $listUrl = $this->deployPopup($query->number); 
+            $listUrl = $this->deployPopup($query->number);
         }
 
         return $listUrl;
@@ -44,7 +44,7 @@ class BaseClientController extends Controller
 
     public function deployPopup($orderNumber)
     {
-        return view('themes.default1.front.clients.deploy-popup',compact('orderNumber'));
+        return view('themes.default1.front.clients.deploy-popup', compact('orderNumber'));
     }
 
     public function downloadPopup($clientid, $invoiceid, $productid)

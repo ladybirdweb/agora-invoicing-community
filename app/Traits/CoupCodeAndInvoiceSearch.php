@@ -73,7 +73,6 @@ trait CoupCodeAndInvoiceSearch
 
             return $join;
         }
-        $return;
     }
 
     public function invoice_from($from, $till, $join)

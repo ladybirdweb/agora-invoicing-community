@@ -193,7 +193,6 @@ class AdminOrderInvoiceController extends Controller
                          })
 
                          ->addColumn('action', function ($model) {
-                             '<input type="hidden" class="paymentid" value="{{$model->id}}">';
                              if ($model->invoice_id == 0) {
                                  return '<a href='.url('payments/'.$model->id.'/edit/')." class='btn btn-sm btn-secondary btn-xs' ".tooltip('Edit')." <i class='fa fa-edit' style='color:white;'> </i></a>";
                              } else {

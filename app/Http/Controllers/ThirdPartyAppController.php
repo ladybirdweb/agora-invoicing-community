@@ -48,8 +48,8 @@ class ThirdPartyAppController extends Controller
                 return $model->app_key;
             })
              ->addColumn('app_key', function ($model) {
-                return $model->secret;
-            })
+                 return $model->secret;
+             })
             ->addColumn('action', function ($model) {
                 return "<p><button data-toggle='modal' 
              data-id=".$model->id." data-appName='$model->app_name'. data-appKey='$model->app_key'. data-secret='$model->app_secret' class='btn btn-sm btn-secondary btn-xs editThirdPartyApp'".tooltip('Edit')."<i class='fa fa-edit'

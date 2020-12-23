@@ -18,11 +18,11 @@ class TenantController extends Controller
     }
 
     /**
-<<<<<<< HEAD
+     * <<<<<<< HEAD
      * Complete logic for creating new tenant is handled here.
-=======
+     * =======
      * Logic for creating new tenant is handled here
->>>>>>> create new tenant api
+     * >>>>>>> create new tenant api
      */
     public function createTenant(Request $request)
     {
@@ -47,18 +47,18 @@ class TenantController extends Controller
             $hashedSignature = hash_hmac('sha256', $encodedData, $keys->app_secret);
             $response = $client->request(
                     'POST',
-                    $this->url.'/tenants',['form_params'=>$data, 'headers'=>['signature'=>$hashedSignature]]
+                    $this->url.'/tenants', ['form_params'=>$data, 'headers'=>['signature'=>$hashedSignature]]
                 );
             // var_dump($response);
-            $response =  (string) $response->getBody();
+            $response = (string) $response->getBody();
 
-            $result =  json_decode($response);
-            if($result->status == 'fails') {
-                return ['status' => 'false', 'message' => $result->message];  
+            $result = json_decode($response);
+            if ($result->status == 'fails') {
+                return ['status' => 'false', 'message' => $result->message];
             } elseif ($result->status == 'validationFailure') {
-                return ['status' => 'validationFailure', 'message' => $result->message];  
+                return ['status' => 'validationFailure', 'message' => $result->message];
             } else {
-               return ['status' => 'true', 'message' => $result->message];  
+                return ['status' => 'true', 'message' => $result->message];
             }
         } catch (Exception $e) {
             return ['status' => 'false', 'message' => $e->getMessage()];
@@ -74,16 +74,16 @@ class TenantController extends Controller
             if ($faveoToken && $token == $faveoToken) {
                 \DB::table('third_party_tokens')->where('user_id', $userId)->delete();
                 //delete third party token here
-               $response =  ['status' => 'success', 'message' => "Valid token"];
+                $response = ['status' => 'success', 'message' => 'Valid token'];
             } else {
-                $response =  ['status' => 'fails', 'message' => "Invalid token"];
+                $response = ['status' => 'fails', 'message' => 'Invalid token'];
             }
 
             return $response;
         } catch (Exception $e) {
-            $error =  ['status' => 'fails', 'message' => $e->getMessage()];
+            $error = ['status' => 'fails', 'message' => $e->getMessage()];
+
             return $error;
-            
         }
     }
 }

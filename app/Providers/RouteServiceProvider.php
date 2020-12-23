@@ -39,6 +39,8 @@ class RouteServiceProvider extends ServiceProvider
 
         $this->mapWebRoutes();
 
+        $this->mapThirdPartyRoutes();
+
         //
     }
 
@@ -69,5 +71,19 @@ class RouteServiceProvider extends ServiceProvider
              ->middleware('api')
              ->namespace($this->namespace)
              ->group(base_path('routes/api.php'));
+    }
+
+    /**
+     * Define the "third party" routes for the application.
+     *
+     * These routes are typically stateless.
+     *
+     * @return void
+     */
+    protected function mapThirdPartyRoutes()
+    {
+        Route::middleware('validateThirdParty')
+             ->namespace($this->namespace)
+             ->group(base_path('routes/thirdparty.php'));
     }
 }

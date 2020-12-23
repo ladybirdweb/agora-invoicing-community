@@ -51,6 +51,7 @@ class Kernel extends HttpKernel
         'auth.basic'    => [\Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class],
         'installAgora'    => [\App\Http\Middleware\Install::class],
         'isInstalled' => [\App\Http\Middleware\IsInstalled::class],
+        'validateThirdParty' => [\App\Http\Middleware\VerifyThirdPartyApps::class],
         'api' => [
             'throttle:60,1',
             'bindings',

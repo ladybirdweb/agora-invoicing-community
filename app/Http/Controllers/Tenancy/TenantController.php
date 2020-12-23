@@ -18,7 +18,11 @@ class TenantController extends Controller
     }
 
     /**
+<<<<<<< HEAD
      * Complete logic for creating new tenant is handled here.
+=======
+     * Logic for creating new tenant is handled here
+>>>>>>> create new tenant api
      */
     public function createTenant(Request $request)
     {
@@ -41,23 +45,23 @@ class TenantController extends Controller
 
             $encodedData = http_build_query($data);
             $hashedSignature = hash_hmac('sha256', $encodedData, $keys->app_secret);
-
             $response = $client->request(
                     'POST',
-                    'http://faveo.helpdesk/tenants', ['form_params'=>$data, 'headers'=>['signature'=>$hashedSignature]]
+                    $this->url.'/tenants',['form_params'=>$data, 'headers'=>['signature'=>$hashedSignature]]
                 );
-            var_dump($response);
-            exit();
-            // dd(json_decode($response->getBody()->getContents()));
-            // dd($response);
-            // json_decode($response->getBody()->getContents()
-            return successResponse('Created successfully');
-        } catch (Exception $e) {
-            // var_dump($e);
-            // die();
-            dd($e);
+            // var_dump($response);
+            $response =  (string) $response->getBody();
 
-            return errorResponse($e->getMessage());
+            $result =  json_decode($response);
+            if($result->status == 'fails') {
+                return ['status' => 'false', 'message' => $result->message];  
+            } elseif ($result->status == 'validationFailure') {
+                return ['status' => 'validationFailure', 'message' => $result->message];  
+            } else {
+               return ['status' => 'true', 'message' => $result->message];  
+            }
+        } catch (Exception $e) {
+            return ['status' => 'false', 'message' => $e->getMessage()];
         }
     }
 
@@ -70,12 +74,20 @@ class TenantController extends Controller
             if ($faveoToken && $token == $faveoToken) {
                 \DB::table('third_party_tokens')->where('user_id', $userId)->delete();
                 //delete third party token here
-                return successResponse('Valid token');
+               $response =  ['status' => 'success', 'message' => "Valid token"];
             } else {
-                return errorResponse('Invalid Token');
+                $response =  ['status' => 'fails', 'message' => "Invalid token"];
             }
+<<<<<<< HEAD
         } catch (Exception $e) {
             throw new \Exception($e->getMessage());
+=======
+            return $response;
+        } catch (Exception $e) {
+            $error =  ['status' => 'fails', 'message' => $e->getMessage()];
+            return $error;
+            
+>>>>>>> create new tenant api
         }
     }
 }

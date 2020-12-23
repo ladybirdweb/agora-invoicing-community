@@ -78,16 +78,12 @@ class TenantController extends Controller
             } else {
                 $response =  ['status' => 'fails', 'message' => "Invalid token"];
             }
-<<<<<<< HEAD
-        } catch (Exception $e) {
-            throw new \Exception($e->getMessage());
-=======
+
             return $response;
         } catch (Exception $e) {
             $error =  ['status' => 'fails', 'message' => $e->getMessage()];
             return $error;
             
->>>>>>> create new tenant api
         }
     }
 }

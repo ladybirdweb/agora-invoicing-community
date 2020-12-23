@@ -3,13 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Model\Order\Order;
+use App\Model\Common\StatusSetting;
 use App\Model\Product\Product;
+use App\Model\Product\ProductUpload;
+use App\Traits\Upload\ChunkUpload;
 use Exception;
 use Illuminate\Http\Request;
-use App\Traits\Upload\ChunkUpload;
-use App\Model\Product\ProductUpload;
-use App\Model\Common\StatusSetting;
 
 class ThirdPartyApiController extends Controller
 {
@@ -29,13 +28,11 @@ class ThirdPartyApiController extends Controller
         $this->product = $product;
     }
 
-
-
-
     public function chunkUploadFile(Request $request)
     {
         try {
             $result = $this->uploadFile($request);
+
             return $result;
         } catch (Exception $ex) {
             $error = $ex->getMessage();

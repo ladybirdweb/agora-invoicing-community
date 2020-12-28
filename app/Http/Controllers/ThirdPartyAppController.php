@@ -47,15 +47,15 @@ class ThirdPartyAppController extends Controller
             ->addColumn('app_key', function ($model) {
                 return $model->app_key;
             })
-             ->addColumn('app_key', function ($model) {
-                 return $model->secret;
+             ->addColumn('app_secret', function ($model) {
+                 return $model->app_secret;
              })
             ->addColumn('action', function ($model) {
                 return "<p><button data-toggle='modal' 
              data-id=".$model->id." data-appName='$model->app_name'. data-appKey='$model->app_key'. data-secret='$model->app_secret' class='btn btn-sm btn-secondary btn-xs editThirdPartyApp'".tooltip('Edit')."<i class='fa fa-edit'
              style='color:white;'> </i></button>&nbsp;</p>";
             })
-            ->rawColumns(['checkbox', 'app_name', 'app_key', 'action'])
+            ->rawColumns(['checkbox', 'app_name', 'app_key', 'app_secret', 'action'])
             ->make(true);
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());

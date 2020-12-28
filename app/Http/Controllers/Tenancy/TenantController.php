@@ -18,7 +18,7 @@ class TenantController extends Controller
     }
 
     /**
-    * Logic for creating new tenant is handled here
+     * Logic for creating new tenant is handled here.
      */
     public function createTenant(Request $request)
     {
@@ -46,14 +46,13 @@ class TenantController extends Controller
                     $this->url.'/tenants', ['form_params'=>$data, 'headers'=>['signature'=>$hashedSignature]]
                 );
 
-
             $response = explode('{', (string) $response->getBody());
-            $response = "{".$response[1];
+            $response = '{'.$response[1];
 
-            $result =  json_decode($response);
+            $result = json_decode($response);
 
-            if($result->status == 'fails') {
-                return ['status' => 'false', 'message' => $result->message];  
+            if ($result->status == 'fails') {
+                return ['status' => 'false', 'message' => $result->message];
             } elseif ($result->status == 'validationFailure') {
                 return ['status' => 'validationFailure', 'message' => $result->message];
             } else {

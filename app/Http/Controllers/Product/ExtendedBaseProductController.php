@@ -75,7 +75,7 @@ class ExtendedBaseProductController extends Controller
         ]);
         try {
             $file_upload = ProductUpload::find($id);
-            $file_upload->where('id', $id)->update(['title'=>$request->input('title'), 'description'=>$request->input('description'), 'version'=> $request->input('version'), 'dependencies'=>$request->input('dependencies')]);
+            $file_upload->where('id', $id)->update(['title'=>$request->input('title'), 'description'=>$request->input('description'), 'version'=> $request->input('version'), 'dependencies'=>$request->input('dependencies'),'is_private'=>$request->input('is_private'), 'is_restricted'=>$request->input('is_restricted')]);
             $autoUpdateStatus = StatusSetting::pluck('update_settings')->first();
             if ($autoUpdateStatus == 1) { //If License Setting Status is on,Add Product to the AutoUpdate Script
                 $productSku = $file_upload->product->product_sku;

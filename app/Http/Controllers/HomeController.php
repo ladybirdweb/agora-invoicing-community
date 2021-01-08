@@ -401,7 +401,7 @@ class HomeController extends BaseHomeController
                 $message = ['status' => 'fails', 'message' => 'no-new-version-available'];
             }
         } catch (\Exception $ex) {
-            $message = ['error' => $e->getMessage()];
+            $message = ['error' => $ex->getMessage()];
         }
 
         return response()->json($message);

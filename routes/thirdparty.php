@@ -1,5 +1,5 @@
 <?php
 
-Route::post('chunk-upload', 'Api\ThirdPartyApiController@chunkUploadFile');
+Route::post('api/chunk-upload', 'Api\ThirdPartyApiController@chunkUploadFile');
 
-Route::post('upload/save', 'Api\ThirdPartyApiController@saveProduct')->name('upload/save');
+Route::post('api/upload/save', 'Api\ThirdPartyApiController@saveProduct');

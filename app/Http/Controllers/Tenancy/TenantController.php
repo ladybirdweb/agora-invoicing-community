@@ -3,11 +3,10 @@
 namespace App\Http\Controllers\Tenancy;
 
 use App\Http\Controllers\Controller;
+use App\Model\Common\Setting;
 use App\Model\Order\Order;
 use App\ThirdPartyApp;
-use Carbon\Carbon;
 use GuzzleHttp\Client;
-use App\Model\Common\Setting;
 use Illuminate\Http\Request;
 
 class TenantController extends Controller
@@ -16,8 +15,7 @@ class TenantController extends Controller
     {
         $this->client = $client;
         $this->url = 'http://faveo.helpdesk';
-        $this->middleware('auth',['except'=>['createTenant','verifyThirdPartyToken']]);
-
+        $this->middleware('auth', ['except'=>['createTenant', 'verifyThirdPartyToken']]);
     }
 
     public function viewTenant()
@@ -32,8 +30,9 @@ class TenantController extends Controller
                     'GET',
                     $this->url.'/tenants',
                 );
-        $responseBody =  (string) $response->getBody();
+        $responseBody = (string) $response->getBody();
         $response = json_decode($responseBody);
+
         return \DataTables::of($response->message)
 
          ->addColumn('tenants', function ($model) {
@@ -54,12 +53,11 @@ class TenantController extends Controller
              class='btn btn-sm btn-danger btn-xs delTenant'".tooltip('Delete')."<i class='fa fa-trash'
              style='color:white;'> </i></button>&nbsp;</p>";
          })
-         ->rawColumns(['tenants', 'domain', 'db_name', 'db_username','action'])
+         ->rawColumns(['tenants', 'domain', 'db_name', 'db_username', 'action'])
          ->make(true);
-       
-        // $tenants = 
-    }
 
+        // $tenants =
+    }
 
     /**
      * Logic for creating new tenant is handled here.
@@ -105,6 +103,7 @@ class TenantController extends Controller
                 $setting = Setting::find(1);
                 $mail = new \App\Http\Controllers\Common\PhpMailController();
                 $mail->sendEmail($setting->email, $user, $userData, 'New instance created');
+
                 return ['status' => 'true', 'message' => $result->message];
             }
         } catch (Exception $e) {
@@ -147,9 +146,9 @@ class TenantController extends Controller
                         'DELETE',
                         $this->url.'/tenants', ['form_params'=>$data, 'headers'=>['signature'=>$hashedSignature]]
                     );
-            $responseBody =  (string) $response->getBody();
+            $responseBody = (string) $response->getBody();
             $response = json_decode($responseBody);
-            if($response->status == 'success') {
+            if ($response->status == 'success') {
                 return successResponse($response->message);
             } else {
                 return errorResponse($response->message);
@@ -157,6 +156,5 @@ class TenantController extends Controller
         } catch (Exception $e) {
             return errorResponse($e->getMessage());
         }
-        
     }
 }

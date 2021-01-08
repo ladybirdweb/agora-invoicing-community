@@ -22,7 +22,7 @@
                         <label>Domain</label>
                         <div class="row" style="margin-left: 2px; margin-right: 2px;">
                             <input  type="text" name="domain" autocomplete="off" id= "userdomain"  class="form-control col col-4" placeholder="Domain">
-                            <input type="text" class="form-control col col-8" value=".faveo-homestead.com" disabled="true">
+                            <input type="text" class="form-control col col-8" value=".faveocloud.com" disabled="true">
                         </div>
                     </div>
                    <!--  <div class="form-group">

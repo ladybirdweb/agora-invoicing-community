@@ -126,6 +126,7 @@ class OrderController extends BaseOrderController
                 $installedVersions = InstallationDetail::where('order_id', $model->id)->pluck('version')->toArray();
                 if (count($installedVersions)) {
                     $latest = max($installedVersions);
+
                     return getVersionAndLabel($latest, $model->product);
                 } else {
                     return '--';

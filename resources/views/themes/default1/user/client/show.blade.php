@@ -359,9 +359,15 @@ User
                                         @endif
 
                                         <?php $manager = $client->manager()->select('id', 'first_name', 'last_name')->first(); ?>
+                                        <?php $actManager = $client->accountManager()->select('id', 'first_name', 'last_name')->first(); ?>
                                         @if($client && $manager)
                                             <li class="list-group-item">
-                                                <b>Account Manager</b>: <span class="pull-right clientmanager" style="float:right;"><a href="{{url('clients/'.$manager->id)}}">{{$manager->first_name}} {{$manager->last_name}}</a></span>
+                                                <b>Sales Manager</b>: <span class="pull-right clientmanager" style="float:right;"><a href="{{url('clients/'.$manager->id)}}">{{$manager->first_name}} {{$manager->last_name}}</a></span>
+                                            </li>
+                                        @endif
+                                        @if($client && $actManager)
+                                        <li class="list-group-item">
+                                                <b>Account Manager</b>: <span class="pull-right actmanager" style="float:right;"><a href="{{url('clients/'.$actManager->id)}}">{{$actManager->first_name}} {{$actManager->last_name}}</a></span>
                                             </li>
                                         @endif
                                         <li class="list-group-item">
@@ -953,6 +959,7 @@ User
 
                 },
            success: function (response) {
+            console.log(response)
             $('#cus_detail').html('');
             $('.clientemail').html((response.client).email);
             $('.clientcompanyname').html((response.client).company);
@@ -972,6 +979,7 @@ User
                $('.referrer').html((response.client).referrer);
                $('.clientskype').html((response.client).skype);
                $('.clientmanager').val((response.client).clientmanager);
+               $('.actmanager').val((response.client).account_manager);
          }
       })
  })

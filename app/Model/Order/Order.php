@@ -77,11 +77,15 @@ class Order extends BaseModel
         return $this->belongsTo('App\Model\Order\InvoiceItem');
     }
 
+    public function installationDetail()
+    {
+        return $this->hasMany('App\Model\Order\InstallationDetail');
+    }
+
     public function delete()
     {
         $this->invoiceRelation()->delete();
         $this->subscription()->delete();
-
         parent::delete();
     }
 

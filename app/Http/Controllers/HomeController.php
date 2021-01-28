@@ -366,7 +366,7 @@ class HomeController extends BaseHomeController
                 $product = $product->where('name', $title)->first();
                 if ($product) {
                     $productId = $product->id;
-                    $product = ProductUpload::where('product_id', $productId)->where('is_restricted', '!=', 1)->orderBy('id', 'desc')->first();
+                    $product = ProductUpload::where('product_id', $productId)->where('is_restricted', 1)->orderBy('id', 'desc')->first();
                     // dd($product);
                     $message = ['version' => str_replace('v', '', $product->version)];
                 } else {
@@ -401,7 +401,7 @@ class HomeController extends BaseHomeController
                 $message = ['status' => 'fails', 'message' => 'no-new-version-available'];
             }
         } catch (\Exception $ex) {
-            $message = ['error' => $e->getMessage()];
+            $message = ['error' => $ex->getMessage()];
         }
 
         return response()->json($message);

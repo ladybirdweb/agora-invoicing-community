@@ -18,4 +18,9 @@ class ProductUpload extends Model
     {
         return $this->belongsTo('App\Model\Order\Order');
     }
+
+    public function getDependenciesAttribute($value)
+    {
+        return json_decode($value);
+    }
 }

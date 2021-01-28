@@ -512,14 +512,14 @@ Sign in or Register
 
 
                                                         <div class="col-md-3">
-                                                            <button type="button" class="btn btn-primary float-right mb-5" name="verifyOtp" id="verifyOtp" value="Verify OTP" onclick="verifyBySendOtp()" >
+                                                            <button type="button" class="btn btn-primary float-right mb-5" name="verifyOtp" style="width: max-content;" id="verifyOtp" value="Verify OTP" onclick="verifyBySendOtp()" >
                                                                 Verify OTP
                                                             </button>
                                                         </div>
 
 
                                                         <div class="col-md-3">
-                                                            <button type="button" class="btn btn-danger float-right mb-5" name="resendOTP" id="resendOTP">
+                                                            <button type="button" class="btn btn-danger float-right mb-5" style="width: max-content;" name="resendOTP" id="resendOTP">
                                                                 Resend OTP
                                                             </button>
 

@@ -258,8 +258,7 @@ main
 
 
                     
-                      
-                       <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.9/angular.min.js"></script>
+                         <script src="{{asset('client/js/angular.js')}}"></script>
 
          
           
@@ -620,7 +619,6 @@ main
                                         $scope.newObj['id'] = $('#u_id').val();
                                         $scope.newObj['code'] = $('#u_code').val();
                                         $scope.newObj['mobile'] = $('#u_mobile').val().replace(/[\. ,:-]+/g, '');
-                                        console.log($scope.newObj);
                                         $http({
                                             url: '{{url("otp/send")}}',
                                             method: "GET",

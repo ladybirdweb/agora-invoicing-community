@@ -23,11 +23,12 @@ class VerifyThirdPartyApps
 
             return response()->json(compact('result'));
         }
-        $appKey = $request->header('app_key');
+        $appKey = $request->header('app-key');
         $requestParameters = file_get_contents('php://input'); //get all the form parameters in the request
         $requestHeader = $request->header('signature'); //get signature sent in the request
-        $app_secret = $keys = ThirdPartyApp::where('app_name', 'faveo_app_key')->where('app_key', $appKey)->value('app_secret');
+        $app_secret = $keys = ThirdPartyApp::where('app_key', $appKey)->value('app_secret');
         $signature = hash_hmac('sha256', $requestParameters, $app_secret); //hash the request parameter with the app secret
+        
         if ($requestHeader && hash_equals($signature, $requestHeader)) {
             return $next($request);
         } else {

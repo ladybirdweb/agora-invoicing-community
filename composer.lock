@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0c073380bac691cf68c45bbe221a30ae",
+    "content-hash": "21afd3abeb174f18f5459d3b44f68491",
     "packages": [
         {
             "name": "anhskohbo/no-captcha",
@@ -9356,12 +9356,6 @@
             "homepage": "https://github.com/sebastianbergmann/php-token-stream/",
             "keywords": [
                 "tokenizer"
-            ],
-            "funding": [
-                {
-                    "url": "https://github.com/sebastianbergmann",
-                    "type": "github"
-                }
             ],
             "abandoned": true,
             "time": "2020-06-27T06:36:25+00:00"

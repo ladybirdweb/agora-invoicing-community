@@ -478,6 +478,19 @@
             Route::get('country-count', 'WelcomeController@countryCount')->name('country-count')->middleware('admin');
 
             /*
+            Cloud APIs
+             */
+
+            Route::resource('third-party-keys', 'ThirdPartyAppController');
+            Route::get('get-third-party-app', 'ThirdPartyAppController@getThirdPartyDetails')->name('get-third-party-app');
+            Route::get('get-app-key', 'ThirdPartyAppController@getAppKey')->name('get-app-key');
+            Route::delete('third-party-delete', 'ThirdPartyAppController@destroy')->name('third-party-delete');
+            Route::post('create/tenant', 'Tenancy\TenantController@createTenant');
+            Route::get('view/tenant', 'Tenancy\TenantController@viewTenant')->middleware('admin');
+            Route::get('get-tenants', 'Tenancy\TenantController@getTenants')->name('get-tenants')->middleware('admin');
+            Route::delete('delete-tenant', 'Tenancy\TenantController@destroyTenant')->name('delete-tenant')->middleware('admin');
+
+            /*
              * Api
              */
             Route::group(['prefix' => 'api'], function () {
@@ -519,6 +532,7 @@
         Route::post('update/lic-code', 'HomeController@updateLicenseCode');
         Route::get('new-version-available', 'HomeController@isNewVersionAvailable');
         Route::post('update-installation-detail', 'HomeController@updateInstallationDetails');
+        Route::get('verify/third-party-token', 'Tenancy\TenantController@verifyThirdPartyToken');
 
         Route::get('404', ['as' => 'error404', function () {
             return view('errors.404');

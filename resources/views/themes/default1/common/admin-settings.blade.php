@@ -147,6 +147,32 @@ Settings
                     </div>
                 </div>
 
+                <div class="col-md-2 col-sm-6">
+                    <div class="settingiconblue">
+                        <div class="settingdivblue">
+                            <a href="{{url('third-party-keys')}}">
+                                <span class="fa-stack fa-2x">
+                                    <i class="fas fa-file-signature fa-stack-1x"></i>
+                                </span>
+                            </a>
+                        </div>
+                        <p class="box-title" >Third party apps</p>
+                    </div>
+                </div>
+
+               <!--  <div class="col-md-2 col-sm-6">
+                    <div class="settingiconblue">
+                        <div class="settingdivblue">
+                            <a href="{{url('view/tenant')}}">
+                                <span class="fa-stack fa-2x">
+                                    <i class="fa fa-users fa-stack-1x"></i>
+                                </span>
+                            </a>
+                        </div>
+                        <p class="box-title" >Tenants</p>
+                    </div>
+                </div>
+ -->
                  <!--/.col-md-2-->
                   
             </div>

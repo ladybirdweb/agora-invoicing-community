@@ -125,11 +125,12 @@ class OrderController extends BaseOrderController
             ->addColumn('version', function ($model) {
                 $installedVersions = InstallationDetail::where('order_id', $model->id)->pluck('version')->toArray();
                 if (count($installedVersions)) {
-                    return max($installedVersions);
+                    $latest = max($installedVersions);
+
+                    return getVersionAndLabel($latest, $model->product);
                 } else {
                     return '--';
                 }
-                // return getVersionAndLabel($model->product_version, $model->product);
             })
             ->addColumn('number', function ($model) {
                 $orderLink = '<a href='.url('orders/'.$model->id).'>'.$model->number.'</a>';

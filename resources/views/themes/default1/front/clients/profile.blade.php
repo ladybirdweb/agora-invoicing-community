@@ -252,6 +252,7 @@ input:checked + .slider:before {
                     {!! Form::text('country',$selectedCountry,['class' => 'form-control input-lg','onChange'=>'getCountryAttr(this.value);','readonly'=>'readonly']) !!}
                     {!! Form::hidden('country',null,['class' => 'form-control input-lg', 'id'=>'country']) !!}
                  
+
                     <h6 id="countryCheck"></h6>
                 </div>
                 <div class="col-md-6 form-group {{ $errors->has('state') ? 'has-error' : '' }}">
@@ -512,7 +513,8 @@ input:checked + .slider:before {
 <script type="text/javascript">
      $(document).ready(function(){
     var country = $('#country').val();
-    if(country == 'IN') {
+    console.log(country,'sdfs')
+    if(country == 'India') {
         $('#gstin').show()
     } else {
         $('#gstin').hide();

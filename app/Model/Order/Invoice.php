@@ -63,6 +63,11 @@ class Invoice extends BaseModel
         return $this->hasManyThrough('App\Model\Product\Subscription', 'App\Model\Order\Order');
     }
 
+    public function installationDetail()
+    {
+        return $this->hasManyThrough('App\Model\Order\InstallationDetail', 'App\Model\Order\Order');
+    }
+
     public function orderRelation()
     {
         return $this->hasMany('App\Model\Order\OrderInvoiceRelation');
@@ -92,6 +97,7 @@ class Invoice extends BaseModel
     {
         $this->orderRelation()->delete();
         $this->subscription()->delete();
+        $this->installationDetail()->delete();
         $this->order()->delete();
 
         $this->invoiceItem()->delete();

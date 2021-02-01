@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Model\Order\InstallationDetail;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
 
@@ -135,7 +136,14 @@ class AdminOrderInvoiceController extends Controller
                             return $orderLink;
                         })
                          ->addColumn('version', function ($model) {
-                             return getVersionAndLabel($model->product_version, $model->product);
+                             $installedVersions = InstallationDetail::where('order_id', $model->id)->pluck('version')->toArray();
+                             if (count($installedVersions)) {
+                                 $latest = max($installedVersions);
+
+                                 return getVersionAndLabel($latest, $model->product);
+                             } else {
+                                 return '--';
+                             }
                          })
                           ->addColumn('expiry', function ($model) {
                               $ends_at = strtotime($model->subscription_ends_at) > 1 ? $model->subscription_ends_at : '--';

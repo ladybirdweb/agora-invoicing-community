@@ -144,10 +144,10 @@ main
                                         <h6 id="verifyotp"></h6>
                                     </div>
                                     <div class="col-md-3">
-                                       <button class="btn btn-primary float-right mb-5" id="verifyOTP" ng-click="submitOTP(otp)">Verify OTP</button>
+                                       <button class="btn btn-primary float-right" style="width: max-content;" id="verifyOTP" ng-click="submitOTP(otp)">Verify OTP</button>
                                     </div>
                                     <div class="col-md-3">
-                                         <button type="button" class="btn btn-danger float-right mb-5" name="resendOTP" id="resendOTP">
+                                         <button type="button" class="btn btn-danger float-right" style="width: max-content;" name="resendOTP" id="resendOTP">
                                           Resend OTP
                                       </button>
                                     </div>
@@ -211,10 +211,10 @@ main
                                     </div>
                                     
                                     <div class="col-md-3">
-                                        <button class="btn btn-primary float-right mb-5" id="verifyOtp"  onclick="verifyBySendOtp()" >Verify OTP</button>
+                                        <button class="btn btn-primary float-right" id="verifyOtp"  style="width: max-content;" onclick="verifyBySendOtp()" >Verify OTP</button>
                                     </div>
                                     <div class="col-md-3">
-                                      <button type="button" class="btn btn-danger float-right mb-5" name="resendOTP" id="resendOTP">
+                                      <button type="button" class="btn btn-danger float-right" name="resendOTP" style="width: max-content;" id="resendOTP">
                                           Resend OTP
                                       </button>
                                     </div>
@@ -258,8 +258,7 @@ main
 
 
                     
-                      
-                        <script src="{{asset('dist/js/angular.min.js')}}"></script>
+                         <script src="{{asset('client/js/angular.js')}}"></script>
 
          
           
@@ -620,7 +619,6 @@ main
                                         $scope.newObj['id'] = $('#u_id').val();
                                         $scope.newObj['code'] = $('#u_code').val();
                                         $scope.newObj['mobile'] = $('#u_mobile').val().replace(/[\. ,:-]+/g, '');
-                                        console.log($scope.newObj);
                                         $http({
                                             url: '{{url("otp/send")}}',
                                             method: "GET",

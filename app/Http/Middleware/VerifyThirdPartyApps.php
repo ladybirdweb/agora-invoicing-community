@@ -16,7 +16,6 @@ class VerifyThirdPartyApps
      */
     public function handle($request, Closure $next)
     {
-        return $next($request);
         $currentTimestamp = time();
         $timestampDifference = $currentTimestamp - $request->input('timestamp');
         if (! is_numeric($timestampDifference) || $timestampDifference > 900) { //900 sec is 15 mins

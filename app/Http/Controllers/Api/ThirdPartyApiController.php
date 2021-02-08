@@ -31,6 +31,7 @@ class ThirdPartyApiController extends Controller
     public function chunkUploadFile(Request $request)
     {
         try {
+            //Put check in this api for valid product id before uploading
             $result = $this->uploadFile($request);
 
             return $result;
@@ -46,6 +47,7 @@ class ThirdPartyApiController extends Controller
         $this->validate(
             $request,
             [
+                'productname'  =>  'required',
                 'producttitle'  => 'required',
                 'version'      => 'required',
                 'filename'      => 'required',
@@ -55,9 +57,9 @@ class ThirdPartyApiController extends Controller
        ]
         );
         try {
-            $product_id = Product::where('name', $request->input('productname'))->select('id')->first();
-
-            $this->product_upload->product_id = $product_id->id;
+            $product_id = Product::whereRaw('LOWER(`name`) LIKE ? ', (strtolower($request->input('productname'))))->select('id')->first();
+            if($product_id) {
+                $this->product_upload->product_id = $product_id->id;
             $this->product_upload->title = $request->input('producttitle');
             $this->product_upload->description = $request->input('description');
             $this->product_upload->version = $request->input('version');
@@ -73,7 +75,9 @@ class ThirdPartyApiController extends Controller
                 $addProductToAutoUpdate = $updateClassObj->addNewVersion($product_id->id, $request->input('version'), $request->input('filename'), '1');
             }
             $response = ['success'=>'true', 'message'=>'Product Uploaded Successfully'];
-
+        } else {
+            $response = ['success'=>'fails', 'message'=>'Product not found'];
+        }
             return $response;
         } catch (\Exception $e) {
             app('log')->error($e->getMessage());

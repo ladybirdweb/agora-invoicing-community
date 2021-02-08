@@ -513,3 +513,52 @@ function installationStatusLabel(string $lastConnectionDate, string $createdAt)
                      </label>Active</span>" : "&nbsp;<span class='badge badge-info' <label data-toggle='tooltip' style='font-weight:500;background-color:crimson;' data-placement='top' title='Installation inactive for more than 30 days'>
                     </label>Inactive</span>";
 }
+
+//return root url from long url (http://www.domain.com/path/file.php?aa=xx becomes http://www.domain.com/path/), remove scheme, www. and last slash if needed
+function getRootUrl($url, $remove_scheme, $remove_www, $remove_path, $remove_last_slash)
+{
+if (filter_var($url, FILTER_VALIDATE_URL))
+    {
+    $url_array=parse_url($url); //parse URL into arrays like $url_array['scheme'], $url_array['host'], etc
+
+    $url=str_ireplace($url_array['scheme']."://", "", $url); //make URL without scheme, so no :// is included when searching for first or last /
+
+    if ($remove_path==1) //remove everything after FIRST / in URL, so it becomes "real" root URL
+        {
+        $first_slash_position=stripos($url, "/"); //find FIRST slash - the end of root URL
+        if ($first_slash_position>0) //cut URL up to FIRST slash
+            {
+            $url=substr($url, 0, $first_slash_position+1);
+            }
+        }
+    else //remove everything after LAST / in URL, so it becomes "normal" root URL
+        {
+        $last_slash_position=strripos($url, "/"); //find LAST slash - the end of root URL
+        if ($last_slash_position>0) //cut URL up to LAST slash
+            {
+            $url=substr($url, 0, $last_slash_position+1);
+            }
+        }
+
+    if ($remove_scheme!=1) //scheme was already removed, add it again
+        {
+        $url=$url_array['scheme']."://".$url;
+        }
+
+    if ($remove_www==1) //remove www.
+        {
+        $url=str_ireplace("www.", "", $url);
+        }
+
+    if ($remove_last_slash==1) //remove / from the end of URL if it exists
+        {
+        while (substr($url, -1)=="/") //use cycle in case URL already contained multiple // at the end
+            {
+            $url=substr($url, 0, -1);
+            }
+        }
+    }
+
+return trim($url);
+}
+

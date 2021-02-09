@@ -183,10 +183,9 @@ class BaseHomeController extends Controller
     {
         try {
             $orderId = null;
-            $url = $request->input('url');
+            $url = $request->url;
             $ip = $this->getUserIP();
-            // $ip = $request->ip();
-            $url = getRootUrl($url, 1, 1, 0, 1);
+            $url = getRootUrl("$url/", 1, 1, 0, 1);
             $licenseCode = $request->input('licenseCode');
             $orderForLicense = Order::all()->filter(function ($order) use ($licenseCode) {
                 if ($order->serial_key == $licenseCode) {

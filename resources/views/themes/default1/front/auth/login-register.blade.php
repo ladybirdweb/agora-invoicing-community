@@ -555,16 +555,7 @@ Sign in or Register
     </div>
 @stop
 @section('script')
-    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-1027628032"></script>
-    <script>
-
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-
-        gtag('config', 'AW-1027628032');
-    </script>
-
+    <script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo $analyticsTag; ?>"></script>
 
     <script>
         ///////////////////////////////////////////////////////////////////////////////
@@ -1304,22 +1295,16 @@ Sign in or Register
             }
         })
         //////////////////////////////Google Analytics Code after Submit button is clicked//////////////////
-        function gtag_report_conversion(url) {
-            console.log(typeof(url));
-            var callback = function () {
-                if (typeof(url) != 'undefined') {
-                    window.location = url;
-                }
-            };
-            gtag('event', 'conversion', {
-                'send_to': 'AW-1027628032/ZftSCMqHw5YBEIC4geoD',
-                'event_callback': callback
-            });
-            return false;
+        function gtag_report_conversion(tag) {
+            window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+            
+              gtag('config', tag);
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         function registerUser() {
-
+            
             $('#first_namecheck').hide();
             $('#last_namecheck').hide();
             $('#emailcheck').hide();
@@ -1348,7 +1333,12 @@ Sign in or Register
 
             if(first_namecheck() && last_namecheck() && emailcheck() && companycheck() && addresscheck() && mobile_codecheck()  && countrycheck()  && password1check() && conpasscheck()  && terms() && gcaptcha())
             {
-                // gtag_report_conversion();
+               
+                 var tag = "<?php echo $analyticsTag; ?>";
+                 if (tag !== "" ){
+                        gtag_report_conversion(tag);
+                    }
+                
                 $("#register").attr('disabled',true);
                 $("#register").html("<i class='fas fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
                 $.ajax({

@@ -75,11 +75,15 @@ class ChatScriptController extends Controller
         $this->validate($request, [
             'name'  => 'required',
             'script'=> 'required',
+            'google_analytics_tag'=>'required_if:google_analytics,1',
+
         ], [
             'script.required' => 'Content field is required',
+            'google_analytics_tag.required_if'=> 'The google analytics tag is required',
         ]);
 
         try {
+            $request['on_every_page'] = $request->on_registration ? 0 : 1;
             $this->script->fill($request->input())->save();
 
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
@@ -101,7 +105,7 @@ class ChatScriptController extends Controller
     public function edit($id)
     {
         $chat = $this->script->where('id', $id)->first();
-
+        
         return view('themes.default1.common.chat.edit', compact('chat'));
     }
 
@@ -118,11 +122,16 @@ class ChatScriptController extends Controller
         $this->validate($request, [
             'name'   => 'required',
             'script' => 'required',
+            'google_analytics_tag'=>'required_if:google_analytics,1',
 
+        ], [
+            'script.required' => 'Content field is required',
+            'google_analytics_tag.required_if'=> 'The google analytics tag is required',
         ]);
 
         try {
             $script = $this->script->where('id', $id)->first();
+            $script->on_every_page = $script->on_registration ? 0 : 1;
             $script->fill($request->input())->save();
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));

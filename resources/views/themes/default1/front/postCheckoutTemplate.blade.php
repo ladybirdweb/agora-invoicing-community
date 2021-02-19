@@ -79,7 +79,7 @@
                     </tr>
                                         <tr>
                         <th scope="row">Total:</th>
-                            <td><span class="woocommerce-Price-amount amount"> {{currencyFormat($invoice->grand_total,$code = \Auth::user()->currency)}}</span></td>
+                            <td><span class="woocommerce-Price-amount amount"> {{currencyFormat($invoice->grand_total,$code = $invoice->currency)}}</span></td>
                     </tr>
                             </tfoot>
     </table>

@@ -5,11 +5,11 @@ namespace App\Http\Controllers\Auth;
 use App\ApiKey;
 use App\Http\Controllers\Controller;
 use App\Model\Common\Bussiness;
+use App\Model\Common\ChatScript;
 use App\Model\Common\StatusSetting;
 use App\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
-use App\Model\Common\ChatScript;
 
 class LoginController extends Controller
 {
@@ -48,7 +48,7 @@ class LoginController extends Controller
             $bussinesses = Bussiness::pluck('name', 'short')->toArray();
             $status = StatusSetting::select('recaptcha_status', 'msg91_status', 'emailverification_status', 'terms')->first();
             $apiKeys = ApiKey::select('nocaptcha_sitekey', 'captcha_secretCheck', 'msg91_auth_key', 'terms_url')->first();
-            $analyticsTag = ChatScript::where('google_analytics',1)->where('on_registration',1)->value('google_analytics_tag');
+            $analyticsTag = ChatScript::where('google_analytics', 1)->where('on_registration', 1)->value('google_analytics_tag');
             $location = getLocation();
 
             return view('themes.default1.front.auth.login-register', compact('bussinesses', 'location', 'status', 'apiKeys', 'analyticsTag'));

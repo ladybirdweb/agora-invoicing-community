@@ -105,7 +105,7 @@ class ChatScriptController extends Controller
     public function edit($id)
     {
         $chat = $this->script->where('id', $id)->first();
-        
+
         return view('themes.default1.common.chat.edit', compact('chat'));
     }
 

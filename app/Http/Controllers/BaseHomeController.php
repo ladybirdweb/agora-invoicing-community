@@ -185,7 +185,10 @@ class BaseHomeController extends Controller
             $orderId = null;
             $url = $request->url;
             $ip = $this->getUserIP();
-            $url = getRootUrl("$url/", 1, 1, 0, 1);
+            if($url) {
+                $url = getRootUrl("$url/", 1, 1, 0, 1);
+            }
+            
             $licenseCode = $request->input('licenseCode');
             $orderForLicense = Order::all()->filter(function ($order) use ($licenseCode) {
                 if ($order->serial_key == $licenseCode) {
@@ -193,7 +196,8 @@ class BaseHomeController extends Controller
                 }
             });
             if (count($orderForLicense) > 0) {
-                InstallationDetail::updateOrCreate(['installation_path'=>$url, 'installation_ip'=>$ip], ['last_active'=> (string) \Carbon\Carbon::now(), 'installation_path'=>$url, 'installation_ip'=>$ip, 'version'=>$request->input('version'), 'order_id'=>$orderForLicense->first()->id]);
+                if($url) {
+                    InstallationDetail::updateOrCreate(['installation_path'=>$url, 'installation_ip'=>$ip], ['last_active'=> (string) \Carbon\Carbon::now(), 'installation_path'=>$url, 'installation_ip'=>$ip, 'version'=>$request->input('version'), 'order_id'=>$orderForLicense->first()->id]);
 
                 $existingVersion = Subscription::where('order_id', $orderForLicense->first()->id)->value('version');
                 if ($existingVersion && $existingVersion < $request->input('version')) {
@@ -202,9 +206,25 @@ class BaseHomeController extends Controller
                 Subscription::where('order_id', $orderForLicense->first()->id)->update(['version'=>$existingVersion, 'version_updated_at'=> (string) \Carbon\Carbon::now()]);
 
                 return ['status' => 'success', 'message' => 'version-updated-successfully'];
+            } else {//For older client where url is not sent as parameter
+                $cont = new \App\Http\Controllers\License\LicenseController();
+                $installationDetails = $cont->searchInstallationPath($orderForLicense->first()->serial_key, $orderForLicense->first()->product);
+                foreach ($installationDetails['installed_path'] as $path) {
+                    $ipAndDomain = explode(',', $path);
+                    InstallationDetail::updateOrCreate(['installation_path'=>$ipAndDomain[0], 'installation_ip'=>$ipAndDomain[1]], ['installation_path'=>$ipAndDomain[0], 'installation_ip'=>$ipAndDomain[1], 'version'=>$request->input('version'), 'order_id'=>$orderForLicense->first()->id]);
+                }
+                $existingVersion = Subscription::where('order_id', $orderForLicense->first()->id)->value('version');
+                if ($existingVersion && $request->input('version') > $existingVersion) {
+                    Subscription::where('order_id', $orderForLicense->first()->id)->update(['version'=>$request->input('version')]);
+                }
+
+                return ['status' => 'success', 'message' => 'version-updated-successfully'];
+            }
+                
             }
 
             return ['status' => 'fails', 'message' => 'version-not updated'];
+            }
         } catch (\Exception $e) {
             $result = ['status'=>'fails', 'error' => $e->getMessage()];
 

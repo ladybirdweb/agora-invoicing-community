@@ -53,7 +53,6 @@ class OrderSearchController extends Controller
     private function getBaseQueryForOrders()
     {
         return Order::leftJoin('subscriptions', 'orders.id', '=', 'subscriptions.order_id')
-            ->leftJoin('installation_details', 'orders.id', '=', 'installation_details.order_id')
             ->leftJoin('users', 'orders.client', '=', 'users.id')
             ->leftJoin('products', 'orders.product', '=', 'products.id')
             ->select(

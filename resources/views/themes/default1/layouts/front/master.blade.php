@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html>
 <?php $setting = \App\Model\Common\Setting::where('id', 1)->first();
-$script = \App\Model\Common\ChatScript::where('id', 1)->first(); 
-if($script){
-  $script = $script->script;
+$everyPageScript = '';
+$scripts = \App\Model\Common\ChatScript::get(); 
+foreach($scripts as $script)
+if($script->on_every_page == 1) {
+  $everyPageScript = $script->script;
 }
- ?>
 
+ ?>
 <style type="text/css">
     {{-- for making datatable side scrollable whenever it has way too many columns for screen to accomodate   --}}
     .dataTables_wrapper {
@@ -713,21 +715,12 @@ if($script){
 
         </script>
         @yield('script')
-        <!-- Google Analytics: Change UA-XXXXX-X to be your site's ID. Go to http://www.google.com/analytics/ for more information.
-        <script>
-                (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-                })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
         
-                ga('create', 'UA-12345678-1', 'auto');
-                ga('send', 'pageview');
-        </script>
-        -->
 <!--Start of Tawk.to Script-->
 <!--Start of Tawk.to Script-->
+
 <script type="text/javascript">
- {!! html_entity_decode($script) !!}
+ {!! html_entity_decode($everyPageScript) !!}
 
 </script>
 

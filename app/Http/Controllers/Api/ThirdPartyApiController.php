@@ -31,6 +31,7 @@ class ThirdPartyApiController extends Controller
     public function chunkUploadFile(Request $request)
     {
         try {
+            //Put check in this api for valid product id before uploading
             $result = $this->uploadFile($request);
 
             return $result;
@@ -46,6 +47,7 @@ class ThirdPartyApiController extends Controller
         $this->validate(
             $request,
             [
+                'productname'  =>  'required',
                 'producttitle'  => 'required',
                 'version'      => 'required',
                 'filename'      => 'required',
@@ -55,24 +57,27 @@ class ThirdPartyApiController extends Controller
        ]
         );
         try {
-            $product_id = Product::where('name', $request->input('productname'))->select('id')->first();
-
-            $this->product_upload->product_id = $product_id->id;
-            $this->product_upload->title = $request->input('producttitle');
-            $this->product_upload->description = $request->input('description');
-            $this->product_upload->version = $request->input('version');
-            $this->product_upload->file = $request->input('filename');
-            $this->product_upload->is_private = $request->input('is_private');
-            $this->product_upload->is_restricted = $request->input('is_restricted');
-            $this->product_upload->dependencies = json_encode($request->input('dependencies'));
-            $this->product_upload->save();
-            $this->product->where('id', $product_id->id)->update(['version'=>$request->input('version')]);
-            $autoUpdateStatus = StatusSetting::pluck('update_settings')->first();
-            if ($autoUpdateStatus == 1) { //If License Setting Status is on,Add Product to the License Manager
-                $updateClassObj = new \App\Http\Controllers\AutoUpdate\AutoUpdateController();
-                $addProductToAutoUpdate = $updateClassObj->addNewVersion($product_id->id, $request->input('version'), $request->input('filename'), '1');
+            $product_id = Product::whereRaw('LOWER(`name`) LIKE ? ', (strtolower($request->input('productname'))))->select('id')->first();
+            if ($product_id) {
+                $this->product_upload->product_id = $product_id->id;
+                $this->product_upload->title = $request->input('producttitle');
+                $this->product_upload->description = $request->input('description');
+                $this->product_upload->version = $request->input('version');
+                $this->product_upload->file = $request->input('filename');
+                $this->product_upload->is_private = $request->input('is_private');
+                $this->product_upload->is_restricted = $request->input('is_restricted');
+                $this->product_upload->dependencies = json_encode($request->input('dependencies'));
+                $this->product_upload->save();
+                $this->product->where('id', $product_id->id)->update(['version'=>$request->input('version')]);
+                $autoUpdateStatus = StatusSetting::pluck('update_settings')->first();
+                if ($autoUpdateStatus == 1) { //If License Setting Status is on,Add Product to the License Manager
+                    $updateClassObj = new \App\Http\Controllers\AutoUpdate\AutoUpdateController();
+                    $addProductToAutoUpdate = $updateClassObj->addNewVersion($product_id->id, $request->input('version'), $request->input('filename'), '1');
+                }
+                $response = ['success'=>'true', 'message'=>'Product Uploaded Successfully'];
+            } else {
+                $response = ['success'=>'fails', 'message'=>'Product not found'];
             }
-            $response = ['success'=>'true', 'message'=>'Product Uploaded Successfully'];
 
             return $response;
         } catch (\Exception $e) {

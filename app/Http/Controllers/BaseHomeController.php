@@ -224,7 +224,7 @@ class BaseHomeController extends Controller
             }
 
             return ['status' => 'fails', 'message' => 'version-not updated'];
-            }
+        
         } catch (\Exception $e) {
             $result = ['status'=>'fails', 'error' => $e->getMessage()];
 

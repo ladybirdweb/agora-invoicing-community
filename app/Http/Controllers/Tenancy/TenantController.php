@@ -14,7 +14,7 @@ class TenantController extends Controller
     public function __construct(Client $client)
     {
         $this->client = $client;
-        $this->url = 'http://faveo.helpdesk';
+        $this->url = 'https://billing.faveocloud.com';
         $this->middleware('auth', ['except'=>['createTenant', 'verifyThirdPartyToken']]);
     }
 

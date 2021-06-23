@@ -3,7 +3,6 @@
 namespace App\Model\Order;
 
 use App\BaseModel;
-use App\Model\Product\Subscription;
 use DateTime;
 use DateTimeZone;
 use Illuminate\Contracts\Encryption\DecryptException;

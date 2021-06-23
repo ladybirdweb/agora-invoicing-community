@@ -1,4 +1,4 @@
-<a href="#tenant" class="btn  btn-primary btn-xs" data-toggle="modal" data-target="#tenant"><i class="fa fa-refresh"></i>&nbsp;Deploy</a>
+<a data-id="{{$orderNumber}}" href="#tenant" class="btn  btn-primary btn-xs open-createTenantDialog" data-toggle="modal"><i class="fa fa-refresh"></i>&nbsp;Deploy</a>
 <div class="modal fade" id="tenant" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -15,21 +15,16 @@
                 <!-- Form  -->
                 
             <div class="container">
-                
                 <form action="" method="post" style="width:500px; margin: auto auto;" class="card card-body">
                     <input type="hidden" id="orderNo" name="order" value={{$orderNumber}}>
                     <div class="form-group">
                         <label>Domain</label>
                         <div class="row" style="margin-left: 2px; margin-right: 2px;">
+                             <input type="hidden"  name="order" id="orderId" value=""/>
                             <input  type="text" name="domain" autocomplete="off" id= "userdomain"  class="form-control col col-4" placeholder="Domain">
                             <input type="text" class="form-control col col-8" value=".faveocloud.com" disabled="true">
                         </div>
                     </div>
-                   <!--  <div class="form-group">
-                        <label>Passphrase</label>
-                        <input name="passphrase" autocomplete="off" type="password" id="password" class="form-control" placeholder="Passphrase">
-                    </div> -->
-                   
                 </form>
             </div>
 
@@ -38,7 +33,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default pull-left closebutton" id="closebutton" data-dismiss="modal"><i class="fa fa-times">&nbsp;&nbsp;</i>Close</button>
-                 <button type="submit"  class="btn btn-primary createTenant" id="createTenant"><i class="fa fa-check">&nbsp;&nbsp;</i>Submit</button>
+                 <button type="submit"  class="btn btn-primary createTenant" id="createTenant" onclick="createTenant()"><i class="fa fa-check">&nbsp;&nbsp;</i>Submit</button>
                 {!! Form::close()  !!}
             </div>
             <!-- /Form -->
@@ -47,16 +42,23 @@
 </div><!-- /.modal -->  
   
 <script>
+    $(document).on("click", ".open-createTenantDialog", function () {
+     var orderId = $(this).data('id');
+     $(".modal-body #orderId").val( orderId );
+     $('#tenant').modal('show');
+});
+
+
     $('.closebutton').on('click',function(){
         location.reload();
     });
 
-    $('.createTenant').on('click',function(){
+    function createTenant(){
         $('#createTenant').attr('disabled',true)
         $("#createTenant").html("<i class='fas fa-circle-notch fa-spin'></i>Please Wait...");
         var domain = $('#userdomain').val();
         var password = $('#password').val();
-        var order = $('#orderNo').val();
+        var order = $('#orderId').val();
         $.ajax({
             url: "{{url('create/tenant')}}",
             type: "POST",
@@ -88,6 +90,7 @@
                     }
             },error: function (response) {
                 $('#createTenant').attr('disabled',false)
+                $("#createTenant").html("<i class='fa fa-check'>&nbsp;&nbsp;</i>Submit");
                  $("#generate").html("<i class='fa fa-check'>&nbsp;&nbsp;</i>Submit");
                 if(response.status == 422) {
 
@@ -110,5 +113,5 @@
             }
 
         })
-    })
+}    
 </script>

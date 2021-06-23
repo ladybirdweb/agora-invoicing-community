@@ -20,11 +20,7 @@ Tenants
         <div class="card-header">
             <h3 class="card-title">Tenants</h3>
 
-            <div class="card-tools">
-                <a href="#create-third-party-app" data-toggle="modal" data-target="#create-third-party-app" class="btn btn-default btn-sm"><span class="fa fa-plus"></span>&nbsp;&nbsp;{{Lang::get('message.create')}}</a>
-
-
-            </div>
+          
         </div>
 
         <div id="success"></div>
@@ -117,27 +113,27 @@ Tenants
               $('#error').hide();
               $('#success').html(result);
               setInterval(function(){ 
-                $('#success').slideUp(3000); 
-            }, 1000);
+                $('#success').slideUp(5000); 
+            }, 3000);
               location.reload();
             } else if(data.success = false) {
               $('#success').hide();
               $('#error').show();
-              var result =  '<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="fa fa-ban"></i>Whoops! </strong> Something went wrong<br'+data.message+'!</div>';
+              var result =  '<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="fa fa-ban"></i>Whoops! </strong> Something went wrong<br>'+data.message+'!</div>';
               $('#error').html(result);
               setInterval(function(){ 
-                $('#error').slideUp(3000); 
-            }, 1000);
+                $('#error').slideUp(5000); 
+            }, 3000);
             }
              
           },error: function(data) {
             $('#success').hide();
               $('#error').show();
-              var result =  '<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="fa fa-ban"></i>Whoops! </strong> Something went wrong<br'+data.responseJSON.message[0]+'!</div>';
+              var result =  '<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="fa fa-ban"></i>Whoops! </strong> Something went wrong<br>'+data.responseJSON.message+'!</div>';
               $('#error').html(result);
               setInterval(function(){ 
-                $('#error').slideUp(3000); 
-            }, 1000);
+                $('#error').slideUp(5000); 
+            }, 3000);
           }
 
         })

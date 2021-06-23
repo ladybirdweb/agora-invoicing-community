@@ -134,10 +134,12 @@ class ThirdPartyAppController extends Controller
         $this->validate($request, [
             'app_name' => 'required',
             'app_key'  => 'required|size:32',
+            'app_secret'=> 'required',
         ]);
         $app_name = $request->input('app_name');
         $app_key = $request->input('app_key');
-        $this->thirdParty->where('id', $id)->update(['app_name' =>$app_name, 'app_key'=>$app_key]);
+        $app_secret = $request->input('app_secret');
+        $this->thirdParty->where('id', $id)->update(['app_name' =>$app_name, 'app_key'=>$app_key, 'app_secret'=>$app_secret]);
 
         return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
     }

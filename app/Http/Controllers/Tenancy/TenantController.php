@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Tenancy;
 
+use Exception;
 use App\Http\Controllers\Controller;
 use App\Model\Common\Setting;
 use App\Model\Order\Order;
@@ -15,7 +16,7 @@ class TenantController extends Controller
     {
         $this->client = $client;
         $this->url = 'https://billing.faveocloud.com';
-        $this->middleware('auth', ['except'=>['createTenant', 'verifyThirdPartyToken']]);
+        $this->middleware('auth', ['except'=>['verifyThirdPartyToken']]);
     }
 
     public function viewTenant()
@@ -28,7 +29,7 @@ class TenantController extends Controller
         $client = new Client([]);
         $response = $client->request(
                     'GET',
-                    $this->url.'/tenants',
+                    $this->url.'/tenants'
                 );
         $responseBody = (string) $response->getBody();
         $response = json_decode($responseBody);
@@ -67,7 +68,10 @@ class TenantController extends Controller
         $this->validate($request,
                 [
                     'orderNo' => 'required',
-                    'domain'=>  'required',
+                    'domain'=>  'required||regex:/^[a-zA-Z0-9]+$/u',
+                ],
+                [
+                    'domain.regex' => 'Special characters are not allowed in domain name',
                 ]);
         try {
             $faveoCloud = '.faveocloud.com';
@@ -88,17 +92,19 @@ class TenantController extends Controller
                     'POST',
                     $this->url.'/tenants', ['form_params'=>$data, 'headers'=>['signature'=>$hashedSignature]]
                 );
+              
             $response = explode('{', (string) $response->getBody());
+            //   dump($response);
+            //   die();
             $response = '{'.$response[1];
 
             $result = json_decode($response);
-
             if ($result->status == 'fails') {
                 return ['status' => 'false', 'message' => $result->message];
             } elseif ($result->status == 'validationFailure') {
                 return ['status' => 'validationFailure', 'message' => $result->message];
             } else {
-                $userData = 'Your instance has been created successfully. <br> Email:'.' '.$user.'<br>'.'Password:'.$result->password;
+                $userData = $result->message.'.<br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password;
 
                 $setting = Setting::find(1);
                 $mail = new \App\Http\Controllers\Common\PhpMailController();
@@ -138,7 +144,7 @@ class TenantController extends Controller
         try {
             $keys = ThirdPartyApp::where('app_name', 'faveo_app_key')->select('app_key', 'app_secret')->first();
             $token = str_random(32);
-            $data = ['id' => $request->input('id'), 'app_key'=>$keys->app_key, 'token'=>$token, 'timestamp'=>time()];
+            $data = ['id' => $request->input('id'), 'app_key'=>$keys->app_key, 'deleteTenant'=> true, 'token'=>$token, 'timestamp'=>time()];
             $encodedData = http_build_query($data);
             $hashedSignature = hash_hmac('sha256', $encodedData, $keys->app_secret);
             $client = new Client([]);

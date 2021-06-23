@@ -661,7 +661,7 @@ main
                                         $scope.newObj['otp'] = x;
                                         $http({
                                             url: '{{url("otp/verify")}}',
-                                            method: "GET",
+                                            method: "POST",
                                             params: $scope.newObj
                                         }).success(function (data) {
                                            window.location.href = 'login';

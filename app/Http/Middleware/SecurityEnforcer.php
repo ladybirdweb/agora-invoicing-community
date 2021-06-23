@@ -3,7 +3,6 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Config;
 
 /**
  * Handles all security related headers.

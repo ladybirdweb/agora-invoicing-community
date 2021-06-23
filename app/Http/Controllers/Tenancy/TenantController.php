@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Tenancy;
 
-use Exception;
 use App\Http\Controllers\Controller;
 use App\Model\Common\Setting;
 use App\Model\Order\Order;
 use App\ThirdPartyApp;
+use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 
@@ -92,7 +92,7 @@ class TenantController extends Controller
                     'POST',
                     $this->url.'/tenants', ['form_params'=>$data, 'headers'=>['signature'=>$hashedSignature]]
                 );
-              
+
             $response = explode('{', (string) $response->getBody());
             //   dump($response);
             //   die();

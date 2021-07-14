@@ -32,8 +32,8 @@ class TenantController extends Controller
                     $this->url.'/tenants'
                 );
         $responseBody = (string) $response->getBody();
-        $response = json_decode($responseBody);
-
+         $response = json_decode($responseBody);
+        
         return \DataTables::of($response->message)
 
          ->addColumn('tenants', function ($model) {
@@ -59,6 +59,23 @@ class TenantController extends Controller
 
         // $tenants =
     }
+    
+    
+    private function postCurl($post_url, $post_info)
+    {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $post_url);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $post_info);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+        $result = curl_exec($ch);
+        curl_close($ch);
+
+        return $result;
+    }    
 
     /**
      * Logic for creating new tenant is handled here.
@@ -74,6 +91,7 @@ class TenantController extends Controller
                     'domain.regex' => 'Special characters are not allowed in domain name',
                 ]);
         try {
+                
             $faveoCloud = '.faveocloud.com';
             $licCode = Order::where('number', $request->input('orderNo'))->first()->serial_key;
             $keys = ThirdPartyApp::where('app_name', 'faveo_app_key')->select('app_key', 'app_secret')->first();
@@ -94,8 +112,7 @@ class TenantController extends Controller
                 );
 
             $response = explode('{', (string) $response->getBody());
-            //   dump($response);
-            //   die();
+             
             $response = '{'.$response[1];
 
             $result = json_decode($response);
@@ -104,13 +121,23 @@ class TenantController extends Controller
             } elseif ($result->status == 'validationFailure') {
                 return ['status' => 'validationFailure', 'message' => $result->message];
             } else {
+                $url = 'http://165.227.242.64/croncreate.php';
+                $tenant= $result->tenant;
+                $response = $this->postCurl($url,"tenant=$tenant&key=31ba9b727ee347d12ffcb891c064cf9032a8b1d62480690894870df05ebda47c");
+                $cronResult = json_decode($response)->status;
+                $cronFailureMessage = '';
+                if($cronResult == 'fails') {
+                    $cronFailureMessage = '<br><br>Cron creation failed. You mail fetching would not work without this. Please contact Faveo team.';
+                }
+                
+                
                 $userData = $result->message.'.<br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password;
 
                 $setting = Setting::find(1);
                 $mail = new \App\Http\Controllers\Common\PhpMailController();
                 $mail->sendEmail($setting->email, $user, $userData, 'New instance created');
 
-                return ['status' => 'true', 'message' => $result->message];
+                return ['status' => 'true', 'message' => $result->message.'.'.$cronFailureMessage];
             }
         } catch (Exception $e) {
             return ['status' => 'false', 'message' => $e->getMessage()];

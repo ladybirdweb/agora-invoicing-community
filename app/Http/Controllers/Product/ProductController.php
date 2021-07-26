@@ -398,6 +398,7 @@ class ProductController extends BaseProductController
             $licenseStatus = StatusSetting::pluck('license_status')->first();
             if ($licenseStatus) {
                 $addProductInLicensing = $this->licensing->editProduct($input['name'], $input['product_sku']);
+                
             }
             $product = $this->product->where('id', $id)->first();
             if ($request->hasFile('image')) {

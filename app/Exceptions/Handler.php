@@ -35,11 +35,11 @@ class Handler extends ExceptionHandler
      * @return void
      */
     public function report(Throwable $exception)
-    {
+    {    
         parent::report($exception);
-
         // Send unhandled exceptions to bugsnag
         $this->reportToBugsnag($exception);
+       
     }
 
     /**

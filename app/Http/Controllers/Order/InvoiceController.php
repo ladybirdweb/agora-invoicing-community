@@ -291,11 +291,12 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 $this->createInvoiceItems($invoice->id, $cart);
             }
             if (emailSendingStatus()) {
-                $this->sendMail($user_id, $invoice->id);
+               // $this->sendMail($user_id, $invoice->id);
             }
 
             return $invoice;
         } catch (\Exception $ex) {
+            dd($ex);
             app('log')->error($ex->getMessage());
 
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -403,6 +404,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
             return successResponse($result);
         } catch (\Exception $ex) {
+            dd($ex);
             app('log')->info($ex->getMessage());
 
             return errorResponse([$ex->getMessage()]);

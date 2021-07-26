@@ -15,7 +15,6 @@ use DateTimeZone;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 use Razorpay\Api\Api;
-use Redirect;
 
 class RazorpayController extends Controller
 {

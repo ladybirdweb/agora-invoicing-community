@@ -21,7 +21,7 @@
          /*
          * Installer Routes
          */
-        
+
         Route::group(['prefix' => 'install', 'as' => 'AgoraInstaller::', 'middleware' => ['isInstalled']], function () {
             Route::get('/', [
                 'as' => 'welcome',

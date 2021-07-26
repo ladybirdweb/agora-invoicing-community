@@ -106,16 +106,16 @@ Tenants
           method:"delete",
           data: {'id':id},
           success: function (data) {
-            console.log(data,data.success,data.message,'sdfdsf')
             if(data.success = true) {
               var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="fa fa-check"></i>Success! </strong>'+data.message+'!</div>';
               $('#success').show();
               $('#error').hide();
               $('#success').html(result);
               setInterval(function(){ 
-                $('#success').slideUp(5000); 
+                $('#success').slideUp(5000);
+                  location.reload();
             }, 3000);
-              location.reload();
+
             } else if(data.success = false) {
               $('#success').hide();
               $('#error').show();
@@ -123,7 +123,8 @@ Tenants
               $('#error').html(result);
               setInterval(function(){ 
                 $('#error').slideUp(5000); 
-            }, 3000);
+           location.reload(); },10000);
+
             }
              
           },error: function(data) {
@@ -132,8 +133,8 @@ Tenants
               var result =  '<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="fa fa-ban"></i>Whoops! </strong> Something went wrong<br>'+data.responseJSON.message+'!</div>';
               $('#error').html(result);
               setInterval(function(){ 
-                $('#error').slideUp(5000); 
-            }, 3000);
+                $('#error').slideUp(5000); location.reload();
+            }, 10000);
           }
 
         })

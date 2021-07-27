@@ -296,7 +296,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
             return $invoice;
         } catch (\Exception $ex) {
-            dd($ex);
             app('log')->error($ex->getMessage());
 
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -404,7 +403,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
             return successResponse($result);
         } catch (\Exception $ex) {
-            dd($ex);
             app('log')->info($ex->getMessage());
 
             return errorResponse([$ex->getMessage()]);

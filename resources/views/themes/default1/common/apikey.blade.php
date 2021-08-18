@@ -210,8 +210,7 @@ input:checked + .slider:before {
 
 
 
-                 <tr>
-                 
+                 <tr>   
                   <td class="col-md-2">Google reCAPTCHA</td>
                   <td class="col-md-2">
                     <label class="switch toggle_event_editing">

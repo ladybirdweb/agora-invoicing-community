@@ -26,6 +26,39 @@ Order
     }
 </style>
 @section('content')
+    
+
+        <!-- Modal for Localized License domain-->
+        
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                 <div class="modal-content">
+                  <div class="modal-header">
+                   <h5 class="modal-title" id="exampleModalLabel">Please Enter Your Domain That You Wish To Host</h5>
+                  </div>
+                <div class="modal-body">
+              <form method="GET" action="/uploadFile">
+                 {!! csrf_field() !!}
+                <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Domain Name:</label>
+                <input type="text" class="form-control" id="recipient-name" placeholder="https://faveo.helpdesk.com" name="domain" value="" required>
+                {{Form::hidden('code',  $order->serial_key)}}
+                {{Form::hidden('expiry', $order->subscription->ends_at)}}
+                {{Form::hidden('orderNo', $order->number)}}
+                {{Form::hidden('updates', $order->subscription->update_ends_at)}}
+                {{Form::hidden('support_expiry', $order->subscription->support_ends_at)}}  
+                <br>
+                <div class="modal-footer">
+                <button type="button" id="close" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i>&nbsp;Close</button>
+                <button type="submit" id="domainSave" class="done btn btn-primary"><i class="fas fa-save"></i>&nbsp;Done</button>
+            </div>
+                </div>  
+             </form>
+           </div>
+           </div>
+           </div>
+           </div>
+
     <div class="card card-secondary card-outline">
 <div class="row">
 <div class="col-md-12">
@@ -206,17 +239,32 @@ Order
                                                            </button>
                                                        @endif
                                                    </td>
+                                               </tr>  
+                                               <tr>
+                                                   <td><b>License Mode:</b></td>
+                                                   <td class="brtags">    
+                                                    <a href = '/choose?choose=File&orderNo={{$order->number}}'><button class="btn btn-danger mb-2 btn-sm">Allow Localized License</button></a>
+                                                    <i class="fa fa-info ml-1" title="After this button is clicked the Client will see two buttons to download on client panel"></i>
+                                                   
+                                                     
+                                                    <a href="/downloadAdmin?orderNo={{$order->number}}"><button class="btn btn-danger mb-2 btn-sm ml-3">Download License File</button></a>
+                                                    <i class="fa fa-info ml-1" title="Admin can download license file for the client"></i>
+
+                                                    <a href="{{url('downloadPrivate/'.$order->number)}}"><button class="btn btn-danger mb-2 btn-sm ml-3">Download License Key</button></a>
+
+                                                   <i class="fa fa-info ml-1" title="Admin can download private license key for the client"></i>
+
+
+                                                <button class="btn btn-danger mb-2 btn-sm ml-3" id="defaultModalLabel" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">Enter Domain & Download License File</button>
+                                                <i class="fa fa-info ml-1" title="Admin can Enter the domain after that a file is downloaded"></i>
+                                               </td>
                                                </tr>
 
                                                </tbody>
                                            </table>
-
-
-
                                        </div>
-                                       </div>
+                                    </div>
                                    </div>
-
                                </div>
 
            @if($licenseStatus)

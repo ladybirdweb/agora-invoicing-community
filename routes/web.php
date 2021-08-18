@@ -1,5 +1,7 @@
 <?php
-
+use App\Http\Controllers\License\LocalizedLicenseController;
+use App\Http\Controllers\License\EncryptDecryptController;
+use Illuminate\Http\Request;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -109,6 +111,7 @@
             Route::get('get-my-subscriptions', 'Front\ClientController@getSubscriptions');
             Route::get('my-invoice/{id}', 'Front\ClientController@getInvoice');
             Route::get('my-order/{id}', 'Front\ClientController@getOrder');
+            Route::get('/uploadFile','License\LocalizedLicenseController@storeFile');
             Route::get('my-profile', 'Front\ClientController@profile');
             Route::patch('my-profile', 'Front\ClientController@postProfile');
             Route::patch('my-password', 'Front\ClientController@postPassword');
@@ -119,6 +122,11 @@
 
             // Post Route For Make Razorpay Payment Request
             Route::post('payment/{invoice}', 'RazorpayController@payment')->name('payment');
+
+            Route::get('/downloadFile', [LocalizedLicenseController::class,'downloadFile'])->name('event.rsvp')->middleware('signed');
+            Route::get('/downloadAdmin',[LocalizedLicenseController::class,'downloadFile']);
+            Route::get('/request',[LocalizedLicenseController::class,'tempOrderLink']);
+            Route::get('downloadPrivate/{orderNo}',[LocalizedLicenseController::class,'downloadPrivate']);
 
             /*
              * 2FA Routes
@@ -329,6 +337,11 @@
             Route::post('edit-support-expiry', 'Order\BaseOrderController@editSupportExpiry');
             Route::post('edit-installation-limit', 'Order\BaseOrderController@editInstallationLimit');
             Route::get('get-installation-details/{orderId}', 'Order\OrderController@getInstallationDetails');
+            Route::get('/choose','License\LocalizedLicenseController@choose');
+            Route::get('LocalizedLicense', function(){
+
+                  return view('themes\default1\common\Localized', ['name' => 'James']);
+            });
             /*
              * Groups
              */
@@ -489,7 +502,9 @@
             Route::get('view/tenant', 'Tenancy\TenantController@viewTenant')->middleware('admin');
             Route::get('get-tenants', 'Tenancy\TenantController@getTenants')->name('get-tenants')->middleware('admin');
             Route::delete('delete-tenant', 'Tenancy\TenantController@destroyTenant')->name('delete-tenant')->middleware('admin');
+
             Route::post('cloud-details', 'Tenancy\TenantController@saveCloudDetails')->name('cloud-details')->middleware('admin');
+
 
             /*
              * Api

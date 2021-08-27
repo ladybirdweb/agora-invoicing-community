@@ -450,7 +450,7 @@ User
                                                 container : 'body'
                                               });
                                             });
-                                        $('.loader').css('display', 'none');
+                                        $('.loader').css(   'display', 'none');
                                     },
                                     "fnPreDrawCallback": function(oSettings, json) {
                                         $('.loader').css('display', 'block');

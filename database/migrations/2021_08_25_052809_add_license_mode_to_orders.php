@@ -14,7 +14,7 @@ class AddLicenseModeToOrders extends Migration
     public function up()
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->string('license_mode',125)->default('Database');
+            $table->string('license_mode', 125)->default('Database');
         });
     }
 

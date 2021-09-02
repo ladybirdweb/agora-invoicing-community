@@ -35,7 +35,6 @@ active
                             <th>Order No</th>
                             <th>Version</th>
                             <th>Updates Expiry Date</th>
-                            
                             <th>Action</th>
                         </tr></thead>
 

@@ -345,7 +345,6 @@ class ClientController extends BaseClientController
                             })
                             ->addColumn('product_name', function ($model) {
                                 return $model->product_name;
-                            
                             })
                             ->addColumn('number', function ($model) {
                                 return '<a href='.url('my-order/'.$model->id).'>'.$model->number.'</a>';

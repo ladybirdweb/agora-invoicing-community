@@ -1,7 +1,8 @@
 <?php
+
 use App\Http\Controllers\License\LocalizedLicenseController;
-use App\Http\Controllers\License\EncryptDecryptController;
 use Illuminate\Http\Request;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -111,7 +112,7 @@ use Illuminate\Http\Request;
             Route::get('get-my-subscriptions', 'Front\ClientController@getSubscriptions');
             Route::get('my-invoice/{id}', 'Front\ClientController@getInvoice');
             Route::get('my-order/{id}', 'Front\ClientController@getOrder');
-            Route::get('uploadFile','License\LocalizedLicenseController@storeFile');
+            Route::get('uploadFile', 'License\LocalizedLicenseController@storeFile');
             Route::get('my-profile', 'Front\ClientController@profile');
             Route::patch('my-profile', 'Front\ClientController@postProfile');
             Route::patch('my-password', 'Front\ClientController@postPassword');
@@ -124,10 +125,10 @@ use Illuminate\Http\Request;
             Route::post('payment/{invoice}', 'RazorpayController@payment')->name('payment');
 
             Route::get('downloadFile', 'License\LocalizedLicenseController@downloadFile')->name('event.rsvp')->middleware('signed');
-            Route::get('downloadPrivate/{orderNo}','License\LocalizedLicenseController@downloadPrivate');
-            Route::get('LocalizedLicense/downloadLicense/{fileName}','License\LocalizedLicenseController@downloadFileAdmin');
-            Route::get('request','License\LocalizedLicenseController@tempOrderLink');
-            Route::get('LocalizedLicense/downloadPrivateKey/{fileName}','License\LocalizedLicenseController@downloadPrivateKeyAdmin');
+            Route::get('downloadPrivate/{orderNo}', 'License\LocalizedLicenseController@downloadPrivate');
+            Route::get('LocalizedLicense/downloadLicense/{fileName}', 'License\LocalizedLicenseController@downloadFileAdmin');
+            Route::get('request', 'License\LocalizedLicenseController@tempOrderLink');
+            Route::get('LocalizedLicense/downloadPrivateKey/{fileName}', 'License\LocalizedLicenseController@downloadPrivateKeyAdmin');
 
             /*
              * 2FA Routes
@@ -338,11 +339,11 @@ use Illuminate\Http\Request;
             Route::post('edit-support-expiry', 'Order\BaseOrderController@editSupportExpiry');
             Route::post('edit-installation-limit', 'Order\BaseOrderController@editInstallationLimit');
             Route::get('get-installation-details/{orderId}', 'Order\OrderController@getInstallationDetails');
-            Route::post('choose','License\LocalizedLicenseController@choose');
-            Route::get('LocalizedLicense', function(){
-                  return view('themes.default1.common.Localized');
+            Route::post('choose', 'License\LocalizedLicenseController@choose');
+            Route::get('LocalizedLicense', function () {
+                return view('themes.default1.common.Localized');
             });
-            Route::get('LocalizedLicense/delete/{fileName}','License\LocalizedLicenseController@deleteFile');
+            Route::get('LocalizedLicense/delete/{fileName}', 'License\LocalizedLicenseController@deleteFile');
             //Route::post('LocalizedLicense/updateLicenseFile/{fileName}',[LocalizedLicenseController::class,'fileEdit']);
 
             /*
@@ -505,7 +506,7 @@ use Illuminate\Http\Request;
             Route::get('view/tenant', 'Tenancy\TenantController@viewTenant')->middleware('admin');
             Route::get('get-tenants', 'Tenancy\TenantController@getTenants')->name('get-tenants')->middleware('admin');
             Route::delete('delete-tenant', 'Tenancy\TenantController@destroyTenant')->name('delete-tenant')->middleware('admin');
-            
+
             /*
              * Api
              */

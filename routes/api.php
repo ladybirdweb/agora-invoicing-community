@@ -1,9 +1,9 @@
 <?php
 
 //use App\Http\Controllers\License\LicenseController;
+use App\Http\Controllers\License\EncryptDecryptController;
 use App\Http\Controllers\License\LicenseController;
 use App\Http\Controllers\License\LocalizedLicenseController;
-use App\Http\Controllers\License\EncryptDecryptController;
 use Illuminate\Http\Request;
 
 /*
@@ -18,8 +18,6 @@ use Illuminate\Http\Request;
 */
 
 //Route::get('/license/{first_name}/{last_name}/{email}',[LicenseController::class,'addNewProduct');
-
-
 
 /*Route::get('/show',[LocalizedLicenseController::class,'showAllFiles']);
 Route::post('/edit/{fileName}',[LocalizedLicenseController::class,'fileEdit']);

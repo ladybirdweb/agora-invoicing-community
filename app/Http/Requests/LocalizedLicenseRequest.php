@@ -24,7 +24,7 @@ class LocalizedLicenseRequest extends FormRequest
     public function rules()
     {
         return [
-            'domain' => 'required|url'
+            'domain' => 'required|url',
         ];
     }
 }

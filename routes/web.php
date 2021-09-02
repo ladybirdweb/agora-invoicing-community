@@ -111,7 +111,7 @@ use Illuminate\Http\Request;
             Route::get('get-my-subscriptions', 'Front\ClientController@getSubscriptions');
             Route::get('my-invoice/{id}', 'Front\ClientController@getInvoice');
             Route::get('my-order/{id}', 'Front\ClientController@getOrder');
-            Route::get('/uploadFile','License\LocalizedLicenseController@storeFile');
+            Route::get('uploadFile','License\LocalizedLicenseController@storeFile');
             Route::get('my-profile', 'Front\ClientController@profile');
             Route::patch('my-profile', 'Front\ClientController@postProfile');
             Route::patch('my-password', 'Front\ClientController@postPassword');
@@ -123,10 +123,11 @@ use Illuminate\Http\Request;
             // Post Route For Make Razorpay Payment Request
             Route::post('payment/{invoice}', 'RazorpayController@payment')->name('payment');
 
-            Route::get('/downloadFile', [LocalizedLicenseController::class,'downloadFile'])->name('event.rsvp')->middleware('signed');
-            Route::get('/downloadAdmin',[LocalizedLicenseController::class,'downloadFile']);
-            Route::get('/request',[LocalizedLicenseController::class,'tempOrderLink']);
-            Route::get('downloadPrivate/{orderNo}',[LocalizedLicenseController::class,'downloadPrivate']);
+            Route::get('downloadFile', 'License\LocalizedLicenseController@downloadFile')->name('event.rsvp')->middleware('signed');
+            Route::get('downloadPrivate/{orderNo}','License\LocalizedLicenseController@downloadPrivate');
+            Route::get('LocalizedLicense/downloadLicense/{fileName}','License\LocalizedLicenseController@downloadFileAdmin');
+            Route::get('request','License\LocalizedLicenseController@tempOrderLink');
+            Route::get('LocalizedLicense/downloadPrivateKey/{fileName}','License\LocalizedLicenseController@downloadPrivateKeyAdmin');
 
             /*
              * 2FA Routes
@@ -337,11 +338,13 @@ use Illuminate\Http\Request;
             Route::post('edit-support-expiry', 'Order\BaseOrderController@editSupportExpiry');
             Route::post('edit-installation-limit', 'Order\BaseOrderController@editInstallationLimit');
             Route::get('get-installation-details/{orderId}', 'Order\OrderController@getInstallationDetails');
-            Route::get('/choose','License\LocalizedLicenseController@choose');
+            Route::post('choose','License\LocalizedLicenseController@choose');
             Route::get('LocalizedLicense', function(){
-
-                  return view('themes\default1\common\Localized', ['name' => 'James']);
+                  return view('themes.default1.common.Localized');
             });
+            Route::get('LocalizedLicense/delete/{fileName}','License\LocalizedLicenseController@deleteFile');
+            //Route::post('LocalizedLicense/updateLicenseFile/{fileName}',[LocalizedLicenseController::class,'fileEdit']);
+
             /*
              * Groups
              */

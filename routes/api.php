@@ -21,12 +21,12 @@ use Illuminate\Http\Request;
 
 
 
-Route::get('/show',[LocalizedLicenseController::class,'showAllFiles']);
-Route::post('/edit',[LocalizedLicenseController::class,'fileEdit']);
+/*Route::get('/show',[LocalizedLicenseController::class,'showAllFiles']);
+Route::post('/edit/{fileName}',[LocalizedLicenseController::class,'fileEdit']);
 Route::post('/delete',[LocalizedLicenseController::class,'deleteFile']);
 //Route::post('encrypt',[EncryptDecryptController::class,'encrypt']);
-Route::post('decrypt',[EncryptDecryptController::class,'decrypt']);
-//Route::post('generate',[EncryptDecryptController::class,'generate']);
+Route::post('/decrypt',[EncryptDecryptController::class,'decrypt']);
+//Route::post('generate',[EncryptDecryptController::class,'generate']);*/
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });

@@ -40,11 +40,11 @@ active
                    <h5 class="modal-title" id="exampleModalLabel">Please Enter Your Domain That You Wish To Host</h5>
                   </div>
                 <div class="modal-body">
-              <form method="GET" action="/uploadFile">
+              <form method="GET" action="{{url('uploadFile')}}">
                  {!! csrf_field() !!}
                 <div class="form-group">
                 <label for="recipient-name" class="col-form-label">Domain Name:</label>
-                <input type="text" class="form-control" id="recipient-name" placeholder="https://faveo.helpdesk.com" name="domain" value="" required>
+                <input type="text" class="form-control" id="recipient-name" placeholder="https://faveo.helpdesk.com" name="domain" value="">
                 {{Form::hidden('code',  $order->serial_key)}}
                 {{Form::hidden('expiry', $order->subscription->ends_at)}}
                 {{Form::hidden('orderNo', $order->number)}}
@@ -107,14 +107,13 @@ active
 
                         @if($order->license_mode=='File')
                         <tr>
-                            <td><b>License Mode:</b></td>
+                            <td><b>Localized License:</b></td>
                             <td>
-                            <button class="btn btn-danger mb-2 btn-sm" id="defaultModalLabel" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">Download License File</button>
+                            <button class="btn btn-primary mb-2 btn-sm" id="defaultModalLabel" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">Download License File</button>
                             </td>
-                            <td><a href="{{url('downloadPrivate/'.$order->number)}}"><button class="btn btn-danger mb-2 btn-sm">Download License Key</button></a></td>  
-                            <td><i class="fa fa-info" title="It is mandatory to download both files inorder for file system licensing to work"></i></td>
-
-
+                            <td><a href="{{url('downloadPrivate/'.$order->number)}}"><button class="btn btn-primary mb-2 btn-sm">Download License Key</button></a>
+                            <i class="fa fa-info ml-2" title="It is mandatory to download both files inorder for licensing to work. Please place these files in Public\Script\Signature in faveo." {!!tooltip('Edit')!!} </i>
+                            </td>  
                         </tr>
                        @endif
    

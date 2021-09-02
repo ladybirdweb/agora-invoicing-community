@@ -4,6 +4,7 @@ namespace App\Http\Controllers\License;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Requests\LocalizedLicenseRequest;
 use Illuminate\Http\Response;
 use App\Model\Order\Order;
 use Illuminate\Support\Facades\Storage;
@@ -18,23 +19,41 @@ class LocalizedLicenseController extends Controller
 
 
      /**
-      * Downloads the license file  
-      * */
+     * Downloads the license file  
+     * */
      public function downloadFile(Request $request)
     {
           $orderNo=$request->get('orderNo');
           $fileName = "faveo-license-{".$orderNo."}.txt";
           $filePath = storage_path('app/public/'.$fileName);
           return response()->download($filePath);
-
     }
 
+     /**
+     * Downloads the license file through admin 
+     * */
+     public function downloadFileAdmin($fileName)
+    {
+          $filePath = storage_path('app/public/'.$fileName);
+          return response()->download($filePath);
 
+    }
     /**
      * Downloads the private key for the license 
      * */
     public function downloadPrivate($orderNo)
     {
+        $fileName = storage_path('app/public/privateKey-'.$orderNo.'.txt');
+        return response()->download($fileName);
+    }
+
+    /**
+     * Downloads the private key for the license through admin panel
+     * */
+    public function downloadPrivateKeyAdmin($fileName)
+    {
+        $value = explode("}",$fileName);
+        $orderNo = substr($value[0], 15);
         $fileName = storage_path('app/public/privateKey-'.$orderNo.'.txt');
         return response()->download($fileName);
     }
@@ -46,19 +65,27 @@ class LocalizedLicenseController extends Controller
     {
         $chose = $request->input('choose');
         $orderNo = $request->input('orderNo');
-        if ($chose == 'File')
+        if ($chose == 1)
         {
             $encrypt = new EncryptDecryptController();
             $encrypt->generateKeys($orderNo);
             Order::where('number',$orderNo)->update(['license_mode' => 'File']);
-            return redirect()->back()->with('success', Lang::get('Private and Public Keys generated for this order number: '.$orderNo));
+
+            return response()->json(['success'=>'Status change successfully.']);//return redirect()->back()->with('success', Lang::get('Private and Public Keys generated for this order number: '.$orderNo));
         }
         else{
-            exit();
+             Order::where('number',$orderNo)->update(['license_mode' => 'Database']);
+             Storage::disk('public')->delete('publicKey-'.$orderNo.'.txt');
+             Storage::disk('public')->delete('privateKey-'.$orderNo.'.txt');
+             Storage::disk('public')->delete('faveo-license-{'.$orderNo.'}.txt');
+             return response()->json(['success'=>'Status change successfully.']);//return redirect()->back()->with('success',Lang::get('Reverted back to database license mode' .$orderNo));
         }
     }   
 
-    public function storeFile(Request $request)
+    /**
+    * Stores the license file after the client has entered a domain and downloads the license 
+    * */
+    public function storeFile(LocalizedLicenseRequest $request)
     {  
         $licenseVal =  strtotime($request->input('expiry')) > 1 ? $request->input('expiry') : '--';
         $updateVal = strtotime($request->input('updates')) > 1 ? $request->input('updates') : '--';
@@ -85,8 +112,9 @@ class LocalizedLicenseController extends Controller
          }
          else{
             $supportExpiry = Carbon::parse($supportVal)->format('Y-m-d'); 
-         }      
-        $domain = $request->input('domain');
+         }
+        
+        $domain = $request->input('domain');  
         $licenseCode = $request->input('code'); 
         $orderNo = $request->input('orderNo');
 
@@ -102,6 +130,10 @@ class LocalizedLicenseController extends Controller
         return Redirect::to($link);
     }
 
+    
+    /**
+    * Generates a temporary link to download the license file with a time constraint.
+    * */
     public function tempOrderLink($orderNo)
     {
      $url=URL::temporarySignedRoute('event.rsvp', now()->addSeconds(30), [
@@ -110,17 +142,16 @@ class LocalizedLicenseController extends Controller
      return $url;
     }
 
-    public function showAllFiles()
-    {
-       $filesArray=Storage::disk('public')->files();
-       return view('Localized',compact($filesArray));
-    }
 
-  public function fileEdit(Request $request)
+   /**
+   * Edits the license details without showing the pre-existing license data
+   * */
+  /*public function fileEdit(Request $request,$fileName)
   {
-    $orderNo = $request->get('orderNo');
+    $value = explode("}",$fileName);
+    $orderNo = substr($value[0], 15);
     $fileName = "faveo-license-{".$orderNo."}.txt";
-
+    dd($orderNo,$fileName);
     extract($this->getLicenseData($fileName,$orderNo));
     
     if(!is_null($request->get('root_url')))
@@ -152,14 +183,17 @@ class LocalizedLicenseController extends Controller
      $data=$encrypt->encrypt($fileName,$orderNo);
      Storage::disk('public')->put($fileName,$data);  
      @fclose($handle);
-  
-  }
+     return redirect()->back()->with('success', Lang::get('License data is updated'.$orderNo));
+  }*/
 
-  public function deleteFile(Request $request)
+  /**
+   * Deletes the license file 
+   * */
+  public function deleteFile($fileName)
   {
-    $orderNo=$request->get('orderNo');
-    $fileName = "faveo-license-{".$orderNo."}.txt";
+
     Storage::disk('public')->delete($fileName);
+    return redirect()->back()->with('success', Lang::get('License File is deleted '.$fileName));
   }
 
 

@@ -10,7 +10,9 @@ use Illuminate\Http\Request;
 
 class EncryptDecryptController extends Controller
 {
-    
+    /**
+     * Encrypts the license data with the generated public key.
+     * */ 
     public function encrypt($data,$orderNumber)
     {
         
@@ -24,7 +26,9 @@ class EncryptDecryptController extends Controller
         return $data;
     }
 
-
+     /**
+     * Decrypts the license data with the generated private key.
+     * */ 
     public function decrypt($orderNo)
     { 
         $privkey = Storage::disk('public')->get('privateKey-'.$orderNo.'.txt');
@@ -38,7 +42,9 @@ class EncryptDecryptController extends Controller
         return $data;
     }
 
-
+   /**
+   * Generates the public key and private key for a particular order.
+   * */ 
    public function generateKeys($orderNo)
    {
      $config = array(  

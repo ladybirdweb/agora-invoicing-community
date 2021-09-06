@@ -53,7 +53,9 @@ active
                 <br>
                 <div class="modal-footer">
                 <button type="button" id="close" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i>&nbsp;Close</button>
+                 @if(!Storage::disk('public')->exists('faveo-license-{'.$order->number.'}.txt'))
                 <button type="submit" id="domainSave" class="done btn btn-primary"><i class="fas fa-save"></i>&nbsp;Done</button>
+                @endif
             </div>
                 </div>  
              </form>

@@ -69,10 +69,17 @@ class RenewController extends BaseRenewController
             $sub->update_ends_at = $updatesExpiry;
             $sub->support_ends_at = $supportExpiry;
             $sub->save();
+            
+            if(Order::where('id',$sub->order_id)->value('license_mode') == 'File'){
+               Order::where('id',$sub->order_id)->update(['is_downloadable'=> 0]);
+            }
+            else
+            {
             $licenseStatus = StatusSetting::pluck('license_status')->first();
             if ($licenseStatus == 1) {
                 $this->editDateInAPL($sub, $updatesExpiry, $licenseExpiry, $supportExpiry);
             }
+        }
 
             $this->invoiceBySubscriptionId($id, $planid, $cost, $currency);
 
@@ -89,7 +96,6 @@ class RenewController extends BaseRenewController
             $invoice->processing_fee = $invoice->processing_fee;
             $invoice->status = 'success';
             $invoice->save();
-
             $id = Session::get('subscription_id');
             $planid = Session::get('plan_id');
             $plan = $this->plan->find($planid);
@@ -103,11 +109,15 @@ class RenewController extends BaseRenewController
             $sub->update_ends_at = $updatesExpiry;
             $sub->support_ends_at = $supportExpiry;
             $sub->save();
-
+            if(Order::where('id',$sub->order_id)->value('license_mode') == 'File'){
+               Order::where('id',$sub->order_id)->update(['is_downloadable' => 0]);
+            }
+            else{
             $licenseStatus = StatusSetting::pluck('license_status')->first();
             if ($licenseStatus == 1) {
                 $this->editDateInAPL($sub, $updatesExpiry, $licenseExpiry, $supportExpiry);
             }
+        }
             $this->removeSession();
         } catch (Exception $ex) {
             throw new Exception($ex->getMessage());

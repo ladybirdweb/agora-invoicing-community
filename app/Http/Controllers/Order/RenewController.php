@@ -69,17 +69,15 @@ class RenewController extends BaseRenewController
             $sub->update_ends_at = $updatesExpiry;
             $sub->support_ends_at = $supportExpiry;
             $sub->save();
-            
-            if(Order::where('id',$sub->order_id)->value('license_mode') == 'File'){
-               Order::where('id',$sub->order_id)->update(['is_downloadable'=> 0]);
+
+            if (Order::where('id', $sub->order_id)->value('license_mode') == 'File') {
+                Order::where('id', $sub->order_id)->update(['is_downloadable'=> 0]);
+            } else {
+                $licenseStatus = StatusSetting::pluck('license_status')->first();
+                if ($licenseStatus == 1) {
+                    $this->editDateInAPL($sub, $updatesExpiry, $licenseExpiry, $supportExpiry);
+                }
             }
-            else
-            {
-            $licenseStatus = StatusSetting::pluck('license_status')->first();
-            if ($licenseStatus == 1) {
-                $this->editDateInAPL($sub, $updatesExpiry, $licenseExpiry, $supportExpiry);
-            }
-        }
 
             $this->invoiceBySubscriptionId($id, $planid, $cost, $currency);
 
@@ -109,15 +107,14 @@ class RenewController extends BaseRenewController
             $sub->update_ends_at = $updatesExpiry;
             $sub->support_ends_at = $supportExpiry;
             $sub->save();
-            if(Order::where('id',$sub->order_id)->value('license_mode') == 'File'){
-               Order::where('id',$sub->order_id)->update(['is_downloadable' => 0]);
+            if (Order::where('id', $sub->order_id)->value('license_mode') == 'File') {
+                Order::where('id', $sub->order_id)->update(['is_downloadable' => 0]);
+            } else {
+                $licenseStatus = StatusSetting::pluck('license_status')->first();
+                if ($licenseStatus == 1) {
+                    $this->editDateInAPL($sub, $updatesExpiry, $licenseExpiry, $supportExpiry);
+                }
             }
-            else{
-            $licenseStatus = StatusSetting::pluck('license_status')->first();
-            if ($licenseStatus == 1) {
-                $this->editDateInAPL($sub, $updatesExpiry, $licenseExpiry, $supportExpiry);
-            }
-        }
             $this->removeSession();
         } catch (Exception $ex) {
             throw new Exception($ex->getMessage());

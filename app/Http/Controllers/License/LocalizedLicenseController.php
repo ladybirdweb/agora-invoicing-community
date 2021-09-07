@@ -7,7 +7,6 @@ use App\Http\Requests\LocalizedLicenseRequest;
 use App\Model\Order\Order;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;

@@ -38,11 +38,11 @@ trait UpdateDates
                     $this->editUpdateDateInAPL($request->input('orderid'), $date, $licenseSupportExpiry);
                 }
             }
-            
-            if(Order::where('id',$request->get('orderid'))->value('license_mode')== 'File')
-            {
-                  Order::where('id',$request->get('orderid'))->update(['is_downloadable'=> 0]);
+
+            if (Order::where('id', $request->get('orderid'))->value('license_mode') == 'File') {
+                Order::where('id', $request->get('orderid'))->update(['is_downloadable'=> 0]);
             }
+
             return ['message'=>'success', 'update'=>'Updates Expiry Date Updated Successfully'];
         } catch (\Exception $ex) {
             $result = [$ex->getMessage()];
@@ -94,9 +94,8 @@ trait UpdateDates
                 }
             }
 
-            if(Order::where('id',$request->get('orderid'))->value('license_mode')== 'File')
-            {
-            Order::where('id',$request->get('orderid'))->update(['is_downloadable'=> 0]);
+            if (Order::where('id', $request->get('orderid'))->value('license_mode') == 'File') {
+                Order::where('id', $request->get('orderid'))->update(['is_downloadable'=> 0]);
             }
 
             return ['message'=>'success', 'update'=>'License Expiry Date Updated Successfully'];
@@ -149,11 +148,11 @@ trait UpdateDates
                     $this->editSupportDateInAPL($request->input('orderid'), $date, $updatesLicenseExpiry);
                 }
             }
-            
-            if(Order::where('id',$request->get('orderid'))->value('license_mode')== 'File')
-            {
-               Order::where('id',$request->get('orderid'))->update(['is_downloadable'=> 0]);
+
+            if (Order::where('id', $request->get('orderid'))->value('license_mode') == 'File') {
+                Order::where('id', $request->get('orderid'))->update(['is_downloadable'=> 0]);
             }
+
             return ['message'=>'success', 'update'=>'Support Expiry Date Updated Successfully'];
         } catch (\Exception $ex) {
             $result = [$ex->getMessage()];

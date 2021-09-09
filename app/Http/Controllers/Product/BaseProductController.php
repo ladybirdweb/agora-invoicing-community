@@ -106,8 +106,8 @@ class BaseProductController extends ExtendedBaseProductController
     /**
      * Get the Subscription and Price Based on the Product Selected while generating Invoice (Admin Panel).
      *
-     * @param int     $productid
-     * @param Request $request
+     * @param  int  $productid
+     * @param  Request  $request
      *
      * @return [type]
      */
@@ -298,7 +298,7 @@ class BaseProductController extends ExtendedBaseProductController
      *
      * @date   2019-01-11T00:18:49+0530
      *
-     * @param int $productid
+     * @param  int  $productid
      *
      * @return bool
      */
@@ -313,7 +313,7 @@ class BaseProductController extends ExtendedBaseProductController
      * Checks Permission for Incresing the no. of Agents/Quantity in Cart.
      *
      *
-     * @param int $productid The id of the Product added to the cart
+     * @param  int  $productid  The id of the Product added to the cart
      *
      * @return array The permissons for Agents and Quantity
      */

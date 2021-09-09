@@ -195,7 +195,7 @@ class DashboardController extends Controller
 
     /**
      * List of products sold in past $noOfDays days. If no parameter is passed, it will give all products.
-     * @param int $noOfDays
+     * @param  int  $noOfDays
      * @return \Illuminate\Database\Eloquent\Collection
      * @throws \Exception
      */
@@ -246,7 +246,7 @@ class DashboardController extends Controller
 
     /**
      * List of orders expiring in next 30 days.
-     * @param bool $past30Days
+     * @param  bool  $past30Days
      * @return \Illuminate\Database\Eloquent\Collection
      * @throws \Exception
      */

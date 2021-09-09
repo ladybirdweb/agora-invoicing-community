@@ -78,8 +78,8 @@ class SetupTestEnv extends Command
 
     /**
      * Creates an env file if not exists already.
-     * @param  string $dbUsername
-     * @param  string $dbPassword
+     * @param  string  $dbUsername
+     * @param  string  $dbPassword
      * @return null
      */
     private function createEnv(string $dbUsername, string $dbPassword, string $dbName)
@@ -105,8 +105,8 @@ class SetupTestEnv extends Command
 
     /**
      * Sets up DB config for testing.
-     * @param  string $dbUsername  mysql username
-     * @param  string $dbPassword  mysql password
+     * @param  string  $dbUsername  mysql username
+     * @param  string  $dbPassword  mysql password
      * @return null
      */
     private function setupConfig($dbUsername, $dbPassword, $port = '', $dbengine = '')
@@ -122,7 +122,7 @@ class SetupTestEnv extends Command
 
     /**
      * Creates an empty DB with given name.
-     * @param string $dbName    name of the DB
+     * @param  string  $dbName  name of the DB
      * @return null
      */
     private function createDB(string $dbName)

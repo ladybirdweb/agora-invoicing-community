@@ -10,8 +10,8 @@ class JsonDecoder
     /**
      * Decodes a JSON string to stdObject or associative array.
      *
-     * @param string $string
-     * @param bool   $asArray
+     * @param  string  $string
+     * @param  bool  $asArray
      *
      * @return array|object
      */

@@ -90,7 +90,7 @@ class CurrencyController extends Controller
     /**
      * Get the Color of the button when the currency is allowed to show on dashboard.
      *
-     * @param string $id Currrency id
+     * @param  string  $id  Currrency id
      *
      * @return string
      */
@@ -166,7 +166,7 @@ class CurrencyController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param int $id
+     * @param  int  $id
      *
      * @return \Response
      */
@@ -178,7 +178,7 @@ class CurrencyController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param int $id
+     * @param  int  $id
      *
      * @return \Response
      */
@@ -190,7 +190,7 @@ class CurrencyController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param int $id
+     * @param  int  $id
      *
      * @return \Response
      */
@@ -217,7 +217,7 @@ class CurrencyController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param int $id
+     * @param  int  $id
      *
      * @return \Response
      */

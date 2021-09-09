@@ -16,9 +16,9 @@ class Request
     /**
      * Constructor.
      *
-     * @param string     $httpMethod
-     * @param string     $httpUrl
-     * @param array|null $parameters
+     * @param  string  $httpMethod
+     * @param  string  $httpUrl
+     * @param  array|null  $parameters
      */
     public function __construct($httpMethod, $httpUrl, array $parameters = [])
     {
@@ -31,11 +31,11 @@ class Request
     /**
      * pretty much a helper function to set up the request.
      *
-     * @param Consumer $consumer
-     * @param Token    $token
-     * @param string   $httpMethod
-     * @param string   $httpUrl
-     * @param array    $parameters
+     * @param  Consumer  $consumer
+     * @param  Token  $token
+     * @param  string  $httpMethod
+     * @param  string  $httpUrl
+     * @param  array  $parameters
      *
      * @return Request
      */
@@ -62,8 +62,8 @@ class Request
     }
 
     /**
-     * @param string $name
-     * @param string $value
+     * @param  string  $name
+     * @param  string  $value
      */
     public function setParameter($name, $value)
     {
@@ -226,9 +226,9 @@ class Request
     }
 
     /**
-     * @param SignatureMethod $signatureMethod
-     * @param Consumer        $consumer
-     * @param Token           $token
+     * @param  SignatureMethod  $signatureMethod
+     * @param  Consumer  $consumer
+     * @param  Token  $token
      */
     public function signRequest(SignatureMethod $signatureMethod, Consumer $consumer, Token $token = null)
     {
@@ -238,9 +238,9 @@ class Request
     }
 
     /**
-     * @param SignatureMethod $signatureMethod
-     * @param Consumer        $consumer
-     * @param Token           $token
+     * @param  SignatureMethod  $signatureMethod
+     * @param  Consumer  $consumer
+     * @param  Token  $token
      *
      * @return string
      */

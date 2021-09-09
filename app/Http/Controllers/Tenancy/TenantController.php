@@ -3,17 +3,18 @@
 namespace App\Http\Controllers\Tenancy;
 
 use App\Http\Controllers\Controller;
+use App\Model\Common\FaveoCloud;
 use App\Model\Common\Setting;
 use App\Model\Order\Order;
 use App\ThirdPartyApp;
 use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
-use App\Model\Common\FaveoCloud;
 
 class TenantController extends Controller
 {
     private $cloud;
+
     public function __construct(Client $client, FaveoCloud $cloud)
     {
         $this->client = $client;
@@ -25,6 +26,7 @@ class TenantController extends Controller
     public function viewTenant()
     {
         $cloud = $this->cloud;
+
         return view('themes.default1.tenant.index', compact('cloud'));
     }
 
@@ -184,6 +186,7 @@ class TenantController extends Controller
             $response = json_decode($responseBody);
             if ($response->status == 'success') {
                 $this->deleteCronForTenant($request->input('id'));
+
                 return successResponse($response->message);
             } else {
                 return errorResponse($response->message);
@@ -200,7 +203,7 @@ class TenantController extends Controller
         $response = $this->postCurl($url, "tenant=$tenantId&key=$key");
         $cronResult = json_decode($response)->status;
         if ($cronResult == 'fails') {
-            throw new \Exception("Tenant and storage deleted but cron deletion failed. Please contact server team");
+            throw new \Exception('Tenant and storage deleted but cron deletion failed. Please contact server team');
         }
     }
 
@@ -212,12 +215,10 @@ class TenantController extends Controller
 
         try {
             $this->cloud->fill($request->all())->save();
+
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (Exception $e) {
             return redirect()->back()->with('fails', $e->getMessage());
         }
-        
     }
-
-
 }

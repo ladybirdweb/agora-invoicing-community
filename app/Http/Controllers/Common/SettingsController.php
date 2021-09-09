@@ -51,7 +51,7 @@ class SettingsController extends BaseSettingsController
     /**
      * Get the Status and Api Keys for Settings Module.
      *
-     * @param ApiKey $apikeys
+     * @param  ApiKey  $apikeys
      */
     public function getKeys(ApiKey $apikeys)
     {
@@ -107,7 +107,7 @@ class SettingsController extends BaseSettingsController
     /**
      * PAyment Gateway that is shown on the basis of currency.
      *
-     * @param string $currency The currency of the Product Selected
+     * @param  string  $currency  The currency of the Product Selected
      *
      * @return string Name of the Payment Gateway
      */

@@ -83,7 +83,7 @@ class AddonController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param int $id
+     * @param  int  $id
      *
      * @return \Response
      */
@@ -95,7 +95,7 @@ class AddonController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param int $id
+     * @param  int  $id
      *
      * @return \Response
      */
@@ -117,7 +117,7 @@ class AddonController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param int $id
+     * @param  int  $id
      *
      * @return \Response
      */
@@ -152,7 +152,7 @@ class AddonController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param int $id
+     * @param  int  $id
      *
      * @return \Response
      */

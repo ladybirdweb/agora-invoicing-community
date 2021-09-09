@@ -169,7 +169,7 @@ trait CoupCodeAndInvoiceSearch
     /**
      * Remove the specified resource from storage.
      *
-     * @param int $id
+     * @param  int  $id
      *
      * @return \Response
      */

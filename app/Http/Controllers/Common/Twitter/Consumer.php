@@ -16,9 +16,9 @@ class Consumer
     public $callbackUrl;
 
     /**
-     * @param string $key
-     * @param string $secret
-     * @param null   $callbackUrl
+     * @param  string  $key
+     * @param  string  $secret
+     * @param  null  $callbackUrl
      */
     public function __construct($key, $secret, $callbackUrl = null)
     {

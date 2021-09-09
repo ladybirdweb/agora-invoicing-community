@@ -55,7 +55,7 @@ class ExtendedBaseProductController extends Controller
      *
      * @date   2019-03-07T13:15:58+0530
      *
-     * @param int $id Product Upload id
+     * @param  int  $id  Product Upload id
      */
     public function editProductUpload($id)
     {
@@ -109,7 +109,7 @@ class ExtendedBaseProductController extends Controller
     /**
      * Whether the Product Requires the domain to be entered.
      *
-     * @param int $productid
+     * @param  int  $productid
      */
     public function getProductField(int $productid)
     {
@@ -161,9 +161,9 @@ class ExtendedBaseProductController extends Controller
      *
      * @date   2020-04-13T14:53:04+0530
      *
-     * @param  int $id                  Product id
-     * @param  int $invoice             Invoice Number
-     * @param  bool $allowDownload
+     * @param  int  $id  Product id
+     * @param  int  $invoice  Invoice Number
+     * @param  bool  $allowDownload
      * @return bool
      */
     private function downloadValidation(bool $allowDownload, $id, $invoice, $api)
@@ -206,9 +206,9 @@ class ExtendedBaseProductController extends Controller
      *
      * @date   2019-01-07T14:34:54+0530
      *
-     * @param Illuminate\Http\Request $input               All the Product Detais Sent from  the form
-     * @param bool                    $can_modify_agent    Whether Agents can be modified by customer
-     * @param bool                    $can_modify_quantity Whether Product Quantity can be modified by Customers
+     * @param  Illuminate\Http\Request  $input  All the Product Detais Sent from  the form
+     * @param  bool  $can_modify_agent  Whether Agents can be modified by customer
+     * @param  bool  $can_modify_quantity  Whether Product Quantity can be modified by Customers
      *
      * @return
      */
@@ -228,7 +228,7 @@ class ExtendedBaseProductController extends Controller
      *
      *@param  Illuminate\Http\Request     $input      All the Product Detais Sent from  the form
      * @param Illuminate\Http\Request; $request
-     * @param array                    $product instance of the Product
+     * @param  array  $product  instance of the Product
      *
      * @return Save The Details
      */

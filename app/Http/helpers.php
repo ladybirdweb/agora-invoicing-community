@@ -61,8 +61,8 @@ function isInstall()
 /**
  * Format the error message into json error response.
  *
- * @param string|array $message    Error message
- * @param int          $statusCode
+ * @param  string|array  $message  Error message
+ * @param  int  $statusCode
  *
  * @return HTTP json response
  */
@@ -74,9 +74,9 @@ function errorResponse($message, $statusCode = 400)
 /**
  * Format success message/data into json success response.
  *
- * @param string       $message    Success message
- * @param array|string $data       Data of the response
- * @param int          $statusCode
+ * @param  string  $message  Success message
+ * @param  array|string  $data  Data of the response
+ * @param  int  $statusCode
  *
  * @return HTTP json response
  */
@@ -99,8 +99,8 @@ function successResponse($message = '', $data = '', $statusCode = 200)
 
 /**
  * Gets time in logged in user's timezone.
- * @param string $dateTimeString
- * @param string $format
+ * @param  string  $dateTimeString
+ * @param  string  $format
  * @return string
  */
 function getTimeInLoggedInUserTimeZone(string $dateTimeString, $format = 'M j, Y, g:i a')
@@ -116,7 +116,7 @@ function getTimeInLoggedInUserTimeZone(string $dateTimeString, $format = 'M j, Y
 
 /**
  * Gets date in a formatted HTML.
- * @param string|null $dateTimeString
+ * @param  string|null  $dateTimeString
  * @return string
  */
 function getDateHtml(string $dateTimeString = null)
@@ -309,9 +309,9 @@ function userCurrencyAndPrice($userid = '', $plan, $productid = '')
  * Fetches currency and price for a plan. If the country code sent has a price defined for them in a plan then
  * that price will be displayed in the respective currency of that country else the default price for that plan will be displayed along with the default currency.
  *
- * @param  string $countryCode Code of the country
- * @param  obj    $plan   Plan for which price is to be fetched
- * @return array          Currency, symbol and plan details
+ * @param  string  $countryCode  Code of the country
+ * @param  obj  $plan  Plan for which price is to be fetched
+ * @return array Currency, symbol and plan details
  */
 function getCurrencySymbolAndPriceForPlans($countryCode, $plan)
 {
@@ -325,8 +325,8 @@ function getCurrencySymbolAndPriceForPlans($countryCode, $plan)
 
 /**
  * Get client currency on the basis of country. This is applicable when client logs in to detect his currency.
- * @param  string $countryCode The country code('IN','US')
- * @return string              The currency code('INR','USD')
+ * @param  string  $countryCode  The country code('IN','US')
+ * @return string The currency code('INR','USD')
  */
 function getCurrencyForClient($countryCode)
 {

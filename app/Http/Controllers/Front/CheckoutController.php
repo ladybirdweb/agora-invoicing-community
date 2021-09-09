@@ -126,7 +126,7 @@ class CheckoutController extends InfoController
     /**
      * Get all the Attributes Sent From the cart along with Tax Conditions.
      *
-     * @param array $content Collection of the Cart Values
+     * @param  array  $content  Collection of the Cart Values
      *
      * @return array Items along with their details,Attributes(Currency,Agents) and Tax Conditions
      */

@@ -29,10 +29,10 @@ class BaseRenewController extends Controller
     /**
      * generate Invoice and Invoice Item after Increasing the subscription date from Admin Panel.
      *
-     * @param int $orderid The Order ID
-     * @param int $planid  The Plan Id related t the Subscription
-     * @param int $cost    The Renew cost for for the Paln
-     * @param string $currency    Currency of ther plan
+     * @param  int  $orderid  The Order ID
+     * @param  int  $planid  The Plan Id related t the Subscription
+     * @param  int  $cost  The Renew cost for for the Paln
+     * @param  string  $currency  Currency of ther plan
      */
     public function getInvoiceByOrderId(int $orderid, int $planid, $cost, $currency)
     {

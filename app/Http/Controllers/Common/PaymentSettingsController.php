@@ -271,7 +271,7 @@ class PaymentSettingsController extends Controller
     /**
      * Delete the directory.
      *
-     * @param type $dir
+     * @param  type  $dir
      *
      * @return bool
      */

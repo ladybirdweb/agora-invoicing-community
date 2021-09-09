@@ -145,7 +145,7 @@ class TaxController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param int $id
+     * @param  int  $id
      *
      * @return \Response
      */
@@ -169,7 +169,7 @@ class TaxController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param int $id
+     * @param  int  $id
      *
      * @return \Response
      */
@@ -214,7 +214,7 @@ class TaxController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param int $id
+     * @param  int  $id
      *
      * @return \Response
      */
@@ -275,8 +275,8 @@ class TaxController extends Controller
     }
 
     /**
-     * @param Request $request
-     * @param type    $state
+     * @param  Request  $request
+     * @param  type  $state
      *
      * @return type
      */
@@ -311,7 +311,7 @@ class TaxController extends Controller
      */
 
     /**
-     * @param Request $request
+     * @param  Request  $request
      *
      * @return type
      */

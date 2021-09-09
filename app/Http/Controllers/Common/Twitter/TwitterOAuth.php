@@ -35,10 +35,10 @@ class TwitterOAuth extends Config
     /**
      * Constructor.
      *
-     * @param string      $consumerKey      The Application Consumer Key
-     * @param string      $consumerSecret   The Application Consumer Secret
-     * @param string|null $oauthToken       The Client Token (optional)
-     * @param string|null $oauthTokenSecret The Client Token Secret (optional)
+     * @param  string  $consumerKey  The Application Consumer Key
+     * @param  string  $consumerSecret  The Application Consumer Secret
+     * @param  string|null  $oauthToken  The Client Token (optional)
+     * @param  string|null  $oauthTokenSecret  The Client Token Secret (optional)
      */
     public function __construct($consumerKey, $consumerSecret, $oauthToken = null, $oauthTokenSecret = null)
     {
@@ -54,8 +54,8 @@ class TwitterOAuth extends Config
     }
 
     /**
-     * @param string $oauthToken
-     * @param string $oauthTokenSecret
+     * @param  string  $oauthToken
+     * @param  string  $oauthTokenSecret
      */
     public function setOauthToken($oauthToken, $oauthTokenSecret)
     {
@@ -105,8 +105,8 @@ class TwitterOAuth extends Config
     /**
      * Make URLs for user browser navigation.
      *
-     * @param string $path
-     * @param array  $parameters
+     * @param  string  $path
+     * @param  array  $parameters
      *
      * @return string
      */
@@ -122,8 +122,8 @@ class TwitterOAuth extends Config
     /**
      * Make /oauth/* requests to the API.
      *
-     * @param string $path
-     * @param array  $parameters
+     * @param  string  $path
+     * @param  array  $parameters
      *
      * @throws TwitterOAuthException
      *
@@ -150,8 +150,8 @@ class TwitterOAuth extends Config
     /**
      * Make /oauth2/* requests to the API.
      *
-     * @param string $path
-     * @param array  $parameters
+     * @param  string  $path
+     * @param  array  $parameters
      *
      * @return array|object
      */
@@ -173,8 +173,8 @@ class TwitterOAuth extends Config
     /**
      * Make GET requests to the API.
      *
-     * @param string $path
-     * @param array  $parameters
+     * @param  string  $path
+     * @param  array  $parameters
      *
      * @return array|object
      */
@@ -186,8 +186,8 @@ class TwitterOAuth extends Config
     /**
      * Make POST requests to the API.
      *
-     * @param string $path
-     * @param array  $parameters
+     * @param  string  $path
+     * @param  array  $parameters
      *
      * @return array|object
      */
@@ -199,8 +199,8 @@ class TwitterOAuth extends Config
     /**
      * Make DELETE requests to the API.
      *
-     * @param string $path
-     * @param array  $parameters
+     * @param  string  $path
+     * @param  array  $parameters
      *
      * @return array|object
      */
@@ -212,8 +212,8 @@ class TwitterOAuth extends Config
     /**
      * Make PUT requests to the API.
      *
-     * @param string $path
-     * @param array  $parameters
+     * @param  string  $path
+     * @param  array  $parameters
      *
      * @return array|object
      */
@@ -225,9 +225,9 @@ class TwitterOAuth extends Config
     /**
      * Upload media to upload.twitter.com.
      *
-     * @param string $path
-     * @param array  $parameters
-     * @param bool   $chunked
+     * @param  string  $path
+     * @param  array  $parameters
+     * @param  bool  $chunked
      *
      * @return array|object
      */
@@ -243,8 +243,8 @@ class TwitterOAuth extends Config
     /**
      * Private method to upload media (not chunked) to upload.twitter.com.
      *
-     * @param string $path
-     * @param array  $parameters
+     * @param  string  $path
+     * @param  array  $parameters
      *
      * @return array|object
      */
@@ -260,8 +260,8 @@ class TwitterOAuth extends Config
     /**
      * Private method to upload media (chunked) to upload.twitter.com.
      *
-     * @param string $path
-     * @param array  $parameters
+     * @param  string  $path
+     * @param  array  $parameters
      *
      * @return array|object
      */
@@ -295,10 +295,10 @@ class TwitterOAuth extends Config
     }
 
     /**
-     * @param string $method
-     * @param string $host
-     * @param string $path
-     * @param array  $parameters
+     * @param  string  $method
+     * @param  string  $host
+     * @param  string  $path
+     * @param  array  $parameters
      *
      * @return array|object
      */
@@ -317,9 +317,9 @@ class TwitterOAuth extends Config
     /**
      * Format and sign an OAuth / API request.
      *
-     * @param string $url
-     * @param string $method
-     * @param array  $parameters
+     * @param  string  $url
+     * @param  string  $method
+     * @param  array  $parameters
      *
      * @throws TwitterOAuthException
      *
@@ -345,10 +345,10 @@ class TwitterOAuth extends Config
     /**
      * Make an HTTP request.
      *
-     * @param string $url
-     * @param string $method
-     * @param string $authorization
-     * @param array  $postfields
+     * @param  string  $url
+     * @param  string  $method
+     * @param  string  $authorization
+     * @param  array  $postfields
      *
      * @throws TwitterOAuthException
      *
@@ -425,7 +425,7 @@ class TwitterOAuth extends Config
     /**
      * Get the header info to store.
      *
-     * @param string $header
+     * @param  string  $header
      *
      * @return array
      */
@@ -446,7 +446,7 @@ class TwitterOAuth extends Config
     /**
      * Encode application authorization header with base64.
      *
-     * @param Consumer $consumer
+     * @param  Consumer  $consumer
      *
      * @return string
      */

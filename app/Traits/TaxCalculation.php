@@ -194,10 +194,10 @@ trait TaxCalculation
     /**
      *   Get tax value for Same State.
      *
-     * @param int  $productid
-     * @param type $c_gst
-     * @param type $s_gst
-     *                        return type
+     * @param  int  $productid
+     * @param  type  $c_gst
+     * @param  type  $s_gst
+     *                       return type
      */
 
     /**
@@ -228,9 +228,9 @@ trait TaxCalculation
     /**
      *   Get tax value for Other States.
      *
-     * @param type $productid
-     * @param type $i_gst
-     *                        return type
+     * @param  type  $productid
+     * @param  type  $i_gst
+     *                       return type
      */
     public function getValueForOtherState($productid, $i_gst, $taxes, $taxClassId)
     {
@@ -244,9 +244,9 @@ trait TaxCalculation
     /**
      *  Get tax value for Union Territory States.
      *
-     * @param type $productid
-     * @param type $c_gst
-     * @param type $ut_gst
+     * @param  type  $productid
+     * @param  type  $c_gst
+     * @param  type  $ut_gst
      *                        return type
      */
     public function getValueForUnionTerritory($productid, $c_gst, $ut_gst, $taxes, $taxClassId)
@@ -268,7 +268,7 @@ trait TaxCalculation
     }
 
     /**
-     * @param type $tax_class_id
+     * @param  type  $tax_class_id
      *
      * @throws \Exception
      *
@@ -286,8 +286,8 @@ trait TaxCalculation
     }
 
     /**
-     * @param type $rate
-     * @param type $price
+     * @param  type  $rate
+     * @param  type  $price
      *
      * @return type
      */

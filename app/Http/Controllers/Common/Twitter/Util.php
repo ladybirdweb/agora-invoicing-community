@@ -26,7 +26,7 @@ class Util
     }
 
     /**
-     * @param string $string
+     * @param  string  $string
      *
      * @return string
      */
@@ -40,7 +40,7 @@ class Util
      * parameters like this
      * array('a' => array('b','c'), 'd' => 'e').
      *
-     * @param mixed $input
+     * @param  mixed  $input
      *
      * @return array
      */

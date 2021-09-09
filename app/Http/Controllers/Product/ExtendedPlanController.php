@@ -18,7 +18,7 @@ class ExtendedPlanController extends Controller
      *
      * @date   2019-01-08T02:27:37+0530
      *
-     * @param Request $request Get Name And Days as Parameter
+     * @param  Request  $request  Get Name And Days as Parameter
      *
      * @return json Suucess or Failure
      */

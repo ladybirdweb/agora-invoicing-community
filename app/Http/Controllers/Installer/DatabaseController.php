@@ -47,7 +47,7 @@ class DatabaseController extends BaseDatabaseController
     /**
      * Run the migration and call the seeder.
      *
-     * @param \Symfony\Component\Console\Output\BufferedOutput $outputLog
+     * @param  \Symfony\Component\Console\Output\BufferedOutput  $outputLog
      * @return array
      */
     private function migrate(BufferedOutput $outputLog)
@@ -64,7 +64,7 @@ class DatabaseController extends BaseDatabaseController
     /**
      * Seed the database.
      *
-     * @param \Symfony\Component\Console\Output\BufferedOutput $outputLog
+     * @param  \Symfony\Component\Console\Output\BufferedOutput  $outputLog
      * @return array
      */
     private function seed(BufferedOutput $outputLog)
@@ -81,9 +81,9 @@ class DatabaseController extends BaseDatabaseController
     /**
      * Return a formatted error messages.
      *
-     * @param string $message
-     * @param string $status
-     * @param \Symfony\Component\Console\Output\BufferedOutput $outputLog
+     * @param  string  $message
+     * @param  string  $status
+     * @param  \Symfony\Component\Console\Output\BufferedOutput  $outputLog
      * @return array
      */
     private function response($message, $status, BufferedOutput $outputLog)

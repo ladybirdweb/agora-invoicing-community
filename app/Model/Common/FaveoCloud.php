@@ -3,8 +3,6 @@
 namespace App\Model\Common;
 
 use Illuminate\Database\Eloquent\Model;
-use Spatie\Activitylog\Models\Activity;
-use Spatie\Activitylog\Traits\LogsActivity;
 
 class FaveoCloud extends Model
 {
@@ -29,6 +27,5 @@ class FaveoCloud extends Model
         }
 
         return '';
-
     }
 }

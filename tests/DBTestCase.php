@@ -51,9 +51,9 @@ class DBTestCase extends TestCase
     /**
      * for testing non-public properties. Sets non-public properties.
      *
-     * @param object $classObject  object of the class, whose property are required to be fetched
-     * @param string $propertyName name of the perperty as string
-     * @param any    $value        new value of the property
+     * @param  object  $classObject  object of the class, whose property are required to be fetched
+     * @param  string  $propertyName  name of the perperty as string
+     * @param  any  $value  new value of the property
      *
      * @return void
      */
@@ -68,9 +68,9 @@ class DBTestCase extends TestCase
     /**
      * for testing non-public properties. Gets non-public properties at any instant.
      *
-     * @param object $classObject  object of the class, whose properties are required to be fetched
-     * @param string $propertyName name of the property as string
-     * @param any    $value        new value of the property
+     * @param  object  $classObject  object of the class, whose properties are required to be fetched
+     * @param  string  $propertyName  name of the property as string
+     * @param  any  $value  new value of the property
      *
      * @return any returns the value of the property
      */
@@ -88,7 +88,7 @@ class DBTestCase extends TestCase
     /**
      * asserts if the given string is alpha or not.
      *
-     * @param string $value the value that need to be checked for assertion
+     * @param  string  $value  the value that need to be checked for assertion
      *
      * @return bool true if $value is an alphabet else false
      */
@@ -102,7 +102,7 @@ class DBTestCase extends TestCase
     /**
      * asserts if the given string is Number or not.
      *
-     * @param string $value the value that need to be checked for assertion
+     * @param  string  $value  the value that need to be checked for assertion
      *
      * @return bool true if $value is an number else false
      */
@@ -118,8 +118,8 @@ class DBTestCase extends TestCase
      * NOTE: this must be used only if multiple keys are required to be checked.
      *        for checking a single key, there already has a method called assertArrayHasKey in phpunit.
      *
-     * @param array $arrayOfKeys array of keys that is required to be tested
-     * @param array $targetArray array which is required to be tested
+     * @param  array  $arrayOfKeys  array of keys that is required to be tested
+     * @param  array  $targetArray  array which is required to be tested
      *
      * @return bool true if $value is an number else false
      */
@@ -141,8 +141,8 @@ class DBTestCase extends TestCase
     /**
      * Asserts if the given substring is there in the string or not.
      *
-     * @param string $string    string that needs to be searched (haystack)
-     * @param string $substring string that is to be found (needle)
+     * @param  string  $string  string that needs to be searched (haystack)
+     * @param  string  $substring  string that is to be found (needle)
      *
      * @return void
      */

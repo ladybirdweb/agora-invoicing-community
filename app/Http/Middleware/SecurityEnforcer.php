@@ -43,7 +43,7 @@ class SecurityEnforcer
 
     /**
      * Checks if url is http or https.
-     * @param string $url
+     * @param  string  $url
      * @return string
      */
     private function urlScheme($url)

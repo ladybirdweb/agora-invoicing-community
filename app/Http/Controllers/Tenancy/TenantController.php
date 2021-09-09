@@ -3,18 +3,17 @@
 namespace App\Http\Controllers\Tenancy;
 
 use App\Http\Controllers\Controller;
-use App\Model\Common\FaveoCloud;
 use App\Model\Common\Setting;
 use App\Model\Order\Order;
 use App\ThirdPartyApp;
 use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use App\Model\Common\FaveoCloud;
 
 class TenantController extends Controller
 {
     private $cloud;
-
     public function __construct(Client $client, FaveoCloud $cloud)
     {
         $this->client = $client;
@@ -26,41 +25,45 @@ class TenantController extends Controller
     public function viewTenant()
     {
         $cloud = $this->cloud;
-
         return view('themes.default1.tenant.index', compact('cloud'));
     }
 
     public function getTenants(Request $request)
     {
-        $response = $this->client->request(
+        try {
+            $response = $this->client->request(
                     'GET',
                     $this->cloud->cloud_central_domain.'/tenants'
                 );
-        $responseBody = (string) $response->getBody();
-        $response = json_decode($responseBody);
+            $responseBody = (string) $response->getBody();
+            $response = json_decode($responseBody);
+            
+            return \DataTables::of($response->message)
 
-        return \DataTables::of($response->message)
-
-         ->addColumn('tenants', function ($model) {
-             return $model->id;
-         })
-         ->addColumn('domain', function ($model) {
-             return $model->domain;
-         })
-         ->addColumn('db_name', function ($model) {
-             return $model->database_name;
-         })
-         ->addColumn('db_username', function ($model) {
-             return $model->database_user_name;
-         })
-         ->addColumn('action', function ($model) {
-             return "<p><button data-toggle='modal' 
-             data-id=".$model->id." data-name= '' onclick=deleteTenant('".$model->id."') id='delten".$model->id."'
-             class='btn btn-sm btn-danger btn-xs delTenant'".tooltip('Delete')."<i class='fa fa-trash'
-             style='color:white;'> </i></button>&nbsp;</p>";
-         })
-         ->rawColumns(['tenants', 'domain', 'db_name', 'db_username', 'action'])
-         ->make(true);
+             ->addColumn('tenants', function ($model) {
+                 return $model->id;
+             })
+             ->addColumn('domain', function ($model) {
+                 return $model->domain;
+             })
+             ->addColumn('db_name', function ($model) {
+                 return $model->database_name;
+             })
+             ->addColumn('db_username', function ($model) {
+                 return $model->database_user_name;
+             })
+             ->addColumn('action', function ($model) {
+                 return "<p><button data-toggle='modal' 
+                 data-id=".$model->id." data-name= '' onclick=deleteTenant('".$model->id."') id='delten".$model->id."'
+                 class='btn btn-sm btn-danger btn-xs delTenant'".tooltip('Delete')."<i class='fa fa-trash'
+                 style='color:white;'> </i></button>&nbsp;</p>";
+             })
+             ->rawColumns(['tenants', 'domain', 'db_name', 'db_username', 'action'])
+             ->make(true);
+        } catch (ConnectException | Exception $e) {
+            return redirect()->back()->with('fails', $e->getMessage());
+        }
+        
 
         // $tenants =
     }
@@ -186,7 +189,6 @@ class TenantController extends Controller
             $response = json_decode($responseBody);
             if ($response->status == 'success') {
                 $this->deleteCronForTenant($request->input('id'));
-
                 return successResponse($response->message);
             } else {
                 return errorResponse($response->message);
@@ -203,7 +205,7 @@ class TenantController extends Controller
         $response = $this->postCurl($url, "tenant=$tenantId&key=$key");
         $cronResult = json_decode($response)->status;
         if ($cronResult == 'fails') {
-            throw new \Exception('Tenant and storage deleted but cron deletion failed. Please contact server team');
+            throw new \Exception("Tenant and storage deleted but cron deletion failed. Please contact server team");
         }
     }
 
@@ -214,11 +216,14 @@ class TenantController extends Controller
         ]);
 
         try {
-            $this->cloud->fill($request->all())->save();
-
+           $cloud = new FaveoCloud;
+            $cloud->updateOrCreate(['id'=>1],['cloud_central_domain'=>$request->input('cloud_central_domain'), 'cron_server_url'=> $request->input('cron_server_url'), 
+            'cron_server_key'=> $request->input('cron_server_key')]);
+            // $cloud->first()->fill($request->all())->save();
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (Exception $e) {
             return redirect()->back()->with('fails', $e->getMessage());
         }
+        
     }
 }

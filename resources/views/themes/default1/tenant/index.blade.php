@@ -39,7 +39,7 @@ Tenants
                     <div class="col-md-4 form-group">
                          <i class='fa fa-info-circle' style='cursor: help; font-size: small; color: rgb(60, 141, 188)'<label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="The server where call for creating cron for each tenant would happen.">
                         </label></i>
-                        {!! Form::label('cron_server_url',Lang::get('message.cron_server_url'),['class'=>'required']) !!}
+                        {!! Form::label('cron_server_url',Lang::get('message.cron_server_url')) !!}
                         {!! Form::text('cron_server_url',null,['class' => 'form-control']) !!}   
 
                     </div>
@@ -49,7 +49,7 @@ Tenants
                         </label></i>
 
 
-                        {!! Form::label('cron_server_key',Lang::get('message.cron_server_key'),['class'=>'required']) !!}
+                        {!! Form::label('cron_server_key',Lang::get('message.cron_server_key')) !!}
                         {!! Form::text('cron_server_key',null,['class' => 'form-control']) !!}   
 
                     </div>

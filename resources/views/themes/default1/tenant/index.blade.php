@@ -4,7 +4,7 @@ Tenants
 @stop
 @section('content-header')
     <div class="col-sm-6">
-        <h1>Tenants</h1>
+        <h1>Cloud Details</h1>
     </div>
     <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
@@ -15,6 +15,63 @@ Tenants
     </div><!-- /.col -->
 @stop
 @section('content')
+
+
+<div class="card card-secondary card-outline">
+
+    <div class="card-header">
+            <h3 class="card-title">Cloud server</h3>
+    </div>
+    
+    <div class="card-body table-responsive">
+            {!! Form::model($cloud, ['route'=> 'cloud-details']) !!}
+            <div class="col-md-12">
+
+                <div class ="row">
+                    <div class="col-md-4 form-group">
+                         <i class='fa fa-info-circle' style='cursor: help; font-size: small; color: rgb(60, 141, 188)'<label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="The server domain where all the api calls for creating, deleting tenants would happen">
+                        </label></i>
+                        {!! Form::label('cloud_central_domain',Lang::get('message.cloud_central_domain'),['class'=>'required']) !!}
+                        {!! Form::text('cloud_central_domain',null,['class' => 'form-control']) !!}
+                     
+                    </div>
+                   
+                    <div class="col-md-4 form-group">
+                         <i class='fa fa-info-circle' style='cursor: help; font-size: small; color: rgb(60, 141, 188)'<label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="The server where call for creating cron for each tenant would happen.">
+                        </label></i>
+                        {!! Form::label('cron_server_url',Lang::get('message.cron_server_url'),['class'=>'required']) !!}
+                        {!! Form::text('cron_server_url',null,['class' => 'form-control']) !!}   
+
+                    </div>
+
+                    <div class="col-md-4 form-group">
+                         <i class='fa fa-info-circle' style='cursor: help; font-size: small; color: rgb(60, 141, 188)'<label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="The key to verify if the request for cron creation is coming from valid source. There should be check for this key on cron server before setting up cron.">
+                        </label></i>
+
+
+                        {!! Form::label('cron_server_key',Lang::get('message.cron_server_key'),['class'=>'required']) !!}
+                        {!! Form::text('cron_server_key',null,['class' => 'form-control']) !!}   
+
+                    </div>
+
+                     
+                </div>
+                
+            </div>
+             <div class="col-md-12">
+
+             <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-save">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button>
+         </div>
+            
+            {!! Form::close() !!}
+
+
+
+    </div>
+</div>
+  
+
+
 
     <div class="card card-secondary card-outline">
         <div class="card-header">
@@ -54,6 +111,14 @@ Tenants
 
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript">
+$(document).ready(function(){
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip({
+            container : 'body'
+        });
+    });
+})
+
         $('#tenant-table').DataTable({
             processing: true,
             serverSide: true,
@@ -152,6 +217,7 @@ Tenants
         return this.id == 'setting';
     }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
 </script>
+
 @stop
 
 

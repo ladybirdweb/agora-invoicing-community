@@ -489,6 +489,7 @@
             Route::get('view/tenant', 'Tenancy\TenantController@viewTenant')->middleware('admin');
             Route::get('get-tenants', 'Tenancy\TenantController@getTenants')->name('get-tenants')->middleware('admin');
             Route::delete('delete-tenant', 'Tenancy\TenantController@destroyTenant')->name('delete-tenant')->middleware('admin');
+            Route::post('cloud-details', 'Tenancy\TenantController@saveCloudDetails')->name('cloud-details')->middleware('admin');
 
             /*
              * Api

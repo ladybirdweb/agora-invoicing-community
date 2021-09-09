@@ -9,27 +9,30 @@ use App\ThirdPartyApp;
 use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use App\Model\Common\FaveoCloud;
 
 class TenantController extends Controller
 {
-    public function __construct(Client $client)
+    private $cloud;
+    public function __construct(Client $client, FaveoCloud $cloud)
     {
         $this->client = $client;
-        $this->url = 'https://billing.faveocloud.com';
+        $this->cloud = $cloud->first();
+
         $this->middleware('auth', ['except'=>['verifyThirdPartyToken']]);
     }
 
     public function viewTenant()
     {
-        return view('themes.default1.tenant.index');
+        $cloud = $this->cloud;
+        return view('themes.default1.tenant.index', compact('cloud'));
     }
 
     public function getTenants(Request $request)
     {
-        $client = new Client([]);
-        $response = $client->request(
+        $response = $this->client->request(
                     'GET',
-                    $this->url.'/tenants'
+                    $this->cloud->cloud_central_domain.'/tenants'
                 );
         $responseBody = (string) $response->getBody();
         $response = json_decode($responseBody);
@@ -106,7 +109,7 @@ class TenantController extends Controller
             $hashedSignature = hash_hmac('sha256', $encodedData, $keys->app_secret);
             $response = $client->request(
                     'POST',
-                    $this->url.'/tenants', ['form_params'=>$data, 'headers'=>['signature'=>$hashedSignature]]
+                    $this->cloud->cloud_central_domain.'/tenants', ['form_params'=>$data, 'headers'=>['signature'=>$hashedSignature]]
                 );
 
             $response = explode('{', (string) $response->getBody());
@@ -119,9 +122,10 @@ class TenantController extends Controller
             } elseif ($result->status == 'validationFailure') {
                 return ['status' => 'validationFailure', 'message' => $result->message];
             } else {
-                $url = 'http://165.227.242.64/croncreate.php';
+                $url = $this->cloud->cron_server_url.'/croncreate.php';
+                $key = $this->cloud->cron_server_key;
                 $tenant = $result->tenant;
-                $response = $this->postCurl($url, "tenant=$tenant&key=31ba9b727ee347d12ffcb891c064cf9032a8b1d62480690894870df05ebda47c");
+                $response = $this->postCurl($url, "tenant=$tenant&key=$key");
                 $cronResult = json_decode($response)->status;
                 $cronFailureMessage = '';
                 if ($cronResult == 'fails') {
@@ -134,7 +138,7 @@ class TenantController extends Controller
                 $mail = new \App\Http\Controllers\Common\PhpMailController();
                 $mail->sendEmail($setting->email, $user, $userData, 'New instance created');
 
-                return ['status' => 'true', 'message' => $result->message.'.'.$cronFailureMessage];
+                return ['status' => $result->status, 'message' => $result->message.'.'.$cronFailureMessage];
             }
         } catch (Exception $e) {
             return ['status' => 'false', 'message' => $e->getMessage()];
@@ -174,11 +178,12 @@ class TenantController extends Controller
             $client = new Client([]);
             $response = $client->request(
                         'DELETE',
-                        $this->url.'/tenants', ['form_params'=>$data, 'headers'=>['signature'=>$hashedSignature]]
+                        $this->cloud->cloud_central_domain.'/tenants', ['form_params'=>$data, 'headers'=>['signature'=>$hashedSignature]]
                     );
             $responseBody = (string) $response->getBody();
             $response = json_decode($responseBody);
             if ($response->status == 'success') {
+                $this->deleteCronForTenant($request->input('id'));
                 return successResponse($response->message);
             } else {
                 return errorResponse($response->message);
@@ -187,4 +192,32 @@ class TenantController extends Controller
             return errorResponse($e->getMessage());
         }
     }
+
+    private function deleteCronForTenant($tenantId)
+    {
+        $url = $this->cloud->cron_server_url.'/crondelete.php';
+        $key = $this->cloud->cron_server_key;
+        $response = $this->postCurl($url, "tenant=$tenantId&key=$key");
+        $cronResult = json_decode($response)->status;
+        if ($cronResult == 'fails') {
+            throw new \Exception("Tenant and storage deleted but cron deletion failed. Please contact server team");
+        }
+    }
+
+    public function saveCloudDetails(Request $request)
+    {
+        $this->validate($request, [
+            'cloud_central_domain'=> 'required',
+        ]);
+
+        try {
+            $this->cloud->fill($request->all())->save();
+            return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
+        } catch (Exception $e) {
+            return redirect()->back()->with('fails', $e->getMessage());
+        }
+        
+    }
+
+
 }

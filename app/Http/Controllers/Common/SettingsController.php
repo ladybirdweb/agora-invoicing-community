@@ -170,7 +170,7 @@ class SettingsController extends BaseSettingsController
             'company'         => 'required|max:50',
             'company_email'   => 'required|email',
             'website'         => 'required|url',
-            'phone'           => 'required|integer',
+            'phone'           => 'required',
             'address'         => 'required',
             'state'           => 'required',
             'country'         => 'required',

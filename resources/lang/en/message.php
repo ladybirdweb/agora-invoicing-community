@@ -672,5 +672,8 @@ return [
     'currency_array_equals' => 'Currency is not entered for all the countries or country not selected',
     'renew_price_array_equals' => 'Renewal price is not entered for all countries or country not selected',
     'add_price_array_equals'=> 'Regular price is not entered for all countries or country not selected',
+    'cloud_central_domain' => 'Cloud central domain',
+    'cron_server_url' => 'Cron server URL',
+    'cron_server_key' => 'Cron server key',
 
 ];

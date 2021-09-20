@@ -46,7 +46,6 @@ trait ChunkUpload
      * Saves the file.
      *
      * @param  UploadedFile  $file
-     *
      * @return \Illuminate\Http\JsonResponse
      */
     protected function saveFile(UploadedFile $file)
@@ -73,7 +72,6 @@ trait ChunkUpload
      * Create unique filename for uploaded file.
      *
      * @param  UploadedFile  $file
-     *
      * @return string
      */
     protected function createFilename(UploadedFile $file)

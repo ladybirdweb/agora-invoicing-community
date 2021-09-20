@@ -70,6 +70,7 @@ class OrderController extends BaseOrderController
 
     /**
      * Display a listing of the resource.
+     *
      * @param  Request  $request
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
@@ -312,7 +313,6 @@ class OrderController extends BaseOrderController
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     *
      * @return \Response
      */
     public function edit($id)
@@ -337,7 +337,6 @@ class OrderController extends BaseOrderController
      * Update the specified resource in storage.
      *
      * @param  int  $id
-     *
      * @return \Response
      */
     public function update($id, OrderRequest $request)
@@ -358,7 +357,6 @@ class OrderController extends BaseOrderController
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     *
      * @return \Response
      */
     public function destroy(Request $request)

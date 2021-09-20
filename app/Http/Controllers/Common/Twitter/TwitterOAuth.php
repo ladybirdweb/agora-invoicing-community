@@ -107,7 +107,6 @@ class TwitterOAuth extends Config
      *
      * @param  string  $path
      * @param  array  $parameters
-     *
      * @return string
      */
     public function url($path, array $parameters)
@@ -124,10 +123,9 @@ class TwitterOAuth extends Config
      *
      * @param  string  $path
      * @param  array  $parameters
+     * @return array
      *
      * @throws TwitterOAuthException
-     *
-     * @return array
      */
     public function oauth($path, array $parameters = [])
     {
@@ -152,7 +150,6 @@ class TwitterOAuth extends Config
      *
      * @param  string  $path
      * @param  array  $parameters
-     *
      * @return array|object
      */
     public function oauth2($path, array $parameters = [])
@@ -175,7 +172,6 @@ class TwitterOAuth extends Config
      *
      * @param  string  $path
      * @param  array  $parameters
-     *
      * @return array|object
      */
     public function get($path, array $parameters = [])
@@ -188,7 +184,6 @@ class TwitterOAuth extends Config
      *
      * @param  string  $path
      * @param  array  $parameters
-     *
      * @return array|object
      */
     public function post($path, array $parameters = [])
@@ -201,7 +196,6 @@ class TwitterOAuth extends Config
      *
      * @param  string  $path
      * @param  array  $parameters
-     *
      * @return array|object
      */
     public function delete($path, array $parameters = [])
@@ -214,7 +208,6 @@ class TwitterOAuth extends Config
      *
      * @param  string  $path
      * @param  array  $parameters
-     *
      * @return array|object
      */
     public function put($path, array $parameters = [])
@@ -228,7 +221,6 @@ class TwitterOAuth extends Config
      * @param  string  $path
      * @param  array  $parameters
      * @param  bool  $chunked
-     *
      * @return array|object
      */
     public function upload($path, array $parameters = [], $chunked = false)
@@ -245,7 +237,6 @@ class TwitterOAuth extends Config
      *
      * @param  string  $path
      * @param  array  $parameters
-     *
      * @return array|object
      */
     private function uploadMediaNotChunked($path, $parameters)
@@ -262,7 +253,6 @@ class TwitterOAuth extends Config
      *
      * @param  string  $path
      * @param  array  $parameters
-     *
      * @return array|object
      */
     private function uploadMediaChunked($path, $parameters)
@@ -299,7 +289,6 @@ class TwitterOAuth extends Config
      * @param  string  $host
      * @param  string  $path
      * @param  array  $parameters
-     *
      * @return array|object
      */
     private function http($method, $host, $path, array $parameters)
@@ -320,10 +309,9 @@ class TwitterOAuth extends Config
      * @param  string  $url
      * @param  string  $method
      * @param  array  $parameters
+     * @return string
      *
      * @throws TwitterOAuthException
-     *
-     * @return string
      */
     private function oAuthRequest($url, $method, array $parameters)
     {
@@ -349,10 +337,9 @@ class TwitterOAuth extends Config
      * @param  string  $method
      * @param  string  $authorization
      * @param  array  $postfields
+     * @return string
      *
      * @throws TwitterOAuthException
-     *
-     * @return string
      */
     private function request($url, $method, $authorization, $postfields)
     {
@@ -426,7 +413,6 @@ class TwitterOAuth extends Config
      * Get the header info to store.
      *
      * @param  string  $header
-     *
      * @return array
      */
     private function parseHeaders($header)
@@ -447,7 +433,6 @@ class TwitterOAuth extends Config
      * Encode application authorization header with base64.
      *
      * @param  Consumer  $consumer
-     *
      * @return string
      */
     private function encodeAppAuthorization($consumer)

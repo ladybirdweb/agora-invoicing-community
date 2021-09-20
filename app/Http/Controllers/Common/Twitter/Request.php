@@ -36,7 +36,6 @@ class Request
      * @param  string  $httpMethod
      * @param  string  $httpUrl
      * @param  array  $parameters
-     *
      * @return Request
      */
     public static function fromConsumerAndToken(
@@ -72,7 +71,6 @@ class Request
 
     /**
      * @param $name
-     *
      * @return string|null
      */
     public function getParameter($name)
@@ -193,9 +191,9 @@ class Request
     /**
      * Builds the Authorization: header.
      *
-     * @throws TwitterOAuthException
-     *
      * @return string
+     *
+     * @throws TwitterOAuthException
      */
     public function toHeader()
     {
@@ -241,7 +239,6 @@ class Request
      * @param  SignatureMethod  $signatureMethod
      * @param  Consumer  $consumer
      * @param  Token  $token
-     *
      * @return string
      */
     public function buildSignature(SignatureMethod $signatureMethod, Consumer $consumer, Token $token = null)

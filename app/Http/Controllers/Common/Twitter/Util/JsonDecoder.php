@@ -12,7 +12,6 @@ class JsonDecoder
      *
      * @param  string  $string
      * @param  bool  $asArray
-     *
      * @return array|object
      */
     public static function decode($string, $asArray)

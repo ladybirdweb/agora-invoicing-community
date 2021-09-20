@@ -6,6 +6,7 @@ use Closure;
 
 /**
  * Handles all security related headers.
+ *
  * @refer https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Strict_Transport_Security_Cheat_Sheet.html
  * @refer https://www.owasp.org/index.php/Cross_Frame_Scripting
  */
@@ -43,6 +44,7 @@ class SecurityEnforcer
 
     /**
      * Checks if url is http or https.
+     *
      * @param  string  $url
      * @return string
      */

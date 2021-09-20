@@ -44,10 +44,9 @@ class BaseOrderController extends ExtendedOrderController
      *
      * @param  type  $invoiceid
      * @param  type  $order_status
+     * @return string
      *
      * @throws \Exception
-     *
-     * @return string
      */
     public function executeOrder($invoiceid, $order_status = 'executed')
     {
@@ -176,7 +175,6 @@ class BaseOrderController extends ExtendedOrderController
      *
      * @param  bool  $permissions  [Whether Permissons for generating License Expiry Date are there or not]
      * @param  int  $days  [No of days that would get addeed to the current date ]
-     *
      * @return string [The final License Expiry date that is generated]
      */
     protected function getLicenseExpiryDate(bool $permissions, $days)
@@ -195,7 +193,6 @@ class BaseOrderController extends ExtendedOrderController
      *
      * @param  bool  $permissions  [Whether Permissons for generating Updates Expiry Date are there or not]
      * @param  int  $days  [No of days that would get added to the current date ]
-     *
      * @return string [The final Updates Expiry date that is generated]
      */
     protected function getUpdatesExpiryDate(bool $permissions, $days)
@@ -214,7 +211,6 @@ class BaseOrderController extends ExtendedOrderController
      *
      * @param  bool  $permissions  [Whether Permissons for generating Updates Expiry Date are there or not]
      * @param  int  $days  [No of days that would get added to the current date ]
-     *
      * @return string [The final Suport Expiry date that is generated]
      */
     protected function getSupportExpiryDate(bool $permissions, $days)
@@ -321,10 +317,9 @@ class BaseOrderController extends ExtendedOrderController
      * get the price of a product by id.
      *
      * @param  type  $product_id
+     * @return type collection
      *
      * @throws \Exception
-     *
-     * @return type collection
      */
     public function getPrice($product_id)
     {

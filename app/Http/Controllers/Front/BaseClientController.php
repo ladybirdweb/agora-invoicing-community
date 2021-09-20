@@ -22,7 +22,6 @@ class BaseClientController extends Controller
      *
      * @param  Order  $orders  Order For the Client
      * @param  int  $productid  Product id for the Order
-     *
      * @return array Show Modal Popup if Condition Satisfies
      */
     public function getPopup($query, int $productid)

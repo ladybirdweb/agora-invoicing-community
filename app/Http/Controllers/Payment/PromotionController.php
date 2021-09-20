@@ -142,7 +142,6 @@ class PromotionController extends BasePromotionController
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     *
      * @return \Response
      */
     public function edit($id)
@@ -169,7 +168,6 @@ class PromotionController extends BasePromotionController
      * Update the specified resource in storage.
      *
      * @param  int  $id
-     *
      * @return \Response
      */
     public function update($id, PromotionRequest $request)
@@ -206,7 +204,6 @@ class PromotionController extends BasePromotionController
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     *
      * @return \Response
      */
     public function destroy(Request $request)

@@ -36,7 +36,6 @@ class DBTestCase extends TestCase
      * @param $classObject Object => object of the class, whose methods are required to be fetched
      * @param $methodName  String => name of the method as string
      * @param $arguments   Array => method arguments
-     *
      * @return ReflectionMethod
      */
     protected function getPrivateMethod(&$classObject, $methodName, $arguments = [])
@@ -54,7 +53,6 @@ class DBTestCase extends TestCase
      * @param  object  $classObject  object of the class, whose property are required to be fetched
      * @param  string  $propertyName  name of the perperty as string
      * @param  any  $value  new value of the property
-     *
      * @return void
      */
     protected function setPrivateProperty(&$classObject, $propertyName, $value)
@@ -71,7 +69,6 @@ class DBTestCase extends TestCase
      * @param  object  $classObject  object of the class, whose properties are required to be fetched
      * @param  string  $propertyName  name of the property as string
      * @param  any  $value  new value of the property
-     *
      * @return any returns the value of the property
      */
     protected function getPrivateProperty(&$classObject, $propertyName)
@@ -89,7 +86,6 @@ class DBTestCase extends TestCase
      * asserts if the given string is alpha or not.
      *
      * @param  string  $value  the value that need to be checked for assertion
-     *
      * @return bool true if $value is an alphabet else false
      */
     protected function assertAlpha($value)
@@ -103,7 +99,6 @@ class DBTestCase extends TestCase
      * asserts if the given string is Number or not.
      *
      * @param  string  $value  the value that need to be checked for assertion
-     *
      * @return bool true if $value is an number else false
      */
     protected function assertNumber($value)
@@ -120,7 +115,6 @@ class DBTestCase extends TestCase
      *
      * @param  array  $arrayOfKeys  array of keys that is required to be tested
      * @param  array  $targetArray  array which is required to be tested
-     *
      * @return bool true if $value is an number else false
      */
     protected function assertArrayHasKeys($arrayOfKeys, $targetArray)
@@ -143,7 +137,6 @@ class DBTestCase extends TestCase
      *
      * @param  string  $string  string that needs to be searched (haystack)
      * @param  string  $substring  string that is to be found (needle)
-     *
      * @return void
      */
     protected function assertStringContainsSubstring($string, $substring)

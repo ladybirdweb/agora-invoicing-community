@@ -101,6 +101,7 @@ class EmailSettingsController extends Controller
 
     /**
      * checks if php's mail function is enabled on current server.
+     *
      * @return bool true if enabled else false
      */
     private function checkMailConnection()
@@ -115,6 +116,7 @@ class EmailSettingsController extends Controller
 
     /**
      * Checks services status by raw sending mail and waiting for the response.
+     *
      * @return bool true if success else false
      */
     private function checkServices()

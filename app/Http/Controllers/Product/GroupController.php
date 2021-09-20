@@ -114,7 +114,6 @@ class GroupController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     *
      * @return \Response
      */
     public function edit($id)
@@ -134,7 +133,6 @@ class GroupController extends Controller
      * Update the specified resource in storage.
      *
      * @param  int  $id
-     *
      * @return Response
      */
     public function update($id, GroupRequest $request)
@@ -214,7 +212,6 @@ class GroupController extends Controller
      * @date   2019-01-09T18:20:16+0530
      *
      * @param  Request  $request  Slug Url that is sent
-     *
      * @return string The Group Url
      */
     public function generateGroupUrl(Request $request)

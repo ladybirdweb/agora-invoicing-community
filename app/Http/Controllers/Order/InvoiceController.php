@@ -238,7 +238,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
      * not in use case.
      *
      * @param  Request  $request
-     *
      * @return type
      */
     public function generateById(Request $request)

@@ -63,7 +63,6 @@ class SystemManagerController extends Controller
      * @date   2019-08-21T12:54:03+0530
      *
      * @param  Request  $request
-     *
      * @return array
      */
     public function replaceAccountManager(Request $request)
@@ -110,7 +109,6 @@ class SystemManagerController extends Controller
      * @date   2019-08-21T12:54:03+0530
      *
      * @param  Request  $request
-     *
      * @return array
      */
     public function replaceSalesManager(Request $request)

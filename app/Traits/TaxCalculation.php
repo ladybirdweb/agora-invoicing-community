@@ -269,10 +269,9 @@ trait TaxCalculation
 
     /**
      * @param  type  $tax_class_id
+     * @return type
      *
      * @throws \Exception
-     *
-     * @return type
      */
     public function getTaxByPriority($taxClassId)
     {
@@ -288,7 +287,6 @@ trait TaxCalculation
     /**
      * @param  type  $rate
      * @param  type  $price
-     *
      * @return type
      */
     public static function taxValue($rate, $price)

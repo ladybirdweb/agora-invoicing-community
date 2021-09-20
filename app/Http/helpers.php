@@ -63,7 +63,6 @@ function isInstall()
  *
  * @param  string|array  $message  Error message
  * @param  int  $statusCode
- *
  * @return HTTP json response
  */
 function errorResponse($message, $statusCode = 400)
@@ -77,7 +76,6 @@ function errorResponse($message, $statusCode = 400)
  * @param  string  $message  Success message
  * @param  array|string  $data  Data of the response
  * @param  int  $statusCode
- *
  * @return HTTP json response
  */
 function successResponse($message = '', $data = '', $statusCode = 200)
@@ -99,6 +97,7 @@ function successResponse($message = '', $data = '', $statusCode = 200)
 
 /**
  * Gets time in logged in user's timezone.
+ *
  * @param  string  $dateTimeString
  * @param  string  $format
  * @return string
@@ -116,6 +115,7 @@ function getTimeInLoggedInUserTimeZone(string $dateTimeString, $format = 'M j, Y
 
 /**
  * Gets date in a formatted HTML.
+ *
  * @param  string|null  $dateTimeString
  * @return string
  */
@@ -325,6 +325,7 @@ function getCurrencySymbolAndPriceForPlans($countryCode, $plan)
 
 /**
  * Get client currency on the basis of country. This is applicable when client logs in to detect his currency.
+ *
  * @param  string  $countryCode  The country code('IN','US')
  * @return string The currency code('INR','USD')
  */
@@ -457,6 +458,7 @@ function bifurcateTax($taxName, $taxValue, $currency, $state, $price = '')
 /**
  * sets mail config and reloads the config into the container
  * NOTE: this is getting used outside the class to set service config.
+ *
  * @return void
  */
 function setServiceConfig($emailConfig)

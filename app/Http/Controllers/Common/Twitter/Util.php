@@ -10,7 +10,6 @@ class Util
 {
     /**
      * @param $input
-     *
      * @return array|mixed|string
      */
     public static function urlencodeRfc3986($input)
@@ -27,7 +26,6 @@ class Util
 
     /**
      * @param  string  $string
-     *
      * @return string
      */
     public static function urldecodeRfc3986($string)
@@ -41,7 +39,6 @@ class Util
      * array('a' => array('b','c'), 'd' => 'e').
      *
      * @param  mixed  $input
-     *
      * @return array
      */
     public static function parseParameters($input)
@@ -79,7 +76,6 @@ class Util
 
     /**
      * @param $params
-     *
      * @return string
      */
     public static function buildHttpQuery($params)

@@ -13,7 +13,6 @@ class ExtendedOrderController extends Controller
      * Create orders.
      *
      * @param  Request  $request
-     *
      * @return type
      */
     public function orderExecute(Request $request)
@@ -36,10 +35,9 @@ class ExtendedOrderController extends Controller
      *
      * @param  int  $productid
      * @param  int  $agents  No Of Agents
+     * @return string The Final Serial Key after adding no of agents in the last 4 digits
      *
      * @throws \Exception
-     *
-     * @return string The Final Serial Key after adding no of agents in the last 4 digits
      */
     public function generateSerialKey(int $productid, $agents)
     {

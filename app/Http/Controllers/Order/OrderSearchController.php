@@ -23,6 +23,7 @@ class OrderSearchController extends Controller
      *
      * @param  Request  $request
      * @return array
+     *
      * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
      *
      * @date   2019-01-19T01:35:08+0530
@@ -48,6 +49,7 @@ class OrderSearchController extends Controller
 
     /**
      * Gets base query for orders.
+     *
      * @return Builder
      */
     private function getBaseQueryForOrders()
@@ -98,6 +100,7 @@ class OrderSearchController extends Controller
      * @param $versionFrom
      * @param $versionTill
      * @return Builder
+     *
      * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
      */
     private function getSelectedVersionOrders($baseQuery, $version, $productId)
@@ -138,7 +141,6 @@ class OrderSearchController extends Controller
      *
      * @param  string  $allInstallation
      * @param  App\Model\Order  $join  The order instance
-     *
      * @return $join
      */
     public function allInstallations($allInstallation, $join)
@@ -171,7 +173,6 @@ class OrderSearchController extends Controller
      *
      * @param  string  $allInstallation
      * @param  App\Model\Order  $join  The order instance
-     *
      * @return $join
      */
     protected function allRenewals($allRenewal, $join)
@@ -195,7 +196,6 @@ class OrderSearchController extends Controller
      *
      * @param  int  $order_no  The Order NO to be searched
      * @param  App\Model\Order  $join  The Order instance
-     *
      * @return $join
      */
     private function orderNum($order_no, $join)
@@ -212,7 +212,6 @@ class OrderSearchController extends Controller
      *
      * @param  int  $order_no  The Order NO to be searched
      * @param  App\Model\Order  $join  The Order instance
-     *
      * @return $join
      */
     private function product($product_id, $join)
@@ -235,7 +234,6 @@ class OrderSearchController extends Controller
      *
      * @param  string  $expiry  The Order From Date
      * @param  object  $join
-     *
      * @return Query
      */
     public function orderFrom($till, $from, $join)
@@ -258,7 +256,6 @@ class OrderSearchController extends Controller
      *
      * @param  string  $expiry  The Order Till Date
      * @param  object  $join
-     *
      * @return Query
      */
     public function orderTill($from, $till, $join)
@@ -279,7 +276,6 @@ class OrderSearchController extends Controller
      *
      * @param  string  $domain  domaiin
      * @param  object  $join
-     *
      * @return Query
      */
     public function domain($domain, $join)

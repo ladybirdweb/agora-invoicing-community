@@ -108,7 +108,6 @@ class BaseProductController extends ExtendedBaseProductController
      *
      * @param  int  $productid
      * @param  Request  $request
-     *
      * @return [type]
      */
     public function getSubscriptionCheck(int $productid, Request $request)
@@ -299,7 +298,6 @@ class BaseProductController extends ExtendedBaseProductController
      * @date   2019-01-11T00:18:49+0530
      *
      * @param  int  $productid
-     *
      * @return bool
      */
     public function allowQuantityOrAgent(int $productid)
@@ -314,7 +312,6 @@ class BaseProductController extends ExtendedBaseProductController
      *
      *
      * @param  int  $productid  The id of the Product added to the cart
-     *
      * @return array The permissons for Agents and Quantity
      */
     public function isAllowedtoEdit(int $productid)

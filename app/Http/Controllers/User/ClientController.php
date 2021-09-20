@@ -62,8 +62,10 @@ class ClientController extends AdvanceSearchController
 
     /**
      * Get Clients for yajra datatable.
+     *
      * @param  Request  $request
      * @return
+     *
      * @throws \Exception
      */
     public function getClients(Request $request)
@@ -260,7 +262,6 @@ class ClientController extends AdvanceSearchController
      * Display the specified resource.
      *
      * @param  int  $id
-     *
      * @return \Response
      */
     public function show($id)
@@ -307,7 +308,6 @@ class ClientController extends AdvanceSearchController
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     *
      * @return \Response
      */
     public function edit($id)
@@ -373,7 +373,6 @@ class ClientController extends AdvanceSearchController
      * Update the specified resource in storage.
      *
      * @param  int  $id
-     *
      * @return \Response
      */
     public function update($id, ClientRequest $request)
@@ -394,7 +393,6 @@ class ClientController extends AdvanceSearchController
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     *
      * @return \Response
      */
     public function destroy(Request $request)
@@ -496,6 +494,7 @@ class ClientController extends AdvanceSearchController
 
     /**
      * Gets baseQuery for user search by appending all the allowed filters.
+     *
      * @param $request
      * @return mixed
      */

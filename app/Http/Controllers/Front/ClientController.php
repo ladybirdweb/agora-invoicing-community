@@ -183,7 +183,6 @@ class ClientController extends BaseClientController
      * @param  type  $productid
      * @param  type  $clientid
      * @param  type  $invoiceid
-     *
      * @return type
      */
     public function getVersionList($productid, $clientid, $invoiceid)

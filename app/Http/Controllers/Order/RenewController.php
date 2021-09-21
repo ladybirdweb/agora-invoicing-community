@@ -241,7 +241,7 @@ class RenewController extends BaseRenewController
     /**
      * Show the Renew Page from by clicking onRenew in All Orders (Admin Panel).
      *
-     * @param int $id Subscription id for the order
+     * @param  int  $id  Subscription id for the order
      */
     public function renewForm($id)
     {

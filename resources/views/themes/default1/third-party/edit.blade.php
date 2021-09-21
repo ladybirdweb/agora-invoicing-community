@@ -31,7 +31,7 @@
                       {!! Form::label('name','App Secret',['class'=>'required']) !!}
                     <div class="row">
                      <div class="col-md-12">
-                    <input type="text" name="app_secret" id="secret" class="form-control app-key" required='required'>
+                    <input type="text" name="app_secret" id="secret" class="form-control" required='required'>
                     <span class="appkeycheck"></span>
                    </div>
                    

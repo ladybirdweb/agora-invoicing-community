@@ -58,7 +58,7 @@ class EmailSettingsController extends Controller
      * NOTE: to make errors user friendly, more and more cases has to be added to it.
      *
      *
-     * @return string   returns formatted message
+     * @return string returns formatted message
      */
     private function errorhandler()
     {
@@ -71,7 +71,7 @@ class EmailSettingsController extends Controller
      * checks send connection based on the mail driver.
      *
      *
-     * @param Emails $emailConfig emailConfig object
+     * @param  Emails  $emailConfig  emailConfig object
      * @return bool
      */
     protected function checkSendConnection(Setting $emailConfig)
@@ -101,7 +101,8 @@ class EmailSettingsController extends Controller
 
     /**
      * checks if php's mail function is enabled on current server.
-     * @return bool  true if enabled else false
+     *
+     * @return bool true if enabled else false
      */
     private function checkMailConnection()
     {
@@ -115,7 +116,8 @@ class EmailSettingsController extends Controller
 
     /**
      * Checks services status by raw sending mail and waiting for the response.
-     * @return bool      true if success else false
+     *
+     * @return bool true if success else false
      */
     private function checkServices()
     {

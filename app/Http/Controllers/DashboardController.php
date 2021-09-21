@@ -183,6 +183,7 @@ class DashboardController extends Controller
 
     /**
      * Get the list of previous 20 registered users.
+     *
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public function getAllUsers()
@@ -195,8 +196,10 @@ class DashboardController extends Controller
 
     /**
      * List of products sold in past $noOfDays days. If no parameter is passed, it will give all products.
-     * @param int $noOfDays
+     *
+     * @param  int  $noOfDays
      * @return \Illuminate\Database\Eloquent\Collection
+     *
      * @throws \Exception
      */
     public function getSoldProducts(int $noOfDays = null)
@@ -222,6 +225,7 @@ class DashboardController extends Controller
 
     /**
      * List of orders of past 30 days.
+     *
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public function getRecentOrders()
@@ -246,8 +250,10 @@ class DashboardController extends Controller
 
     /**
      * List of orders expiring in next 30 days.
-     * @param bool $past30Days
+     *
+     * @param  bool  $past30Days
      * @return \Illuminate\Database\Eloquent\Collection
+     *
      * @throws \Exception
      */
     public function getExpiringSubscriptions($past30Days = false)
@@ -285,6 +291,7 @@ class DashboardController extends Controller
 
     /**
      * List of Invoices of past 30 ays.
+     *
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public function getRecentInvoices()
@@ -316,7 +323,9 @@ class DashboardController extends Controller
 
     /**
      * Gets list of clients who are using older version of the latest release.
+     *
      * @return mixed
+     *
      * @throws \Exception
      */
     private function getClientsUsingOldVersions()

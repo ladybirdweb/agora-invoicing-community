@@ -25,10 +25,9 @@ abstract class SignatureMethod
      * the encoding is handled in OAuthRequest when the final
      * request is serialized.
      *
-     * @param Request  $request
-     * @param Consumer $consumer
-     * @param Token    $token
-     *
+     * @param  Request  $request
+     * @param  Consumer  $consumer
+     * @param  Token  $token
      * @return string
      */
     abstract public function buildSignature(Request $request, Consumer $consumer, Token $token = null);
@@ -36,11 +35,10 @@ abstract class SignatureMethod
     /**
      * Verifies that a given signature is correct.
      *
-     * @param Request  $request
-     * @param Consumer $consumer
-     * @param Token    $token
-     * @param string   $signature
-     *
+     * @param  Request  $request
+     * @param  Consumer  $consumer
+     * @param  Token  $token
+     * @param  string  $signature
      * @return bool
      */
     public function checkSignature(Request $request, Consumer $consumer, Token $token, $signature)

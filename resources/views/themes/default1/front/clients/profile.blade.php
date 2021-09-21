@@ -514,7 +514,7 @@ input:checked + .slider:before {
      $(document).ready(function(){
     var country = $('#country').val();
     console.log(country,'sdfs')
-    if(country == 'India') {
+    if(country == 'IN') {
         $('#gstin').show()
     } else {
         $('#gstin').hide();

@@ -364,7 +364,7 @@ class HomeController extends BaseHomeController
                 }
             } else {//For older clients in which version is not sent as parameter
                 // $product = $product->where('name', $title)->first();
-                $product_id = $product->whereRaw('LOWER(`name`) LIKE ? ', strtolower($title))->select('id')->first();
+                $product = $product->whereRaw('LOWER(`name`) LIKE ? ', strtolower($title))->select('id')->first();
                 if ($product) {
                     $productId = $product->id;
                     $product = ProductUpload::where('product_id', $productId)->where('is_restricted', 1)->orderBy('id', 'asc')->first();

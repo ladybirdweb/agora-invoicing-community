@@ -129,8 +129,7 @@ class TemplateController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param int $id
-     *
+     * @param  int  $id
      * @return \Response
      */
     public function destroy(Request $request)
@@ -202,8 +201,9 @@ class TemplateController extends Controller
 
     /**
      * Gets the least amount to be displayed on pricing page on the top.
-     * @param  int $id    Product id
-     * @return string     Product price with html
+     *
+     * @param  int  $id  Product id
+     * @return string Product price with html
      */
     public function leastAmount($id)
     {

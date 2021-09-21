@@ -55,8 +55,11 @@ class BaseAuthController extends Controller
         $key = ApiKey::where('id', 1)->select('msg91_auth_key', 'msg91_sender')->first();
 
         $response = $client->request('GET', 'https://api.msg91.com/api/v5/otp', [
-            'query' => ['authkey' => $key->msg91_auth_key, 'mobile' => $number, 'sender'=>$key->msg91_sender],
+          'query' => ['authkey' => $key->msg91_auth_key, 'mobiles' => $number, 'sender'=>$key->msg91_sender, 'template_id'=>'60979666dc49883cda77961b', 'OPT'=>'','form_params'=>['var'=>'']],
+
+            // 'query' => ['authkey' => $key->msg91_auth_key, 'mobile' => $number, 'sender'=>$key->msg91_sender],
         ]);
+
         $send = $response->getBody()->getContents();
         $array = json_decode($send, true);
         if ($array['type'] == 'error') {
@@ -203,8 +206,8 @@ class BaseAuthController extends Controller
                 $person = $pipedrive->persons()->add(['name' => $user->first_name.' '.$user->last_name, 'email'=>$user->email,
                     'phone'                                  => '+'.$user->mobile_code.$user->mobile, 'org_id'=>$orgId, ]);
 
-                $person = $pipedrive->persons()->add(['name' => $user->first_name.' '.$user->last_name, 'email'=>$user->email,
-                    'phone'=>'+'.$user->mobile_code.$user->mobile, 'org_id'=>$orgId, 'af1c1908b70a61f2baf8b33a975a185cce1aefe5'=>$countryFullName, ]);
+                $person = $pipedrive->persons()->add(['name' => $user->first_name .' '. $user->last_name,'email'=>$user->email,
+                    'phone'=>'+'.$user->mobile_code.$user->mobile,'org_id'=>$orgId,'af1c1908b70a61f2baf8b33a975a185cce1aefe5'=>$countryFullName]);
                 $personId = $person->getContent()->data->id;
                 $organization = $pipedrive->deals()->add(['title'=>$user->company.' '.'deal', 'person_id'=>$personId, 'org_id'=>$orgId]);
             }

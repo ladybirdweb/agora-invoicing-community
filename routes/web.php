@@ -339,7 +339,7 @@ use Illuminate\Http\Request;
             Route::post('edit-support-expiry', 'Order\BaseOrderController@editSupportExpiry');
             Route::post('edit-installation-limit', 'Order\BaseOrderController@editInstallationLimit');
             Route::get('get-installation-details/{orderId}', 'Order\OrderController@getInstallationDetails');
-            Route::post('choose', 'License\LocalizedLicenseController@choose');
+            Route::post('choose', 'License\LocalizedLicenseController@chooseLicenseMode');
             Route::get('LocalizedLicense', function () {
                 return view('themes.default1.common.Localized');
             });

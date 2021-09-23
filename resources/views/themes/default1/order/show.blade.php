@@ -108,7 +108,8 @@ input:checked + .slider:before {
                 {{Form::hidden('expiry', $order->subscription->ends_at)}}
                 {{Form::hidden('orderNo', $order->number)}}
                 {{Form::hidden('updates', $order->subscription->update_ends_at)}}
-                {{Form::hidden('support_expiry', $order->subscription->support_ends_at)}}  
+                {{Form::hidden('support_expiry', $order->subscription->support_ends_at)}}
+                {{Form::hidden('userId',$user->id)}}  
                 <br>
                 <div class="modal-footer">
                 <button type="button" id="close" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i>&nbsp;Close</button>

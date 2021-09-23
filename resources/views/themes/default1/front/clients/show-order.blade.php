@@ -49,7 +49,8 @@ active
                 {{Form::hidden('expiry', $order->subscription->ends_at)}}
                 {{Form::hidden('orderNo', $order->number)}}
                 {{Form::hidden('updates', $order->subscription->update_ends_at)}}
-                {{Form::hidden('support_expiry', $order->subscription->support_ends_at)}}  
+                {{Form::hidden('support_expiry', $order->subscription->support_ends_at)}}
+                {{Form::hidden('userId',$user->id)}}  
                 <br>
                 <div class="modal-footer">
                 <button type="button" id="close" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i>&nbsp;Close</button>
@@ -111,7 +112,7 @@ active
                         <tr>
                             <td><b>Localized License:</b></td>
                             <td>
-                            <button class="btn btn-primary mb-2 btn-sm" id="defaultModalLabel" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">Download License File</button>
+                            <button class="btn btn-primary mb-2 btn-sm" id="defaultModalLabel" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo" {{!Storage::disk('public')->exists('faveo-license-{'.$order->number.'}.txt') || $order->is_downloadable==0 ? "enabled" : "disabled"}}>Download License File</button>
                             </td>
                             <td><a href="{{url('downloadPrivate/'.$order->number)}}"><button class="btn btn-primary mb-2 btn-sm">Download License Key</button></a>
                             <i class="fa fa-info ml-2" title="It is mandatory to download both files inorder for licensing to work. Please place these files in Public\Script\Signature in faveo." {!!tooltip('Edit')!!} </i>

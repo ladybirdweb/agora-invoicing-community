@@ -11,19 +11,31 @@ use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
-
+use Illuminate\Support\Facades\Auth;
 class LocalizedLicenseController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('admin',['except'=>['downloadFile','downloadPrivate','storeFile']]);
+    }
     /**
      * Downloads the license file.
      * */
     public function downloadFile(Request $request)
     {
-        $orderNo = $request->get('orderNo');
-        $fileName = 'faveo-license-{'.$orderNo.'}.txt';
-        $filePath = storage_path('app/public/'.$fileName);
-
-        return response()->download($filePath);
+        if(Auth::check()){
+          $orderNo=$request->get('orderNo');
+          $fileName = "faveo-license-{".$orderNo."}.txt";
+         
+          $filePath = storage_path('app/public/'.$fileName);
+          return response()->download($filePath);
+      
+      }
+      else{
+        return redirect(url('login'));
+      }
     }
 
     /**
@@ -61,7 +73,7 @@ class LocalizedLicenseController extends Controller
     /**
      * Chooses which license mode is applicable File/Database.
      * */
-    public function choose(Request $request)
+    public function chooseLicenseMode(Request $request)
     {
         $chose = $request->input('choose');
         $orderNo = $request->input('orderNo');
@@ -86,53 +98,78 @@ class LocalizedLicenseController extends Controller
      * */
     public function storeFile(LocalizedLicenseRequest $request)
     {
-        $licenseVal = strtotime($request->input('expiry')) > 1 ? $request->input('expiry') : '--';
+        
+        if(Auth::check())
+        {
+        $userID = $request->input('userId');
+        if($userID==Auth::user()->id){
+        $licenseVal =  strtotime($request->input('expiry')) > 1 ? $request->input('expiry') : '--';
         $updateVal = strtotime($request->input('updates')) > 1 ? $request->input('updates') : '--';
-        $supportVal = strtotime($request->input('support_expiry')) > 1 ? $request->input('support_expiry') : '--';
+        $supportVal = strtotime($request ->input('support_expiry')) > 1 ?$request ->input('support_expiry'): '--';
 
-        if ($licenseVal == '--') {
+        if($licenseVal == '--'){
+
             $licenseExpiry = $licenseVal;
-        } else {
-            $licenseExpiry = Carbon::parse($licenseVal)->format('Y-m-d');
         }
-        if ($updateVal == '--') {
-            $updatesExpiry = $updateVal;
-        } else {
-            $updatesExpiry = Carbon::parse($updateVal)->format('Y-m-d');
-        }
-        if ($supportVal == '--') {
-            $supportExpiry = $supportVal;
-        } else {
-            $supportExpiry = Carbon::parse($supportVal)->format('Y-m-d');
-        }
+        else{
 
-        $domain = $request->input('domain');
-        $licenseCode = $request->input('code');
+            $licenseExpiry = Carbon::parse($licenseVal)->format('Y-m-d'); 
+        }
+         if($updateVal == '--')
+         {
+            $updatesExpiry=$updateVal;
+         }
+         else{
+
+             $updatesExpiry = Carbon::parse($updateVal)->format('Y-m-d'); 
+         }
+         if($supportVal == '--'){
+            $supportExpiry=$supportVal;
+         }
+         else{
+            $supportExpiry = Carbon::parse($supportVal)->format('Y-m-d'); 
+         }
+
+        $domain = $request->input('domain');  
+        $licenseCode = $request->input('code'); 
         $orderNo = $request->input('orderNo');
 
-        $userData = '<root_url>'.$domain.'</root_url><license_code>'.$licenseCode.'</license_code><license_expiry>'.$licenseExpiry.'</license_expiry><updates_expiry>'.$updatesExpiry.'</updates_expiry><support_expiry>'.$supportExpiry.'</support_expiry>';
+        $userData =  "<root_url>".$domain."</root_url><license_code>".$licenseCode."</license_code><license_expiry>".$licenseExpiry."</license_expiry><updates_expiry>".$updatesExpiry."</updates_expiry><support_expiry>".$supportExpiry."</support_expiry>";
 
         $encrypt = new EncryptDecryptController();
-        $encryptData = $encrypt->encrypt($userData, $orderNo);
+        $encryptData = $encrypt->encrypt($userData,$orderNo);
 
-        $fileName = 'faveo-license-{'.$orderNo.'}.txt';
-        Storage::disk('public')->put($fileName, $encryptData);
-
-        $link = $this->tempOrderLink($orderNo);
-
+        $fileName ='faveo-license-{'.$orderNo.'}.txt';
+        Storage::disk('public')->put($fileName,$encryptData);
+        
+        $link = $this->tempOrderLink($orderNo,$userID);
         return Redirect::to($link);
+        }
+        else{
+             return redirect(url('login'));
+        }
+    }
+    else{
+        return redirect(url('login'));
+    }
     }
 
     /**
      * Generates a temporary link to download the license file with a time constraint.
      * */
-    public function tempOrderLink($orderNo)
+    public function tempOrderLink($orderNo,$userID)
     {
-        $url = URL::temporarySignedRoute('event.rsvp', now()->addSeconds(30), [
-            'orderNo'=>$orderNo,
-        ]);
-
-        return $url;
+        if($userID==Auth::user()->id){
+    
+     $url=URL::temporarySignedRoute('event.rsvp', now()->addSeconds(30), [
+             'orderNo'=>$orderNo,            
+           ]);
+     return $url;
+     
+      }
+     else{
+       return redirect(url('login'));
+     }
     }
 
     /**

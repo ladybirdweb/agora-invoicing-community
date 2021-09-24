@@ -28,7 +28,6 @@ class LocalizedLicenseController extends Controller
         if(Auth::check()){
           $orderNo=$request->get('orderNo');
           $fileName = "faveo-license-{".$orderNo."}.txt";
-         
           $filePath = storage_path('app/public/'.$fileName);
           return response()->download($filePath);
       
@@ -66,7 +65,6 @@ class LocalizedLicenseController extends Controller
         $value = explode('}', $fileName);
         $orderNo = substr($value[0], 15);
         $fileName = storage_path('app/public/privateKey-'.$orderNo.'.txt');
-
         return response()->download($fileName);
     }
 
@@ -98,7 +96,7 @@ class LocalizedLicenseController extends Controller
      * */
     public function storeFile(LocalizedLicenseRequest $request)
     {
-        
+
         if(Auth::check())
         {
         $userID = $request->input('userId');

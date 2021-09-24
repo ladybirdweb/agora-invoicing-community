@@ -210,7 +210,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
     /**
      * Shoe Invoice when view Invoice is selected from dropdown in Admin Panel.
      *
-     * @param Request $request Get InvoiceId as Request
+     * @param  Request  $request  Get InvoiceId as Request
      */
     public function show(Request $request)
     {
@@ -237,8 +237,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
     /**
      * not in use case.
      *
-     * @param Request $request
-     *
+     * @param  Request  $request
      * @return type
      */
     public function generateById(Request $request)

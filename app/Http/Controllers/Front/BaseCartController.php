@@ -12,8 +12,7 @@ class BaseCartController extends Controller
     /**
      * Reduce No. of Agents When Minus button Is Clicked.
      *
-     * @param Request $request Get productid , Product quantity ,Price,Currency,Symbol as Request
-     *
+     * @param  Request  $request  Get productid , Product quantity ,Price,Currency,Symbol as Request
      * @return success
      */
     public function reduceAgentQty(Request $request)
@@ -40,8 +39,7 @@ class BaseCartController extends Controller
     /**
      * Update The Quantity And Price in cart when No of Agents Increasd.
      *
-     * @param Request $request Get productid , Product quantity ,Price,Currency,Symbol as Request
-     *
+     * @param  Request  $request  Get productid , Product quantity ,Price,Currency,Symbol as Request
      * @return success
      */
     public function updateAgentQty(Request $request)
@@ -92,8 +90,7 @@ class BaseCartController extends Controller
     /**
      * Reduce The Quantity And Price in cart whenMinus Button is Clicked.
      *
-     * @param Request $request Get productid , Product quantity ,Price as Request
-     *
+     * @param  Request  $request  Get productid , Product quantity ,Price as Request
      * @return success
      */
     public function reduceProductQty(Request $request)
@@ -120,8 +117,7 @@ class BaseCartController extends Controller
     /**
      * Update The Quantity And Price in cart when No of Products Increasd.
      *
-     * @param Request $request Get productid , Product quantity ,Price as Request
-     *
+     * @param  Request  $request  Get productid , Product quantity ,Price as Request
      * @return success
      */
     public function updateProductQty(Request $request)

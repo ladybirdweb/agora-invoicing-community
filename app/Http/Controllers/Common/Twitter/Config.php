@@ -32,8 +32,8 @@ class Config
     /**
      * Set the connection and response timeouts.
      *
-     * @param int $connectionTimeout
-     * @param int $timeout
+     * @param  int  $connectionTimeout
+     * @param  int  $timeout
      */
     public function setTimeouts($connectionTimeout, $timeout)
     {
@@ -42,7 +42,7 @@ class Config
     }
 
     /**
-     * @param bool $value
+     * @param  bool  $value
      */
     public function setDecodeJsonAsArray($value)
     {
@@ -50,7 +50,7 @@ class Config
     }
 
     /**
-     * @param string $userAgent
+     * @param  string  $userAgent
      */
     public function setUserAgent($userAgent)
     {
@@ -58,7 +58,7 @@ class Config
     }
 
     /**
-     * @param array $proxy
+     * @param  array  $proxy
      */
     public function setProxy(array $proxy)
     {
@@ -68,7 +68,7 @@ class Config
     /**
      * Whether to encode the curl requests with gzip or not.
      *
-     * @param bool $gzipEncoding
+     * @param  bool  $gzipEncoding
      */
     public function setGzipEncoding($gzipEncoding)
     {

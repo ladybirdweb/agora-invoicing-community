@@ -34,7 +34,7 @@ class Google2FAController extends Controller
     }
 
     /**
-     * @param \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function enableTwoFactor(Request $request)
@@ -85,7 +85,7 @@ class Google2FAController extends Controller
     }
 
     /**
-     * @param  App\Http\Requests\ValidateSecretRequest $request
+     * @param  App\Http\Requests\ValidateSecretRequest  $request
      * @return \Illuminate\Http\Response
      */
     public function postLoginValidateToken(ValidateSecretRequest $request)
@@ -160,7 +160,7 @@ class Google2FAController extends Controller
     /**
      * Disables 2FA for a user/agent, wipes out all the details related to 2FA from the Database.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return json \Illuminate\Http\Response
      */
     public function disableTwoFactor(Request $request)

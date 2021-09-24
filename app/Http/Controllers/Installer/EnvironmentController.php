@@ -16,7 +16,7 @@ class EnvironmentController extends BaseEnvironmentController
     protected $EnvironmentManager;
 
     /**
-     * @param EnvironmentManager $environmentManager
+     * @param  EnvironmentManager  $environmentManager
      */
     public function __construct(EnvironmentManager $environmentManager)
     {
@@ -60,8 +60,8 @@ class EnvironmentController extends BaseEnvironmentController
     /**
      * Processes the newly saved environment configuration (Classic).
      *
-     * @param Request $input
-     * @param Redirector $redirect
+     * @param  Request  $input
+     * @param  Redirector  $redirect
      * @return \Illuminate\Http\RedirectResponse
      */
     public function saveClassic(Request $input, Redirector $redirect)
@@ -75,8 +75,8 @@ class EnvironmentController extends BaseEnvironmentController
     /**
      * Processes the newly saved environment configuration (Form Wizard).
      *
-     * @param Request $request
-     * @param Redirector $redirect
+     * @param  Request  $request
+     * @param  Redirector  $redirect
      * @return \Illuminate\Http\RedirectResponse
      */
     public function saveWizard(Request $request, Redirector $redirect)

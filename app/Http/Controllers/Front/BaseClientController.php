@@ -20,9 +20,8 @@ class BaseClientController extends Controller
      *
      * @date   2019-01-06
      *
-     * @param Order $orders    Order For the Client
-     * @param int   $productid Product id for the Order
-     *
+     * @param  Order  $orders  Order For the Client
+     * @param  int  $productid  Product id for the Order
      * @return array Show Modal Popup if Condition Satisfies
      */
     public function getPopup($query, int $productid)

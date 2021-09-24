@@ -209,8 +209,7 @@ class LicenseController extends Controller
      *
      * @date   2019-05-11T11:31:07+0530
      *
-     * @param string $domain
-     *
+     * @param  string  $domain
      * @return array
      */
     protected function getIpAndDomain($domain)

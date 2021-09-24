@@ -314,8 +314,7 @@ class ProductController extends BaseProductController
     /**
      * Show the form for editing the specified resource.
      *
-     * @param int $id
-     *
+     * @param  int  $id
      * @return \Response
      */
     public function edit($id)
@@ -376,8 +375,7 @@ class ProductController extends BaseProductController
     /**
      * Update the specified resource in storage.
      *
-     * @param int $id
-     *
+     * @param  int  $id
      * @return \Response
      */
     public function update($id, Request $request)
@@ -432,8 +430,7 @@ class ProductController extends BaseProductController
     /**
      * Remove the specified resource from storage.
      *
-     * @param int $id
-     *
+     * @param  int  $id
      * @return \Response
      */
     public function destroy(Request $request)
@@ -492,8 +489,7 @@ class ProductController extends BaseProductController
     /**
      * Remove the specified resource from storage.
      *
-     * @param int $id
-     *
+     * @param  int  $id
      * @return \Response
      */
     public function fileDestroy(Request $request)

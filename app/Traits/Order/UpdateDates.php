@@ -187,7 +187,6 @@ trait UpdateDates
      * @date   2019-08-08T11:02:50+0530
      *
      * @param  Request
-     *
      * @return [type]
      */
     public function editInstallationLimit(Request $request)

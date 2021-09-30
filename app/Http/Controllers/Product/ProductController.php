@@ -281,8 +281,9 @@ class ProductController extends BaseProductController
             if ($licenseStatus) { //If License Setting Status is on,Add Product to the License Manager
                 $addProductToLicensing = $this->licensing->addNewProduct($input['name'], $input['product_sku']);
             }
-            $updateCont = new \App\Http\Controllers\AutoUpdate\AutoUpdateController();
-            $addProductToLicensing = $updateCont->addNewProductToAUS($input['name'], $input['product_sku']);
+
+           /* $updateCont = new \App\Http\Controllers\AutoUpdate\AutoUpdateController();
+            $addProductToLicensing = $updateCont->addNewProductToAUS($input['name'], $input['product_sku']);*/
             if ($request->hasFile('image')) {
                 $image = $request->file('image')->getClientOriginalName();
                 $imagedestinationPath = 'common/images';

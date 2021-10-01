@@ -509,7 +509,6 @@ use Illuminate\Http\Request;
 
             Route::post('cloud-details', 'Tenancy\TenantController@saveCloudDetails')->name('cloud-details')->middleware('admin');
 
-
             /*
              * Api
              */

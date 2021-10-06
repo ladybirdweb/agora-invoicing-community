@@ -10,25 +10,33 @@ class AutoUpdateController extends Controller
 {
     private $api_key_secret;
     private $url;
-    private $update;
+    private $license;
+    private $token;
 
-    public function __construct()
+     public function __construct()
     {
         $model = new ApiKey();
-        $this->update = $model->firstOrFail();
+        $this->license = $model->first();
 
-        $this->api_key_secret = $this->update->update_api_secret;
-        $this->url = $this->update->update_api_url;
+        $this->api_key_secret = $this->license->license_api_secret;
+        $this->url = $this->license->license_api_url;
+
+
+        $this->client_id = $this->license->license_client_id;
+        $this->client_secret = $this->license->license_client_secret;
+        $this->grant_type = $this->license->license_grant_type;
     }
-  
-
+     /**
+       * Generate a time limited access token to access update manager
+       * */
       private function oauthAuthorization()
       {
         $url = $this->url;
         $data = [
-            'client_id'=>3,
-            'client_secret'=>'al2kUNnATgwPYuxZTRYGQrOAQjeEjr5TUDOrTwgI',
-            'grant_type' => 'client_credentials',
+            'client_id'=> $this->client_id,
+            'client_secret'=>$this->client_secret,
+            'grant_type' => $this->grant_type,
+
         ];
         $response = $this->postCurl($url."oauth/token",$data);
         $response=json_decode($response);
@@ -87,11 +95,13 @@ class AutoUpdateController extends Controller
 
     public function addNewVersion($product_id, $version_number, $upgrade_zip_file, $version_status)
     {
+        
         $url = $this->url;
         $api_key_secret = $this->api_key_secret;
         $OauthDetails = $this->oauthAuthorization();
         $token = $OauthDetails->access_token;
         $addNewVersion = $this->postCurl($url."api/admin/versions/add", "api_key_secret=$api_key_secret&product_id=$product_id&version_number=$version_number&version_upgrade_file=$upgrade_zip_file&version_status=$version_status&product_status=1",$token);
+       
     }
 
     /*
@@ -120,7 +130,7 @@ class AutoUpdateController extends Controller
         $api_key_secret = $this->api_key_secret;
         $OauthDetails = $this->oauthAuthorization();
         $token = $OauthDetails->access_token;
-        $getVersion = $this->postCurl($url.'api/admin/search', "api_key_secret=$api_key_secret&search_type=version&search_keyword=$product_sku",$token);
+        $getVersion = $this->postCurl($url.'api/admin/search', "api_key_secret=$api_key_secret&search_type=version&search_keyword=$product_sku&isLicenseSearchApi=0",$token);
         $details = json_decode($getVersion);
         if ($details->api_error_detected == 0 && is_array($details->page_message)) {
             foreach ($details->page_message as $detail) {

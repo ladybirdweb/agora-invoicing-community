@@ -58,6 +58,9 @@ class SettingsController extends BaseSettingsController
         try {
             $licenseSecret = $apikeys->pluck('license_api_secret')->first();
             $licenseUrl = $apikeys->pluck('license_api_url')->first();
+            $licenseClientId = $apikeys->pluck('license_client_id')->first();
+            $licenseClientSecret = $apikeys->pluck('license_client_secret')->first();
+            $licenseGrantType = $apikeys->pluck('license_grant_type')->first();
             $status = StatusSetting::pluck('license_status')->first();
             $captchaStatus = StatusSetting::pluck('recaptcha_status')->first();
             $updateStatus = StatusSetting::pluck('update_settings')->first();
@@ -86,7 +89,7 @@ class SettingsController extends BaseSettingsController
             $mailSendingStatus = Setting::value('sending_status');
             $model = $apikeys->find(1);
 
-            return view('themes.default1.common.apikey', compact('model', 'status', 'licenseSecret', 'licenseUrl', 'siteKey', 'secretKey', 'captchaStatus', 'updateStatus', 'updateSecret', 'updateUrl', 'mobileStatus', 'mobileauthkey', 'msg91Sender', 'emailStatus', 'twitterStatus', 'twitterKeys', 'zohoStatus', 'zohoKey', 'rzpStatus', 'rzpKeys', 'mailchimpSetting', 'mailchimpKey', 'termsStatus', 'termsUrl', 'pipedriveKey', 'pipedriveStatus', 'domainCheckStatus', 'mailSendingStatus'));
+            return view('themes.default1.common.apikey', compact('model', 'status', 'licenseSecret', 'licenseUrl','licenseClientId','licenseClientSecret','licenseGrantType','siteKey', 'secretKey', 'captchaStatus', 'updateStatus', 'updateSecret', 'updateUrl', 'mobileStatus', 'mobileauthkey', 'msg91Sender', 'emailStatus', 'twitterStatus', 'twitterKeys', 'zohoStatus', 'zohoKey', 'rzpStatus', 'rzpKeys', 'mailchimpSetting', 'mailchimpKey', 'termsStatus', 'termsUrl', 'pipedriveKey', 'pipedriveStatus', 'domainCheckStatus', 'mailSendingStatus'));
         } catch (\Exception $ex) {
             return redirect('/')->with('fails', $ex->getMessage());
         }

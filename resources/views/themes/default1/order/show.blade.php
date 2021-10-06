@@ -209,9 +209,7 @@ input:checked + .slider:before {
                                                    <td><b>License Code:</b></td>
                                                    <td id="s_key" data-type="serialkey">{{($order->serial_key)}}</td>
 
-                                                   <td> @component('mini_views.copied_flash_text',[
-                                 'navigations'=>[
-                                   ['btnName'=>'lic_btn','slot'=>'license','style'=>'<span data-type="copy" style="font-size: 15px; pointer-events: initial; cursor: pointer; display: block;" id="copyBtn" title="Click to copy to clipboard"><i class="fas fa-copy"></i></span><span class="badge badge-success badge-xs pull-right" id="copied1" style="display:none;margin-top:-40px;margin-left:-20px;position: absolute;">Copied</span>'],
+                                                   <td> @component('mini_views.copied_flash_text',['navigations'=>[['btnName'=>'lic_btn','slot'=>'license','style'=>'<span data-type="copy" style="font-size: 15px; pointer-events: initial; cursor: pointer; display: block;" id="copyBtn" title="Click to copy to clipboard"><i class="fas fa-copy"></i></span><span class="badge badge-success badge-xs pull-right" id="copied1" style="display:none;margin-top:-40px;margin-left:-20px;position: absolute;">Copied</span>'],
                                     ]
                                 ])
 

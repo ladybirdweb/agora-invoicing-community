@@ -103,7 +103,7 @@ input:checked + .slider:before {
                   <tbody>
                 <tr>
                   
-                  <td class="col-md-2">Auto PHP Licenser</td>
+                  <td class="col-md-2">Auto Faveo Licenser & Update Manager</td>
                   <td class="col-md-2">
                     <label class="switch toggle_event_editing">
                           
@@ -119,11 +119,18 @@ input:checked + .slider:before {
                         {!! Form::text('license_api',null,['class' => 'form-control secretHide','disabled'=>'disabled'
                         ]) !!}
 
-
-
                         <!-- last name -->
                         {!! Form::label('lic_api_url',Lang::get('message.lic_api_url')) !!} :
                         {!! Form::text('license_api',null,['class' => 'form-control urlHide','disabled'=>'disabled']) !!}
+
+                        {!! Form::label('lic_client_id',Lang::get('message.lic_client_id')) !!} :
+                        {!! Form::text('license_client_id',null,['class' => 'form-control urlHide','disabled'=>'disabled']) !!}
+
+                        {!! Form::label('lic_client_secret',Lang::get('message.lic_client_secret')) !!} :
+                        {!! Form::text('license_client_secret',null,['class' => 'form-control urlHide','disabled'=>'disabled']) !!}
+
+                        {!! Form::label('lic_grant_type',Lang::get('message.lic_grant_type')) !!} :
+                        {!! Form::text('license_grant_type',null,['class' => 'form-control urlHide','disabled'=>'disabled']) !!}
 
                   </td>
                   <td class="col-md-4 LicenseField hide">
@@ -132,13 +139,30 @@ input:checked + .slider:before {
                         <!-- last name -->
                         {!! Form::label('lic_api_secret',Lang::get('message.lic_api_secret')) !!}
                         {!! Form::text('license_api_secret',$licenseSecret,['class' => 'form-control','id'=>'license_api_secret']) !!}
-                         <h6 id="license_apiCheck"></h6>
-                         <br/>
+                        <h6 id="license_apiCheck"></h6>
+                        <br/>
                   
                         <!-- last name -->
                         {!! Form::label('lic_api_url',Lang::get('message.lic_api_url')) !!} :
-                        {!! Form::text('license_api_url',$licenseUrl,['class' => 'form-control','id'=>'license_api_url']) !!}
+                        {!! Form::text('license_api_url',$licenseUrl,['class' => 'form-control','id'=>'license_api_url']) !!} 
                         <h6 id="license_urlCheck"></h6>
+                        <br/>
+
+                        {!! Form::label('lic_client_id',Lang::get('message.lic_client_id')) !!} :
+                        {!! Form::text('license_client_id',$licenseClientId,['class' => 'form-control','id'=>'license_client_id']) !!}  
+                         <h6 id="license_clientIdCheck"></h6>
+                        <br/>
+
+                        {!! Form::label('lic_client_secret',Lang::get('message.lic_client_secret')) !!} :
+                        {!! Form::text('license_client_secret',$licenseClientSecret,['class' => 'form-control','id'=>'license_client_secret']) !!}
+                        <h6 id="license_clientSecretCheck"></h6>
+                        <br/>
+                     
+
+                        {!! Form::label('lic_grant_type',Lang::get('message.lic_grant_type')) !!} :
+                        {!! Form::text('license_grant_type',$licenseGrantType,['class' => 'form-control','id'=>'license_grant_type']) !!}
+                         <h6 id="license_grantTypeCheck"></h6>
+                        
                    
                </td>
                   <td class="col-md-2"><button type="submit" class="form-group btn btn-primary"  onclick="licenseDetails()" id="submit"><i class="fa fa-save">&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
@@ -166,7 +190,7 @@ input:checked + .slider:before {
                 </tr>
 
 
-                <tr>
+                <!--<tr>
                 
                   <td class="col-md-2">Auto Update</td>
                   <td class="col-md-2">
@@ -181,32 +205,32 @@ input:checked + .slider:before {
 
                   <td class="col-md-4 updateEmptyField">
                   {!! Form::label('update_api_secret',Lang::get('message.lic_api_secret')) !!}
-                        {!! Form::text('update_api',null,['class' => 'form-control updatesecretHide','disabled'=>'disabled']) !!}
+                        {!! Form::text('update_api',null,['class' => 'form-control updatesecretHide','disabled'=>'disabled']) !!}-->
 
 
 
                         <!-- last name -->
-                        {!! Form::label('update_api_url',Lang::get('message.lic_api_url')) !!} :
+                       <!-- {!! Form::label('update_api_url',Lang::get('message.lic_api_url')) !!} :
                         {!! Form::text('update_api',null,['class' => 'form-control updateurlHide','disabled'=>'disabled']) !!}
 
                   </td>
-                  <td class="col-md-4 updateField hide">
+                  <td class="col-md-4 updateField hide">-->
                     
                    
                         <!-- last name -->
-                        {!! Form::label('update_api_secret',Lang::get('message.lic_api_secret')) !!}
+                        <!--{!! Form::label('update_api_secret',Lang::get('message.lic_api_secret')) !!}
                         {!! Form::text('update_api_secret',$updateSecret,['class' => 'form-control','id'=>'update_api_secret']) !!}
                          <h6 id="update_apiCheck"></h6>
-                         <br/>
+                         <br/>-->
                   
                         <!-- last name -->
-                        {!! Form::label('update_api_url',Lang::get('message.lic_api_url')) !!} :
+                        <!--{!! Form::label('update_api_url',Lang::get('message.lic_api_url')) !!} :
                         {!! Form::text('update_api_url',$updateUrl,['class' => 'form-control','id'=>'update_api_url']) !!}
                         <h6 id="update_urlCheck"></h6>
                    
                </td>
                   <td class="col-md-2" ><button type="submit" class="form-group btn btn-primary" onclick="updateDetails()" id="submitudpate"><i class="fa fa-save">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
-                </tr>
+                </tr>-->
 
 
 
@@ -498,7 +522,10 @@ input:checked + .slider:before {
         if ($(this).prop("checked")) {
             // checked
            $('#license_api_secret').val();
-                $('#license_api_url').val();
+            $('#license_api_url').val();
+            $('#license_client_id').val();
+            $('#license_client_secret').val();
+            $('#license_grant_type').val();
             $('.LicenseField').show();
             $('.licenseEmptyField').hide();
         }
@@ -530,7 +557,27 @@ if ($('#License').prop("checked")) {
               $('#license_urlCheck').css({"color":"red","margin-top":"5px"});
               return false;
           }
-         
+            if ($('#license_client_id').val() =="" ) {
+             $('#license_clientIdCheck').show();
+             $('#license_clientIdCheck').html("Please Enter Client Id For License Manager");
+              $('#license_client_id').css("border-color","red");
+              $('#license_clientIdCheck').css({"color":"red","margin-top":"5px"});
+              return false;
+          }
+            if ($('#license_client_secret').val() =="" ) {
+             $('#license_clientSecretCheck').show();
+             $('#license_clientSecretCheck').html("Please Enter Your Client Secret For License Manager");
+              $('#license_client_secret').css("border-color","red");
+              $('#license_clientSecretCheck').css({"color":"red","margin-top":"5px"});
+              return false;
+          }
+            if ($('#license_grant_type').val() =="" ) {
+             $('#license_grantTypeCheck').show();
+             $('#license_grantTypeCheck').html("Please Enter Your Grant Type For License Manager");
+              $('#license_grant_type').css("border-color","red");
+              $('#license_grantTypeCheck').css({"color":"red","margin-top":"5px"});
+              return false;
+          }        
     }
     else{
           var checkboxvalue = 0;
@@ -544,6 +591,10 @@ if ($('#License').prop("checked")) {
        "status": checkboxvalue,
        "license_api_secret": $('#license_api_secret').val(),
        "license_api_url" :$('#license_api_url').val(),
+        "license_client_id": $('#license_client_id').val(),
+       "license_client_secret" :$('#license_client_secret').val(),
+      "license_grant_type": $('#license_grant_type').val(),
+      
       },
       success: function (response) {
             $('#alertMessage').show();

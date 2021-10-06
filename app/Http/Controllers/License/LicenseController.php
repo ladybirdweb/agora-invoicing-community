@@ -23,15 +23,23 @@ class LicenseController extends Controller
 
         $this->api_key_secret = $this->license->license_api_secret;
         $this->url = $this->license->license_api_url;
+
+        //To authorize to access license manager 
+        $this->client_id = $this->license->license_client_id;
+        $this->client_secret = $this->license->license_client_secret;
+        $this->grant_type = $this->license->license_grant_type;
     }
 
+      /**
+       * Generate a time limited access token to access license manager 
+       * */
       private function oauthAuthorization()
       {
         $url = $this->url;
         $data = [
-            'client_id'=>3,
-            'client_secret'=>'al2kUNnATgwPYuxZTRYGQrOAQjeEjr5TUDOrTwgI',
-            'grant_type' => 'client_credentials',
+            'client_id'=> $this->client_id,
+            'client_secret'=>$this->client_secret,
+            'grant_type' => $this->grant_type,
         ];
         $response = $this->postCurl($url."oauth/token",$data);
         $response=json_decode($response);
@@ -82,7 +90,6 @@ class LicenseController extends Controller
         $OauthDetails = $this->oauthAuthorization();
         $token = $OauthDetails->access_token;
         $addProduct = $this->postCurl($url.'api/admin/products/add', "api_key_secret=$api_key_secret&product_title=$product_name&product_key=$key&product_sku=$product_sku&product_status=1",$token); 
-          
     }
 
     /*
@@ -121,7 +128,7 @@ class LicenseController extends Controller
             $api_key_secret = $this->api_key_secret;
             $OauthDetails = $this->oauthAuthorization();
             $token = $OauthDetails->access_token;
-            $getProductId = $this->postCurl($url.'api/admin/search', "api_key_secret=$api_key_secret&search_type=product&search_keyword=$product_sku",$token);
+            $getProductId = $this->postCurl($url.'api/admin/search', "api_key_secret=$api_key_secret&search_type=product&search_keyword=$product_sku&isLicenseSearchApi=1",$token);
             $details = json_decode($getProductId);
 
             if ($details->api_error_detected == 0 && is_array($details->page_message)) {//This is not true if Product_sku is updated
@@ -171,7 +178,7 @@ class LicenseController extends Controller
         $api_key_secret = $this->api_key_secret;
         $OauthDetails = $this->oauthAuthorization();
         $token = $OauthDetails->access_token;
-        $getUserId = $this->postCurl($url.'api/admin/search', "api_key_secret=$api_key_secret&search_type=client&search_keyword=$email",$token);
+        $getUserId = $this->postCurl($url.'api/admin/search', "api_key_secret=$api_key_secret&search_type=client&search_keyword=$email&isLicenseSearchApi=1",$token);
 
         $details = json_decode($getUserId);
         if ($details->api_error_detected == 0 && is_array($details->page_message)) {//This is not true if email is updated
@@ -275,7 +282,7 @@ class LicenseController extends Controller
         $api_key_secret = $this->api_key_secret;
         $OauthDetails = $this->oauthAuthorization();
         $token = $OauthDetails->access_token;
-        $getLicenseId = $this->postCurl($url.'api/admin/search', "api_key_secret=$api_key_secret&search_type=license&search_keyword=$licenseCode",$token);
+        $getLicenseId = $this->postCurl($url.'api/admin/search', "api_key_secret=$api_key_secret&search_type=license&search_keyword=$licenseCode&isLicenseSearchApi=1",$token);
         $details = json_decode($getLicenseId);
         if ($details->api_error_detected == 0 && is_array($details->page_message)) {
             foreach ($details->page_message as $detail) {
@@ -321,7 +328,7 @@ class LicenseController extends Controller
         $api_key_secret = $this->api_key_secret;
         $OauthDetails = $this->oauthAuthorization();
         $token = $OauthDetails->access_token;
-        $getInstallId = $this->postCurl($url.'api/admin/search', "api_key_secret=$api_key_secret&search_type=installation&search_keyword=$licenseCode",$token);
+        $getInstallId = $this->postCurl($url.'api/admin/search', "api_key_secret=$api_key_secret&search_type=installation&search_keyword=$licenseCode&isLicenseSearchApi=1",$token);
 
         return $getInstallId;
     }

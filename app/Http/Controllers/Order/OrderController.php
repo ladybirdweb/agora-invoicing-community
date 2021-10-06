@@ -109,9 +109,9 @@ class OrderController extends BaseOrderController
 
     public function getOrders(Request $request)
     {
+
         $orderSearch = new OrderSearchController();
         $query = $orderSearch->advanceOrderSearch($request);
-
         return \DataTables::of($query)
             ->setTotalRecords($query->count())
             ->addColumn('checkbox', function ($model) {

@@ -30,7 +30,7 @@ class BaseClientController extends Controller
         $permissions = LicensePermissionsController::getPermissionsForProduct($productid);
         if ($permissions['downloadPermission'] == 1) { //If the Product has doownlaod permission
             if ($query->github_owner && $query->github_repository) {
-                $listUrl = $this->downloadGithubPopup($query->client, $orders->invoice_id, $productid);
+                $listUrl = $this->downloadGithubPopup($query->client, $query->invoice_id, $productid);
             } else {
                 $listUrl = $this->downloadPopup($query->client, $query->invoice_number, $productid);
             }

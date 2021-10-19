@@ -3,6 +3,67 @@
 Order
 @stop
 @section('content-header')
+
+<style>
+    .col-2, .col-lg-2, .col-lg-4, .col-md-2, .col-md-4,.col-sm-2 {
+        width: 0px;
+    }
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 24px;
+}
+
+.switch input {display:none;}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+</style>
     <div class="col-sm-6">
         <h1>Order Details</h1>
     </div>
@@ -20,12 +81,46 @@ Order
     .scrollit {
         overflow:scroll;
         height:300px;
+        
     }
     .btn-xs{
         padding:.300rem!important;
     }
 </style>
 @section('content')
+    
+
+        <!-- Modal for Localized License domain-->
+        
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                 <div class="modal-content">
+                  <div class="modal-header">
+                   <h5 class="modal-title" id="exampleModalLabel">Please Enter Your Domain That You Wish To Host</h5>
+                  </div>
+                <div class="modal-body">
+              <form method="GET" action="{{url('uploadFile')}}">
+                 {!! csrf_field() !!}
+                <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Domain Name:</label>
+                <input type="text" class="form-control" id="recipient-name" placeholder="https://faveo.helpdesk.com" name="domain" value="" required>
+                {{Form::hidden('code',  $order->serial_key)}}
+                {{Form::hidden('expiry', $order->subscription->ends_at)}}
+                {{Form::hidden('orderNo', $order->number)}}
+                {{Form::hidden('updates', $order->subscription->update_ends_at)}}
+                {{Form::hidden('support_expiry', $order->subscription->support_ends_at)}}  
+                <br>
+                <div class="modal-footer">
+                <button type="button" id="close" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i>&nbsp;Close</button>
+                <button type="submit" id="domainSave" class="done btn btn-primary"><i class="fas fa-save"></i>&nbsp;Done</button>
+            </div>
+                </div>  
+             </form>
+           </div>
+           </div>
+           </div>
+           </div>
+
     <div class="card card-secondary card-outline">
 <div class="row">
 <div class="col-md-12">
@@ -174,14 +269,12 @@ Order
                                                    <td></td>
                                                </tr> -->
                                                @endif
-
-
                                                <tr>
                                                    <td><b>Updates Expiry:</b></td>
                                                    <td class="brtags"> {!! $date !!} </td>
                                                    <td>
                                                        @if($date != '--')
-                                                           <button class="btn btn-sm btn-secondary btn-xs" id="updates_end" updates-id="{{$order->id}}" data-date="{{getTimeInLoggedInUserTimeZone($subscription->update_ends_at,'m/d/Y')}}" '><i class="fa fa-edit" style='color:white;' {!! tooltip('Edit') !!}</i></button>
+                                                           <button class="btn btn-sm btn-secondary btn-xs" id="updates_end" updates-id="{{$order->id}}" data-date="{{getTimeInLoggedInUserTimeZone($subscription->update_ends_at,'m/d/Y')}}"><i class="fa fa-edit" style='color:white;' {!! tooltip('Edit') !!}</i></button>
                                                        @endif
                                                    </td>
                                                </tr>
@@ -197,26 +290,36 @@ Order
                                                    </td>
                                                </tr>
 
+                                               
                                                <tr>
                                                    <td><b>Support Expiry:</b></td>
                                                    <td class="brtags">{!! $supdate !!}</td>
                                                    <td>
                                                        @if($supdate != '--')
                                                            <button class="btn btn-sm btn-secondary btn-xs" id="support_end" support-id="{{$order->id}}" support-date="{{getTimeInLoggedInUserTimeZone($subscription->support_ends_at,'m/d/Y')}}" ><i class="fa fa-edit" style='color:white;' {!! tooltip('Edit') !!}</i></button>
-                                                           </button>
+                                                             </button>
                                                        @endif
                                                    </td>
+                                               </tr>  
+                                               <tr>
+                                                   <td><b>Switch to localized license?</b></td>
+                                                   <td class="brtags"> 
+                                                 <label class="switch toggle_event_editing">
+                                                     <input data-id="{{$order->number}}" class="localized-slider checkbox" type="checkbox" data-onstyle="success" data-offstyle="danger" data-toggle="toggle" data-on="Active" data-off="InActive" {{$order->license_mode=='File' ? 'checked' : '' }}>
+                                                   <span class="slider round"></span>
+                                               </label>
+                                                </td>
+                                                <td>
+                                                @if($order->license_mode=='File')  
+                                                <button class="btn btn-secondary mb-2 btn-sm" id="defaultModalLabel" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo"> <span title="Enter client domain and a license file will be downloaded." {!!tooltip('Edit')!!} Enter Domain & Download License File</span></button>
+                                                @endif
+                                               </td>
                                                </tr>
-
                                                </tbody>
                                            </table>
-
-
-
                                        </div>
-                                       </div>
+                                    </div>
                                    </div>
-
                                </div>
 
            @if($licenseStatus)
@@ -895,4 +998,26 @@ Order
 
    
 </script>
+
+<script>
+
+  $(function() {
+    $('.localized-slider').change(function() {
+        var choose = $(this).prop('checked') == true ? 1 : 0; 
+        var orderNo = $(this).data('id'); 
+         
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: "{{url('choose')}}",
+            data: {'choose': choose, 'orderNo': orderNo},
+            success: function(data){  
+            $('#response').html(data);
+            location.reload();             
+            }
+        });
+    })
+  })
+</script>
+
 @stop

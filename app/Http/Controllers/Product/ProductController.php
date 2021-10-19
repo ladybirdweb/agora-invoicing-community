@@ -333,7 +333,7 @@ class ProductController extends BaseProductController
             $url = url('/');
             $cartUrl = $url.'/cart?id='.$id;
             $product = $this->product->where('id', $id)->first();
-            $selectedGroup = ProductGroup:: where('id', $product->group)->pluck('name')->toArray();
+            $selectedGroup = ProductGroup::where('id', $product->group)->pluck('name')->toArray();
             $taxes = $this->tax_class->pluck('name', 'id')->toArray();
             $taxes = $this->tax_class->with('tax:tax_classes_id,id,name')->get()->toArray();
             $saved_taxes = $this->tax_relation->where('product_id', $id)->get();

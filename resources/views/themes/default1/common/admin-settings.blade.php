@@ -174,6 +174,18 @@ Settings
                 </div>
 
                  <!--/.col-md-2-->
+                  <div class="col-md-2 col-sm-6">
+                    <div class="settingiconblue">
+                        <div class="settingdivblue">
+                            <a href="{{url('LocalizedLicense')}}">
+                                <span class="fa-stack fa-2x">
+                                    <i class="fa fa-file-word fa-stack-1x"></i>
+                                </span>
+                            </a>
+                        </div>
+                        <p class="box-title">Localized License</p>
+                    </div>
+                </div>
                   
             </div>
     </div>

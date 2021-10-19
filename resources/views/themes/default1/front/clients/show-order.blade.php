@@ -31,6 +31,37 @@ active
                 </div>
             </div>
 
+        <!-- Modal for Localized License domain-->
+        
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                 <div class="modal-content">
+                  <div class="modal-header">
+                   <h5 class="modal-title" id="exampleModalLabel">Please Enter Your Domain That You Wish To Host</h5>
+                  </div>
+                <div class="modal-body">
+              <form method="GET" action="{{url('uploadFile')}}">
+                 {!! csrf_field() !!}
+                <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Domain Name:</label>
+                <input type="text" class="form-control" id="recipient-name" placeholder="https://faveo.helpdesk.com" name="domain" value="">
+                {{Form::hidden('code',  $order->serial_key)}}
+                {{Form::hidden('expiry', $order->subscription->ends_at)}}
+                {{Form::hidden('orderNo', $order->number)}}
+                {{Form::hidden('updates', $order->subscription->update_ends_at)}}
+                {{Form::hidden('support_expiry', $order->subscription->support_ends_at)}}  
+                <br>
+                <div class="modal-footer">
+                <button type="button" id="close" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i>&nbsp;Close</button>
+                <button type="submit" id="domainSave" class="done btn btn-primary"><i class="fas fa-save"></i>&nbsp;Done</button>
+            </div>
+                </div>  
+             </form>
+           </div>
+           </div>
+           </div>
+           </div>
+
             @component('mini_views.navigational_view', [
                 'navigations'=>[
                     ['id'=>'license-details', 'name'=>'License Details', 'active'=>1, 'slot'=>'license','icon'=>'fas fa-file'],
@@ -39,8 +70,10 @@ active
                     ['id'=>'payment-receipts', 'name'=>'Payment Receipts', 'slot'=>'payment','icon'=>'fas fa-briefcase']
                 ]
             ])
+               
 
                 @slot('license')
+                 
                     <table class="table">
                         <input type="hidden" name="domainRes" id="domainRes" value={{$allowDomainStatus}}>
                         <tbody>
@@ -52,19 +85,12 @@ active
                         </tr>
                         @if ($licenseStatus == 1)
                             <tr>
-
                                 <td><b>Licensed Domain/IP:</b></td>
                                 <td>{{$order->domain}} </td>
-
-                                <td>
-                                   
+                                <td>                                 
                                     <button class="btn btn-danger mb-2 btn-sm"  id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}">
                                         Reissue License</button></td>
-                            </tr>
-                            
-
-
-                            
+                            </tr>         
                         @endif
                        
                         <tr>
@@ -79,8 +105,19 @@ active
                             <td></td>
                         </tr>
 
-                        </tbody>
-
+                        @if($order->license_mode=='File')
+                        <tr>
+                            <td><b>Localized License:</b></td>
+                            <td>
+                            <button class="btn btn-primary mb-2 btn-sm" id="defaultModalLabel" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">Download License File</button>
+                            </td>
+                            <td><a href="{{url('downloadPrivate/'.$order->number)}}"><button class="btn btn-primary mb-2 btn-sm">Download License Key</button></a>
+                            <i class="fa fa-info ml-2" title="It is mandatory to download both files inorder for licensing to work. Please place these files in Public\Script\Signature in faveo." {!!tooltip('Edit')!!} </i>
+                            </td>  
+                        </tr>
+                       @endif
+   
+                </tbody>
 
                     </table>
                         <script src="{{asset('common/js/licCode.js')}}"></script>
@@ -100,13 +137,7 @@ active
                     
                 </tr></thead>
                 </table>
-
-                                    
                   
-
-                    
-                    
-
                    <script>
                        $('ul.nav-sidebar a').filter(function() {
                           return this.id == 'all_order';
@@ -217,12 +248,20 @@ active
     </div>
 
 
+
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
 
 <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 
 
 <script type="text/javascript">
+               
+
+               $('.done').click(function() 
+               {
+               $(this).hide(); 
+               });
+
         $('#showorder-table').DataTable({
             processing: true,
             serverSide: true,
@@ -392,8 +431,7 @@ active
         });
          }
          });
+
     </script>
-
-
 
 @stop

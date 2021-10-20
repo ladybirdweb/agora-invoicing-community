@@ -19,7 +19,7 @@ class AddLicenseApiSecretToApiKeys extends Migration
             }
             if (! Schema::hasColumn('api_keys', 'license_api_url')) {
                 $table->string('license_api_url', 255)->nullable();
-            } 
+            }
         });
     }
 

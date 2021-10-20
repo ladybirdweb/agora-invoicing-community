@@ -21,8 +21,9 @@ class OrderSearchController extends Controller
     /**
      * Perform Advance Search for Orders Page.
      *
-     * @param Request $request
+     * @param  Request  $request
      * @return array
+     *
      * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
      *
      * @date   2019-01-19T01:35:08+0530
@@ -48,6 +49,7 @@ class OrderSearchController extends Controller
 
     /**
      * Gets base query for orders.
+     *
      * @return Builder
      */
     private function getBaseQueryForOrders()
@@ -98,6 +100,7 @@ class OrderSearchController extends Controller
      * @param $versionFrom
      * @param $versionTill
      * @return Builder
+     *
      * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
      */
     private function getSelectedVersionOrders($baseQuery, $version, $productId)
@@ -136,9 +139,8 @@ class OrderSearchController extends Controller
      *
      * @date   2020-01-29T17:35:05+0530
      *
-     * @param  string $allInstallation
-     * @param  App\Model\Order $join The order instance
-     *
+     * @param  string  $allInstallation
+     * @param  App\Model\Order  $join  The order instance
      * @return $join
      */
     public function allInstallations($allInstallation, $join)
@@ -169,9 +171,8 @@ class OrderSearchController extends Controller
     /**
      * Searches for Renewals.
      *
-     * @param  string $allInstallation
-     * @param  App\Model\Order $join The order instance
-     *
+     * @param  string  $allInstallation
+     * @param  App\Model\Order  $join  The order instance
      * @return $join
      */
     protected function allRenewals($allRenewal, $join)
@@ -193,9 +194,8 @@ class OrderSearchController extends Controller
     /**
      * Searches for Order No.
      *
-     * @param int             $order_no The Order NO to be searched
-     * @param App\Model\Order $join     The Order instance
-     *
+     * @param  int  $order_no  The Order NO to be searched
+     * @param  App\Model\Order  $join  The Order instance
      * @return $join
      */
     private function orderNum($order_no, $join)
@@ -210,9 +210,8 @@ class OrderSearchController extends Controller
     /**
      * Searches for Product.
      *
-     * @param int             $order_no The Order NO to be searched
-     * @param App\Model\Order $join     The Order instance
-     *
+     * @param  int  $order_no  The Order NO to be searched
+     * @param  App\Model\Order  $join  The Order instance
      * @return $join
      */
     private function product($product_id, $join)
@@ -233,9 +232,8 @@ class OrderSearchController extends Controller
     /**
      * Searches for Order From Date.
      *
-     * @param string $expiry The Order From Date
-     * @param object $join
-     *
+     * @param  string  $expiry  The Order From Date
+     * @param  object  $join
      * @return Query
      */
     public function orderFrom($till, $from, $join)
@@ -256,9 +254,8 @@ class OrderSearchController extends Controller
     /**
      * Searches for Order Till Date.
      *
-     * @param string $expiry The Order Till Date
-     * @param object $join
-     *
+     * @param  string  $expiry  The Order Till Date
+     * @param  object  $join
      * @return Query
      */
     public function orderTill($from, $till, $join)
@@ -277,9 +274,8 @@ class OrderSearchController extends Controller
     /**
      * Searches for Domain.
      *
-     * @param string $domain domaiin
-     * @param object $join
-     *
+     * @param  string  $domain  domaiin
+     * @param  object  $join
      * @return Query
      */
     public function domain($domain, $join)

@@ -175,15 +175,14 @@ class ClientController extends BaseClientController
     /**
      * Get list of all the versions from Filesystem.
      *
-     * @param type $productid
-     * @param type $clientid
-     * @param type $invoiceid
+     * @param  type  $productid
+     * @param  type  $clientid
+     * @param  type  $invoiceid
      *
      * Get list of all the versions from Filesystem.
-     * @param type $productid
-     * @param type $clientid
-     * @param type $invoiceid
-     *
+     * @param  type  $productid
+     * @param  type  $clientid
+     * @param  type  $invoiceid
      * @return type
      */
     public function getVersionList($productid, $clientid, $invoiceid)
@@ -260,9 +259,9 @@ class ClientController extends BaseClientController
     /**
      * Get list of all the versions from Github.
      *
-     * @param type $productid
-     * @param type $clientid
-     * @param type $invoiceid
+     * @param  type  $productid
+     * @param  type  $clientid
+     * @param  type  $invoiceid
      */
     public function getGithubVersionList($productid, $clientid, $invoiceid)
     {
@@ -335,7 +334,7 @@ class ClientController extends BaseClientController
      */
 
     public function getOrders()
-    {   
+    {
         try {
             $orders = $this->getClientPanelOrdersData();
 

@@ -214,8 +214,7 @@ class PageController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param int $id
-     *
+     * @param  int  $id
      * @return \Response
      */
     public function destroy(Request $request)
@@ -307,9 +306,8 @@ class PageController extends Controller
      *
      * @date   2019-01-10T01:20:52+0530
      *
-     * @param int $groupid    Group id
-     * @param int $templateid Id of the Template
-     *
+     * @param  int  $groupid  Group id
+     * @param  int  $templateid  Id of the Template
      * @return longtext The Template to be displayed
      */
     public function pageTemplates(int $templateid, int $groupid)
@@ -342,6 +340,7 @@ class PageController extends Controller
 
     /**
      * Get  Template For Products.
+     *
      * @param $helpdesk_products
      * @param $data
      * @param $trasform
@@ -380,8 +379,7 @@ class PageController extends Controller
      *
      * @date   2019-01-09T00:20:09+0530
      *
-     * @param int $productid Id of the Product
-     *
+     * @param  int  $productid  Id of the Product
      * @return string $priceDescription        The Description of the Price
      */
     public function getPriceDescription(int $productid)

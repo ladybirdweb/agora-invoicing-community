@@ -134,10 +134,11 @@ class PlanController extends ExtendedPlanController
     /**
      * Store the Plans Details While Plan Creation.
      *
-     * @param Request $request Plan Form Details
-     *
+     * @param  Request  $request  Plan Form Details
      * @return [type] Saves Plan
+     *
      * @throws \Illuminate\Validation\ValidationException
+     *
      * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
      *
      * @date   2019-01-08T13:32:57+0530
@@ -178,7 +179,8 @@ class PlanController extends ExtendedPlanController
 
     /**
      * Show the form for editing the specified resource.
-     * @param Plan $plan
+     *
+     * @param  Plan  $plan
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function edit(Plan $plan)
@@ -219,8 +221,8 @@ class PlanController extends ExtendedPlanController
     /**
      * Update the specified resource in storage.
      *
-     * @param Plan $plan
-     * @param PlanRequest $request
+     * @param  Plan  $plan
+     * @param  PlanRequest  $request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Plan $plan, PlanRequest $request)
@@ -252,8 +254,7 @@ class PlanController extends ExtendedPlanController
     /**
      * Remove the specified resource from storage.
      *
-     * @param int $id
-     *
+     * @param  int  $id
      * @return \Response
      */
     public function destroy(Request $request)
@@ -302,8 +303,7 @@ class PlanController extends ExtendedPlanController
      *
      * @date   2019-01-08T12:30:09+0530
      *
-     * @param Request $request Receive Product Id as Paramater
-     *
+     * @param  Request  $request  Receive Product Id as Paramater
      * @return json Returns Boolean value FOR Whether Periods/Agents Enabled for Product
      */
     public function checkSubscription(Request $request)

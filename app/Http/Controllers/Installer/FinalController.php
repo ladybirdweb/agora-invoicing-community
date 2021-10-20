@@ -12,7 +12,7 @@ class FinalController extends BaseFinalController
     /**
      * Update installed file and display finished view.
      *
-     * @param InstalledFileManager $fileManager
+     * @param  InstalledFileManager  $fileManager
      * @return \Illuminate\View\View
      */
     public function finish(InstalledFileManager $fileManager, FinalInstallManager $finalInstall, EnvironmentManager $environment)

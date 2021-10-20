@@ -146,8 +146,7 @@ class GithubController extends Controller
     /**
      * List only one release by id.
      *
-     * @param type $id
-     *
+     * @param  type  $id
      * @return type
      */
     public function getReleaseById($id)
@@ -180,8 +179,7 @@ class GithubController extends Controller
     }
 
     /**
-     * @param type $release
-     *
+     * @param  type  $release
      * @return type .zip file
      */
     public function download($release)
@@ -229,10 +227,9 @@ class GithubController extends Controller
     /**
      * Github Downoload for Clients.
      *
-     * @param type $owner
-     * @param type $repo
-     * @param type $order_id
-     *
+     * @param  type  $owner
+     * @param  type  $repo
+     * @param  type  $order_id
      * @return type
      */
     public function downloadLink($owner, $repo, $order_id)

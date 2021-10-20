@@ -21,7 +21,7 @@ class Response
     private $xHeaders = [];
 
     /**
-     * @param string $apiPath
+     * @param  string  $apiPath
      */
     public function setApiPath($apiPath)
     {
@@ -37,7 +37,7 @@ class Response
     }
 
     /**
-     * @param array|object $body
+     * @param  array|object  $body
      */
     public function setBody($body)
     {
@@ -53,7 +53,7 @@ class Response
     }
 
     /**
-     * @param int $httpCode
+     * @param  int  $httpCode
      */
     public function setHttpCode($httpCode)
     {
@@ -69,7 +69,7 @@ class Response
     }
 
     /**
-     * @param array $headers
+     * @param  array  $headers
      */
     public function setHeaders($headers)
     {
@@ -90,7 +90,7 @@ class Response
     }
 
     /**
-     * @param array $xHeaders
+     * @param  array  $xHeaders
      */
     public function setXHeaders($xHeaders)
     {

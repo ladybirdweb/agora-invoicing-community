@@ -165,7 +165,6 @@ class ProductController extends BaseProductController
     // Save file Info in Modal popup
     public function save(Request $request)
     {
-
         $this->validate(
             $request,
             [
@@ -283,8 +282,8 @@ class ProductController extends BaseProductController
                 $addProductToLicensing = $this->licensing->addNewProduct($input['name'], $input['product_sku']);
             }
 
-           /* $updateCont = new \App\Http\Controllers\AutoUpdate\AutoUpdateController();
-            $addProductToLicensing = $updateCont->addNewProductToAUS($input['name'], $input['product_sku']);*/
+            /* $updateCont = new \App\Http\Controllers\AutoUpdate\AutoUpdateController();
+             $addProductToLicensing = $updateCont->addNewProductToAUS($input['name'], $input['product_sku']);*/
             if ($request->hasFile('image')) {
                 $image = $request->file('image')->getClientOriginalName();
                 $imagedestinationPath = 'common/images';
@@ -316,8 +315,7 @@ class ProductController extends BaseProductController
     /**
      * Show the form for editing the specified resource.
      *
-     * @param int $id
-     *
+     * @param  int  $id
      * @return \Response
      */
     public function edit($id)
@@ -336,7 +334,7 @@ class ProductController extends BaseProductController
             $url = url('/');
             $cartUrl = $url.'/cart?id='.$id;
             $product = $this->product->where('id', $id)->first();
-            $selectedGroup = ProductGroup:: where('id', $product->group)->pluck('name')->toArray();
+            $selectedGroup = ProductGroup::where('id', $product->group)->pluck('name')->toArray();
             $taxes = $this->tax_class->pluck('name', 'id')->toArray();
             $taxes = $this->tax_class->with('tax:tax_classes_id,id,name')->get()->toArray();
             $saved_taxes = $this->tax_relation->where('product_id', $id)->get();
@@ -378,8 +376,7 @@ class ProductController extends BaseProductController
     /**
      * Update the specified resource in storage.
      *
-     * @param int $id
-     *
+     * @param  int  $id
      * @return \Response
      */
     public function update($id, Request $request)
@@ -434,8 +431,7 @@ class ProductController extends BaseProductController
     /**
      * Remove the specified resource from storage.
      *
-     * @param int $id
-     *
+     * @param  int  $id
      * @return \Response
      */
     public function destroy(Request $request)
@@ -494,8 +490,7 @@ class ProductController extends BaseProductController
     /**
      * Remove the specified resource from storage.
      *
-     * @param int $id
-     *
+     * @param  int  $id
      * @return \Response
      */
     public function fileDestroy(Request $request)

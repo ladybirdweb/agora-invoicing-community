@@ -51,7 +51,7 @@ class SettingsController extends BaseSettingsController
     /**
      * Get the Status and Api Keys for Settings Module.
      *
-     * @param ApiKey $apikeys
+     * @param  ApiKey  $apikeys
      */
     public function getKeys(ApiKey $apikeys)
     {
@@ -89,7 +89,7 @@ class SettingsController extends BaseSettingsController
             $mailSendingStatus = Setting::value('sending_status');
             $model = $apikeys->find(1);
 
-            return view('themes.default1.common.apikey', compact('model', 'status', 'licenseSecret', 'licenseUrl','licenseClientId','licenseClientSecret','licenseGrantType','siteKey', 'secretKey', 'captchaStatus', 'updateStatus', 'updateSecret', 'updateUrl', 'mobileStatus', 'mobileauthkey', 'msg91Sender', 'emailStatus', 'twitterStatus', 'twitterKeys', 'zohoStatus', 'zohoKey', 'rzpStatus', 'rzpKeys', 'mailchimpSetting', 'mailchimpKey', 'termsStatus', 'termsUrl', 'pipedriveKey', 'pipedriveStatus', 'domainCheckStatus', 'mailSendingStatus'));
+            return view('themes.default1.common.apikey', compact('model', 'status', 'licenseSecret', 'licenseUrl', 'licenseClientId', 'licenseClientSecret', 'licenseGrantType', 'siteKey', 'secretKey', 'captchaStatus', 'updateStatus', 'updateSecret', 'updateUrl', 'mobileStatus', 'mobileauthkey', 'msg91Sender', 'emailStatus', 'twitterStatus', 'twitterKeys', 'zohoStatus', 'zohoKey', 'rzpStatus', 'rzpKeys', 'mailchimpSetting', 'mailchimpKey', 'termsStatus', 'termsUrl', 'pipedriveKey', 'pipedriveStatus', 'domainCheckStatus', 'mailSendingStatus'));
         } catch (\Exception $ex) {
             return redirect('/')->with('fails', $ex->getMessage());
         }
@@ -110,8 +110,7 @@ class SettingsController extends BaseSettingsController
     /**
      * PAyment Gateway that is shown on the basis of currency.
      *
-     * @param string $currency The currency of the Product Selected
-     *
+     * @param  string  $currency  The currency of the Product Selected
      * @return string Name of the Payment Gateway
      */
     public static function checkPaymentGateway($currency)

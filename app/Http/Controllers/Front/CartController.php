@@ -91,8 +91,7 @@ class CartController extends BaseCartController
      *
      * @date   2019-01-10T18:14:09+0530
      *
-     * @param int $id Product Id
-     *
+     * @param  int  $id  Product Id
      * @return array $items  Array of items and Tax conditions to the cart
      */
     public function addProduct(int $id)
@@ -133,7 +132,8 @@ class CartController extends BaseCartController
 
     /**
      * If multiple products are being added to cart, this method checks all the products have similar currency.
-     * @param  string $currency Currency of the product to be added to cart
+     *
+     * @param  string  $currency  Currency of the product to be added to cart
      */
     private function checkProductsHaveSimilarCurrency($currency)
     {
@@ -199,10 +199,9 @@ class CartController extends BaseCartController
     }
 
     /**
-     * @param int $productid
-     * @param int $userid
-     * @param int $planid
-     *
+     * @param  int  $productid
+     * @param  int  $userid
+     * @param  int  $planid
      * @return string
      */
     public function cost($productid, $planid = '', $userid = '')
@@ -220,13 +219,12 @@ class CartController extends BaseCartController
     /**
      * Get Cost For a particular Plan.
      *
-     * @param int $productid
-     * @param int $userid
-     * @param int $planid
+     * @param  int  $productid
+     * @param  int  $userid
+     * @param  int  $planid
+     * @return int
      *
      * @throws \Exception
-     *
-     * @return int
      */
     public function planCost($productid, $userid = '', $planid = '')
     {

@@ -165,7 +165,6 @@ class ProductController extends BaseProductController
     // Save file Info in Modal popup
     public function save(Request $request)
     {
-
         $this->validate(
             $request,
             [
@@ -283,8 +282,8 @@ class ProductController extends BaseProductController
                 $addProductToLicensing = $this->licensing->addNewProduct($input['name'], $input['product_sku']);
             }
 
-           /* $updateCont = new \App\Http\Controllers\AutoUpdate\AutoUpdateController();
-            $addProductToLicensing = $updateCont->addNewProductToAUS($input['name'], $input['product_sku']);*/
+            /* $updateCont = new \App\Http\Controllers\AutoUpdate\AutoUpdateController();
+             $addProductToLicensing = $updateCont->addNewProductToAUS($input['name'], $input['product_sku']);*/
             if ($request->hasFile('image')) {
                 $image = $request->file('image')->getClientOriginalName();
                 $imagedestinationPath = 'common/images';

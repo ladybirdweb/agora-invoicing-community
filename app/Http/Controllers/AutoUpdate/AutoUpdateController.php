@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\AutoUpdate;
 
 use App\ApiKey;
-use App\ThirdPartyApp;
 use App\Http\Controllers\Controller;
 
 class AutoUpdateController extends Controller
@@ -13,7 +12,7 @@ class AutoUpdateController extends Controller
     private $license;
     private $token;
 
-     public function __construct()
+    public function __construct()
     {
         $model = new ApiKey();
         $this->license = $model->first();
@@ -21,16 +20,16 @@ class AutoUpdateController extends Controller
         $this->api_key_secret = $this->license->license_api_secret;
         $this->url = $this->license->license_api_url;
 
-
         $this->client_id = $this->license->license_client_id;
         $this->client_secret = $this->license->license_client_secret;
         $this->grant_type = $this->license->license_grant_type;
     }
-     /**
-       * Generate a time limited access token to access update manager
-       * */
-      private function oauthAuthorization()
-      {
+
+    /**
+     * Generate a time limited access token to access update manager.
+     * */
+    private function oauthAuthorization()
+    {
         $url = $this->url;
         $data = [
             'client_id'=> $this->client_id,
@@ -38,43 +37,43 @@ class AutoUpdateController extends Controller
             'grant_type' => $this->grant_type,
 
         ];
-        $response = $this->postCurl($url."oauth/token",$data);
-        $response=json_decode($response);
+        $response = $this->postCurl($url.'oauth/token', $data);
+        $response = json_decode($response);
+
         return $response;
     }
-     
 
-    private function postCurl($post_url, $post_info,$token=null)
+    private function postCurl($post_url, $post_info, $token = null)
     {
-       if(!empty($token))
-       {
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $post_url);
-        curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BEARER);
-        curl_setopt($ch,CURLOPT_XOAUTH2_BEARER,$token);
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $post_info);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-        $result = curl_exec($ch);
-        curl_close($ch);
-        return $result;
-    }
-    else{
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $post_url);
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $post_info);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-        $result = curl_exec($ch);
-        curl_close($ch);
-        return $result;
-    }
+        if (! empty($token)) {
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $post_url);
+            curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BEARER);
+            curl_setopt($ch, CURLOPT_XOAUTH2_BEARER, $token);
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $post_info);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+            $result = curl_exec($ch);
+            curl_close($ch);
+
+            return $result;
+        } else {
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $post_url);
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $post_info);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+            $result = curl_exec($ch);
+            curl_close($ch);
+
+            return $result;
+        }
     }
 
     /*
@@ -95,13 +94,11 @@ class AutoUpdateController extends Controller
 
     public function addNewVersion($product_id, $version_number, $upgrade_zip_file, $version_status)
     {
-        
         $url = $this->url;
         $api_key_secret = $this->api_key_secret;
         $OauthDetails = $this->oauthAuthorization();
         $token = $OauthDetails->access_token;
-        $addNewVersion = $this->postCurl($url."api/admin/versions/add", "api_key_secret=$api_key_secret&product_id=$product_id&version_number=$version_number&version_upgrade_file=$upgrade_zip_file&version_status=$version_status&product_status=1",$token);
-       
+        $addNewVersion = $this->postCurl($url.'api/admin/versions/add', "api_key_secret=$api_key_secret&product_id=$product_id&version_number=$version_number&version_upgrade_file=$upgrade_zip_file&version_status=$version_status&product_status=1", $token);
     }
 
     /*
@@ -116,7 +113,7 @@ class AutoUpdateController extends Controller
         $productId = $searchLicense['product_id'];
         $OauthDetails = $this->oauthAuthorization();
         $token = $OauthDetails->access_token;
-        $addNewVersion = $this->postCurl($url."api/admin/versions/edit", "api_key_secret=$api_key_secret&product_id=productId&version_id=$versionId&version_number=$version_number&version_status=1",$token);
+        $addNewVersion = $this->postCurl($url.'api/admin/versions/edit', "api_key_secret=$api_key_secret&product_id=productId&version_id=$versionId&version_number=$version_number&version_status=1", $token);
     }
 
     /*
@@ -130,7 +127,7 @@ class AutoUpdateController extends Controller
         $api_key_secret = $this->api_key_secret;
         $OauthDetails = $this->oauthAuthorization();
         $token = $OauthDetails->access_token;
-        $getVersion = $this->postCurl($url.'api/admin/search', "api_key_secret=$api_key_secret&search_type=version&search_keyword=$product_sku&isLicenseSearchApi=0",$token);
+        $getVersion = $this->postCurl($url.'api/admin/search', "api_key_secret=$api_key_secret&search_type=version&search_keyword=$product_sku&isLicenseSearchApi=0", $token);
         $details = json_decode($getVersion);
         if ($details->api_error_detected == 0 && is_array($details->page_message)) {
             foreach ($details->page_message as $detail) {

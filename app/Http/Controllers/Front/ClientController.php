@@ -334,7 +334,7 @@ class ClientController extends BaseClientController
      */
 
     public function getOrders()
-    {   
+    {
         try {
             $orders = $this->getClientPanelOrdersData();
 

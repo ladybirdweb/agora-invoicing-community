@@ -99,7 +99,7 @@ class LocalizedLicenseController extends Controller
     {
         if (Auth::check()) {
             $userID = $request->input('userId');
-            if ($userID == Auth::user()->id) {
+            if (!empty($userID) && !empty(Auth::user()->id)) {
                 $licenseVal = strtotime($request->input('expiry')) > 1 ? $request->input('expiry') : '--';
                 $updateVal = strtotime($request->input('updates')) > 1 ? $request->input('updates') : '--';
                 $supportVal = strtotime($request->input('support_expiry')) > 1 ? $request->input('support_expiry') : '--';
@@ -148,7 +148,7 @@ class LocalizedLicenseController extends Controller
      * */
     public function tempOrderLink($orderNo, $userID)
     {
-        if ($userID == Auth::user()->id) {
+        if (!empty($userID) && !empty(Auth::user()->id)) {
             $url = URL::temporarySignedRoute('event.rsvp', now()->addSeconds(30), [
                 'orderNo'=>$orderNo,
             ]);

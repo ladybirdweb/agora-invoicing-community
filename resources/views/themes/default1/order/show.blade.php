@@ -180,7 +180,7 @@ input:checked + .slider:before {
                                                                    {!! csrf_field() !!}
                                                                    <div class="form-group">
                                                                        <label for="recipient-name" class="col-form-label">Domain Name:</label>
-                                                                       <input type="text" class="form-control" id="recipient-name" placeholder="https://faveo.helpdesk.com" name="domain" value="" required>
+                                                                       <input type="text" class="form-control" id="recipient-name" placeholder="https://faveohelpdesk.com/public" name="domain" value="" required>
                                                                        {{Form::hidden('code',  $order->serial_key)}}
                                                                        {{Form::hidden('expiry', $order->subscription->ends_at)}}
                                                                        {{Form::hidden('orderNo', $order->number)}}

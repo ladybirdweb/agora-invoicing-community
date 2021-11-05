@@ -88,40 +88,6 @@ input:checked + .slider:before {
     }
 </style>
 @section('content')
-    
-
-        <!-- Modal for Localized License domain-->
-        
-            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                 <div class="modal-content">
-                  <div class="modal-header">
-                   <h5 class="modal-title" id="exampleModalLabel">Please Enter Your Domain That You Wish To Host</h5>
-                  </div>
-                <div class="modal-body">
-              <form method="GET" action="{{url('uploadFile')}}">
-                 {!! csrf_field() !!}
-                <div class="form-group">
-                <label for="recipient-name" class="col-form-label">Domain Name:</label>
-                <input type="text" class="form-control" id="recipient-name" placeholder="https://faveo.helpdesk.com" name="domain" value="" required>
-                {{Form::hidden('code',  $order->serial_key)}}
-                {{Form::hidden('expiry', $order->subscription->ends_at)}}
-                {{Form::hidden('orderNo', $order->number)}}
-                {{Form::hidden('updates', $order->subscription->update_ends_at)}}
-                {{Form::hidden('support_expiry', $order->subscription->support_ends_at)}}
-                {{Form::hidden('userId',$user->id)}}  
-                <br>
-                <div class="modal-footer">
-                <button type="button" id="close" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i>&nbsp;Close</button>
-                <button type="submit" id="domainSave" class="done btn btn-primary"><i class="fas fa-save"></i>&nbsp;Done</button>
-            </div>
-                </div>  
-             </form>
-           </div>
-           </div>
-           </div>
-           </div>
-
     <div class="card card-secondary card-outline">
 <div class="row">
 <div class="col-md-12">
@@ -201,7 +167,37 @@ input:checked + .slider:before {
                                            @include('themes.default1.order.license_end-modal')
                                            @include('themes.default1.order.support_end-modal')
 
+                                           <!-- Modal for Localized License domain-->
 
+                                               <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                   <div class="modal-dialog" role="document">
+                                                       <div class="modal-content">
+                                                           <div class="modal-header">
+                                                               <h5 class="modal-title" id="exampleModalLabel">Please Enter Your Domain That You Wish To Host</h5>
+                                                           </div>
+                                                           <div class="modal-body">
+                                                               <form method="GET" action="{{url('uploadFile')}}">
+                                                                   {!! csrf_field() !!}
+                                                                   <div class="form-group">
+                                                                       <label for="recipient-name" class="col-form-label">Domain Name:</label>
+                                                                       <input type="text" class="form-control" id="recipient-name" placeholder="https://faveo.helpdesk.com" name="domain" value="" required>
+                                                                       {{Form::hidden('code',  $order->serial_key)}}
+                                                                       {{Form::hidden('expiry', $order->subscription->ends_at)}}
+                                                                       {{Form::hidden('orderNo', $order->number)}}
+                                                                       {{Form::hidden('updates', $order->subscription->update_ends_at)}}
+                                                                       {{Form::hidden('support_expiry', $order->subscription->support_ends_at)}}
+                                                                       {{Form::hidden('userId',$user->id)}}
+                                                                       <br>
+                                                                       <div class="modal-footer">
+                                                                           <button type="button" id="close" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i>&nbsp;Close</button>
+                                                                           <button type="submit" id="domainSave" class="done btn btn-primary"><i class="fas fa-save"></i>&nbsp;Done</button>
+                                                                       </div>
+                                                                   </div>
+                                                               </form>
+                                                           </div>
+                                                       </div>
+                                                   </div>
+                                               </div>
                                            <div class="card-header">
                                                <h4 class="card-title">
                                                    License Details

@@ -91,7 +91,7 @@ active
                                 <td><b>Licensed Domain/IP:</b></td>
                                 <td>{{$order->domain}} </td>
                                 <td>                                 
-                                    <button class="btn btn-danger mb-2 btn-sm"  id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}">
+                                    <button class="btn btn-danger mb-2 btn-sm"  id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}" {{!Storage::disk('public')->exists('faveo-license-{'.$order->number.'}.txt') || $order->license_mode!='File' ? "enabled" : "disabled"}}>
                                         Reissue License</button></td>
                             </tr>         
                         @endif

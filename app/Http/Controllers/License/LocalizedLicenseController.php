@@ -2,20 +2,19 @@
 
 namespace App\Http\Controllers\License;
 
+use App\ApiKey;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LocalizedLicenseRequest;
 use App\Model\Order\Order;
+use App\ThirdPartyApp;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
-use Illuminate\Support\Facades\DB;
-use App\ApiKey;
-use App\ThirdPartyApp;
-use App\User;
 
 class LocalizedLicenseController extends Controller
 {
@@ -140,9 +139,9 @@ class LocalizedLicenseController extends Controller
                 $licenseCode = $request->input('code');
                 $orderNo = $request->input('orderNo');
 
-                $id= Order::where('number',$orderNo)->value('id');
+                $id = Order::where('number', $orderNo)->value('id');
                 DB::table('installation_details')->insertOrIgnore(['installation_path'=> $domain, 'order_id'=>$id, 'last_active'=>date('Y-m-d')]);
-                $this->localizedLicenseInstallLM($orderNo,$domain,$licenseCode);
+                $this->localizedLicenseInstallLM($orderNo, $domain, $licenseCode);
 
                 $userData = '<root_url>'.$domain.'</root_url><license_code>'.$licenseCode.'</license_code><license_expiry>'.$licenseExpiry.'</license_expiry><updates_expiry>'.$updatesExpiry.'</updates_expiry><support_expiry>'.$supportExpiry.'</support_expiry>';
 
@@ -179,16 +178,16 @@ class LocalizedLicenseController extends Controller
         }
     }
 
-
-    private function localizedLicenseInstallLM($orderNo,$domain,$licenseCode){
-          $client_email="";
-          $url = $this->url;
-          $token = $this->token;
-          $api_key_secret = $this->api_key_secret;
-          $productId = Order::where('number',$orderNo)->value('product');
-          $installation_date=date('Y-m-d');
-          $installation_hash = hash("sha256", $domain.$client_email.$licenseCode);
-          $addLocalizedInstallation = $this->postCurl($url.'api/admin/addInstallation', "api_key_secret=$api_key_secret&token=$token&product_id=$productId&license_code=$licenseCode&installation_domain=$domain&installation_date=$installation_date&installation_status=1&installation_hash=$installation_hash");
+    private function localizedLicenseInstallLM($orderNo, $domain, $licenseCode)
+    {
+        $client_email = '';
+        $url = $this->url;
+        $token = $this->token;
+        $api_key_secret = $this->api_key_secret;
+        $productId = Order::where('number', $orderNo)->value('product');
+        $installation_date = date('Y-m-d');
+        $installation_hash = hash('sha256', $domain.$client_email.$licenseCode);
+        $addLocalizedInstallation = $this->postCurl($url.'api/admin/addInstallation', "api_key_secret=$api_key_secret&token=$token&product_id=$productId&license_code=$licenseCode&installation_domain=$domain&installation_date=$installation_date&installation_status=1&installation_hash=$installation_hash");
     }
 
     /**

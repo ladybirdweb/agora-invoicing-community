@@ -51,7 +51,7 @@ class LocalizedLicenseController extends Controller
 
         return $result;
     }
-    
+
     /**
      * Downloads the license file.
      * */

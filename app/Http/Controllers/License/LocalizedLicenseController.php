@@ -36,6 +36,22 @@ class LocalizedLicenseController extends Controller
         $this->token = ThirdPartyApp::where('app_secret', 'LicenseSecret')->value('app_key');
     }
 
+    private function postCurl($post_url, $post_info)
+    {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $post_url);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $post_info);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+        $result = curl_exec($ch);
+        curl_close($ch);
+
+        return $result;
+    }
+    
     /**
      * Downloads the license file.
      * */

@@ -181,11 +181,7 @@ input:checked + .slider:before {
                                                                    <div class="form-group">
                                                                        <label for="recipient-name" class="col-form-label">Domain Name:</label>
                                                                        <input type="text" class="form-control" id="recipient-name" placeholder="https://faveohelpdesk.com/public" name="domain" value="" required>
-                                                                       {{Form::hidden('code',  $order->serial_key)}}
-                                                                       {{Form::hidden('expiry', $order->subscription->ends_at)}}
                                                                        {{Form::hidden('orderNo', $order->number)}}
-                                                                       {{Form::hidden('updates', $order->subscription->update_ends_at)}}
-                                                                       {{Form::hidden('support_expiry', $order->subscription->support_ends_at)}}
                                                                        {{Form::hidden('userId',$user->id)}}
                                                                        <br>
                                                                        <div class="modal-footer">
@@ -1006,7 +1002,7 @@ input:checked + .slider:before {
         $.ajax({
             type: "POST",
             dataType: "json",
-            url: "{{url('choose')}}",
+            url: "{{url('chooseLicenseMode')}}",
             data: {'choose': choose, 'orderNo': orderNo},
             success: function(data){  
             $('#response').html(data);

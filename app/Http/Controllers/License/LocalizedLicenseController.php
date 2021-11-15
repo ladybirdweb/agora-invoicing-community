@@ -107,7 +107,7 @@ class LocalizedLicenseController extends Controller
     {
         $chose = $request->input('choose');
         $orderNo = $request->input('orderNo');
-        if ($chose == 1) {
+        if ($chose) {
             $encrypt = new EncryptDecryptController();
             $encrypt->generateKeys($orderNo);
             Order::where('number', $orderNo)->update(['license_mode' => 'File']);
@@ -131,31 +131,31 @@ class LocalizedLicenseController extends Controller
         if (Auth::check()) {
             $userID = $request->input('userId');
             if (! empty($userID) && ! empty(Auth::user()->id)) {
-                $licenseVal = strtotime($request->input('expiry')) > 1 ? $request->input('expiry') : '--';
-                $updateVal = strtotime($request->input('updates')) > 1 ? $request->input('updates') : '--';
-                $supportVal = strtotime($request->input('support_expiry')) > 1 ? $request->input('support_expiry') : '--';
-
-                if ($licenseVal == '--') {
-                    $licenseExpiry = $licenseVal;
-                } else {
-                    $licenseExpiry = Carbon::parse($licenseVal)->format('Y-m-d');
-                }
-                if ($updateVal == '--') {
-                    $updatesExpiry = $updateVal;
-                } else {
-                    $updatesExpiry = Carbon::parse($updateVal)->format('Y-m-d');
-                }
-                if ($supportVal == '--') {
-                    $supportExpiry = $supportVal;
-                } else {
-                    $supportExpiry = Carbon::parse($supportVal)->format('Y-m-d');
-                }
-
                 $domain = $request->input('domain');
-                $licenseCode = $request->input('code');
                 $orderNo = $request->input('orderNo');
-
+                $licenseCode = Order::where('number',$orderNo)->value('serial_key');
                 $id = Order::where('number', $orderNo)->value('id');
+                $licenseExpiry = DB::table('subscriptions')->where('order_id',$id)->value('ends_at');
+                $updatesExpiry = DB::table('subscriptions')->where('order_id',$id)->value('update_ends_at');
+                $supportExpiry = DB::table('subscriptions')->where('order_id',$id)->value('support_ends_at');
+                if (Carbon::parse($licenseExpiry)->format('Y-m-d')<1) {
+                    $licenseExpiry = '--';
+                } 
+                else{
+                      $licenseExpiry = Carbon::parse($licenseExpiry)->format('Y-m-d');
+                }
+                if (Carbon::parse($updatesExpiry)->format('Y-m-d')<1) {
+                    $updatesExpiry = '--';
+                }
+                  else{
+                      $updatesExpiry = Carbon::parse($updatesExpiry)->format('Y-m-d');
+                }
+                if (Carbon::parse($supportExpiry)->format('Y-m-d')<1) {
+                    $supportExpiry = '--';
+                }
+                  else{
+                      $supportExpiry = Carbon::parse($supportExpiry)->format('Y-m-d');
+                }
                 DB::table('installation_details')->insertOrIgnore(['installation_path'=> $domain, 'order_id'=>$id, 'last_active'=>date('Y-m-d')]);
                 $this->localizedLicenseInstallLM($orderNo, $domain, $licenseCode);
 

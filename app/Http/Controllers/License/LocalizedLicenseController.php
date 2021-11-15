@@ -133,28 +133,25 @@ class LocalizedLicenseController extends Controller
             if (! empty($userID) && ! empty(Auth::user()->id)) {
                 $domain = $request->input('domain');
                 $orderNo = $request->input('orderNo');
-                $licenseCode = Order::where('number',$orderNo)->value('serial_key');
+                $licenseCode = Order::where('number', $orderNo)->value('serial_key');
                 $id = Order::where('number', $orderNo)->value('id');
-                $licenseExpiry = DB::table('subscriptions')->where('order_id',$id)->value('ends_at');
-                $updatesExpiry = DB::table('subscriptions')->where('order_id',$id)->value('update_ends_at');
-                $supportExpiry = DB::table('subscriptions')->where('order_id',$id)->value('support_ends_at');
-                if (Carbon::parse($licenseExpiry)->format('Y-m-d')<1) {
+                $licenseExpiry = DB::table('subscriptions')->where('order_id', $id)->value('ends_at');
+                $updatesExpiry = DB::table('subscriptions')->where('order_id', $id)->value('update_ends_at');
+                $supportExpiry = DB::table('subscriptions')->where('order_id', $id)->value('support_ends_at');
+                if (Carbon::parse($licenseExpiry)->format('Y-m-d') < 1) {
                     $licenseExpiry = '--';
-                } 
-                else{
-                      $licenseExpiry = Carbon::parse($licenseExpiry)->format('Y-m-d');
+                } else {
+                    $licenseExpiry = Carbon::parse($licenseExpiry)->format('Y-m-d');
                 }
-                if (Carbon::parse($updatesExpiry)->format('Y-m-d')<1) {
+                if (Carbon::parse($updatesExpiry)->format('Y-m-d') < 1) {
                     $updatesExpiry = '--';
+                } else {
+                    $updatesExpiry = Carbon::parse($updatesExpiry)->format('Y-m-d');
                 }
-                  else{
-                      $updatesExpiry = Carbon::parse($updatesExpiry)->format('Y-m-d');
-                }
-                if (Carbon::parse($supportExpiry)->format('Y-m-d')<1) {
+                if (Carbon::parse($supportExpiry)->format('Y-m-d') < 1) {
                     $supportExpiry = '--';
-                }
-                  else{
-                      $supportExpiry = Carbon::parse($supportExpiry)->format('Y-m-d');
+                } else {
+                    $supportExpiry = Carbon::parse($supportExpiry)->format('Y-m-d');
                 }
                 DB::table('installation_details')->insertOrIgnore(['installation_path'=> $domain, 'order_id'=>$id, 'last_active'=>date('Y-m-d')]);
                 $this->localizedLicenseInstallLM($orderNo, $domain, $licenseCode);

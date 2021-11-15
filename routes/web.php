@@ -124,7 +124,7 @@ use Illuminate\Http\Request;
             // Post Route For Make Razorpay Payment Request
             Route::post('payment/{invoice}', 'RazorpayController@payment')->name('payment');
 
-            Route::get('downloadFile', 'License\LocalizedLicenseController@downloadFile')->name('event.rsvp')->middleware('signed');
+            Route::get('downloadLicenseFile', 'License\LocalizedLicenseController@downloadFile')->name('event.rsvp')->middleware('signed');
             Route::get('downloadPrivate/{orderNo}', 'License\LocalizedLicenseController@downloadPrivate');
             Route::get('LocalizedLicense/downloadLicense/{fileName}', 'License\LocalizedLicenseController@downloadFileAdmin');
             Route::get('request', 'License\LocalizedLicenseController@tempOrderLink');

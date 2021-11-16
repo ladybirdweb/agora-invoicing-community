@@ -193,7 +193,6 @@ class ProductController extends BaseProductController
             if ($autoUpdateStatus == 1) { //If License Setting Status is on,Add Product to the License Manager
                 $updateClassObj = new \App\Http\Controllers\AutoUpdate\AutoUpdateController();
                 $addProductToAutoUpdate = $updateClassObj->addNewVersion($product_id->id, $request->input('version'), $request->input('filename'), '1');
-
             }
             $response = ['success'=>'true', 'message'=>'Product Uploaded Successfully'];
 

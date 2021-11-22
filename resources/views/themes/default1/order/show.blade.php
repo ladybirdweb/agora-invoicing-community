@@ -1002,7 +1002,7 @@ input:checked + .slider:before {
         $.ajax({
             type: "POST",
             dataType: "json",
-            url: "{{url('chooseLicenseMode')}}",
+            url: "{{url('choose')}}",
             data: {'choose': choose, 'orderNo': orderNo},
             success: function(data){  
             $('#response').html(data);

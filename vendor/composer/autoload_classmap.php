@@ -70,7 +70,6 @@ return array(
     'AddSystemDefaultCurrencyToSettings' => $baseDir . '/database/migrations/2018_09_03_202632_add_system_default_currency_to_settings.php',
     'AddTitleToSettings' => $baseDir . '/database/migrations/2018_08_10_113159_add_title_to_settings.php',
     'AddTwitterKeysToApiKeys' => $baseDir . '/database/migrations/2018_09_07_092457_add_twitter_keys_to_api_keys.php',
-    'AddTypeToInstallationDetails' => $baseDir . '/database/migrations/2021_11_10_094305_add_type_to_installation_details.php',
     'AddUpdateApiUrlToApiKeys' => $baseDir . '/database/migrations/2018_12_17_122829_add_update_api_url_to_api_keys.php',
     'AddUpdateStatusToStatusSettings' => $baseDir . '/database/migrations/2018_12_17_113603_add_update_status_to_status_settings.php',
     'AddVersionUpdatedAtToSubscriptionsTable' => $baseDir . '/database/migrations/2021_01_25_132202_add_version_updated_at_to_subscriptions_table.php',

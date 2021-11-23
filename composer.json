@@ -72,6 +72,13 @@
             "Tests\\": "tests/"
         }
     },
+    "extra": {
+        "laravel": {
+            "dont-discover": [
+                "barryvdh/laravel-ide-helper"
+            ]
+        }
+    },
     "scripts": {
         "filter-test":"php vendor/phpunit/phpunit/phpunit --colors=always --filter",
         "all-test":"php vendor/phpunit/phpunit/phpunit",

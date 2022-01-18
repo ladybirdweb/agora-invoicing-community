@@ -192,6 +192,8 @@ use Illuminate\Http\Request;
             /*
              * Settings
              */
+
+
             Route::get('settings', 'Common\SettingsController@settings');
             Route::get('settings/system', 'Common\SettingsController@settingsSystem');
             Route::patch('settings/system', 'Common\SettingsController@postSettingsSystem');

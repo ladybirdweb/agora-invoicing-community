@@ -334,16 +334,9 @@ System Setting
                                 {!! Form::file('logo') !!}
                                 <p><i> {{Lang::get('Upload the company logo')}}</i> </p>
                                 @if($set->logo) 
-                                <img src='{{asset("common/images/$set->logo")}}' class="img-thumbnail" style="height: 50px;"> &nbsp;&nbsp;
-                                 
-                                 <button  type="button"  id="{{$set->id}}" data-url=""  data-toggle="tooltip"  value="logo" class="btn btn-sm btn-secondary show_confirm " label="" style="font-weight:500;" name="logo" value="client_logo" title="Delete  logo." style="background-color: #6c75c7d;">
-                                <i class="fa fa-trash"></i></button>
+                                <img src='{{asset("common/images/$set->logo")}}' class="img-thumbnail" style="height: 50px;">
 
-                                         
-
-                            
-
-                            
+                          
                                 @endif
                             </div>
                         </td>

@@ -192,39 +192,38 @@ use Illuminate\Support\Facades\Route;
              * Settings
              */
 
-            Route::post('changeLogo', [Common\SettingsController::class, 'delete']);
 
-            Route::get('settings', [Common\SettingsController::class, 'settings']);
-            Route::get('settings/system', [Common\SettingsController::class, 'settingsSystem']);
-            Route::patch('settings/system', [Common\SettingsController::class, 'postSettingsSystem']);
-            Route::get('settings/email', [Common\EmailSettingsController::class, 'settingsEmail'])->middleware('auth');
-            Route::patch('settings/email', [Common\EmailSettingsController::class, 'postSettingsEmail']);
-            Route::get('settings/template', [Common\SettingsController::class, 'settingsTemplate']);
-            Route::patch('settings/template', [Common\SettingsController::class, 'postSettingsTemplate']);
-            Route::patch('settings/error', [Common\SettingsController::class, 'postSettingsError']);
-            Route::get('settings/activitylog', [Common\SettingsController::class, 'settingsActivity']);
-            Route::get('settings/maillog', [Common\SettingsController::class, 'settingsMail']);
-            Route::get('get-activity', [Common\SettingsController::class, 'getActivity'])->name('get-activity');
-            Route::get('get-email', [Common\SettingsController::class, 'getMails'])->name('get-email');
-            Route::delete('activity-delete', [Common\SettingsController::class, 'destroy'])->name('activity-delete');
-            Route::delete('email-delete', [Common\SettingsController::class, 'destroyEmail'])->name('email-delete');
-            Route::post('licenseDetails', [Common\BaseSettingsController::class, 'licenseDetails'])->name('licenseDetails');
-            Route::post('updateDetails', [Common\BaseSettingsController::class, 'updateDetails'])->name('updateDetails');
-            Route::post('captchaDetails', [Common\BaseSettingsController::class, 'captchaDetails'])->name('captchaDetails');
-            Route::post('updatemobileDetails', [Common\BaseSettingsController::class, 'updateMobileDetails'])->name('updatemobileDetails');
-            Route::post('updateemailDetails', [Common\BaseSettingsController::class, 'updateEmailDetails'])->name('updateemailDetails');
-            Route::post('updatetwitterDetails', [Common\BaseSettingsController::class, 'updateTwitterDetails'])->name('updatetwitterDetails');
-            Route::post('updateMailchimpDetails', [Common\BaseSettingsController::class, 'updateMailchimpDetails'])->name('updateMailchimpDetails');
-            Route::post('updateTermsDetails', [Common\BaseSettingsController::class, 'updateTermsDetails'])->name('updateTermsDetails');
-            Route::post('updatezohoDetails', [Common\BaseSettingsController::class, 'updateZohoDetails'])->name('updatezohoDetails');
-            Route::post('updatepipedriveDetails', [Common\BaseSettingsController::class, 'updatepipedriveDetails'])->name('updatepipedriveDetails');
-            Route::post('mailchimp-prod-status', [Common\BaseSettingsController::class, 'updateMailchimpProductStatus'])->name('mailchimp-prod-status');
-            Route::post('mailchimp-paid-status', [Common\BaseSettingsController::class, 'updateMailchimpIsPaidStatus'])->name('mailchimp-paid-status');
-            Route::post('updatedomainCheckDetails', [Common\BaseSettingsController::class, 'updatedomainCheckDetails'])->name('updatedomainCheckDetails');
-            Route::get('system-managers', [Common\SystemManagerController::class, 'getSystemManagers'])->name('system-managers');
-            Route::get('search-admins', [Common\SystemManagerController::class, 'searchAdmin'])->name('search-admins');
-            Route::post('replace-acc-manager', [Common\SystemManagerController::class, 'replaceAccountManager'])->name('replace-acc-manager');
-            Route::post('replace-sales-manager', [Common\SystemManagerController::class, 'replaceSalesManager'])->name('replace-sales-manager');
+            Route::get('settings', 'Common\SettingsController@settings');
+            Route::get('settings/system', 'Common\SettingsController@settingsSystem');
+            Route::patch('settings/system', 'Common\SettingsController@postSettingsSystem');
+            Route::get('settings/email', 'Common\EmailSettingsController@settingsEmail');
+            Route::patch('settings/email', 'Common\EmailSettingsController@postSettingsEmail');
+            Route::get('settings/template', 'Common\SettingsController@settingsTemplate');
+            Route::patch('settings/template', 'Common\SettingsController@postSettingsTemplate');
+            Route::patch('settings/error', 'Common\SettingsController@postSettingsError');
+            Route::get('settings/activitylog', 'Common\SettingsController@settingsActivity');
+            Route::get('settings/maillog', 'Common\SettingsController@settingsMail');
+            Route::get('get-activity', ['as' => 'get-activity', 'uses' => 'Common\SettingsController@getActivity']);
+            Route::get('get-email', ['as' => 'get-email', 'uses' => 'Common\SettingsController@getMails']);
+            Route::delete('activity-delete', 'Common\SettingsController@destroy')->name('activity-delete');
+            Route::delete('email-delete', 'Common\SettingsController@destroyEmail')->name('email-delete');
+            Route::post('licenseDetails', 'Common\BaseSettingsController@licenseDetails')->name('licenseDetails');
+            Route::post('updateDetails', 'Common\BaseSettingsController@updateDetails')->name('updateDetails');
+            Route::post('captchaDetails', 'Common\BaseSettingsController@captchaDetails')->name('captchaDetails');
+            Route::post('updatemobileDetails', 'Common\BaseSettingsController@updateMobileDetails')->name('updatemobileDetails');
+            Route::post('updateemailDetails', 'Common\BaseSettingsController@updateEmailDetails')->name('updateemailDetails');
+            Route::post('updatetwitterDetails', 'Common\BaseSettingsController@updateTwitterDetails')->name('updatetwitterDetails');
+            Route::post('updateMailchimpDetails', 'Common\BaseSettingsController@updateMailchimpDetails')->name('updateMailchimpDetails');
+            Route::post('updateTermsDetails', 'Common\BaseSettingsController@updateTermsDetails')->name('updateTermsDetails');
+            Route::post('updatezohoDetails', 'Common\BaseSettingsController@updateZohoDetails')->name('updatezohoDetails');
+            Route::post('updatepipedriveDetails', 'Common\BaseSettingsController@updatepipedriveDetails')->name('updatepipedriveDetails');
+            Route::post('mailchimp-prod-status', 'Common\BaseSettingsController@updateMailchimpProductStatus')->name('mailchimp-prod-status');
+            Route::post('mailchimp-paid-status', 'Common\BaseSettingsController@updateMailchimpIsPaidStatus')->name('mailchimp-paid-status');
+            Route::post('updatedomainCheckDetails', 'Common\BaseSettingsController@updatedomainCheckDetails')->name('updatedomainCheckDetails');
+            Route::get('system-managers', 'Common\SystemManagerController@getSystemManagers')->name('system-managers');
+            Route::get('search-admins', 'Common\SystemManagerController@searchAdmin')->name('search-admins');
+            Route::post('replace-acc-manager', 'Common\SystemManagerController@replaceAccountManager')->name('replace-acc-manager');
+            Route::post('replace-sales-manager', 'Common\SystemManagerController@replaceSalesManager')->name('replace-sales-manager');
 
             /*
              * Client

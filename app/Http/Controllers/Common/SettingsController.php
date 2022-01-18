@@ -209,6 +209,9 @@ class SettingsController extends BaseSettingsController
         }
     }
 
+ 
+    
+
     public function settingsEmail(Setting $settings)
     {
         try {

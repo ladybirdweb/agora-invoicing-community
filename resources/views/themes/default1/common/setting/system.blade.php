@@ -320,6 +320,8 @@ System Setting
                                 <p><i> {{Lang::get('message.enter-the-company-logo')}}</i> </p>
                                 @if($set->logo) 
                                 <img src='{{asset("common/images/$set->logo")}}' class="img-thumbnail" style="height: 50px;">
+
+                          
                                 @endif
                             </div>
                         </td>

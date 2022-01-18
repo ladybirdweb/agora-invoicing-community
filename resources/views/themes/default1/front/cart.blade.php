@@ -261,8 +261,14 @@ $cartTotal = 0;
                             <div class="col-md-offset-5">
                                 <p>There are no items in this cart.</p>
                                  @if(Auth::check())
+
+                          @php       
+                         $data = \App\Model\Product\ProductGroup::where('hidden','!=', 1)->first();
+                         @endphp   
+                           
+                            
+                              <a href="{{url("group/$data->pricing_templates_id/$data->id")}}" class="btn btn-primary">CONTINUE SHOPPING
                                
-                              <a href="{{url('my-invoices')}}" class="btn btn-primary">CONTINUE SHOPPING
                                 @else
                                 <a href="{{url('login')}}" class="btn btn-primary">CONTINUE SHOPPING
                                   @endif

@@ -263,8 +263,8 @@ System Setting
                                 <img src='{{ asset("admin/images/$set->admin_logo")}}' class="img-thumbnail" style="height: 50px;">&nbsp;&nbsp;
                                 
 
-                                 <button  type="button"  id="{{$set->id}}" data-url=""  data-toggle="tooltip"  value="admin" class="btn btn-sm btn-secondary show_confirm " label="" style="font-weight:500;" name="logo" value="client_logo" title="Delete  logo." style="background-color: #6c75c7d;">
-                                <i class="fa fa-trash"></i></button>
+                                  <button type="button"  id="{{$set->id}}" data-url="{{url('logo/'.$set->id.'/admin_logo')}}" id="client" data-toggle="tooltip"  value="" class="btn btn-sm btn-secondary client " label="" style="font-weight:500;" name="logo" title="Delete  logo.">
+                                <i class="fa fa-trash" ></i></button>
                                 @endif
                             </div>
                         </td>
@@ -285,8 +285,8 @@ System Setting
 
                       
 
-                                      <button  type="button"  id="{{$set->id}}" data-url=""  data-toggle="tooltip"  value="fav" class="btn btn-sm btn-secondary show_confirm " label="" style="font-weight:500;" name="logo" value="client_logo" title="Delete  logo." style="background-color: #6c75c7d;">
-                                <i class="fa fa-trash"></i></button>
+                                     <button type="button"  id="{{$set->id}}" data-url="{{url('logo/'.$set->id.'/fav_icon')}}" id="client" data-toggle="tooltip"  value="" class="btn btn-sm btn-secondary client " label="" style="font-weight:500;" name="icon" value="fav_icon" title="Delete  logo.">
+                                <i class="fa fa-trash" ></i></button>
                                 @endif
                             </div>
                         </td>
@@ -334,9 +334,16 @@ System Setting
                                 {!! Form::file('logo') !!}
                                 <p><i> {{Lang::get('Upload the company logo')}}</i> </p>
                                 @if($set->logo) 
-                                <img src='{{asset("common/images/$set->logo")}}' class="img-thumbnail" style="height: 50px;">
+                                <img src='{{asset("common/images/$set->logo")}}' class="img-thumbnail" style="height: 50px;"> &nbsp;&nbsp;
+                                 
+                                <button type="button"  id="{{$set->id}}" data-url="{{url('logo/'.$set->id.'/logo')}}" id="client" data-toggle="tooltip"  value="" class="btn btn-sm btn-secondary client " label="" style="font-weight:500;" name="logo" value="client_logo" title="Delete  logo." style="background-color: #6c75c7d;">
+                                <i class="fa fa-trash"></i></button>
 
-                          
+                                         
+
+                            
+
+                            
                                 @endif
                             </div>
                         </td>
@@ -547,7 +554,25 @@ System Setting
         });
     }
 </script>
-
+<script>
+    $(".client").click(function (e){
+         e.preventDefault();
+        var id = $(this).attr('id');
+        var column = $(this).val();
+        var url = $(this).attr('data-url') + '/' + column;  
+            $.ajax({
+                url: url,
+                type: 'GET',
+                data: { "id":id },
+                success: function () {
+                    location.reload();
+                }
+              
+            });
+            
+       });
+        
+</script>
 
         
 

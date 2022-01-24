@@ -11,6 +11,8 @@ use App\Model\Mailjob\QueueService;
 use App\Model\Payment\Currency;
 use App\Model\Plugin;
 use App\User;
+use DB;
+use File;
 use GrahamCampbell\Markdown\Facades\Markdown;
 use Illuminate\Http\Request;
 use Spatie\Activitylog\Models\Activity;
@@ -58,9 +60,6 @@ class SettingsController extends BaseSettingsController
         try {
             $licenseSecret = $apikeys->pluck('license_api_secret')->first();
             $licenseUrl = $apikeys->pluck('license_api_url')->first();
-            $licenseClientId = $apikeys->pluck('license_client_id')->first();
-            $licenseClientSecret = $apikeys->pluck('license_client_secret')->first();
-            $licenseGrantType = $apikeys->pluck('license_grant_type')->first();
             $status = StatusSetting::pluck('license_status')->first();
             $captchaStatus = StatusSetting::pluck('recaptcha_status')->first();
             $updateStatus = StatusSetting::pluck('update_settings')->first();
@@ -89,7 +88,7 @@ class SettingsController extends BaseSettingsController
             $mailSendingStatus = Setting::value('sending_status');
             $model = $apikeys->find(1);
 
-            return view('themes.default1.common.apikey', compact('model', 'status', 'licenseSecret', 'licenseUrl', 'licenseClientId', 'licenseClientSecret', 'licenseGrantType', 'siteKey', 'secretKey', 'captchaStatus', 'updateStatus', 'updateSecret', 'updateUrl', 'mobileStatus', 'mobileauthkey', 'msg91Sender', 'emailStatus', 'twitterStatus', 'twitterKeys', 'zohoStatus', 'zohoKey', 'rzpStatus', 'rzpKeys', 'mailchimpSetting', 'mailchimpKey', 'termsStatus', 'termsUrl', 'pipedriveKey', 'pipedriveStatus', 'domainCheckStatus', 'mailSendingStatus'));
+            return view('themes.default1.common.apikey', compact('model', 'status', 'licenseSecret', 'licenseUrl', 'siteKey', 'secretKey', 'captchaStatus', 'updateStatus', 'updateSecret', 'updateUrl', 'mobileStatus', 'mobileauthkey', 'msg91Sender', 'emailStatus', 'twitterStatus', 'twitterKeys', 'zohoStatus', 'zohoKey', 'rzpStatus', 'rzpKeys', 'mailchimpSetting', 'mailchimpKey', 'termsStatus', 'termsUrl', 'pipedriveKey', 'pipedriveStatus', 'domainCheckStatus', 'mailSendingStatus'));
         } catch (\Exception $ex) {
             return redirect('/')->with('fails', $ex->getMessage());
         }
@@ -152,9 +151,9 @@ class SettingsController extends BaseSettingsController
             $set = $settings->find(1);
             $state = getStateByCode($set->state);
             $selectedCountry = \DB::table('countries')->where('country_code_char2', $set->country)
-                ->pluck('nicename', 'country_code_char2')->toArray();
+            ->pluck('nicename', 'country_code_char2')->toArray();
             $selectedCurrency = \DB::table('currencies')->where('code', $set->default_currency)
-                ->pluck('name', 'symbol')->toArray();
+            ->pluck('name', 'symbol')->toArray();
             $states = findStateByRegionId($set->country);
 
             return view(
@@ -203,7 +202,7 @@ class SettingsController extends BaseSettingsController
                 $setting->fav_icon = $iconName;
             }
             $setting->default_symbol = Currency::where('code', $request->input('default_currency'))
-                ->pluck('symbol')->first();
+                            ->pluck('symbol')->first();
             $setting->fill($request->except('password', 'logo', 'admin-logo', 'fav-icon'))->save();
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
@@ -212,8 +211,40 @@ class SettingsController extends BaseSettingsController
         }
     }
 
- 
-    
+    /**
+     * Get the id and value of the column.
+     *
+     * Remove the logo from the DB and local storage.
+     */
+   public function delete(Request $request)
+    { 
+        if(isset($request->id)){
+            
+            $todo = Setting::findOrFail($request->id);
+              if($request->column == 'logo')
+              {
+             File::delete(public_path('common/images/').$todo->logo);
+
+              $todo->logo = null;
+            }
+             if($request->column == 'admin')
+              {
+            File::delete(public_path('admin/images/').$todo->admin_logo);
+
+              $todo->admin_logo = null;
+
+            }
+             if($request->column == 'fav')
+              {
+             File::delete(public_path('common/images/').$todo->fav_icon);
+              $todo->fav_icon = null;
+            }
+              $todo->save();
+
+              return back();
+        }
+
+    }
 
     public function settingsEmail(Setting $settings)
     {
@@ -309,65 +340,65 @@ class SettingsController extends BaseSettingsController
             $query = $this->advanceSearch($from, $till, $delFrom, $delTill);
 
             return \DataTables::of($query->take(50))
-                ->setTotalRecords($query->count())
-                ->addColumn('checkbox', function ($model) {
-                    return "<input type='checkbox' class='activity' value=".$model->id.' name=select[] id=check>';
-                })
-                ->addColumn('name', function ($model) {
-                    return ucfirst($model->log_name);
-                })
-                ->addColumn('description', function ($model) {
-                    return ucfirst($model->description);
-                })
-                ->addColumn('username', function ($model) {
-                    $causer_id = $model->causer_id;
-                    $names = User::where('id', $causer_id)->pluck('last_name', 'first_name');
-                    foreach ($names as $key => $value) {
-                        $fullName = $key.' '.$value;
+             ->setTotalRecords($query->count())
+             ->addColumn('checkbox', function ($model) {
+                 return "<input type='checkbox' class='activity' value=".$model->id.' name=select[] id=check>';
+             })
+                           ->addColumn('name', function ($model) {
+                               return ucfirst($model->log_name);
+                           })
+                             ->addColumn('description', function ($model) {
+                                 return ucfirst($model->description);
+                             })
+                          ->addColumn('username', function ($model) {
+                              $causer_id = $model->causer_id;
+                              $names = User::where('id', $causer_id)->pluck('last_name', 'first_name');
+                              foreach ($names as $key => $value) {
+                                  $fullName = $key.' '.$value;
 
-                        return $fullName;
-                    }
-                })
-                ->addColumn('role', function ($model) {
-                    $causer_id = $model->causer_id;
-                    $role = User::where('id', $causer_id)->pluck('role');
+                                  return $fullName;
+                              }
+                          })
+                              ->addColumn('role', function ($model) {
+                                  $causer_id = $model->causer_id;
+                                  $role = User::where('id', $causer_id)->pluck('role');
 
-                    return json_decode($role);
-                })
-                ->addColumn('new', function ($model) {
-                    $properties = ($model->properties);
-                    $newEntry = $this->getNewEntry($properties, $model);
+                                  return json_decode($role);
+                              })
+                               ->addColumn('new', function ($model) {
+                                   $properties = ($model->properties);
+                                   $newEntry = $this->getNewEntry($properties, $model);
 
-                    return $newEntry;
-                })
-                ->addColumn('old', function ($model) {
-                    $data = ($model->properties);
-                    $oldEntry = $this->getOldEntry($data, $model);
+                                   return $newEntry;
+                               })
+                                ->addColumn('old', function ($model) {
+                                    $data = ($model->properties);
+                                    $oldEntry = $this->getOldEntry($data, $model);
 
-                    return $oldEntry;
-                })
-                ->addColumn('created_at', function ($model) {
-                    return getDateHtml($model->created_at);
-                })
+                                    return $oldEntry;
+                                })
+                                ->addColumn('created_at', function ($model) {
+                                    return getDateHtml($model->created_at);
+                                })
 
-                ->filterColumn('log_name', function ($query, $keyword) {
-                    $sql = 'log_name like ?';
-                    $query->whereRaw($sql, ["%{$keyword}%"]);
-                })
+                                    ->filterColumn('log_name', function ($query, $keyword) {
+                                        $sql = 'log_name like ?';
+                                        $query->whereRaw($sql, ["%{$keyword}%"]);
+                                    })
 
-                ->filterColumn('description', function ($query, $keyword) {
-                    $sql = 'description like ?';
-                    $query->whereRaw($sql, ["%{$keyword}%"]);
-                })
+                                ->filterColumn('description', function ($query, $keyword) {
+                                    $sql = 'description like ?';
+                                    $query->whereRaw($sql, ["%{$keyword}%"]);
+                                })
 
-                ->filterColumn('causer_id', function ($query, $keyword) {
-                    $sql = 'first_name like ?';
-                    $query->whereRaw($sql, ["%{$keyword}%"]);
-                })
+                            ->filterColumn('causer_id', function ($query, $keyword) {
+                                $sql = 'first_name like ?';
+                                $query->whereRaw($sql, ["%{$keyword}%"]);
+                            })
 
-                ->rawColumns(['checkbox', 'name', 'description',
-                    'username', 'role', 'new', 'old', 'created_at', ])
-                ->make(true);
+                            ->rawColumns(['checkbox', 'name', 'description',
+                                'username', 'role', 'new', 'old', 'created_at', ])
+                            ->make(true);
         } catch (\Exception $e) {
             return redirect()->back()->with('fails', $e->getMessage());
         }
@@ -379,51 +410,51 @@ class SettingsController extends BaseSettingsController
             $email_log = \DB::table('email_log')->orderBy('date', 'desc')->take(50);
 
             return\DataTables::of($email_log)
-                ->setTotalRecords($email_log->count())
-                ->addColumn('checkbox', function ($model) {
-                    return "<input type='checkbox' class='email' value=".$model->id.' name=select[] id=check>';
-                })
-                ->addColumn('date', function ($model) {
-                    $date = $model->date;
+            ->setTotalRecords($email_log->count())
+             ->addColumn('checkbox', function ($model) {
+                 return "<input type='checkbox' class='email' value=".$model->id.' name=select[] id=check>';
+             })
+                           ->addColumn('date', function ($model) {
+                               $date = $model->date;
 
-                    return getDateHtml($date);
-                })
-                ->addColumn('from', function ($model) {
-                    $from = Markdown::convertToHtml($model->from);
+                               return getDateHtml($date);
+                           })
+                             ->addColumn('from', function ($model) {
+                                 $from = Markdown::convertToHtml($model->from);
 
-                    return $from;
-                })
-                ->addColumn('to', function ($model) {
-                    $to = Markdown::convertToHtml($model->to);
+                                 return $from;
+                             })
+                              ->addColumn('to', function ($model) {
+                                  $to = Markdown::convertToHtml($model->to);
 
-                    return $to;
-                })
+                                  return $to;
+                              })
 
-                ->addColumn('subject', function ($model) {
-                    return ucfirst($model->subject);
-                })
-                ->addColumn('status', function ($model) {
-                    return ucfirst($model->status);
-                })
-                ->filterColumn('from', function ($query, $keyword) {
-                    $sql = '`from` like ?';
-                    $query->whereRaw($sql, ["%{$keyword}%"]);
-                })
-                ->filterColumn('to', function ($query, $keyword) {
-                    $sql = '`to` like ?';
-                    $query->whereRaw($sql, ["%{$keyword}%"]);
-                })
-                ->filterColumn('subject', function ($query, $keyword) {
-                    $sql = '`subject` like ?';
-                    $query->whereRaw($sql, ["%{$keyword}%"]);
-                })
-                ->filterColumn('status', function ($query, $keyword) {
-                    $sql = '`status` like ?';
-                    $query->whereRaw($sql, ["%{$keyword}%"]);
-                })
-                ->rawColumns(['checkbox', 'date', 'from', 'to',
-                    'bcc', 'subject',  'status', ])
-                ->make(true);
+                               ->addColumn('subject', function ($model) {
+                                   return ucfirst($model->subject);
+                               })
+                              ->addColumn('status', function ($model) {
+                                  return ucfirst($model->status);
+                              })
+                               ->filterColumn('from', function ($query, $keyword) {
+                                   $sql = '`from` like ?';
+                                   $query->whereRaw($sql, ["%{$keyword}%"]);
+                               })
+                               ->filterColumn('to', function ($query, $keyword) {
+                                   $sql = '`to` like ?';
+                                   $query->whereRaw($sql, ["%{$keyword}%"]);
+                               })
+                               ->filterColumn('subject', function ($query, $keyword) {
+                                   $sql = '`subject` like ?';
+                                   $query->whereRaw($sql, ["%{$keyword}%"]);
+                               })
+                               ->filterColumn('status', function ($query, $keyword) {
+                                   $sql = '`status` like ?';
+                                   $query->whereRaw($sql, ["%{$keyword}%"]);
+                               })
+                              ->rawColumns(['checkbox', 'date', 'from', 'to',
+                                  'bcc', 'subject',  'status', ])
+                            ->make(true);
         } catch (\Exception $e) {
             return redirect()->back()->with('fails', $e->getMessage());
         }
@@ -443,7 +474,7 @@ class SettingsController extends BaseSettingsController
                         <i class='fa fa-ban'></i>
 
                         <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
-                            /* @scrutinizer ignore-type */     \Lang::get('message.failed').'
+                        /* @scrutinizer ignore-type */     \Lang::get('message.failed').'
 
                         <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                             './* @scrutinizer ignore-type */\Lang::get('message.no-record').'
@@ -454,7 +485,7 @@ class SettingsController extends BaseSettingsController
                 echo "<div class='alert alert-success alert-dismissable'>
                         <i class='fa fa-ban'></i>
                         <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '
-                    ./* @scrutinizer ignore-type */\Lang::get('message.success').'
+                        ./* @scrutinizer ignore-type */\Lang::get('message.success').'
                         <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                             './* @scrutinizer ignore-type */ \Lang::get('message.deleted-successfully').'
                     </div>';
@@ -462,7 +493,7 @@ class SettingsController extends BaseSettingsController
                 echo "<div class='alert alert-danger alert-dismissable'>
                         <i class='fa fa-ban'></i>
                         <b>"./* @scrutinizer ignore-type */ \Lang::get('message.alert').
-                    '!</b> './* @scrutinizer ignore-type */\Lang::get('message.failed').'
+                        '!</b> './* @scrutinizer ignore-type */\Lang::get('message.failed').'
                         <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                             './* @scrutinizer ignore-type */ \Lang::get('message.select-a-row').'
                     </div>';
@@ -472,7 +503,7 @@ class SettingsController extends BaseSettingsController
             echo "<div class='alert alert-danger alert-dismissable'>
                         <i class='fa fa-ban'></i>
                         <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
-                /* @scrutinizer ignore-type */\Lang::get('message.failed').'
+                        /* @scrutinizer ignore-type */\Lang::get('message.failed').'
                         <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                             '.$e->getMessage().'
                     </div>';

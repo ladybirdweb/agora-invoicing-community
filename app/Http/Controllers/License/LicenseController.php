@@ -85,11 +85,10 @@ class LicenseController extends Controller
     public function addNewProduct($product_name, $product_sku)
     {
         $url = $this->url;
-        $key = str_random(16);
         $api_key_secret = $this->api_key_secret;
         $OauthDetails = $this->oauthAuthorization();
         $token = $OauthDetails->access_token;
-        $addProduct = $this->postCurl($url.'api/admin/products/add', "api_key_secret=$api_key_secret&product_title=$product_name&product_key=$key&product_sku=$product_sku&product_status=1", $token);
+        $addProduct = $this->postCurl($url.'api/admin/products/add', "api_key_secret=$api_key_secret&product_title=$product_name&product_sku=$product_sku&product_status=1", $token);
     }
 
     /*

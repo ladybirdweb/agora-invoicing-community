@@ -86,7 +86,7 @@ class AutoUpdateController extends Controller
         $api_key_secret = $this->api_key_secret;
         $OauthDetails = $this->oauthAuthorization();
         $token = $OauthDetails->access_token;
-        $addProduct = $this->postCurl($url."api/admin/products/UpdateAdd", "api_key_secret=$api_key_secret&product_title=$product_name&product_sku=$product_sku&product_key=$key&product_status=1",$token);
+        $addProduct = $this->postCurl($url.'api/admin/products/UpdateAdd', "api_key_secret=$api_key_secret&product_title=$product_name&product_sku=$product_sku&product_key=$key&product_status=1", $token);
     }
 
     /*

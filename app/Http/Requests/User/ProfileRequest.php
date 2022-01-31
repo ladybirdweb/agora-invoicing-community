@@ -70,7 +70,7 @@ class ProfileRequest extends Request
             return [
                 'first_name'            => 'required|min:2|max:30',
                 'last_name'             => 'required|max:30',
-                'email'                 => 'required|email|unique:users',
+                'email'                 => 'required|email|unique:users,email|unique:settings,company_email',
                 'company'               => 'required|max:50',
                 'mobile'                => 'required',
                 'address'                => 'required',

@@ -183,6 +183,21 @@ class SettingsController extends BaseSettingsController
 
     public function postSettingsSystem(Setting $settings, SettingsRequest $request)
     {
+        $this->validate($request, [
+            'company'         => 'required|max:50',
+            'company_email'   => 'required|email',
+            'website'         => 'required|url',
+            'phone'           => 'required',
+            'address'         => 'required',
+            'state'           => 'required',
+            'country'         => 'required',
+            'default_currency'=> 'required',
+            'admin-logo'      => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
+            'fav-icon'        => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
+            'logo'            => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
+        ]);
+
+
         try {
             $setting = $settings->find(1);
             if ($request->hasFile('logo')) {
@@ -245,6 +260,7 @@ class SettingsController extends BaseSettingsController
 
               return back();
         }
+
 
     }
 

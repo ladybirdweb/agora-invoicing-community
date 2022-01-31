@@ -192,8 +192,7 @@ use Illuminate\Support\Facades\Route;
              * Settings
              */
 
-            Route::get('logo/{id}/{value}','Common\SettingsController@changeLogo');
-
+            Route::get('logo/{id}/{value}', 'Common\SettingsController@changeLogo');
 
             Route::get('settings', 'Common\SettingsController@settings');
             Route::get('settings/system', 'Common\SettingsController@settingsSystem');

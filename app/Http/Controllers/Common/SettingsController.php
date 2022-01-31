@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Http\Controllers\Common;
 
@@ -11,13 +11,11 @@ use App\Model\Mailjob\QueueService;
 use App\Model\Payment\Currency;
 use App\Model\Plugin;
 use App\User;
+use DB;
+use File;
 use GrahamCampbell\Markdown\Facades\Markdown;
 use Illuminate\Http\Request;
 use Spatie\Activitylog\Models\Activity;
-use File;
-use DB;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Input;
 
 class SettingsController extends BaseSettingsController
 {
@@ -169,68 +167,59 @@ class SettingsController extends BaseSettingsController
 
     public function postSettingsSystem(Setting $settings, Request $request)
     {
-      
-                        $this->validate($request, [
-                            'company'         => 'required|max:50',
-                            'company_email'   => 'required|email',
-                            'website'         => 'required|url',
-                            'phone'           => 'required',
-                            'address'         => 'required',
-                            'state'           => 'required',
-                            'country'         => 'required',
-                            'default_currency'=> 'required',
-                            'admin-logo'      => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
-                            'fav-icon'        => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
-                            'logo'            => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
-                        ]);
+        $this->validate($request, [
+            'company'         => 'required|max:50',
+            'company_email'   => 'required|email',
+            'website'         => 'required|url',
+            'phone'           => 'required',
+            'address'         => 'required',
+            'state'           => 'required',
+            'country'         => 'required',
+            'default_currency'=> 'required',
+            'admin-logo'      => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
+            'fav-icon'        => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
+            'logo'            => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
+        ]);
 
-                        try {
-                            $setting = $settings->find(1);
-                            if ($request->hasFile('logo')) {
-                                $name = $request->file('logo')->getClientOriginalName();
-                                $destinationPath = public_path('common/images');
-                                $request->file('logo')->move($destinationPath, $name);
-                                $setting->logo = $name;
-                            }
-                            if ($request->hasFile('admin-logo')) {
-                                $logoName = $request->file('admin-logo')->getClientOriginalName();
-                                $destinationPath = public_path('admin/images');
-                                $request->file('admin-logo')->move($destinationPath, $logoName);
-                                $setting->admin_logo = $logoName;
-                            }
-                            if ($request->hasFile('fav-icon')) {
-                                $iconName = $request->file('fav-icon')->getClientOriginalName();
-                                $destinationPath = public_path('common/images');
-                                $request->file('fav-icon')->move($destinationPath, $iconName);
-                                $setting->fav_icon = $iconName;
-                            }
-                            $setting->default_symbol = Currency::where('code', $request->input('default_currency'))
+        try {
+            $setting = $settings->find(1);
+            if ($request->hasFile('logo')) {
+                $name = $request->file('logo')->getClientOriginalName();
+                $destinationPath = public_path('common/images');
+                $request->file('logo')->move($destinationPath, $name);
+                $setting->logo = $name;
+            }
+            if ($request->hasFile('admin-logo')) {
+                $logoName = $request->file('admin-logo')->getClientOriginalName();
+                $destinationPath = public_path('admin/images');
+                $request->file('admin-logo')->move($destinationPath, $logoName);
+                $setting->admin_logo = $logoName;
+            }
+            if ($request->hasFile('fav-icon')) {
+                $iconName = $request->file('fav-icon')->getClientOriginalName();
+                $destinationPath = public_path('common/images');
+                $request->file('fav-icon')->move($destinationPath, $iconName);
+                $setting->fav_icon = $iconName;
+            }
+            $setting->default_symbol = Currency::where('code', $request->input('default_currency'))
                             ->pluck('symbol')->first();
-                            $setting->fill($request->except('password', 'logo', 'admin-logo', 'fav-icon'))->save();
+            $setting->fill($request->except('password', 'logo', 'admin-logo', 'fav-icon'))->save();
 
-                            return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
-                        } catch (\Exception $ex) {
-                            return redirect()->back()->with('fails', $ex->getMessage());
-                        }
-                        
-
-
-                    
-    
-
+            return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
     }
 
-     public function changeLogo($id,$value)
-    {    
-
+    public function changeLogo($id, $value)
+    {
         $log = Setting::find($id);
-        File::delete(public_path('common/images/') . $log->$value);
-        File::delete(public_path('admin/images/') . $log->$value);
+        File::delete(public_path('common/images/').$log->$value);
+        File::delete(public_path('admin/images/').$log->$value);
         $result = DB::table('settings')->where('id', $id)->update([$value => null]);
 
         return back();
-   
-     }
+    }
 
     public function settingsEmail(Setting $settings)
     {

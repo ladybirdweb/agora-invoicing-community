@@ -181,6 +181,7 @@ class SettingsController extends BaseSettingsController
             'logo'            => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
         ]);
 
+
         try {
             $setting = $settings->find(1);
             if ($request->hasFile('logo')) {
@@ -243,6 +244,7 @@ class SettingsController extends BaseSettingsController
 
               return back();
         }
+
 
     }
 

@@ -268,7 +268,7 @@ class AuthController extends BaseAuthController
     {
         $check = false;
         if ($user->active == '1' && $user->mobile_verified == '1') {
-            \Auth:: login($user);
+            \Auth::login($user);
             $check = true;
         }
 

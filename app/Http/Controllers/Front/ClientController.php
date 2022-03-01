@@ -15,8 +15,6 @@ use App\Model\Product\ProductUpload;
 use App\Model\Product\Subscription;
 use App\User;
 use Exception;
-use Illuminate\Support\Facades\Auth;
-
 use GrahamCampbell\Markdown\Facades\Markdown;
 
 class ClientController extends BaseClientController
@@ -65,8 +63,6 @@ class ClientController extends BaseClientController
     public function invoices()
     {
         try {
-            
-            
             return view('themes.default1.front.clients.invoice');
         } catch (Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());

@@ -295,8 +295,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             }
 
             return $invoice;
-
-
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
 
@@ -307,7 +305,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
     public function createInvoiceItems($invoiceid, $cart)
     {
         try {
-
             $planid = 0;
             $product_name = $cart->name;
             $regular_price = $cart->price;
@@ -415,7 +412,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
     public function createInvoiceItemsByAdmin($invoiceid, $productid, $price,
         $currency, $qty, $agents, $planid = '', $userid = '', $tax_name = '', $tax_rate = '', $grandTotalAfterCoupon)
     {
-        dd("gh");
+        dd('gh');
         try {
             $product = $this->product->findOrFail($productid);
             $plan = Plan::where('product', $productid)->first();
@@ -435,7 +432,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 'plan_id'        => $planid,
                 'agents'         => $agents,
             ]);
-            
+
             return $items;
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());

@@ -113,7 +113,6 @@ class SettingsController extends BaseSettingsController
     public static function checkPaymentGateway($currency)
     {
         try {
-
             $plugins = new Plugin();
             $models = [];
             $gateways = '';
@@ -140,7 +139,7 @@ class SettingsController extends BaseSettingsController
 
             return $allAcivePluginName;
         } catch (\Exception $ex) {
-          return redirect()->back()->with('fails', $ex->getMessage());
+            return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 

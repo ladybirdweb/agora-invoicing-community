@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Common\MailChimpController;
 use App\Http\Controllers\Common\TemplateController;
-use App\Http\Controllers\FreeTrialController;
 use App\Model\Common\Setting;
 use App\Model\Common\Template;
 use App\Model\Order\Invoice;
@@ -19,8 +18,6 @@ use App\User;
 use Cart;
 use Darryldecode\Cart\CartCondition;
 use Illuminate\Http\Request;
-
-
 
 class CheckoutController extends InfoController
 {
@@ -85,15 +82,14 @@ class CheckoutController extends InfoController
 
     public function checkoutForm(Request $request)
     {
-
-        if (!\Auth::user()) {//If User is not Logged in then send him to login Page
+        if (! \Auth::user()) {//If User is not Logged in then send him to login Page
             $url = $request->segments(); //The requested url (chekout).Save it in Session
             \Session::put('session-url', $url[0]);
             $content = Cart::getContent();
             $domain = $request->input('domain');
             if ($domain) {
                 foreach ($domain as $key => $value) {
-                    \Session::put('domain' . $key, $value); //Store all the domains Entered in Cart Page in Session
+                    \Session::put('domain'.$key, $value); //Store all the domains Entered in Cart Page in Session
                 }
             }
             \Session::put('content', $content);
@@ -105,29 +101,25 @@ class CheckoutController extends InfoController
 
             $invoice = \Session::get('invoice');
             if ($invoice && \Session::has('fails')) {
-                return redirect('paynow/' . $invoice->id)->with('fails', 'Payment cannot be processed. Please try the other gateway.');
+                return redirect('paynow/'.$invoice->id)->with('fails', 'Payment cannot be processed. Please try the other gateway.');
             }
         }
 
         $content = Cart::getContent();
         $taxConditions = $this->getAttributes($content);
 
-
         $content = Cart::getContent();
         try {
-
             $domain = $request->input('domain');
             if ($domain) {//Store the Domain  in session when user Logged In
 
                 foreach ($domain as $key => $value) {
-                    \Session::put('domain' . $key, $value);
+                    \Session::put('domain'.$key, $value);
                 }
-
             }
 
             return view('themes.default1.front.checkout', compact('content', 'taxConditions'));
         } catch (\Exception $ex) {
-
             app('log')->error($ex->getMessage());
 
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -137,7 +129,7 @@ class CheckoutController extends InfoController
     /**
      * Get all the Attributes Sent From the cart along with Tax Conditions.
      *
-     * @param array $content Collection of the Cart Values
+     * @param  array  $content  Collection of the Cart Values
      * @return array Items along with their details,Attributes(Currency,Agents) and Tax Conditions
      */
     public function getAttributes($content)
@@ -163,14 +155,13 @@ class CheckoutController extends InfoController
 
                     //Return array of Product Details,attributes and their conditions
                     $items[] = ['id' => $item->id, 'name' => $item->name, 'price' => $item->price,
-                        'quantity' => $item->quantity, 'attributes' => ['currency' => $cart_currency, 'symbol' => $item->attributes->symbol, 'agents' => $item->attributes->agents], 'associatedModel' => Product::find($item->id), 'conditions' => $taxConditions,];
+                        'quantity' => $item->quantity, 'attributes' => ['currency' => $cart_currency, 'symbol' => $item->attributes->symbol, 'agents' => $item->attributes->agents], 'associatedModel' => Product::find($item->id), 'conditions' => $taxConditions, ];
                 }
                 Cart::add($items);
 
                 return $taxConditions;
             }
         } catch (\Exception $ex) {
-
             app('log')->error($ex->getMessage());
 
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -183,7 +174,6 @@ class CheckoutController extends InfoController
             $paid = 0;
             $invoice = $this->invoice->find($invoiceid);
             if ($invoice->user_id != \Auth::user()->id) {
-
                 throw new \Exception('Cannot initiate payment. Invalid modification of data');
             }
             if (count($invoice->payment()->get())) {//If partial payment is made
@@ -230,7 +220,6 @@ class CheckoutController extends InfoController
                 if ($amount) {//If payment is for paid product
                     \Event::dispatch(new \App\Events\PaymentGateway(['request' => $request, 'invoice' => $invoice]));
                 } else {
-
                     $date = getDateHtml($invoice->date);
                     $product = $this->product($invoice->id);
                     $items = $invoice->invoiceItem()->get();
@@ -283,7 +272,7 @@ class CheckoutController extends InfoController
     {
         $value = '0%';
         if ($request->input('processing_fee')) {
-            $value = $request->input('processing_fee') . '%';
+            $value = $request->input('processing_fee').'%';
         }
 
         $updateValue = new CartCondition([
@@ -357,4 +346,3 @@ class CheckoutController extends InfoController
         }
     }
 }
-

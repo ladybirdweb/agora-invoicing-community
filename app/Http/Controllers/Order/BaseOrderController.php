@@ -4,15 +4,16 @@ namespace App\Http\Controllers\Order;
 
 use App\Http\Controllers\License\LicensePermissionsController;
 use App\Model\Common\StatusSetting;
+use App\Model\Order\Invoice;
 use App\Model\Order\Order;
 use App\Model\Product\Product;
+use App\Model\Product\Subscription;
 use App\Plugins\Stripe\Controllers\SettingsController;
 use App\Traits\Order\UpdateDates;
 use App\User;
 use Crypt;
 use DB;
-use App\Model\Product\Subscription;
-use App\Model\Order\Invoice;
+
 class BaseOrderController extends ExtendedOrderController
 {
     protected $sendMail;
@@ -30,7 +31,6 @@ class BaseOrderController extends ExtendedOrderController
 
         $subscription = new Subscription();
         $this->subscription = $subscription;
-
     }
 
     use UpdateDates;
@@ -130,16 +130,12 @@ class BaseOrderController extends ExtendedOrderController
     public function addToMailchimp($product, $user_id, $item)
     {
         try {
-
             $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
             $email = User::where('id', $user_id)->pluck('email')->first();
             if ($item->subtotal > 0) {
-        
                 $r = $mailchimp->updateSubscriberForPaidProduct($email, $product);
             } else {
-
                 $r = $mailchimp->updateSubscriberForFreeProduct($email, $product);
-
             }
         } catch (\Exception $ex) {
             return;
@@ -161,16 +157,15 @@ class BaseOrderController extends ExtendedOrderController
      */
     public function addSubscription($orderid, $planid, $version, $product, $serial_key)
     {
-
         try {
             $permissions = LicensePermissionsController::getPermissionsForProduct($product);
-             
+
             if ($version == null) {
                 $version = '';
             }
 
             $days = DB::table('plans')->where('id', $planid)->first()->days;
-            
+
             $licenseExpiry = $this->getLicenseExpiryDate($permissions['generateLicenseExpiryDate'], $days);
             $updatesExpiry = $this->getUpdatesExpiryDate($permissions['generateUpdatesxpiryDate'], $days);
             $supportExpiry = $this->getSupportExpiryDate($permissions['generateSupportExpiryDate'], $days);
@@ -183,10 +178,8 @@ class BaseOrderController extends ExtendedOrderController
             if ($licenseStatus == 1) {
                 $cont = new \App\Http\Controllers\License\LicenseController();
                 $createNewLicense = $cont->createNewLicene($orderid, $product, $user_id, $licenseExpiry, $updatesExpiry, $supportExpiry, $serial_key);
-             
             }
         } catch (\Exception $ex) {
-               
             app('log')->error($ex->getMessage());
 
             throw new \Exception('Can not Generate Subscription');
@@ -265,7 +258,7 @@ class BaseOrderController extends ExtendedOrderController
         //product
 
         $product = $this->product->find($itemid);
-       
+
         //user
         $productId = Product::where('name', $product)->pluck('id')->first();
         $users = new User();
@@ -286,7 +279,6 @@ class BaseOrderController extends ExtendedOrderController
         $invoiceurl = $this->invoiceUrl($orderid);
         //template
         $mail = $this->getMail($setting, $user, $downloadurl, $invoiceurl, $order, $product, $orderid, $myaccounturl);
-        
     }
 
     public function getMail($setting, $user, $downloadurl, $invoiceurl, $order, $product, $orderid, $myaccounturl)

@@ -33,7 +33,6 @@ class BaseMailChimpController extends Controller
     //Update to Mailchimp For Free Product
     public function updateSubscriberForFreeProduct($email, $productid)
     {
-
         try {
             $productGroupId = '';
             $interestGroupIdForNo = '';
@@ -47,20 +46,16 @@ class BaseMailChimpController extends Controller
                 $interestGroupIdForYes = $this->relation->is_paid_yes; //Interest GroupId for IsPaid Is Yes
             }
             if ($productStatusStatus == 1) {
-
                 $productGroupId = $this->groupRelation->where('agora_product_id', $productid)
                 ->pluck('mailchimp_group_cat_id')->first();
-
             }
             if ($interestGroupIdForNo && $productGroupId) {
                 $result = $this->mailchimp->patch("lists/$this->list_id/members/$hash", [
                     'interests'         => [$interestGroupIdForNo => true, $interestGroupIdForYes=>false, $productGroupId =>true],
                 ]);
 
-
             //refer to https://us7.api.mailchimp.com/playground
             } elseif ($interestGroupIdForNo && $productGroupId == null) {
-
                 $result = $this->mailchimp->patch("lists/$this->list_id/members/$hash", [
                     'interests'         => [$interestGroupIdForNo => true, $interestGroupIdForYes=>false],
                 ]);

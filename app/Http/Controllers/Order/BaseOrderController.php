@@ -10,7 +10,9 @@ use App\Plugins\Stripe\Controllers\SettingsController;
 use App\Traits\Order\UpdateDates;
 use App\User;
 use Crypt;
-
+use DB;
+use App\Model\Product\Subscription;
+use App\Model\Order\Invoice;
 class BaseOrderController extends ExtendedOrderController
 {
     protected $sendMail;
@@ -19,6 +21,16 @@ class BaseOrderController extends ExtendedOrderController
     {
         $this->middleware('auth');
         $this->middleware('admin');
+
+        $order = new Order();
+        $this->order = $order;
+
+        $product = new Product();
+        $this->product = $product;
+
+        $subscription = new Subscription();
+        $this->subscription = $subscription;
+
     }
 
     use UpdateDates;
@@ -118,12 +130,16 @@ class BaseOrderController extends ExtendedOrderController
     public function addToMailchimp($product, $user_id, $item)
     {
         try {
+
             $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
             $email = User::where('id', $user_id)->pluck('email')->first();
             if ($item->subtotal > 0) {
+        
                 $r = $mailchimp->updateSubscriberForPaidProduct($email, $product);
             } else {
+
                 $r = $mailchimp->updateSubscriberForFreeProduct($email, $product);
+
             }
         } catch (\Exception $ex) {
             return;
@@ -145,16 +161,21 @@ class BaseOrderController extends ExtendedOrderController
      */
     public function addSubscription($orderid, $planid, $version, $product, $serial_key)
     {
+
         try {
             $permissions = LicensePermissionsController::getPermissionsForProduct($product);
+             
             if ($version == null) {
                 $version = '';
             }
-            $days = $this->plan->where('id', $planid)->first()->days;
+
+            $days = DB::table('plans')->where('id', $planid)->first()->days;
+            
             $licenseExpiry = $this->getLicenseExpiryDate($permissions['generateLicenseExpiryDate'], $days);
             $updatesExpiry = $this->getUpdatesExpiryDate($permissions['generateUpdatesxpiryDate'], $days);
             $supportExpiry = $this->getSupportExpiryDate($permissions['generateSupportExpiryDate'], $days);
-            $user_id = $this->order->find($orderid)->client;
+
+            $user_id = DB::table('orders')->find($orderid)->client;
             $this->subscription->create(['user_id' => $user_id,
                 'plan_id' => $planid, 'order_id' => $orderid, 'update_ends_at' =>$updatesExpiry, 'ends_at' => $licenseExpiry, 'support_ends_at'=>$supportExpiry, 'version'=> $version, 'product_id'=>$product, ]);
 
@@ -162,8 +183,10 @@ class BaseOrderController extends ExtendedOrderController
             if ($licenseStatus == 1) {
                 $cont = new \App\Http\Controllers\License\LicenseController();
                 $createNewLicense = $cont->createNewLicene($orderid, $product, $user_id, $licenseExpiry, $updatesExpiry, $supportExpiry, $serial_key);
+             
             }
         } catch (\Exception $ex) {
+               
             app('log')->error($ex->getMessage());
 
             throw new \Exception('Can not Generate Subscription');
@@ -238,8 +261,11 @@ class BaseOrderController extends ExtendedOrderController
     {
         //order
         $order = $this->order->find($orderid);
+
         //product
-        $product = $this->product($itemid);
+
+        $product = $this->product->find($itemid);
+       
         //user
         $productId = Product::where('name', $product)->pluck('id')->first();
         $users = new User();
@@ -249,7 +275,7 @@ class BaseOrderController extends ExtendedOrderController
         $setting = $settings->where('id', 1)->first();
         $orders = new Order();
         $order = $orders->where('id', $orderid)->first();
-        $invoice = $this->invoice->find($order->invoice_id);
+        $invoice = Invoice::find($order->invoice_id);
         $number = $invoice->number;
         $downloadurl = '';
         if ($user && $order->order_status == 'Executed') {
@@ -260,6 +286,7 @@ class BaseOrderController extends ExtendedOrderController
         $invoiceurl = $this->invoiceUrl($orderid);
         //template
         $mail = $this->getMail($setting, $user, $downloadurl, $invoiceurl, $order, $product, $orderid, $myaccounturl);
+        
     }
 
     public function getMail($setting, $user, $downloadurl, $invoiceurl, $order, $product, $orderid, $myaccounturl)
@@ -281,8 +308,8 @@ class BaseOrderController extends ExtendedOrderController
                 'invoiceurl'    => $invoiceurl,
                 'product'       => $product,
                 'number'        => $order->number,
-                'expiry'        => $this->expiry($orderid),
-                'url'           => $this->renew($orderid),
+                'expiry'        => app('App\Http\Controllers\Order\OrderController')->expiry($orderid),
+                'url'           => app('App\Http\Controllers\Order\OrderController')->renew($orderid),
                 'knowledge_base'=> $knowledgeBaseUrl,
 
             ];
@@ -294,7 +321,6 @@ class BaseOrderController extends ExtendedOrderController
             }
             $mail = new \App\Http\Controllers\Common\PhpMailController();
             $mail->sendEmail($from, $to, $data, $subject, $replace, $type);
-
             if ($order->invoice->grand_total) {
                 SettingsController::sendPaymentSuccessMailtoAdmin($order->invoice->currency, $order->invoice->grand_total, $user, $product);
             }

@@ -77,6 +77,7 @@ use Illuminate\Http\Request;
             Route::post('reduce-agent-qty', 'Front\CartController@reduceAgentQty');
             Route::post('cart/clear', 'Front\CartController@clearCart');
             Route::get('show/cart', 'Front\CartController@showCart');
+            Route::post('firstlogin','FreeTrialController@firstloginatem');
 
             Route::get('checkout', 'Front\CheckoutController@checkoutForm');
             Route::match(['post', 'patch'], 'checkout-and-pay', 'Front\CheckoutController@postCheckout');
@@ -162,6 +163,7 @@ use Illuminate\Http\Request;
             Route::get('/', 'DashboardController@index');
 
             Route::get('activate/{token}', 'Auth\AuthController@activate');
+
 
             /*
              * Client
@@ -385,6 +387,7 @@ use Illuminate\Http\Request;
             /*
              * Invoices
              */
+
 
             Route::get('invoices', 'Order\InvoiceController@index');
             Route::get('invoices/{id}', 'Order\InvoiceController@show');

@@ -95,6 +95,7 @@ class BaseRenewController extends Controller
     {
         try {
             $controller = new InvoiceController();
+            dd($controller);
             if ($code != '') {
                 $product_cost = $controller->checkCode($code, $product->id, $currency);
             }

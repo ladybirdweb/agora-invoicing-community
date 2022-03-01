@@ -47,12 +47,9 @@
      $(".modal-body #orderId").val( orderId );
      $('#tenant').modal('show');
 });
-
-
     $('.closebutton').on('click',function(){
         location.reload();
     });
-
     function createTenant(){
         $('#createTenant').attr('disabled',true)
         $("#createTenant").html("<i class='fas fa-circle-notch fa-spin'></i>Please Wait...");
@@ -67,7 +64,6 @@
                 $('#createTenant').attr('disabled',false)
                 $("#createTenant").html("<i class='fa fa-check'>&nbsp;&nbsp;</i>Submit");
                 if(data.status == 'validationFailure') {
-
                     var html = '<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong>Whoops! </strong>Something went wrong<ul>';
                     for (var key in data.message)
                     {
@@ -99,13 +95,11 @@
                 $("#createTenant").html("<i class='fa fa-check'>&nbsp;&nbsp;</i>Submit");
                  $("#generate").html("<i class='fa fa-check'>&nbsp;&nbsp;</i>Submit");
                 if(response.status == 422) {
-
                      var html = '<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong>Whoops! </strong>Something went wrong<ul>';
                     for (var key in response.responseJSON.errors)
                     {
                         html += '<li>' + response.responseJSON.errors[key][0] + '</li>'
                     }
-
                 } else {
                     var html = '<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong>Whoops! </strong>Something went wrong<ul>';
                     html += '<li>' + response.responseJSON.message + '</li>'
@@ -113,11 +107,10 @@
                 
                  html += '</ul></div>';
                  $('#error').show();
-                  $('#success').hide();
-                  document.getElementById('error').innerHTML = html;
+                 $('#success').hide();
+                 document.getElementById('error').innerHTML = html;
                 
             }
-
         })
 }    
 </script>

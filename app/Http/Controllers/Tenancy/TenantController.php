@@ -90,6 +90,8 @@ class TenantController extends Controller
      */
     public function createTenant(Request $request)
     {
+
+       
         $this->validate($request,
                 [
                     'orderNo' => 'required',
@@ -99,8 +101,9 @@ class TenantController extends Controller
                     'domain.regex' => 'Special characters are not allowed in domain name',
                 ]);
         try {
-            $faveoCloud = '.faveocloud.com';
+            $faveoCloud = '.haxoor-sparta.tk';
             $licCode = Order::where('number', $request->input('orderNo'))->first()->serial_key;
+           
             $keys = ThirdPartyApp::where('app_name', 'faveo_app_key')->select('app_key', 'app_secret')->first();
             if (! $keys->app_key) {//Valdidate if the app key to be sent is valid or not
                 throw new Exception('Invalid App key provided. Please contact admin.');
@@ -110,7 +113,6 @@ class TenantController extends Controller
             $user = \Auth::user()->email;
             $client = new Client([]);
             $data = ['domain' => $request->input('domain').$faveoCloud, 'app_key'=>$keys->app_key, 'token'=>$token, 'lic_code'=>$licCode, 'username'=>$user, 'userId'=>\Auth::user()->id, 'timestamp'=>time()];
-
             $encodedData = http_build_query($data);
             $hashedSignature = hash_hmac('sha256', $encodedData, $keys->app_secret);
             $response = $client->request(
@@ -118,8 +120,9 @@ class TenantController extends Controller
                     $this->cloud->cloud_central_domain.'/tenants', ['form_params'=>$data, 'headers'=>['signature'=>$hashedSignature]]
                 );
 
-            $response = explode('{', (string) $response->getBody());
 
+            $response = explode('{', (string) $response->getBody());
+              dd($response);
             $response = '{'.$response[1];
 
             $result = json_decode($response);
@@ -140,13 +143,16 @@ class TenantController extends Controller
 
                 $userData = $result->message.'.<br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password;
 
+
                 $setting = Setting::find(1);
                 $mail = new \App\Http\Controllers\Common\PhpMailController();
                 $mail->sendEmail($setting->email, $user, $userData, 'New instance created');
 
+
                 return ['status' => $result->status, 'message' => $result->message.'.'.$cronFailureMessage];
             }
         } catch (Exception $e) {
+
             return ['status' => 'false', 'message' => $e->getMessage()];
         }
     }

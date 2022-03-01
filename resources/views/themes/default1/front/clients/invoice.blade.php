@@ -15,9 +15,11 @@ active
   <li><a href="{{url('login')}}">Home</a></li>
   @endif
 <li class="active">My Invoices</li>
-@stop
 
-@section('content')
+@stop
+ @section('content')
+
+
 
 <div class="col-md-12 pull-center">
 

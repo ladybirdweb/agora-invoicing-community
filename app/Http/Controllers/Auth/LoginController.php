@@ -10,11 +10,14 @@ use App\Model\Common\StatusSetting;
 use App\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
+use Cache;
+use DB;
+use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
     use AuthenticatesUsers;
-    /*
+        /*
     |--------------------------------------------------------------------------
     | Login Controller
     |--------------------------------------------------------------------------
@@ -60,6 +63,7 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
+
         $apiKeys = StatusSetting::value('recaptcha_status');
         $captchaRule = $apiKeys ? 'required|' : 'sometimes|';
         $this->validate($request, [
@@ -104,12 +108,19 @@ class LoginController extends Controller
             $userId = \Auth::user()->id;
             \Auth::logout();
             $request->session()->put('2fa:user:id', $userId);
-
             return redirect('2fa/validate');
         }
-        activity()->log('Logged In');
 
-        return redirect()->intended($this->redirectPath());
+         if(Auth::user()->first_time_login)
+              {
+                $first_time_login = true;
+                \Auth::user()->first_time_login = false;
+                \Auth::user()->save();
+               }
+
+            activity()->log('Logged In');
+          
+            return redirect()->intended($this->redirectPath());
     }
 
     /**
@@ -119,12 +130,22 @@ class LoginController extends Controller
      */
     public function redirectPath()
     {
+
         if (\Session::has('session-url')) {
             $url = \Session::get('session-url');
+            return property_exists($this, 'redirectTo') ?: '/'.$url;
 
-            return property_exists($this, 'redirectTo') ? $this->redirectTo : '/'.$url;
-        } else {
-            return property_exists($this, 'redirectTo') ? $this->redirectTo : '/';
+         } 
+            else {
+
+                return property_exists($this, 'redirectTo') ? $this->redirectTo : '/';
+            }
         }
-    }
+
+
+
+
+
+
+    
 }

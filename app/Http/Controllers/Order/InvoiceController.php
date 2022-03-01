@@ -286,6 +286,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $currency = \Session::has('cart_currency') ? \Session::get('cart_currency') : getCurrencyForClient(\Auth::user()->country);
             $invoice = $this->invoice->create(['user_id' => $user_id, 'number' => $number, 'date'=> $date, 'grand_total' => $grand_total, 'status' => 'pending',
                 'currency' => $currency, ]);
+
             foreach (\Cart::getContent() as $cart) {
                 $this->createInvoiceItems($invoice->id, $cart);
             }
@@ -294,6 +295,8 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             }
 
             return $invoice;
+
+
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
 
@@ -304,6 +307,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
     public function createInvoiceItems($invoiceid, $cart)
     {
         try {
+
             $planid = 0;
             $product_name = $cart->name;
             $regular_price = $cart->price;
@@ -411,12 +415,14 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
     public function createInvoiceItemsByAdmin($invoiceid, $productid, $price,
         $currency, $qty, $agents, $planid = '', $userid = '', $tax_name = '', $tax_rate = '', $grandTotalAfterCoupon)
     {
+        dd("gh");
         try {
             $product = $this->product->findOrFail($productid);
             $plan = Plan::where('product', $productid)->first();
             $subtotal = $qty * intval($grandTotalAfterCoupon);
 
             $domain = $this->domain($productid);
+
             $items = $this->invoiceItem->create([
                 'invoice_id'     => $invoiceid,
                 'product_name'   => $product->name,
@@ -429,7 +435,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 'plan_id'        => $planid,
                 'agents'         => $agents,
             ]);
-
+            
             return $items;
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());

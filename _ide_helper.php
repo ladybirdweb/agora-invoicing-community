@@ -9815,6 +9815,7 @@ namespace Illuminate\Support\Facades {
         {
             //Method inherited from \Symfony\Component\HttpFoundation\Request            
                         /** @var \Illuminate\Http\Request $instance */
+                
                         return $instance->getContent($asResource);
         }
         

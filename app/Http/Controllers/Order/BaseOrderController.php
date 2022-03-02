@@ -11,6 +11,9 @@ use App\Model\Product\Subscription;
 use App\Plugins\Stripe\Controllers\SettingsController;
 use App\Traits\Order\UpdateDates;
 use App\User;
+use App\Model\Product\Subscription;
+use App\Model\Payment\Plan;
+use DB;
 use Crypt;
 use Symfony\Component\Mime\Email;
 

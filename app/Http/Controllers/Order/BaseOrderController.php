@@ -15,10 +15,19 @@ class BaseOrderController extends ExtendedOrderController
 {
     protected $sendMail;
 
-    public function __construct()
+   public function __construct()
     {
         $this->middleware('auth');
         $this->middleware('admin');
+
+        $order = new Order();
+        $this->order = $order;
+
+        $product = new Product();
+        $this->product = $product;
+
+        $subscription = new Subscription();
+        $this->subscription = $subscription;
     }
 
     use UpdateDates;
@@ -154,7 +163,7 @@ class BaseOrderController extends ExtendedOrderController
             $licenseExpiry = $this->getLicenseExpiryDate($permissions['generateLicenseExpiryDate'], $days);
             $updatesExpiry = $this->getUpdatesExpiryDate($permissions['generateUpdatesxpiryDate'], $days);
             $supportExpiry = $this->getSupportExpiryDate($permissions['generateSupportExpiryDate'], $days);
-            $user_id = $this->order->find($orderid)->client;
+            $user_id = DB::table('orders')->find($orderid)->client;
             $this->subscription->create(['user_id' => $user_id,
                 'plan_id' => $planid, 'order_id' => $orderid, 'update_ends_at' =>$updatesExpiry, 'ends_at' => $licenseExpiry, 'support_ends_at'=>$supportExpiry, 'version'=> $version, 'product_id'=>$product, ]);
 
@@ -281,8 +290,8 @@ class BaseOrderController extends ExtendedOrderController
                 'invoiceurl'    => $invoiceurl,
                 'product'       => $product,
                 'number'        => $order->number,
-                'expiry'        => $this->expiry($orderid),
-                'url'           => $this->renew($orderid),
+                 'expiry'        => app('App\Http\Controllers\Order\OrderController')->expiry($orderid),
+                'url'           => app('App\Http\Controllers\Order\OrderController')->renew($orderid),
                 'knowledge_base'=> $knowledgeBaseUrl,
 
             ];

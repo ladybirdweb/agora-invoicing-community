@@ -1,6 +1,17 @@
 <?php
 
 return [
+
+  /* 
+    * Free Trail
+    */
+    'free-login' => 'Sign in to start your session',
+    'false' => 'Free trail has been expired',
+    'succs_fre' => 'Invoice and Order has been generated successfully',
+    
+    /*
+
+    
     /*
      * Layout languages
      */

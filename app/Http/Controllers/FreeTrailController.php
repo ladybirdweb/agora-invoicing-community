@@ -15,6 +15,7 @@ use Crypt;
 use DB;
 use Illuminate\Http\Request;
 use Lang;
+use App\Http\Controllers\Order\BaseOrderController;
 
 class FreeTrailController extends Controller
 {
@@ -44,7 +45,7 @@ class FreeTrailController extends Controller
         if (Auth::user()->id == $id) {
             $user_login = User::find($id);
             if ($user_login->first_time_login != 0) {
-                return errorResponse(Lang::get('lang.false'), 400);
+                return errorResponse(Lang::get('message.false'), 400);
             }
             $user = User::where('id', $id)->update(['first_time_login' => 1]);
 
@@ -54,7 +55,7 @@ class FreeTrailController extends Controller
 
             $order = $this->executeFreetrailOrder();
 
-            return successResponse(Lang::get('lang.succs_fre'), $order, 200);
+            return successResponse(Lang::get('message.succs_fre'), $order, 200);
         }
     }
 
@@ -84,26 +85,17 @@ class FreeTrailController extends Controller
         $userId = \Auth::user()->id;
         $invoice = DB::table('invoices')->where('user_id', $userId)->first();
         $invoiceid = $invoice->id;
-        $planid = 0;
-        $product_name = 'Faveo Cloud(Beta)';
-        $regular_price = 0;
-        $quantity = 1;
-        $agents = 0;
-        $domain = '';
-        $subtotal = 0;
-        $tax_name = null;
-        $tax_percentage = 0;
         $invoiceItem = $this->invoiceItem->create([
             'invoice_id'     => $invoiceid,
-            'product_name'   => $product_name,
-            'regular_price'  => $regular_price,
-            'quantity'       => $quantity,
-            'tax_name'       => $tax_name,
-            'tax_percentage' => $tax_percentage,
-            'subtotal'       => $subtotal,
-            'domain'         => $domain,
-            'plan_id'        => $planid,
-            'agents'         => $agents,
+            'product_name'   => 'Faveo Cloud(Beta)',
+            'regular_price'  => 0,
+            'quantity'       => 1,
+            'tax_name'       => "null",
+            'tax_percentage' => 0,
+            'subtotal'       => 0,
+            'domain'         => "",
+            'plan_id'        => 0,
+            'agents'         => 0,
         ]);
 
         return $invoiceItem;
@@ -158,18 +150,16 @@ class FreeTrailController extends Controller
             'domain'          => $domain,
             'number'          => $this->generateFreetrailNumber(),
         ]);
-        app('App\Http\Controllers\Order\BaseOrderController')->addOrderInvoiceRelation($invoiceid, $order->id);
+
+        $baseorder = new BaseOrderController();
+        $baseorder->addOrderInvoiceRelation($invoiceid, $order->id);
 
         if ($plan_id != 0) {
-            app('App\Http\Controllers\Order\BaseOrderController')->addSubscription($order->id, $plan_id, $version, $product, $serial_key);
-        }
-
-        if (emailSendingStatus()) {
-            app('App\Http\Controllers\Order\BaseOrderController')->sendOrderMail($user_id, $order->id, $item->id);
+            $baseorder->addSubscription($order->id, $plan_id, $version, $product, $serial_key);
         }
         $mailchimpStatus = StatusSetting::pluck('mailchimp_status')->first();
         if ($mailchimpStatus) {
-            app('App\Http\Controllers\Order\BaseOrderController')->addtoMailchimp($product, $user_id, $item);
+            $baseorder->addtoMailchimp($product, $user_id, $item);
         }
     }
 

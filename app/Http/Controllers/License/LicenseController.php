@@ -232,8 +232,7 @@ class LicenseController extends Controller
     /*
     *  Create New License For User
     */
-    public function createNewLicene($orderid, $product, $user_id,
-                                    $licenseExpiry, $updatesExpiry, $supportExpiry, $serial_key)
+    public function createNewLicene($orderid, $product, $user_id,$licenseExpiry, $updatesExpiry, $supportExpiry, $serial_key)
     {
         $url = $this->url;
         $api_key_secret = $this->api_key_secret;

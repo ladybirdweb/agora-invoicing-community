@@ -97,8 +97,7 @@ use Illuminate\Http\Request;
              * Front Client Pages
              */
 
-            Route::post('firstlogin','FreeTrialController@firstloginatem');
-
+            Route::post('firstlogin', 'FreeTrialController@firstloginatem');
 
             Route::get('my-invoices', 'Front\ClientController@invoices')->name('my-invoices');
 

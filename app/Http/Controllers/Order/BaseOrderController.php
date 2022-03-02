@@ -18,7 +18,7 @@ class BaseOrderController extends ExtendedOrderController
 {
     protected $sendMail;
 
-    public function __construct()
+   public function __construct()
     {
         $this->middleware('auth');
         $this->middleware('admin');
@@ -164,7 +164,7 @@ class BaseOrderController extends ExtendedOrderController
             $licenseExpiry = $this->getLicenseExpiryDate($permissions['generateLicenseExpiryDate'], $days);
             $updatesExpiry = $this->getUpdatesExpiryDate($permissions['generateUpdatesxpiryDate'], $days);
             $supportExpiry = $this->getSupportExpiryDate($permissions['generateSupportExpiryDate'], $days);
-            $user_id = $this->order->find($orderid)->client;
+            $user_id = DB::table('orders')->find($orderid)->client;
             $this->subscription->create(['user_id' => $user_id,
                 'plan_id' => $planid, 'order_id' => $orderid, 'update_ends_at' => $updatesExpiry, 'ends_at' => $licenseExpiry, 'support_ends_at' => $supportExpiry, 'version' => $version, 'product_id' => $product, 'is_subscribed' => '1']);
 
@@ -274,12 +274,27 @@ class BaseOrderController extends ExtendedOrderController
 
     public function getMail($setting, $user, $downloadurl, $invoiceurl, $order, $product, $orderid, $myaccounturl)
     {
-        $mail = new \App\Http\Controllers\Common\PhpMailController();
-        $mailer = $mail->setMailConfig($setting);
-        $templates = new \App\Model\Common\Template();
-        $temp_id = $setting->order_mail;
-        $template = $templates->where('id', $temp_id)->first();
-        $html = $template->data;
+
+        try {
+            $templates = new \App\Model\Common\Template();
+            $temp_id = $setting->order_mail;
+            $template = $templates->where('id', $temp_id)->first();
+            $knowledgeBaseUrl = $setting->company_url;
+            $from = $setting->email;
+            $to = $user->email;
+            $adminEmail = $setting->company_email;
+            $subject = $template->name;
+            $data = $template->data;
+            $replace = [
+                'name'          => $user->first_name.' '.$user->last_name,
+                'serialkeyurl' => $myaccounturl,
+                'downloadurl'   => $downloadurl,
+                'invoiceurl'    => $invoiceurl,
+                'product'       => $product,
+                'number'        => $order->number,
+                 'expiry'        => app('App\Http\Controllers\Order\OrderController')->expiry($orderid),
+                'url'           => app('App\Http\Controllers\Order\OrderController')->renew($orderid),
+                'knowledge_base'=> $knowledgeBaseUrl,
 
         try {
             $knowledgeBaseUrl = $setting->company_url;

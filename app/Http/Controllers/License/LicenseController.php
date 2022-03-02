@@ -254,8 +254,7 @@ class LicenseController extends Controller
     /*
     *  Create New License For User
     */
-    public function createNewLicene($orderid, $product, $user_id,
-                                    $licenseExpiry, $updatesExpiry, $supportExpiry, $serial_key)
+    public function createNewLicene($orderid, $product, $user_id,$licenseExpiry, $updatesExpiry, $supportExpiry, $serial_key)
     {
         try {
             $url = $this->url;

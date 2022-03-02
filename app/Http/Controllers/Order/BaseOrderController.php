@@ -15,7 +15,7 @@ class BaseOrderController extends ExtendedOrderController
 {
     protected $sendMail;
 
-   public function __construct()
+    public function __construct()
     {
         $this->middleware('auth');
         $this->middleware('admin');
@@ -290,7 +290,7 @@ class BaseOrderController extends ExtendedOrderController
                 'invoiceurl'    => $invoiceurl,
                 'product'       => $product,
                 'number'        => $order->number,
-                 'expiry'        => app('App\Http\Controllers\Order\OrderController')->expiry($orderid),
+                'expiry'        => app('App\Http\Controllers\Order\OrderController')->expiry($orderid),
                 'url'           => app('App\Http\Controllers\Order\OrderController')->renew($orderid),
                 'knowledge_base'=> $knowledgeBaseUrl,
 

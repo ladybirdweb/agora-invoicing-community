@@ -350,15 +350,29 @@ class HomeController extends BaseHomeController
             if ($request->has('version')) {
                 $product = $product->whereRaw('LOWER(`name`) LIKE ? ', strtolower($title))->select('id')->first();
                 if ($product) {
-                    $productVersion = $request->version;
-                    $baseQuery = ProductUpload::where([['product_id', $product->id], ['version', '>', $productVersion]]);
-                    $clonedBaseQuery = clone $baseQuery;
-                    $productVersion = $request->version;
-                    $latestVersion = $baseQuery->orderBy('id', 'desc')->first();
-                    $inBetweenVersions = $clonedBaseQuery->when($latestVersion, function ($query) use ($productVersion, $latestVersion) {
-                        $query->whereBetween('version', [$productVersion, $latestVersion->version]);
-                    })->orderBy('id', 'asc')->select('version', 'description', 'created_at', 'is_restricted', 'is_private', 'dependencies')->get();
-                    $message = ['version' => $inBetweenVersions];
+                    /**
+                     * PLEASE NOTE (documenting updates in the logic change).
+                     *
+                     * This API logic has been updated considering
+                     * - We will maintain security patch releases for older version too that is if the current latest
+                     *   release series is v5.X and we have found the security issues than the security patch will be
+                     *   made for older versions too for version like v4.8 and v4.9
+                     * - We take all version records including new released version which may have happened for security patch
+                     *   updates for older version as explained above so we have to ensure that we consider updates available only
+                     *   after comparing the version. Meaning if record is for v4.8.2 and v5.0.0 is already released then for the
+                     *   clients using v5.0.0 no update should be available so we are filtering it using PHP's version_compare
+                     *   method.
+                     *
+                     * This methods gets all the version records and compares all these version with current version and returns
+                     * details of only those versions which are greater than current version else empty version details.
+                     */
+                    $currenctVersion = $this->getPHPCompatibleVersionString($request->version);
+                    $inBetweenVersions = ProductUpload::where([['product_id', $product->id]])->select('version', 'description', 'created_at', 'is_restricted', 'is_private', 'dependencies')->get()->filter(function ($newVersion) use ($currenctVersion) {
+                        return version_compare($this->getPHPCompatibleVersionString($newVersion->version), $currenctVersion) == 1;
+                    })->sortBy('version', SORT_NATURAL)->toArray();
+                    
+                    $message = ['version' => array_values($inBetweenVersions)];
+                    
                 } else {
                     $message = ['error' => 'product_not_found'];
                 }
@@ -395,16 +409,55 @@ class HomeController extends BaseHomeController
         try {
             $title = $request->input('title');
             $product = $product->whereRaw('LOWER(`name`) LIKE ? ', strtolower($title))->select('id')->first();
-            $isLatestAvailable = ProductUpload::where('product_id', $product->id)->where('version', '>', $request->version)->where('is_private', '!=', 1)->first();
-            if ($isLatestAvailable) {
-                $message = ['status' => 'true', 'message' => 'new-version-available'];
-            } else {
-                $message = ['status' => '', 'message' => 'no-new-version-available'];
+            /**
+             * PLEASE NOTE (documenting updates in the logic change).
+             *
+             * This API logic has been updated considering
+             * - We will maintain security patch releases for older version too that is if the current latest
+             *   release series is v5.X and we have found the security issues than the security patch will be
+             *   made for older versions too for version like v4.8 and v4.9
+             * - We will iterate the products version in descending order of their record id as for vX.Y series
+             *   vX.Y.Z+1 will always be stored after vX.Y.Z record hence for vX.Y latest version will always
+             *   greater id than the older version of vX.Y
+             * - When we are iterating over version once we found the first greater version then the current given
+             *   version we will consider the new version is available.
+             * 
+             * This methods gets all the version records version records to iterate in reverse order of their creation
+             * to compares all these version with current version and if it finds a first greater version than current
+             * version then it updates returns "updates available" else "no updates available".
+             *
+             */
+             
+            $allVersions = ProductUpload::where('product_id', $product->id)->where('is_private', '!=', 1)->orderBy('id', 'desc')->pluck('version')->toArray();
+            $currenctVersion = $this->getPHPCompatibleVersionString($request->version);
+            $message = ['status' => '', 'message' => 'no-new-version-available'];
+            foreach ($allVersions as $version) {
+                if (version_compare($this->getPHPCompatibleVersionString($version), $currenctVersion) == 1) {
+                    $message = ['status' => 'true', 'message' => 'new-version-available'];
+                    break;
+                }
             }
         } catch (\Exception $ex) {
             $message = ['error' => $ex->getMessage()];
         }
 
         return response()->json($message);
+    }
+
+    /**
+     * removes "v", "_" and "v." from the version string and returns PHP compatible version strings
+     * so the version can be used by PHP's version_compare() method.
+     *
+     * "v_1_0_0" => "1.0.0"
+     * "v1.0.0"  => "1.0.0"
+     *
+     * @param  string  $version  Namespace(seeder folders) or Semantic(app version tag) version strings
+     * @return string PHP compatible converted version string
+     *
+     * @author  Manish Verma <manish.verma@ladybirdweb.com>
+     */
+    private function getPHPCompatibleVersionString(string $version = null): string
+    {
+        return preg_replace('#v\.|v#', '', str_replace('_', '.', $version));
     }
 }

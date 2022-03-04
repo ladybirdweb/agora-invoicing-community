@@ -370,9 +370,8 @@ class HomeController extends BaseHomeController
                     $inBetweenVersions = ProductUpload::where([['product_id', $product->id]])->select('version', 'description', 'created_at', 'is_restricted', 'is_private', 'dependencies')->get()->filter(function ($newVersion) use ($currenctVersion) {
                         return version_compare($this->getPHPCompatibleVersionString($newVersion->version), $currenctVersion) == 1;
                     })->sortBy('version', SORT_NATURAL)->toArray();
-                    
+
                     $message = ['version' => array_values($inBetweenVersions)];
-                    
                 } else {
                     $message = ['error' => 'product_not_found'];
                 }
@@ -421,13 +420,11 @@ class HomeController extends BaseHomeController
              *   greater id than the older version of vX.Y
              * - When we are iterating over version once we found the first greater version then the current given
              *   version we will consider the new version is available.
-             * 
+             *
              * This methods gets all the version records version records to iterate in reverse order of their creation
              * to compares all these version with current version and if it finds a first greater version than current
              * version then it updates returns "updates available" else "no updates available".
-             *
              */
-             
             $allVersions = ProductUpload::where('product_id', $product->id)->where('is_private', '!=', 1)->orderBy('id', 'desc')->pluck('version')->toArray();
             $currenctVersion = $this->getPHPCompatibleVersionString($request->version);
             $message = ['status' => '', 'message' => 'no-new-version-available'];

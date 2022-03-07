@@ -1417,6 +1417,7 @@ Sign in or Register
                             html += '<li>' + data.responseJSON.errors[key][0] + '</li>'
                         }
                         html += '</ul></div>';
+    
 
                         $('#error').show();
                         document.getElementById('error').innerHTML = html;

@@ -5,14 +5,14 @@ namespace App\Http\Controllers\Order;
 use App\Http\Controllers\License\LicensePermissionsController;
 use App\Model\Common\StatusSetting;
 use App\Model\Order\Order;
+use App\Model\Payment\Plan;
 use App\Model\Product\Product;
+use App\Model\Product\Subscription;
 use App\Plugins\Stripe\Controllers\SettingsController;
 use App\Traits\Order\UpdateDates;
 use App\User;
-use App\Model\Product\Subscription;
-use App\Model\Payment\Plan;
-use DB;
 use Crypt;
+use DB;
 
 class BaseOrderController extends ExtendedOrderController
 {

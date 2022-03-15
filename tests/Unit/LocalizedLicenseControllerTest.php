@@ -2,6 +2,10 @@
 
 namespace Tests\Unit;
 
+use App\Http\Controllers\License\LocalizedLicenseController;
+use App\User;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Request;
 use Tests\DBTestCase;
 
 class LocalizedLicenseControllerTest extends DBTestCase
@@ -43,19 +47,20 @@ class LocalizedLicenseControllerTest extends DBTestCase
     /** @group LocalizedLicense */
     public function test_downloadFile_clientDownloadsLicenseFile_return200WithFile()
     {
+        $this->withoutExceptionHandling();
         $this->withoutMiddleware();
         $this->getLoggedInUser();
         $user = $this->user;
         $data = [
             'orderNo'=>192020,
         ];
-        $response = $this->json('GET', url('downloadFile'), $data);
+        $response = $this->json('GET', url('downloadLicenseFile'), $data);
         $response->assertStatus(200);
         $response->assertHeader('content-disposition', 'attachment; filename="faveo-license-{192020}.txt"');
     }
 
     /** @group LocalizedLicense */
-    public function test_downloadPrivate_clientDownloadsPrivateKey_returb()
+    public function test_downloadPrivate_clientDownloadsPrivateKey_return()
     {
         $this->withoutMiddleware();
         $orderNo = 192020;

@@ -6,8 +6,10 @@ use App\Http\Controllers\Order\InvoiceController;
 use App\Model\Payment\Plan;
 use App\Model\Payment\PlanPrice;
 use App\Model\Product\Product;
+use App\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Tests\DBTestCase;
 
 class InvoiceControllerTest extends DBTestCase
@@ -23,14 +25,16 @@ class InvoiceControllerTest extends DBTestCase
     /** @group invoice */
     public function test_generateInvoice_generatesInvoiceAndInvoiceItem()
     {
-        $this->getLoggedInUser();
         $this->withoutMiddleware();
+        $user = factory(User::class)->create(['role' => 'user', 'country' => 'IN']);
+        $user_id = Auth::loginUsingId($user->id);
         $product = factory(Product::class)->create();
         $taxCondition = new \Darryldecode\Cart\CartCondition([
             'name'   => 'GST', 'type'   => 'tax',
             'value'  => 5,
         ]);
-        \Cart::add([
+
+         \Cart::add([
             'id'         => $product->id,
             'name'       => $product->name,
             'price'      => 1000,
@@ -45,8 +49,9 @@ class InvoiceControllerTest extends DBTestCase
     /** @group invoice */
     public function test_createInvoiceItems_createsNewInvoiceItem()
     {
-        $this->getLoggedInUser();
         $this->withoutMiddleware();
+        $user = factory(User::class)->create(['role' => 'user', 'country' => 'IN']);
+        $user_id = Auth::loginUsingId($user->id);
         $product = factory(Product::class)->create();
         $plan = Plan::create(['name'=>'Hepldesk 1 year', 'product'=>$product->id, 'days'=>365]);
         $taxCondition = new \Darryldecode\Cart\CartCondition([
@@ -71,13 +76,14 @@ class InvoiceControllerTest extends DBTestCase
     /** @group invoice */
     public function test_invoiceGenerateByForm_createsNewInvoice()
     {
-        $this->getLoggedInUser();
         $this->withoutMiddleware();
+        $user = factory(User::class)->create(['role' => 'admin','country' => 'IN']);
+        $user_id = Auth::loginUsingId($user->id);
         $product = factory(Product::class)->create();
         $plan = Plan::create(['name'=>'Hepldesk 1 year', 'product'=>$product->id, 'days'=>365]);
-        $planPrice = PlanPrice::create(['plan_id'=>$plan->id, 'currency'=>$this->user->currency, 'add_price'=>'1000', 'renew_price'=>'500', 'product_quantity'=>1, 'no_of_agents'=>0]);
 
-        $invoice = $this->classObject->invoiceGenerateByForm(new Request(['user'=>$this->user->id, 'date'=>'09/16/2020', 'product'=>$product->id, 'price'=>$planPrice->add_price, 'code'=>'', 'quantity'=>$planPrice->product_quantity, 'plan'=>$plan->id, 'subscription'=> true, 'description'=>'']));
+        $planPrice = PlanPrice::create(['plan_id'=>$plan->id, 'currency'=>$user->currency, 'add_price'=>'1000', 'renew_price'=>'500', 'product_quantity'=>1, 'no_of_agents'=>0]);
+        $invoice = $this->classObject->invoiceGenerateByForm(new Request(['user'=>$user->id, 'date'=>'09/16/2020', 'product'=>$product->id, 'price'=>$planPrice->add_price, 'code'=>'', 'quantity'=>$planPrice->product_quantity, 'plan'=>$plan->id, 'subscription'=> true, 'description'=>'']));
         $message = json_decode($invoice->getContent())->message->success;
         $this->assertEquals($message, 'Invoice generated successfully');
     }

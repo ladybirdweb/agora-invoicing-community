@@ -8,7 +8,9 @@ use App\Model\Payment\Plan;
 use App\Model\Payment\PlanPrice;
 use App\Model\Payment\Promotion;
 use App\Model\Product\Product;
+use App\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Auth;
 use Tests\DBTestCase;
 
 class PromotionControllerTest extends DBTestCase
@@ -86,7 +88,7 @@ class PromotionControllerTest extends DBTestCase
     public function test_findCostAfterDiscount_whenCodeTypeIsInPercents_returnsDiscountedPrice()
     {
         $this->withoutMiddleware();
-        $this->getLoggedInUser();
+        $user = factory(User::class)->create(['role' => 'user', 'country' => 'IN']);
         $product = factory(Product::class)->create();
         $plan = Plan::create(['name'=>'HD Plan 1 year', 'product'=>$product->id, 'days'=>366]);
 
@@ -94,7 +96,7 @@ class PromotionControllerTest extends DBTestCase
 
         $this->call('POST', 'promotions', ['code'=>'FAVEOCOUPON', 'type'=> 1, 'value'=>10, 'uses'=>10, 'applied'=>$product->id, 'start'=>'08/01/2020', 'expiry'=> '08/15/2050']);
         $promotion = Promotion::orderBy('id', 'desc')->first();
-        $promotion = $this->classObject->findCostAfterDiscount($promotion->id, $product->id, $this->user->id);
+        $promotion = $this->classObject->findCostAfterDiscount($promotion->id, $product->id, $user->id);
         $this->assertEquals($promotion, 900); //10% dicount on 1000
     }
 
@@ -102,7 +104,7 @@ class PromotionControllerTest extends DBTestCase
     public function test_findCostAfterDiscount_whenCodeTypeIsFixedAmount_returnsDiscountedPrice()
     {
         $this->withoutMiddleware();
-        $this->getLoggedInUser();
+        $user = factory(User::class)->create(['role' => 'user', 'country' => 'IN']);
         $product = factory(Product::class)->create();
         $plan = Plan::create(['name'=>'HD Plan 1 year', 'product'=>$product->id, 'days'=>366]);
 
@@ -110,7 +112,7 @@ class PromotionControllerTest extends DBTestCase
 
         $this->call('POST', 'promotions', ['code'=>'FAVEOCOUPON', 'type'=> 2, 'value'=>10, 'uses'=>10, 'applied'=>$product->id, 'start'=>'08/01/2020', 'expiry'=> '08/15/2050']);
         $promotion = Promotion::orderBy('id', 'desc')->first();
-        $promotion = $this->classObject->findCostAfterDiscount($promotion->id, $product->id, $this->user->id);
+        $promotion = $this->classObject->findCostAfterDiscount($promotion->id, $product->id, $user->id);
         $this->assertEquals($promotion, 990); //Rs 10 dicount on 1000
     }
 
@@ -118,7 +120,8 @@ class PromotionControllerTest extends DBTestCase
     public function test_checkCode_whenFixedAmtCouponCodeEnteredWithCartConditions_returnsUpdatedCartPrice()
     {
         $this->withoutMiddleware();
-        $this->getLoggedInUser();
+        $user = factory(User::class)->create(['role' => 'user', 'country' => 'IN']);
+        $userid = Auth::loginUsingId($user->id);
         $product = factory(Product::class)->create();
         $plan = Plan::create(['name'=>'HD Plan 1 year', 'product'=>$product->id, 'days'=>366]);
 
@@ -143,7 +146,8 @@ class PromotionControllerTest extends DBTestCase
     public function test_checkCode_whenPercentCouponCodeEnteredWithCartConditions_returnsUpdatedCartPrice()
     {
         $this->withoutMiddleware();
-        $this->getLoggedInUser();
+        $user = factory(User::class)->create(['role' => 'user', 'country' => 'IN']);
+        $userid = Auth::loginUsingId($user->id);
         $product = factory(Product::class)->create();
         $plan = Plan::create(['name'=>'HD Plan 1 year', 'product'=>$product->id, 'days'=>366]);
 
@@ -169,8 +173,9 @@ class PromotionControllerTest extends DBTestCase
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Invalid promo code');
+        $user = factory(User::class)->create(['role' => 'user', 'country' => 'IN']);
+        $auth = Auth::loginUsingId($user->id);
         $this->withoutMiddleware();
-        $this->getLoggedInUser();
         $product1 = factory(Product::class)->create();
         $product2 = factory(Product::class)->create(['name'=>'Test Product']);
         $plan1 = Plan::create(['name'=>'HD Plan 1 year', 'product'=>$product1->id, 'days'=>366]);
@@ -196,7 +201,8 @@ class PromotionControllerTest extends DBTestCase
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Code already used once');
         $this->withoutMiddleware();
-        $this->getLoggedInUser();
+        $user = factory(User::class)->create(['role' => 'user', 'country' => 'IN']);
+        $auth = Auth::loginUsingId($user->id);
         $product = factory(Product::class)->create();
         $plan = Plan::create(['name'=>'HD Plan 1 year', 'product'=>$product->id, 'days'=>366]);
 

@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Common;
 
+use App\User;
 use Cache;
 use Carbon\Carbon;
 use Tests\DBTestCase;
@@ -92,24 +93,22 @@ class HelpersTest extends DBTestCase
     public function test_userCurrency_whenUserIsNotLoggedIn_returnsCurrencyAndSymbol()
     {
         $this->withoutMiddleware();
-        $currency = userCurrency();
-        $this->assertEquals($currency['currency'], 'USD');
+        $location = getLocation();
+        $this->assertEquals($location['currency'], 'USD');
     }
 
     public function test_userCurrency_whenUserIsLoggedInAndRoleIsClient_returnsCurrencyAndSymbol()
     {
-        $this->getLoggedInUser();
+        $user = factory(User::class)->create(['role' => 'user', 'country' => 'IN']);
         $this->withoutMiddleware();
-        $currency = userCurrency();
-        $this->assertEquals($currency['currency'], 'INR');
+        $this->assertEquals($user['currency'], 'INR');
     }
 
     public function test_userCurrency_whenUserIsLoggedInAndRoleIsAdmin_returnsCurrencyAndSymbol()
     {
-        $this->getLoggedInUser('admin');
+        $user = factory(User::class)->create(['role' => 'admin', 'country' => 'IN']);
         $this->withoutMiddleware();
-        $currency = userCurrency($this->user->id);
-        $this->assertEquals($currency['currency'], 'INR');
+        $this->assertEquals($user['currency'], 'INR');
     }
 
     public function test_rounding_whenRoundingIsOn_returnsRoundedOffPrice()
@@ -129,4 +128,5 @@ class HelpersTest extends DBTestCase
         $price = rounding('999.6677777');
         $this->assertEquals($price, '999.67');
     }
+
 }

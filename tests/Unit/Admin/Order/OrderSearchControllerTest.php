@@ -5,7 +5,6 @@ namespace Tests\Unit\Admin\Order;
 use App\Http\Controllers\Order\OrderSearchController;
 use App\Model\Order\Order;
 use App\Model\Product\Product;
-use App\Model\Product\ProductUpload;
 use App\Model\Product\Subscription;
 use App\User;
 use Tests\DBTestCase;
@@ -77,8 +76,6 @@ class OrderSearchControllerTest extends DBTestCase
         $this->assertEquals('v3.1.0', $records[0]->product_version);
     }
 
-
-
     /** @group orderFilter */
     public function test_getSelectedVersionOrders_whenVersionFromIsNotNullAndVersionTillIsNotNull_shouldGiveIntersectionOfBoth()
     {
@@ -134,11 +131,9 @@ class OrderSearchControllerTest extends DBTestCase
     /** @group orderFilter */
     private function createOrder($version = 'v3.0.0')
     {
-
-            $user = factory(User::class)->create(['role' => 'admin', 'country' => 'IN']);
-            $product = Product::create(['name' => 'Helpdesk' . $version]);
-            $order = Order::create(['client' => $user->id, 'order_status' => 'executed', 'product' => $product->id, 'number' => mt_rand(100000, 999999),]);
-            Subscription::create(['order_id' => $order->id, 'product_id' => $product->id, 'version' => $version]);
-
+        $user = factory(User::class)->create(['role' => 'admin', 'country' => 'IN']);
+        $product = Product::create(['name' => 'Helpdesk'.$version]);
+        $order = Order::create(['client' => $user->id, 'order_status' => 'executed', 'product' => $product->id, 'number' => mt_rand(100000, 999999)]);
+        Subscription::create(['order_id' => $order->id, 'product_id' => $product->id, 'version' => $version]);
     }
 }

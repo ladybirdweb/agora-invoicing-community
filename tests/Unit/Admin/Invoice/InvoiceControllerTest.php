@@ -34,7 +34,7 @@ class InvoiceControllerTest extends DBTestCase
             'value'  => 5,
         ]);
 
-         \Cart::add([
+        \Cart::add([
             'id'         => $product->id,
             'name'       => $product->name,
             'price'      => 1000,
@@ -77,7 +77,7 @@ class InvoiceControllerTest extends DBTestCase
     public function test_invoiceGenerateByForm_createsNewInvoice()
     {
         $this->withoutMiddleware();
-        $user = factory(User::class)->create(['role' => 'admin','country' => 'IN']);
+        $user = factory(User::class)->create(['role' => 'admin', 'country' => 'IN']);
         $user_id = Auth::loginUsingId($user->id);
         $product = factory(Product::class)->create();
         $plan = Plan::create(['name'=>'Hepldesk 1 year', 'product'=>$product->id, 'days'=>365]);

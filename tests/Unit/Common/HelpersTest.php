@@ -128,5 +128,4 @@ class HelpersTest extends DBTestCase
         $price = rounding('999.6677777');
         $this->assertEquals($price, '999.67');
     }
-
 }

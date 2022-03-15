@@ -9,7 +9,6 @@ use App\Model\Product\Product;
 use App\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Tests\DBTestCase;
 
 class BaseCartControllerTest extends DBTestCase
@@ -26,7 +25,7 @@ class BaseCartControllerTest extends DBTestCase
     public function test_getCartValues_calculatesAgentQtyPriceOfCartWhenReducingAgtAllowed_returnArrayToBeAdded()
     {
         $this->withoutMiddleware();
-        $user = factory(User::class)->create(['country' => 'IN','currency' => 'INR']);
+        $user = factory(User::class)->create(['country' => 'IN', 'currency' => 'INR']);
         $product = factory(Product::class)->create();
         $currency = $user->currency;
         \Cart::add([
@@ -46,7 +45,7 @@ class BaseCartControllerTest extends DBTestCase
     {
         $this->withoutMiddleware();
         $product = factory(Product::class)->create();
-        $user = factory(User::class)->create(['country' => 'IN','currency' => 'INR']);
+        $user = factory(User::class)->create(['country' => 'IN', 'currency' => 'INR']);
         $currency = $user->currency;
         \Cart::add([
             'id'         => $product->id,
@@ -65,7 +64,7 @@ class BaseCartControllerTest extends DBTestCase
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Product not present in cart.');
-        $user = factory(User::class)->create(['country' => 'IN','currency' => 'INR']);
+        $user = factory(User::class)->create(['country' => 'IN', 'currency' => 'INR']);
         $this->withoutMiddleware();
         $product1 = factory(Product::class)->create();
         $product2 = factory(Product::class)->create(['name'=>'SD Enterprise']);
@@ -84,7 +83,7 @@ class BaseCartControllerTest extends DBTestCase
     public function test_updateAgentQty_updatesCart_returnsUpdatedCart()
     {
         $this->withoutMiddleware();
-        $user = factory(User::class)->create(['country' => 'IN','currency' => 'INR']);
+        $user = factory(User::class)->create(['country' => 'IN', 'currency' => 'INR']);
         $product = factory(Product::class)->create(['can_modify_agent'=>1]);
         $currency = $user->currency;
         \Cart::add([
@@ -106,7 +105,7 @@ class BaseCartControllerTest extends DBTestCase
     /** @group quantity */
     public function test_updateAgentQty_updatesCartWhenModifyingAgentNotAllowed_returnsSameCartValues()
     {
-        $user = factory(User::class)->create(['country' => 'IN','currency' => 'INR']);
+        $user = factory(User::class)->create(['country' => 'IN', 'currency' => 'INR']);
         $this->withoutMiddleware();
         $product = factory(Product::class)->create();
         $currency = $user->currency;
@@ -130,7 +129,7 @@ class BaseCartControllerTest extends DBTestCase
     public function test_updateProductQty_updatesCartWhenModifyingQtyAllowed_returnsUpdatedCart()
     {
         $this->withoutMiddleware();
-        $user = factory(User::class)->create(['country' => 'IN','currency' => 'INR']);
+        $user = factory(User::class)->create(['country' => 'IN', 'currency' => 'INR']);
         $product = factory(Product::class)->create(['can_modify_quantity'=>1]);
         $plan = Plan::create(['name'=>'HD Plan 1 year', 'product'=>$product->id, 'days'=>366]);
         $planPrice = PlanPrice::create(['plan_id'=>$plan->id, 'currency'=>'INR', 'add_price'=>'1000', 'renew_price'=>'500', 'price_description'=> 'Random description', 'product_quantity'=>1, 'no_of_agents'=>0]);
@@ -156,7 +155,7 @@ class BaseCartControllerTest extends DBTestCase
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Cannot Modify Quantity');
         $this->withoutMiddleware();
-        $user = factory(User::class)->create(['country' => 'IN','currency' => 'INR']);
+        $user = factory(User::class)->create(['country' => 'IN', 'currency' => 'INR']);
         $product = factory(Product::class)->create();
         $currency = $user->currency;
         $plan = Plan::create(['name'=>'HD Plan 1 year', 'product'=>$product->id, 'days'=>366]);
@@ -175,7 +174,7 @@ class BaseCartControllerTest extends DBTestCase
     public function test_reduceProductQty_reduceCartQtyWhenModifyingQtyAllowed_returnsUpdatedCart()
     {
         $this->withoutMiddleware();
-        $user = factory(User::class)->create(['country' => 'IN','currency' => 'INR']);
+        $user = factory(User::class)->create(['country' => 'IN', 'currency' => 'INR']);
         $product = factory(Product::class)->create(['can_modify_quantity'=>1]);
         $plan = Plan::create(['name'=>'HD Plan 1 year', 'product'=>$product->id, 'days'=>366]);
         $planPrice = PlanPrice::create(['plan_id'=>$plan->id, 'currency'=>'INR', 'add_price'=>'1000', 'renew_price'=>'500', 'price_description'=> 'Random description', 'product_quantity'=>1, 'no_of_agents'=>0]);
@@ -200,7 +199,7 @@ class BaseCartControllerTest extends DBTestCase
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Cannot Modify Quantity');
-        $user = factory(User::class)->create(['country' => 'IN','currency' => 'INR']);
+        $user = factory(User::class)->create(['country' => 'IN', 'currency' => 'INR']);
         $this->withoutMiddleware();
         $currency = $user->currency;
         $product = factory(Product::class)->create();
@@ -215,8 +214,4 @@ class BaseCartControllerTest extends DBTestCase
         ]);
         $this->classObject->reduceProductQty(new Request(['productid'=>$product->id]));
     }
-
-
-
-
 }

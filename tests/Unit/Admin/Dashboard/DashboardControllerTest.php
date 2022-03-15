@@ -45,7 +45,7 @@ class DashboardControllerTest extends DBTestCase
     {
         $this->withoutMiddleware();
         $user = factory(User::class)->create(['role' => 'user', 'country' => 'IN']);
-        $invoice = factory(Invoice::class)->create(['user_id'=>$user->id,'date' => $user->created_at]);
+        $invoice = factory(Invoice::class)->create(['user_id'=>$user->id, 'date' => $user->created_at]);
         Payment::create(['invoice_id'=>$invoice->id, 'user_id'=>$user->id, 'amount'=>'10000']);
         $controller = new \App\Http\Controllers\DashboardController();
         $allowedCurrencies2 = 'INR';

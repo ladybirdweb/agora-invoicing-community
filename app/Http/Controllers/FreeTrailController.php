@@ -1,7 +1,5 @@
 <?php
-
 namespace App\Http\Controllers;
-
 use App\Model\Common\StatusSetting;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
@@ -29,12 +27,17 @@ class FreeTrailController extends Controller
         $this->invoiceItem  = new InvoiceItem();
         
 
-         $this->order = new Order();
+        $this->order = new Order();
         
 
         $this->subscription  = new Subscription();
        
     }
+    /**
+     * Get the auth user id
+     * Check the first_time_login is not equal to zero in DB to correspaonding,if its not change into one
+     * @return order
+     */
 
     public function firstloginatem(Request $request)
     {
@@ -42,13 +45,13 @@ class FreeTrailController extends Controller
             return redirect('login')->back()->with('fails', \Lang::get('message.free-login'));
         }
 
-        $id = $request->get('id');
-        if (Auth::user()->id == $id) {
-            $user_login = User::find($id);
-            if ($user_login->first_time_login != 0) {
+        $userId = $request->get('id');
+        if (Auth::user()->id == $userId) {
+            $userLogin = User::find($userId);
+            if ($userLogin->first_time_login != 0) {
                 return errorResponse(Lang::get('message.false'), 400);
             }
-            User::where('id', $id)->update(['first_time_login' => 1]);
+            User::where('id', $userId)->update(['first_time_login' => 1]);
 
             $this->generateFreetrailInvoice();
 
@@ -59,6 +62,11 @@ class FreeTrailController extends Controller
             return successResponse(Lang::get('message.succs_fre'),$this->executeFreetrailOrder(), 200);
         }
     }
+    /**
+     * Generate invoice from client panel for free trial.
+     *
+     * @throws \Exception
+     */
 
     private function generateFreetrailInvoice()
     {
@@ -97,7 +105,11 @@ class FreeTrailController extends Controller
 
         return $invoiceItem;
     }
-
+    /**
+     * Generate Order from client panel for free trial.
+     *
+     * @throws \Exception
+     */
     private function executeFreetrailOrder()
     {
         $order_status = 'executed';

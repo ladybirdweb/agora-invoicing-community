@@ -227,6 +227,11 @@ class SettingsController extends BaseSettingsController
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
+    /**
+     * Get the id and value of the column.
+     *
+     * Remove the logo from the DB and local storage.
+     */
 
     /**
      * Get the id and value of the column.

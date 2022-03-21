@@ -22,17 +22,18 @@ class FreeTrailController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $invoice = new Invoice();
-        $this->invoice = $invoice;
 
-        $invoiceItem = new InvoiceItem();
-        $this->invoiceItem = $invoiceItem;
+        $this->invoice = new Invoice();
+        
 
-        $order = new Order();
-        $this->order = $order;
+        $this->invoiceItem  = new InvoiceItem();
+        
 
-        $subscription = new Subscription();
-        $this->subscription = $subscription;
+         $this->order = new Order();
+        
+
+        $this->subscription  = new Subscription();
+       
     }
 
     public function firstloginatem(Request $request)
@@ -47,15 +48,15 @@ class FreeTrailController extends Controller
             if ($user_login->first_time_login != 0) {
                 return errorResponse(Lang::get('message.false'), 400);
             }
-            $user = User::where('id', $id)->update(['first_time_login' => 1]);
+            User::where('id', $id)->update(['first_time_login' => 1]);
 
-            $invoice = $this->generateFreetrailInvoice();
+            $this->generateFreetrailInvoice();
 
-            $invoice_items = $this->createFreetrailInvoiceItems();
+            $this->createFreetrailInvoiceItems();
 
-            $order = $this->executeFreetrailOrder();
+            $this->executeFreetrailOrder();
 
-            return successResponse(Lang::get('message.succs_fre'), $order, 200);
+            return successResponse(Lang::get('message.succs_fre'),$this->executeFreetrailOrder(), 200);
         }
     }
 
@@ -65,13 +66,9 @@ class FreeTrailController extends Controller
         $rule = $tax_rule->findOrFail(1);
         $rounding = $rule->rounding;
         $user_id = \Auth::user()->id;
-
-        $grand_total = \Cart::getTotal();
+        $grand_total = $rounding ? round($grand_total) : \Cart::getTotal();
         $number = rand(11111111, 99999999);
         $date = \Carbon\Carbon::now();
-        if ($rounding) {
-            $grand_total = round($grand_total);
-        }
         $currency = \Session::has('cart_currency') ? \Session::get('cart_currency') : getCurrencyForClient(\Auth::user()->country);
         $invoice = $this->invoice->create(['user_id' => $user_id, 'number' => $number, 'date'=> $date, 'grand_total' => $grand_total, 'status' => 'pending',
             'currency' => $currency, ]);
@@ -125,7 +122,7 @@ class FreeTrailController extends Controller
 
     private function getIfFreetrailItemPresent($item, $invoiceid, $user_id, $order_status)
     {
-        $product = Product::where('name', $item->product_name)->first()->id;
+        $product = Product::where('name', $item->product_name)->value('id');
         $version = Product::where('name', $item->product_name)->first()->version;
         if ($version == null) {
             //Get Version from Product Upload Table

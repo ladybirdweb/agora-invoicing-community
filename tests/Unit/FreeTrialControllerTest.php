@@ -20,7 +20,7 @@ class FreeTrailControllerTest extends DBTestCase
     {
         $this->assertFalse(auth()->check());
         $user = factory(User::class)->create(['role' => 'user', 'country' => 'IN']);
-        $product = factory(Product::class)->create();
+        factory(Product::class)->create();
         $auth = Auth::loginUsingId($user->id);
         $this->assertEquals($user->id, $auth->id);
         $this->assertEquals(0,$auth->first_time_login);

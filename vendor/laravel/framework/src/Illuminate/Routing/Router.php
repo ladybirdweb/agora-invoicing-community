@@ -701,7 +701,7 @@ class Router implements BindingRegistrar, RegistrarContract
 
         $middleware = collect($route->gatherMiddleware())->map(function ($name) {
             return (array) MiddlewareNameResolver::resolve($name, $this->middleware, $this->middlewareGroups);
-        })->flatten()->reject(function ($name) use ($route, $excluded) {
+        })->flatten()->reject(function ($name) use ($excluded) {
             return in_array($name, $excluded, true);
         })->values();
 
@@ -1224,6 +1224,29 @@ class Router implements BindingRegistrar, RegistrarContract
             ->setContainer($this->container);
 
         $this->container->instance('routes', $this->routes);
+    }
+
+    /**
+     * Remove any duplicate middleware from the given array.
+     *
+     * @param  array  $middleware
+     * @return array
+     */
+    public static function uniqueMiddleware(array $middleware)
+    {
+        $seen = [];
+        $result = [];
+
+        foreach ($middleware as $value) {
+            $key = \is_object($value) ? \spl_object_id($value) : $value;
+
+            if (! isset($seen[$key])) {
+                $seen[$key] = true;
+                $result[] = $value;
+            }
+        }
+
+        return $result;
     }
 
     /**

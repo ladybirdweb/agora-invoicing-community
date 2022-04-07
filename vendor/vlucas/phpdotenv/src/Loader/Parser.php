@@ -114,7 +114,7 @@ class Parser
             return Value::blank();
         }
 
-        return array_reduce(str_split($value), function ($data, $char) use ($value) {
+        $result = array_reduce(str_split($value), function ($data, $char) use ($value) {
             return self::processChar($data[1], $char)->mapError(function ($err) use ($value) {
                 throw new InvalidFileException(
                     self::getErrorMessage($err, $value)
@@ -122,7 +122,15 @@ class Parser
             })->mapSuccess(function ($val) use ($data) {
                 return [$data[0]->append($val[0], $val[1]), $val[2]];
             })->getSuccess();
-        }, [Value::blank(), self::INITIAL_STATE])[0];
+        }, [Value::blank(), self::INITIAL_STATE]);
+
+        if (in_array($result[1], [self::SINGLE_QUOTED_STATE, self::DOUBLE_QUOTED_STATE, self::ESCAPE_SEQUENCE_STATE], true)) {
+            throw new InvalidFileException(
+                self::getErrorMessage('a missing closing quote', $value)
+            );
+        }
+
+        return $result[0];
     }
 
     /**
@@ -138,61 +146,84 @@ class Parser
         switch ($state) {
             case self::INITIAL_STATE:
                 if ($char === '\'') {
+                    /** @var \Dotenv\Result\Result<array{string,bool,int},string> */
                     return Success::create(['', false, self::SINGLE_QUOTED_STATE]);
                 } elseif ($char === '"') {
+                    /** @var \Dotenv\Result\Result<array{string,bool,int},string> */
                     return Success::create(['', false, self::DOUBLE_QUOTED_STATE]);
                 } elseif ($char === '#') {
+                    /** @var \Dotenv\Result\Result<array{string,bool,int},string> */
                     return Success::create(['', false, self::COMMENT_STATE]);
                 } elseif ($char === '$') {
+                    /** @var \Dotenv\Result\Result<array{string,bool,int},string> */
                     return Success::create([$char, true, self::UNQUOTED_STATE]);
                 } else {
+                    /** @var \Dotenv\Result\Result<array{string,bool,int},string> */
                     return Success::create([$char, false, self::UNQUOTED_STATE]);
                 }
             case self::UNQUOTED_STATE:
                 if ($char === '#') {
+                    /** @var \Dotenv\Result\Result<array{string,bool,int},string> */
                     return Success::create(['', false, self::COMMENT_STATE]);
                 } elseif (ctype_space($char)) {
+                    /** @var \Dotenv\Result\Result<array{string,bool,int},string> */
                     return Success::create(['', false, self::WHITESPACE_STATE]);
                 } elseif ($char === '$') {
+                    /** @var \Dotenv\Result\Result<array{string,bool,int},string> */
                     return Success::create([$char, true, self::UNQUOTED_STATE]);
                 } else {
+                    /** @var \Dotenv\Result\Result<array{string,bool,int},string> */
                     return Success::create([$char, false, self::UNQUOTED_STATE]);
                 }
             case self::SINGLE_QUOTED_STATE:
                 if ($char === '\'') {
+                    /** @var \Dotenv\Result\Result<array{string,bool,int},string> */
                     return Success::create(['', false, self::WHITESPACE_STATE]);
                 } else {
+                    /** @var \Dotenv\Result\Result<array{string,bool,int},string> */
                     return Success::create([$char, false, self::SINGLE_QUOTED_STATE]);
                 }
             case self::DOUBLE_QUOTED_STATE:
                 if ($char === '"') {
+                    /** @var \Dotenv\Result\Result<array{string,bool,int},string> */
                     return Success::create(['', false, self::WHITESPACE_STATE]);
                 } elseif ($char === '\\') {
+                    /** @var \Dotenv\Result\Result<array{string,bool,int},string> */
                     return Success::create(['', false, self::ESCAPE_SEQUENCE_STATE]);
                 } elseif ($char === '$') {
+                    /** @var \Dotenv\Result\Result<array{string,bool,int},string> */
                     return Success::create([$char, true, self::DOUBLE_QUOTED_STATE]);
                 } else {
+                    /** @var \Dotenv\Result\Result<array{string,bool,int},string> */
                     return Success::create([$char, false, self::DOUBLE_QUOTED_STATE]);
                 }
             case self::ESCAPE_SEQUENCE_STATE:
                 if ($char === '"' || $char === '\\') {
+                    /** @var \Dotenv\Result\Result<array{string,bool,int},string> */
                     return Success::create([$char, false, self::DOUBLE_QUOTED_STATE]);
                 } elseif ($char === '$') {
+                    /** @var \Dotenv\Result\Result<array{string,bool,int},string> */
                     return Success::create([$char, false, self::DOUBLE_QUOTED_STATE]);
                 } elseif (in_array($char, ['f', 'n', 'r', 't', 'v'], true)) {
+                    /** @var \Dotenv\Result\Result<array{string,bool,int},string> */
                     return Success::create([stripcslashes('\\'.$char), false, self::DOUBLE_QUOTED_STATE]);
                 } else {
+                    /** @var \Dotenv\Result\Result<array{string,bool,int},string> */
                     return Error::create('an unexpected escape sequence');
                 }
             case self::WHITESPACE_STATE:
                 if ($char === '#') {
+                    /** @var \Dotenv\Result\Result<array{string,bool,int},string> */
                     return Success::create(['', false, self::COMMENT_STATE]);
                 } elseif (!ctype_space($char)) {
+                    /** @var \Dotenv\Result\Result<array{string,bool,int},string> */
                     return Error::create('unexpected whitespace');
                 } else {
+                    /** @var \Dotenv\Result\Result<array{string,bool,int},string> */
                     return Success::create(['', false, self::WHITESPACE_STATE]);
                 }
             case self::COMMENT_STATE:
+                /** @var \Dotenv\Result\Result<array{string,bool,int},string> */
                 return Success::create(['', false, self::COMMENT_STATE]);
             default:
                 throw new RuntimeException('Parser entered invalid state.');

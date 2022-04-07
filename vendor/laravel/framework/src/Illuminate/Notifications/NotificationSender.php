@@ -102,7 +102,9 @@ class NotificationSender
                 $notificationId = Str::uuid()->toString();
 
                 foreach ((array) $viaChannels as $channel) {
-                    $this->sendToNotifiable($notifiable, $notificationId, clone $original, $channel);
+                    if (! ($notifiable instanceof AnonymousNotifiable && $channel === 'database')) {
+                        $this->sendToNotifiable($notifiable, $notificationId, clone $original, $channel);
+                    }
                 }
             });
         }
@@ -169,7 +171,7 @@ class NotificationSender
      * Queue the given notification instances.
      *
      * @param  mixed  $notifiables
-     * @param  array[\Illuminate\Notifications\Channels\Notification]  $notification
+     * @param  \Illuminate\Notifications\Notification  $notification
      * @return void
      */
     protected function queueNotification($notifiables, $notification)

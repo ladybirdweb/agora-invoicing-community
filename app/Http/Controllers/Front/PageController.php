@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers\Front;
 
+use App\ApiKey;
 use App\DefaultPage;
 use App\Http\Controllers\Common\TemplateController;
 use App\Http\Controllers\Controller;
+use App\Model\Common\Bussiness;
+use App\Model\Common\ChatScript;
 use App\Model\Common\PricingTemplate;
+use App\Model\Common\StatusSetting;
 use App\Model\Front\FrontendPage;
 use App\Model\Product\Product;
 use App\Model\Product\ProductGroup;
@@ -313,6 +317,11 @@ class PageController extends Controller
     public function pageTemplates(int $templateid, int $groupid)
     {
         try {
+            $bussinesses = Bussiness::pluck('name', 'short')->toArray();
+            $status = StatusSetting::select('recaptcha_status', 'msg91_status', 'emailverification_status', 'terms')->first();
+            $apiKeys = ApiKey::select('nocaptcha_sitekey', 'captcha_secretCheck', 'msg91_auth_key', 'terms_url')->first();
+            $analyticsTag = ChatScript::where('google_analytics', 1)->where('on_registration', 1)->value('google_analytics_tag');
+            $location = getLocation();
             $data = PricingTemplate::findorFail($templateid)->data;
             $headline = ProductGroup::findorFail($groupid)->headline;
             $tagline = ProductGroup::findorFail($groupid)->tagline;
@@ -321,7 +330,7 @@ class PageController extends Controller
             $trasform = [];
             $templates = $this->getTemplateOne($productsRelatedToGroup, $data, $trasform);
 
-            return view('themes.default1.common.template.shoppingcart', compact('templates', 'headline', 'tagline'));
+            return view('themes.default1.common.template.shoppingcart', compact('templates', 'headline', 'tagline','location','bussinesses','apiKeys','status','analyticsTag'));
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
 
@@ -331,8 +340,13 @@ class PageController extends Controller
 
     public function contactUs()
     {
+        $bussinesses = Bussiness::pluck('name', 'short')->toArray();
+        $status = StatusSetting::select('recaptcha_status', 'msg91_status', 'emailverification_status', 'terms')->first();
+        $apiKeys = ApiKey::select('nocaptcha_sitekey', 'captcha_secretCheck', 'msg91_auth_key', 'terms_url')->first();
+        $analyticsTag = ChatScript::where('google_analytics', 1)->where('on_registration', 1)->value('google_analytics_tag');
+        $location = getLocation();
         try {
-            return view('themes.default1.front.contact');
+            return view('themes.default1.front.contact',compact('location','bussinesses','status','apiKeys','analyticsTag'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }

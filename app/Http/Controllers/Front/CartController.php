@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers\Front;
 
+use App\ApiKey;
 use App\Http\Controllers\Common\TemplateController;
+use App\Model\Common\Bussiness;
+use App\Model\Common\ChatScript;
 use App\Model\Common\Setting;
+use App\Model\Common\StatusSetting;
 use App\Model\Payment\Currency;
 use App\Model\Payment\Plan;
 use App\Model\Payment\PlanPrice;
@@ -151,14 +155,19 @@ class CartController extends BaseCartController
      */
     public function showCart()
     {
-        try {
+          try {
+            $bussinesses = Bussiness::pluck('name', 'short')->toArray();
+            $status = StatusSetting::select('recaptcha_status', 'msg91_status', 'emailverification_status', 'terms')->first();
+            $apiKeys = ApiKey::select('nocaptcha_sitekey', 'captcha_secretCheck', 'msg91_auth_key', 'terms_url')->first();
+            $analyticsTag = ChatScript::where('google_analytics', 1)->where('on_registration', 1)->value('google_analytics_tag');
+            $location = getLocation();
             $cartCollection = Cart::getContent();
             foreach ($cartCollection as $item) {
                 $cart_currency = $item->attributes->currency;
                 \Session::put('currency', $cart_currency);
             }
 
-            return view('themes.default1.front.cart', compact('cartCollection'));
+            return view('themes.default1.front.cart', compact('cartCollection','bussinesses','status','apiKeys','analyticsTag','location'));
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
 

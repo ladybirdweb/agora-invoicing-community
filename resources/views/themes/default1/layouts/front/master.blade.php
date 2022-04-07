@@ -66,6 +66,7 @@ if($script->on_every_page == 1) {
      }
    </style>
     <body>
+    @include('themes.default1.login-modal')
 
         <?php
         $domain = [];
@@ -195,11 +196,18 @@ if($script->on_every_page == 1) {
 
 
                                                     @if(!Auth::user())
+                                                   
                                                     <li class="dropdown">
-                                                        <a  class="nav-link"  href="{{url('login')}}">
-                                                            Login
+                                                        <a  class="nav-link"  data-toggle="modal" data-target="#login-modal" href="{{url('login')}}">
+                                                            Signin
                                                         </a>
                                                     </li>
+                                                     <li class="dropdown">
+                                                        <a  class="nav-link signup" id="signup" data-toggle="modal" data-target="#register-modal" href="{{url('login')}}">
+                                                            signup
+                                                        </a>
+                                                    </li>
+
 
                                                     @else
                                                     <li class="dropdown">

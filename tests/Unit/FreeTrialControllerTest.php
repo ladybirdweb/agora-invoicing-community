@@ -8,14 +8,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Mockery;
 use Tests\DBTestCase;
-
-
-
+/**
+ * test  freetrial controller API
+ */
 
 class FreeTrailControllerTest extends DBTestCase
 {
 
-    public function test_firstloginatem_generateinvoiceorder_returnstatus200()
+    public function test_firstLoginAtem_generateinvoiceorder_returnstatus200()
     {
         $this->assertFalse(auth()->check());
         $user = factory(User::class)->create(['role' => 'user', 'country' => 'IN']);

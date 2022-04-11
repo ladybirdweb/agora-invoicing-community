@@ -1,5 +1,10 @@
 <?php
 namespace App\Http\Controllers;
+<<<<<<< HEAD
+=======
+
+use App\Http\Controllers\Order\BaseOrderController;
+>>>>>>> b701568af48fad99a1dc1a418ed0e532f70c725e
 use App\Model\Common\StatusSetting;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
@@ -13,7 +18,6 @@ use Crypt;
 use DB;
 use Illuminate\Http\Request;
 use Lang;
-use App\Http\Controllers\Order\BaseOrderController;
 
 class FreeTrailController extends Controller
 {
@@ -113,10 +117,10 @@ class FreeTrailController extends Controller
             'product_name'   => 'Faveo Cloud(Beta)',
             'regular_price'  => 0,
             'quantity'       => 1,
-            'tax_name'       => "null",
+            'tax_name'       => 'null',
             'tax_percentage' => 0,
             'subtotal'       => 0,
-            'domain'         => "",
+            'domain'         => '',
             'plan_id'        => 0,
             'agents'         => 0,
         ]);

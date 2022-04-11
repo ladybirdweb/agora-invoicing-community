@@ -125,7 +125,7 @@ if($script->on_every_page == 1) {
                                                       @auth 
                                                     <?php
                                                     $id = \Auth::user()->id;
-                                                    $user = DB::table('users')->where('id', '=', $id)->value('first_time_login');?>
+                                                    $user = App\User::where('id', '=', $id)->value('first_time_login');?>
 
                                                      @if(Auth::check())
                                                      @if($user == 0)
@@ -793,7 +793,7 @@ if($script->on_every_page == 1) {
                $.ajax({
                     type: 'POST',
                     data: {'id':id},
-                    url: "{{url('firstlogin')}}",
+                    url: "{{url('first-login')}}",
                     success:function()
                     {
                         //location.reload();

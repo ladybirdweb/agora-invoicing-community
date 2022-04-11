@@ -39,12 +39,13 @@ class FreeTrailController extends Controller
      * @return order
      */
 
-    public function firstloginatem(Request $request)
+    public function firstLoginAtem(Request $request)
     {
+        try{
         if (! Auth::check()) {
             return redirect('login')->back()->with('fails', \Lang::get('message.free-login'));
         }
-
+        
         $userId = $request->get('id');
         if (Auth::user()->id == $userId) {
             $userLogin = User::find($userId);
@@ -52,15 +53,21 @@ class FreeTrailController extends Controller
                 return errorResponse(Lang::get('message.false'), 400);
             }
             User::where('id', $userId)->update(['first_time_login' => 1]);
-
+               
             $this->generateFreetrailInvoice();
-
+            
             $this->createFreetrailInvoiceItems();
-
+            
             $this->executeFreetrailOrder();
-
-            return successResponse(Lang::get('message.succs_fre'),$this->executeFreetrailOrder(), 200);
+            
+            return successResponse(Lang::get('message.succs_fre'),
+                                  $this->executeFreetrailOrder(), 200);
         }
+    }
+    catch (\Exception $ex) {
+        throw new \Exception($ex->getMessage());
+    }
+   
     }
     /**
      * Generate invoice from client panel for free trial.
@@ -70,11 +77,12 @@ class FreeTrailController extends Controller
 
     private function generateFreetrailInvoice()
     {
+        try{
         $tax_rule = new \App\Model\Payment\TaxOption();
         $rule = $tax_rule->findOrFail(1);
         $rounding = $rule->rounding;
         $user_id = \Auth::user()->id;
-        $grand_total = $rounding ? round($grand_total) : \Cart::getTotal();
+        $grand_total = $rounding ? round(\Cart::getTotal()) : \Cart::getTotal();
         $number = rand(11111111, 99999999);
         $date = \Carbon\Carbon::now();
         $currency = \Session::has('cart_currency') ? \Session::get('cart_currency') : getCurrencyForClient(\Auth::user()->country);
@@ -82,13 +90,23 @@ class FreeTrailController extends Controller
             'currency' => $currency, ]);
 
         return $invoice;
+        }
+        catch (\Exception $ex) {
+            throw new \Exception($ex->getMessage());
+        }
     }
+
+     /**
+     * Generate invoice item for the auth user to the corresponding invoiceid 
+     * @return invoiceitem 
+     * @throws \Exception
+     */
 
     private function createFreetrailInvoiceItems()
     {
-        $cart = \Cart::getContent();
+        try{
         $userId = \Auth::user()->id;
-        $invoice = DB::table('invoices')->where('user_id', $userId)->first();
+        $invoice = $this->invoice->where('user_id', $userId)->first();
         $invoiceid = $invoice->id;
         $invoiceItem = $this->invoiceItem->create([
             'invoice_id'     => $invoiceid,
@@ -105,6 +123,10 @@ class FreeTrailController extends Controller
 
         return $invoiceItem;
     }
+    catch (\Exception $ex) {
+        throw new \Exception($ex->getMessage());
+    }
+    }
     /**
      * Generate Order from client panel for free trial.
      *
@@ -112,28 +134,35 @@ class FreeTrailController extends Controller
      */
     private function executeFreetrailOrder()
     {
+        try{
         $order_status = 'executed';
         $userId = \Auth::user()->id;
-        $invoice = DB::table('invoices')->where('user_id', $userId)->first();
+        $invoice = $this->invoice->where('user_id', $userId)->first();
         $invoiceid = $invoice->id;
 
-        $invoice_items = DB::table('invoice_items')->where('invoice_id', $invoiceid)->get();
+        $invoice_items = $this->invoiceItem->where('invoice_id', $invoiceid)->get();
 
         $user_id = $this->invoice->find($invoiceid)->user_id;
 
         if (count($invoice_items) > 0) {
             foreach ($invoice_items as $item) {
                 if ($item) {
-                    $items = $this->getIfFreetrailItemPresent($item, $invoiceid, $user_id, $order_status);
+                    $this->getIfFreetrailItemPresent($item, $invoiceid, $user_id, $order_status);
                 }
             }
         }
 
         return 'success';
     }
+    catch (\Exception $ex) {
+        throw new \Exception($ex->getMessage());
+    }
+    }
 
     private function getIfFreetrailItemPresent($item, $invoiceid, $user_id, $order_status)
     {
+        try
+        {
         $product = Product::where('name', $item->product_name)->value('id');
         $version = Product::where('name', $item->product_name)->first()->version;
         if ($version == null) {
@@ -143,11 +172,10 @@ class FreeTrailController extends Controller
         $serial_key = $this->generateFreetrailSerialKey($product, $item->agents); //Send Product Id and Agents to generate Serial Key
         $domain = $item->domain;
         //$plan_id = $this->plan($item->id);
-        $plan_id = Plan::where('product', '=', $product)
+        $plan_id = Plan::where('product',$product)
                            ->value('id');
 
         $order = $this->order->create([
-
             'invoice_id'      => $invoiceid,
             'invoice_item_id' => $item->id,
             'client'          => $user_id,
@@ -171,34 +199,49 @@ class FreeTrailController extends Controller
             $baseorder->addtoMailchimp($product, $user_id, $item);
         }
     }
+    catch (\Exception $ex) {
+        throw new \Exception($ex->getMessage());
+    }
+    }
+    /**
+     * generate serialkey by productid and agents
+     * @throws \Exception
+     */
 
     private function generateFreetrailSerialKey(int $productid, $agents)
     {
+        try{
         $len = strlen($agents);
         switch ($len) {//Get Last Four digits based on No.Of Agents
 
                 case '1':
                    $lastFour = '000'.$agents;
-                    break;
-                   case '2':
+                   break;
 
+                case '2':
                     $lastFour = '00'.$agents;
-                     break;
-                      case '3':
-                    $lastFour = '0'.$agents;
-                     break;
-                      case '4':
-                    $lastFour = $agents;
+                    break;
 
-                     break;
+
+                case '3':
+                    $lastFour = '0'.$agents;
+                    break;
+
+                case '4':
+                    $lastFour = $agents;
+                    break;
+                    
                 default:
                     $lastFour = '0000';
-                    break;
+                    
             }
         $str = strtoupper(str_random(12));
         $licCode = $str.$lastFour;
-
         return $licCode;
+        }
+        catch (\Exception $ex) {
+            throw new \Exception($ex->getMessage());
+        }
     }
 
     private function generateFreetrailNumber()

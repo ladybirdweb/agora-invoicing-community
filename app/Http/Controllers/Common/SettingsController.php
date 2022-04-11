@@ -109,7 +109,7 @@ class SettingsController extends BaseSettingsController
      *
      * @param  string  $currency  The currency of the Product Selected
      * @return string Name of the Payment Gateway
-     */ 
+     */
     public static function checkPaymentGateway($currency)
     {
         try {

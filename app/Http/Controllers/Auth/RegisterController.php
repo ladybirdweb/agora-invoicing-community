@@ -11,6 +11,8 @@ use Facades\Spatie\Referer\Referer;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
+
 
 class RegisterController extends Controller
 {
@@ -44,7 +46,9 @@ class RegisterController extends Controller
     }
 
     public function postRegister(ProfileRequest $request, User $user)
+
     {
+       
         $apiKeys = StatusSetting::value('recaptcha_status');
         $captchaRule = $apiKeys ? 'required|' : 'sometimes|';
         $this->validate($request, [
@@ -93,11 +97,13 @@ class RegisterController extends Controller
 
             return response()->json($emailMobileStatusResponse);
         } catch (\Exception $ex) {
+            dd($ex);
             app('log')->error($ex->getMessage());
             $result = [$ex->getMessage()];
             return response()->json($result);
         }
     }
+
 
     protected function getEmailMobileStatusResponse($user)
     {

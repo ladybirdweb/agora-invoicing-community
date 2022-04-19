@@ -9,7 +9,7 @@ $country = findCountryByGeoip($location['iso_code']);
         content:'*';
         color:red;
         padding-left:0;
-    }
+    } 
     .wizard-inner
     {
         display:none;
@@ -144,13 +144,18 @@ $country = findCountryByGeoip($location['iso_code']);
 
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <input type="submit" value="Login" id="submitbtn" class="btn btn-primary  btn-lg btn-block" data-loading-text="Loading...">
+                            <hr style="width: 100%;">
+                            <div class="form-group pull-right">
+                                <button type="button" class="btn btn-default closebutton" id="closebutton" data-dismiss="modal"><i class="fa fa-times">&nbsp;&nbsp;</i>Close</button>
+
+                                <input type="submit" value="Login" id="submitbtn" class="btn btn-primary" data-loading-text="Loading...">
                                 <!-- <button type="button" class="btn btn-primary mb-xl next-step float-right" name="sendOtp" id="login" onclick="loginUser()">
                                             Send Email
                                 </button> -->
 
                             </div>
+
+                             <span >Not a user? <a data-dismiss="modal" data-toggle="modal" href="#register-modal">Signup</a></span>
 
                             {!! Form::close() !!}
                         </div>
@@ -250,16 +255,21 @@ $country = findCountryByGeoip($location['iso_code']);
                                     <br><span id="termscheck"></span>
                                 </div>
                             @endif
+                            <hr style="width: 100%;">
+                            <div class="form-group pull-right">
+                                <button type="button" class="btn btn-default closebutton" id="closebutton" data-dismiss="modal"><i class="fa fa-times">&nbsp;&nbsp;</i>Close</button>
 
-                            <div class="form-group">
-                                <button type="button"  class="btn btn-primary  btn-lg btn-block next-step"  name="register" id="register" onclick="registerUser()">Submit</button>
+                                <button type="button"  class="btn btn-primary" value="0" name="register" id="register" onclick="registerUser(0)">Submit</button>
+                                <!-- <button type="button" class="btn btn-primary mb-xl next-step float-right" name="sendOtp" id="login" onclick="loginUser()">
+                                            Send Email
+                                </button> -->
+
                             </div>
 
 
-                            <div class="form-row">
-                                <div class="form-group col-lg-6">
-                                </div>
-                            </div>
+                                    <span>Already user?<a data-dismiss="modal" data-toggle="modal" href="#login-modal">Sign in</a></span>
+
+
 
                         </form>
                     </div>
@@ -271,7 +281,14 @@ $country = findCountryByGeoip($location['iso_code']);
 
 <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
 
+<script src="build/js/intlTelInput.js"></script>
 
+<script>
+  var input = document.querySelector("#phonenum");
+  window.intlTelInput(input, {
+    // any initialisation options go here
+  });
+</script>
 
 </script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo $analyticsTag; ?>"></script>
@@ -292,6 +309,10 @@ $country = findCountryByGeoip($location['iso_code']);
 
 
 <script type="text/javascript">
+
+    $('.closebutton').on('click',function(){
+        location.reload();
+    });
     //robot validation for Login Form
     function validateform() {
         var input = $(".g-recaptcha :input[name='g-recaptcha-response']");
@@ -546,7 +567,8 @@ $country = findCountryByGeoip($location['iso_code']);
         gtag('config', tag);
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////
-    function registerUser() {
+    function registerUser(value) {
+         this.value= value; 
 
 
         $('#first_namecheck').hide();
@@ -588,6 +610,7 @@ $country = findCountryByGeoip($location['iso_code']);
                     "g-recaptcha-response-1":$('#g-recaptcha-response-1').val(),
                     "terms": $('#term').val(),
                     "_token": "{!! csrf_token() !!}",
+                    "value" : value,
                 },
                 success: function (response) {
                     // window.history.pushState(response.type, "TitleTest", "thankyou");
@@ -801,56 +824,55 @@ fbq('track', 'PageView');
 <script type="text/javascript"
         src="//www.googleadservices.com/pagead/conversion_async.js">
 </script>
-{{--<script>--}}
-{{--    $(document).ready(function () {--}}
+ <script>
+        $(document).ready(function () {
 
-{{--        $.ajaxSetup({ headers: { 'csrftoken' : '{{ csrf_token() }}' } });--}}
+            $.ajaxSetup({ headers: { 'csrftoken' : '{{ csrf_token() }}' } });
 
-{{--        //Initialize tooltips--}}
-{{--        $('.nav-tabs > li a[title]').tooltip();--}}
-{{--        $('.nav-tabs .active a[href="#step1"]').click(function(){--}}
-{{--            $('.wizard-inner').css('display','none');--}}
-{{--        })--}}
-{{--        //Wizard--}}
-{{--        if(!$('.nav-tabs .active a[href="#step1"]')){--}}
-{{--            $('.wizard-inner').css('display','block');--}}
-{{--        }--}}
-{{--        $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {--}}
+            //Initialize tooltips
+            $('.nav-tabs > li a[title]').tooltip();
+            $('.nav-tabs .active a[href="#step1"]').click(function(){
+                $('.wizard-inner').css('display','none');
+            })
+            //Wizard
+            if(!$('.nav-tabs .active a[href="#step1"]')){
+                $('.wizard-inner').css('display','block');
+            }
+            $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
 
-{{--            var $target = $(e.target);--}}
+                var $target = $(e.target);
 
-{{--            if ($target.parent().hasClass('disabled')) {--}}
-{{--                return false;--}}
-{{--            }--}}
-{{--        });--}}
+                if ($target.parent().hasClass('disabled')) {
+                    return false;
+                }
+            });
 
-{{--        /*$(".next-step").click(function (e) {--}}
-{{--            $('.wizard-inner').show();--}}
-{{--            var $active = $('.wizard .nav-tabs li.active');--}}
-{{--            $active.next().removeClass('disabled');--}}
-{{--            nextTab($active);--}}
-{{--            window.scrollTo(0, 10);--}}
+            /*$(".next-step").click(function (e) {
+                $('.wizard-inner').show();
+                var $active = $('.wizard .nav-tabs li.active');
+                $active.next().removeClass('disabled');
+                nextTab($active);
+                window.scrollTo(0, 10);
 
-{{--        });*/--}}
+            });*/
 
-{{--        $(".prev").click(function (e) {--}}
+            $(".prev").click(function (e) {
 
-{{--            var $active = $('.wizard .nav-tabs li.active');--}}
-{{--            $active.next().removeClass('disabled');--}}
-{{--            prevTab($active);--}}
-{{--            $('.wizard-inner').css('display','block');--}}
-{{--        });--}}
-{{--    });--}}
+                var $active = $('.wizard .nav-tabs li.active');
+                $active.next().removeClass('disabled');
+                prevTab($active);
+                $('.wizard-inner').css('display','block');
+            });
+        });
 
-{{--    function nextTab(elem) {--}}
+        function nextTab(elem) {
 
-{{--        $(elem).next().find('a[data-toggle="tab"]').click();--}}
-{{--    }--}}
-{{--    function prevTab(elem) {--}}
-{{--        $(elem).prev().find('a[data-toggle="tab"]').click();--}}
-{{--    }--}}
-{{--</script>--}}
-
+            $(elem).next().find('a[data-toggle="tab"]').click();
+        }
+        function prevTab(elem) {
+            $(elem).prev().find('a[data-toggle="tab"]').click();
+        }
+    </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 <!-- <script>
     var input = document.querySelector("#phonenum"),

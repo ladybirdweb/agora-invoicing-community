@@ -223,7 +223,7 @@ $country = findCountryByGeoip($location['iso_code']);
                                 <div class="col-lg-6 form-group {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
                                     <label class="required">Mobile</label>
                                     {!! Form::hidden('mobile',null,['id'=>'phone_code_hidden']) !!}
-                                    <input class="form-control input-lg" id="phonenum" name="mobile" >
+                                    <input class="form-control input-lg" id="phonenum" name="mobile" type="tel">
                                     {!! Form::hidden('mobile_code',null,['class'=>'form-control input-lg','disabled','id'=>'mobile_code']) !!}
                                     <span id="valid-msg" class="hide"></span>
                                     <span id="error-msg" class="hide"></span>
@@ -279,18 +279,26 @@ $country = findCountryByGeoip($location['iso_code']);
     </div>
 </section>
 
-<script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
 
 <script src="build/js/intlTelInput.js"></script>
 
 <script>
+ 
+
   var input = document.querySelector("#phonenum");
-  window.intlTelInput(input, {
-    // any initialisation options go here
-  });
+      window.intlTelInput(input, {
+      initialCountry: "auto",
+      geoIpLookup: function(callback) {
+      $.get('https://ipinfo.io', function() {}, "jsonp").always(function(resp) {
+      var countryCode = (resp && resp.country) ? resp.country : "us";
+      callback(countryCode);
+    });
+  },
+  utilsScript: "../../build/js/utils.js?1638200991544" // just for formatting/placeholders etc
+});
 </script>
 
-</script>
+    <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo $analyticsTag; ?>"></script>
 
 <script>
@@ -913,6 +921,7 @@ fbq('track', 'PageView');
     input.addEventListener('change', reset);
     input.addEventListener('keyup', reset);
 </script> -->
+ 
 
 <noscript>
     <img height="1" width="1"

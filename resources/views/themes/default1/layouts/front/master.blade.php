@@ -55,6 +55,7 @@ if($script->on_every_page == 1) {
         {{--  any custom css can be defined in this  --}}
         <link rel="stylesheet" href="{{asset('client/porto/css/custom.css')}}">
 
+
         <!-- Head Libs -->
         <script src="{{asset('client/js/modernizr.min.js')}}"></script>
 
@@ -637,6 +638,7 @@ if($script->on_every_page == 1) {
           <script src="{{asset('client/js/owl.carousel.min.js')}}"></script>
           <script src="{{asset('client/js/jquery.magnific-popup.min.js')}}"></script>
           <script src="{{asset('client/js/vide.min.js')}}"></script>
+          <script src="build/js/intlTelInput.js"></script>
 
          <!-- Theme Base, Components and Settings -->
           <script src="{{asset('client/porto/js/theme.js')}}"></script>
@@ -752,6 +754,37 @@ if($script->on_every_page == 1) {
  {!! html_entity_decode($everyPageScript) !!}
 
 </script>
+    <script type="text/javascript">
+        var telInput = $('#phonenum');
+        telInput.intlTelInput({
+            geoIpLookup: function (callback) {
+                $.get("https://ipinfo.io", function () {}, "jsonp").always(function (resp) {
+                    var countryCode = (resp && resp.country) ? resp.country : "";
+                    callback(countryCode);
+                });
+            },
+            initialCountry: "auto",
+            separateDialCode: true,
+            utilsScript: "{{asset('common/js/utils.js')}}"
+        });
+        $('.intl-tel-input').css('width', '100%');
+
+        telInput.on('blur', function () {
+            if ($.trim(telInput.val())) {
+                if (!telInput.intlTelInput("isValidNumber")) {
+                    telInput.parent().addClass('has-error');
+                }
+            }
+        });
+        $('input').on('focus', function () {
+            $(this).parent().removeClass('has-error');
+        });
+
+        $('form').on('submit', function (e) {
+            $('input[name=country_code]').attr('value', $('.selected-dial-code').text());
+        });
+
+    </script>
 
 <!--End of Tawk.to Script-->
 <!--End of Tawk.to Script-->

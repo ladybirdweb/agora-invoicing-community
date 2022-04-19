@@ -475,22 +475,39 @@
 @stop
 @section('script')
 <script src="build/js/intlTelInput.js"></script>
-
-<script>
- 
-
-  var input = document.querySelector("#logphonenum");
-      window.intlTelInput(input, {
-      initialCountry: "auto",
-      geoIpLookup: function(callback) {
-      $.get('https://ipinfo.io', function() {}, "jsonp").always(function(resp) {
-      var countryCode = (resp && resp.country) ? resp.country : "us";
-      callback(countryCode);
+<script type="text/javascript">
+    var telInput = $('#logphonenum');
+    telInput.intlTelInput({
+        geoIpLookup: function (callback) {
+            $.get("https://ipinfo.io", function () {}, "jsonp").always(function (resp) {
+                var countryCode = (resp && resp.country) ? resp.country : "";
+                callback(countryCode);
+            });
+        },
+        initialCountry: "auto",
+        separateDialCode: true,
+        utilsScript: "{{asset('common/js/utils.js')}}"
     });
-  },
-  utilsScript: "../../build/js/utils.js?1638200991544" // just for formatting/placeholders etc
-});
+    $('.intl-tel-input').css('width', '100%');
+
+    telInput.on('blur', function () {
+        if ($.trim(telInput.val())) {
+            if (!telInput.intlTelInput("isValidNumber")) {
+                telInput.parent().addClass('has-error');
+            }
+        }
+    });
+    $('input').on('focus', function () {
+        $(this).parent().removeClass('has-error');
+    });
+
+    $('form').on('submit', function (e) {
+        $('input[name=country_code]').attr('value', $('.selected-dial-code').text());
+    });
+
 </script>
+
+
     <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
 
 
@@ -1085,7 +1102,7 @@
   
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-    <script>
+    <!-- <script>
         var input = document.querySelector("#logphonenum"),
             errorMsg = document.querySelector("#error-msg"),
             validMsg = document.querySelector("#valid-msg");
@@ -1123,6 +1140,80 @@
         // on keyup / change flag: reset
         input.addEventListener('change', reset);
         input.addEventListener('keyup', reset);
+    </script> -->
+      <script type="text/javascript">
+        var telInput = $('#logphonenum'),
+            errorMsg = document.querySelector("#error-msg"),
+            validMsg = document.querySelector("#valid-msg"),
+            addressDropdown = $("#country");
+        var errorMap = [ "Invalid number", "Invalid country code", "Number Too short", "Number Too long", "Invalid number"];
+
+        telInput.intlTelInput({
+            geoIpLookup: function (callback) {
+                $.get("https://ipinfo.io", function () {}, "jsonp").always(function (resp) {
+                    var countryCode = (resp && resp.country) ? resp.country : "";
+                    callback(countryCode);
+                });
+            },
+            initialCountry: "auto",
+            separateDialCode: true,
+        });
+        var reset = function() {
+            errorMsg.innerHTML = "";
+            errorMsg.classList.add("hide");
+            validMsg.classList.add("hide");
+        };
+
+        $('.intl-tel-input').css('width', '100%');
+
+        telInput.on('blur', function () {
+            reset();
+            if ($.trim(telInput.val())) {
+                if (telInput.intlTelInput("isValidNumber")) {
+                    $('#logphonenum').css("border-color","");
+                    $("#error-msg").html('');
+                    errorMsg.classList.add("hide");
+                    $('#register').attr('disabled',false);
+                } else {
+                    var errorCode = telInput.intlTelInput("getValidationError");
+                    errorMsg.innerHTML = errorMap[errorCode];
+                    $('#mobile_codecheck').html("");
+
+                    $('#logphonenum').css("border-color","red");
+                    $('#error-msg').css({"color":"red","margin-top":"5px"});
+                    errorMsg.classList.remove("hide");
+                    $('#register').attr('disabled',true);
+                }
+            }
+        });
+        $('input').on('focus', function () {
+            $(this).parent().removeClass('has-error');
+        });
+        addressDropdown.change(function() {
+            telInput.intlTelInput("setCountry", $(this).val());
+            if ($.trim(telInput.val())) {
+                if (telInput.intlTelInput("isValidNumber")) {
+                    $('#logphonenum').css("border-color","");
+                    $("#error-msg").html('');
+                    errorMsg.classList.add("hide");
+                    $('#register').attr('disabled',false);
+                } else {
+                    var errorCode = telInput.intlTelInput("getValidationError");
+                    errorMsg.innerHTML = errorMap[errorCode];
+                    $('#mobile_codecheck').html("");
+
+                    $('#logphonenum').css("border-color","red");
+                    $('#error-msg').css({"color":"red","margin-top":"5px"});
+                    errorMsg.classList.remove("hide");
+                    $('#register').attr('disabled',true);
+                }
+            }
+        });
+
+        $('form').on('submit', function (e) {
+            $('input[name=country_code]').attr('value', $('.selected-dial-code').text());
+        });
+
     </script>
 
     <noscript>

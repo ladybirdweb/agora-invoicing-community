@@ -47,17 +47,22 @@ if($script->on_every_page == 1) {
         <link rel="stylesheet" href="{{asset('client/porto/css/theme-shop.css')}}">
 
            <link rel="stylesheet" href="{{asset('common/css/intlTelInput.css')}}">
+             <link rel="stylesheet" href="{{asset('build/css/intlTelInput.css')}}">
+
 
         {{-- this can be customised to any skin available --}}
         <link rel="stylesheet" href="{{asset('client/porto/css/skins/default.css')}}">
         {{--  any custom css can be defined in this  --}}
         <link rel="stylesheet" href="{{asset('client/porto/css/custom.css')}}">
 
+
         <!-- Head Libs -->
         <script src="{{asset('client/js/modernizr.min.js')}}"></script>
 
         <script src="{{asset("common/js/jquery-2.1.4.js")}}" type="text/javascript"></script>
         <script src="{{asset("common/js/jquery2.1.1.min.js")}}" type="text/javascript"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
 
    </head>
    <style>
@@ -66,6 +71,14 @@ if($script->on_every_page == 1) {
      }
    </style>
     <body>
+        <?php
+         $bussinesses = App\Model\Common\Bussiness::pluck('name', 'short')->toArray();
+            $status =  App\Model\Common\StatusSetting::select('recaptcha_status', 'msg91_status', 'emailverification_status', 'terms')->first();
+            $apiKeys = App\ApiKey::select('nocaptcha_sitekey', 'captcha_secretCheck', 'msg91_auth_key', 'terms_url')->first();
+            $analyticsTag = App\Model\Common\ChatScript::where('google_analytics', 1)->where('on_registration', 1)->value('google_analytics_tag');
+            $location = getLocation();
+        ?>
+       @include('themes.default1.login-modal')
 
         <?php
         $domain = [];
@@ -105,6 +118,13 @@ if($script->on_every_page == 1) {
                                                     </span>
                                                 </li>
                                             @endif
+                                                @if(!Auth::user())
+                                                <li class="nav-item nav-item-left-border nav-item-left-border-remove nav-item-left-border-md-show">
+                                                    <span class="ws-nowrap">
+                                                        <a style="color: inherit"   data-toggle="modal" data-target="#login-modal" href="{{url('login')}}">My Account</a>
+                                                    </span>
+                                                </li>
+                                                    @endif
 
                                         </ul>
                                     </nav>
@@ -214,29 +234,7 @@ if($script->on_every_page == 1) {
 
 
 
-                                                    @if(!Auth::user())
-                                                    <li class="dropdown">
-                                                        <a  class="nav-link"  href="{{url('login')}}">
-                                                            Login
-                                                        </a>
-                                                    </li>
-
-                                                    @else
-                                                    <li class="dropdown">
-                                                        <a class="dropdown-item dropdown-toggle" href="#">
-                                                            My Account
-                                                        </a>
-                                                        <ul class="dropdown-menu">
-                                                          @if(Auth::user()->role == 'admin')
-                                                          <li><a class="dropdown-item" href="{{url('/')}}">Go to Admin Panel</a></li>
-                                                          @endif
-                                                            <li><a class="dropdown-item" href="{{url('my-orders')}}">My Orders</a></li>
-                                                            <li><a class="dropdown-item" href="{{url('my-invoices')}}">My Invoices</a></li>
-                                                            <li><a class="dropdown-item" href="{{url('my-profile')}}">My Profile</a></li>
-                                                            <li><a class="dropdown-item" href="{{url('auth/logout')}}">Logout</a></li>
-                                                        </ul>
-                                                    </li>
-                                                    @endif
+                                                
 
                                                     <li class="dropdown dropdown-mega dropdown-mega-shop" id="headerShop">
                                                         <a class="dropdown-item dropdown-toggle" href="{{url('show/cart')}}">
@@ -320,6 +318,37 @@ if($script->on_every_page == 1) {
                                                             </li>
                                                         </ul>
                                                     </li>
+
+                                                        @if(!Auth::user())
+                                                   
+                                                    <li class="dropdown">
+                                                        <button class="btn btn-primary btn-modern open-createTenantDialog"  data-toggle="modal" data-target="#login-modal" >
+                                                            Free Signup
+                                                        </button>
+                                                    </li>
+                                               <!--     <li class="dropdown">
+                                                   <a  class="nav-link signup" id="signup" data-toggle="modal" data-target="#register-modal" href="{{url('login')}}">
+                                                           signup
+                                                    </a>
+                                               </li> -->
+ 
+
+                                                    @else
+                                                    <li class="dropdown">
+                                                        <a class="dropdown-item dropdown-toggle" href="#">
+                                                            My Account
+                                                        </a>
+                                                        <ul class="dropdown-menu">
+                                                          @if(Auth::user()->role == 'admin')
+                                                          <li><a class="dropdown-item" href="{{url('/')}}">Go to Admin Panel</a></li>
+                                                          @endif
+                                                            <li><a class="dropdown-item" href="{{url('my-orders')}}">My Orders</a></li>
+                                                            <li><a class="dropdown-item" href="{{url('my-invoices')}}">My Invoices</a></li>
+                                                            <li><a class="dropdown-item" href="{{url('my-profile')}}">My Profile</a></li>
+                                                            <li><a class="dropdown-item" href="{{url('auth/logout')}}">Logout</a></li>
+                                                        </ul>
+                                                    </li>
+                                                    @endif
 
 
                                                 </ul>
@@ -652,13 +681,14 @@ if($script->on_every_page == 1) {
         </div>
 
         <!-- Vendor -->
+
         <script src="{{asset('client/js/jquery.min.js')}}"></script>
           <script src="{{asset('client/js/jquery.appear.min.js')}}"></script>
           <script src="{{asset('client/js/jquery.easing.min.js')}}"></script>
           <script src="{{asset('client/js/jquery-cookie.min.js')}}"></script>
           <!-- <script src="{{asset('client/js/popper.js')}}"></script> -->
           <!-- <script src="{{asset('client/js/popper.min.js')}}"></script> -->
-           <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 
           <!-- Popper JS -->
           <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
@@ -676,6 +706,7 @@ if($script->on_every_page == 1) {
           <script src="{{asset('client/js/owl.carousel.min.js')}}"></script>
           <script src="{{asset('client/js/jquery.magnific-popup.min.js')}}"></script>
           <script src="{{asset('client/js/vide.min.js')}}"></script>
+          <script src="{{asset('build/js/intlTelInput.js') }}"></script>
 
          <!-- Theme Base, Components and Settings -->
           <script src="{{asset('client/porto/js/theme.js')}}"></script>
@@ -853,12 +884,62 @@ if($script->on_every_page == 1) {
 <script type="text/javascript">
  {!! html_entity_decode($everyPageScript) !!}
 
+
 </script>
+    <script type="text/javascript">
+        var telInput = $('#phonenum');
+        telInput.intlTelInput({
+            geoIpLookup: function (callback) {
+                $.get("https://ipinfo.io", function () {}, "jsonp").always(function (resp) {
+                    var countryCode = (resp && resp.country) ? resp.country : "";
+                    callback(countryCode);
+                });
+            },
+            initialCountry: "auto",
+            separateDialCode: true,
+            utilsScript: "{{asset('common/js/utils.js')}}"
+        });
+        $('.intl-tel-input').css('width', '100%');
+
+        telInput.on('blur', function () {
+            if ($.trim(telInput.val())) {
+                if (!telInput.intlTelInput("isValidNumber")) {
+                    telInput.parent().addClass('has-error');
+                }
+            }
+        });
+        $('input').on('focus', function () {
+            $(this).parent().removeClass('has-error');
+        });
+
+        $('form').on('submit', function (e) {
+            $('input[name=country_code]').attr('value', $('.selected-dial-code').text());
+        });
+
+    </script>
+<!--      <script src="{{asset('build/js/intlTelInput.js') }}"></script>
+ -->
+<!-- <script>
+ 
+
+  var input = document.querySelector("#phonenum");
+      window.intlTelInput(input, {
+      initialCountry: "auto",
+      geoIpLookup: function(callback) {
+      $.get('https://ipinfo.io', function() {}, "jsonp").always(function(resp) {
+      var countryCode = (resp && resp.country) ? resp.country : "us";
+      callback(countryCode);
+    });
+  },
+  utilsScript: "../../build/js/utils.js?1638200991544" // just for formatting/placeholders etc
+});
+</script> -->
 
 <!--End of Tawk.to Script-->
 <!--End of Tawk.to Script-->
 
 <!--  -->
+
 
     </body>
 </html>

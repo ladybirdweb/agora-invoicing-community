@@ -155,7 +155,7 @@ class CartController extends BaseCartController
      */
     public function showCart()
     {
-          try {
+        try {
             $bussinesses = Bussiness::pluck('name', 'short')->toArray();
             $status = StatusSetting::select('recaptcha_status', 'msg91_status', 'emailverification_status', 'terms')->first();
             $apiKeys = ApiKey::select('nocaptcha_sitekey', 'captcha_secretCheck', 'msg91_auth_key', 'terms_url')->first();
@@ -167,7 +167,7 @@ class CartController extends BaseCartController
                 \Session::put('currency', $cart_currency);
             }
 
-            return view('themes.default1.front.cart', compact('cartCollection','bussinesses','status','apiKeys','analyticsTag','location'));
+            return view('themes.default1.front.cart', compact('cartCollection', 'bussinesses', 'status', 'apiKeys', 'analyticsTag', 'location'));
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
 

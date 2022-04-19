@@ -330,7 +330,7 @@ class PageController extends Controller
             $trasform = [];
             $templates = $this->getTemplateOne($productsRelatedToGroup, $data, $trasform);
 
-            return view('themes.default1.common.template.shoppingcart', compact('templates', 'headline', 'tagline','location','bussinesses','apiKeys','status','analyticsTag'));
+            return view('themes.default1.common.template.shoppingcart', compact('templates', 'headline', 'tagline', 'location', 'bussinesses', 'apiKeys', 'status', 'analyticsTag'));
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
 
@@ -346,7 +346,7 @@ class PageController extends Controller
         $analyticsTag = ChatScript::where('google_analytics', 1)->where('on_registration', 1)->value('google_analytics_tag');
         $location = getLocation();
         try {
-            return view('themes.default1.front.contact',compact('location','bussinesses','status','apiKeys','analyticsTag'));
+            return view('themes.default1.front.contact', compact('location', 'bussinesses', 'status', 'apiKeys', 'analyticsTag'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }

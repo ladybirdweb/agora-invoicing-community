@@ -842,7 +842,7 @@ if($script->on_every_page == 1) {
                $.ajax({
                     type: 'POST',
                     data: {'id':id},
-                    url: "{{url('firstlogin')}}",
+                    url: "{{url('first-login')}}",
                     success:function()
                     {
                         //location.reload();

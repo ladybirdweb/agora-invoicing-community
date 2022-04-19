@@ -33,14 +33,17 @@ class FreeTrailController extends Controller
         $this->subscription  = new Subscription();
        
     }
+    
     /**
      * Get the auth user id
      * Check the first_time_login is not equal to zero in DB to correspaonding,if its not change into one
      * @return order
      */
 
-    public function firstloginatem(Request $request)
+    public function firstLoginAtem(Request $request)
     {
+        try
+        {
         if (! Auth::check()) {
             return redirect('login')->back()->with('fails', \Lang::get('message.free-login'));
         }
@@ -61,7 +64,13 @@ class FreeTrailController extends Controller
 
             return successResponse(Lang::get('message.succs_fre'),$this->executeFreetrailOrder(), 200);
         }
+           } catch (\Exception $ex) {
+            app('log')->error($ex->getMessage());
+
+            throw new \Exception('Can not Generate Subscription');
+        }
     }
+
     /**
      * Generate invoice from client panel for free trial.
      *
@@ -70,11 +79,13 @@ class FreeTrailController extends Controller
 
     private function generateFreetrailInvoice()
     {
+        try
+        {
         $tax_rule = new \App\Model\Payment\TaxOption();
         $rule = $tax_rule->findOrFail(1);
         $rounding = $rule->rounding;
         $user_id = \Auth::user()->id;
-        $grand_total = $rounding ? round($grand_total) : \Cart::getTotal();
+        $grand_total = $rounding ? round(\Cart::getTotal()) : \Cart::getTotal();
         $number = rand(11111111, 99999999);
         $date = \Carbon\Carbon::now();
         $currency = \Session::has('cart_currency') ? \Session::get('cart_currency') : getCurrencyForClient(\Auth::user()->country);
@@ -82,13 +93,27 @@ class FreeTrailController extends Controller
             'currency' => $currency, ]);
 
         return $invoice;
+    } catch (\Exception $ex) {
+            app('log')->error($ex->getMessage());
+
+            throw new \Exception('Can not Generate Subscription');
+        }
+
     }
+
+    /**
+     * Generate invoice items for free trial
+     * 
+     * @throws \Exception
+     */
 
     private function createFreetrailInvoiceItems()
     {
+        try
+        {
         $cart = \Cart::getContent();
         $userId = \Auth::user()->id;
-        $invoice = DB::table('invoices')->where('user_id', $userId)->first();
+        $invoice = $this->invoice->where('user_id', $userId)->first();
         $invoiceid = $invoice->id;
         $invoiceItem = $this->invoiceItem->create([
             'invoice_id'     => $invoiceid,
@@ -104,20 +129,29 @@ class FreeTrailController extends Controller
         ]);
 
         return $invoiceItem;
+           } catch (\Exception $ex) {
+            app('log')->error($ex->getMessage());
+
+            throw new \Exception('Can not Generate Subscription');
+        }
     }
+
     /**
      * Generate Order from client panel for free trial.
      *
      * @throws \Exception
      */
+
     private function executeFreetrailOrder()
     {
+        try {
+
         $order_status = 'executed';
         $userId = \Auth::user()->id;
-        $invoice = DB::table('invoices')->where('user_id', $userId)->first();
+        $invoice = $this->invoice->where('user_id', $userId)->first();
         $invoiceid = $invoice->id;
 
-        $invoice_items = DB::table('invoice_items')->where('invoice_id', $invoiceid)->get();
+        $invoice_items = $this->invoiceItem->where('invoice_id', $invoiceid)->get();
 
         $user_id = $this->invoice->find($invoiceid)->user_id;
 
@@ -130,10 +164,22 @@ class FreeTrailController extends Controller
         }
 
         return 'success';
+          } catch (\Exception $ex) {
+            app('log')->error($ex->getMessage());
+
+            throw new \Exception('Can not Generate Subscription');
+        }
     }
+
+    /**
+     * Create order for free trial if the invoice items present in the DB
+     * @throws \Exception
+     */
 
     private function getIfFreetrailItemPresent($item, $invoiceid, $user_id, $order_status)
     {
+        try
+        {
         $product = Product::where('name', $item->product_name)->value('id');
         $version = Product::where('name', $item->product_name)->first()->version;
         if ($version == null) {
@@ -143,7 +189,7 @@ class FreeTrailController extends Controller
         $serial_key = $this->generateFreetrailSerialKey($product, $item->agents); //Send Product Id and Agents to generate Serial Key
         $domain = $item->domain;
         //$plan_id = $this->plan($item->id);
-        $plan_id = Plan::where('product', '=', $product)
+        $plan_id = Plan::where('product',$product)
                            ->value('id');
 
         $order = $this->order->create([
@@ -170,10 +216,22 @@ class FreeTrailController extends Controller
         if ($mailchimpStatus) {
             $baseorder->addtoMailchimp($product, $user_id, $item);
         }
+           } catch (\Exception $ex) {
+            app('log')->error($ex->getMessage());
+
+            throw new \Exception('Can not Generate Subscription');
+        }
     }
+
+    /**
+     * Generate serial key for free trial
+     * @throws \Exception
+     */ 
 
     private function generateFreetrailSerialKey(int $productid, $agents)
     {
+        try
+        {
         $len = strlen($agents);
         switch ($len) {//Get Last Four digits based on No.Of Agents
 
@@ -193,12 +251,16 @@ class FreeTrailController extends Controller
                      break;
                 default:
                     $lastFour = '0000';
-                    break;
             }
         $str = strtoupper(str_random(12));
         $licCode = $str.$lastFour;
 
         return $licCode;
+           } catch (\Exception $ex) {
+            app('log')->error($ex->getMessage());
+
+            throw new \Exception('Can not Generate Subscription');
+        }
     }
 
     private function generateFreetrailNumber()

@@ -6,7 +6,7 @@
     Login | Register
 @stop
 @section('page-heading')
-Sign in or Register
+    Sign in or Register
 @stop
 @section('breadcrumb')
     @if(Auth::check())
@@ -68,14 +68,14 @@ Sign in or Register
             margin-top: 0px;
         }
         .bootstrap-select .dropdown-toggle .caret {
-           display: none;
+            display: none;
         }
 
         .form-control:not(.form-control-sm):not(.form-control-lg) {
-        /*font-size: 13.6px;
-        font-size: 0.85rem;*/
-        line-height: normal;
-    }
+            /*font-size: 13.6px;
+            font-size: 0.85rem;*/
+            line-height: normal;
+        }
 
 
 
@@ -87,10 +87,10 @@ Sign in or Register
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 
     <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
-     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/js/bootstrap-select.js"></script> -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/2.0.0-beta1/js/bootstrap-select.min.js"></script> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/2.0.0-beta1/js/bootstrap-select.min.js"></script>
     <div class="row">
         <div class="col-md-12">
 
@@ -138,7 +138,7 @@ Sign in or Register
                                 <!-- <div id="error2">
                                 </div>
                                 <div id="alertMessage2" class="-text" ></div> -->
-              
+
                                 <div class="row">
                                     <div class="col-sm-6">
                                         <div class="featured-box featured-box-primary text-left mt-5">
@@ -153,14 +153,14 @@ Sign in or Register
                                                 <div class="form-row">
                                                     <div class="form-group col {{ $errors->has('email1') ? 'has-error' : '' }}">
 
-                                                        <label class="required">Username or E-mail Address</label>
+                                                        <label class="required" >E-mail Address</label>
                                                         <div class="input-group">
                                                             {!! Form::text('email1',null,['class' => 'form-control input-lg','id'=>'username','autocomplete'=>"off" ]) !!}
                                                             <div class="input-group-append">
-                                                                <span class="input-group-text"><i class="fa fa-user"></i></span>
+                                                                {{--                                    <span class="input-group-text"><i class="fa fa-user"></i></span>--}}
                                                             </div>
 
-                                                        </div>
+                                                        </div>  
                                                         <!-- <h6 id="usercheck"></h6> -->
 
 
@@ -170,11 +170,11 @@ Sign in or Register
                                                     <div class="form-group col {{ $errors->has('password1') ? 'has-error' : '' }}">
 
                                                         <a class="pull-right" href="{{url('password/reset')}}">({{Lang::get('message.forgot-my-password')}})</a>
-                                                        <label class="required">Password</label>
+                                                        <label class="required" >Password</label>
                                                         <div class="input-group">
                                                             {!! Form::password('password1',['class' => 'form-control input-lg' ,'id'=>'pass']) !!}
                                                             <div class="input-group-append">
-                                                                <span class="input-group-text"><i class="fa fa-key"></i></span>
+                                                                {{--                                    <span class="input-group-text"><i class="fa fa-key"></i></span>--}}
                                                             </div>
 
                                                         </div>
@@ -189,6 +189,7 @@ Sign in or Register
                                                     {!! NoCaptcha::display() !!}
                                                     <div class="loginrobot-verification"></div>
                                                 @endif
+
                                                 <div class="form-row">
                                                     <div class="form-group col-lg-6">
                                                         <div class="form-check form-check-inline">
@@ -216,139 +217,57 @@ Sign in or Register
                                             <div class="box-content">
                                                 <h4 class="heading-primary text-uppercase mb-3">Register An Account</h4>
 
-                                                <form name="registerForm" id="regiser-form">
+                                                <form name="logregisterForm" id="logregiser-form">
 
                                                     <div class="row">
 
                                                         <div class="form-group col-lg-6 {{ $errors->has('first_name') ? 'has-error' : '' }}">
-                                                        <!--   {!! Form::label('first_name',Lang::get('message.first_name'),['class'=>'required']) !!} -->
+
                                                             <label class="required">First Name</label>
 
-                                                            {!! Form::text('first_name',null,['class'=>'form-control input-lg', 'id'=>'first_name']) !!}
-                                                            <span id="first_namecheck"></span>
+                                                            {!! Form::text('first_name',null,['class'=>'form-control input-lg', 'id'=>'logfirst_name']) !!}
+                                                            <span id="logfirst_namecheck"></span>
                                                         </div>
 
 
 
                                                         <div class="form-group col-lg-6 {{ $errors->has('last_name') ? 'has-error' : '' }}">
                                                             <label class="required">Last Name</label>
-                                                            {!! Form::text('last_name',null,['class'=>'form-control input-lg', 'id'=>'last_name']) !!}
-                                                            <span id="last_namecheck"></span>
+                                                            {!! Form::text('last_name',null,['class'=>'form-control input-lg', 'id'=>'loglast_name']) !!}
+                                                            <span id="loglast_namecheck"></span>
 
                                                         </div>
 
 
                                                     </div>
-                                                    <div class="form-row">
 
+                                                    <div class="form-row">
                                                         <div class="form-group col {{ $errors->has('email') ? 'has-error' : '' }}">
                                                             <label class="required">Email Address</label>
-                                                            {!! Form::email('email',null,['class'=>'form-control input-lg', 'id'=>'email']) !!}
-                                                            <span id="emailcheck"></span>
+                                                            {!! Form::email('email',null,['class'=>'form-control input-lg', 'id'=>'logmail']) !!}
+                                                            <span id="logemailcheck"></span>
                                                         </div>
-
-
                                                     </div>
-
-
-                                                    <div class="row">
-
-                                                        <div class="form-group col{{ $errors->has('company') ? 'has-error' : '' }}">
-                                                            <label  class="required">Company Name</label>
-                                                            {!! Form::text('company',null,['class'=>'form-control input-lg', 'id'=>'company']) !!}
-                                                            <span id="companycheck"></span>
-                                                        </div>
-
-
-
-
-
-
-                                                    </div>
-
-
-                                                     <div class="row">
-                                                   
-                                                        <div class="form-group col {{ $errors->has('address') ? 'has-error' : '' }}">
-                                                            <label class="required">Address</label>
-                                                            {!! Form::textarea('address',null,['class'=>'form-control','rows'=>4, 'id'=>'address']) !!}
-
-                                                       <span id="addresscheck"></span>
-                                                    </div>
-                                                </div>
-
 
                                                     <div class="form-row">
-                                                        <div class="form-group col {{ $errors->has('country') ? 'has-error' : '' }}">
+                                                        <div class="form-group col col-lg-6 {{ $errors->has('country') ? 'has-error' : '' }}">
                                                             {!! Form::label('country',Lang::get('message.country'),['class'=>'required']) !!}
                                                             <?php $countries = \App\Model\Common\Country::pluck('nicename', 'country_code_char2')->toArray(); ?>
-                                                            {!! Form::select('country',[''=>'','Choose'=>$countries],$country,['class' => 'form-control selectpicker','data-live-search-style'=>"startsWith",'data-live-search'=>'true','data-live-search-placeholder'=>'Search','data-dropup-auto'=>'false','data-size'=>'10','onChange'=>'getCountryAttr(this.value);','id'=>'country']) !!}
-                                                            <span id="countrycheck"></span>
-
+                                                            {!! Form::select('country',[''=>'','Choose'=>$countries],$country,['class' => 'form-control selectpicker','data-live-search-style'=>"startsWith",'data-live-search'=>'true','data-live-search-placeholder'=>'Search','data-dropup-auto'=>'false','data-size'=>'10','onChange'=>'getCountryAttr(this.value);','id'=>'logcountry']) !!}
+                                                            <span id="logcountrycheck"></span>
                                                         </div>
 
-                                                    </div>
-                                                    <div class="form-row">
-                                                        <div class="col-lg-12 form-group {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
+
+                                                        <div class="col-lg-6 form-group {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
                                                             <label class="required">Mobile</label>
-                                                            {!! Form::hidden('mobile',null,['id'=>'mobile_code_hidden']) !!}
-                                                            <input class="form-control input-lg" id="mobilenum" name="mobile" type="tel">
-                                                            {!! Form::hidden('mobile_code',null,['class'=>'form-control input-lg','disabled','id'=>'mobile_code']) !!}
+                                                            {!! Form::hidden('mobile',null,['id'=>'logphone_code_hidden']) !!}
+                                                            <input class="form-control input-lg" id="logphonenum" name="mobile" type="tel" >
+                                                            {!! Form::hidden('mobile_code',null,['class'=>'form-control input-lg','disabled','id'=>'logmobile_code']) !!}
                                                             <span id="valid-msg" class="hide"></span>
                                                             <span id="error-msg" class="hide"></span>
-                                                            <span id="mobile_codecheck"></span>
+                                                            <span id="logmobile_codecheck"></span>
                                                         </div>
-
-
-
                                                     </div>
-
-                                                    <div class="form-row hidden">
-                                                        <div class="form-group col{{ $errors->has('state') ? 'has-error' : '' }}">
-                                                            {!! Form::label('state',Lang::get('message.state')) !!}
-                                                            <?php
-                                                            $value = "";
-                                                            if (count($state) > 0) {
-                                                                $value = $state;
-                                                            }
-                                                            if (old('state')) {
-                                                                $value = old('state');
-                                                            }
-                                                            ?>
-
-                                                            {!! Form::select('state',[$states],$value,['class' => 'form-control input-lg','id'=>'state-list']) !!}
-
-                                                            <span id="statecheck"></span>
-                                                        </div>
-
-
-
-
-                                                    </div>
-
-                                                    <div class="form-row">
-
-                                                        <div class="form-group col {{ $errors->has('password') ? 'has-error' : '' }}">
-                                                            <label class="required">Password</label>
-                                                            {!! Form::password('password',['class'=>'form-control input-lg', 'id'=>'password']) !!}
-                                                            <span id="password1check"></span>
-                                                        </div>
-
-
-
-
-                                                    </div>
-                                                    <div class="form-row">
-
-                                                        <div class="form-group col {{ $errors->has('password_confirmation') ? 'has-error' : '' }}">
-                                                            <label class="required">Re-enter Password</label>
-
-                                                            {!! Form::password('password_confirmation',['class'=>'form-control input-lg', 'id'=>'confirm_pass']) !!}
-                                                            <span id="conpasscheck"></span>
-                                                        </div>
-
-                                                    </div>
-
                                                 <!--   <input type="checkbox" name="checkbox" id="option" value="{{old('option')}}"><label for="option"><span></span> <p>I agree to the <a href="#">terms</a></p></label>-->
                                                     <div class="form-row">
                                                         <div class="form-group col-lg-6">
@@ -364,20 +283,20 @@ Sign in or Register
                                                     <div class="form-row">
                                                         @if ($status->terms ==0)
                                                             <div class="form-group col-lg-6">
-                                                                <input type="hidden" value="true" name="terms" id="term">
+                                                                <input type="hidden" value="true" name="logterms" id="logterm">
                                                             </div>
                                                         @else
                                                             <div class="form-group col-lg-6">
                                                                 <label>
 
-                                                                    <input type="checkbox" value="false" name="terms" id="term" > {{Lang::get('message.i-agree-to-the')}} <a href="{{$apiKeys->terms_url}}" target="_blank">{{Lang::get('message.terms')}}</a>
+                                                                    <input type="checkbox" value="false" name="logterms" id="logterm" > {{Lang::get('message.i-agree-to-the')}} <a href="{{$apiKeys->terms_url}}" target="_blank">{{Lang::get('message.terms')}}</a>
                                                                 </label>
                                                                 <br><span id="termscheck"></span>
                                                             </div>
                                                         @endif
 
                                                         <div class="form-group col-lg-6">
-                                                            <button type="button"  class="btn btn-primary pull-right marginright mb-xl next-step"  name="register" id="register" onclick="registerUser()">Submit</button>
+                                                            <button type="button"  class="btn btn-primary pull-right marginright mb-xl next-step" name="register" id="logregister" onclick="logregisterUser(1)">Submit</button>
                                                         </div>
 
                                                     </div>
@@ -555,6 +474,76 @@ Sign in or Register
     </div>
 @stop
 @section('script')
+<script src="{{asset('build/js/intlTelInput.js')}}"></script>
+<script type="text/javascript">
+    var telInput = $('#logphonenum');
+    telInput.intlTelInput({
+        geoIpLookup: function (callback) {
+            $.get("https://ipinfo.io", function () {}, "jsonp").always(function (resp) {
+                var countryCode = (resp && resp.country) ? resp.country : "";
+                callback(countryCode);
+            });
+        },
+        initialCountry: "auto",
+        separateDialCode: true,
+        utilsScript: "{{asset('common/js/utils.js')}}"
+    });
+    $('.intl-tel-input').css('width', '100%');
+
+    telInput.on('blur', function () {
+        if ($.trim(telInput.val())) {
+            if (!telInput.intlTelInput("isValidNumber")) {
+                telInput.parent().addClass('has-error');
+            }
+        }
+    });
+    $('input').on('focus', function () {
+        $(this).parent().removeClass('has-error');
+    });
+
+    $('form').on('submit', function (e) {
+        $('input[name=country_code]').attr('value', $('.selected-dial-code').text());
+    });
+
+</script>
+<script type="text/javascript">
+    var telInput = $('#phonenum');
+    telInput.intlTelInput({
+        geoIpLookup: function (callback) {
+            $.get("https://ipinfo.io", function () {}, "jsonp").always(function (resp) {
+                var countryCode = (resp && resp.country) ? resp.country : "";
+                callback(countryCode);
+            });
+        },
+        initialCountry: "auto",
+        separateDialCode: true,
+        utilsScript: "{{asset('common/js/utils.js')}}"
+    });
+    $('.intl-tel-input').css('width', '100%');
+
+    telInput.on('blur', function () {
+        if ($.trim(telInput.val())) {
+            if (!telInput.intlTelInput("isValidNumber")) {
+                telInput.parent().addClass('has-error');
+            }
+        }
+    });
+    $('input').on('focus', function () {
+        $(this).parent().removeClass('has-error');
+    });
+
+    $('form').on('submit', function (e) {
+        $('input[name=country_code]').attr('value', $('.selected-dial-code').text());
+    });
+
+</script>
+
+
+    <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+
+
+
+    
     <script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo $analyticsTag; ?>"></script>
 
     <script>
@@ -568,357 +557,15 @@ Sign in or Register
         ///////////////////////////////////////////////////////////////////////////////////
     </script>
 
-    <script type="text/javascript">
-
-
-
-        function verify_otp_check(){
-            var userOtp = $('#oneTimePassword').val();
-            if (userOtp.length < 4){
-                $('#enterotp').show();
-                $('#enterotp').html("Please Enter A Valid OTP");
-                $('#enterotp').focus();
-                $('#oneTimePassword').css("border-color","red");
-                $('#enterotp').css({"color":"red","margin-top":"5px"});
-
-
-                // mobile_error = false;
-                return false;
-            }
-            else{
-                $('#enterotp').hide();
-                $('#oneTimePassword').css("border-color","");
-                return true;
-
-            }
-        }
-
-        function verifyBySendOtp() {
-            $('#enterotp').hide();
-            if(verify_otp_check()) {
-                $("#verifyOtp").attr('disabled',true);
-                $("#verifyOtp").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Verifying...");
-                var data = {
-                    "mobile":   $('#verify_number').val().replace(/[\. ,:-]+/g, ''),
-                    "code"  :   $('#verify_country_code').val(),
-                    "otp"   :   $('#oneTimePassword').val(),
-                    'id'    :   $('#hidden_user_id').val(),
-                };
-                $.ajax({
-                    url: '{{url('otp/verify')}}',
-                    type: 'POST',
-                    data: data,
-                    success: function (response) {
-                        $("#verifyOtp").attr('disabled',false);
-                        $('#error2').hide();
-                        $('#error').hide();
-                        $('#alertMessage2').show();
-                        var result =  '<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Well Done! </strong>'+response.message+'!</div>';
-                        // $('#alertMessage3').show();
-                        $('#successMessage2').hide();
-                        $('#success').html(result);
-                        $("#verifyOtp").html("Verify OTP");
-                        $('.nav-tabs li a[href="#step1"]').tab('show');
-                        $('.wizard-inner').css('display','none');
-                        setTimeout(()=>{
-                            getLoginTab();
-                        },10)
-                    },
-                    error: function (ex) {
-                        $("#verifyOtp").attr('disabled',false);
-                        var myJSON = JSON.parse(ex.responseText);
-                        var html = '<div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<br><br><ul>';
-                        $("#verifyOtp").html("Verify OTP");
-                        for (var key in myJSON)
-                        {
-                            html += '<li>' + myJSON[key][0] + '</li>'
-                        }
-                        html += '</ul></div>';
-                        $('#successMessage2').hide();
-                        $('#alertMessage2').hide();
-                        $('#error2').show();
-                        document.getElementById('error2').innerHTML = html;
-                        setTimeout(function(){
-                            $('#error2').hide();
-                        }, 5000);
-                    }
-                });
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-
-        function getLoginTab(){
-            registerForm.elements['first_name'].value = '';
-            registerForm.elements['last_name'].value = '';
-            registerForm.elements['email'].value = '';
-            registerForm.elements['company'].value = '';
-            registerForm.elements['bussiness'].value = '';
-            registerForm.elements['company_type'].value = '';
-            registerForm.elements['company_size'].value = '';
-            registerForm.elements['mobile'].value = '';
-            registerForm.elements['address'].value = '';
-            registerForm.elements['user_name'].value = '';
-            registerForm.elements['password'].value = '';
-            registerForm.elements['password_confirmation'].value = '';
-            registerForm.elements['terms'].checked = false;
-
-            $('.nav-tabs li a[href="#step1"]').tab('show');
-            $('.wizard-inner').css('display','none');
-        }
-
-        $(".prev-step").click(function (e) {
-            getLoginTab();
-        });
-
-        //Enter OTP Validation
-        $('#oneTimePassword').keyup(function(){
-            verify_otp_check();
-        });
-
-        //--------------------------------------------------ReSend OTP via SMS---------------------------------------------------//
-
-        $('#resendOTP').on('click',function(){
-            var data = {
-                "mobile":   $('#verify_number').val().replace(/[\. ,:-]+/g, ''),
-                "code"  :  ($('#verify_country_code').val()),
-                "type"  :  "text",
-            };
-            $("#resendOTP").attr('disabled',true);
-            $("#resendOTP").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Resending..");
-            $.ajax({
-                url: '{{url('resend_otp')}}',
-                type: 'GET',
-                data: data,
-                success: function (response) {
-                    $("#resendOTP").attr('disabled',false);
-                    $("#resendOTP").html("Resend OTP");
-                    $('#successMessage2').hide ();
-                    $('#alertMessage3').show();
-                    $('#error2').hide();
-                    var result =  '<div class="alert alert-success"> <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Well Done! </strong>'+response.message+'!</div>';
-                    $('#alertMessage3').html(result+ ".");
-                },
-                error: function (ex) {
-                    $("#resendOTP").attr('disabled',false);
-                    $("#resendOTP").html("Resend OTP");
-                    var myJSON = JSON.parse(ex.responseText);
-                    var html = '<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>Oh Snap! </strong>Something went wrong<br><br><ul>';
-                    for (var key in myJSON)
-                    {
-                        html += '<li>' + myJSON[key][0] + '</li>'
-                    }
-                    html += '</ul></div>';
-                    ('#successMessage2').hide();
-                    $('#alertMessage2').hide();
-                    $('#alertMessage3').hide();
-                    $('#error2').show();
-                    document.getElementById('error2').innerHTML = html;
-                }
-            })
-
-        });
-
-        //---------------------------------------Resend OTP via voice call--------------------------------------------------//
-
-        $('#voiceOTP').on('click',function(){
-            var data = {
-                "mobile":   $('#verify_number').val().replace(/[\. ,:-]+/g, ''),
-                "code"  :  ($('#verify_country_code').val()),
-                "type"  :  "voice",
-            };
-            $("#voiceOTP").attr('disabled',true);
-            $("#voiceOTP").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Sending Voice Call..");
-            $.ajax({
-                url: '{{url('resend_otp')}}',
-                type: 'GET',
-                data: data,
-                success: function (response) {
-                    $("#voiceOTP").attr('disabled',false);
-                    $("#voiceOTP").html("Receive OTP via Voice call");
-                    $('#successMessage2').hide ();
-                    $('#alertMessage3').show();
-                    $('#error2').hide();
-                    var result =  '<div class="alert alert-success"> <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Well Done! </strong>'+response.message+'!</div>';
-                    $('#alertMessage3').html(result+ ".");
-                },
-                error: function (ex) {
-                    $("#voiceOTP").attr('disabled',false);
-                    $("#voiceOTP").html("Receive OTP via Voice call");
-                    var myJSON = JSON.parse(ex.responseText);
-                    var html = '<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>Oh Snap! </strong>Something went wrong<br><br><ul>';
-                    for (var key in myJSON)
-                    {
-                        html += '<li>' + myJSON[key][0] + '</li>'
-                    }
-                    html += '</ul></div>';
-                    $('#alertMessage2').hide();
-                    $('#alertMessage3').hide();
-                    $('#error2').show();
-                    document.getElementById('error2').innerHTML = html;
-                }
-            })
-
-        });
-
-
-    </script>
 
 
 
 
     <script type="text/javascript">
-        /*
-        * Email ANd Mobile Validation when Send Button is cliced on Tab2
-         */
-        /////////////////////////////////////////////////////////////////////////////////////////////////
-        $('#verify_email').keyup(function(){//Email
-            verify_email_check();
+
+        $('.closebutton').on('click',function(){
+            location.reload();
         });
-
-        function verify_email_check(){
-            if($("#emailstatusConfirm").val() ==1) {//if email verification is active frm admin panlel then validate else don't
-
-                var pattern = new RegExp(/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/);
-                if (pattern.test($('#verify_email').val())) {
-                    $('#conemail').hide();
-                    $('#verify_email').css("border-color","");
-                    return true;
-                } else{
-                    $('#conemail').show();
-                    $('#conemail').html("Please Enter a valid email");
-                    $('#conemail').focus();
-                    $('#verify_email').css("border-color","red");
-                    $('#conemail').css({"color":"red","margin-top":"5px"});
-                    return false;
-
-                }
-            }
-            return true;
-
-        }
-
-        $('#verify_number').keyup(function(){//Mobile
-            verify_number_check();
-        });
-
-        function verify_number_check(){
-
-            var userNumber = $('#verify_number').val();
-            if($("#mobstatusConfirm").val() ==1) { //If Mobile Status Is Active
-                if (userNumber.length < 5){
-                    $('#conmobile').show();
-                    $('#conmobile').html("Please Enter Your Mobile No.");
-                    $('#conmobile').focus();
-                    $('#verify_number').css("border-color","red");
-                    $('#conmobile').css({"color":"red","margin-top":"5px"});
-
-
-                    // mobile_error = false;
-                    return false;
-                }
-                else{
-                    $('#conmobile').hide();
-
-                    $('#verify_number').css("border-color","");
-                    return true;
-
-                }
-            }
-            return true;
-
-        }
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /*
-          * After Send Button is Clicked on Tab 2 fOR sending OTP AND Email
-         */
-        function sendOTP() {
-            $('#conemail').hide();
-            $('#conmobile').hide();
-            var mail_error = true;
-            var mobile_error = true;
-            if((verify_email_check()) && (verify_number_check()))
-            {
-
-                var oldemail=sessionStorage.getItem('oldemail');
-                var newemail = $('#verify_email').val(); // this.value
-                var oldnumber = sessionStorage.getItem('oldemail');
-                var newnumber = $('#verify_number').val();
-
-                $("#sendOtp").attr('disabled',true);
-                $("#sendOtp").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Sending...");
-                var data = {
-                    "newemail": newemail,
-                    "newnumber": newnumber,
-                    "oldnumber": oldnumber,
-                    "oldemail": oldemail,
-                    "email": $('#verify_email').val(),
-                    "mobile": $('#verify_number').val().replace(/[\. ,:-]+/g, ''),
-                    'code': $('#verify_country_code').val(),
-                    'id': $('#user_id').val(),
-                    'password': $('#email_password').val()
-                };
-                $.ajax({
-                    url: '{{url('otp/sendByAjax')}}',
-                    type: 'POST',
-                    data: data,
-                    success: function (response) {
-                        // window.history.replaceState(response.type, "TitleTest", "login");
-                        $("#sendOtp").attr('disabled',false);
-                        var result =  '<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Almost there! </strong>'+response.message+'</div>';
-                        if (($("#checkOtpStatus").val()) == 1 ) {
-                            $('#successMessage2').html(result);
-                            $('#error1').hide();
-                            $('.wizard-inner').css('display','none');
-                            var $active = $('.wizard .nav-tabs li.active');
-                            $active.next().removeClass('disabled');
-                            nextTab($active);
-
-                            setTimeout(function(){
-                                sessionStorage.removeItem('oldemail');
-                                sessionStorage.clear();
-                            }, 500);
-                            window.scrollTo(0, 10);
-                            verify_otp_form.elements['hidden_user_id'].value = $('#user_id').val();
-                            $("#sendOtp").html("Send");
-                        } else {//Show Only Email Success Message when Mobile Status is Not Active
-                            $('#emailsuccess').html(result);
-                            $('#successMessage1').hide();
-                            $("#sendOtp").html("Send");
-                            $('#error1').hide();
-                        }
-                    },
-                    error: function (ex) {
-                        $("#sendOtp").attr('disabled',false);
-                        var myJSON = JSON.parse(ex.responseText);
-                        var html = '<div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<br><br><ul>';
-                        $("#sendOtp").html("Send");
-
-                        html += '<li>' + myJSON.message + '</li>'
-
-                        html += '</ul></div>';
-                        $('#alertMessage1').hide();
-                        $('#successMessage1').hide();
-                        $('#error1').show();
-                        document.getElementById('error1').innerHTML = html;
-                        setTimeout(function(){
-                            $('#error1').hide();
-                        }, 5000);
-                    }
-                });
-            }
-            else{
-                return false;
-            }
-
-        }
-
-  
-
-
         //robot validation for Login Form
         function validateform() {
             var input = $(".g-recaptcha :input[name='g-recaptcha-response']");
@@ -936,83 +583,83 @@ Sign in or Register
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //Registration Form Validation
 
-        function first_namecheck(){
-            var firrstname_val = $('#first_name').val();
+        function logfirst_namecheck(){
+            var firrstname_val = $('#logfirst_name').val();
             if(firrstname_val.length == ''){
-                $('#first_namecheck').show();
-                $('#first_namecheck').html("Please Enter First Name");
-                $('#first_namecheck').focus();
-                $('#first_name').css("border-color","red");
-                $('#first_namecheck').css("color","red");
+                $('#logfirst_namecheck').show();
+                $('#logfirst_namecheck').html("Please Enter First Name");
+                $('#logfirst_namecheck').focus();
+                $('#logfirst_name').css("border-color","red");
+                $('#logfirst_namecheck').css("color","red");
                 // userErr =false;
 
                 $('html, body').animate({
-                    scrollTop: $("#first_namecheck").offset().top -200
+                    scrollTop: $("#logfirst_namecheck").offset().top -200
                 }, 1000)
                 return false;
             }
 
             if(firrstname_val.length > 30){
-                $('#first_namecheck').show();
-                $('#first_namecheck').html("Max 30 characters allowed ");
-                $('#first_namecheck').focus();
-                $('#first_name').css("border-color","red");
-                $('#first_namecheck').css("color","red");
+                $('#logfirst_namecheck').show();
+                $('#logfirst_namecheck').html("Max 30 characters allowed ");
+                $('#logfirst_namecheck').focus();
+                $('#logfirst_name').css("border-color","red");
+                $('#logfirst_namecheck').css("color","red");
                 // userErr =false;
 
                 $('html, body').animate({
-                    scrollTop: $("#first_namecheck").offset().top -200
+                    scrollTop: $("#logfirst_namecheck").offset().top -200
                 }, 1000)
                 return false;
             }
 
             var pattern = new RegExp(/[^a-zA-Z0-9]/);
             if(pattern.test(firrstname_val)) {
-                $('#first_namecheck').show();
-                $('#first_namecheck').html("Special characters not allowed");
-                $('#first_namecheck').focus();
-                $('#first_name').css("border-color","red");
-                $('#first_namecheck').css("color","red");
+                $('#logfirst_namecheck').show();
+                $('#logfirst_namecheck').html("Special characters not allowed");
+                $('#logfirst_namecheck').focus();
+                $('#logfirst_name').css("border-color","red");
+                $('#logfirst_namecheck').css("color","red");
 
                 $('html, body').animate({
-                    scrollTop: $("#first_namecheck").offset().top -200
+                    scrollTop: $("#logfirst_namecheck").offset().top -200
                 }, 1000)
                 return false;
             }
 
             else{
-                $('#first_namecheck').hide();
-                $('#first_name').css("border-color","");
+                $('#logfirst_namecheck').hide();
+                $('#logfirst_name').css("border-color","");
                 return true;
             }
         }
         //Validating last name field
-        function last_namecheck(){
-            var lastname_val = $('#last_name').val();
+        function loglast_namecheck(){
+            var lastname_val = $('#loglast_name').val();
             if(lastname_val.length == ''){
-                $('#last_namecheck').show();
-                $('#last_namecheck').html("Please Enter Last Name");
-                $('#last_namecheck').focus();
-                $('#last_name').css("border-color","red");
-                $('#last_namecheck').css({"color":"red","margin-top":"5px"});
+                $('#loglast_namecheck').show();
+                $('#loglast_namecheck').html("Please Enter Last Name");
+                $('#loglast_namecheck').focus();
+                $('#loglast_name').css("border-color","red");
+                $('#loglast_namecheck').css({"color":"red","margin-top":"5px"});
                 // userErr =false;
                 $('html, body').animate({
 
-                    scrollTop: $("#last_namecheck").offset().top - 200
+                    scrollTop: $("#loglast_namecheck").offset().top - 200
                 }, 1000)
                 return false;
             }
 
             if(lastname_val.length > 30 ){
-                $('#last_namecheck').show();
-                $('#last_namecheck').html("Maximum 30 characters allowed");
-                $('#last_namecheck').focus();
-                $('#last_name').css("border-color","red");
-                $('#last_namecheck').css({"color":"red","margin-top":"5px"});
+                $('#loglast_namecheck').show();
+                $('#loglast_namecheck').html("Maximum 30 characters allowed");
+                $('#loglast_namecheck').focus();
+                $('#loglast_name').css("border-color","red");
+                $('#loglast_namecheck').css({"color":"red","margin-top":"5px"});
                 // userErr =false;
                 $('html, body').animate({
 
-                    scrollTop: $("#last_namecheck").offset().top - 200
+                    scrollTop: $("#loglast_namecheck").offset().top - 200
                 }, 1000)
                 return false;
             }
@@ -1020,245 +667,115 @@ Sign in or Register
 
             var pattern = new RegExp(/[^a-zA-Z0-9]/);
             if(pattern.test(lastname_val)){
-                $('#last_namecheck').show();
-                $('#last_namecheck').html("Special characters not allowed");
-                $('#last_namecheck').focus();
-                $('#last_name').css("border-color","red");
-                $('#last_namecheck').css({"color":"red","margin-top":"5px"});
+                $('#loglast_namecheck').show();
+                $('#loglast_namecheck').html("Special characters not allowed");
+                $('#loglast_namecheck').focus();
+                $('#loglast_name').css("border-color","red");
+                $('#loglast_namecheck').css({"color":"red","margin-top":"5px"});
                 // userErr =false;
                 $('html, body').animate({
 
-                    scrollTop: $("#last_namecheck").offset().top - 200
+                    scrollTop: $("#loglast_namecheck").offset().top - 200
                 }, 1000)
                 return false;
             }
 
             else{
-                $('#last_namecheck').hide();
-                $('#last_name').css("border-color","");
+                $('#loglast_namecheck').hide();
+                $('#loglast_name').css("border-color","");
                 return true;
             }
         }
+
         //Validating email field
-        function emailcheck(){
+        function logemailcheck(){
 
             var pattern = new RegExp(/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/);
-            if (pattern.test($('#email').val())){
-                $('#emailcheck').hide();
+            if (pattern.test($('#logmail').val())){
+                $('#logemailcheck').hide();
                 $('#email').css("border-color","");
                 return true;
 
             }
             else{
-                $('#emailcheck').show();
-                $('#emailcheck').html("Please Enter a valid email");
-                $('#emailcheck').focus();
-                $('#email').css("border-color","red");
-                $('#emailcheck').css({"color":"red","margin-top":"5px"});
+                $('#logemailcheck').show();
+                $('#logemailcheck').html("Please Enter a valid email");
+                $('#logemailcheck').focus();
+                $('#logmail').css("border-color","red");
+                $('#logemailcheck').css({"color":"red","margin-top":"5px"});
                 // mail_error = false;
                 $('html, body').animate({
-                    scrollTop: $("#emailcheck").offset().top -200
+                    scrollTop: $("#logemailcheck").offset().top -200
                 }, 1000)
             }
 
         }
 
-        function companycheck(){
-            var company_val = $('#company').val();
-            if(company_val.length == ''){
-                $('#companycheck').show();
-                $('#companycheck').html("Please Enter Company Name");
-                $('#companycheck').focus();
-                $('#company').css("border-color","red");
-                $('#companycheck').css({"color":"red","margin-top":"5px"});
-                // userErr =false;
-                $('html, body').animate({
-                    scrollTop: $("#companycheck").offset().top - 200
-                }, 1000)
-            }
-
-            else{
-                $('#companycheck').hide();
-                $('#company').css("border-color","");
-                return true;
-            }
-        }
-
-
-            function addresscheck(){
-                var address_val = $('#address').val();
-                if(address_val.length == ''){
-                    $('#addresscheck').show();
-                    $('#addresscheck').html("Please Enter Address ");
-                    $('#addresscheck').focus();
-                     $('#address').css("border-color","red");
-                    $('#addresscheck').css({"color":"red","margin-top":"5px"});
-                    // userErr =false;
-                   $('html, body').animate({
-                    scrollTop: $("#addresscheck").offset().top -200
-                }, 1000)
-                }
-                else{
-                     $('#addresscheck').hide();
-                      $('#address').css("border-color","");
-                     return true;
-                }
-               }
 
 
 
 
 
-        function countrycheck(){
-            var country_val = $('#country').val();
+        function logcountrycheck(){
+            var country_val = $('#logcountry').val();
             if(country_val == ''){
-                $('#countrycheck').show();
-                $('#countrycheck').html("Please Select One Country ");
-                $('#countrycheck').focus();
-                $('#country').css("border-color","red");
-                $('#countrycheck').css({"color":"red","margin-top":"5px"});
+                $('#logcountrycheck').show();
+                $('#logcountrycheck').html("Please Select One Country ");
+                $('#logcountrycheck').focus();
+                $('#logcountry').css("border-color","red");
+                $('#logcountrycheck').css({"color":"red","margin-top":"5px"});
                 // userErr =false;
                 $('html, body').animate({
-                    scrollTop: $("#countrycheck").offset().top - 200
+                    scrollTop: $("#logcountrycheck").offset().top - 200
                 }, 1000)
             }
             else{
-                $('#countrycheck').hide();
-                $('#country').css("border-color","");
+                $('#logcountrycheck').hide();
+                $('#logcountry').css("border-color","");
                 return true;
             }
         }
 
-        function mobile_codecheck(){
-            var mobile_val = $('#mobilenum').val();
+        function logmobile_codecheck(){
+            var mobile_val = $('#logphonenum').val();
             if(mobile_val.length == ''){
-                $('#mobile_codecheck').show();
-                $('#mobile_codecheck').html("Please Enter Mobile No. ");
-                $('#mobile_codecheck').focus();
-                $('#mobilenum').css("border-color","red");
-                $('#mobile_codecheck').css({"color":"red","margin-top":"5px"});
+                $('#logmobile_codecheck').show();
+                $('#logmobile_codecheck').html("Please Enter Mobile No. ");
+                $('#logmobile_codecheck').focus();
+                $('#logphonenum').css("border-color","red");
+                $('#logmobile_codecheck').css({"color":"red","margin-top":"5px"});
                 // userErr =false;
                 $('html, body').animate({
-                    scrollTop: $("#mobile_codecheck").offset().top -200
+                    scrollTop: $("#logmobile_codecheck").offset().top -200
                 }, 1000)
             }
             else{
-                $('#mobile_codecheck').hide();
-                $('#mobilenum').css("border-color","");
+                $('#logmobile_codecheck').hide();
+                $('#logphonenum').css("border-color","");
                 return true;
             }
         }
-
-
-
-        function towncheck(){
-            var town_val = $('#city').val();
-            if(town_val.length == ''){
-                $('#towncheck').show();
-                $('#towncheck').html("Please Enter Town ");
-                $('#towncheck').focus();
-                $('#city').css("border-color","red");
-                $('#towncheck').css({"color":"red","margin-top":"5px"});
-                // userErr =false;
-                $('html, body').animate({
-                    scrollTop: $("#towncheck").offset().top -200
-                }, 1000)
-            }
-            else{
-                $('#towncheck').hide();
-                $('#city').css("border-color","");
-                return true;
-            }
-        }
-
-        function statecheck(){
-            var state_val = $('#state-list').val();
-            if(state_val.length == ''){
-                $('#statecheck').show();
-                $('#statecheck').html("Please Select a State ");
-                $('#statecheck').focus();
-                $('#state-list').css("border-color","red");
-                $('#statecheck').css({"color":"red","margin-top":"5px"});
-                // userErr =false;
-                $('html, body').animate({
-                    scrollTop: $("#statecheck").offset().top -200
-                }, 1000)
-            }
-
-            else{
-                $('#statecheck').hide();
-                $('#state-list').css("border-color","");
-                return true;
-            }
-        }
-
-
-
-
-
-        function password1check(){
-            var pattern = new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*(_|[^\w])).+$/);
-            if (pattern.test($('#password').val())){
-                $('#password1check').hide();
-                $('#password').css("border-color","");
-                return true;
-
-            }
-            else{
-                $('#password1check').show();
-                $('#password1check').html("Password must contain Upper/Lowercase/special Character and number");
-                $('#password1check').focus();
-                $('#password').css("border-color","red");
-                $('#password1check').css({"color":"red","margin-top":"0px"});
-
-                // mail_error = false;
-                return false;
-
-            }
-
-        }
-
 
 
         //    $('#conpassword').keyup(function(){
         //     con_password_check();
-        // });
 
-        function conpasscheck(){
-            var confirmPassStore= $('#confirm_pass').val();
-            var passwordStore = $('#password').val();
-            if(confirmPassStore != passwordStore){
-                $('#conpasscheck').show();
-                $('#conpasscheck').html("Passwords Don't Match");
-                $('#conpasscheck').focus();
-                $('#confirm_pass').css("border-color","red");
-                $('#conpasscheck').css("color","red");
-                $('html, body').animate({
-                    scrollTop: $("#conpasscheck").offset().top -200
-                }, 1000)
-            }
-            else{
-                $('#conpasscheck').hide();
-                $('#confirm_pass').css("border-color","");
-                return true;
-            }
-        }
 
-        function terms(){
-            var term_val = $('#term').val();
+        function logterms(){
+            var term_val = $('#logterm').val();
             if(term_val == 'false'){
                 $('#termscheck').show();
                 $('#termscheck').html("Terms must be accepted");
                 $('#termscheck').focus();
-                $('#term').css("border-color","red");
+                $('#logterm').css("border-color","red");
                 $('#termscheck').css({"color":"red","margin-top":"5px"});
                 // userErr =false;
-                return false;;
+                return false;
             }
 
             else{
                 $('#termscheck').hide();
-                $('#term').css("border-color","");
+                $('#logterm').css("border-color","");
                 return true;
             }
         }
@@ -1272,7 +789,7 @@ Sign in or Register
                 $('#captcha').css("border-color","red");
                 $('#captchacheck').css({"color":"red","margin-top":"5px"});
                 // userErr =false;
-                return false;;
+                return false;
             }
 
             else{
@@ -1286,7 +803,7 @@ Sign in or Register
         ////////////////////////Registration Valdation Ends////////////////////////////////////////////////////////////////////////////////////////////
         ///
         ///////////////////////VALIDATE TERMS AND CNDITION////////////////////////////////////////
-        $(document).on('change','#term',function(){
+        $(document).on('change','#logterm',function(){
             if($(this).val()=="false"){
                 $(this).val("true");
             }
@@ -1297,87 +814,72 @@ Sign in or Register
         //////////////////////////////Google Analytics Code after Submit button is clicked//////////////////
         function gtag_report_conversion(tag) {
             window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-            
-              gtag('config', tag);
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', tag);
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        function registerUser() {
-            
-            $('#first_namecheck').hide();
-            $('#last_namecheck').hide();
-            $('#emailcheck').hide();
-            $('#companycheck').hide();
-            $('#countrycheck').hide();
-            $('#mobile_codecheck').hide();
-            $('#addresscheck').hide();
-            $('#towncheck').hide();
-            $('#statecheck').hide();
-            $('#password1check').hide();
-            $('#conpasscheck').hide();
+        function logregisterUser(value) {
+            this.value= value;    
+                             
+
+
+            $('#logfirst_namecheck').hide();
+            $('#loglast_namecheck').hide();
+            $('#logemailcheck').hide();
+            $('#logcountrycheck').hide();
+            $('#logmobile_codecheck').hide();
             $('#termscheck').hide();
 
 
             var first_nameErr = true;
             var last_nameErr = true;
             var emailErr = true;
-            var companyeErr = true;
             var countryErr = true;
-            var addressErr = true;
             var mobile_codeErr = true;
-            var password1Err = true;
-            var conPassErr = true;
             var termsErr = true;
             // con_password_check();
 
-            if(first_namecheck() && last_namecheck() && emailcheck() && companycheck() && addresscheck() && mobile_codecheck()  && countrycheck()  && password1check() && conpasscheck()  && terms() && gcaptcha())
+            if(logfirst_namecheck() && loglast_namecheck() && logemailcheck() &&   logmobile_codecheck()  && logcountrycheck()  && logterms() && gcaptcha())
             {
-               
-                 var tag = "<?php echo $analyticsTag; ?>";
-                 if (tag !== "" ){
-                        gtag_report_conversion(tag);
-                    }
                 
-                $("#register").attr('disabled',true);
-                $("#register").html("<i class='fas fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
+
+
+                var tag = "<?php echo $analyticsTag; ?>";
+                if (tag !== "" ){
+                    gtag_report_conversion(tag);
+                }
+
+                $("#logregister").attr('disabled',true);
+                $("#logregister").html("<i class='fas fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
                 $.ajax({
                     url: '{{url("auth/register")}}',
                     type: 'POST',
                     data: {
-                        "first_name": $('#first_name').val(),
-                        "last_name": $('#last_name').val(),
-                        "email": $('#email').val(),
-                        "company": $('#company').val(),
-                        "bussiness": $('#business').val(),
-                        "company_type": $('#company_type').val(),
-                        "company_size": $('#company_size').val(),
-                        "country": $('#country').val(),
-                        "mobile_code": $('#mobile_code').val().replace(/\s/g, '') ,
-                        "mobile": $('#mobilenum').val().replace(/[\. ,:-]+/g, ''),
-                        "address": $('#address').val(),
-                        "city": $('#city').val(),
-                        "state": $('#state-list').val(),
-                        "zip": $('#zip').val(),
-                        "user_name": $('#user_name').val(),
-                        "password": $('#password').val(),
-                        "password_confirmation": $('#confirm_pass').val(),
+                        "first_name": $('#logfirst_name').val(),
+                        "last_name": $('#loglast_name').val(),
+                        "email": $('#logmail').val(),
+                        "country": $('#logcountry').val(),
+                        "mobile_code": $('#logmobile_code').val().replace(/\s/g, '') ,
+                        "mobile": $('#logphonenum').val().replace(/[\. ,:-]+/g, ''),
                         "g-recaptcha-response-1":$('#g-recaptcha-response-1').val(),
-                        "terms": $('#term').val(),
-
+                        "logterms": $('#logterm').val(),
                         "_token": "{!! csrf_token() !!}",
+                        "value": value,
+
                     },
                     success: function (response) {
                         // window.history.pushState(response.type, "TitleTest", "thankyou");
 
-                        $("#register").attr('disabled',false);
+                        $("#logregister").attr('disabled',false);
                         if(response.type == 'success'){
                             $('.wizard-inner').css('display','block');
                             if($("#checkEmailStatus").val() == 0 && $("#checkOtpStatus").val() == 0) {
                                 var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Thank You! </strong>'+response.message+'!!</div>';
                                 $('#alertMessage1').html(result);
                                 window.scrollTo(0,0);
-                                $("#register").html("Submit");
+                                $("#logregister").html("Submit");
                             } else {
                                 var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Thank You! </strong>'+response.message+'!!</div>';
                                 $('#successMessage1').html(result);
@@ -1387,27 +889,25 @@ Sign in or Register
                                 window.scrollTo(0,0);
                                 verifyForm.elements['user_id'].value = response.user_id;
                                 if($("#emailstatusConfirm").val() == 1) {
-                                    var emailverfy = verifyForm.elements['verify_email'].value = $('#email').val();
+                                    var emailverfy = verifyForm.elements['verify_email'].value = $('#logmail').val();
                                     sessionStorage.setItem('oldemail',emailverfy);
-
                                 }
 
                             }
-
-                            verifyForm.elements['verify_country_code'].value =$('#mobile_code').val();
-                            var numberverify= verifyForm.elements['verify_number'].value = $('#mobilenum').val().replace(/[\. ,:-]+/g, '');
+                            verifyForm.elements['verify_country_code'].value =$('#logmobile_code').val();
+                            var numberverify= verifyForm.elements['verify_number'].value = $('#logphonenum').val().replace(/[\. ,:-]+/g, '');
                             sessionStorage.setItem('oldenumber',numberverify);
                             verifyForm.elements['email_password'].value = $('#password').val();
-                            $("#register").html("Register");
+                            $("#logregister").html("Register");
                             /*setTimeout(function(){
                                 $('#alertMessage1').hide();
                             }, 3000);*/
                         }
                     },
                     error: function (data) {
-                        $("#register").attr('disabled',false);
+                        $("#logregister").attr('disabled',false);
                         location.reload();
-                        $("#register").html("Register");
+                        $("#logregister").html("Register");
                         $('html, body').animate({scrollTop:0}, 500);
 
 
@@ -1429,7 +929,7 @@ Sign in or Register
             else{
                 return false;
             }
-        };
+        }
 
 
 
@@ -1457,42 +957,25 @@ Sign in or Register
 
     <script>
 
-        var data='{{json_encode($value)}}';
-        var state=JSON.parse(data.replace(/&quot;/g,'"'));
+
         // console.log(state)
         $(document).ready(function () {
-            var val = $("#country").val();
+            var val = $("#logcountry").val();
             getCountryAttr(val);
         });
 
         function getCountryAttr(val) {
             if(val!=""){
-                getState(val);
+
                 getCode(val);
             }
-            else{
-                console.log(val)
-                $("#state-list").html('<option value="">Please select Country</option>').val('');
-            }
 
-//        getCurrency(val);
+
+            // getCurrency(val);
 
         }
 
-        function getState(val) {
-            $.ajax({
-                type: "GET",
-                url: "{{url('get-loginstate')}}/" + val,
-                data: {'country_id':val,'_token':"{{csrf_token()}}"},//'country_id=' + val,
-                success: function (data) {
 
-                    $("#state-list").html('<option value="">Please select Country</option>').val('');
-
-
-                    $("#state-list").html(data).val(state.id);
-                }
-            });
-        }
 
 
         function getCode(val) {
@@ -1501,8 +984,8 @@ Sign in or Register
                 url: "{{url('get-code')}}",
                 data: {'country_id':val,'_token':"{{csrf_token()}}"},//'country_id=' + val,
                 success: function (data) {
-                    $("#mobile_code").val(data);
-                    $("#mobile_code_hidden").val(data);
+                    $("#logmobile_code").val(data);
+                    $("#logphone_code_hidden").val(data);
                 }
             });
         }
@@ -1598,7 +1081,7 @@ Sign in or Register
     <script type="text/javascript"
             src="//www.googleadservices.com/pagead/conversion_async.js">
     </script>
-    <script>
+   <script>
         $(document).ready(function () {
 
             $.ajaxSetup({ headers: { 'csrftoken' : '{{ csrf_token() }}' } });
@@ -1647,10 +1130,13 @@ Sign in or Register
             $(elem).prev().find('a[data-toggle="tab"]').click();
         }
     </script>
+  
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-    <script type="text/javascript">
-        var telInput = $('#mobilenum'),
+ 
+
+      <script type="text/javascript">
+        var telInput = $('#logphonenum'),
             errorMsg = document.querySelector("#error-msg"),
             validMsg = document.querySelector("#valid-msg"),
             addressDropdown = $("#country");
@@ -1678,7 +1164,7 @@ Sign in or Register
             reset();
             if ($.trim(telInput.val())) {
                 if (telInput.intlTelInput("isValidNumber")) {
-                    $('#mobilenum').css("border-color","");
+                    $('#logphonenum').css("border-color","");
                     $("#error-msg").html('');
                     errorMsg.classList.add("hide");
                     $('#register').attr('disabled',false);
@@ -1687,7 +1173,7 @@ Sign in or Register
                     errorMsg.innerHTML = errorMap[errorCode];
                     $('#mobile_codecheck').html("");
 
-                    $('#mobilenum').css("border-color","red");
+                    $('#logphonenum').css("border-color","red");
                     $('#error-msg').css({"color":"red","margin-top":"5px"});
                     errorMsg.classList.remove("hide");
                     $('#register').attr('disabled',true);
@@ -1701,7 +1187,7 @@ Sign in or Register
             telInput.intlTelInput("setCountry", $(this).val());
             if ($.trim(telInput.val())) {
                 if (telInput.intlTelInput("isValidNumber")) {
-                    $('#mobilenum').css("border-color","");
+                    $('#logphonenum').css("border-color","");
                     $("#error-msg").html('');
                     errorMsg.classList.add("hide");
                     $('#register').attr('disabled',false);
@@ -1710,7 +1196,7 @@ Sign in or Register
                     errorMsg.innerHTML = errorMap[errorCode];
                     $('#mobile_codecheck').html("");
 
-                    $('#mobilenum').css("border-color","red");
+                    $('#logphonenum').css("border-color","red");
                     $('#error-msg').css({"color":"red","margin-top":"5px"});
                     errorMsg.classList.remove("hide");
                     $('#register').attr('disabled',true);
@@ -1723,71 +1209,12 @@ Sign in or Register
         });
 
     </script>
-    <script>
-        var tel = $('.phone'),
-            country = $('#country').val();
-        addressDropdown = $("#country");
-        errorMsg1 = document.querySelector("#error-msg1"),
-            validMsg1 = document.querySelector("#valid-msg1");
-        var errorMap = [ "Invalid number", "Invalid country code", "Number Too short", "Number Too long", "Invalid number"];
-        tel.intlTelInput({
-            // allowDropdown: false,
-            // autoHideDialCode: false,
-            // autoPlaceholder: "off",
-            // dropdownContainer: "body",
-            // excludeCountries: ["us"],
-            // formatOnDisplay: false,
-            geoIpLookup: function(callback) {
-                $.get("https://ipinfo.io", function() {}, "jsonp").always(function(resp) {
-                    resp.country = country;
-                    var countryCode = (resp && resp.country) ? resp.country : "";
-                    callback(countryCode);
-                });
-            },
-            // hiddenInput: "full_number",
-            initialCountry: "auto",
-            // nationalMode: false,
-            // onlyCountries: ['us', 'gb', 'ch', 'ca', 'do'],
-            placeholderNumberType: "MOBILE",
-            // preferredCountries: ['cn', 'jp'],
-            separateDialCode: true,
 
-            utilsScript: "{{asset('js/intl/js/utils.js')}}"
-        });
-        var reset = function() {
-            errorMsg1.innerHTML = "";
-            errorMsg1.classList.add("hide");
-            validMsg1.classList.add("hide");
-        };
-
-        addressDropdown.change(function() {
-            tel.intlTelInput("setCountry", $(this).val());
-        });
-
-        tel.on('blur', function () {
-            reset();
-            if ($.trim(tel.val())) {
-                if (tel.intlTelInput("isValidNumber")) {
-                    $('.phone').css("border-color","");
-                    validMsg1.classList.remove("hide");
-                    $('#sendOtp').attr('disabled',false);
-                } else {
-                    var errorCode = tel.intlTelInput("getValidationError");
-                    errorMsg1.innerHTML = errorMap[errorCode];
-                    $('#conmobile').html("");
-
-                    $('.phone').css("border-color","red");
-                    $('#error-msg1').css({"color":"red","margin-top":"5px"});
-                    errorMsg1.classList.remove("hide");
-                    $('#sendOtp').attr('disabled',true);
-                }
-            }
-        });
-    </script>
     <noscript>
         <img height="1" width="1"
              src="https://www.facebook.com/tr?id=308328899511239&ev=PageView
 &noscript=1"/>
     </noscript>
+
     <!-- End Facebook Pixel Code -->
 @stop

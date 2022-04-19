@@ -474,9 +474,40 @@
     </div>
 @stop
 @section('script')
-<script src="build/js/intlTelInput.js"></script>
+<script src="{{asset('build/js/intlTelInput.js')}}"></script>
 <script type="text/javascript">
     var telInput = $('#logphonenum');
+    telInput.intlTelInput({
+        geoIpLookup: function (callback) {
+            $.get("https://ipinfo.io", function () {}, "jsonp").always(function (resp) {
+                var countryCode = (resp && resp.country) ? resp.country : "";
+                callback(countryCode);
+            });
+        },
+        initialCountry: "auto",
+        separateDialCode: true,
+        utilsScript: "{{asset('common/js/utils.js')}}"
+    });
+    $('.intl-tel-input').css('width', '100%');
+
+    telInput.on('blur', function () {
+        if ($.trim(telInput.val())) {
+            if (!telInput.intlTelInput("isValidNumber")) {
+                telInput.parent().addClass('has-error');
+            }
+        }
+    });
+    $('input').on('focus', function () {
+        $(this).parent().removeClass('has-error');
+    });
+
+    $('form').on('submit', function (e) {
+        $('input[name=country_code]').attr('value', $('.selected-dial-code').text());
+    });
+
+</script>
+<script type="text/javascript">
+    var telInput = $('#phonenum');
     telInput.intlTelInput({
         geoIpLookup: function (callback) {
             $.get("https://ipinfo.io", function () {}, "jsonp").always(function (resp) {
@@ -1102,45 +1133,8 @@
   
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-    <!-- <script>
-        var input = document.querySelector("#logphonenum"),
-            errorMsg = document.querySelector("#error-msg"),
-            validMsg = document.querySelector("#valid-msg");
+ 
 
-        // here, the index maps to the error code returned from getValidationError - see readme
-        var errorMap = ["Invalid number", "Invalid country code", "Too short", "Too long", "Invalid number"];
-
-        // initialise plugin
-        var iti = window.intlTelInput(input, {
-            utilsScript: "../../build/js/utils.js?1638200991544"
-        });
-
-        var reset = function() {
-            input.classList.remove("error");
-            errorMsg.innerHTML = "";
-            errorMsg.classList.add("hide");
-            validMsg.classList.add("hide");
-        };
-
-        // on blur: validate
-        input.addEventListener('blur', function() {
-            reset();
-            if (input.value.trim()) {
-                if (iti.isValidNumber()) {
-                    validMsg.classList.remove("hide");
-                } else {
-                    input.classList.add("error");
-                    var errorCode = iti.getValidationError();
-                    errorMsg.innerHTML = errorMap[errorCode];
-                    errorMsg.classList.remove("hide");
-                }
-            }
-        });
-
-        // on keyup / change flag: reset
-        input.addEventListener('change', reset);
-        input.addEventListener('keyup', reset);
-    </script> -->
       <script type="text/javascript">
         var telInput = $('#logphonenum'),
             errorMsg = document.querySelector("#error-msg"),

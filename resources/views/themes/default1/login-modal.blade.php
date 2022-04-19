@@ -279,8 +279,38 @@ $country = findCountryByGeoip($location['iso_code']);
     </div>
 </section>
 
+    <script type="text/javascript">
+        var telInput = $('#phonenum');
+        telInput.intlTelInput({
+            geoIpLookup: function (callback) {
+                $.get("https://ipinfo.io", function () {}, "jsonp").always(function (resp) {
+                    var countryCode = (resp && resp.country) ? resp.country : "";
+                    callback(countryCode);
+                });
+            },
+            initialCountry: "auto",
+            separateDialCode: true,
+            utilsScript: "{{asset('common/js/utils.js')}}"
+        });
+        $('.intl-tel-input').css('width', '100%');
 
-<script src="build/js/intlTelInput.js"></script>
+        telInput.on('blur', function () {
+            if ($.trim(telInput.val())) {
+                if (!telInput.intlTelInput("isValidNumber")) {
+                    telInput.parent().addClass('has-error');
+                }
+            }
+        });
+        $('input').on('focus', function () {
+            $(this).parent().removeClass('has-error');
+        });
+
+        $('form').on('submit', function (e) {
+            $('input[name=country_code]').attr('value', $('.selected-dial-code').text());
+        });
+
+    </script>
+<!-- <script src="{{asset('build/js/intlTelInput.js') }}"></script>
 
 <script>
  
@@ -296,7 +326,7 @@ $country = findCountryByGeoip($location['iso_code']);
   },
   utilsScript: "../../build/js/utils.js?1638200991544" // just for formatting/placeholders etc
 });
-</script>
+</script> -->
 
     <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo $analyticsTag; ?>"></script>

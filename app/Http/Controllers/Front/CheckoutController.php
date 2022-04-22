@@ -222,7 +222,7 @@ class CheckoutController extends InfoController
                     $items = $invoice->invoiceItem()->get();
                     $url = '';
                     $this->checkoutAction($invoice); //For free product generate invoice without payment
-                    $url = view('themes.default1.front.postCheckoutTemplate', compact('invoice', 'date', 'product', 'items', ))->render();
+                    $url = view('themes.default1.front.postCheckoutTemplate', compact('invoice', 'date', 'product', 'items'))->render();
                     // }
                     \Cart::clear();
 
@@ -243,7 +243,7 @@ class CheckoutController extends InfoController
                     $items = $invoice->invoiceItem()->get();
                     $url = '';
                     $this->checkoutAction($invoice); //For free product generate invoice without payment
-                    $url = view('themes.default1.front.postCheckoutTemplate', compact('invoice', 'date', 'product', 'items', ))->render();
+                    $url = view('themes.default1.front.postCheckoutTemplate', compact('invoice', 'date', 'product', 'items'))->render();
                     \Cart::clear();
 
                     return redirect('checkout')->with('success', $url);

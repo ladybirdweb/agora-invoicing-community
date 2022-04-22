@@ -163,4 +163,9 @@ Plans
      });
    
 </script>
+                      <script type="text/javascript">
+@if (count($errors) > 0)
+    $('#create-plan-option').modal('show');
+@endif
+</script>
 @stop

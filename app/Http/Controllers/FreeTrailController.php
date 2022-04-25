@@ -1,5 +1,8 @@
 <?php
+
 namespace App\Http\Controllers;
+
+use App\Http\Controllers\Order\BaseOrderController;
 use App\Model\Common\StatusSetting;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
@@ -13,7 +16,6 @@ use Crypt;
 use DB;
 use Illuminate\Http\Request;
 use Lang;
-use App\Http\Controllers\Order\BaseOrderController;
 
 class FreeTrailController extends Controller
 {
@@ -22,49 +24,44 @@ class FreeTrailController extends Controller
         $this->middleware('auth');
 
         $this->invoice = new Invoice();
-        
 
-        $this->invoiceItem  = new InvoiceItem();
-        
+        $this->invoiceItem = new InvoiceItem();
 
         $this->order = new Order();
-        
 
-        $this->subscription  = new Subscription();
-       
+        $this->subscription = new Subscription();
     }
-    
+
     /**
      * Get the auth user id
-     * Check the first_time_login is not equal to zero in DB to correspaonding,if its not change into one
+     * Check the first_time_login is not equal to zero in DB to correspaonding,if its not change into one.
+     *
      * @return order
      */
-
     public function firstLoginAtem(Request $request)
     {
-        try
-        {
-        if (! Auth::check()) {
-            return redirect('login')->back()->with('fails', \Lang::get('message.free-login'));
-        }
-
-        $userId = $request->get('id');
-        if (Auth::user()->id == $userId) {
-            $userLogin = User::find($userId);
-            if ($userLogin->first_time_login != 0) {
-                return errorResponse(Lang::get('message.false'), 400);
+        try {
+            if (! Auth::check()) {
+                return redirect('login')->back()->with('fails', \Lang::get('message.free-login'));
             }
-            User::where('id', $userId)->update(['first_time_login' => 1]);
 
-            $this->generateFreetrailInvoice();
+            $userId = $request->get('id');
+            if (Auth::user()->id == $userId) {
+                $userLogin = User::find($userId);
+                if ($userLogin->first_time_login != 0) {
+                    return errorResponse(Lang::get('message.false'), 400);
+                }
+                User::where('id', $userId)->update(['first_time_login' => 1]);
 
-            $this->createFreetrailInvoiceItems();
+                $this->generateFreetrailInvoice();
 
-            $this->executeFreetrailOrder();
+                $this->createFreetrailInvoiceItems();
 
-            return successResponse(Lang::get('message.succs_fre'),$this->executeFreetrailOrder(), 200);
-        }
-           } catch (\Exception $ex) {
+                $this->executeFreetrailOrder();
+
+                return successResponse(Lang::get('message.succs_fre'), $this->executeFreetrailOrder(), 200);
+            }
+        } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
 
             throw new \Exception('Can not Generate Subscription');
@@ -76,65 +73,60 @@ class FreeTrailController extends Controller
      *
      * @throws \Exception
      */
-
     private function generateFreetrailInvoice()
     {
-        try
-        {
-        $tax_rule = new \App\Model\Payment\TaxOption();
-        $rule = $tax_rule->findOrFail(1);
-        $rounding = $rule->rounding;
-        $user_id = \Auth::user()->id;
-        $grand_total = $rounding ? round(\Cart::getTotal()) : \Cart::getTotal();
-        $number = rand(11111111, 99999999);
-        $date = \Carbon\Carbon::now();
-        $currency = \Session::has('cart_currency') ? \Session::get('cart_currency') : getCurrencyForClient(\Auth::user()->country);
-        $invoice = $this->invoice->create(['user_id' => $user_id, 'number' => $number, 'date'=> $date, 'grand_total' => $grand_total, 'status' => 'pending',
-            'currency' => $currency, ]);
+        try {
+            $tax_rule = new \App\Model\Payment\TaxOption();
+            $rule = $tax_rule->findOrFail(1);
+            $rounding = $rule->rounding;
+            $user_id = \Auth::user()->id;
+            $grand_total = $rounding ? round(\Cart::getTotal()) : \Cart::getTotal();
+            $number = rand(11111111, 99999999);
+            $date = \Carbon\Carbon::now();
+            $currency = \Session::has('cart_currency') ? \Session::get('cart_currency') : getCurrencyForClient(\Auth::user()->country);
+            $invoice = $this->invoice->create(['user_id' => $user_id, 'number' => $number, 'date'=> $date, 'grand_total' => $grand_total, 'status' => 'pending',
+                'currency' => $currency, ]);
 
-        return $invoice;
-    } catch (\Exception $ex) {
+            return $invoice;
+        } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
 
             throw new \Exception('Can not Generate Subscription');
         }
-
     }
 
     /**
-     * Generate invoice items for free trial
-     * 
+     * Generate invoice items for free trial.
+     *
      * @throws \Exception
      */
-
-      private function createFreetrailInvoiceItems()
+    private function createFreetrailInvoiceItems()
     {
-        try
-        {
+        try {
             $product = Product::with('planRelation')->find('117');
             $plan_id = $product->planRelation()->pluck('id');
 
-        $cart = \Cart::getContent();
-        $userId = \Auth::user()->id;
-        $invoice = $this->invoice->where('user_id', $userId)->first();
-        $invoiceid = $invoice->id;
-        $invoiceItem = $this->invoiceItem->create([
-            'invoice_id'     => $invoiceid,
-            'product_name'   => $product->name,
-            'regular_price'  => planPrice::where('plan_id',$plan_id)
-                                ->where('currency', \Auth::user()->currency)->pluck('add_price'),
-            'quantity'       => 1,
-            'tax_name'       => "null",
-            'tax_percentage' => $product->planRelation()->pluck('allow_tax'),
-            'subtotal'       => 0,
-            'domain'         => "",
-            'plan_id'        => 0,
-            'agents'         => planPrice::where('plan_id',$plan_id)
-                                ->where('currency', \Auth::user()->currency)->pluck('no_of_agents'),
-        ]);
+            $cart = \Cart::getContent();
+            $userId = \Auth::user()->id;
+            $invoice = $this->invoice->where('user_id', $userId)->first();
+            $invoiceid = $invoice->id;
+            $invoiceItem = $this->invoiceItem->create([
+                'invoice_id'     => $invoiceid,
+                'product_name'   => $product->name,
+                'regular_price'  => planPrice::where('plan_id', $plan_id)
+                                    ->where('currency', \Auth::user()->currency)->pluck('add_price'),
+                'quantity'       => 1,
+                'tax_name'       => 'null',
+                'tax_percentage' => $product->planRelation()->pluck('allow_tax'),
+                'subtotal'       => 0,
+                'domain'         => '',
+                'plan_id'        => 0,
+                'agents'         => planPrice::where('plan_id', $plan_id)
+                                    ->where('currency', \Auth::user()->currency)->pluck('no_of_agents'),
+            ]);
 
-        return $invoiceItem;
-           } catch (\Exception $ex) {
+            return $invoiceItem;
+        } catch (\Exception $ex) {
             dd($ex);
             app('log')->error($ex->getMessage());
 
@@ -147,30 +139,28 @@ class FreeTrailController extends Controller
      *
      * @throws \Exception
      */
-
     private function executeFreetrailOrder()
     {
         try {
+            $order_status = 'executed';
+            $userId = \Auth::user()->id;
+            $invoice = $this->invoice->where('user_id', $userId)->first();
+            $invoiceid = $invoice->id;
 
-        $order_status = 'executed';
-        $userId = \Auth::user()->id;
-        $invoice = $this->invoice->where('user_id', $userId)->first();
-        $invoiceid = $invoice->id;
+            $invoice_items = $this->invoiceItem->where('invoice_id', $invoiceid)->get();
 
-        $invoice_items = $this->invoiceItem->where('invoice_id', $invoiceid)->get();
+            $user_id = $this->invoice->find($invoiceid)->user_id;
 
-        $user_id = $this->invoice->find($invoiceid)->user_id;
-
-        if (count($invoice_items) > 0) {
-            foreach ($invoice_items as $item) {
-                if ($item) {
-                    $items = $this->getIfFreetrailItemPresent($item, $invoiceid, $user_id, $order_status);
+            if (count($invoice_items) > 0) {
+                foreach ($invoice_items as $item) {
+                    if ($item) {
+                        $items = $this->getIfFreetrailItemPresent($item, $invoiceid, $user_id, $order_status);
+                    }
                 }
             }
-        }
 
-        return 'success';
-          } catch (\Exception $ex) {
+            return 'success';
+        } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
 
             throw new \Exception('Can not Generate Subscription');
@@ -178,51 +168,50 @@ class FreeTrailController extends Controller
     }
 
     /**
-     * Create order for free trial if the invoice items present in the DB
+     * Create order for free trial if the invoice items present in the DB.
+     *
      * @throws \Exception
      */
-
     private function getIfFreetrailItemPresent($item, $invoiceid, $user_id, $order_status)
     {
-        try
-        {
-        $product = Product::where('name', $item->product_name)->value('id');
-        $version = Product::where('name', $item->product_name)->first()->version;
-        if ($version == null) {
-            //Get Version from Product Upload Table
-            $version = $this->product_upload->where('product_id', $product)->pluck('version')->first();
-        }
-        $serial_key = $this->generateFreetrailSerialKey($product, $item->agents); //Send Product Id and Agents to generate Serial Key
-        $domain = $item->domain;
-        //$plan_id = $this->plan($item->id);
-        $plan_id = Plan::where('product',$product)
+        try {
+            $product = Product::where('name', $item->product_name)->value('id');
+            $version = Product::where('name', $item->product_name)->first()->version;
+            if ($version == null) {
+                //Get Version from Product Upload Table
+                $version = $this->product_upload->where('product_id', $product)->pluck('version')->first();
+            }
+            $serial_key = $this->generateFreetrailSerialKey($product, $item->agents); //Send Product Id and Agents to generate Serial Key
+            $domain = $item->domain;
+            //$plan_id = $this->plan($item->id);
+            $plan_id = Plan::where('product', $product)
                            ->value('id');
 
-        $order = $this->order->create([
+            $order = $this->order->create([
 
-            'invoice_id'      => $invoiceid,
-            'invoice_item_id' => $item->id,
-            'client'          => $user_id,
-            'order_status'    => $order_status,
-            'serial_key'      => Crypt::encrypt($serial_key),
-            'product'         => $product,
-            'price_override'  => $item->subtotal,
-            'qty'             => $item->quantity,
-            'domain'          => $domain,
-            'number'          => $this->generateFreetrailNumber(),
-        ]);
+                'invoice_id'      => $invoiceid,
+                'invoice_item_id' => $item->id,
+                'client'          => $user_id,
+                'order_status'    => $order_status,
+                'serial_key'      => Crypt::encrypt($serial_key),
+                'product'         => $product,
+                'price_override'  => $item->subtotal,
+                'qty'             => $item->quantity,
+                'domain'          => $domain,
+                'number'          => $this->generateFreetrailNumber(),
+            ]);
 
-        $baseorder = new BaseOrderController();
-        $baseorder->addOrderInvoiceRelation($invoiceid, $order->id);
+            $baseorder = new BaseOrderController();
+            $baseorder->addOrderInvoiceRelation($invoiceid, $order->id);
 
-        if ($plan_id != 0) {
-            $baseorder->addSubscription($order->id, $plan_id, $version, $product, $serial_key);
-        }
-        $mailchimpStatus = StatusSetting::pluck('mailchimp_status')->first();
-        if ($mailchimpStatus) {
-            $baseorder->addtoMailchimp($product, $user_id, $item);
-        }
-           } catch (\Exception $ex) {
+            if ($plan_id != 0) {
+                $baseorder->addSubscription($order->id, $plan_id, $version, $product, $serial_key);
+            }
+            $mailchimpStatus = StatusSetting::pluck('mailchimp_status')->first();
+            if ($mailchimpStatus) {
+                $baseorder->addtoMailchimp($product, $user_id, $item);
+            }
+        } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
 
             throw new \Exception('Can not Generate Subscription');
@@ -230,16 +219,15 @@ class FreeTrailController extends Controller
     }
 
     /**
-     * Generate serial key for free trial
+     * Generate serial key for free trial.
+     *
      * @throws \Exception
-     */ 
-
+     */
     private function generateFreetrailSerialKey(int $productid, $agents)
     {
-        try
-        {
-        $len = strlen($agents);
-        switch ($len) {//Get Last Four digits based on No.Of Agents
+        try {
+            $len = strlen($agents);
+            switch ($len) {//Get Last Four digits based on No.Of Agents
 
                 case '1':
                    $lastFour = '000'.$agents;
@@ -258,11 +246,11 @@ class FreeTrailController extends Controller
                 default:
                     $lastFour = '0000';
             }
-        $str = strtoupper(str_random(12));
-        $licCode = $str.$lastFour;
+            $str = strtoupper(str_random(12));
+            $licCode = $str.$lastFour;
 
-        return $licCode;
-           } catch (\Exception $ex) {
+            return $licCode;
+        } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
 
             throw new \Exception('Can not Generate Subscription');

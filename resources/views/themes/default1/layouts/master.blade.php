@@ -354,6 +354,8 @@
             <!-- Main content -->
             <section class="content">
                 <div class="container-fluid">
+                    @if(Route::current()->getName() !== 'plans.index');
+                    
                     @if (count($errors) > 0)
 
                         <div class="alert alert-danger alert-dismissable">
@@ -365,10 +367,9 @@
                                 @endforeach
                             </ul>
                         </div>
+                        @endif
+                        @endif
 
-
-
-                    @endif
 
                     @if(Session::has('success'))
                         <div class="alert alert-success alert-dismissable">

@@ -107,29 +107,35 @@ class FreeTrailController extends Controller
      * @throws \Exception
      */
 
-    private function createFreetrailInvoiceItems()
+      private function createFreetrailInvoiceItems()
     {
         try
         {
+            $product = Product::with('planRelation')->find('117');
+            $plan_id = $product->planRelation()->pluck('id');
+
         $cart = \Cart::getContent();
         $userId = \Auth::user()->id;
         $invoice = $this->invoice->where('user_id', $userId)->first();
         $invoiceid = $invoice->id;
         $invoiceItem = $this->invoiceItem->create([
             'invoice_id'     => $invoiceid,
-            'product_name'   => 'Faveo Cloud(Beta)',
-            'regular_price'  => 0,
+            'product_name'   => $product->name,
+            'regular_price'  => planPrice::where('plan_id',$plan_id)
+                                ->where('currency', \Auth::user()->currency)->pluck('add_price'),
             'quantity'       => 1,
             'tax_name'       => "null",
-            'tax_percentage' => 0,
+            'tax_percentage' => $product->planRelation()->pluck('allow_tax'),
             'subtotal'       => 0,
             'domain'         => "",
             'plan_id'        => 0,
-            'agents'         => 0,
+            'agents'         => planPrice::where('plan_id',$plan_id)
+                                ->where('currency', \Auth::user()->currency)->pluck('no_of_agents'),
         ]);
 
         return $invoiceItem;
            } catch (\Exception $ex) {
+            dd($ex);
             app('log')->error($ex->getMessage());
 
             throw new \Exception('Can not Generate Subscription');

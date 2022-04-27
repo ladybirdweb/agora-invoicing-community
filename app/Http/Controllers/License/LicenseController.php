@@ -43,6 +43,31 @@ class LicenseController extends Controller
         return $result;
     }
 
+    private function getCurl($get_url)
+    {
+     
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $get_url);
+            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 90);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            if (curl_exec($ch) === false) {
+                echo 'Curl error: '.curl_error($ch);
+            }
+            $content = curl_exec($ch);
+            curl_close($ch);
+            return json_decode($content, true);
+
+    }
+
+    public function getLicensekey()
+    {
+        $url = $this->url;
+        $api_key_secret = $this->api_key_secret;
+        $token = $this->token;
+        $getkey = $this->getCurl($url.'api/admin/viewApiKeys?token='.$token);
+        return ['data' => $getkey , 'url' => $url];
+    }
+
     /*
     *  Add New Product
     */

@@ -66,6 +66,13 @@ input:checked + .slider:before {
     overflow:scroll;
     height:600px;
 }
+<?php
+
+$key = new App\Http\Controllers\License\LicenseController;
+$details = $key->getLicensekey();
+$licensekey = $details["data"]["data"][0]["api_key_secret"];
+$licenseurl =  $details["url"];
+?>
 </style>
 <div class="col-sm-6 md-6">
     <h1>API Keys</h1>
@@ -85,7 +92,10 @@ input:checked + .slider:before {
 
             <!-- /.box-header -->
             <div class="card-body">
+          
                <div id="alertMessage"></div>
+                <div id="alertMessage1"></div>
+               
               <div class="scrollit">
                   <div class="row">
                <div class="col-md-12">
@@ -115,13 +125,19 @@ input:checked + .slider:before {
                   </td>
 
                   <td class="col-md-4 licenseEmptyField">
+
+                    
                   {!! Form::label('lic_api_secret',Lang::get('message.lic_api_secret')) !!}
                         {!! Form::text('license_api',null,['class' => 'form-control secretHide','disabled'=>'disabled'
                         ]) !!}
+                         @if($errors->has('license_api_secret'))
+                         <div class="error">{{ $errors->first('license_api_secret') }}</div>
+                          @endif
 
 
 
                         <!-- last name -->
+
                         {!! Form::label('lic_api_url',Lang::get('message.lic_api_url')) !!} :
                         {!! Form::text('license_api',null,['class' => 'form-control urlHide','disabled'=>'disabled']) !!}
 
@@ -134,6 +150,9 @@ input:checked + .slider:before {
                         {!! Form::text('license_api_secret',$licenseSecret,['class' => 'form-control','id'=>'license_api_secret']) !!}
                          <h6 id="license_apiCheck"></h6>
                          <br/>
+                         @if($errors->has('license_api_secret'))
+                         <div class="error">{{ $errors->first('license_api_secret') }}</div>
+                          @endif
                   
                         <!-- last name -->
                         {!! Form::label('lic_api_url',Lang::get('message.lic_api_url')) !!} :
@@ -141,7 +160,7 @@ input:checked + .slider:before {
                         <h6 id="license_urlCheck"></h6>
                    
                </td>
-                  <td class="col-md-2"><button type="submit" class="form-group btn btn-primary"  onclick="licenseDetails()" id="submit"><i class="fa fa-save">&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
+                  <td class="col-md-2"><button type="submit" class="form-group btn btn-primary"  onclick="licenseDetails('{{$licensekey}}','{{$licenseurl}}')" id="submit"><i class="fa fa-save">&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
                 </tr>
 
                 <tr>
@@ -512,8 +531,7 @@ input:checked + .slider:before {
         }
     });
 
-function licenseDetails(){
-
+function licenseDetails($licensekey, $licenseurl){
 if ($('#License').prop("checked")) {
           var checkboxvalue = 1;
           if ($('#license_api_secret').val() =="" ) {
@@ -523,9 +541,23 @@ if ($('#License').prop("checked")) {
               $('#license_apiCheck').css({"color":"red","margin-top":"5px"});
               return false;
           }
+            if ($('#license_api_secret').val() != $licensekey ) {
+             $('#license_apiCheck').show();
+             $('#license_apiCheck').html("Please Enter Valid APT Secret Key");
+              $('#license_api_secret').css("border-color","red");
+              $('#license_apiCheck').css({"color":"red","margin-top":"5px"});
+              return false;
+          }
             if ($('#license_api_url').val() =="" ) {
              $('#license_urlCheck').show();
              $('#license_urlCheck').html("Please Enter API URL");
+              $('#license_api_url').css("border-color","red");
+              $('#license_urlCheck').css({"color":"red","margin-top":"5px"});
+              return false;
+          }
+          if ($('#license_api_url').val() != $licenseurl) {
+             $('#license_urlCheck').show();
+             $('#license_urlCheck').html("Please Enter Valid API URL");
               $('#license_api_url').css("border-color","red");
               $('#license_urlCheck').css({"color":"red","margin-top":"5px"});
               return false;
@@ -554,7 +586,7 @@ if ($('#License').prop("checked")) {
                 $('#alertMessage').slideUp(3000); 
             }, 1000);
           },
-
+   
 
  });
  };

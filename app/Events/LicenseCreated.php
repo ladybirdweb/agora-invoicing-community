@@ -2,19 +2,15 @@
 
 namespace App\Events;
 
-use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use App\ApiKey;
 
 class LicenseCreated
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-    
+
     public $licenseApiSecret;
 
     /**
@@ -22,7 +18,6 @@ class LicenseCreated
      *
      * @return void
      */
-
     public function __construct($licenseApiSecret)
     {
         $this->licenseApiSecret = $licenseApiSecret;

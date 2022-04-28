@@ -7,6 +7,8 @@ use App\Model\Order\Order;
 use App\Model\Payment\Plan;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
+use App\Model\Payment\TaxOption;
+use App\Model\Payment\PlanPrice;
 use App\User;
 use Auth;
 use Crypt;
@@ -81,7 +83,7 @@ class FreeTrailController extends Controller
     {
         try
         {
-        $tax_rule = new \App\Model\Payment\TaxOption();
+        $tax_rule = new TaxOption();
         $rule = $tax_rule->findOrFail(1);
         $rounding = $rule->rounding;
         $user_id = \Auth::user()->id;
@@ -111,8 +113,9 @@ class FreeTrailController extends Controller
     {
         try
         {
-            $product = Product::with('planRelation')->find('117');
-            $plan_id = $product->planRelation()->pluck('id');
+        $product = Product::with('planRelation')->find('117');
+        if($product){
+        $plan_id = $product->planRelation()->pluck('id');
 
         $cart = \Cart::getContent();
         $userId = \Auth::user()->id;
@@ -134,8 +137,11 @@ class FreeTrailController extends Controller
         ]);
 
         return $invoiceItem;
-           } catch (\Exception $ex) {
-            dd($ex);
+            }
+        else{
+            throw new \Exception('Can not Find the Product');
+          }
+        } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
 
             throw new \Exception('Can not Generate Subscription');
@@ -215,7 +221,7 @@ class FreeTrailController extends Controller
         $baseorder = new BaseOrderController();
         $baseorder->addOrderInvoiceRelation($invoiceid, $order->id);
 
-        if ($plan_id != 0) {
+        if ($plan_id) {
             $baseorder->addSubscription($order->id, $plan_id, $version, $product, $serial_key);
         }
         $mailchimpStatus = StatusSetting::pluck('mailchimp_status')->first();
@@ -242,19 +248,17 @@ class FreeTrailController extends Controller
         switch ($len) {//Get Last Four digits based on No.Of Agents
 
                 case '1':
-                   $lastFour = '000'.$agents;
+                    $lastFour = '000'.$agents;
                     break;
-                   case '2':
-
+                case '2':
                     $lastFour = '00'.$agents;
-                     break;
-                      case '3':
+                    break;
+                case '3':
                     $lastFour = '0'.$agents;
-                     break;
-                      case '4':
+                    break;
+                case '4':
                     $lastFour = $agents;
-
-                     break;
+                    break;
                 default:
                     $lastFour = '0000';
             }

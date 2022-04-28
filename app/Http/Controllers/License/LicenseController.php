@@ -97,9 +97,7 @@ class LicenseController extends Controller
     public function getLicensekey()
     {
         $url = $this->url;
-        $api_key_secret = $this->api_key_secret;
-        $token = $this->token;
-        $getkey = $this->getCurl($url.'api/admin/viewApiKeys?token='.$token);
+        $getkey = $this->getCurl($url.'api/admin/viewApiKeys?token='.$this->token);
         return ['data' => $getkey , 'url' => $url];
     }
 

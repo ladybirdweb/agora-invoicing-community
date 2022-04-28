@@ -163,4 +163,11 @@ Plans
      });
    
 </script>
+@if (count($errors) > 0)
+    <script type="text/javascript">
+        $( document ).ready(function() {
+             $('#create-plan-option').modal('show');
+        });
+    </script>
+  @endif
 @stop

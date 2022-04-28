@@ -197,7 +197,6 @@ class SettingsController extends BaseSettingsController
             'logo'            => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
         ]);
 
-
         try {
             $setting = $settings->find(1);
             if ($request->hasFile('logo')) {
@@ -227,12 +226,6 @@ class SettingsController extends BaseSettingsController
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-    /**
-     * Get the id and value of the column.
-     *
-     * Remove the logo from the DB and local storage.
-     */
-
 
     /**
      * Get the id and value of the column.
@@ -266,8 +259,6 @@ class SettingsController extends BaseSettingsController
 
               return back();
         }
-
-
 
     }
 

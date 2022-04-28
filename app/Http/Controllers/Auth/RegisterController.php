@@ -112,7 +112,6 @@ class RegisterController extends Controller
 
             return response()->json($emailMobileStatusResponse);
         } catch (\Exception $ex) {
-            dd($ex);
             app('log')->error($ex->getMessage());
             $result = [$ex->getMessage()];
             return response()->json($result);

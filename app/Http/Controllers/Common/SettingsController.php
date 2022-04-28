@@ -221,7 +221,7 @@ class SettingsController extends BaseSettingsController
         $log = Setting::find($id);
         File::delete(public_path('common/images/').$log->$value);
         File::delete(public_path('admin/images/').$log->$value);
-        $result = DB::table('settings')->where('id', $id)->update([$value => null]);
+        $result = Setting::where('id', $id)->update([$value => null]);
 
         return back();
     }

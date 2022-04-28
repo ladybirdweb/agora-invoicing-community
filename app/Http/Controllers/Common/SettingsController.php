@@ -217,6 +217,7 @@ class SettingsController extends BaseSettingsController
      * Remove the logo from the DB and local storage.
      */
 
+
     /**
      * Get the id and value of the column.
      *
@@ -249,6 +250,7 @@ class SettingsController extends BaseSettingsController
 
               return back();
         }
+
 
 
     }

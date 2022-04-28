@@ -380,7 +380,8 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $qty = $this->getQuantity($qty, $productid, $plan);
 
             $code = $request->input('code');
-            $total = str_replace(',', '', $request->input('price'));
+            $price = $request->input('price');
+            $total = str_replace(',', '', $price);
             $description = $request->input('description');
             if ($request->has('domain')) {
                 $domain = $request->input('domain');

@@ -13,7 +13,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
-
 class RegisterController extends Controller
 {
     /*
@@ -46,20 +45,17 @@ class RegisterController extends Controller
     }
 
     public function postRegister(ProfileRequest $request, User $user)
-
     {
-       
         $apiKeys = StatusSetting::value('recaptcha_status');
         $captchaRule = $apiKeys ? 'required|' : 'sometimes|';
         $this->validate($request, [
-            'g-recaptcha-response-1' => $captchaRule . 'captcha',
+            'g-recaptcha-response-1' => $captchaRule.'captcha',
         ], [
             'g-recaptcha-response-1.required' => 'Robot Verification Failed. Please Try Again.',
         ]);
         try {
-
             $location = getLocation();
-            $state_code = $location['iso_code'] . '-' . $location['state'];
+            $state_code = $location['iso_code'].'-'.$location['state'];
             $state = getStateByCode($state_code);
             $user->state = $state['id'];
             $password = Str::random(20);
@@ -84,25 +80,23 @@ class RegisterController extends Controller
             $user->referrer = Referer::get(); // 'google.com'
             $user->save();
 
-
-            $userData = 'Password:' . ' ' . $password;
+            $userData = 'Password:'.' '.$password;
             $setting = Setting::find(1);
             $mail = new \App\Http\Controllers\Common\PhpMailController();
             $mail->sendEmail($setting->email, $user->email, $userData, 'New Password created');
 
-
             $emailMobileStatusResponse = $this->getEmailMobileStatusResponse($user);
 
-            activity()->log('User <strong>' . $user->first_name . ' ' . $user->last_name . '</strong> was created');
+            activity()->log('User <strong>'.$user->first_name.' '.$user->last_name.'</strong> was created');
 
             return response()->json($emailMobileStatusResponse);
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
             $result = [$ex->getMessage()];
+
             return response()->json($result);
         }
     }
-
 
     protected function getEmailMobileStatusResponse($user)
     {

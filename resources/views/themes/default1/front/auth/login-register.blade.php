@@ -292,7 +292,7 @@
 
                                                                     <input type="checkbox" value="false" name="logterms" id="logterm" > {{Lang::get('message.i-agree-to-the')}} <a href="{{$apiKeys->terms_url}}" target="_blank">{{Lang::get('message.terms')}}</a>
                                                                 </label>
-                                                                <br><span id="termscheck"></span>
+                                                                <br><span id="logtermscheck"></span>
                                                             </div>
                                                         @endif
 
@@ -765,17 +765,17 @@
         function logterms(){
             var term_val = $('#logterm').val();
             if(term_val == 'false'){
-                $('#termscheck').show();
-                $('#termscheck').html("Terms must be accepted");
-                $('#termscheck').focus();
+                $('#logtermscheck').show();
+                $('#logtermscheck').html("Terms must be accepted");
+                $('#logtermscheck').focus();
                 $('#logterm').css("border-color","red");
-                $('#termscheck').css({"color":"red","margin-top":"5px"});
+                $('#logtermscheck').css({"color":"red","margin-top":"5px"});
                 // userErr =false;
                 return false;
             }
 
             else{
-                $('#termscheck').hide();
+                $('#logtermscheck').hide();
                 $('#logterm').css("border-color","");
                 return true;
             }
@@ -831,7 +831,7 @@
             $('#logemailcheck').hide();
             $('#logcountrycheck').hide();
             $('#logmobile_codecheck').hide();
-            $('#termscheck').hide();
+            $('#logtermscheck').hide();
 
 
             var first_nameErr = true;

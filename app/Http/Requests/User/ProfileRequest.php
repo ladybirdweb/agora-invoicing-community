@@ -64,7 +64,7 @@ class ProfileRequest extends Request
             ];
         }
 
-        if ($this->segment(1) == 'auth' && $value == '0') {
+        if ($this->segment(1) == 'auth' && !$value) {
             return [
                 'first_name'            => 'required|min:2|max:30',
                 'last_name'             => 'required|max:30',
@@ -75,7 +75,7 @@ class ProfileRequest extends Request
             ];
            
         }
-         if ($this->segment(1) == 'auth' && $value == '1') {
+         if ($this->segment(1) == 'auth' && $value) {
             return [
                 'first_name'            => 'required|min:2|max:30',
                 'last_name'             => 'required|max:30',
@@ -91,7 +91,7 @@ class ProfileRequest extends Request
     public function messages()
     {
         return[
-            // 'mobile_code.required'           => 'Enter Country code (mobile)',
+            'mobile_code.required'           => 'Enter Country code (mobile)',
         ];
     }
 }

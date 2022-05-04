@@ -239,6 +239,8 @@ class OrderSearchController extends Controller
     public function orderFrom($till, $from, $join)
     {
         if ($from) {
+            $from = Carbon::parse($from)->startOfDay();
+            $till = Carbon::parse($till)->endOfDay();
             $fromdate = date_create($from);
 
             $from = date_format($fromdate, 'Y-m-d H:m:i');
@@ -261,6 +263,8 @@ class OrderSearchController extends Controller
     public function orderTill($from, $till, $join)
     {
         if ($till) {
+            $from = Carbon::parse($from)->startOfDay();
+            $till = Carbon::parse($till)->endOfDay();
             $tilldate = date_create($till);
             $till = date_format($tilldate, 'Y-m-d H:m:i');
             $froms = Order::first()->created_at;

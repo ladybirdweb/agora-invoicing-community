@@ -80,6 +80,7 @@ Sign in or Register
 
 
     </style>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="stylesheet" href="{{asset('client/css/selectpicker.css')}}" />
     <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/css/bootstrap-select.css" /> -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/2.0.0-beta1/css/bootstrap-select.min.css" />
@@ -1481,9 +1482,12 @@ Sign in or Register
 
         function getState(val) {
             $.ajax({
+                headers: {
+                   'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 type: "GET",
                 url: "{{url('get-loginstate')}}/" + val,
-                data: {'country_id':val,'_token':"{{csrf_token()}}"},//'country_id=' + val,
+                data: {'country_id':val},//'country_id=' + val,
                 success: function (data) {
 
                     $("#state-list").html('<option value="">Please select Country</option>').val('');
@@ -1497,9 +1501,12 @@ Sign in or Register
 
         function getCode(val) {
             $.ajax({
+                headers: {
+                   'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 type: "GET",
                 url: "{{url('get-code')}}",
-                data: {'country_id':val,'_token':"{{csrf_token()}}"},//'country_id=' + val,
+                data: {'country_id':val},//'country_id=' + val,
                 success: function (data) {
                     $("#mobile_code").val(data);
                     $("#mobile_code_hidden").val(data);

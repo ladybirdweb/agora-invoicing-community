@@ -23,17 +23,13 @@ class BaseOrderController extends ExtendedOrderController
         $this->middleware('auth');
         $this->middleware('admin');
 
-        $order = new Order();
-        $this->order = $order;
+        $this->order = new Order();
 
-        $product = new Product();
-        $this->product = $product;
+        $this->product= new Product();
+        
+        $this->subscription = new Subscription();
 
-        $subscription = new Subscription();
-        $this->subscription = $subscription;
-
-        $plan = new Plan();
-        $this->plan = $plan;
+        $this->plan = new Plan();
     }
 
     use UpdateDates;

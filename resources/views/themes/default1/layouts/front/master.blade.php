@@ -127,13 +127,12 @@ if($script->on_every_page == 1) {
                                                     $id = \Auth::user()->id;
                                                     $user = \App\User::where('id', '=', $id)->value('first_time_login');?>
 
-                                                     @if(Auth::check())
-                                                     @if($user == 0)
+                                                     @if(Auth::check() && $user == 0)
+                                                    
 
                                                      <button class="btn btn-primary btn-modern open-createTenantDialog"  >free trail</button>
 
                                                      @endif
-                                                      @endif
                                                       @endauth
 
 

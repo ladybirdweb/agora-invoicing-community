@@ -88,7 +88,7 @@ class ProcessController extends Controller
                 $amount = rounding(\Cart::getTotal());
                 \View::addNamespace('plugins', $path);
 
-                echo view('plugins::middle-page', compact('invoice', 'amount', 'invoice_no', 'payment_method', 'invoice', 'regularPayment', ))->render();
+                echo view('plugins::middle-page', compact('invoice', 'amount', 'invoice_no', 'payment_method', 'invoice', 'regularPayment'))->render();
             }
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());

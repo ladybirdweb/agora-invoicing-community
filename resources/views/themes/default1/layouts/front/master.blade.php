@@ -48,7 +48,6 @@ if($script->on_every_page == 1) {
         <link rel="stylesheet" href="{{asset('client/porto/css-1/theme-shop.css')}}">
 
            <link rel="stylesheet" href="{{asset('common/css/intlTelInput.css')}}">
-             <link rel="stylesheet" href="{{asset('build/css/intlTelInput.css')}}">
 
 
 
@@ -63,8 +62,10 @@ if($script->on_every_page == 1) {
 
         <script src="{{asset("common/js/jquery-2.1.4.js")}}" type="text/javascript"></script>
         <script src="{{asset("common/js/jquery2.1.1.min.js")}}" type="text/javascript"></script>
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-
+        <!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script> -->
+        <!-- <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script> -->
+        <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script> -->
+         <!-- <link rel="stylesheet" href="{{asset('client/css/selectpicker.css')}}" />  -->
 
 </head>
    <style>
@@ -123,7 +124,7 @@ if($script->on_every_page == 1) {
                                                 @if(!Auth::user())
                                                 <li class="nav-item nav-item-left-border nav-item-left-border-remove nav-item-left-border-md-show">
                                                     <span class="ws-nowrap">
-                                                        <a style="color: inherit"   data-toggle="modal" data-target="#login-modal" href="{{url('login')}}">My Account</a>
+                                                        <a style="color: inherit"   data-toggle="modal" data-target="#login-modal">My Account</a>
                                                     </span>
                                                 </li>
                                                     @endif
@@ -326,18 +327,17 @@ if($script->on_every_page == 1) {
                                                         </ul>
                                                     </li>
 
+
                                                         @if(!Auth::user())
-                                                   
-                                                    <li class="dropdown">
-                                                        <button class="btn btn-primary btn-modern open-createTenantDialog"  data-toggle="modal" data-target="#login-modal" >
+                                                
+                                                     <li class="dropdown">
+                                                        <a  class="nav-link" data-toggle="modal" data-target="#login-modal">
                                                             Free Signup
-                                                        </button>
+                                                        </a>
                                                     </li>
-                                               <!--     <li class="dropdown">
-                                                   <a  class="nav-link signup" id="signup" data-toggle="modal" data-target="#register-modal" href="{{url('login')}}">
-                                                           signup
-                                                    </a>
-                                               </li> -->
+
+
+
  
 
                                                     @else
@@ -457,8 +457,9 @@ if($script->on_every_page == 1) {
                 </div>
             
                 @endif
-                       @if (count($errors) > 0)
-                    
+                 @if(Auth::user())
+
+                    @if (count($errors) > 0)
                      <div class="alert alert-danger alert-dismissable" role="alert">
                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                        <strong><i class="fas fa-exclamation-triangle"></i>Oh snap!</strong> Change a few things up and try submitting again.
@@ -470,6 +471,7 @@ if($script->on_every_page == 1) {
                         </ul>
                     </div>
                     
+                    @endif
                     @endif
                       
                     @include('themes.default1.front.domain')
@@ -754,7 +756,6 @@ if($script->on_every_page == 1) {
           <script src="{{asset('client/js/owl.carousel.min.js')}}"></script>
           <script src="{{asset('client/js/jquery.magnific-popup.min.js')}}"></script>
           <script src="{{asset('client/js/vide.min.js')}}"></script>
-          <script src="{{asset('build/js/intlTelInput.js') }}"></script>
 
          <!-- Theme Base, Components and Settings -->
           <script src="{{asset('client/porto/js-1/theme.js')}}"></script>
@@ -783,7 +784,89 @@ if($script->on_every_page == 1) {
               }
           });
           </script>
+           <script type="text/javascript">
+            var logtelInput = $('#phonenum'),
+            logerrorMsg = document.querySelector("#error-msg2"),
+            logvalidMsg = document.querySelector("#valid-msg2"),
+            addressDropdown = $("#country");
+            var logerrorMap = [ "Invalid number", "Invalid country code", "Number Too short", "Number Too long", "Invalid number"];
 
+        logtelInput.intlTelInput({
+
+            geoIpLookup: function (callback) {
+                $.get("https://ipinfo.io", function () {}, "jsonp").always(function (resp) {
+                    var logcountryCode = (resp && resp.country) ? resp.country : "";
+                    callback(logcountryCode);
+                });
+            },
+             utilsScript: "{{asset('js/intl/js/utils.js')}}",
+
+            initialCountry: "auto",
+            separateDialCode: true,
+        });
+        var reset = function() {
+
+            logerrorMsg.innerHTML = "";
+            logerrorMsg.classList.add("hide");
+            logvalidMsg.classList.add("hide");
+        };
+
+        $('.intl-tel-input').css('width', '100%');
+
+        logtelInput.on('blur', function () {
+            reset();
+            if ($.trim(logtelInput.val())) {
+                 
+                if (logtelInput.intlTelInput("isValidNumber")) {
+                    $('#phonenum').css("border-color","");
+                    $("#error-msg2").html('');
+                    logerrorMsg.classList.add("hide");
+                    $('#logregister').attr('disabled',false);
+                } else {
+                   
+                    var errorCode = logtelInput.intlTelInput("getValidationError");
+                    logerrorMsg.innerHTML = logerrorMap[errorCode];
+                    $('#mobile_codecheck').html("");
+
+                    $('#phonenum').css("border-color","red");
+                    $('#error-msg2').css({"color":"red","margin-top":"5px"});
+                    logerrorMsg.classList.remove("hide");
+                    $('#logregister').attr('disabled',true);
+                }
+            }
+        });
+        $('input').on('focus', function () {
+            $(this).parent().removeClass('has-error');
+        });
+        addressDropdown.change(function() {
+            logtelInput.intlTelInput("setCountry", $(this).val());
+            if ($.trim(logtelInput.val())) {
+                
+                if (logtelInput.intlTelInput("isValidNumber")) {
+                    $('#phonenum').css("border-color","");
+                    $("#error-msg2").html('');
+                    logerrorMsg.classList.add("hide");
+                    $('#logregister').attr('disabled',false);
+                } else {
+                    
+                    var errorCode = logtelInput.intlTelInput("getValidationError");
+                    logerrorMsg.innerHTML = logerrorMap[errorCode];
+                    $('#mobile_codecheck').html("");
+
+                    $('#phonenum').css("border-color","red");
+                    $('#error-msg2').css({"color":"red","margin-top":"5px"});
+                    logerrorMsg.classList.remove("hide");
+                    $('#logregister').attr('disabled',true);
+                }
+            }
+        });
+
+        $('form').on('submit', function (e) {
+            $('input[name=country_code]').attr('value', $('.selected-dial-code').text());
+        });
+
+    </script>
+         
 
         <script>
 
@@ -937,59 +1020,28 @@ if($script->on_every_page == 1) {
 
 
 </script>
+ 
+
+    @if (count($errors->loginpopup) > 0)
+    
+
     <script type="text/javascript">
-        var telInput = $('#phonenum');
-        telInput.intlTelInput({
-            geoIpLookup: function (callback) {
-                $.get("https://ipinfo.io", function () {}, "jsonp").always(function (resp) {
-                    var countryCode = (resp && resp.country) ? resp.country : "";
-                    callback(countryCode);
-                });
-            },
-            initialCountry: "auto",
-            separateDialCode: true,
-            utilsScript: "{{asset('common/js/utils.js')}}"
-        });
-        $('.intl-tel-input').css('width', '100%');
 
-        telInput.on('blur', function () {
-            if ($.trim(telInput.val())) {
-                if (!telInput.intlTelInput("isValidNumber")) {
-                    telInput.parent().addClass('has-error');
-                }
-            }
+        $( document ).ready(function() {
+             $('#login-modal').modal('show');
         });
-        $('input').on('focus', function () {
-            $(this).parent().removeClass('has-error');
-        });
-
-        $('form').on('submit', function (e) {
-            $('input[name=country_code]').attr('value', $('.selected-dial-code').text());
-        });
-
     </script>
-<!--      <script src="{{asset('build/js/intlTelInput.js') }}"></script>
- -->
-<!-- <script>
- 
+  @endif
 
-  var input = document.querySelector("#phonenum");
-      window.intlTelInput(input, {
-      initialCountry: "auto",
-      geoIpLookup: function(callback) {
-      $.get('https://ipinfo.io', function() {}, "jsonp").always(function(resp) {
-      var countryCode = (resp && resp.country) ? resp.country : "us";
-      callback(countryCode);
-    });
-  },
-  utilsScript: "../../build/js/utils.js?1638200991544" // just for formatting/placeholders etc
-});
-</script> -->
+@if (!$errors->loginpopup->count() > 0)
+  <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
 
- 
+
+  @endif
 
 
 
-    </body>
+
+</body>
 </html>
 @yield('end')

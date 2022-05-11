@@ -45,7 +45,13 @@ $country = findCountryByGeoip($location['iso_code']);
 
 
 
+
+
 </style>
+
+          <script src="{{asset('common/js/intlTelInput.js')}}"></script>
+
+
 <section>
     <div class="wizard">
         <div class="wizard-inner" style="display: none">
@@ -77,7 +83,7 @@ $country = findCountryByGeoip($location['iso_code']);
         </div>
 
         <div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-             aria-hidden="true">
+             aria-hidden="true" >
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header text-center">
@@ -96,33 +102,35 @@ $country = findCountryByGeoip($location['iso_code']);
                                 {!!  Form::open(['action'=>'Auth\LoginController@login', 'method'=>'post','id'=>'formoid']) !!}
                             @endif
                             <div class="form-row">
-                                <div class="form-group col {{ $errors->has('email1') ? 'has-error' : '' }}">
+                                <div class="form-group col">
 
                                     <label class="required" >E-mail Address</label>
                                     <div class="input-group">
                                         {!! Form::text('email1',null,['class' => 'form-control input-lg','id'=>'username','autocomplete'=>"off" ]) !!}
                                         <div class="input-group-append">
-                                            {{--                                    <span class="input-group-text"><i class="fa fa-user"></i></span>--}}
+                                                                              
                                         </div>
 
                                     </div>
+
+                                      <span style="color:#ff0000">  <div>{{ $errors->loginpopup->first('email1') }}</div></span>
                                     <!-- <h6 id="usercheck"></h6> -->
 
 
                                 </div>
                             </div>
                             <div class="form-row">
-                                <div class="form-group col {{ $errors->has('password1') ? 'has-error' : '' }}">
+                                <div class="form-group col">
 
                                     <a class="pull-right" href="{{url('password/reset')}}">({{Lang::get('message.forgot-my-password')}})</a>
                                     <label class="required" >Password</label>
                                     <div class="input-group">
                                         {!! Form::password('password1',['class' => 'form-control input-lg' ,'id'=>'pass']) !!}
                                         <div class="input-group-append">
-                                            {{--                                    <span class="input-group-text"><i class="fa fa-key"></i></span>--}}
                                         </div>
 
                                     </div>
+                                     <span style="color:#ff0000">  <div>{{ $errors->loginpopup->first('password1') }}</div></span>
                                     <!-- <h6 id="passcheck"></h6> -->
                                     <!--<input type="password" value="" class="form-control input-lg">-->
 
@@ -148,7 +156,7 @@ $country = findCountryByGeoip($location['iso_code']);
                             <div class="form-group pull-right">
                                 <button type="button" class="btn btn-default closebutton" id="closebutton" data-dismiss="modal"><i class="fa fa-times">&nbsp;&nbsp;</i>Close</button>
 
-                                <input type="submit" value="Login" id="submitbtn" class="btn btn-primary" data-loading-text="Loading...">
+                                <input type="submit" name="popup" value="Login" id="submitbtn" class="btn btn-primary" data-loading-text="Loading...">
                                 <!-- <button type="button" class="btn btn-primary mb-xl next-step float-right" name="sendOtp" id="login" onclick="loginUser()">
                                             Send Email
                                 </button> -->
@@ -178,6 +186,17 @@ $country = findCountryByGeoip($location['iso_code']);
                     </div>
 
                     <div class="card-body">
+                         <div class="row tab-content">
+                        <div class="col-md-12 tab-pane active" id="step1">
+                            <div class="featured-boxes">
+                                <div id="logerror">
+                                </div>
+                                <div id="success">
+                                </div>
+                                <div id="fails">
+                                </div>
+                                <div id="alertMessage1"></div>
+                                <div id="alertMessage2"></div>
 
                         <form name="registerForm" id="regiser-form">
 
@@ -225,8 +244,8 @@ $country = findCountryByGeoip($location['iso_code']);
                                     {!! Form::hidden('mobile',null,['id'=>'phone_code_hidden']) !!}
                                     <input class="form-control input-lg" id="phonenum" name="mobile" type="tel">
                                     {!! Form::hidden('mobile_code',null,['class'=>'form-control input-lg','disabled','id'=>'mobile_code']) !!}
-                                    <span id="valid-msg" class="hide"></span>
-                                    <span id="error-msg" class="hide"></span>
+                                    <span id="valid-msg2" class="hide"></span>
+                                    <span id="error-msg2" class="hide"></span>
                                     <span id="mobile_codecheck"></span>
                                 </div>
                             </div>
@@ -277,60 +296,15 @@ $country = findCountryByGeoip($location['iso_code']);
             </div>
         </div>
     </div>
+</div>
+</div>
+    </div>
 </section>
 
-    <script type="text/javascript">
-        var telInput = $('#phonenum');
-        telInput.intlTelInput({
-            geoIpLookup: function (callback) {
-                $.get("https://ipinfo.io", function () {}, "jsonp").always(function (resp) {
-                    var countryCode = (resp && resp.country) ? resp.country : "";
-                    callback(countryCode);
-                });
-            },
-            initialCountry: "auto",
-            separateDialCode: true,
-            utilsScript: "{{asset('common/js/utils.js')}}"
-        });
-        $('.intl-tel-input').css('width', '100%');
 
-        telInput.on('blur', function () {
-            if ($.trim(telInput.val())) {
-                if (!telInput.intlTelInput("isValidNumber")) {
-                    telInput.parent().addClass('has-error');
-                }
-            }
-        });
-        $('input').on('focus', function () {
-            $(this).parent().removeClass('has-error');
-        });
-
-        $('form').on('submit', function (e) {
-            $('input[name=country_code]').attr('value', $('.selected-dial-code').text());
-        });
-
-    </script>
-<!-- <script src="{{asset('build/js/intlTelInput.js') }}"></script>
-
-<script>
- 
-
-  var input = document.querySelector("#phonenum");
-      window.intlTelInput(input, {
-      initialCountry: "auto",
-      geoIpLookup: function(callback) {
-      $.get('https://ipinfo.io', function() {}, "jsonp").always(function(resp) {
-      var countryCode = (resp && resp.country) ? resp.country : "us";
-      callback(countryCode);
-    });
-  },
-  utilsScript: "../../build/js/utils.js?1638200991544" // just for formatting/placeholders etc
-});
-</script> -->
-
-    <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+<script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo $analyticsTag; ?>"></script>
-
+ 
 <script>
     ///////////////////////////////////////////////////////////////////////////////
     ///Google Recaptcha
@@ -346,8 +320,9 @@ $country = findCountryByGeoip($location['iso_code']);
 
 
 
-<script type="text/javascript">
 
+<script type="text/javascript">
+    
     $('.closebutton').on('click',function(){
         location.reload();
     });
@@ -686,22 +661,24 @@ $country = findCountryByGeoip($location['iso_code']);
                     }
                 },
                 error: function (data) {
+                    console.log(data);
                     $("#register").attr('disabled',false);
-                    location.reload();
+                    // location.reload();
                     $("#register").html("Register");
                     $('html, body').animate({scrollTop:0}, 500);
 
 
-                    var html = '<div class="alert alert-success alert-dismissable"><strong><i class="fas fa-exclamation-triangle"></i>Oh Snap! </strong>'+data.responseJSON.message+' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><br><ul>';
+                    var html = '<div class="alert alert-danger alert-dismissable"><strong><i class="fas fa-exclamation-triangle"></i>Oh Snap! </strong>'+data.responseJSON.message+' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><br><ul>';
                     for (var key in data.responseJSON.errors)
                     {
                         html += '<li>' + data.responseJSON.errors[key][0] + '</li>'
                     }
                     html += '</ul></div>';
-                    $('#error').show();
-                    document.getElementById('error').innerHTML = html;
+
+                    $('#logerror').show();
+                    document.getElementById('logerror').innerHTML = html;
                     setInterval(function(){
-                        $('#error').slideUp(3000);
+                        $('#logerror').slideUp(3000);
                     }, 8000);
                 }
             });
@@ -843,20 +820,7 @@ chosen link or button. -->
 <script type="text/javascript"
         src="//www.googleadservices.com/pagead/conversion_async.js">
 </script>
-<!-- Facebook Pixel Code -->
-<!-- <script>
-!function(f,b,e,v,n,t,s)
-{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-n.queue=[];t=b.createElement(e);t.async=!0;
-t.src=v;s=b.getElementsByTagName(e)[0];
-s.parentNode.insertBefore(t,s)}(window,document,'script',
-'https://connect.facebook.net/en_US/fbevents.js');
- fbq('init', '308328899511239');
-fbq('track', 'PageView');
 
-</script> -->
 
 <script type="text/javascript"
         src="//www.googleadservices.com/pagead/conversion_async.js">
@@ -884,14 +848,7 @@ fbq('track', 'PageView');
                 }
             });
 
-            /*$(".next-step").click(function (e) {
-                $('.wizard-inner').show();
-                var $active = $('.wizard .nav-tabs li.active');
-                $active.next().removeClass('disabled');
-                nextTab($active);
-                window.scrollTo(0, 10);
-
-            });*/
+          
 
             $(".prev").click(function (e) {
 
@@ -910,47 +867,8 @@ fbq('track', 'PageView');
             $(elem).prev().find('a[data-toggle="tab"]').click();
         }
     </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-<!-- <script>
-    var input = document.querySelector("#phonenum"),
-        errorMsg = document.querySelector("#error-msg"),
-        validMsg = document.querySelector("#valid-msg");
+        
 
-    // here, the index maps to the error code returned from getValidationError - see readme
-    var errorMap = ["Invalid number", "Invalid country code", "Too short", "Too long", "Invalid number"];
-
-    // initialise plugin
-    var iti = window.intlTelInput(input, {
-        utilsScript: "../../build/js/utils.js?1638200991544"
-    });
-
-    var reset = function() {
-        input.classList.remove("error");
-        errorMsg.innerHTML = "";
-        errorMsg.classList.add("hide");
-        validMsg.classList.add("hide");
-    };
-
-    // on blur: validate
-    input.addEventListener('blur', function() {
-        reset();
-        if (input.value.trim()) {
-            if (iti.isValidNumber()) {
-                validMsg.classList.remove("hide");
-            } else {
-                input.classList.add("error");
-                var errorCode = iti.getValidationError();
-                errorMsg.innerHTML = errorMap[errorCode];
-                errorMsg.classList.remove("hide");
-            }
-        }
-    });
-
-    // on keyup / change flag: reset
-    input.addEventListener('change', reset);
-    input.addEventListener('keyup', reset);
-</script> -->
- 
 
 <noscript>
     <img height="1" width="1"

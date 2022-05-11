@@ -81,6 +81,9 @@ class LicenseController extends Controller
             return $result;
         }
     }
+    /**
+     * Get request to the License mnanager
+     */
     private function getCurl($get_url)
     {
      
@@ -96,6 +99,9 @@ class LicenseController extends Controller
             return json_decode($content, true);
 
     }
+    /**
+     * Return API key and API url 
+     */
 
     public function getLicensekey()
     {

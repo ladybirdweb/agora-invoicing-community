@@ -25,9 +25,11 @@ What can we help you with?
         padding-left:5px;
     }
 </style>
+
 <?php 
 $set = new \App\Model\Common\Setting();
 $set = $set->findOrFail(1);
+ $analyticsTag = App\Model\Common\ChatScript::where('google_analytics', 1)->where('on_registration', 1)->value('google_analytics_tag');
 ?>
 
 <div class="row">
@@ -94,6 +96,7 @@ $set = $set->findOrFail(1);
 </div>
 @stop
 @section('script')
+
 <script type="text/javascript">
     var telInput = $('#mobilenum');
     telInput.intlTelInput({
@@ -124,5 +127,98 @@ $set = $set->findOrFail(1);
         $('input[name=country_code]').attr('value', $('.selected-dial-code').text());
     });
 
+    
 </script>
+    <script type="text/javascript">
+           var telInput = $('#phonenum'),
+          
+
+            errorMsg = document.querySelector("#error-msg2"),
+            validMsg = document.querySelector("#valid-msg2"),
+            addressDropdown = $("#country");
+             var errorMap = [ "Invalid number", "Invalid country code", "Number Too short", "Number Too long", "Invalid number"];
+
+          
+        telInput.intlTelInput({
+
+
+           
+            geoIpLookup: function (callback) {
+                $.get("https://ipinfo.io", function () {}, "jsonp").always(function (resp) {
+                    var countryCode = (resp && resp.country) ? resp.country : "";
+                    callback(countryCode);
+                });
+            },
+            utilsScript: "{{asset('js/intl/js/utils.js')}}",
+
+            initialCountry: "auto",
+            separateDialCode: true,
+        });
+        var reset = function() {
+
+            errorMsg.innerHTML = "";
+            errorMsg.classList.add("hide");
+            validMsg.classList.add("hide");
+        };
+
+        $('.intl-tel-input').css('width', '100%');
+
+        telInput.on('blur', function () {
+            reset();
+            if ($.trim(telInput.val())) {
+                 
+                if (telInput.intlTelInput("isValidNumber")) {
+                    $('#phonenum').css("border-color","");
+                    $("#error-msg2").html('');
+                    errorMsg.classList.add("hide");
+                    $('#register').attr('disabled',false);
+                } else {
+                   
+                    var errorCode = telInput.intlTelInput("getValidationError");
+                    errorMsg.innerHTML = errorMap[errorCode];
+                    $('#mobile_codecheck').html("");
+
+                    $('#phonenum').css("border-color","red");
+                    $('#error-msg2').css({"color":"red","margin-top":"5px"});
+                    errorMsg.classList.remove("hide");
+                    $('#register').attr('disabled',true);
+                }
+            }
+        });
+        $('input').on('focus', function () {
+            $(this).parent().removeClass('has-error');
+        });
+        addressDropdown.change(function() {
+            telInput.intlTelInput("setCountry", $(this).val());
+            if ($.trim(telInput.val())) {
+                
+                if (telInput.intlTelInput("isValidNumber")) {
+                    $('#phonenum').css("border-color","");
+                    $("#error-msg2").html('');
+                    errorMsg.classList.add("hide");
+                    $('#register').attr('disabled',false);
+                } else {
+                    
+                    var errorCode = telInput.intlTelInput("getValidationError");
+                    errorMsg.innerHTML = errorMap[errorCode];
+                    $('#mobile_codecheck').html("");
+
+                    $('#phonenum').css("border-color","red");
+                    $('#error-msg2').css({"color":"red","margin-top":"5px"});
+                    errorMsg.classList.remove("hide");
+                    $('#register').attr('disabled',true);
+                }
+            }
+        });
+
+        $('form').on('submit', function (e) {
+            $('input[name=country_code]').attr('value', $('.selected-dial-code').text());
+        });
+
+    </script>
+
+
+ 
+
+
 @stop

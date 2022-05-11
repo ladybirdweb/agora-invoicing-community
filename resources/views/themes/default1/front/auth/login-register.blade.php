@@ -1,4 +1,5 @@
 @extends('themes.default1.layouts.front.master')
+
 @section('title')
     Login | Register
 @stop
@@ -79,8 +80,13 @@
 
 
 
+
     </style>
+
+    
     <link rel="stylesheet" href="{{asset('client/css/selectpicker.css')}}" />
+    
+   
     <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/css/bootstrap-select.css" /> -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/2.0.0-beta1/css/bootstrap-select.min.css" />
 
@@ -91,6 +97,7 @@
 
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/js/bootstrap-select.js"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/2.0.0-beta1/js/bootstrap-select.min.js"></script>
+
     <div class="row">
         <div class="col-md-12">
 
@@ -135,9 +142,7 @@
                                 </div>
                                 <div id="alertMessage1"></div>
                                 <div id="alertMessage2"></div>
-                                <!-- <div id="error2">
-                                </div>
-                                <div id="alertMessage2" class="-text" ></div> -->
+                             
 
                                 <div class="row">
                                     <div class="col-sm-6">
@@ -151,16 +156,17 @@
                                                     {!!  Form::open(['action'=>'Auth\LoginController@login', 'method'=>'post','id'=>'formoid']) !!}
                                                 @endif
                                                 <div class="form-row">
-                                                    <div class="form-group col {{ $errors->has('email1') ? 'has-error' : '' }}">
-
-                                                        <label class="required" >E-mail Address</label>
+                                                    <div class="form-group col">
+                                             <label class="required" >E-mail Address</label>
                                                         <div class="input-group">
                                                             {!! Form::text('email1',null,['class' => 'form-control input-lg','id'=>'username','autocomplete'=>"off" ]) !!}
                                                             <div class="input-group-append">
-                                                                {{--                                    <span class="input-group-text"><i class="fa fa-user"></i></span>--}}
+                                                            <span class="input-group-text"><i class="fa fa-user"></i></span>
                                                             </div>
 
                                                         </div>  
+                                                        <span  style="color:#ff0000;">  <div>{{ $errors->login->first('email1') }}</div></span>
+
                                                         <!-- <h6 id="usercheck"></h6> -->
 
 
@@ -174,10 +180,11 @@
                                                         <div class="input-group">
                                                             {!! Form::password('password1',['class' => 'form-control input-lg' ,'id'=>'pass']) !!}
                                                             <div class="input-group-append">
-                                                                {{--                                    <span class="input-group-text"><i class="fa fa-key"></i></span>--}}
+                                                                      <span class="input-group-text"><i class="fa fa-key"></i></span>
                                                             </div>
 
                                                         </div>
+                                                           <span  style="color:#ff0000;">  <div>{{ $errors->login->first('password1') }}</div></span>
                                                         <!-- <h6 id="passcheck"></h6> -->
                                                         <!--<input type="password" value="" class="form-control input-lg">-->
 
@@ -201,7 +208,9 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group col-lg-6">
-                                                        <input type="submit" value="Login" id="submitbtn" class="btn btn-primary pull-right mb-xl" data-loading-text="Loading...">
+                                                        <input type="submit" name="form" value="Login" id="submitbtn" class="btn btn-primary pull-right mb-xl" data-loading-text="Loading...">
+
+                                                         
                                                         <!-- <button type="button" class="btn btn-primary mb-xl next-step float-right" name="sendOtp" id="login" onclick="loginUser()">
                                                                     Send Email
                                                         </button> -->
@@ -474,72 +483,162 @@
     </div>
 @stop
 @section('script')
-<script src="{{asset('build/js/intlTelInput.js')}}"></script>
-<script type="text/javascript">
-    var telInput = $('#logphonenum');
-    telInput.intlTelInput({
-        geoIpLookup: function (callback) {
-            $.get("https://ipinfo.io", function () {}, "jsonp").always(function (resp) {
-                var countryCode = (resp && resp.country) ? resp.country : "";
-                callback(countryCode);
-            });
-        },
-        initialCountry: "auto",
-        separateDialCode: true,
-        utilsScript: "{{asset('common/js/utils.js')}}"
-    });
-    $('.intl-tel-input').css('width', '100%');
 
-    telInput.on('blur', function () {
-        if ($.trim(telInput.val())) {
-            if (!telInput.intlTelInput("isValidNumber")) {
-                telInput.parent().addClass('has-error');
+
+
+   <script type="text/javascript">
+           var telInput = $('#logphonenum'),
+          
+
+            errorMsg = document.querySelector("#error-msg"),
+            validMsg = document.querySelector("#valid-msg"),
+            addressDropdown = $("#country");
+             var errorMap = [ "Invalid number", "Invalid country code", "Number Too short", "Number Too long", "Invalid number"];
+
+          
+        telInput.intlTelInput({
+
+
+           
+            geoIpLookup: function (callback) {
+                $.get("https://ipinfo.io", function () {}, "jsonp").always(function (resp) {
+                    var countryCode = (resp && resp.country) ? resp.country : "";
+                    callback(countryCode);
+                });
+            },
+            utilsScript: "{{asset('js/intl/js/utils.js')}}",
+
+            initialCountry: "auto",
+            separateDialCode: true,
+        });
+        var reset = function() {
+
+            errorMsg.innerHTML = "";
+            errorMsg.classList.add("hide");
+            validMsg.classList.add("hide");
+        };
+
+        $('.intl-tel-input').css('width', '100%');
+
+        telInput.on('blur', function () {
+            reset();
+            if ($.trim(telInput.val())) {
+                 
+                if (telInput.intlTelInput("isValidNumber")) {
+                    $('#logphonenum').css("border-color","");
+                    $("#error-msg").html('');
+                    errorMsg.classList.add("hide");
+                    $('#register').attr('disabled',false);
+                } else {
+                   
+                    var errorCode = telInput.intlTelInput("getValidationError");
+                    errorMsg.innerHTML = errorMap[errorCode];
+                    $('#logmobile_codecheck').html("");
+
+                    $('#logphonenum').css("border-color","red");
+                    $('#error-msg').css({"color":"red","margin-top":"5px"});
+                    errorMsg.classList.remove("hide");
+                    $('#register').attr('disabled',true);
+                }
             }
-        }
-    });
-    $('input').on('focus', function () {
-        $(this).parent().removeClass('has-error');
-    });
+        });
+        $('input').on('focus', function () {
+            $(this).parent().removeClass('has-error');
+        });
+        addressDropdown.change(function() {
+            telInput.intlTelInput("setCountry", $(this).val());
+            if ($.trim(telInput.val())) {
+                
+                if (telInput.intlTelInput("isValidNumber")) {
+                    $('#logphonenum').css("border-color","");
+                    $("#error-msg").html('');
+                    errorMsg.classList.add("hide");
+                    $('#register').attr('disabled',false);
+                } else {
+                    
+                    var errorCode = telInput.intlTelInput("getValidationError");
+                    errorMsg.innerHTML = errorMap[errorCode];
+                    $('#logmobile_codecheck').html("");
 
-    $('form').on('submit', function (e) {
-        $('input[name=country_code]').attr('value', $('.selected-dial-code').text());
-    });
-
-</script>
-<script type="text/javascript">
-    var telInput = $('#phonenum');
-    telInput.intlTelInput({
-        geoIpLookup: function (callback) {
-            $.get("https://ipinfo.io", function () {}, "jsonp").always(function (resp) {
-                var countryCode = (resp && resp.country) ? resp.country : "";
-                callback(countryCode);
-            });
-        },
-        initialCountry: "auto",
-        separateDialCode: true,
-        utilsScript: "{{asset('common/js/utils.js')}}"
-    });
-    $('.intl-tel-input').css('width', '100%');
-
-    telInput.on('blur', function () {
-        if ($.trim(telInput.val())) {
-            if (!telInput.intlTelInput("isValidNumber")) {
-                telInput.parent().addClass('has-error');
+                    $('#logphonenum').css("border-color","red");
+                    $('#error-msg').css({"color":"red","margin-top":"5px"});
+                    errorMsg.classList.remove("hide");
+                    $('#register').attr('disabled',true);
+                }
             }
-        }
-    });
-    $('input').on('focus', function () {
-        $(this).parent().removeClass('has-error');
-    });
+        });
 
-    $('form').on('submit', function (e) {
-        $('input[name=country_code]').attr('value', $('.selected-dial-code').text());
-    });
+        $('form').on('submit', function (e) {
+            $('input[name=country_code]').attr('value', $('.selected-dial-code').text());
+        });
 
-</script>
+    </script>
 
 
-    <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+     <script>
+        var tel = $('.phone'),
+            country = $('#country').val();
+        addressDropdown = $("#country");
+        errorMsg1 = document.querySelector("#error-msg1"),
+            validMsg1 = document.querySelector("#valid-msg1");
+        var errorMap = [ "Invalid number", "Invalid country code", "Number Too short", "Number Too long", "Invalid number"];
+        tel.intlTelInput({
+            // allowDropdown: false,
+            // autoHideDialCode: false,
+            // autoPlaceholder: "off",
+            // dropdownContainer: "body",
+            // excludeCountries: ["us"],
+            // formatOnDisplay: false,
+            geoIpLookup: function(callback) {
+                $.get("https://ipinfo.io", function() {}, "jsonp").always(function(resp) {
+                    resp.country = country;
+                    var countryCode = (resp && resp.country) ? resp.country : "";
+                    callback(countryCode);
+                });
+            },
+            // hiddenInput: "full_number",
+            initialCountry: "auto",
+            // nationalMode: false,
+            // onlyCountries: ['us', 'gb', 'ch', 'ca', 'do'],
+            placeholderNumberType: "MOBILE",
+            // preferredCountries: ['cn', 'jp'],
+            separateDialCode: true,
+
+            utilsScript: "{{asset('js/intl/js/utils.js')}}"
+        });
+        var reset = function() {
+            errorMsg1.innerHTML = "";
+            errorMsg1.classList.add("hide");
+            validMsg1.classList.add("hide");
+        };
+
+        addressDropdown.change(function() {
+            tel.intlTelInput("setCountry", $(this).val());
+        });
+
+        tel.on('blur', function () {
+            reset();
+            if ($.trim(tel.val())) {
+                if (tel.intlTelInput("isValidNumber")) {
+                    $('.phone').css("border-color","");
+                    validMsg1.classList.remove("hide");
+                    $('#sendOtp').attr('disabled',false);
+                } else {
+                    var errorCode = tel.intlTelInput("getValidationError");
+                    errorMsg1.innerHTML = errorMap[errorCode];
+                    $('#conmobile').html("");
+
+                    $('.phone').css("border-color","red");
+                    $('#error-msg1').css({"color":"red","margin-top":"5px"});
+                    errorMsg1.classList.remove("hide");
+                    $('#sendOtp').attr('disabled',true);
+                }
+            }
+        });
+    </script>
+
+
+
 
 
 
@@ -558,14 +657,358 @@
     </script>
 
 
+ <script type="text/javascript">
+
+
+
+        function verify_otp_check(){
+            var userOtp = $('#oneTimePassword').val();
+            if (userOtp.length < 4){
+                $('#enterotp').show();
+                $('#enterotp').html("Please Enter A Valid OTP");
+                $('#enterotp').focus();
+                $('#oneTimePassword').css("border-color","red");
+                $('#enterotp').css({"color":"red","margin-top":"5px"});
+
+
+                // mobile_error = false;
+                return false;
+            }
+            else{
+                $('#enterotp').hide();
+                $('#oneTimePassword').css("border-color","");
+                return true;
+
+            }
+        }
+
+        function verifyBySendOtp() {
+            $('#enterotp').hide();
+            if(verify_otp_check()) {
+                $("#verifyOtp").attr('disabled',true);
+                $("#verifyOtp").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Verifying...");
+                var data = {
+                    "mobile":   $('#verify_number').val().replace(/[\. ,:-]+/g, ''),
+                    "code"  :   $('#verify_country_code').val(),
+                    "otp"   :   $('#oneTimePassword').val(),
+                    'id'    :   $('#hidden_user_id').val(),
+                };
+                $.ajax({
+                    url: '{{url('otp/verify')}}',
+                    type: 'POST',
+                    data: data,
+                    success: function (response) {
+                        $("#verifyOtp").attr('disabled',false);
+                        $('#error2').hide();
+                        $('#error').hide();
+                        $('#alertMessage2').show();
+                        var result =  '<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Well Done! </strong>'+response.message+'!</div>';
+                        // $('#alertMessage3').show();
+                        $('#successMessage2').hide();
+                        $('#success').html(result);
+                        $("#verifyOtp").html("Verify OTP");
+                        $('.nav-tabs li a[href="#step1"]').tab('show');
+                        $('.wizard-inner').css('display','none');
+                        setTimeout(()=>{
+                            getLoginTab();
+                        },10)
+                    },
+                    error: function (ex) {
+                        $("#verifyOtp").attr('disabled',false);
+                        var myJSON = JSON.parse(ex.responseText);
+                        var html = '<div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<br><br><ul>';
+                        $("#verifyOtp").html("Verify OTP");
+                        for (var key in myJSON)
+                        {
+                            html += '<li>' + myJSON[key][0] + '</li>'
+                        }
+                        html += '</ul></div>';
+                        $('#successMessage2').hide();
+                        $('#alertMessage2').hide();
+                        $('#error2').show();
+                        document.getElementById('error2').innerHTML = html;
+                        setTimeout(function(){
+                            $('#error2').hide();
+                        }, 5000);
+                    }
+                });
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+
+        function getLoginTab(){
+            registerForm.elements['first_name'].value = '';
+            registerForm.elements['last_name'].value = '';
+            registerForm.elements['email'].value = '';
+            registerForm.elements['company'].value = '';
+            registerForm.elements['bussiness'].value = '';
+            registerForm.elements['company_type'].value = '';
+            registerForm.elements['company_size'].value = '';
+            registerForm.elements['mobile'].value = '';
+            registerForm.elements['address'].value = '';
+            registerForm.elements['user_name'].value = '';
+            registerForm.elements['password'].value = '';
+            registerForm.elements['password_confirmation'].value = '';
+            registerForm.elements['terms'].checked = false;
+
+            $('.nav-tabs li a[href="#step1"]').tab('show');
+            $('.wizard-inner').css('display','none');
+        }
+
+        $(".prev-step").click(function (e) {
+            getLoginTab();
+        });
+
+        //Enter OTP Validation
+        $('#oneTimePassword').keyup(function(){
+            verify_otp_check();
+        });
+
+        //--------------------------------------------------ReSend OTP via SMS---------------------------------------------------//
+
+        $('#resendOTP').on('click',function(){
+            var data = {
+                "mobile":   $('#verify_number').val().replace(/[\. ,:-]+/g, ''),
+                "code"  :  ($('#verify_country_code').val()),
+                "type"  :  "text",
+            };
+            $("#resendOTP").attr('disabled',true);
+            $("#resendOTP").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Resending..");
+            $.ajax({
+                url: '{{url('resend_otp')}}',
+                type: 'GET',
+                data: data,
+                success: function (response) {
+                    $("#resendOTP").attr('disabled',false);
+                    $("#resendOTP").html("Resend OTP");
+                    $('#successMessage2').hide ();
+                    $('#alertMessage3').show();
+                    $('#error2').hide();
+                    var result =  '<div class="alert alert-success"> <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Well Done! </strong>'+response.message+'!</div>';
+                    $('#alertMessage3').html(result+ ".");
+                },
+                error: function (ex) {
+                    $("#resendOTP").attr('disabled',false);
+                    $("#resendOTP").html("Resend OTP");
+                    var myJSON = JSON.parse(ex.responseText);
+                    var html = '<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>Oh Snap! </strong>Something went wrong<br><br><ul>';
+                    for (var key in myJSON)
+                    {
+                        html += '<li>' + myJSON[key][0] + '</li>'
+                    }
+                    html += '</ul></div>';
+                    ('#successMessage2').hide();
+                    $('#alertMessage2').hide();
+                    $('#alertMessage3').hide();
+                    $('#error2').show();
+                    document.getElementById('error2').innerHTML = html;
+                }
+            })
+
+        });
+
+        //---------------------------------------Resend OTP via voice call--------------------------------------------------//
+
+        $('#voiceOTP').on('click',function(){
+            var data = {
+                "mobile":   $('#verify_number').val().replace(/[\. ,:-]+/g, ''),
+                "code"  :  ($('#verify_country_code').val()),
+                "type"  :  "voice",
+            };
+            $("#voiceOTP").attr('disabled',true);
+            $("#voiceOTP").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Sending Voice Call..");
+            $.ajax({
+                url: '{{url('resend_otp')}}',
+                type: 'GET',
+                data: data,
+                success: function (response) {
+                    $("#voiceOTP").attr('disabled',false);
+                    $("#voiceOTP").html("Receive OTP via Voice call");
+                    $('#successMessage2').hide ();
+                    $('#alertMessage3').show();
+                    $('#error2').hide();
+                    var result =  '<div class="alert alert-success"> <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Well Done! </strong>'+response.message+'!</div>';
+                    $('#alertMessage3').html(result+ ".");
+                },
+                error: function (ex) {
+                    $("#voiceOTP").attr('disabled',false);
+                    $("#voiceOTP").html("Receive OTP via Voice call");
+                    var myJSON = JSON.parse(ex.responseText);
+                    var html = '<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>Oh Snap! </strong>Something went wrong<br><br><ul>';
+                    for (var key in myJSON)
+                    {
+                        html += '<li>' + myJSON[key][0] + '</li>'
+                    }
+                    html += '</ul></div>';
+                    $('#alertMessage2').hide();
+                    $('#alertMessage3').hide();
+                    $('#error2').show();
+                    document.getElementById('error2').innerHTML = html;
+                }
+            })
+
+        });
+
+
+    </script>
+
+
+
 
 
 
     <script type="text/javascript">
 
-        $('.closebutton').on('click',function(){
-            location.reload();
+             /*
+        * Email ANd Mobile Validation when Send Button is cliced on Tab2
+         */
+        /////////////////////////////////////////////////////////////////////////////////////////////////
+        $('#verify_email').keyup(function(){//Email
+            verify_email_check();
         });
+
+        function verify_email_check(){
+            if($("#emailstatusConfirm").val() ==1) {//if email verification is active frm admin panlel then validate else don't
+
+                var pattern = new RegExp(/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/);
+                if (pattern.test($('#verify_email').val())) {
+                    $('#conemail').hide();
+                    $('#verify_email').css("border-color","");
+                    return true;
+                } else{
+                    $('#conemail').show();
+                    $('#conemail').html("Please Enter a valid email");
+                    $('#conemail').focus();
+                    $('#verify_email').css("border-color","red");
+                    $('#conemail').css({"color":"red","margin-top":"5px"});
+                    return false;
+
+                }
+            }
+            return true;
+
+        }
+
+        $('#verify_number').keyup(function(){//Mobile
+            verify_number_check();
+        });
+
+        function verify_number_check(){
+
+            var userNumber = $('#verify_number').val();
+            if($("#mobstatusConfirm").val() ==1) { //If Mobile Status Is Active
+                if (userNumber.length < 5){
+                    $('#conmobile').show();
+                    $('#conmobile').html("Please Enter Your Mobile No.");
+                    $('#conmobile').focus();
+                    $('#verify_number').css("border-color","red");
+                    $('#conmobile').css({"color":"red","margin-top":"5px"});
+
+
+                    // mobile_error = false;
+                    return false;
+                }
+                else{
+                    $('#conmobile').hide();
+
+                    $('#verify_number').css("border-color","");
+                    return true;
+
+                }
+            }
+            return true;
+
+        }
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /*
+          * After Send Button is Clicked on Tab 2 fOR sending OTP AND Email
+         */
+        function sendOTP() {
+            $('#conemail').hide();
+            $('#conmobile').hide();
+            var mail_error = true;
+            var mobile_error = true;
+            if((verify_email_check()) && (verify_number_check()))
+            {
+
+                var oldemail=sessionStorage.getItem('oldemail');
+                var newemail = $('#verify_email').val(); // this.value
+                var oldnumber = sessionStorage.getItem('oldemail');
+                var newnumber = $('#verify_number').val();
+
+                $("#sendOtp").attr('disabled',true);
+                $("#sendOtp").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Sending...");
+                var data = {
+                    "newemail": newemail,
+                    "newnumber": newnumber,
+                    "oldnumber": oldnumber,
+                    "oldemail": oldemail,
+                    "email": $('#verify_email').val(),
+                    "mobile": $('#verify_number').val().replace(/[\. ,:-]+/g, ''),
+                    'code': $('#verify_country_code').val(),
+                    'id': $('#user_id').val(),
+                    'password': $('#email_password').val()
+                };
+                $.ajax({
+                    url: '{{url('otp/sendByAjax')}}',
+                    type: 'POST',
+                    data: data,
+                    success: function (response) {
+                        // window.history.replaceState(response.type, "TitleTest", "login");
+                        $("#sendOtp").attr('disabled',false);
+                        var result =  '<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Almost there! </strong>'+response.message+'</div>';
+                        if (($("#checkOtpStatus").val()) == 1 ) {
+                            $('#successMessage2').html(result);
+                            $('#error1').hide();
+                            $('.wizard-inner').css('display','none');
+                            var $active = $('.wizard .nav-tabs li.active');
+                            $active.next().removeClass('disabled');
+                            nextTab($active);
+
+                            setTimeout(function(){
+                                sessionStorage.removeItem('oldemail');
+                                sessionStorage.clear();
+                            }, 500);
+                            window.scrollTo(0, 10);
+                            verify_otp_form.elements['hidden_user_id'].value = $('#user_id').val();
+                            $("#sendOtp").html("Send");
+                        } else {//Show Only Email Success Message when Mobile Status is Not Active
+                            $('#emailsuccess').html(result);
+                            $('#successMessage1').hide();
+                            $("#sendOtp").html("Send");
+                            $('#error1').hide();
+                        }
+                    },
+                    error: function (ex) {
+                        $("#sendOtp").attr('disabled',false);
+                        var myJSON = JSON.parse(ex.responseText);
+                        var html = '<div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<br><br><ul>';
+                        $("#sendOtp").html("Send");
+
+                        html += '<li>' + myJSON.message + '</li>'
+
+                        html += '</ul></div>';
+                        $('#alertMessage1').hide();
+                        $('#successMessage1').hide();
+                        $('#error1').show();
+                        document.getElementById('error1').innerHTML = html;
+                        setTimeout(function(){
+                            $('#error1').hide();
+                        }, 5000);
+                    }
+                });
+            }
+            else{
+                return false;
+            }
+
+        }
+
+      
         //robot validation for Login Form
         function validateform() {
             var input = $(".g-recaptcha :input[name='g-recaptcha-response']");
@@ -906,12 +1349,12 @@
                     },
                     error: function (data) {
                         $("#logregister").attr('disabled',false);
-                        location.reload();
+                        // location.reload();
                         $("#logregister").html("Register");
                         $('html, body').animate({scrollTop:0}, 500);
 
 
-                        var html = '<div class="alert alert-success alert-dismissable"><strong><i class="fas fa-exclamation-triangle"></i>Oh Snap! </strong>'+data.responseJSON.message+' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><br><ul>';
+                        var html = '<div class="alert alert-danger alert-dismissable"><strong><i class="fas fa-exclamation-triangle"></i>Oh Snap! </strong>'+data.responseJSON.message+' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><br><ul>';
                         for (var key in data.responseJSON.errors)
                         {
                             html += '<li>' + data.responseJSON.errors[key][0] + '</li>'
@@ -1063,20 +1506,7 @@
     <script type="text/javascript"
             src="//www.googleadservices.com/pagead/conversion_async.js">
     </script>
-    <!-- Facebook Pixel Code -->
-    <!-- <script>
-    !function(f,b,e,v,n,t,s)
-    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-    n.queue=[];t=b.createElement(e);t.async=!0;
-    t.src=v;s=b.getElementsByTagName(e)[0];
-    s.parentNode.insertBefore(t,s)}(window,document,'script',
-    'https://connect.facebook.net/en_US/fbevents.js');
-     fbq('init', '308328899511239');
-    fbq('track', 'PageView');
-
-    </script> -->
+   
 
     <script type="text/javascript"
             src="//www.googleadservices.com/pagead/conversion_async.js">
@@ -1104,14 +1534,7 @@
                 }
             });
 
-            /*$(".next-step").click(function (e) {
-                $('.wizard-inner').show();
-                var $active = $('.wizard .nav-tabs li.active');
-                $active.next().removeClass('disabled');
-                nextTab($active);
-                window.scrollTo(0, 10);
-
-            });*/
+        
 
             $(".prev").click(function (e) {
 
@@ -1132,83 +1555,7 @@
     </script>
   
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
- 
 
-      <script type="text/javascript">
-        var telInput = $('#logphonenum'),
-            errorMsg = document.querySelector("#error-msg"),
-            validMsg = document.querySelector("#valid-msg"),
-            addressDropdown = $("#country");
-        var errorMap = [ "Invalid number", "Invalid country code", "Number Too short", "Number Too long", "Invalid number"];
-
-        telInput.intlTelInput({
-            geoIpLookup: function (callback) {
-                $.get("https://ipinfo.io", function () {}, "jsonp").always(function (resp) {
-                    var countryCode = (resp && resp.country) ? resp.country : "";
-                    callback(countryCode);
-                });
-            },
-            initialCountry: "auto",
-            separateDialCode: true,
-        });
-        var reset = function() {
-            errorMsg.innerHTML = "";
-            errorMsg.classList.add("hide");
-            validMsg.classList.add("hide");
-        };
-
-        $('.intl-tel-input').css('width', '100%');
-
-        telInput.on('blur', function () {
-            reset();
-            if ($.trim(telInput.val())) {
-                if (telInput.intlTelInput("isValidNumber")) {
-                    $('#logphonenum').css("border-color","");
-                    $("#error-msg").html('');
-                    errorMsg.classList.add("hide");
-                    $('#register').attr('disabled',false);
-                } else {
-                    var errorCode = telInput.intlTelInput("getValidationError");
-                    errorMsg.innerHTML = errorMap[errorCode];
-                    $('#mobile_codecheck').html("");
-
-                    $('#logphonenum').css("border-color","red");
-                    $('#error-msg').css({"color":"red","margin-top":"5px"});
-                    errorMsg.classList.remove("hide");
-                    $('#register').attr('disabled',true);
-                }
-            }
-        });
-        $('input').on('focus', function () {
-            $(this).parent().removeClass('has-error');
-        });
-        addressDropdown.change(function() {
-            telInput.intlTelInput("setCountry", $(this).val());
-            if ($.trim(telInput.val())) {
-                if (telInput.intlTelInput("isValidNumber")) {
-                    $('#logphonenum').css("border-color","");
-                    $("#error-msg").html('');
-                    errorMsg.classList.add("hide");
-                    $('#register').attr('disabled',false);
-                } else {
-                    var errorCode = telInput.intlTelInput("getValidationError");
-                    errorMsg.innerHTML = errorMap[errorCode];
-                    $('#mobile_codecheck').html("");
-
-                    $('#logphonenum').css("border-color","red");
-                    $('#error-msg').css({"color":"red","margin-top":"5px"});
-                    errorMsg.classList.remove("hide");
-                    $('#register').attr('disabled',true);
-                }
-            }
-        });
-
-        $('form').on('submit', function (e) {
-            $('input[name=country_code]').attr('value', $('.selected-dial-code').text());
-        });
-
-    </script>
 
     <noscript>
         <img height="1" width="1"

@@ -12,6 +12,7 @@ use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\Http\Controllers\Common\PhpMailController;
 
 
 class RegisterController extends Controller
@@ -43,6 +44,7 @@ class RegisterController extends Controller
     public function __construct()
     {
         $this->middleware('guest');
+
     }
 
     public function postRegister(ProfileRequest $request, User $user)
@@ -87,7 +89,9 @@ class RegisterController extends Controller
 
             $userData = 'Password:' . ' ' . $password;
             $setting = Setting::find(1);
-            $mail = new \App\Http\Controllers\Common\PhpMailController();
+
+            $mail = new PhpMailController();
+
             $mail->sendEmail($setting->email, $user->email, $userData, 'New Password created');
 
 

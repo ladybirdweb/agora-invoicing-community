@@ -786,28 +786,6 @@ if($script->on_every_page == 1) {
         });
 
     </script>
-<!--      <script src="{{asset('build/js/intlTelInput.js') }}"></script>
- -->
-<!-- <script>
- 
-
-  var input = document.querySelector("#phonenum");
-      window.intlTelInput(input, {
-      initialCountry: "auto",
-      geoIpLookup: function(callback) {
-      $.get('https://ipinfo.io', function() {}, "jsonp").always(function(resp) {
-      var countryCode = (resp && resp.country) ? resp.country : "us";
-      callback(countryCode);
-    });
-  },
-  utilsScript: "../../build/js/utils.js?1638200991544" // just for formatting/placeholders etc
-});
-</script> -->
-
-<!--End of Tawk.to Script-->
-<!--End of Tawk.to Script-->
-
-<!--  -->
 
 
     </body>

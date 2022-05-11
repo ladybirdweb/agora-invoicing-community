@@ -135,9 +135,7 @@
                                 </div>
                                 <div id="alertMessage1"></div>
                                 <div id="alertMessage2"></div>
-                                <!-- <div id="error2">
-                                </div>
-                                <div id="alertMessage2" class="-text" ></div> -->
+                             
 
                                 <div class="row">
                                     <div class="col-sm-6">
@@ -1104,14 +1102,7 @@
                 }
             });
 
-            /*$(".next-step").click(function (e) {
-                $('.wizard-inner').show();
-                var $active = $('.wizard .nav-tabs li.active');
-                $active.next().removeClass('disabled');
-                nextTab($active);
-                window.scrollTo(0, 10);
-
-            });*/
+        
 
             $(".prev").click(function (e) {
 

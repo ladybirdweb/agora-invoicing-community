@@ -310,23 +310,7 @@ $country = findCountryByGeoip($location['iso_code']);
         });
 
     </script>
-<!-- <script src="{{asset('build/js/intlTelInput.js') }}"></script>
 
-<script>
- 
-
-  var input = document.querySelector("#phonenum");
-      window.intlTelInput(input, {
-      initialCountry: "auto",
-      geoIpLookup: function(callback) {
-      $.get('https://ipinfo.io', function() {}, "jsonp").always(function(resp) {
-      var countryCode = (resp && resp.country) ? resp.country : "us";
-      callback(countryCode);
-    });
-  },
-  utilsScript: "../../build/js/utils.js?1638200991544" // just for formatting/placeholders etc
-});
-</script> -->
 
     <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo $analyticsTag; ?>"></script>
@@ -844,20 +828,7 @@ chosen link or button. -->
 <script type="text/javascript"
         src="//www.googleadservices.com/pagead/conversion_async.js">
 </script>
-<!-- Facebook Pixel Code -->
-<!-- <script>
-!function(f,b,e,v,n,t,s)
-{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-n.queue=[];t=b.createElement(e);t.async=!0;
-t.src=v;s=b.getElementsByTagName(e)[0];
-s.parentNode.insertBefore(t,s)}(window,document,'script',
-'https://connect.facebook.net/en_US/fbevents.js');
- fbq('init', '308328899511239');
-fbq('track', 'PageView');
 
-</script> -->
 
 <script type="text/javascript"
         src="//www.googleadservices.com/pagead/conversion_async.js">
@@ -885,14 +856,7 @@ fbq('track', 'PageView');
                 }
             });
 
-            /*$(".next-step").click(function (e) {
-                $('.wizard-inner').show();
-                var $active = $('.wizard .nav-tabs li.active');
-                $active.next().removeClass('disabled');
-                nextTab($active);
-                window.scrollTo(0, 10);
-
-            });*/
+          
 
             $(".prev").click(function (e) {
 
@@ -912,7 +876,7 @@ fbq('track', 'PageView');
         }
     </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-<!-- <script>
+<script>
     var input = document.querySelector("#phonenum"),
         errorMsg = document.querySelector("#error-msg"),
         validMsg = document.querySelector("#valid-msg");
@@ -950,7 +914,7 @@ fbq('track', 'PageView');
     // on keyup / change flag: reset
     input.addEventListener('change', reset);
     input.addEventListener('keyup', reset);
-</script> -->
+</script>
  
 
 <noscript>

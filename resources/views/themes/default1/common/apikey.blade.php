@@ -557,36 +557,56 @@ $licenseurl =  $details["url"];
     });
 
 function licenseDetails($licensekey, $licenseurl){
-if ($('#License').prop("checked")) {
+   if ($('#License').prop("checked")) {
           var checkboxvalue = 1;
+          var valid = true;
           if ($('#license_api_secret').val() =="" ) {
              $('#license_apiCheck').show();
              $('#license_apiCheck').html("Please Enter API Secret Key");
               $('#license_api_secret').css("border-color","red");
               $('#license_apiCheck').css({"color":"red","margin-top":"5px"});
-              return false;
+                setTimeout(function(){
+                    $('#license_apiCheck').hide();
+                      $('#license_api_secret').css("border-color","");
+                        }, 1500);
+              valid = false;
           }
             if ($('#license_api_secret').val() != $licensekey ) {
              $('#license_apiCheck').show();
              $('#license_apiCheck').html("Please Enter Valid APT Secret Key");
               $('#license_api_secret').css("border-color","red");
               $('#license_apiCheck').css({"color":"red","margin-top":"5px"});
-              return false;
+              setTimeout(function(){
+                    $('#license_apiCheck').hide();
+                      $('#license_api_secret').css("border-color","");
+                        }, 1500);
+              valid = false;
+
           }
+
             if ($('#license_api_url').val() =="" ) {
              $('#license_urlCheck').show();
              $('#license_urlCheck').html("Please Enter API URL");
               $('#license_api_url').css("border-color","red");
               $('#license_urlCheck').css({"color":"red","margin-top":"5px"});
-              return false;
+                setTimeout(function(){
+                    $('#license_urlCheck').hide();
+                      $('#license_api_url').css("border-color","");
+                        }, 1500);
+              valid = false;
           }
           if ($('#license_api_url').val() != $licenseurl) {
              $('#license_urlCheck').show();
              $('#license_urlCheck').html("Please Enter Valid API URL");
               $('#license_api_url').css("border-color","red");
               $('#license_urlCheck').css({"color":"red","margin-top":"5px"});
-              return false;
+                setTimeout(function(){
+                    $('#license_urlCheck').hide();
+                      $('#license_api_url').css("border-color","");
+                        }, 1500);
+              valid = false;
           }
+          return valid;
          
     }
     else{

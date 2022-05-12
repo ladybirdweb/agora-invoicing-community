@@ -11,9 +11,6 @@ use App\Model\Product\Subscription;
 use App\Plugins\Stripe\Controllers\SettingsController;
 use App\Traits\Order\UpdateDates;
 use App\User;
-use App\Model\Product\Subscription;
-use App\Model\Payment\Plan;
-use DB;
 use Crypt;
 use Symfony\Component\Mime\Email;
 
@@ -169,7 +166,7 @@ class BaseOrderController extends ExtendedOrderController
             $licenseExpiry = $this->getLicenseExpiryDate($permissions['generateLicenseExpiryDate'], $days);
             $updatesExpiry = $this->getUpdatesExpiryDate($permissions['generateUpdatesxpiryDate'], $days);
             $supportExpiry = $this->getSupportExpiryDate($permissions['generateSupportExpiryDate'], $days);
-            $user_id =  $this->order->find($orderid)->client;
+            $user_id = $this->order->find($orderid)->client;
             $this->subscription->create(['user_id' => $user_id,
                 'plan_id' => $planid, 'order_id' => $orderid, 'update_ends_at' => $updatesExpiry, 'ends_at' => $licenseExpiry, 'support_ends_at' => $supportExpiry, 'version' => $version, 'product_id' => $product, ]);
 

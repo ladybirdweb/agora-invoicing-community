@@ -262,7 +262,6 @@ class OrderSearchController extends Controller
      */
     public function orderTill($from, $till, $join)
     {
-
         if ($till) {
             $from = Carbon::parse($from)->startOfDay();
             $till = Carbon::parse($till)->endOfDay();

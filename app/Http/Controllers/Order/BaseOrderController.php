@@ -284,6 +284,23 @@ class BaseOrderController extends ExtendedOrderController
 
         try {
             $knowledgeBaseUrl = $setting->company_url;
+            $from = $setting->email;
+            $to = $user->email;
+            $adminEmail = $setting->company_email;
+            $subject = $template->name;
+            $data = $template->data;
+            $replace = [
+                'name'          => $user->first_name.' '.$user->last_name,
+                'serialkeyurl' => $myaccounturl,
+                'downloadurl'   => $downloadurl,
+                'invoiceurl'    => $invoiceurl,
+                'product'       => $product,
+                'number'        => $order->number,
+                'expiry'        => app('App\Http\Controllers\Order\OrderController')->expiry($orderid),
+                'url'           => app('App\Http\Controllers\Order\OrderController')->renew($orderid),
+                'knowledge_base'=> $knowledgeBaseUrl,
+
+            ];
             $type = '';
             if ($template) {
                 $type_id = $template->type;

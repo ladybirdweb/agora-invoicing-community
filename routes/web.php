@@ -94,7 +94,9 @@ use Illuminate\Support\Facades\Route;
              * Front Client Pages
              */
 
-            Route::post('first-login', [FreeTrailController::class, 'firstLoginAttempt']);
+            Route::post('first-login', 'FreeTrailController@firstLoginAttempt');
+
+            Route::get('my-invoices', 'Front\ClientController@invoices')->name('my-invoices');
 
             Route::get('my-invoices', [Front\ClientController::class, 'invoices'])->name('my-invoices');
 

@@ -2,10 +2,6 @@
 
 namespace Tests\Unit;
 
-use App\Http\Controllers\License\LocalizedLicenseController;
-use App\User;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Request;
 use Tests\DBTestCase;
 
 class LocalizedLicenseControllerTest extends DBTestCase

@@ -78,33 +78,34 @@ class LicenseController extends Controller
             return $result;
         }
     }
+
     /**
-     * Get request to the License mnanager
+     * Get request to the License mnanager.
      */
     private function getCurl($get_url)
     {
-     
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $get_url);
-            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 90);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            if (curl_exec($ch) === false) {
-                echo 'Curl error: '.curl_error($ch);
-            }
-            $content = curl_exec($ch);
-            curl_close($ch);
-            return json_decode($content, true);
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $get_url);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 90);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        if (curl_exec($ch) === false) {
+            echo 'Curl error: '.curl_error($ch);
+        }
+        $content = curl_exec($ch);
+        curl_close($ch);
 
+        return json_decode($content, true);
     }
-    /**
-     * Return API key and API url 
-     */
 
+    /**
+     * Return API key and API url.
+     */
     public function getLicensekey()
     {
         $url = $this->url;
         $getkey = $this->getCurl($url.'api/admin/viewApiKeys?token='.$this->token);
-        return ['data' => $getkey , 'url' => $url];
+
+        return ['data' => $getkey, 'url' => $url];
     }
 
     /*

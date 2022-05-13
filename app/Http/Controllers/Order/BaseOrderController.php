@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Order;
 use App\Http\Controllers\License\LicensePermissionsController;
 use App\Model\Common\StatusSetting;
 use App\Model\Order\Order;
+use App\Model\Payment\Plan;
 use App\Model\Product\Product;
+use App\Model\Product\Subscription;
 use App\Plugins\Stripe\Controllers\SettingsController;
 use App\Traits\Order\UpdateDates;
 use App\User;
@@ -19,6 +21,14 @@ class BaseOrderController extends ExtendedOrderController
     {
         $this->middleware('auth');
         $this->middleware('admin');
+
+        $this->order = new Order();
+
+        $this->product = new Product();
+
+        $this->subscription = new Subscription();
+
+        $this->plan = new Plan();
     }
 
     use UpdateDates;
@@ -281,8 +291,8 @@ class BaseOrderController extends ExtendedOrderController
                 'invoiceurl'    => $invoiceurl,
                 'product'       => $product,
                 'number'        => $order->number,
-                'expiry'        => $this->expiry($orderid),
-                'url'           => $this->renew($orderid),
+                'expiry'        => app('App\Http\Controllers\Order\OrderController')->expiry($orderid),
+                'url'           => app('App\Http\Controllers\Order\OrderController')->renew($orderid),
                 'knowledge_base'=> $knowledgeBaseUrl,
 
             ];

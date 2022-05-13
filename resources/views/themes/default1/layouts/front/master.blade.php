@@ -121,6 +121,26 @@ if($script->on_every_page == 1) {
                                        <div class="header-nav-main header-nav-main-effect-1 header-nav-main-sub-effect-1">
                                             <nav class="collapse">
                                                 <ul class="nav nav-pills" id="mainNav">
+
+                                                      @auth 
+                                                    <?php
+                                                    $id = \Auth::user()->id;
+                                                    $user = \App\User::where('id', '=', $id)->value('first_time_login');?>
+
+                                                     @if(Auth::check() && $user == 0)
+                                                    
+
+                                                  
+                                                      <li class="dropdown">
+                                                        <a  class="nav-link open-createTenantDialog" style="cursor: pointer;">
+                                                             Faveo Cloud-Free Trial
+                                                        </a>
+                                                    </li>
+
+                                                     @endif
+                                                      @endauth
+
+
                                               <?php
                                                 $groups = \App\Model\Product\ProductGroup::where('hidden','!=', 1)->get();
 
@@ -386,6 +406,54 @@ if($script->on_every_page == 1) {
                 </div>
 
             </div>
+
+
+
+ @auth
+
+
+<div class="modal fade" id="tenant" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            {!! Form::open() !!}
+            <div class="modal-header">
+                 <h4 class="modal-title">Create an instance</h4>
+            </div>
+
+            <div class="modal-body">
+                <div id="success">
+                 </div>
+                  <div id="error">
+                 </div>
+                <!-- Form  -->
+
+            <div class="container">
+                <form action="" method="post" style="width:500px; margin: auto auto;" class="card card-body">
+                    <div class="form-group">
+                        <label>Domain</label>
+                        <div class="row" style="margin-left: 2px; margin-right: 2px;">
+                            
+                            <input  type="text"   name="domain" autocomplete="off" id= "userdomain"  class="form-control col col-4" placeholder="Domain" required>
+                            <input type="text" class="form-control col col-8" value=".faveocloud.com" disabled="true">
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default pull-left closebutton" id="closebutton" data-dismiss="modal"><i class="fa fa-times">&nbsp;&nbsp;</i>Close</button>
+                 <button type="submit" data-id=""  class="btn btn-primary createTenant" id="createTenant" onclick="firstlogin({{Auth::user()->id}})"><i class="fa fa-check">&nbsp;&nbsp;</i>Submit</button>
+                {!! Form::close()  !!}
+            </div>
+            <!-- /Form -->
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal --> 
+@endauth
+
           
             <footer id="footer">
               
@@ -711,6 +779,69 @@ if($script->on_every_page == 1) {
                         }
                     });
                   }
+
+
+            $(document).ready(function(){
+    $('.createTenant').attr('disabled',true);
+    $('#userdomain').keyup(function(){
+        if($(this).val().length !=0)
+            $('.createTenant').attr('disabled', false);            
+        else
+            $('.createTenant').attr('disabled',true);
+    })
+   });
+
+                  
+
+    function firstlogin(id) 
+    {
+        $('#createTenant').attr('disabled',true)
+        $("#createTenant").html("<i class='fas fa-circle-notch fa-spin'></i>Please Wait...");
+        var domain = $('#userdomain').val();
+        var password = $('#password').val();
+           
+               $.ajax({
+                    type: 'POST',
+                    data: {'id':id,'password': password,'domain' : domain},
+                    url: "{{url('first-login')}}",
+                   success: function (data) {
+                        if (data.status == 'true') {
+                              $('#error').hide();
+                            $('#success').show();
+                           var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="fa fa-check"></i>Success! </strong>'+data.message+'!</div>';
+                              $('#success').html(result);
+
+                        }else if(data.status == 'false') {
+                             console.log('here');
+                            $('#error').show();
+                            $('#success').hide();
+                            var result =  '<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>Whoops! </strong>Something went wrong<br><ul><li>'+data.message+'</li></ul></div>';
+                                $('#error').html(result);
+                        }
+                },error: function (response) {
+                    $('#createTenant').attr('disabled',false)
+                    $("#createTenant").html("<i class='fa fa-check'>&nbsp;&nbsp;</i>Submit");
+                    $("#generate").html("<i class='fa fa-check'>&nbsp;&nbsp;</i>Submit");
+                     $.each(data,function(value){
+                          var html = '<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong>Whoops! </strong>Something went wrong<ul>';
+                    html += '<li>' + value.message + '</li>'
+                });
+
+                }
+
+
+            }) ;
+           }
+    
+  
+        $(document).on("click", ".open-createTenantDialog", function () {
+    
+     $('#tenant').modal('show');
+});
+    $('.closebutton').on('click',function(){
+        location.reload();
+    });
+
 
 
         </script>

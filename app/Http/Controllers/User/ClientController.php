@@ -15,7 +15,6 @@ use App\Traits\PaymentsAndInvoices;
 use App\User;
 use DB;
 use Illuminate\Http\Request;
-use DB;
 
 class ClientController extends AdvanceSearchController
 {
@@ -341,10 +340,10 @@ class ClientController extends AdvanceSearchController
             //for display
             $timezones = array_column($display, 'name', 'id');
             $state = getStateByCode($user->state);
-            $managers = User::select(DB::raw('CONCAT(first_name, " ", last_name) As first_name'),'id')
+            $managers = User::select(DB::raw('CONCAT(first_name, " ", last_name) As first_name'), 'id')
             ->where('role', 'admin')->where('position', 'manager')
-            ->get()->pluck('first_name','id');
-            $acc_managers = User::select(DB::raw('CONCAT(first_name, " ", last_name) As first_name'),'id')
+            ->get()->pluck('first_name', 'id');
+            $acc_managers = User::select(DB::raw('CONCAT(first_name, " ", last_name) As first_name'), 'id')
             ->where('role', 'admin')->where('position', 'account_manager')->get()
             ->pluck('first_name', 'id');
             $selectedCurrency = Currency::where('code', $user->currency)

@@ -2,6 +2,26 @@
 
 All notable changes to `laravel-referer` will be documented in this file
 
+## 1.7.3 - 2021-05-07
+
+- fix laravel-referer 1.7.2 on Laravel 7.30.4 (#39)
+
+## 1.7.2 - 2021-04-06
+
+-  prep for Octane (#37)
+
+## 1.7.1 - 2021-01-15
+
+- add support for PHP 8
+
+## 1.7.0 - 2020-09-08
+
+- add support for Laravel 8
+
+## 1.6.1 - 2020-07-14
+
+- fixes bug with null values for session key arg in Referer class constructor (#30)
+
 ## 1.6.0 - 2020-03-03
 
 - add support for Laravel 7

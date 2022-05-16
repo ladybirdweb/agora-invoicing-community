@@ -447,6 +447,34 @@ $c);
 array('a' => $a, 'b' => $b,
 'c' => $c);
 
+array(
+ static function() {
+     return null;
+ },
+ (array) array(),
+ (bool) array(),
+ (double) array(),
+ (int) array(),
+ (object) array(),
+ (string) array(),
+ (unset) array(),
+);
+
+array(
+ 'foo',
+ 'bar'
+ // This is a non-fixable error.
+ ,
+);
+
+yield array(
+    static fn () : string => '',
+);
+
+yield array(
+       static fn () : string => '',
+      );
+
 // Intentional syntax error.
 $a = array(
       'a' =>

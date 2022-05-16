@@ -42,7 +42,6 @@ use phpmock\functions\UsleepFunction;
  */
 class SleepEnvironmentBuilder
 {
-
     /**
      * @var array The namespaces for the mock environment.
      */
@@ -52,7 +51,7 @@ class SleepEnvironmentBuilder
      * @var mixed the timestamp.
      */
     private $timestamp;
-    
+
     /**
      * Add a namespace for the mock environment.
      *

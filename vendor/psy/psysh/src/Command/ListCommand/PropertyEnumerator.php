@@ -3,7 +3,7 @@
 /*
  * This file is part of Psy Shell.
  *
- * (c) 2012-2020 Justin Hileman
+ * (c) 2012-2022 Justin Hileman
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -21,7 +21,7 @@ class PropertyEnumerator extends Enumerator
     /**
      * {@inheritdoc}
      */
-    protected function listItems(InputInterface $input, \Reflector $reflector = null, $target = null)
+    protected function listItems(InputInterface $input, \Reflector $reflector = null, $target = null): array
     {
         // only list properties when a Reflector is present.
 
@@ -39,8 +39,8 @@ class PropertyEnumerator extends Enumerator
             return [];
         }
 
-        $showAll    = $input->getOption('all');
-        $noInherit  = $input->getOption('no-inherit');
+        $showAll = $input->getOption('all');
+        $noInherit = $input->getOption('no-inherit');
         $properties = $this->prepareProperties($this->getProperties($showAll, $reflector, $noInherit), $target);
 
         if (empty($properties)) {
@@ -62,7 +62,7 @@ class PropertyEnumerator extends Enumerator
      *
      * @return array
      */
-    protected function getProperties($showAll, \Reflector $reflector, $noInherit = false)
+    protected function getProperties(bool $showAll, \Reflector $reflector, bool $noInherit = false): array
     {
         $className = $reflector->getName();
 
@@ -77,7 +77,7 @@ class PropertyEnumerator extends Enumerator
             }
         }
 
-        \ksort($properties, SORT_NATURAL | SORT_FLAG_CASE);
+        \ksort($properties, \SORT_NATURAL | \SORT_FLAG_CASE);
 
         return $properties;
     }
@@ -89,14 +89,14 @@ class PropertyEnumerator extends Enumerator
      *
      * @return array
      */
-    protected function prepareProperties(array $properties, $target = null)
+    protected function prepareProperties(array $properties, $target = null): array
     {
         // My kingdom for a generator.
         $ret = [];
 
         foreach ($properties as $name => $property) {
             if ($this->showItem($name)) {
-                $fname = '$' . $name;
+                $fname = '$'.$name;
                 $ret[$fname] = [
                     'name'  => $fname,
                     'style' => $this->getVisibilityStyle($property),
@@ -115,7 +115,7 @@ class PropertyEnumerator extends Enumerator
      *
      * @return string
      */
-    protected function getKindLabel(\ReflectionClass $reflector)
+    protected function getKindLabel(\ReflectionClass $reflector): string
     {
         if (\method_exists($reflector, 'isTrait') && $reflector->isTrait()) {
             return 'Trait Properties';
@@ -131,7 +131,7 @@ class PropertyEnumerator extends Enumerator
      *
      * @return string
      */
-    private function getVisibilityStyle(\ReflectionProperty $property)
+    private function getVisibilityStyle(\ReflectionProperty $property): string
     {
         if ($property->isPublic()) {
             return self::IS_PUBLIC;
@@ -150,8 +150,12 @@ class PropertyEnumerator extends Enumerator
      *
      * @return string
      */
-    protected function presentValue(\ReflectionProperty $property, $target)
+    protected function presentValue(\ReflectionProperty $property, $target): string
     {
+        if (!$target) {
+            return '';
+        }
+
         // If $target is a class or trait (try to) get the default
         // value for the property.
         if (!\is_object($target)) {
@@ -161,9 +165,9 @@ class PropertyEnumerator extends Enumerator
                 if (\array_key_exists($property->name, $props)) {
                     $suffix = $property->isStatic() ? '' : ' <aside>(default)</aside>';
 
-                    return $this->presentRef($props[$property->name]) . $suffix;
+                    return $this->presentRef($props[$property->name]).$suffix;
                 }
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 // Well, we gave it a shot.
             }
 

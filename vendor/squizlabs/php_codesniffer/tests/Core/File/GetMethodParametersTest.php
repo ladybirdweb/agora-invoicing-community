@@ -275,6 +275,72 @@ class GetMethodParametersTest extends AbstractMethodUnitTest
 
 
     /**
+     * Verify recognition of PHP8 mixed type declaration.
+     *
+     * @return void
+     */
+    public function testPHP8MixedTypeHint()
+    {
+        $expected    = [];
+        $expected[0] = [
+            'name'              => '$var1',
+            'content'           => 'mixed &...$var1',
+            'pass_by_reference' => true,
+            'variable_length'   => true,
+            'type_hint'         => 'mixed',
+            'nullable_type'     => false,
+        ];
+
+        $this->getMethodParametersTestHelper('/* '.__FUNCTION__.' */', $expected);
+
+    }//end testPHP8MixedTypeHint()
+
+
+    /**
+     * Verify recognition of PHP8 mixed type declaration with nullability.
+     *
+     * @return void
+     */
+    public function testPHP8MixedTypeHintNullable()
+    {
+        $expected    = [];
+        $expected[0] = [
+            'name'              => '$var1',
+            'content'           => '?Mixed $var1',
+            'pass_by_reference' => false,
+            'variable_length'   => false,
+            'type_hint'         => '?Mixed',
+            'nullable_type'     => true,
+        ];
+
+        $this->getMethodParametersTestHelper('/* '.__FUNCTION__.' */', $expected);
+
+    }//end testPHP8MixedTypeHintNullable()
+
+
+    /**
+     * Verify recognition of type declarations using the namespace operator.
+     *
+     * @return void
+     */
+    public function testNamespaceOperatorTypeHint()
+    {
+        $expected    = [];
+        $expected[0] = [
+            'name'              => '$var1',
+            'content'           => '?namespace\Name $var1',
+            'pass_by_reference' => false,
+            'variable_length'   => false,
+            'type_hint'         => '?namespace\Name',
+            'nullable_type'     => true,
+        ];
+
+        $this->getMethodParametersTestHelper('/* '.__FUNCTION__.' */', $expected);
+
+    }//end testNamespaceOperatorTypeHint()
+
+
+    /**
      * Test helper.
      *
      * @param string $commentString The comment which preceeds the test.

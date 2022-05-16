@@ -3,10 +3,13 @@
 namespace Doctrine\DBAL\Driver\PDOIbm;
 
 use Doctrine\DBAL\Driver\AbstractDB2Driver;
-use Doctrine\DBAL\Driver\PDOConnection;
+use Doctrine\DBAL\Driver\PDO\Connection;
+use Doctrine\Deprecations\Deprecation;
 
 /**
  * Driver for the PDO IBM extension.
+ *
+ * @deprecated Use the driver based on the ibm_db2 extension instead.
  */
 class Driver extends AbstractDB2Driver
 {
@@ -15,7 +18,7 @@ class Driver extends AbstractDB2Driver
      */
     public function connect(array $params, $username = null, $password = null, array $driverOptions = [])
     {
-        return new PDOConnection(
+        return new Connection(
             $this->_constructPdoDsn($params),
             $username,
             $password,
@@ -36,9 +39,11 @@ class Driver extends AbstractDB2Driver
         if (isset($params['host'])) {
             $dsn .= 'HOSTNAME=' . $params['host'] . ';';
         }
+
         if (isset($params['port'])) {
             $dsn .= 'PORT=' . $params['port'] . ';';
         }
+
         $dsn .= 'PROTOCOL=TCPIP;';
         if (isset($params['dbname'])) {
             $dsn .= 'DATABASE=' . $params['dbname'] . ';';
@@ -54,6 +59,12 @@ class Driver extends AbstractDB2Driver
      */
     public function getName()
     {
+        Deprecation::trigger(
+            'doctrine/dbal',
+            'https://github.com/doctrine/dbal/issues/3580',
+            'Driver::getName() is deprecated'
+        );
+
         return 'pdo_ibm';
     }
 }

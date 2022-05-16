@@ -5,6 +5,7 @@ namespace Maatwebsite\Excel;
 use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Lumen\Application as LumenApplication;
+use Maatwebsite\Excel\Cache\CacheManager;
 use Maatwebsite\Excel\Console\ExportMakeCommand;
 use Maatwebsite\Excel\Console\ImportMakeCommand;
 use Maatwebsite\Excel\Files\Filesystem;
@@ -22,6 +23,15 @@ class ExcelServiceProvider extends ServiceProvider
     public function boot()
     {
         if ($this->app->runningInConsole()) {
+            $this->publishes([
+                __DIR__ . '/Console/stubs/export.model.stub'       => base_path('stubs/export.model.stub'),
+                __DIR__ . '/Console/stubs/export.plain.stub'       => base_path('stubs/export.plain.stub'),
+                __DIR__ . '/Console/stubs/export.query.stub'       => base_path('stubs/export.query.stub'),
+                __DIR__ . '/Console/stubs/export.query-model.stub' => base_path('stubs/export.query-model.stub'),
+                __DIR__ . '/Console/stubs/import.collection.stub'  => base_path('stubs/import.collection.stub'),
+                __DIR__ . '/Console/stubs/import.model.stub'       => base_path('stubs/import.model.stub'),
+            ], 'stubs');
+
             if ($this->app instanceof LumenApplication) {
                 $this->app->configure('excel');
             } else {
@@ -29,6 +39,16 @@ class ExcelServiceProvider extends ServiceProvider
                     $this->getConfigFile() => config_path('excel.php'),
                 ], 'config');
             }
+        }
+
+        if ($this->app instanceof \Illuminate\Foundation\Application) {
+            // Laravel
+            $this->app->booted(function ($app) {
+                $app->make(SettingsProvider::class)->provide();
+            });
+        } else {
+            // Lumen
+            $this->app->make(SettingsProvider::class)->provide();
         }
     }
 
@@ -42,32 +62,35 @@ class ExcelServiceProvider extends ServiceProvider
             'excel'
         );
 
-        $this->app->bind(TransactionManager::class, function () {
-            return new TransactionManager($this->app);
+        $this->app->bind(CacheManager::class, function ($app) {
+            return new CacheManager($app);
         });
 
-        $this->app->bind(TransactionHandler::class, function () {
-            return $this->app->make(TransactionManager::class)->driver();
+        $this->app->singleton(TransactionManager::class, function ($app) {
+            return new TransactionManager($app);
+        });
+
+        $this->app->bind(TransactionHandler::class, function ($app) {
+            return $app->make(TransactionManager::class)->driver();
         });
 
         $this->app->bind(TemporaryFileFactory::class, function () {
             return new TemporaryFileFactory(
                 config('excel.temporary_files.local_path', config('excel.exports.temp_path', storage_path('framework/laravel-excel'))),
                 config('excel.temporary_files.remote_disk')
-
             );
         });
 
-        $this->app->bind(Filesystem::class, function () {
-            return new Filesystem($this->app->make('filesystem'));
+        $this->app->bind(Filesystem::class, function ($app) {
+            return new Filesystem($app->make('filesystem'));
         });
 
-        $this->app->bind('excel', function () {
+        $this->app->bind('excel', function ($app) {
             return new Excel(
-                $this->app->make(Writer::class),
-                $this->app->make(QueuedWriter::class),
-                $this->app->make(Reader::class),
-                $this->app->make(Filesystem::class)
+                $app->make(Writer::class),
+                $app->make(QueuedWriter::class),
+                $app->make(Reader::class),
+                $app->make(Filesystem::class)
             );
         });
 

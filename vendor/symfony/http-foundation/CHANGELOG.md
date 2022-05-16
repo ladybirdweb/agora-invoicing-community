@@ -1,6 +1,37 @@
 CHANGELOG
 =========
 
+5.4
+---
+
+ * Deprecate passing `null` as `$requestIp` to `IpUtils::__checkIp()`, `IpUtils::__checkIp4()` or `IpUtils::__checkIp6()`, pass an empty string instead.
+ * Add the `litespeed_finish_request` method to work with Litespeed
+ * Deprecate `upload_progress.*` and `url_rewriter.tags` session options
+ * Allow setting session options via DSN
+
+5.3
+---
+
+ * Add the `SessionFactory`, `NativeSessionStorageFactory`, `PhpBridgeSessionStorageFactory` and `MockFileSessionStorageFactory` classes
+ * Calling `Request::getSession()` when there is no available session throws a `SessionNotFoundException`
+ * Add the `RequestStack::getSession` method
+ * Deprecate the `NamespacedAttributeBag` class
+ * Add `ResponseFormatSame` PHPUnit constraint
+ * Deprecate the `RequestStack::getMasterRequest()` method and add `getMainRequest()` as replacement
+
+5.2.0
+-----
+
+ * added support for `X-Forwarded-Prefix` header
+ * added `HeaderUtils::parseQuery()`: it does the same as `parse_str()` but preserves dots in variable names
+ * added `File::getContent()`
+ * added ability to use comma separated ip addresses for `RequestMatcher::matchIps()`
+ * added `Request::toArray()` to parse a JSON request body to an array
+ * added `RateLimiter\RequestRateLimiterInterface` and `RateLimiter\AbstractRequestRateLimiter`
+ * deprecated not passing a `Closure` together with `FILTER_CALLBACK` to `ParameterBag::filter()`; wrap your filter in a closure instead.
+ * Deprecated the `Request::HEADER_X_FORWARDED_ALL` constant, use either `HEADER_X_FORWARDED_FOR | HEADER_X_FORWARDED_HOST | HEADER_X_FORWARDED_PORT | HEADER_X_FORWARDED_PROTO` or `HEADER_X_FORWARDED_AWS_ELB` or `HEADER_X_FORWARDED_TRAEFIK` constants instead.
+ * Deprecated `BinaryFileResponse::create()`, use `__construct()` instead
+
 5.1.0
 -----
 

@@ -1,3 +1,93 @@
+### [1.10.26] 2022-04-13
+
+  * Security: Fixed command injection vulnerability in HgDriver/GitDriver (GHSA-x7cr-6qr6-2hh6 / CVE-2022-24828)
+
+### [1.10.25] 2022-01-21
+
+  * Fixed selfupdate on Windows + PHP 8.1 regression (#10446)
+
+### [1.10.24] 2021-12-09
+
+  * Added v1 deprecation warning when running install. Please make sure you upgrade to Composer 2, see https://blog.packagist.com/deprecating-composer-1-support/
+  * Fixed PHP 8.1 compatibility
+  * Fixed some more Windows CLI parameter escaping edge cases
+
+### [1.10.23] 2021-10-05
+
+  * Security: Fixed command injection vulnerability on Windows (GHSA-frqg-7g38-6gcf / CVE-2021-41116)
+
+### [1.10.22] 2021-04-27
+
+  * Security: Fixed command injection vulnerability in HgDriver/HgDownloader and hardened other VCS drivers and downloaders (GHSA-h5h8-pc6h-jvvx / CVE-2021-29472)
+
+### [1.10.21] 2021-04-01
+
+  * Fixed support for new GitHub OAuth token format
+  * Fixed processes silently ignoring the CWD when it does not exist
+
+### [1.10.20] 2021-01-27
+
+  * Fixed exclude-from-classmap causing regex issues when having too many paths
+  * Fixed compatibility issue with Symfony 4/5
+
+### [1.10.19] 2020-12-04
+
+  * Fixed regression on PHP 8.0
+
+### [1.10.18] 2020-12-03
+
+  * Allow installation on PHP 8.0
+
+### [1.10.17] 2020-10-30
+
+  * Fixed Bitbucket API authentication issue
+  * Fixed parsing of Composer 2 lock files breaking in some rare conditions
+
+### [1.10.16] 2020-10-24
+
+  * Added warning to `validate` command for cases where packages provide/replace a package that they also require
+  * Fixed JSON schema validation issue with PHPStorm
+  * Fixed symlink handling in `archive` command
+
+### [1.10.15] 2020-10-13
+
+  * Fixed path repo version guessing issue
+
+### [1.10.14] 2020-10-13
+
+  * Fixed version guesser to look at remote branches as well as local ones
+  * Fixed path repositories version guessing to handle edge cases where version is different from the VCS-guessed version
+  * Fixed COMPOSER env var causing issues when combined with the `global ` command
+  * Fixed a few issues dealing with PHP without openssl extension (not recommended at all but sometimes needed for testing)
+
+### [1.10.13] 2020-09-09
+
+  * Fixed regressions with old version validation
+  * Fixed invalid root aliases not being reported
+
+### [1.10.12] 2020-09-08
+
+  * Fixed regressions with old version validation
+
+### [1.10.11] 2020-09-08
+
+  * Fixed more PHP 8 compatibility issues
+  * Fixed regression in handling of CTRL-C when xdebug is loaded
+  * Fixed `status` handling of broken symlinks
+
+### [1.10.10] 2020-08-03
+
+  * Fixed `create-project` not triggering events while installing the root package
+  * Fixed PHP 8 compatibility issue
+  * Fixed `self-update` to avoid automatically upgrading to the next major version once it becomes stable
+
+### [1.10.9] 2020-07-16
+
+  * Fixed Bitbucket redirect loop when credentials are outdated
+  * Fixed GitLab auth prompt wording
+  * Fixed `self-update` handling of files requiring admin permissions to write to on Windows (it now does a UAC prompt)
+  * Fixed parsing issues in funding.yml files
+
 ### [1.10.8] 2020-06-24
 
   * Fixed compatibility issue with git being configured to show signatures by default
@@ -866,6 +956,24 @@
 
   * Initial release
 
+[1.10.26]: https://github.com/composer/composer/compare/1.10.25...1.10.26
+[1.10.25]: https://github.com/composer/composer/compare/1.10.24...1.10.25
+[1.10.24]: https://github.com/composer/composer/compare/1.10.23...1.10.24
+[1.10.23]: https://github.com/composer/composer/compare/1.10.22...1.10.23
+[1.10.22]: https://github.com/composer/composer/compare/1.10.21...1.10.22
+[1.10.21]: https://github.com/composer/composer/compare/1.10.20...1.10.21
+[1.10.20]: https://github.com/composer/composer/compare/1.10.19...1.10.20
+[1.10.19]: https://github.com/composer/composer/compare/1.10.18...1.10.19
+[1.10.18]: https://github.com/composer/composer/compare/1.10.17...1.10.18
+[1.10.17]: https://github.com/composer/composer/compare/1.10.16...1.10.17
+[1.10.16]: https://github.com/composer/composer/compare/1.10.15...1.10.16
+[1.10.15]: https://github.com/composer/composer/compare/1.10.14...1.10.15
+[1.10.14]: https://github.com/composer/composer/compare/1.10.13...1.10.14
+[1.10.13]: https://github.com/composer/composer/compare/1.10.12...1.10.13
+[1.10.12]: https://github.com/composer/composer/compare/1.10.11...1.10.12
+[1.10.11]: https://github.com/composer/composer/compare/1.10.10...1.10.11
+[1.10.10]: https://github.com/composer/composer/compare/1.10.9...1.10.10
+[1.10.9]: https://github.com/composer/composer/compare/1.10.8...1.10.9
 [1.10.8]: https://github.com/composer/composer/compare/1.10.7...1.10.8
 [1.10.7]: https://github.com/composer/composer/compare/1.10.6...1.10.7
 [1.10.6]: https://github.com/composer/composer/compare/1.10.5...1.10.6

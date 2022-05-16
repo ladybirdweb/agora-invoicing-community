@@ -11,6 +11,7 @@ trait FindsByName
      *
      * @param       $term
      * @param array $options
+     * @deprecated  Use search method instead
 	 * @return Response
      */
     public function findByName($term, $options = [])

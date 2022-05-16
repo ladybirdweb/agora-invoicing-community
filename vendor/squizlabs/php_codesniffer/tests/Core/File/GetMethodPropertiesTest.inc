@@ -66,3 +66,20 @@ $result = array_map(
     static fn(int $number) : int => $number + 1,
     $numbers
 );
+
+class ReturnMe {
+    /* testReturnTypeStatic */
+    private function myFunction(): static {
+        return $this;
+    }
+}
+
+/* testPHP8MixedTypeHint */
+function mixedTypeHint() :mixed {}
+
+/* testPHP8MixedTypeHintNullable */
+// Intentional fatal error - nullability is not allowed with mixed, but that's not the concern of the method.
+function mixedTypeHintNullable(): ?mixed {}
+
+/* testNamespaceOperatorTypeHint */
+function namespaceOperatorTypeHint() : ?namespace\Name {}

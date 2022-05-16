@@ -424,10 +424,10 @@ abstract class Tokenizer
                         $disabledSniffs = [];
 
                         $additionalText = substr($commentText, 14);
-                        if ($additionalText === false) {
+                        if (empty($additionalText) === true) {
                             $ignoring = ['.all' => true];
                         } else {
-                            $parts = explode(',', substr($commentText, 13));
+                            $parts = explode(',', $additionalText);
                             foreach ($parts as $sniffCode) {
                                 $sniffCode = trim($sniffCode);
                                 $disabledSniffs[$sniffCode] = true;
@@ -459,10 +459,10 @@ abstract class Tokenizer
                             $enabledSniffs = [];
 
                             $additionalText = substr($commentText, 13);
-                            if ($additionalText === false) {
+                            if (empty($additionalText) === true) {
                                 $ignoring = null;
                             } else {
-                                $parts = explode(',', substr($commentText, 13));
+                                $parts = explode(',', $additionalText);
                                 foreach ($parts as $sniffCode) {
                                     $sniffCode = trim($sniffCode);
                                     $enabledSniffs[$sniffCode] = true;
@@ -520,10 +520,10 @@ abstract class Tokenizer
                         $ignoreRules = [];
 
                         $additionalText = substr($commentText, 13);
-                        if ($additionalText === false) {
+                        if (empty($additionalText) === true) {
                             $ignoreRules = ['.all' => true];
                         } else {
-                            $parts = explode(',', substr($commentText, 13));
+                            $parts = explode(',', $additionalText);
                             foreach ($parts as $sniffCode) {
                                 $ignoreRules[trim($sniffCode)] = true;
                             }
@@ -1111,6 +1111,13 @@ abstract class Tokenizer
                         continue;
                     }
 
+                    if ($tokenType === T_NAMESPACE) {
+                        // PHP namespace keywords are special because they can be
+                        // used as blocks but also inline as operators.
+                        // So if we find them nested inside another opener, just skip them.
+                        continue;
+                    }
+
                     if ($tokenType === T_FUNCTION
                         && $this->tokens[$stackPtr]['code'] !== T_FUNCTION
                     ) {
@@ -1291,11 +1298,12 @@ abstract class Tokenizer
                                 // a new statement, it isn't a scope opener.
                                 $disallowed  = Util\Tokens::$assignmentTokens;
                                 $disallowed += [
-                                    T_DOLLAR           => true,
-                                    T_VARIABLE         => true,
-                                    T_OBJECT_OPERATOR  => true,
-                                    T_COMMA            => true,
-                                    T_OPEN_PARENTHESIS => true,
+                                    T_DOLLAR                   => true,
+                                    T_VARIABLE                 => true,
+                                    T_OBJECT_OPERATOR          => true,
+                                    T_NULLSAFE_OBJECT_OPERATOR => true,
+                                    T_COMMA                    => true,
+                                    T_OPEN_PARENTHESIS         => true,
                                 ];
 
                                 if (isset($disallowed[$this->tokens[$x]['code']]) === true) {

@@ -1,6 +1,21 @@
 CHANGELOG
 =========
 
+5.4
+---
+
+ * Add `trimSuffix()` and `trimPrefix()` methods
+
+5.3
+---
+
+ * Made `AsciiSlugger` fallback to parent locale's symbolsMap
+
+5.2.0
+-----
+
+ * added a `FrenchInflector` class
+
 5.1.0
 -----
 

@@ -39,6 +39,7 @@ use Composer\Json\JsonFile;
 use Composer\Config\JsonConfigSource;
 use Composer\Util\Filesystem;
 use Composer\Package\Version\VersionParser;
+use Composer\EventDispatcher\EventDispatcher;
 
 /**
  * Install a package as new project into new directory.
@@ -286,10 +287,14 @@ EOT
             $config->merge(array('config' => array('secure-http' => false)));
         }
 
+        $composer = Factory::create($io, $config->all(), $disablePlugins);
+        $config = $composer->getConfig();
+        $rm = $composer->getRepositoryManager();
+
         if (null === $repository) {
-            $sourceRepo = new CompositeRepository(RepositoryFactory::defaultRepos($io, $config));
+            $sourceRepo = new CompositeRepository(RepositoryFactory::defaultRepos($io, $config, $rm));
         } else {
-            $sourceRepo = RepositoryFactory::fromString($io, $config, $repository, true);
+            $sourceRepo = RepositoryFactory::fromString($io, $config, $repository, true, $rm);
         }
 
         $parser = new VersionParser();
@@ -384,13 +389,13 @@ EOT
             $package = $package->getAliasOf();
         }
 
-        $dm = $this->createDownloadManager($io, $config);
+        $dm = $composer->getDownloadManager();
         $dm->setPreferSource($preferSource)
             ->setPreferDist($preferDist)
             ->setOutputProgress(!$noProgress);
 
         $projectInstaller = new ProjectInstaller($directory, $dm);
-        $im = $this->createInstallationManager();
+        $im = $composer->getInstallationManager();
         $im->addInstaller($projectInstaller);
         $im->install(new InstalledFilesystemRepository(new JsonFile('php://memory')), new InstallOperation($package));
         $im->notifyInstalls($io);
@@ -407,17 +412,5 @@ EOT
         putenv('COMPOSER_ROOT_VERSION='.$_SERVER['COMPOSER_ROOT_VERSION']);
 
         return $installedFromVcs;
-    }
-
-    protected function createDownloadManager(IOInterface $io, Config $config)
-    {
-        $factory = new Factory();
-
-        return $factory->createDownloadManager($io, $config);
-    }
-
-    protected function createInstallationManager()
-    {
-        return new InstallationManager();
     }
 }

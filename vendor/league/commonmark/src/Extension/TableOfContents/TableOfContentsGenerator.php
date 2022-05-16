@@ -24,6 +24,7 @@ use League\CommonMark\Extension\TableOfContents\Normalizer\AsIsNormalizerStrateg
 use League\CommonMark\Extension\TableOfContents\Normalizer\FlatNormalizerStrategy;
 use League\CommonMark\Extension\TableOfContents\Normalizer\NormalizerStrategyInterface;
 use League\CommonMark\Extension\TableOfContents\Normalizer\RelativeNormalizerStrategy;
+use League\CommonMark\Inline\Element\AbstractStringContainer;
 use League\CommonMark\Inline\Element\Link;
 
 final class TableOfContentsGenerator implements TableOfContentsGeneratorInterface
@@ -54,7 +55,7 @@ final class TableOfContentsGenerator implements TableOfContentsGeneratorInterfac
 
     public function generate(Document $document): ?TableOfContents
     {
-        $toc = $this->createToc();
+        $toc = $this->createToc($document);
 
         $normalizer = $this->getNormalizer($toc);
 
@@ -80,7 +81,7 @@ final class TableOfContentsGenerator implements TableOfContentsGeneratorInterfac
             $toc->setEndLine($heading->getEndLine());
 
             // Create the new link
-            $link = new Link('#' . $headingLink->getSlug(), $heading->getStringContent());
+            $link = new Link('#' . $headingLink->getSlug(), self::getHeadingText($heading));
             $paragraph = new Paragraph();
             $paragraph->setStartLine($heading->getStartLine());
             $paragraph->setEndLine($heading->getEndLine());
@@ -103,7 +104,7 @@ final class TableOfContentsGenerator implements TableOfContentsGeneratorInterfac
         return $toc;
     }
 
-    private function createToc(): TableOfContents
+    private function createToc(Document $document): TableOfContents
     {
         $listData = new ListData();
 
@@ -115,7 +116,12 @@ final class TableOfContentsGenerator implements TableOfContentsGeneratorInterfac
             throw new InvalidOptionException(\sprintf('Invalid table of contents list style "%s"', $this->style));
         }
 
-        return new TableOfContents($listData);
+        $toc = new TableOfContents($listData);
+
+        $toc->setStartLine($document->getStartLine());
+        $toc->setEndLine($document->getEndLine());
+
+        return $toc;
     }
 
     /**
@@ -145,5 +151,22 @@ final class TableOfContentsGenerator implements TableOfContentsGeneratorInterfac
             default:
                 throw new InvalidOptionException(\sprintf('Invalid table of contents normalization strategy "%s"', $this->normalizationStrategy));
         }
+    }
+
+    /**
+     * @return string
+     */
+    private static function getHeadingText(Heading $heading)
+    {
+        $text = '';
+
+        $walker = $heading->walker();
+        while ($event = $walker->next()) {
+            if ($event->isEntering() && ($child = $event->getNode()) instanceof AbstractStringContainer) {
+                $text .= $child->getContent();
+            }
+        }
+
+        return $text;
     }
 }

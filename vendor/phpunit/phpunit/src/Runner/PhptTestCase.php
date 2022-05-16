@@ -446,7 +446,7 @@ final class PhptTestCase implements SelfDescribing, Test
         foreach ($unsupportedSections as $section) {
             if (isset($sections[$section])) {
                 throw new Exception(
-                    "PHPUnit does not support PHPT $section sections"
+                    "PHPUnit does not support PHPT {$section} sections"
                 );
             }
         }
@@ -596,11 +596,19 @@ final class PhptTestCase implements SelfDescribing, Test
 
     private function cleanupForCoverage(): array
     {
+        $coverage = [];
         $files    = $this->getCoverageFiles();
-        $coverage = @\unserialize(\file_get_contents($files['coverage']));
 
-        if ($coverage === false) {
-            $coverage = [];
+        if (\file_exists($files['coverage'])) {
+            $buffer = @\file_get_contents($files['coverage']);
+
+            if ($buffer !== false) {
+                $coverage = @\unserialize($buffer);
+
+                if ($coverage === false) {
+                    $coverage = [];
+                }
+            }
         }
 
         foreach ($files as $file) {

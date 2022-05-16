@@ -19,7 +19,7 @@ class TinkerCommand extends Command
      * @var array
      */
     protected $commandWhitelist = [
-        'clear-compiled', 'down', 'env', 'inspire', 'migrate', 'optimize', 'up',
+        'clear-compiled', 'down', 'env', 'inspire', 'migrate', 'migrate:install', 'optimize', 'up',
     ];
 
     /**
@@ -67,20 +67,21 @@ class TinkerCommand extends Command
         );
 
         if ($code = $this->option('execute')) {
-            $shell->execute($code);
-
-            $loader->unregister();
+            try {
+                $shell->setOutput($this->output);
+                $shell->execute($code);
+            } finally {
+                $loader->unregister();
+            }
 
             return 0;
         }
 
         try {
-            $shell->run();
+            return $shell->run();
         } finally {
             $loader->unregister();
         }
-
-        return 0;
     }
 
     /**
@@ -101,7 +102,9 @@ class TinkerCommand extends Command
         $config = $this->getLaravel()->make('config');
 
         foreach ($config->get('tinker.commands', []) as $command) {
-            $commands[] = $this->getApplication()->resolve($command);
+            $commands[] = $this->getApplication()->add(
+                $this->getLaravel()->make($command)
+            );
         }
 
         return $commands;
@@ -117,6 +120,7 @@ class TinkerCommand extends Command
         $casters = [
             'Illuminate\Support\Collection' => 'Laravel\Tinker\TinkerCaster::castCollection',
             'Illuminate\Support\HtmlString' => 'Laravel\Tinker\TinkerCaster::castHtmlString',
+            'Illuminate\Support\Stringable' => 'Laravel\Tinker\TinkerCaster::castStringable',
         ];
 
         if (class_exists('Illuminate\Database\Eloquent\Model')) {
@@ -127,7 +131,9 @@ class TinkerCommand extends Command
             $casters['Illuminate\Foundation\Application'] = 'Laravel\Tinker\TinkerCaster::castApplication';
         }
 
-        return $casters;
+        $config = $this->getLaravel()->make('config');
+
+        return array_merge($casters, (array) $config->get('tinker.casters', []));
     }
 
     /**

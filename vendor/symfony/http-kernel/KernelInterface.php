@@ -20,6 +20,10 @@ use Symfony\Component\HttpKernel\Bundle\BundleInterface;
  *
  * It manages an environment made of application kernel and bundles.
  *
+ * @method string getBuildDir() Returns the build directory - not implementing it is deprecated since Symfony 5.2.
+ *                              This directory should be used to store build artifacts, and can be read-only at runtime.
+ *                              Caches written at runtime should be stored in the "cache directory" ({@see KernelInterface::getCacheDir()}).
+ *
  * @author Fabien Potencier <fabien@symfony.com>
  */
 interface KernelInterface extends HttpKernelInterface
@@ -27,7 +31,7 @@ interface KernelInterface extends HttpKernelInterface
     /**
      * Returns an array of bundles to register.
      *
-     * @return iterable|BundleInterface[] An iterable of bundle instances
+     * @return iterable<mixed, BundleInterface>
      */
     public function registerBundles();
 
@@ -51,14 +55,14 @@ interface KernelInterface extends HttpKernelInterface
     /**
      * Gets the registered bundle instances.
      *
-     * @return BundleInterface[] An array of registered bundle instances
+     * @return array<string, BundleInterface>
      */
     public function getBundles();
 
     /**
      * Returns a bundle.
      *
-     * @return BundleInterface A BundleInterface instance
+     * @return BundleInterface
      *
      * @throws \InvalidArgumentException when the bundle is not enabled
      */
@@ -76,7 +80,7 @@ interface KernelInterface extends HttpKernelInterface
      * where BundleName is the name of the bundle
      * and the remaining part is the relative path in the bundle.
      *
-     * @return string The absolute path of the resource
+     * @return string
      *
      * @throws \InvalidArgumentException if the file cannot be found or the name is not valid
      * @throws \RuntimeException         if the name contains invalid/unsafe characters
@@ -86,14 +90,14 @@ interface KernelInterface extends HttpKernelInterface
     /**
      * Gets the environment.
      *
-     * @return string The current environment
+     * @return string
      */
     public function getEnvironment();
 
     /**
      * Checks if debug mode is enabled.
      *
-     * @return bool true if debug mode is enabled, false otherwise
+     * @return bool
      */
     public function isDebug();
 
@@ -114,28 +118,32 @@ interface KernelInterface extends HttpKernelInterface
     /**
      * Gets the request start time (not available if debug is disabled).
      *
-     * @return float The request start timestamp
+     * @return float
      */
     public function getStartTime();
 
     /**
      * Gets the cache directory.
      *
-     * @return string The cache directory
+     * Since Symfony 5.2, the cache directory should be used for caches that are written at runtime.
+     * For caches and artifacts that can be warmed at compile-time and deployed as read-only,
+     * use the new "build directory" returned by the {@see getBuildDir()} method.
+     *
+     * @return string
      */
     public function getCacheDir();
 
     /**
      * Gets the log directory.
      *
-     * @return string The log directory
+     * @return string
      */
     public function getLogDir();
 
     /**
      * Gets the charset of the application.
      *
-     * @return string The charset
+     * @return string
      */
     public function getCharset();
 }

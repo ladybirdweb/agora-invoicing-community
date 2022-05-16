@@ -2,19 +2,17 @@
 
 namespace PhpOffice\PhpSpreadsheet\Writer\Xls;
 
+use GdImage;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
-use PhpOffice\PhpSpreadsheet\Cell\DataValidation;
 use PhpOffice\PhpSpreadsheet\Exception as PhpSpreadsheetException;
 use PhpOffice\PhpSpreadsheet\RichText\RichText;
 use PhpOffice\PhpSpreadsheet\RichText\Run;
 use PhpOffice\PhpSpreadsheet\Shared\StringHelper;
 use PhpOffice\PhpSpreadsheet\Shared\Xls;
-use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Color;
 use PhpOffice\PhpSpreadsheet\Style\Conditional;
-use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Style\Protection;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 use PhpOffice\PhpSpreadsheet\Worksheet\SheetView;
@@ -56,6 +54,12 @@ use PhpOffice\PhpSpreadsheet\Writer\Exception as WriterException;
 // */
 class Worksheet extends BIFFwriter
 {
+    /** @var int */
+    private static $always0 = 0;
+
+    /** @var int */
+    private static $always1 = 1;
+
     /**
      * Formula parser.
      *
@@ -94,7 +98,7 @@ class Worksheet extends BIFFwriter
     /**
      * Whether to use outline.
      *
-     * @var int
+     * @var bool
      */
     private $outlineOn;
 
@@ -190,7 +194,7 @@ class Worksheet extends BIFFwriter
     /**
      * Escher object corresponding to MSODRAWING.
      *
-     * @var \PhpOffice\PhpSpreadsheet\Shared\Escher
+     * @var null|\PhpOffice\PhpSpreadsheet\Shared\Escher
      */
     private $escher;
 
@@ -216,8 +220,8 @@ class Worksheet extends BIFFwriter
      *
      * @param int $str_total Total number of strings
      * @param int $str_unique Total number of unique strings
-     * @param array &$str_table String Table
-     * @param array &$colors Colour Table
+     * @param array $str_table String Table
+     * @param array $colors Colour Table
      * @param Parser $parser The formula parser created for the Workbook
      * @param bool $preCalculateFormulas Flag indicating whether formulas should be calculated or just written
      * @param \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet $phpSheet The worksheet to write
@@ -243,10 +247,10 @@ class Worksheet extends BIFFwriter
 
         $this->printHeaders = 0;
 
-        $this->outlineStyle = 0;
-        $this->outlineBelow = 1;
-        $this->outlineRight = 1;
-        $this->outlineOn = 1;
+        $this->outlineStyle = false;
+        $this->outlineBelow = true;
+        $this->outlineRight = true;
+        $this->outlineOn = true;
 
         $this->fontHashIndex = [];
 
@@ -258,12 +262,12 @@ class Worksheet extends BIFFwriter
         $maxC = $this->phpSheet->getHighestColumn();
 
         // Determine lowest and highest column and row
+        $this->firstRowIndex = $minR;
         $this->lastRowIndex = ($maxR > 65535) ? 65535 : $maxR;
 
         $this->firstColumnIndex = Coordinate::columnIndexFromString($minC);
         $this->lastColumnIndex = Coordinate::columnIndexFromString($maxC);
 
-//        if ($this->firstColumnIndex > 255) $this->firstColumnIndex = 255;
         if ($this->lastColumnIndex > 255) {
             $this->lastColumnIndex = 255;
         }
@@ -392,7 +396,13 @@ class Worksheet extends BIFFwriter
         // Row dimensions
         foreach ($phpSheet->getRowDimensions() as $rowDimension) {
             $xfIndex = $rowDimension->getXfIndex() + 15; // there are 15 cellXfs
-            $this->writeRow($rowDimension->getRowIndex() - 1, $rowDimension->getRowHeight(), $xfIndex, ($rowDimension->getVisible() ? '0' : '1'), $rowDimension->getOutlineLevel());
+            $this->writeRow(
+                $rowDimension->getRowIndex() - 1,
+                (int) $rowDimension->getRowHeight(),
+                $xfIndex,
+                !$rowDimension->getVisible(),
+                $rowDimension->getOutlineLevel()
+            );
         }
 
         // Write Cells
@@ -412,7 +422,6 @@ class Worksheet extends BIFFwriter
             $cVal = $cell->getValue();
             if ($cVal instanceof RichText) {
                 $arrcRun = [];
-                $str_len = StringHelper::countCharacters($cVal->getPlainText(), 'UTF-8');
                 $str_pos = 0;
                 $elements = $cVal->getRichTextElements();
                 foreach ($elements as $element) {
@@ -430,6 +439,7 @@ class Worksheet extends BIFFwriter
             } else {
                 switch ($cell->getDatatype()) {
                     case DataType::TYPE_STRING:
+                    case DataType::TYPE_INLINE:
                     case DataType::TYPE_NULL:
                         if ($cVal === '' || $cVal === null) {
                             $this->writeBlank($row, $column, $xfIndex);
@@ -475,7 +485,7 @@ class Worksheet extends BIFFwriter
 
                         break;
                     case DataType::TYPE_ERROR:
-                        $this->writeBoolErr($row, $column, self::mapErrorCode($cVal), 1, $xfIndex);
+                        $this->writeBoolErr($row, $column, ErrorCode::error($cVal), 1, $xfIndex);
 
                         break;
                 }
@@ -511,7 +521,7 @@ class Worksheet extends BIFFwriter
 
         // Hyperlinks
         foreach ($phpSheet->getHyperLinkCollection() as $coordinate => $hyperlink) {
-            [$column, $row] = Coordinate::coordinateFromString($coordinate);
+            [$column, $row] = Coordinate::indexesFromString($coordinate);
 
             $url = $hyperlink->getUrl();
 
@@ -525,7 +535,7 @@ class Worksheet extends BIFFwriter
                 $url = 'external:' . $url;
             }
 
-            $this->writeUrl($row - 1, Coordinate::columnIndexFromString($column) - 1, $url);
+            $this->writeUrl($row - 1, $column - 1, $url);
         }
 
         $this->writeDataValidity();
@@ -535,30 +545,44 @@ class Worksheet extends BIFFwriter
         $this->writeSheetProtection();
         $this->writeRangeProtection();
 
-        $arrConditionalStyles = $phpSheet->getConditionalStylesCollection();
+        // Write Conditional Formatting Rules and Styles
+        $this->writeConditionalFormatting();
+
+        $this->storeEof();
+    }
+
+    private function writeConditionalFormatting(): void
+    {
+        $conditionalFormulaHelper = new ConditionalHelper($this->parser);
+
+        $arrConditionalStyles = $this->phpSheet->getConditionalStylesCollection();
         if (!empty($arrConditionalStyles)) {
             $arrConditional = [];
-            // @TODO CFRule & CFHeader
-            // Write CFHEADER record
-            $this->writeCFHeader();
+
             // Write ConditionalFormattingTable records
             foreach ($arrConditionalStyles as $cellCoordinate => $conditionalStyles) {
+                $cfHeaderWritten = false;
                 foreach ($conditionalStyles as $conditional) {
-                    if ($conditional->getConditionType() == Conditional::CONDITION_EXPRESSION
-                        || $conditional->getConditionType() == Conditional::CONDITION_CELLIS) {
-                        if (!isset($arrConditional[$conditional->getHashCode()])) {
+                    /** @var Conditional $conditional */
+                    if (
+                        $conditional->getConditionType() === Conditional::CONDITION_EXPRESSION ||
+                        $conditional->getConditionType() === Conditional::CONDITION_CELLIS
+                    ) {
+                        // Write CFHEADER record (only if there are Conditional Styles that we are able to write)
+                        if ($cfHeaderWritten === false) {
+                            $cfHeaderWritten = $this->writeCFHeader($cellCoordinate, $conditionalStyles);
+                        }
+                        if ($cfHeaderWritten === true && !isset($arrConditional[$conditional->getHashCode()])) {
                             // This hash code has been handled
                             $arrConditional[$conditional->getHashCode()] = true;
 
                             // Write CFRULE record
-                            $this->writeCFRule($conditional);
+                            $this->writeCFRule($conditionalFormulaHelper, $conditional, $cellCoordinate);
                         }
                     }
                 }
             }
         }
-
-        $this->storeEof();
     }
 
     /**
@@ -584,22 +608,20 @@ class Worksheet extends BIFFwriter
             $lastCell = $explodes[1];
         }
 
-        $firstCellCoordinates = Coordinate::coordinateFromString($firstCell); // e.g. [0, 1]
-        $lastCellCoordinates = Coordinate::coordinateFromString($lastCell); // e.g. [1, 6]
+        $firstCellCoordinates = Coordinate::indexesFromString($firstCell); // e.g. [0, 1]
+        $lastCellCoordinates = Coordinate::indexesFromString($lastCell); // e.g. [1, 6]
 
-        return pack('vvvv', $firstCellCoordinates[1] - 1, $lastCellCoordinates[1] - 1, Coordinate::columnIndexFromString($firstCellCoordinates[0]) - 1, Coordinate::columnIndexFromString($lastCellCoordinates[0]) - 1);
+        return pack('vvvv', $firstCellCoordinates[1] - 1, $lastCellCoordinates[1] - 1, $firstCellCoordinates[0] - 1, $lastCellCoordinates[0] - 1);
     }
 
     /**
-     * Retrieves data from memory in one chunk, or from disk in $buffer
+     * Retrieves data from memory in one chunk, or from disk
      * sized chunks.
      *
      * @return string The data
      */
     public function getData()
     {
-        $buffer = 4096;
-
         // Return data stored in memory
         if (isset($this->_data)) {
             $tmp = $this->_data;
@@ -609,7 +631,7 @@ class Worksheet extends BIFFwriter
         }
 
         // No data to return
-        return false;
+        return '';
     }
 
     /**
@@ -637,11 +659,6 @@ class Worksheet extends BIFFwriter
         $this->outlineBelow = $symbols_below;
         $this->outlineRight = $symbols_right;
         $this->outlineStyle = $auto_style;
-
-        // Ensure this is a boolean vale for Window2
-        if ($this->outlineOn) {
-            $this->outlineOn = 1;
-        }
     }
 
     /**
@@ -823,7 +840,6 @@ class Worksheet extends BIFFwriter
     private function writeFormula($row, $col, $formula, $xfIndex, $calculatedValue)
     {
         $record = 0x0006; // Record identifier
-
         // Initialize possible additional value for STRING record that should be written after the FORMULA record?
         $stringValue = null;
 
@@ -841,7 +857,7 @@ class Worksheet extends BIFFwriter
                 $errorCodes = DataType::getErrorCodes();
                 if (isset($errorCodes[$calculatedValue])) {
                     // Error value
-                    $num = pack('CCCvCv', 0x02, 0x00, self::mapErrorCode($calculatedValue), 0x00, 0x00, 0xFFFF);
+                    $num = pack('CCCvCv', 0x02, 0x00, ErrorCode::error($calculatedValue), 0x00, 0x00, 0xFFFF);
                 } elseif ($calculatedValue === '') {
                     // Empty string (and BIFF8)
                     $num = pack('CCCvCv', 0x03, 0x00, 0x00, 0x00, 0x00, 0xFFFF);
@@ -873,7 +889,7 @@ class Worksheet extends BIFFwriter
 
         // Parse the formula using the parser in Parser.php
         try {
-            $error = $this->parser->parse($formula);
+            $this->parser->parse($formula);
             $formula = $this->parser->toReversePolish();
 
             $formlen = strlen($formula); // Length of the binary string
@@ -924,20 +940,14 @@ class Worksheet extends BIFFwriter
      * The hyperlink can be to a http, ftp, mail, internal sheet (not yet), or external
      * directory url.
      *
-     * Returns  0 : normal termination
-     *         -2 : row or column out of range
-     *         -3 : long string truncated to 255 chars
-     *
      * @param int $row Row
      * @param int $col Column
      * @param string $url URL string
-     *
-     * @return int
      */
-    private function writeUrl($row, $col, $url)
+    private function writeUrl($row, $col, $url): void
     {
         // Add start row and col to arg list
-        return $this->writeUrlRange($row, $col, $row, $col, $url);
+        $this->writeUrlRange($row, $col, $row, $col, $url);
     }
 
     /**
@@ -952,21 +962,19 @@ class Worksheet extends BIFFwriter
      * @param int $col2 End column
      * @param string $url URL string
      *
-     * @return int
-     *
      * @see writeUrl()
      */
-    public function writeUrlRange($row1, $col1, $row2, $col2, $url)
+    private function writeUrlRange($row1, $col1, $row2, $col2, $url): void
     {
         // Check for internal/external sheet links or default to web link
         if (preg_match('[^internal:]', $url)) {
-            return $this->writeUrlInternal($row1, $col1, $row2, $col2, $url);
+            $this->writeUrlInternal($row1, $col1, $row2, $col2, $url);
         }
         if (preg_match('[^external:]', $url)) {
-            return $this->writeUrlExternal($row1, $col1, $row2, $col2, $url);
+            $this->writeUrlExternal($row1, $col1, $row2, $col2, $url);
         }
 
-        return $this->writeUrlWeb($row1, $col1, $row2, $col2, $url);
+        $this->writeUrlWeb($row1, $col1, $row2, $col2, $url);
     }
 
     /**
@@ -980,14 +988,11 @@ class Worksheet extends BIFFwriter
      * @param int $col2 End column
      * @param string $url URL string
      *
-     * @return int
-     *
      * @see writeUrl()
      */
-    public function writeUrlWeb($row1, $col1, $row2, $col2, $url)
+    public function writeUrlWeb($row1, $col1, $row2, $col2, $url): void
     {
         $record = 0x01B8; // Record identifier
-        $length = 0x00000; // Bytes to follow
 
         // Pack the undocumented parts of the hyperlink stream
         $unknown1 = pack('H*', 'D0C9EA79F9BACE118C8200AA004BA90B02000000');
@@ -997,6 +1002,8 @@ class Worksheet extends BIFFwriter
         $options = pack('V', 0x03);
 
         // Convert URL to a null terminated wchar string
+
+        /** @phpstan-ignore-next-line */
         $url = implode("\0", preg_split("''", $url, -1, PREG_SPLIT_NO_EMPTY));
         $url = $url . "\0\0\0";
 
@@ -1012,8 +1019,6 @@ class Worksheet extends BIFFwriter
 
         // Write the packed data
         $this->append($header . $data . $unknown1 . $options . $unknown2 . $url_len . $url);
-
-        return 0;
     }
 
     /**
@@ -1025,14 +1030,11 @@ class Worksheet extends BIFFwriter
      * @param int $col2 End column
      * @param string $url URL string
      *
-     * @return int
-     *
      * @see writeUrl()
      */
-    public function writeUrlInternal($row1, $col1, $row2, $col2, $url)
+    private function writeUrlInternal($row1, $col1, $row2, $col2, $url): void
     {
         $record = 0x01B8; // Record identifier
-        $length = 0x00000; // Bytes to follow
 
         // Strip URL type
         $url = preg_replace('/^internal:/', '', $url);
@@ -1061,8 +1063,6 @@ class Worksheet extends BIFFwriter
 
         // Write the packed data
         $this->append($header . $data . $unknown1 . $options . $url_len . $url);
-
-        return 0;
     }
 
     /**
@@ -1078,16 +1078,14 @@ class Worksheet extends BIFFwriter
      * @param int $col2 End column
      * @param string $url URL string
      *
-     * @return int
-     *
      * @see writeUrl()
      */
-    public function writeUrlExternal($row1, $col1, $row2, $col2, $url)
+    private function writeUrlExternal($row1, $col1, $row2, $col2, $url): void
     {
         // Network drives are different. We will handle them separately
         // MS/Novell network drives and shares start with \\
         if (preg_match('[^external:\\\\]', $url)) {
-            return; //($this->writeUrlExternal_net($row1, $col1, $row2, $col2, $url, $str, $format));
+            return;
         }
 
         $record = 0x01B8; // Record identifier
@@ -1163,8 +1161,6 @@ class Worksheet extends BIFFwriter
 
         // Write the packed data
         $this->append($header . $data);
-
-        return 0;
     }
 
     /**
@@ -1194,7 +1190,7 @@ class Worksheet extends BIFFwriter
         }
 
         // Use writeRow($row, null, $XF) to set XF format without setting height
-        if ($height != null) {
+        if ($height !== null) {
             $miyRw = $height * 20; // row height
         } else {
             $miyRw = 0xff; // default row height is 256
@@ -1207,7 +1203,7 @@ class Worksheet extends BIFFwriter
         // collapsed. The zero height flag, 0x20, is used to collapse a row.
 
         $grbit |= $level;
-        if ($hidden) {
+        if ($hidden === true) {
             $grbit |= 0x0030;
         }
         if ($height !== null) {
@@ -1342,32 +1338,13 @@ class Worksheet extends BIFFwriter
      */
     private function writeColinfo($col_array): void
     {
-        if (isset($col_array[0])) {
-            $colFirst = $col_array[0];
-        }
-        if (isset($col_array[1])) {
-            $colLast = $col_array[1];
-        }
-        if (isset($col_array[2])) {
-            $coldx = $col_array[2];
-        } else {
-            $coldx = 8.43;
-        }
-        if (isset($col_array[3])) {
-            $xfIndex = $col_array[3];
-        } else {
-            $xfIndex = 15;
-        }
-        if (isset($col_array[4])) {
-            $grbit = $col_array[4];
-        } else {
-            $grbit = 0;
-        }
-        if (isset($col_array[5])) {
-            $level = $col_array[5];
-        } else {
-            $level = 0;
-        }
+        $colFirst = $col_array[0] ?? null;
+        $colLast = $col_array[1] ?? null;
+        $coldx = $col_array[2] ?? 8.43;
+        $xfIndex = $col_array[3] ?? 15;
+        $grbit = $col_array[4] ?? 0;
+        $level = $col_array[5] ?? 0;
+
         $record = 0x007D; // Record identifier
         $length = 0x000C; // Number of bytes to follow
 
@@ -1423,13 +1400,6 @@ class Worksheet extends BIFFwriter
         $irefAct = 0; // Active cell ref
         $cref = 1; // Number of refs
 
-        if (!isset($rwLast)) {
-            $rwLast = $rwFirst; // Last  row in reference
-        }
-        if (!isset($colLast)) {
-            $colLast = $colFirst; // Last  col in reference
-        }
-
         // Swap last row/col for first row/col as necessary
         if ($rwFirst > $rwLast) {
             [$rwFirst, $rwLast] = [$rwLast, $rwFirst];
@@ -1479,10 +1449,10 @@ class Worksheet extends BIFFwriter
             // extract the row and column indexes
             $range = Coordinate::splitRange($mergeCell);
             [$first, $last] = $range[0];
-            [$firstColumn, $firstRow] = Coordinate::coordinateFromString($first);
-            [$lastColumn, $lastRow] = Coordinate::coordinateFromString($last);
+            [$firstColumn, $firstRow] = Coordinate::indexesFromString($first);
+            [$lastColumn, $lastRow] = Coordinate::indexesFromString($last);
 
-            $recordData .= pack('vvvv', $firstRow - 1, $lastRow - 1, Coordinate::columnIndexFromString($firstColumn) - 1, Coordinate::columnIndexFromString($lastColumn) - 1);
+            $recordData .= pack('vvvv', $firstRow - 1, $lastRow - 1, $firstColumn - 1, $lastColumn - 1);
 
             // flush record if we have reached limit for number of merged cells, or reached final merged cell
             if ($j == $maxCountMergeCellsPerRecord || $i == $countMergeCells) {
@@ -1572,7 +1542,7 @@ class Worksheet extends BIFFwriter
     /**
      * Write BIFF record RANGEPROTECTION.
      *
-     * Openoffice.org's Documentaion of the Microsoft Excel File Format uses term RANGEPROTECTION for these records
+     * Openoffice.org's Documentation of the Microsoft Excel File Format uses term RANGEPROTECTION for these records
      * Microsoft Office Excel 97-2007 Binary File Format Specification uses term FEAT for these records
      */
     private function writeRangeProtection(): void
@@ -1625,76 +1595,37 @@ class Worksheet extends BIFFwriter
      */
     private function writePanes(): void
     {
-        $panes = [];
-        if ($this->phpSheet->getFreezePane()) {
-            [$column, $row] = Coordinate::coordinateFromString($this->phpSheet->getFreezePane());
-            $panes[0] = Coordinate::columnIndexFromString($column) - 1;
-            $panes[1] = $row - 1;
-
-            [$leftMostColumn, $topRow] = Coordinate::coordinateFromString($this->phpSheet->getTopLeftCell());
-            //Coordinates are zero-based in xls files
-            $panes[2] = $topRow - 1;
-            $panes[3] = Coordinate::columnIndexFromString($leftMostColumn) - 1;
-        } else {
+        if (!$this->phpSheet->getFreezePane()) {
             // thaw panes
             return;
         }
 
-        $x = $panes[0] ?? null;
-        $y = $panes[1] ?? null;
-        $rwTop = $panes[2] ?? null;
-        $colLeft = $panes[3] ?? null;
-        if (count($panes) > 4) { // if Active pane was received
-            $pnnAct = $panes[4];
-        } else {
-            $pnnAct = null;
-        }
+        [$column, $row] = Coordinate::indexesFromString($this->phpSheet->getFreezePane() ?? '');
+        $x = $column - 1;
+        $y = $row - 1;
+
+        [$leftMostColumn, $topRow] = Coordinate::indexesFromString($this->phpSheet->getTopLeftCell());
+        //Coordinates are zero-based in xls files
+        $rwTop = $topRow - 1;
+        $colLeft = $leftMostColumn - 1;
+
         $record = 0x0041; // Record identifier
         $length = 0x000A; // Number of bytes to follow
 
-        // Code specific to frozen or thawed panes.
-        if ($this->phpSheet->getFreezePane()) {
-            // Set default values for $rwTop and $colLeft
-            if (!isset($rwTop)) {
-                $rwTop = $y;
-            }
-            if (!isset($colLeft)) {
-                $colLeft = $x;
-            }
-        } else {
-            // Set default values for $rwTop and $colLeft
-            if (!isset($rwTop)) {
-                $rwTop = 0;
-            }
-            if (!isset($colLeft)) {
-                $colLeft = 0;
-            }
-
-            // Convert Excel's row and column units to the internal units.
-            // The default row height is 12.75
-            // The default column width is 8.43
-            // The following slope and intersection values were interpolated.
-            //
-            $y = 20 * $y + 255;
-            $x = 113.879 * $x + 390;
-        }
-
         // Determine which pane should be active. There is also the undocumented
         // option to override this should it be necessary: may be removed later.
-        //
-        if (!isset($pnnAct)) {
-            if ($x != 0 && $y != 0) {
-                $pnnAct = 0; // Bottom right
-            }
-            if ($x != 0 && $y == 0) {
-                $pnnAct = 1; // Top right
-            }
-            if ($x == 0 && $y != 0) {
-                $pnnAct = 2; // Bottom left
-            }
-            if ($x == 0 && $y == 0) {
-                $pnnAct = 3; // Top left
-            }
+        $pnnAct = null;
+        if ($x != 0 && $y != 0) {
+            $pnnAct = 0; // Bottom right
+        }
+        if ($x != 0 && $y == 0) {
+            $pnnAct = 1; // Top right
+        }
+        if ($x == 0 && $y != 0) {
+            $pnnAct = 2; // Bottom left
+        }
+        if ($x == 0 && $y == 0) {
+            $pnnAct = 3; // Top left
         }
 
         $this->activePane = $pnnAct; // Used in writeSelection
@@ -1713,9 +1644,7 @@ class Worksheet extends BIFFwriter
         $length = 0x0022; // Number of bytes to follow
 
         $iPaperSize = $this->phpSheet->getPageSetup()->getPaperSize(); // Paper size
-
-        $iScale = $this->phpSheet->getPageSetup()->getScale() ?
-            $this->phpSheet->getPageSetup()->getScale() : 100; // Print scaling factor
+        $iScale = $this->phpSheet->getPageSetup()->getScale() ?: 100; // Print scaling factor
 
         $iPageStart = 0x01; // Starting page number
         $iFitWidth = (int) $this->phpSheet->getPageSetup()->getFitToWidth(); // Fit to number of pages wide
@@ -1729,11 +1658,12 @@ class Worksheet extends BIFFwriter
         $numFtr = $this->phpSheet->getPageMargins()->getFooter(); // Footer Margin
         $iCopies = 0x01; // Number of copies
 
-        $fLeftToRight = 0x0; // Print over then down
-
+        // Order of printing pages
+        $fLeftToRight = $this->phpSheet->getPageSetup()->getPageOrder() === PageSetup::PAGEORDER_DOWN_THEN_OVER
+            ? 0x1 : 0x0;
         // Page orientation
-        $fLandscape = ($this->phpSheet->getPageSetup()->getOrientation() == PageSetup::ORIENTATION_LANDSCAPE) ?
-            0x0 : 0x1;
+        $fLandscape = ($this->phpSheet->getPageSetup()->getOrientation() == PageSetup::ORIENTATION_LANDSCAPE)
+            ? 0x0 : 0x1;
 
         $fNoPls = 0x0; // Setup not read from printer
         $fNoColor = 0x0; // Print black and white
@@ -2224,7 +2154,7 @@ class Worksheet extends BIFFwriter
     private function writePassword(): void
     {
         // Exit unless sheet protection and password have been specified
-        if (!$this->phpSheet->getProtection()->getSheet() || !$this->phpSheet->getProtection()->getPassword()) {
+        if (!$this->phpSheet->getProtection()->getSheet() || !$this->phpSheet->getProtection()->getPassword() || $this->phpSheet->getProtection()->getAlgorithm() !== '') {
             return;
         }
 
@@ -2252,7 +2182,9 @@ class Worksheet extends BIFFwriter
      */
     public function insertBitmap($row, $col, $bitmap, $x = 0, $y = 0, $scale_x = 1, $scale_y = 1): void
     {
-        $bitmap_array = (is_resource($bitmap) ? $this->processBitmapGd($bitmap) : $this->processBitmap($bitmap));
+        $bitmap_array = (is_resource($bitmap) || $bitmap instanceof GdImage
+            ? $this->processBitmapGd($bitmap)
+            : $this->processBitmap($bitmap));
         [$width, $height, $size, $data] = $bitmap_array;
 
         // Scale the frame of the image.
@@ -2458,7 +2390,7 @@ class Worksheet extends BIFFwriter
     /**
      * Convert a GD-image into the internal format.
      *
-     * @param resource $image The image to process
+     * @param GdImage|resource $image The image to process
      *
      * @return array Array with data and properties of the bitmap
      */
@@ -2470,9 +2402,10 @@ class Worksheet extends BIFFwriter
         $data = pack('Vvvvv', 0x000c, $width, $height, 0x01, 0x18);
         for ($j = $height; --$j;) {
             for ($i = 0; $i < $width; ++$i) {
+                /** @phpstan-ignore-next-line */
                 $color = imagecolorsforindex($image, imagecolorat($image, $i, $j));
                 foreach (['red', 'green', 'blue'] as $key) {
-                    $color[$key] = $color[$key] + round((255 - $color[$key]) * $color['alpha'] / 127);
+                    $color[$key] = $color[$key] + (int) round((255 - $color[$key]) * $color['alpha'] / 127);
                 }
                 $data .= chr($color['blue']) . chr($color['green']) . chr($color['red']);
             }
@@ -2510,6 +2443,8 @@ class Worksheet extends BIFFwriter
         }
 
         // The first 2 bytes are used to identify the bitmap.
+
+        /** @phpstan-ignore-next-line */
         $identity = unpack('A2ident', $data);
         if ($identity['ident'] != 'BM') {
             throw new WriterException("$bitmap doesn't appear to be a valid bitmap image.\n");
@@ -2591,22 +2526,18 @@ class Worksheet extends BIFFwriter
 
     /**
      * Get Escher object.
-     *
-     * @return \PhpOffice\PhpSpreadsheet\Shared\Escher
      */
-    public function getEscher()
+    public function getEscher(): ?\PhpOffice\PhpSpreadsheet\Shared\Escher
     {
         return $this->escher;
     }
 
     /**
      * Set Escher object.
-     *
-     * @param \PhpOffice\PhpSpreadsheet\Shared\Escher $pValue
      */
-    public function setEscher(?\PhpOffice\PhpSpreadsheet\Shared\Escher $pValue = null): void
+    public function setEscher(?\PhpOffice\PhpSpreadsheet\Shared\Escher $escher): void
     {
-        $this->escher = $pValue;
+        $this->escher = $escher;
     }
 
     /**
@@ -2721,67 +2652,16 @@ class Worksheet extends BIFFwriter
             $record = 0x01BE; // Record identifier
 
             foreach ($dataValidationCollection as $cellCoordinate => $dataValidation) {
-                // initialize record data
-                $data = '';
-
                 // options
                 $options = 0x00000000;
 
                 // data type
-                $type = 0x00;
-                switch ($dataValidation->getType()) {
-                    case DataValidation::TYPE_NONE:
-                        $type = 0x00;
-
-                        break;
-                    case DataValidation::TYPE_WHOLE:
-                        $type = 0x01;
-
-                        break;
-                    case DataValidation::TYPE_DECIMAL:
-                        $type = 0x02;
-
-                        break;
-                    case DataValidation::TYPE_LIST:
-                        $type = 0x03;
-
-                        break;
-                    case DataValidation::TYPE_DATE:
-                        $type = 0x04;
-
-                        break;
-                    case DataValidation::TYPE_TIME:
-                        $type = 0x05;
-
-                        break;
-                    case DataValidation::TYPE_TEXTLENGTH:
-                        $type = 0x06;
-
-                        break;
-                    case DataValidation::TYPE_CUSTOM:
-                        $type = 0x07;
-
-                        break;
-                }
+                $type = CellDataValidation::type($dataValidation);
 
                 $options |= $type << 0;
 
                 // error style
-                $errorStyle = 0x00;
-                switch ($dataValidation->getErrorStyle()) {
-                    case DataValidation::STYLE_STOP:
-                        $errorStyle = 0x00;
-
-                        break;
-                    case DataValidation::STYLE_WARNING:
-                        $errorStyle = 0x01;
-
-                        break;
-                    case DataValidation::STYLE_INFORMATION:
-                        $errorStyle = 0x02;
-
-                        break;
-                }
+                $errorStyle = CellDataValidation::errorStyle($dataValidation);
 
                 $options |= $errorStyle << 4;
 
@@ -2803,41 +2683,7 @@ class Worksheet extends BIFFwriter
                 $options |= $dataValidation->getShowErrorMessage() << 19;
 
                 // condition operator
-                $operator = 0x00;
-                switch ($dataValidation->getOperator()) {
-                    case DataValidation::OPERATOR_BETWEEN:
-                        $operator = 0x00;
-
-                        break;
-                    case DataValidation::OPERATOR_NOTBETWEEN:
-                        $operator = 0x01;
-
-                        break;
-                    case DataValidation::OPERATOR_EQUAL:
-                        $operator = 0x02;
-
-                        break;
-                    case DataValidation::OPERATOR_NOTEQUAL:
-                        $operator = 0x03;
-
-                        break;
-                    case DataValidation::OPERATOR_GREATERTHAN:
-                        $operator = 0x04;
-
-                        break;
-                    case DataValidation::OPERATOR_LESSTHAN:
-                        $operator = 0x05;
-
-                        break;
-                    case DataValidation::OPERATOR_GREATERTHANOREQUAL:
-                        $operator = 0x06;
-
-                        break;
-                    case DataValidation::OPERATOR_LESSTHANOREQUAL:
-                        $operator = 0x07;
-
-                        break;
-                }
+                $operator = CellDataValidation::operator($dataValidation);
 
                 $options |= $operator << 20;
 
@@ -2908,35 +2754,6 @@ class Worksheet extends BIFFwriter
     }
 
     /**
-     * Map Error code.
-     *
-     * @param string $errorCode
-     *
-     * @return int
-     */
-    private static function mapErrorCode($errorCode)
-    {
-        switch ($errorCode) {
-            case '#NULL!':
-                return 0x00;
-            case '#DIV/0!':
-                return 0x07;
-            case '#VALUE!':
-                return 0x0F;
-            case '#REF!':
-                return 0x17;
-            case '#NAME?':
-                return 0x1D;
-            case '#NUM!':
-                return 0x24;
-            case '#N/A':
-                return 0x2A;
-        }
-
-        return 0;
-    }
-
-    /**
      * Write PLV Record.
      */
     private function writePageLayoutView(): void
@@ -2970,12 +2787,15 @@ class Worksheet extends BIFFwriter
     /**
      * Write CFRule Record.
      */
-    private function writeCFRule(Conditional $conditional): void
-    {
+    private function writeCFRule(
+        ConditionalHelper $conditionalFormulaHelper,
+        Conditional $conditional,
+        string $cellRange
+    ): void {
         $record = 0x01B1; // Record identifier
+        $type = null; // Type of the CF
+        $operatorType = null; // Comparison operator
 
-        // $type : Type of the CF
-        // $operatorType : Comparison operator
         if ($conditional->getConditionType() == Conditional::CONDITION_EXPRESSION) {
             $type = 0x02;
             $operatorType = 0x00;
@@ -3023,31 +2843,33 @@ class Worksheet extends BIFFwriter
         // $szValue2 : size of the formula data for second value or formula
         $arrConditions = $conditional->getConditions();
         $numConditions = count($arrConditions);
-        if ($numConditions == 1) {
-            $szValue1 = ($arrConditions[0] <= 65535 ? 3 : 0x0000);
-            $szValue2 = 0x0000;
-            $operand1 = pack('Cv', 0x1E, $arrConditions[0]);
-            $operand2 = null;
-        } elseif ($numConditions == 2 && ($conditional->getOperatorType() == Conditional::OPERATOR_BETWEEN)) {
-            $szValue1 = ($arrConditions[0] <= 65535 ? 3 : 0x0000);
-            $szValue2 = ($arrConditions[1] <= 65535 ? 3 : 0x0000);
-            $operand1 = pack('Cv', 0x1E, $arrConditions[0]);
-            $operand2 = pack('Cv', 0x1E, $arrConditions[1]);
-        } else {
-            $szValue1 = 0x0000;
-            $szValue2 = 0x0000;
-            $operand1 = null;
-            $operand2 = null;
+
+        $szValue1 = 0x0000;
+        $szValue2 = 0x0000;
+        $operand1 = null;
+        $operand2 = null;
+
+        if ($numConditions === 1) {
+            $conditionalFormulaHelper->processCondition($arrConditions[0], $cellRange);
+            $szValue1 = $conditionalFormulaHelper->size();
+            $operand1 = $conditionalFormulaHelper->tokens();
+        } elseif ($numConditions === 2 && ($conditional->getOperatorType() === Conditional::OPERATOR_BETWEEN)) {
+            $conditionalFormulaHelper->processCondition($arrConditions[0], $cellRange);
+            $szValue1 = $conditionalFormulaHelper->size();
+            $operand1 = $conditionalFormulaHelper->tokens();
+            $conditionalFormulaHelper->processCondition($arrConditions[1], $cellRange);
+            $szValue2 = $conditionalFormulaHelper->size();
+            $operand2 = $conditionalFormulaHelper->tokens();
         }
 
         // $flags : Option flags
         // Alignment
-        $bAlignHz = ($conditional->getStyle()->getAlignment()->getHorizontal() == null ? 1 : 0);
-        $bAlignVt = ($conditional->getStyle()->getAlignment()->getVertical() == null ? 1 : 0);
-        $bAlignWrapTx = ($conditional->getStyle()->getAlignment()->getWrapText() == false ? 1 : 0);
-        $bTxRotation = ($conditional->getStyle()->getAlignment()->getTextRotation() == null ? 1 : 0);
-        $bIndent = ($conditional->getStyle()->getAlignment()->getIndent() == 0 ? 1 : 0);
-        $bShrinkToFit = ($conditional->getStyle()->getAlignment()->getShrinkToFit() == false ? 1 : 0);
+        $bAlignHz = ($conditional->getStyle()->getAlignment()->getHorizontal() === null ? 1 : 0);
+        $bAlignVt = ($conditional->getStyle()->getAlignment()->getVertical() === null ? 1 : 0);
+        $bAlignWrapTx = ($conditional->getStyle()->getAlignment()->getWrapText() === false ? 1 : 0);
+        $bTxRotation = ($conditional->getStyle()->getAlignment()->getTextRotation() === null ? 1 : 0);
+        $bIndent = ($conditional->getStyle()->getAlignment()->getIndent() === 0 ? 1 : 0);
+        $bShrinkToFit = ($conditional->getStyle()->getAlignment()->getShrinkToFit() === false ? 1 : 0);
         if ($bAlignHz == 0 || $bAlignVt == 0 || $bAlignWrapTx == 0 || $bTxRotation == 0 || $bIndent == 0 || $bShrinkToFit == 0) {
             $bFormatAlign = 1;
         } else {
@@ -3076,7 +2898,7 @@ class Worksheet extends BIFFwriter
             $bFormatBorder = 0;
         }
         // Pattern
-        $bFillStyle = ($conditional->getStyle()->getFill()->getFillType() == null ? 0 : 1);
+        $bFillStyle = ($conditional->getStyle()->getFill()->getFillType() === null ? 0 : 1);
         $bFillColor = ($conditional->getStyle()->getFill()->getStartColor()->getARGB() == null ? 0 : 1);
         $bFillColorBg = ($conditional->getStyle()->getFill()->getEndColor()->getARGB() == null ? 0 : 1);
         if ($bFillStyle == 0 || $bFillColor == 0 || $bFillColorBg == 0) {
@@ -3085,15 +2907,17 @@ class Worksheet extends BIFFwriter
             $bFormatFill = 0;
         }
         // Font
-        if ($conditional->getStyle()->getFont()->getName() != null
-            || $conditional->getStyle()->getFont()->getSize() != null
-            || $conditional->getStyle()->getFont()->getBold() != null
-            || $conditional->getStyle()->getFont()->getItalic() != null
-            || $conditional->getStyle()->getFont()->getSuperscript() != null
-            || $conditional->getStyle()->getFont()->getSubscript() != null
-            || $conditional->getStyle()->getFont()->getUnderline() != null
-            || $conditional->getStyle()->getFont()->getStrikethrough() != null
-            || $conditional->getStyle()->getFont()->getColor()->getARGB() != null) {
+        if (
+            $conditional->getStyle()->getFont()->getName() !== null
+            || $conditional->getStyle()->getFont()->getSize() !== null
+            || $conditional->getStyle()->getFont()->getBold() !== null
+            || $conditional->getStyle()->getFont()->getItalic() !== null
+            || $conditional->getStyle()->getFont()->getSuperscript() !== null
+            || $conditional->getStyle()->getFont()->getSubscript() !== null
+            || $conditional->getStyle()->getFont()->getUnderline() !== null
+            || $conditional->getStyle()->getFont()->getStrikethrough() !== null
+            || $conditional->getStyle()->getFont()->getColor()->getARGB() != null
+        ) {
             $bFormatFont = 1;
         } else {
             $bFormatFont = 0;
@@ -3105,11 +2929,11 @@ class Worksheet extends BIFFwriter
         $flags |= (1 == $bAlignWrapTx ? 0x00000004 : 0);
         $flags |= (1 == $bTxRotation ? 0x00000008 : 0);
         // Justify last line flag
-        $flags |= (1 == 1 ? 0x00000010 : 0);
+        $flags |= (1 == self::$always1 ? 0x00000010 : 0);
         $flags |= (1 == $bIndent ? 0x00000020 : 0);
         $flags |= (1 == $bShrinkToFit ? 0x00000040 : 0);
         // Default
-        $flags |= (1 == 1 ? 0x00000080 : 0);
+        $flags |= (1 == self::$always1 ? 0x00000080 : 0);
         // Protection
         $flags |= (1 == $bProtLocked ? 0x00000100 : 0);
         $flags |= (1 == $bProtHidden ? 0x00000200 : 0);
@@ -3118,13 +2942,13 @@ class Worksheet extends BIFFwriter
         $flags |= (1 == $bBorderRight ? 0x00000800 : 0);
         $flags |= (1 == $bBorderTop ? 0x00001000 : 0);
         $flags |= (1 == $bBorderBottom ? 0x00002000 : 0);
-        $flags |= (1 == 1 ? 0x00004000 : 0); // Top left to Bottom right border
-        $flags |= (1 == 1 ? 0x00008000 : 0); // Bottom left to Top right border
+        $flags |= (1 == self::$always1 ? 0x00004000 : 0); // Top left to Bottom right border
+        $flags |= (1 == self::$always1 ? 0x00008000 : 0); // Bottom left to Top right border
         // Pattern
         $flags |= (1 == $bFillStyle ? 0x00010000 : 0);
         $flags |= (1 == $bFillColor ? 0x00020000 : 0);
         $flags |= (1 == $bFillColorBg ? 0x00040000 : 0);
-        $flags |= (1 == 1 ? 0x00380000 : 0);
+        $flags |= (1 == self::$always1 ? 0x00380000 : 0);
         // Font
         $flags |= (1 == $bFormatFont ? 0x04000000 : 0);
         // Alignment:
@@ -3136,19 +2960,24 @@ class Worksheet extends BIFFwriter
         // Protection
         $flags |= (1 == $bFormatProt ? 0x40000000 : 0);
         // Text direction
-        $flags |= (1 == 0 ? 0x80000000 : 0);
+        $flags |= (1 == self::$always0 ? 0x80000000 : 0);
+
+        $dataBlockFont = null;
+        $dataBlockAlign = null;
+        $dataBlockBorder = null;
+        $dataBlockFill = null;
 
         // Data Blocks
         if ($bFormatFont == 1) {
             // Font Name
-            if ($conditional->getStyle()->getFont()->getName() == null) {
+            if ($conditional->getStyle()->getFont()->getName() === null) {
                 $dataBlockFont = pack('VVVVVVVV', 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000);
                 $dataBlockFont .= pack('VVVVVVVV', 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000);
             } else {
                 $dataBlockFont = StringHelper::UTF8toBIFF8UnicodeLong($conditional->getStyle()->getFont()->getName());
             }
             // Font Size
-            if ($conditional->getStyle()->getFont()->getSize() == null) {
+            if ($conditional->getStyle()->getFont()->getSize() === null) {
                 $dataBlockFont .= pack('V', 20 * 11);
             } else {
                 $dataBlockFont .= pack('V', 20 * $conditional->getStyle()->getFont()->getSize());
@@ -3156,16 +2985,16 @@ class Worksheet extends BIFFwriter
             // Font Options
             $dataBlockFont .= pack('V', 0);
             // Font weight
-            if ($conditional->getStyle()->getFont()->getBold() == true) {
+            if ($conditional->getStyle()->getFont()->getBold() === true) {
                 $dataBlockFont .= pack('v', 0x02BC);
             } else {
                 $dataBlockFont .= pack('v', 0x0190);
             }
             // Escapement type
-            if ($conditional->getStyle()->getFont()->getSubscript() == true) {
+            if ($conditional->getStyle()->getFont()->getSubscript() === true) {
                 $dataBlockFont .= pack('v', 0x02);
                 $fontEscapement = 0;
-            } elseif ($conditional->getStyle()->getFont()->getSuperscript() == true) {
+            } elseif ($conditional->getStyle()->getFont()->getSuperscript() === true) {
                 $dataBlockFont .= pack('v', 0x01);
                 $fontEscapement = 0;
             } else {
@@ -3208,247 +3037,19 @@ class Worksheet extends BIFFwriter
             // Not used (3)
             $dataBlockFont .= pack('vC', 0x0000, 0x00);
             // Font color index
-            switch ($conditional->getStyle()->getFont()->getColor()->getRGB()) {
-                case '000000':
-                    $colorIdx = 0x08;
+            $colorIdx = Style\ColorMap::lookup($conditional->getStyle()->getFont()->getColor(), 0x00);
 
-                    break;
-                case 'FFFFFF':
-                    $colorIdx = 0x09;
-
-                    break;
-                case 'FF0000':
-                    $colorIdx = 0x0A;
-
-                    break;
-                case '00FF00':
-                    $colorIdx = 0x0B;
-
-                    break;
-                case '0000FF':
-                    $colorIdx = 0x0C;
-
-                    break;
-                case 'FFFF00':
-                    $colorIdx = 0x0D;
-
-                    break;
-                case 'FF00FF':
-                    $colorIdx = 0x0E;
-
-                    break;
-                case '00FFFF':
-                    $colorIdx = 0x0F;
-
-                    break;
-                case '800000':
-                    $colorIdx = 0x10;
-
-                    break;
-                case '008000':
-                    $colorIdx = 0x11;
-
-                    break;
-                case '000080':
-                    $colorIdx = 0x12;
-
-                    break;
-                case '808000':
-                    $colorIdx = 0x13;
-
-                    break;
-                case '800080':
-                    $colorIdx = 0x14;
-
-                    break;
-                case '008080':
-                    $colorIdx = 0x15;
-
-                    break;
-                case 'C0C0C0':
-                    $colorIdx = 0x16;
-
-                    break;
-                case '808080':
-                    $colorIdx = 0x17;
-
-                    break;
-                case '9999FF':
-                    $colorIdx = 0x18;
-
-                    break;
-                case '993366':
-                    $colorIdx = 0x19;
-
-                    break;
-                case 'FFFFCC':
-                    $colorIdx = 0x1A;
-
-                    break;
-                case 'CCFFFF':
-                    $colorIdx = 0x1B;
-
-                    break;
-                case '660066':
-                    $colorIdx = 0x1C;
-
-                    break;
-                case 'FF8080':
-                    $colorIdx = 0x1D;
-
-                    break;
-                case '0066CC':
-                    $colorIdx = 0x1E;
-
-                    break;
-                case 'CCCCFF':
-                    $colorIdx = 0x1F;
-
-                    break;
-                case '000080':
-                    $colorIdx = 0x20;
-
-                    break;
-                case 'FF00FF':
-                    $colorIdx = 0x21;
-
-                    break;
-                case 'FFFF00':
-                    $colorIdx = 0x22;
-
-                    break;
-                case '00FFFF':
-                    $colorIdx = 0x23;
-
-                    break;
-                case '800080':
-                    $colorIdx = 0x24;
-
-                    break;
-                case '800000':
-                    $colorIdx = 0x25;
-
-                    break;
-                case '008080':
-                    $colorIdx = 0x26;
-
-                    break;
-                case '0000FF':
-                    $colorIdx = 0x27;
-
-                    break;
-                case '00CCFF':
-                    $colorIdx = 0x28;
-
-                    break;
-                case 'CCFFFF':
-                    $colorIdx = 0x29;
-
-                    break;
-                case 'CCFFCC':
-                    $colorIdx = 0x2A;
-
-                    break;
-                case 'FFFF99':
-                    $colorIdx = 0x2B;
-
-                    break;
-                case '99CCFF':
-                    $colorIdx = 0x2C;
-
-                    break;
-                case 'FF99CC':
-                    $colorIdx = 0x2D;
-
-                    break;
-                case 'CC99FF':
-                    $colorIdx = 0x2E;
-
-                    break;
-                case 'FFCC99':
-                    $colorIdx = 0x2F;
-
-                    break;
-                case '3366FF':
-                    $colorIdx = 0x30;
-
-                    break;
-                case '33CCCC':
-                    $colorIdx = 0x31;
-
-                    break;
-                case '99CC00':
-                    $colorIdx = 0x32;
-
-                    break;
-                case 'FFCC00':
-                    $colorIdx = 0x33;
-
-                    break;
-                case 'FF9900':
-                    $colorIdx = 0x34;
-
-                    break;
-                case 'FF6600':
-                    $colorIdx = 0x35;
-
-                    break;
-                case '666699':
-                    $colorIdx = 0x36;
-
-                    break;
-                case '969696':
-                    $colorIdx = 0x37;
-
-                    break;
-                case '003366':
-                    $colorIdx = 0x38;
-
-                    break;
-                case '339966':
-                    $colorIdx = 0x39;
-
-                    break;
-                case '003300':
-                    $colorIdx = 0x3A;
-
-                    break;
-                case '333300':
-                    $colorIdx = 0x3B;
-
-                    break;
-                case '993300':
-                    $colorIdx = 0x3C;
-
-                    break;
-                case '993366':
-                    $colorIdx = 0x3D;
-
-                    break;
-                case '333399':
-                    $colorIdx = 0x3E;
-
-                    break;
-                case '333333':
-                    $colorIdx = 0x3F;
-
-                    break;
-                default:
-                    $colorIdx = 0x00;
-
-                    break;
-            }
             $dataBlockFont .= pack('V', $colorIdx);
             // Not used (4)
             $dataBlockFont .= pack('V', 0x00000000);
             // Options flags for modified font attributes
             $optionsFlags = 0;
-            $optionsFlagsBold = ($conditional->getStyle()->getFont()->getBold() == null ? 1 : 0);
+            $optionsFlagsBold = ($conditional->getStyle()->getFont()->getBold() === null ? 1 : 0);
             $optionsFlags |= (1 == $optionsFlagsBold ? 0x00000002 : 0);
-            $optionsFlags |= (1 == 1 ? 0x00000008 : 0);
-            $optionsFlags |= (1 == 1 ? 0x00000010 : 0);
-            $optionsFlags |= (1 == 0 ? 0x00000020 : 0);
-            $optionsFlags |= (1 == 1 ? 0x00000080 : 0);
+            $optionsFlags |= (1 == self::$always1 ? 0x00000008 : 0);
+            $optionsFlags |= (1 == self::$always1 ? 0x00000010 : 0);
+            $optionsFlags |= (1 == self::$always0 ? 0x00000020 : 0);
+            $optionsFlags |= (1 == self::$always1 ? 0x00000080 : 0);
             $dataBlockFont .= pack('V', $optionsFlags);
             // Escapement type
             $dataBlockFont .= pack('V', $fontEscapement);
@@ -3463,58 +3064,11 @@ class Worksheet extends BIFFwriter
             // Always
             $dataBlockFont .= pack('v', 0x0001);
         }
-        if ($bFormatAlign == 1) {
-            $blockAlign = 0;
+        if ($bFormatAlign === 1) {
             // Alignment and text break
-            switch ($conditional->getStyle()->getAlignment()->getHorizontal()) {
-                case Alignment::HORIZONTAL_GENERAL:
-                    $blockAlign = 0;
-
-                    break;
-                case Alignment::HORIZONTAL_LEFT:
-                    $blockAlign = 1;
-
-                    break;
-                case Alignment::HORIZONTAL_RIGHT:
-                    $blockAlign = 3;
-
-                    break;
-                case Alignment::HORIZONTAL_CENTER:
-                    $blockAlign = 2;
-
-                    break;
-                case Alignment::HORIZONTAL_CENTER_CONTINUOUS:
-                    $blockAlign = 6;
-
-                    break;
-                case Alignment::HORIZONTAL_JUSTIFY:
-                    $blockAlign = 5;
-
-                    break;
-            }
-            if ($conditional->getStyle()->getAlignment()->getWrapText() == true) {
-                $blockAlign |= 1 << 3;
-            } else {
-                $blockAlign |= 0 << 3;
-            }
-            switch ($conditional->getStyle()->getAlignment()->getVertical()) {
-                case Alignment::VERTICAL_BOTTOM:
-                    $blockAlign = 2 << 4;
-
-                    break;
-                case Alignment::VERTICAL_TOP:
-                    $blockAlign = 0 << 4;
-
-                    break;
-                case Alignment::VERTICAL_CENTER:
-                    $blockAlign = 1 << 4;
-
-                    break;
-                case Alignment::VERTICAL_JUSTIFY:
-                    $blockAlign = 3 << 4;
-
-                    break;
-            }
+            $blockAlign = Style\CellAlignment::horizontal($conditional->getStyle()->getAlignment());
+            $blockAlign |= Style\CellAlignment::wrap($conditional->getStyle()->getAlignment()) << 3;
+            $blockAlign |= Style\CellAlignment::vertical($conditional->getStyle()->getAlignment()) << 4;
             $blockAlign |= 0 << 7;
 
             // Text rotation angle
@@ -3522,7 +3076,7 @@ class Worksheet extends BIFFwriter
 
             // Indentation
             $blockIndent = $conditional->getStyle()->getAlignment()->getIndent();
-            if ($conditional->getStyle()->getAlignment()->getShrinkToFit() == true) {
+            if ($conditional->getStyle()->getAlignment()->getShrinkToFit() === true) {
                 $blockIndent |= 1 << 4;
             } else {
                 $blockIndent |= 0 << 4;
@@ -3534,240 +3088,11 @@ class Worksheet extends BIFFwriter
 
             $dataBlockAlign = pack('CCvvv', $blockAlign, $blockRotation, $blockIndent, $blockIndentRelative, 0x0000);
         }
-        if ($bFormatBorder == 1) {
-            $blockLineStyle = 0;
-            switch ($conditional->getStyle()->getBorders()->getLeft()->getBorderStyle()) {
-                case Border::BORDER_NONE:
-                    $blockLineStyle |= 0x00;
-
-                    break;
-                case Border::BORDER_THIN:
-                    $blockLineStyle |= 0x01;
-
-                    break;
-                case Border::BORDER_MEDIUM:
-                    $blockLineStyle |= 0x02;
-
-                    break;
-                case Border::BORDER_DASHED:
-                    $blockLineStyle |= 0x03;
-
-                    break;
-                case Border::BORDER_DOTTED:
-                    $blockLineStyle |= 0x04;
-
-                    break;
-                case Border::BORDER_THICK:
-                    $blockLineStyle |= 0x05;
-
-                    break;
-                case Border::BORDER_DOUBLE:
-                    $blockLineStyle |= 0x06;
-
-                    break;
-                case Border::BORDER_HAIR:
-                    $blockLineStyle |= 0x07;
-
-                    break;
-                case Border::BORDER_MEDIUMDASHED:
-                    $blockLineStyle |= 0x08;
-
-                    break;
-                case Border::BORDER_DASHDOT:
-                    $blockLineStyle |= 0x09;
-
-                    break;
-                case Border::BORDER_MEDIUMDASHDOT:
-                    $blockLineStyle |= 0x0A;
-
-                    break;
-                case Border::BORDER_DASHDOTDOT:
-                    $blockLineStyle |= 0x0B;
-
-                    break;
-                case Border::BORDER_MEDIUMDASHDOTDOT:
-                    $blockLineStyle |= 0x0C;
-
-                    break;
-                case Border::BORDER_SLANTDASHDOT:
-                    $blockLineStyle |= 0x0D;
-
-                    break;
-            }
-            switch ($conditional->getStyle()->getBorders()->getRight()->getBorderStyle()) {
-                case Border::BORDER_NONE:
-                    $blockLineStyle |= 0x00 << 4;
-
-                    break;
-                case Border::BORDER_THIN:
-                    $blockLineStyle |= 0x01 << 4;
-
-                    break;
-                case Border::BORDER_MEDIUM:
-                    $blockLineStyle |= 0x02 << 4;
-
-                    break;
-                case Border::BORDER_DASHED:
-                    $blockLineStyle |= 0x03 << 4;
-
-                    break;
-                case Border::BORDER_DOTTED:
-                    $blockLineStyle |= 0x04 << 4;
-
-                    break;
-                case Border::BORDER_THICK:
-                    $blockLineStyle |= 0x05 << 4;
-
-                    break;
-                case Border::BORDER_DOUBLE:
-                    $blockLineStyle |= 0x06 << 4;
-
-                    break;
-                case Border::BORDER_HAIR:
-                    $blockLineStyle |= 0x07 << 4;
-
-                    break;
-                case Border::BORDER_MEDIUMDASHED:
-                    $blockLineStyle |= 0x08 << 4;
-
-                    break;
-                case Border::BORDER_DASHDOT:
-                    $blockLineStyle |= 0x09 << 4;
-
-                    break;
-                case Border::BORDER_MEDIUMDASHDOT:
-                    $blockLineStyle |= 0x0A << 4;
-
-                    break;
-                case Border::BORDER_DASHDOTDOT:
-                    $blockLineStyle |= 0x0B << 4;
-
-                    break;
-                case Border::BORDER_MEDIUMDASHDOTDOT:
-                    $blockLineStyle |= 0x0C << 4;
-
-                    break;
-                case Border::BORDER_SLANTDASHDOT:
-                    $blockLineStyle |= 0x0D << 4;
-
-                    break;
-            }
-            switch ($conditional->getStyle()->getBorders()->getTop()->getBorderStyle()) {
-                case Border::BORDER_NONE:
-                    $blockLineStyle |= 0x00 << 8;
-
-                    break;
-                case Border::BORDER_THIN:
-                    $blockLineStyle |= 0x01 << 8;
-
-                    break;
-                case Border::BORDER_MEDIUM:
-                    $blockLineStyle |= 0x02 << 8;
-
-                    break;
-                case Border::BORDER_DASHED:
-                    $blockLineStyle |= 0x03 << 8;
-
-                    break;
-                case Border::BORDER_DOTTED:
-                    $blockLineStyle |= 0x04 << 8;
-
-                    break;
-                case Border::BORDER_THICK:
-                    $blockLineStyle |= 0x05 << 8;
-
-                    break;
-                case Border::BORDER_DOUBLE:
-                    $blockLineStyle |= 0x06 << 8;
-
-                    break;
-                case Border::BORDER_HAIR:
-                    $blockLineStyle |= 0x07 << 8;
-
-                    break;
-                case Border::BORDER_MEDIUMDASHED:
-                    $blockLineStyle |= 0x08 << 8;
-
-                    break;
-                case Border::BORDER_DASHDOT:
-                    $blockLineStyle |= 0x09 << 8;
-
-                    break;
-                case Border::BORDER_MEDIUMDASHDOT:
-                    $blockLineStyle |= 0x0A << 8;
-
-                    break;
-                case Border::BORDER_DASHDOTDOT:
-                    $blockLineStyle |= 0x0B << 8;
-
-                    break;
-                case Border::BORDER_MEDIUMDASHDOTDOT:
-                    $blockLineStyle |= 0x0C << 8;
-
-                    break;
-                case Border::BORDER_SLANTDASHDOT:
-                    $blockLineStyle |= 0x0D << 8;
-
-                    break;
-            }
-            switch ($conditional->getStyle()->getBorders()->getBottom()->getBorderStyle()) {
-                case Border::BORDER_NONE:
-                    $blockLineStyle |= 0x00 << 12;
-
-                    break;
-                case Border::BORDER_THIN:
-                    $blockLineStyle |= 0x01 << 12;
-
-                    break;
-                case Border::BORDER_MEDIUM:
-                    $blockLineStyle |= 0x02 << 12;
-
-                    break;
-                case Border::BORDER_DASHED:
-                    $blockLineStyle |= 0x03 << 12;
-
-                    break;
-                case Border::BORDER_DOTTED:
-                    $blockLineStyle |= 0x04 << 12;
-
-                    break;
-                case Border::BORDER_THICK:
-                    $blockLineStyle |= 0x05 << 12;
-
-                    break;
-                case Border::BORDER_DOUBLE:
-                    $blockLineStyle |= 0x06 << 12;
-
-                    break;
-                case Border::BORDER_HAIR:
-                    $blockLineStyle |= 0x07 << 12;
-
-                    break;
-                case Border::BORDER_MEDIUMDASHED:
-                    $blockLineStyle |= 0x08 << 12;
-
-                    break;
-                case Border::BORDER_DASHDOT:
-                    $blockLineStyle |= 0x09 << 12;
-
-                    break;
-                case Border::BORDER_MEDIUMDASHDOT:
-                    $blockLineStyle |= 0x0A << 12;
-
-                    break;
-                case Border::BORDER_DASHDOTDOT:
-                    $blockLineStyle |= 0x0B << 12;
-
-                    break;
-                case Border::BORDER_MEDIUMDASHDOTDOT:
-                    $blockLineStyle |= 0x0C << 12;
-
-                    break;
-                case Border::BORDER_SLANTDASHDOT:
-                    $blockLineStyle |= 0x0D << 12;
-
-                    break;
-            }
+        if ($bFormatBorder === 1) {
+            $blockLineStyle = Style\CellBorder::style($conditional->getStyle()->getBorders()->getLeft());
+            $blockLineStyle |= Style\CellBorder::style($conditional->getStyle()->getBorders()->getRight()) << 4;
+            $blockLineStyle |= Style\CellBorder::style($conditional->getStyle()->getBorders()->getTop()) << 8;
+            $blockLineStyle |= Style\CellBorder::style($conditional->getStyle()->getBorders()->getBottom()) << 12;
 
             // TODO writeCFRule() => $blockLineStyle => Index Color for left line
             // TODO writeCFRule() => $blockLineStyle => Index Color for right line
@@ -3777,649 +3102,36 @@ class Worksheet extends BIFFwriter
             // TODO writeCFRule() => $blockColor => Index Color for top line
             // TODO writeCFRule() => $blockColor => Index Color for bottom line
             // TODO writeCFRule() => $blockColor => Index Color for diagonal line
-            switch ($conditional->getStyle()->getBorders()->getDiagonal()->getBorderStyle()) {
-                case Border::BORDER_NONE:
-                    $blockColor |= 0x00 << 21;
-
-                    break;
-                case Border::BORDER_THIN:
-                    $blockColor |= 0x01 << 21;
-
-                    break;
-                case Border::BORDER_MEDIUM:
-                    $blockColor |= 0x02 << 21;
-
-                    break;
-                case Border::BORDER_DASHED:
-                    $blockColor |= 0x03 << 21;
-
-                    break;
-                case Border::BORDER_DOTTED:
-                    $blockColor |= 0x04 << 21;
-
-                    break;
-                case Border::BORDER_THICK:
-                    $blockColor |= 0x05 << 21;
-
-                    break;
-                case Border::BORDER_DOUBLE:
-                    $blockColor |= 0x06 << 21;
-
-                    break;
-                case Border::BORDER_HAIR:
-                    $blockColor |= 0x07 << 21;
-
-                    break;
-                case Border::BORDER_MEDIUMDASHED:
-                    $blockColor |= 0x08 << 21;
-
-                    break;
-                case Border::BORDER_DASHDOT:
-                    $blockColor |= 0x09 << 21;
-
-                    break;
-                case Border::BORDER_MEDIUMDASHDOT:
-                    $blockColor |= 0x0A << 21;
-
-                    break;
-                case Border::BORDER_DASHDOTDOT:
-                    $blockColor |= 0x0B << 21;
-
-                    break;
-                case Border::BORDER_MEDIUMDASHDOTDOT:
-                    $blockColor |= 0x0C << 21;
-
-                    break;
-                case Border::BORDER_SLANTDASHDOT:
-                    $blockColor |= 0x0D << 21;
-
-                    break;
-            }
+            $blockColor |= Style\CellBorder::style($conditional->getStyle()->getBorders()->getDiagonal()) << 21;
             $dataBlockBorder = pack('vv', $blockLineStyle, $blockColor);
         }
-        if ($bFormatFill == 1) {
-            // Fill Patern Style
-            $blockFillPatternStyle = 0;
-            switch ($conditional->getStyle()->getFill()->getFillType()) {
-                case Fill::FILL_NONE:
-                    $blockFillPatternStyle = 0x00;
+        if ($bFormatFill === 1) {
+            // Fill Pattern Style
+            $blockFillPatternStyle = Style\CellFill::style($conditional->getStyle()->getFill());
+            // Background Color
+            $colorIdxBg = Style\ColorMap::lookup($conditional->getStyle()->getFill()->getStartColor(), 0x41);
+            // Foreground Color
+            $colorIdxFg = Style\ColorMap::lookup($conditional->getStyle()->getFill()->getEndColor(), 0x40);
 
-                    break;
-                case Fill::FILL_SOLID:
-                    $blockFillPatternStyle = 0x01;
-
-                    break;
-                case Fill::FILL_PATTERN_MEDIUMGRAY:
-                    $blockFillPatternStyle = 0x02;
-
-                    break;
-                case Fill::FILL_PATTERN_DARKGRAY:
-                    $blockFillPatternStyle = 0x03;
-
-                    break;
-                case Fill::FILL_PATTERN_LIGHTGRAY:
-                    $blockFillPatternStyle = 0x04;
-
-                    break;
-                case Fill::FILL_PATTERN_DARKHORIZONTAL:
-                    $blockFillPatternStyle = 0x05;
-
-                    break;
-                case Fill::FILL_PATTERN_DARKVERTICAL:
-                    $blockFillPatternStyle = 0x06;
-
-                    break;
-                case Fill::FILL_PATTERN_DARKDOWN:
-                    $blockFillPatternStyle = 0x07;
-
-                    break;
-                case Fill::FILL_PATTERN_DARKUP:
-                    $blockFillPatternStyle = 0x08;
-
-                    break;
-                case Fill::FILL_PATTERN_DARKGRID:
-                    $blockFillPatternStyle = 0x09;
-
-                    break;
-                case Fill::FILL_PATTERN_DARKTRELLIS:
-                    $blockFillPatternStyle = 0x0A;
-
-                    break;
-                case Fill::FILL_PATTERN_LIGHTHORIZONTAL:
-                    $blockFillPatternStyle = 0x0B;
-
-                    break;
-                case Fill::FILL_PATTERN_LIGHTVERTICAL:
-                    $blockFillPatternStyle = 0x0C;
-
-                    break;
-                case Fill::FILL_PATTERN_LIGHTDOWN:
-                    $blockFillPatternStyle = 0x0D;
-
-                    break;
-                case Fill::FILL_PATTERN_LIGHTUP:
-                    $blockFillPatternStyle = 0x0E;
-
-                    break;
-                case Fill::FILL_PATTERN_LIGHTGRID:
-                    $blockFillPatternStyle = 0x0F;
-
-                    break;
-                case Fill::FILL_PATTERN_LIGHTTRELLIS:
-                    $blockFillPatternStyle = 0x10;
-
-                    break;
-                case Fill::FILL_PATTERN_GRAY125:
-                    $blockFillPatternStyle = 0x11;
-
-                    break;
-                case Fill::FILL_PATTERN_GRAY0625:
-                    $blockFillPatternStyle = 0x12;
-
-                    break;
-                case Fill::FILL_GRADIENT_LINEAR:
-                    $blockFillPatternStyle = 0x00;
-
-                    break; // does not exist in BIFF8
-                case Fill::FILL_GRADIENT_PATH:
-                    $blockFillPatternStyle = 0x00;
-
-                    break; // does not exist in BIFF8
-                default:
-                    $blockFillPatternStyle = 0x00;
-
-                    break;
-            }
-            // Color
-            switch ($conditional->getStyle()->getFill()->getStartColor()->getRGB()) {
-                case '000000':
-                    $colorIdxBg = 0x08;
-
-                    break;
-                case 'FFFFFF':
-                    $colorIdxBg = 0x09;
-
-                    break;
-                case 'FF0000':
-                    $colorIdxBg = 0x0A;
-
-                    break;
-                case '00FF00':
-                    $colorIdxBg = 0x0B;
-
-                    break;
-                case '0000FF':
-                    $colorIdxBg = 0x0C;
-
-                    break;
-                case 'FFFF00':
-                    $colorIdxBg = 0x0D;
-
-                    break;
-                case 'FF00FF':
-                    $colorIdxBg = 0x0E;
-
-                    break;
-                case '00FFFF':
-                    $colorIdxBg = 0x0F;
-
-                    break;
-                case '800000':
-                    $colorIdxBg = 0x10;
-
-                    break;
-                case '008000':
-                    $colorIdxBg = 0x11;
-
-                    break;
-                case '000080':
-                    $colorIdxBg = 0x12;
-
-                    break;
-                case '808000':
-                    $colorIdxBg = 0x13;
-
-                    break;
-                case '800080':
-                    $colorIdxBg = 0x14;
-
-                    break;
-                case '008080':
-                    $colorIdxBg = 0x15;
-
-                    break;
-                case 'C0C0C0':
-                    $colorIdxBg = 0x16;
-
-                    break;
-                case '808080':
-                    $colorIdxBg = 0x17;
-
-                    break;
-                case '9999FF':
-                    $colorIdxBg = 0x18;
-
-                    break;
-                case '993366':
-                    $colorIdxBg = 0x19;
-
-                    break;
-                case 'FFFFCC':
-                    $colorIdxBg = 0x1A;
-
-                    break;
-                case 'CCFFFF':
-                    $colorIdxBg = 0x1B;
-
-                    break;
-                case '660066':
-                    $colorIdxBg = 0x1C;
-
-                    break;
-                case 'FF8080':
-                    $colorIdxBg = 0x1D;
-
-                    break;
-                case '0066CC':
-                    $colorIdxBg = 0x1E;
-
-                    break;
-                case 'CCCCFF':
-                    $colorIdxBg = 0x1F;
-
-                    break;
-                case '000080':
-                    $colorIdxBg = 0x20;
-
-                    break;
-                case 'FF00FF':
-                    $colorIdxBg = 0x21;
-
-                    break;
-                case 'FFFF00':
-                    $colorIdxBg = 0x22;
-
-                    break;
-                case '00FFFF':
-                    $colorIdxBg = 0x23;
-
-                    break;
-                case '800080':
-                    $colorIdxBg = 0x24;
-
-                    break;
-                case '800000':
-                    $colorIdxBg = 0x25;
-
-                    break;
-                case '008080':
-                    $colorIdxBg = 0x26;
-
-                    break;
-                case '0000FF':
-                    $colorIdxBg = 0x27;
-
-                    break;
-                case '00CCFF':
-                    $colorIdxBg = 0x28;
-
-                    break;
-                case 'CCFFFF':
-                    $colorIdxBg = 0x29;
-
-                    break;
-                case 'CCFFCC':
-                    $colorIdxBg = 0x2A;
-
-                    break;
-                case 'FFFF99':
-                    $colorIdxBg = 0x2B;
-
-                    break;
-                case '99CCFF':
-                    $colorIdxBg = 0x2C;
-
-                    break;
-                case 'FF99CC':
-                    $colorIdxBg = 0x2D;
-
-                    break;
-                case 'CC99FF':
-                    $colorIdxBg = 0x2E;
-
-                    break;
-                case 'FFCC99':
-                    $colorIdxBg = 0x2F;
-
-                    break;
-                case '3366FF':
-                    $colorIdxBg = 0x30;
-
-                    break;
-                case '33CCCC':
-                    $colorIdxBg = 0x31;
-
-                    break;
-                case '99CC00':
-                    $colorIdxBg = 0x32;
-
-                    break;
-                case 'FFCC00':
-                    $colorIdxBg = 0x33;
-
-                    break;
-                case 'FF9900':
-                    $colorIdxBg = 0x34;
-
-                    break;
-                case 'FF6600':
-                    $colorIdxBg = 0x35;
-
-                    break;
-                case '666699':
-                    $colorIdxBg = 0x36;
-
-                    break;
-                case '969696':
-                    $colorIdxBg = 0x37;
-
-                    break;
-                case '003366':
-                    $colorIdxBg = 0x38;
-
-                    break;
-                case '339966':
-                    $colorIdxBg = 0x39;
-
-                    break;
-                case '003300':
-                    $colorIdxBg = 0x3A;
-
-                    break;
-                case '333300':
-                    $colorIdxBg = 0x3B;
-
-                    break;
-                case '993300':
-                    $colorIdxBg = 0x3C;
-
-                    break;
-                case '993366':
-                    $colorIdxBg = 0x3D;
-
-                    break;
-                case '333399':
-                    $colorIdxBg = 0x3E;
-
-                    break;
-                case '333333':
-                    $colorIdxBg = 0x3F;
-
-                    break;
-                default:
-                    $colorIdxBg = 0x41;
-
-                    break;
-            }
-            // Fg Color
-            switch ($conditional->getStyle()->getFill()->getEndColor()->getRGB()) {
-                case '000000':
-                    $colorIdxFg = 0x08;
-
-                    break;
-                case 'FFFFFF':
-                    $colorIdxFg = 0x09;
-
-                    break;
-                case 'FF0000':
-                    $colorIdxFg = 0x0A;
-
-                    break;
-                case '00FF00':
-                    $colorIdxFg = 0x0B;
-
-                    break;
-                case '0000FF':
-                    $colorIdxFg = 0x0C;
-
-                    break;
-                case 'FFFF00':
-                    $colorIdxFg = 0x0D;
-
-                    break;
-                case 'FF00FF':
-                    $colorIdxFg = 0x0E;
-
-                    break;
-                case '00FFFF':
-                    $colorIdxFg = 0x0F;
-
-                    break;
-                case '800000':
-                    $colorIdxFg = 0x10;
-
-                    break;
-                case '008000':
-                    $colorIdxFg = 0x11;
-
-                    break;
-                case '000080':
-                    $colorIdxFg = 0x12;
-
-                    break;
-                case '808000':
-                    $colorIdxFg = 0x13;
-
-                    break;
-                case '800080':
-                    $colorIdxFg = 0x14;
-
-                    break;
-                case '008080':
-                    $colorIdxFg = 0x15;
-
-                    break;
-                case 'C0C0C0':
-                    $colorIdxFg = 0x16;
-
-                    break;
-                case '808080':
-                    $colorIdxFg = 0x17;
-
-                    break;
-                case '9999FF':
-                    $colorIdxFg = 0x18;
-
-                    break;
-                case '993366':
-                    $colorIdxFg = 0x19;
-
-                    break;
-                case 'FFFFCC':
-                    $colorIdxFg = 0x1A;
-
-                    break;
-                case 'CCFFFF':
-                    $colorIdxFg = 0x1B;
-
-                    break;
-                case '660066':
-                    $colorIdxFg = 0x1C;
-
-                    break;
-                case 'FF8080':
-                    $colorIdxFg = 0x1D;
-
-                    break;
-                case '0066CC':
-                    $colorIdxFg = 0x1E;
-
-                    break;
-                case 'CCCCFF':
-                    $colorIdxFg = 0x1F;
-
-                    break;
-                case '000080':
-                    $colorIdxFg = 0x20;
-
-                    break;
-                case 'FF00FF':
-                    $colorIdxFg = 0x21;
-
-                    break;
-                case 'FFFF00':
-                    $colorIdxFg = 0x22;
-
-                    break;
-                case '00FFFF':
-                    $colorIdxFg = 0x23;
-
-                    break;
-                case '800080':
-                    $colorIdxFg = 0x24;
-
-                    break;
-                case '800000':
-                    $colorIdxFg = 0x25;
-
-                    break;
-                case '008080':
-                    $colorIdxFg = 0x26;
-
-                    break;
-                case '0000FF':
-                    $colorIdxFg = 0x27;
-
-                    break;
-                case '00CCFF':
-                    $colorIdxFg = 0x28;
-
-                    break;
-                case 'CCFFFF':
-                    $colorIdxFg = 0x29;
-
-                    break;
-                case 'CCFFCC':
-                    $colorIdxFg = 0x2A;
-
-                    break;
-                case 'FFFF99':
-                    $colorIdxFg = 0x2B;
-
-                    break;
-                case '99CCFF':
-                    $colorIdxFg = 0x2C;
-
-                    break;
-                case 'FF99CC':
-                    $colorIdxFg = 0x2D;
-
-                    break;
-                case 'CC99FF':
-                    $colorIdxFg = 0x2E;
-
-                    break;
-                case 'FFCC99':
-                    $colorIdxFg = 0x2F;
-
-                    break;
-                case '3366FF':
-                    $colorIdxFg = 0x30;
-
-                    break;
-                case '33CCCC':
-                    $colorIdxFg = 0x31;
-
-                    break;
-                case '99CC00':
-                    $colorIdxFg = 0x32;
-
-                    break;
-                case 'FFCC00':
-                    $colorIdxFg = 0x33;
-
-                    break;
-                case 'FF9900':
-                    $colorIdxFg = 0x34;
-
-                    break;
-                case 'FF6600':
-                    $colorIdxFg = 0x35;
-
-                    break;
-                case '666699':
-                    $colorIdxFg = 0x36;
-
-                    break;
-                case '969696':
-                    $colorIdxFg = 0x37;
-
-                    break;
-                case '003366':
-                    $colorIdxFg = 0x38;
-
-                    break;
-                case '339966':
-                    $colorIdxFg = 0x39;
-
-                    break;
-                case '003300':
-                    $colorIdxFg = 0x3A;
-
-                    break;
-                case '333300':
-                    $colorIdxFg = 0x3B;
-
-                    break;
-                case '993300':
-                    $colorIdxFg = 0x3C;
-
-                    break;
-                case '993366':
-                    $colorIdxFg = 0x3D;
-
-                    break;
-                case '333399':
-                    $colorIdxFg = 0x3E;
-
-                    break;
-                case '333333':
-                    $colorIdxFg = 0x3F;
-
-                    break;
-                default:
-                    $colorIdxFg = 0x40;
-
-                    break;
-            }
             $dataBlockFill = pack('v', $blockFillPatternStyle);
             $dataBlockFill .= pack('v', $colorIdxFg | ($colorIdxBg << 7));
         }
-        if ($bFormatProt == 1) {
-            $dataBlockProtection = 0;
-            if ($conditional->getStyle()->getProtection()->getLocked() == Protection::PROTECTION_PROTECTED) {
-                $dataBlockProtection = 1;
-            }
-            if ($conditional->getStyle()->getProtection()->getHidden() == Protection::PROTECTION_PROTECTED) {
-                $dataBlockProtection = 1 << 1;
-            }
-        }
 
         $data = pack('CCvvVv', $type, $operatorType, $szValue1, $szValue2, $flags, 0x0000);
-        if ($bFormatFont == 1) { // Block Formatting : OK
+        if ($bFormatFont === 1) { // Block Formatting : OK
             $data .= $dataBlockFont;
         }
-        if ($bFormatAlign == 1) {
+        if ($bFormatAlign === 1) {
             $data .= $dataBlockAlign;
         }
-        if ($bFormatBorder == 1) {
+        if ($bFormatBorder === 1) {
             $data .= $dataBlockBorder;
         }
-        if ($bFormatFill == 1) { // Block Formatting : OK
+        if ($bFormatFill === 1) { // Block Formatting : OK
             $data .= $dataBlockFill;
         }
         if ($bFormatProt == 1) {
-            $data .= $dataBlockProtection;
+            $data .= $this->getDataBlockProtection($conditional);
         }
         if ($operand1 !== null) {
             $data .= $operand1;
@@ -4433,8 +3145,10 @@ class Worksheet extends BIFFwriter
 
     /**
      * Write CFHeader record.
+     *
+     * @param Conditional[] $conditionalStyles
      */
-    private function writeCFHeader(): void
+    private function writeCFHeader(string $cellCoordinate, array $conditionalStyles): bool
     {
         $record = 0x01B0; // Record identifier
         $length = 0x0016; // Bytes to follow
@@ -4443,34 +3157,32 @@ class Worksheet extends BIFFwriter
         $numColumnMax = null;
         $numRowMin = null;
         $numRowMax = null;
+
         $arrConditional = [];
-        foreach ($this->phpSheet->getConditionalStylesCollection() as $cellCoordinate => $conditionalStyles) {
-            foreach ($conditionalStyles as $conditional) {
-                if ($conditional->getConditionType() == Conditional::CONDITION_EXPRESSION
-                    || $conditional->getConditionType() == Conditional::CONDITION_CELLIS) {
-                    if (!in_array($conditional->getHashCode(), $arrConditional)) {
-                        $arrConditional[] = $conditional->getHashCode();
-                    }
-                    // Cells
-                    $arrCoord = Coordinate::coordinateFromString($cellCoordinate);
-                    if (!is_numeric($arrCoord[0])) {
-                        $arrCoord[0] = Coordinate::columnIndexFromString($arrCoord[0]);
-                    }
-                    if ($numColumnMin === null || ($numColumnMin > $arrCoord[0])) {
-                        $numColumnMin = $arrCoord[0];
-                    }
-                    if ($numColumnMax === null || ($numColumnMax < $arrCoord[0])) {
-                        $numColumnMax = $arrCoord[0];
-                    }
-                    if ($numRowMin === null || ($numRowMin > $arrCoord[1])) {
-                        $numRowMin = $arrCoord[1];
-                    }
-                    if ($numRowMax === null || ($numRowMax < $arrCoord[1])) {
-                        $numRowMax = $arrCoord[1];
-                    }
-                }
+        foreach ($conditionalStyles as $conditional) {
+            if (!in_array($conditional->getHashCode(), $arrConditional)) {
+                $arrConditional[] = $conditional->getHashCode();
+            }
+            // Cells
+            $rangeCoordinates = Coordinate::rangeBoundaries($cellCoordinate);
+            if ($numColumnMin === null || ($numColumnMin > $rangeCoordinates[0][0])) {
+                $numColumnMin = $rangeCoordinates[0][0];
+            }
+            if ($numColumnMax === null || ($numColumnMax < $rangeCoordinates[1][0])) {
+                $numColumnMax = $rangeCoordinates[1][0];
+            }
+            if ($numRowMin === null || ($numRowMin > $rangeCoordinates[0][1])) {
+                $numRowMin = (int) $rangeCoordinates[0][1];
+            }
+            if ($numRowMax === null || ($numRowMax < $rangeCoordinates[1][1])) {
+                $numRowMax = (int) $rangeCoordinates[1][1];
             }
         }
+
+        if (count($arrConditional) === 0) {
+            return false;
+        }
+
         $needRedraw = 1;
         $cellRange = pack('vvvv', $numRowMin - 1, $numRowMax - 1, $numColumnMin - 1, $numColumnMax - 1);
 
@@ -4480,5 +3192,20 @@ class Worksheet extends BIFFwriter
         $data .= pack('v', 0x0001);
         $data .= $cellRange;
         $this->append($header . $data);
+
+        return true;
+    }
+
+    private function getDataBlockProtection(Conditional $conditional): int
+    {
+        $dataBlockProtection = 0;
+        if ($conditional->getStyle()->getProtection()->getLocked() == Protection::PROTECTION_PROTECTED) {
+            $dataBlockProtection = 1;
+        }
+        if ($conditional->getStyle()->getProtection()->getHidden() == Protection::PROTECTION_PROTECTED) {
+            $dataBlockProtection = 1 << 1;
+        }
+
+        return $dataBlockProtection;
     }
 }

@@ -12,6 +12,11 @@ $fn1 = fn ($x) => $x + $y;
 /* testComment */
 $fn1 = fn /* comment here */ ($x) => $x + $y;
 
+/* testHeredoc */
+$fn1 = fn() => <<<HTML
+fn
+HTML;
+
 /* testFunctionName */
 function fn() {}
 
@@ -58,6 +63,9 @@ $a = fn($x) => yield 'k' => $x;
 /* testNullableNamespace */
 $a = fn(?\DateTime $x) : ?\DateTime => $x;
 
+/* testNamespaceOperatorInTypes */
+$fn = fn(namespace\Foo $a) : ?namespace\Foo => $a;
+
 /* testSelfReturnType */
 fn(self $a) : self => $a;
 
@@ -69,6 +77,9 @@ fn(callable $a) : callable => $a;
 
 /* testArrayReturnType */
 fn(array $a) : array => $a;
+
+/* testStaticReturnType */
+fn(array $a) : static => $a;
 
 /* testTernary */
 $fn = fn($a) => $a ? /* testTernaryThen */ fn() : string => 'a' : /* testTernaryElse */ fn() : string => 'b';

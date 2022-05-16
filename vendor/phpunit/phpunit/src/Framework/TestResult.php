@@ -301,7 +301,7 @@ final class TestResult implements \Countable
         }
 
         foreach ($this->listeners as $listener) {
-            $listener->$notifyMethod($test, $t, $time);
+            $listener->{$notifyMethod}($test, $t, $time);
         }
 
         $this->lastTestFailed = true;
@@ -368,7 +368,7 @@ final class TestResult implements \Countable
         }
 
         foreach ($this->listeners as $listener) {
-            $listener->$notifyMethod($test, $e, $time);
+            $listener->{$notifyMethod}($test, $e, $time);
         }
 
         $this->lastTestFailed = true;
@@ -776,7 +776,7 @@ final class TestResult implements \Countable
             $risky = true;
         }
 
-        if ($this->forceCoversAnnotation && !$incomplete && !$skipped) {
+        if ($this->forceCoversAnnotation && !$error && !$failure && !$warning && !$incomplete && !$skipped && !$risky) {
             $annotations = $test->getAnnotations();
 
             if (!isset($annotations['class']['covers']) &&

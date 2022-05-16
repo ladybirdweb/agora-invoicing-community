@@ -26,6 +26,8 @@ class_exists(SessionBagProxy::class);
 /**
  * @author Fabien Potencier <fabien@symfony.com>
  * @author Drak <drak@zikula.org>
+ *
+ * @implements \IteratorAggregate<string, mixed>
  */
 class Session implements SessionInterface, \IteratorAggregate, \Countable
 {
@@ -39,14 +41,14 @@ class Session implements SessionInterface, \IteratorAggregate, \Countable
 
     public function __construct(SessionStorageInterface $storage = null, AttributeBagInterface $attributes = null, FlashBagInterface $flashes = null, callable $usageReporter = null)
     {
-        $this->storage = $storage ?: new NativeSessionStorage();
+        $this->storage = $storage ?? new NativeSessionStorage();
         $this->usageReporter = $usageReporter;
 
-        $attributes = $attributes ?: new AttributeBag();
+        $attributes = $attributes ?? new AttributeBag();
         $this->attributeName = $attributes->getName();
         $this->registerBag($attributes);
 
-        $flashes = $flashes ?: new FlashBag();
+        $flashes = $flashes ?? new FlashBag();
         $this->flashName = $flashes->getName();
         $this->registerBag($flashes);
     }
@@ -126,8 +128,9 @@ class Session implements SessionInterface, \IteratorAggregate, \Countable
     /**
      * Returns an iterator for attributes.
      *
-     * @return \ArrayIterator An \ArrayIterator instance
+     * @return \ArrayIterator<string, mixed>
      */
+    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         return new \ArrayIterator($this->getAttributeBag()->all());
@@ -138,6 +141,7 @@ class Session implements SessionInterface, \IteratorAggregate, \Countable
      *
      * @return int
      */
+    #[\ReturnTypeWillChange]
     public function count()
     {
         return \count($this->getAttributeBag()->all());

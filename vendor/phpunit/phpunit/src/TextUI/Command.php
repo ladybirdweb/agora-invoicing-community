@@ -14,7 +14,6 @@ use PharIo\Manifest\Exception as ManifestException;
 use PharIo\Manifest\ManifestLoader;
 use PharIo\Version\Version as PharIoVersion;
 use PHPUnit\Framework\Exception;
-use PHPUnit\Framework\Test;
 use PHPUnit\Framework\TestSuite;
 use PHPUnit\Runner\StandardTestSuiteLoader;
 use PHPUnit\Runner\TestSuiteLoader;
@@ -290,7 +289,7 @@ class Command
                 }
 
                 if (isset($handler) && \is_callable([$this, $handler])) {
-                    $this->$handler($value);
+                    $this->{$handler}($value);
 
                     unset($handler);
                 }
@@ -347,6 +346,7 @@ class Command
                 $configuration = Registry::getInstance()->get($this->arguments['configuration']);
             } catch (\Throwable $e) {
                 print $e->getMessage() . \PHP_EOL;
+
                 exit(TestRunner::FAILURE_EXIT);
             }
 
@@ -410,6 +410,7 @@ class Command
 
         if (!isset($this->arguments['test'])) {
             $this->showHelp();
+
             exit(TestRunner::EXCEPTION_EXIT);
         }
     }

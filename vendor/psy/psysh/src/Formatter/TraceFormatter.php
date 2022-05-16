@@ -3,7 +3,7 @@
 /*
  * This file is part of Psy Shell.
  *
- * (c) 2012-2020 Justin Hileman
+ * (c) 2012-2022 Justin Hileman
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -22,10 +22,6 @@ class TraceFormatter
     /**
      * Format the trace of the given exception.
      *
-     * @throws \InvalidArgumentException if passed a non-Throwable value
-     *
-     * @todo type hint $throwable when we drop support for PHP 5.x
-     *
      * @param \Throwable    $throwable  The error or exception with a backtrace
      * @param FilterOptions $filter     (default: null)
      * @param int           $count      (default: PHP_INT_MAX)
@@ -33,18 +29,14 @@ class TraceFormatter
      *
      * @return string[] Formatted stacktrace lines
      */
-    public static function formatTrace($throwable, FilterOptions $filter = null, $count = null, $includePsy = true)
+    public static function formatTrace(\Throwable $throwable, FilterOptions $filter = null, int $count = null, bool $includePsy = true): array
     {
-        if (!($throwable instanceof \Throwable || $throwable instanceof \Exception)) {
-            throw new \InvalidArgumentException('Unable to format non-throwable value');
-        }
-
         if ($cwd = \getcwd()) {
-            $cwd = \rtrim($cwd, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+            $cwd = \rtrim($cwd, \DIRECTORY_SEPARATOR).\DIRECTORY_SEPARATOR;
         }
 
         if ($count === null) {
-            $count = PHP_INT_MAX;
+            $count = \PHP_INT_MAX;
         }
 
         $lines = [];
@@ -68,11 +60,16 @@ class TraceFormatter
         }
 
         for ($i = 0, $count = \min($count, \count($trace)); $i < $count; $i++) {
-            $class    = isset($trace[$i]['class']) ? $trace[$i]['class'] : '';
-            $type     = isset($trace[$i]['type']) ? $trace[$i]['type'] : '';
+            $class = isset($trace[$i]['class']) ? $trace[$i]['class'] : '';
+            $type = isset($trace[$i]['type']) ? $trace[$i]['type'] : '';
             $function = $trace[$i]['function'];
-            $file     = isset($trace[$i]['file']) ? self::replaceCwd($cwd, $trace[$i]['file']) : 'n/a';
-            $line     = isset($trace[$i]['line']) ? $trace[$i]['line'] : 'n/a';
+            $file = isset($trace[$i]['file']) ? $trace[$i]['file'] : 'n/a';
+            $line = isset($trace[$i]['line']) ? $trace[$i]['line'] : 'n/a';
+
+            // Make file paths relative to cwd
+            if ($cwd !== false) {
+                $file = \preg_replace('/^'.\preg_quote($cwd, '/').'/', '', $file);
+            }
 
             // Leave execution loop out of the `eval()'d code` lines
             if (\preg_match("#/src/Execution(?:Loop)?Closure.php\(\d+\) : eval\(\)'d code$#", \str_replace('\\', '/', $file))) {
@@ -95,22 +92,5 @@ class TraceFormatter
         }
 
         return $lines;
-    }
-
-    /**
-     * Replace the given directory from the start of a filepath.
-     *
-     * @param string $cwd
-     * @param string $file
-     *
-     * @return string
-     */
-    private static function replaceCwd($cwd, $file)
-    {
-        if ($cwd === false) {
-            return $file;
-        } else {
-            return \preg_replace('/^' . \preg_quote($cwd, '/') . '/', '', $file);
-        }
     }
 }

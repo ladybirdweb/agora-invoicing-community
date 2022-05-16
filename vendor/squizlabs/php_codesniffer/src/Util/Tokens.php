@@ -124,6 +124,23 @@ if (defined('T_FN') === false) {
     define('T_FN', 'PHPCS_T_FN');
 }
 
+// Some PHP 8.0 tokens, replicated for lower versions.
+if (defined('T_NULLSAFE_OBJECT_OPERATOR') === false) {
+    define('T_NULLSAFE_OBJECT_OPERATOR', 'PHPCS_T_NULLSAFE_OBJECT_OPERATOR');
+}
+
+if (defined('T_NAME_QUALIFIED') === false) {
+    define('T_NAME_QUALIFIED', 'PHPCS_T_NAME_QUALIFIED');
+}
+
+if (defined('T_NAME_FULLY_QUALIFIED') === false) {
+    define('T_NAME_FULLY_QUALIFIED', 'PHPCS_T_NAME_FULLY_QUALIFIED');
+}
+
+if (defined('T_NAME_RELATIVE') === false) {
+    define('T_NAME_RELATIVE', 'PHPCS_T_NAME_RELATIVE');
+}
+
 // Tokens used for parsing doc blocks.
 define('T_DOC_COMMENT_STAR', 'PHPCS_T_DOC_COMMENT_STAR');
 define('T_DOC_COMMENT_WHITESPACE', 'PHPCS_T_DOC_COMMENT_WHITESPACE');
@@ -587,6 +604,24 @@ final class Tokens
         T_ANON_CLASS => T_ANON_CLASS,
         T_INTERFACE  => T_INTERFACE,
         T_TRAIT      => T_TRAIT,
+    ];
+
+    /**
+     * Tokens representing PHP magic constants.
+     *
+     * @var array <int|string> => <int|string>
+     *
+     * @link https://www.php.net/language.constants.predefined PHP Manual on magic constants
+     */
+    public static $magicConstants = [
+        T_CLASS_C  => T_CLASS_C,
+        T_DIR      => T_DIR,
+        T_FILE     => T_FILE,
+        T_FUNC_C   => T_FUNC_C,
+        T_LINE     => T_LINE,
+        T_METHOD_C => T_METHOD_C,
+        T_NS_C     => T_NS_C,
+        T_TRAIT_C  => T_TRAIT_C,
     ];
 
 

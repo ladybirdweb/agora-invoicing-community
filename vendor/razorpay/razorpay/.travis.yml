@@ -8,13 +8,16 @@ php:
 - '7.0'
 - 7.1
 - 7.2
+- 7.3
+- 7.4
+- 8.0
 install: composer install
 before_script:
   - cp phpunit.xml.dist phpunit.xml
   # These two are required in the build step for non-composer-tests
   - mkdir -p libs
-  - cd libs &&  wget https://github.com/rmccue/Requests/archive/v1.7.0.zip -O requests.zip && unzip requests.zip && rm requests.zip && cd ..
-  - rm -rf libs/Requests-1.7.0/examples libs/Requests-1.7.0/docs libs/Requests-1.7.0/bin libs/Requests-1.7.0/tests
+  - cd libs &&  wget https://github.com/rmccue/Requests/archive/v1.8.0.zip -O requests.zip && unzip requests.zip && rm requests.zip && cd ..
+  - rm -rf libs/Requests-1.8.0/examples libs/Requests-1.8.0/docs libs/Requests-1.8.0/bin libs/Requests-1.8.0/tests
 script:
   # Run a syntax validation check on all PHP files
   -  find . -path ./vendor -prune -o -iname '*.php' |xargs -n1 php -l

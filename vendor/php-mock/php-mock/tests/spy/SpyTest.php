@@ -15,7 +15,6 @@ use phpmock\AbstractMockTest;
  */
 class SpyTest extends AbstractMockTest
 {
-
     protected function defineFunction($namespace, $functionName)
     {
         $mock = new Spy($namespace, $functionName, function () {
@@ -151,7 +150,7 @@ class SpyTest extends AbstractMockTest
             $this->fail("Expected exception");
         } catch (\Exception $e) {
             $invocation = $spy->getInvocations()[0];
-            
+
             $this->assertEquals(["foo"], $invocation->getArguments());
             $this->assertNull($invocation->getReturn());
             $this->assertTrue($invocation->isExceptionThrown());
@@ -171,7 +170,7 @@ class SpyTest extends AbstractMockTest
         $spy->enable();
 
         testNoException();
-        
+
         $invocation = $spy->getInvocations()[0];
         $this->assertFalse($invocation->isExceptionThrown());
         $this->assertNull($invocation->getException());

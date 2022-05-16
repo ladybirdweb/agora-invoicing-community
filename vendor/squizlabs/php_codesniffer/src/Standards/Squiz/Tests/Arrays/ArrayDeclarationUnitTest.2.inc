@@ -436,6 +436,34 @@ $c];
 ['a' => $a, 'b' => $b,
 'c' => $c];
 
+[
+ static function() {
+     return null;
+ },
+ (array) [],
+ (bool) [],
+ (double) [],
+ (int) [],
+ (object) [],
+ (string) [],
+ (unset) [],
+];
+
+[
+ 'foo',
+ 'bar'
+ // This is a non-fixable error.
+ ,
+];
+
+yield [
+    static fn () : string => '',
+];
+
+yield [
+       static fn () : string => '',
+      ];
+
 // Intentional syntax error.
 $a = [
       'a' =>

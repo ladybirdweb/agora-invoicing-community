@@ -19,15 +19,18 @@
     },
     "prefer-stable": true,
     "config": {
+        "platform": {
+            "php": "7.3.0"
+        },
         "optimize-autoloader": true,
         "sort-packages": true
     },
     "require": {
-        "php": "^7.3 || ^8.0"
+        "php": ">=7.3"
     },
     "require-dev": {
         "ext-pcntl": "*",
-        "phpunit/phpunit": "^9.0"
+        "phpunit/phpunit": "^9.3"
     },
     "autoload": {
         "classmap": [
@@ -44,7 +47,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "3.0-dev"
+            "dev-master": "3.1-dev"
         }
     }
 }

@@ -96,7 +96,8 @@ gitlab.com the domain names must be also specified with the
 Defaults to `false`. If set to true all HTTPS URLs will be tried with HTTP
 instead and no network level encryption is performed. Enabling this is a
 security risk and is NOT recommended. The better way is to enable the
-php_openssl extension in php.ini.
+php_openssl extension in php.ini. Enabling this will implicitly disable the
+`secure-http` option.
 
 ## secure-http
 
@@ -278,14 +279,12 @@ scripts if you tend to have modified vendors.
 
 ## archive-format
 
-Defaults to `tar`. Composer allows you to add a default archive format when the
-workflow needs to create a dedicated archiving format.
+Defaults to `tar`. Overrides the default format used by the archive command.
 
 ## archive-dir
 
-Defaults to `.`. Composer allows you to add a default archive directory when the
-workflow needs to create a dedicated archiving format. Or for easier development
-between modules.
+Defaults to `.`. Default destination for archives created by the archive
+command.
 
 Example:
 

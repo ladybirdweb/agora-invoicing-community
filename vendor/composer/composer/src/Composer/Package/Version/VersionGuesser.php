@@ -118,7 +118,7 @@ class VersionGuesser
         $isDetached = false;
 
         // try to fetch current version from git branch
-        if (0 === $this->process->execute('git branch --no-color --no-abbrev -v', $output, $path)) {
+        if (0 === $this->process->execute('git branch -a --no-color --no-abbrev -v', $output, $path)) {
             $branches = array();
             $isFeatureBranch = false;
 
@@ -141,8 +141,8 @@ class VersionGuesser
                     }
                 }
 
-                if ($branch && !preg_match('{^ *[^/]+/HEAD }', $branch)) {
-                    if (preg_match('{^(?:\* )? *(\S+) *([a-f0-9]+) .*$}', $branch, $match)) {
+                if ($branch && !preg_match('{^ *.+/HEAD }', $branch)) {
+                    if (preg_match('{^(?:\* )? *((?:remotes/(?:origin|upstream)/)?[^\s/]+) *([a-f0-9]+) .*$}', $branch, $match)) {
                         $branches[] = $match[1];
                     }
                 }
@@ -244,14 +244,30 @@ class VersionGuesser
                 $nonFeatureBranches = implode('|', $packageConfig['non-feature-branches']);
             }
 
-            foreach ($branches as $candidate) {
-                // return directly, if branch is configured to be non-feature branch
-                if ($candidate === $branch && preg_match('{^(' . $nonFeatureBranches . ')$}', $candidate)) {
-                    break;
+            // return directly, if branch is configured to be non-feature branch
+            if (preg_match('{^(' . $nonFeatureBranches . ')$}', $branch) && in_array($branch, $branches, true)) {
+                return array('version' => $version, 'pretty_version' => $prettyVersion);
+            }
+
+            // sort local branches first then remote ones
+            // and sort numeric branches below named ones, to make sure if the branch has the same distance from main and 1.10 and 1.9 for example, main is picked
+            // and sort using natural sort so that 1.10 will appear before 1.9
+            usort($branches, function ($a, $b) {
+                $aRemote = 0 === strpos($a, 'remotes/');
+                $bRemote = 0 === strpos($b, 'remotes/');
+
+                if ($aRemote !== $bRemote) {
+                    return $aRemote ? 1 : -1;
                 }
 
+                return strnatcasecmp($b, $a);
+            });
+
+            foreach ($branches as $candidate) {
+                $candidateVersion = preg_replace('{^remotes/\S+/}', '', $candidate);
+
                 // do not compare against itself or other feature branches
-                if ($candidate === $branch || !preg_match('{^(' . $nonFeatureBranches . '|master|trunk|default|develop|\d+\..+)$}', $candidate, $match)) {
+                if ($candidate === $branch || !preg_match('{^(' . $nonFeatureBranches . '|master|trunk|default|develop|\d+\..+)$}', $candidateVersion, $match)) {
                     continue;
                 }
 
@@ -262,8 +278,11 @@ class VersionGuesser
 
                 if (strlen($output) < $length) {
                     $length = strlen($output);
-                    $version = $this->versionParser->normalizeBranch($candidate);
-                    $prettyVersion = 'dev-' . $match[1];
+                    $version = $this->versionParser->normalizeBranch($candidateVersion);
+                    $prettyVersion = 'dev-' . $candidateVersion;
+                    if ($length === 0) {
+                        break;
+                    }
                 }
             }
         }

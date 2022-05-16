@@ -1,8 +1,7 @@
 # composer/xdebug-handler
 
 [![packagist](https://img.shields.io/packagist/v/composer/xdebug-handler.svg)](https://packagist.org/packages/composer/xdebug-handler)
-[![linux build](https://img.shields.io/travis/composer/xdebug-handler/master.svg?label=linux+build)](https://travis-ci.org/composer/xdebug-handler)
-[![windows build](https://img.shields.io/appveyor/ci/Seldaek/xdebug-handler/master.svg?label=windows+build)](https://ci.appveyor.com/project/Seldaek/xdebug-handler)
+[![Continuous Integration](https://github.com/composer/xdebug-handler/workflows/Continuous%20Integration/badge.svg?branch=main)](https://github.com/composer/xdebug-handler/actions)
 ![license](https://img.shields.io/github/license/composer/xdebug-handler.svg)
 ![php](https://img.shields.io/packagist/php-v/composer/xdebug-handler.svg?colorB=8892BF&label=php)
 
@@ -63,11 +62,17 @@ A temporary ini file is created from the loaded (and scanned) ini files, with an
 
 * `MYAPP_ALLOW_XDEBUG` is set with internal data to flag and use in the restart.
 * The command-line and environment are [configured](#process-configuration) for the restart.
-* The application is restarted in a new process using `passthru`.
+* The application is restarted in a new process.
     * The restart settings are stored in the environment.
     * `MYAPP_ALLOW_XDEBUG` is unset.
     * The application runs and exits.
 * The main process exits with the exit code from the restarted process.
+
+#### Signal handling
+From PHP 7.1 with the pcntl extension loaded, asynchronous signal handling is automatically enabled. `SIGINT` is set to `SIG_IGN` in the parent
+process and restored to `SIG_DFL` in the restarted process (if no other handler has been set).
+
+From PHP 7.4 on Windows, `CTRL+C` and `CTRL+BREAK` handling is ignored in the parent process and automatically enabled in the restarted process.
 
 ### Limitations
 There are a few things to be aware of when running inside a restarted process.
@@ -75,7 +80,6 @@ There are a few things to be aware of when running inside a restarted process.
 * Extensions set on the command-line will not be loaded.
 * Ini file locations will be reported as per the restart - see [getAllIniFiles()](#getallinifiles).
 * Php sub-processes may be loaded with Xdebug enabled - see [Process configuration](#process-configuration).
-* On Windows `sapi_windows_set_ctrl_handler` handlers will not receive CTRL events.
 
 ### Helper methods
 These static methods provide information from the current process, regardless of whether it has been restarted or not.

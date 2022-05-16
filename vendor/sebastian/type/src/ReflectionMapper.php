@@ -13,17 +13,18 @@ use function assert;
 use function sprintf;
 use ReflectionMethod;
 use ReflectionNamedType;
+use ReflectionType;
 use ReflectionUnionType;
 
 final class ReflectionMapper
 {
     public function fromMethodReturnType(ReflectionMethod $method): Type
     {
-        if (!$method->hasReturnType()) {
+        if (!$this->reflectionMethodHasReturnType($method)) {
             return new UnknownType;
         }
 
-        $returnType = $method->getReturnType();
+        $returnType = $this->reflectionMethodGetReturnType($method);
 
         assert($returnType instanceof ReflectionNamedType || $returnType instanceof ReflectionUnionType);
 
@@ -33,6 +34,17 @@ final class ReflectionMapper
                     $method->getDeclaringClass()->getName(),
                     $returnType->allowsNull()
                 );
+            }
+
+            if ($returnType->getName() === 'static') {
+                return new StaticType(
+                    TypeName::fromReflection($method->getDeclaringClass()),
+                    $returnType->allowsNull()
+                );
+            }
+
+            if ($returnType->getName() === 'mixed') {
+                return new MixedType;
             }
 
             if ($returnType->getName() === 'parent') {
@@ -63,9 +75,13 @@ final class ReflectionMapper
             );
         }
 
+        assert($returnType instanceof ReflectionUnionType);
+
         $types = [];
 
         foreach ($returnType->getTypes() as $type) {
+            assert($type instanceof ReflectionNamedType);
+
             if ($type->getName() === 'self') {
                 $types[] = ObjectType::fromName(
                     $method->getDeclaringClass()->getName(),
@@ -77,5 +93,31 @@ final class ReflectionMapper
         }
 
         return new UnionType(...$types);
+    }
+
+    private function reflectionMethodHasReturnType(ReflectionMethod $method): bool
+    {
+        if ($method->hasReturnType()) {
+            return true;
+        }
+
+        if (!method_exists($method, 'hasTentativeReturnType')) {
+            return false;
+        }
+
+        return $method->hasTentativeReturnType();
+    }
+
+    private function reflectionMethodGetReturnType(ReflectionMethod $method): ?ReflectionType
+    {
+        if ($method->hasReturnType()) {
+            return $method->getReturnType();
+        }
+
+        if (!method_exists($method, 'getTentativeReturnType')) {
+            return null;
+        }
+
+        return $method->getTentativeReturnType();
     }
 }

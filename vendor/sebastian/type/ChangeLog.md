@@ -2,6 +2,52 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [2.3.4] - 2021-06-15
+
+* Fixed regression introduced in 2.3.3
+
+## [2.3.3] - 2021-06-15 [YANKED]
+
+### Fixed
+
+* [#15](https://github.com/sebastianbergmann/type/issues/15): "false" pseudo type is not handled properly
+
+## [2.3.2] - 2021-06-04
+
+### Fixed
+
+* Fixed handling of tentatively declared return types
+
+## [2.3.1] - 2020-10-26
+
+### Fixed
+
+* `SebastianBergmann\Type\Exception` now correctly extends `\Throwable`
+
+## [2.3.0] - 2020-10-06
+
+### Added
+
+* [#14](https://github.com/sebastianbergmann/type/issues/14): Support for `static` return type that is introduced in PHP 8
+
+## [2.2.2] - 2020-09-28
+
+### Changed
+
+* Changed PHP version constraint in `composer.json` from `^7.3 || ^8.0` to `>=7.3`
+
+## [2.2.1] - 2020-07-05
+
+### Fixed
+
+* Fixed handling of `mixed` type in `ReflectionMapper::fromMethodReturnType()`
+
+## [2.2.0] - 2020-07-05
+
+### Added
+
+* Added `MixedType` object for representing PHP 8's `mixed` type
+
 ## [2.1.1] - 2020-06-26
 
 ### Added
@@ -59,6 +105,14 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 * Initial release based on [code contributed by Michel Hartmann to PHPUnit](https://github.com/sebastianbergmann/phpunit/pull/3673)
 
+[2.3.4]: https://github.com/sebastianbergmann/type/compare/ca39369c41313ed12c071ed38ecda8fcdb248859...2.3.4
+[2.3.3]: https://github.com/sebastianbergmann/type/compare/2.3.2...ca39369c41313ed12c071ed38ecda8fcdb248859
+[2.3.2]: https://github.com/sebastianbergmann/type/compare/2.3.1...2.3.2
+[2.3.1]: https://github.com/sebastianbergmann/type/compare/2.3.0...2.3.1
+[2.3.0]: https://github.com/sebastianbergmann/type/compare/2.2.2...2.3.0
+[2.2.2]: https://github.com/sebastianbergmann/type/compare/2.2.1...2.2.2
+[2.2.1]: https://github.com/sebastianbergmann/type/compare/2.2.0...2.2.1
+[2.2.0]: https://github.com/sebastianbergmann/type/compare/2.1.1...2.2.0
 [2.1.1]: https://github.com/sebastianbergmann/type/compare/2.1.0...2.1.1
 [2.1.0]: https://github.com/sebastianbergmann/type/compare/2.0.0...2.1.0
 [2.0.0]: https://github.com/sebastianbergmann/type/compare/1.1.3...2.0.0

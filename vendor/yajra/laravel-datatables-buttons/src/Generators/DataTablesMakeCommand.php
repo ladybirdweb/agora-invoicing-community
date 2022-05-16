@@ -2,9 +2,9 @@
 
 namespace Yajra\DataTables\Generators;
 
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Console\GeneratorCommand;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 
 class DataTablesMakeCommand extends GeneratorCommand
 {
@@ -65,7 +65,7 @@ class DataTablesMakeCommand extends GeneratorCommand
     /**
      * Build the class with the given name.
      *
-     * @param string $name
+     * @param  string  $name
      * @return string
      */
     protected function buildClass($name)
@@ -88,7 +88,7 @@ class DataTablesMakeCommand extends GeneratorCommand
     /**
      * Replace the filename.
      *
-     * @param string $stub
+     * @param  string  $stub
      * @return $this
      */
     protected function replaceFilename(&$stub)
@@ -103,7 +103,7 @@ class DataTablesMakeCommand extends GeneratorCommand
     /**
      * Replace the action.
      *
-     * @param string $stub
+     * @param  string  $stub
      * @return \Yajra\DataTables\Generators\DataTablesMakeCommand
      */
     protected function replaceAction(&$stub)
@@ -128,7 +128,7 @@ class DataTablesMakeCommand extends GeneratorCommand
     /**
      * Replace columns.
      *
-     * @param string $stub
+     * @param  string  $stub
      * @return $this
      */
     protected function replaceTableId(&$stub)
@@ -143,7 +143,7 @@ class DataTablesMakeCommand extends GeneratorCommand
     /**
      * Replace dom.
      *
-     * @param string $stub
+     * @param  string  $stub
      * @return $this
      */
     protected function replaceDOM(&$stub)
@@ -160,7 +160,7 @@ class DataTablesMakeCommand extends GeneratorCommand
     /**
      * Replace buttons.
      *
-     * @param string $stub
+     * @param  string  $stub
      * @return $this
      */
     protected function replaceButtons(&$stub)
@@ -194,8 +194,8 @@ class DataTablesMakeCommand extends GeneratorCommand
     /**
      * Parse array from definition.
      *
-     * @param string $definition
-     * @param int $indentation
+     * @param  string  $definition
+     * @param  int  $indentation
      * @return string
      */
     protected function parseButtons($definition, $indentation = 24)
@@ -223,7 +223,7 @@ class DataTablesMakeCommand extends GeneratorCommand
     /**
      * Replace columns.
      *
-     * @param string $stub
+     * @param  string  $stub
      * @return $this
      */
     protected function replaceColumns(&$stub)
@@ -261,8 +261,8 @@ class DataTablesMakeCommand extends GeneratorCommand
     /**
      * Parse array from definition.
      *
-     * @param string $definition
-     * @param int $indentation
+     * @param  string  $definition
+     * @param  int  $indentation
      * @return string
      */
     protected function parseColumns($definition, $indentation = 12)
@@ -283,7 +283,7 @@ class DataTablesMakeCommand extends GeneratorCommand
     /**
      * Replace builder name.
      *
-     * @param string $stub
+     * @param  string  $stub
      * @return \Yajra\DataTables\Generators\DataTablesMakeCommand
      */
     protected function replaceBuilder(&$stub)
@@ -299,7 +299,7 @@ class DataTablesMakeCommand extends GeneratorCommand
     /**
      * Parse the name and format according to the root namespace.
      *
-     * @param string $name
+     * @param  string  $name
      * @return string
      */
     protected function qualifyClass($name)
@@ -324,7 +324,7 @@ class DataTablesMakeCommand extends GeneratorCommand
     /**
      * Get the default namespace for the class.
      *
-     * @param string $rootNamespace
+     * @param  string  $rootNamespace
      * @return string
      */
     protected function getDefaultNamespace($rootNamespace)
@@ -335,7 +335,7 @@ class DataTablesMakeCommand extends GeneratorCommand
     /**
      * Replace model name.
      *
-     * @param string $stub
+     * @param  string  $stub
      * @return \Yajra\DataTables\Generators\DataTablesMakeCommand
      */
     protected function replaceModel(&$stub)
@@ -361,6 +361,11 @@ class DataTablesMakeCommand extends GeneratorCommand
             return $this->option('model');
         }
 
+        // check if model namespace is not set in command and Models directory already exists then use that directory in namespace.
+        if ($modelNamespace == '') {
+            $modelNamespace = is_dir(app_path('Models')) ? 'Models' : $rootNamespace;
+        }
+
         return $model
             ? $rootNamespace . '\\' . ($modelNamespace ? $modelNamespace . '\\' : '') . Str::singular($name)
             : $rootNamespace . '\\User';
@@ -369,7 +374,7 @@ class DataTablesMakeCommand extends GeneratorCommand
     /**
      * Replace model import.
      *
-     * @param string $stub
+     * @param  string  $stub
      * @return $this
      */
     protected function replaceModelImport(&$stub)

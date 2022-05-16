@@ -14,8 +14,10 @@
  * - Quentí
  */
 // @codeCoverageIgnoreStart
+use Symfony\Component\Translation\PluralizationRules;
+
 if (class_exists('Symfony\\Component\\Translation\\PluralizationRules')) {
-    \Symfony\Component\Translation\PluralizationRules::set(function ($number) {
+    PluralizationRules::set(function ($number) {
         return $number == 1 ? 0 : 1;
     }, 'oc');
 }
@@ -82,18 +84,15 @@ return [
     'weekdays' => ['dimenge', 'diluns', 'dimars', 'dimècres', 'dijòus', 'divendres', 'dissabte'],
     'weekdays_short' => ['dg', 'dl', 'dm', 'dc', 'dj', 'dv', 'ds'],
     'weekdays_min' => ['dg', 'dl', 'dm', 'dc', 'dj', 'dv', 'ds'],
-    'ordinal' => function ($number, $period) {
-        return $number.(
-            ($period === 'w' || $period === 'W') ? 'a' : (
-                ($number === 1) ? 'r' : (
-                    ($number === 2) ? 'n' : (
-                        ($number === 3) ? 'r' : (
-                            ($number === 4) ? 't' : 'è'
-                        )
-                    )
-                )
-            )
-        );
+    'ordinal' => function ($number, string $period = '') {
+        $ordinal = [1 => 'èr', 2 => 'nd'][(int) $number] ?? 'en';
+
+        // feminine for year, week, hour, minute, second
+        if (preg_match('/^[yYwWhHgGis]$/', $period)) {
+            $ordinal .= 'a';
+        }
+
+        return $number.$ordinal;
     },
     'first_day_of_week' => 1,
     'day_of_first_week_of_year' => 4,

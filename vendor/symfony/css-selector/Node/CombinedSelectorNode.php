@@ -24,7 +24,7 @@ namespace Symfony\Component\CssSelector\Node;
 class CombinedSelectorNode extends AbstractNode
 {
     private $selector;
-    private $combinator;
+    private string $combinator;
     private $subSelector;
 
     public function __construct(NodeInterface $selector, string $combinator, NodeInterface $subSelector)
@@ -57,9 +57,6 @@ class CombinedSelectorNode extends AbstractNode
         return $this->selector->getSpecificity()->plus($this->subSelector->getSpecificity());
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function __toString(): string
     {
         $combinator = ' ' === $this->combinator ? '<followed>' : $this->combinator;

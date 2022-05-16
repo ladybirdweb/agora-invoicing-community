@@ -2,8 +2,8 @@
 
 namespace Yajra\DataTables\Generators;
 
-use Illuminate\Support\Str;
 use Illuminate\Console\GeneratorCommand;
+use Illuminate\Support\Str;
 
 class DataTablesEditorCommand extends GeneratorCommand
 {
@@ -34,7 +34,7 @@ class DataTablesEditorCommand extends GeneratorCommand
     /**
      * Build the class with the given name.
      *
-     * @param  string $name
+     * @param  string  $name
      * @return string
      */
     protected function buildClass($name)
@@ -47,7 +47,7 @@ class DataTablesEditorCommand extends GeneratorCommand
     /**
      * Replace model name.
      *
-     * @param string $stub
+     * @param  string  $stub
      * @return string
      */
     protected function replaceModel(&$stub)
@@ -77,7 +77,7 @@ class DataTablesEditorCommand extends GeneratorCommand
     /**
      * Replace model import.
      *
-     * @param string $stub
+     * @param  string  $stub
      * @return $this
      */
     protected function replaceModelImport(&$stub)
@@ -104,7 +104,7 @@ class DataTablesEditorCommand extends GeneratorCommand
     /**
      * Replace the filename.
      *
-     * @param string $stub
+     * @param  string  $stub
      * @return string
      */
     protected function replaceFilename(&$stub)
@@ -119,7 +119,7 @@ class DataTablesEditorCommand extends GeneratorCommand
     /**
      * Parse the name and format according to the root namespace.
      *
-     * @param  string $name
+     * @param  string  $name
      * @return string
      */
     protected function qualifyClass($name)
@@ -144,7 +144,7 @@ class DataTablesEditorCommand extends GeneratorCommand
     /**
      * Get the default namespace for the class.
      *
-     * @param  string $rootNamespace
+     * @param  string  $rootNamespace
      * @return string
      */
     protected function getDefaultNamespace($rootNamespace)

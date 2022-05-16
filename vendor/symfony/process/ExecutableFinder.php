@@ -44,12 +44,12 @@ class ExecutableFinder
      * @param string|null $default   The default to return if no executable is found
      * @param array       $extraDirs Additional dirs to check into
      *
-     * @return string|null The executable path or default value
+     * @return string|null
      */
     public function find(string $name, string $default = null, array $extraDirs = [])
     {
         if (ini_get('open_basedir')) {
-            $searchPath = array_merge(explode(PATH_SEPARATOR, ini_get('open_basedir')), $extraDirs);
+            $searchPath = array_merge(explode(\PATH_SEPARATOR, ini_get('open_basedir')), $extraDirs);
             $dirs = [];
             foreach ($searchPath as $path) {
                 // Silencing against https://bugs.php.net/69240
@@ -63,7 +63,7 @@ class ExecutableFinder
             }
         } else {
             $dirs = array_merge(
-                explode(PATH_SEPARATOR, getenv('PATH') ?: getenv('Path')),
+                explode(\PATH_SEPARATOR, getenv('PATH') ?: getenv('Path')),
                 $extraDirs
             );
         }
@@ -71,7 +71,7 @@ class ExecutableFinder
         $suffixes = [''];
         if ('\\' === \DIRECTORY_SEPARATOR) {
             $pathExt = getenv('PATHEXT');
-            $suffixes = array_merge($pathExt ? explode(PATH_SEPARATOR, $pathExt) : $this->suffixes, $suffixes);
+            $suffixes = array_merge($pathExt ? explode(\PATH_SEPARATOR, $pathExt) : $this->suffixes, $suffixes);
         }
         foreach ($suffixes as $suffix) {
             foreach ($dirs as $dir) {

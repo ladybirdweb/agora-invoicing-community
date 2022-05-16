@@ -3,10 +3,31 @@ Changelog
 
 ## UNRELEASED
 
+## 1.10.0
+
+### Added
+
+* On invalid assertion, we throw a `Webmozart\Assert\InvalidArgumentException`
+* Added `Assert::positiveInteger()`
+
+### Changed
+
+* Using a trait with real implementations of `all*()` and `nullOr*()` methods to improve psalm compatibility.
+
+### Removed
+
+* Support for PHP <7.2
+
+## 1.9.1
+
+## Fixed
+
+* provisional support for PHP 8.0
+
 ## 1.9.0
 
 * added better Psalm support for `all*` & `nullOr*` methods
-  * These methods are now understood by Psalm through a mixin. You may need a newer version of Psalm in order to use this
+* These methods are now understood by Psalm through a mixin. You may need a newer version of Psalm in order to use this
 * added `@psalm-pure` annotation to `Assert::notFalse()`
 * added more `@psalm-assert` annotations where appropriate
 
@@ -15,7 +36,7 @@ Changelog
 * the `all*` & `nullOr*` methods are now declared on an interface, instead of `@method` annotations.
 This interface is linked to the `Assert` class with a `@mixin` annotation. Most IDE's have supported this
 for a long time, and you should not lose any autocompletion capabilities. PHPStan has supported this since
-version `0.12.20`. This package is marked incompatbible (with a composer conflict) with phpstan version prior to that.
+version `0.12.20`. This package is marked incompatible (with a composer conflict) with phpstan version prior to that.
 If you do not use PHPStan than this does not matter.
 
 ## 1.8.0

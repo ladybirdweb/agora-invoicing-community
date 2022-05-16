@@ -9,7 +9,7 @@
     <file>tests</file>
 
     <exclude-pattern>*/src/Standards/*/Tests/*\.(inc|css|js)$</exclude-pattern>
-    <exclude-pattern>*/tests/Core/*/*Test\.(inc|css|js)$</exclude-pattern>
+    <exclude-pattern>*/tests/Core/*/*\.(inc|css|js)$</exclude-pattern>
 
     <arg name="basepath" value="."/>
     <arg name="colors"/>
@@ -143,7 +143,12 @@
 
     <!-- The testing bootstrap file uses string concats to stop IDEs seeing the class aliases -->
     <rule ref="Generic.Strings.UnnecessaryStringConcat">
-        <exclude-pattern>tests/bootstrap.php</exclude-pattern>
+        <exclude-pattern>tests/bootstrap\.php</exclude-pattern>
+    </rule>
+
+    <!-- This test file specifically *needs* Windows line endings for testing purposes. -->
+    <rule ref="Generic.Files.LineEndings.InvalidEOLChar">
+        <exclude-pattern>tests/Core/Tokenizer/StableCommentWhitespaceWinTest\.php</exclude-pattern>
     </rule>
 
 </ruleset>

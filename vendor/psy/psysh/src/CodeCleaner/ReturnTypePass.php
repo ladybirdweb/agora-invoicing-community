@@ -3,7 +3,7 @@
 /*
  * This file is part of Psy Shell.
  *
- * (c) 2012-2020 Justin Hileman
+ * (c) 2012-2022 Justin Hileman
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -36,7 +36,7 @@ class ReturnTypePass extends CodeCleanerPass
 
     public function __construct()
     {
-        $this->atLeastPhp71 = \version_compare(PHP_VERSION, '7.1', '>=');
+        $this->atLeastPhp71 = \version_compare(\PHP_VERSION, '7.1', '>=');
     }
 
     /**
@@ -79,7 +79,7 @@ class ReturnTypePass extends CodeCleanerPass
             }
 
             if ($msg !== null) {
-                throw new FatalErrorException($msg, 0, E_ERROR, null, $node->getLine());
+                throw new FatalErrorException($msg, 0, \E_ERROR, null, $node->getLine());
             }
         }
     }
@@ -98,12 +98,12 @@ class ReturnTypePass extends CodeCleanerPass
         }
     }
 
-    private function isFunctionNode(Node $node)
+    private function isFunctionNode(Node $node): bool
     {
         return $node instanceof Function_ || $node instanceof Closure;
     }
 
-    private function typeName(Node $node)
+    private function typeName(Node $node): string
     {
         if ($node instanceof NullableType) {
             return \strtolower($node->type->name);

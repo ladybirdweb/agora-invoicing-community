@@ -1,6 +1,6 @@
 # CakePHP Chronos
 
-[![Build Status](https://img.shields.io/travis/com/cakephp/chronos/master?style=flat-square)](https://travis-ci.com/cakephp/chronos)
+![Build Status](https://github.com/cakephp/chronos/actions/workflows/ci.yml/badge.svg?branch=master)
 [![Latest Stable Version](https://img.shields.io/github/v/release/cakephp/chronos?sort=semver&style=flat-square)](https://packagist.org/packages/cakephp/chronos)
 [![Total Downloads](https://img.shields.io/packagist/dt/cakephp/chronos?style=flat-square)](https://packagist.org/packages/cakephp/chronos/stats)
 [![Code Coverage](https://img.shields.io/coveralls/cakephp/chronos/master.svg?style=flat-square)](https://coveralls.io/r/cakephp/chronos?branch=master)
@@ -64,14 +64,16 @@ want to migrate, we could use the following to update files:
 ```
 # Replace imports
 find ./src -type f -name '*.php' -exec sed -i '' 's/use Carbon\\CarbonInterval/use Cake\\Chronos\\ChronosInterval/g' {} \;
+find ./src -type f -name '*.php' -exec sed -i '' 's/use Carbon\\CarbonImmutable/use Cake\\Chronos\\Chronos/g' {} \;
 find ./src -type f -name '*.php' -exec sed -i '' 's/use Carbon\\Carbon/use Cake\\Chronos\\Chronos/g' {} \;
 
 # Replace typehints and extensions
 find ./src -type f -name '*.php' -exec sed -i '' 's/CarbonInterval/ChronosInterval/g' {} \;
+find ./src -type f -name '*.php' -exec sed -i '' 's/CarbonImmutable/Chronos/g' {} \;
 find ./src -type f -name '*.php' -exec sed -i '' 's/Carbon/Chronos/g' {} \;
 ```
 
-At this point your code should mostly work as it did before. The biggest
+At this point your code should ***mostly*** work as it did before. The biggest
 difference is that Chronos instances are immutable.
 
 ## Immutable Object Changes

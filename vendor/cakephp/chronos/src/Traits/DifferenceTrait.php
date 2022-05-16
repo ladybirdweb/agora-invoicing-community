@@ -20,6 +20,7 @@ use Cake\Chronos\DifferenceFormatter;
 use Cake\Chronos\DifferenceFormatterInterface;
 use DatePeriod;
 use DateTimeInterface;
+use DateTimeZone;
 
 /**
  * Provides methods for getting differences between datetime objects.
@@ -66,6 +67,29 @@ trait DifferenceTrait
         $months = $diff->y * ChronosInterface::MONTHS_PER_YEAR + $diff->m;
 
         return $diff->invert ? -$months : $months;
+    }
+
+    /**
+     * Get the difference in months ignoring the timezone. This means the months are calculated
+     * in the specified timezone without converting to UTC first. This prevents the day from changing
+     * which can change the month.
+     *
+     * For example, if comparing `2019-06-01 Asia/Tokyo` and `2019-10-01 Asia/Tokyo`,
+     * the result would be 4 months instead of 3 when using normal `DateTime::diff()`.
+     *
+     * @param \Cake\Chronos\ChronosInterface|null $dt The instance to difference from.
+     * @param bool $abs Get the absolute of the difference
+     * @return int
+     */
+    public function diffInMonthsIgnoreTimezone(?ChronosInterface $dt = null, bool $abs = true): int
+    {
+        $utcTz = new DateTimeZone('UTC');
+        $source = new static($this->format('Y-m-d H:i:s.u'), $utcTz);
+
+        $dt = $dt ?? static::now($this->tz);
+        $dt = new static($dt->format('Y-m-d H:i:s.u'), $utcTz);
+
+        return $source->diffInMonths($dt, $abs);
     }
 
     /**

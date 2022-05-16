@@ -404,7 +404,7 @@ class RemoteFilesystem
         if ($originUrl === 'bitbucket.org'
             && !$this->isPublicBitBucketDownload($fileUrl)
             && substr($fileUrl, -4) === '.zip'
-            && (!$locationHeader || substr($locationHeader, -4) !== '.zip')
+            && (!$locationHeader || substr(parse_url($locationHeader, PHP_URL_PATH), -4) !== '.zip')
             && $contentType && preg_match('{^text/html\b}i', $contentType)
         ) {
             $result = false;
@@ -699,8 +699,10 @@ class RemoteFilesystem
             ) {
                 throw new TransportException('Could not authenticate against '.$this->originUrl, 401);
             }
-        } elseif ($this->config && $this->originUrl === 'bitbucket.org') {
+        } elseif ($this->config && ($this->originUrl === 'bitbucket.org' || $this->originUrl === 'api.bitbucket.org')) {
             $askForOAuthToken = true;
+            $this->originUrl = 'bitbucket.org';
+
             if ($this->io->hasAuthentication($this->originUrl)) {
                 $auth = $this->io->getAuthentication($this->originUrl);
                 if ($auth['username'] !== 'x-token-auth') {

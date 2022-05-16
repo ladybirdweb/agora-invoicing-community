@@ -45,15 +45,15 @@ class Composer
      * const SOURCE_VERSION = '';
      *
      * source (git clone):
-     * const VERSION = '1.10.8';
-     * const BRANCH_ALIAS_VERSION = '';
-     * const RELEASE_DATE = '2020-06-24 21:23:30';
+     * const VERSION = '@package_version@';
+     * const BRANCH_ALIAS_VERSION = '@package_branch_alias_version@';
+     * const RELEASE_DATE = '@release_date@';
      * const SOURCE_VERSION = '1.8-dev+source';
      */
-    const VERSION = '1.10.8';
+    const VERSION = '1.10.26';
     const BRANCH_ALIAS_VERSION = '';
-    const RELEASE_DATE = '2020-06-24 21:23:30';
-    const SOURCE_VERSION = '1.10-dev+source';
+    const RELEASE_DATE = '2022-04-13 16:39:56';
+    const SOURCE_VERSION = '';
 
     /**
      * Version number of the internal composer-runtime-api package

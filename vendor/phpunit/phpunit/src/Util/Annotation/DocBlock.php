@@ -163,7 +163,7 @@ final class DocBlock
         ];
 
         // Split docblock into lines and rewind offset to start of docblock
-        $lines  = \preg_split('/\r\n|\r|\n/', $this->docComment);
+        $lines = \preg_split('/\r\n|\r|\n/', $this->docComment);
         $offset -= \count($lines);
 
         foreach ($lines as $line) {
@@ -173,7 +173,7 @@ final class DocBlock
             }
 
             if (\preg_match(self::REGEX_REQUIRES_VERSION, $line, $matches)) {
-                $requires[$matches['name']]        = [
+                $requires[$matches['name']] = [
                     'version'  => $matches['version'],
                     'operator' => $matches['operator'],
                 ];
@@ -190,7 +190,7 @@ final class DocBlock
                 try {
                     $versionConstraintParser = new VersionConstraintParser;
 
-                    $requires[$matches['name'] . '_constraint']        = [
+                    $requires[$matches['name'] . '_constraint'] = [
                         'constraint' => $versionConstraintParser->parse(\trim($matches['constraint'])),
                     ];
                     $recordedOffsets[$matches['name'] . '_constraint'] = $offset;
@@ -329,23 +329,6 @@ final class DocBlock
     public function isToBeExecutedAsPostCondition(): bool
     {
         return 1 === \preg_match('/@postCondition\b/', $this->docComment);
-    }
-
-    /**
-     * Parse annotation content to use constant/class constant values
-     *
-     * Constants are specified using a starting '@'. For example: @ClassName::CONST_NAME
-     *
-     * If the constant is not found the string is used as is to ensure maximum BC.
-     */
-    private function parseAnnotationContent(string $message): string
-    {
-        if (\defined($message) &&
-            (\strpos($message, '::') !== false && \substr_count($message, '::') + 1 === 2)) {
-            return \constant($message);
-        }
-
-        return $message;
     }
 
     private function getDataFromDataProviderAnnotation(string $docComment): ?array
@@ -498,7 +481,7 @@ final class DocBlock
         if (\preg_match_all('/@(?P<name>[A-Za-z_-]+)(?:[ \t]+(?P<value>.*?))?[ \t]*\r?$/m', $docBlock, $matches)) {
             $numMatches = \count($matches[0]);
 
-            for ($i = 0; $i < $numMatches; ++$i) {
+            for ($i = 0; $i < $numMatches; $i++) {
                 $annotations[$matches['name'][$i]][] = (string) $matches['value'][$i];
             }
         }

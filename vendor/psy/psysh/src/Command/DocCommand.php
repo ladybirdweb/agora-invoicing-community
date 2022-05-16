@@ -3,7 +3,7 @@
 /*
  * This file is part of Psy Shell.
  *
- * (c) 2012-2020 Justin Hileman
+ * (c) 2012-2022 Justin Hileman
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -26,6 +26,8 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class DocCommand extends ReflectingCommand
 {
+    const INHERIT_DOC_TAG = '{@inheritdoc}';
+
     /**
      * {@inheritdoc}
      */
@@ -91,7 +93,8 @@ HELP
             $output->writeln($doc);
         }
 
-        if ($input->getOption('all')) {
+        // Implicit --all if the original docblock has an {@inheritdoc} tag.
+        if ($input->getOption('all') || \stripos($doc, self::INHERIT_DOC_TAG) !== false) {
             $parent = $reflector;
             foreach ($this->getParentReflectors($reflector) as $parent) {
                 $output->writeln('');
@@ -132,11 +135,11 @@ HELP
                 break;
 
             case \ReflectionMethod::class:
-                $id = $reflector->class . '::' . $reflector->name;
+                $id = $reflector->class.'::'.$reflector->name;
                 break;
 
             case \ReflectionProperty::class:
-                $id = $reflector->class . '::$' . $reflector->name;
+                $id = $reflector->class.'::$'.$reflector->name;
                 break;
 
             case \ReflectionClassConstant::class:
@@ -144,7 +147,7 @@ HELP
                 // @todo this is going to collide with ReflectionMethod ids
                 // someday... start running the query by id + type if the DB
                 // supports it.
-                $id = $reflector->class . '::' . $reflector->name;
+                $id = $reflector->class.'::'.$reflector->name;
                 break;
 
             case ReflectionConstant_::class:
@@ -166,30 +169,44 @@ HELP
      * yield Reflectors for the same-named method or property on all traits and
      * parent classes.
      *
-     * @return Generator a whole bunch of \Reflector instances
+     * @return \Generator a whole bunch of \Reflector instances
      */
-    private function getParentReflectors($reflector)
+    private function getParentReflectors($reflector): \Generator
     {
+        $seenClasses = [];
+
         switch (\get_class($reflector)) {
             case \ReflectionClass::class:
             case \ReflectionObject::class:
                 foreach ($reflector->getTraits() as $trait) {
-                    yield $trait;
+                    if (!\in_array($trait->getName(), $seenClasses)) {
+                        $seenClasses[] = $trait->getName();
+                        yield $trait;
+                    }
                 }
 
                 foreach ($reflector->getInterfaces() as $interface) {
-                    yield $interface;
+                    if (!\in_array($interface->getName(), $seenClasses)) {
+                        $seenClasses[] = $interface->getName();
+                        yield $interface;
+                    }
                 }
 
                 while ($reflector = $reflector->getParentClass()) {
                     yield $reflector;
 
                     foreach ($reflector->getTraits() as $trait) {
-                        yield $trait;
+                        if (!\in_array($trait->getName(), $seenClasses)) {
+                            $seenClasses[] = $trait->getName();
+                            yield $trait;
+                        }
                     }
 
                     foreach ($reflector->getInterfaces() as $interface) {
-                        yield $interface;
+                        if (!\in_array($interface->getName(), $seenClasses)) {
+                            $seenClasses[] = $interface->getName();
+                            yield $interface;
+                        }
                     }
                 }
 
@@ -198,7 +215,11 @@ HELP
             case \ReflectionMethod::class:
                 foreach ($this->getParentReflectors($reflector->getDeclaringClass()) as $parent) {
                     if ($parent->hasMethod($reflector->getName())) {
-                        yield $parent->getMethod($reflector->getName());
+                        $parentMethod = $parent->getMethod($reflector->getName());
+                        if (!\in_array($parentMethod->getDeclaringClass()->getName(), $seenClasses)) {
+                            $seenClasses[] = $parentMethod->getDeclaringClass()->getName();
+                            yield $parentMethod;
+                        }
                     }
                 }
 
@@ -207,7 +228,11 @@ HELP
             case \ReflectionProperty::class:
                 foreach ($this->getParentReflectors($reflector->getDeclaringClass()) as $parent) {
                     if ($parent->hasProperty($reflector->getName())) {
-                        yield $parent->getProperty($reflector->getName());
+                        $parentProperty = $parent->getProperty($reflector->getName());
+                        if (!\in_array($parentProperty->getDeclaringClass()->getName(), $seenClasses)) {
+                            $seenClasses[] = $parentProperty->getDeclaringClass()->getName();
+                            yield $parentProperty;
+                        }
                     }
                 }
                 break;

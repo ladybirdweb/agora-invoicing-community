@@ -18,7 +18,6 @@ use Countable;
 use DateTime;
 use DateTimeImmutable;
 use Exception;
-use InvalidArgumentException;
 use ResourceBundle;
 use SimpleXMLElement;
 use Throwable;
@@ -27,14 +26,14 @@ use Traversable;
 /**
  * Efficient assertions to validate the input/output of your methods.
  *
- * @mixin Mixin
- *
  * @since  1.0
  *
  * @author Bernhard Schussek <bschussek@gmail.com>
  */
 class Assert
 {
+    use Mixin;
+
     /**
      * @psalm-pure
      * @psalm-assert string $value
@@ -109,6 +108,25 @@ class Assert
 
     /**
      * @psalm-pure
+     * @psalm-assert positive-int $value
+     *
+     * @param mixed  $value
+     * @param string $message
+     *
+     * @throws InvalidArgumentException
+     */
+    public static function positiveInteger($value, $message = '')
+    {
+        if (!(\is_int($value) && $value > 0)) {
+            static::reportInvalidArgument(\sprintf(
+                $message ?: 'Expected a positive integer. Got: %s',
+                static::valueToString($value)
+            ));
+        }
+    }
+
+    /**
+     * @psalm-pure
      * @psalm-assert float $value
      *
      * @param mixed  $value
@@ -147,7 +165,7 @@ class Assert
 
     /**
      * @psalm-pure
-     * @psalm-assert int $value
+     * @psalm-assert positive-int|0 $value
      *
      * @param mixed  $value
      * @param string $message
@@ -1620,7 +1638,7 @@ class Assert
      */
     public static function methodExists($classOrObject, $method, $message = '')
     {
-        if (!\method_exists($classOrObject, $method)) {
+        if (!(\is_string($classOrObject) || \is_object($classOrObject)) || !\method_exists($classOrObject, $method)) {
             static::reportInvalidArgument(\sprintf(
                 $message ?: 'Expected the method %s to exist.',
                 static::valueToString($method)
@@ -1640,7 +1658,7 @@ class Assert
      */
     public static function methodNotExists($classOrObject, $method, $message = '')
     {
-        if (\method_exists($classOrObject, $method)) {
+        if ((\is_string($classOrObject) || \is_object($classOrObject)) && \method_exists($classOrObject, $method)) {
             static::reportInvalidArgument(\sprintf(
                 $message ?: 'Expected the method %s to not exist.',
                 static::valueToString($method)

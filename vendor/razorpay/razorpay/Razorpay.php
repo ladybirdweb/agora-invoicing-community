@@ -1,14 +1,16 @@
 <?php
 
 // Include Requests only if not already defined
+const REQUESTS_SILENCE_PSR0_DEPRECATIONS = true;
+
 if (class_exists('Requests') === false)
 {
-    require_once __DIR__.'/libs/Requests-1.7.0/library/Requests.php';
+    require_once __DIR__.'/libs/Requests-2.0.0/src/Autoload.php';
 }
 
 try
 {
-    Requests::register_autoloader();
+    WpOrg\Requests\Autoload::register();
 
     if (version_compare(Requests::VERSION, '1.6.0') === -1)
     {

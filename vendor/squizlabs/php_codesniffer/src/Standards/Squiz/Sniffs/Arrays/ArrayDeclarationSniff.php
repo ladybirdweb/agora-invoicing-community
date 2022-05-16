@@ -450,9 +450,14 @@ class ArrayDeclarationSniff implements Sniff
                             $error = 'Expected 0 spaces before comma; %s found';
                             $data  = [$spaceLength];
 
-                            $fix = $phpcsFile->addFixableError($error, $nextToken, 'SpaceBeforeComma', $data);
-                            if ($fix === true) {
-                                $phpcsFile->fixer->replaceToken(($nextToken - 1), '');
+                            // The error is only fixable if there is only whitespace between the tokens.
+                            if ($prev === $phpcsFile->findPrevious(T_WHITESPACE, ($nextToken - 1), null, true)) {
+                                $fix = $phpcsFile->addFixableError($error, $nextToken, 'SpaceBeforeComma', $data);
+                                if ($fix === true) {
+                                    $phpcsFile->fixer->replaceToken(($nextToken - 1), '');
+                                }
+                            } else {
+                                $phpcsFile->addError($error, $nextToken, 'SpaceBeforeComma', $data);
                             }
                         }
                     }//end if
@@ -620,7 +625,19 @@ class ArrayDeclarationSniff implements Sniff
 
                 $valuePointer = $value['value'];
 
-                $previous = $phpcsFile->findPrevious([T_WHITESPACE, T_COMMA], ($valuePointer - 1), ($arrayStart + 1), true);
+                $ignoreTokens  = [
+                    T_WHITESPACE => T_WHITESPACE,
+                    T_COMMA      => T_COMMA,
+                ];
+                $ignoreTokens += Tokens::$castTokens;
+
+                if ($tokens[$valuePointer]['code'] === T_CLOSURE
+                    || $tokens[$valuePointer]['code'] === T_FN
+                ) {
+                    $ignoreTokens += [T_STATIC => T_STATIC];
+                }
+
+                $previous = $phpcsFile->findPrevious($ignoreTokens, ($valuePointer - 1), ($arrayStart + 1), true);
                 if ($previous === false) {
                     $previous = $stackPtr;
                 }
@@ -652,12 +669,12 @@ class ArrayDeclarationSniff implements Sniff
                             $found,
                         ];
 
-                        $fix = $phpcsFile->addFixableError($error, $valuePointer, 'ValueNotAligned', $data);
+                        $fix = $phpcsFile->addFixableError($error, $first, 'ValueNotAligned', $data);
                         if ($fix === true) {
                             if ($found === 0) {
-                                $phpcsFile->fixer->addContent(($valuePointer - 1), str_repeat(' ', $expected));
+                                $phpcsFile->fixer->addContent(($first - 1), str_repeat(' ', $expected));
                             } else {
-                                $phpcsFile->fixer->replaceToken(($valuePointer - 1), str_repeat(' ', $expected));
+                                $phpcsFile->fixer->replaceToken(($first - 1), str_repeat(' ', $expected));
                             }
                         }
                     }

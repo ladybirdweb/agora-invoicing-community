@@ -16,22 +16,21 @@ use SebastianBergmann\Template\Template;
  */
 class MockFunctionGenerator
 {
-    
     /**
      * @var string The internal name for optional parameters.
      */
     const DEFAULT_ARGUMENT = "optionalParameter";
- 
+
     /**
      * @var Mock The mock.
      */
     private $mock;
-    
+
     /**
      * @var Template The function template.
      */
     private $template;
-    
+
     /**
      * Sets the mock.
      *
@@ -42,7 +41,7 @@ class MockFunctionGenerator
         $this->mock     = $mock;
         $this->template = new Template(__DIR__ . '/function.tpl');
     }
-    
+
     /**
      * Defines the mock function.
      *
@@ -67,7 +66,7 @@ class MockFunctionGenerator
 
         eval($definition);
     }
-    
+
     /**
      * Removes optional arguments.
      *
@@ -81,7 +80,7 @@ class MockFunctionGenerator
             }
         }
     }
-    
+
     /**
      * Calls the enabled mock, or the built-in function otherwise.
      *

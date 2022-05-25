@@ -470,12 +470,11 @@ if($script->on_every_page == 1) {
 
             <div class="container">
                 <form action="" method="post" style="width:500px; margin: auto auto;" class="card card-body">
-                    <input type="hidden" id="orderNo" name="order" value={{$orderNo}}>
                     <div class="form-group">
                         <label>Domain</label>
                         <div class="row" style="margin-left: 2px; margin-right: 2px;">
-                             <input type="hidden"  name="order" id="orderId" value="{{$orderNo}}"/>
-                            <input  type="text" name="domain" autocomplete="off" id= "userdomain"  class="form-control col col-4" placeholder="Domain" required>
+                            
+                            <input  type="text"   name="domain" autocomplete="off" id= "userdomain"  class="form-control col col-4" placeholder="Domain" required>
                             <input type="text" class="form-control col col-8" value=".faveocloud.com" disabled="true">
                         </div>
                     </div>
@@ -831,80 +830,60 @@ if($script->on_every_page == 1) {
                     });
                   }
 
+
+            $(document).ready(function(){
+    $('.createTenant').attr('disabled',true);
+    $('#userdomain').keyup(function(){
+        if($(this).val().length !=0)
+            $('.createTenant').attr('disabled', false);            
+        else
+            $('.createTenant').attr('disabled',true);
+    })
+   });
+
                   
 
-    function firstlogin(id) {
-             $('#createTenant').attr('disabled',true)
-                $("#createTenant").html("<i class='fas fa-circle-notch fa-spin'></i>Please Wait...");
-                var domain = $('#userdomain').val();
-                var password = $('#password').val();
-                var order = $('#orderId').val();
+    function firstlogin(id) 
+    {
+        $('#createTenant').attr('disabled',true)
+        $("#createTenant").html("<i class='fas fa-circle-notch fa-spin'></i>Please Wait...");
+        var domain = $('#userdomain').val();
+        var password = $('#password').val();
+           
                $.ajax({
                     type: 'POST',
-                    data: {'id':id},
+                    data: {'id':id,'password': password,'domain' : domain},
                     url: "{{url('first-login')}}",
-                    success:function()
-                    {
-                        //location.reload();
-                    }
+                   success: function (data) {
+                        if (data.status == 'true') {
+                              $('#error').hide();
+                            $('#success').show();
+                           var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="fa fa-check"></i>Success! </strong>'+data.message+'!</div>';
+                              $('#success').html(result);
+
+                        }else if(data.status == 'false') {
+                             console.log('here');
+                            $('#error').show();
+                            $('#success').hide();
+                            var result =  '<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>Whoops! </strong>Something went wrong<br><ul><li>'+data.message+'</li></ul></div>';
+                                $('#error').html(result);
+                        }
+                },error: function (response) {
+                    $('#createTenant').attr('disabled',false)
+                    $("#createTenant").html("<i class='fa fa-check'>&nbsp;&nbsp;</i>Submit");
+                    $("#generate").html("<i class='fa fa-check'>&nbsp;&nbsp;</i>Submit");
+                     $.each(data,function(value){
+                          var html = '<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong>Whoops! </strong>Something went wrong<ul>';
+                    html += '<li>' + value.message + '</li>'
                 });
-           $.ajax({
-             url: "{{url('create/tenant')}}",
-            type: "POST",
-            data: {'domain': domain, 'password': password, 'orderNo': order},
-            success: function (data) {
-                $('#createTenant').attr('disabled',false)
-                $("#createTenant").html("<i class='fa fa-check'>&nbsp;&nbsp;</i>Submit");
-                if(data.status == 'validationFailure') {
-                    var html = '<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong>Whoops! </strong>Something went wrong<ul>';
-                    for (var key in data.message)
-                    {
-                        html += '<li>' + data.message[key][0] + '</li>'
-                    }
-                     html += '</ul></div>';
-                 $('#error').show();
-                  $('#success').hide();
-                  document.getElementById('error').innerHTML = html;
-                } else if(data.status == 'false') {
-                    $('#error').show();
-                    $('#success').hide();
-                    var result =  '<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>Whoops! </strong>Something went wrong!!<br><ul><li>'+data.message+'</li></ul></div>';
-                        $('#error').html(result);
-                    } else if(data.status == 'success_with_warning') {
-                        console.log('here');
-                    $('#error').show();
-                    $('#success').hide();
-                    var result =  '<div class="alert alert-warning alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>Whoops! </strong><br><ul><li>'+data.message+'</li></ul></div>';
-                        $('#error').html(result);
-                    } else {
-                        $('#error').hide();
-                        $('#success').show();
-                       var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="fa fa-check"></i>Success! </strong>'+data.message+'!</div>';
-                    $('#success').html(result);
-                    }
-            },error: function (response) {
-                $('#createTenant').attr('disabled',false)
-                $("#createTenant").html("<i class='fa fa-check'>&nbsp;&nbsp;</i>Submit");
-                 $("#generate").html("<i class='fa fa-check'>&nbsp;&nbsp;</i>Submit");
-                if(response.status == 422) {
-                     var html = '<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong>Whoops! </strong>Something went wrong<ul>';
-                    for (var key in response.responseJSON.errors)
-                    {
-                        html += '<li>' + response.responseJSON.errors[key][0] + '</li>'
-                    }
-                } else {
-                    var html = '<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong>Whoops! </strong>Something went wrong<ul>';
-                    html += '<li>' + response.responseJSON.message + '</li>'
+
                 }
-                
-                 html += '</ul></div>';
-                 $('#error').show();
-                 $('#success').hide();
-                 document.getElementById('error').innerHTML = html;
-                
-            }
-        });
-            }
+
+
+            }) ;
+           }
+    
+  
         $(document).on("click", ".open-createTenantDialog", function () {
     
      $('#tenant').modal('show');

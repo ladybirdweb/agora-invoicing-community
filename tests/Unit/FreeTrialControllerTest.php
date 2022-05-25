@@ -11,7 +11,7 @@ use Tests\DBTestCase;
 
 class FreeTrailControllerTest extends DBTestCase
 {
-    public function test_firstLoginAtem_generateinvoiceorder_returnstatus200()
+    public function test_firstLoginAttempt_generateinvoiceorder_returnstatus200()
     {
         $user = factory(User::class)->create(['role' => 'user', 'country' => 'IN']);
         factory(Product::class)->create();

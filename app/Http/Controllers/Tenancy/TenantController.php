@@ -15,7 +15,7 @@ class TenantController extends Controller
 {
     private $cloud;
 
-    public function __construct(Client $client, FaveoCloud $cloud)
+    public function __construct(Client $client = null, FaveoCloud $cloud)
     {
         $this->client = $client;
         $this->cloud = $cloud->first();

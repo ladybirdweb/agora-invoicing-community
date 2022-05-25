@@ -35,8 +35,10 @@ class BaseClientController extends Controller
                 $listUrl = $this->downloadPopup($query->client, $query->invoice_number, $productid);
             }
         } else {
+           if($productid != '117'){
             $listUrl = $this->deployPopup($query->number);
-        }
+        }       
+         }
 
         return $listUrl;
     }

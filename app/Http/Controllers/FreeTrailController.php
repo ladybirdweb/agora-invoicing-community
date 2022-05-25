@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Order\BaseOrderController;
 use App\Model\Common\StatusSetting;
+use App\Model\Common\FaveoCloud;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
 use App\Model\Order\Order;
@@ -18,9 +19,12 @@ use Crypt;
 use DB;
 use Illuminate\Http\Request;
 use Lang;
+use App\Http\Controllers\Tenancy\TenantController;
 
 class FreeTrailController extends Controller
 {
+	public $orderNo = null;
+
     public function __construct()
     {
         $this->middleware('auth');
@@ -40,7 +44,7 @@ class FreeTrailController extends Controller
      *
      * @return order
      */
-    public function firstLoginAtem(Request $request)
+    public function firstLoginAttempt(Request $request)
     {
         try {
             if (! Auth::check()) {
@@ -61,7 +65,8 @@ class FreeTrailController extends Controller
 
                 $this->executeFreetrailOrder();
 
-                return successResponse(Lang::get('message.succs_fre'), $this->executeFreetrailOrder(), 200);
+                return (new TenantController(null, new FaveoCloud()))->createTenant(new Request(['orderNo' => $this->orderNo, 'domain' => $request->domain]));
+
             }
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
@@ -93,7 +98,7 @@ class FreeTrailController extends Controller
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
 
-            throw new \Exception('Can not Generate Subscription');
+            throw new \Exception('Can not Generate Invoice');
         }
     }
 
@@ -135,7 +140,7 @@ class FreeTrailController extends Controller
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
 
-            throw new \Exception('Can not Generate Subscription');
+            throw new \Exception('Can not Generate Invoice items');
         }
     }
 
@@ -151,24 +156,15 @@ class FreeTrailController extends Controller
             $userId = \Auth::user()->id;
             $invoice = $this->invoice->where('user_id', $userId)->first();
             $invoiceid = $invoice->id;
-
-            $invoice_items = $this->invoiceItem->where('invoice_id', $invoiceid)->get();
-
+            $item = $this->invoiceItem->where('invoice_id', $invoiceid)->first();
             $user_id = $this->invoice->find($invoiceid)->user_id;
-
-            if (count($invoice_items) > 0) {
-                foreach ($invoice_items as $item) {
-                    if ($item) {
-                        $items = $this->getIfFreetrailItemPresent($item, $invoiceid, $user_id, $order_status);
-                    }
-                }
-            }
+            $items = $this->getIfFreetrailItemPresent($item, $invoiceid, $user_id, $order_status);
 
             return 'success';
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
 
-            throw new \Exception('Can not Generate Subscription');
+            throw new \Exception('Can not Generate order');
         }
     }
 
@@ -205,7 +201,7 @@ class FreeTrailController extends Controller
                 'domain'          => $domain,
                 'number'          => $this->generateFreetrailNumber(),
             ]);
-
+            $this->orderNo = $order->number;
             $baseorder = new BaseOrderController();
             $baseorder->addOrderInvoiceRelation($invoiceid, $order->id);
 
@@ -219,7 +215,7 @@ class FreeTrailController extends Controller
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
 
-            throw new \Exception('Can not Generate Subscription');
+            throw new \Exception('Can not Generate free trial order');
         }
     }
 
@@ -256,7 +252,7 @@ class FreeTrailController extends Controller
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
 
-            throw new \Exception('Can not Generate Subscription');
+            throw new \Exception('Can not Generate Free trail serialkey');
         }
     }
 

@@ -61,35 +61,29 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
-      
         $val = $request->has('form');
-        
 
         $apiKeys = StatusSetting::value('recaptcha_status');
         $captchaRule = $apiKeys ? 'required|' : 'sometimes|';
-        $rules =  array(
+        $rules = [
             'email1' => 'required',
             'password1' => 'required',
             'g-recaptcha-response' => $captchaRule.'captcha',
-        );
-        $messages = array(
+        ];
+        $messages = [
             'g-recaptcha-response.required' => 'Robot Verification Failed. Please Try Again.',
             'email1.required'    => 'Username/Email is required',
             'password1.required' => 'Password is required',
-            );
-          $validator=Validator::make($input = $request->all(),$rules,$messages);
+        ];
+        $validator = Validator::make($input = $request->all(), $rules, $messages);
 
-          if ($validator->fails() && $val) {
-           return redirect()->back()->withErrors($validator, 'login');
-          }
-          if ($validator->fails() && !$val)
-          {
-          return redirect()->back()->withErrors($validator, 'loginpopup');
-          }
-        
-        
+        if ($validator->fails() && $val) {
+            return redirect()->back()->withErrors($validator, 'login');
+        }
+        if ($validator->fails() && ! $val) {
+            return redirect()->back()->withErrors($validator, 'loginpopup');
+        }
 
-     
         $usernameinput = $request->input('email1');
         $password = $request->input('password1');
         $credentialsForEmail = ['email' => $usernameinput, 'password' => $password, 'active' => '1', 'mobile_verified' => '1'];
@@ -101,23 +95,19 @@ class LoginController extends Controller
         if (! $auth) {//Check for correct username
             $user = User::where('email', $usernameinput)->orWhere('user_name', $usernameinput)->first();
             if (! $user && $val) {
-                {
                 return redirect()->back()
                             ->withInput($request->only('email1', 'remember'))
                             ->withErrors([
                                 'email1' => 'Invalid Email',
-                            ],'login');
-                }
+                            ], 'login');
             }
-             if (! $user && !$val) {
-                {
+            if (! $user && ! $val) {
                 return redirect()->back()
                             ->withInput($request->only('email1', 'remember'))
                             ->withErrors([
                                 'email1' => 'Invalid Email',
                                 'errShow' => 1,
-                            ],'loginpopup');
-                }
+                            ], 'loginpopup');
             }
 
             if (! \Hash::check($password, $user->password) && $val) {//Check for correct password
@@ -125,15 +115,15 @@ class LoginController extends Controller
                 ->withInput($request->only('password1', 'remember'))
                 ->withErrors([
                     'password1' => 'Invalid Password',
-                ],'login');
+                ], 'login');
             }
-             if (! \Hash::check($password, $user->password) && !$val) {//Check for correct password
+            if (! \Hash::check($password, $user->password) && ! $val) {//Check for correct password
                 return redirect()->back()
                 ->withInput($request->only('password1', 'remember'))
                 ->withErrors([
                     'password1' => 'Invalid Password',
                     'errShow' => 1,
-                ],'loginpopup');
+                ], 'loginpopup');
             }
             if ($user && ($user->active !== 1 || $user->mobile_verified !== 1)) {
                 return redirect('verify')->with('user', $user);

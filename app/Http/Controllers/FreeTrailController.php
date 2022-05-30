@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Order\BaseOrderController;
-use App\Model\Common\StatusSetting;
+use App\Http\Controllers\Tenancy\TenantController;
 use App\Model\Common\FaveoCloud;
+use App\Model\Common\StatusSetting;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
 use App\Model\Order\Order;
@@ -19,11 +20,10 @@ use Crypt;
 use DB;
 use Illuminate\Http\Request;
 use Lang;
-use App\Http\Controllers\Tenancy\TenantController;
 
 class FreeTrailController extends Controller
 {
-	public $orderNo = null;
+    public $orderNo = null;
 
     public function __construct()
     {
@@ -66,7 +66,6 @@ class FreeTrailController extends Controller
                 $this->executeFreetrailOrder();
 
                 return (new TenantController(null, new FaveoCloud()))->createTenant(new Request(['orderNo' => $this->orderNo, 'domain' => $request->domain]));
-
             }
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());

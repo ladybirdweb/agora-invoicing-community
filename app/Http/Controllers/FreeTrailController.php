@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Order\BaseOrderController;
 use App\Http\Controllers\Tenancy\TenantController;
 use App\Model\Common\FaveoCloud;
-use GuzzleHttp\Client;
 use App\Model\Common\StatusSetting;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
@@ -19,6 +18,7 @@ use App\User;
 use Auth;
 use Crypt;
 use DB;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Lang;
 

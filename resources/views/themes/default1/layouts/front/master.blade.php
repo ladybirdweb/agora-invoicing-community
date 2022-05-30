@@ -406,12 +406,7 @@ if($script->on_every_page == 1) {
 
  @auth
 
-<?php
-    $userId = \Auth::user()->id;
-    $orderNo = DB::table('orders')->where('client',$userId)->value('number');
 
-    
-?>
 <div class="modal fade" id="tenant" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -445,7 +440,7 @@ if($script->on_every_page == 1) {
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default pull-left closebutton" id="closebutton" data-dismiss="modal"><i class="fa fa-times">&nbsp;&nbsp;</i>Close</button>
-                 <button type="submit" data-id="{{$orderNo}}"  class="btn btn-primary createTenant" id="createTenant" onclick="firstlogin({{Auth::user()->id}})"><i class="fa fa-check">&nbsp;&nbsp;</i>Submit</button>
+                 <button type="submit" data-id=""  class="btn btn-primary createTenant" id="createTenant" onclick="firstlogin({{Auth::user()->id}})"><i class="fa fa-check">&nbsp;&nbsp;</i>Submit</button>
                 {!! Form::close()  !!}
             </div>
             <!-- /Form -->

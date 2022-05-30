@@ -8,10 +8,10 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Tests\DBTestCase;
-/**
- * test  freetrial controller API
- */
 
+/**
+ * test  freetrial controller API.
+ */
 class FreeTrailControllerTest extends DBTestCase
 {
     public function test_firstloginatem_generateinvoiceorder_returnstatus200()

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Order\BaseOrderController;
 use App\Http\Controllers\Tenancy\TenantController;
 use App\Model\Common\FaveoCloud;
+use GuzzleHttp\Client;
 use App\Model\Common\StatusSetting;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
@@ -65,12 +66,12 @@ class FreeTrailController extends Controller
 
                 $this->executeFreetrailOrder();
 
-                return (new TenantController(null, new FaveoCloud()))->createTenant(new Request(['orderNo' => $this->orderNo, 'domain' => $request->domain]));
+                return (new TenantController(new Client, new FaveoCloud()))->createTenant(new Request(['orderNo' => $this->orderNo, 'domain' => $request->domain]));
             }
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
 
-            throw new \Exception('Can not Generate Subscription');
+            throw new \Exception('Can not Generate Freetrial Cloud instance');
         }
     }
 

@@ -91,6 +91,7 @@ Sign in or Register
 
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/js/bootstrap-select.js"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/2.0.0-beta1/js/bootstrap-select.min.js"></script> 
+        <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
     <div class="row">
         <div class="col-md-12">
 
@@ -1406,12 +1407,11 @@ Sign in or Register
                     },
                     error: function (data) {
                         $("#register").attr('disabled',false);
-                        location.reload();
                         $("#register").html("Register");
                         $('html, body').animate({scrollTop:0}, 500);
 
 
-                        var html = '<div class="alert alert-success alert-dismissable"><strong><i class="fas fa-exclamation-triangle"></i>Oh Snap! </strong>'+data.responseJSON.message+' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><br><ul>';
+                        var html = '<div class="alert alert-danger alert-dismissable"><strong><i class="fas fa-exclamation-triangle"></i>Oh Snap! </strong>'+data.responseJSON.message+' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><br><ul>';
                         for (var key in data.responseJSON.errors)
                         {
                             html += '<li>' + data.responseJSON.errors[key][0] + '</li>'

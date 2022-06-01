@@ -96,6 +96,7 @@ Sign in or Register
 
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/js/bootstrap-select.js"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/2.0.0-beta1/js/bootstrap-select.min.js"></script> 
+        <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
     <div class="row">
         <div class="col-md-12">
 

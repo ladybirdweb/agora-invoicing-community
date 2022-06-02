@@ -43,9 +43,7 @@ class SocialMediaController extends Controller
                             ->addColumn('name', function ($model) {
                                 return $model->name;
                             })
-                            ->addColumn('class', function ($model) {
-                                return $model->class;
-                            })
+                     
                             ->addColumn('link', function ($model) {
                                 return $model->link;
                             })
@@ -55,7 +53,7 @@ class SocialMediaController extends Controller
                                 ." class='btn btn-sm btn-secondary btn-xs'".tooltip('Edit')."<i class='fa fa-edit'
                                  style='color:white;'> </i></a>";
                             })
-                            ->rawColumns(['name', 'class', 'link', 'action'])
+                            ->rawColumns(['name','link', 'action'])
                             ->make(true);
             // ->searchColumns('name')
                             // ->orderColumns('class')
@@ -79,8 +77,7 @@ class SocialMediaController extends Controller
         $this->validate($request, [
             'name'     => 'required',
             'link'     => 'required|url',
-            'class'    => 'required',
-            'fa_class' => 'required',
+        
         ]);
 
         try {
@@ -108,8 +105,7 @@ class SocialMediaController extends Controller
         $this->validate($request, [
             'name'     => 'required',
             'link'     => 'required|url',
-            'class'    => 'required',
-            'fa_class' => 'required',
+      
         ]);
 
         try {

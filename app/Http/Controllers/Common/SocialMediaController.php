@@ -76,7 +76,7 @@ class SocialMediaController extends Controller
         $this->validate($request, [
             'name'     => 'required',
             'link'     => 'required|url',
-          
+
         ]);
 
         try {
@@ -104,7 +104,7 @@ class SocialMediaController extends Controller
         $this->validate($request, [
             'name'     => 'required',
             'link'     => 'required|url',
-      
+
         ]);
 
         try {

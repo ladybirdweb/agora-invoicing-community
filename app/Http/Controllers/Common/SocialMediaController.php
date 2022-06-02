@@ -46,7 +46,7 @@ class SocialMediaController extends Controller
                             ->addColumn('name', function ($model) {
                                 return $model->name;
                             })
-
+                     
                             ->addColumn('link', function ($model) {
                                 return $model->link;
                             })
@@ -56,15 +56,7 @@ class SocialMediaController extends Controller
                                 ." class='btn btn-sm btn-secondary btn-xs'".tooltip('Edit')."<i class='fa fa-edit'
                                  style='color:white;'> </i></a>";
                             })
-                             ->filterColumn('name', function ($query, $keyword) {
-                                 $sql = 'name like ?';
-                                 $query->whereRaw($sql, ["%{$keyword}%"]);
-                             })
-                             ->filterColumn('link', function ($query, $keyword) {
-                                 $sql = 'link like ?';
-                                 $query->whereRaw($sql, ["%{$keyword}%"]);
-                             })
-                            ->rawColumns(['name', 'link', 'action'])
+                            ->rawColumns(['name','link', 'action'])
                             ->make(true);
             // ->searchColumns('name')
                             // ->orderColumns('class')
@@ -85,6 +77,12 @@ class SocialMediaController extends Controller
 
     public function store(SocialMediaRequest $request)
     {
+        $this->validate($request, [
+            'name'     => 'required',
+            'link'     => 'required|url',
+        
+        ]);
+
         try {
             $this->social->fill($request->input())->save();
 
@@ -107,6 +105,12 @@ class SocialMediaController extends Controller
 
     public function update($id, SocialMediaRequest $request)
     {
+        $this->validate($request, [
+            'name'     => 'required',
+            'link'     => 'required|url',
+      
+        ]);
+
         try {
             $social = $this->social->findOrFail($id);
             $social->fill($request->input())->save();

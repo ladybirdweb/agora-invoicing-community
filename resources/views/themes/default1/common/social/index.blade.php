@@ -36,7 +36,6 @@ Social Media
 
                     <thead><tr>
                          <th>Name</th>
-                          <th>Type</th>
                            <th>Content</th>
                           <th>Action</th>
                         </tr></thead>
@@ -80,7 +79,6 @@ Social Media
             columns: [
                
                 {data: 'name', name: 'name'},
-                {data: 'class', name: 'class'},
                 {data: 'link', name: 'link'},
                 {data: 'action', name: 'Action'}
             ],

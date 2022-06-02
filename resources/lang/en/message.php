@@ -553,7 +553,7 @@ return [
     'date-of-payment' => 'Date of Payment',
     'amount'          => 'Amount',
     'extra-amount'    => 'Extra Amount Paid',
-    'link'            => 'Link with Invoice',
+    'link'            => 'Social Media Link',
     'edit-payment'    => 'Edit Payment',
     'link-extra'      => 'Link Extra Payment',
 

@@ -48,37 +48,6 @@ Social Media
                         </td>
 
                     </tr>
-                    <tr>
-
-                        <td><b>{!! Form::label('class',Lang::get('message.class'),['class'=>'required']) !!}</b></td>
-                        <td>
-
-                            <div class="form-group {{ $errors->has('class') ? 'has-error' : '' }}">
-
-
-                                {!! Form::text('class',null,['class' => 'form-control']) !!}
-                                <p><i> {{Lang::get('message.enter-the-css-class-of-the-social-media')}}</i> </p>
-
-
-
-                        </td>
-
-
-                    </tr>
-                    <tr>
-                        <td><b>{!! Form::label('fa_class',Lang::get('message.fa-class'),['class'=>'required']) !!}</b></td>
-                        <td>
-
-                            <div class="form-group {{ $errors->has('fa_class') ? 'has-error' : '' }}">
-
-
-                                {!! Form::text('fa_class',null,['class' => 'form-control']) !!}
-                                <p><i> {{Lang::get('message.enter-the-fa-class-of-the-social-media')}}</i> </p>
-
-
-
-                        </td>
-                    </tr>
 
                     <tr>
 

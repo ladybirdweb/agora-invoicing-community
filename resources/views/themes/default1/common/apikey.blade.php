@@ -59,46 +59,40 @@
             border-radius: 34px;
         }
 
-.slider.round:before {
-  border-radius: 50%;
-}
-.scrollit {
-    overflow:scroll;
-    height:600px;
-}
-
-
-</style>
-<div class="col-sm-6 md-6">
-    <h1>API Keys</h1>
-</div>
-<div class="col-sm-6 md-6">
-    <ol class="breadcrumb float-sm-right">
-        <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li class="breadcrumb-item"><a href="{{url('settings')}}"> Settings</a></li>
-        <li class="breadcrumb-item active">Api Key</li>
-    </ol>
-</div><!-- /.col -->
+        .slider.round:before {
+            border-radius: 50%;
+        }
+        .scrollit {
+            overflow:scroll;
+            height:600px;
+        }
+    </style>
+    <div class="col-sm-6 md-6">
+        <h1>API Keys</h1>
+    </div>
+    <div class="col-sm-6 md-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="breadcrumb-item"><a href="{{url('settings')}}"> Settings</a></li>
+            <li class="breadcrumb-item active">Api Key</li>
+        </ol>
+    </div><!-- /.col -->
 @stop
 @section('content')
 
 
     <div class="card card-secondary card-outline">
 
-            <!-- /.box-header -->
-            <div class="card-body">
-          
-               <div id="alertMessage"></div>
-                <div id="alertMessage1"></div>
-               
-              <div class="scrollit">
-                  <div class="row">
-               <div class="col-md-12">
+        <!-- /.box-header -->
+        <div class="card-body">
+            <div id="alertMessage"></div>
+            <div class="scrollit">
+                <div class="row">
+                    <div class="col-md-12">
 
                         <table class="table table-bordered ">
                             <thead>
                             <tr>
-
 
                                 <th>Options</th>
                                 <th>Status</th>
@@ -121,12 +115,9 @@
                                 </td>
 
                                 <td class="col-md-4 licenseEmptyField">
-                                     {!! Form::label('lic_api_secret',Lang::get('message.lic_api_secret')) !!}
-                                     {!! Form::text('license_api',null,['class' => 'form-control secretHide','disabled'=>'disabled'
-                                      ]) !!}
-                         @if($errors->has('license_api_secret'))
-                         <div class="error">{{ $errors->first('license_api_secret') }}</div>
-                          @endif
+                                    {!! Form::label('lic_api_secret',Lang::get('message.lic_api_secret')) !!}
+                                    {!! Form::text('license_api',null,['class' => 'form-control secretHide','disabled'=>'disabled'
+                                    ]) !!}
 
                                     <!-- last name -->
                                     {!! Form::label('lic_api_url',Lang::get('message.lic_api_url')) !!} :
@@ -143,14 +134,13 @@
 
                                 </td>
                                 <td class="col-md-4 LicenseField hide">
+
+
                                     <!-- last name -->
                                     {!! Form::label('lic_api_secret',Lang::get('message.lic_api_secret')) !!}
                                     {!! Form::text('license_api_secret',$licenseSecret,['class' => 'form-control','id'=>'license_api_secret']) !!}
                                     <h6 id="license_apiCheck"></h6>
                                     <br/>
-                                      @if($errors->has('license_api_secret'))
-                         <div class="error">{{ $errors->first('license_api_secret') }}</div>
-                          @endif
 
                                     <!-- last name -->
                                     {!! Form::label('lic_api_url',Lang::get('message.lic_api_url')) !!} :
@@ -162,7 +152,6 @@
                                     {!! Form::text('license_client_id',$licenseClientId,['class' => 'form-control','id'=>'license_client_id']) !!}
                                     <h6 id="license_clientIdCheck"></h6>
                                     <br/>
-
 
                                     {!! Form::label('lic_client_secret',Lang::get('message.lic_client_secret')) !!} :
                                     {!! Form::text('license_client_secret',$licenseClientSecret,['class' => 'form-control','id'=>'license_client_secret']) !!}
@@ -176,9 +165,7 @@
 
 
                                 </td>
-                            
                                 <td class="col-md-2"><button type="submit" class="form-group btn btn-primary"  onclick="licenseDetails()" id="submit"><i class="fa fa-save">&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
-
                             </tr>
 
                             <tr>
@@ -546,53 +533,35 @@
                 $('.LicenseField').hide();
                 $('.nocapsecretHide').val('');
                 $('.siteKeyHide').val('');
-
-               $('.licenseEmptyField').show();
-               
-               
-        }
-    });
+                $('.licenseEmptyField').show();
 
 
+            }
+        });
 
         function licenseDetails(){
 
             if ($('#License').prop("checked")) {
                 var checkboxvalue = 1;
-
                 if ($('#license_api_secret').val() =="" ) {
                     $('#license_apiCheck').show();
                     $('#license_apiCheck').html("Please Enter API Secret Key");
                     $('#license_api_secret').css("border-color","red");
                     $('#license_apiCheck').css({"color":"red","margin-top":"5px"});
-                    setTimeout(function(){
-                    $('#license_apiCheck').hide();
-                      $('#license_api_secret').css("border-color","");
-                        }, 1500);
                     return false;
                 }
-         
                 if ($('#license_api_url').val() =="" ) {
                     $('#license_urlCheck').show();
                     $('#license_urlCheck').html("Please Enter API URL");
                     $('#license_api_url').css("border-color","red");
                     $('#license_urlCheck').css({"color":"red","margin-top":"5px"});
-                    setTimeout(function(){
-                    $('#license_urlCheck').hide();
-                      $('#license_api_url').css("border-color","");
-                        }, 1500);
                     return false;
                 }
-
                 if ($('#license_client_id').val() =="" ) {
                     $('#license_clientIdCheck').show();
                     $('#license_clientIdCheck').html("Please Enter Client Id For License Manager");
                     $('#license_client_id').css("border-color","red");
                     $('#license_clientIdCheck').css({"color":"red","margin-top":"5px"});
-                    setTimeout(function(){
-                    $('#license_clientIdCheck').hide();
-                      $('#license_client_id').css("border-color","");
-                        }, 1500);
                     return false;
                 }
                 if ($('#license_client_secret').val() =="" ) {
@@ -600,10 +569,6 @@
                     $('#license_clientSecretCheck').html("Please Enter Your Client Secret For License Manager");
                     $('#license_client_secret').css("border-color","red");
                     $('#license_clientSecretCheck').css({"color":"red","margin-top":"5px"});
-                    setTimeout(function(){
-                    $('#license_clientSecretCheck').hide();
-                      $('#license_client_secret').css("border-color","");
-                        }, 1500);
                     return false;
                 }
                 if ($('#license_grant_type').val() =="" ) {
@@ -611,10 +576,6 @@
                     $('#license_grantTypeCheck').html("Please Enter Your Grant Type For License Manager");
                     $('#license_grant_type').css("border-color","red");
                     $('#license_grantTypeCheck').css({"color":"red","margin-top":"5px"});
-                    setTimeout(function(){
-                    $('#license_grantTypeCheck').hide();
-                      $('#license_grant_type').css("border-color","");
-                        }, 1500);
                     return false;
                 }
             }

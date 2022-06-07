@@ -69,7 +69,7 @@ class ThirdPartyApiController extends Controller
                 $this->product_upload->is_restricted = $request->input('is_restricted');
                 $this->product_upload->dependencies = json_encode($request->input('dependencies'));
                 $this->product_upload->save();
-                $this->product->where('id', $product_id->id)->update(['version' => $request->input('version')]);
+                $this->product->where('id', $product_id->id)->update(['version'=>$request->input('version')]);
                 $autoUpdateStatus = StatusSetting::pluck('license_status')->first();
                 if ($autoUpdateStatus == 1) { //If License Setting Status is on,Add Product to the License Manager
                     $updateClassObj = new \App\Http\Controllers\AutoUpdate\AutoUpdateController();

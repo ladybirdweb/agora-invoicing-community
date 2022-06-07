@@ -10,9 +10,7 @@ class AutoUpdateController extends Controller
     private $api_key_secret;
 
     private $url;
-
     private $license;
-
     private $token;
 
     public function __construct()
@@ -26,10 +24,6 @@ class AutoUpdateController extends Controller
         $this->client_id = $this->license->license_client_id;
         $this->client_secret = $this->license->license_client_secret;
         $this->grant_type = $this->license->license_grant_type;
-
-        //need to remove this once we deprecate updates.faveohelpdesk.com
-        $this->updateUrl = '';
-        $this->update_api_secret = '';
     }
 
     /**
@@ -39,14 +33,12 @@ class AutoUpdateController extends Controller
     {
         $url = $this->url;
         $data = [
-            'client_id' => $this->client_id,
-            'client_secret' => $this->client_secret,
+            'client_id'=> $this->client_id,
+            'client_secret'=>$this->client_secret,
             'grant_type' => $this->grant_type,
 
         ];
-
         $response = $this->postCurl($url.'oauth/token', $data);
-
         $response = json_decode($response);
 
         return $response;
@@ -90,19 +82,12 @@ class AutoUpdateController extends Controller
     */
     public function addNewProductToAUS($product_name, $product_sku)
     {
-        try {
-            $url = $this->url;
-            $key = str_random(16);
-            $api_key_secret = $this->api_key_secret;
-            $OauthDetails = $this->oauthAuthorization();
-            $token = $OauthDetails->access_token;
-
-            $addProduct = $this->postCurl($url.'api/admin/products/UpdateAdd', "api_key_secret=$api_key_secret&product_title=$product_name&product_sku=$product_sku&product_key=$key&product_status=1", $token);
-            //need to remove this once we deprecate updates.faveohelpdesk.com
-            $anotheradd = $this->postCurl($this->updateUrl, "api_key_secret=$this->update_api_secret&api_function=products_add&product_title=$product_name&product_sku=$product_sku&product_key=$key&product_status=1");
-        } catch (\Exception $ex) {
-            throw new \Exception('Please configure the valid license details in Apikey settings.');
-        }
+        $url = $this->url;
+        $key = str_random(16);
+        $api_key_secret = $this->api_key_secret;
+        $OauthDetails = $this->oauthAuthorization();
+        $token = $OauthDetails->access_token;
+        $addProduct = $this->postCurl($url.'api/admin/products/UpdateAdd', "api_key_secret=$api_key_secret&product_title=$product_name&product_sku=$product_sku&product_key=$key&product_status=1", $token);
     }
 
     /*
@@ -111,17 +96,11 @@ class AutoUpdateController extends Controller
 
     public function addNewVersion($product_id, $version_number, $upgrade_zip_file, $version_status)
     {
-        try {
-            $url = $this->url;
-            $api_key_secret = $this->api_key_secret;
-            $OauthDetails = $this->oauthAuthorization();
-            $token = $OauthDetails->access_token;
-            $addNewVersion = $this->postCurl($url.'api/admin/versions/add', "api_key_secret=$api_key_secret&product_id=$product_id&version_number=$version_number&version_upgrade_file=$upgrade_zip_file&version_status=$version_status&product_status=1", $token);
-            //need to remove this once we deprecate updates.faveohelpdesk.com
-            $anotherVersion = $this->postCurl($this->updateUrl, "api_key_secret=$this->update_api_secret&api_function=versions_add&product_id=$product_id&version_number=$version_number&version_upgrade_file=$upgrade_zip_file&version_status=$version_status&product_status=1");
-        } catch (\Exception $ex) {
-            throw new \Exception('Please configure the valid license details in Apikey settings.');
-        }
+        $url = $this->url;
+        $api_key_secret = $this->api_key_secret;
+        $OauthDetails = $this->oauthAuthorization();
+        $token = $OauthDetails->access_token;
+        $addNewVersion = $this->postCurl($url.'api/admin/versions/add', "api_key_secret=$api_key_secret&product_id=$product_id&version_number=$version_number&version_upgrade_file=$upgrade_zip_file&version_status=$version_status&product_status=1", $token);
     }
 
     /*
@@ -129,20 +108,14 @@ class AutoUpdateController extends Controller
     */
     public function editVersion($version_number, $product_sku)
     {
-        try {
-            $url = $this->url;
-            $api_key_secret = $this->api_key_secret;
-            $searchLicense = $this->searchVersion($version_number, $product_sku);
-            $versionId = $searchLicense['version_id'];
-            $productId = $searchLicense['product_id'];
-            $OauthDetails = $this->oauthAuthorization();
-            $token = $OauthDetails->access_token;
-            $addNewVersion = $this->postCurl($url.'api/admin/versions/edit', "api_key_secret=$api_key_secret&product_id=productId&version_id=$versionId&version_number=$version_number&version_status=1", $token);
-            //need to remove this once we deprecate updates.faveohelpdesk.com
-            $editNewVersion = $this->postCurl($this->updateUrl, "api_key_secret=$api_key_secret&api_function=versions_edit&product_id=productId&version_id=$versionId&version_number=$version_number&version_status=1");
-        } catch (\Exception $ex) {
-            throw new \Exception('Please configure the valid license details in Apikey settings.');
-        }
+        $url = $this->url;
+        $api_key_secret = $this->api_key_secret;
+        $searchLicense = $this->searchVersion($version_number, $product_sku);
+        $versionId = $searchLicense['version_id'];
+        $productId = $searchLicense['product_id'];
+        $OauthDetails = $this->oauthAuthorization();
+        $token = $OauthDetails->access_token;
+        $addNewVersion = $this->postCurl($url.'api/admin/versions/edit', "api_key_secret=$api_key_secret&product_id=productId&version_id=$versionId&version_number=$version_number&version_status=1", $token);
     }
 
     /*
@@ -150,21 +123,19 @@ class AutoUpdateController extends Controller
     */
     public function searchVersion($version_number, $product_sku)
     {
-        try {
-            $versionId = '';
-            $productId = '';
-            $url = $this->url;
-            $api_key_secret = $this->api_key_secret;
-            $OauthDetails = $this->oauthAuthorization();
-            $token = $OauthDetails->access_token;
-            $getVersion = $this->postCurl($url.'api/admin/search', "api_key_secret=$api_key_secret&search_type=version&search_keyword=$product_sku&isLicenseSearchApi=0", $token);
-            $details = json_decode($getVersion);
-            if ($details->api_error_detected == 0 && is_array($details->page_message)) {
-                foreach ($details->page_message as $detail) {
-                    if ($detail->version_number == $version_number) {
-                        $versionId = $detail->version_id;
-                        $productId = $detail->product_id;
-                    }
+        $versionId = '';
+        $productId = '';
+        $url = $this->url;
+        $api_key_secret = $this->api_key_secret;
+        $OauthDetails = $this->oauthAuthorization();
+        $token = $OauthDetails->access_token;
+        $getVersion = $this->postCurl($url.'api/admin/search', "api_key_secret=$api_key_secret&search_type=version&search_keyword=$product_sku&isLicenseSearchApi=0", $token);
+        $details = json_decode($getVersion);
+        if ($details->api_error_detected == 0 && is_array($details->page_message)) {
+            foreach ($details->page_message as $detail) {
+                if ($detail->version_number == $version_number) {
+                    $versionId = $detail->version_id;
+                    $productId = $detail->product_id;
                 }
             }
 

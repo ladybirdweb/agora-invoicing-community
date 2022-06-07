@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class AddClientForLicenseManagerToApiKeys extends Migration
 {
     /**
      * Run the migrations.
@@ -37,4 +37,4 @@ return new class extends Migration
             $table->dropColumn(['license_client_id', 'license_client_secret', 'license_grant_type']);
         });
     }
-};
+}

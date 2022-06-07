@@ -23,12 +23,11 @@ trait ApiKeySettings
         $licenseApiClientId = $request->input('license_client_id');
         $licenseApiClientSecret = $request->input('license_client_secret');
         $licenseApiGrantType = $request->input('license_grant_type');
-        StatusSetting::where('id', 1)->update(['license_status' => $status]);
-        ApiKey::where('id', 1)->update(['license_api_secret' => $licenseApiSecret, 'license_api_url' => $licenseApiUrl,
-            'license_client_id' => $licenseApiClientId, 'license_client_secret' => $licenseApiClientSecret,
-            'license_grant_type' => $licenseApiGrantType, ]);
-
-        return ['message' => 'success', 'update' => 'Licensing settings saved'];
+        StatusSetting::where('id', 1)->update(['license_status'=>$status]);
+        ApiKey::where('id', 1)->update(['license_api_secret'=>$licenseApiSecret, 'license_api_url'=>$licenseApiUrl,
+            'license_client_id'=> $licenseApiClientId, 'license_client_secret'=> $licenseApiClientSecret,
+            'license_grant_type'=>$licenseApiGrantType, ]);
+        return ['message' => 'success', 'update'=>'Licensing settings saved'];
     }
 
     //Save Auto Update status in Database

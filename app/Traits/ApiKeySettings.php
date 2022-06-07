@@ -20,9 +20,13 @@ trait ApiKeySettings
         $status = $request->input('status');
         $licenseApiSecret = $request->input('license_api_secret');
         $licenseApiUrl = $request->input('license_api_url');
+        $licenseApiClientId = $request->input('license_client_id');
+        $licenseApiClientSecret = $request->input('license_client_secret');
+        $licenseApiGrantType = $request->input('license_grant_type');
         StatusSetting::where('id', 1)->update(['license_status'=>$status]);
-        ApiKey::where('id', 1)->update(['license_api_secret'=>$licenseApiSecret, 'license_api_url'=>$licenseApiUrl]);
-
+        ApiKey::where('id', 1)->update(['license_api_secret'=>$licenseApiSecret, 'license_api_url'=>$licenseApiUrl,
+            'license_client_id'=> $licenseApiClientId, 'license_client_secret'=> $licenseApiClientSecret,
+            'license_grant_type'=>$licenseApiGrantType, ]);
         return ['message' => 'success', 'update'=>'Licensing settings saved'];
     }
 

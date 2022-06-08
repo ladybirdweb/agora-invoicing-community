@@ -100,8 +100,8 @@ class TenantController extends Controller
             ]);
         try {
             $faveoCloud = $request->domain;
-            $dns_record = dns_get_record($faveoCloud,DNS_CNAME);
-            if(empty($dns_record) || $dns_record[0]['domain']!= $this->cloud->cloud_central_domain){
+            $dns_record = dns_get_record($faveoCloud, DNS_CNAME);
+            if (empty($dns_record) || $dns_record[0]['domain'] != $this->cloud->cloud_central_domain) {
                 throw new Exception('Your Domains DNS CNAME record is not pointing to our cloud!(CNAME record is missing) Please do it to proceed');
             }
             $licCode = Order::where('number', $request->input('orderNo'))->first()->serial_key;
@@ -231,23 +231,26 @@ class TenantController extends Controller
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
-    public function changeDomain(Request $request){
+
+    public function changeDomain(Request $request)
+    {
         $this->validate($request, [
             'currentDomain'=> 'required',
-            'newDomain'=>'required'
+            'newDomain'=>'required',
         ]);
         $keys = ThirdPartyApp::where('app_name', 'faveo_app_key')->select('app_key', 'app_secret')->first();
         $token = str_random(32);
-        $newDomain =$request->get('newDomain');
-        $data = ['currentDomain' => $request->get('currentDomain'), 'newDomain'=>$newDomain,'app_key'=>$keys->app_key,'token'=>$token, 'timestamp'=>time()];
-        $dns_record = dns_get_record($newDomain,DNS_CNAME);
-        if(empty($dns_record) || $dns_record[0]['domain']!= $this->cloud->cloud_central_domain){
+        $newDomain = $request->get('newDomain');
+        $data = ['currentDomain' => $request->get('currentDomain'), 'newDomain'=>$newDomain, 'app_key'=>$keys->app_key, 'token'=>$token, 'timestamp'=>time()];
+        $dns_record = dns_get_record($newDomain, DNS_CNAME);
+        if (empty($dns_record) || $dns_record[0]['domain'] != $this->cloud->cloud_central_domain) {
             throw new Exception('Your Domains DNS CNAME record is not pointing to our cloud!(CNAME record is missing) Please do it to proceed');
         }
         $response = $client->request(
             'POST',
             $this->cloud->cloud_central_domain.'/changeDomain', ['form_params'=>$data, 'headers'=>['signature'=>$hashedSignature]]
         );
+
         return response(['message'=> $response]);
     }
 }

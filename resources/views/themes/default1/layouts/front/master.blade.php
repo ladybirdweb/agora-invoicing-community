@@ -130,7 +130,12 @@ if($script->on_every_page == 1) {
                                                      @if(Auth::check() && $user == 0)
                                                     
 
-                                                     <button class="btn btn-primary btn-modern open-createTenantDialog"  >free trail</button>
+                                                  
+                                                      <li class="dropdown">
+                                                        <a  class="nav-link open-createTenantDialog" style="cursor: pointer;">
+                                                             Faveo Cloud-Free Trial
+                                                        </a>
+                                                    </li>
 
                                                      @endif
                                                       @endauth

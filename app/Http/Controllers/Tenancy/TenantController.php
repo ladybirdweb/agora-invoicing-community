@@ -119,7 +119,11 @@ class TenantController extends Controller
         $mailer = $mail->setMailConfig($settings);
 
         try {
-            $faveoCloud = '.faveocloud.com';
+            $faveoCloud = $request->domain;
+            $dns_record = dns_get_record($faveoCloud,DNS_CNAME);
+            if(empty($dns_record) || $dns_record[0]['domain']!= $this->cloud->cloud_central_domain){
+                throw new Exception('Your Domains DNS CNAME record is not pointing to our cloud!(CNAME record is missing) Please do it to proceed');
+            }
             $licCode = Order::where('number', $request->input('orderNo'))->first()->serial_key;
             $keys = ThirdPartyApp::where('app_name', 'faveo_app_key')->select('app_key', 'app_secret')->first();
             if (! $keys->app_key) {//Valdidate if the app key to be sent is valid or not
@@ -128,14 +132,14 @@ class TenantController extends Controller
             $token = str_random(32);
             \DB::table('third_party_tokens')->insert(['user_id' => \Auth::user()->id, 'token' => $token]);
             $client = new Client([]);
-            $data = ['domain' => $request->input('domain').$faveoCloud, 'app_key' => $keys->app_key, 'token' => $token, 'lic_code' => $licCode, 'username' => $user, 'userId' => \Auth::user()->id, 'timestamp' => time()];
+            $data = ['domain' => $request->input('domain'), 'app_key'=>$keys->app_key, 'token'=>$token, 'lic_code'=>$licCode, 'username'=>$user, 'userId'=>\Auth::user()->id, 'timestamp'=>time()];
 
             $encodedData = http_build_query($data);
             $hashedSignature = hash_hmac('sha256', $encodedData, $keys->app_secret);
             $response = $client->request(
-                    'POST',
-                    $this->cloud->cloud_central_domain.'/tenants', ['form_params' => $data, 'headers' => ['signature' => $hashedSignature]]
-                );
+                'POST',
+                $this->cloud->cloud_central_domain.'/tenants', ['form_params'=>$data, 'headers'=>['signature'=>$hashedSignature]]
+            );
 
             $response = explode('{', (string) $response->getBody());
 
@@ -257,5 +261,29 @@ class TenantController extends Controller
         } catch (Exception $e) {
             return redirect()->back()->with('fails', $e->getMessage());
         }
+    }
+    public function changeDomain(Request $request)
+    {
+        $this->validate($request, [
+            'currentDomain'=> 'required',
+            'newDomain'=>'required',
+        ]);
+        $keys = ThirdPartyApp::where('app_name', 'faveo_app_key')->select('app_key', 'app_secret')->first();
+        $token = str_random(32);
+        $newDomain = $request->get('newDomain');
+        $data = ['currentDomain' => $request->get('currentDomain'), 'newDomain'=>$newDomain, 'app_key'=>$keys->app_key, 'token'=>$token, 'timestamp'=>time()];
+        $dns_record = dns_get_record($newDomain, DNS_CNAME);
+        if (empty($dns_record) || $dns_record[0]['domain'] != $this->cloud->cloud_central_domain) {
+            throw new Exception('Your Domains DNS CNAME record is not pointing to our cloud!(CNAME record is missing) Please do it to proceed');
+        }
+        $encodedData = http_build_query($data);
+        $hashedSignature = hash_hmac('sha256', $encodedData, $keys->app_secret);
+        $client = new Client([]);
+        $response = $client->request(
+            'POST',
+            $this->cloud->cloud_central_domain.'/changeDomain', ['form_params'=>$data, 'headers'=>['signature'=>$hashedSignature]]
+        );
+
+        return response(['message'=> $response]);
     }
 }

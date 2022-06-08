@@ -498,12 +498,16 @@ use Illuminate\Support\Facades\Route;
             Cloud APIs
              */
 
+
             Route::resource('third-party-keys', ThirdPartyAppController::class);
             Route::get('get-third-party-app', [ThirdPartyAppController::class, 'getThirdPartyDetails'])->name('get-third-party-app');
             Route::get('get-app-key', [ThirdPartyAppController::class, 'getAppKey'])->name('get-app-key');
             Route::delete('third-party-delete', [ThirdPartyAppController::class, 'destroy'])->name('third-party-delete');
             Route::post('create/tenant', [Tenancy\TenantController::class, 'createTenant']);
+            Route::post('change/domain',[Tenancy\TenantController::class,'changeDomain']);
             Route::get('view/tenant', [Tenancy\TenantController::class, 'viewTenant'])->middleware('admin');
+            Route::get('get-tenants', [Tenancy\TenantController::class,'getTenants'])->name('get-tenants')->middleware('admin');
+            Route::delete('delete-tenant', [Tenancy\TenantController::class,'destroyTenant'])->name('delete-tenant')->middleware('admin');
 
             Route::delete('delete-tenant', [Tenancy\TenantController::class, 'destroyTenant'])->name('delete-tenant')->middleware('admin');
 

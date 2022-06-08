@@ -52,7 +52,11 @@
     $(document).on("click", ".open-createTenantDialog", function () {
         var orderId = $(this).data('id');
         $(".modal-body #orderId").val( orderId );
+<<<<<<< HEAD
         $('#edittenant').modal('show');
+=======
+        $('#tenant').modal('show');
+>>>>>>> 3edc9a741 (few changes for live cloud)
     });
 
 

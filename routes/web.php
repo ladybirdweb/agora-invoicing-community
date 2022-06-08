@@ -505,6 +505,7 @@ use Illuminate\Http\Request;
             Route::get('get-app-key', 'ThirdPartyAppController@getAppKey')->name('get-app-key');
             Route::delete('third-party-delete', 'ThirdPartyAppController@destroy')->name('third-party-delete');
             Route::post('create/tenant', 'Tenancy\TenantController@createTenant');
+            Route::post('change/domain','Tenancy\TenantController@changeDomain');
             Route::get('view/tenant', 'Tenancy\TenantController@viewTenant')->middleware('admin');
             Route::get('get-tenants', 'Tenancy\TenantController@getTenants')->name('get-tenants')->middleware('admin');
             Route::delete('delete-tenant', 'Tenancy\TenantController@destroyTenant')->name('delete-tenant')->middleware('admin');

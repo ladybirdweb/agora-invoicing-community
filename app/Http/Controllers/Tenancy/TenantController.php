@@ -100,8 +100,8 @@ class TenantController extends Controller
             ]);
         try {
             $faveoCloud = $request->domain;
-            $dns_record = dns_get_record($faveoCloud,DNS_CNAME);
-            if(empty($dns_record) || $dns_record[0]['domain']!= $this->cloud->cloud_central_domain){
+            $dns_record = dns_get_record($faveoCloud, DNS_CNAME);
+            if (empty($dns_record) || $dns_record[0]['domain'] != $this->cloud->cloud_central_domain) {
                 throw new Exception('Your Domains DNS CNAME record is not pointing to our cloud!(CNAME record is missing) Please do it to proceed');
             }
             $licCode = Order::where('number', $request->input('orderNo'))->first()->serial_key;
@@ -231,6 +231,7 @@ class TenantController extends Controller
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
+
     public function changeDomain(Request $request)
     {
         $this->validate($request, [

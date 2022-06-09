@@ -498,7 +498,6 @@ use Illuminate\Support\Facades\Route;
             Cloud APIs
              */
 
-
             Route::resource('third-party-keys', ThirdPartyAppController::class);
             Route::get('get-third-party-app', [ThirdPartyAppController::class, 'getThirdPartyDetails'])->name('get-third-party-app');
             Route::get('get-app-key', [ThirdPartyAppController::class, 'getAppKey'])->name('get-app-key');

@@ -366,7 +366,6 @@ class ClientController extends BaseClientController
                                 $listUrl = $this->getPopup($model, $model->product_id);
                                 $deleteCloud = $this->getCloudDeletePopup($model, $model->product_id);
 
-
                                 return '<a href='.url('my-order/'.$model->id)." 
                                 class='btn  btn-primary btn-xs' style='margin-right:5px;'>
                                 <i class='fa fa-eye' title='Details of order'></i>&nbsp;View $listUrl $url $deleteCloud</a>";

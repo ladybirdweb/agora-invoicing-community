@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Tenancy;
 use App\Http\Controllers\Controller;
 use App\Model\Common\FaveoCloud;
 use App\Model\Common\Setting;
+use App\Model\Common\StatusSetting;
 use App\Model\Order\Order;
 use App\ThirdPartyApp;
 use Exception;
@@ -254,5 +255,68 @@ class TenantController extends Controller
         );
 
         return response(['message'=> $response]);
+    }
+    public function DeleteCloudInstanceForClient($orderNumber,$isDelete){
+        if($isDelete){
+            $keys = ThirdPartyApp::where('app_name', 'faveo_app_key')->select('app_key', 'app_secret')->first();
+            $token = str_random(32);
+            $order_id=Order::where('number',$orderNumber)->where('client',\Auth::user()->id)->value('id');
+            $installation_path = \DB::table('installation_details')->where('order_id',$order_id)->value('installation_path');
+            $response = $this->client->request(
+                'GET',
+                $this->cloud->cloud_central_domain.'/tenants'
+            );
+            $responseBody = (string) $response->getBody();
+            $response = json_decode($responseBody);
+            $domainArray = $response->message;
+            for($i=0;$i<count($domainArray);$i++){
+                if($domainArray[$i]->domain == $installation_path){
+                    $data = ['id' => $domainArray[$i]->id, 'app_key'=>$keys->app_key, 'deleteTenant'=> true, 'token'=>$token, 'timestamp'=>time()];
+                    $encodedData = http_build_query($data);
+                    $hashedSignature = hash_hmac('sha256', $encodedData, $keys->app_secret);
+                    $client = new Client([]);
+                    $response = $client->request(
+                        'DELETE',
+                        $this->cloud->cloud_central_domain.'/tenants', ['form_params'=>$data, 'headers'=>['signature'=>$hashedSignature]]
+                    );
+                    $responseBody = (string) $response->getBody();
+                    $response = json_decode($responseBody);
+                    if ($response->status == 'success') {
+                        $this->deleteCronForTenant( $domainArray[$i]->id);
+                        $this->reissueCloudLicense($order_id);
+                        Order::where('number',$orderNumber)->where('client',\Auth::user()->id)->delete();
+                        return redirect()->back()->with('success', $response->message);
+                    }
+                    else {
+                        return redirect()->back()->with('fails', $response->message);
+                    }
+                }
+
+            }
+            return redirect()->back()->with('fails', "Something went wrong, we couldn't delete your cloud instance.(mostly your cloud instance was already deleted)");
+
+        }
+    }
+    protected function reissueCloudLicense($order_id)
+    {
+        $order = Order::findorFail($order_id);
+        if (\Auth::user()->role != 'admin' && $order->client != \Auth::user()->id) {
+            return errorResponse('Cannot remove license installations. Invalid modification of data');
+        }
+        $order->domain = '';
+        $licenseCode = $order->serial_key;
+        $order->save();
+        $licenseStatus = StatusSetting::pluck('license_status')->first();
+        if ($licenseStatus == 1) {
+            $licenseExpiry = $order->subscription->ends_at;
+            $updatesExpiry = $order->subscription->update_ends_at;
+            $supportExpiry = $order->subscription->support_ends_at;
+            $cont = new \App\Http\Controllers\License\LicenseController();
+            $updateLicensedDomain = $cont->updateLicensedDomain($licenseCode, $order->domain, $order->product, $licenseExpiry, $updatesExpiry, $supportExpiry, $order->number);
+            //Now make Installation status as inactive
+            $updateInstallStatus = $cont->updateInstalledDomain($licenseCode, $order->product);
+        }
+
+        return ['message' => 'success', 'update'=>'License installations removed'];
     }
 }

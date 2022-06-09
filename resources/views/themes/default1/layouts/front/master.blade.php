@@ -132,7 +132,7 @@ $set = $set->findOrFail(1);
 
                                                   
                                                       <li class="dropdown">
-                                                        <a  class="nav-link open-createTenantDialog" style="cursor: pointer;">
+                                                        <a  class="nav-link open-createTenantDialog" style="cursor: pointer;" data-toggle="modal" data-target="#tenant">
                                                              Faveo Cloud-Free Trial
                                                         </a>
                                                     </li>

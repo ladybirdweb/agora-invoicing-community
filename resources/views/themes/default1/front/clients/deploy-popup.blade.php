@@ -1,5 +1,5 @@
-<a data-id="{{$orderNumber}}" href="#tenant" class="btn  btn-primary btn-xs open-createTenantDialog" data-toggle="modal"><i class="fa fa-edit"></i>&nbsp;Change Cloud Domain</a>
-<div class="modal fade" id="tenant" data-backdrop="static" data-keyboard="false">
+<a data-id="{{$orderNumber}}" href="#edittenant" class="btn  btn-primary btn-xs" data-toggle="modal"><i class="fa fa-edit"></i>&nbsp;Change Cloud Domain</a>
+<div class="modal fade" id="edittenant" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog">
         <div class="modal-content">
             {!! Form::open() !!}
@@ -12,6 +12,11 @@
                 </div>
                 <div id="error">
                 </div>
+                @if(session()->has('message'))
+                    <div class="alert alert-success">
+                        {{ session()->get('message') }}
+                    </div>
+                @endif
                 <!-- Form  -->
 
                 <div class="container">
@@ -52,7 +57,7 @@
     $(document).on("click", ".open-createTenantDialog", function () {
         var orderId = $(this).data('id');
         $(".modal-body #orderId").val( orderId );
-        $('#tenant').modal('show');
+        $('#edittenant').modal('show');
     });
 
 

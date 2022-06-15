@@ -23,9 +23,7 @@ class ProfileRequest extends Request
      */
     public function rules()
     {
-
         $value = $this->input('value');
-        
 
         if ($this->segment(1) == 'profile') {
             $userid = \Auth::user()->id;
@@ -64,7 +62,7 @@ class ProfileRequest extends Request
             ];
         }
 
-        if ($this->segment(1) == 'auth' && !$value) {
+        if ($this->segment(1) == 'auth') {
             return [
                 'first_name'            => 'required|min:2|max:30',
                 'last_name'             => 'required|max:30',
@@ -73,25 +71,15 @@ class ProfileRequest extends Request
                 'terms'                 => 'accepted',
                 'country'               => 'required|exists:countries,country_code_char2',
             ];
-           
         }
-         if ($this->segment(1) == 'auth' && $value) {
-            return [
-                'first_name'            => 'required|min:2|max:30',
-                'last_name'             => 'required|max:30',
-                'email'                 => 'required|email|unique:users',
-                'mobile'                => 'required',
-                'logterms'                 => 'accepted',
-                'country'               => 'required|exists:countries,country_code_char2',
-            ];
-           
-        }
+   
     }
 
     public function messages()
     {
-        return[
+       return[
             'mobile_code.required'           => 'Enter Country code (mobile)',
+            'state.required_if'           => 'The state field is required when country is India.',
         ];
     }
 }

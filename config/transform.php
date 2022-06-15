@@ -97,4 +97,12 @@ return[
         'manager_mobile'     => '{{manager_mobile}}',
         'manager_skype'      => '{{manager_skype}}',
     ],
+    /*
+    *This for password mail content
+    */
+       'password_mail' => [
+        'name'       => '{{name}}',
+        'username'   => '{{username}}',
+        'password'   => '{{password}}',
+    ],
 ];

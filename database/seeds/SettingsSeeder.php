@@ -37,6 +37,7 @@ class SettingsSeeder extends Seeder
             'download'                  => 9,
             'invoice_template'          => 8,
             'file_storage'              => 'storage/upload',
+             'password_mail'            => 11,
 
         ]);
     }

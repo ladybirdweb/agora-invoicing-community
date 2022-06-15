@@ -244,6 +244,8 @@ class TemplateTypeTableSeeder extends Seeder
         TemplateType::create(['id' => 8, 'name' => 'download_mail']);
         TemplateType::create(['id' => 9, 'name' => 'sales_manager_email']);
         TemplateType::create(['id' => 10, 'name' => 'account_manager_email']);
+        TemplateType::create(['id' => 11, 'name' => 'password_mail']);
+
     }
 }
 
@@ -736,6 +738,68 @@ class TemplateTableSeeder extends Seeder
 <p>Regards,</p>
 <p>{{manager_first_name}}{{manager_last_name}}</p>
 <p>Account Manager,<br /> Faveo Helpdesk<br /> Mobile :{{manager_code}} {{manager_mobile}}<br /> Skype ID : {{manager_skype}}<br /> Email : {{manager_email}}</p>']);
+
+            Template::create(['id' => 11, 'name' => '[Faveo Helpdesk] Your New Password', 'type' => 11, 'url'=>'null', 'data' => '<table style="background: #f2f2f2 none repeat scroll 0% 0%; width: 700px; height: 524px;" border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr style="height: 134px;">
+<td style="width: 28px; height: 134px;">&nbsp;</td>
+<td style="width: 640px; padding-top: 30px; height: 134px;">
+<h2 style="color: #333; font-family: Arial, sans-serif; font-size: 18px; font-weight: bold; padding: 0; margin: 0;"><img src="https://billing.faveohelpdesk.com/common/images/faveo1.png" alt="Faveo Helpdesk" /></h2>
+</td>
+<td style="width: 28px; height: 134px;">&nbsp;</td>
+</tr>
+<tr style="height: 350px;">
+<td style="width: 28px; height: 350px;">&nbsp;</td>
+<td style="width: 640px; padding-top: 30px; height: 350px;">
+<table style="width: 635px; border-bottom: 1px solid #cccccc; height: 300px;" border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr style="height: 271px;">
+<td style="background: #ffffff none repeat scroll 0% 0%; border-left: 1px solid #cccccc; border-top: 1px solid #cccccc; width: 38px; padding-top: 10px; padding-bottom: 10px; height: 271px;">&nbsp;</td>
+<td style="background: #ffffff none repeat scroll 0% 0%; border-top: 1px solid #cccccc; padding: 40px 0px 10px; width: 554.75px; height: 271px;" align="left">
+<p>Dear {{name}}, <br /><br />your new password is generated sucessfully<br /><br /><strong>Login Details:</strong><br /><strong>Username:</strong> {{username}}<br /><strong>Password:</strong> {{password}}<br /><br />Thank You.<br />Regards,<br />Faveo Helpdesk</p>
+</td>
+<td style="background: #ffffff none repeat scroll 0% 0%; border-right: 1px solid #cccccc; border-top: 1px solid #cccccc; width: 38.25px; padding-top: 10px; padding-bottom: 10px; height: 271px;">&nbsp;</td>
+</tr>
+<tr style="height: 19px;">
+<td style="background: #ffffff none repeat scroll 0% 0%; border-left: 1px solid #cccccc; width: 38px; padding-top: 10px; padding-bottom: 10px; height: 19px;">&nbsp;</td>
+<td style="background: #ffffff none repeat scroll 0% 0%; padding: 0px; width: 554.75px; height: 19px;" align="left">&nbsp;</td>
+<td style="background: #ffffff none repeat scroll 0% 0%; border-right: 1px solid #cccccc; width: 38.25px; padding-top: 10px; padding-bottom: 10px; height: 19px;">&nbsp;</td>
+</tr>
+<tr style="height: 10px;">
+<td style="background: #ffffff none repeat scroll 0% 0%; border-left: 1px solid #cccccc; width: 38px; padding-top: 10px; padding-bottom: 10px; height: 10px;">&nbsp;</td>
+<td style="background: #ffffff none repeat scroll 0% 0%; padding: 20px 0px 50px; width: 554.75px; height: 10px;" align="left">&nbsp;</td>
+<td style="background: #ffffff none repeat scroll 0% 0%; border-right: 1px solid #cccccc; width: 38.25px; padding-top: 10px; padding-bottom: 10px; height: 10px;">&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td style="width: 28px; height: 350px;">&nbsp;</td>
+</tr>
+<tr style="height: 40px;">
+<td style="width: 28px; padding-top: 10px; padding-bottom: 10px; height: 40px;">&nbsp;</td>
+<td style="padding: 20px 0px 10px; width: 640px; height: 40px;" align="left">
+<table border="0" width="100%" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td style="color: #333; font-family: Arial, sans-serif; font-size: 12px; font-weight: bold; padding-bottom: 0; padding-left: 25px;">&nbsp;</td>
+<td style="color: #333; font-family: Arial, sans-serif; font-size: 12px; font-weight: bold; padding-bottom: 0; padding-left: 25px;">&nbsp;</td>
+<td style="color: #333; font-family: Arial, sans-serif; font-size: 12px; font-weight: bold; padding-bottom: 0; padding-left: 25px;">&nbsp;</td>
+</tr>
+<tr>
+<td style="color: #333; font-family: Arial, sans-serif; font-size: 11px; padding-left: 25px;" valign="top">&nbsp;</td>
+<td style="color: #333; font-family: Arial, sans-serif; font-size: 11px; padding-left: 25px;" valign="top">&nbsp;</td>
+<td style="color: #333; font-family: Arial, sans-serif; font-size: 11px; padding-left: 25px;" valign="top">&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td style="width: 28px; padding-top: 10px; padding-bottom: 10px; height: 40px;">&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<p>&nbsp;</p>'
+]);
+
     }
 }
 

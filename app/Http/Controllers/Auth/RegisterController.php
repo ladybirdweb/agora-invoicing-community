@@ -9,11 +9,10 @@ use App\Model\Common\StatusSetting;
 use App\User;
 use Facades\Spatie\Referer\Referer;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use App\Http\Controllers\Common\PhpMailController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use Illuminate\Http\Controllers\Common\PhpMailController;
-
 
 class RegisterController extends Controller
 {
@@ -44,27 +43,26 @@ class RegisterController extends Controller
     public function __construct()
     {
         $this->middleware('guest');
-
     }
 
     public function postRegister(ProfileRequest $request, User $user)
-
     {
-       
         $apiKeys = StatusSetting::value('recaptcha_status');
         $captchaRule = $apiKeys ? 'required|' : 'sometimes|';
         $this->validate($request, [
-            'g-recaptcha-response-1' => $captchaRule . 'captcha',
+            'g-recaptcha-response-1' => $captchaRule.'captcha',
         ], [
             'g-recaptcha-response-1.required' => 'Robot Verification Failed. Please Try Again.',
         ]);
         try {
-
             $location = getLocation();
-            $state_code = $location['iso_code'] . '-' . $location['state'];
+         
+            $state_code = $location['iso_code'].'-'.$location['state'];
+        
             $state = getStateByCode($state_code);
             $user->state = $state['id'];
             $password = Str::random(20);
+            // $password = "Demo@123";
             $user->password = \Hash::make($password);
             $user->town = $location['city'];
             $user->profile_pic = '';
@@ -85,28 +83,44 @@ class RegisterController extends Controller
             $user->timezone_id = getTimezoneByName($location['timezone']);
             $user->referrer = Referer::get(); // 'google.com'
             $user->save();
+            
+             //check in the settings
+            $settings = new \App\Model\Common\Setting();
+            $settings = $settings->where('id', 1)->first();
 
+            //template
+            $template = new \App\Model\Common\Template();
+            $temp_id = $settings->where('id', 1)->first()->password_mail;
+            $template = $template->where('id',$temp_id)->first();
+            $from = $settings->email;
+            $to = $user->email;
+            $subject = $template->name;
+            $data = $template->data;
+            $replace = ['name' => $user->first_name.' '.$user->last_name,
+                'username'         => $user->email, 'password' => $password, ];
+            $type = '';
 
-            $userData = 'Password:' . ' ' . $password;
-            $setting = Setting::find(1);
-
-            $mail = new PhpMailController();
-
-            $mail->sendEmail($setting->email, $user->email, $userData, 'New Password created');
-
-
+            if ($template) {
+                $type_id = $template->type;
+                $temp_type = new \App\Model\Common\TemplateType();
+                $type = $temp_type->where('id', $type_id)->first()->name;
+            }
+            $mail = new \App\Http\Controllers\Common\PhpMailController();
+            $mail->sendEmail($from, $to, $data, $subject, $replace, $type);
+            
             $emailMobileStatusResponse = $this->getEmailMobileStatusResponse($user);
 
-            activity()->log('User <strong>' . $user->first_name . ' ' . $user->last_name . '</strong> was created');
+            activity()->log('User <strong>'.$user->first_name.' '.$user->last_name.'</strong> was created');
 
             return response()->json($emailMobileStatusResponse);
         } catch (\Exception $ex) {
+          
             app('log')->error($ex->getMessage());
             $result = [$ex->getMessage()];
+
             return response()->json($result);
         }
     }
-
 
     protected function getEmailMobileStatusResponse($user)
     {

@@ -69,22 +69,33 @@ class AuthController extends BaseAuthController
 
                     return redirect($url);
                 }
-
-                    return redirect($url)->with('success', 'Email verification successful.
-                    Please login to access your account !!');
+             
+                    return redirect($url)->with(
+                                      ['success' => 'Email verification successful.Please login to access your account !!',
+                                       'popup' => 1
+                                       ]);
                 } else {
-                    return redirect($url)->with('warning', 'This email is already verified');
+                    return redirect($url)->with(
+                        ['warning' => 'This email is already verified',
+                         'popup' => 1
+                        ]);
                 }
             } else {
                 throw new NotFoundHttpException('User with this email not found.');
             }
         } catch (\Exception $ex) {
             if ($ex->getCode() == 400) {
-                return redirect($url)->with('success', 'Email verification successful,
-                 Please login to access your account');
+                return redirect($url)->with(
+                ['success' => 'Email verification successful,
+                 Please login to access your account',
+                 'popup' => 1
+                 ]);
             }
 
-            return redirect($url)->with('fails', $ex->getMessage());
+            return redirect($url)->with([
+                'fails' => $ex->getMessage(),
+                'popup' => 1
+                ]);
         }
     }
 
@@ -156,8 +167,9 @@ class AuthController extends BaseAuthController
             $mobile = ltrim($request->input('mobile'), '0');
             $otp = $request->input('otp');
             $number = '(+'.$code.') '.$mobile;
+          
             $result = $this->sendForReOtp($mobile, $code, $request->input('type'));
-            // dd($result);
+           
             switch ($request->input('type')) {
                 case 'text':
                    $array = json_decode($result, true);

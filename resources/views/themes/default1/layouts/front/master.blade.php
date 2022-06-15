@@ -62,10 +62,7 @@ if($script->on_every_page == 1) {
 
         <script src="{{asset("common/js/jquery-2.1.4.js")}}" type="text/javascript"></script>
         <script src="{{asset("common/js/jquery2.1.1.min.js")}}" type="text/javascript"></script>
-        <!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script> -->
-        <!-- <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script> -->
-        <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script> -->
-         <!-- <link rel="stylesheet" href="{{asset('client/css/selectpicker.css')}}" />  -->
+   
 
 </head>
    <style>
@@ -331,12 +328,12 @@ if($script->on_every_page == 1) {
                                                         @if(!Auth::user())
                                                 
                                                      <li class="dropdown">
-                                                        <a  class="nav-link" data-toggle="modal" data-target="#login-modal">
+                                                        <a  class="nav-link" data-toggle="modal" data-target="#login-modal" style="cursor: pointer;">
                                                             Free Signup
                                                         </a>
                                                     </li>
-
-
+                                      
+                                               
 
  
 
@@ -429,6 +426,7 @@ if($script->on_every_page == 1) {
                 </section>
 
                 <div class="container">
+                      @if(Auth::user())
                     @if(Session::has('warning'))
 
                     <div class="alert alert-warning alert-dismissable">
@@ -436,9 +434,10 @@ if($script->on_every_page == 1) {
                         {{Session::get('warning')}}
                     </div>
                     @endif
-
-                @if(Session::has('success'))                    
-               
+                    @endif
+                    
+                    @if(Auth::user())
+                     @if(Session::has('success'))
                 <div class="alert alert-success">
                      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                        <strong><i class="far fa-thumbs-up"></i> Well done!</strong>
@@ -447,15 +446,17 @@ if($script->on_every_page == 1) {
                 </div>
                 
                 @endif
+                @endif
                 
                  <!--fail message -->
-                   @if(Session::has('fails') )
-                
+                 @if(Auth::user())
+                @if(Session::has('fails'))
                  <div class="alert alert-danger alert-dismissable" role="alert">
                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     {{Session::get('fails')}}
                 </div>
             
+                @endif
                 @endif
                  @if(Auth::user())
 
@@ -719,7 +720,7 @@ if($script->on_every_page == 1) {
                     <div class="container py-2">
                         <div class="row py-4">
                             <div class="col-md-12 align-items-center justify-content-center justify-content-lg-start mb-2 mb-lg-0">
-                              <p>Copyright ©<?php echo date('Y') ?> . <a href="{{$set->website}}" target="_blank">{{$set->company}}</a>. All Rights Reserved.Powered by
+                              <p>Copyright 漏 <?php echo date('Y') ?> 路 <a href="{{$set->website}}" target="_blank">{{$set->company}}</a>. All Rights Reserved.Powered by
                                     <a href="https://www.ladybirdweb.com/" target="_blank"><img src="{{asset('common/images/Ladybird1.png')}}" alt="Ladybird"></a></p>
                             </div>
 
@@ -738,7 +739,7 @@ if($script->on_every_page == 1) {
           <script src="{{asset('client/js/jquery-cookie.min.js')}}"></script>
           <!-- <script src="{{asset('client/js/popper.js')}}"></script> -->
           <!-- <script src="{{asset('client/js/popper.min.js')}}"></script> -->
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <!--<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>-->
 
           <!-- Popper JS -->
           <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
@@ -784,7 +785,7 @@ if($script->on_every_page == 1) {
               }
           });
           </script>
-           <script type="text/javascript">
+          <script type="text/javascript">
             var logtelInput = $('#phonenum'),
             logerrorMsg = document.querySelector("#error-msg2"),
             logvalidMsg = document.querySelector("#valid-msg2"),
@@ -866,6 +867,69 @@ if($script->on_every_page == 1) {
         });
 
     </script>
+    
+     <script>
+        var tel = $('.phone'),
+            country = $('#country').val();
+        addressDropdown = $("#country");
+        errorMsg1 = document.querySelector("#error-msg1"),
+            validMsg1 = document.querySelector("#valid-msg1");
+        var errorMap = [ "Invalid number", "Invalid country code", "Number Too short", "Number Too long", "Invalid number"];
+        tel.intlTelInput({
+            // allowDropdown: false,
+            // autoHideDialCode: false,
+            // autoPlaceholder: "off",
+            // dropdownContainer: "body",
+            // excludeCountries: ["us"],
+            // formatOnDisplay: false,
+            geoIpLookup: function(callback) {
+                $.get("https://ipinfo.io", function() {}, "jsonp").always(function(resp) {
+                    resp.country = country;
+                    var countryCode = (resp && resp.country) ? resp.country : "";
+                    callback(countryCode);
+                });
+            },
+            // hiddenInput: "full_number",
+            initialCountry: "auto",
+            // nationalMode: false,
+            // onlyCountries: ['us', 'gb', 'ch', 'ca', 'do'],
+            placeholderNumberType: "MOBILE",
+            // preferredCountries: ['cn', 'jp'],
+            separateDialCode: true,
+
+            utilsScript: "{{asset('js/intl/js/utils.js')}}"
+        });
+        var reset = function() {
+            errorMsg1.innerHTML = "";
+            errorMsg1.classList.add("hide");
+            validMsg1.classList.add("hide");
+        };
+
+        addressDropdown.change(function() {
+            tel.intlTelInput("setCountry", $(this).val());
+        });
+
+        tel.on('blur', function () {
+            reset();
+            if ($.trim(tel.val())) {
+                if (tel.intlTelInput("isValidNumber")) {
+                    $('.phone').css("border-color","");
+                    validMsg1.classList.remove("hide");
+                    $('#sendOtp').attr('disabled',false);
+                } else {
+                    var errorCode = tel.intlTelInput("getValidationError");
+                    errorMsg1.innerHTML = errorMap[errorCode];
+                    $('#conmobile').html("");
+
+                    $('.phone').css("border-color","red");
+                    $('#error-msg1').css({"color":"red","margin-top":"5px"});
+                    errorMsg1.classList.remove("hide");
+                    $('#sendOtp').attr('disabled',true);
+                }
+            }
+        });
+    </script>
+   
          
 
         <script>
@@ -1021,26 +1085,47 @@ if($script->on_every_page == 1) {
 
 </script>
  
+ <!--@if (!count($errors) > 0)-->
+ <!-- <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>-->
+ <!--@endif-->
 
-    @if (count($errors->loginpopup) > 0)
+    @if (count($errors) > 0)
     
 
     <script type="text/javascript">
 
-        $( document ).ready(function() {
-             $('#login-modal').modal('show');
+        jQuery( document ).ready(function() {
+            jQuery('#login-modal').modal('show');
         });
+        
+        
+        
     </script>
   @endif
 
-@if (!$errors->loginpopup->count() > 0)
-  <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+
+@if(!empty(Session::get('popup')) && Session::get('popup') == 1)
+  <script type="text/javascript">
+
+        jQuery( document ).ready(function() {
+            jQuery('#register-modal').modal('show');
+        });
+        </script>
+        
+@endif
+ @if(Route::current()->getName() == 'login')
+ <script type="text/javascript">
+
+        jQuery( document ).ready(function() {
+            jQuery('#login-modal').modal('show');
+        });
+        </script>
+ @endif
+
+ 
 
 
-  @endif
-
-
-
+  
 
 </body>
 </html>

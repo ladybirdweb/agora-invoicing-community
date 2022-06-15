@@ -49,7 +49,7 @@ $country = findCountryByGeoip($location['iso_code']);
 
 </style>
 
-          <script src="{{asset('common/js/intlTelInput.js')}}"></script>
+ <script src="{{asset('common/js/intlTelInput.js')}}"></script>
 
 
 <section>
@@ -92,6 +92,7 @@ $country = findCountryByGeoip($location['iso_code']);
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
+                
 
                     <div class="card-body">
                         <div class="box-content">
@@ -113,7 +114,7 @@ $country = findCountryByGeoip($location['iso_code']);
 
                                     </div>
 
-                                      <span style="color:#ff0000">  <div>{{ $errors->loginpopup->first('email1') }}</div></span>
+                                      <span style="color:#ff0000">  <div>{{ $errors->first('email1') }}</div></span>
                                     <!-- <h6 id="usercheck"></h6> -->
 
 
@@ -130,7 +131,7 @@ $country = findCountryByGeoip($location['iso_code']);
                                         </div>
 
                                     </div>
-                                     <span style="color:#ff0000">  <div>{{ $errors->loginpopup->first('password1') }}</div></span>
+                                     <span style="color:#ff0000">  <div>{{ $errors->first('password1') }}</div></span>
                                     <!-- <h6 id="passcheck"></h6> -->
                                     <!--<input type="password" value="" class="form-control input-lg">-->
 
@@ -157,7 +158,7 @@ $country = findCountryByGeoip($location['iso_code']);
                                 <button type="button" class="btn btn-default closebutton" id="closebutton" data-dismiss="modal"><i class="fa fa-times">&nbsp;&nbsp;</i>Close</button>
 
                                 <input type="submit" name="popup" value="Login" id="submitbtn" class="btn btn-primary" data-loading-text="Loading...">
-                                <!-- <button type="button" class="btn btn-primary mb-xl next-step float-right" name="sendOtp" id="login" onclick="loginUser()">
+                                <!-- <button type="button" class="btn btn-primary mb-xl next-step float-right" name="logsendOtp" id="login" onclick="loginUser()">
                                             Send Email
                                 </button> -->
 
@@ -176,7 +177,7 @@ $country = findCountryByGeoip($location['iso_code']);
 
         <div class="modal fade" id="register-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
              aria-hidden="true">
-            <div class="modal-dialog" role="document">
+            <div class="modal-dialog" role="document" style=" overflow-y: initial !important;">
                 <div class="modal-content">
                     <div class="modal-header text-center">
                         <h4 class="modal-title w-100 font-weight-bold">Register</h4>
@@ -184,12 +185,36 @@ $country = findCountryByGeoip($location['iso_code']);
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
+                           
 
-                    <div class="card-body">
+                    <div class="card-body" style="  height: 80vh;
+    overflow-y: auto;">
                          <div class="row tab-content">
                         <div class="col-md-12 tab-pane active" id="step1">
                             <div class="featured-boxes">
-                                <div id="logerror">
+                                  @if(Session::has('success'))
+                <div class="col-md-12 tab-panel alert alert-success">
+                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                       <strong><i class="far fa-thumbs-up"></i> Well done!</strong>
+                   
+                    {!!Session::get('success')!!}
+                </div>
+                @endif
+                 @if(Session::has('warning'))
+                    <div class="alert alert-warning alert-dismissable">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                        {{Session::get('warning')}}
+                    </div>
+                    @endif
+                    
+                    @if(Session::has('fails'))
+                 <div class="alert alert-danger alert-dismissable" role="alert">
+                   <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <strong><i class="fas fa-exclamation-triangle"></i>Oh snap!</strong>
+                    {{Session::get('fails')}}
+                </div>
+                @endif
+                                <div id="error">
                                 </div>
                                 <div id="success">
                                 </div>
@@ -278,8 +303,8 @@ $country = findCountryByGeoip($location['iso_code']);
                             <div class="form-group pull-right">
                                 <button type="button" class="btn btn-default closebutton" id="closebutton" data-dismiss="modal"><i class="fa fa-times">&nbsp;&nbsp;</i>Close</button>
 
-                                <button type="button"  class="btn btn-primary" value="0" name="register" id="register" onclick="registerUser(0)">Submit</button>
-                                <!-- <button type="button" class="btn btn-primary mb-xl next-step float-right" name="sendOtp" id="login" onclick="loginUser()">
+                                <button type="button"  class="btn btn-primary" value="0" name="register" id="register" onclick="registerUser()">Submit</button>
+                                <!-- <button type="button" class="btn btn-primary mb-xl next-step float-right" name="logsendOtp" id="login" onclick="loginUser()">
                                             Send Email
                                 </button> -->
 
@@ -293,7 +318,171 @@ $country = findCountryByGeoip($location['iso_code']);
                         </form>
                     </div>
                 </div>
+            
+                
+                        <div class="col-md-12 tab-pane" id="step2">
+
+                            <div class="featured-boxes">
+
+
+                                <!-- fail message -->
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div id="successMessage1"></div>
+                                     
+                                        <div id = "emailsuccess"></div>
+                                         <!--<div id="successMessage2"></div> -->
+
+                                        <div id="error1">
+                                        </div>
+                                        <div class="featured-box featured-box-primary text-left mt-5">
+                                            <div class="box-content">
+
+                                                <form class="form-horizontal" novalidate="novalidate" name="verifyForm">
+
+                                                    <h4 class="heading-primary text-uppercase mb-md">Confirm Email/Mobile</h4>
+
+                                                    <input type="hidden" name="user_id" id="user_id"/>
+                                                  
+                                                    <p>Please enter your password that wil be sent to your email</p>
+                                                       <label  for="mobile" class="required">Password</label>
+                                                                 <div class="input-group">
+                                                                     <input type="password" value="" name="email_password" id="email_password"" class="form-control form-control input-lg">
+                                                                     </div>
+                                                    <input type="hidden" id="checkEmailStatus" value="{{$status->emailverification_status}}">
+                                                    @if($status->emailverification_status == 1)
+                                                        <p>You will be sent a verification email by an automated system, Please click on the verification link in the email. Click next to continue</p>
+                                                        <div class="form-row">
+                                                            <div class="form-group col">
+                                                              
+                                                                <label  for="mobile" class="required">Email</label>
+                                                                <div class="input-group">
+                                                                    <input type="hidden" id="emailstatusConfirm" value="{{$status->emailverification_status}}">
+                                                                    <input type="email" value="" name="verify_email" id="verify_email" class="form-control form-control input-lg">
+                                                                    <div class="input-group-append">
+                                                                        <span class="input-group-text"><i class="fa fa-envelope"></i></span>
+                                                                    </div>
+
+                                                                </div>
+                                                                <span id="conemail"></span>
+                                                            </div>
+
+                                                        </div>
+                                                    @endif
+
+
+
+                                                    @if($status->msg91_status == 1)
+                                                        <p>You will be sent an OTP on your mobile immediately by an automated system, Please enter the OTP in the next step. Click next to continue</p>
+                                                        <div class="form-row">
+                                                            <div class="form-group col">
+                                                                <input id="mobile_code_hidden" name="mobile_code" type="hidden">
+                                                                <input class="form-control form-control input-lg"  id="verify_country_code" name="verify_country_code" type="hidden">
+                                                                <label for="mobile" class="required">Mobile</label><br/>
+                                                                <input type="hidden" id="mobstatusConfirm" value="{{$status->msg91_status}}">
+                                                                <input class="form-control input-lg phone"  name="verify_number" type="text" id="verify_number">
+                                                                <span id="valid-msg1" class="hide"></span>
+                                                                <span id="error-msg1" class="hide"></span>
+
+                                                                <span id="conmobile"></span>
+                                                            </div>
+
+                                                        </div>
+                                                    @endif
+
+                                                    <div class="form-row">
+                                                        <div class="form-group col">
+
+                                                            <button type="button" class="btn btn-primary mb-xl next-step float-right" name="sendOtp" id="sendOtp" onclick="sendOTP()">
+                                                                Next
+                                                            </button>
+                                                        </div>
+                                                    </div>
+
+
+
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 tab-pane" id="step3">
+
+                            <div class="featured-boxes">
+                                <!-- fail message -->
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div id="error2">
+                                        </div>
+                                        <div id="successMessage2"></div>
+
+                                        <div id="alertMessage3"></div>
+
+                                        <div class="featured-box featured-box-primary text-left mt-5">
+                                            <input type="hidden" id="checkOtpStatus" value="{{$status->msg91_status}}">
+                                            <div class="box-content" id="showOtpBox">
+                                                <h4 class="heading-primary text-uppercase mb-md">OTP Confirmation</h4>
+                                                <!-- <div class="row verify">
+                                                    <div class="col-md-12">
+                                                        <label>
+                                                            <span>Verification email sent on your email and OTP on mobile</span>
+                                                        </label>
+                                                    </div>
+                                                </div> -->
+                                                <form name="verify_otp_form">
+                                                    <label for="mobile" class="required">Enter OTP</label><br/>
+                                                    <div class="row ">
+                                                        <div class="col-md-6" >
+
+                                                            <input type="hidden" name="user_id" id="hidden_user_id"/>
+                                                            <input class="form-control input-lg "  id="oneTimePassword" name="oneTimePassword" type="text" " >
+                                                            <span id="enterotp"></span>
+                                                        </div><br>
+
+
+                                                        <div class="col-md-3">
+                                                            <button type="button" style="position: absolute;width: max-content;right: 10%;" class="btn btn-primary float-right mb-5" name="verifyOtp"  id="verifyOtp" value="Verify OTP" onclick="verifyBySendOtp()" >
+                                                                Verify OTP
+                                                            </button>
+                                                        </div>
+
+
+                                                        <div class="col-md-3">
+                                                            <button type="button" class="btn btn-danger float-right mb-5" style="position: absolute;width: max-content;right: -7%;" name="resendOTP" id="resendOTP" >
+                                                                Resend OTP
+                                                            </button>
+
+
+                                                        </div>
+
+                                                    </div>
+
+                                                    <div class="row">
+
+                                                        <div class="col-sm-6">
+                                                            <p>Did not receive OTP via SMS?</p>&nbsp;&nbsp;
+                                                            <button type="button" class="btn btn-secondary" name="voiceOTP" id="voiceOTP" value="Verify OTP" style= "margin-top:-15px;"><i class="fa fa-phone"></i>
+                                                                Receive OTP via Voice call
+                                                            </button>
+                                                        </div>
+
+                                                    </div>
+
+                                                </form>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                
             </div>
+            
+            
+            
         </div>
     </div>
 </div>
@@ -301,11 +490,10 @@ $country = findCountryByGeoip($location['iso_code']);
     </div>
 </section>
 
-
-<script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo $analyticsTag; ?>"></script>
- 
-<script>
+
+
+<script type="text/javascript">
     ///////////////////////////////////////////////////////////////////////////////
     ///Google Recaptcha
     function recaptchaCallback() {
@@ -317,7 +505,348 @@ $country = findCountryByGeoip($location['iso_code']);
 </script>
 
 
+  
+<script type="text/javascript">
 
+
+        function verify_otp_check(){
+            var userOtp = $('#oneTimePassword').val();
+            if (userOtp.length < 4){
+                $('#enterotp').show();
+                $('#enterotp').html("Please Enter A Valid OTP");
+                $('#enterotp').focus();
+                $('#oneTimePassword').css("border-color","red");
+                $('#enterotp').css({"color":"red","margin-top":"5px"});
+
+
+                // mobile_error = false;
+                return false;
+            }
+            else{
+                $('#enterotp').hide();
+                $('#oneTimePassword').css("border-color","");
+                return true;
+
+            }
+        }
+
+        function verifyBySendOtp() {
+            $('#enterotp').hide();
+            if(verify_otp_check()) {
+                $("#verifyOtp").attr('disabled',true);
+                $("#verifyOtp").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Verifying...");
+                var data = {
+                    "mobile":   $('#verify_number').val().replace(/[\. ,:-]+/g, ''),
+                    "code"  :   $('#verify_country_code').val(),
+                    "otp"   :   $('#oneTimePassword').val(),
+                    'id'    :   $('#hidden_user_id').val(),
+                };
+                $.ajax({
+                    url: '{{url('otp/verify')}}',
+                    type: 'POST',
+                    data: data,
+                    success: function (response) {
+                        $("#verifyOtp").attr('disabled',false);
+                        $('#error2').hide();
+                        $('#error').hide();
+                        $('#alertMessage2').show();
+                        var result =  '<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Well Done! </strong>'+response.message+'!</div>';
+                        // $('#alertMessage3').show();
+                        $('#successMessage2').hide();
+                        $('#success').html(result);
+                        $("#verifyOtp").html("Verify OTP");
+                        $('.nav-tabs li a[href="#step1"]').tab('show');
+                        $('.wizard-inner').css('display','none');
+                        setTimeout(()=>{
+                            getLoginTab();
+                        },10)
+                    },
+                    error: function (ex) {
+                        $("#verifyOtp").attr('disabled',false);
+                        var myJSON = JSON.parse(ex.responseText);
+                        var html = '<div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<br><br><ul>';
+                        $("#verifyOtp").html("Verify OTP");
+                        for (var key in myJSON)
+                        {
+                            html += '<li>' + myJSON[key][0] + '</li>'
+                        }
+                        html += '</ul></div>';
+                        $('#successMessage2').hide();
+                        $('#alertMessage2').hide();
+                        $('#error2').show();
+                        document.getElementById('error2').innerHTML = html;
+                        setTimeout(function(){
+                            $('#error2').hide();
+                        }, 5000);
+                    }
+                });
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+
+        function getLoginTab(){
+            registerForm.elements['first_name'].value = '';
+            registerForm.elements['last_name'].value = '';
+            registerForm.elements['email'].value = '';
+            registerForm.elements['mobile'].value = '';
+            registerForm.elements['terms'].checked = false;
+
+            $('.nav-tabs li a[href="#step1"]').tab('show');
+            $('.wizard-inner').css('display','none');
+        }
+
+        $(".prev-step").click(function (e) {
+            getLoginTab();
+        });
+
+        //Enter OTP Validation
+        $('#oneTimePassword').keyup(function(){
+            verify_otp_check();
+        });
+
+        //--------------------------------------------------ReSend OTP via SMS---------------------------------------------------//
+
+        $('#resendOTP').on('click',function(){
+            var data = {
+                "mobile":   $('#verify_number').val().replace(/[\. ,:-]+/g, ''),
+                "code"  :  ($('#verify_country_code').val()),
+                "type"  :  "text",
+            };
+            $("#resendOTP").attr('disabled',true);
+            $("#resendOTP").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Resending..");
+            $.ajax({
+                url: '{{url('resend_otp')}}',
+                type: 'GET',
+                data: data,
+                success: function (response) {
+                    $("#resendOTP").attr('disabled',false);
+                    $("#resendOTP").html("Resend OTP");
+                    $('#successMessage2').hide ();
+                    $('#alertMessage3').show();
+                    $('#error2').hide();
+                    var result =  '<div class="alert alert-success"> <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Well Done! </strong>'+response.message+'!</div>';
+                    $('#alertMessage3').html(result+ ".");
+                },
+                error: function (ex) {
+                    $("#resendOTP").attr('disabled',false);
+                    $("#resendOTP").html("Resend OTP");
+                    var myJSON = JSON.parse(ex.responseText);
+                    var html = '<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>Oh Snap! </strong>Something went wrong<br><br><ul>';
+                    for (var key in myJSON)
+                    {
+                        html += '<li>' + myJSON[key][0] + '</li>'
+                    }
+                    html += '</ul></div>';
+                    ('#successMessage2').hide();
+                    $('#alertMessage2').hide();
+                    $('#alertMessage3').hide();
+                    $('#error2').show();
+                    document.getElementById('error2').innerHTML = html;
+                }
+            })
+
+        });
+
+        //---------------------------------------Resend OTP via voice call--------------------------------------------------//
+
+        $('#voiceOTP').on('click',function(){
+            var data = {
+                "mobile":   $('#verify_number').val().replace(/[\. ,:-]+/g, ''),
+                "code"  :  ($('#verify_country_code').val()),
+                "type"  :  "voice",
+            };
+            $("#voiceOTP").attr('disabled',true);
+            $("#voiceOTP").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Sending Voice Call..");
+            $.ajax({
+                url: '{{url('resend_otp')}}',
+                type: 'GET',
+                data: data,
+                success: function (response) {
+                    $("#voiceOTP").attr('disabled',false);
+                    $("#voiceOTP").html("Receive OTP via Voice call");
+                    $('#successMessage2').hide ();
+                    $('#alertMessage3').show();
+                    $('#error2').hide();
+                    var result =  '<div class="alert alert-success"> <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Well Done! </strong>'+response.message+'!</div>';
+                    $('#alertMessage3').html(result+ ".");
+                },
+                error: function (ex) {
+                    $("#voiceOTP").attr('disabled',false);
+                    $("#voiceOTP").html("Receive OTP via Voice call");
+                    var myJSON = JSON.parse(ex.responseText);
+                    var html = '<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>Oh Snap! </strong>Something went wrong<br><br><ul>';
+                    for (var key in myJSON)
+                    {
+                        html += '<li>' + myJSON[key][0] + '</li>'
+                    }
+                    html += '</ul></div>';
+                    $('#alertMessage2').hide();
+                    $('#alertMessage3').hide();
+                    $('#error2').show();
+                    document.getElementById('error2').innerHTML = html;
+                }
+            })
+
+        });
+
+
+  
+</script>
+
+
+
+    <script type="text/javascript">
+        /*
+        * Email ANd Mobile Validation when Send Button is cliced on Tab2
+         */
+        /////////////////////////////////////////////////////////////////////////////////////////////////
+        $('#verify_email').keyup(function(){//Email
+            verify_email_check();
+        });
+
+        function verify_email_check(){
+            if($("#emailstatusConfirm").val() ==1) {//if email verification is active frm admin panlel then validate else don't
+
+                var pattern = new RegExp(/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/);
+                if (pattern.test($('#verify_email').val())) {
+                    $('#conemail').hide();
+                    $('#verify_email').css("border-color","");
+                    return true;
+                } else{
+                    $('#conemail').show();
+                    $('#conemail').html("Please Enter a valid email");
+                    $('#conemail').focus();
+                    $('#verify_email').css("border-color","red");
+                    $('#conemail').css({"color":"red","margin-top":"5px"});
+                    return false;
+
+                }
+            }
+            return true;
+
+        }
+
+        $('#verify_number').keyup(function(){//Mobile
+            verify_number_check();
+        });
+
+        function verify_number_check(){
+
+            var userNumber = $('#verify_number').val();
+            if($("#mobstatusConfirm").val() ==1) { //If Mobile Status Is Active
+                if (userNumber.length < 5){
+                    $('#conmobile').show();
+                    $('#conmobile').html("Please Enter Your Mobile No.");
+                    $('#conmobile').focus();
+                    $('#verify_number').css("border-color","red");
+                    $('#conmobile').css({"color":"red","margin-top":"5px"});
+
+
+                    // mobile_error = false;
+                    return false;
+                }
+                else{
+                    $('#conmobile').hide();
+
+                    $('#verify_number').css("border-color","");
+                    return true;
+
+                }
+            }
+            return true;
+
+        }
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /*
+          * After Send Button is Clicked on Tab 2 fOR sending OTP AND Email
+         */
+        function sendOTP() {
+            $('#conemail').hide();
+            $('#conmobile').hide();
+            var mail_error = true;
+            var mobile_error = true;
+            if((verify_email_check()) && (verify_number_check()))
+            {
+
+                var oldemail=sessionStorage.getItem('oldemail');
+                var newemail = $('#verify_email').val(); // this.value
+                var oldnumber = sessionStorage.getItem('oldemail');
+                var newnumber = $('#verify_number').val();
+
+                $("#sendOtp").attr('disabled',true);
+                $("#sendOtp").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Sending...");
+                var data = {
+                    "newemail": newemail,
+                    "newnumber": newnumber,
+                    "oldnumber": oldnumber,
+                    "oldemail": oldemail,
+                    "email": $('#verify_email').val(),
+                    "mobile": $('#verify_number').val().replace(/[\. ,:-]+/g, ''),
+                    'code': $('#verify_country_code').val(),
+                    'id': $('#user_id').val(),
+                    'password': $('#email_password').val()
+                };
+                $.ajax({
+                    url: '{{url('otp/sendByAjax')}}',
+                    type: 'POST',
+                    data: data,
+                    success: function (response) {
+                        // window.history.replaceState(response.type, "TitleTest", "login");
+                        $("#sendOtp").attr('disabled',false);
+                        var result =  '<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Almost there! </strong>'+response.message+'</div>';
+                        if (($("#checkOtpStatus").val()) == 1 ) {
+                            $('#successMessage2').html(result);
+                            $('#error1').hide();
+                            $('.wizard-inner').css('display','none');
+                            var $active = $('.wizard .nav-tabs li.active');
+                            $active.next().removeClass('disabled');
+                            nextTab($active);
+
+                            setTimeout(function(){
+                                sessionStorage.removeItem('oldemail');
+                                sessionStorage.clear();
+                            }, 500);
+                            window.scrollTo(0, 10);
+                            verify_otp_form.elements['hidden_user_id'].value = $('#user_id').val();
+                            $("#sendOtp").html("Send");
+                        } else {//Show Only Email Success Message when Mobile Status is Not Active
+                            $('#emailsuccess').html(result);
+                            $('#successMessage1').hide();
+                            $("#sendOtp").html("Send");
+                            $('#error1').hide();
+                        }
+                    },
+                    error: function (ex) {
+                        $("#sendOtp").attr('disabled',false);
+                        var myJSON = JSON.parse(ex.responseText);
+                        var html = '<div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<br><br><ul>';
+                        $("#sendOtp").html("Send");
+
+                        html += '<li>' + myJSON.message + '</li>'
+
+                        html += '</ul></div>';
+                        $('#alertMessage1').hide();
+                        $('#successMessage1').hide();
+                        $('#error1').show();
+                        document.getElementById('error1').innerHTML = html;
+                        setTimeout(function(){
+                            $('#error1').hide();
+                        }, 5000);
+                    }
+                });
+            }
+            else{
+                return false;
+            }
+
+        }
+
+  
+</script>
 
 
 
@@ -326,6 +855,12 @@ $country = findCountryByGeoip($location['iso_code']);
     $('.closebutton').on('click',function(){
         location.reload();
     });
+    
+    
+    
+  
+    
+    
     //robot validation for Login Form
     function validateform() {
         var input = $(".g-recaptcha :input[name='g-recaptcha-response']");
@@ -580,8 +1115,9 @@ $country = findCountryByGeoip($location['iso_code']);
         gtag('config', tag);
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////
-    function registerUser(value) {
-         this.value= value; 
+   
+    function registerUser() {
+          
 
 
         $('#first_namecheck').hide();
@@ -623,9 +1159,9 @@ $country = findCountryByGeoip($location['iso_code']);
                     "g-recaptcha-response-1":$('#g-recaptcha-response-1').val(),
                     "terms": $('#term').val(),
                     "_token": "{!! csrf_token() !!}",
-                    "value" : value,
+                   
                 },
-                success: function (response) {
+                  success: function (response) {
                     // window.history.pushState(response.type, "TitleTest", "thankyou");
 
                     $("#register").attr('disabled',false);
@@ -660,27 +1196,31 @@ $country = findCountryByGeoip($location['iso_code']);
                         }, 3000);*/
                     }
                 },
+             
+        
                 error: function (data) {
-                    console.log(data);
+
                     $("#register").attr('disabled',false);
                     // location.reload();
                     $("#register").html("Register");
                     $('html, body').animate({scrollTop:0}, 500);
 
-
+                    // console.log(Jquery.parseJson(data));
                     var html = '<div class="alert alert-danger alert-dismissable"><strong><i class="fas fa-exclamation-triangle"></i>Oh Snap! </strong>'+data.responseJSON.message+' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><br><ul>';
                     for (var key in data.responseJSON.errors)
                     {
                         html += '<li>' + data.responseJSON.errors[key][0] + '</li>'
                     }
                     html += '</ul></div>';
-
-                    $('#logerror').show();
-                    document.getElementById('logerror').innerHTML = html;
+                    
+                    
+                    $('#error').show();
+                    document.getElementById('error').innerHTML = html;
                     setInterval(function(){
-                        $('#logerror').slideUp(3000);
+                        $('#error').slideUp(3000);
                     }, 8000);
                 }
+              
             });
         }
         else{
@@ -741,6 +1281,7 @@ $country = findCountryByGeoip($location['iso_code']);
             url: "{{url('get-code')}}",
             data: {'country_id':val,'_token':"{{csrf_token()}}"},//'country_id=' + val,
             success: function (data) {
+                console.log(data);
                 $("#mobile_code").val(data);
                 $("#phone_code_hidden").val(data);
             }
@@ -867,6 +1408,7 @@ chosen link or button. -->
             $(elem).prev().find('a[data-toggle="tab"]').click();
         }
     </script>
+ 
         
 
 

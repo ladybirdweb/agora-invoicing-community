@@ -105,4 +105,12 @@ return[
         'username' => '{{username}}',
         'password' => '{{password}}',
     ],
+    /*
+    *This for password mail content
+    */
+       'password_mail' => [
+        'name'       => '{{name}}',
+        'username'   => '{{username}}',
+        'password'   => '{{password}}',
+    ],
 ];

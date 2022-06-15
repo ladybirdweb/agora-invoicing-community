@@ -125,11 +125,11 @@
 
                         </td>
                         <td>
-                          <input type="text" class="form-control" name="add_price[]" class="{{ $errors->has('add_prices') ? 'has-error' : '' }}">
+                          <input type="text" class="form-control" name="add_price[]" class="{{ $errors->has('add_prices') ? 'has-error' : '' }}" value="{{old('add_price.0')}}">
                         </td>
 
                         <td>
-                            <input type="text" class="form-control" name="renew_price[]">
+                            <input type="text" class="form-control" value="{{old('renew_price.0')}}" name="renew_price[]">
                         </td>
 
 

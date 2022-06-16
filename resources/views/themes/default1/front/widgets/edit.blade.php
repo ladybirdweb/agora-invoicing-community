@@ -46,31 +46,40 @@ Edit Widget
                         {!! Form::select('publish',[1=>'Yes',0=>'No'],null,['class' => 'form-control']) !!}
 
                     </div>
-                   <?php 
-                $mail = ['class' => 'form-control','disabled' => 'true' , 'title' => 'Cofigure your mailchimp in settings to access'];
-                $twitter = ['class' => 'form-control','disabled' => 'true', 'title' => 'Configure your tweets in settings to access'];
-                
-                ?>
+                    @if($twitterStatus == 1)
 
-                    
-                  
                     <div class="col-md-4 form-group {{ $errors->has('allow_tweets') ? 'has-error' : '' }}">
                         <!-- last name -->
                         {!! Form::label('allow_tweets',Lang::get('message.allow_tweets'),['class'=>'required']) !!}
                         {!! Form::select('allow_tweets',[1=>'Yes',0=>'No'],null,($twitterStatus) ? ['class' => 'form-control'] : $twitter) !!}
 
                     </div>
-                  
-        
+                    @endif
+                      @if($twitterStatus == 0)
 
-                   
-                   
-                   <div class="col-md-4 form-group {{ $errors->has('allow_mailchimp') ? 'has-error' : '' }}">
+                    <div class="col-md-4 form-group {{ $errors->has('allow_tweets') ? 'has-error' : '' }}">
+                        <!-- last name -->
+                        {!! Form::label('allow_tweets',Lang::get('message.allow_tweets'),['class'=>'required']) !!}
+                        {!! Form::select('allow_tweets',[1=>'Yes',0=>'No'],null,['class' => 'form-control','disabled' => 'true','title' => 'Configure your tweets in settings to access']) !!}
+
+                    </div>
+                    @endif
+                    @if( $mailchimpStatus == 1)
+                    <div class="col-md-4 form-group {{ $errors->has('allow_mailchimp') ? 'has-error' : '' }}">
                         <!-- last name -->
                         {!! Form::label('allow_mailchimp',Lang::get('message.allow_mailchimp'),['class'=>'required']) !!}
                         {!! Form::select('allow_mailchimp',[1=>'Yes',0=>'No'],null,($mailchimpStatus) ? ['class' => 'form-control'] : $mail) !!}
 
                     </div>
+                    @endif
+                      @if( $mailchimpStatus == 0)
+                       <div class="col-md-4 form-group {{ $errors->has('allow_mailchimp') ? 'has-error' : '' }}">
+                        <!-- last name -->
+                        {!! Form::label('allow_mailchimp',Lang::get('message.allow_mailchimp'),['class'=>'required']) !!}
+                        {!! Form::select('allow_mailchimp',[1=>'Yes',0=>'No'],null,['class' => 'form-control','disabled' => 'true','title' => 'Configure your mailchimp in settings to access']) !!}
+
+                    </div>
+                    @endif
                     <div class="col-md-4 form-group {{ $errors->has('allow_mailchimp') ? 'has-error' : '' }}">
                         <!-- last name -->
                         {!! Form::label('allow_social_media','Allow social media icons',['class'=>'required']) !!}

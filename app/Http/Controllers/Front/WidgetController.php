@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Front;
 use App\Http\Controllers\Controller;
 use App\Model\Front\Widgets;
 use Illuminate\Http\Request;
+use App\Model\Common\StatusSetting;
+
 
 class WidgetController extends Controller
 {
@@ -63,7 +65,10 @@ class WidgetController extends Controller
     public function create()
     {
         try {
-            return view('themes.default1.front.widgets.create');
+            $mailchimpStatus = StatusSetting::pluck('mailchimp_status')->first();
+            $twitterStatus = StatusSetting::pluck('twitter_status')->first();
+
+            return view('themes.default1.front.widgets.create',compact('mailchimpStatus','twitterStatus'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -72,9 +77,11 @@ class WidgetController extends Controller
     public function edit($id)
     {
         try {
+            $mailchimpStatus = StatusSetting::pluck('mailchimp_status')->first();
+            $twitterStatus = StatusSetting::pluck('twitter_status')->first();
             $widget = $this->widget->where('id', $id)->first();
             //dd($widget);
-            return view('themes.default1.front.widgets.edit', compact('widget'));
+            return view('themes.default1.front.widgets.edit', compact('widget','mailchimpStatus','twitterStatus'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }

@@ -58,7 +58,6 @@ class FreeTrailController extends Controller
                 if ($userLogin->first_time_login != 0) {
                     return errorResponse(Lang::get('message.false'), 400);
                 }
-                 User::where('id', $userId)->update(['first_time_login' => 1]);
 
                 $this->generateFreetrailInvoice();
 

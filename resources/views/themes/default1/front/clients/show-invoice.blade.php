@@ -174,9 +174,12 @@ active
                                 </tr>
                                 @endif
                           
+                                    @foreach($items as $item)
 
-                                
+                              
                                     <?php
+
+
                                     $order = \App\Model\Order\Order::where('invoice_item_id',$item->id)->first();
                                     if($order != null) {
                                         $productId = $order->product;
@@ -190,6 +193,7 @@ active
                                     $taxDetails = explode('@', $tax);
                                     ?>
                                     @if ($taxDetails[0]!= 'null')
+
                                             
                                        
                                             <tr>
@@ -211,6 +215,7 @@ active
                                      
                                        
                                     @endif
+                                    @endforeach
                                     @endforeach
                                 @if($invoice->processing_fee != null && $invoice->processing_fee != '0%')
                                 <tr>

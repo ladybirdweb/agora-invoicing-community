@@ -168,6 +168,7 @@ Invoice
                                   <th>Discount</th>
                                     <td>{{currencyFormat($invoice->discount,$code=$symbol)}}</td>
                                 @endif
+                                @foreach($invoiceItems as $item)
 
                                  <?php
                                     $order = \App\Model\Order\Order::where('invoice_item_id',$item->id)->first();
@@ -178,6 +179,7 @@ Invoice
                                     }
                                     
                                     ?>
+
                                      @if ($item->tax_name != 'null')
                                             
                                        
@@ -200,6 +202,7 @@ Invoice
                                      
                                        
                                     @endif
+                                    @endforeach
                                     <th>Total:</th>
                                     <td>{{currencyFormat($invoice->grand_total,$code=$symbol)}}</td>
                                

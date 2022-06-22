@@ -95,6 +95,28 @@ $country = findCountryByGeoip($location['iso_code']);
                 
 
                     <div class="card-body">
+                          @if(Session::has('success'))
+                <div class="col-md-12 tab-panel alert alert-success">
+                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                       <strong><i class="far fa-thumbs-up"></i> Well done!</strong>
+                   
+                    {!!Session::get('success')!!}
+                </div>
+                @endif
+                 @if(Session::has('warning'))
+                    <div class="alert alert-warning alert-dismissable">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                        {{Session::get('warning')}}
+                    </div>
+                    @endif
+                    
+                    @if(Session::has('fails'))
+                 <div class="alert alert-danger alert-dismissable" role="alert">
+                   <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <strong><i class="fas fa-exclamation-triangle"></i>Oh snap!</strong>
+                    {{Session::get('fails')}}
+                </div>
+                @endif
                         <div class="box-content">
 
                             @if ($status->recaptcha_status==1 && $apiKeys->nocaptcha_sitekey != '00' && $apiKeys->captcha_secretCheck != '00')
@@ -192,28 +214,7 @@ $country = findCountryByGeoip($location['iso_code']);
                          <div class="row tab-content">
                         <div class="col-md-12 tab-pane active" id="step1">
                             <div class="featured-boxes">
-                                  @if(Session::has('success'))
-                <div class="col-md-12 tab-panel alert alert-success">
-                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                       <strong><i class="far fa-thumbs-up"></i> Well done!</strong>
-                   
-                    {!!Session::get('success')!!}
-                </div>
-                @endif
-                 @if(Session::has('warning'))
-                    <div class="alert alert-warning alert-dismissable">
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                        {{Session::get('warning')}}
-                    </div>
-                    @endif
-                    
-                    @if(Session::has('fails'))
-                 <div class="alert alert-danger alert-dismissable" role="alert">
-                   <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <strong><i class="fas fa-exclamation-triangle"></i>Oh snap!</strong>
-                    {{Session::get('fails')}}
-                </div>
-                @endif
+                                
                                 <div id="error">
                                 </div>
                                 <div id="success">
@@ -557,6 +558,7 @@ $country = findCountryByGeoip($location['iso_code']);
                         $("#verifyOtp").html("Verify OTP");
                         $('.nav-tabs li a[href="#step1"]').tab('show');
                         $('.wizard-inner').css('display','none');
+                        location.reload();
                         setTimeout(()=>{
                             getLoginTab();
                         },10)
@@ -994,7 +996,7 @@ $country = findCountryByGeoip($location['iso_code']);
         }
         else{
             $('#emailcheck').show();
-            $('#emailcheck').html("Please Enter a valid email");
+            $('#emailcheck').html("Please Enter a email");
             $('#emailcheck').focus();
             $('#mail').css("border-color","red");
             $('#emailcheck').css({"color":"red","margin-top":"5px"});

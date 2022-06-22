@@ -1,6 +1,6 @@
 @extends('themes.default1.layouts.front.master')
 
-<!--  @section('title')
+  @section('title')
     Login | Register
 @stop
 @section('page-header')
@@ -20,8 +20,8 @@
 @section('main-class')
     main
 @stop
-@section('content') -->
-<!--     <?php
+@section('content') 
+   <?php
     use App\Http\Controllers\Front\CartController;
     $country = findCountryByGeoip($location['iso_code']);
     $states = findStateByRegionId($location['iso_code']);
@@ -30,18 +30,18 @@
     $state = getStateByCode($state_code);
 
 
-    ?>  -->
+    ?>  
     <style>
-       /* .required:after{
+        .required:after{
             content:'*';
             color:red;
             padding-left:0px;
         }
 
 
-        }*/
+        }
 
-       /* .wizard-inner
+        .wizard-inner
         {
             display:none;
         }
@@ -58,10 +58,10 @@
 
             border: none ;
             border-top: 0;
-            /*padding: 15px;*/
+            padding: 15px;
         }
 
-        /*.open>.dropdown-menu {
+        .open>.dropdown-menu {
             display: block;
             color:black;
         }
@@ -70,13 +70,13 @@
         }
         .bootstrap-select .dropdown-toggle .caret {
             display: none;
-        }*/
+        }
 
         .form-control:not(.form-control-sm):not(.form-control-lg) {
-            /*font-size: 13.6px;
-            font-size: 0.85rem;*/
+            font-size: 13.6px;
+            font-size: 0.85rem;
             line-height: normal;
-        }*/
+        }
 
 
 
@@ -84,21 +84,21 @@
     </style>
 
     
-    <!-- <link rel="stylesheet" href="{{asset('client/css/selectpicker.css')}}" /> -->
+     <link rel="stylesheet" href="{{asset('client/css/selectpicker.css')}}" /> 
     
    
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/css/bootstrap-select.css" /> -->
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/2.0.0-beta1/css/bootstrap-select.min.css" /> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/css/bootstrap-select.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/2.0.0-beta1/css/bootstrap-select.min.css" />
 
-    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 
-    <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
-    <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/js/bootstrap-select.js"></script> -->
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/2.0.0-beta1/js/bootstrap-select.min.js"></script> -->
-<!-- 
-    <div class="row">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/js/bootstrap-select.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/2.0.0-beta1/js/bootstrap-select.min.js"></script>
+
+   <!--  <div class="row">
         <div class="col-md-12">
 
             <section>
@@ -122,13 +122,13 @@
                             </li>
                             <li role="presentation" class="disabled">
                                 <a href="#step3" data-toggle="tab" aria-controls="complete" role="tab" title="Confirmation">
- -->
 
-            <!--                     </a>
+
+                                </a>
                                 <p style="display: none">Confirmation</p>
-                            </li>
+                            </li> -->
 
-
+<!-- 
                         </ul>
                     </div>
                     <div class="row tab-content">
@@ -141,9 +141,9 @@
                                 <div id="fails">
                                 </div>
                                 <div id="alertMessage1"></div>
-                                <div id="alertMessage2"></div>
+                                <div id="alertMessage2"></div> -->
                              
-
+<!-- 
                                 <div class="row">
                                     <div class="col-sm-6">
                                         <div class="featured-box featured-box-primary text-left mt-5">
@@ -165,12 +165,12 @@
                                                             </div>
 
                                                         </div>  
-                                                        <span  style="color:#ff0000;">  <div>{{ $errors->login->first('email1') }}</div></span>
- -->
+                                                        <span  style="color:#ff0000;">  <div>{{ $errors->login->first('email1') }}</div></span> -->
+
                                                         <!-- <h6 id="usercheck"></h6> -->
 
-<!-- 
-                                                    </div>
+
+                                                   <!--  </div>
                                                 </div>
                                                 <div class="form-row">
                                                     <div class="form-group col {{ $errors->has('password1') ? 'has-error' : '' }}">
@@ -184,11 +184,11 @@
                                                             </div>
 
                                                         </div>
-                                                           <span  style="color:#ff0000;">  <div>{{ $errors->login->first('password1') }}</div></span>
-                                          -->               <!-- <h6 id="passcheck"></h6> -->
+                                                           <span  style="color:#ff0000;">  <div>{{ $errors->login->first('password1') }}</div></span> -->
+                                                        <!-- <h6 id="passcheck"></h6> -->
                                                         <!--<input type="password" value="" class="form-control input-lg">-->
-<!-- 
-                                                    </div>
+
+                                                    <!-- </div>
                                                 </div>
 
                                                 @if ($status->recaptcha_status==1 && $apiKeys->nocaptcha_sitekey != '00' && $apiKeys->captcha_secretCheck != '00')
@@ -210,12 +210,12 @@
                                                     <div class="form-group col-lg-6">
                                                         <input type="submit" name="form" value="Login" id="submitbtn" class="btn btn-primary pull-right mb-xl" data-loading-text="Loading...">
 
-                                               -->           
-                                                        <!-- <button type="button" class="btn btn-primary mb-xl next-step float-right" name="sendOtp" id="login" onclick="loginUser()">
+                                                         
+                                                        <button type="button" class="btn btn-primary mb-xl next-step float-right" name="sendOtp" id="login" onclick="loginUser()">
                                                                     Send Email
                                                         </button> -->
-<!-- 
-                                                    </div>
+
+                                                   <!--  </div>
                                                 </div>
                                                 {!! Form::close() !!}
                                             </div>
@@ -247,9 +247,9 @@
 
                                                         </div>
 
-
-                                                    </div>
- --><!-- 
+ -->
+                                                    <!-- </div>
+ 
                                                     <div class="form-row">
                                                         <div class="form-group col {{ $errors->has('email') ? 'has-error' : '' }}">
                                                             <label class="required">Email Address</label>
@@ -265,9 +265,9 @@
                                                             {!! Form::select('country',[''=>'','Choose'=>$countries],$country,['class' => 'form-control selectpicker','data-live-search-style'=>"startsWith",'data-live-search'=>'true','data-live-search-placeholder'=>'Search','data-dropup-auto'=>'false','data-size'=>'10','onChange'=>'getCountryAttr(this.value);','id'=>'logcountry']) !!}
                                                             <span id="logcountrycheck"></span>
                                                         </div>
+ -->
 
-
-                                                        <div class="col-lg-6 form-group {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
+                                                       <!--  <div class="col-lg-6 form-group {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
                                                             <label class="required">Mobile</label>
                                                             {!! Form::hidden('mobile',null,['id'=>'logphone_code_hidden']) !!}
                                                             <input class="form-control input-lg" id="logphonenum" name="mobile" type="tel" >
@@ -276,13 +276,13 @@
                                                             <span id="error-msg" class="hide"></span>
                                                             <span id="logmobile_codecheck"></span>
                                                         </div>
-                                                    </div> -->
-                                                <!--   <input type="checkbox" name="checkbox" id="option" value="{{old('option')}}"><label for="option"><span></span> <p>I agree to the <a href="#">terms</a></p></label>-->
-                                                   <!--  <div class="form-row">
+                                                    </div>
+                                                  <input type="checkbox" name="checkbox" id="option" value="{{old('option')}}"><label for="option"><span></span> <p>I agree to the <a href="#">terms</a></p></label>
+                                                    <div class="form-row">
                                                         <div class="form-group col-lg-6">
-                                                            @if ($status->recaptcha_status==1 && $apiKeys->nocaptcha_sitekey != '00' && $apiKeys->captcha_secretCheck != '00')
+                                                            @if ($status->recaptcha_status==1 && $apiKeys->nocaptcha_sitekey != '00' && $apiKeys->captcha_secretCheck != '00') -->
 
-                                                                {!! NoCaptcha::display() !!}
+                                                              <!--   {!! NoCaptcha::display() !!}
 
                                                                 <div class="robot-verification" id="captcha"></div>
                                                                 <span id="captchacheck"></span>
@@ -303,7 +303,7 @@
                                                                 <br><span id="logtermscheck"></span>
                                                             </div>
                                                         @endif
-
+ --><!-- 
                                                         <div class="form-group col-lg-6">
                                                             <button type="button"  class="btn btn-primary pull-right marginright mb-xl next-step" name="register" id="logregister" onclick="logregisterUser(1)">Submit</button>
                                                         </div>
@@ -328,15 +328,15 @@
 
                             <div class="featured-boxes">
 
- -->
-                                <!-- fail message -->
-                                <!-- <div class="row">
+
+                                fail message
+                                <div class="row">
                                     <div class="col-lg-6 offset-lg-3">
                                         <div id="successMessage1"></div>
-                                        <div id = "emailsuccess"></div> -->
-                                        <!-- <div id="successMessage2"></div> -->
+                                        <div id = "emailsuccess"></div>
+                                        <div id="successMessage2"></div> 
 
-                                       <!--  <div id="error1">
+                                        <div id="error1">
                                         </div>
                                         <div class="featured-box featured-box-primary text-left mt-5">
                                             <div class="box-content">
@@ -365,9 +365,9 @@
                                                             </div>
 
                                                         </div>
-                                                    @endif -->
+                                                    @endif 
 
-
+ -->
 <!-- 
                                                     @if($status->msg91_status == 1)
                                                         <p>You will be sent an OTP on your mobile immediately by an automated system, Please enter the OTP in the next step. Click next to continue</p>
@@ -385,9 +385,9 @@
                                                             </div>
 
                                                         </div>
-                                                    @endif -->
+                                                    @endif 
 
-                                                  <!--   <div class="form-row">
+                                                    <div class="form-row">
                                                         <div class="form-group col">
 
                                                             <button type="button" class="btn btn-primary mb-xl next-step float-right" name="sendOtp" id="sendOtp" onclick="sendOTP()">
@@ -396,9 +396,9 @@
                                                         </div>
                                                     </div>
 
+ -->
 
-
-                                                </form>
+                                                <!-- </form>
                                             </div>
                                         </div>
                                     </div>
@@ -409,8 +409,8 @@
 
                             <div class="featured-boxes"> -->
                                 <!-- fail message -->
-                                <!-- <div class="row"> -->
-                               <!--      <div class="col-lg-6 offset-lg-3">
+                                <!-- <div class="row">
+                                    <div class="col-lg-6 offset-lg-3">
                                         <div id="error2">
                                         </div>
                                         <div id="successMessage2"></div>
@@ -420,15 +420,15 @@
                                         <div class="featured-box featured-box-primary text-left mt-5">
                                             <input type="hidden" id="checkOtpStatus" value="{{$status->msg91_status}}">
                                             <div class="box-content" id="showOtpBox">
-                                                <h4 class="heading-primary text-uppercase mb-md">OTP Confirmation</h4> -->
-                                                <!-- <div class="row verify">
+                                                <h4 class="heading-primary text-uppercase mb-md">OTP Confirmation</h4>
+                                                <div class="row verify">
                                                     <div class="col-md-12">
                                                         <label>
                                                             <span>Verification email sent on your email and OTP on mobile</span>
                                                         </label>
                                                     </div>
-                                                </div> -->
-                                               <!--  <form name="verify_otp_form">
+                                                </div>
+                                                <form name="verify_otp_form">
                                                     <label for="mobile" class="required">Enter OTP</label><br/>
                                                     <div class="row ">
                                                         <div class="col-md-6">
@@ -438,15 +438,15 @@
                                                             <span id="enterotp"></span>
                                                         </div>
 
-
-                                                        <div class="col-md-3">
+ -->
+                                                     <!--    <div class="col-md-3">
                                                             <button type="button" class="btn btn-primary float-right mb-5" name="verifyOtp" style="width: max-content;" id="verifyOtp" value="Verify OTP" onclick="verifyBySendOtp()" >
                                                                 Verify OTP
                                                             </button>
-                                                        </div> -->
+                                                        </div>
 
 
-                                                      <!--   <div class="col-md-3">
+                                                        <div class="col-md-3">
                                                             <button type="button" class="btn btn-danger float-right mb-5" style="width: max-content;" name="resendOTP" id="resendOTP">
                                                                 Resend OTP
                                                             </button>
@@ -456,9 +456,9 @@
 
                                                     </div>
 
-                                                    <div class="row">
+                                                    <div class="row"> -->
 
-                                                        <div class="col-sm-6 col-md-3 col-lg-6">
+                                                      <!--   <div class="col-sm-6 col-md-3 col-lg-6">
                                                             <p>Did not receive OTP via SMS?</p>
                                                             <button type="button" class="btn btn-secondary" name="voiceOTP" id="voiceOTP" value="Verify OTP" style= "margin-top:-15px;"><i class="fa fa-phone"></i>
                                                                 Receive OTP via Voice call
@@ -480,13 +480,13 @@
         </div>
         </section>
     </div>
-    </div>
+    </div> -->
 @stop
-@section('script') -->
+@section('script')
 
 
 
-  <!--  <script type="text/javascript">
+   <script type="text/javascript">
            var telInput = $('#logphonenum'),
           
 
@@ -572,70 +572,70 @@
             $('input[name=country_code]').attr('value', $('.selected-dial-code').text());
         });
 
-    </script> -->
+    </script>
 
 
      <script>
-        // var tel = $('.phone'),
-        //     country = $('#country').val();
-        // addressDropdown = $("#country");
-        // errorMsg1 = document.querySelector("#error-msg1"),
-        //     validMsg1 = document.querySelector("#valid-msg1");
-        // var errorMap = [ "Invalid number", "Invalid country code", "Number Too short", "Number Too long", "Invalid number"];
-        // tel.intlTelInput({
-            // allowDropdown: false,
-            // autoHideDialCode: false,
-            // autoPlaceholder: "off",
-            // dropdownContainer: "body",
-            // excludeCountries: ["us"],
-            // formatOnDisplay: false,
-            // geoIpLookup: function(callback) {
-            //     $.get("https://ipinfo.io", function() {}, "jsonp").always(function(resp) {
-            //         resp.country = country;
-            //         var countryCode = (resp && resp.country) ? resp.country : "";
-            //         callback(countryCode);
-            //     });
-            // },
-            // hiddenInput: "full_number",
-            // initialCountry: "auto",
-            // nationalMode: false,
-            // onlyCountries: ['us', 'gb', 'ch', 'ca', 'do'],
-            // placeholderNumberType: "MOBILE",
-            // preferredCountries: ['cn', 'jp'],
-            // separateDialCode: true,
+        var tel = $('.phone'),
+            country = $('#country').val();
+        addressDropdown = $("#country");
+        errorMsg1 = document.querySelector("#error-msg1"),
+            validMsg1 = document.querySelector("#valid-msg1");
+        var errorMap = [ "Invalid number", "Invalid country code", "Number Too short", "Number Too long", "Invalid number"];
+        tel.intlTelInput({
+            allowDropdown: false,
+            autoHideDialCode: false,
+            autoPlaceholder: "off",
+            dropdownContainer: "body",
+            excludeCountries: ["us"],
+            formatOnDisplay: false,
+            geoIpLookup: function(callback) {
+                $.get("https://ipinfo.io", function() {}, "jsonp").always(function(resp) {
+                    resp.country = country;
+                    var countryCode = (resp && resp.country) ? resp.country : "";
+                    callback(countryCode);
+                });
+            },
+            hiddenInput: "full_number",
+            initialCountry: "auto",
+            nationalMode: false,
+            onlyCountries: ['us', 'gb', 'ch', 'ca', 'do'],
+            placeholderNumberType: "MOBILE",
+            preferredCountries: ['cn', 'jp'],
+            separateDialCode: true,
 
-        //     utilsScript: "{{asset('js/intl/js/utils.js')}}"
-        // });
-        // var reset = function() {
-        //     errorMsg1.innerHTML = "";
-        //     errorMsg1.classList.add("hide");
-        //     validMsg1.classList.add("hide");
-        // };
+            utilsScript: "{{asset('js/intl/js/utils.js')}}"
+        });
+        var reset = function() {
+            errorMsg1.innerHTML = "";
+            errorMsg1.classList.add("hide");
+            validMsg1.classList.add("hide");
+        };
 
-        // addressDropdown.change(function() {
-        //     tel.intlTelInput("setCountry", $(this).val());
-        // });
+        addressDropdown.change(function() {
+            tel.intlTelInput("setCountry", $(this).val());
+        });
 
-        // tel.on('blur', function () {
-        //     reset();
-        //     if ($.trim(tel.val())) {
-        //         if (tel.intlTelInput("isValidNumber")) {
-        //             $('.phone').css("border-color","");
-        //             validMsg1.classList.remove("hide");
-        //             $('#sendOtp').attr('disabled',false);
-        //         } else {
-        //             var errorCode = tel.intlTelInput("getValidationError");
-        //             errorMsg1.innerHTML = errorMap[errorCode];
-        //             $('#conmobile').html("");
+        tel.on('blur', function () {
+            reset();
+            if ($.trim(tel.val())) {
+                if (tel.intlTelInput("isValidNumber")) {
+                    $('.phone').css("border-color","");
+                    validMsg1.classList.remove("hide");
+                    $('#sendOtp').attr('disabled',false);
+                } else {
+                    var errorCode = tel.intlTelInput("getValidationError");
+                    errorMsg1.innerHTML = errorMap[errorCode];
+                    $('#conmobile').html("");
 
-        //             $('.phone').css("border-color","red");
-        //             $('#error-msg1').css({"color":"red","margin-top":"5px"});
-        //             errorMsg1.classList.remove("hide");
-        //             $('#sendOtp').attr('disabled',true);
-        //         }
-        //     }
-        // });
-    <!-- </script> -->
+                    $('.phone').css("border-color","red");
+                    $('#error-msg1').css({"color":"red","margin-top":"5px"});
+                    errorMsg1.classList.remove("hide");
+                    $('#sendOtp').attr('disabled',true);
+                }
+            }
+        });
+    </script> 
 
 
 
@@ -643,25 +643,25 @@
 
 
     
-    <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo $analyticsTag; ?>"></script> -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo $analyticsTag; ?>"></script>
 
-    <!-- <script> -->
+    <script>
         ///////////////////////////////////////////////////////////////////////////////
-        <!-- ///Google Recaptcha -->
-        <!-- function recaptchaCallback() {
+         ///Google Recaptcha
+        function recaptchaCallback() {
             document.querySelectorAll('.g-recaptcha').forEach(function (el) {
                 grecaptcha.render(el);
             });
-        } -->
+        } 
         ///////////////////////////////////////////////////////////////////////////////////
-    <!-- </script> -->
+ </script>
 
 
- <!-- <script type="text/javascript"> -->
+ <script type="text/javascript"> 
 
 
 
-       <!--  function verify_otp_check(){
+        function verify_otp_check(){
             var userOtp = $('#oneTimePassword').val();
             if (userOtp.length < 4){
                 $('#enterotp').show();
@@ -739,8 +739,8 @@
             }
         }
 
- -->
-       <!--  function getLoginTab(){
+ 
+         function getLoginTab(){
             registerForm.elements['first_name'].value = '';
             registerForm.elements['last_name'].value = '';
             registerForm.elements['email'].value = '';
@@ -809,9 +809,9 @@
                 }
             })
 
-        }); -->
+        }); 
 
-      <!--   //---------------------------------------Resend OTP via voice call--------------------------------------------------//
+         //---------------------------------------Resend OTP via voice call--------------------------------------------------//
 
         $('#voiceOTP').on('click',function(){
             var data = {
@@ -858,12 +858,12 @@
 
 
 
- -->
+ 
 
-<!-- 
-    <script type="text/javascript"> -->
 
-     <!--         /*
+    <script type="text/javascript">
+
+        /*
         * Email ANd Mobile Validation when Send Button is cliced on Tab2
          */
         /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -908,8 +908,8 @@
                     $('#verify_number').css("border-color","red");
                     $('#conmobile').css({"color":"red","margin-top":"5px"});
 
- -->
-                  <!--   // mobile_error = false;
+
+                     // mobile_error = false;
                     return false;
                 }
                 else{
@@ -1008,8 +1008,8 @@
 
         }
 
-       -->
-      <!--   //robot validation for Login Form
+    
+         //robot validation for Login Form
         function validateform() {
             var input = $(".g-recaptcha :input[name='g-recaptcha-response']");
             console.log(input.val());
@@ -1026,7 +1026,7 @@
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //Registration Form Validation -->
 
-       <!--  function logfirst_namecheck(){
+         function logfirst_namecheck(){
             var firrstname_val = $('#logfirst_name').val();
             if(firrstname_val.length == ''){
                 $('#logfirst_namecheck').show();
@@ -1105,9 +1105,9 @@
                     scrollTop: $("#loglast_namecheck").offset().top - 200
                 }, 1000)
                 return false;
-            } -->
+            } 
 
-<!-- 
+
             var pattern = new RegExp(/[^a-zA-Z0-9]/);
             if(pattern.test(lastname_val)){
                 $('#loglast_namecheck').show();
@@ -1154,12 +1154,12 @@
 
         }
 
- -->
+ 
 
 
 
 
-       <!--  function logcountrycheck(){
+        function logcountrycheck(){
             var country_val = $('#logcountry').val();
             if(country_val == ''){
                 $('#logcountrycheck').show();
@@ -1199,7 +1199,7 @@
             }
         }
 
- --><!-- 
+ 
         //    $('#conpassword').keyup(function(){
         //     con_password_check();
 
@@ -1221,9 +1221,9 @@
                 $('#logterm').css("border-color","");
                 return true;
             }
-        } -->
+        } 
 
-      <!--   function gcaptcha(){
+        function gcaptcha(){
             var captcha_val = $('#g-recaptcha-response-1').val();
             if(captcha_val == ''){
                 $('#captchacheck').show();
@@ -1240,9 +1240,9 @@
                 $('#captcha').css("border-color","");
                 return true;
             }
-        } -->
+        } 
 
-<!-- 
+
         ////////////////////////Registration Valdation Ends////////////////////////////////////////////////////////////////////////////////////////////
         ///
         ///////////////////////VALIDATE TERMS AND CNDITION////////////////////////////////////////
@@ -1268,7 +1268,7 @@
                              
 
 
-          <!--   $('#logfirst_namecheck').hide();
+           $('#logfirst_namecheck').hide();
             $('#loglast_namecheck').hide();
             $('#logemailcheck').hide();
             $('#logcountrycheck').hide();
@@ -1292,8 +1292,8 @@
                 var tag = "<?php echo $analyticsTag; ?>";
                 if (tag !== "" ){
                     gtag_report_conversion(tag);
-                } -->
-<!-- 
+                } 
+ 
                 $("#logregister").attr('disabled',true);
                 $("#logregister").html("<i class='fas fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
                 $.ajax({
@@ -1335,7 +1335,7 @@
                                     var emailverfy = verifyForm.elements['verify_email'].value = $('#logmail').val();
                                     sessionStorage.setItem('oldemail',emailverfy);
                                 }
- --><!-- 
+  
                             }
                             verifyForm.elements['verify_country_code'].value =$('#logmobile_code').val();
                             var numberverify= verifyForm.elements['verify_number'].value = $('#logphonenum').val().replace(/[\. ,:-]+/g, '');
@@ -1374,10 +1374,14 @@
             }
         }
 
- -->
+ 
 
-<!-- 
-        //get login tab1
+
+
+
+
+
+// /get login tab1
 
 
 
@@ -1391,17 +1395,17 @@
             }
 
         });
- -->
-
-
-    <!-- </script> -->
 
 
 
-    <!-- <script> -->
+     </script> 
 
 
-       <!--  // console.log(state)
+
+     <script> 
+
+
+         // console.log(state)
         $(document).ready(function () {
             var val = $("#logcountry").val();
             getCountryAttr(val);
@@ -1412,15 +1416,15 @@
 
                 getCode(val);
             }
- -->
+ 
 
-         <!--    // getCurrency(val);
+            // getCurrency(val);
 
         }
- -->
+ 
 
 
-<!-- 
+
         function getCode(val) {
             $.ajax({
                 type: "GET",
@@ -1431,8 +1435,8 @@
                     $("#logphone_code_hidden").val(data);
                 }
             });
-        } -->
-       <!--  function getCurrency(val) {
+        } 
+         function getCurrency(val) {
             $.ajax({
                 type: "GET",
                 url: "{{url('get-currency')}}",
@@ -1442,7 +1446,7 @@
                 }
             });
         }
-    </script> -->
+    </script> 
     <!-- Google Code for Help Desk Pro | Campaign 001 Conversion Page
     In your html page, add the snippet and call
     goog_report_conversion when someone clicks on the
@@ -1478,91 +1482,91 @@
     goog_report_conversion when someone clicks on the
     chosen link or button. -->
     <script type="text/javascript">
-        //<![CDATA[
-        // goog_snippet_vars = function() {
-        //     var w = window;
-        //     w.google_conversion_id = 1027628032;
-        //     w.google_conversion_label = "uBhoCLT3i3AQgLiB6gM";
-        //     w.google_remarketing_only = false;
-        // }
-        // DO NOT CHANGE THE CODE BELOW.
-        // goog_report_conversion = function(url) {
-        //     goog_snippet_vars();
-        //     window.google_conversion_format = "3";
-        //     var opt = new Object();
-        //     opt.onload_callback = function() {
-        //         if (typeof(url) != 'undefined') {
-        //             window.location = url;
-        //         }
-        //     }
-        //     var conv_handler = window['google_trackConversion'];
-        //     if (typeof(conv_handler) == 'function') {
-        //         conv_handler(opt);
-        //     }
-        //     fbq('track', 'CompleteRegistration');
-        // }
-        //]]>
+        <![CDATA[
+        goog_snippet_vars = function() {
+            var w = window;
+            w.google_conversion_id = 1027628032;
+            w.google_conversion_label = "uBhoCLT3i3AQgLiB6gM";
+            w.google_remarketing_only = false;
+        }
+        DO NOT CHANGE THE CODE BELOW.
+        goog_report_conversion = function(url) {
+            goog_snippet_vars();
+            window.google_conversion_format = "3";
+            var opt = new Object();
+            opt.onload_callback = function() {
+                if (typeof(url) != 'undefined') {
+                    window.location = url;
+                }
+            }
+            var conv_handler = window['google_trackConversion'];
+            if (typeof(conv_handler) == 'function') {
+                conv_handler(opt);
+            }
+            fbq('track', 'CompleteRegistration');
+        }
+        ]]>
     </script>
-   <!--  <script type="text/javascript"
+    <script type="text/javascript"
             src="//www.googleadservices.com/pagead/conversion_async.js">
-    </script> -->
+    </script>
    
 
-  <!--   <script type="text/javascript"
+    <script type="text/javascript"
             src="//www.googleadservices.com/pagead/conversion_async.js">
-    </script> -->
+    </script>
    <script>
-        // $(document).ready(function () {
+        $(document).ready(function () {
 
-        //     $.ajaxSetup({ headers: { 'csrftoken' : '{{ csrf_token() }}' } });
+            $.ajaxSetup({ headers: { 'csrftoken' : '{{ csrf_token() }}' } });
 
-        //     //Initialize tooltips
-        //     $('.nav-tabs > li a[title]').tooltip();
-        //     $('.nav-tabs .active a[href="#step1"]').click(function(){
-        //         $('.wizard-inner').css('display','none');
-        //     })
-        //     //Wizard
-        //     if(!$('.nav-tabs .active a[href="#step1"]')){
-        //         $('.wizard-inner').css('display','block');
-        //     }
-        //     $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
+            //Initialize tooltips
+            $('.nav-tabs > li a[title]').tooltip();
+            $('.nav-tabs .active a[href="#step1"]').click(function(){
+                $('.wizard-inner').css('display','none');
+            })
+            //Wizard
+            if(!$('.nav-tabs .active a[href="#step1"]')){
+                $('.wizard-inner').css('display','block');
+            }
+            $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
 
-        //         var $target = $(e.target);
+                var $target = $(e.target);
 
-        //         if ($target.parent().hasClass('disabled')) {
-        //             return false;
-        //         }
-        //     });
+                if ($target.parent().hasClass('disabled')) {
+                    return false;
+                }
+            });
 
         
 
-        //     $(".prev").click(function (e) {
+            $(".prev").click(function (e) {
 
-        //         var $active = $('.wizard .nav-tabs li.active');
-        //         $active.next().removeClass('disabled');
-        //         prevTab($active);
-        //         $('.wizard-inner').css('display','block');
-        //     });
-        // });
+                var $active = $('.wizard .nav-tabs li.active');
+                $active.next().removeClass('disabled');
+                prevTab($active);
+                $('.wizard-inner').css('display','block');
+            });
+        });
 
-        // function nextTab(elem) {
+        function nextTab(elem) {
 
-        //     $(elem).next().find('a[data-toggle="tab"]').click();
-        // }
-        // function prevTab(elem) {
-        //     $(elem).prev().find('a[data-toggle="tab"]').click();
-        // }
+            $(elem).next().find('a[data-toggle="tab"]').click();
+        }
+        function prevTab(elem) {
+            $(elem).prev().find('a[data-toggle="tab"]').click();
+        }
     </script>
   
 
 
 
     <noscript>
-       <!--  <img height="1" width="1"
+        <img height="1" width="1"
              src="https://www.facebook.com/tr?id=308328899511239&ev=PageView
-&noscript=1"/> -->
+&noscript=1"/>
     </noscript>
 
-    <!-- End Facebook Pixel Code -->
-<!-- @stop  -->
+    End Facebook Pixel Code
+@stop 
 

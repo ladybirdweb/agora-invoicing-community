@@ -65,15 +65,13 @@ class FreeTrailController extends Controller
 
                 $this->executeFreetrailOrder();
 
-                $isSuccess =  (new TenantController(new Client, new FaveoCloud()))->createTenant(new Request(['orderNo' => $this->orderNo, 'domain' => $request->domain]));
-                if($isSuccess['status'] == 'false')
-                {
+                $isSuccess = (new TenantController(new Client, new FaveoCloud()))->createTenant(new Request(['orderNo' => $this->orderNo, 'domain' => $request->domain]));
+                if ($isSuccess['status'] == 'false') {
                     return $isSuccess;
                 }
                 User::where('id', $userId)->update(['first_time_login' => 1]);
+
                 return $isSuccess;
-
-
             }
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());

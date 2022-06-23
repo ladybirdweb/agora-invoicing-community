@@ -1,6 +1,6 @@
 @extends('themes.default1.layouts.front.master')
 
-<!--  @section('title')
+ @section('title')
     Login | Register
 @stop
 @section('page-header')
@@ -20,8 +20,8 @@
 @section('main-class')
     main
 @stop
-@section('content') -->
-<!--     <?php
+@section('content')
+     <?php
     use App\Http\Controllers\Front\CartController;
     $country = findCountryByGeoip($location['iso_code']);
     $states = findStateByRegionId($location['iso_code']);
@@ -30,7 +30,7 @@
     $state = getStateByCode($state_code);
 
 
-    ?>  -->
+    ?>  
     <style>
        /* .required:after{
             content:'*';
@@ -84,21 +84,21 @@
     </style>
 
     
-    <!-- <link rel="stylesheet" href="{{asset('client/css/selectpicker.css')}}" /> -->
+     <!--<link rel="stylesheet" href="{{asset('client/css/selectpicker.css')}}" /> -->
     
    
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/css/bootstrap-select.css" /> -->
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/2.0.0-beta1/css/bootstrap-select.min.css" /> -->
+     <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/css/bootstrap-select.css" /> -->
+     <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/2.0.0-beta1/css/bootstrap-select.min.css" /> -->
 
-    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> -->
+     <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> -->
 
-    <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
-    <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> -->
+     <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
+     <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> -->
 
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/js/bootstrap-select.js"></script> -->
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/2.0.0-beta1/js/bootstrap-select.min.js"></script> -->
-<!-- 
-    <div class="row">
+     <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/js/bootstrap-select.js"></script> -->
+     <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/2.0.0-beta1/js/bootstrap-select.min.js"></script> -->
+
+    <!<div class="row">
         <div class="col-md-12">
 
             <section>
@@ -106,23 +106,23 @@
                     <div class="wizard-inner" style="display: none">
 
                         <ul class="nav nav-tabs" role="tablist" style=" margin: -5px!important;">
-                            <li role="presentation" class="active">
-                                <a href="#step1" data-toggle="tab" aria-controls="step1" role="tab">
+                            <!--<li role="presentation" class="active">-->
+                                <!--<a href="#step1" data-toggle="tab" aria-controls="step1" role="tab">-->
 
 
-                                </a>
-                                <p style="display: none">Contact Information</p>
-                            </li>
-                            <li role="presentation" class="disabled" >
-                                <a href="#step2" data-toggle="tab" aria-controls="step2" role="tab" >
+                                <!--</a>-->
+                                <!--<p style="display: none">Contact Information</p>-->
+                            <!--</li>-->
+                            <!--<li role="presentation" class="disabled" >-->
+                                <!--<a href="#step2" data-toggle="tab" aria-controls="step2" role="tab" >-->
 
 
-                                </a>
-                                <p style="display: none">Identity Verification</p>
-                            </li>
-                            <li role="presentation" class="disabled">
-                                <a href="#step3" data-toggle="tab" aria-controls="complete" role="tab" title="Confirmation">
- -->
+                                <!--</a>-->
+                                <!--<p style="display: none">Identity Verification</p>-->
+                            <!--</li>-->
+                            <!--<li role="presentation" class="disabled">-->
+                                <!--<a href="#step3" data-toggle="tab" aria-controls="complete" role="tab" title="Confirmation">-->
+
 
             <!--                     </a>
                                 <p style="display: none">Confirmation</p>
@@ -249,7 +249,7 @@
 
 
                                                     </div>
- --><!-- 
+ 
                                                     <div class="form-row">
                                                         <div class="form-group col {{ $errors->has('email') ? 'has-error' : '' }}">
                                                             <label class="required">Email Address</label>
@@ -328,7 +328,7 @@
 
                             <div class="featured-boxes">
 
- -->
+
                                 <!-- fail message -->
                                 <!-- <div class="row">
                                     <div class="col-lg-6 offset-lg-3">
@@ -575,7 +575,7 @@
     </script> -->
 
 
-     <script>
+    <script>
         // var tel = $('.phone'),
         //     country = $('#country').val();
         // addressDropdown = $("#country");
@@ -635,7 +635,7 @@
         //         }
         //     }
         // });
-    <!-- </script> -->
+     <!--</script>-->
 
 
 
@@ -646,14 +646,14 @@
     <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo $analyticsTag; ?>"></script> -->
 
     <!-- <script> -->
-        ///////////////////////////////////////////////////////////////////////////////
+        
         <!-- ///Google Recaptcha -->
         <!-- function recaptchaCallback() {
             document.querySelectorAll('.g-recaptcha').forEach(function (el) {
                 grecaptcha.render(el);
             });
         } -->
-        ///////////////////////////////////////////////////////////////////////////////////
+        
     <!-- </script> -->
 
 
@@ -866,7 +866,7 @@
      <!--         /*
         * Email ANd Mobile Validation when Send Button is cliced on Tab2
          */
-        /////////////////////////////////////////////////////////////////////////////////////////////////
+        
         $('#verify_email').keyup(function(){//Email
             verify_email_check();
         });
@@ -923,7 +923,7 @@
             return true;
 
         }
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      
         /*
           * After Send Button is Clicked on Tab 2 fOR sending OTP AND Email
          */
@@ -1023,7 +1023,6 @@
             }
         }
 
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //Registration Form Validation -->
 
        <!--  function logfirst_namecheck(){

@@ -69,15 +69,15 @@ class AuthController extends BaseAuthController
 
                     return redirect($url);
                 }
-             
+
                     return redirect($url)->with(
                                       ['success' => 'Email verification successful.Please login to access your account !!',
-                                       'popup' => 1
-                                       ]);
+                                          'popup' => 1,
+                                      ]);
                 } else {
                     return redirect($url)->with(
                         ['warning' => 'This email is already verified',
-                         'popup' => 1
+                            'popup' => 1,
                         ]);
                 }
             } else {
@@ -88,14 +88,14 @@ class AuthController extends BaseAuthController
                 return redirect($url)->with(
                 ['success' => 'Email verification successful,
                  Please login to access your account',
-                 'popup' => 1
-                 ]);
+                    'popup' => 1,
+                ]);
             }
 
             return redirect($url)->with([
                 'fails' => $ex->getMessage(),
-                'popup' => 1
-                ]);
+                'popup' => 1,
+            ]);
         }
     }
 
@@ -167,9 +167,9 @@ class AuthController extends BaseAuthController
             $mobile = ltrim($request->input('mobile'), '0');
             $otp = $request->input('otp');
             $number = '(+'.$code.') '.$mobile;
-          
+
             $result = $this->sendForReOtp($mobile, $code, $request->input('type'));
-           
+
             switch ($request->input('type')) {
                 case 'text':
                    $array = json_decode($result, true);

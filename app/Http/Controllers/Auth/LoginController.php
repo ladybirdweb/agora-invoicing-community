@@ -85,7 +85,7 @@ class LoginController extends Controller
                 return redirect()->back()
                             ->withInput()
                             ->withErrors([
-                                'email1' => 'Invalid Email and/or Password',
+                                'email1' => 'Invalid Email',
                             ]);
             }
 

@@ -814,6 +814,7 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
         'AddLicenseStatusToStatusSettings' => __DIR__ . '/../..' . '/database/migrations/2018_11_20_104359_add_license_status_to_status_settings.php',
         'AddMsg91AuthKeyToApiKeys' => __DIR__ . '/../..' . '/database/migrations/2018_07_09_092247_add_msg91_auth_key_to_api_keys.php',
         'AddNocaptchaSitekeyToApiKeysTable' => __DIR__ . '/../..' . '/database/migrations/2018_11_22_175752_add_nocaptcha_sitekey_to_api_keys_table.php',
+        'AddPasswordMailToSettingsTable' => __DIR__ . '/../..' . '/database/migrations/2022_06_23_120542_add_password_mail_to_settings_table.php',
         'AddPerpetualLicenseToProductsTable' => __DIR__ . '/../..' . '/database/migrations/2018_11_19_190929_add_perpetual_license_to_products_table.php',
         'AddProcessingFeeToInvoices' => __DIR__ . '/../..' . '/database/migrations/2020_08_13_045954_add_processing_fee_to_invoices.php',
         'AddProductQuantityToPlanPrices' => __DIR__ . '/../..' . '/database/migrations/2019_01_08_060351_add_product_quantity_to_plan_prices.php',

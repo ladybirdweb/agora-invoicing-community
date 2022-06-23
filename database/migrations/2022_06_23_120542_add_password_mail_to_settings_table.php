@@ -14,7 +14,7 @@ class AddPasswordMailToSettingsTable extends Migration
     public function up()
     {
         Schema::table('settings', function (Blueprint $table) {
-              $table->string('password_mail')->nullable();
+            $table->string('password_mail')->nullable();
         });
     }
 
@@ -26,7 +26,7 @@ class AddPasswordMailToSettingsTable extends Migration
     public function down()
     {
         Schema::table('settings', function (Blueprint $table) {
-             $table->dropColumn('password_mail');
+            $table->dropColumn('password_mail');
         });
     }
 }

@@ -1065,7 +1065,7 @@ if($script->on_every_page == 1) {
   <script type="text/javascript">
 
         jQuery( document ).ready(function() {
-            jQuery('#register-modal').modal('show');
+            jQuery('#login-modal').modal('show');
         });
         </script>
         

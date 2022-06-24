@@ -467,7 +467,13 @@ $country = findCountryByGeoip($location['iso_code']);
                                                             <button type="button" class="btn btn-secondary" name="voiceOTP" id="voiceOTP" value="Verify OTP" style= "margin-top:-15px;"><i class="fa fa-phone"></i>
                                                                 Receive OTP via Voice call
                                                             </button>
-                                                        </div>
+                                                        
+                                                     
+                                                          
+                                                                    <button type="button"style="position: absolute; left: 150%;width: max-content;" class="btn btn-default closebutton" id="closebutton" data-dismiss="modal"><i class="fa fa-times">&nbsp;&nbsp;</i>Close</button>
+                                
+                            
+                                                    
 
                                                     </div>
 

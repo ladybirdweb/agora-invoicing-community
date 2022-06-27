@@ -123,7 +123,7 @@ class FreeTrailController extends Controller
 
                 $cart = \Cart::getContent();
                 $userId = \Auth::user()->id;
-                $invoice = $this->invoice->where('user_id', $userId)->orderBy('id','DESC')->first();
+                $invoice = $this->invoice->where('user_id', $userId)->orderBy('id', 'DESC')->first();
                 $invoiceid = $invoice->id;
                 $invoiceItem = $this->invoiceItem->create([
                     'invoice_id'     => $invoiceid,
@@ -145,7 +145,7 @@ class FreeTrailController extends Controller
                 throw new \Exception('Can not Find the Product');
             }
         } catch (\Exception $ex) {
-             dd($ex);
+            dd($ex);
             app('log')->error($ex->getMessage());
 
             throw new \Exception('Can not Generate Invoice items');
@@ -162,9 +162,9 @@ class FreeTrailController extends Controller
         try {
             $order_status = 'executed';
             $userId = \Auth::user()->id;
-            $invoice = $this->invoice->where('user_id', $userId)->orderBy('id','DESC')->first();
+            $invoice = $this->invoice->where('user_id', $userId)->orderBy('id', 'DESC')->first();
             $invoiceid = $invoice->id;
-            $item = $this->invoiceItem->where('invoice_id', $invoiceid)->orderBy('invoice_id','DESC')->first();
+            $item = $this->invoiceItem->where('invoice_id', $invoiceid)->orderBy('invoice_id', 'DESC')->first();
             $user_id = $this->invoice->find($invoiceid)->user_id;
             $items = $this->getIfFreetrailItemPresent($item, $invoiceid, $user_id, $order_status);
 

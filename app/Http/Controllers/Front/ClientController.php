@@ -157,6 +157,8 @@ class ClientController extends BaseClientController
     {
         try {
             $invoice = $this->invoice->findOrFail($id);
+            $product_id = Product::where('id',117)->value('id');
+
             $user = \Auth::user();
             if ($invoice->user_id != $user->id) {
                 throw new \Exception('Cannot view invoice. Invalid modification of data.');
@@ -166,7 +168,7 @@ class ClientController extends BaseClientController
             $currency = getCurrencyForClient($user->country);
             $symbol = Currency::where('code', $currency)->value('symbol');
 
-            return view('themes.default1.front.clients.show-invoice', compact('invoice', 'items', 'user', 'currency', 'symbol', 'order'));
+            return view('themes.default1.front.clients.show-invoice', compact('invoice', 'items', 'user', 'currency', 'symbol', 'order','product_id'));
         } catch (Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }

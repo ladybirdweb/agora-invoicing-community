@@ -241,8 +241,10 @@ active
             <div class="text-right">
                 <a href="{{url('pdf?invoiceid='.$invoice->id)}}" class="btn btn-default"><i class="fa fa-download"></i> Generate PDF</a>
 
+                @if($product_id != '117')
                 @if($invoice->status !='Success')
                     <a href="{{url('paynow/'.$invoice->id)}}" target="_blank" class="btn btn-primary ml-3"><i class="fa fa-credit-card"></i> Pay Now</a>
+                @endif
                 @endif
             </div>
         </div>

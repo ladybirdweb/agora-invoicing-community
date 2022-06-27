@@ -65,15 +65,13 @@ class FreeTrailController extends Controller
 
                 $this->executeFreetrailOrder();
 
-                $isSuccess =  (new TenantController(new Client, new FaveoCloud()))->createTenant(new Request(['orderNo' => $this->orderNo, 'domain' => $request->domain]));
-                if($isSuccess['status'] == 'false')
-                {
+                $isSuccess = (new TenantController(new Client, new FaveoCloud()))->createTenant(new Request(['orderNo' => $this->orderNo, 'domain' => $request->domain]));
+                if ($isSuccess['status'] == 'false') {
                     return $isSuccess;
                 }
                 User::where('id', $userId)->update(['first_time_login' => 1]);
+
                 return $isSuccess;
-
-
             }
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
@@ -123,7 +121,7 @@ class FreeTrailController extends Controller
 
                 $cart = \Cart::getContent();
                 $userId = \Auth::user()->id;
-                $invoice = $this->invoice->where('user_id', $userId)->first();
+                $invoice = $this->invoice->where('user_id', $userId)->orderBy('id','DESC')->first();
                 $invoiceid = $invoice->id;
                 $invoiceItem = $this->invoiceItem->create([
                     'invoice_id'     => $invoiceid,
@@ -161,9 +159,9 @@ class FreeTrailController extends Controller
         try {
             $order_status = 'executed';
             $userId = \Auth::user()->id;
-            $invoice = $this->invoice->where('user_id', $userId)->first();
+            $invoice = $this->invoice->where('user_id', $userId)->orderBy('id','DESC')->first();
             $invoiceid = $invoice->id;
-            $item = $this->invoiceItem->where('invoice_id', $invoiceid)->first();
+            $item = $this->invoiceItem->where('invoice_id', $invoiceid)->orderBy('invoice_id','DESC')->first();
             $user_id = $this->invoice->find($invoiceid)->user_id;
             $items = $this->getIfFreetrailItemPresent($item, $invoiceid, $user_id, $order_status);
 

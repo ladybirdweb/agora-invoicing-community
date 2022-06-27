@@ -37,6 +37,7 @@ class LocalizedLicenseController extends Controller
         $this->client_id = $this->license->license_client_id;
         $this->client_secret = $this->license->license_client_secret;
         $this->grant_type = $this->license->license_grant_type;
+
     }
 
     /**
@@ -46,8 +47,8 @@ class LocalizedLicenseController extends Controller
     {
         $url = $this->url;
         $data = [
-            'client_id' => $this->client_id,
-            'client_secret' => $this->client_secret,
+            'client_id'=> $this->client_id,
+            'client_secret'=>$this->client_secret,
             'grant_type' => $this->grant_type,
         ];
         $response = $this->postCurl($url.'oauth/token', $data);
@@ -238,8 +239,9 @@ class LocalizedLicenseController extends Controller
         $installation_hash = hash('sha256', $domain.$client_email.$licenseCode);
         $OauthDetails = $this->oauthAuthorization();
         $token = $OauthDetails->access_token;
-        $addLocalizedInstallation = $this->postCurl($url.'api/admin/addInstallation', "api_key_secret=$api_key_secret&product_id=$productId&license_code=$licenseCode&installation_domain=$domain&installation_date=$installation_date&installation_status=1&installation_hash=$installation_hash", $token);
+        $addLocalizedInstallation = $this->postCurl($url.'api/admin/addInstallation', "api_key_secret=$api_key_secret&product_id=$productId&license_code=$licenseCode&installation_domain=$domain&installation_date=$installation_date&installation_status=1&installation_hash=$installation_hash",$token);
     }
+
 
     /**
      * Edits the license details without showing the pre-existing license data.

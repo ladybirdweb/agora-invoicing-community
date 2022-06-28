@@ -990,18 +990,33 @@ $country = findCountryByGeoip($location['iso_code']);
         }
 
     //Validating email field
-    function emailcheck(){
+  function emailcheck(){
 
         var pattern = new RegExp(/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/);
+        var email_val = $('#mail').val();
+
         if (pattern.test($('#mail').val())){
             $('#emailcheck').hide();
-            $('#email').css("border-color","");
+            $('#mail').css("border-color","");
             return true;
 
         }
+               if(email_val.length == ''){
+                $('#emailcheck').show();
+                $('#emailcheck').html("Please Enter an Email");
+                $('#emailcheck').focus();
+                $('#mail').css("border-color","red");
+                $('#emailcheck').css({"color":"red","margin-top":"5px"});
+                // userErr =false;
+                $('html, body').animate({
+
+                    scrollTop: $("#emailcheck").offset().top - 200
+                }, 1000)
+                return false;
+            }
         else{
             $('#emailcheck').show();
-            $('#emailcheck').html("Please Enter an  email");
+            $('#emailcheck').html("Please Enter an valid  Email");
             $('#emailcheck').focus();
             $('#mail').css("border-color","red");
             $('#emailcheck').css({"color":"red","margin-top":"5px"});

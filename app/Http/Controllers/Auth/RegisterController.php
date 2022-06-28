@@ -9,7 +9,6 @@ use App\Model\Common\StatusSetting;
 use App\User;
 use Facades\Spatie\Referer\Referer;
 use Illuminate\Foundation\Auth\RegistersUsers;
-use App\Http\Controllers\Common\PhpMailController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -56,9 +55,9 @@ class RegisterController extends Controller
         ]);
         try {
             $location = getLocation();
-         
+
             $state_code = $location['iso_code'].'-'.$location['state'];
-        
+
             $state = getStateByCode($state_code);
             $user->state = $state['id'];
             $password = Str::random(20);
@@ -83,15 +82,15 @@ class RegisterController extends Controller
             $user->timezone_id = getTimezoneByName($location['timezone']);
             $user->referrer = Referer::get(); // 'google.com'
             $user->save();
-            
-             //check in the settings
+
+            //check in the settings
             $settings = new \App\Model\Common\Setting();
             $settings = $settings->where('id', 1)->first();
 
             //template
             $template = new \App\Model\Common\Template();
             $temp_id = $settings->where('id', 1)->first()->password_mail;
-            $template = $template->where('id',$temp_id)->first();
+            $template = $template->where('id', $temp_id)->first();
             $from = $settings->email;
             $to = $user->email;
             $subject = $template->name;
@@ -107,14 +106,13 @@ class RegisterController extends Controller
             }
             $mail = new \App\Http\Controllers\Common\PhpMailController();
             $mail->sendEmail($from, $to, $data, $subject, $replace, $type);
-            
+
             $emailMobileStatusResponse = $this->getEmailMobileStatusResponse($user);
 
             activity()->log('User <strong>'.$user->first_name.' '.$user->last_name.'</strong> was created');
 
             return response()->json($emailMobileStatusResponse);
         } catch (\Exception $ex) {
-          
             app('log')->error($ex->getMessage());
             $result = [$ex->getMessage()];
 

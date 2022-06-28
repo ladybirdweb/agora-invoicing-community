@@ -100,7 +100,7 @@ return[
     /*
     *This for password mail content
     */
-       'password_mail' => [
+    'password_mail' => [
         'name'       => '{{name}}',
         'username'   => '{{username}}',
         'password'   => '{{password}}',

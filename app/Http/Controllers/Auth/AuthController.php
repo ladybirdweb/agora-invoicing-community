@@ -56,34 +56,37 @@ class AuthController extends BaseAuthController
                 throw new NotFoundHttpException('Token mismatch. Account cannot be activated.');
             }
             $user = $user->where('email', $email)->first();
-            if ($user) {
-                if ($user->active == 0) {
-                    $user->active = 1;
-                    $user->save();
-                    $status = StatusSetting::select('mailchimp_status', 'pipedrive_status', 'zoho_status')->first();
-                    $this->addUserToPipedrive($user, $status->pipedrive_status); //Add user to pipedrive
-                $this->addUserToZoho($user, $status->zoho_status); //Add user to zoho
-                $this->addUserToMailchimp($user, $status->mailchimp_status); // Add user to mailchimp
+            
+            if (!$user) {
+                throw new NotFoundHttpException('User with this email not found.');
+            }
+            
+            if($user->active) {
+                   return redirect($url)->with(
+                        ['warning' => 'This email is already verified',
+                            'popup' => 1,
+                        ]);
+            }
+        
+            $user->active = 1;
+            $user->save();
+            $status = StatusSetting::select('mailchimp_status', 'pipedrive_status', 'zoho_status')->first();
+            $this->addUserToPipedrive($user, $status->pipedrive_status); //Add user to pipedrive
+            $this->addUserToZoho($user, $status->zoho_status); //Add user to zoho
+            $this->addUserToMailchimp($user, $status->mailchimp_status); // Add user to mailchimp
                 if (\Session::has('session-url')) {
                     $url = \Session::get('session-url');
 
                     return redirect($url);
                 }
 
-                    return redirect($url)->with(
+            return redirect($url)->with(
                                       ['success' => 'Email verification successful.Please login to access your account !!',
                                           'popup' => 1,
                                       ]);
-                } else {
-                    return redirect($url)->with(
-                        ['warning' => 'This email is already verified',
-                            'popup' => 1,
-                        ]);
-                }
-            } else {
-                throw new NotFoundHttpException('User with this email not found.');
-            }
+                
         } catch (\Exception $ex) {
+        
             if ($ex->getCode() == 400) {
                 return redirect($url)->with(
                 ['success' => 'Email verification successful,
@@ -96,6 +99,7 @@ class AuthController extends BaseAuthController
                 'fails' => $ex->getMessage(),
                 'popup' => 1,
             ]);
+            
         }
     }
 

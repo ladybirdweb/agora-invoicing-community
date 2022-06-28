@@ -62,7 +62,6 @@ class RegisterController extends Controller
             $state = getStateByCode($state_code);
             $user->state = $state['id'];
             $password = Str::random(20);
-            // $password = "Demo@123";
             $user->password = \Hash::make($password);
             $user->town = $location['city'];
             $user->profile_pic = '';

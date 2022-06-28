@@ -1016,7 +1016,7 @@ $country = findCountryByGeoip($location['iso_code']);
             }
         else{
             $('#emailcheck').show();
-            $('#emailcheck').html("Please Enter an valid  Email");
+            $('#emailcheck').html("Please Enter a valid  Email");
             $('#emailcheck').focus();
             $('#mail').css("border-color","red");
             $('#emailcheck').css({"color":"red","margin-top":"5px"});

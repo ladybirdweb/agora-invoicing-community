@@ -68,8 +68,8 @@ class LoginController extends Controller
             'g-recaptcha-response' => $captchaRule.'captcha',
         ], [
             'g-recaptcha-response.required' => 'Robot Verification Failed. Please Try Again.',
-            'email1.required'    => 'Username/Email is required',
-            'password1.required' => 'Password is required',
+            'email1.required'    => 'Please Enter an Email',
+            'password1.required' => 'Please Enter Password',
         ]);
         $usernameinput = $request->input('email1');
         $password = $request->input('password1');
@@ -85,7 +85,7 @@ class LoginController extends Controller
                 return redirect()->back()
                             ->withInput($request->only('email1', 'remember'))
                             ->withErrors([
-                                'email1' => 'Invalid Email',
+                                'email1' => 'Please Enter a valid Email',
                             ]);
             }
 
@@ -93,7 +93,7 @@ class LoginController extends Controller
                 return redirect()->back()
                 ->withInput($request->only('password1', 'remember'))
                 ->withErrors([
-                    'password1' => 'Invalid Password',
+                    'password1' => 'Please Enter a valid Password',
                 ]);
             }
             if ($user && ($user->active !== 1 || $user->mobile_verified !== 1)) {

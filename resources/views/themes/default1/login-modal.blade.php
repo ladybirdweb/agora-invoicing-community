@@ -470,7 +470,9 @@ $country = findCountryByGeoip($location['iso_code']);
                                                         
                                                      
                                                           
-                                                                    <button type="button"style="position: absolute; left: 150%;width: max-content;" class="btn btn-default closebutton" id="closebutton" data-dismiss="modal"><i class="fa fa-times">&nbsp;&nbsp;</i>Close</button>
+                                <button type="button"style="position: absolute;
+left: 150%;
+width: max-content;" class="btn btn-default closebutton" id="closebutton" data-dismiss="modal"><i class="fa fa-times">&nbsp;&nbsp;</i>Close</button>
                                 
                             
                                                     
@@ -993,15 +995,30 @@ $country = findCountryByGeoip($location['iso_code']);
     function emailcheck(){
 
         var pattern = new RegExp(/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/);
+        var email_val = $('#mail').val();
+
         if (pattern.test($('#mail').val())){
             $('#emailcheck').hide();
-            $('#email').css("border-color","");
+            $('#mail').css("border-color","");
             return true;
 
         }
+               if(email_val.length == ''){
+                $('#emailcheck').show();
+                $('#emailcheck').html("Please Enter an Email");
+                $('#emailcheck').focus();
+                $('#mail').css("border-color","red");
+                $('#emailcheck').css({"color":"red","margin-top":"5px"});
+                // userErr =false;
+                $('html, body').animate({
+
+                    scrollTop: $("#emailcheck").offset().top - 200
+                }, 1000)
+                return false;
+            }
         else{
             $('#emailcheck').show();
-            $('#emailcheck').html("Please Enter an  email");
+            $('#emailcheck').html("Please Enter an valid  Email");
             $('#emailcheck').focus();
             $('#mail').css("border-color","red");
             $('#emailcheck').css({"color":"red","margin-top":"5px"});

@@ -60,8 +60,7 @@ Create Invoice
 
                 <div class="col-sm-4 form-group">
                     {!! Form::label('user',Lang::get('message.clients'),['class'=>'required']) !!}
-                     {!! Form::select('user', [Lang::get('User')=>$users],null,['multiple'=>true,'class'=>"form-control select2" ,'id'=>"users",'required','style'=>"width:100%;color:black",'oninvalid'=>"setCustomValidity('Please Select Client')",
-                  'onchange'=>"setCustomValidity('')"]) !!}
+                     {!! Form::select('user', [Lang::get('User')=>$users],null,['multiple'=>true,'class'=>"form-control select2" ,'id'=>"users"]) !!}
                  
                 </div>
                 @endif
@@ -81,7 +80,7 @@ Create Invoice
 
                 <div class="col-md-4 lg-4 form-group">
                     {!! Form::label('product',Lang::get('message.product'),['class'=>'required']) !!}
-                     <select name="product" value= "Choose" id="product" class="form-control" required="required">
+                     <select name="product" value= "Choose" id="product" class="form-control">
                              <option value="">Choose</option>
                            @foreach($products as $key=>$product)
                               <option value={{$key}}>{{$product}}</option>
@@ -164,7 +163,7 @@ Create Invoice
                 
                 var price = data['price'];
                 var field = data['field'];
-                 var qty = data['quantity'];
+                var qty = data['quantity'];
                 var agents = data['agents'];
                 //console.log(field);
                 $("#price").val(price);
@@ -229,6 +228,11 @@ Create Invoice
       //   }
          /* stop form from submitting normally */
         event.preventDefault();
+          // const inputs = document.querySelectorAll('#users, #invoice_date','#product','#price',);
+          //   inputs.forEach(input => {
+          //   input.value = '';
+          //     });
+
 
         /* get the action attribute from the <form action=""> element */
         var $form = $(this),
@@ -237,9 +241,11 @@ Create Invoice
         var plan = "";
         var subscription = 'false';
         var description = "";
-        if ($('#plan').length > 0) {
+        var product=document.getElementById("product").value;  
+
+            
+        if (product != '') {
             var plan = document.getElementsByName('plan')[0].value;
-           
             subscription = 'true';
         }
         if ($('#description').length > 0) {
@@ -267,18 +273,28 @@ Create Invoice
         }
         data = data + '&plan=' + plan + '&subscription=' + subscription+'&description='+description;
         $("#generate").html("<i class='fas fa-circle-notch fa-spin'></i>Please Wait...");
+
         $.ajax({
             type: "POST",
             url: url,
             data: data,
             success: function (data) {
-                $("#generate").html("<i class='fas fa-sync-alt'>&nbsp;&nbsp;</i>Generate");
+                 
+               $("#generate").html("<i class='fas fa-sync-alt'>&nbsp;&nbsp;</i>Generate");
+
+                // $('#formoid')[0].reset();
+
+              
                 if(data.success == true) {
                     $('#fails').hide();
                         $('#error').hide();
                         $('#success').show();
                     var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="fa fa-check"></i>Success! </strong>'+data.message.success+'!</div>';
                     $('#success').html(result);
+                     $('#formoid').trigger("reset");
+                     $('select').prop('selectedIndex', 0);
+                     $("#users").val("");
+                     $("#users").trigger("change");
                 }
 
 

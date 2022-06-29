@@ -58,9 +58,9 @@ return [
     'environment' => [
         'form' => [
             'rules' => [
-                'environment' => 'required|string|max:50',
-                'environment_custom' => 'required_if:environment,other|max:50',
-                'app_debug' => [
+                'environment'           => 'required|string|max:50',
+                'environment_custom'    => 'required_if:environment,other|max:50',
+                'app_debug'             => [
                     'required',
                     Rule::in(['true', 'false']),
                 ],

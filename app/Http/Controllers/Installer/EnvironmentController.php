@@ -84,7 +84,6 @@ class EnvironmentController extends BaseEnvironmentController
         $rules = config('installer.environment.form.rules');
         $messages = [
             'environment_custom.required_if' => trans('installer_messages.environment.wizard.form.name_required'),
-            'app_name.regex' => 'The app name should not contain spaces',
         ];
 
         $validator = Validator::make($request->all(), $rules, $messages);

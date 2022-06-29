@@ -46,7 +46,7 @@ Create Widget
                         {!! Form::select('publish',[1=>'Yes',0=>'No'],null,['class' => 'form-control']) !!}
 
                     </div>
-                     @if($twitterStatus == 1)
+                     @if($twitterStatus)
 
                 <?php 
                 $mail = ['class' => 'form-control','disabled' => 'true' , 'title' => 'Cofigure your mailchimp in settings to access'];
@@ -62,8 +62,8 @@ Create Widget
                         {!! Form::select('allow_tweets',[1=>'Yes',0=>'No'],null,($twitterStatus) ? ['class' => 'form-control'] : $twitter) !!}
 
                     </div>
-                    @endif
-                    @if($twitterStatus == 0)
+                    
+                    @else
                     <div class="col-md-4 form-group {{ $errors->has('allow_tweets') ? 'has-error' : '' }}">
                         <!-- last name -->
                         {!! Form::label('allow_tweets',Lang::get('message.allow_tweets'),['class'=>'required']) !!}
@@ -71,15 +71,15 @@ Create Widget
 
                     </div>
                     @endif
-                    @if( $mailchimpStatus == 1)
+                    @if($mailchimpStatus)
                     <div class="col-md-4 form-group {{ $errors->has('allow_mailchimp') ? 'has-error' : '' }}">
                         <!-- last name -->
                         {!! Form::label('allow_mailchimp',Lang::get('message.allow_mailchimp'),['class'=>'required']) !!}
                         {!! Form::select('allow_mailchimp',[1=>'Yes',0=>'No'],null,($mailchimpStatus) ? ['class' => 'form-control'] : $mail) !!}
 
                     </div>
-                    @endif
-                    @if( $mailchimpStatus == 0)
+                    
+                    @else
                    <div class="col-md-4 form-group {{ $errors->has('allow_mailchimp') ? 'has-error' : '' }}">
                         <!-- last name -->
                         {!! Form::label('allow_mailchimp',Lang::get('message.allow_mailchimp'),['class'=>'required']) !!}

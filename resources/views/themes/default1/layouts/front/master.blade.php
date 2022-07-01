@@ -390,7 +390,7 @@ if($script->on_every_page == 1) {
                 </section>
 
                 <div class="container">
-                      @if(Auth::user())
+                      @if(Request::path() != 'LOGIN' && Request::path() != 'CONTACT_US' && Request::path() != 'CART' && Request::path() != 'STORE' )
                     @if(Session::has('warning'))
                     <div class="alert alert-warning alert-dismissable">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
@@ -399,8 +399,8 @@ if($script->on_every_page == 1) {
                     @endif
                     @endif
                     
-                    @if(Auth::user())
-                     @if(Session::has('success'))
+                @if(Request::path() != 'LOGIN' && Request::path() != 'CONTACT_US' && Request::path() != 'CART' && Request::path() != 'STORE')                    
+               @if(Session::has('success'))
                 <div class="alert alert-success">
                      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                        <strong><i class="far fa-thumbs-up"></i> Well done!</strong>
@@ -411,7 +411,7 @@ if($script->on_every_page == 1) {
                 @endif
                 
                  <!--fail message -->
-                 @if(Auth::user())
+                   @if(Request::path() != 'LOGIN' && Request::path() != 'CONTACT_US' && Request::path() != 'CART' && Request::path() != 'STORE' )
                 @if(Session::has('fails'))
                  <div class="alert alert-danger alert-dismissable" role="alert">
                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -420,8 +420,7 @@ if($script->on_every_page == 1) {
                 </div>
                 @endif
                 @endif
-                 @if(Auth::user())
-
+                       @if(Request::path() != 'LOGIN' && Request::path() != 'CONTACT_US' && Request::path() != 'CART' && Request::path() != 'STORE' )
                     @if (count($errors) > 0)
                      <div class="alert alert-danger alert-dismissable" role="alert">
                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -1050,20 +1049,7 @@ if($script->on_every_page == 1) {
  <!-- <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>-->
  <!--@endif-->
 
-    @if (count($errors) > 0)
-    
-
-    <script type="text/javascript">
-
-        jQuery( document ).ready(function() {
-            jQuery('#login-modal').modal('show');
-        });
-        
-        
-        
-    </script>
-  @endif
-
+   
 
 @if(!empty(Session::get('popup')) && Session::get('popup') == 1)
   <script type="text/javascript">

@@ -74,12 +74,11 @@ class ProfileRequest extends Request
                 'country'               => 'required|exists:countries,country_code_char2',
             ];
         }
-   
     }
 
     public function messages()
     {
-       return[
+        return[
             'mobile_code.required'           => 'Enter Country code (mobile)',
             'state.required_if'           => 'The state field is required when country is India.',
         ];

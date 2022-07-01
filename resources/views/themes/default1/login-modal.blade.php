@@ -1430,8 +1430,17 @@ chosen link or button. -->
             $(elem).prev().find('a[data-toggle="tab"]').click();
         }
     </script>
- 
-        
+  @if(count($errors) > 0 && Request::path() == 'LOGIN' && Request::path() == 'CONTACT_US' && Request::path() == 'CART' && Request::path() == 'STORE' )
+    
+    
+
+    <script type="text/javascript">
+
+        jQuery( document ).ready(function() {
+            jQuery('#login-modal').modal('show');
+        });
+    </script>
+  @endif    
 
 
 <noscript>

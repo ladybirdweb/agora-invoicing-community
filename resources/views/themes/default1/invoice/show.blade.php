@@ -142,7 +142,7 @@ Invoice
                                          <td>{{currencyFormat($item->regular_price,$code=$symbol)}}</td>
                                         <td>{{$item->quantity}}</td>
                                        
-                                       <td> {{currencyFormat($item->subtotal,$code=$symbol)}}</td>
+                                       <td style="position: absolute;right: 10.5%;">{{currencyFormat($item->subtotal,$code=$symbol)}}</td>
                                     </tr>
                                     @endforeach
                                 </tbody>

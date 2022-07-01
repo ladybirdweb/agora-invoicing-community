@@ -58,18 +58,18 @@ class AuthController extends BaseAuthController
                 throw new NotFoundHttpException('Token mismatch. Account cannot be activated.');
             }
             $user = $user->where('email', $email)->first();
-            
-            if (!$user) {
+
+            if (! $user) {
                 throw new NotFoundHttpException('User with this email not found.');
             }
-            
-            if($user->active) {
-                   return redirect($url)->with(
+
+            if ($user->active) {
+                return redirect($url)->with(
                         ['warning' => 'This email is already verified',
                             'popup' => 1,
                         ]);
             }
-        
+
             $user->active = 1;
             $user->save();
             $status = StatusSetting::select('mailchimp_status', 'pipedrive_status', 'zoho_status')->first();
@@ -86,9 +86,7 @@ class AuthController extends BaseAuthController
                                       ['success' => 'Email verification successful.Please login to access your account !!',
                                           'popup' => 1,
                                       ]);
-                
         } catch (\Exception $ex) {
-        
             if ($ex->getCode() == 400) {
                 return redirect($url)->with(
                 ['success' => 'Email verification successful,
@@ -101,7 +99,6 @@ class AuthController extends BaseAuthController
                 'fails' => $ex->getMessage(),
                 'popup' => 1,
             ]);
-            
         }
     }
 

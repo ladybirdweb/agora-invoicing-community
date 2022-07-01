@@ -538,7 +538,7 @@ use Illuminate\Http\Request;
                     return view('themes.default1.user.verify', compact('user'));
                 }
 
-                return redirect('login');   
+                return redirect('login');
             });
         });
          /*

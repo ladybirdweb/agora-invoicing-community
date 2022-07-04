@@ -23,6 +23,10 @@ class AutoUpdateController extends Controller
         $this->client_id = $this->license->license_client_id;
         $this->client_secret = $this->license->license_client_secret;
         $this->grant_type = $this->license->license_grant_type;
+
+        //need to remove this once we deprecate updates.faveohelpdesk.com
+        $this->updateUrl = 'https://updates.faveohelpdesk.com/';
+        $this->update_api_secret = 'oiZJh1G4yw00LPbC';
     }
 
     /**
@@ -87,6 +91,8 @@ class AutoUpdateController extends Controller
         $OauthDetails = $this->oauthAuthorization();
         $token = $OauthDetails->access_token;
         $addProduct = $this->postCurl($url.'api/admin/products/UpdateAdd', "api_key_secret=$api_key_secret&product_title=$product_name&product_sku=$product_sku&product_key=$key&product_status=1", $token);
+        //need to remove this once we deprecate updates.faveohelpdesk.com
+        $anotheradd = $this->postCurl($this->updateUrl, "api_key_secret=$this->update_api_secret&api_function=products_add&product_title=$product_name&product_sku=$product_sku&product_key=$key&product_status=1");
     }
 
     /*
@@ -100,6 +106,8 @@ class AutoUpdateController extends Controller
         $OauthDetails = $this->oauthAuthorization();
         $token = $OauthDetails->access_token;
         $addNewVersion = $this->postCurl($url.'api/admin/versions/add', "api_key_secret=$api_key_secret&product_id=$product_id&version_number=$version_number&version_upgrade_file=$upgrade_zip_file&version_status=$version_status&product_status=1", $token);
+        //need to remove this once we deprecate updates.faveohelpdesk.com
+        $anotherVersion = $this->postCurl($this->updateUrl, "api_key_secret=$this->update_api_secret&api_function=versions_add&product_id=$product_id&version_number=$version_number&version_upgrade_file=$upgrade_zip_file&version_status=$version_status&product_status=1");
     }
 
     /*
@@ -115,6 +123,8 @@ class AutoUpdateController extends Controller
         $OauthDetails = $this->oauthAuthorization();
         $token = $OauthDetails->access_token;
         $addNewVersion = $this->postCurl($url.'api/admin/versions/edit', "api_key_secret=$api_key_secret&product_id=productId&version_id=$versionId&version_number=$version_number&version_status=1", $token);
+        //need to remove this once we deprecate updates.faveohelpdesk.com
+        $editNewVersion = $this->postCurl($this->updateUrl, "api_key_secret=$api_key_secret&api_function=versions_edit&product_id=productId&version_id=$versionId&version_number=$version_number&version_status=1");
     }
 
     /*
@@ -141,4 +151,5 @@ class AutoUpdateController extends Controller
 
         return ['version_id'=>$versionId, 'product_id'=>$productId];
     }
+
 }

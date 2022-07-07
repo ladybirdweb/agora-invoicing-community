@@ -25,8 +25,8 @@ class AutoUpdateController extends Controller
         $this->grant_type = $this->license->license_grant_type;
 
         //need to remove this once we deprecate updates.faveohelpdesk.com
-        $this->updateUrl = 'https://updates.faveohelpdesk.com/aus_api/api.php';
-        $this->update_api_secret = 'oiZJh1G4yw00LPbC';
+        $this->updateUrl = '';
+        $this->update_api_secret = '';
     }
 
     /**

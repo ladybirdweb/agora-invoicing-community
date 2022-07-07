@@ -154,5 +154,4 @@ class AutoUpdateController extends Controller
             throw new \Exception('Please configure the valid license details in Apikey settings.');
         }
     }
-
 }

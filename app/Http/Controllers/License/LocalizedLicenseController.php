@@ -6,7 +6,6 @@ use App\ApiKey;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LocalizedLicenseRequest;
 use App\Model\Order\Order;
-use App\ThirdPartyApp;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -35,7 +34,6 @@ class LocalizedLicenseController extends Controller
         $this->client_id = $this->license->license_client_id;
         $this->client_secret = $this->license->license_client_secret;
         $this->grant_type = $this->license->license_grant_type;
-
     }
 
     /**
@@ -237,9 +235,8 @@ class LocalizedLicenseController extends Controller
         $installation_hash = hash('sha256', $domain.$client_email.$licenseCode);
         $OauthDetails = $this->oauthAuthorization();
         $token = $OauthDetails->access_token;
-        $addLocalizedInstallation = $this->postCurl($url.'api/admin/addInstallation', "api_key_secret=$api_key_secret&product_id=$productId&license_code=$licenseCode&installation_domain=$domain&installation_date=$installation_date&installation_status=1&installation_hash=$installation_hash",$token);
+        $addLocalizedInstallation = $this->postCurl($url.'api/admin/addInstallation', "api_key_secret=$api_key_secret&product_id=$productId&license_code=$licenseCode&installation_domain=$domain&installation_date=$installation_date&installation_status=1&installation_hash=$installation_hash", $token);
     }
-
 
     /**
      * Edits the license details without showing the pre-existing license data.

@@ -151,5 +151,4 @@ class AutoUpdateController extends Controller
 
         return ['version_id'=>$versionId, 'product_id'=>$productId];
     }
-
 }

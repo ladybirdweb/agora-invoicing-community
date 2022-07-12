@@ -23,6 +23,8 @@ use App\Traits\PaymentsAndInvoices;
 use App\Traits\TaxCalculation;
 use App\User;
 use Illuminate\Http\Request;
+use App\Http\Requests\InvoiceRequest;
+
 
 class InvoiceController extends TaxRatesAndCodeExpiryController
 {
@@ -356,17 +358,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
      */
     public function invoiceGenerateByForm(InvoiceRequest $request, $user_id = '')
     {
-        $this->validate($request, [
-            'user'      => 'required',
-            'date'      => 'required|date',
-            'domain'    => 'sometimes|nullable|regex:/^(?!:\/\/)(?=.{1,255}$)((.{1,63}\.){1,127}(?![0-9]*$)[a-z0-9-]+\.?)$/i',
-            'plan'      => 'required_if:subscription,true',
-            'price'     => 'required',
-            'product'   => 'required',
-        ], [
-            'plan.required_if' => 'The subscription field is required',
-            'user.required' => 'The clients field is required',
-        ]);
+       
 
         try {
             $agents = $request->input('agents');

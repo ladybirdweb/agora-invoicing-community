@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Order;
 
 use App\Http\Controllers\Front\CartController;
+use App\Http\Requests\InvoiceRequest;
 use App\Model\Common\Setting;
 use App\Model\Common\Template;
 use App\Model\Order\Invoice;
@@ -22,8 +23,6 @@ use App\Traits\PaymentsAndInvoices;
 use App\Traits\TaxCalculation;
 use App\User;
 use Illuminate\Http\Request;
-use App\Http\Requests\InvoiceRequest;
-
 
 class InvoiceController extends TaxRatesAndCodeExpiryController
 {
@@ -348,8 +347,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
      */
     public function invoiceGenerateByForm(InvoiceRequest $request, $user_id = '')
     {
-       
-
         try {
             $agents = $request->input('agents');
             $status = 'pending';

@@ -77,9 +77,11 @@ class SocialMediaController extends Controller
 
     public function store(SocialMediaRequest $request)
     {
+      $regex = '/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/';
+
         $this->validate($request, [
             'name'     => 'required',
-            'link'     => 'required|url',
+            'link'     =>  'required|regex:'.$regex,
 
         ]);
 
@@ -105,9 +107,11 @@ class SocialMediaController extends Controller
 
     public function update($id, SocialMediaRequest $request)
     {
+        $regex = '/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/';
+
         $this->validate($request, [
             'name'     => 'required',
-            'link'     => 'required|url',
+            'link'     =>  'required|regex:'.$regex,
 
         ]);
 

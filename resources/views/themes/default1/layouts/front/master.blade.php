@@ -508,7 +508,8 @@ if($script->on_every_page == 1) {
                                      @if($widgets->allow_social_media)
                                      <ul class="social-icons">
                                       @foreach($social as $media)
-                                <li class="{{$media->class}}"><a href="{{$media->link}}" target="_blank" title="{{ucfirst($media->name)}}"><i class="{{$media->fa_class}}"></i></a></li>
+                                 <li class="social-icons-{{lcfirst($media->name)}}"><a href="{{$media->link}}" target="_blank" title="{{ucfirst($media->name)}}"><i class="fa fa-{{lcfirst($media->name)}}"></i></a></li>
+
                             @endforeach
                           </ul>
                             @endif
@@ -539,8 +540,9 @@ if($script->on_every_page == 1) {
                                          <ul class="social-icons">
                                           @foreach($social as $media)
                                           
-                                <li style="display:inline-block;" class="{{$media->class}}"><a href="{{$media->link}}" target="_blank" title="{{ucfirst($media->name)}}"><i class="{{$media->fa_class}}"></i></a></li>
-                              
+                                 <li class="social-icons-{{lcfirst($media->name)}}"><a href="{{$media->link}}" target="_blank" title="{{ucfirst($media->name)}}"><i class="fa fa-{{lcfirst($media->name)}}"></i></a></li>
+
+                              heelo
                             @endforeach
                             </ul>
                             @endif
@@ -572,7 +574,8 @@ if($script->on_every_page == 1) {
                                           <ul class="social-icons">
                                           @foreach($social as $media)
 
-                                <li class="{{$media->class}}"><a href="{{$media->link}}" target="_blank" title="{{ucfirst($media->name)}}"><i class="{{$media->fa_class}}"></i></a></li>
+                                    <li class="social-icons-{{lcfirst($media->name)}}"><a href="{{$media->link}}" target="_blank" title="{{ucfirst($media->name)}}"><i class="fa fa-{{lcfirst($media->name)}}"></i></a></li>
+
                             @endforeach
                           </ul>
                             @endif
@@ -627,7 +630,8 @@ if($script->on_every_page == 1) {
                             @if($widgets->allow_social_media)
                              <ul class="social-icons">
                             @foreach($social as $media)
-                                <li class="{{$media->class}}"><a href="{{$media->link}}" target="_blank" title="{{ucfirst($media->name)}}"><i class="{{$media->fa_class}}"></i></a></li>
+                             <li class="social-icons-{{lcfirst($media->name)}}"><a href="{{$media->link}}" target="_blank" title="{{ucfirst($media->name)}}"><i class="fa fa-{{lcfirst($media->name)}}"></i></a></li>
+
                             @endforeach
                           </ul>
                             @endif

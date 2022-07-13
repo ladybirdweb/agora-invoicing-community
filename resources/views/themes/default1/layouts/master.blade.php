@@ -354,7 +354,7 @@
             <!-- Main content -->
             <section class="content">
                 <div class="container-fluid">
-                    @if(Route::current()->getName() !== 'plans.index');
+                    @if(Route::current()->getName() !== 'plans.index')
 
                     @if (count($errors) > 0)
 

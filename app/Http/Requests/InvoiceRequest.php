@@ -32,6 +32,7 @@ class InvoiceRequest extends FormRequest
             'product'   => 'required',
         ];
     }
+
     public function messages()
     {
         return[

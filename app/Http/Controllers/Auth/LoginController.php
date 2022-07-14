@@ -83,7 +83,7 @@ class LoginController extends Controller
             $user = User::where('email', $usernameinput)->orWhere('user_name', $usernameinput)->first();
             if (! $user) {
                 return redirect()->back()
-                            ->withInput($request->only('email1', 'remember'))
+                            ->withInput()
                             ->withErrors([
                                 'email1' => 'Please Enter a valid Email',
                             ]);
@@ -91,7 +91,7 @@ class LoginController extends Controller
 
             if (! \Hash::check($password, $user->password)) {//Check for correct password
                 return redirect()->back()
-                ->withInput($request->only('password1', 'remember'))
+                ->withInput()
                 ->withErrors([
                     'password1' => 'Please Enter a valid Password',
                 ]);

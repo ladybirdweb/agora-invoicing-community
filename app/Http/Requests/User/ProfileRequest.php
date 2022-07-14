@@ -64,8 +64,9 @@ class ProfileRequest extends Request
 
         if ($this->segment(1) == 'auth') {
             return [
-                'first_name'            => 'required|min:2|max:30',
-                'last_name'             => 'required|max:30',
+
+                'first_name'            => 'required|regex:/^[a-zA-Z]+$/u|min:2|max:30',
+                'last_name'             => 'required|regex:/^[a-zA-Z]+$/u|max:30',
 
                 'email'                 => 'required|email|unique:users',
 
@@ -81,6 +82,9 @@ class ProfileRequest extends Request
         return[
             'mobile_code.required'           => 'Enter Country code (mobile)',
             'state.required_if'           => 'The state field is required when country is India.',
+            'first_name.regex'  => 'The First name must be in alphabets',
+            'last_name.regex'  => 'The Last name must be in alphabets'
+
         ];
     }
 }

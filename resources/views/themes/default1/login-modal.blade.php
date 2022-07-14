@@ -209,7 +209,7 @@ $country = findCountryByGeoip($location['iso_code']);
                     </div>
                            
 
-                    <div class="card-body" style="  height: 80vh;
+                    <div class="card-body" style="  height: 60vh;
     overflow-y: auto;">
                          <div class="row tab-content">
                         <div class="col-md-12 tab-pane active" id="step1">
@@ -345,11 +345,12 @@ $country = findCountryByGeoip($location['iso_code']);
 
                                                     <input type="hidden" name="user_id" id="user_id"/>
                                                   
-                                                    <p>Please enter your password that wil be sent to your email</p>
+                                                    <p>Please enter your password which already you received via email</p>
                                                        <label  for="mobile" class="required">Password</label>
                                                                  <div class="input-group">
                                                                      <input type="password" value="" name="email_password" id="email_password"" class="form-control form-control input-lg">
                                                                      </div>
+                                        <span id="conpass"></span>
                                                     <input type="hidden" id="checkEmailStatus" value="{{$status->emailverification_status}}">
                                                     @if($status->emailverification_status == 1)
                                                         <p>You will be sent a verification email by an automated system, Please click on the verification link in the email. Click next to continue</p>
@@ -714,6 +715,29 @@ $country = findCountryByGeoip($location['iso_code']);
         $('#verify_email').keyup(function(){//Email
             verify_email_check();
         });
+        
+        function verify_password_check()
+        {
+            var pass_val = $('#email_password').val();
+                if(pass_val.length == ''){
+                $('#conpass').show();
+                $('#conpass').html("Please Enter a Password");
+                $('#conpass').focus();
+                $('#email_password').css("border-color","red");
+                $('#conpass').css({"color":"red","margin-top":"5px"});
+                // userErr =false;
+                $('html, body').animate({
+
+                    scrollTop: $("#conpass").offset().top - 200
+                }, 1000)
+                return false;
+            }
+            else{
+                $('#conpass').hide();
+                $('#email_password').css("border-color","");
+                return true;
+            }
+        }
 
         function verify_email_check(){
             if($("#emailstatusConfirm").val() ==1) {//if email verification is active frm admin panlel then validate else don't
@@ -776,7 +800,7 @@ $country = findCountryByGeoip($location['iso_code']);
             $('#conmobile').hide();
             var mail_error = true;
             var mobile_error = true;
-            if((verify_email_check()) && (verify_number_check()))
+            if((verify_email_check()) && (verify_number_check()) && (verify_password_check()))
             {
 
                 var oldemail=sessionStorage.getItem('oldemail');
@@ -827,22 +851,23 @@ $country = findCountryByGeoip($location['iso_code']);
                             $('#error1').hide();
                         }
                     },
-                    error: function (ex) {
+                    error: function (data) {
+                       
                         $("#sendOtp").attr('disabled',false);
-                        var myJSON = JSON.parse(ex.responseText);
-                        var html = '<div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<br><br><ul>';
-                        $("#sendOtp").html("Send");
-
-                        html += '<li>' + myJSON.message + '</li>'
-
+                         $("#sendOtp").html("Register");
+                        $('html, body').animate({scrollTop:0}, 500);
+                         var html = '<div class="alert alert-danger alert-dismissable"><strong><i class="fas fa-exclamation-triangle"></i>Oh Snap! </strong>'+data.responseJSON.message+' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><br><ul>';
+                        for (var key in data.responseJSON.errors)
+                        {
+                            html += '<li>' + data.responseJSON.errors[key][0] + '</li>'
+                        }
                         html += '</ul></div>';
-                        $('#alertMessage1').hide();
-                        $('#successMessage1').hide();
-                        $('#error1').show();
+
+                        $('#error').show();
                         document.getElementById('error1').innerHTML = html;
-                        setTimeout(function(){
-                            $('#error1').hide();
-                        }, 5000);
+                        setInterval(function(){
+                            $('#error1').slideUp(3000);
+                        }, 8000);
                     }
                 });
             }
@@ -992,7 +1017,7 @@ $country = findCountryByGeoip($location['iso_code']);
     //Validating email field
   function emailcheck(){
 
-        var pattern = new RegExp(/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/);
+        var pattern =  /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
         var email_val = $('#mail').val();
 
         if (pattern.test($('#mail').val())){
@@ -1430,7 +1455,7 @@ chosen link or button. -->
             $(elem).prev().find('a[data-toggle="tab"]').click();
         }
     </script>
-  @if(count($errors) > 0 && Request::path() == 'LOGIN' && Request::path() == 'CONTACT_US' && Request::path() == 'CART' && Request::path() == 'STORE' )
+  @if(count($errors) > 0 && Request::path() == 'login' && Request::path() == 'contact_us' && Request::path() == 'cart' && Request::path() == 'store' )
     
     
 

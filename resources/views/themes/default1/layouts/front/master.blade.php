@@ -322,7 +322,8 @@ if($script->on_every_page == 1) {
                                                 
                                                      <li class="dropdown">
                                                         <a  class="nav-link" data-toggle="modal" data-target="#register-modal" style="cursor: pointer;">
-                                                            Free Signup
+                                                            Free Signup 
+                                         
                                                         </a>
                                                     </li>
                                       
@@ -390,38 +391,37 @@ if($script->on_every_page == 1) {
                 </section>
 
                 <div class="container">
-                      @if(Request::path() != 'LOGIN' && Request::path() != 'CONTACT_US' && Request::path() != 'CART' && Request::path() != 'STORE' )
-                    @if(Session::has('warning'))
+                      @if(Request::path() != 'login' && Request::path() != 'contact_us' && Request::path() != 'cart' && Request::path() != 'store' && Session::has('warning') )
+                    
                     <div class="alert alert-warning alert-dismissable">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                         {{Session::get('warning')}}
                     </div>
                     @endif
-                    @endif
-                    
-                @if(Request::path() != 'LOGIN' && Request::path() != 'CONTACT_US' && Request::path() != 'CART' && Request::path() != 'STORE')                    
-               @if(Session::has('success'))
+
+                @if(Request::path() != 'login' && Request::path() != 'contact_us' && Request::path() != 'cart' && Request::path() != 'store' && Session::has('success'))                    
+               
                 <div class="alert alert-success">
                      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                        <strong><i class="far fa-thumbs-up"></i> Well done!</strong>
                    
                     {!!Session::get('success')!!}
                 </div>
-                @endif
+                
                 @endif
                 
                  <!--fail message -->
-                   @if(Request::path() != 'LOGIN' && Request::path() != 'CONTACT_US' && Request::path() != 'CART' && Request::path() != 'STORE' )
-                @if(Session::has('fails'))
+                   @if(Request::path() != 'login' && Request::path() != 'contact_us' && Request::path() != 'cart' && Request::path() != 'store' && Session::has('fails') )
+                
                  <div class="alert alert-danger alert-dismissable" role="alert">
                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <strong><i class="fas fa-exclamation-triangle"></i>Oh snap!</strong>
                     {{Session::get('fails')}}
                 </div>
+            
                 @endif
-                @endif
-                       @if(Request::path() != 'LOGIN' && Request::path() != 'CONTACT_US' && Request::path() != 'CART' && Request::path() != 'STORE' )
-                    @if (count($errors) > 0)
+                       @if(Request::path() != 'login' && Request::path() != 'contact_us' && Request::path() != 'cart' && Request::path() != 'store' && count($errors) > 0)
+                    
                      <div class="alert alert-danger alert-dismissable" role="alert">
                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                        <strong><i class="fas fa-exclamation-triangle"></i>Oh snap!</strong> Change a few things up and try submitting again.
@@ -432,7 +432,7 @@ if($script->on_every_page == 1) {
                             @endforeach
                         </ul>
                     </div>
-                    @endif
+                    
                     @endif
                       
                     @include('themes.default1.front.domain')
@@ -778,7 +778,7 @@ if($script->on_every_page == 1) {
                     $('#phonenum').css("border-color","");
                     $("#error-msg2").html('');
                     logerrorMsg.classList.add("hide");
-                    $('#logregister').attr('disabled',false);
+                    $('#register').attr('disabled',false);
                 } else {
                    
                     var errorCode = logtelInput.intlTelInput("getValidationError");
@@ -788,7 +788,7 @@ if($script->on_every_page == 1) {
                     $('#phonenum').css("border-color","red");
                     $('#error-msg2').css({"color":"red","margin-top":"5px"});
                     logerrorMsg.classList.remove("hide");
-                    $('#logregister').attr('disabled',true);
+                    $('#register').attr('disabled',true);
                 }
             }
         });
@@ -803,7 +803,7 @@ if($script->on_every_page == 1) {
                     $('#phonenum').css("border-color","");
                     $("#error-msg2").html('');
                     logerrorMsg.classList.add("hide");
-                    $('#logregister').attr('disabled',false);
+                    $('#register').attr('disabled',false);
                 } else {
                     
                     var errorCode = logtelInput.intlTelInput("getValidationError");
@@ -813,7 +813,7 @@ if($script->on_every_page == 1) {
                     $('#phonenum').css("border-color","red");
                     $('#error-msg2').css({"color":"red","margin-top":"5px"});
                     logerrorMsg.classList.remove("hide");
-                    $('#logregister').attr('disabled',true);
+                    $('#register').attr('disabled',true);
                 }
             }
         });

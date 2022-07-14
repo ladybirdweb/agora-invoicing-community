@@ -74,13 +74,28 @@ main
                  verify_mail_check();
             });
            function verify_mail_check(){
-              var pattern = new RegExp(/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/);
-              if (pattern.test($('#email').val())){
+              var pattern = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+               var email_val = $('#email').val();
+               if(email_val.length == ''){
+                $('#resetpasswordcheck').show();
+                $('#resetpasswordcheck').html("Please Enter an Email");
+                $('#resetpasswordcheck').focus();
+                $('#email').css("border-color","red");
+                $('#resetpasswordcheck').css({"color":"red","margin-top":"5px"});
+                // userErr =false;
+                $('html, body').animate({
+
+                    scrollTop: $("#emailcheck").offset().top - 200
+                }, 1000)
+                return false;
+            }
+              if(pattern.test($('#email').val())){
                  $('#resetpasswordcheck').hide();
                   $('#email').css("border-color","");
                  return true;
                
               }
+              
               else{
                  $('#resetpasswordcheck').show();
                 $('#resetpasswordcheck').html("Please Enter a valid email");
@@ -97,7 +112,7 @@ main
 
                         function resetpassword() 
                         {  
-                        	 var mail_error = true;
+                             var mail_error = true;
                            var mobile_error = true;
                            $('#resetpasswordcheck').hide();
                                                         

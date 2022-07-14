@@ -9,10 +9,13 @@ use App\Model\Common\Setting;
 use App\Model\Common\StatusSetting;
 use App\Model\User\AccountActivate;
 use App\User;
+use App\Http\Requests\verifyOtp;
 use Illuminate\Http\Request;
+
 
 class BaseAuthController extends Controller
 {
+   
     //Required Fields for Zoho
     public function reqFields($user, $email)
     {
@@ -93,13 +96,9 @@ class BaseAuthController extends Controller
     /**
      * Sends otp and email for confirmatiob.
      */
-    public function requestOtpFromAjax(Request $request)
+    public function requestOtpFromAjax(verifyOtp $request)
     {
-        $this->validate($request, [
-            'verify_email'   => 'sometimes|required|verify_email|email',
-            'verify_email'   => 'sometimes|required||verify_country_code|numeric',
-            'verify_email'   => 'sometimes|required|verify_number|numeric',
-        ]);
+      
         $email = $request->oldemail;
         $newEmail = $request->newemail;
         $number = ltrim($request->oldnumber, '0');

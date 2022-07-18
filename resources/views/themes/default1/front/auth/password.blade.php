@@ -25,7 +25,7 @@ main
             <div class="row">
               <div class="col-lg-6 offset-lg-3">
                      <div id="alertMessage"></div>
-                     <div id="error"></div>
+                     <div id="errorMessage"></div>
                    <div class="featured-box featured-box-primary text-left mt-5">
                         <div class="box-content">
                           
@@ -147,17 +147,18 @@ main
                                            }
                                         },
                                         error: function (data) {
-                                             var html = '<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><ul>';
+                                                var html = '<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><ul>';
                                             $("#resetmail").html("Send Email");
                                               for (var key in data.responseJSON.errors)
                                             {
                                                 html += '<li>' + data.responseJSON.errors + '</li>'
                                             }
                                             html += '</ul></div>';
-                                           $('#alertMessage').hide(); 
+                                          
                                             
-                                            $('#error').show();
-                                             document.getElementById('error').innerHTML = html;
+                                            $('#errorMessage').show();
+                                             document.getElementById('errorMessage').innerHTML = html;
+                                           
                                            
                                         }
                                     });

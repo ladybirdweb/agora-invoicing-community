@@ -17,16 +17,21 @@ main
 @stop
 @section('content')
 
-<div class="row">
-    <div class="col-md-12">
+
+<div class="row" >
+    <div class="col-md-12" >
 
         <div class="featured-boxes">
+           
+         
             
             <div class="row">
                  <div class="col-lg-6 offset-lg-3">
 
                      <div class="featured-box featured-box-primary text-left mt-5">
+                          
                         <div class="box-content">
+                            
                                
                             <h4 class="heading-primary text-uppercase mb-md">Reset Password</h4>
                             {!!  Form::open(['url'=>'/password/reset', 'method'=>'post']) !!}
@@ -40,8 +45,8 @@ main
                                        </p>
                                       
 
-                                        {!! Form::password('password',['placeholder'=>Lang::get('message.password'),'class' => 'form-control input-lg']) !!}
-                                        <!--<input type="password" value="" class="form-control input-lg">-->
+                                     
+                                        <input type="password" value="" class="form-control input-lg" placeholder="Password" name='password'<?php if( count($errors) > 0) {?> style="width: 98%;position: relative;left: 5px;"<?}?>>
                                    
                                 </div>
                             </div>

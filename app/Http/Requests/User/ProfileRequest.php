@@ -80,7 +80,7 @@ class ProfileRequest extends Request
             'mobile_code.required'           => 'Enter Country code (mobile)',
             'state.required_if'           => 'The state field is required when country is India.',
             'first_name.regex'  => 'The First name must be in alphabets',
-            'last_name.regex'  => 'The Last name must be in alphabets'
+            'last_name.regex'  => 'The Last name must be in alphabets',
 
         ];
     }

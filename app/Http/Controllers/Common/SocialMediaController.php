@@ -77,7 +77,7 @@ class SocialMediaController extends Controller
 
     public function store(SocialMediaRequest $request)
     {
-      $regex = '/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/';
+        $regex = '/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/';
 
         $this->validate($request, [
             'name'     => 'required',

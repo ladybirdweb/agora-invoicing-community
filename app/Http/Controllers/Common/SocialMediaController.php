@@ -78,7 +78,7 @@ class SocialMediaController extends Controller
 
         $this->validate($request, [
             'name'     => 'required',
-            'link'     =>  'required|regex:'.$regex,
+            'link'     =>  'required|url|regex:'.$regex,
 
         ]);
 

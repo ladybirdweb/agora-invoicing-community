@@ -258,8 +258,8 @@ System Setting
                                 <img src='{{ asset("admin/images/$set->admin_logo")}}' class="img-thumbnail" style="height: 50px;">&nbsp;&nbsp;
                                 
 
-                                  <button type="button"  id="{{$set->id}}" data-url="{{url('logo/'.$set->id.'/admin_logo')}}" id="client" data-toggle="tooltip"  value="" class="btn btn-sm btn-secondary client " label="" style="font-weight:500;" name="logo" title="Delete  logo.">
-                                <i class="fa fa-trash" ></i></button>
+                                 <button  type="button"  id="{{$set->id}}" data-url=""  data-toggle="tooltip"  value="admin" class="btn btn-sm btn-secondary show_confirm " label="" style="font-weight:500;" name="logo" value="client_logo" title="Delete  logo." style="background-color: #6c75c7d;">
+                                <i class="fa fa-trash"></i></button>
                                 @endif
                             </div>
                         </td>
@@ -280,8 +280,8 @@ System Setting
 
                       
 
-                                     <button type="button"  id="{{$set->id}}" data-url="{{url('logo/'.$set->id.'/fav_icon')}}" id="client" data-toggle="tooltip"  value="" class="btn btn-sm btn-secondary client " label="" style="font-weight:500;" name="icon" value="fav_icon" title="Delete  logo.">
-                                <i class="fa fa-trash" ></i></button>
+                                      <button  type="button"  id="{{$set->id}}" data-url=""  data-toggle="tooltip"  value="fav" class="btn btn-sm btn-secondary show_confirm " label="" style="font-weight:500;" name="logo" value="client_logo" title="Delete  logo." style="background-color: #6c75c7d;">
+                                <i class="fa fa-trash"></i></button>
                                 @endif
                             </div>
                         </td>
@@ -331,7 +331,7 @@ System Setting
                                 @if($set->logo) 
                                 <img src='{{asset("common/images/$set->logo")}}' class="img-thumbnail" style="height: 50px;"> &nbsp;&nbsp;
                                  
-                                <button type="button"  id="{{$set->id}}" data-url="{{url('logo/'.$set->id.'/logo')}}" id="client" data-toggle="tooltip"  value="" class="btn btn-sm btn-secondary client " label="" style="font-weight:500;" name="logo" value="client_logo" title="Delete  logo." style="background-color: #6c75c7d;">
+                                 <button  type="button"  id="{{$set->id}}" data-url=""  data-toggle="tooltip"  value="logo" class="btn btn-sm btn-secondary show_confirm " label="" style="font-weight:500;" name="logo" value="client_logo" title="Delete  logo." style="background-color: #6c75c7d;">
                                 <i class="fa fa-trash"></i></button>
 
                                          
@@ -356,6 +356,45 @@ System Setting
         </div>
     </div>
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
+<script type="text/javascript">
+ 
+     $('.show_confirm').click(function(event) {
+          var id = $(this).attr('id');
+          var column = $(this).attr('value');
+        
+
+          event.preventDefault();
+          swal({
+              title: `Are you sure to delete this record?`,
+              text: "If you delete this, it will be gone forever.",
+              
+              buttons: true,
+              dangerMode: true,
+          })
+          .then((willDelete) => {
+            if (willDelete) {
+                $.ajax({
+               
+                type: 'POST',
+                url: "{{url('changeLogo')}}",
+                dataType: 'json',
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                data: {id:id,column:column,"_token": "{{ csrf_token() }}"},
+               success: function (data) {
+                location.reload();
+                               
+               },
+               error: function (data) {
+                  location.reload();   
+               }
+              
+            });
+            }
+          });
+      });
+  
+</script>
 <script>
      $('ul.nav-sidebar a').filter(function() {
         return this.id == 'setting';
@@ -409,25 +448,7 @@ System Setting
         });
     }
 </script>
-<script>
-    $(".client").click(function (e){
-         e.preventDefault();
-        var id = $(this).attr('id');
-        var column = $(this).val();
-        var url = $(this).attr('data-url') + '/' + column;  
-            $.ajax({
-                url: url,
-                type: 'GET',
-                data: { "id":id },
-                success: function () {
-                    location.reload();
-                }
-              
-            });
-            
-       });
-        
-</script>
+
 
         
 

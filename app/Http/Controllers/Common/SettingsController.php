@@ -216,14 +216,34 @@ class SettingsController extends BaseSettingsController
      *
      * Remove the logo from the DB and local storage.
      */
-    public function changeLogo($id, $value)
-    {
-        $log = Setting::find($id);
-        File::delete(public_path('common/images/').$log->$value);
-        File::delete(public_path('admin/images/').$log->$value);
-        $result = Setting::where('id', $id)->update([$value => null]);
+   public function delete(Request $request)
+    { 
+        if(isset($request->id)){
+            
+            $todo = Setting::findOrFail($request->id);
+              if($request->column == 'logo')
+              {
+             File::delete(public_path('common/images/').$todo->logo);
 
-        return back();
+              $todo->logo = null;
+            }
+             if($request->column == 'admin')
+              {
+            File::delete(public_path('admin/images/').$todo->admin_logo);
+
+              $todo->admin_logo = null;
+
+            }
+             if($request->column == 'fav')
+              {
+             File::delete(public_path('common/images/').$todo->fav_icon);
+              $todo->fav_icon = null;
+            }
+              $todo->save();
+
+              return back();
+        }
+
     }
 
     public function settingsEmail(Setting $settings)

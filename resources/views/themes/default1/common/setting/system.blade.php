@@ -16,7 +16,6 @@ System Setting
 @stop
 @section('content')
 
-
 <div class="row">
 
     <div class="col-md-12">
@@ -24,6 +23,8 @@ System Setting
             <div class="box-header">
 
             </div>
+            <div id="successu"></div>
+            <div id="error"></div>
 
             <div class="card-body">
                 {!! Form::model($set,['url'=>'settings/system','method'=>'patch','files'=>true]) !!}
@@ -253,13 +254,13 @@ System Setting
                             <div class="form-group {{ $errors->has('logo') ? 'has-error' : '' }}">
 
                                 {!! Form::file('admin-logo') !!}
-                                <p><i> {{Lang::get('Upload Application logo')}}</i> </p>
+                                <p><i> {{Lang::get('message.enter-the-admin-panel-logo')}}</i> </p>
                                 @if($set->admin_logo) 
-                                <img src='{{ asset("admin/images/$set->admin_logo")}}' class="img-thumbnail" style="height: 50px;">&nbsp;&nbsp;
-                                
+                                <img src='{{ asset("admin/images/$set->admin_logo")}}' class="img-thumbnail" style="height: 50px;">
 
-                                  <button type="button"  id="{{$set->id}}" data-url="{{url('logo/'.$set->id.'/admin_logo')}}" id="client" data-toggle="tooltip"  value="" class="btn btn-sm btn-secondary client " label="" style="font-weight:500;" name="logo" title="Delete  logo.">
-                                <i class="fa fa-trash" ></i></button>
+                                   <button  type="button"  id="{{$set->id}}" data-url=""  data-toggle="tooltip"  value="admin" class="btn btn-sm btn-secondary show_confirm " label="" style="font-weight:500;" name="logo" value="client_logo" title="Delete  logo." style="background-color: #6c75c7d;">
+                                <i class="fa fa-trash"></i></button>
+
                                 @endif
                             </div>
                         </td>
@@ -274,15 +275,11 @@ System Setting
                             <div class="form-group {{ $errors->has('icon') ? 'has-error' : '' }}">
 
                                 {!! Form::file('fav-icon') !!}
-                                <p><i> {{Lang::get('Upload favicon for Admin and Client Panel')}}</i> </p>
+                                <p><i> {{Lang::get('message.enter-the-favicon')}}</i> </p>
                                 @if($set->fav_icon) 
-                                <img src='{{asset("common/images/$set->fav_icon")}}' class="img-thumbnail" style="height: 50px;">&nbsp;&nbsp;
-
-                      
-
-                                     <button type="button"  id="{{$set->id}}" data-url="{{url('logo/'.$set->id.'/fav_icon')}}" id="client" data-toggle="tooltip"  value="" class="btn btn-sm btn-secondary client " label="" style="font-weight:500;" name="icon" value="fav_icon" title="Delete  logo.">
-                                <i class="fa fa-trash" ></i></button>
-                                @endif
+                                <img src='{{asset("common/images/$set->fav_icon")}}' class="img-thumbnail" style="height: 50px;">
+                                 <button  type="button"  id="{{$set->id}}" data-url=""  data-toggle="tooltip"  value="fav" class="btn btn-sm btn-secondary show_confirm " label="" style="font-weight:500;" name="logo" value="client_logo" title="Delete  logo." style="background-color: #6c75c7d;">
+                                <i class="fa fa-trash"></i></button>                                @endif
                             </div>
                         </td>
                        
@@ -324,21 +321,16 @@ System Setting
 
                         <td><b>{!! Form::label('logo',Lang::get('message.client-logo')) !!}</b></td>
                         <td>
+                        
+
                             <div class="form-group {{ $errors->has('logo') ? 'has-error' : '' }}">
 
                                 {!! Form::file('logo') !!}
-                                <p><i> {{Lang::get('Upload the company logo')}}</i> </p>
+                                <p><i> {{Lang::get('message.enter-the-company-logo')}}</i> </p>
                                 @if($set->logo) 
-                                <img src='{{asset("common/images/$set->logo")}}' class="img-thumbnail" style="height: 50px;"> &nbsp;&nbsp;
-                                 
-                                <button type="button"  id="{{$set->id}}" data-url="{{url('logo/'.$set->id.'/logo')}}" id="client" data-toggle="tooltip"  value="" class="btn btn-sm btn-secondary client " label="" style="font-weight:500;" name="logo" value="client_logo" title="Delete  logo." style="background-color: #6c75c7d;">
+                                <img src='{{asset("common/images/$set->logo")}}' class="img-thumbnail " style="height: 50px;">
+                                 <button  type="button"  id="{{$set->id}}" data-url=""  data-toggle="tooltip"  value="logo" class="btn btn-sm btn-secondary show_confirm " label="" style="font-weight:500;" name="logo" value="client_logo" title="Delete  logo." style="background-color: #6c75c7d;">
                                 <i class="fa fa-trash"></i></button>
-
-                                         
-
-                            
-
-                            
                                 @endif
                             </div>
                         </td>
@@ -349,13 +341,51 @@ System Setting
             </div>
 
                 </div>
-                <button type="submit" class="btn btn-primary" id="submit" name="submit" value="save" ><i class="fa fa-sync-alt">&nbsp;</i>{!!Lang::get('message.update')!!}</button>
-               
-
+                <button type="submit" class="btn btn-primary" id="submit" ><i class="fa fa-sync-alt">&nbsp;</i>{!!Lang::get('message.update')!!}</button>
                 {!! Form::close() !!}
         </div>
     </div>
 </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
+<script type="text/javascript">
+ 
+     $('.show_confirm').click(function(event) {
+          var id = $(this).attr('id');
+          var column = $(this).attr('value');
+        
+
+          event.preventDefault();
+          swal({
+              title: `Are you sure to delete this record?`,
+              text: "If you delete this, it will be gone forever.",
+              
+              buttons: true,
+              dangerMode: true,
+          })
+          .then((willDelete) => {
+            if (willDelete) {
+                $.ajax({
+               
+                type: 'POST',
+                url: "{{url('changeLogo')}}",
+                dataType: 'json',
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                data: {id:id,column:column,"_token": "{{ csrf_token() }}"},
+               success: function (data) {
+                location.reload();
+                               
+               },
+               error: function (data) {
+                  location.reload();   
+               }
+              
+            });
+            }
+          });
+      });
+  
+</script>
 <script>
      $('ul.nav-sidebar a').filter(function() {
         return this.id == 'setting';
@@ -409,26 +439,4 @@ System Setting
         });
     }
 </script>
-<script>
-    $(".client").click(function (e){
-         e.preventDefault();
-        var id = $(this).attr('id');
-        var column = $(this).val();
-        var url = $(this).attr('data-url') + '/' + column;  
-            $.ajax({
-                url: url,
-                type: 'GET',
-                data: { "id":id },
-                success: function () {
-                    location.reload();
-                }
-              
-            });
-            
-       });
-        
-</script>
-
-        
-
 @stop

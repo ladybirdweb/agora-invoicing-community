@@ -97,6 +97,8 @@ use Illuminate\Http\Request;
              * Front Client Pages
              */
 
+            Route::post('first-login', 'FreeTrailController@firstLoginAttempt');
+
             Route::get('my-invoices', 'Front\ClientController@invoices')->name('my-invoices');
 
             Route::get('get-my-invoices', 'Front\ClientController@getInvoices')->name('get-my-invoices');
@@ -190,8 +192,7 @@ use Illuminate\Http\Request;
             /*
              * Settings
              */
-
-            Route::get('logo/{id}/{value}', 'Common\SettingsController@changeLogo');
+            Route::post('changeLogo','Common\SettingsController@delete');
 
             Route::get('settings', 'Common\SettingsController@settings');
             Route::get('settings/system', 'Common\SettingsController@settingsSystem');

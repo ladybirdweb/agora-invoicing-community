@@ -11,11 +11,10 @@ use App\Model\Mailjob\QueueService;
 use App\Model\Payment\Currency;
 use App\Model\Plugin;
 use App\User;
+use File;
 use GrahamCampbell\Markdown\Facades\Markdown;
 use Illuminate\Http\Request;
 use Spatie\Activitylog\Models\Activity;
-use File;
-
 
 class SettingsController extends BaseSettingsController
 {
@@ -213,40 +212,35 @@ class SettingsController extends BaseSettingsController
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
+
     public function delete(Request $request)
-    { 
-      try{
-        if(isset($request->id)){
-            
-            $todo = Setting::findOrFail($request->id);
-              if($request->column == 'logo')
-              {
-             File::delete(public_path('common/images/').$todo->logo);
+    {
+        try {
+            if (isset($request->id)) {
+                $todo = Setting::findOrFail($request->id);
+                if ($request->column == 'logo') {
+                    File::delete(public_path('common/images/').$todo->logo);
 
-              $todo->logo = null;
+                    $todo->logo = null;
+                }
+                if ($request->column == 'admin') {
+                    File::delete(public_path('admin/images/').$todo->admin_logo);
+
+                    $todo->admin_logo = null;
+                }
+                if ($request->column == 'fav') {
+                    File::delete(public_path('common/images/').$todo->fav_icon);
+                    $todo->fav_icon = null;
+                }
+                $todo->save();
+
+                return back();
             }
-             if($request->column == 'admin')
-              {
-            File::delete(public_path('admin/images/').$todo->admin_logo);
-
-              $todo->admin_logo = null;
-
-            }
-             if($request->column == 'fav')
-              {
-             File::delete(public_path('common/images/').$todo->fav_icon);
-              $todo->fav_icon = null;
-            }
-              $todo->save();
-
-              return back();
-        }
-    }
-       catch (\Exception $ex) {
+        } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
-
     }
+
     public function settingsEmail(Setting $settings)
     {
         try {

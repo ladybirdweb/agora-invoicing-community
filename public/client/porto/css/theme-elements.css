@@ -10773,6 +10773,13 @@ html.boxed .slider-container {
 .social-icons li:hover.social-icons-twitter a {
 	background: #1aa9e1;
 }
+.social-icons li:hover.social-icons-github a {
+	background: #000000;
+}
+
+.social-icons li:hover.social-icons-whatsapp a {
+	background: #25D366;
+}
 
 .social-icons li:hover.social-icons-facebook a {
 	background: #3b5a9a;
@@ -10786,8 +10793,9 @@ html.boxed .slider-container {
 	background: #ff8201;
 }
 
-.social-icons li:hover.social-icons-googleplus a {
+.social-icons li:hover.social-icons-google a {
 	background: #dd4b39;
+
 }
 
 .social-icons li:hover.social-icons-pinterest a {
@@ -10806,7 +10814,7 @@ html.boxed .slider-container {
 	background: #00b0f6;
 }
 
-.social-icons li:hover.social-icons-email a {
+.social-icons li:hover.social-icons-envelope a {
 	background: #dd4b39;
 }
 

@@ -263,8 +263,8 @@ System Setting
                                 <img src='{{ asset("admin/images/$set->admin_logo")}}' class="img-thumbnail" style="height: 50px;">&nbsp;&nbsp;
                                 
 
-                                  <button type="button"  id="{{$set->id}}" data-url="{{url('logo/'.$set->id.'/admin_logo')}}" id="client" data-toggle="tooltip"  value="" class="btn btn-sm btn-secondary client " label="" style="font-weight:500;" name="logo" title="Delete  logo.">
-                                <i class="fa fa-trash" ></i></button>
+                                 <button  type="button"  id="{{$set->id}}" data-url=""  data-toggle="tooltip"  value="admin" class="btn btn-sm btn-secondary show_confirm " label="" style="font-weight:500;" name="logo" value="client_logo" title="Delete  logo." style="background-color: #6c75c7d;">
+                                <i class="fa fa-trash"></i></button>
                                 @endif
                             </div>
                         </td>
@@ -285,8 +285,8 @@ System Setting
 
                       
 
-                                     <button type="button"  id="{{$set->id}}" data-url="{{url('logo/'.$set->id.'/fav_icon')}}" id="client" data-toggle="tooltip"  value="" class="btn btn-sm btn-secondary client " label="" style="font-weight:500;" name="icon" value="fav_icon" title="Delete  logo.">
-                                <i class="fa fa-trash" ></i></button>
+                                      <button  type="button"  id="{{$set->id}}" data-url=""  data-toggle="tooltip"  value="fav" class="btn btn-sm btn-secondary show_confirm " label="" style="font-weight:500;" name="logo" value="client_logo" title="Delete  logo." style="background-color: #6c75c7d;">
+                                <i class="fa fa-trash"></i></button>
                                 @endif
                             </div>
                         </td>
@@ -336,7 +336,7 @@ System Setting
                                 @if($set->logo) 
                                 <img src='{{asset("common/images/$set->logo")}}' class="img-thumbnail" style="height: 50px;"> &nbsp;&nbsp;
                                  
-                                <button type="button"  id="{{$set->id}}" data-url="{{url('logo/'.$set->id.'/logo')}}" id="client" data-toggle="tooltip"  value="" class="btn btn-sm btn-secondary client " label="" style="font-weight:500;" name="logo" value="client_logo" title="Delete  logo." style="background-color: #6c75c7d;">
+                                 <button  type="button"  id="{{$set->id}}" data-url=""  data-toggle="tooltip"  value="logo" class="btn btn-sm btn-secondary show_confirm " label="" style="font-weight:500;" name="logo" value="client_logo" title="Delete  logo." style="background-color: #6c75c7d;">
                                 <i class="fa fa-trash"></i></button>
 
                                          
@@ -363,95 +363,6 @@ System Setting
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
 <script type="text/javascript">
- 
-      $(document).ready(function(){
-         $(function () {
-             //Initialize Select2 Elements
-             $('.select2').select2()
-         });
-    var country = $('#country').val();
-    if(country == 'IN') {
-        $('#gstin').show()
-    } else {
-        $('#gstin').hide();
-    }
-    getCode(country);
-    var telInput = $('#phone');
-    addressDropdown = $("#country");
-     errorMsg = document.querySelector("#error-msg"),
-    validMsg = document.querySelector("#valid-msg");
-    var errorMap = [ "Invalid number", "Invalid country code", "Number Too short", "Number Too long", "Invalid number"];
-     let currentCountry="";
-    telInput.intlTelInput({
-        initialCountry: "auto",
-        geoIpLookup: function (callback) {
-
-            $.get("http://ipinfo.io", function () {}, "jsonp").always(function (resp) {
-                resp.country = country;
-
-                var countryCode = (resp && resp.country) ? resp.country : "";
-                    currentCountry=countryCode.toLowerCase()
-                    callback(countryCode);
-            });
-        },
-        separateDialCode: true,
-       utilsScript: "{{asset('js/intl/js/utils.js')}}"
-    });
-     var reset = function() {
-      errorMsg.innerHTML = "";
-      errorMsg.classList.add("hide");
-      validMsg.classList.add("hide");
-    };
-    setTimeout(()=>{
-         telInput.intlTelInput("setCountry", currentCountry);
-    },500)
-     $('.intl-tel-input').css('width', '100%');
-    telInput.on('blur', function () {
-      reset();
-        if ($.trim(telInput.val())) {
-            if (telInput.intlTelInput("isValidNumber")) {
-              $('#phone').css("border-color","");
-              validMsg.classList.remove("hide");
-              $('#submit').attr('disabled',false);
-            } else {
-              var errorCode = telInput.intlTelInput("getValidationError");
-             errorMsg.innerHTML = errorMap[errorCode];
-             $('#phone').css("border-color","red");
-             $('#error-msg').css({"color":"red","margin-top":"5px"});
-             errorMsg.classList.remove("hide");
-             $('#submit').attr('disabled',true);
-            }
-        }
-    });
-
-     addressDropdown.change(function() {
-     telInput.intlTelInput("setCountry", $(this).val());
-             if ($.trim(telInput.val())) {
-            if (telInput.intlTelInput("isValidNumber")) {
-              $('#phone').css("border-color","");
-              errorMsg.classList.add("hide");
-              $('#submit').attr('disabled',false);
-            } else {
-              var errorCode = telInput.intlTelInput("getValidationError");
-             errorMsg.innerHTML = errorMap[errorCode];
-             $('#phone').css("border-color","red");
-             $('#error-msg').css({"color":"red","margin-top":"5px"});
-             errorMsg.classList.remove("hide");
-             $('#submit').attr('disabled',true);
-            }
-        }
-    });
-    $('input').on('focus', function () {
-        $(this).parent().removeClass('has-error');
-    });
-
-    $('form').on('submit', function (e) {
-        $('input[name=mobileds]').attr('value', $('.selected-dial-code').text());
-    });
-
-
-});
- 
  
      $('.show_confirm').click(function(event) {
           var id = $(this).attr('id');
@@ -554,25 +465,7 @@ System Setting
         });
     }
 </script>
-<script>
-    $(".client").click(function (e){
-         e.preventDefault();
-        var id = $(this).attr('id');
-        var column = $(this).val();
-        var url = $(this).attr('data-url') + '/' + column;  
-            $.ajax({
-                url: url,
-                type: 'GET',
-                data: { "id":id },
-                success: function () {
-                    location.reload();
-                }
-              
-            });
-            
-       });
-        
-</script>
+
 
         
 

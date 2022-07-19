@@ -193,7 +193,7 @@ use Illuminate\Http\Request;
              * Settings
              */
 
-            Route::get('logo/{id}/{value}', 'Common\SettingsController@changeLogo');
+            Route::post('changeLogo','Common\SettingsController@delete');
 
             Route::get('settings', 'Common\SettingsController@settings');
             Route::get('settings/system', 'Common\SettingsController@settingsSystem');

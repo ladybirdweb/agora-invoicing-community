@@ -4,18 +4,16 @@ namespace App\Http\Controllers\Auth;
 
 use App\ApiKey;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\verifyOtp;
 use App\Model\Common\Country;
 use App\Model\Common\Setting;
 use App\Model\Common\StatusSetting;
 use App\Model\User\AccountActivate;
 use App\User;
-use App\Http\Requests\verifyOtp;
 use Illuminate\Http\Request;
-
 
 class BaseAuthController extends Controller
 {
-   
     //Required Fields for Zoho
     public function reqFields($user, $email)
     {
@@ -98,7 +96,6 @@ class BaseAuthController extends Controller
      */
     public function requestOtpFromAjax(verifyOtp $request)
     {
-      
         $email = $request->oldemail;
         $newEmail = $request->newemail;
         $number = ltrim($request->oldnumber, '0');

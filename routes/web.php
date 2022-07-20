@@ -192,7 +192,7 @@ use Illuminate\Support\Facades\Route;
              * Settings
              */
 
-            Route::post('changeLogo','Common\SettingsController@delete');
+            Route::post('changeLogo', 'Common\SettingsController@delete');
 
             Route::get('settings', 'Common\SettingsController@settings');
             Route::get('settings/system', 'Common\SettingsController@settingsSystem');

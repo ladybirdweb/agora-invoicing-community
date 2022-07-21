@@ -45,7 +45,7 @@ class RegistrationTest extends DBTestCase
     /** @group postRegister */
     public function test_when_user_registers_emailAndUsername_not_given()
     {
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
         $response = $this->call('POST', 'auth/register', ['first_name' => $user->first_name,
             'last_name' => $user->last_name,
             // 'email' =>$user->email,
@@ -75,7 +75,7 @@ class RegistrationTest extends DBTestCase
     // public function test_when_user_registers_successfully()
     // {
     //     $this->setUpServerVariable('192.168.12.12', 'someaddress', 'IN');
-    //     $user = factory(User::class)->create(['bussiness'=>'Accounting', 'mobile_code'=>91]);
+    //     $user = User::factory()->create(['bussiness'=>'Accounting', 'mobile_code'=>91]);
     //     $response = $this->call('POST', 'auth/register', ['first_name'=> $user->first_name,
     //                 'last_name'                                       => $user->last_name,
     //                 'email'                                           => 'test@gmail.com',
@@ -108,7 +108,7 @@ class RegistrationTest extends DBTestCase
     // /** @group postRegister */
     // public function test_postRegister_whenUserRegistersAndIpIsNotDetected()
     // {
-    //     $user = factory(User::class)->create(['bussiness'=>'Accounting', 'mobile_code'=>91]);
+    //     $user = User::factory()->create(['bussiness'=>'Accounting', 'mobile_code'=>91]);
     //     $response = $this->call('POST', 'auth/register', ['first_name'=> $user->first_name,
     //                 'last_name'                                       => $user->last_name,
     //                 'email'                                           => 'test@gmail.com',
@@ -138,7 +138,7 @@ class RegistrationTest extends DBTestCase
     public function test_postRegister_whenPasswordDoesNotMatch()
     {
         $this->setUpServerVariable('192.168.12.12', 'someaddress', 'IN');
-        $user = factory(User::class)->create(['bussiness' => 'Accounting', 'mobile_code' => 91]);
+        $user = User::factory()->create(['bussiness' => 'Accounting', 'mobile_code' => 91]);
         $response = $this->call('POST', 'auth/register', ['first_name' => $user->first_name,
             'last_name' => $user->last_name,
             'email' => 'test@gmail.com',

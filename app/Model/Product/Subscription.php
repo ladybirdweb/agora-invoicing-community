@@ -2,6 +2,7 @@
 
 namespace App\Model\Product;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use DateTime;
 use DateTimeZone;
 use Illuminate\Database\Eloquent\Model;
@@ -9,6 +10,8 @@ use Spatie\Activitylog\Traits\LogsActivity;
 
 class Subscription extends Model
 {
+    use HasFactory;
+
     use LogsActivity;
 
     protected $table = 'subscriptions';

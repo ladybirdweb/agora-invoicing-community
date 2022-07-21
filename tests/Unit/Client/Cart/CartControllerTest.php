@@ -24,7 +24,7 @@ class CartControllerTest extends DBTestCase
     {
         $this->getLoggedInUser();
         $this->withoutMiddleware();
-        $product = factory(Product::class)->create();
+        $product = Product::factory()->create();
         $plan = Plan::create(['name' => 'HD Plan 1 year', 'product' => $product->id, 'days' => 366]);
         $planPrice = PlanPrice::create(['plan_id' => $plan->id, 'currency' => 'INR', 'add_price' => '1000', 'renew_price' => '500', 'price_description' => 'Random description', 'product_quantity' => 1, 'no_of_agents' => 0]);
 
@@ -37,7 +37,7 @@ class CartControllerTest extends DBTestCase
     {
         $this->getLoggedInUser();
         $this->withoutMiddleware();
-        $product = factory(Product::class)->create();
+        $product = Product::factory()->create();
         $plan = Plan::create(['name' => 'HD Plan 1 year', 'product' => $product->id, 'days' => 366]);
         $planPrice = PlanPrice::create(['plan_id' => $plan->id, 'currency' => 'INR', 'add_price' => '1000', 'renew_price' => '500', 'price_description' => 'Random description', 'product_quantity' => 1, 'no_of_agents' => 0]);
 
@@ -52,7 +52,7 @@ class CartControllerTest extends DBTestCase
         $this->expectExceptionMessage('Product cannot be added to cart. No such plan exists.');
         $this->getLoggedInUser();
         $this->withoutMiddleware();
-        $product = factory(Product::class)->create();
+        $product = Product::factory()->create();
         $plan = Plan::create(['name' => 'HD Plan 1 year', 'product' => $product->id, 'days' => 366]);
         $planPrice = PlanPrice::create(['plan_id' => $plan->id, 'currency' => 'INR', 'add_price' => '1000', 'renew_price' => '500', 'price_description' => 'Random description', 'product_quantity' => 1, 'no_of_agents' => 0]);
 
@@ -64,7 +64,7 @@ class CartControllerTest extends DBTestCase
     {
         $this->getLoggedInUser();
         $this->withoutMiddleware();
-        $product = factory(Product::class)->create();
+        $product = Product::factory()->create();
         $plan = Plan::create(['name' => 'HD Plan 1 year', 'product' => $product->id, 'days' => 366]);
         $planPrice = PlanPrice::create(['plan_id' => $plan->id, 'currency' => 'INR', 'add_price' => '1000', 'renew_price' => '500', 'price_description' => 'Random description', 'product_quantity' => 1, 'no_of_agents' => 0]);
 
@@ -79,8 +79,8 @@ class CartControllerTest extends DBTestCase
         $this->expectExceptionMessage('Product cannot be added to cart. No such plan exists.');
         $this->getLoggedInUser();
         $this->withoutMiddleware();
-        $product1 = factory(Product::class)->create();
-        $product2 = factory(Product::class)->create(['name' => 'Test Product']);
+        $product1 = Product::factory()->create();
+        $product2 = Product::factory()->create(['name' => 'Test Product']);
         $plan1 = Plan::create(['name' => 'HD Plan 1 year', 'product' => $product1->id, 'days' => 366]);
         $plan2 = Plan::create(['name' => 'SD Plan 1 year', 'product' => $product2->id, 'days' => 366]);
 
@@ -96,7 +96,7 @@ class CartControllerTest extends DBTestCase
     {
         $this->getLoggedInUser();
         $this->withoutMiddleware();
-        $product = factory(Product::class)->create();
+        $product = Product::factory()->create();
 
         $taxCondition = new \Darryldecode\Cart\CartCondition([
             'name' => 'GST', 'type' => 'tax',
@@ -123,8 +123,8 @@ class CartControllerTest extends DBTestCase
     {
         $this->getLoggedInUser();
         $this->withoutMiddleware();
-        $product1 = factory(Product::class)->create();
-        $product2 = factory(Product::class)->create(['name' => 'Test Product']);
+        $product1 = Product::factory()->create();
+        $product2 = Product::factory()->create(['name' => 'Test Product']);
 
         $taxCondition1 = new \Darryldecode\Cart\CartCondition([
             'name' => 'GST', 'type' => 'tax',

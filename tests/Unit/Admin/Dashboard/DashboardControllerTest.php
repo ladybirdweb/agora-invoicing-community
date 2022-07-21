@@ -32,7 +32,7 @@ class DashboardControllerTest extends DBTestCase
         $this->withoutMiddleware();
         $this->getLoggedInUser();
         $user = $this->user;
-        $invoice = factory(Invoice::class)->create(['user_id' => $user->id]);
+        $invoice = Invoice::factory()->create(['user_id' => $user->id]);
         Payment::create(['invoice_id' => $invoice->id, 'user_id' => $user->id, 'amount' => '10000']);
         $controller = new \App\Http\Controllers\DashboardController();
         $allowedCurrencies2 = 'INR';
@@ -46,7 +46,7 @@ class DashboardControllerTest extends DBTestCase
         $this->withoutMiddleware();
         $this->getLoggedInUser();
         $user = $this->user;
-        $invoice = factory(Invoice::class)->create(['user_id' => $user->id]);
+        $invoice = Invoice::factory()->create(['user_id' => $user->id]);
         Payment::create(['invoice_id' => $invoice->id, 'user_id' => $user->id, 'amount' => '10000']);
         $controller = new \App\Http\Controllers\DashboardController();
         $allowedCurrencies2 = 'INR';
@@ -62,7 +62,7 @@ class DashboardControllerTest extends DBTestCase
         $this->withoutMiddleware();
         $this->getLoggedInUser();
         $user = $this->user;
-        $invoice = factory(Invoice::class, 3)->create(['created_at' => 2017, 'user_id' => $user->id]);
+        $invoice = Invoice::factory()->count(3)->create(['created_at' => 2017, 'user_id' => $user->id]);
         $controller = new \App\Http\Controllers\DashboardController();
         $allowedCurrencies2 = 'INR';
         $response = $controller->getYearlySales($allowedCurrencies2);
@@ -72,7 +72,7 @@ class DashboardControllerTest extends DBTestCase
     /** @group Dashboard */
     public function test_getAllUsers_getListOfRecentUsers()
     {
-        $user = factory(User::class, 3)->create();
+        $user = User::factory()->count(3)->create();
         $controller = new \App\Http\Controllers\DashboardController();
         $response = $controller->getAllUsers();
         $this->assertCount(1, [$user]);

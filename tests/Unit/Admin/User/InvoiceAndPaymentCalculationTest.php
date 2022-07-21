@@ -19,7 +19,7 @@ class InvoiceAndPaymentCalculationTest extends DBTestCase
         $this->getLoggedInUser();
         $user = $this->user;
         $user_id = $user->id;
-        $invoice = factory(Invoice::class)->create(['user_id' => $user_id, 'grand_total' => '10000']);
+        $invoice = Invoice::factory()->create(['user_id' => $user_id, 'grand_total' => '10000']);
         $response = $this->call('POST', 'change-invoiceTotal', [
             'total' => '12000',
             'number' => $invoice->number,
@@ -37,7 +37,7 @@ class InvoiceAndPaymentCalculationTest extends DBTestCase
         $this->getLoggedInUser();
         $user = $this->user;
         $user_id = $user->id;
-        $invoice = factory(Invoice::class)->create(['user_id' => $user_id]);
+        $invoice = Invoice::factory()->create(['user_id' => $user_id]);
         $invoiceItem = InvoiceItem::create([
             'invoice_id' => $invoice->id,
             'product_name' => 'Helpdesk Advance',
@@ -49,7 +49,7 @@ class InvoiceAndPaymentCalculationTest extends DBTestCase
             'domain' => 'faveo.com',
             'plan_id' => 1,
         ]);
-        $order = factory(Order::class)->create(['invoice_id' => $invoice->id,
+        $order = Order::factory()->create(['invoice_id' => $invoice->id,
             'invoice_item_id' => $invoiceItem->id, 'client' => $user_id, ]);
 
         $response = $this->call('GET', 'clients/'.$user_id, [

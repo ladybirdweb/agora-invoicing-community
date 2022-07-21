@@ -25,7 +25,7 @@ class BaseCartControllerTest extends DBTestCase
     {
         $this->getLoggedInUser();
         $this->withoutMiddleware();
-        $product = factory(Product::class)->create();
+        $product = Product::factory()->create();
         $currency = userCurrency();
         \Cart::add([
             'id' => $product->id,
@@ -44,7 +44,7 @@ class BaseCartControllerTest extends DBTestCase
     {
         $this->getLoggedInUser();
         $this->withoutMiddleware();
-        $product = factory(Product::class)->create();
+        $product = Product::factory()->create();
         $currency = userCurrency();
         \Cart::add([
             'id' => $product->id,
@@ -65,8 +65,8 @@ class BaseCartControllerTest extends DBTestCase
         $this->expectExceptionMessage('Product not present in cart.');
         $this->getLoggedInUser();
         $this->withoutMiddleware();
-        $product1 = factory(Product::class)->create();
-        $product2 = factory(Product::class)->create(['name' => 'SD Enterprise']);
+        $product1 = Product::factory()->create();
+        $product2 = Product::factory()->create(['name' => 'SD Enterprise']);
         $currency = userCurrency();
         \Cart::add([
             'id' => $product1->id,
@@ -83,7 +83,7 @@ class BaseCartControllerTest extends DBTestCase
     {
         $this->getLoggedInUser();
         $this->withoutMiddleware();
-        $product = factory(Product::class)->create(['can_modify_agent' => 1]);
+        $product = Product::factory()->create(['can_modify_agent' => 1]);
         $currency = userCurrency();
         \Cart::add([
             'id' => $product->id,
@@ -106,7 +106,7 @@ class BaseCartControllerTest extends DBTestCase
     {
         $this->getLoggedInUser();
         $this->withoutMiddleware();
-        $product = factory(Product::class)->create();
+        $product = Product::factory()->create();
         $currency = userCurrency();
         \Cart::add([
             'id' => $product->id,
@@ -129,7 +129,7 @@ class BaseCartControllerTest extends DBTestCase
     {
         $this->getLoggedInUser();
         $this->withoutMiddleware();
-        $product = factory(Product::class)->create(['can_modify_quantity' => 1]);
+        $product = Product::factory()->create(['can_modify_quantity' => 1]);
         $plan = Plan::create(['name' => 'HD Plan 1 year', 'product' => $product->id, 'days' => 366]);
         $planPrice = PlanPrice::create(['plan_id' => $plan->id, 'currency' => 'INR', 'add_price' => '1000', 'renew_price' => '500', 'price_description' => 'Random description', 'product_quantity' => 1, 'no_of_agents' => 0]);
         $currency = userCurrency();
@@ -155,7 +155,7 @@ class BaseCartControllerTest extends DBTestCase
         $this->expectExceptionMessage('Cannot Modify Quantity');
         $this->getLoggedInUser();
         $this->withoutMiddleware();
-        $product = factory(Product::class)->create();
+        $product = Product::factory()->create();
         $plan = Plan::create(['name' => 'HD Plan 1 year', 'product' => $product->id, 'days' => 366]);
         $planPrice = PlanPrice::create(['plan_id' => $plan->id, 'currency' => 'INR', 'add_price' => '1000', 'renew_price' => '500', 'price_description' => 'Random description', 'product_quantity' => 1, 'no_of_agents' => 0]);
         $currency = userCurrency();
@@ -174,7 +174,7 @@ class BaseCartControllerTest extends DBTestCase
     {
         $this->getLoggedInUser();
         $this->withoutMiddleware();
-        $product = factory(Product::class)->create(['can_modify_quantity' => 1]);
+        $product = Product::factory()->create(['can_modify_quantity' => 1]);
         $plan = Plan::create(['name' => 'HD Plan 1 year', 'product' => $product->id, 'days' => 366]);
         $planPrice = PlanPrice::create(['plan_id' => $plan->id, 'currency' => 'INR', 'add_price' => '1000', 'renew_price' => '500', 'price_description' => 'Random description', 'product_quantity' => 1, 'no_of_agents' => 0]);
         $currency = userCurrency();
@@ -200,7 +200,7 @@ class BaseCartControllerTest extends DBTestCase
         $this->expectExceptionMessage('Cannot Modify Quantity');
         $this->getLoggedInUser();
         $this->withoutMiddleware();
-        $product = factory(Product::class)->create();
+        $product = Product::factory()->create();
         $plan = Plan::create(['name' => 'HD Plan 1 year', 'product' => $product->id, 'days' => 366]);
         $planPrice = PlanPrice::create(['plan_id' => $plan->id, 'currency' => 'INR', 'add_price' => '1000', 'renew_price' => '500', 'price_description' => 'Random description', 'product_quantity' => 1, 'no_of_agents' => 0]);
         $currency = userCurrency();

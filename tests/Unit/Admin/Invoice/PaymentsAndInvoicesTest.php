@@ -24,7 +24,7 @@ class PaymentsAndInvoicesTest extends DBTestCase
     {
         $this->getLoggedInUser();
         $this->withoutMiddleware();
-        $product = factory(Product::class)->create();
+        $product = Product::factory()->create();
         $plan = Plan::create(['name' => 'Hepldesk 1 year', 'product' => $product->id, 'days' => 365]);
         $planPrice = PlanPrice::create(['plan_id' => $plan->id, 'currency' => $this->user->currency, 'add_price' => '1000', 'renew_price' => '500', 'product_quantity' => 1, 'no_of_agents' => 5]);
         $agents = $this->classObject->getAgents(5, $product->id, $plan->id);
@@ -36,7 +36,7 @@ class PaymentsAndInvoicesTest extends DBTestCase
     {
         $this->getLoggedInUser();
         $this->withoutMiddleware();
-        $product = factory(Product::class)->create();
+        $product = Product::factory()->create();
         $plan = Plan::create(['name' => 'Hepldesk 1 year', 'product' => $product->id, 'days' => 365]);
         $planPrice = PlanPrice::create(['plan_id' => $plan->id, 'currency' => $this->user->currency, 'add_price' => '1000', 'renew_price' => '500', 'product_quantity' => 1, 'no_of_agents' => 5]);
         $agents = $this->classObject->getAgents('', $product->id, $plan->id);
@@ -48,7 +48,7 @@ class PaymentsAndInvoicesTest extends DBTestCase
     {
         $this->getLoggedInUser();
         $this->withoutMiddleware();
-        $product = factory(Product::class)->create();
+        $product = Product::factory()->create();
         $agents = $this->classObject->getAgents('', $product->id, '');
         $this->assertEquals($agents, 0);
     }
@@ -58,7 +58,7 @@ class PaymentsAndInvoicesTest extends DBTestCase
     {
         $this->getLoggedInUser();
         $this->withoutMiddleware();
-        $product = factory(Product::class)->create();
+        $product = Product::factory()->create();
         $plan = Plan::create(['name' => 'Hepldesk 1 year', 'product' => $product->id, 'days' => 365]);
         $planPrice = PlanPrice::create(['plan_id' => $plan->id, 'currency' => $this->user->currency, 'add_price' => '1000', 'renew_price' => '500', 'product_quantity' => 1, 'no_of_agents' => 5]);
         $qty = $this->classObject->getQuantity(1, $product->id, $plan->id);
@@ -70,7 +70,7 @@ class PaymentsAndInvoicesTest extends DBTestCase
     {
         $this->getLoggedInUser();
         $this->withoutMiddleware();
-        $product = factory(Product::class)->create();
+        $product = Product::factory()->create();
         $plan = Plan::create(['name' => 'Hepldesk 1 year', 'product' => $product->id, 'days' => 365]);
         $planPrice = PlanPrice::create(['plan_id' => $plan->id, 'currency' => $this->user->currency, 'add_price' => '1000', 'renew_price' => '500', 'product_quantity' => 2, 'no_of_agents' => 5]);
         $qty = $this->classObject->getQuantity('', $product->id, $plan->id);
@@ -82,7 +82,7 @@ class PaymentsAndInvoicesTest extends DBTestCase
     {
         $this->getLoggedInUser();
         $this->withoutMiddleware();
-        $product = factory(Product::class)->create();
+        $product = Product::factory()->create();
         $qty = $this->classObject->getQuantity('', $product->id, '');
         $this->assertEquals($qty, 1);
     }

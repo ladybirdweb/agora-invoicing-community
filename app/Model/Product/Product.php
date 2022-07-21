@@ -2,11 +2,14 @@
 
 namespace App\Model\Product;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\BaseModel;
 use Spatie\Activitylog\Traits\LogsActivity;
 
 class Product extends BaseModel
 {
+    use HasFactory;
+
     use LogsActivity;
 
     protected $table = 'products';

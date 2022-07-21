@@ -20,8 +20,8 @@ class CouponTest extends DBTestCase
     //     $this->withoutMiddleware();
     //     $this->getLoggedInUser();
     //     $user = $this->user;
-    //     $invoice = factory(Invoice::class)->create(['user_id'=>$user->id]);
-    //     $product = factory(Product::class)->create();
+    //     $invoice = Invoice::factory()->create(['user_id'=>$user->id]);
+    //     $product = Product::factory()->create();
 
     //     $promotionType = PromotionType::create(['name'=>'Fixed Amount']);
     //     $promotion = Promotion::create(['code'=> 'FAVEOCOUPON',
@@ -51,10 +51,10 @@ class CouponTest extends DBTestCase
     //     $this->getLoggedInUser();
     //     $user = $this->user;
     //     $currency = $user->currency;
-    //     $invoice = factory(Invoice::class)->create(['user_id'=>$user->id]);
+    //     $invoice = Invoice::factory()->create(['user_id'=>$user->id]);
     //     $promotionTypeName = PromotionType::find(2);
     //     $promotionType = $promotionTypeName->name;
-    //     $product = factory(Product::class)->create();
+    //     $product = Product::factory()->create();
     //     $promotion = Promotion::create(['code'=> 'FAVEOCOUPON',
     //         'type'                            => $promotionTypeName->id,
     //         'uses'                            => '100',
@@ -89,10 +89,10 @@ class CouponTest extends DBTestCase
         $this->getLoggedInUser();
         $user = $this->user;
         $currency = $user->currency;
-        $invoice = factory(Invoice::class)->create(['user_id' => $user->id]);
+        $invoice = Invoice::factory()->create(['user_id' => $user->id]);
         $promotionTypeName = PromotionType::find(2);
         $promotionType = $promotionTypeName->name;
-        $product = factory(Product::class)->create();
+        $product = Product::factory()->create();
         $promotion = Promotion::create(['code' => 'FAVEOCOUPON',
             'type' => $promotionTypeName->id,
             'uses' => '100',
@@ -127,10 +127,10 @@ class CouponTest extends DBTestCase
         $this->getLoggedInUser();
         $user = $this->user;
         $currency = $user->currency;
-        $invoice = factory(Invoice::class)->create(['user_id' => $user->id]);
+        $invoice = Invoice::factory()->create(['user_id' => $user->id]);
         $promotionTypeName = PromotionType::find(2);
         $promotionType = $promotionTypeName->name;
-        $product = factory(Product::class)->create();
+        $product = Product::factory()->create();
         $promotion = Promotion::create(['code' => 'FAVEOCOUPON',
             'type' => $promotionTypeName->id,
             'uses' => '100',

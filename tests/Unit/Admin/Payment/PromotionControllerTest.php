@@ -35,7 +35,7 @@ class PromotionControllerTest extends DBTestCase
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Usage of Code Expired');
         $this->withoutMiddleware();
-        $product = factory(Product::class)->create();
+        $product = Product::factory()->create();
         $this->call('POST', 'promotions', ['code' => 'FAVEOCOUPON', 'type' => 1, 'value' => 10, 'uses' => 10, 'applied' => $product->id, 'start' => '08/01/2020', 'expiry' => '08/15/2020']);
         $promotion = $this->classObject->getPromotionDetails('FAVEOCOUPON');
     }
@@ -46,7 +46,7 @@ class PromotionControllerTest extends DBTestCase
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('There is  no product related to this code');
         $this->withoutMiddleware();
-        $product = factory(Product::class)->create();
+        $product = Product::factory()->create();
         $promotion = Promotion::create(['code' => 'FAVEOCOUPON',
             'type' => 1,
             'uses' => '100',
@@ -65,8 +65,8 @@ class PromotionControllerTest extends DBTestCase
         $this->expectExceptionMessage('Usage of code Completed');
         $this->getLoggedInUser();
         $this->withoutMiddleware();
-        $product = factory(Product::class)->create();
-        $invoice = factory(Invoice::class, 3)->create(['user_id' => $this->user->id, 'coupon_code' => 'FAVEOCOUPON']);
+        $product = Product::factory()->create();
+        $invoice = Invoice::factory()->count(3)->create(['user_id' => $this->user->id, 'coupon_code' => 'FAVEOCOUPON']);
 
         $this->call('POST', 'promotions', ['code' => 'FAVEOCOUPON', 'type' => 1, 'value' => 10, 'uses' => 2, 'applied' => $product->id, 'start' => '08/01/2020', 'expiry' => '08/15/2050']);
         $promotion = $this->classObject->getPromotionDetails('FAVEOCOUPON');
@@ -76,7 +76,7 @@ class PromotionControllerTest extends DBTestCase
     public function test_getPromotionDetails_whenValidCodePassed_returnsSuccess()
     {
         $this->withoutMiddleware();
-        $product = factory(Product::class)->create();
+        $product = Product::factory()->create();
         $this->call('POST', 'promotions', ['code' => 'FAVEOCOUPON', 'type' => 1, 'value' => 10, 'uses' => 10, 'applied' => $product->id, 'start' => '08/01/2020', 'expiry' => '08/15/2050']);
         $promotion = $this->classObject->getPromotionDetails('FAVEOCOUPON');
         $this->assertStringContainsSubstring($promotion->code, 'FAVEOCOUPON');
@@ -87,7 +87,7 @@ class PromotionControllerTest extends DBTestCase
     {
         $this->withoutMiddleware();
         $this->getLoggedInUser();
-        $product = factory(Product::class)->create();
+        $product = Product::factory()->create();
         $plan = Plan::create(['name' => 'HD Plan 1 year', 'product' => $product->id, 'days' => 366]);
 
         $planPrice = PlanPrice::create(['plan_id' => $plan->id, 'currency' => 'INR', 'add_price' => '1000', 'renew_price' => '500', 'price_description' => 'Random description', 'product_quantity' => 1, 'no_of_agents' => 0]);
@@ -103,7 +103,7 @@ class PromotionControllerTest extends DBTestCase
     {
         $this->withoutMiddleware();
         $this->getLoggedInUser();
-        $product = factory(Product::class)->create();
+        $product = Product::factory()->create();
         $plan = Plan::create(['name' => 'HD Plan 1 year', 'product' => $product->id, 'days' => 366]);
 
         $planPrice = PlanPrice::create(['plan_id' => $plan->id, 'currency' => 'INR', 'add_price' => '1000', 'renew_price' => '500', 'price_description' => 'Random description', 'product_quantity' => 1, 'no_of_agents' => 0]);
@@ -119,7 +119,7 @@ class PromotionControllerTest extends DBTestCase
     {
         $this->withoutMiddleware();
         $this->getLoggedInUser();
-        $product = factory(Product::class)->create();
+        $product = Product::factory()->create();
         $plan = Plan::create(['name' => 'HD Plan 1 year', 'product' => $product->id, 'days' => 366]);
 
         $planPrice = PlanPrice::create(['plan_id' => $plan->id, 'currency' => 'INR', 'add_price' => '1000', 'renew_price' => '500', 'price_description' => 'Random description', 'product_quantity' => 1, 'no_of_agents' => 0]);
@@ -144,7 +144,7 @@ class PromotionControllerTest extends DBTestCase
     {
         $this->withoutMiddleware();
         $this->getLoggedInUser();
-        $product = factory(Product::class)->create();
+        $product = Product::factory()->create();
         $plan = Plan::create(['name' => 'HD Plan 1 year', 'product' => $product->id, 'days' => 366]);
 
         $planPrice = PlanPrice::create(['plan_id' => $plan->id, 'currency' => 'INR', 'add_price' => '1000', 'renew_price' => '500', 'price_description' => 'Random description', 'product_quantity' => 1, 'no_of_agents' => 0]);
@@ -171,8 +171,8 @@ class PromotionControllerTest extends DBTestCase
         $this->expectExceptionMessage('Invalid promo code');
         $this->withoutMiddleware();
         $this->getLoggedInUser();
-        $product1 = factory(Product::class)->create();
-        $product2 = factory(Product::class)->create(['name' => 'Test Product']);
+        $product1 = Product::factory()->create();
+        $product2 = Product::factory()->create(['name' => 'Test Product']);
         $plan1 = Plan::create(['name' => 'HD Plan 1 year', 'product' => $product1->id, 'days' => 366]);
         $plan2 = Plan::create(['name' => 'SD Plan 1 year', 'product' => $product2->id, 'days' => 366]);
 
@@ -197,7 +197,7 @@ class PromotionControllerTest extends DBTestCase
         $this->expectExceptionMessage('Code already used once');
         $this->withoutMiddleware();
         $this->getLoggedInUser();
-        $product = factory(Product::class)->create();
+        $product = Product::factory()->create();
         $plan = Plan::create(['name' => 'HD Plan 1 year', 'product' => $product->id, 'days' => 366]);
 
         $planPrice = PlanPrice::create(['plan_id' => $plan->id, 'currency' => 'INR', 'add_price' => '1000', 'renew_price' => '500', 'price_description' => 'Random description', 'product_quantity' => 1, 'no_of_agents' => 0]);
@@ -221,7 +221,7 @@ class PromotionControllerTest extends DBTestCase
     {
         $this->getLoggedInUser();
         $this->withoutMiddleware();
-        $product = factory(Product::class)->create();
+        $product = Product::factory()->create();
         $promotion = $this->call('POST', 'promotions', ['code' => 'FAVEOCOUPON', 'type' => 1, 'value' => 10, 'uses' => 2, 'applied' => $product->id, 'start' => '08/01/2020', 'expiry' => '08/15/2050']);
         $promotion->assertSessionHas('success');
     }

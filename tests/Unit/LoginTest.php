@@ -13,7 +13,7 @@ class LoginTest extends DBTestCase
     /** @group postLogin */
     public function test_postLogin_forVerifiedUsers()
     {
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
         $response = $this->call('POST', 'login', ['email1' => $user->email, 'password1' => 'password']);
         $response->assertStatus(302);
         // $this->assertStringContainsSubstring($response->getTargetUrl(), 'home');
@@ -22,7 +22,7 @@ class LoginTest extends DBTestCase
     /** @group postLogin */
     public function test_postLogin_forAdmin()
     {
-        $user = factory(User::class)->create(['role' => 'admin']);
+        $user = User::factory()->create(['role' => 'admin']);
         $response = $this->call('POST', 'login', ['email1' => $user->email, 'password1' => 'password']);
         $this->assertStringContainsSubstring($response->getTargetUrl(), '/');
     }
@@ -30,7 +30,7 @@ class LoginTest extends DBTestCase
     /** @group postLogin */
     public function test_postLogin_when_mobile_is_Unverified()
     {
-        $user = factory(User::class)->create(['mobile_verified' => 0]);
+        $user = User::factory()->create(['mobile_verified' => 0]);
         $response = $this->call('POST', 'login', ['email1' => $user->email, 'password1' => 'password']);
         $response->assertStatus(302);
         // $this->assertStringContainsSubstring($response->getTargetUrl(), '/verify');
@@ -39,7 +39,7 @@ class LoginTest extends DBTestCase
     /** @group postLogin */
     public function test_postLogin_when_email_is_Unverified()
     {
-        $user = factory(User::class)->create(['active' => 0]);
+        $user = User::factory()->create(['active' => 0]);
         $response = $this->call('POST', 'login', ['email1' => $user->email, 'password1' => 'password']);
         $response->assertStatus(302);
     }
@@ -47,7 +47,7 @@ class LoginTest extends DBTestCase
     /** @group postLogin */
     public function test_postLogin_when_email_and_mobile_are_Unverified()
     {
-        $user = factory(User::class)->create(['active' => 0, 'mobile_verified' => 0]);
+        $user = User::factory()->create(['active' => 0, 'mobile_verified' => 0]);
         $response = $this->call('POST', 'login', ['email1' => $user->email, 'password1' => 'password']);
         $response->assertStatus(302);
         // $this->assertStringContainsSubstring($response->getTargetUrl(), '/verify');

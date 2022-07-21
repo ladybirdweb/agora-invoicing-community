@@ -15,7 +15,7 @@ class SoftDeleteControllerTest extends DBTestCase
     public function test_softDeletedUsers_checkUserIsSoftDeleted()
     {
         $this->withoutMiddleware();
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
         $user->delete();
         $data = $this->call('GET', 'soft-delete');
         $idAfterDelete = json_decode($data->getContent())->data[0]->id;
@@ -27,7 +27,7 @@ class SoftDeleteControllerTest extends DBTestCase
     public function test_restoreUser_checkSoftDeletedUserIsRestored()
     {
         $this->withoutMiddleware();
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
         $user->delete();
         $data = $this->call('GET', 'clients/'.$user->id.'/restore');
         $data->assertSessionHas('success');
@@ -37,7 +37,7 @@ class SoftDeleteControllerTest extends DBTestCase
     public function test_permanentDeleteUser_deleteUserPermanently()
     {
         $this->withoutMiddleware();
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
         $user->delete();
         $data = $this->call('DELETE', 'permanent-delete-client', ['select' => [$user->id]]);
         $this->assertDatabaseMissing('users', ['id' => $user->id]);
@@ -47,8 +47,8 @@ class SoftDeleteControllerTest extends DBTestCase
     public function test_permanentDeleteUser_deleteInvoiceOrderCommnetPermanently()
     {
         $this->withoutMiddleware();
-        $user1 = factory(User::class)->create();
-        $user2 = factory(User::class)->create();
+        $user1 = User::factory()->create();
+        $user2 = User::factory()->create();
         $product = Product::create(['name' => 'Helpdesk']);
         $invoice = Invoice::create(['user_id' => $user1->id, 'number' => '234435']);
         $comment = Comment::create(['user_id' => $user2->id, 'updated_by_user_id' => $user1->id, 'description' => 'TesComment']);

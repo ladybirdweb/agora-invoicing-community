@@ -13,8 +13,8 @@ class FreeTrailControllerTest extends DBTestCase
 {
     public function test_firstLoginAttempt_generateinvoiceorder_returnstatus200()
     {
-        $user = factory(User::class)->create(['role' => 'user', 'country' => 'IN']);
-        factory(Product::class)->create();
+        $user = User::factory()->create(['role' => 'user', 'country' => 'IN']);
+        Product::factory()->create();
         $auth = Auth::loginUsingId($user->id);
         $this->actingAs($user);
         $response = (new FreeTrailController())->firstLoginAtem(new Request(['id' => $user->id]));

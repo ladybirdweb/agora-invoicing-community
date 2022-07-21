@@ -14,7 +14,7 @@ class BaseCartControllerTest extends DBTestCase
 {
     use DatabaseTransactions;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->classObject = new BaseCartController();

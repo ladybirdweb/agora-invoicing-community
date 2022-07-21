@@ -19,7 +19,7 @@ class DashboardControllerTest extends DBTestCase
 
     private $classObject;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 

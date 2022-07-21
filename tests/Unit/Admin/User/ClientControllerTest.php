@@ -11,7 +11,7 @@ class ClientControllerTest extends DBTestCase
 {
     private $classObject;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->classObject = new ClientController();

@@ -449,8 +449,8 @@
                                                             </button>
                                                         </div> -->
 
-
-                                                      <!--   <div class="col-md-3">
+<!-- 
+                                                        <div class="col-md-3">
                                                             <button type="button" class="btn btn-danger float-right mb-5" style="width: max-content;" name="resendOTP" id="resendOTP">
                                                                 Resend OTP
                                                             </button>
@@ -485,8 +485,8 @@
         </section>
     </div>
     </div>
-@stop
-@section('script') -->
+@stop 
+
 
 
 
@@ -576,7 +576,7 @@
             $('input[name=country_code]').attr('value', $('.selected-dial-code').text());
         });
 
-    </script> -->
+    </script>
 
 
     <script>
@@ -1417,21 +1417,9 @@
             }
  -->
 
-<<<<<<< HEAD
 
-        function getState(val) {
-            $.ajax({
-                headers: {
-                   'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                type: "GET",
-                url: "{{url('get-loginstate')}}/" + val,
-                data: {'country_id':val},//'country_id=' + val,
-                success: function (data) {
-
-=======
          <!--    // getCurrency(val);
->>>>>>> Issues fixed
+
 
         }
  -->
@@ -1577,12 +1565,5 @@
 
 
 
-    <noscript>
-       <!--  <img height="1" width="1"
-             src="https://www.facebook.com/tr?id=308328899511239&ev=PageView
-&noscript=1"/> -->
-    </noscript>
 
-    <!-- End Facebook Pixel Code -->
-<!-- @stop  -->
 

@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use App\Model\Common\Setting;
 use App\Model\Payment\PlanPrice;
 use Illuminate\Database\Seeder;

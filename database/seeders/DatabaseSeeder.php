@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use App\ApiKey;
 use App\Model\Common\Mailchimp\MailchimpFieldAgoraRelation;
 use App\Model\Common\Mailchimp\MailchimpSetting;

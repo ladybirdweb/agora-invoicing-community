@@ -15,8 +15,9 @@ class Subscription extends Model
 
     protected $fillable = ['name', 'description', 'days', 'ends_at', 'update_ends_at',
         'user_id', 'plan_id', 'order_id', 'deny_after_subscription', 'version', 'product_id', 'support_ends_at', 'version_updated_at', ];
-
-    protected $dates = ['ends_at'];
+    protected $casts = [
+        'ends_at' => 'datetime',
+    ];
 
     protected static $logName = 'Subscription';
 

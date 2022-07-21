@@ -22,11 +22,17 @@ class RenewController extends BaseRenewController
     use TaxCalculation;
 
     protected $sub;
+
     protected $plan;
+
     protected $order;
+
     protected $invoice;
+
     protected $item;
+
     protected $product;
+
     protected $user;
 
     public function __construct()
@@ -71,7 +77,7 @@ class RenewController extends BaseRenewController
             $sub->save();
 
             if (Order::where('id', $sub->order_id)->value('license_mode') == 'File') {
-                Order::where('id', $sub->order_id)->update(['is_downloadable'=> 0]);
+                Order::where('id', $sub->order_id)->update(['is_downloadable' => 0]);
             } else {
                 $licenseStatus = StatusSetting::pluck('license_status')->first();
                 if ($licenseStatus == 1) {
@@ -169,7 +175,7 @@ class RenewController extends BaseRenewController
         try {
             $relation = new \App\Model\Order\OrderInvoiceRelation();
             $relation->create([
-                'order_id'   => $orderid,
+                'order_id' => $orderid,
                 'invoice_id' => $invoiceid,
             ]);
         } catch (Exception $ex) {
@@ -222,10 +228,10 @@ class RenewController extends BaseRenewController
     public function renew($id, Request $request)
     {
         $this->validate($request, [
-            'plan'           => 'required',
+            'plan' => 'required',
             'payment_method' => 'required',
-            'cost'           => 'required',
-            'code'           => 'exists:promotions,code',
+            'cost' => 'required',
+            'code' => 'exists:promotions,code',
         ]);
 
         try {
@@ -274,9 +280,9 @@ class RenewController extends BaseRenewController
             throw new \Exception('Permission denied. Invalid modification of data');
         }
         $this->validate($request, [
-            'plan'           => 'required',
-            'cost'           => 'required',
-            'code'           => 'exists:promotions,code',
+            'plan' => 'required',
+            'cost' => 'required',
+            'code' => 'exists:promotions,code',
         ]);
 
         try {

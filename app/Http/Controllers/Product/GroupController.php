@@ -13,7 +13,9 @@ use Illuminate\Http\Request;
 class GroupController extends Controller
 {
     public $group;
+
     public $feature;
+
     public $config;
 
     public function __construct()
@@ -95,10 +97,10 @@ class GroupController extends Controller
     public function store(GroupRequest $request)
     {
         $this->validate($request, [
-            'name'                 => 'required',
+            'name' => 'required',
             'pricing_templates_id' => 'required',
         ], [
-            'pricing_templates_id.required'=> 'Please Select a Template',
+            'pricing_templates_id.required' => 'Please Select a Template',
         ]);
 
         try {

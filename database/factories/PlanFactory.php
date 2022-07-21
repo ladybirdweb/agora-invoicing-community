@@ -5,8 +5,8 @@ use Faker\Generator as Faker;
 
 $factory->define(Plan::class, function (Faker $faker) {
     return [
-        'name'      => 'Helpdesk Advance',
+        'name' => 'Helpdesk Advance',
         'allow_tax' => '1',
-        'days'      => 365,
+        'days' => 365,
     ];
 });

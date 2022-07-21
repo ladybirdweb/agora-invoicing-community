@@ -8,10 +8,15 @@ use Spatie\Activitylog\Traits\LogsActivity;
 class Plan extends BaseModel
 {
     use LogsActivity;
+
     protected $table = 'plans';
+
     protected $fillable = ['name', 'product', 'allow_tax', 'days'];
+
     protected static $logName = 'Plans';
+
     protected static $logAttributes = ['name', 'product', 'days'];
+
     protected static $logOnlyDirty = true;
 
     public function getDescriptionForEvent(string $eventName): string

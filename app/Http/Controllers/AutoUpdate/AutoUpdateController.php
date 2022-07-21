@@ -8,8 +8,11 @@ use App\Http\Controllers\Controller;
 class AutoUpdateController extends Controller
 {
     private $api_key_secret;
+
     private $url;
+
     private $license;
+
     private $token;
 
     public function __construct()
@@ -36,8 +39,8 @@ class AutoUpdateController extends Controller
     {
         $url = $this->url;
         $data = [
-            'client_id'=> $this->client_id,
-            'client_secret'=>$this->client_secret,
+            'client_id' => $this->client_id,
+            'client_secret' => $this->client_secret,
             'grant_type' => $this->grant_type,
 
         ];
@@ -149,6 +152,6 @@ class AutoUpdateController extends Controller
             }
         }
 
-        return ['version_id'=>$versionId, 'product_id'=>$productId];
+        return ['version_id' => $versionId, 'product_id' => $productId];
     }
 }

@@ -42,7 +42,7 @@ class HomeController extends BaseHomeController
         if ($product) {
             $version = $product->version;
         } else {
-            return json_encode(['message'=>'Product not found']);
+            return json_encode(['message' => 'Product not found']);
         }
 
         return str_replace('v', '', $product->version);
@@ -65,7 +65,7 @@ class HomeController extends BaseHomeController
             $serial_key = $this->checkSerialKey($faveo_encrypted_key, $order_number);
 
             \Log::emergency(json_encode(['domain' => $request->input('domain'),
-                'serial'                             => $serial_key, 'order' => $order_number, ]));
+                'serial' => $serial_key, 'order' => $order_number, ]));
             $result = [];
             if ($request_type == 'install') {
                 $result = $this->verificationResult($order_number, $serial_key);

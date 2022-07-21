@@ -24,15 +24,15 @@ class SettingRequest extends Request
     public function rules()
     {
         return [
-            'company'     => 'required',
-            'website'     => 'url',
-            'phone'       => 'regex:/\(?([0-9]{3})\)?([ .-]?)([0-9]{3})\2([0-9]{4})/',
-            'address'     => 'required|max:300',
-            'logo'        => 'mimes:png',
-            'driver'      => 'required',
-            'port'        => 'integer',
-            'email'       => 'required|email',
-            'password'    => 'required',
+            'company' => 'required',
+            'website' => 'url',
+            'phone' => 'regex:/\(?([0-9]{3})\)?([ .-]?)([0-9]{3})\2([0-9]{4})/',
+            'address' => 'required|max:300',
+            'logo' => 'mimes:png',
+            'driver' => 'required',
+            'port' => 'integer',
+            'email' => 'required|email',
+            'password' => 'required',
             'error_email' => 'email',
 
         ];

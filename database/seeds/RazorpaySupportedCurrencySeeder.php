@@ -2,9 +2,8 @@
 
 namespace database\seeds;
 
-use Illuminate\Database\Seeder;
 use App\Plugins\Razorpay\Model\RazorpayPayment;
-
+use Illuminate\Database\Seeder;
 
 class RazorpaySupportedCurrencySeeder extends Seeder
 {
@@ -16,16 +15,15 @@ class RazorpaySupportedCurrencySeeder extends Seeder
     public function run()
     {
         RazorpayPayment::create([
-            'currencies'             => 'INR',
-            'base_currency'               => 'INR',
-            'processing_fee'               => '0',
+            'currencies' => 'INR',
+            'base_currency' => 'INR',
+            'processing_fee' => '0',
         ]);
 
         RazorpayPayment::create([
-            'currencies'             => 'USD',
-            'base_currency'               => 'INR',
-            'processing_fee'               => '0',
+            'currencies' => 'USD',
+            'base_currency' => 'INR',
+            'processing_fee' => '0',
         ]);
-
     }
 }

@@ -32,8 +32,8 @@ class DashboardControllerTest extends DBTestCase
         $this->withoutMiddleware();
         $this->getLoggedInUser();
         $user = $this->user;
-        $invoice = factory(Invoice::class)->create(['user_id'=>$user->id]);
-        Payment::create(['invoice_id'=>$invoice->id, 'user_id'=>$user->id, 'amount'=>'10000']);
+        $invoice = factory(Invoice::class)->create(['user_id' => $user->id]);
+        Payment::create(['invoice_id' => $invoice->id, 'user_id' => $user->id, 'amount' => '10000']);
         $controller = new \App\Http\Controllers\DashboardController();
         $allowedCurrencies2 = 'INR';
         $response = $controller->getTotalSales($allowedCurrencies2);
@@ -46,8 +46,8 @@ class DashboardControllerTest extends DBTestCase
         $this->withoutMiddleware();
         $this->getLoggedInUser();
         $user = $this->user;
-        $invoice = factory(Invoice::class)->create(['user_id'=>$user->id]);
-        Payment::create(['invoice_id'=>$invoice->id, 'user_id'=>$user->id, 'amount'=>'10000']);
+        $invoice = factory(Invoice::class)->create(['user_id' => $user->id]);
+        Payment::create(['invoice_id' => $invoice->id, 'user_id' => $user->id, 'amount' => '10000']);
         $controller = new \App\Http\Controllers\DashboardController();
         $allowedCurrencies2 = 'INR';
         $response = $controller->getYearlySales($allowedCurrencies2);
@@ -62,7 +62,7 @@ class DashboardControllerTest extends DBTestCase
         $this->withoutMiddleware();
         $this->getLoggedInUser();
         $user = $this->user;
-        $invoice = factory(Invoice::class, 3)->create(['created_at'=>2017, 'user_id'=>$user->id]);
+        $invoice = factory(Invoice::class, 3)->create(['created_at' => 2017, 'user_id' => $user->id]);
         $controller = new \App\Http\Controllers\DashboardController();
         $allowedCurrencies2 = 'INR';
         $response = $controller->getYearlySales($allowedCurrencies2);
@@ -82,14 +82,14 @@ class DashboardControllerTest extends DBTestCase
     public function test_getRecentOrders_getsRecentlySoldProductInLast30DaysWithCorrespondingCount()
     {
         $this->getLoggedInUser('admin');
-        $productOne = Product::create(['name'=> 'one']);
-        $productTwo = Product::create(['name'=> 'two']);
-        $orderOne = $productOne->order()->create(['client'=>$this->user->id, 'number'=> 1, 'price_override'=>10]);
-        $orderTwo = $productOne->order()->create(['client'=>$this->user->id, 'number'=> 2, 'price_override'=>20]);
+        $productOne = Product::create(['name' => 'one']);
+        $productTwo = Product::create(['name' => 'two']);
+        $orderOne = $productOne->order()->create(['client' => $this->user->id, 'number' => 1, 'price_override' => 10]);
+        $orderTwo = $productOne->order()->create(['client' => $this->user->id, 'number' => 2, 'price_override' => 20]);
 
         // creating one without price override
-        $productOne->order()->create(['client'=>$this->user->id, 'number'=> 3]);
-        $orderFour = $productTwo->order()->create(['client'=>$this->user->id, 'number'=> 4, 'price_override'=>10]);
+        $productOne->order()->create(['client' => $this->user->id, 'number' => 3]);
+        $orderFour = $productTwo->order()->create(['client' => $this->user->id, 'number' => 4, 'price_override' => 10]);
         $response = $this->classObject->getRecentOrders();
 
         $this->assertCount(3, $response);
@@ -111,16 +111,16 @@ class DashboardControllerTest extends DBTestCase
     public function test_getSoldProducts_whenNumberOfDaysIsPassed_shouldGetOrdersForPassedNumberOfDays()
     {
         $this->getLoggedInUser('admin');
-        $productOne = Product::create(['name'=> 'one']);
-        $productTwo = Product::create(['name'=> 'two']);
-        $productOne->order()->create(['client'=>$this->user->id, 'number'=> 1, 'order_status'=>'executed']);
-        $productOne->order()->create(['client'=>$this->user->id, 'number'=> 2, 'order_status'=>'executed']);
+        $productOne = Product::create(['name' => 'one']);
+        $productTwo = Product::create(['name' => 'two']);
+        $productOne->order()->create(['client' => $this->user->id, 'number' => 1, 'order_status' => 'executed']);
+        $productOne->order()->create(['client' => $this->user->id, 'number' => 2, 'order_status' => 'executed']);
 
-        $order = $productOne->order()->create(['client'=>$this->user->id, 'number'=> 3, 'order_status'=>'executed']);
+        $order = $productOne->order()->create(['client' => $this->user->id, 'number' => 3, 'order_status' => 'executed']);
         $order->created_at = Carbon::now()->subDays(2);
         $order->save();
 
-        $productTwo->order()->create(['client'=>$this->user->id, 'number'=> 4, 'order_status'=>'executed']);
+        $productTwo->order()->create(['client' => $this->user->id, 'number' => 4, 'order_status' => 'executed']);
         $response = $this->classObject->getSoldProducts(1);
         $this->assertEquals(2, $response[0]->order_count);
         $this->assertEquals($productOne->id, $response[0]->product_id);
@@ -134,16 +134,16 @@ class DashboardControllerTest extends DBTestCase
     public function test_getSoldProducts_whenNumberOfDaysIsNotPassed_shouldGiveAllRecords()
     {
         $this->getLoggedInUser('admin');
-        $productOne = Product::create(['name'=> 'one']);
-        $productTwo = Product::create(['name'=> 'two']);
-        $productOne->order()->create(['client'=>$this->user->id, 'number'=> 1, 'order_status'=>'executed']);
-        $productOne->order()->create(['client'=>$this->user->id, 'number'=> 2, 'order_status'=>'executed']);
+        $productOne = Product::create(['name' => 'one']);
+        $productTwo = Product::create(['name' => 'two']);
+        $productOne->order()->create(['client' => $this->user->id, 'number' => 1, 'order_status' => 'executed']);
+        $productOne->order()->create(['client' => $this->user->id, 'number' => 2, 'order_status' => 'executed']);
 
-        $order = $productOne->order()->create(['client'=>$this->user->id, 'number'=> 3, 'order_status'=>'executed']);
+        $order = $productOne->order()->create(['client' => $this->user->id, 'number' => 3, 'order_status' => 'executed']);
         $order->created_at = Carbon::now()->subDays(2);
         $order->save();
 
-        $productTwo->order()->create(['client'=>$this->user->id, 'number'=> 4, 'order_status'=>'executed']);
+        $productTwo->order()->create(['client' => $this->user->id, 'number' => 4, 'order_status' => 'executed']);
         $response = $this->classObject->getSoldProducts();
 
         $this->assertEquals(3, $response[0]->order_count);
@@ -158,15 +158,15 @@ class DashboardControllerTest extends DBTestCase
     public function test_getExpiringSubscriptions_whenLast30DaysIsFalse_shouldGiveSubscriptionsWhichAreExpiringIn30Days()
     {
         $this->getLoggedInUser('admin');
-        $product = Product::create(['name'=> 'one']);
-        $orderOne = $product->order()->create(['client'=>$this->user->id, 'number'=> 1, 'price_override'=>10]);
-        $orderTwo = $product->order()->create(['client'=>$this->user->id, 'number'=> 2, 'price_override'=>10]);
-        Subscription::create(['update_ends_at'=> Carbon::now()->addDays(2), 'order_id'=> $orderOne->id, 'product_id'=>$product->id, 'user_id'=>$this->user->id]);
-        Subscription::create(['update_ends_at'=> Carbon::now()->addDays(3), 'order_id'=> $orderOne->id, 'product_id'=>$product->id, 'user_id'=>$this->user->id]);
-        Subscription::create(['update_ends_at'=> Carbon::now()->addDays(4), 'order_id'=> $orderTwo->id, 'product_id'=>$product->id, 'user_id'=>$this->user->id]);
-        Subscription::create(['update_ends_at'=> Carbon::now()->addDays(5), 'order_id'=> $orderTwo->id, 'product_id'=>$product->id, 'user_id'=>$this->user->id]);
-        Subscription::create(['update_ends_at'=> Carbon::now()->subDays(5), 'order_id'=> $orderTwo->id, 'product_id'=>$product->id, 'user_id'=>$this->user->id]);
-        Subscription::create(['update_ends_at'=> Carbon::now()->addDays(31), 'order_id'=> $orderTwo->id, 'product_id'=>$product->id, 'user_id'=>$this->user->id]);
+        $product = Product::create(['name' => 'one']);
+        $orderOne = $product->order()->create(['client' => $this->user->id, 'number' => 1, 'price_override' => 10]);
+        $orderTwo = $product->order()->create(['client' => $this->user->id, 'number' => 2, 'price_override' => 10]);
+        Subscription::create(['update_ends_at' => Carbon::now()->addDays(2), 'order_id' => $orderOne->id, 'product_id' => $product->id, 'user_id' => $this->user->id]);
+        Subscription::create(['update_ends_at' => Carbon::now()->addDays(3), 'order_id' => $orderOne->id, 'product_id' => $product->id, 'user_id' => $this->user->id]);
+        Subscription::create(['update_ends_at' => Carbon::now()->addDays(4), 'order_id' => $orderTwo->id, 'product_id' => $product->id, 'user_id' => $this->user->id]);
+        Subscription::create(['update_ends_at' => Carbon::now()->addDays(5), 'order_id' => $orderTwo->id, 'product_id' => $product->id, 'user_id' => $this->user->id]);
+        Subscription::create(['update_ends_at' => Carbon::now()->subDays(5), 'order_id' => $orderTwo->id, 'product_id' => $product->id, 'user_id' => $this->user->id]);
+        Subscription::create(['update_ends_at' => Carbon::now()->addDays(31), 'order_id' => $orderTwo->id, 'product_id' => $product->id, 'user_id' => $this->user->id]);
 
         $response = $this->classObject->getExpiringSubscriptions(false);
 
@@ -186,15 +186,15 @@ class DashboardControllerTest extends DBTestCase
     public function test_getExpiringSubscriptions_whenLast30DaysIsTrue_shouldGiveSubscriptionsWhichHasExpiredInLast30Days()
     {
         $this->getLoggedInUser('admin');
-        $product = Product::create(['name'=> 'one']);
-        $orderOne = $product->order()->create(['client'=>$this->user->id, 'number'=> 1, 'price_override'=>10]);
-        $orderTwo = $product->order()->create(['client'=>$this->user->id, 'number'=> 2, 'price_override'=>10]);
-        Subscription::create(['update_ends_at'=> Carbon::now()->subDays(2), 'order_id'=> $orderOne->id, 'product_id'=>$product->id, 'user_id'=>$this->user->id]);
-        Subscription::create(['update_ends_at'=> Carbon::now()->subDays(3), 'order_id'=> $orderOne->id, 'product_id'=>$product->id, 'user_id'=>$this->user->id]);
-        Subscription::create(['update_ends_at'=> Carbon::now()->subDays(4), 'order_id'=> $orderTwo->id, 'product_id'=>$product->id, 'user_id'=>$this->user->id]);
-        Subscription::create(['update_ends_at'=> Carbon::now()->subDays(5), 'order_id'=> $orderTwo->id, 'product_id'=>$product->id, 'user_id'=>$this->user->id]);
-        Subscription::create(['update_ends_at'=> Carbon::now()->addDays(5), 'order_id'=> $orderTwo->id, 'product_id'=>$product->id, 'user_id'=>$this->user->id]);
-        Subscription::create(['update_ends_at'=> Carbon::now()->subDays(31), 'order_id'=> $orderTwo->id, 'product_id'=>$product->id, 'user_id'=>$this->user->id]);
+        $product = Product::create(['name' => 'one']);
+        $orderOne = $product->order()->create(['client' => $this->user->id, 'number' => 1, 'price_override' => 10]);
+        $orderTwo = $product->order()->create(['client' => $this->user->id, 'number' => 2, 'price_override' => 10]);
+        Subscription::create(['update_ends_at' => Carbon::now()->subDays(2), 'order_id' => $orderOne->id, 'product_id' => $product->id, 'user_id' => $this->user->id]);
+        Subscription::create(['update_ends_at' => Carbon::now()->subDays(3), 'order_id' => $orderOne->id, 'product_id' => $product->id, 'user_id' => $this->user->id]);
+        Subscription::create(['update_ends_at' => Carbon::now()->subDays(4), 'order_id' => $orderTwo->id, 'product_id' => $product->id, 'user_id' => $this->user->id]);
+        Subscription::create(['update_ends_at' => Carbon::now()->subDays(5), 'order_id' => $orderTwo->id, 'product_id' => $product->id, 'user_id' => $this->user->id]);
+        Subscription::create(['update_ends_at' => Carbon::now()->addDays(5), 'order_id' => $orderTwo->id, 'product_id' => $product->id, 'user_id' => $this->user->id]);
+        Subscription::create(['update_ends_at' => Carbon::now()->subDays(31), 'order_id' => $orderTwo->id, 'product_id' => $product->id, 'user_id' => $this->user->id]);
 
         $response = $this->classObject->getExpiringSubscriptions(true);
 
@@ -214,9 +214,9 @@ class DashboardControllerTest extends DBTestCase
     public function test_getRecentOrders_shouldGiveOrdersInLast30DaysOrderedByDescCreatedAt()
     {
         $this->getLoggedInUser('admin');
-        $product = Product::create(['name'=> 'one']);
-        $orderOne = $product->order()->create(['client'=>$this->user->id, 'number'=> 1, 'price_override'=>10]);
-        $orderTwo = $product->order()->create(['client'=>$this->user->id, 'number'=> 2, 'price_override'=>10]);
+        $product = Product::create(['name' => 'one']);
+        $orderOne = $product->order()->create(['client' => $this->user->id, 'number' => 1, 'price_override' => 10]);
+        $orderTwo = $product->order()->create(['client' => $this->user->id, 'number' => 2, 'price_override' => 10]);
 
         $response = $this->classObject->getRecentOrders();
 
@@ -293,13 +293,13 @@ class DashboardControllerTest extends DBTestCase
     /** @group Dashboard */
     private function createOrder($version = 'v3.0.0', $price = 1000, $subscriptionUpdatedAt = null)
     {
-        $product = Product::create(['name'=>"Helpdesk $version"]);
-        $order = Order::create(['client'=> $this->user->id, 'order_status' => 'executed',
-            'product'=> $product->id, 'number'=> mt_rand(100000, 999999), 'price_override'=> $price, ]);
-        $subscriptionId = Subscription::create(['order_id'=>$order->id, 'product_id'=> $product->id, 'version'=>$version])->id;
+        $product = Product::create(['name' => "Helpdesk $version"]);
+        $order = Order::create(['client' => $this->user->id, 'order_status' => 'executed',
+            'product' => $product->id, 'number' => mt_rand(100000, 999999), 'price_override' => $price, ]);
+        $subscriptionId = Subscription::create(['order_id' => $order->id, 'product_id' => $product->id, 'version' => $version])->id;
 
         if ($subscriptionUpdatedAt) {
-            \DB::table('subscriptions')->where('id', $subscriptionId)->update(['updated_at'=> $subscriptionUpdatedAt]);
+            \DB::table('subscriptions')->where('id', $subscriptionId)->update(['updated_at' => $subscriptionUpdatedAt]);
         }
 
         return $order;

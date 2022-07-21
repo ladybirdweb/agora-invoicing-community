@@ -134,12 +134,12 @@ trait CoupCodeAndInvoiceSearch
             $invoice_status = 'pending';
 
             $payment = $this->payment->create([
-                'invoice_id'     => $invoiceid,
-                'user_id'        => $invoice->user_id,
-                'amount'         => $amount,
+                'invoice_id' => $invoiceid,
+                'user_id' => $invoice->user_id,
+                'amount' => $amount,
                 'payment_method' => $payment_method,
                 'payment_status' => $payment_status,
-                'created_at'     => $payment_date,
+                'created_at' => $payment_date,
             ]);
             $all_payments = $this->payment
             ->where('invoice_id', $invoiceid)

@@ -8,7 +8,9 @@ use Spatie\Activitylog\Traits\LogsActivity;
 class Product extends BaseModel
 {
     use LogsActivity;
+
     protected $table = 'products';
+
     protected $fillable = ['name', 'description', 'type', 'group', 'file', 'image', 'require_domain', 'category',
         'can_modify_agent',  'can_modify_quantity', 'show_agent', 'tax_apply', 'show_product_quantity', 'hidden',  'auto_terminate',
         'setup_order_placed', 'setup_first_payment', 'setup_accept_manually',

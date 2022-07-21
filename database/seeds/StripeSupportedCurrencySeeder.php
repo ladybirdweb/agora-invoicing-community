@@ -2,9 +2,8 @@
 
 namespace database\seeds;
 
-use Illuminate\Database\Seeder;
 use App\Plugins\Stripe\Model\StripePayment;
-
+use Illuminate\Database\Seeder;
 
 class StripeSupportedCurrencySeeder extends Seeder
 {
@@ -16,807 +15,807 @@ class StripeSupportedCurrencySeeder extends Seeder
     public function run()
     {
         StripePayment::create([
-            'currencies'             => 'USD',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'USD',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'AED',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'AED',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'AFN',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'AFN',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'ALL',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'ALL',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'AMD',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'AMD',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'ANG',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'ANG',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'AOA',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'AOA',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'ARS',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'ARS',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'AUD',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'AUD',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'AWG',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'AWG',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'AZN',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'AZN',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'BAM',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'BAM',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'BBD',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'BBD',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'BDT',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'BDT',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'BGN',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'BGN',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'BIF',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'BIF',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'BMD',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'BMD',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'BND',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'BND',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'BOB',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'BOB',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'BRL',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'BRL',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'BSD',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'BSD',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'BWP',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'BWP',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'BZD',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'BZD',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'CAD',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'CAD',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'CDF',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'CDF',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'CHF',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'CHF',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'CLP',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'CLP',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'CNY',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'CNY',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'COP',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'COP',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'CRC',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'CRC',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'CVE',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'CVE',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'CZK',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'CZK',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'DJF',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'DJF',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'DKK',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'DKK',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'DOP',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'DOP',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'DZD',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'DZD',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'EGP',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'EGP',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'ETB',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'ETB',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'EUR',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'EUR',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'FJD',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'FJD',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'FKP',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'FKP',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'GBP',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'GBP',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'GEL',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'GEL',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'GIP',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'GIP',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'GMD',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'GMD',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'GNF',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'GNF',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'GTQ',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'GTQ',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'GYD',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'GYD',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'HKD',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'HKD',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'HNL',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'HNL',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'HRK',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'HRK',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'HTG',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'HTG',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'HUF',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'HUF',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'IDR',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'IDR',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'ILS',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'ILS',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'INR',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '1',
+            'currencies' => 'INR',
+            'base_currency' => 'USD',
+            'processing_fee' => '1',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'ISK',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'ISK',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'JMD',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'JMD',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'JPY',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'JPY',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'KES',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'KES',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'KGS',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'KGS',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'KHR',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'KHR',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'KMF',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'KMF',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'KRW',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'KRW',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'KYD',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'KYD',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'KZT',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'KZT',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'LAK',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'LAK',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'LBP',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'LBP',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'ZMW',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'ZMW',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'ZAR',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'ZAR',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'YER',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'YER',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'XPF',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'XPF',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'XOF',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'XOF',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'XCD',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'XCD',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'XAF',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'XAF',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'WST',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'WST',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'VUV',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'VUV',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'VND',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'VND',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'UZS',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'UZS',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'UYU',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'UYU',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'UGX',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'UGX',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'UAH',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'UAH',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'TZS',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'TZS',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'TWD',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'TWD',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'TTD',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'TTD',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'TOP',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'TOP',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'TJS',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'TJS',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'THB',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'THB',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'SZL',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'SZL',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'STD',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'STD',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'SRD',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'SRD',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'SOS',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'SOS',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'SLL',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'SLL',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'SHP',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'SHP',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'SGD',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'SGD',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'SEK',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'SEK',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'SCR',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'SCR',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'SBD',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'SBD',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'SAR',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'SAR',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'RWF',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'RWF',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'RUB',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'RUB',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'RSD',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'RSD',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'RON',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'RON',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'QAR',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'QAR',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'PYG',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'PYG',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'PLN',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'PLN',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'PKR',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'PKR',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'PHP',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'PHP',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'PGK',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'PGK',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'PEN',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'PEN',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'PAB',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'PAB',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'NZD',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'NZD',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'NPR',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'NPR',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'NOK',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'NOK',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'NIO',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'NIO',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'NGN',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'NGN',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'NAD',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'NAD',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'MZN',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'MZN',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'MYR',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'MYR',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'MXN',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'MXN',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'MWK',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'MWK',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'MVR',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'MVR',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'MUR',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'MUR',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'MRO',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'MRO',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'MOP',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'MOP',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'MNT',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'MNT',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'MMK',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'MMK',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'MKD',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'MKD',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'MGA',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'MGA',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'MDL',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'MDL',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'MAD',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'MAD',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'LSL',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'LSL',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'LRD',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'LRD',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
 
         StripePayment::create([
-            'currencies'             => 'LKR',
-            'base_currency'               => 'USD',
-            'processing_fee'               => '5',
+            'currencies' => 'LKR',
+            'base_currency' => 'USD',
+            'processing_fee' => '5',
         ]);
     }
 }

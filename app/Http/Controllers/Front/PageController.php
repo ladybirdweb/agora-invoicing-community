@@ -17,7 +17,7 @@ class PageController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth', ['except'=>['pageTemplates', 'contactUs']]);
+        $this->middleware('auth', ['except' => ['pageTemplates', 'contactUs']]);
 
         $page = new FrontendPage();
         $this->page = $page;
@@ -86,7 +86,7 @@ class PageController extends Controller
             $selectedParent = $this->page->where('id', $id)->pluck('parent_page_id')->toArray();
             $parentName = $this->page->where('id', $selectedParent)->pluck('name', 'id')->toArray();
 
-            return view('themes.default1.front.page.edit', compact('parents', 'page', 'selectedDefault', 'publishingDate','selectedParent',
+            return view('themes.default1.front.page.edit', compact('parents', 'page', 'selectedDefault', 'publishingDate', 'selectedParent',
                 'parentName'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -96,10 +96,10 @@ class PageController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'name'    => 'required',
+            'name' => 'required',
             'publish' => 'required',
-            'slug'    => 'required',
-            'url'     => 'required',
+            'slug' => 'required',
+            'url' => 'required',
             'content' => 'required',
         ]);
 
@@ -128,12 +128,12 @@ class PageController extends Controller
     public function update($id, Request $request)
     {
         $this->validate($request, [
-            'name'           => 'required',
-            'publish'        => 'required',
-            'slug'           => 'required',
-            'url'            => 'required',
-            'content'        => 'required',
-            'created_at'     => 'required',
+            'name' => 'required',
+            'publish' => 'required',
+            'slug' => 'required',
+            'url' => 'required',
+            'content' => 'required',
+            'created_at' => 'required',
         ]);
 
         try {
@@ -144,9 +144,9 @@ class PageController extends Controller
                 $page->created_at = $date->format('Y-m-d H:i:s');
                 $page->save();
                 $defaultUrl = $this->page->where('id', $request->input('default_page_id'))->pluck('url')->first();
-                DefaultPage::find(1)->update(['page_id'=>$request->input('default_page_id'), 'page_url'=>$defaultUrl]);
+                DefaultPage::find(1)->update(['page_id' => $request->input('default_page_id'), 'page_url' => $defaultUrl]);
             } else {
-                DefaultPage::find(1)->update(['page_id'=>1, 'page_url'=>url('my-invoices')]);
+                DefaultPage::find(1)->update(['page_id' => 1, 'page_url' => url('my-invoices')]);
             }
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
@@ -434,8 +434,8 @@ class PageController extends Controller
     public function postContactUs(Request $request)
     {
         $this->validate($request, [
-            'name'    => 'required',
-            'email'   => 'required|email',
+            'name' => 'required',
+            'email' => 'required|email',
             'message' => 'required',
         ]);
 

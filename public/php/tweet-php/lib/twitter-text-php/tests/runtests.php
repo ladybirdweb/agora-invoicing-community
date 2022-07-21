@@ -16,11 +16,11 @@ $browser = (PHP_SAPI != 'cli');
 function pretty_format($a)
 {
     return preg_replace([
-    "/\n/", '/ +\[/', '/ +\)/', '/Array +\(/', '/(?<!\() \[/', '/\[([^]]+)\]/',
-    '/"(\d+)"/', '/(?<=^| )\((?= )/', '/(?<= )\)(?=$| )/',
-  ], [
-    ' ', ' [', ' )', '(', ', [', '"$1"', '$1', '[', ']',
-  ], print_r($a, true));
+        "/\n/", '/ +\[/', '/ +\)/', '/Array +\(/', '/(?<!\() \[/', '/\[([^]]+)\]/',
+        '/"(\d+)"/', '/(?<=^| )\((?= )/', '/(?<= )\)(?=$| )/',
+    ], [
+        ' ', ' [', ' )', '(', ', [', '"$1"', '$1', '[', ']',
+    ], print_r($a, true));
 }
 
 $pass_total = 0;
@@ -65,13 +65,13 @@ $data = Spyc::YAMLLoad($DATA.'/extract.yml');
 
 // Define the functions to be tested.
 $functions = [
-  'hashtags'              => 'extractHashtags',
-  'urls'                  => 'extractURLs',
-  'mentions'              => 'extractMentionedUsernames',
-  'replies'               => 'extractRepliedUsernames',
-  'hashtags_with_indices' => 'extractHashtagsWithIndices',
-  'urls_with_indices'     => 'extractURLsWithIndices',
-  'mentions_with_indices' => 'extractMentionedUsernamesWithIndices',
+    'hashtags' => 'extractHashtags',
+    'urls' => 'extractURLs',
+    'mentions' => 'extractMentionedUsernames',
+    'replies' => 'extractRepliedUsernames',
+    'hashtags_with_indices' => 'extractHashtagsWithIndices',
+    'urls_with_indices' => 'extractURLsWithIndices',
+    'mentions_with_indices' => 'extractMentionedUsernamesWithIndices',
 ];
 
 // Perform testing.
@@ -81,7 +81,7 @@ foreach ($data['tests'] as $group => $tests) {
     echo $browser ? '</h3>' : ":\033[0m".PHP_EOL;
     echo PHP_EOL;
 
-    if (!array_key_exists($group, $functions)) {
+    if (! array_key_exists($group, $functions)) {
         echo $browser ? '<p>' : "   \033[1;35m";
         echo 'Skipping Test...';
         echo $browser ? '</p>' : "\033[0m".PHP_EOL;
@@ -144,11 +144,11 @@ $data = Spyc::YAMLLoad($DATA.'/autolink.yml');
 
 // Define the functions to be tested.
 $functions = [
-  'usernames' => 'addLinksToUsernamesAndLists',
-  'lists'     => 'addLinksToUsernamesAndLists',
-  'hashtags'  => 'addLinksToHashtags',
-  'urls'      => 'addLinksToURLs',
-  'all'       => 'addLinks',
+    'usernames' => 'addLinksToUsernamesAndLists',
+    'lists' => 'addLinksToUsernamesAndLists',
+    'hashtags' => 'addLinksToHashtags',
+    'urls' => 'addLinksToURLs',
+    'all' => 'addLinks',
 ];
 
 // Perform testing.
@@ -158,7 +158,7 @@ foreach ($data['tests'] as $group => $tests) {
     echo $browser ? '</h3>' : ":\033[0m".PHP_EOL;
     echo PHP_EOL;
 
-    if (!array_key_exists($group, $functions)) {
+    if (! array_key_exists($group, $functions)) {
         echo $browser ? '<p>' : "   \033[1;35m";
         echo 'Skipping Test...';
         echo $browser ? '</p>' : "\033[0m".PHP_EOL;
@@ -185,12 +185,12 @@ foreach ($data['tests'] as $group => $tests) {
         //      We use the same wrapping function for adding links for all methods.
         if ($group == 'hashtags') {
             $linked = preg_replace([
-        '!<a class="([^"]*)" href="([^"]*)">([^<]*)</a>!',
-        '!title="＃([^"]+)"!',
-      ], [
-        '<a href="$2" title="$3" class="$1">$3</a>',
-        'title="#$1"',
-      ], $linked);
+                '!<a class="([^"]*)" href="([^"]*)">([^<]*)</a>!',
+                '!title="＃([^"]+)"!',
+            ], [
+                '<a href="$2" title="$3" class="$1">$3</a>',
+                'title="#$1"',
+            ], $linked);
         }
         if ($test['expected'] == $linked) {
             $pass_group++;
@@ -238,8 +238,8 @@ $data = Spyc::YAMLLoad($DATA.'/hit_highlighting.yml');
 
 // Define the functions to be tested.
 $functions = [
-  'plain_text' => 'addHitHighlighting',
-  'with_links' => 'addHitHighlighting',
+    'plain_text' => 'addHitHighlighting',
+    'with_links' => 'addHitHighlighting',
 ];
 
 // Perform testing.
@@ -249,7 +249,7 @@ foreach ($data['tests'] as $group => $tests) {
     echo $browser ? '</h3>' : ":\033[0m".PHP_EOL;
     echo PHP_EOL;
 
-    if (!array_key_exists($group, $functions)) {
+    if (! array_key_exists($group, $functions)) {
         echo $browser ? '<p>' : "   \033[1;35m";
         echo 'Skipping Test...';
         echo $browser ? '</p>' : "\033[0m".PHP_EOL;

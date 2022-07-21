@@ -86,7 +86,7 @@ class ResetPasswordController extends Controller
             'email' => 'required|email',
             'password' => 'required|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$/|
        confirmed', 'g-recaptcha-response' => 'sometimes|required|captcha',
-        ], ['password.regex'=>'Your password must be more than 6 characters long, should contain at-least 1 Uppercase, 1 Lowercase, 1 Numeric and 1 special character.', 'g-recaptcha-response.required'=>'Please verify that you are not a robot.',
+        ], ['password.regex' => 'Your password must be more than 6 characters long, should contain at-least 1 Uppercase, 1 Lowercase, 1 Numeric and 1 special character.', 'g-recaptcha-response.required' => 'Please verify that you are not a robot.',
             'g-recaptcha-response.captcha' => 'Captcha error! try again later or contact site admin.',
         ]);
         try {

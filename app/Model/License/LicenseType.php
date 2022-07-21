@@ -8,8 +8,11 @@ use Spatie\Activitylog\Traits\LogsActivity;
 class LicenseType extends Model
 {
     use LogsActivity;
+
     protected $table = 'license_types';
+
     protected $fillable = ['id', 'name'];
+
     protected static $logName = 'License Type';
 
     protected static $logOnlyDirty = true;

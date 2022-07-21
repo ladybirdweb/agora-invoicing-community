@@ -44,6 +44,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         'company_type', 'company_size', 'ip', 'mobile_verified', 'position', 'skype', 'manager', 'currency_symbol', 'account_manager', 'referrer', 'google2fa_secret', 'is_2fa_enabled', 'google2fa_activation_date', 'backup_code', 'code_usage_count', 'gstin', ];
 
     protected static $logName = 'User';
+
     protected static $logAttributes = ['first_name', 'last_name', 'user_name', 'company', 'zip',
         'state', 'town', 'mobile',
         'email', 'role', 'active', 'profile_pic',

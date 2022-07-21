@@ -22,9 +22,9 @@ class OrderSearchControllerTest extends DBTestCase
     public function test_getBaseQueryForOrders_givesRequiredColumnsWhenCalled()
     {
         $this->getLoggedInUser('admin');
-        $product = Product::create(['name'=>'Helpdesk']);
-        $order = Order::create(['client'=> $this->user->id, 'order_status' => 'executed', 'product'=> $product->id]);
-        $subscription = Subscription::create(['order_id'=>$order->id, 'product_id'=> $product->id, 'version'=>'v3.0.0']);
+        $product = Product::create(['name' => 'Helpdesk']);
+        $order = Order::create(['client' => $this->user->id, 'order_status' => 'executed', 'product' => $product->id]);
+        $subscription = Subscription::create(['order_id' => $order->id, 'product_id' => $product->id, 'version' => 'v3.0.0']);
         $query = $this->getPrivateMethod($this->classObject, 'getBaseQueryForOrders');
         $record = $query->first();
         $this->assertEquals($order->id, $record->id);
@@ -159,9 +159,9 @@ class OrderSearchControllerTest extends DBTestCase
     /** @group orderFilter */
     private function createOrder($version = 'v3.0.0')
     {
-        $product = Product::create(['name'=>'Helpdesk'.$version]);
-        $order = Order::create(['client'=> $this->user->id, 'order_status' => 'executed',
-            'product'=> $product->id, 'number'=> mt_rand(100000, 999999), ]);
-        Subscription::create(['order_id'=>$order->id, 'product_id'=> $product->id, 'version'=>$version]);
+        $product = Product::create(['name' => 'Helpdesk'.$version]);
+        $order = Order::create(['client' => $this->user->id, 'order_status' => 'executed',
+            'product' => $product->id, 'number' => mt_rand(100000, 999999), ]);
+        Subscription::create(['order_id' => $order->id, 'product_id' => $product->id, 'version' => $version]);
     }
 }

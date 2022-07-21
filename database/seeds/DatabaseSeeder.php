@@ -155,7 +155,7 @@ class ApiKeyTableSeeder extends Seeder
         \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         \DB::table('api_keys')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        ApiKey::create(['id' => 1, 'rzp_key' => '', 'rzp_secret' => '', 'apilayer_key' => '', 'bugsnag_api_key' => '', 'zoho_api_key'=>'', 'msg91_auth_key'=>'', 'twitter_consumer_key'=>'', 'twitter_consumer_secret'=>'', 'twitter_access_token'=>'', 'access_tooken_secret'=>'', 'license_api_secret'=>'', 'license_api_url'=>'', 'update_api_url'=>'', 'update_api_secret'=>'', 'terms_url'=>'', 'pipedrive_api_key'=>'']);
+        ApiKey::create(['id' => 1, 'rzp_key' => '', 'rzp_secret' => '', 'apilayer_key' => '', 'bugsnag_api_key' => '', 'zoho_api_key' => '', 'msg91_auth_key' => '', 'twitter_consumer_key' => '', 'twitter_consumer_secret' => '', 'twitter_access_token' => '', 'access_tooken_secret' => '', 'license_api_secret' => '', 'license_api_url' => '', 'update_api_url' => '', 'update_api_secret' => '', 'terms_url' => '', 'pipedrive_api_key' => '']);
     }
 }
 
@@ -245,7 +245,6 @@ class TemplateTypeTableSeeder extends Seeder
         TemplateType::create(['id' => 9, 'name' => 'sales_manager_email']);
         TemplateType::create(['id' => 10, 'name' => 'account_manager_email']);
         TemplateType::create(['id' => 11, 'name' => 'password_mail']);
-
     }
 }
 
@@ -256,7 +255,7 @@ class TemplateTableSeeder extends Seeder
         \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         \DB::table('templates')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        Template::create(['id' => 2, 'name' => '[Faveo Helpdesk] Verify your email address', 'type' => 1, 'url'=>'null', 'data' => '<table style="background: #f2f2f2; width: 700px;" border="0" cellspacing="0" cellpadding="0">
+        Template::create(['id' => 2, 'name' => '[Faveo Helpdesk] Verify your email address', 'type' => 1, 'url' => 'null', 'data' => '<table style="background: #f2f2f2; width: 700px;" border="0" cellspacing="0" cellpadding="0">
 <tbody>
 <tr>
 <td style="width: 30px;"> </td>
@@ -322,7 +321,7 @@ class TemplateTableSeeder extends Seeder
 </table>
 <p> </p>']);
 
-        Template::create(['id' => 4, 'name' => '[Faveo Helpdesk] Purchase confirmation', 'type' => 7, 'url'=>'null', 'data' =>'<table style="background: #f2f2f2; width: 700px;" border="0" cellspacing="0" cellpadding="0">
+        Template::create(['id' => 4, 'name' => '[Faveo Helpdesk] Purchase confirmation', 'type' => 7, 'url' => 'null', 'data' => '<table style="background: #f2f2f2; width: 700px;" border="0" cellspacing="0" cellpadding="0">
 <tbody>
 <tr>
 <td style="width: 30px;">&nbsp;</td>
@@ -410,7 +409,7 @@ class TemplateTableSeeder extends Seeder
 </table>
 <p>&nbsp;</p>']);
 
-        Template::create(['id' => 5, 'name' => '[Faveo Helpdesk] Reset your password', 'type' => 2, 'url'=>'null', 'data' =>'<table style="background: #f2f2f2; width: 700px;" border="0" cellspacing="0" cellpadding="0">
+        Template::create(['id' => 5, 'name' => '[Faveo Helpdesk] Reset your password', 'type' => 2, 'url' => 'null', 'data' => '<table style="background: #f2f2f2; width: 700px;" border="0" cellspacing="0" cellpadding="0">
 <tbody>
 <tr>
 <td style="width: 30px;">&nbsp;</td>
@@ -471,7 +470,7 @@ class TemplateTableSeeder extends Seeder
 </table>
 <p>&nbsp;</p>']);
 
-        Template::create(['id' => 6, 'name' => '[Faveo Helpdesk] Consolidated renewal reminder', 'type' => 4, 'url'=>'null', 'data' =>'<table style="background: #f2f2f2; width: 700px;" border="0" cellspacing="0" cellpadding="0">
+        Template::create(['id' => 6, 'name' => '[Faveo Helpdesk] Consolidated renewal reminder', 'type' => 4, 'url' => 'null', 'data' => '<table style="background: #f2f2f2; width: 700px;" border="0" cellspacing="0" cellpadding="0">
 <tbody>
 <tr>
 <td style="width: 30px;">&nbsp;</td>
@@ -556,7 +555,7 @@ class TemplateTableSeeder extends Seeder
 </table>
 <p>&nbsp;</p>']);
 
-        Template::create(['id' => 7, 'name' => '[Faveo Helpdesk] URGENT: Order has expired', 'type' => 5, 'url'=>'null', 'data' =>'<table style="background: #f2f2f2; width: 700px;" border="0" cellspacing="0" cellpadding="0">
+        Template::create(['id' => 7, 'name' => '[Faveo Helpdesk] URGENT: Order has expired', 'type' => 5, 'url' => 'null', 'data' => '<table style="background: #f2f2f2; width: 700px;" border="0" cellspacing="0" cellpadding="0">
 <tbody>
 <tr>
 <td style="width: 30px;">&nbsp;</td>
@@ -641,7 +640,7 @@ class TemplateTableSeeder extends Seeder
 </table>
 <p>&nbsp;</p>']);
 
-        Template::create(['id' => 8, 'name' => '[Faveo Helpdesk] Invoice', 'type' => 6, 'url'=>'null', 'data' =>'<table style="background: #f2f2f2; width: 700px;" border="0" cellspacing="0" cellpadding="0">
+        Template::create(['id' => 8, 'name' => '[Faveo Helpdesk] Invoice', 'type' => 6, 'url' => 'null', 'data' => '<table style="background: #f2f2f2; width: 700px;" border="0" cellspacing="0" cellpadding="0">
 <tbody>
 <tr>
 <td style="width: 30px;">&nbsp;</td>
@@ -723,7 +722,7 @@ class TemplateTableSeeder extends Seeder
 </table>
 <p>&nbsp;</p>']);
 
-        Template::create(['id' => 9, 'name' => '[Faveo Helpdesk] Your New Sales Manager', 'type' => 9, 'url'=>'null', 'data' =>'<p>Dear {{name}},</p>
+        Template::create(['id' => 9, 'name' => '[Faveo Helpdesk] Your New Sales Manager', 'type' => 9, 'url' => 'null', 'data' => '<p>Dear {{name}},</p>
 <p>This is {{manager_first_name}} {{manager_last_name}}.</p>
 <p>From now onwards I will be your one point of contact. I will followup with you as well as with our team. Please feel free to get in touch with me anytime if you have any issues with regards to your account. You can also add me on Skype. My ID is mentioned in my signature. It is a pleasure to have you on board and I look forward to effective conversations with you in future.</p>
 <p>Hope you have a great day.</p>
@@ -731,7 +730,7 @@ class TemplateTableSeeder extends Seeder
 <p>{{manager_first_name}}{{manager_last_name}}</p>
 <p>Sales Manager,<br /> Faveo Helpdesk<br /> Mobile :{{manager_code}} {{manager_mobile}}<br /> Skype ID : {{manager_skype}}<br /> Email : {{manager_email}}</p>']);
 
-        Template::create(['id' => 10, 'name' => '[Faveo Helpdesk] Your New Account Manager', 'type' => 10, 'url'=>'null', 'data' =>'<p>Dear {{name}},</p>
+        Template::create(['id' => 10, 'name' => '[Faveo Helpdesk] Your New Account Manager', 'type' => 10, 'url' => 'null', 'data' => '<p>Dear {{name}},</p>
 <p>This is {{manager_first_name}} {{manager_last_name}}.</p>
 <p>From now onwards I will be your one point of contact. I will followup with you as well as with our team. Please feel free to get in touch with me anytime if you have any issues with regards to your account. You can also add me on Skype. My ID is mentioned in my signature. It is a pleasure to have you on board and I look forward to effective conversations with you in future.</p>
 <p>Hope you have a great day.</p>
@@ -739,7 +738,7 @@ class TemplateTableSeeder extends Seeder
 <p>{{manager_first_name}}{{manager_last_name}}</p>
 <p>Account Manager,<br /> Faveo Helpdesk<br /> Mobile :{{manager_code}} {{manager_mobile}}<br /> Skype ID : {{manager_skype}}<br /> Email : {{manager_email}}</p>']);
 
-            Template::create(['id' => 11, 'name' => '[Faveo Helpdesk] Your New Password', 'type' => 11, 'url'=>'null', 'data' => '<table style="background: #f2f2f2 none repeat scroll 0% 0%; width: 700px; height: 524px;" border="0" cellspacing="0" cellpadding="0">
+        Template::create(['id' => 11, 'name' => '[Faveo Helpdesk] Your New Password', 'type' => 11, 'url' => 'null', 'data' => '<table style="background: #f2f2f2 none repeat scroll 0% 0%; width: 700px; height: 524px;" border="0" cellspacing="0" cellpadding="0">
 <tbody>
 <tr style="height: 134px;">
 <td style="width: 28px; height: 134px;">&nbsp;</td>
@@ -797,9 +796,8 @@ class TemplateTableSeeder extends Seeder
 </tr>
 </tbody>
 </table>
-<p>&nbsp;</p>'
-]);
-
+<p>&nbsp;</p>',
+        ]);
     }
 }
 
@@ -809,12 +807,12 @@ class LicensePermissionTableSeeder extends Seeder
     {
         \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         \DB::table('license_permissions')->truncate();
-        LicensePermission::create(['id'=>1, 'permissions'=> 'Can be Downloaded']);
-        LicensePermission::create(['id'=>2, 'permissions'=> 'Generate License Expiry Date']);
-        LicensePermission::create(['id'=>3, 'permissions'=> 'Generate Updates Expiry Date']);
-        LicensePermission::create(['id'=>4, 'permissions'=> 'Generate Support Expiry Date']);
-        LicensePermission::create(['id'=>5, 'permissions'=> 'No Permissions']);
-        LicensePermission::create(['id'=>6, 'permissions'=> 'Allow Downloads Before Updates Expire']);
+        LicensePermission::create(['id' => 1, 'permissions' => 'Can be Downloaded']);
+        LicensePermission::create(['id' => 2, 'permissions' => 'Generate License Expiry Date']);
+        LicensePermission::create(['id' => 3, 'permissions' => 'Generate Updates Expiry Date']);
+        LicensePermission::create(['id' => 4, 'permissions' => 'Generate Support Expiry Date']);
+        LicensePermission::create(['id' => 5, 'permissions' => 'No Permissions']);
+        LicensePermission::create(['id' => 6, 'permissions' => 'Allow Downloads Before Updates Expire']);
     }
 }
 
@@ -824,7 +822,7 @@ class StatusSettingSeeder extends Seeder
     {
         \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         \DB::table('status_settings')->truncate();
-        StatusSetting::create(['id' => 1, 'expiry_mail'=>0, 'activity_log_delete'=>0, 'license_status'=>0, 'github_status'=>0, 'mailchimp_status'=>0, 'twitter_status'=>0, 'msg91_status'=>0, 'emailverification_status'=>0, 'recaptcha_status'=>0, 'update_settings'=>0, 'zoho_status'=>0, 'rzp_status'=>0, 'mailchimp_product_status'=>0, 'mailchimp_ispaid_status'=>0, 'terms'=>0, 'pipedrive_status'=>0]);
+        StatusSetting::create(['id' => 1, 'expiry_mail' => 0, 'activity_log_delete' => 0, 'license_status' => 0, 'github_status' => 0, 'mailchimp_status' => 0, 'twitter_status' => 0, 'msg91_status' => 0, 'emailverification_status' => 0, 'recaptcha_status' => 0, 'update_settings' => 0, 'zoho_status' => 0, 'rzp_status' => 0, 'mailchimp_product_status' => 0, 'mailchimp_ispaid_status' => 0, 'terms' => 0, 'pipedrive_status' => 0]);
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 }
@@ -835,7 +833,7 @@ class PricingTemplateSeeder extends Seeder
     {
         \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         \DB::table('pricing_templates')->truncate();
-        PricingTemplate::create(['id'=> 1, 'data'=>'<div class="col-md-3 col-sm-6">
+        PricingTemplate::create(['id' => 1, 'data' => '<div class="col-md-3 col-sm-6">
                             <div class="plan">
                                 <div class="plan-header">
                                     <h3>{{name}}</h3>
@@ -857,7 +855,7 @@ class PricingTemplateSeeder extends Seeder
                                 </div>
                                 
                             </div>
-                        </div>', 'image'=> 'pricing_template1.png', 'name'=>'Porto Theme(With Gap Style)']);
+                        </div>', 'image' => 'pricing_template1.png', 'name' => 'Porto Theme(With Gap Style)']);
     }
 }
 
@@ -868,7 +866,7 @@ class GitHubTableSeeder extends Seeder
         \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         \DB::table('githubs')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        Github::create(['id' => 1, 'client_id'=>null, 'client_secret'=>null, 'username'=>null, 'password'=>null]);
+        Github::create(['id' => 1, 'client_id' => null, 'client_secret' => null, 'username' => null, 'password' => null]);
     }
 }
 
@@ -877,8 +875,8 @@ class ConditionSeeder extends Seeder
     public function run()
     {
         $data = [
-            ['job'=>'expiryMail', 'value'=>'everyFiveMinutes'],
-            ['job'=> 'deleteLogs', 'value'=>'daily'],
+            ['job' => 'expiryMail', 'value' => 'everyFiveMinutes'],
+            ['job' => 'deleteLogs', 'value' => 'daily'],
 
         ];
         foreach ($data as $job) {
@@ -894,7 +892,7 @@ class ActivityLogDelSeeder extends Seeder
         \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         \DB::table('activity_log_days')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        ActivityLogDay::create(['id' => 1, 'days'=>'']);
+        ActivityLogDay::create(['id' => 1, 'days' => '']);
     }
 }
 
@@ -905,8 +903,8 @@ class FormatCurrenciesSeeder extends Seeder
         \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         \DB::table('format_currencies')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        \DB::table('format_currencies')->insert(['id' => 1, 'name'=>'US Dollar', 'code'=>'USD', 'symbol'=>'$', 'format'=>'$1,0.00', 'exchange_rate'=>0, 'active'=>0]);
-        \DB::table('format_currencies')->insert(['id' => 2, 'name'=>'Indian Rupee', 'code'=>'INR', 'symbol'=>'₹', 'format'=>'₹1,0.00', 'exchange_rate'=>0, 'active'=>0]);
+        \DB::table('format_currencies')->insert(['id' => 1, 'name' => 'US Dollar', 'code' => 'USD', 'symbol' => '$', 'format' => '$1,0.00', 'exchange_rate' => 0, 'active' => 0]);
+        \DB::table('format_currencies')->insert(['id' => 2, 'name' => 'Indian Rupee', 'code' => 'INR', 'symbol' => '₹', 'format' => '₹1,0.00', 'exchange_rate' => 0, 'active' => 0]);
     }
 }
 
@@ -919,25 +917,25 @@ class UserTableSeeder extends Seeder
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         return \App\User::create([
-            'first_name'      => 'Demo',
-            'last_name'       => 'Admin',
-            'user_name'       => 'demo',
-            'email'           => 'demo@admin.com',
-            'role'            => 'admin',
-            'password'        => \Hash::make('password'),
-            'active'          => 1,
+            'first_name' => 'Demo',
+            'last_name' => 'Admin',
+            'user_name' => 'demo',
+            'email' => 'demo@admin.com',
+            'role' => 'admin',
+            'password' => \Hash::make('password'),
+            'active' => 1,
             'mobile_verified' => 1,
-            'currency'        => 'INR',
-            'company'         => 'My Company Name',
-            'mobile'          => '',
-            'mobile_code'     => '',
-            'address'         => '',
-            'town'            => '',
-            'country'         => 'IN',
-            'state'           => 'IN-KA',
-            'zip'             => '',
-            'profile_pic'     => '',
-            'debit'           => 0,
+            'currency' => 'INR',
+            'company' => 'My Company Name',
+            'mobile' => '',
+            'mobile_code' => '',
+            'address' => '',
+            'town' => '',
+            'country' => 'IN',
+            'state' => 'IN-KA',
+            'zip' => '',
+            'profile_pic' => '',
+            'debit' => 0,
         ]);
     }
 }

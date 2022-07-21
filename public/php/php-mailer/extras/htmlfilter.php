@@ -33,10 +33,9 @@
  * of attributes, and the type of the tag. This function is called by
  * tln_sanitize internally.
  *
- * @param string $tagname the name of the tag.
- * @param array  $attary  the array of attributes and their values
- * @param int    $tagtype The type of the tag (see in comments).
- *
+ * @param  string  $tagname the name of the tag.
+ * @param  array  $attary  the array of attributes and their values
+ * @param  int  $tagtype The type of the tag (see in comments).
  * @return string A string with the final tag representation.
  */
 function tln_tagprint($tagname, $attary, $tagtype)
@@ -47,7 +46,7 @@ function tln_tagprint($tagname, $attary, $tagtype)
         $fulltag = '<'.$tagname;
         if (is_array($attary) && count($attary)) {
             $atts = [];
-            while (list($attname, $attvalue) = each($attary)) {
+            while ([$attname, $attvalue] = each($attary)) {
                 array_push($atts, "$attname=$attvalue");
             }
             $fulltag .= ' '.implode(' ', $atts);
@@ -65,8 +64,7 @@ function tln_tagprint($tagname, $attary, $tagtype)
  * A small helper function to use with array_walk. Modifies a by-ref
  * value and makes it lowercase.
  *
- * @param string $val a value passed by-ref.
- *
+ * @param  string  $val a value passed by-ref.
  * @return void since it modifies a by-ref value.
  */
 function tln_casenormalize(&$val)
@@ -78,10 +76,9 @@ function tln_casenormalize(&$val)
  * This function skips any whitespace from the current position within
  * a string and to the next non-whitespace value.
  *
- * @param string $body   the string
- * @param int    $offset the offset within the string where we should start
+ * @param  string  $body   the string
+ * @param  int  $offset the offset within the string where we should start
  *                       looking for the next non-whitespace character.
- *
  * @return int the location within the $body where the next
  *             non-whitespace char is located.
  */
@@ -101,10 +98,9 @@ function tln_skipspace($body, $offset)
  * really just a glorified "strpos", except it catches the failures
  * nicely.
  *
- * @param string $body   The string to look for needle in.
- * @param int    $offset Start looking from this position.
- * @param string $needle The character/string to look for.
- *
+ * @param  string  $body   The string to look for needle in.
+ * @param  int  $offset Start looking from this position.
+ * @param  string  $needle The character/string to look for.
  * @return int location of the next occurrence of the needle, or
  *             strlen($body) if needle wasn't found.
  */
@@ -122,10 +118,9 @@ function tln_findnxstr($body, $offset, $needle)
  * This function takes a PCRE-style regexp and tries to match it
  * within the string.
  *
- * @param string $body   The string to look for needle in.
- * @param int    $offset Start looking from here.
- * @param string $reg    A PCRE-style regex to match.
- *
+ * @param  string  $body   The string to look for needle in.
+ * @param  int  $offset Start looking from here.
+ * @param  string  $reg    A PCRE-style regex to match.
  * @return array|bool Returns a false if no matches found, or an array
  *                    with the following members:
  *                    - integer with the location of the match within $body
@@ -138,7 +133,7 @@ function tln_findnxreg($body, $offset, $reg)
     $retarr = [];
     $preg_rule = '%^(.*?)('.$reg.')%s';
     preg_match($preg_rule, substr($body, $offset), $matches);
-    if (!isset($matches[0]) || !$matches[0]) {
+    if (! isset($matches[0]) || ! $matches[0]) {
         $retarr = false;
     } else {
         $retarr[0] = $offset + strlen($matches[1]);
@@ -152,9 +147,8 @@ function tln_findnxreg($body, $offset, $reg)
 /**
  * This function looks for the next tag.
  *
- * @param string $body   String where to look for the next tag.
- * @param int    $offset Start looking from here.
- *
+ * @param  string  $body   String where to look for the next tag.
+ * @param  int  $offset Start looking from here.
  * @return array|bool false if no more tags exist in the body, or
  *                    an array with the following members:
  *                    - string with the name of the tag
@@ -231,7 +225,7 @@ function tln_getnxtag($body, $offset)
     if ($regary == false) {
         return [false, false, false, $lt, strlen($body)];
     }
-    list($pos, $tagname, $match) = $regary;
+    [$pos, $tagname, $match] = $regary;
     $tagname = strtolower($tagname);
 
     /**
@@ -266,7 +260,7 @@ function tln_getnxtag($body, $offset)
         /*
          * Check if it's whitespace
          */
-        if (!preg_match('/\s/', $match)) {
+        if (! preg_match('/\s/', $match)) {
             /**
              * This is an invalid tag! Look for the next closing ">".
              */
@@ -336,7 +330,7 @@ function tln_getnxtag($body, $offset)
              */
             return [false, false, false, $lt, strlen($body)];
         }
-        list($pos, $attname, $match) = $regary;
+        [$pos, $attname, $match] = $regary;
         $attname = strtolower($attname);
         /*
          * We arrived at the end of attribute name. Several things possible
@@ -397,7 +391,7 @@ function tln_getnxtag($body, $offset)
                     if ($regary == false) {
                         return [false, false, false, $lt, strlen($body)];
                     }
-                    list($pos, $attval, $match) = $regary;
+                    [$pos, $attval, $match] = $regary;
                     $pos++;
                     $attary[$attname] = '\''.$attval.'\'';
                 } elseif ($quot == '"') {
@@ -405,7 +399,7 @@ function tln_getnxtag($body, $offset)
                     if ($regary == false) {
                         return [false, false, false, $lt, strlen($body)];
                     }
-                    list($pos, $attval, $match) = $regary;
+                    [$pos, $attval, $match] = $regary;
                     $pos++;
                     $attary[$attname] = '"'.$attval.'"';
                 } else {
@@ -416,7 +410,7 @@ function tln_getnxtag($body, $offset)
                     if ($regary == false) {
                         return [false, false, false, $lt, strlen($body)];
                     }
-                    list($pos, $attval, $match) = $regary;
+                    [$pos, $attval, $match] = $regary;
                     /**
                      * If it's ">" it will be caught at the top.
                      */
@@ -449,10 +443,9 @@ function tln_getnxtag($body, $offset)
 /**
  * Translates entities into literal values so they can be checked.
  *
- * @param string $attvalue the by-ref value to check.
- * @param string $regex    the regular expression to check against.
- * @param bool   $hex      whether the entities are hexadecimal.
- *
+ * @param  string  $attvalue the by-ref value to check.
+ * @param  string  $regex    the regular expression to check against.
+ * @param  bool  $hex      whether the entities are hexadecimal.
  * @return bool True or False depending on whether there were matches.
  */
 function tln_deent(&$attvalue, $regex, $hex = false)
@@ -481,7 +474,7 @@ function tln_deent(&$attvalue, $regex, $hex = false)
  * and returns them translated into 8-bit strings so we can run
  * checks on them.
  *
- * @param string $attvalue A string to run entity check against.
+ * @param  string  $attvalue A string to run entity check against.
  */
 function tln_defang(&$attvalue)
 {
@@ -507,7 +500,7 @@ function tln_defang(&$attvalue)
  * makers of the browser with 95% market value decided that it'd
  * be funny to make "java[tab]script" be just as good as "javascript".
  *
- * @param string $attvalue The attribute value before extraneous spaces removed.
+ * @param  string  $attvalue The attribute value before extraneous spaces removed.
  */
 function tln_unspace(&$attvalue)
 {
@@ -523,14 +516,13 @@ function tln_unspace(&$attvalue)
 /**
  * This function runs various checks against the attributes.
  *
- * @param string $tagname               String with the name of the tag.
- * @param array  $attary                Array with all tag attributes.
- * @param array  $rm_attnames           See description for tln_sanitize
- * @param array  $bad_attvals           See description for tln_sanitize
- * @param array  $add_attr_to_tag       See description for tln_sanitize
- * @param string $trans_image_path
- * @param bool   $block_external_images
- *
+ * @param  string  $tagname               String with the name of the tag.
+ * @param  array  $attary                Array with all tag attributes.
+ * @param  array  $rm_attnames           See description for tln_sanitize
+ * @param  array  $bad_attvals           See description for tln_sanitize
+ * @param  array  $add_attr_to_tag       See description for tln_sanitize
+ * @param  string  $trans_image_path
+ * @param  bool  $block_external_images
  * @return array with modified attributes.
  */
 function tln_fixatts(
@@ -542,7 +534,7 @@ function tln_fixatts(
     $trans_image_path,
     $block_external_images
 ) {
-    while (list($attname, $attvalue) = each($attary)) {
+    while ([$attname, $attvalue] = each($attary)) {
         /*
          * See if this attribute should be removed.
          */
@@ -582,7 +574,7 @@ function tln_fixatts(
                          * First is matches.
                          * Second one is replacements
                          */
-                        list($valmatch, $valrepl) = $valary;
+                        [$valmatch, $valrepl] = $valary;
                         $newvalue = preg_replace($valmatch, $valrepl, $attvalue);
                         if ($newvalue != $attvalue) {
                             $attary[$attname] = $newvalue;
@@ -659,7 +651,7 @@ function tln_fixurl($attname, &$attvalue, $trans_image_path, $block_external_ima
                             if ($block_external_images == true) {
                                 $attvalue = $sQuote.$trans_image_path.$sQuote;
                             } else {
-                                if (!isset($aUrl['path'])) {
+                                if (! isset($aUrl['path'])) {
                                     $attvalue = $sQuote.$trans_image_path.$sQuote;
                                 }
                             }
@@ -678,7 +670,7 @@ function tln_fixurl($attname, &$attvalue, $trans_image_path, $block_external_ima
                         break;
                 }
             } else {
-                if (!isset($aUrl['path']) || $aUrl['path'] != $trans_image_path) {
+                if (! isset($aUrl['path']) || $aUrl['path'] != $trans_image_path) {
                     $$attvalue = $sQuote.$trans_image_path.$sQuote;
                 }
             }
@@ -795,13 +787,13 @@ function tln_fixstyle($body, $pos, $trans_image_path, $block_external_images)
     tln_unspace($contentTemp);
 
     $match = ['/\/\*.*\*\//',
-                    '/expression/i',
-                    '/behaviou*r/i',
-                    '/binding/i',
-                    '/include-source/i',
-                    '/javascript/i',
-                    '/script/i',
-                    '/position/i', ];
+        '/expression/i',
+        '/behaviou*r/i',
+        '/binding/i',
+        '/include-source/i',
+        '/javascript/i',
+        '/script/i',
+        '/position/i', ];
     $replace = ['', 'idiocy', 'idiocy', 'idiocy', 'idiocy', 'idiocy', 'idiocy', ''];
     $contentNew = preg_replace($match, $replace, $contentTemp);
     if ($contentNew !== $contentTemp) {
@@ -818,7 +810,7 @@ function tln_body2div($attary, $trans_image_path)
     $has_bgc_stl = $has_txt_stl = false;
     $styledef = '';
     if (is_array($attary) && count($attary) > 0) {
-        foreach ($attary as $attname=>$attvalue) {
+        foreach ($attary as $attname => $attvalue) {
             $quotchar = substr($attvalue, 0, 1);
             $attvalue = str_replace($quotchar, '', $attvalue);
             switch ($attname) {
@@ -837,7 +829,7 @@ function tln_body2div($attary, $trans_image_path)
         }
         // Outlook defines a white bgcolor and no text color. This can lead to
         // white text on a white bg with certain themes.
-        if ($has_bgc_stl && !$has_txt_stl) {
+        if ($has_bgc_stl && ! $has_txt_stl) {
             $styledef .= "color: $text; ";
         }
         if (strlen($styledef) > 0) {
@@ -849,17 +841,16 @@ function tln_body2div($attary, $trans_image_path)
 }
 
 /**
- * @param string $body                  The HTML you wish to filter
- * @param array  $tag_list              see description above
- * @param array  $rm_tags_with_content  see description above
- * @param array  $self_closing_tags     see description above
- * @param bool   $force_tag_closing     see description above
- * @param array  $rm_attnames           see description above
- * @param array  $bad_attvals           see description above
- * @param array  $add_attr_to_tag       see description above
- * @param string $trans_image_path
- * @param bool   $block_external_images
- *
+ * @param  string  $body                  The HTML you wish to filter
+ * @param  array  $tag_list              see description above
+ * @param  array  $rm_tags_with_content  see description above
+ * @param  array  $self_closing_tags     see description above
+ * @param  bool  $force_tag_closing     see description above
+ * @param  array  $rm_attnames           see description above
+ * @param  array  $bad_attvals           see description above
+ * @param  array  $add_attr_to_tag       see description above
+ * @param  string  $trans_image_path
+ * @param  bool  $block_external_images
  * @return string Sanitized html safe to show on your pages.
  */
 function tln_sanitize(
@@ -896,16 +887,16 @@ function tln_sanitize(
      */
     $body = preg_replace('/&(\{.*?\};)/si', '&amp;\\1', $body);
     while (($curtag = tln_getnxtag($body, $curpos)) != false) {
-        list($tagname, $attary, $tagtype, $lt, $gt) = $curtag;
+        [$tagname, $attary, $tagtype, $lt, $gt] = $curtag;
         $free_content = substr($body, $curpos, $lt - $curpos);
         /*
          * Take care of <style>
          */
         if ($tagname == 'style' && $tagtype == 1) {
-            list($free_content, $curpos) =
+            [$free_content, $curpos] =
                 tln_fixstyle($body, $gt + 1, $trans_image_path, $block_external_images);
             if ($free_content != false) {
-                if (!empty($attary)) {
+                if (! empty($attary)) {
                     $attary = tln_fixatts($tagname,
                                          $attary,
                                          $rm_attnames,
@@ -972,7 +963,7 @@ function tln_sanitize(
                         if (($rm_tags == false
                              && in_array($tagname, $tag_list)) ||
                             ($rm_tags == true
-                                && !in_array($tagname, $tag_list))
+                                && ! in_array($tagname, $tag_list))
                         ) {
                             $tagname = false;
                         } else {
@@ -1071,12 +1062,12 @@ function HTMLFilter($body, $trans_image_path, $block_external_images = false)
 
     $rm_attnames = [
         '/.*/' => [
-                // "/target/i",
-                '/^on.*/i',
-                '/^dynsrc/i',
-                '/^data.*/i',
-                '/^lowsrc.*/i',
-            ],
+            // "/target/i",
+            '/^on.*/i',
+            '/^dynsrc/i',
+            '/^data.*/i',
+            '/^lowsrc.*/i',
+        ],
     ];
 
     $bad_attvals = [

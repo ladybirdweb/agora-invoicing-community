@@ -9,11 +9,15 @@ use Spatie\Activitylog\Traits\LogsActivity;
 class ProductCategory extends Model
 {
     use LogsActivity;
+
     protected $table = 'product_categories';
+
     protected $fillable = ['id', 'category_name'];
 
     protected static $logName = 'Product Category';
+
     protected static $logAttributes = ['category_name'];
+
     protected static $logOnlyDirty = true;
 
     public function getDescriptionForEvent(string $eventName): string

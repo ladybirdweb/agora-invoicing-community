@@ -69,13 +69,13 @@ class ExtendedBaseProductController extends Controller
     public function uploadUpdate($id, Request $request)
     {
         $this->validate($request, [
-            'title'        => 'required',
-            'version'      => 'required',
-            'dependencies'  =>'required',
+            'title' => 'required',
+            'version' => 'required',
+            'dependencies' => 'required',
         ]);
         try {
             $file_upload = ProductUpload::find($id);
-            $file_upload->where('id', $id)->update(['title'=>$request->input('title'), 'description'=>$request->input('description'), 'version'=> $request->input('version'), 'dependencies'=>json_encode($request->input('dependencies')), 'is_private'=>$request->input('is_private'), 'is_restricted'=>$request->input('is_restricted')]);
+            $file_upload->where('id', $id)->update(['title' => $request->input('title'), 'description' => $request->input('description'), 'version' => $request->input('version'), 'dependencies' => json_encode($request->input('dependencies')), 'is_private' => $request->input('is_private'), 'is_restricted' => $request->input('is_restricted')]);
             $autoUpdateStatus = StatusSetting::pluck('license_status')->first();
             if ($autoUpdateStatus == 1) { //If License Setting Status is on,Add Product to the AutoUpdate Script
                 $productSku = $file_upload->product->product_sku;
@@ -87,7 +87,7 @@ class ExtendedBaseProductController extends Controller
         } catch (\Exception $e) {
             app('log')->error($e->getMessage());
             $message = [$e->getMessage()];
-            $response = ['success'=>'false', 'message'=>$message];
+            $response = ['success' => 'false', 'message' => $message];
 
             return redirect()->back()->with('fails', $e->getMessage());
         }
@@ -225,7 +225,7 @@ class ExtendedBaseProductController extends Controller
      *
      * @date   2019-01-07T20:40:20+0530
      *
-     *@param  Illuminate\Http\Request     $input      All the Product Detais Sent from  the form
+     *@param  Illuminate\Http\Request  $input      All the Product Detais Sent from  the form
      * @param Illuminate\Http\Request; $request
      * @param  array  $product  instance of the Product
      * @return Save The Details

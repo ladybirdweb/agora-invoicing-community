@@ -9,7 +9,7 @@
  * @copyright  Copyright © 2010, Mike Cochrane, Nick Pope
  * @license    http://www.apache.org/licenses/LICENSE-2.0  Apache License v2.0
  */
-if (!defined('E_DEPRECATED')) {
+if (! defined('E_DEPRECATED')) {
     define('E_DEPRECATED', 8192);
 }
 error_reporting(E_ALL | E_STRICT | E_DEPRECATED);
@@ -27,13 +27,13 @@ function print_array(array $a)
     $p = print_r($a, true);
     $p = str_replace('  ', ' ', $p);
     echo preg_replace([
-    '!^Array\s+\(\s+!',
-    '!=> Array\s+\(!',
-    '!  (\[\d|\))!',
-    '!\s+\)\s*$!',
-  ], [
-    '  ', '=> (', '\1', '',
-  ], $p);
+        '!^Array\s+\(\s+!',
+        '!=> Array\s+\(!',
+        '!  (\[\d|\))!',
+        '!\s+\)\s*$!',
+    ], [
+        '  ', '=> (', '\1', '',
+    ], $p);
 }
 
 $tweet = 'Tweet mentioning @mikenz and referring to his list @mikeNZ/sports and website http://mikenz.geek.nz #awesome';

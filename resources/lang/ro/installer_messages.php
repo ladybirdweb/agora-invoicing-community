@@ -8,7 +8,7 @@ return [
      *
      */
     'title' => 'Procesul de instalare Laravel',
-    'next'  => 'Pasul următor',
+    'next' => 'Pasul următor',
 
     /*
      *
@@ -16,7 +16,7 @@ return [
      *
      */
     'welcome' => [
-        'title'   => 'Bun venit în procesul de instalare...',
+        'title' => 'Bun venit în procesul de instalare...',
         'message' => 'Bun venit în configurarea asistată.',
     ],
 
@@ -44,10 +44,10 @@ return [
      *
      */
     'environment' => [
-        'title'   => 'Settări ale mediului',
-        'save'    => 'Salvează fișier .env',
+        'title' => 'Settări ale mediului',
+        'save' => 'Salvează fișier .env',
         'success' => 'Setările tale au fost salvate în fișierul .env.',
-        'errors'  => 'Nu am putut salva fișierul .env, Te rugăm să-l creezi manual.',
+        'errors' => 'Nu am putut salva fișierul .env, Te rugăm să-l creezi manual.',
     ],
 
     /*
@@ -56,8 +56,8 @@ return [
      *
      */
     'final' => [
-        'title'    => 'Am terminat',
+        'title' => 'Am terminat',
         'finished' => 'Aplicația a fost instalată cu succes.',
-        'exit'     => 'Click aici pentru a ieși',
+        'exit' => 'Click aici pentru a ieși',
     ],
 ];

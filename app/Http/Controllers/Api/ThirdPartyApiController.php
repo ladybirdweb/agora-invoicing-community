@@ -15,6 +15,7 @@ class ThirdPartyApiController extends Controller
     use ChunkUpload;
 
     private $product_upload;
+
     private $product;
 
     public function __construct()
@@ -47,11 +48,11 @@ class ThirdPartyApiController extends Controller
         $this->validate(
             $request,
             [
-                'productname'  =>  'required',
-                'producttitle'  => 'required',
-                'version'      => 'required',
-                'filename'      => 'required',
-                'dependencies'  =>'required',
+                'productname' => 'required',
+                'producttitle' => 'required',
+                'version' => 'required',
+                'filename' => 'required',
+                'dependencies' => 'required',
             ],
        ['filename.required' => 'Please Uplaod A file',
        ]
@@ -68,22 +69,22 @@ class ThirdPartyApiController extends Controller
                 $this->product_upload->is_restricted = $request->input('is_restricted');
                 $this->product_upload->dependencies = json_encode($request->input('dependencies'));
                 $this->product_upload->save();
-                $this->product->where('id', $product_id->id)->update(['version'=>$request->input('version')]);
+                $this->product->where('id', $product_id->id)->update(['version' => $request->input('version')]);
                 $autoUpdateStatus = StatusSetting::pluck('license_status')->first();
                 if ($autoUpdateStatus == 1) { //If License Setting Status is on,Add Product to the License Manager
                     $updateClassObj = new \App\Http\Controllers\AutoUpdate\AutoUpdateController();
                     $addProductToAutoUpdate = $updateClassObj->addNewVersion($product_id->id, $request->input('version'), $request->input('filename'), '1');
                 }
-                $response = ['success'=>'true', 'message'=>'Product Uploaded Successfully'];
+                $response = ['success' => 'true', 'message' => 'Product Uploaded Successfully'];
             } else {
-                $response = ['success'=>'fails', 'message'=>'Product not found'];
+                $response = ['success' => 'fails', 'message' => 'Product not found'];
             }
 
             return $response;
         } catch (\Exception $e) {
             app('log')->error($e->getMessage());
             $message = [$e->getMessage()];
-            $response = ['success'=>'false', 'message'=>$message];
+            $response = ['success' => 'false', 'message' => $message];
 
             return response()->json(compact('response'), 500);
         }

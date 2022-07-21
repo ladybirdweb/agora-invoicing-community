@@ -106,7 +106,7 @@ class ExtendedOrderController extends Controller
             $updateInstallStatus = $cont->updateInstalledDomain($licenseCode, $order->product);
         }
 
-        return ['message' => 'success', 'update'=>'Licensed Domain Updated'];
+        return ['message' => 'success', 'update' => 'Licensed Domain Updated'];
     }
 
     public function reissueLicense(Request $request)
@@ -129,7 +129,7 @@ class ExtendedOrderController extends Controller
             $updateInstallStatus = $cont->updateInstalledDomain($licenseCode, $order->product);
         }
 
-        return ['message' => 'success', 'update'=>'License Reissued'];
+        return ['message' => 'success', 'update' => 'License Reissued'];
     }
 
     public function getAllowedDomains($seperateDomains)

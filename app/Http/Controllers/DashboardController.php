@@ -64,10 +64,9 @@ class DashboardController extends Controller
         $status = $request->input('status');
         $conversionRate = $this->getConversionRate();
 
-        return view('themes.default1.common.dashboard', compact('allowedCurrencies1','allowedCurrencies2',
-            'currency1Symbol','currency2Symbol','totalSalesCurrency2', 'totalSalesCurrency1', 'yearlySalesCurrency2',
-            'yearlySalesCurrency1', 'monthlySalesCurrency2', 'monthlySalesCurrency1', 'users', 'productSoldInLast30Days'
-            ,'recentOrders','subscriptions','expiredSubscriptions', 'invoices', 'allSoldProducts', 'pendingPaymentCurrency2',
+        return view('themes.default1.common.dashboard', compact('allowedCurrencies1', 'allowedCurrencies2',
+            'currency1Symbol', 'currency2Symbol', 'totalSalesCurrency2', 'totalSalesCurrency1', 'yearlySalesCurrency2',
+            'yearlySalesCurrency1', 'monthlySalesCurrency2', 'monthlySalesCurrency1', 'users', 'productSoldInLast30Days', 'recentOrders', 'subscriptions', 'expiredSubscriptions', 'invoices', 'allSoldProducts', 'pendingPaymentCurrency2',
             'pendingPaymentCurrency1', 'status', 'startSubscriptionDate', 'endSubscriptionDate', 'clientsUsingOldVersion', 'getLast30DaysInstallation', 'conversionRate'));
     }
 
@@ -87,7 +86,7 @@ class DashboardController extends Controller
             $rate = ($paidOrders / $allOrders) * 100;
         }
 
-        return ['all_orders'=>$allOrders, 'paid_orders'=>$paidOrders, 'rate'=>$rate];
+        return ['all_orders' => $allOrders, 'paid_orders' => $paidOrders, 'rate' => $rate];
     }
 
     /**
@@ -106,7 +105,7 @@ class DashboardController extends Controller
             $rate = (($totalSubscriptionInLast30Days - $inactiveInstallation) / $totalSubscriptionInLast30Days * 100);
         }
 
-        return ['total_subscription'=>$totalSubscriptionInLast30Days, 'inactive_subscription'=>$inactiveInstallation, 'rate'=>$rate];
+        return ['total_subscription' => $totalSubscriptionInLast30Days, 'inactive_subscription' => $inactiveInstallation, 'rate' => $rate];
     }
 
     /**
@@ -263,7 +262,7 @@ class DashboardController extends Controller
         $baseQuery = Subscription::with('user:id,first_name,last_name,email,user_name')
             ->join('orders', 'subscriptions.order_id', '=', 'orders.id')
             ->join('products', 'products.id', '=', 'orders.product')
-            ->select('subscriptions.id','products.id as product_id', 'orders.number as order_number', 'orders.id as order_id',
+            ->select('subscriptions.id', 'products.id as product_id', 'orders.number as order_number', 'orders.id as order_id',
                 'products.name as product_name', 'subscriptions.update_ends_at as subscription_ends_at', 'user_id')
             ->where('price_override', '>', 0)
             ->orderBy('subscription_ends_at', 'asc')
@@ -344,7 +343,7 @@ class DashboardController extends Controller
             ->where('subscriptions.version', '<', $latestVersion)
             ->where('subscriptions.version', '!=', null)
             ->where('subscriptions.version', '!=', '')
-            ->select('orders.id', \DB::raw("concat(first_name, ' ', last_name) as client_name"), 'products.name as product_name','products.id as product_id',
+            ->select('orders.id', \DB::raw("concat(first_name, ' ', last_name) as client_name"), 'products.name as product_name', 'products.id as product_id',
                 'subscriptions.version as product_version', 'client as client_id', 'subscriptions.update_ends_at as subscription_ends_at')
             ->orderBy('subscription_ends_at', 'desc')
             ->take(30)->get()->map(function ($element) {

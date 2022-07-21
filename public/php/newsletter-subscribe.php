@@ -27,14 +27,14 @@ $MailChimp = new MailChimp($apiKey);
 
 $result = $MailChimp->post('lists/'.$listId.'/members', [
     'email_address' => $email,
-    'merge_fields'  => ['FNAME'=>'', 'LNAME'=>''], // Step 3 (Optional) - Vars - More Information - http://kb.mailchimp.com/merge-tags/using/getting-started-with-merge-tags
-    'status' 		     => 'subscribed',
+    'merge_fields' => ['FNAME' => '', 'LNAME' => ''], // Step 3 (Optional) - Vars - More Information - http://kb.mailchimp.com/merge-tags/using/getting-started-with-merge-tags
+    'status' => 'subscribed',
 ]);
 
 if ($result['id'] != '') {
-    $arrResult = ['response'=>'success'];
+    $arrResult = ['response' => 'success'];
 } else {
-    $arrResult = ['response'=>'error', 'message'=>$result['detail']];
+    $arrResult = ['response' => 'error', 'message' => $result['detail']];
 }
 
 echo json_encode($arrResult);

@@ -7,6 +7,7 @@ use App\BaseModel;
 class State extends BaseModel
 {
     protected $table = 'states_subdivisions';
+
     protected $primaryKey = 'state_subdivision_id';
 
     protected $fillable = [

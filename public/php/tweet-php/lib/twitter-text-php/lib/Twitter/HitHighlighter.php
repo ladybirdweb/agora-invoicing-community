@@ -32,8 +32,8 @@ class Twitter_HitHighlighter extends Twitter_Regex
     /**
      * Provides fluent method chaining.
      *
-     * @param string $tweet       The tweet to be hit highlighted.
-     * @param bool   $full_encode Whether to encode all special characters.
+     * @param  string  $tweet       The tweet to be hit highlighted.
+     * @param  bool  $full_encode Whether to encode all special characters.
      *
      * @see  __construct()
      *
@@ -51,9 +51,9 @@ class Twitter_HitHighlighter extends Twitter_Regex
      *
      * @see  htmlspecialchars()
      *
-     * @param string $tweet       The tweet to be hit highlighted.
-     * @param bool   $escape      Whether to escape the tweet (default: true).
-     * @param bool   $full_encode Whether to encode all special characters.
+     * @param  string  $tweet       The tweet to be hit highlighted.
+     * @param  bool  $escape      Whether to escape the tweet (default: true).
+     * @param  bool  $full_encode Whether to encode all special characters.
      */
     public function __construct($tweet, $escape = true, $full_encode = false)
     {
@@ -81,8 +81,7 @@ class Twitter_HitHighlighter extends Twitter_Regex
     /**
      * Set the highlighting tag to surround hits with.  The default tag is 'em'.
      *
-     * @param string $v The tag name.
-     *
+     * @param  string  $v The tag name.
      * @return Twitter_HitHighlighter Fluid method chaining.
      */
     public function setTag($v)
@@ -95,9 +94,8 @@ class Twitter_HitHighlighter extends Twitter_Regex
     /**
      * Hit highlights the tweet.
      *
-     * @param array $hits An array containing the start and end index pairs
+     * @param  array  $hits An array containing the start and end index pairs
      *                    for the highlighting.
-     *
      * @return string The hit highlighted tweet.
      */
     public function addHitHighlighting(array $hits)
@@ -149,7 +147,7 @@ class Twitter_HitHighlighter extends Twitter_Regex
                     $chunk = (isset($chunks[$chunk_index]) ? $chunks[$chunk_index] : null);
                     $start_in_chunk = false;
                 }
-                if (!$placed && $chunk !== null) {
+                if (! $placed && $chunk !== null) {
                     $hit_spot = $hit - $offset;
                     $tweet .= mb_substr($chunk, $chunk_cursor, $hit_spot - $chunk_cursor).$tag;
                     $chunk_cursor = $hit_spot;
@@ -157,7 +155,7 @@ class Twitter_HitHighlighter extends Twitter_Regex
                     $placed = true;
                 }
                 // Ultimate fallback - hits that run off the end get a closing tag:
-                if (!$placed) {
+                if (! $placed) {
                     $tweet .= $tag;
                 }
             }
@@ -177,12 +175,11 @@ class Twitter_HitHighlighter extends Twitter_Regex
     /**
      * A multibyte-aware substring replacement function.
      *
-     * @param string $string      The string to modify.
-     * @param string $replacement The replacement string.
-     * @param int    $start       The start of the replacement.
-     * @param int    $length      The number of characters to replace.
-     * @param string $encoding    The encoding of the string.
-     *
+     * @param  string  $string      The string to modify.
+     * @param  string  $replacement The replacement string.
+     * @param  int  $start       The start of the replacement.
+     * @param  int  $length      The number of characters to replace.
+     * @param  string  $encoding    The encoding of the string.
      * @return string The modified string.
      *
      * @see http://www.php.net/manual/en/function.substr-replace.php#90146

@@ -8,10 +8,15 @@ use Spatie\Activitylog\Traits\LogsActivity;
 class Promotion extends BaseModel
 {
     use LogsActivity;
+
     protected $table = 'promotions';
+
     protected $fillable = ['code', 'type', 'uses', 'value', 'start', 'expiry'];
+
     protected static $logName = 'Promotion';
+
     protected static $logAttributes = ['code', 'type', 'uses', 'value', 'start', 'expiry'];
+
     protected static $logOnlyDirty = true;
 
     // protected $dates = ['start','expiry'];

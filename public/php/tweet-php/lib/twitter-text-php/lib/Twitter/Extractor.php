@@ -27,7 +27,7 @@ class Twitter_Extractor extends Twitter_Regex
     /**
      * Provides fluent method chaining.
      *
-     * @param string $tweet The tweet to be converted.
+     * @param  string  $tweet The tweet to be converted.
      *
      * @see  __construct()
      *
@@ -43,7 +43,7 @@ class Twitter_Extractor extends Twitter_Regex
      *
      * Extracts various parts of a tweet including URLs, usernames, hashtags...
      *
-     * @param string $tweet The tweet to extract.
+     * @param  string  $tweet The tweet to extract.
      */
     public function __construct($tweet)
     {
@@ -59,14 +59,14 @@ class Twitter_Extractor extends Twitter_Regex
     public function extract()
     {
         return [
-      'hashtags'              => $this->extractHashtags(),
-      'urls'                  => $this->extractURLs(),
-      'mentions'              => $this->extractMentionedUsernames(),
-      'replyto'               => $this->extractRepliedUsernames(),
-      'hashtags_with_indices' => $this->extractHashtagsWithIndices(),
-      'urls_with_indices'     => $this->extractURLsWithIndices(),
-      'mentions_with_indices' => $this->extractMentionedUsernamesWithIndices(),
-    ];
+            'hashtags' => $this->extractHashtags(),
+            'urls' => $this->extractURLs(),
+            'mentions' => $this->extractMentionedUsernames(),
+            'replyto' => $this->extractRepliedUsernames(),
+            'hashtags_with_indices' => $this->extractHashtagsWithIndices(),
+            'urls_with_indices' => $this->extractURLsWithIndices(),
+            'mentions_with_indices' => $this->extractMentionedUsernamesWithIndices(),
+        ];
     }
 
     /**
@@ -89,7 +89,7 @@ class Twitter_Extractor extends Twitter_Regex
     public function extractURLs()
     {
         preg_match_all(self::$REGEX_VALID_URL, $this->tweet, $matches);
-        list($all, $before, $url, $protocol, $domain, $path, $query) = array_pad($matches, 7, '');
+        [$all, $before, $url, $protocol, $domain, $path, $query] = array_pad($matches, 7, '');
 
         return $url;
     }
@@ -104,11 +104,11 @@ class Twitter_Extractor extends Twitter_Regex
     public function extractMentionedUsernames()
     {
         preg_match_all(self::REGEX_USERNAME_MENTION, $this->tweet, $matches);
-        list($all, $before, $username, $after) = array_pad($matches, 4, '');
+        [$all, $before, $username, $after] = array_pad($matches, 4, '');
         $usernames = [];
         for ($i = 0; $i < count($username); $i++) {
             // If $after is not empty, there is an invalid character.
-            if (!empty($after[$i])) {
+            if (! empty($after[$i])) {
                 continue;
             }
             array_push($usernames, $username[$i]);

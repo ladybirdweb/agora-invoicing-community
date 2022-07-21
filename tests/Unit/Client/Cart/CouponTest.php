@@ -89,28 +89,28 @@ class CouponTest extends DBTestCase
         $this->getLoggedInUser();
         $user = $this->user;
         $currency = $user->currency;
-        $invoice = factory(Invoice::class)->create(['user_id'=>$user->id]);
+        $invoice = factory(Invoice::class)->create(['user_id' => $user->id]);
         $promotionTypeName = PromotionType::find(2);
         $promotionType = $promotionTypeName->name;
         $product = factory(Product::class)->create();
-        $promotion = Promotion::create(['code'=> 'FAVEOCOUPON',
-            'type'                            => $promotionTypeName->id,
-            'uses'                            => '100',
-            'value'                           => '100',
-            'start'                           => '2017-06-30 00:00:00',
-            'expiry'                          => '2017-07-30 00:00:00',
+        $promotion = Promotion::create(['code' => 'FAVEOCOUPON',
+            'type' => $promotionTypeName->id,
+            'uses' => '100',
+            'value' => '100',
+            'start' => '2017-06-30 00:00:00',
+            'expiry' => '2017-07-30 00:00:00',
 
         ]);
 
-        $promotion = PromoProductRelation::create(['promotion_id'=> $promotion->id,
-            'product_id'                                         => $product->id,
+        $promotion = PromoProductRelation::create(['promotion_id' => $promotion->id,
+            'product_id' => $product->id,
         ]);
 
         \Cart::add([
-            'id'         => $product->id,
-            'name'       => $product->name,
-            'price'      => $invoice->grand_total,
-            'quantity'   => 1,
+            'id' => $product->id,
+            'name' => $product->name,
+            'price' => $invoice->grand_total,
+            'quantity' => 1,
             'attributes' => [],
         ]);
         $controller = new \App\Http\Controllers\Payment\PromotionController();
@@ -127,26 +127,26 @@ class CouponTest extends DBTestCase
         $this->getLoggedInUser();
         $user = $this->user;
         $currency = $user->currency;
-        $invoice = factory(Invoice::class)->create(['user_id'=>$user->id]);
+        $invoice = factory(Invoice::class)->create(['user_id' => $user->id]);
         $promotionTypeName = PromotionType::find(2);
         $promotionType = $promotionTypeName->name;
         $product = factory(Product::class)->create();
-        $promotion = Promotion::create(['code'=> 'FAVEOCOUPON',
-            'type'                            => $promotionTypeName->id,
-            'uses'                            => '100',
-            'value'                           => '100',
-            'start'                           => '2018-06-30 00:00:00',
-            'expiry'                          => '2018-07-30 00:00:00',
+        $promotion = Promotion::create(['code' => 'FAVEOCOUPON',
+            'type' => $promotionTypeName->id,
+            'uses' => '100',
+            'value' => '100',
+            'start' => '2018-06-30 00:00:00',
+            'expiry' => '2018-07-30 00:00:00',
         ]);
 
-        $promotion = PromoProductRelation::create(['promotion_id'=> $promotion->id,
-            'product_id'                                         => $product->id,
+        $promotion = PromoProductRelation::create(['promotion_id' => $promotion->id,
+            'product_id' => $product->id,
         ]);
         \Cart::add([
-            'id'         => $product->id,
-            'name'       => $product->name,
-            'price'      => $invoice->grand_total,
-            'quantity'   => 1,
+            'id' => $product->id,
+            'name' => $product->name,
+            'price' => $invoice->grand_total,
+            'quantity' => 1,
             'attributes' => [],
         ]);
         $controller = new \App\Http\Controllers\Payment\PromotionController();

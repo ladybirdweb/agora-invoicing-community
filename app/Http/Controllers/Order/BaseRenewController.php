@@ -91,7 +91,7 @@ class BaseRenewController extends Controller
         }
     }
 
-    public function generateInvoice($product, $user, $orderid, $planid, $cost, $code = '', $agents = '', $currency)
+    public function generateInvoice($product, $user, $orderid, $planid, $cost, $code, $agents, $currency)
     {
         try {
             $controller = new InvoiceController();
@@ -107,13 +107,13 @@ class BaseRenewController extends Controller
             $number = rand(11111111, 99999999);
             $date = \Carbon\Carbon::now();
             $invoice = Invoice::create([
-                'user_id'     => $user->id,
-                'number'      => $number,
-                'date'        => $date,
+                'user_id' => $user->id,
+                'number' => $number,
+                'date' => $date,
                 'grand_total' => $cost,
-                'currency'    => $currency,
-                'is_renewed'  => 1,
-                'status'      => 'pending',
+                'currency' => $currency,
+                'is_renewed' => 1,
+                'status' => 'pending',
             ]);
             $this->createOrderInvoiceRelation($orderid, $invoice->id);
             $items = $controller->createInvoiceItemsByAdmin($invoice->id, $product->id,

@@ -84,11 +84,11 @@ class get_oauth_token extends AbstractProvider
         $params = array_merge(
             parent::getAuthorizationParameters($options),
             array_filter([
-                'hd'          => $this->hostedDomain,
+                'hd' => $this->hostedDomain,
                 'access_type' => $this->accessType,
-        'scope'               => $this->scope,
+                'scope' => $this->scope,
                 // if the user is logged in with more than one account ask which one to use for the login!
-                'authuser'    => '-1',
+                'authuser' => '-1',
             ])
         );
 
@@ -111,7 +111,7 @@ class get_oauth_token extends AbstractProvider
 
     protected function checkResponse(ResponseInterface $response, $data)
     {
-        if (!empty($data['error'])) {
+        if (! empty($data['error'])) {
             $code = 0;
             $error = $data['error'];
 
@@ -133,15 +133,15 @@ class get_oauth_token extends AbstractProvider
 //Set Redirect URI in Developer Console as [https/http]://<yourdomain>/<folder>/get_oauth_token.php
 $provider = new Google(
     [
-        'clientId'     => $clientId,
+        'clientId' => $clientId,
         'clientSecret' => $clientSecret,
-        'redirectUri'  => $redirectUri,
-        'scope'        => ['https://mail.google.com/'],
-    'accessType'       => 'offline',
+        'redirectUri' => $redirectUri,
+        'scope' => ['https://mail.google.com/'],
+        'accessType' => 'offline',
     ]
 );
 
-if (!isset($_GET['code'])) {
+if (! isset($_GET['code'])) {
     // If we don't have an authorization code then get one
     $authUrl = $provider->getAuthorizationUrl();
     $_SESSION['oauth2state'] = $provider->getState();

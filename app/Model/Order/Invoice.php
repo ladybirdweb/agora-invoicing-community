@@ -10,15 +10,19 @@ use Spatie\Activitylog\Traits\LogsActivity;
 class Invoice extends BaseModel
 {
     use LogsActivity;
+
     protected $table = 'invoices';
+
     protected $fillable = ['user_id', 'number', 'date', 'coupon_code', 'discount',
         'grand_total', 'currency', 'status', 'description', 'is_renewed', 'processing_fee', ];
 
     protected $dates = ['date'];
+
     protected static $logName = 'Invoice';
 
     protected static $logAttributes = ['user_id', 'number', 'date',
         'coupon_code', 'grand_total', 'currency', 'status', 'description', ];
+
     protected static $logOnlyDirty = true;
 
     public function getDescriptionForEvent(string $eventName): string

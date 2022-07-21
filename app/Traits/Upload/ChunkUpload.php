@@ -32,11 +32,11 @@ trait ChunkUpload
             $handler = $save->handler();
 
             return response()->json([
-                'done'   => $handler->getPercentageDone(),
+                'done' => $handler->getPercentageDone(),
                 'status' => true,
             ]);
         } catch (Exception $ex) {
-            $response = ['success'=>'false', 'message'=>$ex->getMessage()];
+            $response = ['success' => 'false', 'message' => $ex->getMessage()];
 
             return response()->json(compact('response'), 500);
         }

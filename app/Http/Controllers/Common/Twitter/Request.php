@@ -9,8 +9,11 @@ namespace App\Http\Controllers\Common\Twitter;
 class Request
 {
     protected $parameters;
+
     protected $httpMethod;
+
     protected $httpUrl;
+
     public static $version = '1.0';
 
     /**
@@ -46,9 +49,9 @@ class Request
         array $parameters = []
     ) {
         $defaults = [
-            'oauth_version'      => self::$version,
-            'oauth_nonce'        => self::generateNonce(),
-            'oauth_timestamp'    => time(),
+            'oauth_version' => self::$version,
+            'oauth_nonce' => self::generateNonce(),
+            'oauth_timestamp' => time(),
             'oauth_consumer_key' => $consumer->key,
         ];
         if (null !== $token) {

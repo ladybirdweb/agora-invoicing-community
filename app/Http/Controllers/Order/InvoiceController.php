@@ -31,18 +31,31 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
     use TaxCalculation;
 
     public $invoice;
+
     public $invoiceItem;
+
     public $user;
+
     public $template;
+
     public $setting;
+
     public $payment;
+
     public $product;
+
     public $price;
+
     public $promotion;
+
     public $currency;
+
     public $tax;
+
     public $tax_option;
+
     public $order;
+
     public $cartController;
 
     public function __construct()
@@ -99,8 +112,8 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
     public function index(Request $request)
     {
         $validator = \Validator::make($request->all(), [
-            'from'     => 'nullable',
-            'till'     => 'nullable|after:from',
+            'from' => 'nullable',
+            'till' => 'nullable|after:from',
 
         ]);
         if ($validator->fails()) {
@@ -119,7 +132,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $from = $request->input('from');
             $till = $request->input('till');
 
-            return view('themes.default1.invoice.index', compact('request','name','invoice_no','status','currencies','currency_id','from',
+            return view('themes.default1.invoice.index', compact('request', 'name', 'invoice_no', 'status', 'currencies', 'currency_id', 'from',
 
                 'till'));
         } catch (\Exception $ex) {
@@ -285,7 +298,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 $grand_total = round($grand_total);
             }
             $currency = \Session::has('cart_currency') ? \Session::get('cart_currency') : getCurrencyForClient(\Auth::user()->country);
-            $invoice = $this->invoice->create(['user_id' => $user_id, 'number' => $number, 'date'=> $date, 'grand_total' => $grand_total, 'status' => 'pending',
+            $invoice = $this->invoice->create(['user_id' => $user_id, 'number' => $number, 'date' => $date, 'grand_total' => $grand_total, 'status' => 'pending',
                 'currency' => $currency, ]);
             foreach (\Cart::getContent() as $cart) {
                 $this->createInvoiceItems($invoice->id, $cart);
@@ -322,16 +335,16 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $tax_name = $cart->conditions->getName();
             $tax_percentage = $cart->conditions->getValue();
             $invoiceItem = $this->invoiceItem->create([
-                'invoice_id'     => $invoiceid,
-                'product_name'   => $product_name,
-                'regular_price'  => $regular_price,
-                'quantity'       => $quantity,
-                'tax_name'       => $tax_name,
+                'invoice_id' => $invoiceid,
+                'product_name' => $product_name,
+                'regular_price' => $regular_price,
+                'quantity' => $quantity,
+                'tax_name' => $tax_name,
                 'tax_percentage' => $tax_percentage,
-                'subtotal'       => $subtotal,
-                'domain'         => $domain,
-                'plan_id'        => $planid,
-                'agents'         => $agents,
+                'subtotal' => $subtotal,
+                'domain' => $domain,
+                'plan_id' => $planid,
+                'agents' => $agents,
             ]);
 
             return $invoiceItem;
@@ -385,7 +398,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $tax = $this->calculateTax($product->id, $user->state, $user->country, true);
             $grand_total = rounding($this->calculateTotal($tax['value'], $grandTotalAfterCoupon));
             $invoice = Invoice::create(['user_id' => $user_id, 'number' => $number, 'date' => $date,
-                'coupon_code'  => $couponTotal['code'], 'discount'=>$couponTotal['value'], 'discount_mode'  => $couponTotal['mode'], 'grand_total'  => $grand_total,  'currency'  => $currency, 'status' => $status, 'description' => $description, ]);
+                'coupon_code' => $couponTotal['code'], 'discount' => $couponTotal['value'], 'discount_mode' => $couponTotal['mode'], 'grand_total' => $grand_total,  'currency' => $currency, 'status' => $status, 'description' => $description, ]);
 
             $items = $this->createInvoiceItemsByAdmin($invoice->id, $productid,
               $total, $currency, $qty, $agents, $plan, $user_id, $tax['name'], $tax['value'], $grandTotalAfterCoupon);
@@ -400,7 +413,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
     }
 
     public function createInvoiceItemsByAdmin($invoiceid, $productid, $price,
-        $currency, $qty, $agents, $planid = '', $userid = '', $tax_name = '', $tax_rate = '', $grandTotalAfterCoupon)
+        $currency, $qty, $agents, $planid, $userid, $tax_name, $tax_rate, $grandTotalAfterCoupon)
     {
         try {
             $product = $this->product->findOrFail($productid);
@@ -409,16 +422,16 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
             $domain = $this->domain($productid);
             $items = $this->invoiceItem->create([
-                'invoice_id'     => $invoiceid,
-                'product_name'   => $product->name,
-                'regular_price'  => $price,
-                'quantity'       => $qty,
-                'subtotal'       => rounding($subtotal),
-                'tax_name'       => $tax_name,
+                'invoice_id' => $invoiceid,
+                'product_name' => $product->name,
+                'regular_price' => $price,
+                'quantity' => $qty,
+                'subtotal' => rounding($subtotal),
+                'tax_name' => $tax_name,
                 'tax_percentage' => $tax_rate,
-                'domain'         => $domain,
-                'plan_id'        => $planid,
-                'agents'         => $agents,
+                'domain' => $domain,
+                'plan_id' => $planid,
+                'agents' => $agents,
             ]);
 
             return $items;

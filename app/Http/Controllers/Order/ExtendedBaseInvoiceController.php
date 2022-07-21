@@ -34,7 +34,7 @@ class ExtendedBaseInvoiceController extends Controller
             $symbol = Currency::where('code', $currency)->pluck('symbol')->first();
             $orders = $order->where('client', $clientid)->get();
 
-            return view('themes.default1.invoice.newpayment', compact('clientid', 'client', 'invoices',  'orders',
+            return view('themes.default1.invoice.newpayment', compact('clientid', 'client', 'invoices', 'orders',
                   'invoiceSum', 'amountReceived', 'pendingAmount', 'currency', 'symbol'));
         } catch (Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -44,9 +44,9 @@ class ExtendedBaseInvoiceController extends Controller
     public function postNewPayment($clientid, Request $request)
     {
         $this->validate($request, [
-            'payment_date'  => 'required',
-            'payment_method'=> 'required',
-            'amount'        => 'required',
+            'payment_date' => 'required',
+            'payment_method' => 'required',
+            'amount' => 'required',
         ]);
 
         try {
@@ -78,18 +78,18 @@ class ExtendedBaseInvoiceController extends Controller
     public function postEdit($invoiceid, Request $request)
     {
         $this->validate($request, [
-            'date'  => 'required',
+            'date' => 'required',
             'total' => 'required',
-            'status'=> 'required',
+            'status' => 'required',
         ]);
 
         try {
             $total = $request->input('total');
             $status = $request->input('status');
             $paid = $request->input('paid');
-            $invoice = Invoice::where('id', $invoiceid)->update(['grand_total'=> $total, 'status'=>$status,
-                'date'                                                        => \Carbon\Carbon::parse($request->input('date')), ]);
-            $order = Order::where('invoice_id', $invoiceid)->update(['price_override'=>$total]);
+            $invoice = Invoice::where('id', $invoiceid)->update(['grand_total' => $total, 'status' => $status,
+                'date' => \Carbon\Carbon::parse($request->input('date')), ]);
+            $order = Order::where('invoice_id', $invoiceid)->update(['price_override' => $total]);
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $ex) {
@@ -100,11 +100,11 @@ class ExtendedBaseInvoiceController extends Controller
     public function postNewMultiplePayment($clientid, Request $request)
     {
         $this->validate($request, [
-            'payment_date'  => 'required',
-            'payment_method'=> 'required',
-            'totalAmt'      => 'required|numeric|not_in:0',
+            'payment_date' => 'required',
+            'payment_method' => 'required',
+            'totalAmt' => 'required|numeric|not_in:0',
         ], [
-            'totalAmt.required'=> 'The amount field is required',
+            'totalAmt.required' => 'The amount field is required',
         ]);
 
         try {
@@ -115,7 +115,7 @@ class ExtendedBaseInvoiceController extends Controller
             $invoicAmount = $request->invoiceAmount;
             $amtToCredit = $request->amtToCredit;
             $payment_status = 'success';
-            $payment = $this->multiplePayment($clientid,$invoiceChecked, $payment_method,
+            $payment = $this->multiplePayment($clientid, $invoiceChecked, $payment_method,
              $payment_date, $totalAmt, $invoicAmount, $amtToCredit, $payment_status);
             $response = ['type' => 'success', 'message' => 'Payment Updated Successfully'];
 
@@ -131,7 +131,7 @@ class ExtendedBaseInvoiceController extends Controller
         }
     }
 
-    public function multiplePayment($clientid,$invoiceChecked, $payment_method,
+    public function multiplePayment($clientid, $invoiceChecked, $payment_method,
              $payment_date, $totalAmt, $invoicAmount, $amtToCredit, $payment_status)
     {
         try {
@@ -141,13 +141,13 @@ class ExtendedBaseInvoiceController extends Controller
                     $invoice_status = 'pending';
                     $invoicAmount[$key] = $invoicAmount[$key] == '' ? 0 : $invoicAmount[$key];
                     $payment = Payment::where('invoice_id', $value)->create([
-                        'invoice_id'     => $value,
-                        'user_id'        => $clientid,
-                        'amount'         => $invoicAmount[$key],
-                        'amt_to_credit'  => $amtToCredit,
+                        'invoice_id' => $value,
+                        'user_id' => $clientid,
+                        'amount' => $invoicAmount[$key],
+                        'amt_to_credit' => $amtToCredit,
                         'payment_method' => $payment_method,
                         'payment_status' => $payment_status,
-                        'created_at'     => $payment_date,
+                        'created_at' => $payment_date,
                     ]);
                     $totalPayments = $this->payment
             ->where('invoice_id', $value)
@@ -172,12 +172,12 @@ class ExtendedBaseInvoiceController extends Controller
                         Payment::where('user_id', $clientid)->delete();
                     }
                     $payment = Payment::updateOrCreate([
-                        'invoice_id'     => $value,
-                        'user_id'        => $clientid,
-                        'amt_to_credit'  => $amtToCredit,
+                        'invoice_id' => $value,
+                        'user_id' => $clientid,
+                        'amt_to_credit' => $amtToCredit,
                         'payment_method' => $payment_method,
                         'payment_status' => $payment_status,
-                        'created_at'     => $payment_date,
+                        'created_at' => $payment_date,
                     ]);
                 }
             }
@@ -196,10 +196,10 @@ class ExtendedBaseInvoiceController extends Controller
     public function updateNewMultiplePayment($clientid, Request $request)
     {
         $this->validate($request, [
-            'payment_date'  => 'required',
-            'payment_method'=> 'required',
-            'totalAmt'      => 'required|numeric',
-            'invoiceChecked'=> 'required',
+            'payment_date' => 'required',
+            'payment_method' => 'required',
+            'totalAmt' => 'required|numeric',
+            'invoiceChecked' => 'required',
         ],
         [
             'invoiceChecked.required' => 'Please link the amount with at least one Invoice',
@@ -214,7 +214,7 @@ class ExtendedBaseInvoiceController extends Controller
             $invoicAmount = $request->invoiceAmount;
             $amtToCredit = $request->amtToCredit;
             $payment_status = 'success';
-            $payment = $this->updatePaymentByInvoice($clientid,$invoiceChecked, $payment_method,
+            $payment = $this->updatePaymentByInvoice($clientid, $invoiceChecked, $payment_method,
              $payment_date, $totalAmt, $invoicAmount, $amtToCredit, $payment_status);
             $response = ['type' => 'success', 'message' => 'Payment Updated Successfully'];
 
@@ -227,7 +227,7 @@ class ExtendedBaseInvoiceController extends Controller
         }
     }
 
-    public function updatePaymentByInvoice($clientid,$invoiceChecked, $payment_method,
+    public function updatePaymentByInvoice($clientid, $invoiceChecked, $payment_method,
              $payment_date, $totalAmt, $invoicAmount, $amtToCredit, $payment_status)
     {
         try {
@@ -236,15 +236,15 @@ class ExtendedBaseInvoiceController extends Controller
                 if ($key != 0) {//If Payment is linked to Invoice
                     $invoice = Invoice::find($value);
                     Payment::where('user_id', $clientid)->where('invoice_id', 0)
-                     ->update(['amt_to_credit'=>$amtToCredit]);
+                     ->update(['amt_to_credit' => $amtToCredit]);
                     $invoice_status = 'pending';
                     $payment = Payment::create([
-                        'invoice_id'     => $value,
-                        'user_id'        => $clientid,
-                        'amount'         => $invoicAmount[$key],
+                        'invoice_id' => $value,
+                        'user_id' => $clientid,
+                        'amount' => $invoicAmount[$key],
                         'payment_method' => $payment_method,
                         'payment_status' => $payment_status,
-                        'created_at'     => $payment_date,
+                        'created_at' => $payment_date,
                     ]);
                     $totalPayments = $this->payment
             ->where('invoice_id', $value)

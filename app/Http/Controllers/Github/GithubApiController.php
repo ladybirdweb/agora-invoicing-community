@@ -8,7 +8,9 @@ use App\Model\Github\Github;
 class GithubApiController extends Controller
 {
     private $username;
+
     private $password;
+
     private $github;
 
     public function __construct()
@@ -86,7 +88,7 @@ class GithubApiController extends Controller
         $body = substr($content, $header_size);
         curl_close($ch);
 
-        return ['body' => json_decode($body, true), 'header'=>$header];
+        return ['body' => json_decode($body, true), 'header' => $header];
     }
 
     public function convertHeaderToArray($header_text, $response)

@@ -18,13 +18,21 @@ use Session;
 class CartController extends BaseCartController
 {
     public $templateController;
+
     public $product;
+
     public $currency;
+
     public $addons;
+
     public $addonRelation;
+
     public $licence;
+
     public $tax_option;
+
     public $tax_by_state;
+
     public $setting;
 
     public function __construct()
@@ -120,8 +128,8 @@ class CartController extends BaseCartController
                 throw new \Exception('Product cannot be added to cart. No plan exists.');
             }
             $actualPrice = $this->cost($product->id, $planid);
-            $items = ['id'     => $id, 'name' => $product->name, 'price' => $actualPrice,
-                'quantity'    => $qty, 'attributes' => ['currency' => $currency['currency'], 'symbol'=>$currency['symbol'], 'agents'=> $agents], 'associatedModel' => $product, ];
+            $items = ['id' => $id, 'name' => $product->name, 'price' => $actualPrice,
+                'quantity' => $qty, 'attributes' => ['currency' => $currency['currency'], 'symbol' => $currency['symbol'], 'agents' => $agents], 'associatedModel' => $product, ];
 
             return $items;
         } catch (\Exception $e) {

@@ -50,10 +50,10 @@ class ForgotPasswordController extends Controller
             $token = str_random(40);
             $password = new \App\Model\User\Password();
             if ($password->where('email', $email)->first()) {
-                $password->where('email', $email)->update(['created_at'=>\Carbon\Carbon::now()]);
+                $password->where('email', $email)->update(['created_at' => \Carbon\Carbon::now()]);
                 $token = $password->where('email', $email)->first()->token;
             } else {
-                $activate = $password->create(['email' => $email, 'token' => $token, 'created_at'=>\Carbon\Carbon::now()]);
+                $activate = $password->create(['email' => $email, 'token' => $token, 'created_at' => \Carbon\Carbon::now()]);
                 $token = $activate->token;
             }
 
@@ -77,7 +77,7 @@ class ForgotPasswordController extends Controller
             $contactUs = $setting->website;
             $subject = $template->name;
             $data = $template->data;
-            $replace = ['name' => $user->first_name.' '.$user->last_name, 'url' => $url, 'contact_us'=>$contactUs];
+            $replace = ['name' => $user->first_name.' '.$user->last_name, 'url' => $url, 'contact_us' => $contactUs];
             $type = '';
 
             if ($template) {
@@ -89,10 +89,10 @@ class ForgotPasswordController extends Controller
             $mail = new \App\Http\Controllers\Common\PhpMailController();
             if (emailSendingStatus()) {
                 $mail->sendEmail($from, $to, $data, $subject, $replace, $type);
-                $response = ['type' => 'success',   'message' =>'Reset instructions have been mailed to '.$to.'
+                $response = ['type' => 'success',   'message' => 'Reset instructions have been mailed to '.$to.'
     .Be sure to check your Junk folder if you do not see an email from us in your Inbox within a few minutes.'];
             } else {
-                $response = ['type' => 'fails',   'message' =>'System email is not configured. Please contact admin.'];
+                $response = ['type' => 'fails',   'message' => 'System email is not configured. Please contact admin.'];
             }
 
             return response()->json($response);

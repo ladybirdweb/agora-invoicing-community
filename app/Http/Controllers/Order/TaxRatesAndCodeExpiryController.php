@@ -16,16 +16,16 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
     public function getGrandTotal($code, $total, $cost, $productid, $currency, $user_id = '')
     {
         if (! $total) {
-            return ['total'=>$total, 'code'=>'', 'value'=>'', 'mode'=>''];
+            return ['total' => $total, 'code' => '', 'value' => '', 'mode' => ''];
         }
         if ($code) {
             $cont = new \App\Http\Controllers\Payment\PromotionController();
             $promo = $cont->getPromotionDetails($code);
             $total = $cont->findCostAfterDiscount($promo->id, $productid, $user_id);
 
-            return ['total'=>$total, 'code'=>$promo->code, 'value'=>$promo->value, 'mode'=>'coupon'];
+            return ['total' => $total, 'code' => $promo->code, 'value' => $promo->value, 'mode' => 'coupon'];
         } else {
-            return ['total'=>$total, 'code'=>'', 'value'=>'', 'mode'=>''];
+            return ['total' => $total, 'code' => '', 'value' => '', 'mode' => ''];
         }
     }
 
@@ -128,12 +128,12 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
         $subject = $template->name;
         $data = $template->data;
         $replace = [
-            'name'       => $user->first_name.' '.$user->last_name,
-            'number'     => $number,
-            'address'    => $user->address,
+            'name' => $user->first_name.' '.$user->last_name,
+            'number' => $number,
+            'address' => $user->address,
             'invoiceurl' => $invoiceurl,
-            'content'    => $this->invoiceContent($invoiceid),
-            'currency'   => $this->currency($invoiceid),
+            'content' => $this->invoiceContent($invoiceid),
+            'currency' => $this->currency($invoiceid),
         ];
         $type = '';
         if ($template) {
@@ -194,7 +194,7 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
             $orders = $order->where('client', $clientid)->get();
 
             return view('themes.default1.invoice.editPayment',
-                compact('amountReceived','clientid', 'client', 'invoices',  'orders',
+                compact('amountReceived', 'clientid', 'client', 'invoices', 'orders',
                   'invoiceSum', 'amountReceived', 'pendingAmount', 'currency', 'symbol'));
         } catch (\Exception $e) {
             return redirect()->back()->with('fails', $e->getMessage());

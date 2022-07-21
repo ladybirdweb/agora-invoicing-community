@@ -70,8 +70,8 @@ class CommentController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $comment = $this->comment->where('id', $id)->update(['user_id'=> $request->input('user_id'),
-                'updated_by_user_id'                                          => $request->input('updated_by_user_id'), 'description'=>$request->input('description'), ]);
+            $comment = $this->comment->where('id', $id)->update(['user_id' => $request->input('user_id'),
+                'updated_by_user_id' => $request->input('updated_by_user_id'), 'description' => $request->input('description'), ]);
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (Exception $ex) {

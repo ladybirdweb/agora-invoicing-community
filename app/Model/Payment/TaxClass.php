@@ -8,10 +8,15 @@ use Spatie\Activitylog\Traits\LogsActivity;
 class TaxClass extends BaseModel
 {
     use LogsActivity;
+
     protected $table = 'tax_classes';
+
     protected $fillable = ['name'];
+
     protected static $logName = 'Tax Class';
+
     protected static $logAttributes = ['name'];
+
     protected static $logOnlyDirty = true;
 
     public function getDescriptionForEvent(string $eventName): string

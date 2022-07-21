@@ -198,7 +198,7 @@ class BaseProductController extends ExtendedBaseProductController
             $github_controller = new \App\Http\Controllers\Github\GithubController();
             $relese = $github_controller->listRepositories($owner, $repository, $order_id);
 
-            return ['release'=>$relese, 'type'=>'github'];
+            return ['release' => $relese, 'type' => 'github'];
         } elseif ($file) {
             //If the Product is Downloaded from FileSystem
             $fileName = $file->file;
@@ -217,7 +217,7 @@ class BaseProductController extends ExtendedBaseProductController
             $github_controller = new \App\Http\Controllers\Github\GithubController();
             $relese = $github_controller->listRepositoriesAdmin($owner, $repository);
 
-            return ['release'=>$relese, 'type'=>'github'];
+            return ['release' => $relese, 'type' => 'github'];
         } elseif ($file->file) {
             // $relese = storage_path().'\products'.'\\'.$file->file;
             //    $relese = '/home/faveo/products/'.$file->file;
@@ -267,7 +267,7 @@ class BaseProductController extends ExtendedBaseProductController
             $field = $this->getProductField($id);
             $quantity = $this->getProductQtyCheck($id, $plan);
             $agents = $this->getAgentQtyCheck($id, $plan);
-            $result = ['price' => $price, 'field' => $field, 'quantity'=>$quantity, 'agents'=>$agents];
+            $result = ['price' => $price, 'field' => $field, 'quantity' => $quantity, 'agents' => $agents];
 
             return response()->json($result);
         } catch (\Exception $ex) {
@@ -321,6 +321,6 @@ class BaseProductController extends ExtendedBaseProductController
         $agentModifyPermission = $product->can_modify_agent;
         $quantityModifyPermission = $product->can_modify_quantity;
 
-        return ['agent'=>$agentModifyPermission, 'quantity'=>$quantityModifyPermission];
+        return ['agent' => $agentModifyPermission, 'quantity' => $quantityModifyPermission];
     }
 }

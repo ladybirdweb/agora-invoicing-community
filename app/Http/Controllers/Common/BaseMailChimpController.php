@@ -51,17 +51,17 @@ class BaseMailChimpController extends Controller
             }
             if ($interestGroupIdForNo && $productGroupId) {
                 $result = $this->mailchimp->patch("lists/$this->list_id/members/$hash", [
-                    'interests'         => [$interestGroupIdForNo => true, $interestGroupIdForYes=>false, $productGroupId =>true],
+                    'interests' => [$interestGroupIdForNo => true, $interestGroupIdForYes => false, $productGroupId => true],
                 ]);
             //refer to https://us7.api.mailchimp.com/playground
             } elseif ($interestGroupIdForNo && $productGroupId == null) {
                 $result = $this->mailchimp->patch("lists/$this->list_id/members/$hash", [
-                    'interests'         => [$interestGroupIdForNo => true, $interestGroupIdForYes=>false],
+                    'interests' => [$interestGroupIdForNo => true, $interestGroupIdForYes => false],
                 ]);
             //refer to https://us7.api.mailchimp.com/playground
             } elseif ($productGroupId && $interestGroupIdForNo == null || $interestGroupIdForYes == null) {
                 $result = $this->mailchimp->patch("lists/$this->list_id/members/$hash", [
-                    'interests'         => [$productGroupId =>true],
+                    'interests' => [$productGroupId => true],
                 ]);
             }
         } catch (Exception $ex) {
@@ -86,17 +86,17 @@ class BaseMailChimpController extends Controller
             }
             if ($interestGroupIdForNo && $productGroupId) {
                 $result = $this->mailchimp->patch("lists/$this->list_id/members/$hash", [
-                    'interests'         => [$interestGroupIdForNo => false, $interestGroupIdForYes=>true, $productGroupId =>true],
+                    'interests' => [$interestGroupIdForNo => false, $interestGroupIdForYes => true, $productGroupId => true],
                     //refer to https://us7.api.mailchimp.com/playground
                 ]);
             } elseif ($interestGroupIdForNo && $productGroupId == null) {
                 $result = $this->mailchimp->patch("lists/$this->list_id/members/$hash", [
-                    'interests'         => [$interestGroupIdForNo => false, $interestGroupIdForYes=>true],
+                    'interests' => [$interestGroupIdForNo => false, $interestGroupIdForYes => true],
                 ]);
             //refer to https://us7.api.mailchimp.com/playground
             } elseif ($productGroupId && $interestGroupIdForNo == null || $interestGroupIdForYes == null) {
                 $result = $this->mailchimp->patch("lists/$this->list_id/members/$hash", [
-                    'interests'         => [$productGroupId =>true],
+                    'interests' => [$productGroupId => true],
                 ]);
             }
             //refer to https://us7.api.mailchimp.com/playground
@@ -136,8 +136,8 @@ class BaseMailChimpController extends Controller
         ]);
 
         try {
-            $this->mailchimp_set->first()->update(['subscribe_status'=> $request->input('subscribe_status'),
-                'list_id'                                            => $request->input('list_id'), ]);
+            $this->mailchimp_set->first()->update(['subscribe_status' => $request->input('subscribe_status'),
+                'list_id' => $request->input('list_id'), ]);
             $this->addListsToAgora();
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
@@ -160,7 +160,7 @@ class BaseMailChimpController extends Controller
                 $name = $list->name;
                 $list_id = $list->id;
                 $this->lists->create([
-                    'name'    => $name,
+                    'name' => $name,
                     'list_id' => $list_id,
                 ]);
             }

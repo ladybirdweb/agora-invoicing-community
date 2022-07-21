@@ -17,8 +17,11 @@ use Illuminate\Http\Request;
 class PlanController extends ExtendedPlanController
 {
     protected $currency;
+
     protected $price;
+
     protected $period;
+
     protected $product;
 
     public function __construct()
@@ -315,7 +318,7 @@ class PlanController extends ExtendedPlanController
            || $permissions['generateSupportExpiryDate'] != 0 ? 1 : 0;
             $product = Product::find($product_id);
             $checkIfAgentEnabled = ($product->show_agent == 1) ? 1 : 0;
-            $result = ['subscription'=> $checkSubscription, 'agentEnable'=>$checkIfAgentEnabled];
+            $result = ['subscription' => $checkSubscription, 'agentEnable' => $checkIfAgentEnabled];
 
             return response()->json($result);
         } catch (\Exception $ex) {

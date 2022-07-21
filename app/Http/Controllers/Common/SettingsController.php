@@ -20,6 +20,7 @@ use Spatie\Activitylog\Models\Activity;
 class SettingsController extends BaseSettingsController
 {
     public $apikey;
+
     public $statusSetting;
 
     public function __construct()
@@ -71,7 +72,7 @@ class SettingsController extends BaseSettingsController
             $msg91Sender = $apikeys->pluck('msg91_sender')->first();
             $updateUrl = $apikeys->pluck('update_api_url')->first();
             $emailStatus = StatusSetting::pluck('emailverification_status')->first();
-            $twitterKeys = $apikeys->select('twitter_consumer_key','twitter_consumer_secret',
+            $twitterKeys = $apikeys->select('twitter_consumer_key', 'twitter_consumer_secret',
                 'twitter_access_token', 'access_tooken_secret')->first();
             $twitterStatus = $this->statusSetting->pluck('twitter_status')->first();
             $zohoStatus = $this->statusSetting->pluck('zoho_status')->first();
@@ -168,17 +169,17 @@ class SettingsController extends BaseSettingsController
     public function postSettingsSystem(Setting $settings, Request $request)
     {
         $this->validate($request, [
-            'company'         => 'required|max:50',
-            'company_email'   => 'required|email',
-            'website'         => 'required|url',
-            'phone'           => 'required',
-            'address'         => 'required',
-            'state'           => 'required',
-            'country'         => 'required',
-            'default_currency'=> 'required',
-            'admin-logo'      => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
-            'fav-icon'        => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
-            'logo'            => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
+            'company' => 'required|max:50',
+            'company_email' => 'required|email',
+            'website' => 'required|url',
+            'phone' => 'required',
+            'address' => 'required',
+            'state' => 'required',
+            'country' => 'required',
+            'default_currency' => 'required',
+            'admin-logo' => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
+            'fav-icon' => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
+            'logo' => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
         ]);
 
         try {
@@ -289,10 +290,10 @@ class SettingsController extends BaseSettingsController
     public function settingsActivity(Request $request, Activity $activities)
     {
         $validator = \Validator::make($request->all(), [
-            'from'     => 'nullable',
-            'till'     => 'nullable|after:from',
-            'delFrom'  => 'nullable',
-            'delTill'  => 'nullable|after:delFrom',
+            'from' => 'nullable',
+            'till' => 'nullable|after:from',
+            'delFrom' => 'nullable',
+            'delTill' => 'nullable|after:delFrom',
         ]);
         if ($validator->fails()) {
             $request->from = '';

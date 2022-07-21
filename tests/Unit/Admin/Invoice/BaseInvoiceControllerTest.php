@@ -31,7 +31,7 @@ class BaseInvoiceControllerTest extends DBTestCase
         $this->getLoggedInUser();
         $this->withoutMiddleware();
         $tax_rule = new \App\Model\Payment\TaxOption();
-        $rule = $tax_rule->findOrFail(1)->update(['inclusive'=>1]);
+        $rule = $tax_rule->findOrFail(1)->update(['inclusive' => 1]);
         $price = $this->classObject->calculateTotal('10%', '1000');
         $this->assertEquals($price, '1000');
     }

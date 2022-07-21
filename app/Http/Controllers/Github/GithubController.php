@@ -12,8 +12,11 @@ use Illuminate\Http\Request;
 class GithubController extends Controller
 {
     public $github_api;
+
     public $client_id;
+
     public $client_secret;
+
     public $github;
 
     public function __construct()
@@ -213,12 +216,12 @@ class GithubController extends Controller
     {
         try {
             $status = $request->input('status');
-            StatusSetting::find(1)->update(['github_status'=>$status]);
-            Github::find(1)->update(['username'=> $request->input('git_username'),
-                'password'                     => $request->input('git_password'), 'client_id'=>$request->input('git_client'),
-                'client_secret'               => $request->input('git_secret'), ]);
+            StatusSetting::find(1)->update(['github_status' => $status]);
+            Github::find(1)->update(['username' => $request->input('git_username'),
+                'password' => $request->input('git_password'), 'client_id' => $request->input('git_client'),
+                'client_secret' => $request->input('git_secret'), ]);
 
-            return ['message' => 'success', 'update'=>'Github Settings Updated'];
+            return ['message' => 'success', 'update' => 'Github Settings Updated'];
         } catch (Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }

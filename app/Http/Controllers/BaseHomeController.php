@@ -115,7 +115,7 @@ class BaseHomeController extends Controller
                 $order = $this->verifyOrder($order_number, $serial_key);
                 if ($order) {
                     return ['status' => 'success', 'message' => 'this-is-a-valid-request',
-                        'order_number'   => $order_number, 'serial' => $serial_key, ];
+                        'order_number' => $order_number, 'serial' => $serial_key, ];
                 } else {
                     return ['status' => 'fails', 'message' => 'this-is-an-invalid-request'];
                 }
@@ -173,7 +173,7 @@ class BaseHomeController extends Controller
 
             return ['status' => 'fails', 'message' => 'do-not-allow-auto-update'];
         } catch (\Exception $e) {
-            $result = ['status'=>'fails', 'error' => $e->getMessage()];
+            $result = ['status' => 'fails', 'error' => $e->getMessage()];
 
             return $result;
         }
@@ -197,13 +197,13 @@ class BaseHomeController extends Controller
             });
             if (count($orderForLicense) > 0) {
                 if ($url) {
-                    InstallationDetail::updateOrCreate(['installation_path'=>$url, 'installation_ip'=>$ip], ['last_active'=> (string) \Carbon\Carbon::now(), 'installation_path'=>$url, 'installation_ip'=>$ip, 'version'=>$request->input('version'), 'order_id'=>$orderForLicense->first()->id]);
+                    InstallationDetail::updateOrCreate(['installation_path' => $url, 'installation_ip' => $ip], ['last_active' => (string) \Carbon\Carbon::now(), 'installation_path' => $url, 'installation_ip' => $ip, 'version' => $request->input('version'), 'order_id' => $orderForLicense->first()->id]);
 
                     $existingVersion = Subscription::where('order_id', $orderForLicense->first()->id)->value('version');
                     if ($existingVersion && $existingVersion < $request->input('version')) {
                         $existingVersion = $request->input('version');
                     }
-                    Subscription::where('order_id', $orderForLicense->first()->id)->update(['version'=>$existingVersion, 'version_updated_at'=> (string) \Carbon\Carbon::now()]);
+                    Subscription::where('order_id', $orderForLicense->first()->id)->update(['version' => $existingVersion, 'version_updated_at' => (string) \Carbon\Carbon::now()]);
 
                     return ['status' => 'success', 'message' => 'version-updated-successfully'];
                 } else {//For older client where url is not sent as parameter
@@ -211,11 +211,11 @@ class BaseHomeController extends Controller
                     $installationDetails = $cont->searchInstallationPath($orderForLicense->first()->serial_key, $orderForLicense->first()->product);
                     foreach ($installationDetails['installed_path'] as $path) {
                         $ipAndDomain = explode(',', $path);
-                        InstallationDetail::updateOrCreate(['installation_path'=>$ipAndDomain[0], 'installation_ip'=>$ipAndDomain[1]], ['installation_path'=>$ipAndDomain[0], 'installation_ip'=>$ipAndDomain[1], 'version'=>$request->input('version'), 'order_id'=>$orderForLicense->first()->id]);
+                        InstallationDetail::updateOrCreate(['installation_path' => $ipAndDomain[0], 'installation_ip' => $ipAndDomain[1]], ['installation_path' => $ipAndDomain[0], 'installation_ip' => $ipAndDomain[1], 'version' => $request->input('version'), 'order_id' => $orderForLicense->first()->id]);
                     }
                     $existingVersion = Subscription::where('order_id', $orderForLicense->first()->id)->value('version');
                     if ($existingVersion && $request->input('version') > $existingVersion) {
-                        Subscription::where('order_id', $orderForLicense->first()->id)->update(['version'=>$request->input('version')]);
+                        Subscription::where('order_id', $orderForLicense->first()->id)->update(['version' => $request->input('version')]);
                     }
 
                     return ['status' => 'success', 'message' => 'version-updated-successfully'];
@@ -224,7 +224,7 @@ class BaseHomeController extends Controller
 
             return ['status' => 'fails', 'message' => 'version-not updated'];
         } catch (\Exception $e) {
-            $result = ['status'=>'fails', 'error' => $e->getMessage()];
+            $result = ['status' => 'fails', 'error' => $e->getMessage()];
 
             return $result;
         }
@@ -276,12 +276,12 @@ class BaseHomeController extends Controller
                 $existingLicense->serial_key = \Crypt::encrypt(substr($licCode, 0, 12).$lastFour);
                 $existingLicense->save();
                 //send the newly updated license code in response
-                $result = ['status'=>'success', 'updatedLicenseCode'=>$existingLicense->serial_key];
+                $result = ['status' => 'success', 'updatedLicenseCode' => $existingLicense->serial_key];
 
                 return response()->json($result);
             }
         } catch (\Exception $ex) {
-            $result = ['status'=>'fails', 'error' => $ex->getMessage()];
+            $result = ['status' => 'fails', 'error' => $ex->getMessage()];
 
             return response()->json($result);
         }

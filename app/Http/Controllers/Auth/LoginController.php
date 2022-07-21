@@ -68,7 +68,7 @@ class LoginController extends Controller
             'g-recaptcha-response' => $captchaRule.'captcha',
         ], [
             'g-recaptcha-response.required' => 'Robot Verification Failed. Please Try Again.',
-            'email1.required'    => 'Please Enter an Email',
+            'email1.required' => 'Please Enter an Email',
             'password1.required' => 'Please Enter Password',
         ]);
         $usernameinput = $request->input('email1');

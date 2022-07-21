@@ -10,8 +10,10 @@ class Consumer
 {
     /** @var string */
     public $key;
+
     /** @var string */
     public $secret;
+
     /** @var string|null */
     public $callbackUrl;
 

@@ -18,14 +18,17 @@ use Illuminate\Support\Facades\URL;
 class LocalizedLicenseController extends Controller
 {
     private $api_key_secret;
+
     private $url;
+
     private $license;
+
     private $token;
 
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('admin', ['except'=>['downloadFile', 'downloadPrivate', 'storeFile']]);
+        $this->middleware('admin', ['except' => ['downloadFile', 'downloadPrivate', 'storeFile']]);
         $model = new ApiKey();
         $this->license = $model->first();
 
@@ -43,8 +46,8 @@ class LocalizedLicenseController extends Controller
     {
         $url = $this->url;
         $data = [
-            'client_id'=> $this->client_id,
-            'client_secret'=>$this->client_secret,
+            'client_id' => $this->client_id,
+            'client_secret' => $this->client_secret,
             'grant_type' => $this->grant_type,
         ];
         $response = $this->postCurl($url.'oauth/token', $data);
@@ -146,14 +149,14 @@ class LocalizedLicenseController extends Controller
             $encrypt->generateKeys($orderNo);
             Order::where('number', $orderNo)->update(['license_mode' => 'File']);
 
-            return response()->json(['success'=>'Status change successfully.']); //return redirect()->back()->with('success', Lang::get('Private and Public Keys generated for this order number: '.$orderNo));
+            return response()->json(['success' => 'Status change successfully.']); //return redirect()->back()->with('success', Lang::get('Private and Public Keys generated for this order number: '.$orderNo));
         } else {
             Order::where('number', $orderNo)->update(['license_mode' => 'Database']);
             Storage::disk('public')->delete('publicKey-'.$orderNo.'.txt');
             Storage::disk('public')->delete('privateKey-'.$orderNo.'.txt');
             Storage::disk('public')->delete('faveo-license-{'.$orderNo.'}.txt');
 
-            return response()->json(['success'=>'Status change successfully.']); //return redirect()->back()->with('success',Lang::get('Reverted back to database license mode' .$orderNo));
+            return response()->json(['success' => 'Status change successfully.']); //return redirect()->back()->with('success',Lang::get('Reverted back to database license mode' .$orderNo));
         }
     }
 
@@ -187,7 +190,7 @@ class LocalizedLicenseController extends Controller
                 } else {
                     $supportExpiry = Carbon::parse($supportExpiry)->format('Y-m-d');
                 }
-                DB::table('installation_details')->insertOrIgnore(['installation_path'=> $domain, 'order_id'=>$id, 'last_active'=>date('Y-m-d')]);
+                DB::table('installation_details')->insertOrIgnore(['installation_path' => $domain, 'order_id' => $id, 'last_active' => date('Y-m-d')]);
                 $this->localizedLicenseInstallLM($orderNo, $domain, $licenseCode);
 
                 $userData = '<root_url>'.$domain.'</root_url><license_code>'.$licenseCode.'</license_code><license_expiry>'.$licenseExpiry.'</license_expiry><updates_expiry>'.$updatesExpiry.'</updates_expiry><support_expiry>'.$supportExpiry.'</support_expiry>';
@@ -216,7 +219,7 @@ class LocalizedLicenseController extends Controller
     {
         if (! empty($userID) && ! empty(Auth::user()->id)) {
             $url = URL::temporarySignedRoute('event.rsvp', now()->addSeconds(30), [
-                'orderNo'=>$orderNo,
+                'orderNo' => $orderNo,
             ]);
 
             return $url;

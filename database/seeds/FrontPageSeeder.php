@@ -15,8 +15,8 @@ class FrontPageSeeder extends Seeder
         \DB::table('frontend_pages')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         \App\DefaultPage::create([
-            'page_id'           => '1',
-            'page_url'          => url('/my-invoices'),
+            'page_id' => '1',
+            'page_url' => url('/my-invoices'),
         ]);
     }
 }

@@ -14,12 +14,19 @@ class SendEmail implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $tries = 5;
+
     protected $from;
+
     protected $to;
+
     protected $template_data;
+
     protected $template_name;
+
     protected $replace;
+
     protected $type;
+
     protected $bcc;
 
     /**

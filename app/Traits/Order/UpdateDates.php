@@ -32,7 +32,7 @@ trait UpdateDates
                 $newDate = $request->input('date');
                 $date = \DateTime::createFromFormat('m/d/Y', $newDate);
                 $date = $date->format('Y-m-d H:i:s');
-                Subscription::where('order_id', $request->input('orderid'))->update(['update_ends_at'=>$date]);
+                Subscription::where('order_id', $request->input('orderid'))->update(['update_ends_at' => $date]);
                 $checkUpdateStatus = StatusSetting::first()->pluck('license_status')->first();
                 if ($checkUpdateStatus == 1) {
                     $this->editUpdateDateInAPL($request->input('orderid'), $date, $licenseSupportExpiry);
@@ -40,10 +40,10 @@ trait UpdateDates
             }
 
             if (Order::where('id', $request->get('orderid'))->value('license_mode') == 'File') {
-                Order::where('id', $request->get('orderid'))->update(['is_downloadable'=> 0]);
+                Order::where('id', $request->get('orderid'))->update(['is_downloadable' => 0]);
             }
 
-            return ['message'=>'success', 'update'=>'Updates Expiry Date Updated Successfully'];
+            return ['message' => 'success', 'update' => 'Updates Expiry Date Updated Successfully'];
         } catch (\Exception $ex) {
             $result = [$ex->getMessage()];
 
@@ -87,7 +87,7 @@ trait UpdateDates
                 $newDate = $request->input('date');
                 $date = \DateTime::createFromFormat('m/d/Y', $newDate);
                 $date = $date->format('Y-m-d H:i:s');
-                Subscription::where('order_id', $request->input('orderid'))->update(['ends_at'=>$date]);
+                Subscription::where('order_id', $request->input('orderid'))->update(['ends_at' => $date]);
                 $checkUpdateStatus = StatusSetting::first()->pluck('license_status')->first();
                 if ($checkUpdateStatus == 1) {
                     $this->editLicenseDateInAPL($request->input('orderid'), $date, $updatesSupportExpiry);
@@ -95,10 +95,10 @@ trait UpdateDates
             }
 
             if (Order::where('id', $request->get('orderid'))->value('license_mode') == 'File') {
-                Order::where('id', $request->get('orderid'))->update(['is_downloadable'=> 0]);
+                Order::where('id', $request->get('orderid'))->update(['is_downloadable' => 0]);
             }
 
-            return ['message'=>'success', 'update'=>'License Expiry Date Updated Successfully'];
+            return ['message' => 'success', 'update' => 'License Expiry Date Updated Successfully'];
         } catch (\Exception $ex) {
             $result = [$ex->getMessage()];
 
@@ -142,7 +142,7 @@ trait UpdateDates
                 $newDate = $request->input('date');
                 $date = \DateTime::createFromFormat('m/d/Y', $newDate);
                 $date = $date->format('Y-m-d H:i:s');
-                Subscription::where('order_id', $request->input('orderid'))->update(['support_ends_at'=>$date]);
+                Subscription::where('order_id', $request->input('orderid'))->update(['support_ends_at' => $date]);
                 $checkUpdateStatus = StatusSetting::first()->pluck('license_status')->first();
                 if ($checkUpdateStatus == 1) {
                     $this->editSupportDateInAPL($request->input('orderid'), $date, $updatesLicenseExpiry);
@@ -150,10 +150,10 @@ trait UpdateDates
             }
 
             if (Order::where('id', $request->get('orderid'))->value('license_mode') == 'File') {
-                Order::where('id', $request->get('orderid'))->update(['is_downloadable'=> 0]);
+                Order::where('id', $request->get('orderid'))->update(['is_downloadable' => 0]);
             }
 
-            return ['message'=>'success', 'update'=>'Support Expiry Date Updated Successfully'];
+            return ['message' => 'success', 'update' => 'Support Expiry Date Updated Successfully'];
         } catch (\Exception $ex) {
             $result = [$ex->getMessage()];
 
@@ -205,6 +205,6 @@ trait UpdateDates
         $getInstallPreference = $cont->getInstallPreference($order->serial_key, $order->product);
         $updateLicensedDomain = $cont->updateLicensedDomain($order->serial_key, $order->domain, $order->product, $licenseExpiry, $expiryDate, $supportExpiry, $order->number, $request->input('limit'), $getInstallPreference);
 
-        return ['message'=>'success', 'update'=>'Installation Limit Updated'];
+        return ['message' => 'success', 'update' => 'Installation Limit Updated'];
     }
 }

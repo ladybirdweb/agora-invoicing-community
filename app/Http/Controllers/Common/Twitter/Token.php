@@ -10,6 +10,7 @@ class Token
 {
     /** @var string */
     public $key;
+
     /** @var string */
     public $secret;
 

@@ -72,13 +72,13 @@ class ChatScriptController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'name'  => 'required',
-            'script'=> 'required',
-            'google_analytics_tag'=>'required_if:google_analytics,1',
+            'name' => 'required',
+            'script' => 'required',
+            'google_analytics_tag' => 'required_if:google_analytics,1',
 
         ], [
             'script.required' => 'Content field is required',
-            'google_analytics_tag.required_if'=> 'The google analytics tag is required',
+            'google_analytics_tag.required_if' => 'The google analytics tag is required',
         ]);
 
         try {
@@ -117,13 +117,13 @@ class ChatScriptController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            'name'   => 'required',
+            'name' => 'required',
             'script' => 'required',
-            'google_analytics_tag'=>'required_if:google_analytics,1',
+            'google_analytics_tag' => 'required_if:google_analytics,1',
 
         ], [
             'script.required' => 'Content field is required',
-            'google_analytics_tag.required_if'=> 'The google analytics tag is required',
+            'google_analytics_tag.required_if' => 'The google analytics tag is required',
         ]);
 
         try {

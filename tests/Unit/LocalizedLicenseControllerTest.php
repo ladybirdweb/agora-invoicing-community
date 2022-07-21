@@ -10,14 +10,14 @@ class LocalizedLicenseControllerTest extends DBTestCase
     public function test_chooseLicenseMode_fileChosen_returnStatusChangeSuccessfully()
     {
         $this->withoutMiddleware();
-        \App\Model\Order\Order::create(['number'=>192020, 'order_status' => 'executed', 'product'=>28]);
+        \App\Model\Order\Order::create(['number' => 192020, 'order_status' => 'executed', 'product' => 28]);
         $data = [
             'choose' => 1,
-            'orderNo'=> 192020,
+            'orderNo' => 192020,
         ];
         $response = $this->json('POST', url('choose'), $data);
         $response->assertStatus(200);
-        $response->assertJson(['success'=>'Status change successfully.']);
+        $response->assertJson(['success' => 'Status change successfully.']);
     }
 
     /** @group LocalizedLicense */
@@ -27,13 +27,13 @@ class LocalizedLicenseControllerTest extends DBTestCase
         $this->getLoggedInUser();
         $user = $this->user;
         $data = [
-            'userId'=>$user->id,
+            'userId' => $user->id,
             'expiry' => now(),
-            'updates'=>now(),
-            'support_expiry'=>now(),
+            'updates' => now(),
+            'support_expiry' => now(),
             'domain' => 'https://www.faveo.com',
-            'code'=>'OLAPO08D903U890S',
-            'orderNo'=>192020,
+            'code' => 'OLAPO08D903U890S',
+            'orderNo' => 192020,
 
         ];
         $response = $this->json('GET', url('uploadFile'), $data);
@@ -47,7 +47,7 @@ class LocalizedLicenseControllerTest extends DBTestCase
         $this->getLoggedInUser();
         $user = $this->user;
         $data = [
-            'orderNo'=>192020,
+            'orderNo' => 192020,
         ];
         $response = $this->json('GET', url('downloadFile'), $data);
         $response->assertStatus(200);
@@ -98,13 +98,13 @@ class LocalizedLicenseControllerTest extends DBTestCase
     public function test_chooseLicenseMode_DatabaseChosen_returnStatusChangeSuccessfully()
     {
         $this->withoutMiddleware();
-        \App\Model\Order\Order::create(['number'=>192020, 'order_status' => 'executed', 'product'=>28]);
+        \App\Model\Order\Order::create(['number' => 192020, 'order_status' => 'executed', 'product' => 28]);
         $data = [
             'choose' => 0,
-            'orderNo'=> 192020,
+            'orderNo' => 192020,
         ];
         $response = $this->json('POST', url('choose'), $data);
         $response->assertStatus(200);
-        $response->assertJson(['success'=>'Status change successfully.']);
+        $response->assertJson(['success' => 'Status change successfully.']);
     }
 }

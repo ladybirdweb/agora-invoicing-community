@@ -19,10 +19,10 @@ class InvoiceAndPaymentCalculationTest extends DBTestCase
         $this->getLoggedInUser();
         $user = $this->user;
         $user_id = $user->id;
-        $invoice = factory(Invoice::class)->create(['user_id'=>$user_id, 'grand_total'=>'10000']);
+        $invoice = factory(Invoice::class)->create(['user_id' => $user_id, 'grand_total' => '10000']);
         $response = $this->call('POST', 'change-invoiceTotal', [
-            'total'   => '12000',
-            'number'  => $invoice->number,
+            'total' => '12000',
+            'number' => $invoice->number,
             'user_id' => $user_id,
         ]);
 
@@ -37,24 +37,24 @@ class InvoiceAndPaymentCalculationTest extends DBTestCase
         $this->getLoggedInUser();
         $user = $this->user;
         $user_id = $user->id;
-        $invoice = factory(Invoice::class)->create(['user_id'=>$user_id]);
+        $invoice = factory(Invoice::class)->create(['user_id' => $user_id]);
         $invoiceItem = InvoiceItem::create([
-            'invoice_id'         => $invoice->id,
-            'product_name'       => 'Helpdesk Advance',
-            'regular_price'      => 10000,
-            'quantity'           => 1,
-            'tax_name'           => 'CGST+SGST',
-            'tax_percentage'     => 18,
-            'subtotal'           => 11800,
-            'domain'             => 'faveo.com',
-            'plan_id'            => 1,
+            'invoice_id' => $invoice->id,
+            'product_name' => 'Helpdesk Advance',
+            'regular_price' => 10000,
+            'quantity' => 1,
+            'tax_name' => 'CGST+SGST',
+            'tax_percentage' => 18,
+            'subtotal' => 11800,
+            'domain' => 'faveo.com',
+            'plan_id' => 1,
         ]);
-        $order = factory(Order::class)->create(['invoice_id'=> $invoice->id,
-            'invoice_item_id'                               => $invoiceItem->id, 'client'=>$user_id, ]);
+        $order = factory(Order::class)->create(['invoice_id' => $invoice->id,
+            'invoice_item_id' => $invoiceItem->id, 'client' => $user_id, ]);
 
         $response = $this->call('GET', 'clients/'.$user_id, [
-            'total'   => '12000',
-            'number'  => $invoice->number,
+            'total' => '12000',
+            'number' => $invoice->number,
             'user_id' => $user_id,
         ]);
         $this->assertStringContainsSubstring($response->content(), '<!DOCTYPE html>');

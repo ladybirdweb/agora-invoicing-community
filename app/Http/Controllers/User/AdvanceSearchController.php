@@ -48,8 +48,8 @@ class AdvanceSearchController extends AdminOrderInvoiceController
             $formatted_tags = [];
 
             foreach ($users as $user) {
-                $formatted_users[] = ['id'     => $user->id, 'text' => $user->email, 'profile_pic' => $user->profile_pic,
-                    'first_name'                   => $user->first_name, 'last_name' => $user->last_name, ];
+                $formatted_users[] = ['id' => $user->id, 'text' => $user->email, 'profile_pic' => $user->profile_pic,
+                    'first_name' => $user->first_name, 'last_name' => $user->last_name, ];
             }
 
             return \Response::json($formatted_users);
@@ -77,7 +77,7 @@ class AdvanceSearchController extends AdminOrderInvoiceController
         }
         $client->country = ucwords(strtolower(getCountryByCode($client->country)));
 
-        $displayData = (['currency'=>$currency, 'client'=> $client]);
+        $displayData = (['currency' => $currency, 'client' => $client]);
 
         return $displayData;
     }

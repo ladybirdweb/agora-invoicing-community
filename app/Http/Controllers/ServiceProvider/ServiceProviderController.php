@@ -13,7 +13,9 @@ use App\Organization;
 class ServiceProviderController extends Controller
 {
     public $slaServiceRelation;
+
     public $service;
+
     public $licence;
 
     public function __construct()

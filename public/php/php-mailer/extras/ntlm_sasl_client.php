@@ -16,16 +16,17 @@ define('SASL_CONTINUE', 1);
 class ntlm_sasl_client_class
 {
     public $credentials = [];
+
     public $state = SASL_NTLM_STATE_START;
 
     public function initialize(&$client)
     {
-        if (!function_exists($function = 'mcrypt_encrypt')
-            || !function_exists($function = 'mhash')
+        if (! function_exists($function = 'mcrypt_encrypt')
+            || ! function_exists($function = 'mhash')
         ) {
             $extensions = [
                 'mcrypt_encrypt' => 'mcrypt',
-                'mhash'          => 'mhash',
+                'mhash' => 'mhash',
             ];
             $client->error = 'the extension '.$extensions[$function].
                 ' required by the NTLM SASL client class is not available in this PHP configuration';
@@ -147,9 +148,9 @@ class ntlm_sasl_client_class
             return SASL_FAIL;
         }
         $this->credentials = [
-            'user'        => '',
-            'password'    => '',
-            'realm'       => '',
+            'user' => '',
+            'password' => '',
+            'realm' => '',
             'workstation' => '',
         ];
         $defaults = [];

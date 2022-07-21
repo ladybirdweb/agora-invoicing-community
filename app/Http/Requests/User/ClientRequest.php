@@ -26,32 +26,32 @@ class ClientRequest extends Request
         switch ($this->method()) {
             case 'POST':
                     return [
-                        'first_name'       => 'required',
-                        'last_name'        => 'required',
-                        'company'          => 'required',
-                        'email'            => 'required|email|unique:users',
-                        'address'          => 'required',
-                        'mobile'           => 'required',
-                        'country'          => 'required|exists:countries,country_code_char2',
-                        'state'            => 'required_if:country,in',
-                        'timezone_id'      => 'required',
-                        'user_name'        => 'unique:users,user_name',
+                        'first_name' => 'required',
+                        'last_name' => 'required',
+                        'company' => 'required',
+                        'email' => 'required|email|unique:users',
+                        'address' => 'required',
+                        'mobile' => 'required',
+                        'country' => 'required|exists:countries,country_code_char2',
+                        'state' => 'required_if:country,in',
+                        'timezone_id' => 'required',
+                        'user_name' => 'unique:users,user_name',
                     ];
 
             case 'PATCH':
                 $id = $this->segment(2);
 
                     return [
-                        'first_name'       => 'required',
-                        'last_name'        => 'required',
-                        'email'            => 'required|email|unique:users,email,'.$this->getSegmentFromEnd().',id',
-                        'company'          => 'required',
-                        'address'          => 'required',
-                        'mobile'           => 'required',
-                        'timezone_id'      => 'required',
-                        'timezone_id'      => 'required',
-                        'state'                  => 'required_if:country,IN',
-                        'user_name'        => 'unique:users,user_name,'.$id,
+                        'first_name' => 'required',
+                        'last_name' => 'required',
+                        'email' => 'required|email|unique:users,email,'.$this->getSegmentFromEnd().',id',
+                        'company' => 'required',
+                        'address' => 'required',
+                        'mobile' => 'required',
+                        'timezone_id' => 'required',
+                        'timezone_id' => 'required',
+                        'state' => 'required_if:country,IN',
+                        'user_name' => 'unique:users,user_name,'.$id,
                     ];
 
             default:
@@ -62,7 +62,7 @@ class ClientRequest extends Request
     public function messages()
     {
         return[
-            'state.required_if'           => 'The state field is required when country is India.',
+            'state.required_if' => 'The state field is required when country is India.',
         ];
     }
 

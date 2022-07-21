@@ -208,10 +208,10 @@ class BaseCronController extends Controller
         $date = date_create($end);
         $end = date_format($date, 'l, F j, Y H:m A');
         $replace = ['name' => ucfirst($user->first_name).' '.ucfirst($user->last_name),
-            'expiry'       => $end,
-            'product'      => $product,
-            'number'       => $order->number,
-            'url'          => $url,
+            'expiry' => $end,
+            'product' => $product,
+            'number' => $order->number,
+            'url' => $url,
         ];
         $type = '';
         if ($template) {

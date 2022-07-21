@@ -106,8 +106,8 @@ class Twitter_Autolink extends Twitter_Regex
     /**
      * Provides fluent method chaining.
      *
-     * @param string $tweet       The tweet to be converted.
-     * @param bool   $full_encode Whether to encode all special characters.
+     * @param  string  $tweet       The tweet to be converted.
+     * @param  bool  $full_encode Whether to encode all special characters.
      *
      * @see  __construct()
      *
@@ -126,9 +126,9 @@ class Twitter_Autolink extends Twitter_Regex
      *
      * @see  htmlspecialchars()
      *
-     * @param string $tweet       The tweet to be converted.
-     * @param bool   $escape      Whether to escape the tweet (default: true).
-     * @param bool   $full_encode Whether to encode all special characters.
+     * @param  string  $tweet       The tweet to be converted.
+     * @param  bool  $escape      Whether to escape the tweet (default: true).
+     * @param  bool  $full_encode Whether to encode all special characters.
      */
     public function __construct($tweet, $escape = true, $full_encode = false)
     {
@@ -156,8 +156,7 @@ class Twitter_Autolink extends Twitter_Regex
     /**
      * CSS class for auto-linked URLs.
      *
-     * @param string $v CSS class for URL links.
-     *
+     * @param  string  $v CSS class for URL links.
      * @return Twitter_Autolink Fluid method chaining.
      */
     public function setURLClass($v)
@@ -180,8 +179,7 @@ class Twitter_Autolink extends Twitter_Regex
     /**
      * CSS class for auto-linked username URLs.
      *
-     * @param string $v CSS class for username links.
-     *
+     * @param  string  $v CSS class for username links.
      * @return Twitter_Autolink Fluid method chaining.
      */
     public function setUsernameClass($v)
@@ -204,8 +202,7 @@ class Twitter_Autolink extends Twitter_Regex
     /**
      * CSS class for auto-linked username/list URLs.
      *
-     * @param string $v CSS class for username/list links.
-     *
+     * @param  string  $v CSS class for username/list links.
      * @return Twitter_Autolink Fluid method chaining.
      */
     public function setListClass($v)
@@ -228,8 +225,7 @@ class Twitter_Autolink extends Twitter_Regex
     /**
      * CSS class for auto-linked hashtag URLs.
      *
-     * @param string $v CSS class for hashtag links.
-     *
+     * @param  string  $v CSS class for hashtag links.
      * @return Twitter_Autolink Fluid method chaining.
      */
     public function setHashtagClass($v)
@@ -252,8 +248,7 @@ class Twitter_Autolink extends Twitter_Regex
     /**
      * Whether to include the value 'nofollow' in the 'rel' attribute.
      *
-     * @param bool $v The value to add to the 'target' attribute.
-     *
+     * @param  bool  $v The value to add to the 'target' attribute.
      * @return Twitter_Autolink Fluid method chaining.
      */
     public function setNoFollow($v)
@@ -286,8 +281,7 @@ class Twitter_Autolink extends Twitter_Regex
      * been undeprecated and thus the 'target' attribute can be used.  If this is
      * set to false then the 'target' attribute will be output.
      *
-     * @param bool $v The value to add to the 'target' attribute.
-     *
+     * @param  bool  $v The value to add to the 'target' attribute.
      * @return Twitter_Autolink Fluid method chaining.
      */
     public function setExternal($v)
@@ -318,8 +312,7 @@ class Twitter_Autolink extends Twitter_Regex
      * since been reinstated in HTML 5.  To output the 'target' attribute you
      * must disable the adding of the string 'external' to the 'rel' attribute.
      *
-     * @param string $v The value to add to the 'target' attribute.
-     *
+     * @param  string  $v The value to add to the 'target' attribute.
      * @return Twitter_Autolink Fluid method chaining.
      */
     public function setTarget($v)
@@ -390,10 +383,9 @@ class Twitter_Autolink extends Twitter_Regex
      *
      * This is a helper function to perform the generation of the link.
      *
-     * @param string $url     The URL to use as the href.
-     * @param string $class   The CSS class(es) to apply (space separated).
-     * @param string $element The tweet element to wrap.
-     *
+     * @param  string  $url     The URL to use as the href.
+     * @param  string  $class   The CSS class(es) to apply (space separated).
+     * @param  string  $element The tweet element to wrap.
      * @return string The tweet element with a link applied.
      */
     protected function wrap($url, $class, $element)
@@ -410,7 +402,7 @@ class Twitter_Autolink extends Twitter_Regex
         if ($this->nofollow) {
             $rel[] = 'nofollow';
         }
-        if (!empty($rel)) {
+        if (! empty($rel)) {
             $link .= ' rel="'.implode(' ', $rel).'"';
         }
         if ($this->target) {
@@ -426,8 +418,7 @@ class Twitter_Autolink extends Twitter_Regex
      *
      * @see  addLinksToHashtags()
      *
-     * @param array $matches The regular expression matches.
-     *
+     * @param  array  $matches The regular expression matches.
      * @return string The link-wrapped hashtag.
      */
     protected function _addLinksToHashtags($matches)
@@ -445,15 +436,14 @@ class Twitter_Autolink extends Twitter_Regex
      *
      * @see  addLinksToURLs()
      *
-     * @param array $matches The regular expression matches.
-     *
+     * @param  array  $matches The regular expression matches.
      * @return string The link-wrapped URL.
      */
     protected function _addLinksToURLs($matches)
     {
-        list($all, $before, $url, $protocol, $domain, $path, $query) = array_pad($matches, 7, '');
+        [$all, $before, $url, $protocol, $domain, $path, $query] = array_pad($matches, 7, '');
         $url = htmlspecialchars($url, ENT_QUOTES, 'UTF-8', false);
-        if (!$protocol) {
+        if (! $protocol) {
             return $all;
         }
 
@@ -465,18 +455,17 @@ class Twitter_Autolink extends Twitter_Regex
      *
      * @see  addLinksToUsernamesAndLists()
      *
-     * @param array $matches The regular expression matches.
-     *
+     * @param  array  $matches The regular expression matches.
      * @return string The link-wrapped username/list pair.
      */
     protected function _addLinksToUsernamesAndLists($matches)
     {
-        list($all, $before, $at, $username, $slash_listname, $after) = array_pad($matches, 6, '');
+        [$all, $before, $at, $username, $slash_listname, $after] = array_pad($matches, 6, '');
         // If $after is not empty, there is an invalid character.
-        if (!empty($after)) {
+        if (! empty($after)) {
             return $all;
         }
-        if (!empty($slash_listname)) {
+        if (! empty($slash_listname)) {
             // Replace the list and username
             $element = $username.substr($slash_listname, 0, 26);
             $class = $this->class_list;

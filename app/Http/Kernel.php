@@ -45,11 +45,11 @@ class Kernel extends HttpKernel
             // \App\Http\Middleware\IsInstalled::class,
 
         ],
-        'admin'        => [\App\Http\Middleware\Admin::class],
-        'guest'       => [\App\Http\Middleware\RedirectIfAuthenticated::class],
-        'auth'       => [\Illuminate\Auth\Middleware\Authenticate::class],
-        'auth.basic'    => [\Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class],
-        'installAgora'    => [\App\Http\Middleware\Install::class],
+        'admin' => [\App\Http\Middleware\Admin::class],
+        'guest' => [\App\Http\Middleware\RedirectIfAuthenticated::class],
+        'auth' => [\Illuminate\Auth\Middleware\Authenticate::class],
+        'auth.basic' => [\Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class],
+        'installAgora' => [\App\Http\Middleware\Install::class],
         'isInstalled' => [\App\Http\Middleware\IsInstalled::class],
         'validateThirdParty' => [\App\Http\Middleware\VerifyThirdPartyApps::class],
         'api' => [
@@ -66,13 +66,13 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
-        'auth'       => \Illuminate\Auth\Middleware\Authenticate::class,
+        'auth' => \Illuminate\Auth\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
-        'bindings'   => \Illuminate\Routing\Middleware\SubstituteBindings::class,
-        'can'        => \Illuminate\Auth\Middleware\Authorize::class,
-        'guest'      => \App\Http\Middleware\RedirectIfAuthenticated::class,
-        'throttle'   => \Illuminate\Routing\Middleware\ThrottleRequests::class,
-        'installAgora'    => \App\Http\Middleware\Install::class,
+        'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        'can' => \Illuminate\Auth\Middleware\Authorize::class,
+        'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
+        'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+        'installAgora' => \App\Http\Middleware\Install::class,
         'isInstalled' => [\App\Http\Middleware\IsInstalled::class],
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
     ];

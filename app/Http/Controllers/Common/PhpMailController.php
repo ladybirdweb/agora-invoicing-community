@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 class PhpMailController extends Controller
 {
     protected $commonMailer;
+
     protected $queueManager;
 
     public function __construct()
@@ -36,8 +37,8 @@ class PhpMailController extends Controller
             $short = 'database';
             $field = [
                 'driver' => 'database',
-                'table'  => 'jobs',
-                'queue'  => 'default',
+                'table' => 'jobs',
+                'queue' => 'default',
                 'expire' => 60,
             ];
 
@@ -49,7 +50,7 @@ class PhpMailController extends Controller
                 $field = $fields->where('service_id', $active_queue->id)->pluck('value', 'key')->toArray();
             }
 
-            return (object) ['driver'=> $short, 'config'=>$field];
+            return (object) ['driver' => $short, 'config' => $field];
         });
     }
 
@@ -89,23 +90,23 @@ class PhpMailController extends Controller
                 }
             });
             \DB::table('email_log')->insert([
-                'date'       => date('Y-m-d H:i:s'),
-                'from'       => $from,
-                'to'         => $to,
-                'subject'   => $subject,
-                'body'       => $data,
-                'status'     => 'success',
+                'date' => date('Y-m-d H:i:s'),
+                'from' => $from,
+                'to' => $to,
+                'subject' => $subject,
+                'body' => $data,
+                'status' => 'success',
             ]);
 
             return 'success';
         } catch (\Exception $ex) {
             \DB::table('email_log')->insert([
-                'date'     => date('Y-m-d H:i:s'),
-                'from'     => $from,
-                'to'       => $to,
+                'date' => date('Y-m-d H:i:s'),
+                'from' => $from,
+                'to' => $to,
                 'subject' => $subject,
-                'body'     => $data,
-                'status'   => 'failed',
+                'body' => $data,
+                'status' => 'failed',
             ]);
             if ($ex instanceof \Swift_TransportException) {
                 throw new \Exception($ex->getMessage());

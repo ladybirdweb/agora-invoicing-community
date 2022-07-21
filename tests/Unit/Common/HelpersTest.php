@@ -11,7 +11,7 @@ class HelpersTest extends DBTestCase
     public function test_getTimeInLoggedInUserTimeZone_whenUserTimezoneIsPresent_shouldConsiderTimezoneAsUserTimezone()
     {
         $this->getLoggedInUser('admin');
-        $this->user->timezone()->updateOrCreate(['name'=>'Asia/Kolkata']);
+        $this->user->timezone()->updateOrCreate(['name' => 'Asia/Kolkata']);
         $this->assertEquals('Jan 1, 2001, 5:30 am', getTimeInLoggedInUserTimeZone(Carbon::now()->startOfMillennium()));
     }
 
@@ -125,7 +125,7 @@ class HelpersTest extends DBTestCase
         $this->getLoggedInUser();
         $this->withoutMiddleware();
         $tax_rule = new \App\Model\Payment\TaxOption();
-        $rule = $tax_rule->findOrFail(1)->update(['rounding'=>0]);
+        $rule = $tax_rule->findOrFail(1)->update(['rounding' => 0]);
         $price = rounding('999.6677777');
         $this->assertEquals($price, '999.67');
     }

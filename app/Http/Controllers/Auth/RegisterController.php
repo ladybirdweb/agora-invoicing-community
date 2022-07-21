@@ -95,7 +95,7 @@ class RegisterController extends Controller
             $subject = $template->name;
             $data = $template->data;
             $replace = ['name' => $user->first_name.' '.$user->last_name,
-                'username'         => $user->email, 'password' => $password, ];
+                'username' => $user->email, 'password' => $password, ];
             $type = '';
 
             if ($template) {

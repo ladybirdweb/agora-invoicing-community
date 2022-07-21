@@ -25,8 +25,8 @@ class CartControllerTest extends DBTestCase
         $this->getLoggedInUser();
         $this->withoutMiddleware();
         $product = factory(Product::class)->create();
-        $plan = Plan::create(['name'=>'HD Plan 1 year', 'product'=>$product->id, 'days'=>366]);
-        $planPrice = PlanPrice::create(['plan_id'=>$plan->id, 'currency'=>'INR', 'add_price'=>'1000', 'renew_price'=>'500', 'price_description'=> 'Random description', 'product_quantity'=>1, 'no_of_agents'=>0]);
+        $plan = Plan::create(['name' => 'HD Plan 1 year', 'product' => $product->id, 'days' => 366]);
+        $planPrice = PlanPrice::create(['plan_id' => $plan->id, 'currency' => 'INR', 'add_price' => '1000', 'renew_price' => '500', 'price_description' => 'Random description', 'product_quantity' => 1, 'no_of_agents' => 0]);
 
         $response = $this->classObject->addProduct($product->id);
         $this->assertStringContainsSubstring($response['name'], 'Helpdesk Advance');
@@ -38,8 +38,8 @@ class CartControllerTest extends DBTestCase
         $this->getLoggedInUser();
         $this->withoutMiddleware();
         $product = factory(Product::class)->create();
-        $plan = Plan::create(['name'=>'HD Plan 1 year', 'product'=>$product->id, 'days'=>366]);
-        $planPrice = PlanPrice::create(['plan_id'=>$plan->id, 'currency'=>'INR', 'add_price'=>'1000', 'renew_price'=>'500', 'price_description'=> 'Random description', 'product_quantity'=>1, 'no_of_agents'=>0]);
+        $plan = Plan::create(['name' => 'HD Plan 1 year', 'product' => $product->id, 'days' => 366]);
+        $planPrice = PlanPrice::create(['plan_id' => $plan->id, 'currency' => 'INR', 'add_price' => '1000', 'renew_price' => '500', 'price_description' => 'Random description', 'product_quantity' => 1, 'no_of_agents' => 0]);
 
         $response = $this->classObject->planCost($product->id, $this->user->id, $plan->id);
         $this->assertEquals($response, 1000);
@@ -53,8 +53,8 @@ class CartControllerTest extends DBTestCase
         $this->getLoggedInUser();
         $this->withoutMiddleware();
         $product = factory(Product::class)->create();
-        $plan = Plan::create(['name'=>'HD Plan 1 year', 'product'=>$product->id, 'days'=>366]);
-        $planPrice = PlanPrice::create(['plan_id'=>$plan->id, 'currency'=>'INR', 'add_price'=>'1000', 'renew_price'=>'500', 'price_description'=> 'Random description', 'product_quantity'=>1, 'no_of_agents'=>0]);
+        $plan = Plan::create(['name' => 'HD Plan 1 year', 'product' => $product->id, 'days' => 366]);
+        $planPrice = PlanPrice::create(['plan_id' => $plan->id, 'currency' => 'INR', 'add_price' => '1000', 'renew_price' => '500', 'price_description' => 'Random description', 'product_quantity' => 1, 'no_of_agents' => 0]);
 
         $response = $this->classObject->planCost($product->id, $this->user->id, 1);
     }
@@ -65,8 +65,8 @@ class CartControllerTest extends DBTestCase
         $this->getLoggedInUser();
         $this->withoutMiddleware();
         $product = factory(Product::class)->create();
-        $plan = Plan::create(['name'=>'HD Plan 1 year', 'product'=>$product->id, 'days'=>366]);
-        $planPrice = PlanPrice::create(['plan_id'=>$plan->id, 'currency'=>'INR', 'add_price'=>'1000', 'renew_price'=>'500', 'price_description'=> 'Random description', 'product_quantity'=>1, 'no_of_agents'=>0]);
+        $plan = Plan::create(['name' => 'HD Plan 1 year', 'product' => $product->id, 'days' => 366]);
+        $planPrice = PlanPrice::create(['plan_id' => $plan->id, 'currency' => 'INR', 'add_price' => '1000', 'renew_price' => '500', 'price_description' => 'Random description', 'product_quantity' => 1, 'no_of_agents' => 0]);
 
         $response = $this->classObject->planCost($product->id, $this->user->id);
         $this->assertEquals($response, 1000);
@@ -80,13 +80,13 @@ class CartControllerTest extends DBTestCase
         $this->getLoggedInUser();
         $this->withoutMiddleware();
         $product1 = factory(Product::class)->create();
-        $product2 = factory(Product::class)->create(['name'=>'Test Product']);
-        $plan1 = Plan::create(['name'=>'HD Plan 1 year', 'product'=>$product1->id, 'days'=>366]);
-        $plan2 = Plan::create(['name'=>'SD Plan 1 year', 'product'=>$product2->id, 'days'=>366]);
+        $product2 = factory(Product::class)->create(['name' => 'Test Product']);
+        $plan1 = Plan::create(['name' => 'HD Plan 1 year', 'product' => $product1->id, 'days' => 366]);
+        $plan2 = Plan::create(['name' => 'SD Plan 1 year', 'product' => $product2->id, 'days' => 366]);
 
-        $planPrice1 = PlanPrice::create(['plan_id'=>$plan1->id, 'currency'=>'INR', 'add_price'=>'1000', 'renew_price'=>'500', 'price_description'=> 'Random description', 'product_quantity'=>1, 'no_of_agents'=>0]);
+        $planPrice1 = PlanPrice::create(['plan_id' => $plan1->id, 'currency' => 'INR', 'add_price' => '1000', 'renew_price' => '500', 'price_description' => 'Random description', 'product_quantity' => 1, 'no_of_agents' => 0]);
 
-        $planPrice2 = PlanPrice::create(['plan_id'=>$plan2->id, 'currency'=>'INR', 'add_price'=>'1000', 'renew_price'=>'500', 'price_description'=> 'Random description', 'product_quantity'=>1, 'no_of_agents'=>0]);
+        $planPrice2 = PlanPrice::create(['plan_id' => $plan2->id, 'currency' => 'INR', 'add_price' => '1000', 'renew_price' => '500', 'price_description' => 'Random description', 'product_quantity' => 1, 'no_of_agents' => 0]);
 
         $response = $this->classObject->planCost($product1->id, $this->user->id, $plan2->id);
     }
@@ -99,14 +99,14 @@ class CartControllerTest extends DBTestCase
         $product = factory(Product::class)->create();
 
         $taxCondition = new \Darryldecode\Cart\CartCondition([
-            'name'   => 'GST', 'type'   => 'tax',
-            'value'  => 5,
+            'name' => 'GST', 'type' => 'tax',
+            'value' => 5,
         ]);
         \Cart::add([
-            'id'         => $product->id,
-            'name'       => $product->name,
-            'price'      => 1000,
-            'quantity'   => 1,
+            'id' => $product->id,
+            'name' => $product->name,
+            'price' => 1000,
+            'quantity' => 1,
             'attributes' => [],
             'conditions' => $taxCondition,
         ]);
@@ -124,28 +124,28 @@ class CartControllerTest extends DBTestCase
         $this->getLoggedInUser();
         $this->withoutMiddleware();
         $product1 = factory(Product::class)->create();
-        $product2 = factory(Product::class)->create(['name'=>'Test Product']);
+        $product2 = factory(Product::class)->create(['name' => 'Test Product']);
 
         $taxCondition1 = new \Darryldecode\Cart\CartCondition([
-            'name'   => 'GST', 'type'   => 'tax',
-            'value'  => 5,
+            'name' => 'GST', 'type' => 'tax',
+            'value' => 5,
         ]);
         $taxCondition2 = new \Darryldecode\Cart\CartCondition([
-            'name'   => 'VAT', 'type'   => 'tax',
-            'value'  => 10,
+            'name' => 'VAT', 'type' => 'tax',
+            'value' => 10,
         ]);
         \Cart::add([
-            ['id'         => $product1->id,
-                'name'       => $product1->name,
-                'price'      => 1000,
-                'quantity'   => 1,
+            ['id' => $product1->id,
+                'name' => $product1->name,
+                'price' => 1000,
+                'quantity' => 1,
                 'attributes' => [],
                 'conditions' => $taxCondition1,
             ],
-            ['id'         => $product2->id,
-                'name'       => $product2->name,
-                'price'      => 1000,
-                'quantity'   => 1,
+            ['id' => $product2->id,
+                'name' => $product2->name,
+                'price' => 1000,
+                'quantity' => 1,
                 'attributes' => [],
                 'conditions' => $taxCondition2,
             ],

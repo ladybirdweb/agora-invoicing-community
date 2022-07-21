@@ -18,7 +18,7 @@ class CompanyType extends Seeder
         foreach ($types as $type) {
             \DB::table('company_types')->insert([
                 'short' => str_slug($type),
-                'name'  => $type,
+                'name' => $type,
             ]);
         }
     }

@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Model\Payment\TaxByState;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class TaxByStatesSeeder extends Seeder
 {
@@ -14,9 +15,9 @@ class TaxByStatesSeeder extends Seeder
      */
     public function run()
     {
-        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        \DB::table('tax_by_states')->truncate();
-        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::table('tax_by_states')->truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         TaxByState::create([
             'id' => 1,
             'country' => 'IN',

@@ -4,14 +4,15 @@ namespace Database\Seeders;
 
 use App\Model\Common\Country;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class CountrySeeder extends Seeder
 {
     public function run()
     {
-        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        \DB::table('countries')->truncate();
-        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::table('countries')->truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         Country::create([
             'country_id' => 1,
             'country_code_char2' => 'AF',

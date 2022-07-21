@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Model\Common\State;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class StateSubdivision extends Seeder
 {
@@ -14,9 +15,9 @@ class StateSubdivision extends Seeder
      */
     public function run()
     {
-        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        \DB::table('states_subdivisions')->truncate();
-        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::table('states_subdivisions')->truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         State::create([
             'state_subdivision_id' => 12254,

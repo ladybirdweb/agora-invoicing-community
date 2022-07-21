@@ -12,6 +12,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Installer;
 use App\Http\Controllers\Jobs;
 use App\Http\Controllers\License;
+use App\Http\Controllers\License\LocalizedLicenseController;
 use App\Http\Controllers\Order;
 use App\Http\Controllers\Payment;
 use App\Http\Controllers\Product;
@@ -20,9 +21,8 @@ use App\Http\Controllers\Tenancy;
 use App\Http\Controllers\ThirdPartyAppController;
 use App\Http\Controllers\User;
 use App\Http\Controllers\WelcomeController;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\License\LocalizedLicenseController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -554,6 +554,6 @@ use Illuminate\Http\Request;
         Route::get('verify/third-party-token', [Tenancy\TenantController::class, 'verifyThirdPartyToken']);
 
         Route::get('404', function () {
-    return view('errors.404');
-})->name('error404');
+            return view('errors.404');
+        })->name('error404');
     // });

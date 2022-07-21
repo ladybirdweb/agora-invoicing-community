@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Model\Payment\Currency;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class CurrencySeeder extends Seeder
 {
@@ -14,9 +15,9 @@ class CurrencySeeder extends Seeder
      */
     public function run()
     {
-        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        \DB::table('currencies')->truncate();
-        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::table('currencies')->truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         Currency::create([
             'id' => 1,
             'code' => 'AFN',

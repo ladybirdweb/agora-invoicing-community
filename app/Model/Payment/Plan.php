@@ -2,14 +2,13 @@
 
 namespace App\Model\Payment;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\BaseModel;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\Activitylog\Traits\LogsActivity;
 
 class Plan extends BaseModel
 {
     use HasFactory;
-
     use LogsActivity;
 
     protected $table = 'plans';

@@ -2,8 +2,6 @@
 
 namespace App\Plugins\Stripe\Controllers;
 
-use Database\Seeders\StripeSupportedCurrencySeeder;
-use Database\Seeders\CurrencySeeder;
 use App\ApiKey;
 use App\Http\Controllers\Controller;
 use App\Model\Common\Setting;

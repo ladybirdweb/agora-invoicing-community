@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class CompanyType extends Seeder
 {
@@ -13,12 +14,12 @@ class CompanyType extends Seeder
      */
     public function run()
     {
-        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        \DB::table('company_types')->truncate();
-        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::table('company_types')->truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         $types = ['Public Company', 'Self Employed', 'Non Profit', 'Privately Held', 'Partnership'];
         foreach ($types as $type) {
-            \DB::table('company_types')->insert([
+            DB::table('company_types')->insert([
                 'short' => str_slug($type),
                 'name' => $type,
             ]);

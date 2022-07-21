@@ -21,6 +21,8 @@ use App\Model\Payment\TaxOption;
 use App\Model\Product\Product;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -109,10 +111,10 @@ class DatabaseSeeder extends Seeder
         $this->call(QueueServiceSeeder::class);
         $this->call(PlanPriceSeeder::class);
 
-        // \DB::unprepared(file_get_contents(storage_path('agora.sql')));
-        // \DB::unprepared(file_get_contents(storage_path('states.sql')));
-        // \DB::unprepared(file_get_contents(storage_path('taxrates.sql')));
-        // \DB::unprepared(file_get_contents(storage_path('dummy-data.sql')));
+        // DB::unprepared(file_get_contents(storage_path('agora.sql')));
+        // DB::unprepared(file_get_contents(storage_path('states.sql')));
+        // DB::unprepared(file_get_contents(storage_path('taxrates.sql')));
+        // DB::unprepared(file_get_contents(storage_path('dummy-data.sql')));
     }
 }
 
@@ -120,9 +122,9 @@ class DatabaseSeeder extends Seeder
 // {
 //     public function run()
 //     {
-//         \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-//         \DB::table('plans')->truncate();
-//         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+//         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+//         DB::table('plans')->truncate();
+//         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 //         $subcriptions = [
 //             0 => ['name' => 'no subcription', 'days' => 0],
 //             1 => ['name' => 'one week', 'days' => 7],
@@ -143,9 +145,9 @@ class TaxOptionTableSeeder extends Seeder
 {
     public function run()
     {
-        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        \DB::table('tax_rules')->truncate();
-        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::table('tax_rules')->truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         TaxOption::create(['id' => 1, 'tax_enable' => 0, 'inclusive' => 0, 'rounding' => 1]);
     }
 }
@@ -154,9 +156,9 @@ class ApiKeyTableSeeder extends Seeder
 {
     public function run()
     {
-        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        \DB::table('api_keys')->truncate();
-        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::table('api_keys')->truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         ApiKey::create(['id' => 1, 'rzp_key' => '', 'rzp_secret' => '', 'apilayer_key' => '', 'bugsnag_api_key' => '', 'zoho_api_key' => '', 'msg91_auth_key' => '', 'twitter_consumer_key' => '', 'twitter_consumer_secret' => '', 'twitter_access_token' => '', 'access_tooken_secret' => '', 'license_api_secret' => '', 'license_api_url' => '', 'update_api_url' => '', 'update_api_secret' => '', 'terms_url' => '', 'pipedrive_api_key' => '']);
     }
 }
@@ -165,9 +167,9 @@ class PeriodTypeTableSeeder extends Seeder
 {
     public function run()
     {
-        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        \DB::table('periods')->truncate();
-        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::table('periods')->truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         Period::create(['id' => 1, 'name' => '1 Year', 'days' => '366']);
         Period::create(['id' => 2, 'name' => '2 Years', 'days' => '730']);
         Period::create(['id' => 3, 'name' => '3 Years', 'days' => '1095']);
@@ -189,9 +191,9 @@ class PromotionTableSeeder extends Seeder
 {
     public function run()
     {
-        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        \DB::table('promotions')->truncate();
-        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::table('promotions')->truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         Promotion::create(['id' => 1, 'code' => 'none', 'type' => 1, 'uses' => 0, 'value' => 'none', 'start' => '1000-01-01 00:00:00', 'expiry' => '1000-01-01 00:00:00']);
     }
 }
@@ -200,9 +202,9 @@ class PromotionTypeTableSeeder extends Seeder
 {
     public function run()
     {
-        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        \DB::table('promotion_types')->truncate();
-        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::table('promotion_types')->truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         PromotionType::create(['id' => 1, 'name' => 'Percentage']);
         PromotionType::create(['id' => 2, 'name' => 'Fixed Amount']);
     }
@@ -212,9 +214,9 @@ class mailchimpFieldAgoraSeeder extends Seeder
 {
     public function run()
     {
-        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        \DB::table('mailchimp_field_agora_relations')->truncate();
-        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::table('mailchimp_field_agora_relations')->truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         MailchimpFieldAgoraRelation::create(['id' => 1]);
     }
 }
@@ -223,9 +225,9 @@ class mailchimpSettingSeeder extends Seeder
 {
     public function run()
     {
-        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        \DB::table('mailchimp_settings')->truncate();
-        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::table('mailchimp_settings')->truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         MailchimpSetting::create(['id' => 1]);
     }
 }
@@ -234,9 +236,9 @@ class TemplateTypeTableSeeder extends Seeder
 {
     public function run()
     {
-        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        \DB::table('template_types')->truncate();
-        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::table('template_types')->truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         TemplateType::create(['id' => 1, 'name' => 'welcome_mail']);
         TemplateType::create(['id' => 2, 'name' => 'forgot_password_mail']);
         TemplateType::create(['id' => 4, 'name' => 'subscription_going_to_end_mail']);
@@ -254,9 +256,9 @@ class TemplateTableSeeder extends Seeder
 {
     public function run()
     {
-        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        \DB::table('templates')->truncate();
-        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::table('templates')->truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         Template::create(['id' => 2, 'name' => '[Faveo Helpdesk] Verify your email address', 'type' => 1, 'url' => 'null', 'data' => '<table style="background: #f2f2f2; width: 700px;" border="0" cellspacing="0" cellpadding="0">
 <tbody>
 <tr>
@@ -807,8 +809,8 @@ class LicensePermissionTableSeeder extends Seeder
 {
     public function run()
     {
-        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        \DB::table('license_permissions')->truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::table('license_permissions')->truncate();
         LicensePermission::create(['id' => 1, 'permissions' => 'Can be Downloaded']);
         LicensePermission::create(['id' => 2, 'permissions' => 'Generate License Expiry Date']);
         LicensePermission::create(['id' => 3, 'permissions' => 'Generate Updates Expiry Date']);
@@ -822,10 +824,10 @@ class StatusSettingSeeder extends Seeder
 {
     public function run()
     {
-        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        \DB::table('status_settings')->truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::table('status_settings')->truncate();
         StatusSetting::create(['id' => 1, 'expiry_mail' => 0, 'activity_log_delete' => 0, 'license_status' => 0, 'github_status' => 0, 'mailchimp_status' => 0, 'twitter_status' => 0, 'msg91_status' => 0, 'emailverification_status' => 0, 'recaptcha_status' => 0, 'update_settings' => 0, 'zoho_status' => 0, 'rzp_status' => 0, 'mailchimp_product_status' => 0, 'mailchimp_ispaid_status' => 0, 'terms' => 0, 'pipedrive_status' => 0]);
-        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 }
 
@@ -833,8 +835,8 @@ class PricingTemplateSeeder extends Seeder
 {
     public function run()
     {
-        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        \DB::table('pricing_templates')->truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::table('pricing_templates')->truncate();
         PricingTemplate::create(['id' => 1, 'data' => '<div class="col-md-3 col-sm-6">
                             <div class="plan">
                                 <div class="plan-header">
@@ -865,9 +867,9 @@ class GitHubTableSeeder extends Seeder
 {
     public function run()
     {
-        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        \DB::table('githubs')->truncate();
-        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::table('githubs')->truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         Github::create(['id' => 1, 'client_id' => null, 'client_secret' => null, 'username' => null, 'password' => null]);
     }
 }
@@ -891,9 +893,9 @@ class ActivityLogDelSeeder extends Seeder
 {
     public function run()
     {
-        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        \DB::table('activity_log_days')->truncate();
-        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::table('activity_log_days')->truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         ActivityLogDay::create(['id' => 1, 'days' => '']);
     }
 }
@@ -902,11 +904,11 @@ class FormatCurrenciesSeeder extends Seeder
 {
     public function run()
     {
-        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        \DB::table('format_currencies')->truncate();
-        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        \DB::table('format_currencies')->insert(['id' => 1, 'name' => 'US Dollar', 'code' => 'USD', 'symbol' => '$', 'format' => '$1,0.00', 'exchange_rate' => 0, 'active' => 0]);
-        \DB::table('format_currencies')->insert(['id' => 2, 'name' => 'Indian Rupee', 'code' => 'INR', 'symbol' => '₹', 'format' => '₹1,0.00', 'exchange_rate' => 0, 'active' => 0]);
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::table('format_currencies')->truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        DB::table('format_currencies')->insert(['id' => 1, 'name' => 'US Dollar', 'code' => 'USD', 'symbol' => '$', 'format' => '$1,0.00', 'exchange_rate' => 0, 'active' => 0]);
+        DB::table('format_currencies')->insert(['id' => 2, 'name' => 'Indian Rupee', 'code' => 'INR', 'symbol' => '₹', 'format' => '₹1,0.00', 'exchange_rate' => 0, 'active' => 0]);
     }
 }
 
@@ -914,9 +916,9 @@ class UserTableSeeder extends Seeder
 {
     public function run()
     {
-        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        \DB::table('users')->truncate();
-        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::table('users')->truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         return \App\User::create([
             'first_name' => 'Demo',
@@ -924,7 +926,7 @@ class UserTableSeeder extends Seeder
             'user_name' => 'demo',
             'email' => 'demo@admin.com',
             'role' => 'admin',
-            'password' => \Hash::make('password'),
+            'password' => Hash::make('password'),
             'active' => 1,
             'mobile_verified' => 1,
             'currency' => 'INR',

@@ -2,9 +2,8 @@
 
 namespace database\seeds;
 
-use Database\Seeders\StripeSupportedCurrencySeeder;
-use Database\Seeders\CurrencySeeder;
 use App\Plugins\Stripe\Model\StripePayment;
+use Database\Seeders\StripeSupportedCurrencySeeder;
 use Illuminate\Database\Seeder;
 
 class StripeSupportedCurrencySeeder extends Seeder

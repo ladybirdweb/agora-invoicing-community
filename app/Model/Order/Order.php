@@ -2,17 +2,16 @@
 
 namespace App\Model\Order;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\BaseModel;
 use DateTime;
 use DateTimeZone;
 use Illuminate\Contracts\Encryption\DecryptException;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\Activitylog\Traits\LogsActivity;
 
 class Order extends BaseModel
 {
     use HasFactory;
-
     use LogsActivity;
 
     protected $table = 'orders';

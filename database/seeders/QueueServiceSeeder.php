@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class QueueServiceSeeder extends Seeder
 {
@@ -13,9 +14,9 @@ class QueueServiceSeeder extends Seeder
      */
     public function run()
     {
-        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        \DB::table('queue_services')->truncate();
-        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::table('queue_services')->truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         \App\Model\Mailjob\QueueService::create([
             'id' => 1,

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class ProductUpload extends Model
 {
     protected $table = 'product_uploads';
+
     protected $fillable = ['product_id', 'title', 'description', 'version', 'file', 'is_private', 'is_restricted'];
 
     public function product()

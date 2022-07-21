@@ -121,7 +121,7 @@ class CurrencyController extends Controller
         Currency::where('id', $id)->update(['dashboard_currency' => 1]);
         $dashboardStatus = Currency::where('id', '!=', $id)->select('dashboard_currency', 'id')->get();
         foreach ($dashboardStatus as $status) {
-            $status = Currency::where('id', $status->id)->update(['dashboard_currency'=>0]);
+            $status = Currency::where('id', $status->id)->update(['dashboard_currency' => 0]);
         }
 
         return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
@@ -280,8 +280,8 @@ class CurrencyController extends Controller
     public function countryDetails(Request $request)
     {
         $countryDetails = Country::where('country_id', $request->id)->select('currency_code', 'currency_symbol', 'currency_name')->first();
-        $data = (['code'=> $countryDetails->currency_code,
-            'symbol'      => $countryDetails->currency_symbol, 'currency'=>$countryDetails->currency_name, ]);
+        $data = (['code' => $countryDetails->currency_code,
+            'symbol' => $countryDetails->currency_symbol, 'currency' => $countryDetails->currency_name, ]);
 
         return $data;
     }
@@ -291,7 +291,7 @@ class CurrencyController extends Controller
         $code = Currency::where('id', $request->input('current_id'))->value('code');
         Artisan::call('currency:manage', ['action' => 'add', 'currency' => $code]);
         $updatedStatus = ($request->current_status == '1') ? 0 : 1;
-        Currency::where('id', $request->current_id)->update(['status'=>$updatedStatus]);
+        Currency::where('id', $request->current_id)->update(['status' => $updatedStatus]);
 
         return Lang::get('message.updated-successfully');
     }

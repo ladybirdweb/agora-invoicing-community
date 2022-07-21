@@ -17,7 +17,7 @@ class SettingsController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('admin', ['except'=>['postPaymentWithStripe']]);
+        $this->middleware('admin', ['except' => ['postPaymentWithStripe']]);
     }
 
     public function Settings()
@@ -57,13 +57,13 @@ class SettingsController extends Controller
     public function postSettings(Request $request)
     {
         $this->validate($request, [
-            'business'    => 'required',
-            'cmd'         => 'required',
-            'paypal_url'  => 'required|url',
+            'business' => 'required',
+            'cmd' => 'required',
+            'paypal_url' => 'required|url',
             'success_url' => 'url',
-            'cancel_url'  => 'url',
-            'notify_url'  => 'url',
-            'currencies'  => 'required',
+            'cancel_url' => 'url',
+            'notify_url' => 'url',
+            'currencies' => 'required',
         ]);
 
         try {
@@ -82,10 +82,10 @@ class SettingsController extends Controller
         $baseCurrency = Stripe::where('id', $request->input('b_currency'))->pluck('currencies')->first();
         $allCurrencies = Stripe::select('base_currency', 'id')->get();
         foreach ($allCurrencies as $currencies) {
-            Stripe::where('id', $currencies->id)->update(['base_currency'=>$baseCurrency]);
+            Stripe::where('id', $currencies->id)->update(['base_currency' => $baseCurrency]);
         }
 
-        return ['message' => 'success', 'update'=>'Base Currency Updated'];
+        return ['message' => 'success', 'update' => 'Base Currency Updated'];
     }
 
     public function updateApiKey(Request $request)
@@ -94,9 +94,9 @@ class SettingsController extends Controller
             $stripe = Stripe::make($request->input('stripe_secret'));
             $response = $stripe->customers()->create(['description' => 'Test Customer to Validate Secret Key']);
             $stripe_secret = $request->input('stripe_secret');
-            ApiKey::find(1)->update(['stripe_secret'=>$stripe_secret]);
+            ApiKey::find(1)->update(['stripe_secret' => $stripe_secret]);
 
-            return successResponse(['success'=>'true', 'message'=>'Secret key updated successfully']);
+            return successResponse(['success' => 'true', 'message' => 'Secret key updated successfully']);
         } catch (\Cartalyst\Stripe\Exception\UnauthorizedException  $e) {
             return errorResponse($e->getMessage());
         } catch (\Exception $e) {
@@ -135,10 +135,10 @@ class SettingsController extends Controller
             $stripe = Stripe::make($stripeSecretKey);
             $token = $stripe->tokens()->create([
                 'card' => [
-                    'number'    => $request->get('card_no'),
+                    'number' => $request->get('card_no'),
                     'exp_month' => $request->get('exp_month'),
-                    'exp_year'  => $request->get('exp_year'),
-                    'cvc'       => $request->get('cvv'),
+                    'exp_year' => $request->get('exp_year'),
+                    'cvc' => $request->get('cvv'),
                 ],
             ]);
             if (! isset($token['id'])) {
@@ -163,7 +163,7 @@ class SettingsController extends Controller
             $charge = $stripe->charges()->create([
                 'customer' => $customer['id'],
                 'currency' => $currency,
-                'amount'   =>$amount,
+                'amount' => $amount,
                 'description' => 'Add in wallet',
             ]);
             if ($charge['status'] == 'succeeded') {

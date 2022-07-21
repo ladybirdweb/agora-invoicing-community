@@ -78,7 +78,7 @@ class CategoryController extends Controller
     {
         try {
             $cat_name = $request->input('category_name');
-            $category = $this->productCategory->where('id', $id)->update(['category_name' =>$cat_name]);
+            $category = $this->productCategory->where('id', $id)->update(['category_name' => $cat_name]);
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $ex) {

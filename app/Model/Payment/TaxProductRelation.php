@@ -7,6 +7,7 @@ use App\BaseModel;
 class TaxProductRelation extends BaseModel
 {
     protected $table = 'tax_product_relations';
+
     protected $fillable = ['product_id', 'tax_class_id'];
 
     public function tax()

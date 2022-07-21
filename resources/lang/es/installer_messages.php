@@ -7,8 +7,8 @@ return [
      * Traducciones compartidas.
      *
      */
-    'title'  => 'Instalador de Laravel',
-    'next'   => 'Siguiente',
+    'title' => 'Instalador de Laravel',
+    'next' => 'Siguiente',
     'finish' => 'Instalar',
 
     /*
@@ -17,7 +17,7 @@ return [
      *
      */
     'welcome' => [
-        'title'   => 'Bienvenido al instalador',
+        'title' => 'Bienvenido al instalador',
         'message' => 'Bienvenido al asistente de configuración',
     ],
 
@@ -45,10 +45,10 @@ return [
      *
      */
     'environment' => [
-        'title'   => 'Configuraciones del entorno',
-        'save'    => 'Guardar archivo .env',
+        'title' => 'Configuraciones del entorno',
+        'save' => 'Guardar archivo .env',
         'success' => 'Los cambios en tu archivo .env han sido guardados.',
-        'errors'  => 'No es posible crear el archivo .env, por favor intentalo manualmente.',
+        'errors' => 'No es posible crear el archivo .env, por favor intentalo manualmente.',
     ],
 
     /*
@@ -57,8 +57,8 @@ return [
      *
      */
     'final' => [
-        'title'    => 'Finalizado.',
+        'title' => 'Finalizado.',
         'finished' => 'La aplicación ha sido instalada con éxito!',
-        'exit'     => 'Haz click aquí para salir.',
+        'exit' => 'Haz click aquí para salir.',
     ],
 ];

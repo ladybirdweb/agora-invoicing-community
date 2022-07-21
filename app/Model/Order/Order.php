@@ -11,12 +11,17 @@ use Spatie\Activitylog\Traits\LogsActivity;
 class Order extends BaseModel
 {
     use LogsActivity;
+
     protected $table = 'orders';
+
     protected static $logName = 'Order';
+
     protected $fillable = ['client', 'order_status', 'invoice_item_id',
         'serial_key', 'product', 'domain', 'subscription', 'price_override', 'qty', 'invoice_id', 'number', ];
+
     protected static $logAttributes = ['client', 'order_status', 'invoice_item_id',
         'serial_key', 'product', 'domain', 'subscription', 'price_override', 'qty', 'invoice_id', 'number', ];
+
     protected static $logOnlyDirty = true;
 
     public function getDescriptionForEvent(string $eventName): string

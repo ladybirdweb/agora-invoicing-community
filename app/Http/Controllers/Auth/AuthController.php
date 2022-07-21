@@ -34,6 +34,7 @@ class AuthController extends BaseAuthController
 
     /* Direct After Logout */
     protected $redirectAfterLogout = 'home';
+
     protected $loginPath = 'login';
 
     //protected $loginPath = 'login';
@@ -109,8 +110,8 @@ class AuthController extends BaseAuthController
     public function validator(array $data)
     {
         return Validator::make($data, [
-            'name'     => 'required|max:255',
-            'email'    => 'required|email|max:255|unique:users',
+            'name' => 'required|max:255',
+            'email' => 'required|email|max:255|unique:users',
             'password' => 'required|confirmed|min:6',
         ]);
     }
@@ -124,8 +125,8 @@ class AuthController extends BaseAuthController
     public function create(array $data)
     {
         return User::create([
-            'name'     => $data['name'],
-            'email'    => $data['email'],
+            'name' => $data['name'],
+            'email' => $data['email'],
             'password' => bcrypt($data['password']),
         ]);
     }
@@ -133,13 +134,13 @@ class AuthController extends BaseAuthController
     public function requestOtp(Request $request)
     {
         $this->validate($request, [
-            'code'   => 'required|numeric',
+            'code' => 'required|numeric',
             'mobile' => 'required|numeric',
         ]);
 
         $number = ltrim($request->oldnumber, '0');
         $newNumber = ltrim($request->newnumber, '0');
-        User::where('mobile', $number)->update(['mobile'=>$newNumber]);
+        User::where('mobile', $number)->update(['mobile' => $newNumber]);
 
         try {
             $code = $request->input('code');
@@ -159,7 +160,7 @@ class AuthController extends BaseAuthController
     public function retryOTP(Request $request)
     {
         $this->validate($request, [
-            'code'   => 'required|numeric',
+            'code' => 'required|numeric',
             'mobile' => 'required|numeric',
         ]);
 
@@ -175,20 +176,20 @@ class AuthController extends BaseAuthController
                 case 'text':
                    $array = json_decode($result, true);
                    $response = ['type' => 'success',
-                       'message'           => 'OTP has been resent to '.$number.'.Please Enter the OTP to login!!', ];
+                       'message' => 'OTP has been resent to '.$number.'.Please Enter the OTP to login!!', ];
 
                     break;
 
                     case 'voice':
                     $array = json_decode($result, true);
                     $response = ['type' => 'success',
-                        'message'            => 'Voice call has been sent to '.$number.'.Please Enter the OTP received on the call to login!!', ];
+                        'message' => 'Voice call has been sent to '.$number.'.Please Enter the OTP received on the call to login!!', ];
                     break;
 
                 default:
                     $array = json_decode($result, true);
                     $response = ['type' => 'success',
-                        'message'            => 'Voice call has been sent to '.$number.'.Please Enter the OTP received on the call to login!!', ];
+                        'message' => 'Voice call has been sent to '.$number.'.Please Enter the OTP received on the call to login!!', ];
                     break;
 
             }
@@ -239,7 +240,7 @@ class AuthController extends BaseAuthController
             }
             $check = $this->checkVerify($user);
             $response = ['type' => 'success', 'proceed' => $check,
-                'user_id'           => $userid, 'message' =>'Mobile verified..Please login to access your account', ];
+                'user_id' => $userid, 'message' => 'Mobile verified..Please login to access your account', ];
 
             return response()->json($response);
             // return redirect('/login');
@@ -267,7 +268,7 @@ class AuthController extends BaseAuthController
             //$this->sendActivation($email, $request->method());
             $this->sendActivation($email, $method);
             $response = ['type' => 'success', 'proceed' => $check,
-                'email'             => $email, 'message' => 'Activation link has been sent to '.$email, ];
+                'email' => $email, 'message' => 'Activation link has been sent to '.$email, ];
 
             return response()->json($response);
         } catch (\Exception $ex) {
@@ -333,13 +334,13 @@ class AuthController extends BaseAuthController
             $template_name = $template->name;
             $template_controller = new \App\Http\Controllers\Common\TemplateController();
             $replace = [
-                'name'               => $user->first_name.' '.$user->last_name,
+                'name' => $user->first_name.' '.$user->last_name,
                 'manager_first_name' => $manager->first_name,
-                'manager_last_name'  => $manager->last_name,
-                'manager_email'      => $manager->email,
-                'manager_code'       => $manager->mobile_code,
-                'manager_mobile'     => $manager->mobile,
-                'manager_skype'      => $manager->skype,
+                'manager_last_name' => $manager->last_name,
+                'manager_email' => $manager->email,
+                'manager_code' => $manager->mobile_code,
+                'manager_mobile' => $manager->mobile,
+                'manager_skype' => $manager->skype,
             ];
             $mail = new \App\Http\Controllers\Common\PhpMailController();
             $mail->sendEmail($from, $to, $template_data, $template_name, $replace, 'sales_manager_email', $bcc);
@@ -368,13 +369,13 @@ class AuthController extends BaseAuthController
             $template_name = $template->name;
             $template_controller = new \App\Http\Controllers\Common\TemplateController();
             $replace = [
-                'name'               => $user->first_name.' '.$user->last_name,
+                'name' => $user->first_name.' '.$user->last_name,
                 'manager_first_name' => $manager->first_name,
-                'manager_last_name'  => $manager->last_name,
-                'manager_email'      => $manager->email,
-                'manager_code'       => $manager->mobile_code,
-                'manager_mobile'     => $manager->mobile,
-                'manager_skype'      => $manager->skype,
+                'manager_last_name' => $manager->last_name,
+                'manager_email' => $manager->email,
+                'manager_code' => $manager->mobile_code,
+                'manager_mobile' => $manager->mobile,
+                'manager_skype' => $manager->skype,
             ];
             $mail = new \App\Http\Controllers\Common\PhpMailController();
             $mail->sendEmail($from, $to, $template_data, $template_name, $replace, 'account_manager_email', $bcc);

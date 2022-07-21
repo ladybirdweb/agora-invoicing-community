@@ -22,22 +22,22 @@ class InvoiceTest extends DBTestCase
         $this->getLoggedInUser();
         $user = $this->user;
         $user_id = $user->id;
-        $invoice = factory(Invoice::class)->create(['user_id'=> $user_id]);
+        $invoice = factory(Invoice::class)->create(['user_id' => $user_id]);
         $invoiceItem = InvoiceItem::create([
-            'invoice_id'         => $invoice->id,
-            'product_name'       => 'Helpdesk Advance',
-            'regular_price'      => 10000,
-            'quantity'           => 1,
-            'tax_name'           => 'CGST+SGST',
-            'tax_percentage'     => 18,
-            'subtotal'           => 11800,
-            'domain'             => 'faveo.com',
-            'plan_id'            => 1,
+            'invoice_id' => $invoice->id,
+            'product_name' => 'Helpdesk Advance',
+            'regular_price' => 10000,
+            'quantity' => 1,
+            'tax_name' => 'CGST+SGST',
+            'tax_percentage' => 18,
+            'subtotal' => 11800,
+            'domain' => 'faveo.com',
+            'plan_id' => 1,
         ]);
         $response = $this->call('GET', 'my-invoice/'.$invoice->id, [
             'invoice' => $invoice,
-            'items'   => $invoiceItem,
-            'user'    => $user,
+            'items' => $invoiceItem,
+            'user' => $user,
         ]);
         $response->setExpectedException(\Exception::class);
     }

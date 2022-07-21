@@ -104,7 +104,7 @@ class LicensePermissionsController extends Controller
             $licenseType = LicenseType::find($request->input('licenseId'));
             $licenseType->permissions()->attach($request->input('permissionid'));
 
-            return ['message' =>'success', 'update'=> 'Permissions Updated Successfully'];
+            return ['message' => 'success', 'update' => 'Permissions Updated Successfully'];
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
             $result = [$ex->getMessage()];
@@ -127,7 +127,7 @@ class LicensePermissionsController extends Controller
             $permissionsArray = [];
         }
 
-        return response()->json(['permissions'=> $permissionsArray, 'message'=>'success']);
+        return response()->json(['permissions' => $permissionsArray, 'message' => 'success']);
     }
 
     /**
@@ -168,9 +168,9 @@ class LicensePermissionsController extends Controller
                 }
             }
 
-            return ['generateUpdatesxpiryDate'=> $generateUpdatesxpiryDate, 'generateLicenseExpiryDate'=>$generateLicenseExpiryDate,
-                'generateSupportExpiryDate'       => $generateSupportExpiryDate, 'downloadPermission'=>$downloadPermission, 'noPermissions'=>$noPermissions,
-                'allowDownloadTillExpiry'         => $allowDownloadTillExpiry, ];
+            return ['generateUpdatesxpiryDate' => $generateUpdatesxpiryDate, 'generateLicenseExpiryDate' => $generateLicenseExpiryDate,
+                'generateSupportExpiryDate' => $generateSupportExpiryDate, 'downloadPermission' => $downloadPermission, 'noPermissions' => $noPermissions,
+                'allowDownloadTillExpiry' => $allowDownloadTillExpiry, ];
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
 

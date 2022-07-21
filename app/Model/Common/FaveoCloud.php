@@ -7,9 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 class FaveoCloud extends Model
 {
     protected $table = 'faveo_cloud';
+
     protected $fillable = ['cloud_central_domain', 'cron_server_url', 'cron_server_key'];
+
     protected static $logName = 'Cloud detail';
+
     protected static $logAttributes = ['cloud_central_domain', 'cron_server_url', 'cron_server_key'];
+
     protected static $logOnlyDirty = true;
 
     public function getDescriptionForEvent(string $eventName): string

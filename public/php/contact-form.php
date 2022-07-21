@@ -23,15 +23,15 @@ $subject = $_POST['subject'];
 $fields = [
     0 => [
         'text' => 'Name',
-        'val'  => $_POST['name'],
+        'val' => $_POST['name'],
     ],
     1 => [
         'text' => 'Email address',
-        'val'  => $_POST['email'],
+        'val' => $_POST['email'],
     ],
     2 => [
         'text' => 'Message',
-        'val'  => $_POST['message'],
+        'val' => $_POST['message'],
     ],
 ];
 
@@ -73,11 +73,11 @@ try {
     $mail->Body = $message;
 
     $mail->Send();
-    $arrResult = ['response'=>'success'];
+    $arrResult = ['response' => 'success'];
 } catch (phpmailerException $e) {
-    $arrResult = ['response'=>'error', 'errorMessage'=>$e->errorMessage()];
+    $arrResult = ['response' => 'error', 'errorMessage' => $e->errorMessage()];
 } catch (Exception $e) {
-    $arrResult = ['response'=>'error', 'errorMessage'=>$e->getMessage()];
+    $arrResult = ['response' => 'error', 'errorMessage' => $e->getMessage()];
 }
 
 if ($debug == 0) {

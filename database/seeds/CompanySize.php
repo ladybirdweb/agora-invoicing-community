@@ -18,7 +18,7 @@ class CompanySize extends Seeder
         foreach ($sizes as $size) {
             \DB::table('company_sizes')->insert([
                 'short' => str_slug($size),
-                'name'  => $size,
+                'name' => $size,
             ]);
         }
     }

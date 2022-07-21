@@ -11,7 +11,7 @@ function simple_php_captcha($config = [])
 {
 
     // Check for GD library
-    if (!function_exists('gd_info')) {
+    if (! function_exists('gd_info')) {
         throw new Exception('Required GD library is missing');
     }
 
@@ -20,9 +20,9 @@ function simple_php_captcha($config = [])
 
     // Default values
     $captcha_config = [
-        'code'        => '',
-        'min_length'  => 5,
-        'max_length'  => 5,
+        'code' => '',
+        'min_length' => 5,
+        'max_length' => 5,
         'backgrounds' => [
             $bg_path.'45-degree-fabric.png',
             $bg_path.'cloth-alike.png',
@@ -36,14 +36,14 @@ function simple_php_captcha($config = [])
         'fonts' => [
             $font_path.'times_new_yorker.ttf',
         ],
-        'characters'      => 'ABCDEFGHJKLMNPRSTUVWXYZabcdefghjkmnprstuvwxyz23456789',
-        'min_font_size'   => 28,
-        'max_font_size'   => 28,
-        'color'           => '#666',
-        'angle_min'       => 0,
-        'angle_max'       => 10,
-        'shadow'          => true,
-        'shadow_color'    => '#fff',
+        'characters' => 'ABCDEFGHJKLMNPRSTUVWXYZabcdefghjkmnprstuvwxyz23456789',
+        'min_font_size' => 28,
+        'max_font_size' => 28,
+        'color' => '#666',
+        'angle_min' => 0,
+        'angle_max' => 10,
+        'shadow' => true,
+        'shadow_color' => '#fff',
         'shadow_offset_x' => -1,
         'shadow_offset_y' => 1,
     ];
@@ -97,12 +97,12 @@ function simple_php_captcha($config = [])
     $_SESSION['_CAPTCHA']['config'] = serialize($captcha_config);
 
     return [
-        'code'      => $captcha_config['code'],
+        'code' => $captcha_config['code'],
         'image_src' => $image_src,
     ];
 }
 
-if (!function_exists('hex2rgb')) {
+if (! function_exists('hex2rgb')) {
     function hex2rgb($hex_str, $return_string = false, $separator = ',')
     {
         $hex_str = preg_replace('/[^0-9A-Fa-f]/', '', $hex_str); // Gets a proper hex string
@@ -129,7 +129,7 @@ if (isset($_GET['_CAPTCHA'])) {
     session_start();
 
     $captcha_config = unserialize($_SESSION['_CAPTCHA']['config']);
-    if (!$captcha_config) {
+    if (! $captcha_config) {
         exit();
     }
 
@@ -141,7 +141,7 @@ if (isset($_GET['_CAPTCHA'])) {
 
     // Pick random background, get info, and start captcha
     $background = $captcha_config['backgrounds'][mt_rand(0, count($captcha_config['backgrounds']) - 1)];
-    list($bg_width, $bg_height, $bg_type, $bg_attr) = getimagesize($background);
+    [$bg_width, $bg_height, $bg_type, $bg_attr] = getimagesize($background);
 
     $captcha = imagecreatefrompng($background);
 
@@ -155,7 +155,7 @@ if (isset($_GET['_CAPTCHA'])) {
     $font = $captcha_config['fonts'][mt_rand(0, count($captcha_config['fonts']) - 1)];
 
     // Verify font file exists
-    if (!file_exists($font)) {
+    if (! file_exists($font)) {
         throw new Exception('Font file not found: '.$font);
     }
     //Set the font size.

@@ -67,15 +67,15 @@ return [
     'drivers' => [
 
         'database' => [
-            'class'      => \Torann\Currency\Drivers\Database::class,
+            'class' => \Torann\Currency\Drivers\Database::class,
             'connection' => null,
-            'table'      => 'format_currencies',
+            'table' => 'format_currencies',
         ],
 
         'filesystem' => [
             'class' => \Torann\Currency\Drivers\Filesystem::class,
-            'disk'  => null,
-            'path'  => 'currencies.json',
+            'disk' => null,
+            'path' => 'currencies.json',
         ],
 
     ],

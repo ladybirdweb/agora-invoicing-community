@@ -17,8 +17,7 @@ class Twitter_AutolinkTest extends PHPUnit_Framework_TestCase
     /**
      * A helper function for providers.
      *
-     * @param string $test The test to fetch data for.
-     *
+     * @param  string  $test The test to fetch data for.
      * @return array The test data to provide.
      */
     protected function providerHelper($test)
@@ -83,12 +82,12 @@ class Twitter_AutolinkTest extends PHPUnit_Framework_TestCase
         // XXX: Need to re-order for hashtag as it is written out differently...
         //      We use the same wrapping function for adding links for all methods.
         $linked = preg_replace([
-      '!<a class="([^"]*)" href="([^"]*)">([^<]*)</a>!',
-      '!title="＃([^"]+)"!',
-    ], [
-      '<a href="$2" title="$3" class="$1">$3</a>',
-      'title="#$1"',
-    ], $linked);
+            '!<a class="([^"]*)" href="([^"]*)">([^<]*)</a>!',
+            '!title="＃([^"]+)"!',
+        ], [
+            '<a href="$2" title="$3" class="$1">$3</a>',
+            'title="#$1"',
+        ], $linked);
         $this->assertSame($expected, $linked, $description);
     }
 

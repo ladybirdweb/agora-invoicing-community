@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class PricingTemplate extends Model
 {
     protected $tables = 'pricing_templates';
+
     protected $fillable = ['data', 'image', 'name'];
 
     public function productGroups()

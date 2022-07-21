@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class QueueService extends Model
 {
     protected $table = 'queue_services';
+
     protected $fillable = ['name', 'short_name', 'status'];
 
     public function extraFieldRelation()

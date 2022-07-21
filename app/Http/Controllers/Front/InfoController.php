@@ -32,6 +32,6 @@ class InfoController extends Controller
             $status = 'success';
         }
 
-        return ['payment'=>$payment_method, 'status'=>$status];
+        return ['payment' => $payment_method, 'status' => $status];
     }
 }

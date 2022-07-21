@@ -54,7 +54,7 @@ class SetupTestEnv extends Command
 
         echo "\nRunning migrations!\n";
 
-        Artisan::call('migrate', ['--force'=>true]);
+        Artisan::call('migrate', ['--force' => true]);
 
         echo Artisan::output();
 
@@ -62,7 +62,7 @@ class SetupTestEnv extends Command
 
         echo "\nRunning seeders!\n";
 
-        Artisan::call('db:seed', ['--force'=>true]);
+        Artisan::call('db:seed', ['--force' => true]);
 
         echo Artisan::output();
 

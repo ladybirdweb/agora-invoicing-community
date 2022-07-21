@@ -13,9 +13,13 @@ use Carbon\Carbon;
 class CronController extends BaseCronController
 {
     protected $subscription;
+
     protected $order;
+
     protected $user;
+
     protected $template;
+
     protected $invoice;
 
     public function __construct()

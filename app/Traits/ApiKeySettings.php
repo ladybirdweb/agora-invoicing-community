@@ -23,12 +23,12 @@ trait ApiKeySettings
         $licenseApiClientId = $request->input('license_client_id');
         $licenseApiClientSecret = $request->input('license_client_secret');
         $licenseApiGrantType = $request->input('license_grant_type');
-        StatusSetting::where('id', 1)->update(['license_status'=>$status]);
-        ApiKey::where('id', 1)->update(['license_api_secret'=>$licenseApiSecret, 'license_api_url'=>$licenseApiUrl,
-            'license_client_id'=> $licenseApiClientId, 'license_client_secret'=> $licenseApiClientSecret,
-            'license_grant_type'=>$licenseApiGrantType, ]);
+        StatusSetting::where('id', 1)->update(['license_status' => $status]);
+        ApiKey::where('id', 1)->update(['license_api_secret' => $licenseApiSecret, 'license_api_url' => $licenseApiUrl,
+            'license_client_id' => $licenseApiClientId, 'license_client_secret' => $licenseApiClientSecret,
+            'license_grant_type' => $licenseApiGrantType, ]);
 
-        return ['message' => 'success', 'update'=>'Licensing settings saved'];
+        return ['message' => 'success', 'update' => 'Licensing settings saved'];
     }
 
     //Save Auto Update status in Database
@@ -37,10 +37,10 @@ trait ApiKeySettings
         $status = $request->input('status');
         $updateApiSecret = $request->input('update_api_secret');
         $updateApiUrl = $request->input('update_api_url');
-        StatusSetting::where('id', 1)->update(['update_settings'=>$status]);
-        ApiKey::where('id', 1)->update(['update_api_secret'=>$updateApiSecret, 'update_api_url'=>$updateApiUrl]);
+        StatusSetting::where('id', 1)->update(['update_settings' => $status]);
+        ApiKey::where('id', 1)->update(['update_api_secret' => $updateApiSecret, 'update_api_url' => $updateApiUrl]);
 
-        return ['message' => 'success', 'update'=>'Auto update settings saved'];
+        return ['message' => 'success', 'update' => 'Auto update settings saved'];
     }
 
     /*
@@ -50,10 +50,10 @@ trait ApiKeySettings
     {
         $status = $request->input('status');
         $key = $request->input('msg91_auth_key');
-        StatusSetting::find(1)->update(['msg91_status'=>$status]);
-        ApiKey::find(1)->update(['msg91_auth_key'=>$key, 'msg91_sender'=>$request->input('msg91_sender')]);
+        StatusSetting::find(1)->update(['msg91_status' => $status]);
+        ApiKey::find(1)->update(['msg91_auth_key' => $key, 'msg91_sender' => $request->input('msg91_sender')]);
 
-        return ['message' => 'success', 'update'=>'Msg91 settings saved'];
+        return ['message' => 'success', 'update' => 'Msg91 settings saved'];
     }
 
     /*
@@ -63,10 +63,10 @@ trait ApiKeySettings
     {
         $status = $request->input('status');
         $key = $request->input('zoho_key');
-        StatusSetting::find(1)->update(['zoho_status'=>$status]);
-        ApiKey::find(1)->update(['zoho_api_key'=>$key]);
+        StatusSetting::find(1)->update(['zoho_status' => $status]);
+        ApiKey::find(1)->update(['zoho_api_key' => $key]);
 
-        return ['message' => 'success', 'update'=>'Zoho settings saved'];
+        return ['message' => 'success', 'update' => 'Zoho settings saved'];
     }
 
     /*
@@ -75,9 +75,9 @@ trait ApiKeySettings
     public function updateEmailDetails(Request $request)
     {
         $status = $request->input('status');
-        StatusSetting::find(1)->update(['emailverification_status'=>$status]);
+        StatusSetting::find(1)->update(['emailverification_status' => $status]);
 
-        return ['message' => 'success', 'update'=>'Email verification status saved'];
+        return ['message' => 'success', 'update' => 'Email verification status saved'];
     }
 
     /*
@@ -86,9 +86,9 @@ trait ApiKeySettings
     public function updatedomainCheckDetails(Request $request)
     {
         $status = $request->input('status');
-        StatusSetting::find(1)->update(['domain_check'=>$status]);
+        StatusSetting::find(1)->update(['domain_check' => $status]);
 
-        return ['message' => 'success', 'update'=>'Domain check status saved'];
+        return ['message' => 'success', 'update' => 'Domain check status saved'];
     }
 
     /*
@@ -101,52 +101,52 @@ trait ApiKeySettings
         $access_token = $request->input('access_token');
         $token_secret = $request->input('token_secret');
         $status = $request->input('status');
-        StatusSetting::find(1)->update(['twitter_status'=>$status]);
-        ApiKey::find(1)->update(['twitter_consumer_key'=>$consumer_key, 'twitter_consumer_secret'=>$consumer_secret, 'twitter_access_token'=>$access_token, 'access_tooken_secret'=>$token_secret]);
+        StatusSetting::find(1)->update(['twitter_status' => $status]);
+        ApiKey::find(1)->update(['twitter_consumer_key' => $consumer_key, 'twitter_consumer_secret' => $consumer_secret, 'twitter_access_token' => $access_token, 'access_tooken_secret' => $token_secret]);
 
-        return ['message' => 'success', 'update'=>'Twitter settings saved'];
+        return ['message' => 'success', 'update' => 'Twitter settings saved'];
     }
 
     public function updatepipedriveDetails(Request $request)
     {
         $pipedriveKey = $request->input('pipedrive_key');
         $status = $request->input('status');
-        StatusSetting::find(1)->update(['pipedrive_status'=>$status]);
-        ApiKey::find(1)->update(['pipedrive_api_key'=>$pipedriveKey]);
+        StatusSetting::find(1)->update(['pipedrive_status' => $status]);
+        ApiKey::find(1)->update(['pipedrive_api_key' => $pipedriveKey]);
     }
 
     public function updateMailchimpProductStatus(Request $request)
     {
-        StatusSetting::first()->update(['mailchimp_product_status'=>$request->input('status')]);
+        StatusSetting::first()->update(['mailchimp_product_status' => $request->input('status')]);
 
-        return ['message' => 'success', 'update'=>'Mailchimp products group status saved'];
+        return ['message' => 'success', 'update' => 'Mailchimp products group status saved'];
     }
 
     public function updateMailchimpIsPaidStatus(Request $request)
     {
-        StatusSetting::first()->update(['mailchimp_ispaid_status'=>$request->input('status')]);
+        StatusSetting::first()->update(['mailchimp_ispaid_status' => $request->input('status')]);
 
-        return ['message' => 'success', 'update'=>'Mailchimp is paid status saved'];
+        return ['message' => 'success', 'update' => 'Mailchimp is paid status saved'];
     }
 
     public function updateMailchimpDetails(Request $request)
     {
         $chimp_auth_key = $request->input('mailchimp_auth_key');
         $status = $request->input('status');
-        StatusSetting::find(1)->update(['mailchimp_status'=>$status]);
-        MailchimpSetting::find(1)->update(['api_key'=>$chimp_auth_key]);
+        StatusSetting::find(1)->update(['mailchimp_status' => $status]);
+        MailchimpSetting::find(1)->update(['api_key' => $chimp_auth_key]);
 
-        return ['message' => 'success', 'update'=>'Mailchimp settings saved'];
+        return ['message' => 'success', 'update' => 'Mailchimp settings saved'];
     }
 
     public function updateTermsDetails(Request $request)
     {
         $terms_url = $request->input('terms_url');
         $status = $request->input('status');
-        StatusSetting::find(1)->update(['terms'=>$status]);
-        ApiKey::find(1)->update(['terms_url'=>$terms_url]);
+        StatusSetting::find(1)->update(['terms' => $status]);
+        ApiKey::find(1)->update(['terms_url' => $terms_url]);
 
-        return ['message' => 'success', 'update'=>'Terms url saved'];
+        return ['message' => 'success', 'update' => 'Terms url saved'];
     }
 
     /**
@@ -182,7 +182,7 @@ trait ApiKeySettings
             $activity_dailyAt = \Request::get('activity-dailyAt');
             $activity_command = $this->getCommand($activity_commands, $activity_dailyAt);
             $expiry_command = $this->getCommand($expiry_commands, $expiry_dailyAt);
-            $jobs = ['expiryMail' => $expiry_command, 'deleteLogs' =>  $activity_command];
+            $jobs = ['expiryMail' => $expiry_command, 'deleteLogs' => $activity_command];
             $this->storeCommand($jobs);
         }
     }
@@ -208,7 +208,7 @@ trait ApiKeySettings
         if (count($array) > 0) {
             foreach ($array as $key => $save) {
                 $command->create([
-                    'job'   => $key,
+                    'job' => $key,
                     'value' => $save,
                 ]);
             }
@@ -224,7 +224,7 @@ trait ApiKeySettings
 
     public function updateStoragePath(Request $request)
     {
-        $updatedPath = Setting::find(1)->update(['file_storage'=>$request->input('fileuploadpath')]);
+        $updatedPath = Setting::find(1)->update(['file_storage' => $request->input('fileuploadpath')]);
 
         return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
     }

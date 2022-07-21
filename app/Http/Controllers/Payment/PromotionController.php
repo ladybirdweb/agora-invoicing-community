@@ -14,9 +14,13 @@ use Illuminate\Http\Request;
 class PromotionController extends BasePromotionController
 {
     public $promotion;
+
     public $product;
+
     public $promoRelation;
+
     public $type;
+
     public $invoice;
 
     public function __construct()
@@ -178,11 +182,11 @@ class PromotionController extends BasePromotionController
             $enddate = date_create($request->input('expiry'));
             $expiry = date_format($enddate, 'Y-m-d H:m:i');
             $promotion = $this->promotion->where('id', $id)->update([
-                'code'   => $request->input('code'),
-                'type'   => $request->input('type'),
-                'value'  => $request->input('type') == 2 ? intval($request->input('value')) : intval($request->input('value')).'%',
-                'uses'   => $request->input('uses'),
-                'start'  => $start,
+                'code' => $request->input('code'),
+                'type' => $request->input('type'),
+                'value' => $request->input('type') == 2 ? intval($request->input('value')) : intval($request->input('value')).'%',
+                'uses' => $request->input('uses'),
+                'start' => $start,
                 'expiry' => $expiry,
             ]);
             /* Delete the products has this id */
@@ -272,13 +276,13 @@ class PromotionController extends BasePromotionController
                     \Session::put('code', $promo->code);
                     \Session::put('codevalue', $promo->value);
                     $coupon101 = new CartCondition([
-                        'name'   => $promo->code,
-                        'type'   => 'coupon',
-                        'value'  => '-'.$promo->value,
+                        'name' => $promo->code,
+                        'type' => 'coupon',
+                        'value' => '-'.$promo->value,
                     ]);
                     \Cart::update($productid, [
-                        'id'         => $productid,
-                        'price'      => $value,
+                        'id' => $productid,
+                        'price' => $value,
                         'conditions' => $coupon101,
 
                         // new item price, price can also be a string format like so: '98.67'

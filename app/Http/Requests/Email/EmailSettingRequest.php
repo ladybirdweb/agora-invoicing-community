@@ -25,49 +25,49 @@ class EmailSettingRequest extends FormRequest
     {
         if ($this->driver == 'smtp') {
             return [
-                'driver'    => 'required',
+                'driver' => 'required',
                 'email' => 'required',
-                'password'=> 'required',
-                'port'      => 'required',
-                'encryption'=> 'required',
-                'host'      => 'required',
+                'password' => 'required',
+                'port' => 'required',
+                'encryption' => 'required',
+                'host' => 'required',
             ];
         } elseif ($this->driver == 'mailgun') {
             return [
-                'driver'    => 'required',
+                'driver' => 'required',
                 'email' => 'required',
-                'password'=> 'required',
-                'secret'      => 'required',
-                'domain'      => 'required',
+                'password' => 'required',
+                'secret' => 'required',
+                'domain' => 'required',
             ];
         } elseif ($this->driver == 'mandrill') {
             return [
-                'driver'    => 'required',
+                'driver' => 'required',
                 'email' => 'required',
-                'password'=> 'required',
-                'secret'      => 'required',
+                'password' => 'required',
+                'secret' => 'required',
             ];
         } elseif ($this->driver == 'ses') {
             return [
-                'driver'    => 'required',
+                'driver' => 'required',
                 'email' => 'required',
-                'password'=> 'required',
-                'secret'      => 'required',
-                'key'         => 'required',
-                'region'      => 'required',
+                'password' => 'required',
+                'secret' => 'required',
+                'key' => 'required',
+                'region' => 'required',
             ];
         } elseif ($this->driver == 'sparkpost') {
             return [
-                'driver'    => 'required',
+                'driver' => 'required',
                 'email' => 'required',
-                'password'=> 'required',
-                'secret'      => 'required',
+                'password' => 'required',
+                'secret' => 'required',
             ];
         } else {
             return [
-                'driver'    => 'required',
+                'driver' => 'required',
                 'email' => 'required',
-                'password'=> 'required',
+                'password' => 'required',
             ];
         }
     }

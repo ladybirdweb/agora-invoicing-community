@@ -93,16 +93,16 @@ class BaseOrderController extends ExtendedOrderController
             $plan_id = $this->plan($item->id);
             $order = $this->order->create([
 
-                'invoice_id'      => $invoiceid,
+                'invoice_id' => $invoiceid,
                 'invoice_item_id' => $item->id,
-                'client'          => $user_id,
-                'order_status'    => $order_status,
-                'serial_key'      => Crypt::encrypt($serial_key),
-                'product'         => $product,
-                'price_override'  => $item->subtotal,
-                'qty'             => $item->quantity,
-                'domain'          => $domain,
-                'number'          => $this->generateNumber(),
+                'client' => $user_id,
+                'order_status' => $order_status,
+                'serial_key' => Crypt::encrypt($serial_key),
+                'product' => $product,
+                'price_override' => $item->subtotal,
+                'qty' => $item->quantity,
+                'domain' => $domain,
+                'number' => $this->generateNumber(),
             ]);
             $this->addOrderInvoiceRelation($invoiceid, $order->id);
 
@@ -166,7 +166,7 @@ class BaseOrderController extends ExtendedOrderController
             $supportExpiry = $this->getSupportExpiryDate($permissions['generateSupportExpiryDate'], $days);
             $user_id = $this->order->find($orderid)->client;
             $this->subscription->create(['user_id' => $user_id,
-                'plan_id' => $planid, 'order_id' => $orderid, 'update_ends_at' =>$updatesExpiry, 'ends_at' => $licenseExpiry, 'support_ends_at'=>$supportExpiry, 'version'=> $version, 'product_id'=>$product, ]);
+                'plan_id' => $planid, 'order_id' => $orderid, 'update_ends_at' => $updatesExpiry, 'ends_at' => $licenseExpiry, 'support_ends_at' => $supportExpiry, 'version' => $version, 'product_id' => $product, ]);
 
             $licenseStatus = StatusSetting::pluck('license_status')->first();
             if ($licenseStatus == 1) {
@@ -285,15 +285,15 @@ class BaseOrderController extends ExtendedOrderController
             $subject = $template->name;
             $data = $template->data;
             $replace = [
-                'name'          => $user->first_name.' '.$user->last_name,
+                'name' => $user->first_name.' '.$user->last_name,
                 'serialkeyurl' => $myaccounturl,
-                'downloadurl'   => $downloadurl,
-                'invoiceurl'    => $invoiceurl,
-                'product'       => $product,
-                'number'        => $order->number,
-                'expiry'        => app('App\Http\Controllers\Order\OrderController')->expiry($orderid),
-                'url'           => app('App\Http\Controllers\Order\OrderController')->renew($orderid),
-                'knowledge_base'=> $knowledgeBaseUrl,
+                'downloadurl' => $downloadurl,
+                'invoiceurl' => $invoiceurl,
+                'product' => $product,
+                'number' => $order->number,
+                'expiry' => app('App\Http\Controllers\Order\OrderController')->expiry($orderid),
+                'url' => app('App\Http\Controllers\Order\OrderController')->renew($orderid),
+                'knowledge_base' => $knowledgeBaseUrl,
 
             ];
             $type = '';

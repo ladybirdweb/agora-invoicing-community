@@ -91,7 +91,7 @@ class ProcessController extends Controller
                 $invoice_no = $invoice->number;
                 $status = $pay['status'];
                 $processingFee = $this->getProcessingFee($payment_method, $invoice->currency);
-                $this->updateFinalPrice(new Request(['processing_fee'=>$processingFee]));
+                $this->updateFinalPrice(new Request(['processing_fee' => $processingFee]));
                 $amount = \Cart::getTotal();
                 \View::addNamespace('plugins', $path);
 
@@ -110,10 +110,10 @@ class ProcessController extends Controller
         }
 
         $updateValue = new CartCondition([
-            'name'   => 'Processing fee',
-            'type'   => 'fee',
+            'name' => 'Processing fee',
+            'type' => 'fee',
             'target' => 'total',
-            'value'  => $value,
+            'value' => $value,
         ]);
         \Cart::condition($updateValue);
     }
@@ -125,7 +125,7 @@ class ProcessController extends Controller
             $status = 'success';
         }
 
-        return ['payment'=>$payment_method, 'status'=>$status];
+        return ['payment' => $payment_method, 'status' => $status];
     }
 
     public function product($invoiceid)

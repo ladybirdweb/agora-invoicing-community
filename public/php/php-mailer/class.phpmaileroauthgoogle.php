@@ -29,15 +29,18 @@
 class PHPMailerOAuthGoogle
 {
     private $oauthUserEmail = '';
+
     private $oauthRefreshToken = '';
+
     private $oauthClientId = '';
+
     private $oauthClientSecret = '';
 
     /**
-     * @param string $UserEmail
-     * @param string $ClientSecret
-     * @param string $ClientId
-     * @param string $RefreshToken
+     * @param  string  $UserEmail
+     * @param  string  $ClientSecret
+     * @param  string  $ClientId
+     * @param  string  $RefreshToken
      */
     public function __construct(
         $UserEmail,
@@ -54,7 +57,7 @@ class PHPMailerOAuthGoogle
     private function getProvider()
     {
         return new League\OAuth2\Client\Provider\Google([
-            'clientId'     => $this->oauthClientId,
+            'clientId' => $this->oauthClientId,
             'clientSecret' => $this->oauthClientSecret,
         ]);
     }

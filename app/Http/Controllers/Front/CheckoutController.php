@@ -24,17 +24,29 @@ class CheckoutController extends InfoController
     use TaxCalculation;
 
     public $subscription;
+
     public $plan;
+
     public $templateController;
+
     public $product;
+
     public $price;
+
     public $user;
+
     public $setting;
+
     public $template;
+
     public $order;
+
     public $addon;
+
     public $invoice;
+
     public $invoiceItem;
+
     public $mailchimp;
 
     public function __construct()
@@ -152,7 +164,7 @@ class CheckoutController extends InfoController
 
                     //Return array of Product Details,attributes and their conditions
                     $items[] = ['id' => $item->id, 'name' => $item->name, 'price' => $item->price,
-                        'quantity'       => $item->quantity, 'attributes' => ['currency'=> $cart_currency, 'symbol'=>$item->attributes->symbol, 'agents'=> $item->attributes->agents], 'associatedModel' => Product::find($item->id), 'conditions' => $taxConditions, ];
+                        'quantity' => $item->quantity, 'attributes' => ['currency' => $cart_currency, 'symbol' => $item->attributes->symbol, 'agents' => $item->attributes->agents], 'associatedModel' => Product::find($item->id), 'conditions' => $taxConditions, ];
                 }
                 Cart::add($items);
 
@@ -198,9 +210,9 @@ class CheckoutController extends InfoController
         $cost = $request->input('cost');
         if (Cart::getSubTotal() != 0 || $cost > 0) {
             $this->validate($request, [
-                'payment_gateway'=> 'required',
+                'payment_gateway' => 'required',
             ], [
-                'payment_gateway.required'=> 'Please Select a Payment Gateway',
+                'payment_gateway.required' => 'Please Select a Payment Gateway',
             ]);
         }
         try {
@@ -273,10 +285,10 @@ class CheckoutController extends InfoController
         }
 
         $updateValue = new CartCondition([
-            'name'   => 'Processing fee',
-            'type'   => 'fee',
+            'name' => 'Processing fee',
+            'type' => 'fee',
             'target' => 'total',
-            'value'  => $value,
+            'value' => $value,
         ]);
         \Cart::condition($updateValue);
     }

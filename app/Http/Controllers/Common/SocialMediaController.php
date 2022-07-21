@@ -77,8 +77,8 @@ class SocialMediaController extends Controller
         $regex = '/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/';
 
         $this->validate($request, [
-            'name'     => 'required',
-            'link'     =>  'required|url|regex:'.$regex,
+            'name' => 'required',
+            'link' => 'required|url|regex:'.$regex,
 
         ]);
 
@@ -107,8 +107,8 @@ class SocialMediaController extends Controller
         $regex = '/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/';
 
         $this->validate($request, [
-            'name'     => 'required',
-            'link'     =>  'required|regex:'.$regex,
+            'name' => 'required',
+            'link' => 'required|regex:'.$regex,
 
         ]);
 
@@ -195,7 +195,7 @@ class SocialMediaController extends Controller
             // Load the Tweets
             $tweets = $twitter->get('statuses/user_timeline',
                 ['screen_name' => $username, 'exclude_replies' => 'true',
-                    'include_rts'  => 'false', 'count' => $tweet_limit, ]);
+                    'include_rts' => 'false', 'count' => $tweet_limit, ]);
 
             //dd($tweets);
             // Example output

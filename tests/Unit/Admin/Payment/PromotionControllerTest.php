@@ -36,7 +36,7 @@ class PromotionControllerTest extends DBTestCase
         $this->expectExceptionMessage('Usage of Code Expired');
         $this->withoutMiddleware();
         $product = factory(Product::class)->create();
-        $this->call('POST', 'promotions', ['code'=>'FAVEOCOUPON', 'type'=> 1, 'value'=>10, 'uses'=>10, 'applied'=>$product->id, 'start'=>'08/01/2020', 'expiry'=> '08/15/2020']);
+        $this->call('POST', 'promotions', ['code' => 'FAVEOCOUPON', 'type' => 1, 'value' => 10, 'uses' => 10, 'applied' => $product->id, 'start' => '08/01/2020', 'expiry' => '08/15/2020']);
         $promotion = $this->classObject->getPromotionDetails('FAVEOCOUPON');
     }
 
@@ -47,12 +47,12 @@ class PromotionControllerTest extends DBTestCase
         $this->expectExceptionMessage('There is  no product related to this code');
         $this->withoutMiddleware();
         $product = factory(Product::class)->create();
-        $promotion = Promotion::create(['code'=> 'FAVEOCOUPON',
-            'type'                            => 1,
-            'uses'                            => '100',
-            'value'                           => '100',
-            'start'                           => '2017-06-30 00:00:00',
-            'expiry'                          => '2017-07-30 00:00:00',
+        $promotion = Promotion::create(['code' => 'FAVEOCOUPON',
+            'type' => 1,
+            'uses' => '100',
+            'value' => '100',
+            'start' => '2017-06-30 00:00:00',
+            'expiry' => '2017-07-30 00:00:00',
 
         ]);
         $promotion = $this->classObject->getPromotionDetails('FAVEOCOUPON');
@@ -66,9 +66,9 @@ class PromotionControllerTest extends DBTestCase
         $this->getLoggedInUser();
         $this->withoutMiddleware();
         $product = factory(Product::class)->create();
-        $invoice = factory(Invoice::class, 3)->create(['user_id'=>$this->user->id, 'coupon_code'=>'FAVEOCOUPON']);
+        $invoice = factory(Invoice::class, 3)->create(['user_id' => $this->user->id, 'coupon_code' => 'FAVEOCOUPON']);
 
-        $this->call('POST', 'promotions', ['code'=>'FAVEOCOUPON', 'type'=> 1, 'value'=>10, 'uses'=>2, 'applied'=>$product->id, 'start'=>'08/01/2020', 'expiry'=> '08/15/2050']);
+        $this->call('POST', 'promotions', ['code' => 'FAVEOCOUPON', 'type' => 1, 'value' => 10, 'uses' => 2, 'applied' => $product->id, 'start' => '08/01/2020', 'expiry' => '08/15/2050']);
         $promotion = $this->classObject->getPromotionDetails('FAVEOCOUPON');
     }
 
@@ -77,7 +77,7 @@ class PromotionControllerTest extends DBTestCase
     {
         $this->withoutMiddleware();
         $product = factory(Product::class)->create();
-        $this->call('POST', 'promotions', ['code'=>'FAVEOCOUPON', 'type'=> 1, 'value'=>10, 'uses'=>10, 'applied'=>$product->id, 'start'=>'08/01/2020', 'expiry'=> '08/15/2050']);
+        $this->call('POST', 'promotions', ['code' => 'FAVEOCOUPON', 'type' => 1, 'value' => 10, 'uses' => 10, 'applied' => $product->id, 'start' => '08/01/2020', 'expiry' => '08/15/2050']);
         $promotion = $this->classObject->getPromotionDetails('FAVEOCOUPON');
         $this->assertStringContainsSubstring($promotion->code, 'FAVEOCOUPON');
     }
@@ -88,11 +88,11 @@ class PromotionControllerTest extends DBTestCase
         $this->withoutMiddleware();
         $this->getLoggedInUser();
         $product = factory(Product::class)->create();
-        $plan = Plan::create(['name'=>'HD Plan 1 year', 'product'=>$product->id, 'days'=>366]);
+        $plan = Plan::create(['name' => 'HD Plan 1 year', 'product' => $product->id, 'days' => 366]);
 
-        $planPrice = PlanPrice::create(['plan_id'=>$plan->id, 'currency'=>'INR', 'add_price'=>'1000', 'renew_price'=>'500', 'price_description'=> 'Random description', 'product_quantity'=>1, 'no_of_agents'=>0]);
+        $planPrice = PlanPrice::create(['plan_id' => $plan->id, 'currency' => 'INR', 'add_price' => '1000', 'renew_price' => '500', 'price_description' => 'Random description', 'product_quantity' => 1, 'no_of_agents' => 0]);
 
-        $this->call('POST', 'promotions', ['code'=>'FAVEOCOUPON', 'type'=> 1, 'value'=>10, 'uses'=>10, 'applied'=>$product->id, 'start'=>'08/01/2020', 'expiry'=> '08/15/2050']);
+        $this->call('POST', 'promotions', ['code' => 'FAVEOCOUPON', 'type' => 1, 'value' => 10, 'uses' => 10, 'applied' => $product->id, 'start' => '08/01/2020', 'expiry' => '08/15/2050']);
         $promotion = Promotion::orderBy('id', 'desc')->first();
         $promotion = $this->classObject->findCostAfterDiscount($promotion->id, $product->id, $this->user->id);
         $this->assertEquals($promotion, 900); //10% dicount on 1000
@@ -104,11 +104,11 @@ class PromotionControllerTest extends DBTestCase
         $this->withoutMiddleware();
         $this->getLoggedInUser();
         $product = factory(Product::class)->create();
-        $plan = Plan::create(['name'=>'HD Plan 1 year', 'product'=>$product->id, 'days'=>366]);
+        $plan = Plan::create(['name' => 'HD Plan 1 year', 'product' => $product->id, 'days' => 366]);
 
-        $planPrice = PlanPrice::create(['plan_id'=>$plan->id, 'currency'=>'INR', 'add_price'=>'1000', 'renew_price'=>'500', 'price_description'=> 'Random description', 'product_quantity'=>1, 'no_of_agents'=>0]);
+        $planPrice = PlanPrice::create(['plan_id' => $plan->id, 'currency' => 'INR', 'add_price' => '1000', 'renew_price' => '500', 'price_description' => 'Random description', 'product_quantity' => 1, 'no_of_agents' => 0]);
 
-        $this->call('POST', 'promotions', ['code'=>'FAVEOCOUPON', 'type'=> 2, 'value'=>10, 'uses'=>10, 'applied'=>$product->id, 'start'=>'08/01/2020', 'expiry'=> '08/15/2050']);
+        $this->call('POST', 'promotions', ['code' => 'FAVEOCOUPON', 'type' => 2, 'value' => 10, 'uses' => 10, 'applied' => $product->id, 'start' => '08/01/2020', 'expiry' => '08/15/2050']);
         $promotion = Promotion::orderBy('id', 'desc')->first();
         $promotion = $this->classObject->findCostAfterDiscount($promotion->id, $product->id, $this->user->id);
         $this->assertEquals($promotion, 990); //Rs 10 dicount on 1000
@@ -120,17 +120,17 @@ class PromotionControllerTest extends DBTestCase
         $this->withoutMiddleware();
         $this->getLoggedInUser();
         $product = factory(Product::class)->create();
-        $plan = Plan::create(['name'=>'HD Plan 1 year', 'product'=>$product->id, 'days'=>366]);
+        $plan = Plan::create(['name' => 'HD Plan 1 year', 'product' => $product->id, 'days' => 366]);
 
-        $planPrice = PlanPrice::create(['plan_id'=>$plan->id, 'currency'=>'INR', 'add_price'=>'1000', 'renew_price'=>'500', 'price_description'=> 'Random description', 'product_quantity'=>1, 'no_of_agents'=>0]);
+        $planPrice = PlanPrice::create(['plan_id' => $plan->id, 'currency' => 'INR', 'add_price' => '1000', 'renew_price' => '500', 'price_description' => 'Random description', 'product_quantity' => 1, 'no_of_agents' => 0]);
 
-        $this->call('POST', 'promotions', ['code'=>'FAVEOCOUPON', 'type'=> 2, 'value'=>10, 'uses'=>10, 'applied'=>$product->id, 'start'=>'08/01/2020', 'expiry'=> '08/15/2050']);
+        $this->call('POST', 'promotions', ['code' => 'FAVEOCOUPON', 'type' => 2, 'value' => 10, 'uses' => 10, 'applied' => $product->id, 'start' => '08/01/2020', 'expiry' => '08/15/2050']);
         $promotion = Promotion::orderBy('id', 'desc')->first();
         \Cart::add([
-            'id'         => $product->id,
-            'name'       => $product->name,
-            'price'      => $planPrice->add_price,
-            'quantity'   => 1,
+            'id' => $product->id,
+            'name' => $product->name,
+            'price' => $planPrice->add_price,
+            'quantity' => 1,
             'attributes' => [],
         ]);
         $promotion = $this->classObject->checkCode('FAVEOCOUPON');
@@ -145,17 +145,17 @@ class PromotionControllerTest extends DBTestCase
         $this->withoutMiddleware();
         $this->getLoggedInUser();
         $product = factory(Product::class)->create();
-        $plan = Plan::create(['name'=>'HD Plan 1 year', 'product'=>$product->id, 'days'=>366]);
+        $plan = Plan::create(['name' => 'HD Plan 1 year', 'product' => $product->id, 'days' => 366]);
 
-        $planPrice = PlanPrice::create(['plan_id'=>$plan->id, 'currency'=>'INR', 'add_price'=>'1000', 'renew_price'=>'500', 'price_description'=> 'Random description', 'product_quantity'=>1, 'no_of_agents'=>0]);
+        $planPrice = PlanPrice::create(['plan_id' => $plan->id, 'currency' => 'INR', 'add_price' => '1000', 'renew_price' => '500', 'price_description' => 'Random description', 'product_quantity' => 1, 'no_of_agents' => 0]);
 
-        $this->call('POST', 'promotions', ['code'=>'FAVEOCOUPON', 'type'=> 1, 'value'=>10, 'uses'=>10, 'applied'=>$product->id, 'start'=>'08/01/2020', 'expiry'=> '08/15/2050']);
+        $this->call('POST', 'promotions', ['code' => 'FAVEOCOUPON', 'type' => 1, 'value' => 10, 'uses' => 10, 'applied' => $product->id, 'start' => '08/01/2020', 'expiry' => '08/15/2050']);
         $promotion = Promotion::orderBy('id', 'desc')->first();
         \Cart::add([
-            'id'         => $product->id,
-            'name'       => $product->name,
-            'price'      => $planPrice->add_price,
-            'quantity'   => 1,
+            'id' => $product->id,
+            'name' => $product->name,
+            'price' => $planPrice->add_price,
+            'quantity' => 1,
             'attributes' => [],
         ]);
         $promotion = $this->classObject->checkCode('FAVEOCOUPON');
@@ -172,19 +172,19 @@ class PromotionControllerTest extends DBTestCase
         $this->withoutMiddleware();
         $this->getLoggedInUser();
         $product1 = factory(Product::class)->create();
-        $product2 = factory(Product::class)->create(['name'=>'Test Product']);
-        $plan1 = Plan::create(['name'=>'HD Plan 1 year', 'product'=>$product1->id, 'days'=>366]);
-        $plan2 = Plan::create(['name'=>'SD Plan 1 year', 'product'=>$product2->id, 'days'=>366]);
+        $product2 = factory(Product::class)->create(['name' => 'Test Product']);
+        $plan1 = Plan::create(['name' => 'HD Plan 1 year', 'product' => $product1->id, 'days' => 366]);
+        $plan2 = Plan::create(['name' => 'SD Plan 1 year', 'product' => $product2->id, 'days' => 366]);
 
-        $planPrice = PlanPrice::create(['plan_id'=>$plan1->id, 'currency'=>'INR', 'add_price'=>'1000', 'renew_price'=>'500', 'price_description'=> 'Random description', 'product_quantity'=>1, 'no_of_agents'=>0]);
+        $planPrice = PlanPrice::create(['plan_id' => $plan1->id, 'currency' => 'INR', 'add_price' => '1000', 'renew_price' => '500', 'price_description' => 'Random description', 'product_quantity' => 1, 'no_of_agents' => 0]);
 
-        $this->call('POST', 'promotions', ['code'=>'FAVEOCOUPON', 'type'=> 1, 'value'=>10, 'uses'=>10, 'applied'=> $product1->id, 'start'=>'08/01/2020', 'expiry'=> '08/15/2050']);
+        $this->call('POST', 'promotions', ['code' => 'FAVEOCOUPON', 'type' => 1, 'value' => 10, 'uses' => 10, 'applied' => $product1->id, 'start' => '08/01/2020', 'expiry' => '08/15/2050']);
         $promotion = Promotion::orderBy('id', 'desc')->first();
         \Cart::add([
-            'id'         => $product2->id,
-            'name'       => $product2->name,
-            'price'      => $planPrice->add_price,
-            'quantity'   => 1,
+            'id' => $product2->id,
+            'name' => $product2->name,
+            'price' => $planPrice->add_price,
+            'quantity' => 1,
             'attributes' => [],
         ]);
         $promotion = $this->classObject->checkCode('FAVEOCOUPON');
@@ -198,17 +198,17 @@ class PromotionControllerTest extends DBTestCase
         $this->withoutMiddleware();
         $this->getLoggedInUser();
         $product = factory(Product::class)->create();
-        $plan = Plan::create(['name'=>'HD Plan 1 year', 'product'=>$product->id, 'days'=>366]);
+        $plan = Plan::create(['name' => 'HD Plan 1 year', 'product' => $product->id, 'days' => 366]);
 
-        $planPrice = PlanPrice::create(['plan_id'=>$plan->id, 'currency'=>'INR', 'add_price'=>'1000', 'renew_price'=>'500', 'price_description'=> 'Random description', 'product_quantity'=>1, 'no_of_agents'=>0]);
+        $planPrice = PlanPrice::create(['plan_id' => $plan->id, 'currency' => 'INR', 'add_price' => '1000', 'renew_price' => '500', 'price_description' => 'Random description', 'product_quantity' => 1, 'no_of_agents' => 0]);
 
-        $this->call('POST', 'promotions', ['code'=>'FAVEOCOUPON', 'type'=> 1, 'value'=>10, 'uses'=>10, 'applied'=> $product->id, 'start'=>'08/01/2020', 'expiry'=> '08/15/2050']);
+        $this->call('POST', 'promotions', ['code' => 'FAVEOCOUPON', 'type' => 1, 'value' => 10, 'uses' => 10, 'applied' => $product->id, 'start' => '08/01/2020', 'expiry' => '08/15/2050']);
         $promotion = Promotion::orderBy('id', 'desc')->first();
         \Cart::add([
-            'id'         => $product->id,
-            'name'       => $product->name,
-            'price'      => $planPrice->add_price,
-            'quantity'   => 1,
+            'id' => $product->id,
+            'name' => $product->name,
+            'price' => $planPrice->add_price,
+            'quantity' => 1,
             'attributes' => [],
         ]);
         for ($i = 0; $i <= 1; $i++) {
@@ -222,7 +222,7 @@ class PromotionControllerTest extends DBTestCase
         $this->getLoggedInUser();
         $this->withoutMiddleware();
         $product = factory(Product::class)->create();
-        $promotion = $this->call('POST', 'promotions', ['code'=>'FAVEOCOUPON', 'type'=> 1, 'value'=>10, 'uses'=>2, 'applied'=>$product->id, 'start'=>'08/01/2020', 'expiry'=> '08/15/2050']);
+        $promotion = $this->call('POST', 'promotions', ['code' => 'FAVEOCOUPON', 'type' => 1, 'value' => 10, 'uses' => 2, 'applied' => $product->id, 'start' => '08/01/2020', 'expiry' => '08/15/2050']);
         $promotion->assertSessionHas('success');
     }
 }

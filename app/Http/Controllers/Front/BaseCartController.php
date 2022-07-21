@@ -25,8 +25,8 @@ class BaseCartController extends Controller
                 $cartValues = $this->getCartValues($id, true);
 
                 Cart::update($id, [
-                    'price'      => $cartValues['price'],
-                    'attributes' => ['agents' =>  $cartValues['agtqty'], 'currency'=> $cartValues['currency'], 'symbol'=>$cartValues['symbol']],
+                    'price' => $cartValues['price'],
+                    'attributes' => ['agents' => $cartValues['agtqty'], 'currency' => $cartValues['currency'], 'symbol' => $cartValues['symbol']],
                 ]);
             }
 
@@ -51,8 +51,8 @@ class BaseCartController extends Controller
             if ($hasPermissionToModifyAgent) {
                 $cartValues = $this->getCartValues($id);
                 Cart::update($id, [
-                    'price'      => $cartValues['price'],
-                    'attributes' => ['agents' =>  $cartValues['agtqty'], 'currency'=> $cartValues['currency'], 'symbol'=>$cartValues['symbol']],
+                    'price' => $cartValues['price'],
+                    'attributes' => ['agents' => $cartValues['agtqty'], 'currency' => $cartValues['currency'], 'symbol' => $cartValues['symbol']],
                 ]);
             }
 
@@ -84,7 +84,7 @@ class BaseCartController extends Controller
             $price = \Cart::getTotal() * 2;
         }
 
-        return ['agtqty'=>$agtqty, 'price'=>$price, 'currency'=>$currency, 'symbol'=>$symbol];
+        return ['agtqty' => $agtqty, 'price' => $price, 'currency' => $currency, 'symbol' => $symbol];
     }
 
     /**
@@ -104,7 +104,7 @@ class BaseCartController extends Controller
                 $price = $this->cost($id);
                 Cart::update($id, [
                     'quantity' => -1,
-                    'price'    => $price,
+                    'price' => $price,
                 ]);
             } else {
                 throw new \Exception('Cannot Modify Quantity');
@@ -132,9 +132,9 @@ class BaseCartController extends Controller
                 Cart::update($id, [
                     'quantity' => [
                         'relative' => false,
-                        'value'    => $qty,
+                        'value' => $qty,
                     ],
-                    'price'  => $price,
+                    'price' => $price,
                 ]);
             } else {
                 throw new \Exception('Cannot Modify Quantity');

@@ -56,7 +56,7 @@ class BaseAuthController extends Controller
         $key = ApiKey::where('id', 1)->select('msg91_auth_key', 'msg91_sender')->first();
 
         $response = $client->request('GET', 'https://api.msg91.com/api/v5/otp', [
-            'query' => ['authkey' => $key->msg91_auth_key, 'mobiles' => $number, 'sender'=>$key->msg91_sender, 'template_id'=>'60979666dc49883cda77961b', 'OPT'=>'', 'form_params'=>['var'=>'']],
+            'query' => ['authkey' => $key->msg91_auth_key, 'mobiles' => $number, 'sender' => $key->msg91_sender, 'template_id' => '60979666dc49883cda77961b', 'OPT' => '', 'form_params' => ['var' => '']],
 
             // 'query' => ['authkey' => $key->msg91_auth_key, 'mobile' => $number, 'sender'=>$key->msg91_sender],
         ]);
@@ -80,7 +80,7 @@ class BaseAuthController extends Controller
         $key = ApiKey::where('id', 1)->value('msg91_auth_key');
 
         $response = $client->request('GET', 'https://api.msg91.com/api/v5/otp/retry', [
-            'query' => ['authkey' => $key, 'mobile' => $number, 'retrytype'=>$type],
+            'query' => ['authkey' => $key, 'mobile' => $number, 'retrytype' => $type],
         ]);
         $send = $response->getBody()->getContents();
         $array = json_decode($send, true);
@@ -100,7 +100,7 @@ class BaseAuthController extends Controller
         $newEmail = $request->newemail;
         $number = ltrim($request->oldnumber, '0');
         $newNumber = ltrim($request->newnumber, '0');
-        User::where('email', $email)->update(['email'=>$newEmail, 'mobile'=>$newNumber]);
+        User::where('email', $email)->update(['email' => $newEmail, 'mobile' => $newNumber]);
 
         try {
             $code = $request->input('code');
@@ -128,12 +128,12 @@ class BaseAuthController extends Controller
             }
 
             $response = ['type' => 'success',
-                'message'           => $msg1.'<br><br>'.$msg2, ];
+                'message' => $msg1.'<br><br>'.$msg2, ];
 
             return response()->json($response);
         } catch (\Exception $ex) {
             $response = ['type' => 'fail',
-                'message'           => $ex->getMessage(), ];
+                'message' => $ex->getMessage(), ];
             $result = [$ex->getMessage()];
 
             return response()->json(compact('response'), 500);
@@ -175,7 +175,7 @@ class BaseAuthController extends Controller
             $subject = $template->name;
             $data = $template->data;
             $replace = ['name' => $user->first_name.' '.$user->last_name,
-                'username'         => $user->email, 'password' => $str, 'url' => $url, 'website_url'=>$website_url, ];
+                'username' => $user->email, 'password' => $str, 'url' => $url, 'website_url' => $website_url, ];
             $type = '';
 
             if ($template) {
@@ -198,14 +198,14 @@ class BaseAuthController extends Controller
             if (! $result) {
                 $countryFullName = Country::where('country_code_char2', $user->country)->pluck('nicename')->first();
                 $pipedrive = new \Devio\Pipedrive\Pipedrive($token);
-                $orgId = $pipedrive->organizations->add(['name'=>$user->company])->getContent()->data->id;
-                $person = $pipedrive->persons()->add(['name' => $user->first_name.' '.$user->last_name, 'email'=>$user->email,
-                    'phone'                                  => '+'.$user->mobile_code.$user->mobile, 'org_id'=>$orgId, ]);
+                $orgId = $pipedrive->organizations->add(['name' => $user->company])->getContent()->data->id;
+                $person = $pipedrive->persons()->add(['name' => $user->first_name.' '.$user->last_name, 'email' => $user->email,
+                    'phone' => '+'.$user->mobile_code.$user->mobile, 'org_id' => $orgId, ]);
 
-                $person = $pipedrive->persons()->add(['name' => $user->first_name.' '.$user->last_name, 'email'=>$user->email,
-                    'phone'=>'+'.$user->mobile_code.$user->mobile, 'org_id'=>$orgId, 'af1c1908b70a61f2baf8b33a975a185cce1aefe5'=>$countryFullName, ]);
+                $person = $pipedrive->persons()->add(['name' => $user->first_name.' '.$user->last_name, 'email' => $user->email,
+                    'phone' => '+'.$user->mobile_code.$user->mobile, 'org_id' => $orgId, 'af1c1908b70a61f2baf8b33a975a185cce1aefe5' => $countryFullName, ]);
                 $personId = $person->getContent()->data->id;
-                $organization = $pipedrive->deals()->add(['title'=>$user->company.' '.'deal', 'person_id'=>$personId, 'org_id'=>$orgId]);
+                $organization = $pipedrive->deals()->add(['title' => $user->company.' '.'deal', 'person_id' => $personId, 'org_id' => $orgId]);
             }
         }
     }

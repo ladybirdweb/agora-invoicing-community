@@ -8,7 +8,7 @@ return [
      *
      */
     'title' => 'Installateur de Laravel',
-    'next'  => 'Suivant',
+    'next' => 'Suivant',
 
     /*
      *
@@ -16,7 +16,7 @@ return [
      *
      */
     'welcome' => [
-        'title'   => 'Bienvenue dans l’installateur...',
+        'title' => 'Bienvenue dans l’installateur...',
         'message' => 'Bienvenue dans le programme d’installation.',
     ],
 
@@ -44,10 +44,10 @@ return [
      *
      */
     'environment' => [
-        'title'   => 'Paramètres d’environment',
-        'save'    => 'Enregistrer .env',
+        'title' => 'Paramètres d’environment',
+        'save' => 'Enregistrer .env',
         'success' => 'Votre fichier .env a été sauvegardé.',
-        'errors'  => 'Impossible d’enregistrer le fichier .env, il faut que vous le créiez manuellement.',
+        'errors' => 'Impossible d’enregistrer le fichier .env, il faut que vous le créiez manuellement.',
     ],
 
     /*
@@ -56,9 +56,9 @@ return [
      *
      */
     'final' => [
-        'title'    => 'Terminé',
+        'title' => 'Terminé',
         'finished' => 'L’application a été installée avec succès.',
-        'exit'     => 'Cliquez ici pour quitter',
+        'exit' => 'Cliquez ici pour quitter',
     ],
 
     /*
@@ -80,7 +80,7 @@ return [
          *
          */
         'welcome' => [
-            'title'   => 'Bienvenue dans l\'updateur...',
+            'title' => 'Bienvenue dans l\'updateur...',
             'message' => 'Bienvenue dans le programme de mise à jour.',
         ],
 
@@ -90,7 +90,7 @@ return [
          *
          */
         'overview' => [
-            'title'   => 'Aperçu',
+            'title' => 'Aperçu',
             'message' => 'Il y a 1 mise à jour.|Il y a :number mises à jour.',
         ],
 
@@ -100,9 +100,9 @@ return [
          *
          */
         'final' => [
-            'title'    => 'Terminé',
+            'title' => 'Terminé',
             'finished' => 'L’application a été mise à jour avec succès.',
-            'exit'     => 'Cliquez ici pour quitter',
+            'exit' => 'Cliquez ici pour quitter',
         ],
     ],
 ];

@@ -19,6 +19,7 @@ use Razorpay\Api\Api;
 class RazorpayController extends Controller
 {
     public $invoice;
+
     public $invoiceItem;
 
     public function __construct()
@@ -123,10 +124,10 @@ class RazorpayController extends Controller
 
         \Cart::clear();
         $status = 'success';
-        $message = view('themes.default1.front.postPaymentTemplate', compact('invoice','orders',
+        $message = view('themes.default1.front.postPaymentTemplate', compact('invoice', 'orders',
              'invoiceItems', 'state', 'currency'))->render();
 
-        return ['status'=>$status, 'message'=>$message];
+        return ['status' => $status, 'message' => $message];
     }
 
     public function getViewMessageAfterRenew($invoice, $state, $currency)
@@ -143,9 +144,9 @@ class RazorpayController extends Controller
         \Cart::clear();
         $status = 'success';
 
-        $message = view('themes.default1.front.postRenewTemplate', compact('invoice','date',
+        $message = view('themes.default1.front.postRenewTemplate', compact('invoice', 'date',
             'product', 'invoiceItem', 'state', 'currency'))->render();
 
-        return ['status'=>$status, 'message'=>$message];
+        return ['status' => $status, 'message' => $message];
     }
 }

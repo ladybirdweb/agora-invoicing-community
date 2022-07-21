@@ -21,7 +21,7 @@
 /**
  * PHPMailer SPL autoloader.
  *
- * @param string $classname The name of the class to load
+ * @param  string  $classname The name of the class to load
  */
 function PHPMailerAutoload($classname)
 {
@@ -43,7 +43,7 @@ if (version_compare(PHP_VERSION, '5.1.2', '>=')) {
     /**
      * Fall back to traditional autoload for old PHP versions.
      *
-     * @param string $classname The name of the class to load
+     * @param  string  $classname The name of the class to load
      */
     function __autoload($classname)
     {

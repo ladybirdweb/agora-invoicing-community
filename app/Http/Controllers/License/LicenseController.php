@@ -11,8 +11,11 @@ use App\User;
 class LicenseController extends Controller
 {
     private $api_key_secret;
+
     private $url;
+
     private $license;
+
     private $token;
 
     public function __construct()
@@ -36,8 +39,8 @@ class LicenseController extends Controller
     {
         $url = $this->url;
         $data = [
-            'client_id'=> $this->client_id,
-            'client_secret'=>$this->client_secret,
+            'client_id' => $this->client_id,
+            'client_secret' => $this->client_secret,
             'grant_type' => $this->grant_type,
         ];
         $response = $this->postCurl($url.'oauth/token', $data);
@@ -290,12 +293,12 @@ class LicenseController extends Controller
     {
         if ($domain != '') {
             if (ip2long($domain)) {
-                return ['ip'=>$domain, 'domain'=>'', 'requireDomain'=>0];
+                return ['ip' => $domain, 'domain' => '', 'requireDomain' => 0];
             } else {
-                return ['ip'=>'', 'domain'=>$domain, 'requireDomain'=>1];
+                return ['ip' => '', 'domain' => $domain, 'requireDomain' => 1];
             }
         } else {
-            return ['ip'=>'', 'domain'=>'', 'requireDomain'=>0];
+            return ['ip' => '', 'domain' => '', 'requireDomain' => 0];
         }
     }
 
@@ -324,7 +327,7 @@ class LicenseController extends Controller
             }
         }
 
-        return ['productId'=>$product, 'code'=>$code, 'licenseId'=>$license, 'allowedInstalltion'=>$ipOrDomain, 'installationLimit'=>$limit];
+        return ['productId' => $product, 'code' => $code, 'licenseId' => $license, 'allowedInstalltion' => $ipOrDomain, 'installationLimit' => $limit];
     }
 
     //Update the Installation status as Inactive after Licensed Domain Is Chnaged

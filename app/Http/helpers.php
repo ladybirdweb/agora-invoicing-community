@@ -110,7 +110,7 @@ function getTimeInLoggedInUserTimeZone(string $dateTimeString, $format = 'M j, Y
         return Auth::user()->timezone->name;
     });
 
-    return ((new DateTime($dateTimeString))->setTimezone(new DateTimeZone($timezone)))->format($format);
+    return (new DateTime($dateTimeString))->setTimezone(new DateTimeZone($timezone))->format($format);
 }
 
 /**
@@ -269,7 +269,7 @@ function getStateByCode($code)
         $subregion = \App\Model\Common\State::where('state_subdivision_code', $code)->first();
         if ($subregion) {
             $result = ['id' => $subregion->state_subdivision_code,
-                'name'         => $subregion->state_subdivision_name, ];
+                'name' => $subregion->state_subdivision_name, ];
         }
 
         return $result;
@@ -278,7 +278,7 @@ function getStateByCode($code)
     }
 }
 
-function userCurrencyAndPrice($userid = '', $plan, $productid = '')
+function userCurrencyAndPrice($userid, $plan, $productid = '')
 {
     try {
         if (! \Auth::user()) {//When user is not logged in
@@ -299,7 +299,7 @@ function userCurrencyAndPrice($userid = '', $plan, $productid = '')
         $symbol = $currencyAndSymbol['currency_symbol'];
         $plan = $currencyAndSymbol['userPlan'];
 
-        return ['currency'=>$currency, 'symbol'=>$symbol, 'plan'=>$plan];
+        return ['currency' => $currency, 'symbol' => $symbol, 'plan' => $plan];
     } catch (\Exception $ex) {
         return redirect()->back()->with('fails', $ex->getMessage());
     }
@@ -397,7 +397,7 @@ function getIndianCurrencyFormat($number)
         $restunits = substr($num, 0, strlen($num) - 3); // extracts the last three digits
       $restunits = (strlen($restunits) % 2 == 1) ? '0'.$restunits : $restunits; // explodes the remaining digits in 2's formats, adds a zero in the beginning to maintain the 2's grouping.
       $expunit = str_split($restunits, 2);
-        for ($i = 0; $i < sizeof($expunit); $i++) {
+        for ($i = 0; $i < count($expunit); $i++) {
             // creates each of the 2's group and adds a comma to the end
             if ($i == 0) {
                 $explrestunits .= (int) $expunit[$i].','; // if is first value , convert into integer
@@ -433,25 +433,25 @@ function bifurcateTax($taxName, $taxValue, $currency, $state, $price = '')
 
             $sgst_value = currencyFormat(TaxCalculation::taxValue($gst->s_gst, $price), $currency);
 
-            return ['html'=>$html, 'tax'=>$cgst_value.'<br>'.$sgst_value];
+            return ['html' => $html, 'tax' => $cgst_value.'<br>'.$sgst_value];
         } elseif ($taxName == 'CGST+UTGST') {
             $html = 'CGST@'.$gst->c_gst.'%<br>UTGST@'.$gst->ut_gst.'%';
 
             $cgst_value = currencyFormat(TaxCalculation::taxValue($gst->c_gst, $price), $currency);
             $utgst_value = currencyFormat(TaxCalculation::taxValue($gst->ut_gst, $price), $currency);
 
-            return ['html'=>$html, 'tax'=>$cgst_value.'<br>'.$utgst_value];
+            return ['html' => $html, 'tax' => $cgst_value.'<br>'.$utgst_value];
         } else {
             $html = $taxName.'@'.$taxValue;
             $tax_value = currencyFormat(TaxCalculation::taxValue($taxValue, $price), $currency);
 
-            return ['html'=>$html, 'tax'=>$tax_value];
+            return ['html' => $html, 'tax' => $tax_value];
         }
     } else {
         $html = $taxName.'@'.$taxValue;
         $tax_value = currencyFormat(TaxCalculation::taxValue($taxValue, $price), $currency);
 
-        return ['html'=>$html, 'tax'=>$tax_value];
+        return ['html' => $html, 'tax' => $tax_value];
     }
 }
 

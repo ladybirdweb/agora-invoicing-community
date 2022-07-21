@@ -14,7 +14,7 @@ class TaxOptionTest extends TestCase
     public function test_options_whenGstIsEnable()
     {
         $this->withoutMiddleware();
-        $rule = TaxOption::where('id', 1)->update(['tax_enable'=>'1']);
+        $rule = TaxOption::where('id', 1)->update(['tax_enable' => '1']);
         $response = $this->call('POST', 'taxes/option', [
             'Gst_no' => '2323244',
         ]);
@@ -26,12 +26,12 @@ class TaxOptionTest extends TestCase
     {
         $this->withoutMiddleware();
         $response = $this->call('POST', 'taxes/option', [
-            'name'     => 'Others',
+            'name' => 'Others',
             'tax-name' => 'VAT',
-            'active'   => 1,
-            'country'  => 'AU',
-            'state'    => 'QLD',
-            'rate'     => '20',
+            'active' => 1,
+            'country' => 'AU',
+            'state' => 'QLD',
+            'rate' => '20',
         ]);
         $response->assertSessionHas('success');
     }
@@ -41,12 +41,12 @@ class TaxOptionTest extends TestCase
     {
         $this->withoutMiddleware();
         $response = $this->call('POST', 'taxes/option', [
-            'name'     => 'Inter State GST',
+            'name' => 'Inter State GST',
             'tax-name' => 'CGST',
-            'active'   => 1,
-            'country'  => 'IN',
-            'state'    => 'IN-MH',
-            'rate'     => '20',
+            'active' => 1,
+            'country' => 'IN',
+            'state' => 'IN-MH',
+            'rate' => '20',
         ]);
         $response->assertSessionHas('success');
     }

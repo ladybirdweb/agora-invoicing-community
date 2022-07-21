@@ -14,9 +14,13 @@ use Illuminate\Http\Request;
 class TaxController extends Controller
 {
     public $tax;
+
     public $country;
+
     public $state;
+
     public $tax_option;
+
     public $tax_class;
 
     public function __construct()
@@ -175,7 +179,7 @@ class TaxController extends Controller
     {
         if ($request->tax_classes_id == 'Others') {
             $this->validate($request, [
-                'rate'        => 'required|numeric',
+                'rate' => 'required|numeric',
             ]);
         }
         try {
@@ -188,19 +192,19 @@ class TaxController extends Controller
             $taxClassesName = $request->tax_classes_id;
             $taxClass = TaxClass::where('name', $request->tax_classes_id)->first();
             if (! $taxClass) {
-                $taxClass = $this->tax_class->create(['name'=>$taxClassesName]);
+                $taxClass = $this->tax_class->create(['name' => $taxClassesName]);
             }
             $taxId = $taxClass->id;
             $tax = $this->tax->where('id', $id)->first();
             $tax->fill($request->except('tax_classes_id'))->save();
 
-            $this->tax->where('id', $id)->update(['tax_classes_id'=> $taxId]);
+            $this->tax->where('id', $id)->update(['tax_classes_id' => $taxId]);
             if ($taxClassesName != 'Others') {
                 $country = 'IN';
                 $state = '';
                 $rate = '';
                 $this->tax->where('id', $id)
-                ->update(['tax_classes_id'=> $taxId, 'country'=>$country, 'state'=>$state, 'rate'=>$rate]);
+                ->update(['tax_classes_id' => $taxId, 'country' => $country, 'state' => $state, 'rate' => $rate]);
             }
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
@@ -314,7 +318,7 @@ class TaxController extends Controller
     {
         if ($request->input('name') == 'Others') {
             $this->validate($request, [
-                'rate'        => 'required|numeric',
+                'rate' => 'required|numeric',
             ]);
         }
 

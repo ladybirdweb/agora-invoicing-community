@@ -43,8 +43,8 @@ class SystemManagerController extends Controller
 
             foreach ($users as $user) {
                 if ($user->role == 'admin') {
-                    $formatted_users[] = ['id'     => $user->id, 'text' => $user->email, 'profile_pic' => $user->profile_pic,
-                        'first_name'                       => $user->first_name, 'last_name' => $user->last_name, ];
+                    $formatted_users[] = ['id' => $user->id, 'text' => $user->email, 'profile_pic' => $user->profile_pic,
+                        'first_name' => $user->first_name, 'last_name' => $user->last_name, ];
                 }
             }
 
@@ -69,23 +69,23 @@ class SystemManagerController extends Controller
     {
         $this->validate($request, [
             'existingAccManager' => 'required',
-            'newAccManager'      => 'required',
+            'newAccManager' => 'required',
         ], [
             'existingAccManager.required' => 'Select system Account Manager',
-            'newAccManager.required'      => 'Select new Account Manager',
+            'newAccManager.required' => 'Select new Account Manager',
         ]);
 
         try {
             $existingAccManager = $request->input('existingAccManager');
             $newAccountManager = $request->input('newAccManager')[0];
             if ($existingAccManager == $newAccountManager) {
-                return ['message'=>'fails', 'update'=>'Existing and the new account manager cannot be same'];
+                return ['message' => 'fails', 'update' => 'Existing and the new account manager cannot be same'];
             }
             //First make the selected Admin as account Manager-
-            User::where('id', $newAccountManager)->update(['position'=>'account_manager']);
+            User::where('id', $newAccountManager)->update(['position' => 'account_manager']);
             $accManagers = User::where('account_manager', $existingAccManager)->get();
             foreach ($accManagers as $accManager) {
-                User::where('id', $accManager->id)->update(['account_manager'=>$newAccountManager]);
+                User::where('id', $accManager->id)->update(['account_manager' => $newAccountManager]);
             }
             $arrayOfBccEmails = User::where('account_manager', $newAccountManager)->get();
             if ($arrayOfBccEmails && emailSendingStatus()) {
@@ -95,9 +95,9 @@ class SystemManagerController extends Controller
                 }
             }
 
-            return ['message' => 'success', 'update'=>\Lang::get('message.account_man_replaced_success')];
+            return ['message' => 'success', 'update' => \Lang::get('message.account_man_replaced_success')];
         } catch (\Exception $ex) {
-            return ['message'=>'fails', 'update'=>$ex->getMessage()];
+            return ['message' => 'fails', 'update' => $ex->getMessage()];
         }
     }
 
@@ -115,24 +115,24 @@ class SystemManagerController extends Controller
     {
         $this->validate($request, [
             'existingSaleManager' => 'required',
-            'newSaleManager'      => 'required',
+            'newSaleManager' => 'required',
         ], [
             'existingSaleManager.required' => 'Select system Sales Manager',
-            'newSaleManager.required'      => 'Select new Sales Manager',
+            'newSaleManager.required' => 'Select new Sales Manager',
         ]);
 
         try {
             $existingSaleManager = $request->input('existingSaleManager');
             $newSalesManager = $request->input('newSaleManager')[0];
             if ($existingSaleManager == $newSalesManager) {
-                return ['message'=>'fails', 'update'=>'Existing and the new sales manager cannot be same'];
+                return ['message' => 'fails', 'update' => 'Existing and the new sales manager cannot be same'];
             }
             //First make the selected Admin as sales Manager-
-            User::where('id', $newSalesManager)->update(['position'=>'manager']);
+            User::where('id', $newSalesManager)->update(['position' => 'manager']);
 
             $saleManagers = User::where('manager', $existingSaleManager)->get();
             foreach ($saleManagers as $saleManager) {
-                User::where('id', $saleManager->id)->update(['manager'=>$newSalesManager]);
+                User::where('id', $saleManager->id)->update(['manager' => $newSalesManager]);
             }
             $arrayOfBccEmails = User::where('manager', $newSalesManager)->get();
             if ($arrayOfBccEmails && emailSendingStatus()) {
@@ -142,9 +142,9 @@ class SystemManagerController extends Controller
                 }
             }
 
-            return ['message' => 'success', 'update'=>\Lang::get('message.sales_man_replaced_success')];
+            return ['message' => 'success', 'update' => \Lang::get('message.sales_man_replaced_success')];
         } catch (\Exception $ex) {
-            return ['message'=>'fails', 'update'=>$ex->getMessage()];
+            return ['message' => 'fails', 'update' => $ex->getMessage()];
         }
     }
 }

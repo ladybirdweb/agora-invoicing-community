@@ -52,9 +52,9 @@ return [
             //                }"
             //                ]
             //            ],
-            'pagingType'  => 'simple_numbers',
+            'pagingType' => 'simple_numbers',
             'bProcessing' => true,
-            'columnDefs'  => [['targets' => 0, 'orderable' => false]],
+            'columnDefs' => [['targets' => 0, 'orderable' => false]],
             // 'oLanguage'   => [
             //         'sProcessing'=> '<img id="blur-bg" class="backgroundfadein" style="top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;" src="'.asset('dist/gif/gifloader.gif').'">',
             //     ],
@@ -138,7 +138,7 @@ return [
      */
     'classmap' => [
         'CollectionEngine' => 'Chumper\Datatable\Engines\CollectionEngine',
-        'QueryEngine'      => 'Chumper\Datatable\Engines\QueryEngine',
-        'Table'            => 'Chumper\Datatable\Table',
+        'QueryEngine' => 'Chumper\Datatable\Engines\QueryEngine',
+        'Table' => 'Chumper\Datatable\Table',
     ],
 ];

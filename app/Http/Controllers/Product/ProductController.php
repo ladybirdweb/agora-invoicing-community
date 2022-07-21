@@ -33,15 +33,25 @@ class ProductController extends BaseProductController
     use ChunkUpload;
 
     public $product;
+
     public $price;
+
     public $type;
+
     public $subscription;
+
     public $currency;
+
     public $group;
+
     public $plan;
+
     public $tax;
+
     public $tax_relation;
+
     public $tax_class;
+
     public $product_upload;
 
     public function __construct()
@@ -168,10 +178,10 @@ class ProductController extends BaseProductController
         $this->validate(
             $request,
             [
-                'producttitle'  => 'required',
-                'version'      => 'required',
-                'filename'      => 'required',
-                'dependencies'  =>'required',
+                'producttitle' => 'required',
+                'version' => 'required',
+                'filename' => 'required',
+                'dependencies' => 'required',
             ],
        ['filename.required' => 'Please Uplaod A file',
        ]
@@ -188,19 +198,19 @@ class ProductController extends BaseProductController
             $this->product_upload->is_restricted = $request->input('is_restricted');
             $this->product_upload->dependencies = json_encode($request->input('dependencies'));
             $this->product_upload->save();
-            $this->product->where('id', $product_id->id)->update(['version'=>$request->input('version')]);
+            $this->product->where('id', $product_id->id)->update(['version' => $request->input('version')]);
             $autoUpdateStatus = StatusSetting::pluck('license_status')->first();
             if ($autoUpdateStatus == 1) { //If License Setting Status is on,Add Product to the License Manager
                 $updateClassObj = new \App\Http\Controllers\AutoUpdate\AutoUpdateController();
                 $addProductToAutoUpdate = $updateClassObj->addNewVersion($product_id->id, $request->input('version'), $request->input('filename'), '1');
             }
-            $response = ['success'=>'true', 'message'=>'Product Uploaded Successfully'];
+            $response = ['success' => 'true', 'message' => 'Product Uploaded Successfully'];
 
             return $response;
         } catch (\Exception $e) {
             app('log')->error($e->getMessage());
             $message = [$e->getMessage()];
-            $response = ['success'=>'false', 'message'=>$message];
+            $response = ['success' => 'false', 'message' => $message];
 
             return response()->json(compact('response'), 500);
         }
@@ -256,12 +266,12 @@ class ProductController extends BaseProductController
     {
         $input = $request->all();
         $v = \Validator::make($input, [
-            'name'       => 'required|unique:products,name',
-            'type'       => 'required',
-            'description'=> 'required',
-            'image'      => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
-            'product_sku'=> 'required|unique:products,product_sku',
-            'group'      => 'required',
+            'name' => 'required|unique:products,name',
+            'type' => 'required',
+            'description' => 'required',
+            'image' => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
+            'product_sku' => 'required|unique:products,product_sku',
+            'group' => 'required',
             'show_agent' => 'required',
             // 'version' => 'required',
         ], [
@@ -382,12 +392,12 @@ class ProductController extends BaseProductController
     {
         $input = $request->all();
         $v = \Validator::make($input, [
-            'name'       => 'required',
-            'type'       => 'required',
-            'description'=> 'required',
-            'image'      => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
-            'product_sku'=> 'required',
-            'group'      => 'required',
+            'name' => 'required',
+            'type' => 'required',
+            'description' => 'required',
+            'image' => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
+            'product_sku' => 'required',
+            'group' => 'required',
         ]);
 
         if ($v->fails()) {

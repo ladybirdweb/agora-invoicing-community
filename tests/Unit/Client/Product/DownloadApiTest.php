@@ -20,9 +20,9 @@ class DownloadApiTest extends DBTestCase
         $this->getLoggedInUser();
         $user_id = $this->user->id;
         $product = factory(Product::class)->create();
-        $invoice = factory(Invoice::class)->create(['user_id'=> $user_id]);
-        $order = factory(Order::class)->create(['client'=> $user_id, 'invoice_id'=>$invoice->id, 'product'=>$product->id]);
-        $subscription = factory(Subscription::class)->create(['user_id'=>$user_id, 'product_id'=>$product->id, 'order_id'=>$order->id]);
+        $invoice = factory(Invoice::class)->create(['user_id' => $user_id]);
+        $order = factory(Order::class)->create(['client' => $user_id, 'invoice_id' => $invoice->id, 'product' => $product->id]);
+        $subscription = factory(Subscription::class)->create(['user_id' => $user_id, 'product_id' => $product->id, 'order_id' => $order->id]);
         $cont = new \App\Http\Controllers\Product\ExtendedBaseProductController();
         $response = $this->getPrivateMethod($cont, 'downloadValidation', ['true', $product->id, $invoice->number, false]);
         $this->assertEquals($response, true);
@@ -35,9 +35,9 @@ class DownloadApiTest extends DBTestCase
         $this->getLoggedInUser();
         $user_id = $this->user->id;
         $product = factory(Product::class)->create();
-        $invoice = factory(Invoice::class)->create(['user_id'=> $user_id]);
-        $order = factory(Order::class)->create(['client'=> $user_id, 'invoice_id'=>$invoice->id, 'product'=>$product->id]);
-        $subscription = factory(Subscription::class)->create(['user_id'=>$user_id, 'product_id'=>$product->id, 'order_id'=>$order->id]);
+        $invoice = factory(Invoice::class)->create(['user_id' => $user_id]);
+        $order = factory(Order::class)->create(['client' => $user_id, 'invoice_id' => $invoice->id, 'product' => $product->id]);
+        $subscription = factory(Subscription::class)->create(['user_id' => $user_id, 'product_id' => $product->id, 'order_id' => $order->id]);
         $cont = new \App\Http\Controllers\Product\ExtendedBaseProductController();
         $response = $this->getPrivateMethod($cont, 'downloadValidation', ['true', '1223434', $invoice->number, false]);
         $this->assertEquals($response, false);
@@ -51,9 +51,9 @@ class DownloadApiTest extends DBTestCase
         $this->getLoggedInUser();
         $user_id = $this->user->id;
         $product = factory(Product::class)->create();
-        $invoice = factory(Invoice::class)->create(['user_id'=> $user_id]);
-        $order = factory(Order::class)->create(['client'=> $user_id, 'invoice_id'=>$invoice->id, 'product'=>$product->id]);
-        $subscription = factory(Subscription::class)->create(['user_id'=>$user_id, 'order_id'=>$order->id]);
+        $invoice = factory(Invoice::class)->create(['user_id' => $user_id]);
+        $order = factory(Order::class)->create(['client' => $user_id, 'invoice_id' => $invoice->id, 'product' => $product->id]);
+        $subscription = factory(Subscription::class)->create(['user_id' => $user_id, 'order_id' => $order->id]);
         $cont = new \App\Http\Controllers\Product\ExtendedBaseProductController();
         $response = $this->getPrivateMethod($cont, 'downloadValidation', ['true', $product->id, '2222', false]);
     }
@@ -66,7 +66,7 @@ class DownloadApiTest extends DBTestCase
         $this->getLoggedInUser();
         $user_id = $this->user->id;
         $product = factory(Product::class)->create();
-        $invoice = factory(Invoice::class)->create(['user_id'=> $user_id]);
+        $invoice = factory(Invoice::class)->create(['user_id' => $user_id]);
         $cont = new \App\Http\Controllers\Product\ExtendedBaseProductController();
         $response = $this->getPrivateMethod($cont, 'downloadValidation', ['true', $product->id, $invoice->number, false]);
     }
@@ -78,7 +78,7 @@ class DownloadApiTest extends DBTestCase
         $this->getLoggedInUser('admin');
         $user_id = $this->user->id;
         $product = factory(Product::class)->create();
-        $invoice = factory(Invoice::class)->create(['user_id'=> $user_id]);
+        $invoice = factory(Invoice::class)->create(['user_id' => $user_id]);
         $cont = new \App\Http\Controllers\Product\ExtendedBaseProductController();
         $response = $this->getPrivateMethod($cont, 'downloadValidation', ['true', $product->id, $invoice->number, false]);
         $this->assertEquals($response, true);

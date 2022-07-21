@@ -166,29 +166,29 @@ class BaseSettingsController extends PaymentSettingsController
         $condition = new \App\Model\Mailjob\Condition();
 
         $commands = [
-            'everyMinute'        => 'Every Minute',
-            'everyFiveMinutes'   => 'Every Five Minute',
-            'everyTenMinutes'    => 'Every Ten Minute',
+            'everyMinute' => 'Every Minute',
+            'everyFiveMinutes' => 'Every Five Minute',
+            'everyTenMinutes' => 'Every Ten Minute',
             'everyThirtyMinutes' => 'Every Thirty Minute',
-            'hourly'             => 'Every Hour',
-            'daily'              => 'Every Day',
-            'dailyAt'            => 'Daily at',
-            'weekly'             => 'Every Week',
+            'hourly' => 'Every Hour',
+            'daily' => 'Every Day',
+            'dailyAt' => 'Daily at',
+            'weekly' => 'Every Week',
 
             'monthly' => 'Monthly',
-            'yearly'  => 'Yearly',
+            'yearly' => 'Yearly',
         ];
 
         $expiryDays = [
-            '120'=> '120 Days',
+            '120' => '120 Days',
             '90' => '90 Days',
             '60' => '60 Days',
             '30' => '30 Days',
             '15' => '15 Days',
-            '5'  => '5 Days',
-            '3'  => '3 Days',
-            '1'  => '1 Day',
-            '0'  => 'On the Expiry Day',
+            '5' => '5 Days',
+            '3' => '3 Days',
+            '1' => '1 Day',
+            '0' => 'On the Expiry Day',
         ];
 
         $selectedDays = [];
@@ -198,8 +198,8 @@ class BaseSettingsController extends PaymentSettingsController
                 $selectedDays[] = $daysList;
             }
         }
-        $delLogDays = ['720' => '720 Days', '365'=>'365 days', '180'=>'180 Days',
-            '150'                => '150 Days', '60'=>'60 Days', '30'=>'30 Days', '15'=>'15 Days', '5'=>'5 Days', '2'=>'2 Days', '0'=>'Delete All Logs', ];
+        $delLogDays = ['720' => '720 Days', '365' => '365 days', '180' => '180 Days',
+            '150' => '150 Days', '60' => '60 Days', '30' => '30 Days', '15' => '15 Days', '5' => '5 Days', '2' => '2 Days', '0' => 'Delete All Logs', ];
         $beforeLogDay[] = ActivityLogDay::first()->days;
 
         return view('themes.default1.common.cron.cron', compact(
@@ -249,11 +249,11 @@ class BaseSettingsController extends PaymentSettingsController
         if ($request['expiryday'] != null) {
             foreach ($request['expiryday'] as $key => $value) {
                 $daysList->create([
-                    'days'=> $value,
+                    'days' => $value,
                 ]);
             }
         }
-        ActivityLogDay::findorFail(1)->update(['days'=>$request->logdelday]);
+        ActivityLogDay::findorFail(1)->update(['days' => $request->logdelday]);
 
         return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
     }
@@ -265,7 +265,7 @@ class BaseSettingsController extends PaymentSettingsController
         if ($status == 1) {
             $nocaptcha_sitekey = $request->input('nocaptcha_sitekey');
             $captcha_secretCheck = $request->input('nocaptcha_secret');
-            $values = ['NOCAPTCHA_SITEKEY'=>$nocaptcha_sitekey, 'NOCAPTCHA_SECRET'=>$captcha_secretCheck];
+            $values = ['NOCAPTCHA_SITEKEY' => $nocaptcha_sitekey, 'NOCAPTCHA_SECRET' => $captcha_secretCheck];
 
             $envFile = app()->environmentFilePath();
             $str = file_get_contents($envFile);
@@ -299,10 +299,10 @@ class BaseSettingsController extends PaymentSettingsController
             file_put_contents($path_to_file, $file_contents_secretchek);
         }
 
-        StatusSetting::where('id', 1)->update(['recaptcha_status'=>$status]);
-        ApiKey::where('id', 1)->update(['nocaptcha_sitekey'=> $nocaptcha_sitekey,
-            'captcha_secretCheck'                             => $captcha_secretCheck, ]);
+        StatusSetting::where('id', 1)->update(['recaptcha_status' => $status]);
+        ApiKey::where('id', 1)->update(['nocaptcha_sitekey' => $nocaptcha_sitekey,
+            'captcha_secretCheck' => $captcha_secretCheck, ]);
 
-        return ['message' => 'success', 'update'=>'Recaptcha Settings Updated'];
+        return ['message' => 'success', 'update' => 'Recaptcha Settings Updated'];
     }
 }

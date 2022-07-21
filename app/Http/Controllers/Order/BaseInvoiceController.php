@@ -74,8 +74,8 @@ class BaseInvoiceController extends ExtendedBaseInvoiceController
     {
         $this->validate($request, [
             'payment_method' => 'required',
-            'amount'         => 'required|numeric',
-            'payment_date'   => 'required|date_format:Y-m-d',
+            'amount' => 'required|numeric',
+            'payment_date' => 'required|date_format:Y-m-d',
         ]);
 
         try {
@@ -140,8 +140,8 @@ class BaseInvoiceController extends ExtendedBaseInvoiceController
         }
         $number = $request->input('number');
         $invoiceId = Invoice::where('number', $number)->value('id');
-        $invoiceItem = InvoiceItem::where('invoice_id', $invoiceId)->update(['subtotal'=>$total]);
-        $invoices = Invoice::where('number', $number)->update(['grand_total'=>$total]);
+        $invoiceItem = InvoiceItem::where('invoice_id', $invoiceId)->update(['subtotal' => $total]);
+        $invoices = Invoice::where('number', $number)->update(['grand_total' => $total]);
     }
 
     public function calculateTotal($rate, $total)
@@ -186,6 +186,6 @@ class BaseInvoiceController extends ExtendedBaseInvoiceController
             $codevalue = \Session::get('codevalue');
         }
 
-        return ['code'=> $code, 'codevalue'=>$codevalue];
+        return ['code' => $code, 'codevalue' => $codevalue];
     }
 }

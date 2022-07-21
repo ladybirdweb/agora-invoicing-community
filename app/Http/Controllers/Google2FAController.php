@@ -183,16 +183,16 @@ class Google2FAController extends Controller
     public function generateRecoveryCode()
     {
         $code = str_random(20);
-        User::where('id', \Auth::user()->id)->update(['backup_code'=>$code, 'code_usage_count'=>0]);
+        User::where('id', \Auth::user()->id)->update(['backup_code' => $code, 'code_usage_count' => 0]);
 
-        return successResponse(['code'=>$code]);
+        return successResponse(['code' => $code]);
     }
 
     public function getRecoveryCode()
     {
         $code = User::find(\Auth::user()->id)->backup_code;
 
-        return successResponse(['code'=>$code]);
+        return successResponse(['code' => $code]);
     }
 
     public function showRecoveryCode()
@@ -206,10 +206,10 @@ class Google2FAController extends Controller
 
     public function verifyRecoveryCode(Request $request)
     {
-        $this->validate($request,[
-            'rec_code'=>'required',
+        $this->validate($request, [
+            'rec_code' => 'required',
         ],
-        ['rec_code.required'=>'Plase enter recovery code',
+        ['rec_code.required' => 'Plase enter recovery code',
         ]);
         try {
             $userId = $request->session()->pull('2fa:user:id');

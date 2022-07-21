@@ -144,7 +144,7 @@ abstract class Twitter_Regex
     /**
      * This constructor is used to populate some variables.
      *
-     * @param string $tweet The tweet to parse.
+     * @param  string  $tweet The tweet to parse.
      */
     protected function __construct($tweet)
     {

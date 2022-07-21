@@ -24,15 +24,15 @@ class OrderRequest extends Request
     public function rules()
     {
         return [
-            'client'         => 'required',
+            'client' => 'required',
             'payment_method' => 'required',
             'promotion_code' => 'required',
-            'order_status'   => 'required',
-            'product'        => 'required',
+            'order_status' => 'required',
+            'product' => 'required',
             //'domain'         => 'url',
-            'subscription'   => 'required',
+            'subscription' => 'required',
             'price_override' => 'numeric',
-            'qty'            => 'integer',
+            'qty' => 'integer',
         ];
     }
 
@@ -40,7 +40,7 @@ class OrderRequest extends Request
     {
         return [
             'price_override.numeric' => 'Price should be a numeric value',
-            'qty.integer'            => 'Quantity should be a integer value',
+            'qty.integer' => 'Quantity should be a integer value',
         ];
     }
 }

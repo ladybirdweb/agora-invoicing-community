@@ -17,7 +17,7 @@ use Illuminate\Http\Request;
         // VisitStats::routes();
             Route::post('refresh-csrf', function () {
                 return response()->json([
-                    'token'=>csrf_token(), ],
+                    'token' => csrf_token(), ],
               200);
             });
 
@@ -402,9 +402,9 @@ use Illuminate\Http\Request;
             Route::get('invoice/generate', 'Order\InvoiceController@generateById');
             Route::post('generate/invoice/{user_id?}', 'Order\InvoiceController@invoiceGenerateByForm');
             Route::post('change-invoiceTotal', ['as' => 'change-invoiceTotal',
-                'uses'                              => 'Order\InvoiceController@invoiceTotalChange', ]);
+                'uses' => 'Order\InvoiceController@invoiceTotalChange', ]);
             Route::post('change-paymentTotal', ['as' => 'change-paymentTotal',
-                'uses'                              => 'Order\InvoiceController@paymentTotalChange', ]);
+                'uses' => 'Order\InvoiceController@paymentTotalChange', ]);
 
             /*
              * Payment
@@ -474,9 +474,9 @@ use Illuminate\Http\Request;
              * Cron Jobs
              */
 
-            Route::get('job-scheduler', ['as'=>'get.job.scheduler', 'uses'=>'Common\SettingsController@getScheduler']);
+            Route::get('job-scheduler', ['as' => 'get.job.scheduler', 'uses' => 'Common\SettingsController@getScheduler']);
             Route::patch('post-scheduler', ['as' => 'post.job.scheduler', 'uses' => 'Common\SettingsController@postSchedular'])->name('post-scheduler'); //to update job scheduler
-            Route::patch('cron-days', ['as'=>'cron-days', 'uses'=>'Common\SettingsController@saveCronDays'])->name('cron-days');
+            Route::patch('cron-days', ['as' => 'cron-days', 'uses' => 'Common\SettingsController@saveCronDays'])->name('cron-days');
             Route::post('verify-php-path', ['as' => 'verify-cron', 'uses' => 'Common\SettingsController@checkPHPExecutablePath']);
             Route::get('file-storage', 'Common\SettingsController@showFileStorage');
             Route::post('file-storage-path', 'Common\SettingsController@updateStoragePath');

@@ -7,6 +7,7 @@ use App\BaseModel;
 class ProductBundle extends BaseModel
 {
     protected $table = 'product_bundles';
+
     protected $fillable = ['name', 'valid_from', 'valid_till', 'uses', 'maximum_uses', 'allow-promotion', 'show'];
 
     public function relation()

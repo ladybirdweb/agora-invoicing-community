@@ -11,8 +11,10 @@ class Config
 {
     /** @var int How long to wait for a response from the API */
     protected $timeout = 5;
+
     /** @var int how long to wait while connecting to the API */
     protected $connectionTimeout = 5;
+
     /**
      * Decode JSON Response as associative Array.
      *
@@ -21,8 +23,10 @@ class Config
      * @var bool
      */
     protected $decodeJsonAsArray = false;
+
     /** @var string User-Agent header */
     protected $userAgent = 'TwitterOAuth (+https://twitteroauth.com)';
+
     /** @var array Store proxy connection details */
     protected $proxy = [];
 

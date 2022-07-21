@@ -8,7 +8,7 @@ return [
      *
      */
     'title' => 'Laraveli installer',
-    'next'  => 'Järgmine samm',
+    'next' => 'Järgmine samm',
 
     /*
      *
@@ -16,7 +16,7 @@ return [
      *
      */
     'welcome' => [
-        'title'   => 'Tere tulemast Laraveli installerisse',
+        'title' => 'Tere tulemast Laraveli installerisse',
         'message' => 'Tere tulemast installatsiooniviisardisse.',
     ],
 
@@ -44,10 +44,10 @@ return [
      *
      */
     'environment' => [
-        'title'   => 'Keskkonna seaded',
-        'save'    => 'Salvesta .env',
+        'title' => 'Keskkonna seaded',
+        'save' => 'Salvesta .env',
         'success' => 'Sinu .env faili seaded on salvestatud.',
-        'errors'  => 'Ei saanud .env faili salvesta, palun loo see manuaalselt.',
+        'errors' => 'Ei saanud .env faili salvesta, palun loo see manuaalselt.',
     ],
 
     /*
@@ -56,8 +56,8 @@ return [
      *
      */
     'final' => [
-        'title'    => 'Lõpetatud',
+        'title' => 'Lõpetatud',
         'finished' => 'Laravel on edukalt installitud',
-        'exit'     => 'Väljumiseks vajuta siia',
+        'exit' => 'Väljumiseks vajuta siia',
     ],
 ];

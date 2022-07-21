@@ -15,7 +15,9 @@ class DBTestCase extends TestCase
     use DatabaseTransactions;
 
     protected $user;
+
     protected $token;
+
     protected $organization;
     //NOTE: For logging into api, we require token but for web we don't need any
 

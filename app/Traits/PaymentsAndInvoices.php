@@ -36,7 +36,7 @@ use Illuminate\Http\Request;
                     $creditAmt = $creditAmt + $diff;
                     $total = $invoiceSum;
                 }
-                $payment = $this->payment->where('id', $paymentid)->update(['amount'=>$total]);
+                $payment = $this->payment->where('id', $paymentid)->update(['amount' => $total]);
 
                 $creditAmtInvoiceId = $this->payment->where('user_id', $creditAmtUserId)
         ->where('invoice_id', '!=', 0)->first();
@@ -47,7 +47,7 @@ use Illuminate\Http\Request;
 
                 $finalAmt = $creditAmt + $diffSum;
                 $updatedAmt = $this->payment->where('user_id', $creditAmtUserId)
-        ->where('invoice_id', '=', 0)->update(['amt_to_credit'=>$creditAmt]);
+        ->where('invoice_id', '=', 0)->update(['amt_to_credit' => $creditAmt]);
             } catch (\Exception $ex) {
                 app('log')->info($ex->getMessage());
 
@@ -72,10 +72,10 @@ use Illuminate\Http\Request;
                         $payment_status = 'success';
                     }
                     $this->payment->create([
-                        'parent_id'      => $parent_id,
-                        'invoice_id'     => $invoiceid,
-                        'user_id'        => $userid,
-                        'amount'         => $amount,
+                        'parent_id' => $parent_id,
+                        'invoice_id' => $invoiceid,
+                        'user_id' => $userid,
+                        'amount' => $amount,
                         'payment_method' => $payment_method,
                         'payment_status' => $payment_status,
                     ]);

@@ -26,7 +26,7 @@ class DatabaseController extends BaseDatabaseController
                          ->with(['message' => $response]);
         } catch (\Exception $ex) {
             return redirect()->route('AgoraInstaller::environmentWizard')
-                         ->with(['fails' =>$ex->getMessage()]);
+                         ->with(['fails' => $ex->getMessage()]);
         }
     }
 
@@ -53,7 +53,7 @@ class DatabaseController extends BaseDatabaseController
     private function migrate(BufferedOutput $outputLog)
     {
         try {
-            Artisan::call('migrate', ['--force'=> true], $outputLog);
+            Artisan::call('migrate', ['--force' => true], $outputLog);
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
         }

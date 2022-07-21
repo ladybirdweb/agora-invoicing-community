@@ -34,7 +34,7 @@ class QueueRequest extends FormRequest
         $rules = ['input' => 'required'];
         if (count($request) > 0) {
             unset($rules['input']);
-            foreach ($request as $key=>$value) {
+            foreach ($request as $key => $value) {
                 $rules[$key] = 'required';
             }
         }

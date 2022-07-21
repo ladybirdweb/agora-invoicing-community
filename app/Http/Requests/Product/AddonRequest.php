@@ -24,11 +24,11 @@ class AddonRequest extends Request
     public function rules()
     {
         return [
-            'name'          => 'required',
-            'subscription'  => 'required',
+            'name' => 'required',
+            'subscription' => 'required',
             'regular_price' => 'required|numeric',
             'selling_price' => 'required|numeric',
-            'products'      => 'required',
+            'products' => 'required',
         ];
     }
 }

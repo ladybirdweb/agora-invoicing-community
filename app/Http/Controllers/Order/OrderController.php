@@ -23,19 +23,27 @@ class OrderController extends BaseOrderController
     // NOTE FROM AVINASH: utha le re deva
     // NOTE: don't lose hope.
     public $order;
+
     public $user;
+
     public $promotion;
+
     public $product;
+
     public $subscription;
+
     public $invoice;
+
     public $invoice_items;
+
     public $price;
+
     public $plan;
 
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('admin', ['except'=>['getInstallationDetails']]);
+        $this->middleware('admin', ['except' => ['getInstallationDetails']]);
 
         $order = new Order();
         $this->order = $order;
@@ -77,8 +85,8 @@ class OrderController extends BaseOrderController
     public function index(Request $request)
     {
         $validator = \Validator::make($request->all(), [
-            'from'          => 'nullable',
-            'till'          => 'nullable|after:from',
+            'from' => 'nullable',
+            'till' => 'nullable|after:from',
 
         ]);
         if ($validator->fails()) {
@@ -90,11 +98,11 @@ class OrderController extends BaseOrderController
         try {
             $products = $this->product->where('id', '!=', 1)->pluck('name', 'id')->toArray();
 
-            $paidUnpaidOptions = ['paid'=>'Paid Products', 'unpaid'=>'Unpaid Products'];
-            $insNotIns = ['installed'=>'Yes (Installed atleast once)', 'not_installed'=>'No (Not Installed)'];
-            $activeInstallationOptions = ['paid_ins'=>'Active installation'];
-            $inactiveInstallationOptions = ['paid_inactive_ins'=>'Inactive installation'];
-            $renewal = ['expired_subscription'=>'Expired Subscriptions', 'active_subscription'=> 'Active Subscriptions'];
+            $paidUnpaidOptions = ['paid' => 'Paid Products', 'unpaid' => 'Unpaid Products'];
+            $insNotIns = ['installed' => 'Yes (Installed atleast once)', 'not_installed' => 'No (Not Installed)'];
+            $activeInstallationOptions = ['paid_ins' => 'Active installation'];
+            $inactiveInstallationOptions = ['paid_inactive_ins' => 'Inactive installation'];
+            $renewal = ['expired_subscription' => 'Expired Subscriptions', 'active_subscription' => 'Active Subscriptions'];
             $selectedVersion = $request->version;
             $allVersions = Subscription::where('version', '!=', '')->whereNotNull('version')
                 ->orderBy('version', 'desc')->groupBy('version')

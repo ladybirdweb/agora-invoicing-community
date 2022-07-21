@@ -21,7 +21,9 @@ class ClientController extends AdvanceSearchController
     use PaymentsAndInvoices;
 
     public $user;
+
     public $activate;
+
     public $product;
 
     public function __construct()
@@ -47,8 +49,8 @@ class ClientController extends AdvanceSearchController
     public function index(Request $request)
     {
         $validator = \Validator::make($request->all(), [
-            'reg_from'     => 'nullable',
-            'reg_till'     => 'nullable|after:reg_from',
+            'reg_from' => 'nullable',
+            'reg_till' => 'nullable|after:reg_from',
 
         ]);
         if ($validator->fails()) {
@@ -187,7 +189,7 @@ class ClientController extends AdvanceSearchController
                 $end = strpos($location, ')', $start + 1);
                 $length = $end - $start;
                 $result = substr($location, $start + 1, $length - 1);
-                $display[] = (['id'=>$timezone->id, 'name'=> '('.$result.')'.' '.$timezone->name]);
+                $display[] = (['id' => $timezone->id, 'name' => '('.$result.')'.' '.$timezone->name]);
             }
         }
         $timezones = array_column($display, 'name', 'id');
@@ -295,7 +297,7 @@ class ClientController extends AdvanceSearchController
 
             return view(
                 'themes.default1.user.client.show',
-                compact('id','client','invoices','orders','invoiceSum','amountReceived','pendingAmount','currency','extraAmt','comments',
+                compact('id', 'client', 'invoices', 'orders', 'invoiceSum', 'amountReceived', 'pendingAmount', 'currency', 'extraAmt', 'comments',
                     'is2faEnabled')
             );
         } catch (\Exception $ex) {
@@ -323,7 +325,7 @@ class ClientController extends AdvanceSearchController
                     $end = strpos($location, ')', $start + 1);
                     $length = $end - $start;
                     $result = substr($location, $start + 1, $length - 1);
-                    $display[] = (['id'=>$timezone->id, 'name'=> '('.$result.')'.' '.$timezone->name]);
+                    $display[] = (['id' => $timezone->id, 'name' => '('.$result.')'.' '.$timezone->name]);
                 }
             }
             //for display
@@ -476,7 +478,7 @@ class ClientController extends AdvanceSearchController
             $subject = $template->name;
             $data = $template->data;
             $replace = ['name' => $user->first_name.' '.$user->last_name,
-                'username'         => $user->email, 'password' => $str, 'url' => $url, ];
+                'username' => $user->email, 'password' => $str, 'url' => $url, ];
             $type = '';
             if ($template) {
                 $type_id = $template->type;

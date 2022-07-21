@@ -44,10 +44,10 @@ return [
      */
     'snappy' => [
         'options' => [
-            'no-outline'    => true,
-            'margin-left'   => '0',
-            'margin-right'  => '0',
-            'margin-top'    => '10mm',
+            'no-outline' => true,
+            'margin-left' => '0',
+            'margin-right' => '0',
+            'margin-top' => '10mm',
             'margin-bottom' => '10mm',
         ],
         'orientation' => 'landscape',
@@ -57,8 +57,8 @@ return [
      * Default html builder parameters.
      */
     'parameters' => [
-        'dom'     => 'Bfrtip',
-        'order'   => [[0, 'desc']],
+        'dom' => 'Bfrtip',
+        'order' => [[0, 'desc']],
         'buttons' => [
             'create',
             'export',

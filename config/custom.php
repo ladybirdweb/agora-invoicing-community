@@ -6,5 +6,5 @@ return [
 
     'razor_secret' => '', //Shared by Razorpay
 
-    'displayCurrency'=> '',
+    'displayCurrency' => '',
 ];

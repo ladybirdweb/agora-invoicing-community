@@ -15,11 +15,11 @@ trait TaxCalculation
     {
         try {
             if ($taxCaluculationFromAdminPanel) {
-                $taxCondition = ['name'=>'null', 'value'  => '0%'];
+                $taxCondition = ['name' => 'null', 'value' => '0%'];
             } else {
                 $taxCondition = new \Darryldecode\Cart\CartCondition([
-                    'name'   => 'null', 'type'   => 'tax',
-                    'value'  => '0%',
+                    'name' => 'null', 'type' => 'tax',
+                    'value' => '0%',
                 ]);
             }
             if (TaxOption::findOrFail(1)->inclusive == 0) {
@@ -51,20 +51,20 @@ trait TaxCalculation
     {
         if ($tax) {
             if ($taxCaluculationFromAdminPanel) {
-                $taxCondition = ['name'=>$tax->name, 'value'  => $tax->value.'%'];
+                $taxCondition = ['name' => $tax->name, 'value' => $tax->value.'%'];
             } else {
                 $taxCondition = new \Darryldecode\Cart\CartCondition([
-                    'name'   => $tax->name, 'type'   => 'tax',
-                    'value'  => $tax->value.'%',
+                    'name' => $tax->name, 'type' => 'tax',
+                    'value' => $tax->value.'%',
                 ]);
             }
         } else {
             if ($taxCaluculationFromAdminPanel) {
-                $taxCondition = ['name'=>'null', 'value'  => '0%'];
+                $taxCondition = ['name' => 'null', 'value' => '0%'];
             } else {
                 $taxCondition = new \Darryldecode\Cart\CartCondition([
-                    'name'   => 'null', 'type'   => 'tax',
-                    'value'  => '0%',
+                    'name' => 'null', 'type' => 'tax',
+                    'value' => '0%',
                 ]);
             }
         }

@@ -20,7 +20,7 @@ class TenantController extends Controller
         $this->client = $client;
         $this->cloud = $cloud->first();
 
-        $this->middleware('auth', ['except'=>['verifyThirdPartyToken']]);
+        $this->middleware('auth', ['except' => ['verifyThirdPartyToken']]);
     }
 
     public function viewTenant()
@@ -93,7 +93,7 @@ class TenantController extends Controller
         $this->validate($request,
                 [
                     'orderNo' => 'required',
-                    'domain'=>  'required||regex:/^[a-zA-Z0-9]+$/u',
+                    'domain' => 'required||regex:/^[a-zA-Z0-9]+$/u',
                 ],
                 [
                     'domain.regex' => 'Special characters are not allowed in domain name',
@@ -106,16 +106,16 @@ class TenantController extends Controller
                 throw new Exception('Invalid App key provided. Please contact admin.');
             }
             $token = str_random(32);
-            \DB::table('third_party_tokens')->insert(['user_id'=>\Auth::user()->id, 'token'=>$token]);
+            \DB::table('third_party_tokens')->insert(['user_id' => \Auth::user()->id, 'token' => $token]);
             $user = \Auth::user()->email;
             $client = new Client([]);
-            $data = ['domain' => $request->input('domain').$faveoCloud, 'app_key'=>$keys->app_key, 'token'=>$token, 'lic_code'=>$licCode, 'username'=>$user, 'userId'=>\Auth::user()->id, 'timestamp'=>time()];
+            $data = ['domain' => $request->input('domain').$faveoCloud, 'app_key' => $keys->app_key, 'token' => $token, 'lic_code' => $licCode, 'username' => $user, 'userId' => \Auth::user()->id, 'timestamp' => time()];
 
             $encodedData = http_build_query($data);
             $hashedSignature = hash_hmac('sha256', $encodedData, $keys->app_secret);
             $response = $client->request(
                     'POST',
-                    $this->cloud->cloud_central_domain.'/tenants', ['form_params'=>$data, 'headers'=>['signature'=>$hashedSignature]]
+                    $this->cloud->cloud_central_domain.'/tenants', ['form_params' => $data, 'headers' => ['signature' => $hashedSignature]]
                 );
 
             $response = explode('{', (string) $response->getBody());
@@ -178,13 +178,13 @@ class TenantController extends Controller
         try {
             $keys = ThirdPartyApp::where('app_name', 'faveo_app_key')->select('app_key', 'app_secret')->first();
             $token = str_random(32);
-            $data = ['id' => $request->input('id'), 'app_key'=>$keys->app_key, 'deleteTenant'=> true, 'token'=>$token, 'timestamp'=>time()];
+            $data = ['id' => $request->input('id'), 'app_key' => $keys->app_key, 'deleteTenant' => true, 'token' => $token, 'timestamp' => time()];
             $encodedData = http_build_query($data);
             $hashedSignature = hash_hmac('sha256', $encodedData, $keys->app_secret);
             $client = new Client([]);
             $response = $client->request(
                         'DELETE',
-                        $this->cloud->cloud_central_domain.'/tenants', ['form_params'=>$data, 'headers'=>['signature'=>$hashedSignature]]
+                        $this->cloud->cloud_central_domain.'/tenants', ['form_params' => $data, 'headers' => ['signature' => $hashedSignature]]
                     );
             $responseBody = (string) $response->getBody();
             $response = json_decode($responseBody);
@@ -214,13 +214,13 @@ class TenantController extends Controller
     public function saveCloudDetails(Request $request)
     {
         $this->validate($request, [
-            'cloud_central_domain'=> 'required',
+            'cloud_central_domain' => 'required',
         ]);
 
         try {
             $cloud = new FaveoCloud;
-            $cloud->updateOrCreate(['id'=>1], ['cloud_central_domain'=>$request->input('cloud_central_domain'), 'cron_server_url'=> $request->input('cron_server_url'),
-                'cron_server_key'=> $request->input('cron_server_key'), ]);
+            $cloud->updateOrCreate(['id' => 1], ['cloud_central_domain' => $request->input('cloud_central_domain'), 'cron_server_url' => $request->input('cron_server_url'),
+                'cron_server_key' => $request->input('cron_server_key'), ]);
             // $cloud->first()->fill($request->all())->save();
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (Exception $e) {

@@ -24,6 +24,7 @@ class EasyPeasyICS
      * @var string
      */
     protected $calendarName;
+
     /**
      * The array of events to add to this calendar.
      *
@@ -34,7 +35,7 @@ class EasyPeasyICS
     /**
      * Constructor.
      *
-     * @param string $calendarName
+     * @param  string  $calendarName
      */
     public function __construct($calendarName = '')
     {
@@ -44,13 +45,12 @@ class EasyPeasyICS
     /**
      * Add an event to this calendar.
      *
-     * @param string $start       The start date and time as a unix timestamp
-     * @param string $end         The end date and time as a unix timestamp
-     * @param string $summary     A summary or title for the event
-     * @param string $description A description of the event
-     * @param string $url         A URL for the event
-     * @param string $uid         A unique identifier for the event - generated automatically if not provided
-     *
+     * @param  string  $start       The start date and time as a unix timestamp
+     * @param  string  $end         The end date and time as a unix timestamp
+     * @param  string  $summary     A summary or title for the event
+     * @param  string  $description A description of the event
+     * @param  string  $url         A URL for the event
+     * @param  string  $uid         A unique identifier for the event - generated automatically if not provided
      * @return array An array of event details, including any generated UID
      */
     public function addEvent($start, $end, $summary = '', $description = '', $url = '', $uid = '')
@@ -59,12 +59,12 @@ class EasyPeasyICS
             $uid = md5(uniqid(mt_rand(), true)).'@EasyPeasyICS';
         }
         $event = [
-            'start'       => gmdate('Ymd', $start).'T'.gmdate('His', $start).'Z',
-            'end'         => gmdate('Ymd', $end).'T'.gmdate('His', $end).'Z',
-            'summary'     => $summary,
+            'start' => gmdate('Ymd', $start).'T'.gmdate('His', $start).'Z',
+            'end' => gmdate('Ymd', $end).'T'.gmdate('His', $end).'Z',
+            'summary' => $summary,
             'description' => $description,
-            'url'         => $url,
-            'uid'         => $uid,
+            'url' => $url,
+            'uid' => $uid,
         ];
         $this->events[] = $event;
 
@@ -110,8 +110,7 @@ class EasyPeasyICS
     /**
      * Render and optionally output a vcal string.
      *
-     * @param bool $output Whether to output the calendar data directly (the default).
-     *
+     * @param  bool  $output Whether to output the calendar data directly (the default).
      * @return string The complete rendered vlal
      */
     public function render($output = true)

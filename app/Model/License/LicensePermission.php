@@ -7,7 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class LicensePermission extends Model
 {
     protected $table = 'license_permissions';
+
     protected $fillable = ['id', 'permissions'];
+
     protected static $logName = 'License Permission';
 
     protected static $logOnlyDirty = true;

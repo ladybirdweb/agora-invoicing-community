@@ -17,18 +17,25 @@ use App\Http\Controllers\Common\Twitter\Util\JsonDecoder;
 class TwitterOAuth extends Config
 {
     const API_VERSION = '1.1';
+
     const API_HOST = 'https://api.twitter.com';
+
     const UPLOAD_HOST = 'https://upload.twitter.com';
+
     const UPLOAD_CHUNK = 40960; // 1024 * 40
 
     /** @var Response details about the result of the last request */
     private $response;
+
     /** @var string|null Application bearer token */
     private $bearer;
+
     /** @var Consumer Twitter application details */
     private $consumer;
+
     /** @var Token|null User access token details */
     private $token;
+
     /** @var HmacSha1 OAuth 1 signature type used by Twitter */
     private $signatureMethod;
 
@@ -259,8 +266,8 @@ class TwitterOAuth extends Config
     {
         // Init
         $init = $this->http('POST', self::UPLOAD_HOST, $path, [
-            'command'     => 'INIT',
-            'media_type'  => $parameters['media_type'],
+            'command' => 'INIT',
+            'media_type' => $parameters['media_type'],
             'total_bytes' => filesize($parameters['media']),
         ]);
         // Append
@@ -268,16 +275,16 @@ class TwitterOAuth extends Config
         $media = fopen($parameters['media'], 'rb');
         while (! feof($media)) {
             $this->http('POST', self::UPLOAD_HOST, 'media/upload', [
-                'command'       => 'APPEND',
-                'media_id'      => $init->media_id_string,
+                'command' => 'APPEND',
+                'media_id' => $init->media_id_string,
                 'segment_index' => $segment_index++,
-                'media_data'    => base64_encode(fread($media, self::UPLOAD_CHUNK)),
+                'media_data' => base64_encode(fread($media, self::UPLOAD_CHUNK)),
             ]);
         }
         fclose($media);
         // Finalize
         $finalize = $this->http('POST', self::UPLOAD_HOST, 'media/upload', [
-            'command'  => 'FINALIZE',
+            'command' => 'FINALIZE',
             'media_id' => $init->media_id_string,
         ]);
 
@@ -346,16 +353,16 @@ class TwitterOAuth extends Config
         /* Curl settings */
         $options = [
             // CURLOPT_VERBOSE => true,
-            CURLOPT_CAINFO         => __DIR__.DIRECTORY_SEPARATOR.'cacert.pem',
+            CURLOPT_CAINFO => __DIR__.DIRECTORY_SEPARATOR.'cacert.pem',
             CURLOPT_CONNECTTIMEOUT => $this->connectionTimeout,
-            CURLOPT_HEADER         => true,
-            CURLOPT_HTTPHEADER     => ['Accept: application/json', $authorization, 'Expect:'],
+            CURLOPT_HEADER => true,
+            CURLOPT_HTTPHEADER => ['Accept: application/json', $authorization, 'Expect:'],
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_SSL_VERIFYHOST => 2,
             CURLOPT_SSL_VERIFYPEER => true,
-            CURLOPT_TIMEOUT        => $this->timeout,
-            CURLOPT_URL            => $url,
-            CURLOPT_USERAGENT      => $this->userAgent,
+            CURLOPT_TIMEOUT => $this->timeout,
+            CURLOPT_URL => $url,
+            CURLOPT_USERAGENT => $this->userAgent,
         ];
 
         if ($this->gzipEncoding) {

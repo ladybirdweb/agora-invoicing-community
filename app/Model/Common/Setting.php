@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Setting extends Model
 {
     protected $table = 'settings';
+
     protected $fillable = ['company', 'website', 'phone', 'logo',
         'address', 'host', 'port', 'encryption', 'email', 'password',
         'error_log', 'error_email', 'state', 'city', 'country',

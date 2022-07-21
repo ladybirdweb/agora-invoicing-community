@@ -33,6 +33,6 @@ class InvoiceItem extends BaseModel
 
     public function order()
     {
-        return $this->hasOne('App\Model\Order\Order');
+        return $this->hasOne(\App\Model\Order\Order::class);
     }
 }

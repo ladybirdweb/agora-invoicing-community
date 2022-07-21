@@ -41,17 +41,17 @@ class Plan extends BaseModel
 
     public function planPrice()
     {
-        return $this->hasMany('App\Model\Payment\PlanPrice');
+        return $this->hasMany(\App\Model\Payment\PlanPrice::class);
     }
 
     public function product()
     {
-        return $this->hasMany('App\Model\Product\Product', 'id');
+        return $this->hasMany(\App\Model\Product\Product::class, 'id');
     }
 
     public function periods()
     {
-        return $this->belongstoMany('App\Model\Payment\Period', 'plans_periods_relation')->withTimestamps();
+        return $this->belongstoMany(\App\Model\Payment\Period::class, 'plans_periods_relation')->withTimestamps();
     }
 
     public function delete()

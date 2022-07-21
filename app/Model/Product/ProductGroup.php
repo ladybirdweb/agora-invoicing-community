@@ -12,22 +12,22 @@ class ProductGroup extends BaseModel
 
     public function config()
     {
-        return $this->hasMany('App\Model\Product\ConfigurableOption', 'group_id');
+        return $this->hasMany(\App\Model\Product\ConfigurableOption::class, 'group_id');
     }
 
     public function features()
     {
-        return $this->hasMany('App\Model\Product\GroupFeatures', 'group_id');
+        return $this->hasMany(\App\Model\Product\GroupFeatures::class, 'group_id');
     }
 
     public function product()
     {
-        return $this->hasMany('App\Model\Product\Product', 'group');
+        return $this->hasMany(\App\Model\Product\Product::class, 'group');
     }
 
     public function pricingTemplate()
     {
-        return $this->belongsTo('App\Model\Common\PricingTemplate');
+        return $this->belongsTo(\App\Model\Common\PricingTemplate::class);
     }
 
     public function delete()

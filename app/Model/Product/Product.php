@@ -46,37 +46,37 @@ class Product extends BaseModel
 
     public function order()
     {
-        return $this->hasMany('App\Model\Order\Order', 'product');
+        return $this->hasMany(\App\Model\Order\Order::class, 'product');
     }
 
     public function subscription()
     {
-        return $this->hasMany('App\Model\Product\Subscription');
+        return $this->hasMany(\App\Model\Product\Subscription::class);
     }
 
     public function licenseType()
     {
-        return $this->belongsTo('App\Model\License\LicenseType', 'type');
+        return $this->belongsTo(\App\Model\License\LicenseType::class, 'type');
     }
 
     public function price()
     {
-        return $this->hasMany('App\Model\Product\Price');
+        return $this->hasMany(\App\Model\Product\Price::class);
     }
 
     public function PromoRelation()
     {
-        return $this->hasMany('App\Model\Payment\PromoProductRelation', 'product_id');
+        return $this->hasMany(\App\Model\Payment\PromoProductRelation::class, 'product_id');
     }
 
     public function tax()
     {
-        return $this->hasMany('App\Model\Payment\TaxProductRelation', 'product_id');
+        return $this->hasMany(\App\Model\Payment\TaxProductRelation::class, 'product_id');
     }
 
     public function productUpload()
     {
-        return $this->hasMany('App\Model\Product\ProductUpload', 'product_id');
+        return $this->hasMany(\App\Model\Product\ProductUpload::class, 'product_id');
     }
 
     public function delete()
@@ -114,14 +114,14 @@ class Product extends BaseModel
 
     public function planRelation()
     {
-        $related = "App\Model\Payment\Plan";
+        $related = \App\Model\Payment\Plan::class;
 
         return $this->hasMany($related, 'product');
     }
 
     public function group()
     {
-        return $this->belongsTo("App\Model\Product\ProductGroup");
+        return $this->belongsTo(\App\Model\Product\ProductGroup::class);
     }
 
     public function plan()

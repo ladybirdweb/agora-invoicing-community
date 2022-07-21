@@ -12,7 +12,7 @@ class Type extends BaseModel
 
     public function product()
     {
-        return $this->hasMany('App\Model\Product\Product');
+        return $this->hasMany(\App\Model\Product\Product::class);
     }
 
     public function delete()

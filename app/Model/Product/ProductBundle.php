@@ -12,7 +12,7 @@ class ProductBundle extends BaseModel
 
     public function relation()
     {
-        return $this->hasMany('App\Model\Product\ProductBundleRelation', 'bundle_id');
+        return $this->hasMany(\App\Model\Product\ProductBundleRelation::class, 'bundle_id');
     }
 
     public function delete()

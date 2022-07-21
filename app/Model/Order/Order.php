@@ -43,47 +43,47 @@ class Order extends BaseModel
 
     public function invoice()
     {
-        return $this->belongsTo('App\Model\Order\Invoice', 'invoice_id');
+        return $this->belongsTo(\App\Model\Order\Invoice::class, 'invoice_id');
     }
 
     public function user()
     {
-        return $this->belongsTo('App\User', 'client');
+        return $this->belongsTo(\App\User::class, 'client');
     }
 
     public function subscription()
     {
-        return $this->hasOne('App\Model\Product\Subscription');
+        return $this->hasOne(\App\Model\Product\Subscription::class);
     }
 
     public function productUpload()
     {
-        return $this->hasMany('App\Model\Product\ProductUpload');
+        return $this->hasMany(\App\Model\Product\ProductUpload::class);
     }
 
     public function product()
     {
-        return $this->belongsTo('App\Model\Product\Product', 'product');
+        return $this->belongsTo(\App\Model\Product\Product::class, 'product');
     }
 
     public function invoiceRelation()
     {
-        return $this->hasMany('App\Model\Order\OrderInvoiceRelation');
+        return $this->hasMany(\App\Model\Order\OrderInvoiceRelation::class);
     }
 
     public function invoiceItem()
     {
-        return $this->hasManyThrough('App\Model\Order\InvoiceItem', 'App\Model\Order\Invoice');
+        return $this->hasManyThrough(\App\Model\Order\InvoiceItem::class, \App\Model\Order\Invoice::class);
     }
 
     public function item()
     {
-        return $this->belongsTo('App\Model\Order\InvoiceItem');
+        return $this->belongsTo(\App\Model\Order\InvoiceItem::class);
     }
 
     public function installationDetail()
     {
-        return $this->hasMany('App\Model\Order\InstallationDetail');
+        return $this->hasMany(\App\Model\Order\InstallationDetail::class);
     }
 
     public function delete()

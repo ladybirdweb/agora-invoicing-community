@@ -12,7 +12,7 @@ class InstallationDetail extends Model
 
     public function order()
     {
-        return $this->belongsTo('App\Model\Order\Order');
+        return $this->belongsTo(\App\Model\Order\Order::class);
     }
 
     public function delete()

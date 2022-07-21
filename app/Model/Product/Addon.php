@@ -14,7 +14,7 @@ class Addon extends BaseModel
 
     public function relation()
     {
-        return $this->hasMany('App\Model\Product\ProductAddonRelation');
+        return $this->hasMany(\App\Model\Product\ProductAddonRelation::class);
     }
 
     public function delete()

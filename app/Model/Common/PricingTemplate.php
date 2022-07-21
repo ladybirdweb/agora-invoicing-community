@@ -12,6 +12,6 @@ class PricingTemplate extends Model
 
     public function productGroups()
     {
-        return $this->hasMany('App\Model\Product\ProductGroup');
+        return $this->hasMany(\App\Model\Product\ProductGroup::class);
     }
 }

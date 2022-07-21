@@ -1,6 +1,6 @@
 <?php
 
-Event::listen('App\Events\PaymentGateway', function ($event) {
+Event::listen(\App\Events\PaymentGateway::class, function ($event) {
     $controller = new App\Plugins\Razorpay\Controllers\ProcessController();
     echo $controller->PassToPayment($event->para);
 });

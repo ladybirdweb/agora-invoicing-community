@@ -39,7 +39,7 @@ class Promotion extends BaseModel
 
     public function relation()
     {
-        return $this->hasMany('App\Model\Payment\PromoProductRelation', 'promotion_id');
+        return $this->hasMany(\App\Model\Payment\PromoProductRelation::class, 'promotion_id');
     }
 
     public function delete()

@@ -12,7 +12,7 @@ class Period extends Model
 
     public function plans()
     {
-        return $this->belongstoMany('App\Model\Payment\Plan', 'plans_periods_relation')->withTimestamps();
+        return $this->belongstoMany(\App\Model\Payment\Plan::class, 'plans_periods_relation')->withTimestamps();
     }
 
     public function delete()

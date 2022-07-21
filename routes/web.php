@@ -25,49 +25,25 @@ use Illuminate\Http\Request;
          * Installer Routes
          */
 
-        Route::group(['prefix' => 'install', 'as' => 'AgoraInstaller::', 'middleware' => ['isInstalled']], function () {
-            Route::get('/', [
-                'as' => 'welcome',
-                'uses' => 'Installer\WelcomeController@welcome',
-            ]);
+        Route::prefix('install')->name('AgoraInstaller::')->middleware('isInstalled')->group(function () {
+            Route::get('/', 'Installer\WelcomeController@welcome')->name('welcome');
 
-            Route::get('requirements', [
-                'as' => 'requirements',
-                'uses' => 'Installer\RequirementsController@requirements',
-            ]);
+            Route::get('requirements', 'Installer\RequirementsController@requirements')->name('requirements');
 
-            Route::get('permissions', [
-                'as' => 'permissions',
-                'uses' => 'Installer\PermissionsController@permissions',
-            ]);
+            Route::get('permissions', 'Installer\PermissionsController@permissions')->name('permissions');
 
-            Route::get('environment', [
-                'as' => 'environment',
-                'uses' => 'Installer\EnvironmentController@environmentMenu',
-            ]);
+            Route::get('environment', 'Installer\EnvironmentController@environmentMenu')->name('environment');
 
-            Route::get('environment/wizard', [
-                'as' => 'environmentWizard',
-                'uses' => 'Installer\EnvironmentController@environmentWizard',
-            ]);
+            Route::get('environment/wizard', 'Installer\EnvironmentController@environmentWizard')->name('environmentWizard');
 
-            Route::post('environment/saveWizard', [
-                'as' => 'environmentSaveWizard',
-                'uses' => 'Installer\EnvironmentController@saveWizard',
-            ]);
+            Route::post('environment/saveWizard', 'Installer\EnvironmentController@saveWizard')->name('environmentSaveWizard');
 
-            Route::get('database', [
-                'as' => 'database',
-                'uses' => 'Installer\DatabaseController@database',
-            ]);
+            Route::get('database', 'Installer\DatabaseController@database')->name('database');
 
-            Route::get('final', [
-                'as' => 'final',
-                'uses' => 'Installer\FinalController@finish',
-            ]);
+            Route::get('final', 'Installer\FinalController@finish')->name('final');
         });
 
-        Route::group(['middleware' => ['installAgora']], function () {
+        Route::middleware('installAgora')->group(function () {
             Route::get('pricing', 'Front\CartController@cart')->name('pricing');
             Route::get('group/{templateid}/{groupid}/', 'Front\PageController@pageTemplates');
             Route::post('cart/remove', 'Front\CartController@cartRemove');
@@ -104,9 +80,9 @@ use Illuminate\Http\Request;
             Route::get('get-my-invoices', 'Front\ClientController@getInvoices')->name('get-my-invoices');
             Route::get('get-my-invoices/{orderid}/{userid}', 'Front\ClientController@getInvoicesByOrderId');
 
-            Route::get('get-my-payment/{orderid}/{userid}', ['uses' => 'Front\ClientController@getPaymentByOrderId', 'as' => 'get-my-payment']);
+            Route::get('get-my-payment/{orderid}/{userid}', 'Front\ClientController@getPaymentByOrderId')->name('get-my-payment');
 
-            Route::get('get-my-payment-client/{orderid}/{userid}', ['uses' => 'Front\ClientController@getPaymentByOrderIdClient', 'as' => 'get-my-payment-client']);
+            Route::get('get-my-payment-client/{orderid}/{userid}', 'Front\ClientController@getPaymentByOrderIdClient')->name('get-my-payment-client');
 
             Route::get('my-orders', 'Front\ClientController@orders');
             Route::get('get-my-orders', 'Front\ClientController@getOrders')->name('get-my-orders');
@@ -120,8 +96,8 @@ use Illuminate\Http\Request;
             Route::patch('my-password', 'Front\ClientController@postPassword');
             Route::get('paynow/{id}', 'Front\CheckoutController@payNow');
 
-            Route::get('get-versions/{productid}/{clientid}/{invoiceid}/', ['as' => 'get-versions', 'uses' => 'Front\ClientController@getVersionList']);
-            Route::get('get-github-versions/{productid}/{clientid}/{invoiceid}/', ['as' => 'get-github-versions', 'uses' => 'Front\ClientController@getGithubVersionList']);
+            Route::get('get-versions/{productid}/{clientid}/{invoiceid}/', 'Front\ClientController@getVersionList')->name('get-versions');
+            Route::get('get-github-versions/{productid}/{clientid}/{invoiceid}/', 'Front\ClientController@getGithubVersionList')->name('get-github-versions');
 
             // Post Route For Make Razorpay Payment Request
             Route::post('payment/{invoice}', 'RazorpayController@payment')->name('payment');
@@ -152,7 +128,7 @@ use Illuminate\Http\Request;
              */
 
             Route::resource('social-media', 'Common\SocialMediaController');
-            Route::get('get-social-media', ['as' => 'get-social-media', 'uses' => 'Common\SocialMediaController@getSocials']);
+            Route::get('get-social-media', 'Common\SocialMediaController@getSocials')->name('get-social-media');
             /*
              * Tweeter api
              */
@@ -205,8 +181,8 @@ use Illuminate\Http\Request;
             Route::patch('settings/error', 'Common\SettingsController@postSettingsError');
             Route::get('settings/activitylog', 'Common\SettingsController@settingsActivity');
             Route::get('settings/maillog', 'Common\SettingsController@settingsMail');
-            Route::get('get-activity', ['as' => 'get-activity', 'uses' => 'Common\SettingsController@getActivity']);
-            Route::get('get-email', ['as' => 'get-email', 'uses' => 'Common\SettingsController@getMails']);
+            Route::get('get-activity', 'Common\SettingsController@getActivity')->name('get-activity');
+            Route::get('get-email', 'Common\SettingsController@getMails')->name('get-email');
             Route::delete('activity-delete', 'Common\SettingsController@destroy')->name('activity-delete');
             Route::delete('email-delete', 'Common\SettingsController@destroyEmail')->name('email-delete');
             Route::post('licenseDetails', 'Common\BaseSettingsController@licenseDetails')->name('licenseDetails');
@@ -239,13 +215,13 @@ use Illuminate\Http\Request;
             Route::get('getClientDetail/{id}', 'User\ClientController@getClientDetail');
             Route::get('getPaymentDetail/{id}', 'User\ClientController@getPaymentDetail');
             Route::get('getOrderDetail/{id}', 'User\ClientController@getOrderDetail');
-            Route::get('get-clients', ['as' => 'get-clients', 'uses' => 'User\ClientController@getClients']);
+            Route::get('get-clients', 'User\ClientController@getClients')->name('get-clients');
             Route::delete('clients-delete', 'User\ClientController@destroy');
             Route::get('get-users', 'User\ClientController@getUsers');
             Route::get('search-email', 'User\ClientController@search')->name('search-email');
 
             Route::resource('products', 'Product\ProductController');
-            Route::get('get-products', ['as' => 'get-products', 'uses' => 'Product\ProductController@getProducts']);
+            Route::get('get-products', 'Product\ProductController@getProducts')->name('get-products');
             // Route::get('get-products', 'Product\ProductController@GetProducts');
             Route::delete('products-delete', 'Product\ProductController@destroy')->name('products-delete');
             Route::delete('uploads-delete', 'Product\ProductController@fileDestroy')->name('uploads-delete');
@@ -264,7 +240,7 @@ use Illuminate\Http\Request;
              */
 
             Route::resource('plans', 'Product\PlanController');
-            Route::get('get-plans', ['as' => 'get-plans', 'uses' => 'Product\PlanController@getPlans']);
+            Route::get('get-plans', 'Product\PlanController@getPlans')->name('get-plans');
             // Route::get('get-plans', 'Product\PlanController@GetPlans');
             Route::delete('plans-delete', 'Product\PlanController@destroy')->name('plans-delete');
             Route::get('get-period', 'Product\PlanController@checkSubscription')->name('get-period');
@@ -275,8 +251,8 @@ use Illuminate\Http\Request;
              */
 
             Route::resource('currency', 'Payment\CurrencyController');
-            Route::get('get-currency/datatable', ['as' => 'get-currency.datatable', 'uses' => 'Payment\CurrencyController@getCurrency']);
-            Route::post('change/currency/status', ['as' => 'change.currency.status', 'uses' => 'Payment\CurrencyController@updatecurrency']);
+            Route::get('get-currency/datatable', 'Payment\CurrencyController@getCurrency')->name('get-currency.datatable');
+            Route::post('change/currency/status', 'Payment\CurrencyController@updatecurrency')->name('change.currency.status');
 
             /*
              * Tax
@@ -284,9 +260,9 @@ use Illuminate\Http\Request;
 
             Route::resource('tax', 'Payment\TaxController');
             Route::get('get-state/{state}', 'Payment\TaxController@getState');
-            Route::get('get-tax', ['as' => 'get-tax', 'uses' => 'Payment\TaxController@getTax']);
+            Route::get('get-tax', 'Payment\TaxController@getTax')->name('get-tax');
 
-            Route::get('get-taxtable', ['as' => 'get-taxtable', 'uses' => 'Payment\TaxController@getTaxTable']);
+            Route::get('get-taxtable', 'Payment\TaxController@getTaxTable')->name('get-taxtable');
             Route::get('get-loginstate/{state}', 'Auth\AuthController@getState');
 
             // Route::get('get-tax', 'Payment\TaxController@GetTax');
@@ -364,27 +340,27 @@ use Illuminate\Http\Request;
              */
 
             Route::resource('templates', 'Common\TemplateController');
-            Route::get('get-templates', ['as' => 'get-templates', 'uses' => 'Common\TemplateController@getTemplates']);
+            Route::get('get-templates', 'Common\TemplateController@getTemplates')->name('get-templates');
             // Route::get('get-templates', 'Common\TemplateController@GetTemplates');
             Route::delete('templates-delete', 'Common\TemplateController@destroy')->name('templates-delete');
 
             /**
              * Queue.
              */
-            Route::get('queue', ['as' => 'queue', 'uses' => 'Jobs\QueueController@index']);
+            Route::get('queue', 'Jobs\QueueController@index')->name('queue');
             Route::get('get-queue', 'Jobs\QueueController@getQueues')->name('get-queue');
-            Route::get('queue/{id}', ['as' => 'queue.edit', 'uses' => 'Jobs\QueueController@edit']);
-            Route::post('queue/{id}', ['as' => 'queue.update', 'uses' => 'Jobs\QueueController@update']);
+            Route::get('queue/{id}', 'Jobs\QueueController@edit')->name('queue.edit');
+            Route::post('queue/{id}', 'Jobs\QueueController@update')->name('queue.update');
 
             Route::post('queue/{queue}/activate', 'Jobs\QueueController@activate');
-            Route::get('form/queue', ['as' => 'queue.form', 'uses' => 'Jobs\QueueController@getForm']);
+            Route::get('form/queue', 'Jobs\QueueController@getForm')->name('queue.form');
             // Route::get('queue-monitoring', 'Jobs\QueueController@monitorQueues']);
 
             /*
              * Chat Script
              */
             Route::resource('chat', 'Common\ChatScriptController');
-            Route::get('get-script', ['as' => 'get-script', 'uses' => 'Common\ChatScriptController@getScript']);
+            Route::get('get-script', 'Common\ChatScriptController@getScript')->name('get-script');
             Route::delete('script-delete', 'Common\ChatScriptController@destroy')->name('script-delete');
             Route::post('order/execute', 'Order\OrderController@orderExecute');
             /*
@@ -396,15 +372,13 @@ use Illuminate\Http\Request;
             Route::get('get-client-invoice/{id}', 'User\ClientController@getClientInvoice');
             Route::get('invoices/edit/{id}', 'Order\InvoiceController@edit');
             Route::post('invoice/edit/{id}', 'Order\InvoiceController@postEdit');
-            Route::get('get-invoices', ['as' => 'get-invoices', 'uses' => 'Order\InvoiceController@getInvoices']);
+            Route::get('get-invoices', 'Order\InvoiceController@getInvoices')->name('get-invoices');
             Route::get('pdf', 'Order\InvoiceController@pdf');
             Route::delete('invoice-delete', 'Order\InvoiceController@destroy')->name('invoice-delete');
             Route::get('invoice/generate', 'Order\InvoiceController@generateById');
             Route::post('generate/invoice/{user_id?}', 'Order\InvoiceController@invoiceGenerateByForm');
-            Route::post('change-invoiceTotal', ['as' => 'change-invoiceTotal',
-                'uses' => 'Order\InvoiceController@invoiceTotalChange', ]);
-            Route::post('change-paymentTotal', ['as' => 'change-paymentTotal',
-                'uses' => 'Order\InvoiceController@paymentTotalChange', ]);
+            Route::post('change-invoiceTotal', 'Order\InvoiceController@invoiceTotalChange')->name('change-invoiceTotal');
+            Route::post('change-paymentTotal', 'Order\InvoiceController@paymentTotalChange')->name('change-paymentTotal');
 
             /*
              * Payment
@@ -424,14 +398,14 @@ use Illuminate\Http\Request;
             Route::resource('pages', 'Front\PageController')->middleware('admin');
             Route::get('pages/{slug}', 'Front\PageController@show');
             Route::get('page/search', 'Front\PageController@search');
-            Route::get('get-pages', ['as' => 'get-pages', 'uses' => 'Front\PageController@getPages']);
+            Route::get('get-pages', 'Front\PageController@getPages')->name('get-pages');
             Route::delete('pages-delete', 'Front\PageController@destroy')->name('pages-delete');
 
             /*
              * Widgets
              */
             Route::resource('widgets', 'Front\WidgetController');
-            Route::get('get-widgets', ['as' => 'get-widgets', 'uses' => 'Front\WidgetController@getPages']);
+            Route::get('get-widgets', 'Front\WidgetController@getPages')->name('get-widgets');
             // Route::get('get-widgets', 'Front\WidgetController@GetPages');
             Route::delete('widgets-delete', 'Front\WidgetController@destroy');
 
@@ -464,20 +438,20 @@ use Illuminate\Http\Request;
              */
             Route::get('plugin', 'Common\SettingsController@plugins');
 
-            Route::get('get-plugin', ['as' => 'get-plugin', 'uses' => 'Common\PaymentSettingsController@getPlugin']);
+            Route::get('get-plugin', 'Common\PaymentSettingsController@getPlugin')->name('get-plugin');
             // Route::get('getplugin', 'Common\SettingsController@getPlugin');
-            Route::post('post-plugin', ['as' => 'post.plugin', 'uses' => 'Common\PaymentSettingsController@postPlugins']);
-            Route::post('plugin/delete/{slug}', ['as' => 'delete.plugin', 'uses' => 'Common\PaymentSettingsController@deletePlugin']);
-            Route::post('plugin/status/{slug}', ['as' => 'status.plugin', 'uses' => 'Common\PaymentSettingsController@statusPlugin']);
+            Route::post('post-plugin', 'Common\PaymentSettingsController@postPlugins')->name('post.plugin');
+            Route::post('plugin/delete/{slug}', 'Common\PaymentSettingsController@deletePlugin')->name('delete.plugin');
+            Route::post('plugin/status/{slug}', 'Common\PaymentSettingsController@statusPlugin')->name('status.plugin');
 
             /*
              * Cron Jobs
              */
 
-            Route::get('job-scheduler', ['as' => 'get.job.scheduler', 'uses' => 'Common\SettingsController@getScheduler']);
-            Route::patch('post-scheduler', ['as' => 'post.job.scheduler', 'uses' => 'Common\SettingsController@postSchedular'])->name('post-scheduler'); //to update job scheduler
-            Route::patch('cron-days', ['as' => 'cron-days', 'uses' => 'Common\SettingsController@saveCronDays'])->name('cron-days');
-            Route::post('verify-php-path', ['as' => 'verify-cron', 'uses' => 'Common\SettingsController@checkPHPExecutablePath']);
+            Route::get('job-scheduler', 'Common\SettingsController@getScheduler')->name('get.job.scheduler');
+            Route::patch('post-scheduler', 'Common\SettingsController@postSchedular')->name('post.job.scheduler')->name('post-scheduler'); //to update job scheduler
+            Route::patch('cron-days', 'Common\SettingsController@saveCronDays')->name('cron-days')->name('cron-days');
+            Route::post('verify-php-path', 'Common\SettingsController@checkPHPExecutablePath')->name('verify-cron');
             Route::get('file-storage', 'Common\SettingsController@showFileStorage');
             Route::post('file-storage-path', 'Common\SettingsController@updateStoragePath');
             Route::get('expired-subscriptions', 'Common\CronController@eachSubscription');
@@ -517,7 +491,7 @@ use Illuminate\Http\Request;
             /*
              * Api
              */
-            Route::group(['prefix' => 'api'], function () {
+            Route::prefix('api')->group(function () {
                 /*
                  * Unautherised requests
                  */
@@ -558,7 +532,7 @@ use Illuminate\Http\Request;
         Route::post('update-installation-detail', 'HomeController@updateInstallationDetails');
         Route::get('verify/third-party-token', 'Tenancy\TenantController@verifyThirdPartyToken');
 
-        Route::get('404', ['as' => 'error404', function () {
-            return view('errors.404');
-        }]);
+        Route::get('404', function () {
+    return view('errors.404');
+})->name('error404');
     // });

@@ -3,7 +3,6 @@
 namespace Database\Factories\Model\Product;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Model\Product\Subscription;
 
 class SubscriptionFactory extends Factory
 {

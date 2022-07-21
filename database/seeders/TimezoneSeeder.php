@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Model\Common\Timezone;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class TimezoneSeeder extends Seeder
 {
@@ -14,9 +15,9 @@ class TimezoneSeeder extends Seeder
      */
     public function run()
     {
-        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        \DB::table('timezone')->truncate();
-        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::table('timezone')->truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         Timezone::create([
             'id' => 1,
             'name' => 'Pacific/Midway',

@@ -2,8 +2,6 @@
 
 namespace App\Plugins\Razorpay\Controllers;
 
-use Database\Seeders\RazorpaySupportedCurrencySeeder;
-use Database\Seeders\CurrencySeeder;
 use App\ApiKey;
 use App\Http\Controllers\Controller;
 use App\Model\Common\Setting;

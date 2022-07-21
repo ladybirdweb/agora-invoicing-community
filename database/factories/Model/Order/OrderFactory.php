@@ -3,7 +3,6 @@
 namespace Database\Factories\Model\Order;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Model\Order\Order;
 
 class OrderFactory extends Factory
 {

@@ -2,22 +2,22 @@
 
 namespace App\Model\Order;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\BaseModel;
 use DateTime;
 use DateTimeZone;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\Activitylog\Traits\LogsActivity;
 
 class Invoice extends BaseModel
 {
     use HasFactory;
-
     use LogsActivity;
 
     protected $table = 'invoices';
 
     protected $fillable = ['user_id', 'number', 'date', 'coupon_code', 'discount',
         'grand_total', 'currency', 'status', 'description', 'is_renewed', 'processing_fee', ];
+
     protected $casts = [
         'date' => 'datetime',
     ];

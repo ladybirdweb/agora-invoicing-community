@@ -3,7 +3,6 @@
 namespace Database\Factories\Model\Payment;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Model\Payment\Plan;
 
 class PlanFactory extends Factory
 {

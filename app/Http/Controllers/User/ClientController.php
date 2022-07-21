@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\User;
 
-use Database\Seeders\CompanySize;
 use App\Comment;
 use App\Http\Controllers\License\LicenseController;
 use App\Http\Requests\User\ClientRequest;

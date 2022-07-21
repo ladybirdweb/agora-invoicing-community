@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Front;
 
-use Database\Seeders\CompanySize;
 use App\Http\Controllers\Github\GithubApiController;
 use App\Http\Controllers\License\LicensePermissionsController;
 use App\Model\Common\StatusSetting;

@@ -2,22 +2,22 @@
 
 namespace App\Model\Product;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use DateTime;
 use DateTimeZone;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Traits\LogsActivity;
 
 class Subscription extends Model
 {
     use HasFactory;
-
     use LogsActivity;
 
     protected $table = 'subscriptions';
 
     protected $fillable = ['name', 'description', 'days', 'ends_at', 'update_ends_at',
         'user_id', 'plan_id', 'order_id', 'deny_after_subscription', 'version', 'product_id', 'support_ends_at', 'version_updated_at', ];
+
     protected $casts = [
         'ends_at' => 'datetime',
     ];

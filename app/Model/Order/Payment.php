@@ -13,12 +13,12 @@ class Payment extends BaseModel
 
     public function invoice()
     {
-        return $this->belongsTo('App\Model\Order\Invoice');
+        return $this->belongsTo(\App\Model\Order\Invoice::class);
     }
 
     public function user()
     {
-        return $this->belongsTo('App\User');
+        return $this->belongsTo(\App\User::class);
     }
 
     //    public function setCreatedAtAttribute($value) {

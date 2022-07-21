@@ -18,6 +18,6 @@ class Country extends BaseModel
 
     public function currency()
     {
-        return $this->belongsTo('App\Model\Payment\Currency');
+        return $this->belongsTo(\App\Model\Payment\Currency::class);
     }
 }

@@ -79,38 +79,38 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
     public function order()
     {
-        return $this->hasMany('App\Model\Order\Order', 'client');
+        return $this->hasMany(\App\Model\Order\Order::class, 'client');
     }
 
     public function comments()
     {
-        return $this->hasMany('App\Comment', 'updated_by_user_id');
+        return $this->hasMany(\App\Comment::class, 'updated_by_user_id');
     }
 
     public function subscription()
     {
         // Return an Eloquent relationship.
-        return $this->hasMany('App\Model\Product\Subscription');
+        return $this->hasMany(\App\Model\Product\Subscription::class);
     }
 
     public function invoiceItem()
     {
-        return $this->hasManyThrough('App\Model\Order\InvoiceItem', 'App\Model\Order\Invoice');
+        return $this->hasManyThrough(\App\Model\Order\InvoiceItem::class, \App\Model\Order\Invoice::class);
     }
 
     public function orderRelation()
     {
-        return $this->hasManyThrough('App\Model\Order\OrderInvoiceRelation', 'App\Model\Order\Invoice');
+        return $this->hasManyThrough(\App\Model\Order\OrderInvoiceRelation::class, \App\Model\Order\Invoice::class);
     }
 
     public function invoice()
     {
-        return $this->hasMany('App\Model\Order\Invoice');
+        return $this->hasMany(\App\Model\Order\Invoice::class);
     }
 
     public function timezone()
     {
-        return $this->belongsTo('App\Model\Common\Timezone');
+        return $this->belongsTo(\App\Model\Common\Timezone::class);
     }
 
     // public function getCreatedAtAttribute($value)
@@ -146,7 +146,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
     public function payment()
     {
-        return $this->hasMany('App\Model\Order\Payment');
+        return $this->hasMany(\App\Model\Order\Payment::class);
     }
 
     public function setCountryAttribute($value)
@@ -193,12 +193,12 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
     public function manager()
     {
-        return $this->belongsTo('App\User', 'manager');
+        return $this->belongsTo(\App\User::class, 'manager');
     }
 
     public function accountManager()
     {
-        return $this->belongsTo('App\User', 'account_manager');
+        return $this->belongsTo(\App\User::class, 'account_manager');
     }
 
     public function assignSalesManager()

@@ -151,8 +151,8 @@ return [
 
         //
 
-        'App\Plugins\Stripe\ServiceProvider',
-        'App\Plugins\Razorpay\ServiceProvider',
+        App\Plugins\Stripe\ServiceProvider::class,
+        App\Plugins\Razorpay\ServiceProvider::class,
         /*
          * Laravel Framework Service Providers...
          */

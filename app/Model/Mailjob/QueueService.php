@@ -12,7 +12,7 @@ class QueueService extends Model
 
     public function extraFieldRelation()
     {
-        $related = "App\Model\Mailjob\FaveoQueue";
+        $related = \App\Model\Mailjob\FaveoQueue::class;
 
         return $this->hasMany($related, 'service_id');
     }

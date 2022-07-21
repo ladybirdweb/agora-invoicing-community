@@ -43,6 +43,6 @@ class Currency extends BaseModel
 
     public function country()
     {
-        return $this->hasMany('App\Model\Common\Country', 'currency_id');
+        return $this->hasMany(\App\Model\Common\Country::class, 'currency_id');
     }
 }

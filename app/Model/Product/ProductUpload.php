@@ -12,12 +12,12 @@ class ProductUpload extends Model
 
     public function product()
     {
-        return $this->belongsTo('App\Model\Product\Product');
+        return $this->belongsTo(\App\Model\Product\Product::class);
     }
 
     public function order()
     {
-        return $this->belongsTo('App\Model\Order\Order');
+        return $this->belongsTo(\App\Model\Order\Order::class);
     }
 
     public function getDependenciesAttribute($value)

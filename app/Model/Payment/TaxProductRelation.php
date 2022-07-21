@@ -12,11 +12,11 @@ class TaxProductRelation extends BaseModel
 
     public function tax()
     {
-        return $this->belongsTo('App\Model\Payment\TaxClass', 'tax_class_id');
+        return $this->belongsTo(\App\Model\Payment\TaxClass::class, 'tax_class_id');
     }
 
     public function product()
     {
-        return $this->hasMany('App\Model\Product\Product', 'product_id');
+        return $this->hasMany(\App\Model\Product\Product::class, 'product_id');
     }
 }

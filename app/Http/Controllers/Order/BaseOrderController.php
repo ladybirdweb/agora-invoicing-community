@@ -291,8 +291,8 @@ class BaseOrderController extends ExtendedOrderController
                 'invoiceurl' => $invoiceurl,
                 'product' => $product,
                 'number' => $order->number,
-                'expiry' => app('App\Http\Controllers\Order\OrderController')->expiry($orderid),
-                'url' => app('App\Http\Controllers\Order\OrderController')->renew($orderid),
+                'expiry' => app(\App\Http\Controllers\Order\OrderController::class)->expiry($orderid),
+                'url' => app(\App\Http\Controllers\Order\OrderController::class)->renew($orderid),
                 'knowledge_base' => $knowledgeBaseUrl,
 
             ];

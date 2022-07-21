@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use App\Model\Payment\Currency;
 use Illuminate\Database\Seeder;
 

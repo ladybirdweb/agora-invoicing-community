@@ -2,6 +2,8 @@
 
 namespace database\seeds;
 
+use Database\Seeders\RazorpaySupportedCurrencySeeder;
+use Database\Seeders\CurrencySeeder;
 use App\Plugins\Razorpay\Model\RazorpayPayment;
 use Illuminate\Database\Seeder;
 

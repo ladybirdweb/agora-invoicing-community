@@ -2,6 +2,8 @@
 
 namespace App\Plugins\Stripe\Controllers;
 
+use Database\Seeders\StripeSupportedCurrencySeeder;
+use Database\Seeders\CurrencySeeder;
 use App\ApiKey;
 use App\Http\Controllers\Controller;
 use App\Model\Common\Setting;
@@ -39,7 +41,7 @@ class SettingsController extends Controller
             $stripe = $stripe1->where('id', '1')->first();
 
             if (! $stripe) {
-                \Artisan::call('db:seed', ['--class' => 'database\\seeds\\StripeSupportedCurrencySeeder', '--force' => true]);
+                \Artisan::call('db:seed', ['--class' => 'database\\seeds\StripeSupportedCurrencySeeder', '--force' => true]);
             }
             $allCurrencies = StripePayment::pluck('currencies', 'id')->toArray();
             $apikey = new ApiKey();

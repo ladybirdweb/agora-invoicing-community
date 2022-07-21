@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Database\Seeders\CompanyType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;

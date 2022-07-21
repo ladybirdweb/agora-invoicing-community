@@ -2,6 +2,8 @@
 
 namespace database\seeds;
 
+use Database\Seeders\StripeSupportedCurrencySeeder;
+use Database\Seeders\CurrencySeeder;
 use App\Plugins\Stripe\Model\StripePayment;
 use Illuminate\Database\Seeder;
 

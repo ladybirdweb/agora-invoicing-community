@@ -2,6 +2,8 @@
 
 namespace App\Plugins\Razorpay\Controllers;
 
+use Database\Seeders\RazorpaySupportedCurrencySeeder;
+use Database\Seeders\CurrencySeeder;
 use App\ApiKey;
 use App\Http\Controllers\Controller;
 use App\Model\Common\Setting;
@@ -40,7 +42,7 @@ class SettingsController extends Controller
             $razorpay = $razorpay1->where('id', '1')->first();
 
             if (! $razorpay) {
-                \Artisan::call('db:seed', ['--class' => 'database\\seeds\\RazorpaySupportedCurrencySeeder', '--force' => true]);
+                \Artisan::call('db:seed', ['--class' => 'database\\seeds\RazorpaySupportedCurrencySeeder', '--force' => true]);
             }
             $allCurrencies = RazorpayPayment::pluck('currencies', 'id')->toArray();
             $rzpkey = new ApiKey();

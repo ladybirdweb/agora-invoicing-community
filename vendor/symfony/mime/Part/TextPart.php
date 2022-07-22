@@ -23,11 +23,17 @@ use Symfony\Component\Mime\Header\Headers;
  */
 class TextPart extends AbstractPart
 {
+    /** @internal */
+    protected $_headers;
+
     private static $encoders = [];
 
     private $body;
     private $charset;
     private $subtype;
+    /**
+     * @var ?string
+     */
     private $disposition;
     private $name;
     private $encoding;
@@ -36,8 +42,10 @@ class TextPart extends AbstractPart
     /**
      * @param resource|string $body
      */
-    public function __construct($body, ?string $charset = 'utf-8', $subtype = 'plain', string $encoding = null)
+    public function __construct($body, ?string $charset = 'utf-8', string $subtype = 'plain', string $encoding = null)
     {
+        unset($this->_headers);
+
         parent::__construct();
 
         if (!\is_string($body) && !\is_resource($body)) {
@@ -47,7 +55,7 @@ class TextPart extends AbstractPart
         $this->body = $body;
         $this->charset = $charset;
         $this->subtype = $subtype;
-        $this->seekable = \is_resource($body) ? stream_get_meta_data($body)['seekable'] && 0 === fseek($body, 0, SEEK_CUR) : null;
+        $this->seekable = \is_resource($body) ? stream_get_meta_data($body)['seekable'] && 0 === fseek($body, 0, \SEEK_CUR) : null;
 
         if (null === $encoding) {
             $this->encoding = $this->chooseEncoding();
@@ -86,7 +94,7 @@ class TextPart extends AbstractPart
      *
      * @return $this
      */
-    public function setName($name)
+    public function setName(string $name)
     {
         $this->name = $name;
 
@@ -131,7 +139,7 @@ class TextPart extends AbstractPart
         if ($this->charset) {
             $headers->setHeaderParameter('Content-Type', 'charset', $this->charset);
         }
-        if ($this->name) {
+        if ($this->name && 'form-data' !== $this->disposition) {
             $headers->setHeaderParameter('Content-Type', 'name', $this->name);
         }
         $headers->setHeaderBody('Text', 'Content-Transfer-Encoding', $this->encoding);

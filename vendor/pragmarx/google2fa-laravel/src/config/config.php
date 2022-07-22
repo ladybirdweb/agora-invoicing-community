@@ -25,9 +25,13 @@ return [
     'auth' => 'auth',
 
     /*
+     * Guard.
+     */
+    'guard' => '',
+
+    /*
      * 2FA verified session var.
      */
-
     'session_var' => 'google2fa',
 
     /*
@@ -74,6 +78,6 @@ return [
      *
      * Supports imagemagick, svg and eps
      */
-    'qrcode_image_backend' => \PragmaRX\Google2FALaravel\Support\Constants::QRCODE_IMAGE_BACKEND_IMAGEMAGICK,
+    'qrcode_image_backend' => \PragmaRX\Google2FALaravel\Support\Constants::QRCODE_IMAGE_BACKEND_SVG,
 
 ];

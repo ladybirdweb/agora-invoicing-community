@@ -3,7 +3,7 @@
 namespace PhpOffice\PhpSpreadsheet\Shared\JAMA;
 
 use PhpOffice\PhpSpreadsheet\Calculation\Exception as CalculationException;
-use PhpOffice\PhpSpreadsheet\Calculation\Functions;
+use PhpOffice\PhpSpreadsheet\Calculation\Information\ExcelError;
 use PhpOffice\PhpSpreadsheet\Shared\StringHelper;
 
 /**
@@ -147,7 +147,7 @@ class Matrix
      * @param int $i Row position
      * @param int $j Column position
      *
-     * @return mixed Element (int/float/double)
+     * @return float|int
      */
     public function get($i = null, $j = null)
     {
@@ -323,11 +323,9 @@ class Matrix
      *
      * @param int $i Row position
      * @param int $j Column position
-     * @param mixed $c Int/float/double value
-     *
-     * @return mixed Element (int/float/double)
+     * @param float|int $c value
      */
-    public function set($i = null, $j = null, $c = null)
+    public function set($i = null, $j = null, $c = null): void
     {
         // Optimized set version just has this
         $this->A[$i][$j] = $c;
@@ -457,17 +455,6 @@ class Matrix
     }
 
     /**
-     * uminus.
-     *
-     *    Unary minus matrix -A
-     *
-     * @return Matrix Unary minus matrix
-     */
-    public function uminus()
-    {
-    }
-
-    /**
      * plus.
      *
      *    A + B
@@ -556,7 +543,7 @@ class Matrix
                     if ($validValues) {
                         $this->A[$i][$j] += $value;
                     } else {
-                        $this->A[$i][$j] = Functions::NAN();
+                        $this->A[$i][$j] = ExcelError::NAN();
                     }
                 }
             }
@@ -656,7 +643,7 @@ class Matrix
                     if ($validValues) {
                         $this->A[$i][$j] -= $value;
                     } else {
-                        $this->A[$i][$j] = Functions::NAN();
+                        $this->A[$i][$j] = ExcelError::NAN();
                     }
                 }
             }
@@ -758,7 +745,7 @@ class Matrix
                     if ($validValues) {
                         $this->A[$i][$j] *= $value;
                     } else {
-                        $this->A[$i][$j] = Functions::NAN();
+                        $this->A[$i][$j] = ExcelError::NAN();
                     }
                 }
             }
@@ -821,7 +808,7 @@ class Matrix
                             $M->set($i, $j, $this->A[$i][$j] / $value);
                         }
                     } else {
-                        $M->set($i, $j, Functions::NAN());
+                        $M->set($i, $j, ExcelError::NAN());
                     }
                 }
             }
@@ -1103,7 +1090,7 @@ class Matrix
                     if ($validValues) {
                         $this->A[$i][$j] = $this->A[$i][$j] ** $value;
                     } else {
-                        $this->A[$i][$j] = Functions::NAN();
+                        $this->A[$i][$j] = ExcelError::NAN();
                     }
                 }
             }
@@ -1147,6 +1134,7 @@ class Matrix
             $this->checkMatrixDimensions($M);
             for ($i = 0; $i < $this->m; ++$i) {
                 for ($j = 0; $j < $this->n; ++$j) {
+                    // @phpstan-ignore-next-line
                     $this->A[$i][$j] = trim($this->A[$i][$j], '"') . trim($M->get($i, $j), '"');
                 }
             }
@@ -1164,7 +1152,7 @@ class Matrix
      *
      * @return Matrix ... Solution if A is square, least squares solution otherwise
      */
-    public function solve($B)
+    public function solve(self $B)
     {
         if ($this->m == $this->n) {
             $LU = new LUDecomposition($this);

@@ -11,12 +11,12 @@
 
 namespace League\CommonMark\Extension\HeadingPermalink;
 
+use League\CommonMark\Block\Element\Document;
 use League\CommonMark\Block\Element\Heading;
 use League\CommonMark\Event\DocumentParsedEvent;
 use League\CommonMark\Exception\InvalidOptionException;
 use League\CommonMark\Extension\HeadingPermalink\Slug\SlugGeneratorInterface as DeprecatedSlugGeneratorInterface;
-use League\CommonMark\Inline\Element\Code;
-use League\CommonMark\Inline\Element\Text;
+use League\CommonMark\Inline\Element\AbstractStringContainer;
 use League\CommonMark\Node\Node;
 use League\CommonMark\Normalizer\SlugNormalizer;
 use League\CommonMark\Normalizer\TextNormalizerInterface;
@@ -63,7 +63,7 @@ final class HeadingPermalinkProcessor implements ConfigurationAwareInterface
         while ($event = $walker->next()) {
             $node = $event->getNode();
             if ($node instanceof Heading && $event->isEntering()) {
-                $this->addHeadingLink($node);
+                $this->addHeadingLink($node, $e->getDocument());
             }
         }
     }
@@ -82,7 +82,7 @@ final class HeadingPermalinkProcessor implements ConfigurationAwareInterface
         $this->slugNormalizer = $generator;
     }
 
-    private function addHeadingLink(Heading $heading): void
+    private function addHeadingLink(Heading $heading, Document $document): void
     {
         $text = $this->getChildText($heading);
         if ($this->slugNormalizer instanceof DeprecatedSlugGeneratorInterface) {
@@ -90,6 +90,8 @@ final class HeadingPermalinkProcessor implements ConfigurationAwareInterface
         } else {
             $slug = $this->slugNormalizer->normalize($text, $heading);
         }
+
+        $slug = $this->ensureUnique($slug, $document);
 
         $headingLinkAnchor = new HeadingPermalink($slug);
 
@@ -116,11 +118,30 @@ final class HeadingPermalinkProcessor implements ConfigurationAwareInterface
 
         $walker = $node->walker();
         while ($event = $walker->next()) {
-            if ($event->isEntering() && (($child = $event->getNode()) instanceof Text || $child instanceof Code)) {
+            if ($event->isEntering() && (($child = $event->getNode()) instanceof AbstractStringContainer)) {
                 $text .= $child->getContent();
             }
         }
 
         return $text;
+    }
+
+    private function ensureUnique(string $proposed, Document $document): string
+    {
+        // Quick path, it's a unique ID
+        if (!isset($document->data['heading_ids'][$proposed])) {
+            $document->data['heading_ids'][$proposed] = true;
+
+            return $proposed;
+        }
+
+        $extension = 0;
+        do {
+            ++$extension;
+        } while (isset($document->data['heading_ids']["$proposed-$extension"]));
+
+        $document->data['heading_ids']["$proposed-$extension"] = true;
+
+        return "$proposed-$extension";
     }
 }

@@ -9,7 +9,6 @@ use Illuminate\Support\Str;
 /**
  * Trait     HasConfig
  *
- * @package  Arcanedev\Support\Providers\Concerns
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
 trait HasConfig

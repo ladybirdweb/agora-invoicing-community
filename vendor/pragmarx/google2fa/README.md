@@ -1,4 +1,5 @@
-# Google2FA - Google Two-Factor Authentication for PHP
+# Google2FA 
+## Google Two-Factor Authentication for PHP
 
 Google2FA is a PHP implementation of the Google Two-Factor Authentication Module, supporting the HMAC-Based One-time Password (HOTP) algorithm specified in [RFC 4226](https://tools.ietf.org/html/rfc4226) and the Time-based One-time Password (TOTP) algorithm specified in [RFC 6238](https://tools.ietf.org/html/rfc6238).
 
@@ -22,12 +23,12 @@ Google2FA is a PHP implementation of the Google Two-Factor Authentication Module
 ## Menu
 
   - [Version Compatibility](#version-compatibility)
-  - [Google Two-Factor Authentication for PHP Package](#google-two-factor-authentication-for-php-package)
+  - [Google Two-Factor Authentication for PHP](#google-two-factor-authentication-for-php)
   - [Laravel bridge](#laravel-bridge)
-  - [Demos, Example & Playground](#demos--example---playground)
+  - [Demos, Example & Playground](#demos-example--playground)
   - [Requirements](#requirements)
   - [Installing](#installing)
-  - [Usage](#using-it)
+  - [Usage](#usage)
   - [How To Generate And Use Two Factor Authentication](#how-to-generate-and-use-two-factor-authentication)
   - [Generating QRCodes](#generating-qrcodes)
   - [QR Code Packages](#qr-code-packages)
@@ -37,24 +38,25 @@ Google2FA is a PHP implementation of the Google Two-Factor Authentication Module
   - [Validation Window](#validation-window)
   - [Using a Bigger and Prefixing the Secret Key](#using-a-bigger-and-prefixing-the-secret-key)
   - [Google Authenticator secret key compatibility](#google-authenticator-secret-key-compatibility)
-  - [Google Authenticator Apps:](#google-authenticator-apps-)
+  - [Google Authenticator Apps](#google-authenticator-apps)
   - [Deprecation Warning](#deprecation-warning)
-  - [Tests](#tests)
+  - [Testing](#testing)
   - [Authors](#authors)
   - [License](#license)
   - [Contributing](#contributing)
 
 ## Version Compatibility
 
- PHP    | Google2FA
-:-------|:----------
- 5.4    | 7.x LTS 
- 5.5    | 7.x LTS 
- 5.6    | 7.x LTS 
- 7.1    | 8.x
- 7.2    | 8.x
- 7.3    | 8.x
- 7.4    | 8.x
+ PHP     | Google2FA
+:--------|:----------
+ 5.4     | 7.x LTS 
+ 5.5     | 7.x LTS 
+ 5.6     | 7.x LTS 
+ 7.1     | 8.x
+ 7.2     | 8.x
+ 7.3     | 8.x
+ 7.4     | 8.x
+ 8.0 (β) | 8.x
  
 ## Laravel bridge
 
@@ -247,6 +249,9 @@ And show it as an image:
 To comply with [RFC6238](https://tools.ietf.org/html/rfc6238), this package supports SHA1, SHA256 and SHA512. It defaults to SHA1, so to use a different algorithm you just have to use the method `setAlgorith()`:
 
 ``` php
+
+use PragmaRX\Google2FA\Support\Constants;
+
 $google2fa->setAlgorithm(Constants::SHA512);
 ```
 
@@ -362,7 +367,7 @@ By default, this package will enforce compatibility, but, if Google Authenticato
 $google2fa->setEnforceGoogleAuthenticatorCompatibility(false);
 ```
 
-## Google Authenticator Apps:
+## Google Authenticator Apps
 
 To use the two factor authentication, your user will have to install a Google Authenticator compatible app, those are some of the currently available:
 

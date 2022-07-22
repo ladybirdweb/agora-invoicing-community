@@ -21,8 +21,14 @@ use ScatterPlot;
 use Spline;
 use StockPlot;
 
-require_once __DIR__ . '/Polyfill.php';
-
+/**
+ * Jpgraph is not maintained in Composer, and the version there
+ * is extremely out of date. For that reason, all unit test
+ * requiring Jpgraph are skipped. So, do not measure
+ * code coverage for this class till that is fixed.
+ *
+ * @codeCoverageIgnore
+ */
 class JpGraph implements IRenderer
 {
     private static $width = 640;
@@ -219,9 +225,11 @@ class JpGraph implements IRenderer
                     break;
                 case 't':
                     $this->graph->legend->SetPos(0.5, 0.01, 'center', 'top'); //    top
+
                     break;
                 case 'b':
                     $this->graph->legend->SetPos(0.5, 0.99, 'center', 'bottom'); //    bottom
+
                     break;
                 default:
                     $this->graph->legend->SetPos(0.01, 0.01, 'right', 'top'); //    top-right
@@ -301,6 +309,8 @@ class JpGraph implements IRenderer
         $seriesPlots = [];
         if ($grouping == 'percentStacked') {
             $sumValues = $this->percentageSumCalculation($groupID, $seriesCount);
+        } else {
+            $sumValues = [];
         }
 
         //    Loop through each data series in turn
@@ -376,6 +386,8 @@ class JpGraph implements IRenderer
         $seriesPlots = [];
         if ($grouping == 'percentStacked') {
             $sumValues = $this->percentageSumCalculation($groupID, $seriesCount);
+        } else {
+            $sumValues = [];
         }
 
         //    Loop through each data series in turn

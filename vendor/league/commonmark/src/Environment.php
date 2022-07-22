@@ -104,6 +104,10 @@ final class Environment implements ConfigurableEnvironmentInterface
 
     public function mergeConfig(array $config = [])
     {
+        if (\func_num_args() === 0) {
+            @\trigger_error('Calling Environment::mergeConfig() without any parameters is deprecated in league/commonmark 1.6 and will not be allowed in 2.0', \E_USER_DEPRECATED);
+        }
+
         $this->assertUninitialized('Failed to modify configuration.');
 
         $this->config->merge($config);
@@ -111,6 +115,8 @@ final class Environment implements ConfigurableEnvironmentInterface
 
     public function setConfig(array $config = [])
     {
+        @\trigger_error('The Environment::setConfig() method is deprecated in league/commonmark 1.6 and will be removed in 2.0. Use mergeConfig() instead.', \E_USER_DEPRECATED);
+
         $this->assertUninitialized('Failed to modify configuration.');
 
         $this->config->replace($config);
@@ -305,7 +311,7 @@ final class Environment implements ConfigurableEnvironmentInterface
             ],
             'html_input'         => self::HTML_INPUT_ALLOW,
             'allow_unsafe_links' => true,
-            'max_nesting_level'  => \INF,
+            'max_nesting_level'  => \PHP_INT_MAX,
         ]);
 
         return $environment;
@@ -369,10 +375,15 @@ final class Environment implements ConfigurableEnvironmentInterface
 
         if (empty($chars)) {
             // If no special inline characters exist then parse the whole line
-            $this->inlineParserCharacterRegex = '/^.+$/u';
+            $this->inlineParserCharacterRegex = '/^.+$/';
         } else {
             // Match any character which inline parsers are not interested in
-            $this->inlineParserCharacterRegex = '/^[^' . \preg_quote(\implode('', $chars), '/') . ']+/u';
+            $this->inlineParserCharacterRegex = '/^[^' . \preg_quote(\implode('', $chars), '/') . ']+/';
+
+            // Only add the u modifier (which slows down performance) if we have a multi-byte UTF-8 character in our regex
+            if (\strlen($this->inlineParserCharacterRegex) > \mb_strlen($this->inlineParserCharacterRegex)) {
+                $this->inlineParserCharacterRegex .= 'u';
+            }
         }
     }
 
@@ -410,7 +421,7 @@ final class Environment implements ConfigurableEnvironmentInterface
             return $list[$class];
         }
 
-        while ($parent = \get_parent_class($parent ?? $class)) {
+        while (\class_exists($parent = $parent ?? $class) && $parent = \get_parent_class($parent)) {
             if (!isset($list[$parent])) {
                 continue;
             }

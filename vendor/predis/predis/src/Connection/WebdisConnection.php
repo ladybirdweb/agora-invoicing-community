@@ -119,7 +119,7 @@ class WebdisConnection implements NodeConnectionInterface
         $parameters = $this->getParameters();
         $timeout = (isset($parameters->timeout) ? (float) $parameters->timeout : 5.0) * 1000;
 
-        if (filter_var($host = $parameters->host, FILTER_VALIDATE_IP)) {
+        if (filter_var($host = $parameters->host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
             $host = "[$host]";
         }
 
@@ -292,10 +292,10 @@ class WebdisConnection implements NodeConnectionInterface
         curl_setopt($resource, CURLOPT_POSTFIELDS, $serializedCommand);
 
         if (curl_exec($resource) === false) {
-            $error = curl_error($resource);
+            $error = trim(curl_error($resource));
             $errno = curl_errno($resource);
 
-            throw new ConnectionException($this, trim($error), $errno);
+            throw new ConnectionException($this, "$error{$this->getParameters()}]", $errno);
         }
 
         if (phpiredis_reader_get_state($this->reader) !== PHPIREDIS_READER_STATE_COMPLETE) {

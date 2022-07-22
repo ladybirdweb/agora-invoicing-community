@@ -25,10 +25,16 @@ class LineFormatter extends NormalizerFormatter
 {
     public const SIMPLE_FORMAT = "[%datetime%] %channel%.%level_name%: %message% %context% %extra%\n";
 
+    /** @var string */
     protected $format;
+    /** @var bool */
     protected $allowInlineLineBreaks;
+    /** @var bool */
     protected $ignoreEmptyContextAndExtra;
+    /** @var bool */
     protected $includeStacktraces;
+    /** @var ?callable */
+    protected $stacktracesParser;
 
     /**
      * @param string|null $format                     The format of the message
@@ -36,34 +42,42 @@ class LineFormatter extends NormalizerFormatter
      * @param bool        $allowInlineLineBreaks      Whether to allow inline line breaks in log entries
      * @param bool        $ignoreEmptyContextAndExtra
      */
-    public function __construct(?string $format = null, ?string $dateFormat = null, bool $allowInlineLineBreaks = false, bool $ignoreEmptyContextAndExtra = false)
+    public function __construct(?string $format = null, ?string $dateFormat = null, bool $allowInlineLineBreaks = false, bool $ignoreEmptyContextAndExtra = false, bool $includeStacktraces = false)
     {
         $this->format = $format === null ? static::SIMPLE_FORMAT : $format;
         $this->allowInlineLineBreaks = $allowInlineLineBreaks;
         $this->ignoreEmptyContextAndExtra = $ignoreEmptyContextAndExtra;
+        $this->includeStacktraces($includeStacktraces);
         parent::__construct($dateFormat);
     }
 
-    public function includeStacktraces(bool $include = true)
+    public function includeStacktraces(bool $include = true, ?callable $parser = null): self
     {
         $this->includeStacktraces = $include;
         if ($this->includeStacktraces) {
             $this->allowInlineLineBreaks = true;
+            $this->stacktracesParser = $parser;
         }
+
+        return $this;
     }
 
-    public function allowInlineLineBreaks(bool $allow = true)
+    public function allowInlineLineBreaks(bool $allow = true): self
     {
         $this->allowInlineLineBreaks = $allow;
+
+        return $this;
     }
 
-    public function ignoreEmptyContextAndExtra(bool $ignore = true)
+    public function ignoreEmptyContextAndExtra(bool $ignore = true): self
     {
         $this->ignoreEmptyContextAndExtra = $ignore;
+
+        return $this;
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function format(array $record): string
     {
@@ -106,6 +120,10 @@ class LineFormatter extends NormalizerFormatter
         // remove leftover %extra.xxx% and %context.xxx% if any
         if (false !== strpos($output, '%')) {
             $output = preg_replace('/%(?:extra|context)\..+?%/', '', $output);
+            if (null === $output) {
+                $pcreErrorCode = preg_last_error();
+                throw new \RuntimeException('Failed to run preg_replace: ' . $pcreErrorCode . ' / ' . Utils::pcreLastErrorMessage($pcreErrorCode));
+            }
         }
 
         return $output;
@@ -121,14 +139,14 @@ class LineFormatter extends NormalizerFormatter
         return $message;
     }
 
+    /**
+     * @param mixed $value
+     */
     public function stringify($value): string
     {
         return $this->replaceNewlines($this->convertToString($value));
     }
 
-    /**
-     * @suppress PhanParamSignatureMismatch
-     */
     protected function normalizeException(\Throwable $e, int $depth = 0): string
     {
         $str = $this->formatException($e);
@@ -142,6 +160,9 @@ class LineFormatter extends NormalizerFormatter
         return $str;
     }
 
+    /**
+     * @param mixed $data
+     */
     protected function convertToString($data): string
     {
         if (null === $data || is_bool($data)) {
@@ -191,9 +212,25 @@ class LineFormatter extends NormalizerFormatter
         $str .= '): ' . $e->getMessage() . ' at ' . $e->getFile() . ':' . $e->getLine() . ')';
 
         if ($this->includeStacktraces) {
-            $str .= "\n[stacktrace]\n" . $e->getTraceAsString() . "\n";
+            $str .= $this->stacktracesParser($e);
         }
 
         return $str;
+    }
+
+    private function stacktracesParser(\Throwable $e): string
+    {
+        $trace = $e->getTraceAsString();
+
+        if ($this->stacktracesParser) {
+            $trace = $this->stacktracesParserCustom($trace);
+        }
+
+        return "\n[stacktrace]\n" . $trace . "\n";
+    }
+
+    private function stacktracesParserCustom(string $trace): string
+    {
+        return implode("\n", array_filter(array_map($this->stacktracesParser, explode("\n", $trace))));
     }
 }

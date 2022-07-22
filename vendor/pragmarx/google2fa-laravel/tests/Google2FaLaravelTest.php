@@ -251,7 +251,7 @@ class Google2FaLaravelTest extends TestCase
         $qrCode = Google2FA::getQRCodeInline('company name', 'email@company.com', Constants::SECRET);
 
         $this->assertStringStartsWith(
-            'data:image/png;base64',
+            '<?xml version="1.0"',
             $qrCode
         );
 
@@ -282,14 +282,14 @@ class Google2FaLaravelTest extends TestCase
     public function testQrCodeBackend()
     {
         $this->assertEquals(
-            PackageConstants::QRCODE_IMAGE_BACKEND_IMAGEMAGICK,
+            PackageConstants::QRCODE_IMAGE_BACKEND_SVG,
             Google2FA::getQRCodeBackend()
         );
 
-        Google2FA::setQRCodeBackend('svg');
+        Google2FA::setQRCodeBackend('imagemagick');
 
         $this->assertEquals(
-            PackageConstants::QRCODE_IMAGE_BACKEND_SVG,
+            PackageConstants::QRCODE_IMAGE_BACKEND_IMAGEMAGICK,
             Google2FA::getQRCodeBackend()
         );
     }

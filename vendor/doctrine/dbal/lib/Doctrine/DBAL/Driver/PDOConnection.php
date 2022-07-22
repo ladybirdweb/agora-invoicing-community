@@ -2,18 +2,31 @@
 
 namespace Doctrine\DBAL\Driver;
 
+use Doctrine\DBAL\Driver\Connection as ConnectionInterface;
+use Doctrine\DBAL\Driver\PDO\Exception;
+use Doctrine\DBAL\Driver\PDO\Statement;
 use Doctrine\DBAL\ParameterType;
+use Doctrine\Deprecations\Deprecation;
 use PDO;
+use PDOException;
+use PDOStatement;
+use ReturnTypeWillChange;
+
 use function assert;
-use function func_get_args;
 
 /**
  * PDO implementation of the Connection interface.
  * Used by all PDO-based drivers.
+ *
+ * @deprecated Use {@link Connection} instead
  */
-class PDOConnection extends PDO implements Connection, ServerInfoAwareConnection
+class PDOConnection extends PDO implements ConnectionInterface, ServerInfoAwareConnection
 {
+    use PDOQueryImplementation;
+
     /**
+     * @internal The connection can be only instantiated by its driver.
+     *
      * @param string       $dsn
      * @param string|null  $user
      * @param string|null  $password
@@ -25,22 +38,26 @@ class PDOConnection extends PDO implements Connection, ServerInfoAwareConnection
     {
         try {
             parent::__construct($dsn, (string) $user, (string) $password, (array) $options);
-            $this->setAttribute(PDO::ATTR_STATEMENT_CLASS, [PDOStatement::class, []]);
+            $this->setAttribute(PDO::ATTR_STATEMENT_CLASS, [Statement::class, []]);
             $this->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        } catch (\PDOException $exception) {
-            throw new PDOException($exception);
+        } catch (PDOException $exception) {
+            throw Exception::new($exception);
         }
     }
 
     /**
      * {@inheritdoc}
      */
-    public function exec($statement)
+    #[ReturnTypeWillChange]
+    public function exec($sql)
     {
         try {
-            return parent::exec($statement);
-        } catch (\PDOException $exception) {
-            throw new PDOException($exception);
+            $result = parent::exec($sql);
+            assert($result !== false);
+
+            return $result;
+        } catch (PDOException $exception) {
+            throw Exception::new($exception);
         }
     }
 
@@ -53,48 +70,41 @@ class PDOConnection extends PDO implements Connection, ServerInfoAwareConnection
     }
 
     /**
-     * @param string          $prepareString
+     * @param string          $sql
      * @param array<int, int> $driverOptions
      *
-     * @return Statement
+     * @return PDOStatement
      */
-    public function prepare($prepareString, $driverOptions = [])
+    #[ReturnTypeWillChange]
+    public function prepare($sql, $driverOptions = [])
     {
         try {
-            return parent::prepare($prepareString, $driverOptions);
-        } catch (\PDOException $exception) {
-            throw new PDOException($exception);
+            $statement = parent::prepare($sql, $driverOptions);
+            assert($statement instanceof PDOStatement);
+
+            return $statement;
+        } catch (PDOException $exception) {
+            throw Exception::new($exception);
         }
     }
 
     /**
      * {@inheritdoc}
      */
-    public function query()
+    #[ReturnTypeWillChange]
+    public function quote($value, $type = ParameterType::STRING)
     {
-        $args = func_get_args();
-
-        try {
-            $stmt = parent::query(...$args);
-            assert($stmt instanceof \PDOStatement);
-
-            return $stmt;
-        } catch (\PDOException $exception) {
-            throw new PDOException($exception);
-        }
+        return parent::quote($value, $type);
     }
 
     /**
      * {@inheritdoc}
+     *
+     * @param string|null $name
+     *
+     * @return string|int|false
      */
-    public function quote($input, $type = ParameterType::STRING)
-    {
-        return parent::quote($input, $type);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
+    #[ReturnTypeWillChange]
     public function lastInsertId($name = null)
     {
         try {
@@ -103,8 +113,8 @@ class PDOConnection extends PDO implements Connection, ServerInfoAwareConnection
             }
 
             return parent::lastInsertId($name);
-        } catch (\PDOException $exception) {
-            throw new PDOException($exception);
+        } catch (PDOException $exception) {
+            throw Exception::new($exception);
         }
     }
 
@@ -113,6 +123,28 @@ class PDOConnection extends PDO implements Connection, ServerInfoAwareConnection
      */
     public function requiresQueryForServerVersion()
     {
+        Deprecation::triggerIfCalledFromOutside(
+            'doctrine/dbal',
+            'https://github.com/doctrine/dbal/pull/4114',
+            'ServerInfoAwareConnection::requiresQueryForServerVersion() is deprecated and removed in DBAL 3.'
+        );
+
         return false;
+    }
+
+    /**
+     * @param mixed ...$args
+     */
+    private function doQuery(...$args): PDOStatement
+    {
+        try {
+            $stmt = parent::query(...$args);
+        } catch (PDOException $exception) {
+            throw Exception::new($exception);
+        }
+
+        assert($stmt instanceof PDOStatement);
+
+        return $stmt;
     }
 }

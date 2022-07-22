@@ -34,8 +34,6 @@ class PipedriveToken
      */
     public function __construct($config)
     {
-        $config = array_map('camel_case', $config);
-
         foreach ($config as $key => $value) {
             $this->{$key} = $value;
         }

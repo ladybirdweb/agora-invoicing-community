@@ -10,28 +10,51 @@
         }
     ],
     "require": {
-        "php": ">=7",
-        "illuminate/support": "^5.5|^6|^7",
-        "dompdf/dompdf": "^0.8"
+        "php": "^7.2 || ^8.0",
+        "dompdf/dompdf": "^2",
+        "illuminate/support": "^6|^7|^8|^9"
     },
-
+    "require-dev": {
+        "orchestra/testbench": "^4|^5|^6|^7",
+        "squizlabs/php_codesniffer": "^3.5",
+        "phpro/grumphp": "^1",
+        "nunomaduro/larastan": "^1|^2"
+    },
     "autoload": {
         "psr-4": {
             "Barryvdh\\DomPDF\\": "src"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Barryvdh\\DomPDF\\Tests\\": "tests"
+        }
+    },
     "extra": {
         "branch-alias": {
-            "dev-master": "0.8-dev"
+            "dev-master": "2.0-dev"
         },
         "laravel": {
             "providers": [
                 "Barryvdh\\DomPDF\\ServiceProvider"
             ],
             "aliases": {
-                "PDF": "Barryvdh\\DomPDF\\Facade"
+                "Pdf": "Barryvdh\\DomPDF\\Facade\\Pdf",
+                "PDF": "Barryvdh\\DomPDF\\Facade\\Pdf"
             }
         }
     },
-    "minimum-stability": "dev"
+    "scripts": {
+        "test": "phpunit",
+        "check-style": "phpcs -p --standard=psr12 src/",
+        "fix-style": "phpcbf -p --standard=psr12 src/",
+        "phpstan": "phpstan analyze --memory-limit=-1"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "config": {
+        "allow-plugins": {
+            "phpro/grumphp": true
+        }
+    }
 }

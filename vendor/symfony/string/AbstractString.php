@@ -29,15 +29,15 @@ use Symfony\Component\String\Exception\RuntimeException;
  */
 abstract class AbstractString implements \Stringable, \JsonSerializable
 {
-    public const PREG_PATTERN_ORDER = PREG_PATTERN_ORDER;
-    public const PREG_SET_ORDER = PREG_SET_ORDER;
-    public const PREG_OFFSET_CAPTURE = PREG_OFFSET_CAPTURE;
-    public const PREG_UNMATCHED_AS_NULL = PREG_UNMATCHED_AS_NULL;
+    public const PREG_PATTERN_ORDER = \PREG_PATTERN_ORDER;
+    public const PREG_SET_ORDER = \PREG_SET_ORDER;
+    public const PREG_OFFSET_CAPTURE = \PREG_OFFSET_CAPTURE;
+    public const PREG_UNMATCHED_AS_NULL = \PREG_UNMATCHED_AS_NULL;
 
     public const PREG_SPLIT = 0;
-    public const PREG_SPLIT_NO_EMPTY = PREG_SPLIT_NO_EMPTY;
-    public const PREG_SPLIT_DELIM_CAPTURE = PREG_SPLIT_DELIM_CAPTURE;
-    public const PREG_SPLIT_OFFSET_CAPTURE = PREG_SPLIT_OFFSET_CAPTURE;
+    public const PREG_SPLIT_NO_EMPTY = \PREG_SPLIT_NO_EMPTY;
+    public const PREG_SPLIT_DELIM_CAPTURE = \PREG_SPLIT_DELIM_CAPTURE;
+    public const PREG_SPLIT_OFFSET_CAPTURE = \PREG_SPLIT_OFFSET_CAPTURE;
 
     protected $string = '';
     protected $ignoreCase = false;
@@ -98,7 +98,6 @@ abstract class AbstractString implements \Stringable, \JsonSerializable
     public function after($needle, bool $includeNeedle = false, int $offset = 0): self
     {
         $str = clone $this;
-        $str->string = '';
         $i = \PHP_INT_MAX;
 
         foreach ((array) $needle as $n) {
@@ -130,7 +129,6 @@ abstract class AbstractString implements \Stringable, \JsonSerializable
     public function afterLast($needle, bool $includeNeedle = false, int $offset = 0): self
     {
         $str = clone $this;
-        $str->string = '';
         $i = null;
 
         foreach ((array) $needle as $n) {
@@ -167,7 +165,6 @@ abstract class AbstractString implements \Stringable, \JsonSerializable
     public function before($needle, bool $includeNeedle = false, int $offset = 0): self
     {
         $str = clone $this;
-        $str->string = '';
         $i = \PHP_INT_MAX;
 
         foreach ((array) $needle as $n) {
@@ -199,7 +196,6 @@ abstract class AbstractString implements \Stringable, \JsonSerializable
     public function beforeLast($needle, bool $includeNeedle = false, int $offset = 0): self
     {
         $str = clone $this;
-        $str->string = '';
         $i = null;
 
         foreach ((array) $needle as $n) {
@@ -621,9 +617,77 @@ abstract class AbstractString implements \Stringable, \JsonSerializable
     abstract public function trimEnd(string $chars = " \t\n\r\0\x0B\x0C\u{A0}\u{FEFF}"): self;
 
     /**
+     * @param string|string[] $prefix
+     *
+     * @return static
+     */
+    public function trimPrefix($prefix): self
+    {
+        if (\is_array($prefix) || $prefix instanceof \Traversable) {
+            foreach ($prefix as $s) {
+                $t = $this->trimPrefix($s);
+
+                if ($t->string !== $this->string) {
+                    return $t;
+                }
+            }
+
+            return clone $this;
+        }
+
+        $str = clone $this;
+
+        if ($prefix instanceof self) {
+            $prefix = $prefix->string;
+        } else {
+            $prefix = (string) $prefix;
+        }
+
+        if ('' !== $prefix && \strlen($this->string) >= \strlen($prefix) && 0 === substr_compare($this->string, $prefix, 0, \strlen($prefix), $this->ignoreCase)) {
+            $str->string = substr($this->string, \strlen($prefix));
+        }
+
+        return $str;
+    }
+
+    /**
      * @return static
      */
     abstract public function trimStart(string $chars = " \t\n\r\0\x0B\x0C\u{A0}\u{FEFF}"): self;
+
+    /**
+     * @param string|string[] $suffix
+     *
+     * @return static
+     */
+    public function trimSuffix($suffix): self
+    {
+        if (\is_array($suffix) || $suffix instanceof \Traversable) {
+            foreach ($suffix as $s) {
+                $t = $this->trimSuffix($s);
+
+                if ($t->string !== $this->string) {
+                    return $t;
+                }
+            }
+
+            return clone $this;
+        }
+
+        $str = clone $this;
+
+        if ($suffix instanceof self) {
+            $suffix = $suffix->string;
+        } else {
+            $suffix = (string) $suffix;
+        }
+
+        if ('' !== $suffix && \strlen($this->string) >= \strlen($suffix) && 0 === substr_compare($this->string, $suffix, -\strlen($suffix), null, $this->ignoreCase)) {
+            $str->string = substr($this->string, 0, -\strlen($suffix));
+        }
+
+        return $str;
+    }
 
     /**
      * @return static

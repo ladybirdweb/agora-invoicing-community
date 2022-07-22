@@ -1,6 +1,39 @@
 CHANGELOG
 =========
 
+2.12.2 (2021-11-30)
+-------------------
+
+* The `geoip2.phar` now works when included from another directory.
+  Reported by Eduardo Ruiz. GitHub #179.
+
+2.12.1 (2021-11-23)
+-------------------
+
+* The `geoip2.phar` included in 2.12.0 would only work in CLI applications.
+  This was due to a change in Box 3.x. The Phar should now work in all
+  applications. This release only affects users of the Phar file.
+
+2.12.0 (2021-11-18)
+-------------------
+
+* Support for mobile country code (MCC) and mobile network codes (MNC) was
+  added for the GeoIP2 ISP and Enterprise databases as well as the GeoIP2
+  City and Insights web services. `$mobileCountryCode` and
+  `$mobileNetworkCode` properties were added to `GeoIp2\Model\Isp`
+  for the GeoIP2 ISP database and `GeoIp2\Record\Traits` for the Enterprise
+  database and the GeoIP2 City and Insights web services. We expect this data
+  to be available by late January, 2022.
+* `geoip2.phar` is now generated with Box 3.x.
+
+2.11.0 (2020-10-01)
+-------------------
+
+* IMPORTANT: PHP 7.2 or greater is now required.
+* Added the `isResidentialProxy` property to `GeoIp2\Model\AnonymousIP` and
+  `GeoIp2\Record\Traits`.
+* Additional type hints have been added.
+
 2.10.0 (2019-12-12)
 -------------------
 

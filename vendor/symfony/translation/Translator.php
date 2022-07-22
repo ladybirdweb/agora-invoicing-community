@@ -43,7 +43,7 @@ class Translator implements TranslatorInterface, TranslatorBagInterface, LocaleA
     private $locale;
 
     /**
-     * @var array
+     * @var string[]
      */
     private $fallbackLocales = [];
 
@@ -134,6 +134,7 @@ class Translator implements TranslatorInterface, TranslatorBagInterface, LocaleA
         }
 
         $this->assertValidLocale($locale);
+        $locale ?: $locale = class_exists(\Locale::class) ? \Locale::getDefault() : 'en';
 
         $this->resources[$locale][] = [$format, $resource, $domain];
 
@@ -158,13 +159,13 @@ class Translator implements TranslatorInterface, TranslatorBagInterface, LocaleA
      */
     public function getLocale()
     {
-        return $this->locale;
+        return $this->locale ?: (class_exists(\Locale::class) ? \Locale::getDefault() : 'en');
     }
 
     /**
      * Sets the fallback locales.
      *
-     * @param array $locales The fallback locales
+     * @param string[] $locales
      *
      * @throws InvalidArgumentException If a locale contains invalid characters
      */
@@ -214,7 +215,11 @@ class Translator implements TranslatorInterface, TranslatorBagInterface, LocaleA
             }
         }
 
-        if ($this->hasIntlFormatter && $catalogue->defines($id, $domain.MessageCatalogue::INTL_DOMAIN_SUFFIX)) {
+        $len = \strlen(MessageCatalogue::INTL_DOMAIN_SUFFIX);
+        if ($this->hasIntlFormatter
+            && ($catalogue->defines($id, $domain.MessageCatalogue::INTL_DOMAIN_SUFFIX)
+            || (\strlen($domain) > $len && 0 === substr_compare($domain, MessageCatalogue::INTL_DOMAIN_SUFFIX, -$len, $len)))
+        ) {
             return $this->formatter->formatIntl($catalogue->get($id, $domain), $locale, $parameters);
         }
 
@@ -226,7 +231,7 @@ class Translator implements TranslatorInterface, TranslatorBagInterface, LocaleA
      */
     public function getCatalogue(string $locale = null)
     {
-        if (null === $locale) {
+        if (!$locale) {
             $locale = $this->getLocale();
         } else {
             $this->assertValidLocale($locale);
@@ -240,9 +245,17 @@ class Translator implements TranslatorInterface, TranslatorBagInterface, LocaleA
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getCatalogues(): array
+    {
+        return array_values($this->catalogues);
+    }
+
+    /**
      * Gets the loaders.
      *
-     * @return array LoaderInterface[]
+     * @return LoaderInterface[]
      */
     protected function getLoaders()
     {
@@ -397,20 +410,14 @@ EOF
     protected function computeFallbackLocales(string $locale)
     {
         if (null === $this->parentLocales) {
-            $parentLocales = json_decode(file_get_contents(__DIR__.'/Resources/data/parents.json'), true);
+            $this->parentLocales = json_decode(file_get_contents(__DIR__.'/Resources/data/parents.json'), true);
         }
 
+        $originLocale = $locale;
         $locales = [];
-        foreach ($this->fallbackLocales as $fallback) {
-            if ($fallback === $locale) {
-                continue;
-            }
-
-            $locales[] = $fallback;
-        }
 
         while ($locale) {
-            $parent = $parentLocales[$locale] ?? null;
+            $parent = $this->parentLocales[$locale] ?? null;
 
             if ($parent) {
                 $locale = 'root' !== $parent ? $parent : null;
@@ -428,8 +435,16 @@ EOF
             }
 
             if (null !== $locale) {
-                array_unshift($locales, $locale);
+                $locales[] = $locale;
             }
+        }
+
+        foreach ($this->fallbackLocales as $fallback) {
+            if ($fallback === $originLocale) {
+                continue;
+            }
+
+            $locales[] = $fallback;
         }
 
         return array_unique($locales);
@@ -442,7 +457,7 @@ EOF
      */
     protected function assertValidLocale(string $locale)
     {
-        if (1 !== preg_match('/^[a-z0-9@_\\.\\-]*$/i', $locale)) {
+        if (!preg_match('/^[a-z0-9@_\\.\\-]*$/i', $locale)) {
             throw new InvalidArgumentException(sprintf('Invalid "%s" locale.', $locale));
         }
     }

@@ -11,7 +11,6 @@ use Illuminate\Database\Schema\Builder;
 /**
  * Class     Migration
  *
- * @package  Arcanedev\Support\Database
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
 abstract class Migration extends IlluminateMigration

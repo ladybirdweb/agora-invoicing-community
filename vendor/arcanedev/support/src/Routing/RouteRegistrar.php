@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Arcanedev\Support\Routing;
 
 use Arcanedev\Support\Routing\Concerns\RegistersRouteClasses;
-use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\Registrar;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Traits\ForwardsCalls;
@@ -13,7 +12,6 @@ use Illuminate\Support\Traits\ForwardsCalls;
 /**
  * Class     RouteRegistrar
  *
- * @package  Arcanedev\Support\Routing
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  *
  * @method  \Illuminate\Routing\RouteRegistrar  bind(string $key, \Closure $binder)

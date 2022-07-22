@@ -7,7 +7,6 @@ namespace Arcanedev\Support\Providers\Concerns;
 /**
  * Trait     HasMigrations
  *
- * @package  Arcanedev\Support\Providers\Concerns
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
 trait HasMigrations

@@ -23,23 +23,24 @@ class Google2FA extends Google2FAService
     protected $qrCodeBackend;
 
     /**
-     * Construct the correct backend.
+     * Get current image correct backend.
      */
-    protected function constructBackend(): void
+    protected function getImageBackend()
     {
+        if (!class_exists('BaconQrCode\Renderer\ImageRenderer')) {
+            return null;
+        }
+
         switch ($this->getQRCodeBackend()) {
             case Constants::QRCODE_IMAGE_BACKEND_SVG:
-                parent::__construct(new \BaconQrCode\Renderer\Image\SvgImageBackEnd());
-                break;
+                return new \BaconQrCode\Renderer\Image\SvgImageBackEnd();
 
             case Constants::QRCODE_IMAGE_BACKEND_EPS:
-                parent::__construct(new \BaconQrCode\Renderer\Image\EpsImageBackEnd());
-                break;
+                return new \BaconQrCode\Renderer\Image\EpsImageBackEnd();
 
             case Constants::QRCODE_IMAGE_BACKEND_IMAGEMAGICK:
             default:
-                parent::__construct();
-                break;
+                return null;
         }
     }
 
@@ -66,7 +67,7 @@ class Google2FA extends Google2FAService
     {
         $this->boot($request);
 
-        $this->constructBackend();
+        parent::__construct(null, $this->getImageBackend());
     }
 
     /**
@@ -79,6 +80,8 @@ class Google2FA extends Google2FAService
     public function boot($request)
     {
         $this->setRequest($request);
+
+        $this->setWindow($this->config('window'));
 
         return $this;
     }
@@ -261,7 +264,7 @@ class Google2FA extends Google2FAService
         return $this->verifyKey(
             $secret,
             $one_time_password,
-            $this->config('window'),
+            $this->getWindow(),
             null, // $timestamp
                 $this->getOldTimestamp() ?: null
         );
@@ -276,7 +279,7 @@ class Google2FA extends Google2FAService
      */
     protected function verifyAndStoreOneTimePassword($one_time_password)
     {
-        return $this->storeOldTimeStamp(
+        return $this->storeOldTimestamp(
             $this->verifyGoogle2FA(
                 $this->getGoogle2FASecretKey(),
                 $one_time_password

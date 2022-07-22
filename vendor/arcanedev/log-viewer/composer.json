@@ -1,6 +1,6 @@
 {
     "name":        "arcanedev/log-viewer",
-    "description": "Provides a Log Viewer for Laravel 5/6",
+    "description": "Provides a Log Viewer for Laravel",
     "keywords":    ["arcanedev", "arcanesoft", "laravel", "log", "log viewer", "log-viewer", "logviewer"],
     "homepage":    "https://github.com/ARCANEDEV/LogViewer",
     "authors": [
@@ -14,14 +14,16 @@
     "type":    "library",
     "license": "MIT",
     "require": {
-        "php":               "^7.2.5",
-        "ext-json":          "*",
-        "psr/log":           "^1.0",
-        "arcanedev/support": "^7.0"
+        "php": "^7.3|^8.0",
+        "ext-json": "*",
+        "arcanedev/support": "^8.0",
+        "psr/log": "^1.1 || ^2.0"
     },
     "require-dev": {
-        "orchestra/testbench": "^5.0",
-        "phpunit/phpunit":     "^8.0|^9.0"
+        "laravel/framework": "^8.74",
+        "mockery/mockery": "^1.4.2",
+        "orchestra/testbench-core": "^6.27",
+        "phpunit/phpunit": "^9.5.10"
     },
     "autoload": {
         "psr-4": {
@@ -34,13 +36,24 @@
             "Arcanedev\\LogViewer\\Tests\\": "tests/"
         }
     },
+    "scripts": {
+        "test": "phpunit --colors=always",
+        "test:dox": "phpunit --testdox --colors=always",
+        "test:cov": "phpunit --coverage-html coverage"
+    },
     "extra": {
+        "branch-alias": {
+            "dev-develop": "8.x-dev"
+        },
         "laravel": {
             "providers": [
                 "Arcanedev\\LogViewer\\LogViewerServiceProvider",
                 "Arcanedev\\LogViewer\\Providers\\DeferredServicesProvider"
             ]
         }
+    },
+    "config": {
+        "sort-packages": true
     },
     "minimum-stability": "dev",
     "prefer-stable": true

@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * This file is part of the Carbon package.
+ *
+ * (c) Brian Nesbitt <brian@nesbot.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Carbon\PHPStan;
 
 use Carbon\CarbonInterface;
@@ -20,7 +29,9 @@ final class MacroScanner
      */
     public function hasMethod(string $className, string $methodName): bool
     {
-        return is_a($className, CarbonInterface::class, true) && $className::hasMacro($methodName);
+        return is_a($className, CarbonInterface::class, true) &&
+            \is_callable([$className, 'hasMacro']) &&
+            $className::hasMacro($methodName);
     }
 
     /**

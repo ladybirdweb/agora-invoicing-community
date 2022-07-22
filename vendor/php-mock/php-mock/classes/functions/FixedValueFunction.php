@@ -11,12 +11,11 @@ namespace phpmock\functions;
  */
 class FixedValueFunction implements FunctionProvider, Incrementable
 {
-    
     /**
      * @var mixed The fixed value for the function.
      */
     private $value;
-    
+
     /**
      * Set the value.
      *
@@ -26,7 +25,7 @@ class FixedValueFunction implements FunctionProvider, Incrementable
     {
         $this->setValue($value);
     }
-    
+
     /**
      * Returns this object as a callable for the mock function.
      *
@@ -48,7 +47,7 @@ class FixedValueFunction implements FunctionProvider, Incrementable
     {
         $this->value = $value;
     }
-    
+
     public function increment($increment)
     {
         $this->value += $increment;

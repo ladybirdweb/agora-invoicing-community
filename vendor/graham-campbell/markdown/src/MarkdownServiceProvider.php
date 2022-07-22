@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Laravel Markdown.
  *
- * (c) Graham Campbell <graham@alt-three.com>
+ * (c) Graham Campbell <hello@gjcampbell.co.uk>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -23,16 +23,16 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\View\Engines\CompilerEngine;
 use Laravel\Lumen\Application as LumenApplication;
-use League\CommonMark\Converter;
-use League\CommonMark\ConverterInterface;
-use League\CommonMark\DocParser;
+use League\CommonMark\CommonMarkConverter;
+use League\CommonMark\ConfigurableEnvironmentInterface;
 use League\CommonMark\Environment;
-use League\CommonMark\HtmlRenderer;
+use League\CommonMark\EnvironmentInterface;
+use League\CommonMark\MarkdownConverterInterface;
 
 /**
  * This is the markdown service provider class.
  *
- * @author Graham Campbell <graham@alt-three.com>
+ * @author Graham Campbell <hello@gjcampbell.co.uk>
  */
 class MarkdownServiceProvider extends ServiceProvider
 {
@@ -178,6 +178,8 @@ class MarkdownServiceProvider extends ServiceProvider
         });
 
         $this->app->alias('markdown.environment', Environment::class);
+        $this->app->alias('markdown.environment', EnvironmentInterface::class);
+        $this->app->alias('markdown.environment', ConfigurableEnvironmentInterface::class);
     }
 
     /**
@@ -189,14 +191,12 @@ class MarkdownServiceProvider extends ServiceProvider
     {
         $this->app->singleton('markdown', function (Container $app) {
             $environment = $app['markdown.environment'];
-            $docParser = new DocParser($environment);
-            $htmlRenderer = new HtmlRenderer($environment);
 
-            return new Converter($docParser, $htmlRenderer);
+            return new CommonMarkConverter([], $environment);
         });
 
-        $this->app->alias('markdown', Converter::class);
-        $this->app->alias('markdown', ConverterInterface::class);
+        $this->app->alias('markdown', CommonMarkConverter::class);
+        $this->app->alias('markdown', MarkdownConverterInterface::class);
     }
 
     /**

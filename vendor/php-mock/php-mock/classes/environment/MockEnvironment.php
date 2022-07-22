@@ -14,12 +14,11 @@ use phpmock\Mock;
  */
 class MockEnvironment implements Deactivatable
 {
-    
     /**
      * @var Mock[] Mock environment.
      */
     private $mocks = [];
-    
+
     /**
      * Sets the mocks for this environment.
      *
@@ -29,7 +28,7 @@ class MockEnvironment implements Deactivatable
     {
         $this->mocks = $mocks;
     }
-    
+
     /**
      * Adds a mock to this environment.
      *
@@ -39,7 +38,7 @@ class MockEnvironment implements Deactivatable
     {
         $this->mocks[] = $mock;
     }
-    
+
     /**
      * Enable all mocks in this environment.
      */
@@ -49,7 +48,7 @@ class MockEnvironment implements Deactivatable
             $mock->enable();
         }
     }
-    
+
     /**
      * Define all mocks in this environment.
      *
@@ -61,7 +60,7 @@ class MockEnvironment implements Deactivatable
             $mock->define();
         }
     }
-    
+
     /**
      * Disable all mocks in this environment.
      */

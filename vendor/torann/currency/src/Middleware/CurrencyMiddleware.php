@@ -10,8 +10,8 @@ class CurrencyMiddleware
     /**
      * Handle an incoming request.
      *
-     * @param  Request $request
-     * @param  Closure $next
+     * @param Request $request
+     * @param Closure $next
      *
      * @return mixed
      */
@@ -49,7 +49,7 @@ class CurrencyMiddleware
         }
 
         // Get currency from session
-        $currency = $request->getSession()->get('currency');
+        $currency = $request->session()->get('currency');
         if ($currency && currency()->isActive($currency) === true) {
             return $currency;
         }
@@ -93,7 +93,7 @@ class CurrencyMiddleware
         currency()->setUserCurrency($currency);
 
         // Save it for later too!
-        $request->getSession()->put(['currency' => $currency]);
+        $request->session()->put(['currency' => $currency]);
 
         return $currency;
     }

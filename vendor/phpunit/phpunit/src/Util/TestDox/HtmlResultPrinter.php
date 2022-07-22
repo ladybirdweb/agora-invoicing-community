@@ -9,6 +9,7 @@
  */
 namespace PHPUnit\Util\TestDox;
 
+use function sprintf;
 use PHPUnit\Framework\TestResult;
 
 /**
@@ -19,7 +20,7 @@ final class HtmlResultPrinter extends ResultPrinter
     /**
      * @var string
      */
-    private const PAGE_HEADER = <<<EOT
+    private const PAGE_HEADER = <<<'EOT'
 <!doctype html>
 <html lang="en">
     <head>
@@ -31,6 +32,8 @@ final class HtmlResultPrinter extends ResultPrinter
                 font-variant-ligatures: common-ligatures;
                 font-kerning: normal;
                 margin-left: 2em;
+                background-color: #ffffff;
+                color: #000000;
             }
 
             body > ul > li {
@@ -55,7 +58,7 @@ EOT;
     /**
      * @var string
      */
-    private const CLASS_HEADER = <<<EOT
+    private const CLASS_HEADER = <<<'EOT'
 
         <h2 id="%s">%s</h2>
         <ul>
@@ -65,14 +68,14 @@ EOT;
     /**
      * @var string
      */
-    private const CLASS_FOOTER = <<<EOT
+    private const CLASS_FOOTER = <<<'EOT'
         </ul>
 EOT;
 
     /**
      * @var string
      */
-    private const PAGE_FOOTER = <<<EOT
+    private const PAGE_FOOTER = <<<'EOT'
 
     </body>
 </html>
@@ -96,7 +99,7 @@ EOT;
     protected function startClass(string $name): void
     {
         $this->write(
-            \sprintf(
+            sprintf(
                 self::CLASS_HEADER,
                 $name,
                 $this->currentTestClassPrettified
@@ -110,7 +113,7 @@ EOT;
     protected function onTest(string $name, bool $success = true): void
     {
         $this->write(
-            \sprintf(
+            sprintf(
                 "            <li style=\"color: %s;\">%s %s</li>\n",
                 $success ? '#555753' : '#ef2929',
                 $success ? '✓' : '❌',

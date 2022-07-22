@@ -3,8 +3,9 @@
 namespace Maatwebsite\Excel\Validators;
 
 use Illuminate\Contracts\Support\Arrayable;
+use JsonSerializable;
 
-class Failure implements Arrayable
+class Failure implements Arrayable, JsonSerializable
 {
     /**
      * @var int
@@ -27,10 +28,10 @@ class Failure implements Arrayable
     private $values;
 
     /**
-     * @param int    $row
-     * @param string $attribute
-     * @param array  $errors
-     * @param array  $values
+     * @param  int  $row
+     * @param  string  $attribute
+     * @param  array  $errors
+     * @param  array  $values
      */
     public function __construct(int $row, string $attribute, array $errors, array $values = [])
     {
@@ -80,5 +81,19 @@ class Failure implements Arrayable
         return collect($this->errors)->map(function ($message) {
             return __('There was an error on row :row. :message', ['row' => $this->row, 'message' => $message]);
         })->all();
+    }
+
+    /**
+     * @return array
+     */
+    #[\ReturnTypeWillChange]
+    public function jsonSerialize()
+    {
+        return [
+            'row'       => $this->row(),
+            'attribute' => $this->attribute(),
+            'errors'    => $this->errors(),
+            'values'    => $this->values(),
+        ];
     }
 }

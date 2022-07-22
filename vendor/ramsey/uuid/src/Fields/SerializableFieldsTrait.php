@@ -14,8 +14,11 @@ declare(strict_types=1);
 
 namespace Ramsey\Uuid\Fields;
 
+use ValueError;
+
 use function base64_decode;
-use function base64_encode;
+use function sprintf;
+use function strlen;
 
 /**
  * Provides common serialization functionality to fields
@@ -39,7 +42,15 @@ trait SerializableFieldsTrait
      */
     public function serialize(): string
     {
-        return base64_encode($this->getBytes());
+        return $this->getBytes();
+    }
+
+    /**
+     * @return array{bytes: string}
+     */
+    public function __serialize(): array
+    {
+        return ['bytes' => $this->getBytes()];
     }
 
     /**
@@ -48,9 +59,28 @@ trait SerializableFieldsTrait
      * @param string $serialized The serialized string representation of the object
      *
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
+     * @psalm-suppress UnusedMethodCall
      */
     public function unserialize($serialized): void
     {
-        $this->__construct(base64_decode($serialized));
+        if (strlen($serialized) === 16) {
+            $this->__construct($serialized);
+        } else {
+            $this->__construct(base64_decode($serialized));
+        }
+    }
+
+    /**
+     * @param array{bytes: string} $data
+     */
+    public function __unserialize(array $data): void
+    {
+        // @codeCoverageIgnoreStart
+        if (!isset($data['bytes'])) {
+            throw new ValueError(sprintf('%s(): Argument #1 ($data) is invalid', __METHOD__));
+        }
+        // @codeCoverageIgnoreEnd
+
+        $this->unserialize($data['bytes']);
     }
 }

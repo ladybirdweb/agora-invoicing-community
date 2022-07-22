@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * This file is part of the Carbon package.
+ *
+ * (c) Brian Nesbitt <brian@nesbot.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Carbon\Laravel;
 
 use Carbon\Carbon;
@@ -42,7 +51,6 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         CarbonPeriod::setLocale($locale);
         CarbonInterval::setLocale($locale);
 
-        // @codeCoverageIgnoreStart
         if (class_exists(IlluminateCarbon::class)) {
             IlluminateCarbon::setLocale($locale);
         }
@@ -55,7 +63,6 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
                 // Non Carbon class in use in Date facade
             }
         }
-        // @codeCoverageIgnoreEnd
     }
 
     public function register()

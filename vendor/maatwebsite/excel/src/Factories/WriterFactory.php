@@ -2,6 +2,7 @@
 
 namespace Maatwebsite\Excel\Factories;
 
+use Maatwebsite\Excel\Cache\CacheManager;
 use Maatwebsite\Excel\Concerns\MapsCsvSettings;
 use Maatwebsite\Excel\Concerns\WithCharts;
 use Maatwebsite\Excel\Concerns\WithCustomCsvSettings;
@@ -18,16 +19,20 @@ class WriterFactory
     use MapsCsvSettings;
 
     /**
-     * @param string      $writerType
-     * @param Spreadsheet $spreadsheet
-     * @param object      $export
+     * @param  string  $writerType
+     * @param  Spreadsheet  $spreadsheet
+     * @param  object  $export
+     * @return IWriter
      *
      * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
-     * @return IWriter
      */
     public static function make(string $writerType, Spreadsheet $spreadsheet, $export): IWriter
     {
         $writer = IOFactory::createWriter($spreadsheet, $writerType);
+
+        $writer->setUseDiskCaching(
+            config('excel.cache.driver', CacheManager::DRIVER_MEMORY) !== CacheManager::DRIVER_MEMORY
+        );
 
         if (static::includesCharts($export)) {
             $writer->setIncludeCharts(true);
@@ -46,10 +51,12 @@ class WriterFactory
 
             $writer->setDelimiter(static::$delimiter);
             $writer->setEnclosure(static::$enclosure);
+            $writer->setEnclosureRequired((bool) static::$enclosure);
             $writer->setLineEnding(static::$lineEnding);
             $writer->setUseBOM(static::$useBom);
             $writer->setIncludeSeparatorLine(static::$includeSeparatorLine);
             $writer->setExcelCompatibility(static::$excelCompatibility);
+            $writer->setOutputEncoding(static::$outputEncoding);
         }
 
         // Calculation settings
@@ -64,7 +71,6 @@ class WriterFactory
 
     /**
      * @param $export
-     *
      * @return bool
      */
     private static function includesCharts($export): bool

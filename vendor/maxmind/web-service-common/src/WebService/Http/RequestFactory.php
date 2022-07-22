@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MaxMind\WebService\Http;
 
 /**
@@ -14,7 +16,7 @@ class RequestFactory
      * done the connection is kept alive, SSL resumption can be used
      * etcetera.
      *
-     * @var resource
+     * @var \CurlHandle|null
      */
     private $ch;
 
@@ -25,6 +27,9 @@ class RequestFactory
         }
     }
 
+    /**
+     * @return \CurlHandle
+     */
     private function getCurlHandle()
     {
         if (empty($this->ch)) {
@@ -34,13 +39,7 @@ class RequestFactory
         return $this->ch;
     }
 
-    /**
-     * @param string $url
-     * @param array  $options
-     *
-     * @return Request
-     */
-    public function request($url, $options)
+    public function request(string $url, array $options): Request
     {
         $options['curlHandle'] = $this->getCurlHandle();
 

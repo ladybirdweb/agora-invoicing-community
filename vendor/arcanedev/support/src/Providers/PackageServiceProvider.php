@@ -15,7 +15,6 @@ use ReflectionClass;
 /**
  * Class     PackageServiceProvider
  *
- * @package  Arcanedev\Support\Providers
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
 abstract class PackageServiceProvider extends ServiceProvider

@@ -1,5 +1,24 @@
 ## Change Log
 
+## [2.0.1] - 2021-08-15
+### Added
+- Make image backend optional if bacon is not installed
+
+## [2.0.0] - 2021-08-15
+### Added
+- Allow Google2FA QRCode 3.0
+
+## [1.4.1] - 2020-09-20
+### Added
+- Improve PHP 8 compatibility by not defaulting to imagemagick
+- Make the code PHP 7.0 compatible
+- Supports using a different guard
+- Ability to setWindow dynamically
+
+## [1.4.0] - 2020-09-20
+### Added
+- Laravel 8 support
+
 ## [1.1.2] - 2019-03-13
 ### Added
 - New config item for empty OTP error messages: 'cannot_be_empty' => 'One Time Password cannot be empty.',  

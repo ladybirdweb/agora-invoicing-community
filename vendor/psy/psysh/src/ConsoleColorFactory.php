@@ -3,7 +3,7 @@
 /*
  * This file is part of Psy Shell.
  *
- * (c) 2012-2020 Justin Hileman
+ * (c) 2012-2022 Justin Hileman
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -21,7 +21,7 @@ class ConsoleColorFactory
     /**
      * @param string $colorMode
      */
-    public function __construct($colorMode)
+    public function __construct(string $colorMode)
     {
         // Nothing to see here
     }
@@ -32,7 +32,7 @@ class ConsoleColorFactory
      *
      * @return ConsoleColor
      */
-    public function getConsoleColor()
+    public function getConsoleColor(): ConsoleColor
     {
         return new ConsoleColor(); // /shrug
     }

@@ -17,6 +17,9 @@
             this.chart = new Chart(this.context, {
                 type: 'line',
                 options: {
+                    tooltips: {
+                        intersect: false,
+                    },
                     legend: {
                         display: false,
                     },
@@ -24,7 +27,12 @@
                         yAxes: [
                             {
                                 ticks: {
-                                    beginAtZero: true
+                                    beginAtZero: true,
+                                     callback: (value, index, values) => {
+                                        return this.data.datasets[0].label === "Seconds"
+                                            ? `${value} secs`
+                                            : value;
+                                    },
                                 },
                                 gridLines: {
                                     display: true

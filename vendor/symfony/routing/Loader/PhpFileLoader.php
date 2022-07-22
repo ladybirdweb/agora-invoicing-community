@@ -33,7 +33,7 @@ class PhpFileLoader extends FileLoader
      * @param string      $file A PHP file path
      * @param string|null $type The resource type
      *
-     * @return RouteCollection A RouteCollection instance
+     * @return RouteCollection
      */
     public function load($file, string $type = null)
     {
@@ -64,14 +64,14 @@ class PhpFileLoader extends FileLoader
      */
     public function supports($resource, string $type = null)
     {
-        return \is_string($resource) && 'php' === pathinfo($resource, PATHINFO_EXTENSION) && (!$type || 'php' === $type);
+        return \is_string($resource) && 'php' === pathinfo($resource, \PATHINFO_EXTENSION) && (!$type || 'php' === $type);
     }
 
     protected function callConfigurator(callable $result, string $path, string $file): RouteCollection
     {
         $collection = new RouteCollection();
 
-        $result(new RoutingConfigurator($collection, $this, $path, $file));
+        $result(new RoutingConfigurator($collection, $this, $path, $file, $this->env));
 
         return $collection;
     }

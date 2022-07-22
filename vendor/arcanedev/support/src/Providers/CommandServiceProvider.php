@@ -7,7 +7,6 @@ namespace Arcanedev\Support\Providers;
 /**
  * Class     CommandServiceProvider
  *
- * @package  Arcanedev\Support\Providers
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
 abstract class CommandServiceProvider extends ServiceProvider

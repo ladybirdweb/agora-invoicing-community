@@ -24,17 +24,18 @@
     "license": "MIT",
     "require": {
         "php": ">=5.3.0",
-        "rmccue/requests": "v1.7.0",
+        "rmccue/requests": "^2.0",
         "ext-json": "*"
     },
     "require-dev": {
         "raveren/kint": "1.*",
-        "phpunit/phpunit": "~4.8|~5.0"
+        "phpunit/phpunit": "^9"
     },
     "autoload": {
         "psr-4": {
             "Razorpay\\Api\\": "src/",
             "Razorpay\\Tests\\": "tests/"
-        }
+        },
+        "files" : ["Deprecated.php"]
     }
 }

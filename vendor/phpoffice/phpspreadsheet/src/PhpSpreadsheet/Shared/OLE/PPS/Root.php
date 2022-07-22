@@ -46,8 +46,8 @@ class Root extends PPS
     private $bigBlockSize;
 
     /**
-     * @param int $time_1st A timestamp
-     * @param int $time_2nd A timestamp
+     * @param null|float|int $time_1st A timestamp
+     * @param null|float|int $time_2nd A timestamp
      * @param File[] $raChild
      */
     public function __construct($time_1st, $time_2nd, $raChild)
@@ -71,30 +71,30 @@ class Root extends PPS
         $this->fileHandle = $fileHandle;
 
         // Initial Setting for saving
-        $this->bigBlockSize = 2 ** (
+        $this->bigBlockSize = (int) (2 ** (
             (isset($this->bigBlockSize)) ? self::adjust2($this->bigBlockSize) : 9
-            );
-        $this->smallBlockSize = 2 ** (
+        ));
+        $this->smallBlockSize = (int) (2 ** (
             (isset($this->smallBlockSize)) ? self::adjust2($this->smallBlockSize) : 6
-            );
+        ));
 
         // Make an array of PPS's (for Save)
         $aList = [];
-        PPS::_savePpsSetPnt($aList, [$this]);
+        PPS::savePpsSetPnt($aList, [$this]);
         // calculate values for header
-        [$iSBDcnt, $iBBcnt, $iPPScnt] = $this->_calcSize($aList); //, $rhInfo);
+        [$iSBDcnt, $iBBcnt, $iPPScnt] = $this->calcSize($aList); //, $rhInfo);
         // Save Header
-        $this->_saveHeader($iSBDcnt, $iBBcnt, $iPPScnt);
+        $this->saveHeader($iSBDcnt, $iBBcnt, $iPPScnt);
 
         // Make Small Data string (write SBD)
-        $this->_data = $this->_makeSmallData($aList);
+        $this->_data = $this->makeSmallData($aList);
 
         // Write BB
-        $this->_saveBigData($iSBDcnt, $aList);
+        $this->saveBigData($iSBDcnt, $aList);
         // Write PPS
-        $this->_savePps($aList);
+        $this->savePps($aList);
         // Write Big Block Depot and BDList and Adding Header informations
-        $this->_saveBbd($iSBDcnt, $iBBcnt, $iPPScnt);
+        $this->saveBbd($iSBDcnt, $iBBcnt, $iPPScnt);
 
         return true;
     }
@@ -106,7 +106,7 @@ class Root extends PPS
      *
      * @return float[] The array of numbers
      */
-    public function _calcSize(&$raList)
+    private function calcSize(&$raList)
     {
         // Calculate Basic Setting
         [$iSBDcnt, $iBBcnt, $iPPScnt] = [0, 0, 0];
@@ -160,7 +160,7 @@ class Root extends PPS
      * @param int $iBBcnt
      * @param int $iPPScnt
      */
-    public function _saveHeader($iSBDcnt, $iBBcnt, $iPPScnt): void
+    private function saveHeader($iSBDcnt, $iBBcnt, $iPPScnt): void
     {
         $FILE = $this->fileHandle;
 
@@ -237,9 +237,9 @@ class Root extends PPS
      * Saving big data (PPS's with data bigger than \PhpOffice\PhpSpreadsheet\Shared\OLE::OLE_DATA_SIZE_SMALL).
      *
      * @param int $iStBlk
-     * @param array &$raList Reference to array of PPS's
+     * @param array $raList Reference to array of PPS's
      */
-    public function _saveBigData($iStBlk, &$raList): void
+    private function saveBigData($iStBlk, &$raList): void
     {
         $FILE = $this->fileHandle;
 
@@ -267,11 +267,11 @@ class Root extends PPS
     /**
      * get small data (PPS's with data smaller than \PhpOffice\PhpSpreadsheet\Shared\OLE::OLE_DATA_SIZE_SMALL).
      *
-     * @param array &$raList Reference to array of PPS's
+     * @param array $raList Reference to array of PPS's
      *
      * @return string
      */
-    public function _makeSmallData(&$raList)
+    private function makeSmallData(&$raList)
     {
         $sRes = '';
         $FILE = $this->fileHandle;
@@ -321,12 +321,12 @@ class Root extends PPS
      *
      * @param array $raList Reference to an array with all PPS's
      */
-    public function _savePps(&$raList): void
+    private function savePps(&$raList): void
     {
         // Save each PPS WK
         $iC = count($raList);
         for ($i = 0; $i < $iC; ++$i) {
-            fwrite($this->fileHandle, $raList[$i]->_getPpsWk());
+            fwrite($this->fileHandle, $raList[$i]->getPpsWk());
         }
         // Adjust for Block
         $iCnt = count($raList);
@@ -343,7 +343,7 @@ class Root extends PPS
      * @param int $iBsize
      * @param int $iPpsCnt
      */
-    public function _saveBbd($iSbdSize, $iBsize, $iPpsCnt): void
+    private function saveBbd($iSbdSize, $iBsize, $iPpsCnt): void
     {
         $FILE = $this->fileHandle;
         // Calculate Basic Setting

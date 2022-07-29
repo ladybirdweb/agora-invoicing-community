@@ -14,7 +14,7 @@ class AddVersionSettingsTable extends Migration
     public function up()
     {
         Schema::table('settings', function (Blueprint $table) {
-            $table->string('version',255)->nullable();
+            $table->string('version', 255)->nullable();
         });
     }
 

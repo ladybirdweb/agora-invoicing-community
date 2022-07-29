@@ -2,9 +2,8 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Http\Controllers\Update\SyncBillingToLatestVersion;
-
+use Illuminate\Console\Command;
 
 class SyncDatabaseToLatestVersion extends Command
 {
@@ -39,7 +38,6 @@ class SyncDatabaseToLatestVersion extends Command
      */
     public function handle()
     {
-     echo (new SyncBillingToLatestVersion)->sync();
-
+        echo (new SyncBillingToLatestVersion)->sync();
     }
 }

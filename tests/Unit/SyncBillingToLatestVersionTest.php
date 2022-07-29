@@ -2,12 +2,9 @@
 
 namespace Tests;
 
-use PHPUnit\Framework\TestCase;
-use App\Model\Common\Setting;
 use App\Http\Controllers\Update\SyncBillingToLatestVersion;
+use App\Model\Common\Setting;
 use Illuminate\Http\Request;
-use Tests\DBTestCase;
-
 
 class SyncBillingToLatestVersionTest extends DBTestCase
 {
@@ -20,7 +17,7 @@ class SyncBillingToLatestVersionTest extends DBTestCase
     {
         $latestVersion = 'v1.5.3';
         $olderVersion = Setting::factory()->create();
-         $response = (new SyncBillingToLatestVersion())->sync(new Request(['latestVersion' => $latestVersion,'olderVersion' => $olderVersion->version]));
-        $this->assertDatabaseHas('settings',['version'=>'v1.5.3']);
+        $response = (new SyncBillingToLatestVersion())->sync(new Request(['latestVersion' => $latestVersion, 'olderVersion' => $olderVersion->version]));
+        $this->assertDatabaseHas('settings', ['version'=>'v1.5.3']);
     }
 }

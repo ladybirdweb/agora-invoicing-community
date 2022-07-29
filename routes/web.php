@@ -47,22 +47,22 @@ use Illuminate\Support\Facades\Route;
          */
 
             Route::prefix('install')->name('AgoraInstaller::')->middleware('isInstalled')->group(function () {
-            Route::get('/', [Installer\WelcomeController::class, 'welcome'])->name('welcome');
+                Route::get('/', [Installer\WelcomeController::class, 'welcome'])->name('welcome');
 
-            Route::get('requirements', [Installer\RequirementsController::class, 'requirements'])->name('requirements');
+                Route::get('requirements', [Installer\RequirementsController::class, 'requirements'])->name('requirements');
 
-            Route::get('permissions', [Installer\PermissionsController::class, 'permissions'])->name('permissions');
+                Route::get('permissions', [Installer\PermissionsController::class, 'permissions'])->name('permissions');
 
-            Route::get('environment', [Installer\EnvironmentController::class, 'environmentMenu'])->name('environment');
+                Route::get('environment', [Installer\EnvironmentController::class, 'environmentMenu'])->name('environment');
 
-            Route::get('environment/wizard', [Installer\EnvironmentController::class, 'environmentWizard'])->name('environmentWizard');
+                Route::get('environment/wizard', [Installer\EnvironmentController::class, 'environmentWizard'])->name('environmentWizard');
 
-            Route::post('environment/saveWizard', [Installer\EnvironmentController::class, 'saveWizard'])->name('environmentSaveWizard');
+                Route::post('environment/saveWizard', [Installer\EnvironmentController::class, 'saveWizard'])->name('environmentSaveWizard');
 
-            Route::get('database', [Installer\DatabaseController::class, 'database'])->name('database');
+                Route::get('database', [Installer\DatabaseController::class, 'database'])->name('database');
 
-            Route::get('final', [Installer\FinalController::class, 'finish'])->name('final');
-        });
+                Route::get('final', [Installer\FinalController::class, 'finish'])->name('final');
+            });
 
         Route::middleware('installAgora')->group(function () {
             Route::get('pricing', [Front\CartController::class, 'cart'])->name('pricing');
@@ -524,9 +524,8 @@ use Illuminate\Support\Facades\Route;
              */
             Route::get('apikeys', [Common\SettingsController::class, 'getKeys']);
             Route::patch('apikeys', [Common\SettingsController::class, 'postKeys']);
-            Route::post('login', [ 'as' => 'login', 'uses' => 'App\Http\Controllers\Auth\LoginController@login']);
+            Route::post('login', ['as' => 'login', 'uses' => 'App\Http\Controllers\Auth\LoginController@login']);
             // Route::post('login', [Auth\LoginController::class, 'login'])->name('login');
-
 
             Route::get('otp/send', [Auth\AuthController::class, 'requestOtp']);
             Route::post('otp/sendByAjax', [Auth\AuthController::class, 'requestOtpFromAjax']);

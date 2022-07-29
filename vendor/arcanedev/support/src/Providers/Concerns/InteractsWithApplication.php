@@ -7,10 +7,7 @@ namespace Arcanedev\Support\Providers\Concerns;
 /**
  * Trait     InteractsWithApplication
  *
- * @package  Arcanedev\Support\Providers\Concerns
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
- *
- * @property  \Illuminate\Foundation\Application|mixed  $app
  */
 trait InteractsWithApplication
 {

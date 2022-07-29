@@ -2,10 +2,10 @@ dist: trusty
 language: php
 
 php:
-  - 5.6
-  - 7.0
   - 7.1
   - 7.2
+  - 7.3
+  - 7.4
   - nightly
 
 # This triggers builds to run on the new TravisCI infrastructure.
@@ -17,16 +17,21 @@ cache:
   directories:
     - $HOME/.composer/cache
 
-before_script:
-  - yes '' | pecl install imagick
-  - travis_retry composer update ${COMPOSER_FLAGS} --no-interaction --prefer-dist
+install:
+  - |
+    if [[ "$TRAVIS_PHP_VERSION" == 'nightly' ]]; then
+      travis_retry composer update --ignore-platform-reqs --no-interaction --prefer-dist
+    else
+      yes '' | pecl install imagick
+      travis_retry composer update --no-interaction --prefer-dist
+    fi
 
 script:
   - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
 
 after_script:
   - |
-    if [[ "$TRAVIS_PHP_VERSION" == '7.2' ]]; then
+    if [[ "$TRAVIS_PHP_VERSION" == '7.4' ]]; then
       wget https://scrutinizer-ci.com/ocular.phar
       php ocular.phar code-coverage:upload --format=php-clover coverage.clover
     fi

@@ -5,12 +5,11 @@ declare(strict_types=1);
 namespace Arcanedev\Support\Middleware;
 
 use Closure;
-use Illuminate\Http\{Request, Response};
+use Illuminate\Http\{JsonResponse, Request, Response};
 
 /**
  * Class     VerifyJsonRequest
  *
- * @package  Arcanedev\Support\Middleware
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
 class VerifyJsonRequest
@@ -21,6 +20,7 @@ class VerifyJsonRequest
      */
 
     /**
+     * Supported request method verbs.
      *
      * @var array
      */
@@ -57,8 +57,8 @@ class VerifyJsonRequest
     /**
      * Validate json Request.
      *
-     * @param  Request            $request
-     * @param  string|array|null  $methods
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string|array|null         $methods
      *
      * @return bool
      */
@@ -91,7 +91,7 @@ class VerifyJsonRequest
             'message' => 'Request must be JSON',
         ];
 
-        return response()->json($data, $statusCode);
+        return new JsonResponse($data, $statusCode);
     }
 
     /**

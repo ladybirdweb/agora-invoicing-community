@@ -10,7 +10,7 @@
     <a href="https://packagist.org/packages/pragmarx/google2fa-laravel"><img alt="Downloads" src="https://img.shields.io/packagist/dt/pragmarx/google2fa-laravel.svg?style=flat-square"></a>
     <a href="https://scrutinizer-ci.com/g/antonioribeiro/google2fa-laravel/?branch=master"><img alt="Coverage" src="https://img.shields.io/scrutinizer/coverage/g/antonioribeiro/google2fa-laravel.svg?style=flat-square"></a>
     <a href="https://styleci.io/repos/94630851"><img alt="StyleCI" src="https://styleci.io/repos/94630851/shield"></a>
-    <a href="https://travis-ci.org/antonioribeiro/google2fa-laravel"><img alt="PHP" src="https://img.shields.io/badge/PHP-7.0%20--%207.3-brightgreen.svg?style=flat-square"></a>
+    <a href="https://travis-ci.org/antonioribeiro/google2fa-laravel"><img alt="PHP" src="https://img.shields.io/badge/PHP-7.0%20--%208.0-brightgreen.svg?style=flat-square"></a>
 </p>
 
 ### Google Two-Factor Authentication Package for Laravel
@@ -41,7 +41,7 @@ You can scan the QR code on [this (old) demo page](https://antoniocarlosribeiro.
 |---------|-----------|-------------------|
 | 4.2     | <= 1.0.1  |                   |
 | 5.0-5.1 | <= 1.0.1  |                   |
-| 5.2-6.x | >= 2.0.0  | >= 0.2.0          |
+| 5.2-8.x | >= 2.0.0  | >= 0.2.0          |
 
 Before Google2FA 2.0 (Laravel 5.1) you have to install `pragmarx/google2fa:~1.0`, because this package was both a Laravel package and a PHP (agnostic).   
 
@@ -119,7 +119,11 @@ Route::get('/admin', function () {
 })->middleware(['auth', '2fa']);
 ```
 
-### QRCode Backend
+### QRCode
+
+This package uses the [Google2FA-QRCode package](https://github.com/antonioribeiro/google2fa-qrcode), please check it for more info on how to configure the proper QRCode generators for your use case.
+
+### Imagick QRCode Backend
 
 There are three available: **imagemagick** (default), **svg** and **eps**. 
 
@@ -182,6 +186,7 @@ Usually an OTP lasts forever, until the user logs off your app, but, to improve 
 
 'lifetime' => 0, // 0 = eternal
 ```
+Keep in mind that this uses the Laravel sessions in the background. If this number exceeds the value set in ``config('session.lifetime')`` you will still be logged out, even if your OTP lifetime has not expired.
 
 And you can decide whether your OTP will be kept alive while your users are browsing the site or not:
 

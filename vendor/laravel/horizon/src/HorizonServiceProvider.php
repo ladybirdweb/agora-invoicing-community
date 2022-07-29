@@ -23,6 +23,8 @@ class HorizonServiceProvider extends ServiceProvider
         $this->registerRoutes();
         $this->registerResources();
         $this->defineAssetPublishing();
+        $this->offerPublishing();
+        $this->registerCommands();
     }
 
     /**
@@ -77,57 +79,7 @@ class HorizonServiceProvider extends ServiceProvider
     {
         $this->publishes([
             HORIZON_PATH.'/public' => public_path('vendor/horizon'),
-        ], 'horizon-assets');
-    }
-
-    /**
-     * Register the custom queue connectors for Horizon.
-     *
-     * @return void
-     */
-    protected function registerQueueConnectors()
-    {
-        $this->app->resolving(QueueManager::class, function ($manager) {
-            $manager->addConnector('redis', function () {
-                return new RedisConnector($this->app['redis']);
-            });
-        });
-    }
-
-    /**
-     * Register any application services.
-     *
-     * @return void
-     */
-    public function register()
-    {
-        if (! defined('HORIZON_PATH')) {
-            define('HORIZON_PATH', realpath(__DIR__.'/../'));
-        }
-
-        $this->app->bind(Console\WorkCommand::class, function ($app) {
-            return new Console\WorkCommand($app['queue.worker'], $app['cache.store']);
-        });
-
-        $this->configure();
-        $this->offerPublishing();
-        $this->registerServices();
-        $this->registerCommands();
-        $this->registerQueueConnectors();
-    }
-
-    /**
-     * Setup the configuration for Horizon.
-     *
-     * @return void
-     */
-    protected function configure()
-    {
-        $this->mergeConfigFrom(
-            __DIR__.'/../config/horizon.php', 'horizon'
-        );
-
-        Horizon::use(config('horizon.use', 'default'));
+        ], ['horizon-assets', 'laravel-assets']);
     }
 
     /**
@@ -149,6 +101,72 @@ class HorizonServiceProvider extends ServiceProvider
     }
 
     /**
+     * Register the Horizon Artisan commands.
+     *
+     * @return void
+     */
+    protected function registerCommands()
+    {
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                Console\ClearCommand::class,
+                Console\ContinueCommand::class,
+                Console\ContinueSupervisorCommand::class,
+                Console\ForgetFailedCommand::class,
+                Console\HorizonCommand::class,
+                Console\InstallCommand::class,
+                Console\ListCommand::class,
+                Console\PauseCommand::class,
+                Console\PauseSupervisorCommand::class,
+                Console\PublishCommand::class,
+                Console\PurgeCommand::class,
+                Console\StatusCommand::class,
+                Console\SupervisorCommand::class,
+                Console\SupervisorsCommand::class,
+                Console\TerminateCommand::class,
+                Console\TimeoutCommand::class,
+                Console\WorkCommand::class,
+            ]);
+        }
+
+        $this->commands([Console\SnapshotCommand::class]);
+    }
+
+    /**
+     * Register any application services.
+     *
+     * @return void
+     */
+    public function register()
+    {
+        if (! defined('HORIZON_PATH')) {
+            define('HORIZON_PATH', realpath(__DIR__.'/../'));
+        }
+
+        $this->app->bind(Console\WorkCommand::class, function ($app) {
+            return new Console\WorkCommand($app['queue.worker'], $app['cache.store']);
+        });
+
+        $this->configure();
+        $this->registerServices();
+        $this->registerQueueConnectors();
+    }
+
+    /**
+     * Setup the configuration for Horizon.
+     *
+     * @return void
+     */
+    protected function configure()
+    {
+        $this->mergeConfigFrom(
+            __DIR__.'/../config/horizon.php', 'horizon'
+        );
+
+        Horizon::use(config('horizon.use', 'default'));
+    }
+
+    /**
      * Register Horizon's services in the container.
      *
      * @return void
@@ -163,30 +181,16 @@ class HorizonServiceProvider extends ServiceProvider
     }
 
     /**
-     * Register the Horizon Artisan commands.
+     * Register the custom queue connectors for Horizon.
      *
      * @return void
      */
-    protected function registerCommands()
+    protected function registerQueueConnectors()
     {
-        if ($this->app->runningInConsole()) {
-            $this->commands([
-                Console\ContinueCommand::class,
-                Console\HorizonCommand::class,
-                Console\InstallCommand::class,
-                Console\ListCommand::class,
-                Console\PauseCommand::class,
-                Console\PublishCommand::class,
-                Console\PurgeCommand::class,
-                Console\StatusCommand::class,
-                Console\SupervisorCommand::class,
-                Console\SupervisorsCommand::class,
-                Console\TerminateCommand::class,
-                Console\TimeoutCommand::class,
-                Console\WorkCommand::class,
-            ]);
-        }
-
-        $this->commands([Console\SnapshotCommand::class]);
+        $this->callAfterResolving(QueueManager::class, function ($manager) {
+            $manager->addConnector('redis', function () {
+                return new RedisConnector($this->app['redis']);
+            });
+        });
     }
 }

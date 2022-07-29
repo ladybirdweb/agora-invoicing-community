@@ -3,6 +3,7 @@
 namespace Illuminate\Routing;
 
 use Illuminate\Support\Arr;
+use Illuminate\Support\Reflector;
 use Illuminate\Support\Str;
 use LogicException;
 use UnexpectedValueException;
@@ -28,7 +29,7 @@ class RouteAction
         // If the action is already a Closure instance, we will just set that instance
         // as the "uses" property, because there is nothing else we need to do when
         // it is available. Otherwise we will need to find it in the action list.
-        if (is_callable($action, true)) {
+        if (Reflector::isCallable($action, true)) {
             return ! is_array($action) ? ['uses' => $action] : [
                 'uses' => $action[0].'@'.$action[1],
                 'controller' => $action[0].'@'.$action[1],
@@ -42,7 +43,7 @@ class RouteAction
             $action['uses'] = static::findCallable($action);
         }
 
-        if (is_string($action['uses']) && ! Str::contains($action['uses'], '@')) {
+        if (! static::containsSerializedClosure($action) && is_string($action['uses']) && ! Str::contains($action['uses'], '@')) {
             $action['uses'] = static::makeInvokable($action['uses']);
         }
 
@@ -73,7 +74,7 @@ class RouteAction
     protected static function findCallable(array $action)
     {
         return Arr::first($action, function ($value, $key) {
-            return is_callable($value) && is_numeric($key);
+            return Reflector::isCallable($value) && is_numeric($key);
         });
     }
 
@@ -92,5 +93,19 @@ class RouteAction
         }
 
         return $action.'@__invoke';
+    }
+
+    /**
+     * Determine if the given array actions contain a serialized Closure.
+     *
+     * @param  array  $action
+     * @return bool
+     */
+    public static function containsSerializedClosure(array $action)
+    {
+        return is_string($action['uses']) && Str::startsWith($action['uses'], [
+            'C:32:"Opis\\Closure\\SerializableClosure',
+            'O:47:"Laravel\\SerializableClosure\\SerializableClosure',
+        ]) !== false;
     }
 }

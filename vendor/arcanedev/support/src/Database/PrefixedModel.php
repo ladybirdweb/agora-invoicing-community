@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * Class     PrefixedModel
  *
- * @package  Arcanedev\Support\Database
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
 abstract class PrefixedModel extends Model
@@ -38,15 +37,15 @@ abstract class PrefixedModel extends Model
      */
     public function getTable()
     {
-        return $this->getPrefix() . parent::getTable();
+        return $this->getPrefix().parent::getTable();
     }
 
     /**
      * Get the prefix table associated with the model.
      *
-     * @return null|string
+     * @return string
      */
-    public function getPrefix()
+    public function getPrefix(): string
     {
         return $this->isPrefixed() ? $this->prefix : '';
     }
@@ -54,11 +53,11 @@ abstract class PrefixedModel extends Model
     /**
      * Set the prefix table associated with the model.
      *
-     * @param  string  $prefix
+     * @param  string|null  $prefix
      *
-     * @return self
+     * @return $this
      */
-    public function setPrefix($prefix)
+    public function setPrefix(?string $prefix)
     {
         $this->prefix = $prefix;
 
@@ -75,7 +74,7 @@ abstract class PrefixedModel extends Model
      *
      * @return bool
      */
-    public function isPrefixed()
+    public function isPrefixed(): bool
     {
         return ! is_null($this->prefix);
     }

@@ -35,12 +35,11 @@ use phpmock\Mock;
  */
 class Spy extends Mock
 {
-
     /**
      * @var Invocation[] The recorded calls.
      */
     private $invocations = [];
-    
+
     /**
      * Initializes the spy.
      *
@@ -54,7 +53,7 @@ class Spy extends Mock
     {
         parent::__construct($namespace, $name, $function ?: $name);
     }
-    
+
     public function call(array $arguments)
     {
         $return = null;
@@ -69,7 +68,7 @@ class Spy extends Mock
             $this->invocations[] = new Invocation($arguments, $return, $exception);
         }
     }
-    
+
     /**
      * Returns the recorded function calls and its arguments.
      *

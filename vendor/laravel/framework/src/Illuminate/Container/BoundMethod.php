@@ -24,14 +24,16 @@ class BoundMethod
      */
     public static function call($container, $callback, array $parameters = [], $defaultMethod = null)
     {
+        if (is_string($callback) && ! $defaultMethod && method_exists($callback, '__invoke')) {
+            $defaultMethod = '__invoke';
+        }
+
         if (static::isCallableWithAtSign($callback) || $defaultMethod) {
             return static::callClass($container, $callback, $parameters, $defaultMethod);
         }
 
         return static::callBoundMethod($container, $callback, function () use ($container, $callback, $parameters) {
-            return call_user_func_array(
-                $callback, static::getMethodDependencies($container, $callback, $parameters)
-            );
+            return $callback(...array_values(static::getMethodDependencies($container, $callback, $parameters)));
         });
     }
 
@@ -122,7 +124,7 @@ class BoundMethod
             static::addDependencyForCallParameter($container, $parameter, $parameters, $dependencies);
         }
 
-        return array_merge($dependencies, $parameters);
+        return array_merge($dependencies, array_values($parameters));
     }
 
     /**
@@ -154,6 +156,8 @@ class BoundMethod
      * @param  array  $parameters
      * @param  array  $dependencies
      * @return void
+     *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     protected static function addDependencyForCallParameter($container, $parameter,
                                                             array &$parameters, &$dependencies)
@@ -168,7 +172,15 @@ class BoundMethod
 
                 unset($parameters[$className]);
             } else {
-                $dependencies[] = $container->make($className);
+                if ($parameter->isVariadic()) {
+                    $variadicDependencies = $container->make($className);
+
+                    $dependencies = array_merge($dependencies, is_array($variadicDependencies)
+                                ? $variadicDependencies
+                                : [$variadicDependencies]);
+                } else {
+                    $dependencies[] = $container->make($className);
+                }
             }
         } elseif ($parameter->isDefaultValueAvailable()) {
             $dependencies[] = $parameter->getDefaultValue();

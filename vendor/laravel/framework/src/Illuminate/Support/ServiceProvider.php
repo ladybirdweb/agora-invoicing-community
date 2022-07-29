@@ -2,6 +2,7 @@
 
 namespace Illuminate\Support;
 
+use Closure;
 use Illuminate\Console\Application as Artisan;
 use Illuminate\Contracts\Foundation\CachesConfiguration;
 use Illuminate\Contracts\Foundation\CachesRoutes;
@@ -17,6 +18,20 @@ abstract class ServiceProvider
      * @var \Illuminate\Contracts\Foundation\Application
      */
     protected $app;
+
+    /**
+     * All of the registered booting callbacks.
+     *
+     * @var array
+     */
+    protected $bootingCallbacks = [];
+
+    /**
+     * All of the registered booted callbacks.
+     *
+     * @var array
+     */
+    protected $bootedCallbacks = [];
 
     /**
      * The paths that should be published.
@@ -54,6 +69,60 @@ abstract class ServiceProvider
     }
 
     /**
+     * Register a booting callback to be run before the "boot" method is called.
+     *
+     * @param  \Closure  $callback
+     * @return void
+     */
+    public function booting(Closure $callback)
+    {
+        $this->bootingCallbacks[] = $callback;
+    }
+
+    /**
+     * Register a booted callback to be run after the "boot" method is called.
+     *
+     * @param  \Closure  $callback
+     * @return void
+     */
+    public function booted(Closure $callback)
+    {
+        $this->bootedCallbacks[] = $callback;
+    }
+
+    /**
+     * Call the registered booting callbacks.
+     *
+     * @return void
+     */
+    public function callBootingCallbacks()
+    {
+        $index = 0;
+
+        while ($index < count($this->bootingCallbacks)) {
+            $this->app->call($this->bootingCallbacks[$index]);
+
+            $index++;
+        }
+    }
+
+    /**
+     * Call the registered booted callbacks.
+     *
+     * @return void
+     */
+    public function callBootedCallbacks()
+    {
+        $index = 0;
+
+        while ($index < count($this->bootedCallbacks)) {
+            $this->app->call($this->bootedCallbacks[$index]);
+
+            $index++;
+        }
+    }
+
+    /**
      * Merge the given configuration with the existing configuration.
      *
      * @param  string  $path
@@ -63,8 +132,10 @@ abstract class ServiceProvider
     protected function mergeConfigFrom($path, $key)
     {
         if (! ($this->app instanceof CachesConfiguration && $this->app->configurationIsCached())) {
-            $this->app['config']->set($key, array_merge(
-                require $path, $this->app['config']->get($key, [])
+            $config = $this->app->make('config');
+
+            $config->set($key, array_merge(
+                require $path, $config->get($key, [])
             ));
         }
     }
@@ -165,6 +236,8 @@ abstract class ServiceProvider
 
     /**
      * Register Eloquent model factory paths.
+     *
+     * @deprecated Will be removed in a future Laravel version.
      *
      * @param  array|string  $paths
      * @return void

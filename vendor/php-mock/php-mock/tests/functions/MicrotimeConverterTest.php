@@ -14,7 +14,6 @@ use PHPUnit\Framework\TestCase;
  */
 class MicrotimeConverterTest extends TestCase
 {
-
     /**
      * Test convertStringToFloat().
      *
@@ -44,7 +43,7 @@ class MicrotimeConverterTest extends TestCase
         $converter = new MicrotimeConverter();
         $this->assertEquals($string, $converter->convertFloatToString($float));
     }
-    
+
     /**
      * Returns convert test cases.
      *

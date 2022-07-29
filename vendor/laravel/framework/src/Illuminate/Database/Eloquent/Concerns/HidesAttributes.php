@@ -94,9 +94,7 @@ trait HidesAttributes
      */
     public function makeVisibleIf($condition, $attributes)
     {
-        $condition = $condition instanceof Closure ? $condition($this) : $condition;
-
-        return $condition ? $this->makeVisible($attributes) : $this;
+        return value($condition, $this) ? $this->makeVisible($attributes) : $this;
     }
 
     /**
@@ -117,14 +115,12 @@ trait HidesAttributes
     /**
      * Make the given, typically visible, attributes hidden if the given truth test passes.
      *
-     * @param  bool|Closure  $truthTest
+     * @param  bool|Closure  $condition
      * @param  array|string|null  $attributes
      * @return $this
      */
     public function makeHiddenIf($condition, $attributes)
     {
-        $condition = $condition instanceof Closure ? $condition($this) : $condition;
-
-        return value($condition) ? $this->makeHidden($attributes) : $this;
+        return value($condition, $this) ? $this->makeHidden($attributes) : $this;
     }
 }

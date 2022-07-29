@@ -25,8 +25,12 @@ You can skip this step if your version of Laravel is 5.5 or above. Otherwise, yo
 
 ## Step 3: Migration
 
-Now, run this in terminal:
+Publish migration files:
+```bash
+php artisan vendor:publish --tag=laravel-email-database-log-migration
+```
 
+Now, run this in terminal:
 ```bash
 php artisan migrate
 ```

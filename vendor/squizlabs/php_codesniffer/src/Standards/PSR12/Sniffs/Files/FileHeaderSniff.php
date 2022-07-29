@@ -166,8 +166,25 @@ class FileHeaderSniff implements Sniff
                 }
 
                 // Make sure this is not a code-level docblock.
-                $end      = $tokens[$next]['comment_closer'];
-                $docToken = $phpcsFile->findNext(Tokens::$emptyTokens, ($end + 1), null, true);
+                $end = $tokens[$next]['comment_closer'];
+                for ($docToken = ($end + 1); $docToken < $phpcsFile->numTokens; $docToken++) {
+                    if (isset(Tokens::$emptyTokens[$tokens[$docToken]['code']]) === true) {
+                        continue;
+                    }
+
+                    if ($tokens[$docToken]['code'] === T_ATTRIBUTE
+                        && isset($tokens[$docToken]['attribute_closer']) === true
+                    ) {
+                        $docToken = $tokens[$docToken]['attribute_closer'];
+                        continue;
+                    }
+
+                    break;
+                }
+
+                if ($docToken === $phpcsFile->numTokens) {
+                    $docToken--;
+                }
 
                 if (isset($commentOpeners[$tokens[$docToken]['code']]) === false
                     && isset(Tokens::$methodPrefixes[$tokens[$docToken]['code']]) === false
@@ -197,6 +214,13 @@ class FileHeaderSniff implements Sniff
                 break;
             case T_DECLARE:
             case T_NAMESPACE:
+                if (isset($tokens[$next]['scope_opener']) === true) {
+                    // If this statement is using bracketed syntax, it doesn't
+                    // apply to the entire files and so is not part of header.
+                    // The header has now ended and the main code block begins.
+                    break(2);
+                }
+
                 $end = $phpcsFile->findEndOfStatement($next);
 
                 $headerLines[] = [

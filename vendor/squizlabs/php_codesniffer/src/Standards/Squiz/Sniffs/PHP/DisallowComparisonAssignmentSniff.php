@@ -68,14 +68,17 @@ class DisallowComparisonAssignmentSniff implements Sniff
 
         // Ignore function calls.
         $ignore = [
-            T_STRING,
-            T_WHITESPACE,
+            T_NULLSAFE_OBJECT_OPERATOR,
             T_OBJECT_OPERATOR,
+            T_STRING,
+            T_VARIABLE,
+            T_WHITESPACE,
         ];
 
         $next = $phpcsFile->findNext($ignore, ($stackPtr + 1), null, true);
-        if ($tokens[$next]['code'] === T_OPEN_PARENTHESIS
-            && $tokens[($next - 1)]['code'] === T_STRING
+        if ($tokens[$next]['code'] === T_CLOSURE
+            || ($tokens[$next]['code'] === T_OPEN_PARENTHESIS
+            && $tokens[($next - 1)]['code'] === T_STRING)
         ) {
             // Code will look like: $var = myFunction(
             // and will be ignored.

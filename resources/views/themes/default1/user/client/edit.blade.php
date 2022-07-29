@@ -83,7 +83,7 @@ Edit User
                          
                         <option value="{{$key}}" <?php  if(in_array($bussiness, $selectedIndustry) ) 
 
-use Database\Seeders\CompanySize;
+
                         { echo "selected";} ?>>{{$bussiness}}</option>
                             @endforeach
                          </select> -->

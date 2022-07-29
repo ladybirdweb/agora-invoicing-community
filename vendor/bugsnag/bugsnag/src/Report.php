@@ -2,24 +2,28 @@
 
 namespace Bugsnag;
 
+use BackedEnum;
 use Bugsnag\Breadcrumbs\Breadcrumb;
+use Bugsnag\DateTime\Date;
+use Bugsnag\Internal\FeatureFlagDelegate;
 use Exception;
 use InvalidArgumentException;
 use Throwable;
+use UnitEnum;
 
-class Report
+class Report implements FeatureDataStore
 {
     /**
-     * The payload version.
+     * The payload version for the error notification API.
      *
-     * @var string
+     * @deprecated Use {HttpClient::NOTIFY_PAYLOAD_VERSION} instead.
      */
-    const PAYLOAD_VERSION = HttpClient::PAYLOAD_VERSION;
+    const PAYLOAD_VERSION = HttpClient::NOTIFY_PAYLOAD_VERSION;
 
     /**
      * The config object.
      *
-     * @var \Bugsnag\Config
+     * @var \Bugsnag\Configuration
      */
     protected $config;
 
@@ -87,6 +91,13 @@ class Report
     protected $metaData = [];
 
     /**
+     * The associated feature flags.
+     *
+     * @var FeatureFlagDelegate
+     */
+    private $featureFlags;
+
+    /**
      * The associated user.
      *
      * @var array
@@ -124,7 +135,7 @@ class Report
     /**
      * Attached session from SessionTracking.
      *
-     * @var array
+     * @var array|null
      */
     protected $session;
 
@@ -142,6 +153,7 @@ class Report
      */
     public static function fromPHPError(Configuration $config, $code, $message, $file, $line, $fatal = false)
     {
+        // @phpstan-ignore-next-line
         $report = new static($config);
 
         $report->setPHPError($code, $message, $file, $line, $fatal)
@@ -161,6 +173,7 @@ class Report
      */
     public static function fromPHPThrowable(Configuration $config, $throwable)
     {
+        // @phpstan-ignore-next-line
         $report = new static($config);
 
         $report->setPHPThrowable($throwable)
@@ -181,6 +194,7 @@ class Report
      */
     public static function fromNamedError(Configuration $config, $name, $message = null)
     {
+        // @phpstan-ignore-next-line
         $report = new static($config);
 
         $report->setName($name)
@@ -204,7 +218,8 @@ class Report
     protected function __construct(Configuration $config)
     {
         $this->config = $config;
-        $this->time = gmdate('Y-m-d\TH:i:s\Z');
+        $this->time = Date::now();
+        $this->featureFlags = $config->getFeatureFlagsCopy();
     }
 
     /**
@@ -228,6 +243,9 @@ class Report
      */
     public function setPHPThrowable($throwable)
     {
+        // TODO: if we drop support for PHP 5, we can remove this check for
+        //       'Exception', which fixes the PHPStan issue here
+        // @phpstan-ignore-next-line
         if (!$throwable instanceof Throwable && !$throwable instanceof Exception) {
             throw new InvalidArgumentException('The throwable must implement Throwable or extend Exception.');
         }
@@ -330,6 +348,8 @@ class Report
     /**
      * Sets the unhandled flag.
      *
+     * @param bool $unhandled
+     *
      * @return $this
      */
     public function setUnhandled($unhandled)
@@ -386,7 +406,7 @@ class Report
      */
     public function setName($name)
     {
-        if (is_scalar($name) || method_exists($name, '__toString')) {
+        if (is_scalar($name) || (is_object($name) && method_exists($name, '__toString'))) {
             $this->name = (string) $name;
         } else {
             throw new InvalidArgumentException('The name must be a string.');
@@ -422,7 +442,10 @@ class Report
     {
         if ($message === null) {
             $this->message = null;
-        } elseif (is_scalar($message) || method_exists($message, '__toString')) {
+        } elseif (
+            is_scalar($message)
+            || (is_object($message) && method_exists($message, '__toString'))
+        ) {
             $this->message = (string) $message;
         } else {
             throw new InvalidArgumentException('The message must be a string.');
@@ -562,6 +585,54 @@ class Report
     }
 
     /**
+     * Add a single feature flag to this report.
+     *
+     * @param string $name
+     * @param string|null $variant
+     *
+     * @return void
+     */
+    public function addFeatureFlag($name, $variant = null)
+    {
+        $this->featureFlags->add($name, $variant);
+    }
+
+    /**
+     * Add multiple feature flags to this report.
+     *
+     * @param FeatureFlag[] $featureFlags
+     * @phpstan-param list<FeatureFlag> $featureFlags
+     *
+     * @return void
+     */
+    public function addFeatureFlags(array $featureFlags)
+    {
+        $this->featureFlags->merge($featureFlags);
+    }
+
+    /**
+     * Remove the feature flag with the given name from this report.
+     *
+     * @param string $name
+     *
+     * @return void
+     */
+    public function clearFeatureFlag($name)
+    {
+        $this->featureFlags->remove($name);
+    }
+
+    /**
+     * Remove all feature flags from this report.
+     *
+     * @return void
+     */
+    public function clearFeatureFlags()
+    {
+        $this->featureFlags->clear();
+    }
+
+    /**
      * Set the current user.
      *
      * @param array $user the current user
@@ -633,11 +704,44 @@ class Report
     /**
      * Sets the session data.
      *
-     * @return $this
+     * @return void
      */
     public function setSessionData(array $session)
     {
         $this->session = $session;
+    }
+
+    /**
+     * Get a list of all errors in a fixed format of:
+     * - 'errorClass'
+     * - 'errorMessage'
+     * - 'type' (always 'php').
+     *
+     * @return array
+     */
+    public function getErrors()
+    {
+        $errors = [$this->toError()];
+        $previous = $this->previous;
+
+        while ($previous) {
+            $errors[] = $previous->toError();
+            $previous = $previous->previous;
+        }
+
+        return $errors;
+    }
+
+    /**
+     * @return array
+     */
+    private function toError()
+    {
+        return [
+            'errorClass' => $this->name,
+            'errorMessage' => $this->message,
+            'type' => 'php',
+        ];
     }
 
     /**
@@ -652,13 +756,14 @@ class Report
             'device' => array_merge(['time' => $this->time], $this->config->getDeviceData()),
             'user' => $this->getUser(),
             'context' => $this->getContext(),
-            'payloadVersion' => HttpClient::PAYLOAD_VERSION,
+            'payloadVersion' => HttpClient::NOTIFY_PAYLOAD_VERSION,
             'severity' => $this->getSeverity(),
             'exceptions' => $this->exceptionArray(),
             'breadcrumbs' => $this->breadcrumbs,
             'metaData' => $this->cleanupObj($this->getMetaData(), true),
             'unhandled' => $this->getUnhandled(),
             'severityReason' => $this->getSeverityReason(),
+            'featureFlags' => $this->featureFlags->toArray(),
         ];
 
         if ($hash = $this->getGroupingHash()) {
@@ -709,12 +814,12 @@ class Report
      * @param mixed $obj        the data to cleanup
      * @param bool  $isMetaData if it is meta data
      *
-     * @return array|null
+     * @return mixed
      */
     protected function cleanupObj($obj, $isMetaData)
     {
         if (is_null($obj)) {
-            return;
+            return null;
         }
 
         if (is_array($obj)) {
@@ -732,6 +837,10 @@ class Report
         }
 
         if (is_object($obj)) {
+            if ($obj instanceof UnitEnum) {
+                return $this->enumToString($obj);
+            }
+
             return $this->cleanupObj(json_decode(json_encode($obj), true), $isMetaData);
         }
 
@@ -748,11 +857,21 @@ class Report
      */
     protected function shouldFilter($key, $isMetaData)
     {
-        if ($isMetaData) {
-            foreach ($this->config->getFilters() as $filter) {
-                if (strpos($key, $filter) !== false) {
-                    return true;
-                }
+        if (!$isMetaData) {
+            return false;
+        }
+
+        foreach ($this->config->getFilters() as $filter) {
+            if (stripos($key, $filter) !== false) {
+                return true;
+            }
+        }
+
+        foreach ($this->config->getRedactedKeys() as $redactedKey) {
+            if (@preg_match($redactedKey, $key) === 1) {
+                return true;
+            } elseif (Utils::stringCaseEquals($redactedKey, $key)) {
+                return true;
             }
         }
 
@@ -777,5 +896,25 @@ class Report
         }
 
         return $array;
+    }
+
+    /**
+     * Convert the given enum to a string.
+     *
+     * @param UnitEnum $enum
+     *
+     * @return string
+     */
+    private function enumToString(UnitEnum $enum)
+    {
+        // e.g. My\Enum::SomeCase
+        $string = sprintf('%s::%s', get_class($enum), $enum->name);
+
+        // add the value, if there is one
+        if ($enum instanceof BackedEnum) {
+            $string .= sprintf(' (%s)', $enum->value);
+        }
+
+        return $string;
     }
 }

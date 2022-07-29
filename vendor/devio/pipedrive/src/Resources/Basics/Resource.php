@@ -31,6 +31,13 @@ abstract class Resource
     protected $disabled = [];
 
     /**
+     * Should requests to add POST as JSON?
+     *
+     * @var bool
+     */
+    protected $addPostedAsJson = false;
+
+    /**
      * Endpoint constructor.
      *
      * @param Request $request
@@ -56,7 +63,7 @@ abstract class Resource
     /**
      * Get the entity details by ID.
      *
-     * @param $id   Entity ID to find.
+     * @param int $id Entity ID to find.
 	 * @return Response
      */
     public function find($id)
@@ -72,6 +79,10 @@ abstract class Resource
      */
     public function add(array $values)
     {
+        if ($this->addPostedAsJson) {
+            $values['json'] = true;
+        }
+
         return $this->request->post('', $values);
     }
 

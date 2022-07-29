@@ -85,15 +85,33 @@ class Request
         // inludes the success variable, we will return the response data.
         if (!isset($content) || !($response->getStatusCode() == 302 || $response->isSuccess())) {
             if ($response->getStatusCode() == 404) {
-                throw new ItemNotFoundException($content->error);
+                throw new ItemNotFoundException(isset($content->error) ? $content->error : "Error unknown.");
             }
 
-            throw new PipedriveException(
-                isset($content->error) ? $content->error : "Error unknown."
-            );
+            $this->throwPipedriveException($content);
         }
 
         return $response;
+    }
+    
+    /**
+     * Throws PipedriveException with message depending on content.
+     *
+     * @param string $content
+     */
+    protected function throwPipedriveException($content)
+    {
+        if (!isset($content->error))
+        {
+            throw new PipedriveException('Error unknown.');
+        }
+        
+        if (property_exists($content->error, 'message'))
+        {
+            throw new PipedriveException($content->error->message);
+        }
+        
+        throw new PipedriveException($content->error);
     }
 
     /**

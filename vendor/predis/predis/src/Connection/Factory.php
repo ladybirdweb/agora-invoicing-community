@@ -110,16 +110,6 @@ class Factory implements FactoryInterface
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function aggregate(AggregateConnectionInterface $connection, array $parameters)
-    {
-        foreach ($parameters as $node) {
-            $connection->add($node instanceof NodeConnectionInterface ? $node : $this->create($node));
-        }
-    }
-
-    /**
      * Assigns a default set of parameters applied to new connections.
      *
      * The set of parameters passed to create a new connection have precedence
@@ -173,15 +163,19 @@ class Factory implements FactoryInterface
     {
         $parameters = $connection->getParameters();
 
-        if (isset($parameters->password)) {
+        if (isset($parameters->password) && strlen($parameters->password)) {
+            $cmdAuthArgs = isset($parameters->username) && strlen($parameters->username)
+                ? array($parameters->username, $parameters->password)
+                : array($parameters->password);
+
             $connection->addConnectCommand(
-                new RawCommand(array('AUTH', $parameters->password))
+                new RawCommand('AUTH', $cmdAuthArgs)
             );
         }
 
-        if (isset($parameters->database)) {
+        if (isset($parameters->database) && strlen($parameters->database)) {
             $connection->addConnectCommand(
-                new RawCommand(array('SELECT', $parameters->database))
+                new RawCommand('SELECT', array($parameters->database))
             );
         }
     }

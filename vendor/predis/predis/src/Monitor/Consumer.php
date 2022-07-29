@@ -12,7 +12,7 @@
 namespace Predis\Monitor;
 
 use Predis\ClientInterface;
-use Predis\Connection\AggregateConnectionInterface;
+use Predis\Connection\Cluster\ClusterInterface;
 use Predis\NotSupportedException;
 
 /**
@@ -56,14 +56,14 @@ class Consumer implements \Iterator
      */
     private function assertClient(ClientInterface $client)
     {
-        if ($client->getConnection() instanceof AggregateConnectionInterface) {
+        if ($client->getConnection() instanceof ClusterInterface) {
             throw new NotSupportedException(
-                'Cannot initialize a monitor consumer over aggregate connections.'
+                'Cannot initialize a monitor consumer over cluster connections.'
             );
         }
 
-        if ($client->getProfile()->supportsCommand('MONITOR') === false) {
-            throw new NotSupportedException("The current profile does not support 'MONITOR'.");
+        if (!$client->getCommandFactory()->supports('MONITOR')) {
+            throw new NotSupportedException("'MONITOR' is not supported by the current command factory.");
         }
     }
 
@@ -91,6 +91,7 @@ class Consumer implements \Iterator
     /**
      * {@inheritdoc}
      */
+    #[\ReturnTypeWillChange]
     public function rewind()
     {
         // NOOP
@@ -101,6 +102,7 @@ class Consumer implements \Iterator
      *
      * @return object
      */
+    #[\ReturnTypeWillChange]
     public function current()
     {
         return $this->getValue();
@@ -109,6 +111,7 @@ class Consumer implements \Iterator
     /**
      * {@inheritdoc}
      */
+    #[\ReturnTypeWillChange]
     public function key()
     {
         return $this->position;
@@ -117,6 +120,7 @@ class Consumer implements \Iterator
     /**
      * {@inheritdoc}
      */
+    #[\ReturnTypeWillChange]
     public function next()
     {
         ++$this->position;
@@ -127,6 +131,7 @@ class Consumer implements \Iterator
      *
      * @return bool
      */
+    #[\ReturnTypeWillChange]
     public function valid()
     {
         return $this->valid;

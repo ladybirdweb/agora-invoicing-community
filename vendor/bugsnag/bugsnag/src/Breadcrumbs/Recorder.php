@@ -5,6 +5,9 @@ namespace Bugsnag\Breadcrumbs;
 use Countable;
 use Iterator;
 
+/**
+ * @implements Iterator<int, Breadcrumb>
+ */
 class Recorder implements Countable, Iterator
 {
     /**
@@ -85,6 +88,7 @@ class Recorder implements Countable, Iterator
      *
      * @return int
      */
+    #[\ReturnTypeWillChange]
     public function count()
     {
         return count($this->breadcrumbs);
@@ -95,6 +99,7 @@ class Recorder implements Countable, Iterator
      *
      * @return \Bugsnag\Breadcrumbs\Breadcrumb
      */
+    #[\ReturnTypeWillChange]
     public function current()
     {
         return $this->breadcrumbs[($this->head + $this->position) % static::MAX_ITEMS];
@@ -105,6 +110,7 @@ class Recorder implements Countable, Iterator
      *
      * @return int
      */
+    #[\ReturnTypeWillChange]
     public function key()
     {
         return $this->position;
@@ -115,6 +121,7 @@ class Recorder implements Countable, Iterator
      *
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function next()
     {
         $this->position++;
@@ -125,6 +132,7 @@ class Recorder implements Countable, Iterator
      *
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function rewind()
     {
         $this->position = 0;
@@ -133,8 +141,9 @@ class Recorder implements Countable, Iterator
     /**
      * Is the current key position set?
      *
-     * @return int
+     * @return bool
      */
+    #[\ReturnTypeWillChange]
     public function valid()
     {
         return $this->position < $this->count();

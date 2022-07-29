@@ -31,8 +31,8 @@ class XmlFileLoader extends FileLoader
     use LocalizedRouteTrait;
     use PrefixTrait;
 
-    const NAMESPACE_URI = 'http://symfony.com/schema/routing';
-    const SCHEME_PATH = '/schema/routing/routing-1.0.xsd';
+    public const NAMESPACE_URI = 'http://symfony.com/schema/routing';
+    public const SCHEME_PATH = '/schema/routing/routing-1.0.xsd';
 
     /**
      * Loads an XML file.
@@ -40,7 +40,7 @@ class XmlFileLoader extends FileLoader
      * @param string      $file An XML file path
      * @param string|null $type The resource type
      *
-     * @return RouteCollection A RouteCollection instance
+     * @return RouteCollection
      *
      * @throws \InvalidArgumentException when the file cannot be loaded or when the XML cannot be
      *                                   parsed because it does not validate against the scheme
@@ -69,10 +69,6 @@ class XmlFileLoader extends FileLoader
     /**
      * Parses a node from a loaded XML file.
      *
-     * @param \DOMElement $node Element to parse
-     * @param string      $path Full path of the XML file being processed
-     * @param string      $file Loaded file name
-     *
      * @throws \InvalidArgumentException When the XML is invalid
      */
     protected function parseNode(RouteCollection $collection, \DOMElement $node, string $path, string $file)
@@ -88,6 +84,16 @@ class XmlFileLoader extends FileLoader
             case 'import':
                 $this->parseImport($collection, $node, $path, $file);
                 break;
+            case 'when':
+                if (!$this->env || $node->getAttribute('env') !== $this->env) {
+                    break;
+                }
+                foreach ($node->childNodes as $node) {
+                    if ($node instanceof \DOMElement) {
+                        $this->parseNode($collection, $node, $path, $file);
+                    }
+                }
+                break;
             default:
                 throw new \InvalidArgumentException(sprintf('Unknown tag "%s" used in file "%s". Expected "route" or "import".', $node->localName, $path));
         }
@@ -98,14 +104,11 @@ class XmlFileLoader extends FileLoader
      */
     public function supports($resource, string $type = null)
     {
-        return \is_string($resource) && 'xml' === pathinfo($resource, PATHINFO_EXTENSION) && (!$type || 'xml' === $type);
+        return \is_string($resource) && 'xml' === pathinfo($resource, \PATHINFO_EXTENSION) && (!$type || 'xml' === $type);
     }
 
     /**
      * Parses a route and adds it to the RouteCollection.
-     *
-     * @param \DOMElement $node Element to parse that represents a Route
-     * @param string      $path Full path of the XML file being processed
      *
      * @throws \InvalidArgumentException When the XML is invalid
      */
@@ -115,10 +118,20 @@ class XmlFileLoader extends FileLoader
             throw new \InvalidArgumentException(sprintf('The <route> element in file "%s" must have an "id" attribute.', $path));
         }
 
-        $schemes = preg_split('/[\s,\|]++/', $node->getAttribute('schemes'), -1, PREG_SPLIT_NO_EMPTY);
-        $methods = preg_split('/[\s,\|]++/', $node->getAttribute('methods'), -1, PREG_SPLIT_NO_EMPTY);
+        if ('' !== $alias = $node->getAttribute('alias')) {
+            $alias = $collection->addAlias($id, $alias);
 
-        list($defaults, $requirements, $options, $condition, $paths, /* $prefixes */, $hosts) = $this->parseConfigs($node, $path);
+            if ($deprecationInfo = $this->parseDeprecation($node, $path)) {
+                $alias->setDeprecated($deprecationInfo['package'], $deprecationInfo['version'], $deprecationInfo['message']);
+            }
+
+            return;
+        }
+
+        $schemes = preg_split('/[\s,\|]++/', $node->getAttribute('schemes'), -1, \PREG_SPLIT_NO_EMPTY);
+        $methods = preg_split('/[\s,\|]++/', $node->getAttribute('methods'), -1, \PREG_SPLIT_NO_EMPTY);
+
+        [$defaults, $requirements, $options, $condition, $paths, /* $prefixes */, $hosts] = $this->parseConfigs($node, $path);
 
         if (!$paths && '' === $node->getAttribute('path')) {
             throw new \InvalidArgumentException(sprintf('The <route> element in file "%s" must have a "path" attribute or <path> child nodes.', $path));
@@ -144,10 +157,6 @@ class XmlFileLoader extends FileLoader
     /**
      * Parses an import and adds the routes in the resource to the RouteCollection.
      *
-     * @param \DOMElement $node Element to parse that represents a Route
-     * @param string      $path Full path of the XML file being processed
-     * @param string      $file Loaded file name
-     *
      * @throws \InvalidArgumentException When the XML is invalid
      */
     protected function parseImport(RouteCollection $collection, \DOMElement $node, string $path, string $file)
@@ -158,12 +167,12 @@ class XmlFileLoader extends FileLoader
 
         $type = $node->getAttribute('type');
         $prefix = $node->getAttribute('prefix');
-        $schemes = $node->hasAttribute('schemes') ? preg_split('/[\s,\|]++/', $node->getAttribute('schemes'), -1, PREG_SPLIT_NO_EMPTY) : null;
-        $methods = $node->hasAttribute('methods') ? preg_split('/[\s,\|]++/', $node->getAttribute('methods'), -1, PREG_SPLIT_NO_EMPTY) : null;
+        $schemes = $node->hasAttribute('schemes') ? preg_split('/[\s,\|]++/', $node->getAttribute('schemes'), -1, \PREG_SPLIT_NO_EMPTY) : null;
+        $methods = $node->hasAttribute('methods') ? preg_split('/[\s,\|]++/', $node->getAttribute('methods'), -1, \PREG_SPLIT_NO_EMPTY) : null;
         $trailingSlashOnRoot = $node->hasAttribute('trailing-slash-on-root') ? XmlUtils::phpize($node->getAttribute('trailing-slash-on-root')) : true;
         $namePrefix = $node->getAttribute('name-prefix') ?: null;
 
-        list($defaults, $requirements, $options, $condition, /* $paths */, $prefixes, $hosts) = $this->parseConfigs($node, $path);
+        [$defaults, $requirements, $options, $condition, /* $paths */, $prefixes, $hosts] = $this->parseConfigs($node, $path);
 
         if ('' !== $prefix && $prefixes) {
             throw new \InvalidArgumentException(sprintf('The <route> element in file "%s" must not have both a "prefix" attribute and <prefix> child nodes.', $path));
@@ -220,10 +229,6 @@ class XmlFileLoader extends FileLoader
     }
 
     /**
-     * Loads an XML file.
-     *
-     * @param string $file An XML file path
-     *
      * @return \DOMDocument
      *
      * @throws \InvalidArgumentException When loading of XML file fails because of syntax errors
@@ -326,7 +331,7 @@ class XmlFileLoader extends FileLoader
     /**
      * Parses the "default" elements.
      *
-     * @return array|bool|float|int|string|null The parsed value of the "default" element
+     * @return array|bool|float|int|string|null
      */
     private function parseDefaultsConfig(\DOMElement $element, string $path)
     {
@@ -358,7 +363,7 @@ class XmlFileLoader extends FileLoader
     /**
      * Recursively parses the value of a "default" element.
      *
-     * @return array|bool|float|int|string The parsed value
+     * @return array|bool|float|int|string|null
      *
      * @throws \InvalidArgumentException when the XML is invalid
      */
@@ -423,5 +428,42 @@ class XmlFileLoader extends FileLoader
         }
 
         return 'true' === $element->getAttributeNS($namespaceUri, 'nil') || '1' === $element->getAttributeNS($namespaceUri, 'nil');
+    }
+
+    /**
+     * Parses the deprecation elements.
+     *
+     * @throws \InvalidArgumentException When the XML is invalid
+     */
+    private function parseDeprecation(\DOMElement $node, string $path): array
+    {
+        $deprecatedNode = null;
+        foreach ($node->childNodes as $child) {
+            if (!$child instanceof \DOMElement || self::NAMESPACE_URI !== $child->namespaceURI) {
+                continue;
+            }
+            if ('deprecated' !== $child->localName) {
+                throw new \InvalidArgumentException(sprintf('Invalid child element "%s" defined for alias "%s" in "%s".', $child->localName, $node->getAttribute('id'), $path));
+            }
+
+            $deprecatedNode = $child;
+        }
+
+        if (null === $deprecatedNode) {
+            return [];
+        }
+
+        if (!$deprecatedNode->hasAttribute('package')) {
+            throw new \InvalidArgumentException(sprintf('The <deprecated> element in file "%s" must have a "package" attribute.', $path));
+        }
+        if (!$deprecatedNode->hasAttribute('version')) {
+            throw new \InvalidArgumentException(sprintf('The <deprecated> element in file "%s" must have a "version" attribute.', $path));
+        }
+
+        return [
+            'package' => $deprecatedNode->getAttribute('package'),
+            'version' => $deprecatedNode->getAttribute('version'),
+            'message' => trim($deprecatedNode->nodeValue),
+        ];
     }
 }

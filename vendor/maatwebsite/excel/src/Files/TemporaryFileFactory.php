@@ -17,8 +17,8 @@ class TemporaryFileFactory
     private $temporaryDisk;
 
     /**
-     * @param string|null $temporaryPath
-     * @param string|null $temporaryDisk
+     * @param  string|null  $temporaryPath
+     * @param  string|null  $temporaryDisk
      */
     public function __construct(string $temporaryPath = null, string $temporaryDisk = null)
     {
@@ -27,24 +27,21 @@ class TemporaryFileFactory
     }
 
     /**
-     * @param string|null $fileExtension
-     *
+     * @param  string|null  $fileExtension
      * @return TemporaryFile
      */
     public function make(string $fileExtension = null): TemporaryFile
     {
         if (null !== $this->temporaryDisk) {
-            return $this->makeRemote();
+            return $this->makeRemote($fileExtension);
         }
 
         return $this->makeLocal(null, $fileExtension);
     }
 
     /**
-     * @param string|null $fileName
-     *
-     * @param string|null $fileExtension
-     *
+     * @param  string|null  $fileName
+     * @param  string|null  $fileExtension
      * @return LocalTemporaryFile
      */
     public function makeLocal(string $fileName = null, string $fileExtension = null): LocalTemporaryFile
@@ -59,11 +56,12 @@ class TemporaryFileFactory
     }
 
     /**
+     * @param  string|null  $fileExtension
      * @return RemoteTemporaryFile
      */
-    private function makeRemote(): RemoteTemporaryFile
+    private function makeRemote(string $fileExtension = null): RemoteTemporaryFile
     {
-        $filename = $this->generateFilename();
+        $filename = $this->generateFilename($fileExtension);
 
         return new RemoteTemporaryFile(
             $this->temporaryDisk,
@@ -73,8 +71,7 @@ class TemporaryFileFactory
     }
 
     /**
-     * @param string|null $fileExtension
-     *
+     * @param  string|null  $fileExtension
      * @return string
      */
     private function generateFilename(string $fileExtension = null): string

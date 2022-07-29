@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Gate;
 /**
  * Class     AuthorizationServiceProvider
  *
- * @package  Arcanedev\Support\Providers
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
 abstract class AuthorizationServiceProvider extends AuthServiceProvider

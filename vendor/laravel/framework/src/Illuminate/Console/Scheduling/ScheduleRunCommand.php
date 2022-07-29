@@ -3,6 +3,7 @@
 namespace Illuminate\Console\Scheduling;
 
 use Illuminate\Console\Command;
+use Illuminate\Console\Events\ScheduledTaskFailed;
 use Illuminate\Console\Events\ScheduledTaskFinished;
 use Illuminate\Console\Events\ScheduledTaskSkipped;
 use Illuminate\Console\Events\ScheduledTaskStarting;
@@ -132,7 +133,7 @@ class ScheduleRunCommand extends Command
      */
     protected function runEvent($event)
     {
-        $this->line('<info>Running scheduled command:</info> '.$event->getSummaryForDisplay());
+        $this->line('<info>['.date('c').'] Running scheduled command:</info> '.$event->getSummaryForDisplay());
 
         $this->dispatcher->dispatch(new ScheduledTaskStarting($event));
 
@@ -148,6 +149,8 @@ class ScheduleRunCommand extends Command
 
             $this->eventsRan = true;
         } catch (Throwable $e) {
+            $this->dispatcher->dispatch(new ScheduledTaskFailed($event, $e));
+
             $this->handler->report($e);
         }
     }

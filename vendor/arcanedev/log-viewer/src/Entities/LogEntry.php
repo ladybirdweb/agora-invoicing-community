@@ -12,7 +12,6 @@ use JsonSerializable;
 /**
  * Class     LogEntry
  *
- * @package  Arcanedev\LogViewer\Entities
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
 class LogEntry implements Arrayable, Jsonable, JsonSerializable
@@ -256,7 +255,7 @@ class LogEntry implements Arrayable, Jsonable, JsonSerializable
      *
      * @return array
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return $this->toArray();
     }

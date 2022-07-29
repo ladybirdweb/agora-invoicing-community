@@ -7,14 +7,15 @@ use Maatwebsite\Excel\Concerns\ToArray;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithCalculatedFormulas;
+use Maatwebsite\Excel\Concerns\WithFormatData;
 use Maatwebsite\Excel\Concerns\WithMappedCells;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class MappedReader
 {
     /**
-     * @param WithMappedCells $import
-     * @param Worksheet       $worksheet
+     * @param  WithMappedCells  $import
+     * @param  Worksheet  $worksheet
      *
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
@@ -26,7 +27,8 @@ class MappedReader
 
             $mapped[$name] = $cell->getValue(
                 null,
-                $import instanceof WithCalculatedFormulas
+                $import instanceof WithCalculatedFormulas,
+                $import instanceof WithFormatData
             );
         }
 

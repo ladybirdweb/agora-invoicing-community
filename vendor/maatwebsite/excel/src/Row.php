@@ -2,10 +2,13 @@
 
 namespace Maatwebsite\Excel;
 
+use ArrayAccess;
+use Closure;
 use Illuminate\Support\Collection;
 use PhpOffice\PhpSpreadsheet\Worksheet\Row as SpreadsheetRow;
 
-class Row
+/** @mixin SpreadsheetRow */
+class Row implements ArrayAccess
 {
     use DelegatedMacroable;
 
@@ -15,18 +18,30 @@ class Row
     protected $headingRow = [];
 
     /**
-     * @var SpreadsheetRow
+     * @var \Closure
      */
-    private $row;
+    protected $preparationCallback;
 
     /**
-     * @param SpreadsheetRow $row
-     * @param array          $headingRow
+     * @var SpreadsheetRow
      */
-    public function __construct(SpreadsheetRow $row, array $headingRow = [])
+    protected $row;
+
+    /**
+     * @var array|null
+     */
+    protected $rowCache;
+
+    /**
+     * @param  SpreadsheetRow  $row
+     * @param  array  $headingRow
+     * @param  array  $headerIsGrouped
+     */
+    public function __construct(SpreadsheetRow $row, array $headingRow = [], array $headerIsGrouped = [])
     {
-        $this->row        = $row;
-        $this->headingRow = $headingRow;
+        $this->row             = $row;
+        $this->headingRow      = $headingRow;
+        $this->headerIsGrouped = $headerIsGrouped;
     }
 
     /**
@@ -38,34 +53,42 @@ class Row
     }
 
     /**
-     * @param null $nullValue
-     * @param bool $calculateFormulas
-     * @param bool $formatData
-     *
+     * @param  null  $nullValue
+     * @param  bool  $calculateFormulas
+     * @param  bool  $formatData
+     * @param  string|null  $endColumn
      * @return Collection
      */
-    public function toCollection($nullValue = null, $calculateFormulas = false, $formatData = true): Collection
+    public function toCollection($nullValue = null, $calculateFormulas = false, $formatData = true, ?string $endColumn = null): Collection
     {
-        return new Collection($this->toArray($nullValue, $calculateFormulas, $formatData));
+        return new Collection($this->toArray($nullValue, $calculateFormulas, $formatData, $endColumn));
     }
 
     /**
-     * @param null $nullValue
-     * @param bool $calculateFormulas
-     * @param bool $formatData
-     *
+     * @param  null  $nullValue
+     * @param  bool  $calculateFormulas
+     * @param  bool  $formatData
+     * @param  string|null  $endColumn
      * @return array
      */
-    public function toArray($nullValue = null, $calculateFormulas = false, $formatData = true)
+    public function toArray($nullValue = null, $calculateFormulas = false, $formatData = true, ?string $endColumn = null)
     {
+        if (is_array($this->rowCache)) {
+            return $this->rowCache;
+        }
+
         $cells = [];
 
         $i = 0;
-        foreach ($this->row->getCellIterator() as $cell) {
+        foreach ($this->row->getCellIterator('A', $endColumn) as $cell) {
             $value = (new Cell($cell))->getValue($nullValue, $calculateFormulas, $formatData);
 
             if (isset($this->headingRow[$i])) {
-                $cells[$this->headingRow[$i]] = $value;
+                if (!$this->headerIsGrouped[$i]) {
+                    $cells[$this->headingRow[$i]] = $value;
+                } else {
+                    $cells[$this->headingRow[$i]][] = $value;
+                }
             } else {
                 $cells[] = $value;
             }
@@ -73,7 +96,23 @@ class Row
             $i++;
         }
 
+        if (isset($this->preparationCallback)) {
+            $cells = ($this->preparationCallback)($cells, $this->row->getRowIndex());
+        }
+
+        $this->rowCache = $cells;
+
         return $cells;
+    }
+
+    /**
+     * @param  bool  $calculateFormulas
+     * @param  string|null  $endColumn
+     * @return bool
+     */
+    public function isEmpty($calculateFormulas = false, ?string $endColumn = null): bool
+    {
+        return count(array_filter($this->toArray(null, $calculateFormulas, false, $endColumn))) === 0;
     }
 
     /**
@@ -82,5 +121,39 @@ class Row
     public function getIndex(): int
     {
         return $this->row->getRowIndex();
+    }
+
+    #[\ReturnTypeWillChange]
+    public function offsetExists($offset)
+    {
+        return isset(($this->toArray())[$offset]);
+    }
+
+    #[\ReturnTypeWillChange]
+    public function offsetGet($offset)
+    {
+        return ($this->toArray())[$offset];
+    }
+
+    #[\ReturnTypeWillChange]
+    public function offsetSet($offset, $value)
+    {
+        //
+    }
+
+    #[\ReturnTypeWillChange]
+    public function offsetUnset($offset)
+    {
+        //
+    }
+
+    /**
+     * @param  \Closure  $preparationCallback
+     *
+     * @internal
+     */
+    public function setPreparationCallback(Closure $preparationCallback = null)
+    {
+        $this->preparationCallback = $preparationCallback;
     }
 }

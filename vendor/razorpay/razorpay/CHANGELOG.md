@@ -4,11 +4,73 @@ Changelog for Razorpay-PHP SDK. Follows [keepachangelog.com](https://keepachange
 
 ## Unreleased
 
-## [2.5.0][2.5.0] - 2019-05-20
+## [2.8.4] - 2022-06-28
+
+- New APIs for Third party validation (createUpi, validateVpa, fetchPaymentMethods)
+- Update documentation 
+
+## [2.8.3] - 2022-04-29
+
+- PHP v8.1 is officially supported
+- Update [Request](https://github.com/WordPress/Requests/tree/v2.0.0) library to v2.0
+- Improve documentation 
+- Add PHPUnit v9
+
+## [2.8.2] - 2022-03-08
+
+- Change name convention to standard in Unit test 
+- Removed test api key due to security concern from test cases
+
+## [2.8.1] - 2021-11-08
 
 ### Added
 
--   Adds support for payment edit API [[#100](https://github.com/razorpay/razorpay-php/pull/100)]
+- Added Item Api
+- Added Unit Tests
+
+## [2.8.0][2.8.0] - 2021-10-07
+
+### Added
+- QR code end point API [[#235](https://github.com/razorpay/razorpay-php/pull/235)]
+- Update, cancel, create subscription link,fetch details of a Pending Update,cancel, pause and resume subscription API[[#236](https://github.com/razorpay/razorpay-php/pull/236)]
+- Smart Collect(Virtual Account) TPV API's [[#238](https://github.com/razorpay/razorpay-php/pull/238)]
+- Add/Delete TPV Bank Account [[#239](https://github.com/razorpay/razorpay-php/pull/239)]
+- Card end point api [[#240](https://github.com/razorpay/razorpay-php/pull/240)]
+- Route end point api [[#241](https://github.com/razorpay/razorpay-php/pull/241)]
+- Register emandate and charge first payment together [[#245](https://github.com/razorpay/razorpay-php/pull/245)]
+- PaperNACH/Register NACH and charge first payment together [[#246](https://github.com/razorpay/razorpay-php/pull/246)]
+- Added payment and Settlements methods [[#247](https://github.com/razorpay/razorpay-php/pull/247)]
+- Added edit and notify API's for payment links [[#248](https://github.com/razorpay/razorpay-php/pull/248)]
+- Added fetch, fetch multiple refund,edit and notify API's for refunds [[#250](https://github.com/razorpay/razorpay-php/pull/250)]
+- Added edit order API [[#251](https://github.com/razorpay/razorpay-php/pull/251)]
+- Fund API's end point [[#252](https://github.com/razorpay/razorpay-php/pull/252)]
+- UPI [[#253](https://github.com/razorpay/razorpay-php/pull/253)]
+- Added payment link paymentverification [[#255](https://github.com/razorpay/razorpay-php/pull/255)]
+- Update readme file [[#254](https://github.com/razorpay/razorpay-php/pull/254)]
+
+## [2.7.1][2.7.1] - 2021-09-16
+
+### Added
+
+-   Added Payment Link end point API [[#233](https://github.com/razorpay/razorpay-php/pull/233)]
+
+## [2.7.0][2.7.0] - 2021-05-07
+
+### Added
+
+-   Adds support for payment page enity API [[#224](https://github.com/razorpay/razorpay-php/pull/224)]
+
+## [2.6.1][2.6.1] - 2021-04-30
+
+### Changed
+
+-   Upgrades [requests](https://github.com/rmccue/Requests/) to v1.8. [[#221](https://github.com/razorpay/razorpay-php/pull/221)]
+
+## [2.6.0][2.6.0] - 2021-04-05
+
+### Added
+
+-   Adds support for webhook enity API [[#212](https://github.com/razorpay/razorpay-php/pull/212)]
 
 ## [2.4.0-beta][2.4.0-beta] - 2018-11-28
 
@@ -162,3 +224,6 @@ Changelog for Razorpay-PHP SDK. Follows [keepachangelog.com](https://keepachange
 [2.3.0]: https://github.com/razorpay/razorpay-php/compare/2.2.1...2.3.0
 [2.4.0-beta]: https://github.com/razorpay/razorpay-php/compare/2.3.0...2.4.0-beta
 [2.5.0]: https://github.com/razorpay/razorpay-php/compare/2.4.0-beta...2.5.0
+[2.8.0]: https://github.com/razorpay/razorpay-php/compare/2.7.1...2.8.0
+[2.8.1]: https://github.com/razorpay/razorpay-php/compare/2.8.0...2.8.1
+[2.8.2]: https://github.com/razorpay/razorpay-php/compare/2.8.0...2.8.2

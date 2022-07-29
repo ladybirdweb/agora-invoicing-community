@@ -1,4 +1,4 @@
 composer.lock
 phpunit.xml
 vendor/
-libs/
+**/.DS_Store

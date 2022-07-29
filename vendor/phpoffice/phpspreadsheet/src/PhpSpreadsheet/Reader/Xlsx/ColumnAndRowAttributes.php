@@ -3,6 +3,7 @@
 namespace PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use PhpOffice\PhpSpreadsheet\Reader\DefaultReadFilter;
 use PhpOffice\PhpSpreadsheet\Reader\IReadFilter;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use SimpleXMLElement;
@@ -71,11 +72,7 @@ class ColumnAndRowAttributes extends BaseParserClass
         }
     }
 
-    /**
-     * @param IReadFilter $readFilter
-     * @param bool $readDataOnly
-     */
-    public function load(?IReadFilter $readFilter = null, $readDataOnly = false): void
+    public function load(?IReadFilter $readFilter = null, bool $readDataOnly = false): void
     {
         if ($this->worksheetXml === null) {
             return;
@@ -91,11 +88,17 @@ class ColumnAndRowAttributes extends BaseParserClass
             $rowsAttributes = $this->readRowAttributes($this->worksheetXml->sheetData->row, $readDataOnly);
         }
 
+        if ($readFilter !== null && get_class($readFilter) === DefaultReadFilter::class) {
+            $readFilter = null;
+        }
+
         // set columns/rows attributes
         $columnsAttributesAreSet = [];
         foreach ($columnsAttributes as $columnCoordinate => $columnAttributes) {
-            if ($readFilter === null ||
-                !$this->isFilteredColumn($readFilter, $columnCoordinate, $rowsAttributes)) {
+            if (
+                $readFilter === null ||
+                !$this->isFilteredColumn($readFilter, $columnCoordinate, $rowsAttributes)
+            ) {
                 if (!isset($columnsAttributesAreSet[$columnCoordinate])) {
                     $this->setColumnAttributes($columnCoordinate, $columnAttributes);
                     $columnsAttributesAreSet[$columnCoordinate] = true;
@@ -105,8 +108,10 @@ class ColumnAndRowAttributes extends BaseParserClass
 
         $rowsAttributesAreSet = [];
         foreach ($rowsAttributes as $rowCoordinate => $rowAttributes) {
-            if ($readFilter === null ||
-                !$this->isFilteredRow($readFilter, $rowCoordinate, $columnsAttributes)) {
+            if (
+                $readFilter === null ||
+                !$this->isFilteredRow($readFilter, $rowCoordinate, $columnsAttributes)
+            ) {
                 if (!isset($rowsAttributesAreSet[$rowCoordinate])) {
                     $this->setRowAttributes($rowCoordinate, $rowAttributes);
                     $rowsAttributesAreSet[$rowCoordinate] = true;

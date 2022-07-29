@@ -5,10 +5,9 @@ namespace Doctrine\DBAL\Schema;
 use Doctrine\DBAL\Platforms\MariaDb1027Platform;
 use Doctrine\DBAL\Platforms\MySqlPlatform;
 use Doctrine\DBAL\Types\Type;
-use const CASE_LOWER;
+
 use function array_change_key_case;
 use function array_shift;
-use function array_values;
 use function assert;
 use function explode;
 use function is_string;
@@ -17,6 +16,8 @@ use function strpos;
 use function strtok;
 use function strtolower;
 use function strtr;
+
+use const CASE_LOWER;
 
 /**
  * Schema manager for the MySql RDBMS.
@@ -82,12 +83,17 @@ class MySqlSchemaManager extends AbstractSchemaManager
             } else {
                 $v['primary'] = false;
             }
+
             if (strpos($v['index_type'], 'FULLTEXT') !== false) {
                 $v['flags'] = ['FULLTEXT'];
             } elseif (strpos($v['index_type'], 'SPATIAL') !== false) {
                 $v['flags'] = ['SPATIAL'];
             }
-            $v['length'] = isset($v['sub_part']) ? (int) $v['sub_part'] : null;
+
+            // Ignore prohibited prefix `length` for spatial index
+            if (strpos($v['index_type'], 'SPATIAL') === false) {
+                $v['length'] = isset($v['sub_part']) ? (int) $v['sub_part'] : null;
+            }
 
             $tableIndexes[$k] = $v;
         }
@@ -138,6 +144,7 @@ class MySqlSchemaManager extends AbstractSchemaManager
             case 'binary':
                 $fixed = true;
                 break;
+
             case 'float':
             case 'double':
             case 'real':
@@ -148,25 +155,33 @@ class MySqlSchemaManager extends AbstractSchemaManager
                     $scale     = $match[2];
                     $length    = null;
                 }
+
                 break;
+
             case 'tinytext':
                 $length = MySqlPlatform::LENGTH_LIMIT_TINYTEXT;
                 break;
+
             case 'text':
                 $length = MySqlPlatform::LENGTH_LIMIT_TEXT;
                 break;
+
             case 'mediumtext':
                 $length = MySqlPlatform::LENGTH_LIMIT_MEDIUMTEXT;
                 break;
+
             case 'tinyblob':
                 $length = MySqlPlatform::LENGTH_LIMIT_TINYBLOB;
                 break;
+
             case 'blob':
                 $length = MySqlPlatform::LENGTH_LIMIT_BLOB;
                 break;
+
             case 'mediumblob':
                 $length = MySqlPlatform::LENGTH_LIMIT_MEDIUMBLOB;
                 break;
+
             case 'tinyint':
             case 'smallint':
             case 'mediumint':
@@ -208,6 +223,7 @@ class MySqlSchemaManager extends AbstractSchemaManager
         if (isset($tableColumn['characterset'])) {
             $column->setPlatformOption('charset', $tableColumn['characterset']);
         }
+
         if (isset($tableColumn['collation'])) {
             $column->setPlatformOption('collation', $tableColumn['collation']);
         }
@@ -231,7 +247,7 @@ class MySqlSchemaManager extends AbstractSchemaManager
      *
      * @param string|null $columnDefault default value as stored in information_schema for MariaDB >= 10.2.7
      */
-    private function getMariaDb1027ColumnDefault(MariaDb1027Platform $platform, ?string $columnDefault) : ?string
+    private function getMariaDb1027ColumnDefault(MariaDb1027Platform $platform, ?string $columnDefault): ?string
     {
         if ($columnDefault === 'NULL' || $columnDefault === null) {
             return null;
@@ -244,8 +260,10 @@ class MySqlSchemaManager extends AbstractSchemaManager
         switch ($columnDefault) {
             case 'current_timestamp()':
                 return $platform->getCurrentTimestampSQL();
+
             case 'curdate()':
                 return $platform->getCurrentDateSQL();
+
             case 'curtime()':
                 return $platform->getCurrentTimeSQL();
         }
@@ -265,6 +283,7 @@ class MySqlSchemaManager extends AbstractSchemaManager
                 if (! isset($value['delete_rule']) || $value['delete_rule'] === 'RESTRICT') {
                     $value['delete_rule'] = null;
                 }
+
                 if (! isset($value['update_rule']) || $value['update_rule'] === 'RESTRICT') {
                     $value['update_rule'] = null;
                 }
@@ -278,6 +297,7 @@ class MySqlSchemaManager extends AbstractSchemaManager
                     'onUpdate' => $value['update_rule'],
                 ];
             }
+
             $list[$value['constraint_name']]['local'][]   = $value['column_name'];
             $list[$value['constraint_name']]['foreign'][] = $value['referenced_column_name'];
         }
@@ -285,9 +305,9 @@ class MySqlSchemaManager extends AbstractSchemaManager
         $result = [];
         foreach ($list as $constraint) {
             $result[] = new ForeignKeyConstraint(
-                array_values($constraint['local']),
+                $constraint['local'],
                 $constraint['foreignTable'],
-                array_values($constraint['foreign']),
+                $constraint['foreign'],
                 $constraint['name'],
                 [
                     'onDelete' => $constraint['onDelete'],
@@ -299,15 +319,18 @@ class MySqlSchemaManager extends AbstractSchemaManager
         return $result;
     }
 
-    public function listTableDetails($tableName)
+    /**
+     * {@inheritdoc}
+     */
+    public function listTableDetails($name)
     {
-        $table = parent::listTableDetails($tableName);
+        $table = parent::listTableDetails($name);
 
-        /** @var MySqlPlatform $platform */
         $platform = $this->_platform;
-        $sql      = $platform->getListTableMetadataSQL($tableName);
+        assert($platform instanceof MySqlPlatform);
+        $sql = $platform->getListTableMetadataSQL($name);
 
-        $tableOptions = $this->_conn->fetchAssoc($sql);
+        $tableOptions = $this->_conn->fetchAssociative($sql);
 
         if ($tableOptions === false) {
             return $table;
@@ -332,7 +355,7 @@ class MySqlSchemaManager extends AbstractSchemaManager
     /**
      * @return string[]|true[]
      */
-    private function parseCreateOptions(?string $string) : array
+    private function parseCreateOptions(?string $string): array
     {
         $options = [];
 

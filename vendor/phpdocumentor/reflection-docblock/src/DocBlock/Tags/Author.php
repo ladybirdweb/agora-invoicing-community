@@ -14,9 +14,11 @@ declare(strict_types=1);
 namespace phpDocumentor\Reflection\DocBlock\Tags;
 
 use InvalidArgumentException;
+
 use function filter_var;
 use function preg_match;
 use function trim;
+
 use const FILTER_VALIDATE_EMAIL;
 
 /**
@@ -51,7 +53,7 @@ final class Author extends BaseTag implements Factory\StaticMethod
      *
      * @return string The author's name.
      */
-    public function getAuthorName() : string
+    public function getAuthorName(): string
     {
         return $this->authorName;
     }
@@ -61,7 +63,7 @@ final class Author extends BaseTag implements Factory\StaticMethod
      *
      * @return string The author's email.
      */
-    public function getEmail() : string
+    public function getEmail(): string
     {
         return $this->authorEmail;
     }
@@ -69,15 +71,23 @@ final class Author extends BaseTag implements Factory\StaticMethod
     /**
      * Returns this tag in string form.
      */
-    public function __toString() : string
+    public function __toString(): string
     {
-        return $this->authorName . ($this->authorEmail !== '' ? ' <' . $this->authorEmail . '>' : '');
+        if ($this->authorEmail) {
+            $authorEmail = '<' . $this->authorEmail . '>';
+        } else {
+            $authorEmail = '';
+        }
+
+        $authorName = $this->authorName;
+
+        return $authorName . ($authorEmail !== '' ? ($authorName !== '' ? ' ' : '') . $authorEmail : '');
     }
 
     /**
-     * Attempts to create a new Author object based on †he tag body.
+     * Attempts to create a new Author object based on the tag body.
      */
-    public static function create(string $body) : ?self
+    public static function create(string $body): ?self
     {
         $splitTagContent = preg_match('/^([^\<]*)(?:\<([^\>]*)\>)?$/u', $body, $matches);
         if (!$splitTagContent) {

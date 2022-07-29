@@ -23,6 +23,8 @@ class Kernel extends ConsoleKernel
         CurrencyManage::class,
         \App\Console\Commands\ExpiryCron::class,
         SetupTestEnv::class,
+        \App\Console\Commands\SyncDatabaseToLatestVersion::class,
+
     ];
 
     /**

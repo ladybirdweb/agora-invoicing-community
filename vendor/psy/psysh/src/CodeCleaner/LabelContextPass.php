@@ -3,7 +3,7 @@
 /*
  * This file is part of Psy Shell.
  *
- * (c) 2012-2020 Justin Hileman
+ * (c) 2012-2022 Justin Hileman
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -84,7 +84,7 @@ class LabelContextPass extends CodeCleanerPass
         foreach ($this->labelGotos as $name => $line) {
             if (!isset($this->labelDeclarations[$name])) {
                 $msg = "'goto' to undefined label '{$name}'";
-                throw new FatalErrorException($msg, 0, E_ERROR, null, $line);
+                throw new FatalErrorException($msg, 0, \E_ERROR, null, $line);
             }
         }
     }

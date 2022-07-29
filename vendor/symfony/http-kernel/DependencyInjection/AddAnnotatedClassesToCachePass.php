@@ -37,12 +37,14 @@ class AddAnnotatedClassesToCachePass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        $annotatedClasses = $this->kernel->getAnnotatedClassesToCompile();
+        $annotatedClasses = [];
         foreach ($container->getExtensions() as $extension) {
             if ($extension instanceof Extension) {
-                $annotatedClasses = array_merge($annotatedClasses, $extension->getAnnotatedClassesToCompile());
+                $annotatedClasses[] = $extension->getAnnotatedClassesToCompile();
             }
         }
+
+        $annotatedClasses = array_merge($this->kernel->getAnnotatedClassesToCompile(), ...$annotatedClasses);
 
         $existingClasses = $this->getClassesInComposerClassMaps();
 
@@ -62,7 +64,7 @@ class AddAnnotatedClassesToCachePass implements CompilerPassInterface
 
         // Explicit classes declared in the patterns are returned directly
         foreach ($patterns as $key => $pattern) {
-            if ('\\' !== substr($pattern, -1) && false === strpos($pattern, '*')) {
+            if (!str_ends_with($pattern, '\\') && !str_contains($pattern, '*')) {
                 unset($patterns[$key]);
                 $expanded[] = ltrim($pattern, '\\');
             }
@@ -127,10 +129,10 @@ class AddAnnotatedClassesToCachePass implements CompilerPassInterface
 
     private function matchAnyRegexps(string $class, array $regexps): bool
     {
-        $isTest = false !== strpos($class, 'Test');
+        $isTest = str_contains($class, 'Test');
 
         foreach ($regexps as $regex) {
-            if ($isTest && false === strpos($regex, 'Test')) {
+            if ($isTest && !str_contains($regex, 'Test')) {
                 continue;
             }
 

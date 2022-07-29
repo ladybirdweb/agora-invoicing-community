@@ -7,7 +7,6 @@ namespace Arcanedev\Support\Routing\Concerns;
 /**
  * Trait     RegistersRouteClasses
  *
- * @package  Arcanedev\Support\Routing\Concerns
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
 trait RegistersRouteClasses

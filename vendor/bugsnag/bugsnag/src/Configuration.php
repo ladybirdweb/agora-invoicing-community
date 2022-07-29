@@ -2,27 +2,27 @@
 
 namespace Bugsnag;
 
+use Bugsnag\Internal\FeatureFlagDelegate;
 use InvalidArgumentException;
 
-class Configuration
+class Configuration implements FeatureDataStore
 {
     /**
-     * The default endpoint.
-     *
-     * @var string
+     * The default endpoint for event notifications.
+     */
+    const NOTIFY_ENDPOINT = 'https://notify.bugsnag.com';
+
+    /**
+     * The default endpoint for session tracking.
      */
     const SESSION_ENDPOINT = 'https://sessions.bugsnag.com';
 
     /**
-     * The default build endpoint.
-     *
-     * @var string
+     * The default endpoint for build notifications.
      */
     const BUILD_ENDPOINT = 'https://build.bugsnag.com';
 
     /**
-     * The Bugsnag API Key.
-     *
      * @var string
      */
     protected $apiKey;
@@ -44,9 +44,18 @@ class Configuration
     /**
      * The strings to filter out from metaData.
      *
+     * @deprecated Use redactedKeys instead
+     *
      * @var string[]
      */
-    protected $filters = ['password'];
+    protected $filters = [
+        'password',
+        'cookie',
+        'authorization',
+        'php-auth-user',
+        'php-auth-pw',
+        'php-auth-digest',
+    ];
 
     /**
      * The project root regex.
@@ -76,7 +85,7 @@ class Configuration
      */
     protected $notifier = [
         'name' => 'Bugsnag PHP (Official)',
-        'version' => '3.21.0',
+        'version' => '3.28.0',
         'url' => 'https://bugsnag.com',
     ];
 
@@ -109,6 +118,13 @@ class Configuration
     protected $metaData = [];
 
     /**
+     * The associated feature flags.
+     *
+     * @var FeatureFlagDelegate
+     */
+    private $featureFlags;
+
+    /**
      * The error reporting level.
      *
      * @var int|null
@@ -125,23 +141,51 @@ class Configuration
     /**
      * A client to use to send sessions.
      *
-     * @var \GuzzleHttp\ClientInterface
+     * @var \GuzzleHttp\ClientInterface|null
+     *
+     * @deprecated This will be removed in the next major version.
      */
     protected $sessionClient;
 
     /**
-     * The endpoint to deliver sessions to.
-     *
+     * @var string
+     */
+    protected $notifyEndpoint = self::NOTIFY_ENDPOINT;
+
+    /**
      * @var string
      */
     protected $sessionEndpoint = self::SESSION_ENDPOINT;
 
     /**
-     * The endpoint to deliver build notifications to.
-     *
      * @var string
      */
-    protected $buildEndpoint;
+    protected $buildEndpoint = self::BUILD_ENDPOINT;
+
+    /**
+     * The amount to increase the memory_limit to handle an OOM.
+     *
+     * The default is 5MiB and can be disabled by setting it to 'null'
+     *
+     * @var int|null
+     */
+    protected $memoryLimitIncrease = 5242880;
+
+    /**
+     * An array of classes that should not be sent to Bugsnag.
+     *
+     * This can contain both fully qualified class names and regular expressions.
+     *
+     * @var array
+     */
+    protected $discardClasses = [];
+
+    /**
+     * An array of metadata keys that should be redacted.
+     *
+     * @var string[]
+     */
+    protected $redactedKeys = [];
 
     /**
      * Create a new config instance.
@@ -160,6 +204,7 @@ class Configuration
 
         $this->apiKey = $apiKey;
         $this->fallbackType = php_sapi_name();
+        $this->featureFlags = new FeatureFlagDelegate();
 
         // Add PHP runtime version to device data
         $this->mergeDeviceData(['runtimeVersions' => ['php' => phpversion()]]);
@@ -168,7 +213,7 @@ class Configuration
     /**
      * Get the Bugsnag API Key.
      *
-     * @var string
+     * @return string
      */
     public function getApiKey()
     {
@@ -234,6 +279,8 @@ class Configuration
      *
      * Eg. ['password', 'credit_card'].
      *
+     * @deprecated Use redactedKeys instead
+     *
      * @param string[] $filters an array of metaData filters
      *
      * @return $this
@@ -248,7 +295,9 @@ class Configuration
     /**
      * Get the array of metaData filters.
      *
-     * @var string
+     * @deprecated Use redactedKeys instead
+     *
+     * @return string[]
      */
     public function getFilters()
     {
@@ -277,7 +326,7 @@ class Configuration
      */
     public function setProjectRootRegex($projectRootRegex)
     {
-        if ($projectRootRegex && @preg_match($projectRootRegex, null) === false) {
+        if ($projectRootRegex && @preg_match($projectRootRegex, '') === false) {
             throw new InvalidArgumentException('Invalid project root regex: '.$projectRootRegex);
         }
 
@@ -290,7 +339,7 @@ class Configuration
      *
      * @param string $file
      *
-     * @return string
+     * @return bool
      */
     public function isInProject($file)
     {
@@ -319,7 +368,7 @@ class Configuration
      */
     public function setStripPathRegex($stripPathRegex)
     {
-        if ($stripPathRegex && @preg_match($stripPathRegex, null) === false) {
+        if ($stripPathRegex && @preg_match($stripPathRegex, '') === false) {
             throw new InvalidArgumentException('Invalid strip path regex: '.$stripPathRegex);
         }
 
@@ -383,7 +432,7 @@ class Configuration
     /**
      * Get the notifier to report as to Bugsnag.
      *
-     * @var string[]
+     * @return string[]
      */
     public function getNotifier()
     {
@@ -481,7 +530,7 @@ class Configuration
      *
      * @param array $data an associative array containing the new data to be added
      *
-     * @return this
+     * @return $this
      */
     public function mergeDeviceData($data)
     {
@@ -549,6 +598,64 @@ class Configuration
     }
 
     /**
+     * Add a single feature flag to all future reports.
+     *
+     * @param string $name
+     * @param string|null $variant
+     *
+     * @return void
+     */
+    public function addFeatureFlag($name, $variant = null)
+    {
+        $this->featureFlags->add($name, $variant);
+    }
+
+    /**
+     * Add multiple feature flags to all future reports.
+     *
+     * @param FeatureFlag[] $featureFlags
+     * @phpstan-param list<FeatureFlag> $featureFlags
+     *
+     * @return void
+     */
+    public function addFeatureFlags(array $featureFlags)
+    {
+        $this->featureFlags->merge($featureFlags);
+    }
+
+    /**
+     * Remove the feature flag with the given name from all future reports.
+     *
+     * @param string $name
+     *
+     * @return void
+     */
+    public function clearFeatureFlag($name)
+    {
+        $this->featureFlags->remove($name);
+    }
+
+    /**
+     * Remove all feature flags from all future reports.
+     *
+     * @return void
+     */
+    public function clearFeatureFlags()
+    {
+        $this->featureFlags->clear();
+    }
+
+    /**
+     * @internal
+     *
+     * @return FeatureFlagDelegate
+     */
+    public function getFeatureFlagsCopy()
+    {
+        return clone $this->featureFlags;
+    }
+
+    /**
      * Set Bugsnag's error reporting level.
      *
      * If this is not set, we'll use your current PHP error_reporting value
@@ -560,9 +667,66 @@ class Configuration
      */
     public function setErrorReportingLevel($errorReportingLevel)
     {
+        if (!$this->isSubsetOfErrorReporting($errorReportingLevel)) {
+            $missingLevels = implode(', ', $this->getMissingErrorLevelNames($errorReportingLevel));
+            $message =
+                'Bugsnag Warning: errorReportingLevel cannot contain values that are not in error_reporting. '.
+                "Any errors of these levels will be ignored: {$missingLevels}.";
+
+            error_log($message);
+        }
+
         $this->errorReportingLevel = $errorReportingLevel;
 
         return $this;
+    }
+
+    /**
+     * Check if the given error reporting level is a subset of error_reporting.
+     *
+     * For example, if $level contains E_WARNING then error_reporting must too.
+     *
+     * @param int|null $level
+     *
+     * @return bool
+     */
+    private function isSubsetOfErrorReporting($level)
+    {
+        if (!is_int($level)) {
+            return true;
+        }
+
+        $errorReporting = error_reporting();
+
+        // If all of the bits in $level are also in $errorReporting, ORing them
+        // together will result in the same value as $errorReporting because
+        // there are no new bits to add
+        return ($errorReporting | $level) === $errorReporting;
+    }
+
+    /**
+     * Get a list of error level names that are in $level but not error_reporting.
+     *
+     * For example, if error_reporting is E_NOTICE and $level is E_ERROR then
+     * this will return ['E_ERROR']
+     *
+     * @param int $level
+     *
+     * @return string[]
+     */
+    private function getMissingErrorLevelNames($level)
+    {
+        $missingLevels = [];
+        $errorReporting = error_reporting();
+
+        foreach (ErrorTypes::getAllCodes() as $code) {
+            // $code is "missing" if it's in $level but not in $errorReporting
+            if (($code & $level) && !($code & $errorReporting)) {
+                $missingLevels[] = ErrorTypes::codeToString($code);
+            }
+        }
+
+        return $missingLevels;
     }
 
     /**
@@ -574,39 +738,49 @@ class Configuration
      */
     public function shouldIgnoreErrorCode($code)
     {
-        $defaultReportingLevel = error_reporting();
-
-        if ($defaultReportingLevel === 0) {
-            // The error has been suppressed using the error control operator ('@')
-            // Ignore the error in all cases.
+        // If the code is not in error_reporting then it is either totally
+        // disabled or is being suppressed with '@'
+        if (!(error_reporting() & $code)) {
             return true;
         }
 
+        // Filter the error code further against our error reporting level, which
+        // can be lower than error_reporting
         if (isset($this->errorReportingLevel)) {
             return !($this->errorReportingLevel & $code);
         }
 
-        return !($defaultReportingLevel & $code);
+        return false;
     }
 
     /**
-     * Set session tracking state and pass in optional guzzle.
+     * Set event notification endpoint.
      *
-     * @param bool $track whether to track sessions
+     * @param string $endpoint
      *
      * @return $this
      */
-    public function setAutoCaptureSessions($track)
+    public function setNotifyEndpoint($endpoint)
     {
-        $this->autoCaptureSessions = $track;
+        $this->notifyEndpoint = $endpoint;
 
         return $this;
     }
 
     /**
+     * Get event notification endpoint.
+     *
+     * @return string
+     */
+    public function getNotifyEndpoint()
+    {
+        return $this->notifyEndpoint;
+    }
+
+    /**
      * Set session delivery endpoint.
      *
-     * @param string $endpoint the session endpoint
+     * @param string $endpoint
      *
      * @return $this
      */
@@ -614,37 +788,21 @@ class Configuration
     {
         $this->sessionEndpoint = $endpoint;
 
-        $this->sessionClient = Client::makeGuzzle($this->sessionEndpoint);
-
         return $this;
     }
 
     /**
-     * Get the session client.
+     * Get session delivery endpoint.
      *
-     * @return \GuzzleHttp\ClientInterface
+     * @return string
      */
-    public function getSessionClient()
+    public function getSessionEndpoint()
     {
-        if (is_null($this->sessionClient)) {
-            $this->sessionClient = Client::makeGuzzle($this->sessionEndpoint);
-        }
-
-        return $this->sessionClient;
+        return $this->sessionEndpoint;
     }
 
     /**
-     * Whether should be auto-capturing sessions.
-     *
-     * @return bool
-     */
-    public function shouldCaptureSessions()
-    {
-        return $this->autoCaptureSessions;
-    }
-
-    /**
-     * Sets the build endpoint.
+     * Set the build endpoint.
      *
      * @param string $endpoint the build endpoint
      *
@@ -658,16 +816,130 @@ class Configuration
     }
 
     /**
-     * Returns the build endpoint.
+     * Get the build endpoint.
      *
      * @return string
      */
     public function getBuildEndpoint()
     {
-        if (isset($this->buildEndpoint)) {
-            return $this->buildEndpoint;
+        return $this->buildEndpoint;
+    }
+
+    /**
+     * Set session tracking state.
+     *
+     * @param bool $track whether to track sessions
+     *
+     * @return $this
+     */
+    public function setAutoCaptureSessions($track)
+    {
+        $this->autoCaptureSessions = $track;
+
+        return $this;
+    }
+
+    /**
+     * Whether should be auto-capturing sessions.
+     *
+     * @return bool
+     */
+    public function shouldCaptureSessions()
+    {
+        return $this->autoCaptureSessions;
+    }
+
+    /**
+     * Get the session client.
+     *
+     * @return \GuzzleHttp\ClientInterface
+     *
+     * @deprecated This will be removed in the next major version.
+     */
+    public function getSessionClient()
+    {
+        if (is_null($this->sessionClient)) {
+            $this->sessionClient = Client::makeGuzzle($this->sessionEndpoint);
         }
 
-        return self::BUILD_ENDPOINT;
+        return $this->sessionClient;
+    }
+
+    /**
+     * Set the amount to increase the memory_limit when an OOM is triggered.
+     *
+     * This is an amount of bytes or 'null' to disable increasing the limit.
+     *
+     * @param int|null $value
+     *
+     * @return $this
+     */
+    public function setMemoryLimitIncrease($value)
+    {
+        $this->memoryLimitIncrease = $value;
+
+        return $this;
+    }
+
+    /**
+     * Get the amount to increase the memory_limit when an OOM is triggered.
+     *
+     * This will return 'null' if this feature is disabled.
+     *
+     * @return int|null
+     */
+    public function getMemoryLimitIncrease()
+    {
+        return $this->memoryLimitIncrease;
+    }
+
+    /**
+     * Set the array of classes that should not be sent to Bugsnag.
+     *
+     * @param array $discardClasses
+     *
+     * @return $this
+     */
+    public function setDiscardClasses(array $discardClasses)
+    {
+        $this->discardClasses = $discardClasses;
+
+        return $this;
+    }
+
+    /**
+     * Get the array of classes that should not be sent to Bugsnag.
+     *
+     * This can contain both fully qualified class names and regular expressions.
+     *
+     * @return array
+     */
+    public function getDiscardClasses()
+    {
+        return $this->discardClasses;
+    }
+
+    /**
+     * Set the array of metadata keys that should be redacted.
+     *
+     * @param string[] $redactedKeys
+     *
+     * @return $this
+     */
+    public function setRedactedKeys(array $redactedKeys)
+    {
+        $this->redactedKeys = $redactedKeys;
+
+        return $this;
+    }
+
+    /**
+     * Get the array of metadata keys that should be redacted.
+     *
+     * @return string[]
+     */
+    public function getRedactedKeys()
+    {
+        return $this->redactedKeys;
     }
 }

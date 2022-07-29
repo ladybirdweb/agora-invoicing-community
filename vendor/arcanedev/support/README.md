@@ -30,7 +30,7 @@ If you discover any security related issues, please email arcanedev.maroc@gmail.
 - [All Contributors][link-contributors]
 
 [badge_license]:   http://img.shields.io/packagist/l/arcanedev/support.svg?style=flat-square
-[badge_laravel]:   https://img.shields.io/badge/Laravel-5.1%20to%205.8-orange.svg?style=flat-square
+[badge_laravel]:   https://img.shields.io/badge/Laravel-5.1%20to%208.0-orange.svg?style=flat-square
 [badge_build]:     https://img.shields.io/github/workflow/status/ARCANEDEV/Support/run-tests?style=flat-square
 [badge_coverage]:  https://img.shields.io/scrutinizer/coverage/g/ARCANEDEV/Support.svg?style=flat-square
 [badge_quality]:   https://img.shields.io/scrutinizer/g/ARCANEDEV/Support.svg?style=flat-square

@@ -44,8 +44,8 @@ class Page extends AbstractFrameReflower
     }
 
     /**
-     * @param Frame $frame
-     * @param $page_number
+     * @param PageFrameDecorator $frame
+     * @param int $page_number
      */
     function apply_page_style(Frame $frame, $page_number)
     {
@@ -83,6 +83,8 @@ class Page extends AbstractFrameReflower
 
             $frame->set_style($style);
         }
+
+        $frame->calculate_bottom_page_edge();
     }
 
     /**
@@ -117,8 +119,7 @@ class Page extends AbstractFrameReflower
 
             // Only if it's the first page, we save the nodes with a fixed position
             if ($current_page == 0) {
-                $children = $child->get_children();
-                foreach ($children as $onechild) {
+                foreach ($child->get_children() as $onechild) {
                     if ($onechild->get_style()->position === "fixed") {
                         $fixed_children[] = $onechild->deep_copy();
                     }
@@ -174,31 +175,24 @@ class Page extends AbstractFrameReflower
      * Check for callbacks that need to be performed when a given event
      * gets triggered on a page
      *
-     * @param string $event the type of event
-     * @param Frame $frame  the frame that event is triggered on
+     * @param string $event The type of event
+     * @param Frame  $frame The frame that event is triggered on
      */
-    protected function _check_callbacks($event, $frame)
+    protected function _check_callbacks(string $event, Frame $frame): void
     {
         if (!isset($this->_callbacks)) {
-            $dompdf = $this->_frame->get_dompdf();
-            $this->_callbacks = $dompdf->get_callbacks();
-            $this->_canvas = $dompdf->get_canvas();
+            $dompdf = $this->get_dompdf();
+            $this->_callbacks = $dompdf->getCallbacks();
+            $this->_canvas = $dompdf->getCanvas();
         }
 
-        if (is_array($this->_callbacks) && isset($this->_callbacks[$event])) {
-            $info = [
-                0 => $this->_canvas, "canvas" => $this->_canvas,
-                1 => $frame,         "frame"  => $frame,
-            ];
+        if (isset($this->_callbacks[$event])) {
             $fs = $this->_callbacks[$event];
+            $canvas = $this->_canvas;
+            $fontMetrics = $this->get_dompdf()->getFontMetrics();
+
             foreach ($fs as $f) {
-                if (is_callable($f)) {
-                    if (is_array($f)) {
-                        $f[0]->{$f[1]}($info);
-                    } else {
-                        $f($info);
-                    }
-                }
+                $f($frame, $canvas, $fontMetrics);
             }
         }
     }

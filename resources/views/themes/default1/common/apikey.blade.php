@@ -72,6 +72,12 @@ $key = new App\Http\Controllers\License\LicenseController;
 $details = $key->getLicensekey();
 $licensekey = $details["data"]["data"][0]["api_key_secret"];
 $licenseurl =  $details["url"];
+
+
+
+ $licenseClientId = app\ApiKey::pluck('license_client_id')->first();
+$licenseClientSecret =  app\ApiKey::pluck('license_client_secret')->first();
+$licenseGrantType =  app\ApiKey::pluck('license_grant_type')->first();
 ?>
 </style>
 <div class="col-sm-6 md-6">
@@ -104,7 +110,7 @@ $licenseurl =  $details["url"];
                             <thead>
                             <tr>
 
-<<<<<<< HEAD
+
                                 <th>Options</th>
                                 <th>Status</th>
                                 <th>Fields</th>
@@ -556,22 +562,25 @@ $licenseurl =  $details["url"];
         }
     });
 
-function licenseDetails($licensekey, $licenseurl){
-   if ($('#License').prop("checked")) {
-          var checkboxvalue = 1;
-          var valid = true;
-          if ($('#license_api_secret').val() =="" ) {
-             $('#license_apiCheck').show();
-             $('#license_apiCheck').html("Please Enter API Secret Key");
-              $('#license_api_secret').css("border-color","red");
-              $('#license_apiCheck').css({"color":"red","margin-top":"5px"});
-                setTimeout(function(){
+
+
+        function licenseDetails($licensekey, $licenseurl){
+
+            if ($('#License').prop("checked")) {
+                var checkboxvalue = 1;
+
+                if ($('#license_api_secret').val() =="" ) {
+                    $('#license_apiCheck').show();
+                    $('#license_apiCheck').html("Please Enter API Secret Key");
+                    $('#license_api_secret').css("border-color","red");
+                    $('#license_apiCheck').css({"color":"red","margin-top":"5px"});
+                    setTimeout(function(){
                     $('#license_apiCheck').hide();
                       $('#license_api_secret').css("border-color","");
                         }, 1500);
-              valid = false;
-          }
-            if ($('#license_api_secret').val() != $licensekey ) {
+                    return false;
+                }
+                  if ($('#license_api_secret').val() != $licensekey ) {
              $('#license_apiCheck').show();
              $('#license_apiCheck').html("Please Enter Valid APT Secret Key");
               $('#license_api_secret').css("border-color","red");
@@ -580,83 +589,41 @@ function licenseDetails($licensekey, $licenseurl){
                     $('#license_apiCheck').hide();
                       $('#license_api_secret').css("border-color","");
                         }, 1500);
-              valid = false;
-
+              
+              return false;
           }
-
-            if ($('#license_api_url').val() =="" ) {
-             $('#license_urlCheck').show();
-             $('#license_urlCheck').html("Please Enter API URL");
-              $('#license_api_url').css("border-color","red");
-              $('#license_urlCheck').css({"color":"red","margin-top":"5px"});
-                setTimeout(function(){
-                    $('#license_urlCheck').hide();
-                      $('#license_api_url').css("border-color","");
-                        }, 1500);
-              valid = false;
-          }
-          if ($('#license_api_url').val() != $licenseurl) {
-             $('#license_urlCheck').show();
-             $('#license_urlCheck').html("Please Enter Valid API URL");
-              $('#license_api_url').css("border-color","red");
-              $('#license_urlCheck').css({"color":"red","margin-top":"5px"});
-                setTimeout(function(){
-                    $('#license_urlCheck').hide();
-                      $('#license_api_url').css("border-color","");
-                        }, 1500);
-              valid = false;
-          }
-          return valid;
-         
-    }
-    else{
-          var checkboxvalue = 0;
-         }
-       $("#submit").html("<i class='fas fa-circle-notch fa-spin'></i>Please Wait...");
-  $.ajax({
-    
-    url : '{{url("licenseDetails")}}',
-    type : 'post',
-    data: {
-       "status": checkboxvalue,
-       "license_api_secret": $('#license_api_secret').val(),
-       "license_api_url" :$('#license_api_url').val(),
-      },
-      success: function (response) {
-            $('#alertMessage').show();
-            var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>'+response.update+'.</div>';
-            $('#alertMessage').html(result+ ".");
-            $("#submit").html("<i class='fa fa-save'>&nbsp;&nbsp;</i>Save");
-                setInterval(function(){ 
-                $('#alertMessage').slideUp(3000); 
-            }, 1000);
-          },
-            
-        });
-
-        function licenseDetails(){
-
-            if ($('#License').prop("checked")) {
-                var checkboxvalue = 1;
-                if ($('#license_api_secret').val() =="" ) {
-                    $('#license_apiCheck').show();
-                    $('#license_apiCheck').html("Please Enter API Secret Key");
-                    $('#license_api_secret').css("border-color","red");
-                    $('#license_apiCheck').css({"color":"red","margin-top":"5px"});
-                    return false;
-                }
                 if ($('#license_api_url').val() =="" ) {
                     $('#license_urlCheck').show();
                     $('#license_urlCheck').html("Please Enter API URL");
                     $('#license_api_url').css("border-color","red");
                     $('#license_urlCheck').css({"color":"red","margin-top":"5px"});
+                    setTimeout(function(){
+                    $('#license_urlCheck').hide();
+                      $('#license_api_url').css("border-color","");
+                        }, 1500);
                     return false;
                 }
+                  if ($('#license_api_url').val() != $licenseurl) {
+             $('#license_urlCheck').show();
+             $('#license_urlCheck').html("Please Enter Valid API URL");
+              $('#license_api_url').css("border-color","red");
+              $('#license_urlCheck').css({"color":"red","margin-top":"5px"});
+              setTimeout(function(){
+                    $('#license_urlCheck').hide();
+                      $('#license_api_url').css("border-color","");
+                        }, 1500);
+                
+              return false;
+          }
                 if ($('#license_client_id').val() =="" ) {
                     $('#license_clientIdCheck').show();
                     $('#license_clientIdCheck').html("Please Enter Client Id For License Manager");
                     $('#license_client_id').css("border-color","red");
                     $('#license_clientIdCheck').css({"color":"red","margin-top":"5px"});
+                    setTimeout(function(){
+                    $('#license_clientIdCheck').hide();
+                      $('#license_client_id').css("border-color","");
+                        }, 1500);
                     return false;
                 }
                 if ($('#license_client_secret').val() =="" ) {
@@ -664,6 +631,10 @@ function licenseDetails($licensekey, $licenseurl){
                     $('#license_clientSecretCheck').html("Please Enter Your Client Secret For License Manager");
                     $('#license_client_secret').css("border-color","red");
                     $('#license_clientSecretCheck').css({"color":"red","margin-top":"5px"});
+                    setTimeout(function(){
+                    $('#license_clientSecretCheck').hide();
+                      $('#license_client_secret').css("border-color","");
+                        }, 1500);
                     return false;
                 }
                 if ($('#license_grant_type').val() =="" ) {
@@ -671,6 +642,10 @@ function licenseDetails($licensekey, $licenseurl){
                     $('#license_grantTypeCheck').html("Please Enter Your Grant Type For License Manager");
                     $('#license_grant_type').css("border-color","red");
                     $('#license_grantTypeCheck').css({"color":"red","margin-top":"5px"});
+                    setTimeout(function(){
+                    $('#license_grantTypeCheck').hide();
+                      $('#license_grant_type').css("border-color","");
+                        }, 1500);
                     return false;
                 }
             }

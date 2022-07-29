@@ -1,6 +1,29 @@
 CHANGELOG
 =========
 
+5.4
+---
+
+ * Add `github` format & autodetection to render errors as annotations when
+   running the XLIFF linter command in a Github Actions environment.
+ * Translation providers are not experimental anymore
+
+5.3
+---
+
+ * Add `translation:pull` and `translation:push` commands to manage translations with third-party providers
+ * Add `TranslatorBagInterface::getCatalogues` method
+ * Add support to load XLIFF string in `XliffFileLoader`
+
+5.2.0
+-----
+
+ * added support for calling `trans` with ICU formatted messages
+ * added `PseudoLocalizationTranslator`
+ * added `TranslatableMessage` objects that represent a message that can be translated
+ * added the `t()` function to easily create `TranslatableMessage` objects
+ * Added support for extracting messages from `TranslatableMessage` objects
+
 5.1.0
 -----
 

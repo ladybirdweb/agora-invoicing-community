@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Laravel Markdown.
  *
- * (c) Graham Campbell <graham@alt-three.com>
+ * (c) Graham Campbell <hello@gjcampbell.co.uk>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,30 +13,30 @@ declare(strict_types=1);
 
 namespace GrahamCampbell\Markdown\View\Directive;
 
-use League\CommonMark\Converter;
+use League\CommonMark\MarkdownConverterInterface;
 
 /**
  * This is the markdown directive class.
  *
- * @author Graham Campbell <graham@alt-three.com>
+ * @author Graham Campbell <hello@gjcampbell.co.uk>
  */
 final class MarkdownDirective
 {
     /**
      * The markdown instance.
      *
-     * @var \League\CommonMark\Converter
+     * @var \League\CommonMark\MarkdownConverterInterface
      */
     private $markdown;
 
     /**
      * Create a new markdown directive instance.
      *
-     * @param \League\CommonMark\Converter $markdown
+     * @param \League\CommonMark\MarkdownConverterInterface $markdown
      *
      * @return void
      */
-    public function __construct(Converter $markdown)
+    public function __construct(MarkdownConverterInterface $markdown)
     {
         $this->markdown = $markdown;
     }

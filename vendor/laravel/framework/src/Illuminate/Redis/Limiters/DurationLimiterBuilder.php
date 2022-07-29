@@ -24,7 +24,7 @@ class DurationLimiterBuilder
     public $name;
 
     /**
-     * The maximum number of locks that can obtained per time window.
+     * The maximum number of locks that can be obtained per time window.
      *
      * @var int
      */
@@ -58,7 +58,7 @@ class DurationLimiterBuilder
     }
 
     /**
-     * Set the maximum number of locks that can obtained per time window.
+     * Set the maximum number of locks that can be obtained per time window.
      *
      * @param  int  $maxLocks
      * @return $this
@@ -73,7 +73,7 @@ class DurationLimiterBuilder
     /**
      * Set the amount of time the lock window is maintained.
      *
-     * @param  int  $decay
+     * @param  \DateTimeInterface|\DateInterval|int  $decay
      * @return $this
      */
     public function every($decay)

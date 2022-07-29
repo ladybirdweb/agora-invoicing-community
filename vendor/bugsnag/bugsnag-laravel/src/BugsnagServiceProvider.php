@@ -9,6 +9,7 @@ use Bugsnag\BugsnagLaravel\Request\LaravelResolver;
 use Bugsnag\Callbacks\CustomUser;
 use Bugsnag\Client;
 use Bugsnag\Configuration;
+use Bugsnag\FeatureFlag;
 use Bugsnag\PsrLogger\BugsnagLogger;
 use Bugsnag\PsrLogger\MultiLogger as BaseMultiLogger;
 use Bugsnag\Report;
@@ -36,7 +37,7 @@ class BugsnagServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    const VERSION = '2.19.0';
+    const VERSION = '2.24.0';
 
     /**
      * Boot the service provider.
@@ -50,6 +51,13 @@ class BugsnagServiceProvider extends ServiceProvider
         $this->setupEvents($this->app->events, $this->app->config->get('bugsnag'));
 
         $this->setupQueue($this->app->queue);
+
+        // Load the Client instance up-front if the OOM bootstrapper has been
+        // loaded. This avoids the possibility of initialising during an OOM,
+        // which can take a non-trivial amount of memory
+        if (class_exists(OomBootstrapper::class, false) && !$this->app->runningUnitTests()) {
+            $this->app->make('bugsnag');
+        }
     }
 
     /**
@@ -213,6 +221,10 @@ class BugsnagServiceProvider extends ServiceProvider
                 $client->setFilters($config['filters']);
             }
 
+            if (isset($config['endpoint'])) {
+                $client->setNotifyEndpoint($config['endpoint']);
+            }
+
             if ($this->isSessionTrackingAllowed($config)) {
                 $endpoint = isset($config['session_endpoint']) ? $config['session_endpoint'] : null;
                 $this->setupSessionTracking($client, $endpoint, $this->app->events);
@@ -220,6 +232,36 @@ class BugsnagServiceProvider extends ServiceProvider
 
             if (isset($config['build_endpoint'])) {
                 $client->setBuildEndpoint($config['build_endpoint']);
+            }
+
+            if (array_key_exists('memory_limit_increase', $config)) {
+                $client->setMemoryLimitIncrease($config['memory_limit_increase']);
+            }
+
+            if (isset($config['discard_classes']) && is_array($config['discard_classes'])) {
+                $client->setDiscardClasses($config['discard_classes']);
+            }
+
+            if (isset($config['redacted_keys']) && is_array($config['redacted_keys'])) {
+                $client->setRedactedKeys($config['redacted_keys']);
+            }
+
+            if (isset($config['feature_flags']) && is_array($config['feature_flags']) && $config['feature_flags'] !== []) {
+                $featureFlags = [];
+
+                foreach ($config['feature_flags'] as $flag) {
+                    if (!is_array($flag) || !array_key_exists('name', $flag)) {
+                        continue;
+                    }
+
+                    if (array_key_exists('variant', $flag)) {
+                        $featureFlags[] = new FeatureFlag($flag['name'], $flag['variant']);
+                    } else {
+                        $featureFlags[] = new FeatureFlag($flag['name']);
+                    }
+                }
+
+                $client->addFeatureFlags($featureFlags);
             }
 
             return $client;
@@ -266,6 +308,11 @@ class BugsnagServiceProvider extends ServiceProvider
      */
     protected function getGuzzle(array $config)
     {
+        // If a 'bugsnag.guzzle' instance exists in the container, use it
+        if ($this->app->bound('bugsnag.guzzle')) {
+            return $this->app->make('bugsnag.guzzle');
+        }
+
         $options = [];
 
         if (isset($config['proxy']) && $config['proxy']) {
@@ -276,7 +323,7 @@ class BugsnagServiceProvider extends ServiceProvider
             $options['proxy'] = $config['proxy'];
         }
 
-        return Client::makeGuzzle(isset($config['endpoint']) ? $config['endpoint'] : null, $options);
+        return Client::makeGuzzle(null, $options);
     }
 
     /**

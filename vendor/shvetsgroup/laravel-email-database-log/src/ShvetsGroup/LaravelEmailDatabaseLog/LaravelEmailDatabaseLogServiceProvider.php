@@ -2,22 +2,11 @@
 
 namespace ShvetsGroup\LaravelEmailDatabaseLog;
 
-use Illuminate\Foundation\Support\Providers\EventServiceProvider;
+use Illuminate\Support\ServiceProvider;
 use Illuminate\Mail\Events\MessageSending;
 
-class LaravelEmailDatabaseLogServiceProvider extends EventServiceProvider
+class LaravelEmailDatabaseLogServiceProvider extends ServiceProvider
 {
-    /**
-     * The event listener mappings for the application.
-     *
-     * @var array
-     */
-    protected $listen = [
-        MessageSending::class => [
-            EmailLogger::class,
-        ],
-    ];
-
     /**
      * Register any other events for your application.
      *
@@ -25,8 +14,22 @@ class LaravelEmailDatabaseLogServiceProvider extends EventServiceProvider
      */
     public function boot()
     {
-        parent::boot();
+		//
+    }
 
-        $this->loadMigrationsFrom(__DIR__ . '/../../database/migrations');
+	/**
+	 * Register any application services.
+	 *
+	 * @return void
+	 */
+    public function register()
+    {
+	    $this->app->register(LaravelEmailDatabaseLogEventServiceProvider::class);
+
+	    if ($this->app->runningInConsole()) {
+		    $this->publishes([
+			    __DIR__ . '/../../database/migrations' => database_path('migrations'),
+		    ], 'laravel-email-database-log-migration');
+	    }
     }
 }

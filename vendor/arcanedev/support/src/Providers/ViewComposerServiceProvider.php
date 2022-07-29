@@ -9,7 +9,6 @@ use Illuminate\Contracts\View\Factory as ViewFactory;
 /**
  * Class     ViewComposerServiceProvider
  *
- * @package  Arcanedev\Support\Providers
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
 abstract class ViewComposerServiceProvider extends ServiceProvider

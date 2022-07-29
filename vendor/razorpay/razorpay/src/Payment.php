@@ -16,6 +16,13 @@ class Payment extends Entity
 
     public function all($options = array())
     {
+        if(isset($options['X-Razorpay-Account'])){
+
+            Request::addHeader('X-Razorpay-Account', $options['X-Razorpay-Account']);
+
+            unset($options['X-Razorpay-Account']);
+        }
+
         return parent::all($options);
     }
 
@@ -83,6 +90,136 @@ class Payment extends Entity
     public function bankTransfer()
     {
         $relativeUrl = $this->getEntityUrl() . $this->id . '/bank_transfer';
+
+        return $this->request('GET', $relativeUrl);
+    }
+
+    public function fetchMultipleRefund($options = array())
+    {
+        $relativeUrl = $this->getEntityUrl() . $this->id . '/refunds';
+
+        return $this->request('GET', $relativeUrl, $options);
+    }
+
+    public function fetchRefund($refundId)
+    {
+        $relativeUrl = $this->getEntityUrl() . $this->id . '/refunds/'.$refundId;
+
+        return $this->request('GET', $relativeUrl);
+    }
+
+    public function createRecurring($attributes = array())
+    {
+        $relativeUrl = $this->getEntityUrl() . 'create/recurring';
+
+        return $this->request('POST', $relativeUrl, $attributes);
+    }
+    /**
+     * fetch Card Details
+     *
+     * @param id $id
+     *
+     * @return card
+     */
+    public function fetchCardDetails()
+    {
+        $relativeUrl = $this->getEntityUrl() . $this->id . '/card';
+
+        return $this->request('GET', $relativeUrl);
+    }
+     /**
+     * fetchPaymentDowntime
+     *
+     */
+    public function fetchPaymentDowntime()
+    {
+        $relativeUrl = $this->getEntityUrl() . 'downtimes';
+
+        return $this->request('GET', $relativeUrl);
+    }
+    /**
+     * fetch Payment Downtime Id
+     *
+     * @param id $id
+     *
+     * @return card
+     */
+    public function fetchPaymentDowntimeById($id)
+    {
+        $relativeUrl = $this->getEntityUrl() . 'downtimes' . $id;
+
+        return $this->request('GET', $relativeUrl);
+    }
+    /**
+     * create Payment Json
+     *
+     * @param array $attributes
+     */
+    public function createPaymentJson($attributes = array())
+    {
+        $relativeUrl = $this->getEntityUrl() . 'create/json';
+
+        return $this->request('POST', $relativeUrl, $attributes);
+    }
+    /**
+     * Submit otp
+     *
+     * @param id $id
+     *
+     * @param array $attributes
+     */
+    public function otpSubmit($attributes = array())
+    {
+        $relativeUrl = $this->getEntityUrl(). $this->id . '/otp/submit';
+
+        return $this->request('POST', $relativeUrl, $attributes);
+    }
+
+    /**
+     * Generate otp
+     *
+     * @param id $id
+     *
+     * @param array $attributes
+     */
+    public function otpGenerate($id)
+    {
+        $relativeUrl = $this->getEntityUrl(). $id . '/otp_generate';
+
+        return $this->request('POST', $relativeUrl);
+    }
+
+    /**
+     * Resend otp
+     *
+     * @param id $id
+     *
+     * @param array $attributes
+     */
+    public function otpResend()
+    {
+        $relativeUrl = $this->getEntityUrl(). $this->id . '/otp/resend';
+
+        return $this->request('POST', $relativeUrl);
+    }
+    
+    public function createUpi($attributes = array())
+    {
+        $relativeUrl = $this->getEntityUrl() . 'create/upi';
+
+        return $this->request('POST', $relativeUrl, $attributes);
+    }
+
+    public function validateVpa($attributes = array())
+    {
+        $relativeUrl = $this->getEntityUrl() . 'validate/vpa';
+
+        return $this->request('POST', $relativeUrl, $attributes);
+    }
+
+    public function fetchPaymentMethods()
+    {
+        $relativeUrl = 'methods';
 
         return $this->request('GET', $relativeUrl);
     }

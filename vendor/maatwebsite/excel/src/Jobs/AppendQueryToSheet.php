@@ -5,13 +5,15 @@ namespace Maatwebsite\Excel\Jobs;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Files\TemporaryFile;
+use Maatwebsite\Excel\Jobs\Middleware\LocalizeJob;
 use Maatwebsite\Excel\Writer;
 
 class AppendQueryToSheet implements ShouldQueue
 {
-    use Queueable, Dispatchable, ProxyFailures;
+    use Queueable, Dispatchable, ProxyFailures, InteractsWithQueue;
 
     /**
      * @var TemporaryFile
@@ -44,12 +46,12 @@ class AppendQueryToSheet implements ShouldQueue
     public $chunkSize;
 
     /**
-     * @param FromQuery       $sheetExport
-     * @param TemporaryFile   $temporaryFile
-     * @param string          $writerType
-     * @param int             $sheetIndex
-     * @param int             $page
-     * @param int             $chunkSize
+     * @param  FromQuery  $sheetExport
+     * @param  TemporaryFile  $temporaryFile
+     * @param  string  $writerType
+     * @param  int  $sheetIndex
+     * @param  int  $page
+     * @param  int  $chunkSize
      */
     public function __construct(
         FromQuery $sheetExport,
@@ -78,21 +80,23 @@ class AppendQueryToSheet implements ShouldQueue
     }
 
     /**
-     * @param Writer $writer
+     * @param  Writer  $writer
      *
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
      */
     public function handle(Writer $writer)
     {
-        $writer = $writer->reopen($this->temporaryFile, $this->writerType);
+        (new LocalizeJob($this->sheetExport))->handle($this, function () use ($writer) {
+            $writer = $writer->reopen($this->temporaryFile, $this->writerType);
 
-        $sheet = $writer->getSheetByIndex($this->sheetIndex);
+            $sheet = $writer->getSheetByIndex($this->sheetIndex);
 
-        $query = $this->sheetExport->query()->forPage($this->page, $this->chunkSize);
+            $query = $this->sheetExport->query()->forPage($this->page, $this->chunkSize);
 
-        $sheet->appendRows($query->get(), $this->sheetExport);
+            $sheet->appendRows($query->get(), $this->sheetExport);
 
-        $writer->write($this->sheetExport, $this->temporaryFile, $this->writerType);
+            $writer->write($this->sheetExport, $this->temporaryFile, $this->writerType);
+        });
     }
 }

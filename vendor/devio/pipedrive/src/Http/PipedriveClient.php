@@ -5,6 +5,7 @@ namespace Devio\Pipedrive\Http;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Psr7\Request as GuzzleRequest;
 use GuzzleHttp\Exception\BadResponseException;
+use GuzzleHttp\RequestOptions;
 
 class PipedriveClient implements Client
 {
@@ -107,6 +108,11 @@ class PipedriveClient implements Client
         if (isset($parameters['file'])) {
             $form = 'multipart';
             $parameters = $this->multipart($parameters);
+        }
+
+        if (isset($parameters['json'])) {
+            $form = RequestOptions::JSON;
+            $parameters = array_except($parameters, RequestOptions::JSON);
         }
 
         return $this->execute($request, [$form => $parameters]);

@@ -14,6 +14,7 @@ namespace PHP_CodeSniffer;
 
 use PHP_CodeSniffer\Exceptions\DeepExitException;
 use PHP_CodeSniffer\Exceptions\RuntimeException;
+use PHP_CodeSniffer\Util\Common;
 
 /**
  * Stores the configuration used to run PHPCS and PHPCBF.
@@ -79,7 +80,7 @@ class Config
      *
      * @var string
      */
-    const VERSION = '3.5.5';
+    const VERSION = '3.7.1';
 
     /**
      * Package stability; either stable, beta or alpha.
@@ -363,11 +364,11 @@ class Config
 
                 $lastDir    = $currentDir;
                 $currentDir = dirname($currentDir);
-            } while ($currentDir !== '.' && $currentDir !== $lastDir && @is_readable($currentDir) === true);
+            } while ($currentDir !== '.' && $currentDir !== $lastDir && Common::isReadable($currentDir) === true);
         }//end if
 
         if (defined('STDIN') === false
-            || strtoupper(substr(PHP_OS, 0, 3)) === 'WIN'
+            || stripos(PHP_OS, 'WIN') === 0
         ) {
             return;
         }
@@ -459,7 +460,7 @@ class Config
     /**
      * Restore default values for all possible command line arguments.
      *
-     * @return array
+     * @return void
      */
     public function restoreDefaults()
     {
@@ -1516,7 +1517,7 @@ class Config
             return self::$executablePaths[$name];
         }
 
-        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+        if (stripos(PHP_OS, 'WIN') === 0) {
             $cmd = 'where '.escapeshellarg($name).' 2> nul';
         } else {
             $cmd = 'which '.escapeshellarg($name).' 2> /dev/null';
@@ -1596,7 +1597,7 @@ class Config
         if ($temp === false) {
             $output  = '<'.'?php'."\n".' $phpCodeSnifferConfig = ';
             $output .= var_export($phpCodeSnifferConfig, true);
-            $output .= "\n?".'>';
+            $output .= ";\n?".'>';
 
             if (file_put_contents($configFile, $output) === false) {
                 $error = 'ERROR: Config file '.$configFile.' could not be written'.PHP_EOL.PHP_EOL;
@@ -1656,7 +1657,7 @@ class Config
             return [];
         }
 
-        if (is_readable($configFile) === false) {
+        if (Common::isReadable($configFile) === false) {
             $error = 'ERROR: Config file '.$configFile.' is not readable'.PHP_EOL.PHP_EOL;
             throw new DeepExitException($error, 3);
         }

@@ -12,7 +12,6 @@ use SplFileInfo;
 /**
  * Class     Log
  *
- * @package  Arcanedev\LogViewer\Entities
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
 class Log implements Arrayable, Jsonable, JsonSerializable
@@ -224,7 +223,7 @@ class Log implements Arrayable, Jsonable, JsonSerializable
      *
      * @return array
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return $this->toArray();
     }

@@ -46,7 +46,7 @@ use Illuminate\Support\Facades\Route;
          * Installer Routes
          */
 
-        Route::prefix('install')->name('AgoraInstaller::')->middleware('isInstalled')->group(function () {
+            Route::prefix('install')->name('AgoraInstaller::')->middleware('isInstalled')->group(function () {
             Route::get('/', [Installer\WelcomeController::class, 'welcome'])->name('welcome');
 
             Route::get('requirements', [Installer\RequirementsController::class, 'requirements'])->name('requirements');
@@ -524,6 +524,9 @@ use Illuminate\Support\Facades\Route;
              */
             Route::get('apikeys', [Common\SettingsController::class, 'getKeys']);
             Route::patch('apikeys', [Common\SettingsController::class, 'postKeys']);
+            Route::post('login', [ 'as' => 'login', 'uses' => 'App\Http\Controllers\Auth\LoginController@login']);
+            // Route::post('login', [Auth\LoginController::class, 'login'])->name('login');
+
 
             Route::get('otp/send', [Auth\AuthController::class, 'requestOtp']);
             Route::post('otp/sendByAjax', [Auth\AuthController::class, 'requestOtpFromAjax']);

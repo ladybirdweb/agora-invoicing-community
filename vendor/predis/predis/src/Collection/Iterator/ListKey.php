@@ -73,8 +73,8 @@ class ListKey implements \Iterator
      */
     protected function requiredCommand(ClientInterface $client, $commandID)
     {
-        if (!$client->getProfile()->supportsCommand($commandID)) {
-            throw new NotSupportedException("The current profile does not support '$commandID'.");
+        if (!$client->getCommandFactory()->supports($commandID)) {
+            throw new NotSupportedException("'$commandID' is not supported by the current command factory.");
         }
     }
 
@@ -128,6 +128,7 @@ class ListKey implements \Iterator
     /**
      * {@inheritdoc}
      */
+    #[\ReturnTypeWillChange]
     public function rewind()
     {
         $this->reset();
@@ -137,6 +138,7 @@ class ListKey implements \Iterator
     /**
      * {@inheritdoc}
      */
+    #[\ReturnTypeWillChange]
     public function current()
     {
         return $this->current;
@@ -145,6 +147,7 @@ class ListKey implements \Iterator
     /**
      * {@inheritdoc}
      */
+    #[\ReturnTypeWillChange]
     public function key()
     {
         return $this->position;
@@ -153,6 +156,7 @@ class ListKey implements \Iterator
     /**
      * {@inheritdoc}
      */
+    #[\ReturnTypeWillChange]
     public function next()
     {
         if (!$this->elements && $this->fetchmore) {
@@ -169,6 +173,7 @@ class ListKey implements \Iterator
     /**
      * {@inheritdoc}
      */
+    #[\ReturnTypeWillChange]
     public function valid()
     {
         return $this->valid;

@@ -11,30 +11,29 @@
 
 /*
  * Authors:
- * - Halwest Manguri
+ * - Unicode, Inc.
  */
-$months = ['کانونی دووەم', 'شوبات', 'ئازار', 'نیسان', 'ئایار', '‌حوزەیران', 'تەمموز', 'ئاب', 'ئەیلول', 'تشرینی یەکەم', 'تشرینی دووەم', 'کانونی یەکەم'];
-
-$weekdays = ['دوو شەممە', 'سێ شەممە', 'چوار شەممە', 'پێنج شەممە', 'هەینی', 'شەممە', 'یەک شەممە'];
 
 return [
-    'ago' => 'لەمەوبەر :time',
-    'from_now' => ':time لە ئێستاوە',
-    'after' => 'دوای :time',
-    'before' => 'پێش :time',
-    'year' => '{0}ساڵ|{1}ساڵ|{2}ساڵ|[3,10]:count ساڵ|[11,Inf]:count ساڵ',
-    'month' => '{0}مانگ|{1}مانگ|{2}مانگ|[3,10]:count مانگ|[11,Inf]:count مانگ',
-    'week' => '{0}هەفتە|{1}هەفتە|{2}هەفتە|[3,10]:count هەفتە|[11,Inf]:count هەفتە',
-    'day' => '{0}ڕۆژ|{1}ڕۆژ|{2}ڕۆژ|[3,10]:count ڕۆژ|[11,Inf]:count ڕۆژ',
-    'hour' => '{0}کاژێر|{1}کاژێر|{2}کاژێر|[3,10]:count کاژێر|[11,Inf]:count کاژێر',
-    'minute' => '{0}خولەک|{1}خولەک|{2}خولەک|[3,10]:count خولەک|[11,Inf]:count خولەک',
-    'second' => '{0}چرکە|{1}چرکە|{2}چرکە|[3,10]:count چرکە|[11,Inf]:count چرکە',
-    'months' => $months,
-    'months_standalone' => $months,
-    'months_short' => $months,
-    'weekdays' => $weekdays,
-    'weekdays_short' => $weekdays,
-    'weekdays_min' => $weekdays,
+    'ago' => 'berî :time',
+    'from_now' => 'di :time de',
+    'after' => ':time piştî',
+    'before' => ':time berê',
+    'year' => ':count sal',
+    'year_ago' => ':count salê|:count salan',
+    'year_from_now' => 'salekê|:count salan',
+    'month' => ':count meh',
+    'week' => ':count hefte',
+    'day' => ':count roj',
+    'hour' => ':count saet',
+    'minute' => ':count deqîqe',
+    'second' => ':count saniye',
+    'months' => ['rêbendanê', 'reşemiyê', 'adarê', 'avrêlê', 'gulanê', 'pûşperê', 'tîrmehê', 'gelawêjê', 'rezberê', 'kewçêrê', 'sermawezê', 'berfanbarê'],
+    'months_standalone' => ['rêbendan', 'reşemî', 'adar', 'avrêl', 'gulan', 'pûşper', 'tîrmeh', 'gelawêj', 'rezber', 'kewçêr', 'sermawez', 'berfanbar'],
+    'months_short' => ['rêb', 'reş', 'ada', 'avr', 'gul', 'pûş', 'tîr', 'gel', 'rez', 'kew', 'ser', 'ber'],
+    'weekdays' => ['yekşem', 'duşem', 'sêşem', 'çarşem', 'pêncşem', 'în', 'şemî'],
+    'weekdays_short' => ['yş', 'dş', 'sş', 'çş', 'pş', 'în', 'ş'],
+    'weekdays_min' => ['Y', 'D', 'S', 'Ç', 'P', 'Î', 'Ş'],
     'list' => [', ', ' û '],
     'first_day_of_week' => 6,
     'day_of_first_week_of_year' => 1,

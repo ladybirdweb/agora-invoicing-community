@@ -163,6 +163,7 @@ active
                     <div class="row justify-content-end">
                         <div class="col-sm-4">
                             <table class="table h6 text-dark" >
+                                @foreach($items as $item)
                                  <tr>
                                  <th>Subtotal</th>
                                     <td>{{currencyFormat($itemsSubtotal,$code=$symbol)}}</td>
@@ -226,6 +227,7 @@ active
                                     <th>Total</th>
                                     <td>{{currencyFormat($invoice->grand_total,$code = $symbol)}}</td>
                                 </tr>
+                                @endforeach
                             </table>
 
                         </div>

@@ -1,6 +1,42 @@
 CHANGELOG
 =========
 
+5.4
+---
+
+ * Add the ability to enable the profiler using a request query parameter, body parameter or attribute
+ * Deprecate `AbstractTestSessionListener` and `TestSessionListener`, use `AbstractSessionListener` and `SessionListener` instead
+ * Deprecate the `fileLinkFormat` parameter of `DebugHandlersListener`
+ * Add support for configuring log level, and status code by exception class
+ * Allow ignoring "kernel.reset" methods that don't exist with "on_invalid" attribute
+
+5.3
+---
+
+ * Deprecate `ArgumentInterface`
+ * Add `ArgumentMetadata::getAttributes()`
+ * Deprecate `ArgumentMetadata::getAttribute()`, use `getAttributes()` instead
+ * Mark the class `Symfony\Component\HttpKernel\EventListener\DebugHandlersListener` as internal
+ * Deprecate returning a `ContainerBuilder` from `KernelInterface::registerContainerConfiguration()`
+ * Deprecate `HttpKernelInterface::MASTER_REQUEST` and add `HttpKernelInterface::MAIN_REQUEST` as replacement
+ * Deprecate `KernelEvent::isMasterRequest()` and add `isMainRequest()` as replacement
+ * Add `#[AsController]` attribute for declaring standalone controllers on PHP 8
+ * Add `FragmentUriGeneratorInterface` and `FragmentUriGenerator` to generate the URI of a fragment
+
+5.2.0
+-----
+
+ * added session usage
+ * made the public `http_cache` service handle requests when available
+ * allowed enabling trusted hosts and proxies using new `kernel.trusted_hosts`,
+   `kernel.trusted_proxies` and `kernel.trusted_headers` parameters
+ * content of request parameter `_password` is now also hidden
+   in the request profiler raw content section
+ * Allowed adding attributes on controller arguments that will be passed to argument resolvers.
+ * kernels implementing the `ExtensionInterface` will now be auto-registered to the container
+ * added parameter `kernel.runtime_environment`, defined as `%env(default:kernel.environment:APP_RUNTIME_ENV)%`
+ * do not set a default `Accept` HTTP header when using `HttpKernelBrowser`
+
 5.1.0
 -----
 

@@ -5,6 +5,9 @@ namespace Illuminate\Container;
 use Closure;
 use ReflectionNamedType;
 
+/**
+ * @internal
+ */
 class Util
 {
     /**
@@ -50,13 +53,19 @@ class Util
         $type = $parameter->getType();
 
         if (! $type instanceof ReflectionNamedType || $type->isBuiltin()) {
-            return;
+            return null;
         }
 
         $name = $type->getName();
 
-        if ($name === 'self') {
-            return $parameter->getDeclaringClass()->getName();
+        if (! is_null($class = $parameter->getDeclaringClass())) {
+            if ($name === 'self') {
+                return $class->getName();
+            }
+
+            if ($name === 'parent' && $parent = $class->getParentClass()) {
+                return $parent->getName();
+            }
         }
 
         return $name;

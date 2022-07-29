@@ -4,6 +4,147 @@ Updates should follow the [Keep a CHANGELOG](https://keepachangelog.com/) princi
 
 ## [Unreleased][unreleased]
 
+## [1.6.7] - 2022-01-13
+
+### Changed
+
+ - Added `ReturnTypeWillChange` attribute to prevent PHP 8.1 deprecation warnings (#785)
+ - Coerced punctuation counts to integers to ensure floats are never used
+
+## [1.6.6] - 2021-07-17
+
+### Fixed
+
+ - Fixed Mentions inside of links creating nested links against the spec's rules (#688)
+
+## [1.6.5] - 2021-06-26
+
+### Changed
+
+ - Simplified checks for thematic breaks
+
+### Fixed
+
+ - Fixed ExternalLinkProcessor not handling autolinks by adjusting its priority to -50 (#681)
+
+## [1.6.4] - 2021-06-19
+
+### Changed
+
+ - Optimized attribute parsing to avoid inspecting every space character (30% performance boost)
+
+## [1.6.3] - 2021-06-19
+
+### Fixed
+
+ - Fixed incorrect parsing of tilde-fenced code blocks with leading spaces (#676)
+
+## [1.6.2] - 2021-05-12
+
+### Fixed
+
+ - Fixed incorrect error level for deprecation notices
+
+## [1.6.1] - 2021-05-08
+
+### Fixed
+
+ - Fixed `HeadingPermalinkProcessor` skipping text contents from certain nodes (#615)
+
+## [1.6.0] - 2021-05-01
+
+### Added
+
+ - Added forward-compatibility for [configuration options which will be changing in 2.0](https://commonmark.thephpleague.com/1.6/upgrading/):
+   - `commonmark/enable_em` (currently `enable_em` in 1.x)
+   - `commonmark/enable_strong` (currently `enable_strong` in 1.x)
+   - `commonmark/use_asterisk` (currently `use_asterisk` in 1.x)
+   - `commonmark/use_underscore` (currently `use_underscore` in 1.x)
+   - `commonmark/unordered_list_markers` (currently `unordered_list_markers` in 1.x)
+   - `mentions/*/prefix` (currently `mentions/*/symbol` in 1.x)
+   - `mentions/*/pattern` (currently `mentions/*/regex` in 1.x)
+   - `max_nesting_level` (currently supports `int` and `float` values in 1.x; will only support `int` in 2.0)
+ - Added new `MarkdownConverter` class for creating converters with custom environments; this replaces the previously-deprecated `Converter` class
+ - Added new `RegexHelper::matchFirst()` method
+ - Added new `Configuration::exists()` method
+
+### Changed
+
+ - The `max_nesting_level` option now defaults to `PHP_INT_MAX` instead of `INF`
+
+### Deprecated
+
+ - Deprecated the [configuration options shown above](https://commonmark.thephpleague.com/1.6/upgrading/)
+ - Deprecated the ability to pass a custom `Environment` into the constructors of `CommonMarkConverter` and `GithubFlavoredMarkdownConverter`; use `MarkdownConverter` instead
+ - Deprecated `ConfigurableEnvironmentInterface::setConfig()`; use `mergeConfig()` instead
+ - Deprecated calling `ConfigurableEnvironmentInterface::mergeConfig()` without any parameters
+ - Deprecated calling `Configuration::get()` and `EnvironmentInterface::getConfig()` without any parameters
+ - Deprecated calling `Configuration::set()` without the second `$value` parameter
+ - Deprecated `RegexHelper::matchAll()`; use `RegexHelper::matchFirst()` instead
+ - Deprecated extending the `ArrayCollection` class; will be marked `final` in 2.0
+
+### Fixed
+
+ - Fixed missing check for empty arrays being passed into the `unordered_list_markers` configuration option
+
+## [1.5.8] - 2021-03-28
+
+### Fixed
+
+ - Fixed Table of Contents not rendering heading inlines properly (#587, #588)
+ - Fixed parsing of tables within list items (#590)
+
+## [1.5.7] - 2020-10-31
+
+### Fixed
+
+ - Fixed mentions not being parsed when appearing after non-word characters (#582)
+
+## [1.5.6] - 2020-10-17
+
+### Changed
+
+ - Blocks added outside of the parsing context now have their start/end line numbers defaulted to 0 to avoid type errors (#579)
+
+### Fixed
+
+ - Fixed replacement blocks not inheriting the start line number of the container they're replacing (#579)
+ - Fixed Table of Contents blocks not having correct start/end line numbers (#579)
+
+## [1.5.5] - 2020-09-13
+
+### Changed
+
+ - Bumped CommonMark spec compliance to 0.28.2
+
+### Fixed
+
+ - Fixed `textarea` elements not being treated as a type 1 HTML block (like `script`, `style`, or `pre`)
+ - Fixed autolink processor not handling other unmatched trailing parentheses
+
+## [1.5.4] - 2020-08-17
+
+### Fixed
+
+ - Fixed footnote ID configuration not taking effect (#524, #530)
+ - Fixed heading permalink slugs not being unique (#531, #534)
+
+## [1.5.3] - 2020-07-19
+
+### Fixed
+
+ - Fixed regression of multi-byte inline parser characters not being matched
+
+## [1.5.2] - 2020-07-19
+
+### Changed
+
+ - Significantly improved performance of the inline parser regex
+
+### Fixed
+
+ - Fixed parent class lookups for non-existent classes on PHP 8 (#517)
+
 ## [1.5.1] - 2020-06-27
 
 ### Fixed
@@ -347,7 +488,22 @@ No changes were made since 1.0.0-rc1.
    - Removed `DelimiterStack::iterateByCharacters()` (use the new `processDelimiters()` method instead)
    - Removed the protected `DelimiterStack::findMatchingOpener()` method
 
-[unreleased]: https://github.com/thephpleague/commonmark/compare/1.5.1...1.5
+[unreleased]: https://github.com/thephpleague/commonmark/compare/1.6.7...1.6
+[1.6.7]: https://github.com/thephpleague/commonmark/compare/1.6.6...1.6.7
+[1.6.6]: https://github.com/thephpleague/commonmark/compare/1.6.5...1.6.6
+[1.6.5]: https://github.com/thephpleague/commonmark/compare/1.6.4...1.6.5
+[1.6.4]: https://github.com/thephpleague/commonmark/compare/1.6.3...1.6.4
+[1.6.3]: https://github.com/thephpleague/commonmark/compare/1.6.2...1.6.3
+[1.6.2]: https://github.com/thephpleague/commonmark/compare/1.6.1...1.6.2
+[1.6.1]: https://github.com/thephpleague/commonmark/compare/1.6.0...1.6.1
+[1.6.0]: https://github.com/thephpleague/commonmark/compare/1.5.8...1.6.0
+[1.5.8]: https://github.com/thephpleague/commonmark/compare/1.5.7...1.5.8
+[1.5.7]: https://github.com/thephpleague/commonmark/compare/1.5.6...1.5.7
+[1.5.6]: https://github.com/thephpleague/commonmark/compare/1.5.5...1.5.6
+[1.5.5]: https://github.com/thephpleague/commonmark/compare/1.5.4...1.5.5
+[1.5.4]: https://github.com/thephpleague/commonmark/compare/1.5.3...1.5.4
+[1.5.3]: https://github.com/thephpleague/commonmark/compare/1.5.2...1.5.3
+[1.5.2]: https://github.com/thephpleague/commonmark/compare/1.5.1...1.5.2
 [1.5.1]: https://github.com/thephpleague/commonmark/compare/1.5.0...1.5.1
 [1.5.0]: https://github.com/thephpleague/commonmark/compare/1.4.3...1.5.0
 [1.4.3]: https://github.com/thephpleague/commonmark/compare/1.4.2...1.4.3

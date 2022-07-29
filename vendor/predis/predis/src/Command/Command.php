@@ -22,23 +22,11 @@ abstract class Command implements CommandInterface
     private $arguments = array();
 
     /**
-     * Returns a filtered array of the arguments.
-     *
-     * @param array $arguments List of arguments.
-     *
-     * @return array
-     */
-    protected function filterArguments(array $arguments)
-    {
-        return $arguments;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function setArguments(array $arguments)
     {
-        $this->arguments = $this->filterArguments($arguments);
+        $this->arguments = $arguments;
         unset($this->slot);
     }
 
@@ -104,7 +92,7 @@ abstract class Command implements CommandInterface
      */
     public static function normalizeArguments(array $arguments)
     {
-        if (count($arguments) === 1 && is_array($arguments[0])) {
+        if (count($arguments) === 1 && isset($arguments[0]) && is_array($arguments[0])) {
             return $arguments[0];
         }
 

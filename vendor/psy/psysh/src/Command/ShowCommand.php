@@ -3,7 +3,7 @@
 /*
  * This file is part of Psy Shell.
  *
- * (c) 2012-2020 Justin Hileman
+ * (c) 2012-2022 Justin Hileman
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -46,7 +46,7 @@ class ShowCommand extends ReflectingCommand
             ->setName('show')
             ->setDefinition([
                 new CodeArgument('target', CodeArgument::OPTIONAL, 'Function, class, instance, constant, method or property to show.'),
-                new InputOption('ex', null,  InputOption::VALUE_OPTIONAL, 'Show last exception context. Optionally specify a stack index.', 1),
+                new InputOption('ex', null, InputOption::VALUE_OPTIONAL, 'Show last exception context. Optionally specify a stack index.', 1),
             ])
             ->setDescription('Show the code for an object, class, constant, method or property.')
             ->setHelp(
@@ -114,8 +114,17 @@ HELP
             // If we didn't get a target and Reflector, maybe we got a filename?
             $target = $e->getTarget();
             if (\is_string($target) && \is_file($target) && $code = @\file_get_contents($target)) {
-                // @todo maybe set $__file to $target?
-                return $output->page(CodeFormatter::formatCode($code));
+                $file = \realpath($target);
+                if ($file !== $this->context->get('__file')) {
+                    $this->context->setCommandScopeVariables([
+                        '__file' => $file,
+                        '__dir'  => \dirname($file),
+                    ]);
+                }
+
+                $output->page(CodeFormatter::formatCode($code));
+
+                return;
             } else {
                 throw $e;
             }
@@ -148,7 +157,7 @@ HELP
                 $index = 0;
             }
         } else {
-            $index = \max(0, \intval($input->getOption('ex')) - 1);
+            $index = \max(0, (int) $input->getOption('ex') - 1);
         }
 
         $trace = $exception->getTrace();
@@ -186,16 +195,16 @@ HELP
         ));
     }
 
-    private function replaceCwd($file)
+    private function replaceCwd(string $file): string
     {
         if ($cwd = \getcwd()) {
-            $cwd = \rtrim($cwd, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+            $cwd = \rtrim($cwd, \DIRECTORY_SEPARATOR).\DIRECTORY_SEPARATOR;
         }
 
         if ($cwd === false) {
             return $file;
         } else {
-            return \preg_replace('/^' . \preg_quote($cwd, '/') . '/', '', $file);
+            return \preg_replace('/^'.\preg_quote($cwd, '/').'/', '', $file);
         }
     }
 
@@ -245,7 +254,7 @@ HELP
                 if ($namespace = $refl->getNamespaceName()) {
                     $vars['__namespace'] = $namespace;
                 }
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 // oh well
             }
         } elseif (isset($context['function'])) {
@@ -256,7 +265,7 @@ HELP
                 if ($namespace = $refl->getNamespaceName()) {
                     $vars['__namespace'] = $namespace;
                 }
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 // oh well
             }
         }
@@ -281,7 +290,7 @@ HELP
         $this->context->setCommandScopeVariables($vars);
     }
 
-    private function extractEvalFileAndLine($file)
+    private function extractEvalFileAndLine(string $file)
     {
         if (\preg_match('/(.*)\\((\\d+)\\) : eval\\(\\)\'d code$/', $file, $matches)) {
             return [$matches[1], $matches[2]];

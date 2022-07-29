@@ -2,6 +2,7 @@
 
 namespace Maatwebsite\Excel;
 
+use Illuminate\Foundation\Bus\PendingDispatch;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\FromQuery;
@@ -37,8 +38,8 @@ class QueuedWriter
     protected $temporaryFileFactory;
 
     /**
-     * @param Writer               $writer
-     * @param TemporaryFileFactory $temporaryFileFactory
+     * @param  Writer  $writer
+     * @param  TemporaryFileFactory  $temporaryFileFactory
      */
     public function __construct(Writer $writer, TemporaryFileFactory $temporaryFileFactory)
     {
@@ -48,17 +49,17 @@ class QueuedWriter
     }
 
     /**
-     * @param object       $export
-     * @param string       $filePath
-     * @param string       $disk
-     * @param string|null  $writerType
-     * @param array|string $diskOptions
-     *
+     * @param  object  $export
+     * @param  string  $filePath
+     * @param  string  $disk
+     * @param  string|null  $writerType
+     * @param  array|string  $diskOptions
      * @return \Illuminate\Foundation\Bus\PendingDispatch
      */
     public function store($export, string $filePath, string $disk = null, string $writerType = null, $diskOptions = [])
     {
-        $temporaryFile = $this->temporaryFileFactory->make();
+        $extension     = pathinfo($filePath, PATHINFO_EXTENSION);
+        $temporaryFile = $this->temporaryFileFactory->make($extension);
 
         $jobs = $this->buildExportJobs($export, $temporaryFile, $writerType);
 
@@ -69,14 +70,15 @@ class QueuedWriter
             $diskOptions
         ));
 
-        return QueueExport::withChain($jobs->toArray())->dispatch($export, $temporaryFile, $writerType);
+        return new PendingDispatch(
+            (new QueueExport($export, $temporaryFile, $writerType))->chain($jobs->toArray())
+        );
     }
 
     /**
-     * @param object        $export
-     * @param TemporaryFile $temporaryFile
-     * @param string        $writerType
-     *
+     * @param  object  $export
+     * @param  TemporaryFile  $temporaryFile
+     * @param  string  $writerType
      * @return Collection
      */
     private function buildExportJobs($export, TemporaryFile $temporaryFile, string $writerType): Collection
@@ -103,11 +105,10 @@ class QueuedWriter
     }
 
     /**
-     * @param FromCollection $export
-     * @param TemporaryFile  $temporaryFile
-     * @param string         $writerType
-     * @param int            $sheetIndex
-     *
+     * @param  FromCollection  $export
+     * @param  TemporaryFile  $temporaryFile
+     * @param  string  $writerType
+     * @param  int  $sheetIndex
      * @return Collection
      */
     private function exportCollection(
@@ -135,11 +136,10 @@ class QueuedWriter
     }
 
     /**
-     * @param FromQuery     $export
-     * @param TemporaryFile $temporaryFile
-     * @param string        $writerType
-     * @param int           $sheetIndex
-     *
+     * @param  FromQuery  $export
+     * @param  TemporaryFile  $temporaryFile
+     * @param  string  $writerType
+     * @param  int  $sheetIndex
      * @return Collection
      */
     private function exportQuery(
@@ -170,11 +170,10 @@ class QueuedWriter
     }
 
     /**
-     * @param FromView     $export
-     * @param TemporaryFile $temporaryFile
-     * @param string        $writerType
-     * @param int           $sheetIndex
-     *
+     * @param  FromView  $export
+     * @param  TemporaryFile  $temporaryFile
+     * @param  string  $writerType
+     * @param  int  $sheetIndex
      * @return Collection
      */
     private function exportView(
@@ -195,8 +194,7 @@ class QueuedWriter
     }
 
     /**
-     * @param object|WithCustomChunkSize $export
-     *
+     * @param  object|WithCustomChunkSize  $export
      * @return int
      */
     private function getChunkSize($export): int

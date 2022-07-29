@@ -10,7 +10,6 @@ use Illuminate\Support\ServiceProvider as IlluminateServiceProvider;
 /**
  * Class     ServiceProvider
  *
- * @package  Arcanedev\Support\Providers
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
 abstract class ServiceProvider extends IlluminateServiceProvider

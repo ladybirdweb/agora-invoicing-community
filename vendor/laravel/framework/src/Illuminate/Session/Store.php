@@ -194,6 +194,17 @@ class Store implements Session
     }
 
     /**
+     * Determine if the given key is missing from the session data.
+     *
+     * @param  string|array  $key
+     * @return bool
+     */
+    public function missing($key)
+    {
+        return ! $this->exists($key);
+    }
+
+    /**
      * Checks if a key is present and not null.
      *
      * @param  string|array  $key
@@ -222,7 +233,7 @@ class Store implements Session
      * Get the value of a given key and then forget it.
      *
      * @param  string  $key
-     * @param  string|null  $default
+     * @param  mixed  $default
      * @return mixed
      */
     public function pull($key, $default = null)
@@ -635,6 +646,16 @@ class Store implements Session
     public function setPreviousUrl($url)
     {
         $this->put('_previous.url', $url);
+    }
+
+    /**
+     * Specify that the user has confirmed their password.
+     *
+     * @return void
+     */
+    public function passwordConfirmed()
+    {
+        $this->put('auth.password_confirmed_at', time());
     }
 
     /**

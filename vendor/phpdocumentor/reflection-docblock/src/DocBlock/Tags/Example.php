@@ -15,6 +15,7 @@ namespace phpDocumentor\Reflection\DocBlock\Tags;
 
 use phpDocumentor\Reflection\DocBlock\Tag;
 use Webmozart\Assert\Assert;
+
 use function array_key_exists;
 use function preg_match;
 use function rawurlencode;
@@ -45,10 +46,15 @@ final class Example implements Tag, Factory\StaticMethod
     /** @var string|null */
     private $content;
 
-    public function __construct(string $filePath, bool $isURI, int $startingLine, int $lineCount, ?string $content)
-    {
-        Assert::notEmpty($filePath);
-        Assert::greaterThanEq($startingLine, 0);
+    public function __construct(
+        string $filePath,
+        bool $isURI,
+        int $startingLine,
+        int $lineCount,
+        ?string $content
+    ) {
+        Assert::stringNotEmpty($filePath);
+        Assert::greaterThanEq($startingLine, 1);
         Assert::greaterThanEq($lineCount, 0);
 
         $this->filePath     = $filePath;
@@ -61,10 +67,10 @@ final class Example implements Tag, Factory\StaticMethod
         $this->isURI = $isURI;
     }
 
-    public function getContent() : string
+    public function getContent(): string
     {
-        if ($this->content === null) {
-            $filePath = '"' . $this->filePath . '"';
+        if ($this->content === null || $this->content === '') {
+            $filePath = $this->filePath;
             if ($this->isURI) {
                 $filePath = $this->isUriRelative($this->filePath)
                     ? str_replace('%2F', '/', rawurlencode($this->filePath))
@@ -77,15 +83,15 @@ final class Example implements Tag, Factory\StaticMethod
         return $this->content;
     }
 
-    public function getDescription() : ?string
+    public function getDescription(): ?string
     {
         return $this->content;
     }
 
-    public static function create(string $body) : ?Tag
+    public static function create(string $body): ?Tag
     {
         // File component: File path in quotes or File URI / Source information
-        if (!preg_match('/^(?:\"([^\"]+)\"|(\S+))(?:\s+(.*))?$/sux', $body, $matches)) {
+        if (!preg_match('/^\s*(?:(\"[^\"]+\")|(\S+))(?:\s+(.*))?$/sux', $body, $matches)) {
             return null;
         }
 
@@ -107,7 +113,7 @@ final class Example implements Tag, Factory\StaticMethod
             // Starting line / Number of lines / Description
             if (preg_match('/^([1-9]\d*)(?:\s+((?1))\s*)?(.*)$/sux', $matches[3], $contentMatches)) {
                 $startingLine = (int) $contentMatches[1];
-                if (isset($contentMatches[2]) && $contentMatches[2] !== '') {
+                if (isset($contentMatches[2])) {
                     $lineCount = (int) $contentMatches[2];
                 }
 
@@ -132,43 +138,58 @@ final class Example implements Tag, Factory\StaticMethod
      * @return string Path to a file to use as an example.
      *     May also be an absolute URI.
      */
-    public function getFilePath() : string
+    public function getFilePath(): string
     {
-        return $this->filePath;
+        return trim($this->filePath, '"');
     }
 
     /**
      * Returns a string representation for this tag.
      */
-    public function __toString() : string
+    public function __toString(): string
     {
-        return $this->filePath . ($this->content ? ' ' . $this->content : '');
+        $filePath = $this->filePath;
+        $isDefaultLine = $this->startingLine === 1 && $this->lineCount === 0;
+        $startingLine = !$isDefaultLine ? (string) $this->startingLine : '';
+        $lineCount = !$isDefaultLine ? (string) $this->lineCount : '';
+        $content = (string) $this->content;
+
+        return $filePath
+            . ($startingLine !== ''
+                ? ($filePath !== '' ? ' ' : '') . $startingLine
+                : '')
+            . ($lineCount !== ''
+                ? ($filePath !== '' || $startingLine !== '' ? ' ' : '') . $lineCount
+                : '')
+            . ($content !== ''
+                ? ($filePath !== '' || $startingLine !== '' || $lineCount !== '' ? ' ' : '') . $content
+                : '');
     }
 
     /**
      * Returns true if the provided URI is relative or contains a complete scheme (and thus is absolute).
      */
-    private function isUriRelative(string $uri) : bool
+    private function isUriRelative(string $uri): bool
     {
         return strpos($uri, ':') === false;
     }
 
-    public function getStartingLine() : int
+    public function getStartingLine(): int
     {
         return $this->startingLine;
     }
 
-    public function getLineCount() : int
+    public function getLineCount(): int
     {
         return $this->lineCount;
     }
 
-    public function getName() : string
+    public function getName(): string
     {
         return 'example';
     }
 
-    public function render(?Formatter $formatter = null) : string
+    public function render(?Formatter $formatter = null): string
     {
         if ($formatter === null) {
             $formatter = new Formatter\PassthroughFormatter();

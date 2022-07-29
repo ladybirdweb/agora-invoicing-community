@@ -37,7 +37,7 @@ final class Return_ extends TagWithType implements Factory\StaticMethod
         ?TypeResolver $typeResolver = null,
         ?DescriptionFactory $descriptionFactory = null,
         ?TypeContext $context = null
-    ) : self {
+    ): self {
         Assert::notNull($typeResolver);
         Assert::notNull($descriptionFactory);
 
@@ -49,8 +49,16 @@ final class Return_ extends TagWithType implements Factory\StaticMethod
         return new static($type, $description);
     }
 
-    public function __toString() : string
+    public function __toString(): string
     {
-        return ($this->type ?: 'mixed') . ' ' . (string) $this->description;
+        if ($this->description) {
+            $description = $this->description->render();
+        } else {
+            $description = '';
+        }
+
+        $type = $this->type ? '' . $this->type : 'mixed';
+
+        return $type . ($description !== '' ? ' ' . $description : '');
     }
 }

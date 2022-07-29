@@ -2,17 +2,16 @@
 
 namespace Doctrine\DBAL\Schema;
 
-use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\DriverManager;
-use Doctrine\DBAL\FetchMode;
+use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Types\StringType;
 use Doctrine\DBAL\Types\TextType;
 use Doctrine\DBAL\Types\Type;
-use const CASE_LOWER;
+
 use function array_change_key_case;
 use function array_map;
+use function array_merge;
 use function array_reverse;
-use function array_values;
 use function explode;
 use function file_exists;
 use function preg_match;
@@ -27,6 +26,8 @@ use function strtolower;
 use function trim;
 use function unlink;
 use function usort;
+
+use const CASE_LOWER;
 
 /**
  * Sqlite SchemaManager.
@@ -50,13 +51,12 @@ class SqliteSchemaManager extends AbstractSchemaManager
      */
     public function createDatabase($database)
     {
-        $params  = $this->_conn->getParams();
-        $driver  = $params['driver'];
-        $options = [
-            'driver' => $driver,
-            'path' => $database,
-        ];
-        $conn    = DriverManager::getConnection($options);
+        $params = $this->_conn->getParams();
+
+        $params['path'] = $database;
+        unset($params['memory']);
+
+        $conn = DriverManager::getConnection($params);
         $conn->connect();
         $conn->close();
     }
@@ -113,14 +113,16 @@ class SqliteSchemaManager extends AbstractSchemaManager
         if ($database === null) {
             $database = $this->_conn->getDatabase();
         }
+
         $sql              = $this->_platform->getListTableForeignKeysSQL($table, $database);
-        $tableForeignKeys = $this->_conn->fetchAll($sql);
+        $tableForeignKeys = $this->_conn->fetchAllAssociative($sql);
 
         if (! empty($tableForeignKeys)) {
             $createSql = $this->getCreateTableSQL($table);
 
-            if ($createSql !== null && preg_match_all(
-                '#
+            if (
+                $createSql !== null && preg_match_all(
+                    '#
                     (?:CONSTRAINT\s+([^\s]+)\s+)?
                     (?:FOREIGN\s+KEY[^\)]+\)\s*)?
                     REFERENCES\s+[^\s]+\s+(?:\([^\)]+\))?
@@ -129,9 +131,10 @@ class SqliteSchemaManager extends AbstractSchemaManager
                         (NOT\s+DEFERRABLE|DEFERRABLE)
                         (?:\s+INITIALLY\s+(DEFERRED|IMMEDIATE))?
                     )?#isx',
-                $createSql,
-                $match
-            )) {
+                    $createSql,
+                    $match
+                )
+            ) {
                 $names      = array_reverse($match[1]);
                 $deferrable = array_reverse($match[2]);
                 $deferred   = array_reverse($match[3]);
@@ -140,10 +143,13 @@ class SqliteSchemaManager extends AbstractSchemaManager
             }
 
             foreach ($tableForeignKeys as $key => $value) {
-                $id                                        = $value['id'];
-                $tableForeignKeys[$key]['constraint_name'] = isset($names[$id]) && $names[$id] !== '' ? $names[$id] : $id;
-                $tableForeignKeys[$key]['deferrable']      = isset($deferrable[$id]) && strtolower($deferrable[$id]) === 'deferrable';
-                $tableForeignKeys[$key]['deferred']        = isset($deferred[$id]) && strtolower($deferred[$id]) === 'deferred';
+                $id = $value['id'];
+
+                $tableForeignKeys[$key] = array_merge($tableForeignKeys[$key], [
+                    'constraint_name' => isset($names[$id]) && $names[$id] !== '' ? $names[$id] : $id,
+                    'deferrable'      => isset($deferrable[$id]) && strtolower($deferrable[$id]) === 'deferrable',
+                    'deferred'        => isset($deferred[$id]) && strtolower($deferred[$id]) === 'deferred',
+                ]);
             }
         }
 
@@ -168,21 +174,28 @@ class SqliteSchemaManager extends AbstractSchemaManager
         $indexBuffer = [];
 
         // fetch primary
-        $stmt       = $this->_conn->executeQuery(sprintf(
+        $indexArray = $this->_conn->fetchAllAssociative(sprintf(
             'PRAGMA TABLE_INFO (%s)',
             $this->_conn->quote($tableName)
         ));
-        $indexArray = $stmt->fetchAll(FetchMode::ASSOCIATIVE);
 
-        usort($indexArray, static function ($a, $b) {
-            if ($a['pk'] === $b['pk']) {
-                return $a['cid'] - $b['cid'];
+        usort(
+            $indexArray,
+            /**
+             * @param array<string,mixed> $a
+             * @param array<string,mixed> $b
+             */
+            static function (array $a, array $b): int {
+                if ($a['pk'] === $b['pk']) {
+                    return $a['cid'] - $b['cid'];
+                }
+
+                return $a['pk'] - $b['pk'];
             }
+        );
 
-            return $a['pk'] - $b['pk'];
-        });
         foreach ($indexArray as $indexColumnRow) {
-            if ($indexColumnRow['pk'] === '0') {
+            if ($indexColumnRow['pk'] === 0 || $indexColumnRow['pk'] === '0') {
                 continue;
             }
 
@@ -207,11 +220,10 @@ class SqliteSchemaManager extends AbstractSchemaManager
             $idx['primary']    = false;
             $idx['non_unique'] = ! $tableIndex['unique'];
 
-                $stmt       = $this->_conn->executeQuery(sprintf(
-                    'PRAGMA INDEX_INFO (%s)',
-                    $this->_conn->quote($keyName)
-                ));
-                $indexArray = $stmt->fetchAll(FetchMode::ASSOCIATIVE);
+            $indexArray = $this->_conn->fetchAllAssociative(sprintf(
+                'PRAGMA INDEX_INFO (%s)',
+                $this->_conn->quote($keyName)
+            ));
 
             foreach ($indexArray as $indexColumnRow) {
                 $idx['column_name'] = $indexColumnRow['name'];
@@ -249,7 +261,7 @@ class SqliteSchemaManager extends AbstractSchemaManager
         $autoincrementCount  = 0;
 
         foreach ($tableColumns as $tableColumn) {
-            if ($tableColumn['pk'] === '0') {
+            if ($tableColumn['pk'] === 0 || $tableColumn['pk'] === '0') {
                 continue;
             }
 
@@ -278,7 +290,10 @@ class SqliteSchemaManager extends AbstractSchemaManager
             $type = $column->getType();
 
             if ($type instanceof StringType || $type instanceof TextType) {
-                $column->setPlatformOption('collation', $this->parseColumnCollationFromSQL($columnName, $createSql) ?: 'BINARY');
+                $column->setPlatformOption(
+                    'collation',
+                    $this->parseColumnCollationFromSQL($columnName, $createSql) ?: 'BINARY'
+                );
             }
 
             $comment = $this->parseColumnCommentFromSQL($columnName, $createSql);
@@ -358,15 +373,17 @@ class SqliteSchemaManager extends AbstractSchemaManager
                     if (strpos($tableColumn['length'], ',') === false) {
                         $tableColumn['length'] .= ',0';
                     }
+
                     [$precision, $scale] = array_map('trim', explode(',', $tableColumn['length']));
                 }
+
                 $length = null;
                 break;
         }
 
         $options = [
             'length'   => $length,
-            'unsigned' => (bool) $unsigned,
+            'unsigned' => $unsigned,
             'fixed'    => $fixed,
             'notnull'  => $notnull,
             'default'  => $default,
@@ -399,6 +416,7 @@ class SqliteSchemaManager extends AbstractSchemaManager
                 if (! isset($value['on_delete']) || $value['on_delete'] === 'RESTRICT') {
                     $value['on_delete'] = null;
                 }
+
                 if (! isset($value['on_update']) || $value['on_update'] === 'RESTRICT') {
                     $value['on_update'] = null;
                 }
@@ -411,25 +429,31 @@ class SqliteSchemaManager extends AbstractSchemaManager
                     'onDelete' => $value['on_delete'],
                     'onUpdate' => $value['on_update'],
                     'deferrable' => $value['deferrable'],
-                    'deferred'=> $value['deferred'],
+                    'deferred' => $value['deferred'],
                 ];
             }
-            $list[$name]['local'][]   = $value['from'];
+
+            $list[$name]['local'][] = $value['from'];
+
+            if ($value['to'] === null) {
+                continue;
+            }
+
             $list[$name]['foreign'][] = $value['to'];
         }
 
         $result = [];
         foreach ($list as $constraint) {
             $result[] = new ForeignKeyConstraint(
-                array_values($constraint['local']),
+                $constraint['local'],
                 $constraint['foreignTable'],
-                array_values($constraint['foreign']),
+                $constraint['foreign'],
                 $constraint['name'],
                 [
                     'onDelete' => $constraint['onDelete'],
                     'onUpdate' => $constraint['onUpdate'],
                     'deferrable' => $constraint['deferrable'],
-                    'deferred'=> $constraint['deferred'],
+                    'deferred' => $constraint['deferred'],
                 ]
             );
         }
@@ -442,7 +466,7 @@ class SqliteSchemaManager extends AbstractSchemaManager
      *
      * @return TableDiff
      *
-     * @throws DBALException
+     * @throws Exception
      */
     private function getTableDiffForAlterForeignKey($table)
     {
@@ -450,7 +474,9 @@ class SqliteSchemaManager extends AbstractSchemaManager
             $tableDetails = $this->tryMethod('listTableDetails', $table);
 
             if ($tableDetails === false) {
-                throw new DBALException(sprintf('Sqlite schema manager requires to modify foreign keys table definition "%s".', $table));
+                throw new Exception(
+                    sprintf('Sqlite schema manager requires to modify foreign keys table definition "%s".', $table)
+                );
             }
 
             $table = $tableDetails;
@@ -462,9 +488,10 @@ class SqliteSchemaManager extends AbstractSchemaManager
         return $tableDiff;
     }
 
-    private function parseColumnCollationFromSQL(string $column, string $sql) : ?string
+    private function parseColumnCollationFromSQL(string $column, string $sql): ?string
     {
-        $pattern = '{(?:\W' . preg_quote($column) . '\W|\W' . preg_quote($this->_platform->quoteSingleIdentifier($column))
+        $pattern = '{(?:\W' . preg_quote($column) . '\W|\W'
+            . preg_quote($this->_platform->quoteSingleIdentifier($column))
             . '\W)[^,(]+(?:\([^()]+\)[^,]*)?(?:(?:DEFAULT|CHECK)\s*(?:\(.*?\))?[^,]*)*COLLATE\s+["\']?([^\s,"\')]+)}is';
 
         if (preg_match($pattern, $sql, $match) !== 1) {
@@ -474,7 +501,7 @@ class SqliteSchemaManager extends AbstractSchemaManager
         return $match[1];
     }
 
-    private function parseTableCommentFromSQL(string $table, string $sql) : ?string
+    private function parseTableCommentFromSQL(string $table, string $sql): ?string
     {
         $pattern = '/\s* # Allow whitespace characters at start of line
 CREATE\sTABLE # Match "CREATE TABLE"
@@ -493,10 +520,10 @@ CREATE\sTABLE # Match "CREATE TABLE"
         return $comment === '' ? null : $comment;
     }
 
-    private function parseColumnCommentFromSQL(string $column, string $sql) : ?string
+    private function parseColumnCommentFromSQL(string $column, string $sql): ?string
     {
-        $pattern = '{[\s(,](?:\W' . preg_quote($this->_platform->quoteSingleIdentifier($column)) . '\W|\W' . preg_quote($column)
-            . '\W)(?:\([^)]*?\)|[^,(])*?,?((?:(?!\n))(?:\s*--[^\n]*\n?)+)}i';
+        $pattern = '{[\s(,](?:\W' . preg_quote($this->_platform->quoteSingleIdentifier($column))
+            . '\W|\W' . preg_quote($column) . '\W)(?:\([^)]*?\)|[^,(])*?,?((?:(?!\n))(?:\s*--[^\n]*\n?)+)}i';
 
         if (preg_match($pattern, $sql, $match) !== 1) {
             return null;
@@ -507,7 +534,7 @@ CREATE\sTABLE # Match "CREATE TABLE"
         return $comment === '' ? null : $comment;
     }
 
-    private function getCreateTableSQL(string $table) : ?string
+    private function getCreateTableSQL(string $table): ?string
     {
         return $this->_conn->fetchColumn(
             <<<'SQL'
@@ -528,15 +555,15 @@ SQL
     }
 
     /**
-     * @param string $tableName
+     * @param string $name
      */
-    public function listTableDetails($tableName) : Table
+    public function listTableDetails($name): Table
     {
-        $table = parent::listTableDetails($tableName);
+        $table = parent::listTableDetails($name);
 
-        $tableCreateSql = $this->getCreateTableSQL($tableName) ?? '';
+        $tableCreateSql = $this->getCreateTableSQL($name) ?? '';
 
-        $comment = $this->parseTableCommentFromSQL($tableName, $tableCreateSql);
+        $comment = $this->parseTableCommentFromSQL($name, $tableCreateSql);
 
         if ($comment !== null) {
             $table->addOption('comment', $comment);

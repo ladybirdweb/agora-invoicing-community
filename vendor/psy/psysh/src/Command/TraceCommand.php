@@ -3,7 +3,7 @@
 /*
  * This file is part of Psy Shell.
  *
- * (c) 2012-2020 Justin Hileman
+ * (c) 2012-2022 Justin Hileman
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -45,8 +45,8 @@ class TraceCommand extends Command
         $this
             ->setName('trace')
             ->setDefinition([
-                new InputOption('include-psy', 'p', InputOption::VALUE_NONE,     'Include Psy in the call stack.'),
-                new InputOption('num',         'n', InputOption::VALUE_REQUIRED, 'Only include NUM lines.'),
+                new InputOption('include-psy', 'p', InputOption::VALUE_NONE, 'Include Psy in the call stack.'),
+                new InputOption('num', 'n', InputOption::VALUE_REQUIRED, 'Only include NUM lines.'),
 
                 $grep,
                 $insensitive,
@@ -90,7 +90,7 @@ HELP
      *
      * @return array Formatted stacktrace lines
      */
-    protected function getBacktrace(\Exception $e, $count = null, $includePsy = true)
+    protected function getBacktrace(\Exception $e, int $count = null, bool $includePsy = true): array
     {
         return TraceFormatter::formatTrace($e, $this->filter, $count, $includePsy);
     }

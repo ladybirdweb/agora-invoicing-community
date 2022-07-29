@@ -225,7 +225,7 @@ class Cart
      * update a cart
      *
      * @param $id
-     * @param $data
+     * @param array $data
      *
      * the $data will be an associative array, you don't need to pass all the data, only the key value
      * of the item you want to update on it
@@ -672,7 +672,9 @@ class Cart
      */
     public function getContent()
     {
-        return (new CartCollection($this->session->get($this->sessionKeyCartItems)));
+        return (new CartCollection($this->session->get($this->sessionKeyCartItems)))->reject(function($item) {
+            return ! ($item instanceof ItemCollection);
+        });
     }
 
     /**
@@ -682,9 +684,7 @@ class Cart
      */
     public function isEmpty()
     {
-        $cart = new CartCollection($this->session->get($this->sessionKeyCartItems));
-
-        return $cart->isEmpty();
+        return $this->getContent()->isEmpty();
     }
 
     /**
@@ -699,7 +699,7 @@ class Cart
         $rules = array(
             'id' => 'required',
             'price' => 'required|numeric',
-            'quantity' => 'required|numeric|min:1',
+            'quantity' => 'required|numeric|min:0.1',
             'name' => 'required',
         );
 

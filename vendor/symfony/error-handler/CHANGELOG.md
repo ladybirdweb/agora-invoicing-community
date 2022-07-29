@@ -1,6 +1,17 @@
 CHANGELOG
 =========
 
+5.4
+---
+
+ * Make `DebugClassLoader` trigger deprecation notices on missing return types
+ * Add `SYMFONY_PATCH_TYPE_DECLARATIONS='force=2'` mode to `DebugClassLoader` to turn annotations into native return types
+
+5.2.0
+-----
+
+ * added the ability to set `HtmlErrorRenderer::$template` to a custom template to render when not in debug mode.
+
 5.1.0
 -----
 

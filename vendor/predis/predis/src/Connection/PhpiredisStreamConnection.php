@@ -67,9 +67,19 @@ class PhpiredisStreamConnection extends StreamConnection
      */
     public function __destruct()
     {
-        phpiredis_reader_destroy($this->reader);
-
         parent::__destruct();
+
+        phpiredis_reader_destroy($this->reader);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function disconnect()
+    {
+        phpiredis_reader_reset($this->reader);
+
+        parent::disconnect();
     }
 
     /**
@@ -87,22 +97,35 @@ class PhpiredisStreamConnection extends StreamConnection
     /**
      * {@inheritdoc}
      */
-    protected function assertSslSupport(ParametersInterface $parameters)
+    protected function assertParameters(ParametersInterface $parameters)
     {
-        throw new \InvalidArgumentException('SSL encryption is not supported by this connection backend.');
+        switch ($parameters->scheme) {
+            case 'tcp':
+            case 'redis':
+            case 'unix':
+                break;
+
+            case 'tls':
+            case 'rediss':
+                throw new \InvalidArgumentException('SSL encryption is not supported by this connection backend.');
+
+            default:
+                throw new \InvalidArgumentException("Invalid scheme: '$parameters->scheme'.");
+        }
+
+        return $parameters;
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function createStreamSocket(ParametersInterface $parameters, $address, $flags, $context = null)
+    protected function createStreamSocket(ParametersInterface $parameters, $address, $flags)
     {
         $socket = null;
         $timeout = (isset($parameters->timeout) ? (float) $parameters->timeout : 5.0);
+        $context = stream_context_create(['socket' => ['tcp_nodelay' => (bool) $parameters->tcp_nodelay]]);
 
-        $resource = @stream_socket_client($address, $errno, $errstr, $timeout, $flags);
-
-        if (!$resource) {
+        if (!$resource = @stream_socket_client($address, $errno, $errstr, $timeout, $flags, $context)) {
             $this->onConnectionError(trim($errstr), $errno);
         }
 

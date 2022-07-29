@@ -3,16 +3,16 @@
 namespace Yajra\DataTables;
 
 use Exception;
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\QueryException;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Validation\ValidationException;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 
 abstract class DataTablesEditor
 {
@@ -40,7 +40,14 @@ abstract class DataTablesEditor
     ];
 
     /**
-     * @var \Illuminate\Database\Eloquent\Model
+     * List of custom editor actions.
+     *
+     * @var array
+     */
+    protected $customActions = [];
+
+    /**
+     * @var null|string|\Illuminate\Database\Eloquent\Model
      */
     protected $model = null;
 
@@ -89,20 +96,21 @@ abstract class DataTablesEditor
     /**
      * Process dataTables editor action request.
      *
-     * @param Request $request
+     * @param  Request  $request
      * @return JsonResponse|mixed
+     *
      * @throws DataTablesEditorException
      */
     public function process(Request $request)
     {
-        $action = $request->get('action');
+        $this->action = $request->get('action');
 
-        if (! in_array($action, $this->actions)) {
-            throw new DataTablesEditorException('Requested action not supported!');
+        if (! in_array($this->action, array_merge($this->actions, $this->customActions))) {
+            throw new DataTablesEditorException(sprintf('Requested action (%s) not supported!', $this->action));
         }
 
         try {
-            return $this->{$action}($request);
+            return $this->{$this->action}($request);
         } catch (Exception $exception) {
             $error = config('app.debug')
                 ? '<strong>Server Error:</strong> ' . $exception->getMessage()
@@ -125,40 +133,43 @@ abstract class DataTablesEditor
     /**
      * Display success data in dataTables editor format.
      *
-     * @param array $data
-     * @param array $errors
-     * @param string $error
+     * @param  array  $data
+     * @param  array  $errors
+     * @param  string  $error
      * @return JsonResponse
      */
     protected function toJson(array $data, array $errors = [], $error = '')
     {
+        $code = 200;
+
         $response = [
             'action' => $this->action,
             'data'   => $data,
         ];
 
         if ($error) {
+            $code              = 422;
             $response['error'] = $error;
         }
 
         if ($errors) {
+            $code                    = 422;
             $response['fieldErrors'] = $errors;
         }
 
-        return new JsonResponse($response, 200);
+        return new JsonResponse($response, $code);
     }
 
     /**
      * Process create action request.
      *
-     * @param Request $request
+     * @param  Request  $request
      * @return JsonResponse
+     *
      * @throws \Exception
      */
     public function create(Request $request)
     {
-        $this->action = $this->action ?? 'create';
-
         $model      = $this->resolveModel();
         $connection = $model->getConnection();
         $affected   = [];
@@ -217,7 +228,7 @@ abstract class DataTablesEditor
     /**
      * Resolve model to used.
      *
-     * @return Model|\Illuminate\Database\Eloquent\SoftDeletes
+     * @return Model
      */
     protected function resolveModel()
     {
@@ -235,7 +246,10 @@ abstract class DataTablesEditor
      *
      * @return array
      */
-    abstract public function createRules();
+    public function createRules()
+    {
+        return [];
+    }
 
     /**
      * Get validation messages.
@@ -251,6 +265,7 @@ abstract class DataTablesEditor
      * Get create validation messages.
      *
      * @return array
+     *
      * @deprecated deprecated since v1.12.0, please use messages() instead.
      */
     protected function createMessages()
@@ -269,7 +284,7 @@ abstract class DataTablesEditor
     }
 
     /**
-     * @param Validator $validator
+     * @param  Validator  $validator
      * @return array
      */
     protected function formatErrors(Validator $validator)
@@ -289,13 +304,11 @@ abstract class DataTablesEditor
     /**
      * Process restore action request.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function restore(Request $request)
     {
-        $this->action = 'restore';
-
         $this->restoring = true;
 
         return $this->edit($request);
@@ -304,13 +317,11 @@ abstract class DataTablesEditor
     /**
      * Process edit action request.
      *
-     * @param Request $request
+     * @param  Request  $request
      * @return JsonResponse
      */
     public function edit(Request $request)
     {
-        $this->action = $this->action ?? 'edit';
-
         $connection = $this->getBuilder()->getConnection();
         $affected   = [];
         $errors     = [];
@@ -384,15 +395,19 @@ abstract class DataTablesEditor
     /**
      * Get edit action validation rules.
      *
-     * @param Model $model
+     * @param  Model  $model
      * @return array
      */
-    abstract public function editRules(Model $model);
+    public function editRules(Model $model)
+    {
+        return [];
+    }
 
     /**
      * Get edit validation messages.
      *
      * @return array
+     *
      * @deprecated deprecated since v1.12.0, please use messages() instead.
      */
     protected function editMessages()
@@ -403,14 +418,13 @@ abstract class DataTablesEditor
     /**
      * Process force delete action request.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
+     *
      * @throws \Exception
      */
     public function forceDelete(Request $request)
     {
-        $this->action = 'forceDelete';
-
         $this->forceDeleting = true;
 
         return $this->remove($request);
@@ -419,14 +433,13 @@ abstract class DataTablesEditor
     /**
      * Process remove action request.
      *
-     * @param Request $request
+     * @param  Request  $request
      * @return JsonResponse
+     *
      * @throws \Exception
      */
     public function remove(Request $request)
     {
-        $this->action = $this->action ?? 'remove';
-
         $connection = $this->getBuilder()->getConnection();
         $affected   = [];
         $errors     = [];
@@ -489,15 +502,19 @@ abstract class DataTablesEditor
     /**
      * Get remove action validation rules.
      *
-     * @param Model $model
+     * @param  Model  $model
      * @return array
      */
-    abstract public function removeRules(Model $model);
+    public function removeRules(Model $model)
+    {
+        return [];
+    }
 
     /**
      * Get remove validation messages.
      *
      * @return array
+     *
      * @deprecated deprecated since v1.12.0, please use messages() instead.
      */
     protected function removeMessages()
@@ -508,8 +525,8 @@ abstract class DataTablesEditor
     /**
      * Get remove query exception message.
      *
-     * @param QueryException $exception
-     * @param Model $model
+     * @param  QueryException  $exception
+     * @param  Model  $model
      * @return string
      */
     protected function removeExceptionMessage(QueryException $exception, Model $model)
@@ -530,7 +547,7 @@ abstract class DataTablesEditor
     /**
      * Set the dataTables model on runtime.
      *
-     * @param Model|string $model
+     * @param  Model|string  $model
      * @return DataTablesEditor
      */
     public function setModel($model)
@@ -543,7 +560,7 @@ abstract class DataTablesEditor
     /**
      * Set model unguard state.
      *
-     * @param bool $state
+     * @param  bool  $state
      * @return $this
      */
     public function unguard($state = true)
@@ -556,25 +573,22 @@ abstract class DataTablesEditor
     /**
      * Handle uploading of file.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function upload(Request $request)
     {
-        $this->action = 'upload';
-
         $field   = $request->input('uploadField');
-        $storage = Storage::disk($this->disk);
+        $storage = $this->getDisk();
 
         try {
             $rules      = $this->uploadRules();
-            $fieldRules = ['upload' => data_get($rules, $field, [])];
+            $fieldRules = ['upload' => $rules[$field] ?? []];
 
             $this->validate($request, $fieldRules, $this->messages(), $this->attributes());
 
             $uploadedFile = $request->file('upload');
-            $filename     = $this->getUploadedFilename($field, $uploadedFile);
-            $id           = $storage->putFileAs($this->uploadDir, $uploadedFile, $filename);
+            $id           = $this->storeUploadedFile($field, $uploadedFile);
 
             if (method_exists($this, 'uploaded')) {
                 $id = $this->uploaded($id);
@@ -589,7 +603,7 @@ abstract class DataTablesEditor
                             'filename'      => $id,
                             'original_name' => $uploadedFile->getClientOriginalName(),
                             'size'          => $uploadedFile->getSize(),
-                            'directory'     => $this->uploadDir,
+                            'directory'     => $this->getUploadDirectory(),
                             'disk'          => $this->disk,
                             'url'           => $storage->url($id),
                         ],
@@ -624,12 +638,40 @@ abstract class DataTablesEditor
     }
 
     /**
-     * @param string $field
-     * @param UploadedFile $uploadedFile
+     * @param  string  $field
+     * @param  UploadedFile  $uploadedFile
      * @return string
      */
     protected function getUploadedFilename($field, UploadedFile $uploadedFile)
     {
         return date('Ymd_His') . '_' . $uploadedFile->getClientOriginalName();
+    }
+
+    /**
+     * @return string
+     */
+    protected function getUploadDirectory()
+    {
+        return $this->uploadDir;
+    }
+
+    /**
+     * @return \Illuminate\Contracts\Filesystem\Filesystem|\Illuminate\Filesystem\FilesystemAdapter
+     */
+    protected function getDisk()
+    {
+        return Storage::disk($this->disk);
+    }
+
+    /**
+     * @param string $field
+     * @param UploadedFile $uploadedFile
+     * @return false|string
+     */
+    protected function storeUploadedFile($field, UploadedFile $uploadedFile)
+    {
+        $filename = $this->getUploadedFilename($field, $uploadedFile);
+
+        return $this->getDisk()->putFileAs($this->getUploadDirectory(), $uploadedFile, $filename);
     }
 }

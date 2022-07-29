@@ -167,6 +167,39 @@ $builder->setNamespace(__NAMESPACE__)
 $mock = $builder->build();
 ```
 
+It's important to note that `setNamespace()` should target the namespace where the function is called, not the namespace where it's being mocked. For example:
+
+```
+<?php
+
+namespace App\Code;
+
+class Subject
+{
+  public function foo()
+  {
+    time();
+  }
+}
+```
+
+In a test mocking this call:
+
+```
+<?php
+
+namespace Tests\Unit;
+
+class SubjectTest
+{
+  public function myTest()
+  {
+    $builder = new MockBuilder();
+    $builder->setNamespace('\\App\\Code'); // ... etc
+  }
+}
+```
+
 ### Reset global state
 
 An enabled mock changes global state. This will break subsequent tests if
@@ -260,5 +293,3 @@ This library was inspired by Fabian Schmengler's article
 
 If you like PHP-Mock and feel generous donate a few Bitcoins here:
 [1335STSwu9hST4vcMRppEPgENMHD2r1REK](bitcoin:1335STSwu9hST4vcMRppEPgENMHD2r1REK)
-
-[![Build Status](https://travis-ci.org/php-mock/php-mock.svg?branch=master)](https://travis-ci.org/php-mock/php-mock)

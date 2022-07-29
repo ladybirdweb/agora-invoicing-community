@@ -3,7 +3,7 @@
 /*
  * This file is part of Psy Shell.
  *
- * (c) 2012-2020 Justin Hileman
+ * (c) 2012-2022 Justin Hileman
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -19,20 +19,20 @@ use Symfony\Component\Console\Formatter\OutputFormatter;
  */
 class CodeFormatter implements ReflectorFormatter
 {
-    const LINE_MARKER    = '  <urgent>></urgent> ';
+    const LINE_MARKER = '  <urgent>></urgent> ';
     const NO_LINE_MARKER = '    ';
 
-    const HIGHLIGHT_DEFAULT     = 'default';
-    const HIGHLIGHT_KEYWORD     = 'keyword';
+    const HIGHLIGHT_DEFAULT = 'default';
+    const HIGHLIGHT_KEYWORD = 'keyword';
 
-    const HIGHLIGHT_PUBLIC      = 'public';
-    const HIGHLIGHT_PROTECTED   = 'protected';
-    const HIGHLIGHT_PRIVATE     = 'private';
+    const HIGHLIGHT_PUBLIC = 'public';
+    const HIGHLIGHT_PROTECTED = 'protected';
+    const HIGHLIGHT_PRIVATE = 'private';
 
-    const HIGHLIGHT_CONST       = 'const';
-    const HIGHLIGHT_NUMBER      = 'number';
-    const HIGHLIGHT_STRING      = 'string';
-    const HIGHLIGHT_COMMENT     = 'comment';
+    const HIGHLIGHT_CONST = 'const';
+    const HIGHLIGHT_NUMBER = 'number';
+    const HIGHLIGHT_STRING = 'string';
+    const HIGHLIGHT_COMMENT = 'comment';
     const HIGHLIGHT_INLINE_HTML = 'inline_html';
 
     private static $tokenMap = [
@@ -81,7 +81,7 @@ class CodeFormatter implements ReflectorFormatter
      *
      * @return string formatted code
      */
-    public static function format(\Reflector $reflector, $colorMode = null)
+    public static function format(\Reflector $reflector, string $colorMode = null): string
     {
         if (self::isReflectable($reflector)) {
             if ($code = @\file_get_contents($reflector->getFileName())) {
@@ -104,7 +104,7 @@ class CodeFormatter implements ReflectorFormatter
      *
      * @return string formatted code
      */
-    public static function formatCode($code, $startLine = 1, $endLine = null, $markLine = null)
+    public static function formatCode(string $code, int $startLine = 1, int $endLine = null, int $markLine = null): string
     {
         $spans = self::tokenizeSpans($code);
         $lines = self::splitLines($spans, $startLine, $endLine);
@@ -125,7 +125,7 @@ class CodeFormatter implements ReflectorFormatter
      *
      * @return int
      */
-    private static function getStartLine(\Reflector $reflector)
+    private static function getStartLine(\Reflector $reflector): int
     {
         $startLine = $reflector->getStartLine();
 
@@ -148,10 +148,10 @@ class CodeFormatter implements ReflectorFormatter
      *
      * @return \Generator [$spanType, $spanText] highlight spans
      */
-    private static function tokenizeSpans($code)
+    private static function tokenizeSpans(string $code): \Generator
     {
         $spanType = null;
-        $buffer   = '';
+        $buffer = '';
 
         foreach (\token_get_all($code) as $token) {
             $nextType = self::nextHighlightType($token, $spanType);
@@ -160,7 +160,7 @@ class CodeFormatter implements ReflectorFormatter
             if ($spanType !== $nextType) {
                 yield [$spanType, $buffer];
                 $spanType = $nextType;
-                $buffer   = '';
+                $buffer = '';
             }
 
             $buffer .= \is_array($token) ? $token[1] : $token;
@@ -209,10 +209,10 @@ class CodeFormatter implements ReflectorFormatter
      *
      * @return \Generator lines, each an array of [$spanType, $spanText] pairs
      */
-    private static function splitLines(\Generator $spans, $startLine = 1, $endLine = null)
+    private static function splitLines(\Generator $spans, int $startLine = 1, int $endLine = null): \Generator
     {
         $lineNum = 1;
-        $buffer  = [];
+        $buffer = [];
 
         foreach ($spans as list($spanType, $spanText)) {
             foreach (\preg_split('/(\r\n?|\n)/', $spanText) as $index => $spanLine) {
@@ -247,7 +247,7 @@ class CodeFormatter implements ReflectorFormatter
      *
      * @return \Generator Formatted lines
      */
-    private static function formatLines(\Generator $spanLines)
+    private static function formatLines(\Generator $spanLines): \Generator
     {
         foreach ($spanLines as $lineNum => $spanLine) {
             $line = '';
@@ -260,7 +260,7 @@ class CodeFormatter implements ReflectorFormatter
                 }
             }
 
-            yield $lineNum => $line . \PHP_EOL;
+            yield $lineNum => $line.\PHP_EOL;
         }
     }
 
@@ -276,7 +276,7 @@ class CodeFormatter implements ReflectorFormatter
      *
      * @return \Generator Numbered, formatted lines
      */
-    private static function numberLines(\Generator $lines, $markLine = null)
+    private static function numberLines(\Generator $lines, int $markLine = null): \Generator
     {
         $lines = \iterator_to_array($lines);
 
@@ -302,7 +302,7 @@ class CodeFormatter implements ReflectorFormatter
                 $mark = ($markLine === $lineNum) ? self::LINE_MARKER : self::NO_LINE_MARKER;
             }
 
-            yield \sprintf("%s<aside>%${pad}s</aside>: %s", $mark, $lineNum, $line);
+            yield \sprintf("%s<aside>%{$pad}s</aside>: %s", $mark, $lineNum, $line);
         }
     }
 
@@ -313,7 +313,7 @@ class CodeFormatter implements ReflectorFormatter
      *
      * @return bool
      */
-    private static function isReflectable(\Reflector $reflector)
+    private static function isReflectable(\Reflector $reflector): bool
     {
         return ($reflector instanceof \ReflectionClass || $reflector instanceof \ReflectionFunctionAbstract) && \is_file($reflector->getFileName());
     }

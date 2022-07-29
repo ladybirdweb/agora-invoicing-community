@@ -10,7 +10,6 @@ use Symfony\Component\Console\Helper\TableSeparator;
 /**
  * Class     Command
  *
- * @package  Arcanedev\Support\Console
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
 abstract class Command extends IlluminateCommand
@@ -41,23 +40,11 @@ abstract class Command extends IlluminateCommand
     }
 
     /**
-     * Display header.
-     *
-     * @param  string  $text
-     *
-     * @deprecated Use the frame($text) method instead.
-     */
-    protected function header($text)
-    {
-        $this->frame($text);
-    }
-
-    /**
      * Display frame the text info.
      *
      * @param  string  $text
      */
-    protected function frame($text)
+    protected function frame(string $text)
     {
         $line   = '+'.str_repeat('-', strlen($text) + 4).'+';
         $this->info($line);

@@ -11,11 +11,11 @@
  * bundled with this package in the LICENSE file.
  *
  * @package    Stripe
- * @version    2.4.1
+ * @version    2.4.6
  * @author     Cartalyst LLC
  * @license    BSD License (3-clause)
- * @copyright  (c) 2011-2020, Cartalyst LLC
- * @link       http://cartalyst.com
+ * @copyright  (c) 2011-2021, Cartalyst LLC
+ * @link       https://cartalyst.com
  */
 
 namespace Cartalyst\Stripe;
@@ -70,14 +70,14 @@ interface ConfigInterface
     /**
      * Returns the idempotency key.
      *
-     * @return string
+     * @return string|null
      */
     public function getIdempotencyKey();
 
     /**
      * Sets the idempotency key.
      *
-     * @param  string  $idempotencyKey
+     * @param  string|null  $idempotencyKey
      * @return $this
      */
     public function setIdempotencyKey($idempotencyKey);

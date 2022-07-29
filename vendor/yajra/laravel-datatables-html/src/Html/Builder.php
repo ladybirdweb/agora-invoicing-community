@@ -78,6 +78,10 @@ class Builder
         $this->html = $html;
         $this->collection = new Collection;
         $this->tableAttributes = $this->config->get('datatables-html.table', []);
+        $this->attributes = [
+            'serverSide' => true,
+            'processing' => true,
+        ];
     }
 
     /**
@@ -118,7 +122,17 @@ class Builder
      */
     public function generateJson()
     {
-        $args = array_merge(
+        return $this->parameterize($this->getOptions());
+    }
+
+    /**
+     * Get DataTable options array.
+     *
+     * @return array
+     */
+    public function getOptions()
+    {
+        return array_merge(
             $this->attributes, [
                 'ajax' => $this->ajax,
                 'columns' => $this->collection->map(function (Column $column) {
@@ -129,8 +143,6 @@ class Builder
                 })->toArray(),
             ]
         );
-
-        return $this->parameterize($args);
     }
 
     /**
@@ -260,7 +272,8 @@ class Builder
     {
         $script = '';
         foreach ($data as $key => $value) {
-            $script .= PHP_EOL . "data.{$key} = '{$value}';";
+            $dataValue = $this->isCallbackFunction($value, $key) ? $value : "'{$value}'";
+            $script .= PHP_EOL . "data.{$key} = {$dataValue};";
         }
 
         return $script;
@@ -273,8 +286,16 @@ class Builder
      */
     public function asOptions()
     {
-        $this->setTemplate('datatables::options');
+        return $this->setTemplate('datatables::options');
+    }
 
-        return $this;
+    /**
+     * Wrap dataTable scripts with a function.
+     *
+     * @return $this
+     */
+    public function asFunction()
+    {
+        return $this->setTemplate('datatables::function');
     }
 }

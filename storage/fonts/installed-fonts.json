@@ -1,0 +1,26 @@
+{
+    "dejavu sans light": {
+        "normal": "\/var\/www\/billing\/agora-invoicing-community\/vendor\/dompdf\/dompdf\/lib\/fonts\/DejaVuSans-ExtraLight"
+    },
+    "dejavu sans condensed": {
+        "bold": "\/var\/www\/billing\/agora-invoicing-community\/vendor\/dompdf\/dompdf\/lib\/fonts\/DejaVuSansCondensed-Bold",
+        "bold_italic": "\/var\/www\/billing\/agora-invoicing-community\/vendor\/dompdf\/dompdf\/lib\/fonts\/DejaVuSansCondensed-BoldOblique",
+        "italic": "\/var\/www\/billing\/agora-invoicing-community\/vendor\/dompdf\/dompdf\/lib\/fonts\/DejaVuSansCondensed-Oblique",
+        "normal": "\/var\/www\/billing\/agora-invoicing-community\/vendor\/dompdf\/dompdf\/lib\/fonts\/DejaVuSansCondensed"
+    },
+    "dejavu serif condensed": {
+        "bold": "\/var\/www\/billing\/agora-invoicing-community\/vendor\/dompdf\/dompdf\/lib\/fonts\/DejaVuSerifCondensed-Bold",
+        "bold_italic": "\/var\/www\/billing\/agora-invoicing-community\/vendor\/dompdf\/dompdf\/lib\/fonts\/DejaVuSerifCondensed-BoldItalic",
+        "italic": "\/var\/www\/billing\/agora-invoicing-community\/vendor\/dompdf\/dompdf\/lib\/fonts\/DejaVuSerifCondensed-Italic",
+        "normal": "\/var\/www\/billing\/agora-invoicing-community\/vendor\/dompdf\/dompdf\/lib\/fonts\/DejaVuSerifCondensed"
+    },
+    "glyphicons halflings": {
+        "normal": "\/var\/www\/billing\/agora-invoicing-community\/storage\/fonts\/ca6b3e307d9f20f1c05aacaaddcd86e0"
+    },
+    "fontawesome": {
+        "normal": "\/var\/www\/billing\/agora-invoicing-community\/storage\/fonts\/858c8295bbe0626798fef38f75b88485"
+    },
+    "ionicons": {
+        "normal": "\/var\/www\/billing\/agora-invoicing-community\/storage\/fonts\/499ed0e151682fc2c1ba5340c204f05f"
+    }
+}

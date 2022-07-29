@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Event;
 /**
  * Class     EventServiceProvider
  *
- * @package  Arcanedev\Support\Laravel\Providers
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
 abstract class EventServiceProvider extends ServiceProvider

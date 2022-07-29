@@ -86,12 +86,12 @@ class LicenseController extends Controller
     /**
      * Get request to the License mnanager.
      */
-    private function getCurl($get_url,$token = null)
+    private function getCurl($get_url, $token = null)
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $get_url);
-          curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BEARER);
-            curl_setopt($ch, CURLOPT_XOAUTH2_BEARER, $token);
+        curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BEARER);
+        curl_setopt($ch, CURLOPT_XOAUTH2_BEARER, $token);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 90);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         if (curl_exec($ch) === false) {
@@ -109,9 +109,9 @@ class LicenseController extends Controller
     public function getLicensekey()
     {
         $url = $this->url;
-         $OauthDetails = $this->oauthAuthorization();
+        $OauthDetails = $this->oauthAuthorization();
         $token = $OauthDetails->access_token;
-        $getkey = $this->getCurl($url.'api/admin/viewApiKeys',$token);
+        $getkey = $this->getCurl($url.'api/admin/viewApiKeys', $token);
 
         return ['data' => $getkey, 'url' => $url];
     }

@@ -48,8 +48,7 @@
         "thomaswelton/laravel-gravatar": "^1.3",
         "torann/currency": "^1.1",
         "torann/geoip": "^3.0",
-        "yajra/laravel-datatables": "^1.5",
-        "fruitcake/laravel-cors": "^2.0"
+        "yajra/laravel-datatables": "^1.5"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.12",

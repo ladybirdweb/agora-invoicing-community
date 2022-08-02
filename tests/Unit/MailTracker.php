@@ -15,7 +15,7 @@ trait MailTracker
     public function setUpForMailTracker()
     {
         parent::setUp();
-        \Mail::getSwiftMailer()
+        \Mail::getSymfonyTransport()
                 ->registerPlugin(new TestingMailEventListener($this));
     }
 
@@ -36,7 +36,7 @@ trait MailTracker
         );
     }
 
-    public function addEmail(\Swift_Message $email)
+    public function addEmail(\Symfony\Component\Mime\Email $email)
     {
         $this->emails[] = $email;
     }

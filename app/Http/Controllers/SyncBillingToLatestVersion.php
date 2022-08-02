@@ -75,7 +75,7 @@ class SyncBillingToLatestVersion
         $this->updateMigrationTable($olderVersion);
 
         // after older version is updated, update to the latest version in which seeder versioning is implemented
-        Artisan::call('migrate', ['--force'=>true]);
+        Artisan::call('migrate', ['--force' => true]);
 
         $this->handleArtisanLogs();
 

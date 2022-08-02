@@ -18,6 +18,6 @@ class SyncBillingToLatestVersionTest extends DBTestCase
         $latestVersion = 'v1.5.3';
         $olderVersion = Setting::factory()->create();
         $response = (new SyncBillingToLatestVersion())->sync(new Request(['latestVersion' => $latestVersion, 'olderVersion' => $olderVersion->version]));
-        $this->assertDatabaseHas('settings', ['version'=>'v1.5.3']);
+        $this->assertDatabaseHas('settings', ['version' => 'v1.5.3']);
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Api;
 use App\Http\Controllers\Auth;
 use App\Http\Controllers\Common;
@@ -524,7 +525,7 @@ use Illuminate\Support\Facades\Route;
              */
             Route::get('apikeys', [Common\SettingsController::class, 'getKeys']);
             Route::patch('apikeys', [Common\SettingsController::class, 'postKeys']);
-            Route::post('login', 'App\Http\Controllers\Auth\LoginController@login')->name('login');
+            Route::post('login', [App\Http\Controllers\Auth\LoginController::class, 'login'])->name('login');
             // Route::post('login', [Auth\LoginController::class, 'login'])->name('login');
 
             Route::get('otp/send', [Auth\AuthController::class, 'requestOtp']);

@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class AddForeignKeysToTaxProductRelationsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -36,4 +36,4 @@ class AddForeignKeysToTaxProductRelationsTable extends Migration
             $table->dropForeign('tax_product_relations_tax_id_foreign');
         });
     }
-}
+};

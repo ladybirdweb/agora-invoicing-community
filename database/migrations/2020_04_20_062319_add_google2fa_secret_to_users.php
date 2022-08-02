@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddGoogle2faSecretToUsers extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -47,4 +47,4 @@ class AddGoogle2faSecretToUsers extends Migration
             $table->dropColumn('code_usage_count');
         });
     }
-}
+};

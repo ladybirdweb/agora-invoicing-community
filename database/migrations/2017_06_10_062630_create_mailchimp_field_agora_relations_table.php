@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateMailchimpFieldAgoraRelationsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -44,4 +44,4 @@ class CreateMailchimpFieldAgoraRelationsTable extends Migration
     {
         Schema::drop('mailchimp_field_agora_relations');
     }
-}
+};

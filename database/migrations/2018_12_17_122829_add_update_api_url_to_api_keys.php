@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddUpdateApiUrlToApiKeys extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -40,4 +40,4 @@ class AddUpdateApiUrlToApiKeys extends Migration
             $table->dropColumn(['update_api_url', 'update_api_secret', 'terms_url', 'pipedrive_api_key']);
         });
     }
-}
+};

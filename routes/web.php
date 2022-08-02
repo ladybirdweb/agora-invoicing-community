@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Api;
 use App\Http\Controllers\Auth;
 use App\Http\Controllers\Common;

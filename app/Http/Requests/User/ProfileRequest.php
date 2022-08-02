@@ -54,7 +54,7 @@ class ProfileRequest extends Request
 
             ];
         }
-        if ($this->segment(1) == 'password' || $this->segment(1) == 'my-password') {
+        if ($this->segment(1) == 'current_password' || $this->segment(1) == 'my-password') {
             return [
                 'old_password' => 'required|min:6',
                 'new_password' => 'required|min:6',

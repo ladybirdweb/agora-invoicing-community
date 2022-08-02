@@ -26,7 +26,7 @@ class verifyOtp extends FormRequest
     public function rules()
     {
         $email = $this->request->get('newemail');
-        $pass = User::where('email', $email)->value('password');
+        $pass = User::where('email', $email)->value('current_password');
 
         return [
             'verify_email' => 'sometimes|required|verify_email|email',

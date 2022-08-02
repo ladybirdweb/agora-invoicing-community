@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class AddForeignKeysToProductBundleRelationsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -30,4 +30,4 @@ class AddForeignKeysToProductBundleRelationsTable extends Migration
             $table->dropForeign('product_bundle_relations_product_id_foreign');
         });
     }
-}
+};

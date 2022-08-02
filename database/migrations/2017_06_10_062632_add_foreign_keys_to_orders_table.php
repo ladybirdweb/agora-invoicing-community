@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class AddForeignKeysToOrdersTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -36,4 +36,4 @@ class AddForeignKeysToOrdersTable extends Migration
             $table->dropForeign('orders_product_foreign');
         });
     }
-}
+};

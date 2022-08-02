@@ -15,8 +15,8 @@ class ProductFactory extends Factory
     {
         return [
 
-            'name' => $this->faker->name,
-            'description' => $this->faker->sentence,
+            'name' => $this->faker->name(),
+            'description' => $this->faker->sentence(),
             // 'type'                => 1,
             'group' => 1,
             'can_modify_agent' => 0,

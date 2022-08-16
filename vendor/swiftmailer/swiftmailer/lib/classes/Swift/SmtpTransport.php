@@ -31,7 +31,7 @@ class Swift_SmtpTransport extends Swift_Transport_EsmtpTransport
      *        - 'ssl' for SMTPS = SMTP over TLS (always encrypted).
      */
     public function __construct($host = 'localhost', $port = 25, $encryption = null)
-    {
+    { 
         \call_user_func_array(
             [$this, 'Swift_Transport_EsmtpTransport::__construct'],
             Swift_DependencyContainer::getInstance()
@@ -41,5 +41,7 @@ class Swift_SmtpTransport extends Swift_Transport_EsmtpTransport
         $this->setHost($host);
         $this->setPort($port);
         $this->setEncryption($encryption);
+  
     }
+    
 }

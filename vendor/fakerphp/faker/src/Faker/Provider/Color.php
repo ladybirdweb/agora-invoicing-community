@@ -2,18 +2,15 @@
 
 namespace Faker\Provider;
 
-/**
- * @author lsv
- */
 class Color extends Base
 {
-    protected static $safeColorNames = array(
+    protected static $safeColorNames = [
         'black', 'maroon', 'green', 'navy', 'olive',
         'purple', 'teal', 'lime', 'blue', 'silver',
-        'gray', 'yellow', 'fuchsia', 'aqua', 'white'
-    );
+        'gray', 'yellow', 'fuchsia', 'aqua', 'white',
+    ];
 
-    protected static $allColorNames = array(
+    protected static $allColorNames = [
         'AliceBlue', 'AntiqueWhite', 'Aqua', 'Aquamarine',
         'Azure', 'Beige', 'Bisque', 'Black', 'BlanchedAlmond',
         'Blue', 'BlueViolet', 'Brown', 'BurlyWood', 'CadetBlue',
@@ -39,43 +36,51 @@ class Color extends Base
         'PowderBlue', 'Purple', 'Red', 'RosyBrown', 'RoyalBlue', 'SaddleBrown', 'Salmon',
         'SandyBrown', 'SeaGreen', 'SeaShell', 'Sienna', 'Silver', 'SkyBlue', 'SlateBlue',
         'SlateGray', 'Snow', 'SpringGreen', 'SteelBlue', 'Tan', 'Teal', 'Thistle', 'Tomato',
-        'Turquoise', 'Violet', 'Wheat', 'White', 'WhiteSmoke', 'Yellow', 'YellowGreen'
-    );
+        'Turquoise', 'Violet', 'Wheat', 'White', 'WhiteSmoke', 'Yellow', 'YellowGreen',
+    ];
 
     /**
      * @example '#fa3cc2'
+     *
+     * @return string
      */
     public static function hexColor()
     {
-        return '#' . str_pad(dechex(mt_rand(1, 16777215)), 6, '0', STR_PAD_LEFT);
+        return '#' . str_pad(dechex(self::numberBetween(1, 16777215)), 6, '0', STR_PAD_LEFT);
     }
 
     /**
      * @example '#ff0044'
+     *
+     * @return string
      */
     public static function safeHexColor()
     {
-        $color = str_pad(dechex(mt_rand(0, 255)), 3, '0', STR_PAD_LEFT);
+        $color = str_pad(dechex(self::numberBetween(0, 255)), 3, '0', STR_PAD_LEFT);
 
         return '#' . $color[0] . $color[0] . $color[1] . $color[1] . $color[2] . $color[2];
     }
 
     /**
      * @example 'array(0,255,122)'
+     *
+     * @return array
      */
     public static function rgbColorAsArray()
     {
         $color = static::hexColor();
 
-        return array(
+        return [
             hexdec(substr($color, 1, 2)),
             hexdec(substr($color, 3, 2)),
-            hexdec(substr($color, 5, 2))
-        );
+            hexdec(substr($color, 5, 2)),
+        ];
     }
 
     /**
      * @example '0,255,122'
+     *
+     * @return string
      */
     public static function rgbColor()
     {
@@ -84,6 +89,8 @@ class Color extends Base
 
     /**
      * @example 'rgb(0,255,122)'
+     *
+     * @return string
      */
     public static function rgbCssColor()
     {
@@ -92,6 +99,8 @@ class Color extends Base
 
     /**
      * @example 'rgba(0,255,122,0.8)'
+     *
+     * @return string
      */
     public static function rgbaCssColor()
     {
@@ -100,6 +109,8 @@ class Color extends Base
 
     /**
      * @example 'blue'
+     *
+     * @return string
      */
     public static function safeColorName()
     {
@@ -108,6 +119,8 @@ class Color extends Base
 
     /**
      * @example 'NavajoWhite'
+     *
+     * @return string
      */
     public static function colorName()
     {
@@ -116,28 +129,30 @@ class Color extends Base
 
     /**
      * @example '340,50,20'
+     *
      * @return string
      */
     public static function hslColor()
     {
         return sprintf(
             '%s,%s,%s',
-            static::numberBetween(0, 360),
-            static::numberBetween(0, 100),
-            static::numberBetween(0, 100)
+            self::numberBetween(0, 360),
+            self::numberBetween(0, 100),
+            self::numberBetween(0, 100)
         );
     }
 
     /**
      * @example array(340, 50, 20)
+     *
      * @return array
      */
     public static function hslColorAsArray()
     {
-        return array(
-            static::numberBetween(0, 360),
-            static::numberBetween(0, 100),
-            static::numberBetween(0, 100)
-        );
+        return [
+            self::numberBetween(0, 360),
+            self::numberBetween(0, 100),
+            self::numberBetween(0, 100),
+        ];
     }
 }

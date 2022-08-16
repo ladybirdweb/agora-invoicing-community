@@ -2,11 +2,12 @@
 
 namespace Illuminate\Foundation\Testing;
 
-use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 use Illuminate\Console\Application as Artisan;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Bootstrap\HandleExceptions;
 use Illuminate\Queue\Queue;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\Facades\ParallelTesting;
 use Illuminate\Support\Str;
@@ -142,6 +143,16 @@ abstract class TestCase extends BaseTestCase
             $this->setUpFaker();
         }
 
+        foreach ($uses as $trait) {
+            if (method_exists($this, $method = 'setUp'.class_basename($trait))) {
+                $this->{$method}();
+            }
+
+            if (method_exists($this, $method = 'tearDown'.class_basename($trait))) {
+                $this->beforeApplicationDestroyed(fn () => $this->{$method}());
+            }
+        }
+
         return $uses;
     }
 
@@ -200,8 +211,8 @@ abstract class TestCase extends BaseTestCase
         $this->beforeApplicationDestroyedCallbacks = [];
 
         Artisan::forgetBootstrappers();
-
         Queue::createPayloadUsing(null);
+        HandleExceptions::forgetApp();
 
         if ($this->callbackException) {
             throw $this->callbackException;

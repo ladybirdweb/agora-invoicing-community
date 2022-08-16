@@ -166,6 +166,31 @@ class SqlServerGrammar extends Grammar
     }
 
     /**
+     * Compile a "JSON contains key" statement into SQL.
+     *
+     * @param  string  $column
+     * @return string
+     */
+    protected function compileJsonContainsKey($column)
+    {
+        $segments = explode('->', $column);
+
+        $lastSegment = array_pop($segments);
+
+        if (preg_match('/\[([0-9]+)\]$/', $lastSegment, $matches)) {
+            $segments[] = Str::beforeLast($lastSegment, $matches[0]);
+
+            $key = $matches[1];
+        } else {
+            $key = "'".str_replace("'", "''", $lastSegment)."'";
+        }
+
+        [$field, $path] = $this->wrapJsonFieldAndPath(implode('->', $segments));
+
+        return $key.' in (select [key] from openjson('.$field.$path.'))';
+    }
+
+    /**
      * Compile a "JSON length" statement into SQL.
      *
      * @param  string  $column
@@ -181,7 +206,7 @@ class SqlServerGrammar extends Grammar
     }
 
     /**
-     * {@inheritdoc}
+     * Compile a single having clause.
      *
      * @param  array  $having
      * @return string
@@ -207,7 +232,7 @@ class SqlServerGrammar extends Grammar
 
         $parameter = $this->parameter($having['value']);
 
-        return $having['boolean'].' ('.$column.' '.$having['operator'].' '.$parameter.') != 0';
+        return '('.$column.' '.$having['operator'].' '.$parameter.') != 0';
     }
 
     /**

@@ -8,9 +8,12 @@ use Spatie\Activitylog\Traits\LogsActivity;
 
 class ChatScript extends Model
 {
-    use LogsActivity;
+   
+    // use LogsActivity;
 
     protected $table = 'chat_scripts';
+    
+    
 
     protected $fillable = ['name', 'script', 'on_registration', 'on_every_page', 'google_analytics', 'google_analytics_tag'];
 
@@ -20,9 +23,9 @@ class ChatScript extends Model
 
     protected static $logOnlyDirty = true;
 
+
     public function getDescriptionForEvent(string $eventName): string
     {
-        // dd(Activity::where('subject_id',)->pluck('subject_id'));
         if ($eventName == 'created') {
             return 'Chat Script'.$this->name.' was created';
         }
@@ -37,7 +40,8 @@ class ChatScript extends Model
 
         return '';
 
-        // return "Product  has been {$eventName}";
-         // \Auth::user()->activity;
+       
     }
+
+ 
 }

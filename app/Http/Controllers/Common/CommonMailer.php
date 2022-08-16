@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Common;
 
 use Exception;
 
+
 class CommonMailer
 {
     public function setSmtpDriver($config)
     {
+     
         try {
             if (! $config) {
                 return false;
@@ -26,6 +28,7 @@ class CommonMailer
 
             return true;
         } catch (Exception $e) {
+           
             loging($e->getMessage());
 
             return $e->getMessage();

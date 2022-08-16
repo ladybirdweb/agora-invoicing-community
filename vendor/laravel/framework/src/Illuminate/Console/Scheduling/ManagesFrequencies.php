@@ -60,9 +60,9 @@ trait ManagesFrequencies
 
         if ($endTime->lessThan($startTime)) {
             if ($startTime->greaterThan($now)) {
-                $startTime->subDay(1);
+                $startTime = $startTime->subDay(1);
             } else {
-                $endTime->addDay(1);
+                $endTime = $endTime->addDay(1);
             }
         }
 
@@ -464,6 +464,21 @@ trait ManagesFrequencies
         return $this->spliceIntoPosition(1, 0)
                     ->spliceIntoPosition(2, 0)
                     ->spliceIntoPosition(3, 1)
+                    ->spliceIntoPosition(4, '1-12/3');
+    }
+
+    /**
+     * Schedule the event to run quarterly on a given day and time.
+     *
+     * @param  int  $dayOfQuarter
+     * @param  int  $time
+     * @return $this
+     */
+    public function quarterlyOn($dayOfQuarter = 1, $time = '0:0')
+    {
+        $this->dailyAt($time);
+
+        return $this->spliceIntoPosition(3, $dayOfQuarter)
                     ->spliceIntoPosition(4, '1-12/3');
     }
 

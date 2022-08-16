@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\Models\Activity;
-use Spatie\Activitylog\Traits\LogsActivity;
+// use Spatie\Activitylog\Traits\LogsActivity;
 
 //use Laravel\Cashier\Billable;
 //use LinkThrow\Billing\CustomerBillableTrait;
@@ -21,7 +21,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     use HasFactory;
     use Authenticatable,
     CanResetPassword;
-    use LogsActivity;
+    // use LogsActivity;
     use SoftDeletes;
 
     // use Billable;
@@ -129,7 +129,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
     public function getProfilePicAttribute($value)
     {
-        $image = \Gravatar::src($this->attributes['email']);
+        $image = \Gravatar::get($this->attributes['email']);
         if ($value) {
             $file = public_path('common/images/users/'.$value);
             if (is_file($file)) {

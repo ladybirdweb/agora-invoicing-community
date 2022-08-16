@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Http\Controllers\Update\SyncBillingToLatestVersion;
+use App\Http\Controllers\SyncBillingToLatestVersion;
 use Illuminate\Console\Command;
 
 class SyncDatabaseToLatestVersion extends Command

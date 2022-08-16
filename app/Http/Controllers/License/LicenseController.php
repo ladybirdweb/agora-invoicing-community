@@ -37,17 +37,23 @@ class LicenseController extends Controller
      * */
     private function oauthAuthorization()
     {
+        
         $url = $this->url;
         $data = [
             'client_id' => $this->client_id,
             'client_secret' => $this->client_secret,
             'grant_type' => $this->grant_type,
         ];
-        $response = $this->postCurl($url.'oauth/token', $data);
+        
+        $response = $this->postCurl($url.'/oauth/token', $data);
+      
         $response = json_decode($response);
+       
+        
+      
 
         return $response;
-        dd($response);
+       
     }
 
     private function postCurl($post_url, $post_info, $token = null)
@@ -108,10 +114,13 @@ class LicenseController extends Controller
      */
     public function getLicensekey()
     {
+        
         $url = $this->url;
+        $api_key_secret = $this->api_key_secret;
         $OauthDetails = $this->oauthAuthorization();
         $token = $OauthDetails->access_token;
-        $getkey = $this->getCurl($url.'api/admin/viewApiKeys', $token);
+        $getkey = $this->getCurl($url.'/api/admin/viewApiKeys', $token);
+        
 
         return ['data' => $getkey, 'url' => $url];
     }
@@ -121,11 +130,17 @@ class LicenseController extends Controller
     */
     public function addNewProduct($product_name, $product_sku)
     {
+    
         $url = $this->url;
         $api_key_secret = $this->api_key_secret;
+        
+           
         $OauthDetails = $this->oauthAuthorization();
         $token = $OauthDetails->access_token;
-        $addProduct = $this->postCurl($url.'api/admin/products/add', "api_key_secret=$api_key_secret&product_title=$product_name&product_sku=$product_sku&product_status=1", $token);
+        
+        
+        $addProduct = $this->postCurl($url.'/api/admin/products/add', "api_key_secret=$api_key_secret&product_title=$product_name&product_sku=$product_sku&product_status=1", $token);
+        
     }
 
     /*

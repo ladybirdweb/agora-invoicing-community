@@ -2,6 +2,9 @@
 
 namespace Illuminate\Foundation\Providers;
 
+use Illuminate\Contracts\Foundation\MaintenanceMode as MaintenanceModeContract;
+use Illuminate\Foundation\MaintenanceModeManager;
+use Illuminate\Foundation\Vite;
 use Illuminate\Http\Request;
 use Illuminate\Log\Events\MessageLogged;
 use Illuminate\Support\AggregateServiceProvider;
@@ -20,6 +23,15 @@ class FoundationServiceProvider extends AggregateServiceProvider
     protected $providers = [
         FormRequestServiceProvider::class,
         ParallelTestingServiceProvider::class,
+    ];
+
+    /**
+     * The singletons to register into the container.
+     *
+     * @var array
+     */
+    public $singletons = [
+        Vite::class => Vite::class,
     ];
 
     /**
@@ -48,6 +60,7 @@ class FoundationServiceProvider extends AggregateServiceProvider
         $this->registerRequestValidation();
         $this->registerRequestSignatureValidation();
         $this->registerExceptionTracking();
+        $this->registerMaintenanceModeManager();
     }
 
     /**
@@ -88,6 +101,10 @@ class FoundationServiceProvider extends AggregateServiceProvider
         Request::macro('hasValidRelativeSignature', function () {
             return URL::hasValidSignature($this, $absolute = false);
         });
+
+        Request::macro('hasValidSignatureWhileIgnoring', function ($ignoreQuery = [], $absolute = true) {
+            return URL::hasValidSignature($this, $absolute, $ignoreQuery);
+        });
     }
 
     /**
@@ -112,5 +129,20 @@ class FoundationServiceProvider extends AggregateServiceProvider
                         ->push($event->context['exception']);
             }
         });
+    }
+
+    /**
+     * Register the maintenance mode manager service.
+     *
+     * @return void
+     */
+    public function registerMaintenanceModeManager()
+    {
+        $this->app->singleton(MaintenanceModeManager::class);
+
+        $this->app->bind(
+            MaintenanceModeContract::class,
+            fn () => $this->app->make(MaintenanceModeManager::class)->driver()
+        );
     }
 }

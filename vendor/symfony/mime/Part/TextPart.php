@@ -82,7 +82,7 @@ class TextPart extends AbstractPart
      *
      * @return $this
      */
-    public function setDisposition(string $disposition)
+    public function setDisposition(string $disposition): static
     {
         $this->disposition = $disposition;
 
@@ -94,11 +94,19 @@ class TextPart extends AbstractPart
      *
      * @return $this
      */
-    public function setName(string $name)
+    public function setName(string $name): static
     {
         $this->name = $name;
 
         return $this;
+    }
+
+    /**
+     * Gets the name of the file (used by FormDataPart).
+     */
+    public function getName(): ?string
+    {
+        return $this->name;
     }
 
     public function getBody(): string
@@ -189,10 +197,7 @@ class TextPart extends AbstractPart
         return 'quoted-printable';
     }
 
-    /**
-     * @return array
-     */
-    public function __sleep()
+    public function __sleep(): array
     {
         // convert resources to strings for serialization
         if (null !== $this->seekable) {
@@ -207,7 +212,6 @@ class TextPart extends AbstractPart
     public function __wakeup()
     {
         $r = new \ReflectionProperty(AbstractPart::class, 'headers');
-        $r->setAccessible(true);
         $r->setValue($this, $this->_headers);
         unset($this->_headers);
     }

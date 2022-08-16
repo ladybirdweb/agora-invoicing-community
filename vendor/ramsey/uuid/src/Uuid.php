@@ -384,6 +384,11 @@ class Uuid implements UuidInterface
         return new IntegerObject($this->numberConverter->fromHex($this->getHex()->toString()));
     }
 
+    public function getUrn(): string
+    {
+        return 'urn:uuid:' . $this->toString();
+    }
+
     /**
      * @psalm-return non-empty-string
      */
@@ -476,10 +481,11 @@ class Uuid implements UuidInterface
      */
     public static function fromString(string $uuid): UuidInterface
     {
+        $uuid = strtolower($uuid);
         if (! self::$factoryReplaced && preg_match(LazyUuidFromString::VALID_REGEX, $uuid) === 1) {
             assert($uuid !== '');
 
-            return new LazyUuidFromString(strtolower($uuid));
+            return new LazyUuidFromString($uuid);
         }
 
         return self::getFactory()->fromString($uuid);

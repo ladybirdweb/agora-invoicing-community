@@ -2,76 +2,75 @@
 
 namespace Faker\Provider\kk_KZ;
 
-use \Faker\Provider\DateTime;
+use Faker\Provider\DateTime;
 
 class Person extends \Faker\Provider\Person
 {
+    public const GENDER_MALE = 0;
+    public const GENDER_FEMALE = 1;
 
-    const GENDER_MALE = 0;
-    const GENDER_FEMALE = 1;
+    public const CENTURY_19TH = 0;
+    public const CENTURY_20TH = 1;
+    public const CENTURY_21ST = 2;
 
-    const CENTURY_19TH = 0;
-    const CENTURY_20TH = 1;
-    const CENTURY_21ST = 2;
+    public const MALE_CENTURY_19TH = 1;
+    public const MALE_CENTURY_20TH = 3;
+    public const MALE_CENTURY_21ST = 5;
 
-    const MALE_CENTURY_19TH = 1;
-    const MALE_CENTURY_20TH = 3;
-    const MALE_CENTURY_21ST = 5;
-
-    const FEMALE_CENTURY_19TH = 2;
-    const FEMALE_CENTURY_20TH = 4;
-    const FEMALE_CENTURY_21ST = 6;
-
-    /**
-     * @var array
-     */
-    public static $firstSequenceBitWeights = array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11);
+    public const FEMALE_CENTURY_19TH = 2;
+    public const FEMALE_CENTURY_20TH = 4;
+    public const FEMALE_CENTURY_21ST = 6;
 
     /**
      * @var array
      */
-    public static $secondSequenceBitWeights = array(3, 4, 5, 6, 7, 8, 9, 10, 11, 1, 2);
+    public static $firstSequenceBitWeights = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 
     /**
      * @var array
      */
-    public static $genderCenturyMap = array(
-        self::GENDER_MALE   => array(
+    public static $secondSequenceBitWeights = [3, 4, 5, 6, 7, 8, 9, 10, 11, 1, 2];
+
+    /**
+     * @var array
+     */
+    public static $genderCenturyMap = [
+        self::GENDER_MALE => [
             self::CENTURY_19TH => self::MALE_CENTURY_19TH,
             self::CENTURY_20TH => self::MALE_CENTURY_20TH,
             self::CENTURY_21ST => self::MALE_CENTURY_21ST,
-        ),
-        self::GENDER_FEMALE => array(
+        ],
+        self::GENDER_FEMALE => [
             self::CENTURY_19TH => self::FEMALE_CENTURY_19TH,
             self::CENTURY_20TH => self::FEMALE_CENTURY_20TH,
             self::CENTURY_21ST => self::FEMALE_CENTURY_21ST,
-        ),
-    );
+        ],
+    ];
 
     /**
      * @see https://ru.wikipedia.org/wiki/%D0%9A%D0%B0%D0%B7%D0%B0%D1%85%D1%81%D0%BA%D0%B0%D1%8F_%D1%84%D0%B0%D0%BC%D0%B8%D0%BB%D0%B8%D1%8F
      *
      * @var array
      */
-    protected static $maleNameFormats = array(
+    protected static $maleNameFormats = [
         '{{lastName}}ұлы {{firstNameMale}}',
-    );
+    ];
 
     /**
      * @see https://ru.wikipedia.org/wiki/%D0%9A%D0%B0%D0%B7%D0%B0%D1%85%D1%81%D0%BA%D0%B0%D1%8F_%D1%84%D0%B0%D0%BC%D0%B8%D0%BB%D0%B8%D1%8F
      *
      * @var array
      */
-    protected static $femaleNameFormats = array(
+    protected static $femaleNameFormats = [
         '{{lastName}}қызы {{firstNameFemale}}',
-    );
+    ];
 
     /**
      * @see http://koshpendi.kz/index.php/nomad/imena/
      *
      * @var array
      */
-    protected static $firstNameMale = array(
+    protected static $firstNameMale = [
         'Аылғазы',
         'Әбдіқадыр',
         'Бабағожа',
@@ -100,14 +99,14 @@ class Person extends \Faker\Provider\Person
         'Шаттық',
         'Ыстамбақы',
         'Ібни',
-    );
+    ];
 
     /**
      * @see http://koshpendi.kz/index.php/nomad/imena/
      *
      * @var array
      */
-    protected static $firstNameFemale = array(
+    protected static $firstNameFemale = [
         'Асылтас',
         'Әужа',
         'Бүлдіршін',
@@ -137,7 +136,7 @@ class Person extends \Faker\Provider\Person
         'Шырынгүл',
         'Ырысты',
         'Іңкәр',
-    );
+    ];
 
     /**
      * @see http://koshpendi.kz/index.php/nomad/imena/
@@ -145,7 +144,7 @@ class Person extends \Faker\Provider\Person
      *
      * @var array
      */
-    protected static $lastName = array(
+    protected static $lastName = [
         'Адырбай',
         'Әжібай',
         'Байбөрі',
@@ -174,32 +173,42 @@ class Person extends \Faker\Provider\Person
         'Шілдебай',
         'Ыстамбақы',
         'Ісмет',
-    );
+    ];
 
     /**
-     * @param  integer $year
+     * Note! When calculating individual identification number
+     *   2000-01-01 - 2000-12-31 counts as 21th century
+     *   1900-01-01 - 1900-12-31 counts as 20th century
      *
-     * @return integer|null
+     * @param int $year
+     *
+     * @return int
      */
     private static function getCenturyByYear($year)
     {
-        if ($year >= 2000 && $year <= DateTime::year()) {
-            return self::CENTURY_21ST;
-        } elseif ($year >= 1900) {
-            return self::CENTURY_20TH;
-        } elseif ($year >= 1800) {
-            return self::CENTURY_19TH;
+        if (($year >= 2100) || ($year < 1800)) {
+            throw new \InvalidArgumentException('Unexpected century');
         }
+
+        if ($year >= 2000) {
+            return self::CENTURY_21ST;
+        }
+
+        if ($year >= 1900) {
+            return self::CENTURY_20TH;
+        }
+
+        return self::CENTURY_19TH;
     }
 
     /**
      * National Individual Identification Numbers
      *
-     * @link   http://egov.kz/wps/portal/Content?contentPath=%2Fegovcontent%2Fcitizen_migration%2Fpassport_id_card%2Farticle%2Fiin_info&lang=en
-     * @link   https://ru.wikipedia.org/wiki/%D0%98%D0%BD%D0%B4%D0%B8%D0%B2%D0%B8%D0%B4%D1%83%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B9_%D0%B8%D0%B4%D0%B5%D0%BD%D1%82%D0%B8%D1%84%D0%B8%D0%BA%D0%B0%D1%86%D0%B8%D0%BE%D0%BD%D0%BD%D1%8B%D0%B9_%D0%BD%D0%BE%D0%BC%D0%B5%D1%80
+     * @see   http://egov.kz/wps/portal/Content?contentPath=%2Fegovcontent%2Fcitizen_migration%2Fpassport_id_card%2Farticle%2Fiin_info&lang=en
+     * @see   https://ru.wikipedia.org/wiki/%D0%98%D0%BD%D0%B4%D0%B8%D0%B2%D0%B8%D0%B4%D1%83%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B9_%D0%B8%D0%B4%D0%B5%D0%BD%D1%82%D0%B8%D1%84%D0%B8%D0%BA%D0%B0%D1%86%D0%B8%D0%BE%D0%BD%D0%BD%D1%8B%D0%B9_%D0%BD%D0%BE%D0%BC%D0%B5%D1%80
      *
-     * @param  \DateTime $birthDate
-     * @param  integer   $gender
+     * @param \DateTime $birthDate
+     * @param int       $gender
      *
      * @return string 12 digits, like 780322300455
      */
@@ -210,7 +219,7 @@ class Person extends \Faker\Provider\Person
         }
 
         do {
-            $population = mt_rand(1000, 2000);
+            $population = self::numberBetween(1000, 2000);
             $century = self::getCenturyByYear((int) $birthDate->format('Y'));
 
             $iin = $birthDate->format('ymd');
@@ -225,7 +234,7 @@ class Person extends \Faker\Provider\Person
     /**
      * @param string $iinValue
      *
-     * @return integer
+     * @return int
      */
     public static function checkSum($iinValue)
     {
@@ -240,15 +249,15 @@ class Person extends \Faker\Provider\Person
 
     /**
      * @param string $iinValue
-     * @param array $sequence
+     * @param array  $sequence
      *
-     * @return integer
+     * @return int
      */
     protected static function getControlDigit($iinValue, $sequence)
     {
         $sum = 0;
 
-        for ($i = 0; $i <= 10; $i++) {
+        for ($i = 0; $i <= 10; ++$i) {
             $sum += (int) $iinValue[$i] * $sequence[$i];
         }
 

@@ -4,7 +4,7 @@ namespace Faker\Provider\tr_TR;
 
 class Company extends \Faker\Provider\Company
 {
-    protected static $formats = array(
+    protected static $formats = [
         '{{lastName}} {{companySuffix}}',
         '{{lastName}}oğlu {{companySuffix}}',
         '{{lastName}} {{lastName}} {{companySuffix}}',
@@ -12,11 +12,11 @@ class Company extends \Faker\Provider\Company
         '{{lastName}} {{companyField}} {{companySuffix}}',
         '{{lastName}} {{companyField}} {{companySuffix}}',
         '{{lastName}} {{lastName}} {{companyField}} {{companySuffix}}',
-    );
+    ];
 
-    protected static $companySuffix = array('A.Ş.', 'Ltd. Şti.');
+    protected static $companySuffix = ['A.Ş.', 'Ltd. Şti.'];
 
-    protected static $companyField = array(
+    protected static $companyField = [
         'Akaryakıt', 'Beyaz Eşya', 'Bilgi İşlem', 'Bilgisayar', 'Bilişim Hizmetleri',
         'Biracılık ve Malt Sanayii', 'Cam Sanayii', 'Çimento', 'Demir ve Çelik',
         'Dış Ticaret', 'Eczacılık', 'Elektrik İletim', 'Elektrik Üretim', 'Elektronik',
@@ -25,15 +25,15 @@ class Company extends \Faker\Provider\Company
         'Kurumsal Hizmetler', 'Lojistik', 'Madencilik', 'Makina', 'Mağazalar', 'Nakliyat',
         'Otomotiv', 'Pazarlama', 'Perakende Ticaret', 'Petrol', 'Petrolcülük', 'Sanayi',
         'Sağlık Hizmetleri', 'Servis ve Ticaret', 'Süt Ürünleri', 'Tarım Sanayi',
-        'Tavukçuluk', 'Tekstil', 'Telekomunikasyon', 'Tersane ve Ulaşım Sanayi',
-        'Ticaret', 'Ticaret ve Sanayi', 'Ticaret ve Taahhüt', 'Turizm', 'Yatırım'
-    );
+        'Tavukçuluk', 'Tekstil', 'Telekomünikasyon', 'Tersane ve Ulaşım Sanayi',
+        'Ticaret', 'Ticaret ve Sanayi', 'Ticaret ve Taahhüt', 'Turizm', 'Yatırım',
+    ];
 
     /**
-    * @link https://tr.wikipedia.org/wiki/Meslekler_listesi
-    * @note Randomly took 300 from this list
-    */
-    protected static $jobTitleFormat = array(
+     * @see https://tr.wikipedia.org/wiki/Meslekler_listesi
+     * @note Randomly took 300 from this list
+     */
+    protected static $jobTitleFormat = [
         'Acil tıp teknisyeni', 'Agronomist', 'Aile hekimi', 'Aktar', 'Aktör', 'Aktüer',
         'Akustikçi', 'Albay', 'Ambarcı', 'Ambulans şoförü', 'Amiral', 'Analist',
         'Antika satıcısı', 'Araba tamircisi', 'Arabacı', 'Araştırmacı', 'Armatör', 'Artist',
@@ -43,13 +43,13 @@ class Company extends \Faker\Provider\Company
         'Balon pilotu', 'Bankacı', 'Banker', 'Barmeyd', 'Başdümenci', 'Başpiskopos',
         'Başçavuş', 'Bebek Bakıcısı', 'Belediye başkanı', 'Belediye meclisi üyesi', 'Besteci',
         'Biletçi', 'Bilgi İşlemci', 'Bilgisayar mühendisi', 'Binicilik', 'Biyografi yazarı',
-        'Bobinajcı', 'Borsacı', 'Boyacı', 'Bulaşıkçı', 'Börekç', 'Çamaşırcı', 'Çantacı',
+        'Bobinajcı', 'Borsacı', 'Boyacı', 'Bulaşıkçı', 'Börekçi', 'Çamaşırcı', 'Çantacı',
         'Çevik Kuvvet', 'Çevirmen', 'Çevre Mühendisi', 'Çevrebilimci', 'Çeyizci',
         'Çiftlik işletici', 'Çiftçi', 'Çinici', 'Çoban', 'Çırak', 'Dadı', 'Daktilograf',
         'Dalgıç', 'Dansöz', 'Dedektif', 'Derici', 'Değirmen işçisi', 'Değirmenci', 'Dilci',
         'Diplomat', 'Doktor', 'Dokumacı', 'Dondurmacı', 'Doğramacı', 'Dövizci', 'Döşemeci',
         'Elektrik mühendisi', 'Elektronik mühendisi', 'Elektronik ve Haberleşme mühendisi',
-        'Embriyolog', 'Emniyet amiri', 'Emniyet genel müdürü', 'Ergonomist', 'Eskici', 'Fahişe',
+        'Embriyolog', 'Emniyet amiri', 'Emniyet genel müdürü', 'Ergonomist', 'Eskici', 'Falcı',
         'Fizikçi', 'Fizyoterapist', 'Fotoğrafçı', 'Fıçıcı', 'Galerici', 'Garson',
         'Gazete dağıtıcısı', 'Gazete satıcısı', 'Gazeteci', 'Gelir uzman yardımcısı', 'General',
         'Genetik mühendisi', 'Gezici vaiz', 'Gondolcu', 'Guru', 'Gökbilimci', 'Gözlükçü',
@@ -73,19 +73,19 @@ class Company extends \Faker\Provider\Company
         'Öğretim görevlisi', 'Öğretim üyesi', 'Papaz', 'Paramedik', 'Pastörizör', 'Pencereci',
         'Perukçu', 'Peyzaj teknikeri', 'Peçeteci', 'Pideci', 'Pilot', 'Piyanist', 'Politikacı',
         'Pompacı', 'Psikolog', 'Radyolog', 'Radyoloji teknisyeni/teknikeri', 'Rejisör',
-        'Reklamcı', 'Rektör', 'Rot balansçı', 'Saat tamircisi', 'Sanat yönetmeni', 'Saraç',
+        'Reklamcı', 'Rektör', 'Rot balansçı', 'Saat tamircisi', 'Sanat yönetmeni', 'Saraç', 'Savcı',
         'Saz şairi', 'Sekreter', 'Ses teknisyeni', 'Sicil memuru', 'Sihirbaz', 'Sistem mühendisi',
-        'Sosyal hizmet uzmanı', 'Sosyolog', 'Soğuk demirci', 'Stenograf', 'Stilist', 'Striptizci',
+        'Sosyal hizmet uzmanı', 'Sosyolog', 'Soğuk demirci', 'Stenograf', 'Stilist',
         'Sucu', 'Sunucu', 'Susuz araç yıkama', 'Sünnetçi', 'Sürveyan', 'Şapel papazı',
         'Şarkı sözü yazarı', 'Şehir Plancısı', 'Şekerci', 'Şimşirci', 'Şoför', 'Tahsildar',
-        'Tarihçi', 'Tasarımcı', 'Taşlayıcı', 'Taşçı', 'Tekniker', 'Teknisyen', 'Teknoloji uzmani',
+        'Tarihçi', 'Tasarımcı', 'Taşlayıcı', 'Taşçı', 'Tekniker', 'Teknisyen', 'Teknoloji uzmanı',
         'Televizyon tamircisi', 'Terapist', 'Tesisatçı', 'Teşrifatçı', 'Tornacı', 'Tuğgeneral',
         'Ulaşım sorumlusu', 'Ustabaşı', 'Uydu antenci', 'Üst Düzey Yönetici', 'Ütücü',
         'Uzay bilimcisi', 'Vali', 'Veri hazırlama ve kontrol işletmeni', 'Veteriner hekim',
         'Veteriner sağlık teknikeri', 'Veznedar', 'Vinç operatörü', 'Vitrinci', 'Yarbay',
         'Yardımcı pilot', 'Yargıç', 'Yazar', 'Yazı işleri müdürü', 'Yazılım mühendisi',
-        'Yer gösterici', 'Yol bekçisi', 'Yorgancı', 'Yoğurtçu', 'Yıkıcı', 'Zabıta', 'Zoolog'
-    );
+        'Yer gösterici', 'Yol bekçisi', 'Yorgancı', 'Yoğurtçu', 'Yıkıcı', 'Zabıta', 'Zoolog',
+    ];
 
     /**
      * Returns a random company field.

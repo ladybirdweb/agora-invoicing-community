@@ -2,9 +2,13 @@
 
 namespace Faker;
 
+use Faker\Extension\Extension;
+
 /**
  * Proxy for other generators, to return only valid values. Works with
  * Faker\Generator\Base->valid()
+ *
+ * @mixin Generator
  */
 class ValidGenerator
 {
@@ -13,14 +17,14 @@ class ValidGenerator
     protected $maxRetries;
 
     /**
-     * @param Generator $generator
-     * @param callable|null $validator
-     * @param integer $maxRetries
+     * @param Extension|Generator $generator
+     * @param callable|null       $validator
+     * @param int                 $maxRetries
      */
-    public function __construct(Generator $generator, $validator = null, $maxRetries = 10000)
+    public function __construct($generator, $validator = null, $maxRetries = 10000)
     {
-        if (is_null($validator)) {
-            $validator = function () {
+        if (null === $validator) {
+            $validator = static function () {
                 return true;
             };
         } elseif (!is_callable($validator)) {
@@ -31,30 +35,39 @@ class ValidGenerator
         $this->maxRetries = $maxRetries;
     }
 
+    public function ext(string $id)
+    {
+        return new self($this->generator->ext($id), $this->validator, $this->maxRetries);
+    }
+
     /**
      * Catch and proxy all generator calls but return only valid values
+     *
      * @param string $attribute
      *
-     * @return mixed
+     * @deprecated Use a method instead.
      */
     public function __get($attribute)
     {
-        return $this->__call($attribute, array());
+        trigger_deprecation('fakerphp/faker', '1.14', 'Accessing property "%s" is deprecated, use "%s()" instead.', $attribute, $attribute);
+
+        return $this->__call($attribute, []);
     }
 
     /**
      * Catch and proxy all generator calls with arguments but return only valid values
-     * @param string $name
-     * @param array $arguments
      *
-     * @return mixed
+     * @param string $name
+     * @param array  $arguments
      */
     public function __call($name, $arguments)
     {
         $i = 0;
+
         do {
-            $res = call_user_func_array(array($this->generator, $name), $arguments);
-            $i++;
+            $res = call_user_func_array([$this->generator, $name], $arguments);
+            ++$i;
+
             if ($i > $this->maxRetries) {
                 throw new \OverflowException(sprintf('Maximum retries of %d reached without finding a valid value', $this->maxRetries));
             }

@@ -1,6 +1,26 @@
 CHANGELOG
 =========
 
+6.1
+---
+
+ * Add `BackedEnumValueResolver` to resolve backed enum cases from request attributes in controller arguments
+ * Add `DateTimeValueResolver` to resolve request attributes into DateTime objects in controller arguments
+ * Deprecate StreamedResponseListener, it's not needed anymore
+ * Add `Profiler::isEnabled()` so collaborating collector services may elect to omit themselves
+ * Add the `UidValueResolver` argument value resolver
+ * Add `AbstractBundle` class for DI configuration/definition on a single file
+ * Update the path of a bundle placed in the `src/` directory to the parent directory when `AbstractBundle` is used
+
+6.0
+---
+
+ * Remove `ArgumentInterface`
+ * Remove `ArgumentMetadata::getAttribute()`, use `getAttributes()` instead
+ * Remove support for returning a `ContainerBuilder` from `KernelInterface::registerContainerConfiguration()`
+ * Remove `KernelEvent::isMasterRequest()`, use `isMainRequest()` instead
+ * Remove support for `service:action` syntax to reference controllers, use `serviceOrFqcn::method` instead
+
 5.4
 ---
 

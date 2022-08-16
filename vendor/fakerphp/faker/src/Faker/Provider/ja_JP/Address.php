@@ -4,7 +4,7 @@ namespace Faker\Provider\ja_JP;
 
 class Address extends \Faker\Provider\Address
 {
-    protected static $country = array(
+    protected static $country = [
         'アフガニスタン', 'アルバニア', 'アルジェリア', 'アメリカ領サモア', 'アンドラ', 'アンゴラ', 'アンギラ', '南極大陸', 'アンティグアバーブーダ', 'アルゼンチン', 'アルメニア', 'アルバ', 'オーストラリア', 'オーストリア', 'アゼルバイジャン',
         'バハマ', 'バーレーン', 'バングラデシュ', 'バルバドス', 'ベラルーシ', 'ベルギー', 'ベリーズ', 'ベナン', 'バミューダ島', 'ブータン', 'ボリビア', 'ボスニア・ヘルツェゴビナ', 'ボツワナ', 'ブーベ島', 'ブラジル', 'イギリス領インド洋地域', 'イギリス領ヴァージン諸島', 'ブルネイ', 'ブルガリア', 'ブルキナファソ', 'ブルンジ',
         'カンボジア', 'カメルーン', 'カナダ', 'カーボベルデ', 'ケイマン諸島', '中央アフリカ共和国', 'チャド', 'チリ', '中国', 'クリスマス島', 'ココス諸島', 'コロンビア', 'コモロ', 'コンゴ共和国', 'クック諸島', 'コスタリカ', 'コートジボワール', 'クロアチア', 'キューバ', 'キプロス共和国', 'チェコ共和国',
@@ -29,9 +29,9 @@ class Address extends \Faker\Provider\Address
         'バヌアツ', 'ベネズエラ', 'ベトナム',
         'ウォリス・フツナ', '西サハラ',
         'イエメン',
-        'ザンビア', 'ジンバブエ'
-    );
-    protected static $prefecture = array(
+        'ザンビア', 'ジンバブエ',
+    ];
+    protected static $prefecture = [
         '北海道',
         '青森県', '岩手県', '宮城県', '秋田県', '山形県', '福島県',
         '茨城県', '栃木県', '群馬県', '埼玉県', '千葉県', '東京都', '神奈川県',
@@ -40,39 +40,39 @@ class Address extends \Faker\Provider\Address
         '鳥取県', '島根県', '岡山県', '広島県', '山口県',
         '徳島県', '香川県', '愛媛県', '高知県',
         '福岡県', '佐賀県', '長崎県', '熊本県', '大分県', '宮崎県', '鹿児島県',
-        '沖縄県'
-    );
-    protected static $ward = array('中央', '北', '東', '南', '西');
+        '沖縄県',
+    ];
+    protected static $ward = ['中央', '北', '東', '南', '西'];
 
-    protected static $citySuffix = array('市');
-    protected static $wardSuffix = array('区');
-    protected static $streetSuffix = array('町');
+    protected static $citySuffix = ['市'];
+    protected static $wardSuffix = ['区'];
+    protected static $streetSuffix = ['町'];
 
-    protected static $postcodeFormats = array('{{postcode1}}{{postcode2}}');
-    protected static $cityFormats = array(
+    protected static $postcodeFormats = ['{{postcode1}}{{postcode2}}'];
+    protected static $cityFormats = [
         '{{lastName}}{{citySuffix}}',
-    );
-    protected static $streetNameFormats = array(
-        '{{lastName}}{{streetSuffix}}'
-    );
-    protected static $streetAddressFormats = array(
-        '{{streetName}}{{lastName}}{{areaNumber}}-{{areaNumber}}-{{areaNumber}}'
-    );
-    protected static $addressFormats = array(
+    ];
+    protected static $streetNameFormats = [
+        '{{lastName}}{{streetSuffix}}',
+    ];
+    protected static $streetAddressFormats = [
+        '{{streetName}}{{lastName}}{{areaNumber}}-{{areaNumber}}-{{areaNumber}}',
+    ];
+    protected static $addressFormats = [
         '{{postcode}}  {{prefecture}}{{city}}{{ward}}{{streetAddress}}',
-        '{{postcode}}  {{prefecture}}{{city}}{{ward}}{{streetAddress}} {{secondaryAddress}}'
-    );
-    protected static $secondaryAddressFormats = array(
+        '{{postcode}}  {{prefecture}}{{city}}{{ward}}{{streetAddress}} {{secondaryAddress}}',
+    ];
+    protected static $secondaryAddressFormats = [
         'ハイツ{{lastName}}{{buildingNumber}}号',
-        'コーポ{{lastName}}{{buildingNumber}}号'
-    );
+        'コーポ{{lastName}}{{buildingNumber}}号',
+    ];
 
     /**
      * @example 111
      */
     public static function postcode1()
     {
-        return static::numberBetween(100, 999);
+        return self::numberBetween(100, 999);
     }
 
     /**
@@ -80,7 +80,7 @@ class Address extends \Faker\Provider\Address
      */
     public static function postcode2()
     {
-        return static::numberBetween(1000, 9999);
+        return self::numberBetween(1000, 9999);
     }
 
     /**
@@ -120,12 +120,12 @@ class Address extends \Faker\Provider\Address
      */
     public static function areaNumber()
     {
-        return static::numberBetween(1, 10);
+        return self::numberBetween(1, 10);
     }
 
     public static function buildingNumber()
     {
-        return static::numberBetween(101, 110);
+        return (string) self::numberBetween(101, 110);
     }
 
     public function secondaryAddress()

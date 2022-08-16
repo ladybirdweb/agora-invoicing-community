@@ -8,7 +8,7 @@ abstract class Text extends Base
     protected static $separator = ' ';
     protected static $separatorLen = 1;
     protected $explodedText;
-    protected $consecutiveWords = array();
+    protected $consecutiveWords = [];
     protected static $textStartsWithUppercase = true;
 
     /**
@@ -19,15 +19,44 @@ abstract class Text extends Base
      * possible following words as the value.
      *
      * @example 'Alice, swallowing down her flamingo, and began by taking the little golden key'
-     * @param integer $maxNbChars Maximum number of characters the text should contain (minimum: 10)
-     * @param integer $indexSize  Determines how many words are considered for the generation of the next word.
-     *                             The minimum is 1, and it produces a higher level of randomness, although the
-     *                             generated text usually doesn't make sense. Higher index sizes (up to 5)
-     *                             produce more correct text, at the price of less randomness.
+     *
+     * @param int $maxNbChars Maximum number of characters the text should contain (minimum: 10)
+     * @param int $indexSize  Determines how many words are considered for the generation of the next word.
+     *                        The minimum is 1, and it produces a higher level of randomness, although the
+     *                        generated text usually doesn't make sense. Higher index sizes (up to 5)
+     *                        produce more correct text, at the price of less randomness.
+     *
      * @return string
      */
     public function realText($maxNbChars = 200, $indexSize = 2)
     {
+        return $this->realTextBetween((int) round($maxNbChars * 0.8), $maxNbChars, $indexSize);
+    }
+
+    /**
+     * Generate a text string by the Markov chain algorithm.
+     *
+     * Depending on the $maxNbChars, returns a random valid looking text. The algorithm
+     * generates a weighted table with the specified number of words as the index and the
+     * possible following words as the value.
+     *
+     * @example 'Alice, swallowing down her flamingo, and began by taking the little golden key'
+     *
+     * @param int $minNbChars Minimum number of characters the text should contain (maximum: 8)
+     * @param int $maxNbChars Maximum number of characters the text should contain (minimum: 10)
+     * @param int $indexSize  Determines how many words are considered for the generation of the next word.
+     *                        The minimum is 1, and it produces a higher level of randomness, although the
+     *                        generated text usually doesn't make sense. Higher index sizes (up to 5)
+     *                        produce more correct text, at the price of less randomness.
+     *
+     * @return string
+     */
+    public function realTextBetween($minNbChars = 160, $maxNbChars = 200, $indexSize = 2)
+    {
+        if ($minNbChars < 1) {
+            throw new \InvalidArgumentException('minNbChars must be at least 1');
+        }
+
         if ($maxNbChars < 10) {
             throw new \InvalidArgumentException('maxNbChars must be at least 10');
         }
@@ -40,11 +69,39 @@ abstract class Text extends Base
             throw new \InvalidArgumentException('indexSize must be at most 5');
         }
 
+        if ($minNbChars >= $maxNbChars) {
+            throw new \InvalidArgumentException('minNbChars must be smaller than maxNbChars');
+        }
+
         $words = $this->getConsecutiveWords($indexSize);
-        $result = array();
+        $iterations = 0;
+
+        do {
+            ++$iterations;
+
+            if ($iterations >= 100) {
+                throw new \OverflowException(sprintf('Maximum retries of %d reached without finding a valid real text', $iterations));
+            }
+
+            $result = $this->generateText($maxNbChars, $words);
+        } while (static::strlen($result) <= $minNbChars);
+
+        return $result;
+    }
+
+    /**
+     * @param int   $maxNbChars
+     * @param array $words
+     *
+     * @return string
+     */
+    protected function generateText($maxNbChars, $words)
+    {
+        $result = [];
         $resultLength = 0;
         // take a random starting point
         $next = static::randomKey($words);
+
         while ($resultLength < $maxNbChars && isset($words[$next])) {
             // fetch a random word to append
             $word = static::randomElement($words[$next]);
@@ -78,16 +135,18 @@ abstract class Text extends Base
     {
         if (!isset($this->consecutiveWords[$indexSize])) {
             $parts = $this->getExplodedText();
-            $words = array();
-            $index = array();
-            for ($i = 0; $i < $indexSize; $i++) {
+            $words = [];
+            $index = [];
+
+            for ($i = 0; $i < $indexSize; ++$i) {
                 $index[] = array_shift($parts);
             }
 
-            for ($i = 0, $count = count($parts); $i < $count; $i++) {
+            for ($i = 0, $count = count($parts); $i < $count; ++$i) {
                 $stringIndex = static::implode($index);
+
                 if (!isset($words[$stringIndex])) {
-                    $words[$stringIndex] = array();
+                    $words[$stringIndex] = [];
                 }
                 $word = $parts[$i];
                 $words[$stringIndex][] = $word;
@@ -128,14 +187,16 @@ abstract class Text extends Base
     protected static function validStart($word)
     {
         $isValid = true;
+
         if (static::$textStartsWithUppercase) {
             $isValid = preg_match('/^\p{Lu}/u', $word);
         }
+
         return $isValid;
     }
 
     protected static function appendEnd($text)
     {
-        return preg_replace("/([ ,-:;\x{2013}\x{2014}]+$)/us", '', $text).'.';
+        return preg_replace("/([ ,-:;\x{2013}\x{2014}]+$)/us", '', $text) . '.';
     }
 }

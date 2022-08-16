@@ -231,6 +231,7 @@ class Validator implements ValidatorContract
         'Different',
         'ExcludeIf',
         'ExcludeUnless',
+        'ExcludeWith',
         'ExcludeWithout',
         'Gt',
         'Gte',
@@ -257,7 +258,7 @@ class Validator implements ValidatorContract
      *
      * @var string[]
      */
-    protected $excludeRules = ['Exclude', 'ExcludeIf', 'ExcludeUnless', 'ExcludeWithout'];
+    protected $excludeRules = ['Exclude', 'ExcludeIf', 'ExcludeUnless', 'ExcludeWith', 'ExcludeWithout'];
 
     /**
      * The size related validation rules.
@@ -380,9 +381,7 @@ class Validator implements ValidatorContract
      */
     public function after($callback)
     {
-        $this->after[] = function () use ($callback) {
-            return $callback($this);
-        };
+        $this->after[] = fn () => $callback($this);
 
         return $this;
     }
@@ -667,7 +666,6 @@ class Validator implements ValidatorContract
      * Replace each field parameter which has an escaped dot with the dot placeholder.
      *
      * @param  array  $parameters
-     * @param  array  $keys
      * @return array
      */
     protected function replaceDotInParameters(array $parameters)
@@ -814,13 +812,15 @@ class Validator implements ValidatorContract
         if (! $rule->passes($attribute, $value)) {
             $this->failedRules[$attribute][get_class($rule)] = [];
 
-            $messages = $rule->message();
+            $messages = $this->getFromLocalArray($attribute, get_class($rule)) ?? $rule->message();
 
             $messages = $messages ? (array) $messages : [get_class($rule)];
 
-            foreach ($messages as $message) {
-                $this->messages->add($attribute, $this->makeReplacements(
-                    $message, $attribute, get_class($rule), []
+            foreach ($messages as $key => $message) {
+                $key = is_string($key) ? $key : $attribute;
+
+                $this->messages->add($key, $this->makeReplacements(
+                    $message, $key, get_class($rule), []
                 ));
             }
         }
@@ -1151,7 +1151,7 @@ class Validator implements ValidatorContract
             $this->implicitAttributes = array_merge($response->implicitAttributes, $this->implicitAttributes);
 
             foreach ($response->rules as $ruleKey => $ruleValue) {
-                if ($callback($payload, $this->dataForSometimesIteration($ruleKey, ! Str::endsWith($key, '.*')))) {
+                if ($callback($payload, $this->dataForSometimesIteration($ruleKey, ! str_ends_with($key, '.*')))) {
                     $this->addRules([$ruleKey => $ruleValue]);
                 }
             }

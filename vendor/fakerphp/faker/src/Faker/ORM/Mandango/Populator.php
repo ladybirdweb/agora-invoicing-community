@@ -12,13 +12,9 @@ class Populator
 {
     protected $generator;
     protected $mandango;
-    protected $entities = array();
-    protected $quantities = array();
+    protected $entities = [];
+    protected $quantities = [];
 
-    /**
-     * @param \Faker\Generator $generator
-     * @param Mandango $mandango
-     */
     public function __construct(\Faker\Generator $generator, Mandango $mandango)
     {
         $this->generator = $generator;
@@ -31,12 +27,13 @@ class Populator
      * @param mixed $entity A Propel ActiveRecord classname, or a \Faker\ORM\Propel\EntityPopulator instance
      * @param int   $number The number of entities to populate
      */
-    public function addEntity($entity, $number, $customColumnFormatters = array())
+    public function addEntity($entity, $number, $customColumnFormatters = [])
     {
         if (!$entity instanceof \Faker\ORM\Mandango\EntityPopulator) {
             $entity = new \Faker\ORM\Mandango\EntityPopulator($entity);
         }
         $entity->setColumnFormatters($entity->guessColumnFormatters($this->generator, $this->mandango));
+
         if ($customColumnFormatters) {
             $entity->mergeColumnFormattersWith($customColumnFormatters);
         }
@@ -52,10 +49,11 @@ class Populator
      */
     public function execute()
     {
-        $insertedEntities = array();
+        $insertedEntities = [];
+
         foreach ($this->quantities as $class => $number) {
-            for ($i=0; $i < $number; $i++) {
-                $insertedEntities[$class][]= $this->entities[$class]->execute($this->mandango, $insertedEntities);
+            for ($i = 0; $i < $number; ++$i) {
+                $insertedEntities[$class][] = $this->entities[$class]->execute($this->mandango, $insertedEntities);
             }
         }
         $this->mandango->flush();

@@ -26,5 +26,10 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->alias('bugsnag.logger', \Illuminate\Contracts\Logging\Log::class);
         $this->app->alias('bugsnag.logger', \Psr\Log\LoggerInterface::class);
+        
+       
+       
+            $this->app->bind('MailerInterface',  \Symfony\Component\Mailer\MailerInterface::class);
+
     }
 }

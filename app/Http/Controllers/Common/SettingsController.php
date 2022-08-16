@@ -16,6 +16,7 @@ use File;
 use GrahamCampbell\Markdown\Facades\Markdown;
 use Illuminate\Http\Request;
 use Spatie\Activitylog\Models\Activity;
+use Yajra\DataTables\DataTables;
 
 class SettingsController extends BaseSettingsController
 {
@@ -404,7 +405,7 @@ class SettingsController extends BaseSettingsController
         try {
             $email_log = \DB::table('email_log')->orderBy('date', 'desc')->take(50);
 
-            return\DataTables::of($email_log)
+            return DataTables::of($email_log)
             ->setTotalRecords($email_log->count())
              ->addColumn('checkbox', function ($model) {
                  return "<input type='checkbox' class='email' value=".$model->id.' name=select[] id=check>';

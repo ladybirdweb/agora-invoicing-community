@@ -24,7 +24,7 @@ class Text extends \Faker\Provider\Text
      * @licence Creative Commons Attribution-ShareAlike https://creativecommons.org/licenses/by-sa/3.0/deed.el
      *
      * @see     https://wikimediafoundation.org/wiki/Terms_of_Use/
-     * @link    https://el.wikisource.org/wiki/%CE%A4%CF%81%CE%B5%CE%BB%CE%B1%CE%BD%CF%84%CF%8E%CE%BD%CE%B7%CF%82
+     * @see    https://el.wikisource.org/wiki/%CE%A4%CF%81%CE%B5%CE%BB%CE%B1%CE%BD%CF%84%CF%8E%CE%BD%CE%B7%CF%82
      *
      * @var string
      */
@@ -2255,11 +2255,12 @@ class Text extends \Faker\Provider\Text
 - Θα ησυχάσετε, θηρία; Ή να φωνάξω τον μπαμπά να του πω πως έκανες μια τούμπα κι έσπασες το κρεβάτι; Θαρρείς πως δεν το κατάλαβε η κερα-Ρήνη, και ας μη μίλησε; Αντώνη, Τρελαντώνη, Ζουρλαντώνη, Λωλαντώνη, καλά σε λέγει η κερα-Ρήνη! Θα μας τρελάνεις όλους! Κοιμήσου αμέσως!
 Όλα τ' αδέλφια ζάρωσαν. Γύρισε και ο Αντώνης από τον τοίχο κι έκλεισε τα μάτια του. Αυτή η κερα-Ρήνη! Τίποτα ωστόσο δεν της ξέφευγε! Μα θα της ξεφύγει αυτός τώρα που θα πάγει σχολείο! Αχ! σαν πάγει σχολείο... Θα είναι πια με αγόρια... όλο με αγόρια... θα παίζουν πάλι σκλαβάκια... θα πολεμούν όλη μέρα... θα σπάζουν κεφάλια... θα παλεύουν, θα τραβούν σπαθιές, τουφεκιές, κανονιές... θα... θα... Και τον πήρε ο ύπνος με χίλια όνειρα ηρωικά.
 EOT;
+
     /*
     *** START: FULL LICENSE ***
         Creative Commons Legal Code
         Attribution-ShareAlike 3.0 Unported
-    
+
     CREATIVE COMMONS CORPORATION IS NOT A LAW FIRM AND DOES NOT PROVIDE
     LEGAL SERVICES. DISTRIBUTION OF THIS LICENSE DOES NOT CREATE AN
     ATTORNEY-CLIENT RELATIONSHIP. CREATIVE COMMONS PROVIDES THIS

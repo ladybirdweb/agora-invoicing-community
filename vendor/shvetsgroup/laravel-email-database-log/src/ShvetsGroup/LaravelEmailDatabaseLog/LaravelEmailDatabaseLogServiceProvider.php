@@ -3,7 +3,6 @@
 namespace ShvetsGroup\LaravelEmailDatabaseLog;
 
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Mail\Events\MessageSending;
 
 class LaravelEmailDatabaseLogServiceProvider extends ServiceProvider
 {

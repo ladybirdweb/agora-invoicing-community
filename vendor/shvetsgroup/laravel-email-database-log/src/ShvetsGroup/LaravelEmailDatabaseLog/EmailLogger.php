@@ -2,58 +2,65 @@
 
 namespace ShvetsGroup\LaravelEmailDatabaseLog;
 
+use Carbon\Carbon;
+use Symfony\Component\Mime\Email;
 use Illuminate\Support\Facades\DB;
+use Symfony\Component\Mime\Part\DataPart;
 use Illuminate\Mail\Events\MessageSending;
 
 class EmailLogger
 {
-    /**
-     * Handle the event.
-     *
-     * @param MessageSending $event
-     */
-    public function handle(MessageSending $event)
-    {
-        $message = $event->message;
+	/**
+	 * Handle the actual logging.
+	 *
+	 * @param MessageSending $event
+	 * @return void
+	 */
+	public function handle(MessageSending $event): void
+	{
+		$message = $event->message;
 
-        DB::table('email_log')->insert([
-            'date' => date('Y-m-d H:i:s'),
-            'from' => $this->formatAddressField($message, 'From'),
-            'to' => $this->formatAddressField($message, 'To'),
-            'cc' => $this->formatAddressField($message, 'Cc'),
-            'bcc' => $this->formatAddressField($message, 'Bcc'),
-            'subject' => $message->getSubject(),
-            'body' => $message->getBody(),
-            'headers' => (string)$message->getHeaders(),
-            'attachments' => $message->getChildren() ? implode("\n\n", $message->getChildren()) : null,
-        ]);
-    }
+		DB::table('email_log')->insert([
+			'date' => Carbon::now()->format('Y-m-d H:i:s'),
+			'from' => $this->formatAddressField($message, 'From'),
+			'to' => $this->formatAddressField($message, 'To'),
+			'cc' => $this->formatAddressField($message, 'Cc'),
+			'bcc' => $this->formatAddressField($message, 'Bcc'),
+			'subject' => $message->getSubject(),
+			'body' => $message->getBody()->bodyToString(),
+			'headers' => $message->getHeaders()->toString(),
+			'attachments' => $this->saveAttachments($message),
+		]);
+	}
 
-    /**
-     * Format address strings for sender, to, cc, bcc.
-     *
-     * @param $message
-     * @param $field
-     * @return null|string
-     */
-    function formatAddressField($message, $field)
-    {
-        $headers = $message->getHeaders();
+	/**
+	 * Format address strings for sender, to, cc, bcc.
+	 *
+	 * @param Email $message
+	 * @param string $field
+	 * @return null|string
+	 */
+	function formatAddressField(Email $message, string $field): ?string
+	{
+		$headers = $message->getHeaders();
 
-        if (!$headers->has($field)) {
-            return null;
-        }
+		return $headers->get($field)?->getBodyAsString();
+	}
 
-        $mailboxes = $headers->get($field)->getFieldBodyModel();
+	/**
+	 * Collect all attachments and format them as strings.
+	 *
+	 * @param Email $message
+	 * @return string|null
+	 */
+	protected function saveAttachments(Email $message): ?string
+	{
+		if (empty($message->getAttachments())) {
+			return null;
+		}
 
-        $strings = [];
-        foreach ($mailboxes as $email => $name) {
-            $mailboxStr = $email;
-            if (null !== $name) {
-                $mailboxStr = $name . ' <' . $mailboxStr . '>';
-            }
-            $strings[] = $mailboxStr;
-        }
-        return implode(', ', $strings);
-    }
+		return collect($message->getAttachments())
+			->map(fn(DataPart $part) => $part->toString())
+			->implode("\n\n");
+	}
 }

@@ -6,7 +6,6 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'thomaswelton\\GravatarLib\\' => array($vendorDir . '/thomaswelton/gravatarlib'),
     'ShvetsGroup\\LaravelEmailDatabaseLog\\' => array($vendorDir . '/shvetsgroup/laravel-email-database-log/src'),
     'Mockery' => array($vendorDir . '/mockery/mockery/library'),
     'HTMLPurifier' => array($vendorDir . '/ezyang/htmlpurifier/library'),

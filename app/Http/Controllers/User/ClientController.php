@@ -15,6 +15,11 @@ use App\Traits\PaymentsAndInvoices;
 use App\User;
 use DB;
 use Illuminate\Http\Request;
+use Yajra\DataTables\DataTables;
+
+
+
+
 
 class ClientController extends AdvanceSearchController
 {
@@ -75,7 +80,7 @@ class ClientController extends AdvanceSearchController
     {
         $baseQuery = $this->getBaseQueryForUserSearch($request);
 
-        return\DataTables::of($baseQuery)
+        return DataTables::of($baseQuery)
                         ->addColumn('checkbox', function ($model) {
                             $isAccountManager = User::where('account_manager', $model->id)->get();
                             $isSalesManager = User::where('manager', $model->id)->get();
@@ -244,6 +249,7 @@ class ClientController extends AdvanceSearchController
 
             $user->save();
             if (emailSendingStatus()) {
+                
                 $this->sendWelcomeMail($user);
             }
             $mailchimpStatus = StatusSetting::first()->value('mailchimp_status');
@@ -458,11 +464,13 @@ class ClientController extends AdvanceSearchController
 
     public function sendWelcomeMail($user)
     {
+        
         $settings = new \App\Model\Common\Setting();
         $setting = $settings->where('id', 1)->first();
         $from = $setting->email;
         $to = $user->email;
         if (! $user->active) {
+            
             $activate_model = new AccountActivate();
             $str = str_random(40);
             $activate = $activate_model->create(['email' => $user->email, 'token' => $str]);
@@ -488,7 +496,9 @@ class ClientController extends AdvanceSearchController
             $mail = new \App\Http\Controllers\Common\PhpMailController();
             $mail->sendEmail($from, $to, $data, $subject, $replace, $type);
         } else {
+            
             $loginData = "You have been successfully registered. Your login details are:<br>Email:$user->email<br> Password:demopass";
+            
 
             $mail = new \App\Http\Controllers\Common\PhpMailController();
             $mail->sendEmail($from, $to, $loginData, 'Login details ');

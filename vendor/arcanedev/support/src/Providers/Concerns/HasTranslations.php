@@ -17,29 +17,33 @@ trait HasTranslations
      */
 
     /**
-     * Get the translations path.
-     *
-     * @return string
+     * Get the translations' folder name.
+     */
+    protected function getTranslationsFolderName(): string
+    {
+        return 'translations';
+    }
+
+    /**
+     * Get the translations' path.
      */
     protected function getTranslationsPath(): string
     {
-        return $this->getBasePath().DIRECTORY_SEPARATOR.'translations';
+        return $this->getBasePath().DIRECTORY_SEPARATOR.$this->getTranslationsFolderName();
     }
 
     /**
      * Get the destination views path.
-     *
-     * @return string
      */
     protected function getTranslationsDestinationPath(): string
     {
-        return $this->app['path.lang'].DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.$this->getPackageName();
+        return $this->app->langPath(
+            'vendor'.DIRECTORY_SEPARATOR.$this->getPackageName()
+        );
     }
 
     /**
      * Publish the translations.
-     *
-     * @param  string|null  $path
      */
     protected function publishTranslations(?string $path = null): void
     {

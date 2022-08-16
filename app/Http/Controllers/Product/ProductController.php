@@ -25,6 +25,7 @@ namespace App\Http\Controllers\Product;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Input;
     use Spatie\Activitylog\Models\Activity;
+    use Yajra\DataTables\DataTables;
 
     // use Input;
 
@@ -123,7 +124,7 @@ class ProductController extends BaseProductController
         try {
             $new_product = Product::select('id', 'name', 'type', 'image', 'group', 'image')->get();
 
-            return\DataTables::of($new_product)
+            return DataTables::of($new_product)
 
                             ->addColumn('checkbox', function ($model) {
                                 return "<input type='checkbox' class='product_checkbox' 

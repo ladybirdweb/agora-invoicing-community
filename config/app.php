@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Facade;
 
+
 return [
 
     /*
@@ -205,7 +206,6 @@ return [
 
         Yajra\DataTables\HtmlServiceProvider::class,
         Yajra\DataTables\DataTablesServiceProvider::class,
-        GrahamCampbell\Markdown\MarkdownServiceProvider::class,
         Spatie\Activitylog\ActivitylogServiceProvider::class,
         \Torann\Currency\CurrencyServiceProvider::class,
         Devio\Pipedrive\PipedriveServiceProvider::class,
@@ -214,6 +214,10 @@ return [
         PragmaRX\Google2FALaravel\ServiceProvider::class,
         Darryldecode\Cart\CartServiceProvider::class,
         // Voerro\Laravel\VisitorTracker\VisitorTrackerServiceProvider::class,
+        Creativeorange\Gravatar\GravatarServiceProvider::class,
+       
+
+
 
     ],
 
@@ -234,17 +238,17 @@ return [
         'Cart' => Darryldecode\Cart\Facades\CartFacade::class,
         'Currency' => \Torann\Currency\Facades\Currency::class,
         'DataTables' => Yajra\DataTables\Facades\DataTables::class,
-        'Datatable' => 'Chumper\Datatable\Facades\DatatableFacade',
         'Form' => Collective\Html\FormFacade::class,
         'GeoIP' => \Torann\GeoIP\Facades\GeoIP::class,
         'Google2FA' => PragmaRX\Google2FALaravel\Facade::class,
         'HTML' => Collective\Html\HtmlFacade::class,
         'Input' => Illuminate\Support\Facades\Input::class,
-        'Markdown' => GrahamCampbell\Markdown\Facades\Markdown::class,
         'PDF' => Barryvdh\DomPDF\Facade::class,
         'Pipedrive' => Devio\Pipedrive\PipedriveFacade::class,
         'Redis' => Illuminate\Support\Facades\Redis::class,
         'Stripe' => Cartalyst\Stripe\Laravel\Facades\Stripe::class,
+        'Gravatar' => Creativeorange\Gravatar\Facades\Gravatar::class,
+
     ])->toArray(),
 
 ];

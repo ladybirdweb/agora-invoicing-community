@@ -2,6 +2,7 @@
 
 namespace Illuminate\Console;
 
+use Illuminate\Console\View\Components\Factory;
 use Illuminate\Support\Traits\Macroable;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -111,11 +112,13 @@ class Command extends SymfonyCommand
      * @param  \Symfony\Component\Console\Output\OutputInterface  $output
      * @return int
      */
-    public function run(InputInterface $input, OutputInterface $output)
+    public function run(InputInterface $input, OutputInterface $output): int
     {
         $this->output = $this->laravel->make(
             OutputStyle::class, ['input' => $input, 'output' => $output]
         );
+
+        $this->components = $this->laravel->make(Factory::class, ['output' => $this->output]);
 
         return parent::run(
             $this->input = $input, $this->output
@@ -166,17 +169,15 @@ class Command extends SymfonyCommand
      *
      * @return bool
      */
-    public function isHidden()
+    public function isHidden(): bool
     {
         return $this->hidden;
     }
 
     /**
      * {@inheritdoc}
-     *
-     * @return static
      */
-    public function setHidden(bool $hidden)
+    public function setHidden(bool $hidden = true): static
     {
         parent::setHidden($this->hidden = $hidden);
 

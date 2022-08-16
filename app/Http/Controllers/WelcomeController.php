@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Model\Common\Country;
 use Illuminate\Http\Request;
+use Yajra\DataTables\DataTables;
+
 
 class WelcomeController extends Controller
 {
@@ -54,7 +56,7 @@ class WelcomeController extends Controller
                 ->get();
         $users = $users->sortBy('country');
 
-        return\DataTables::of($users)
+        return DataTables::of($users)
                             ->addColumn('country', function ($model) {
                                 return ucfirst($model->country);
                             })

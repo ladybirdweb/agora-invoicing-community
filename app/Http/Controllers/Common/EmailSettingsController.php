@@ -5,6 +5,13 @@ namespace App\Http\Controllers\Common;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Email\EmailSettingRequest;
 use App\Model\Common\Setting;
+use Symfony\Component\Mime\Email;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Component\Mailer\Transport\Smtp\ESmtpTransport;
+use Swift_SmtpTransport;
+
+
+
 
 class EmailSettingsController extends Controller
 {
@@ -78,7 +85,7 @@ class EmailSettingsController extends Controller
     {
         try {
             $this->emailConfig = $emailConfig;
-
+            $this->emailConfig;
             //if sending protocol is mail, no connection check is required
             if ($this->emailConfig->driver == 'mail') {
                 return $this->checkMailConnection();
@@ -87,7 +94,7 @@ class EmailSettingsController extends Controller
             //set outgoing mail configuation to the passed one
             setServiceConfig($this->emailConfig);
 
-            if ($this->emailConfig->driver == 'smtp') {
+          if ($this->emailConfig->driver == 'smtp') {
                 return $this->checkSMTPConnection();
             }
 
@@ -150,15 +157,17 @@ class EmailSettingsController extends Controller
             $https['ssl']['verify_peer'] = false;
             $https['ssl']['verify_peer_name'] = false;
 
-            $transport = new \Swift_SmtpTransport(\Config::get('mail.host'), \Config::get('mail.port'), \Config::get('mail.security'));
+            $transport = new  Swift_SmtpTransport(\Config::get('mail.host'), \Config::get('mail.port'), \Config::get('mail.security'));
             $transport->setUsername(\Config::get('mail.username'));
             $transport->setPassword(\Config::get('mail.password'));
             $transport->setStreamOptions($https);
             $mailer = new \Swift_Mailer($transport);
+           
             $mailer->getTransport()->start();
 
             return true;
-        } catch (\Swift_TransportException $e) {
+        } catch (\TransportExceptionInterface $e) {
+            
             $this->error = $e;
 
             return false;

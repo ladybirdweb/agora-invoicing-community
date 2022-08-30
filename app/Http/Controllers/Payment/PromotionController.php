@@ -62,7 +62,7 @@ class PromotionController extends BasePromotionController
 
     public function getPromotion()
     {
-        $new_promotion = $this->promotion->select('code', 'type', 'id')->get();
+        $new_promotion = $this->promotion->select('code', 'type', 'id');
 
         return DataTables::of($new_promotion)
                             ->addColumn('checkbox', function ($model) {

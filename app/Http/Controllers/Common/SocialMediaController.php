@@ -34,7 +34,7 @@ class SocialMediaController extends Controller
     public function getSocials()
     {
         try {
-            $social = $this->social->get();
+            $social = $this->social->select('id', 'name', 'link');
 
             return \DataTables::of($social)
                             ->addColumn('#', function ($model) {

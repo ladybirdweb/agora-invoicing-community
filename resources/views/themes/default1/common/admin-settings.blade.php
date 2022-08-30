@@ -310,7 +310,7 @@ Settings
                 <div class="col-md-2 col-sm-6">
                     <div class="settingiconblue">
                         <div class="settingdivblue">
-                            <a href="{{url('templates')}}">
+                            <a href="{{url('template')}}">
                                 <span class="fa-stack fa-2x">
                                     <i class="fas fa-file-alt fa-stack-1x"></i>
                                 </span>

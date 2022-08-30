@@ -31,7 +31,7 @@ class ChatScriptController extends Controller
     public function getScript()
     {
         try {
-            return \DataTables::of($this->script->get())
+            return \DataTables::of($this->script->select('id', 'name'))
                         ->addColumn('checkbox', function ($model) {
                             return "<input type='checkbox' class='chat_checkbox' 
                             value=".$model->id.' name=select[] id=check>';

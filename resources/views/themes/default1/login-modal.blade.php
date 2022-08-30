@@ -1209,6 +1209,7 @@ $country = findCountryByGeoip($location['iso_code']);
                    
                 },
                   success: function (response) {
+                    
                     // window.history.pushState(response.type, "TitleTest", "thankyou");
 
                     $("#register").attr('disabled',false);
@@ -1246,6 +1247,7 @@ $country = findCountryByGeoip($location['iso_code']);
              
         
                 error: function (data) {
+                   
 
                     $("#register").attr('disabled',false);
                     // location.reload();

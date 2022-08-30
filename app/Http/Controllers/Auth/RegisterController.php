@@ -12,8 +12,27 @@ use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use Mail;
+use mail;
+use Symfony\Bridge\Twig\Mime\BodyRenderer;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\Mailer\EventListener\MessageListener;
+use Symfony\Component\Mailer\Mailer;
+use Symfony\Component\Mailer\Transport;
+use Twig\Environment;
+use Twig\Loader\FilesystemLoader;
+use Symfony\Component\Mime\Email;
+use  App\Http\Controllers\Common\CommonMailer;
 use Symfony\Component\Mailer\MailerInterface;
+use DB;
+
+
+
+
+
+
+
+
 
 
 class RegisterController extends Controller
@@ -42,12 +61,12 @@ class RegisterController extends Controller
      *
      * @return void
      */
-    public function __construct()
+        public function __construct()
     {
         $this->middleware('guest');
     }
 
-    public function postRegister(ProfileRequest $request, User $user, MailerInterface $mailer)
+   public function postRegister(ProfileRequest $request, User $user)
     {
         
         $apiKeys = StatusSetting::value('recaptcha_status');
@@ -57,102 +76,170 @@ class RegisterController extends Controller
         ], [
             'g-recaptcha-response-1.required' => 'Robot Verification Failed. Please Try Again.',
         ]);
+        
+          //check in the settings
+            $settings = new \App\Model\Common\Setting();
+            $settings = $settings->where('id', 1)->first();
+          
+          
+            
+
+            //template
+            $template = new \App\Model\Common\Template();
+            $temp_id = $settings->where('id', 1)->first()->password_mail;
+            $template = $template->where('id', $temp_id)->first();
+
+            
+            $mail = new \App\Http\Controllers\Common\PhpMailController();
+            $mailer = $mail->setMailConfig($settings);
+               
+            $html = $template->data;
         try {
+          
+          
             $location = getLocation();
 
             $state_code = $location['iso_code'].'-'.$location['state'];
 
             $state = getStateByCode($state_code);
-            $user->state = $state['id'];
             $password = Str::random(20);
-            $user->password = \Hash::make($password);
-            $user->town = $location['city'];
-            $user->profile_pic = '';
-            $user->active = 0;
-            $user->mobile_verified = 0;
-            $user->country = $request->input('country');
-            $user->mobile = ltrim($request->input('mobile'), '0');
-            $user->mobile_code = $request->input('mobile_code');
-            $user->role = 'user';
-            $user->company = strip_tags($request->input('company'));
-            $user->address = strip_tags($request->input('address'));
-            $user->email = strip_tags($request->input('email'));
-            $user->first_name = strip_tags($request->input('first_name'));
-            $user->last_name = strip_tags($request->input('last_name'));
-            $user->user_name = strip_tags($request->input('email'));
-            $user->manager = $user->assignSalesManager();
-            $user->ip = $location['ip'];
-            $user->timezone_id = getTimezoneByName($location['timezone']);
-            $user->referrer = Referer::get(); // 'google.com'
             
-            // $user->save();
-        //   check in the settings
-            // $settings = new \App\Model\Common\Setting();
-            // $settings = $settings->where('id', 1)->first();
-            
+         $user = 
+         [
 
-            //template
-            // $template = new \App\Model\Common\Template();
-            // $temp_id = $settings->where('id', 1)->first()->password_mail;
-            // $template = $template->where('id', $temp_id)->first();
-            // $from = $settings->email;
-            // $to = $user->email;
-            // $subject = $template->name;
-            // $data = $template->data;
-            // $replace = ['name' => $user->first_name.' '.$user->last_name,
-            //     'username' => $user->email, 'password' => $password, ];
-            // $type = '';
-
-            // if ($template) {
-            //     $type_id = $template->type;
-            //     $temp_type = new \App\Model\Common\TemplateType();
-            //     $type = $temp_type->where('id', $type_id)->first()->name;
-            // }
-            // $mail = new \App\Http\Controllers\Common\PhpMailController();
-            // $mail->sendEmail($from, $to, $data, $subject, $replace, $type);
+             'state' => $state['id'],
+             'town' => $location['city'],
+             'password' => \Hash::make($password),
+             'profile_pic' => '',
+             'active' => 0,
+             'mobile_verified' => 0,
+             'country' => $request->input('country'),
+             'mobile' => ltrim($request->input('mobile'), '0'),
+             'mobile_code' =>  $request->input('mobile_code'),
+             'role' => 'user',
+             'company' => strip_tags($request->input('company')),
+             'address' =>  strip_tags($request->input('address')),
+             'email' => strip_tags($request->input('email')),
+             'user_name' => strip_tags($request->input('email')),
+             'first_name' => strip_tags($request->input('first_name')),
+             'last_name' => strip_tags($request->input('last_name')),
+             'manager' => $user->assignSalesManager(),
+             'ip' => $location['ip'],
+             'timezone_id' => getTimezoneByName($location['timezone']),
+             'referrer' => Referer::get()
+             
+             
+             ];
+             
+             $userInput = User::insertGetId($user);
             
-              $data = array('name'=>"sowmi");
-   
-      Mail::send(['text'=>'mail'], $data, function($message) {
-         $message->to('sowmisasasa@gmail.com', 'demo')->subject
-            ('Testing Mail');
-         $message->from('sowmisowmi99@gmail.com','sowmi');
-      });
-      echo "Basic Email Sent. Check your inbox.";
-           
         
+                
+               
+                $email = (new Email())
+                    ->from($settings->email)
+                    ->to($user['email'])
+                     ->subject($template->name)
+                     ->html($mail->mailTemplate($template->data,$templatevariables=['name' => $user['first_name'].' '.$user['last_name'],
+                    'username' => $user['email'], 'password' => $password,]));
+                   
+                    
+                    $mailer->send($email);
+                 $mail->email_log_success($settings->email,$user['email'],$template->name,$html);
+            
+            
+             $emailMobileStatusResponse = $this->getEmailMobileStatusResponse($user,$userInput);
 
-           $emailMobileStatusResponse = $this->getEmailMobileStatusResponse($user);
-
-            activity()->log('User <strong>'.$user->first_name.' '.$user->last_name.'</strong> was created');
+            activity()->log('User <strong>'.$user['first_name'].' '.$user['last_name'].'</strong> was created');
 
             return response()->json($emailMobileStatusResponse);
-        } catch (\Exception $ex) {
-            dd($ex);
+        }      catch (\Exception $ex) {
+           
+            $mail->email_log_fail($settings->email,$user['email'],$template->name,$html);
             app('log')->error($ex->getMessage());
             $result = [$ex->getMessage()];
 
             return response()->json($result);
         }
     }
+    
+ 
 
-    protected function getEmailMobileStatusResponse($user)
+    
+    
+    
+    public function mailTemplate($contents,$templatevariables)
     {
+        
+      
+       $variables = $this->getVariableValues($contents,$templatevariables);
+      
+       $messageBody = $contents;
+      
+       foreach($variables as $v =>$k)
+       {
+          
+           
+           $messageBody = str_replace($v,$k,$messageBody);
+          
+           
+       }
+       
+       return $messageBody;
+      
+      
+       
+    }
+    
+    public function getVariableValues($contents,$templatevariables)
+    {
+        
+     
+        $variables = [];
+        $name = $this->checkElement('name',$templatevariables);
+        $email = $this->checkElement('username',$templatevariables);
+        $password = $this->checkElement('password',$templatevariables);
+      
+        $variables['{$name}'] = $name;
+        $variables['{$username}'] = $email;
+        $variables['{$password}'] = $password;
+
+      
+       
+        return $variables;
+        
+    }
+    
+      public function checkElement($element, $array)
+    {
+        $value = "";
+        if (is_array($array)) {
+            if (key_exists($element, $array)) {
+                $value = $array[$element];
+            }
+        }
+        return $value;
+    }
+
+
+    protected function getEmailMobileStatusResponse($user,$userId)
+    {
+       
         $emailMobileSetting = StatusSetting::select('emailverification_status', 'msg91_status')->first();
         if ($emailMobileSetting->emailverification_status == 0 && $emailMobileSetting->msg91_status == 1) {
-            $user->mobile_verified = 0;
-            $user->active = 1;
-            $response = ['type' => 'success', 'user_id' => $user->id, 'message' => 'Your Submission has been received successfully. Verify your Mobile to log into the Website.'];
+            $user['mobile_verified'] = 0;
+            $user['active'] = 1;
+            $response = ['type' => 'success', 'user_id' => $userId, 'message' => 'Your Submission has been received successfully. Verify your Mobile to log into the Website.'];
         } elseif ($emailMobileSetting->emailverification_status == 1 && $emailMobileSetting->msg91_status == 0) {
-            $user->mobile_verified = 1;
-            $user->active = 0;
-            $response = ['type' => 'success', 'user_id' => $user->id, 'message' => 'Your Submission has been received successfully. Verify your Email to log into the Website.'];
+            $user['mobile_verified'] = 1;
+            $user['active'] = 0;
+            $response = ['type' => 'success', 'user_id' => $userId, 'message' => 'Your Submission has been received successfully. Verify your Email to log into the Website.'];
         } elseif ($emailMobileSetting->emailverification_status == 0 && $emailMobileSetting->msg91_status == 0) {
-            $user->mobile_verified = 1;
-            $user->active = 1;
-            $response = ['type' => 'success', 'user_id' => $user->id, 'message' => 'Your have been Registered Successfully.'];
+            $user['mobile_verified'] = 1;
+            $user['active'] = 1;
+            $response = ['type' => 'success', 'user_id' => $userId, 'message' => 'Your have been Registered Successfully.'];
         } else {
-            $response = ['type' => 'success', 'user_id' => $user->id, 'message' => 'Your Submission has been received successfully. Verify your Email and Mobile to log into the Website.'];
+            $response = ['type' => 'success', 'user_id' => $userId, 'message' => 'Your Submission has been received successfully. Verify your Email and Mobile to log into the Website.'];
         }
 
         return $response;

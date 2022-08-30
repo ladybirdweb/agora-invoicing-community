@@ -127,6 +127,4 @@ class Activity extends Model implements ActivityContract
     {
         return $query->where('batch_uuid', $batchUuid);
     }
-    
- 
 }

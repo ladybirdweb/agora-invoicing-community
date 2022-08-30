@@ -34,7 +34,7 @@ class LicenseSettingsController extends LicensePermissionsController
     public function getLicenseTypes()
     {
         try {
-            $allTypes = $this->licenseType->select('id', 'name')->get();
+            $allTypes = $this->licenseType->select('id', 'name');
 
             return \DataTables::of($allTypes)
             ->addColumn('checkbox', function ($model) {

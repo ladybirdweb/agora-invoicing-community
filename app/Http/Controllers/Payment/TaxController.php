@@ -73,7 +73,7 @@ class TaxController extends Controller
      */
     public function getTax()
     {
-        return \DataTables::of($this->tax->select('id', 'tax_classes_id', 'name', 'country', 'state', 'rate')->get())
+        return \DataTables::of($this->tax->select('id', 'tax_classes_id', 'name', 'country', 'state', 'rate'))
                             ->addColumn('checkbox', function ($model) {
                                 return "<input type='checkbox' class='tax_checkbox' 
                                 value=".$model->id.' name=select[] id=check>';

@@ -1,0 +1,49 @@
+{
+    "name": "graham-campbell/markdown",
+    "description": "Markdown Is A CommonMark Wrapper For Laravel",
+    "keywords": ["laravel", "framework", "markdown", "commonmark", "common mark", "Laravel Markdown", "Laravel-Markdown", "Graham Campbell", "GrahamCampbell"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Graham Campbell",
+            "email": "hello@gjcampbell.co.uk",
+            "homepage": "https://github.com/GrahamCampbell"
+        }
+    ],
+    "require": {
+        "php": "^7.4.15 || ^8.0.2",
+        "illuminate/contracts": "^8.75 || ^9.0",
+        "illuminate/filesystem": "^8.75 || ^9.0",
+        "illuminate/support": "^8.75 || ^9.0",
+        "illuminate/view": "^8.75 || ^9.0",
+        "league/commonmark": "^2.3.1"
+    },
+    "require-dev": {
+        "graham-campbell/analyzer": "^3.1",
+        "graham-campbell/testbench": "^5.7",
+        "mockery/mockery": "^1.5",
+        "phpunit/phpunit": "^9.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "GrahamCampbell\\Markdown\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "GrahamCampbell\\Tests\\Markdown\\": "tests/"
+        }
+    },
+    "config": {
+        "preferred-install": "dist"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "GrahamCampbell\\Markdown\\MarkdownServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

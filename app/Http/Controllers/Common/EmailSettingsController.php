@@ -158,6 +158,8 @@ class EmailSettingsController extends Controller
             $https['ssl']['verify_peer_name'] = false;
 
             $transport = new  Swift_SmtpTransport(\Config::get('mail.host'), \Config::get('mail.port'), \Config::get('mail.security'));
+            
+          
             $transport->setUsername(\Config::get('mail.username'));
             $transport->setPassword(\Config::get('mail.password'));
             $transport->setStreamOptions($https);

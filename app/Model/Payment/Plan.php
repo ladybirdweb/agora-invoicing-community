@@ -5,6 +5,7 @@ namespace App\Model\Payment;
 use App\BaseModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class Plan extends BaseModel
 {
@@ -61,4 +62,8 @@ class Plan extends BaseModel
         $this->planPrice()->delete();
         parent::delete();
     }
+           public function getActivitylogOptions(): LogOptions
+  {
+    return LogOptions::defaults();
+   }
 }

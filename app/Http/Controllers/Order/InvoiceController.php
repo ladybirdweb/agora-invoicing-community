@@ -285,6 +285,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
      */
     public function generateInvoice()
     {
+      
         try {
             $tax_rule = new \App\Model\Payment\TaxOption();
             $rule = $tax_rule->findOrFail(1);
@@ -304,6 +305,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 $this->createInvoiceItems($invoice->id, $cart);
             }
             if (emailSendingStatus()) {
+                
                 $this->sendMail($user_id, $invoice->id);
             }
 

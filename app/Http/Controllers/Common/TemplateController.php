@@ -30,6 +30,7 @@ class TemplateController extends Controller
     public function index()
     {
         try {
+          
             return view('themes.default1.common.template.inbox');
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -38,7 +39,7 @@ class TemplateController extends Controller
 
     public function getTemplates()
     {
-        return \DataTables::of($this->template->select('id', 'name', 'type')->get())
+        return \DataTables::of($this->template->select('id', 'name', 'type'))
                         ->addColumn('checkbox', function ($model) {
                             return "<input type='checkbox' class='template_checkbox' 
                             value=".$model->id.' name=select[] id=check>';
@@ -51,7 +52,7 @@ class TemplateController extends Controller
                             return $this->type->where('id', $model->type)->first()->name;
                         })
                         ->addColumn('action', function ($model) {
-                            return '<a href='.url('templates/'.$model->id.'/edit').
+                            return '<a href='.url('template/'.$model->id.'/edit').
                             " class='btn btn-sm btn-secondary btn-xs'".tooltip('Edit')."<i class='fa fa-edit'
                                  style='color:white;'> </i></a>";
                         })
@@ -62,6 +63,7 @@ class TemplateController extends Controller
     public function create()
     {
         try {
+            
             $controller = new ProductController();
             $url = $controller->GetMyUrl();
             $i = $this->template->orderBy('created_at', 'desc')->first()->id + 1;
@@ -94,6 +96,7 @@ class TemplateController extends Controller
     public function edit($id)
     {
         try {
+           
             $controller = new ProductController();
             $url = $controller->GetMyUrl();
 
@@ -117,7 +120,7 @@ class TemplateController extends Controller
         ]);
 
         try {
-            //dd($request);
+            
             $template = $this->template->where('id', $id)->first();
             $template->fill($request->input())->save();
 

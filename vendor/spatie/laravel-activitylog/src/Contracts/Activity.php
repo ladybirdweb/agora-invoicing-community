@@ -24,6 +24,4 @@ interface Activity
     public function scopeForEvent(Builder $query, string $event): Builder;
 
     public function scopeForSubject(Builder $query, Model $subject): Builder;
-    
-
 }

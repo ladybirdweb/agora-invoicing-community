@@ -28,8 +28,9 @@ class AppServiceProvider extends ServiceProvider
         $this->app->alias('bugsnag.logger', \Psr\Log\LoggerInterface::class);
         
        
-       
-            $this->app->bind('MailerInterface',  \Symfony\Component\Mailer\MailerInterface::class);
+       $this->app->bind('\Symfony\Component\Mailer\MailerInterface::class', 'ProviderRepository');
+
+            // $this->app->bind('\Symfony\Component\Mailer\MailerInterface::class',  'Illuminate\Foundation\ProviderRepository::class');
 
     }
 }

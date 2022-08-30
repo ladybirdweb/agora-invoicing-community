@@ -40,7 +40,7 @@ class LicensePermissionsController extends Controller
     {
         try {
             $allPermissions = $this->licensePermission->select('id', 'permissions')->get();
-            $licenseType = LicenseType::select('id', 'name')->get();
+            $licenseType = LicenseType::select('id', 'name');
 
             return \DataTables::of($licenseType)
             ->addColumn('checkbox', function ($model) {

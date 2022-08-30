@@ -275,6 +275,7 @@ class BaseOrderController extends ExtendedOrderController
     public function getMail($setting, $user, $downloadurl, $invoiceurl, $order, $product, $orderid, $myaccounturl)
     {
         try {
+            
             $templates = new \App\Model\Common\Template();
             $temp_id = $setting->order_mail;
             $template = $templates->where('id', $temp_id)->first();

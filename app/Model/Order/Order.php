@@ -8,6 +8,7 @@ use DateTimeZone;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class Order extends BaseModel
 {
@@ -163,4 +164,8 @@ class Order extends BaseModel
 
         return $link;
     }
+    public function getActivitylogOptions(): LogOptions
+  {
+    return LogOptions::defaults();
+   }
 }

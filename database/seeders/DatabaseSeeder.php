@@ -276,7 +276,7 @@ class TemplateTableSeeder extends Seeder
 <tr>
 <td style="background: #fff; border-left: 1px solid #ccc; border-top: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;"> </td>
 <td style="background: #fff; border-top: 1px solid #ccc; padding: 40px 0 10px 0; width: 560px;" align="left">
-<p>Dear {{name}}, <br /><br /> Before you can login, you must active your account. Click <a href="{{url}}">{{url}}</a> to activate your account.<br /><br /> <strong>Your Profile & Control Panel Login</strong><br /><br /> You can start exploring our feature-rich Control Panel, which will allow you to manage all your Products, buy new Products, check all your transactions and more.<br /><br /> <strong>Login Details:</strong><br /> <strong>URL: </strong><a href="{{website_url}}">{{website_url}}</a> <br /> <strong>Username:</strong> {{username}}<br /><br /> Thank You.<br /> Regards,<br /> Faveo Helpdesk</p>
+<p>Dear {$name}, <br /><br /> Before you can login, you must active your account. Click <a href="{$url}">{$url}</a> to activate your account.<br /><br /> <strong>Your Profile & Control Panel Login</strong><br /><br /> You can start exploring our feature-rich Control Panel, which will allow you to manage all your Products, buy new Products, check all your transactions and more.<br /><br /> <strong>Login Details:</strong><br /> <strong>URL: </strong><a href="{$website_url}">{$website_url}</a> <br /> <strong>Username:</strong> {$username}<br /><br /> Thank You.<br /> Regards,<br /> Faveo Helpdesk</p>
 </td>
 <td style="background: #fff; border-right: 1px solid #ccc; border-top: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;"> </td>
 </tr>
@@ -287,7 +287,7 @@ class TemplateTableSeeder extends Seeder
 </tr>
 <tr>
 <td style="background: #fff; border-left: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;"> </td>
-<td style="background: #fff; padding: 20px 0 50px 0; width: 560px;" align="left"><a style="background: #00aeef; border: 1px solid                        #0088CC; padding: 10px 20px; border-radius: 5px; font-size: 14px; font-weight: bold; color: #fff; outline: none; text-shadow: none; text-decoration: none; font-family: Arial,sans-serif;" href="{{url}}" target="_blank">Verify Email </a></td>
+<td style="background: #fff; padding: 20px 0 50px 0; width: 560px;" align="left"><a style="background: #00aeef; border: 1px solid                        #0088CC; padding: 10px 20px; border-radius: 5px; font-size: 14px; font-weight: bold; color: #fff; outline: none; text-shadow: none; text-decoration: none; font-family: Arial,sans-serif;" href="{$url}" target="_blank">Verify Email </a></td>
 <td style="background: #fff; border-right: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;"> </td>
 </tr>
 </tbody>
@@ -430,13 +430,13 @@ class TemplateTableSeeder extends Seeder
 <tr>
 <td style="background: #fff; border-left: 1px solid #ccc; border-top: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;">&nbsp;</td>
 <td style="background: #fff; border-top: 1px solid #ccc; padding: 40px 0 10px 0; width: 560px;" align="left">
-<p>Dear {{name}},<br /><br /> A request to reset password was received from your account.&nbsp; Use the link below to reset your password and login.<br /><br /> <strong>Link:</strong>&nbsp; <a href="{{url}}">{{url}}</a><br /><br /> Thank You.<br /> Regards,<br /> Faveo Helpdesk<br /><br /> <strong>IMP:</strong> If you have not initiated this request, <a href="{{contact-us}}/contact-us/">report it to us immediately</a>.<br /><br /> <em>This is an automated email, please do not reply.</em></p>
+<p>Dear {$name},<br /><br /> A request to reset password was received from your account.&nbsp; Use the link below to reset your password and login.<br /><br /> <strong>Link:</strong>&nbsp; <a href="{$url}">{$url}</a><br /><br /> Thank You.<br /> Regards,<br /> Faveo Helpdesk<br /><br /> <strong>IMP:</strong> If you have not initiated this request, <a href="{$contact-us}/contact-us/">report it to us immediately</a>.<br /><br /> <em>This is an automated email, please do not reply.</em></p>
 </td>
 <td style="background: #fff; border-right: 1px solid #ccc; border-top: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;">&nbsp;</td>
 </tr>
 <tr>
 <td style="background: #fff; border-left: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;">&nbsp;</td>
-<td style="background: #fff; padding: 20px 0 50px 0; width: 560px;" align="left"><a style="background: #00aeef; border: 1px solid                        #0088CC; padding: 10px 20px; border-radius: 5px; font-size: 14px; font-weight: bold; color: #fff; outline: none; text-shadow: none; text-decoration: none; font-family: Arial,sans-serif;" href="{{url}}" target="_blank">Reset Password </a></td>
+<td style="background: #fff; padding: 20px 0 50px 0; width: 560px;" align="left"><a style="background: #00aeef; border: 1px solid                        #0088CC; padding: 10px 20px; border-radius: 5px; font-size: 14px; font-weight: bold; color: #fff; outline: none; text-shadow: none; text-decoration: none; font-family: Arial,sans-serif;" href="{$url}" target="_blank">Reset Password </a></td>
 <td style="background: #fff; border-right: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;">&nbsp;</td>
 </tr>
 </tbody>
@@ -660,7 +660,7 @@ class TemplateTableSeeder extends Seeder
 <tbody>
 <tr>
 <td style="background: #fff; border-left: 1px solid                      #ccc; border-top: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px; border-radius: 5px                      0 0 0;">&nbsp;</td>
-<td style="background: #fff; border-top: 1px solid                      #ccc; padding: 40px 0 10px 0; width: 560px;" align="left">Dear {{name}},<br /><br />
+<td style="background: #fff; border-top: 1px solid                      #ccc; padding: 40px 0 10px 0; width: 560px;" align="left">Dear {$name},<br /><br />
 <h1 style="color: #0088cc; font-family: Arial,sans-serif; font-size: 24px; font-weight: bold; padding: 0; margin: 0;">Thanks for your order</h1>
 <br /> Your order and payment details are below.</td>
 <td style="background: #fff; border-right: 1px solid                      #ccc; border-top: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px; border-radius: 0                      5px 0 0;">&nbsp;</td>
@@ -678,7 +678,7 @@ class TemplateTableSeeder extends Seeder
 </thead>
 <tbody>
 <tr>
-<td>&nbsp;{{content}}</td>
+<td>&nbsp;{$content}</td>
 </tr>
 </tbody>
 </table>
@@ -688,7 +688,7 @@ class TemplateTableSeeder extends Seeder
 </tr>
 <tr>
 <td style="background: #fff; border-left: 1px solid                      #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;">&nbsp;</td>
-<td style="background: #fff; padding: 20px 0 50px                      0; width: 560px;" align="left"><a style="background: #00aeef; border: 1px solid                        #0088CC; padding: 10px 20px; border-radius: 5px; font-size: 14px; font-weight: bold; color: #fff; outline: none; text-shadow: none; text-decoration: none; font-family: Arial,sans-serif;" href="{{invoiceurl}}" target="_blank"> Invoice </a></td>
+<td style="background: #fff; padding: 20px 0 50px                      0; width: 560px;" align="left"><a style="background: #00aeef; border: 1px solid                        #0088CC; padding: 10px 20px; border-radius: 5px; font-size: 14px; font-weight: bold; color: #fff; outline: none; text-shadow: none; text-decoration: none; font-family: Arial,sans-serif;" href="{$invoiceurl}" target="_blank"> Invoice </a></td>
 <td style="background: #fff; border-right: 1px solid                      #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;">&nbsp;</td>
 </tr>
 </tbody>
@@ -726,21 +726,21 @@ class TemplateTableSeeder extends Seeder
 </table>
 <p>&nbsp;</p>']);
 
-        Template::create(['id' => 9, 'name' => '[Faveo Helpdesk] Your New Sales Manager', 'type' => 9, 'url' => 'null', 'data' => '<p>Dear {{name}},</p>
-<p>This is {{manager_first_name}} {{manager_last_name}}.</p>
+        Template::create(['id' => 9, 'name' => '[Faveo Helpdesk] Your New Sales Manager', 'type' => 9, 'url' => 'null', 'data' => '<p>Dear {$name},</p>
+<p>This is {$manager_first_name} {$manager_last_name}.</p>
 <p>From now onwards I will be your one point of contact. I will followup with you as well as with our team. Please feel free to get in touch with me anytime if you have any issues with regards to your account. You can also add me on Skype. My ID is mentioned in my signature. It is a pleasure to have you on board and I look forward to effective conversations with you in future.</p>
 <p>Hope you have a great day.</p>
 <p>Regards,</p>
-<p>{{manager_first_name}}{{manager_last_name}}</p>
-<p>Sales Manager,<br /> Faveo Helpdesk<br /> Mobile :{{manager_code}} {{manager_mobile}}<br /> Skype ID : {{manager_skype}}<br /> Email : {{manager_email}}</p>']);
+<p>{$manager_first_name}{$manager_last_name}</p>
+<p>Sales Manager,<br /> Faveo Helpdesk<br /> Mobile :{$manager_code} {$manager_mobile}<br /> Skype ID : {$manager_skype}<br /> Email : {$manager_email}</p>']);
 
-        Template::create(['id' => 10, 'name' => '[Faveo Helpdesk] Your New Account Manager', 'type' => 10, 'url' => 'null', 'data' => '<p>Dear {{name}},</p>
-<p>This is {{manager_first_name}} {{manager_last_name}}.</p>
+        Template::create(['id' => 10, 'name' => '[Faveo Helpdesk] Your New Account Manager', 'type' => 10, 'url' => 'null', 'data' => '<p>Dear {$name},</p>
+<p>This is {$manager_first_name} {$manager_last_name}.</p>
 <p>From now onwards I will be your one point of contact. I will followup with you as well as with our team. Please feel free to get in touch with me anytime if you have any issues with regards to your account. You can also add me on Skype. My ID is mentioned in my signature. It is a pleasure to have you on board and I look forward to effective conversations with you in future.</p>
 <p>Hope you have a great day.</p>
 <p>Regards,</p>
-<p>{{manager_first_name}}{{manager_last_name}}</p>
-<p>Account Manager,<br /> Faveo Helpdesk<br /> Mobile :{{manager_code}} {{manager_mobile}}<br /> Skype ID : {{manager_skype}}<br /> Email : {{manager_email}}</p>']);
+<p>{$manager_first_name}{$manager_last_name}</p>
+<p>Account Manager,<br /> Faveo Helpdesk<br /> Mobile :{$manager_code} {$manager_mobile}<br /> Skype ID : {$manager_skype}<br /> Email : {$manager_email}</p>']);
 
         Template::create(['id' => 11, 'name' => '[Faveo Helpdesk] Your New Password', 'type' => 11, 'url' => 'null', 'data' => '<table style="background: #f2f2f2 none repeat scroll 0% 0%; width: 700px; height: 524px;" border="0" cellspacing="0" cellpadding="0">
 <tbody>
@@ -759,7 +759,7 @@ class TemplateTableSeeder extends Seeder
 <tr style="height: 271px;">
 <td style="background: #ffffff none repeat scroll 0% 0%; border-left: 1px solid #cccccc; border-top: 1px solid #cccccc; width: 38px; padding-top: 10px; padding-bottom: 10px; height: 271px;">&nbsp;</td>
 <td style="background: #ffffff none repeat scroll 0% 0%; border-top: 1px solid #cccccc; padding: 40px 0px 10px; width: 554.75px; height: 271px;" align="left">
-<p>Dear {{name}}, <br /><br />your new password is generated sucessfully<br /><br /><strong>Login Details:</strong><br /><strong>Username:</strong> {{username}}<br /><strong>Password:</strong> {{password}}<br /><br />Thank You.<br />Regards,<br />Faveo Helpdesk</p>
+<p>Dear {$name}, <br /><br />your new password is generated sucessfully<br /><br /><strong>Login Details:</strong><br /><strong>Username:</strong> {$username}<br /><strong>Password:</strong> {$password}<br /><br />Thank You.<br />Regards,<br />Faveo Helpdesk</p>
 </td>
 <td style="background: #ffffff none repeat scroll 0% 0%; border-right: 1px solid #cccccc; border-top: 1px solid #cccccc; width: 38.25px; padding-top: 10px; padding-bottom: 10px; height: 271px;">&nbsp;</td>
 </tr>

@@ -207,6 +207,7 @@ class CheckoutController extends InfoController
 
     public function postCheckout(Request $request)
     {
+        
         $cost = $request->input('cost');
         if (Cart::getSubTotal() != 0 || $cost > 0) {
             $this->validate($request, [
@@ -216,15 +217,19 @@ class CheckoutController extends InfoController
             ]);
         }
         try {
+           
             $invoice_controller = new \App\Http\Controllers\Order\InvoiceController();
             $info_cont = new \App\Http\Controllers\Front\InfoController();
             $payment_method = $request->input('payment_gateway');
             \Session::put('payment_method', $payment_method);
             $paynow = $this->checkregularPaymentOrRenewal($request->input('invoice_id'));
+            
             $cost = $request->input('cost');
             $state = $this->getState();
             if ($paynow === false) {//When regular payment
+           
                 $invoice = $invoice_controller->generateInvoice();
+                
                 $amount = intval(Cart::getSubTotal());
                 if ($amount) {//If payment is for paid product
                     \Event::dispatch(new \App\Events\PaymentGateway(['request' => $request, 'invoice' => $invoice]));
@@ -233,6 +238,7 @@ class CheckoutController extends InfoController
                     $product = $this->product($invoice->id);
                     $items = $invoice->invoiceItem()->get();
                     $url = '';
+                   
                     $this->checkoutAction($invoice); //For free product generate invoice without payment
                     $url = view('themes.default1.front.postCheckoutTemplate', compact('invoice', 'date', 'product', 'items'))->render();
                     // }
@@ -241,6 +247,7 @@ class CheckoutController extends InfoController
                     return redirect('checkout')->with('success', $url);
                 }
             } else {//When renewal, pending payments
+          
                 $invoiceid = $request->input('invoice_id');
                 $invoice = $this->invoice->find($invoiceid);
                 $amount = intval($invoice->grand_total);
@@ -262,6 +269,7 @@ class CheckoutController extends InfoController
                 }
             }
         } catch (\Exception $ex) {
+           
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -309,6 +317,7 @@ class CheckoutController extends InfoController
 
     public function checkoutAction($invoice)
     {
+        
         try {
             //get elements from invoice
             $invoice_number = $invoice->number;

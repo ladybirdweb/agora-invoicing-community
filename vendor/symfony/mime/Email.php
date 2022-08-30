@@ -295,7 +295,8 @@ class Email extends Message
      */
     public function html($body, string $charset = 'utf-8'): static
     {
-        if (null !== $body && !\is_string($body) && !\is_resource($body)) {
+        
+       if (null !== $body && !\is_string($body) && !\is_resource($body)) {
             throw new \TypeError(sprintf('The body must be a string, a resource or null (got "%s").', get_debug_type($body)));
         }
 

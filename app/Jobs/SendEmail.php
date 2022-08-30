@@ -52,6 +52,7 @@ class SendEmail implements ShouldQueue
      */
     public function handle(PhpMailController $phpMailController)
     {
+      
         $p = $phpMailController->mailing(
            $this->from,
            $this->to,

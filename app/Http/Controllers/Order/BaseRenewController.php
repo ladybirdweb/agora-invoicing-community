@@ -93,7 +93,9 @@ class BaseRenewController extends Controller
 
     public function generateInvoice($product, $user, $orderid, $planid, $cost, $code, $agents, $currency)
     {
+      
         try {
+           
             $controller = new InvoiceController();
             if ($code != '') {
                 $product_cost = $controller->checkCode($code, $product->id, $currency);

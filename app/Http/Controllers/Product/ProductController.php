@@ -122,7 +122,7 @@ class ProductController extends BaseProductController
     public function getProducts()
     {
         try {
-            $new_product = Product::select('id', 'name', 'type', 'image', 'group', 'image')->get();
+            $new_product = Product::select('id', 'name', 'type', 'image', 'group', 'image')->take(50);
 
             return DataTables::of($new_product)
 

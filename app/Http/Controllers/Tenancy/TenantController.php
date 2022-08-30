@@ -10,6 +10,7 @@ use App\ThirdPartyApp;
 use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use Symfony\Component\Mime\Email;
 
 class TenantController extends Controller
 {
@@ -37,10 +38,11 @@ class TenantController extends Controller
                     'GET',
                     $this->cloud->cloud_central_domain.'/tenants'
                 );
+              
             $responseBody = (string) $response->getBody();
             $response = json_decode($responseBody);
-
-            return \DataTables::of($response->message)
+           
+            return \DataTables::of($response)
 
              ->addColumn('tenants', function ($model) {
                  return $model->id;
@@ -63,6 +65,7 @@ class TenantController extends Controller
              ->rawColumns(['tenants', 'domain', 'db_name', 'db_username', 'action'])
              ->make(true);
         } catch (ConnectException|Exception $e) {
+            
             return redirect()->back()->with('fails', $e->getMessage());
         }
 
@@ -98,6 +101,11 @@ class TenantController extends Controller
                 [
                     'domain.regex' => 'Special characters are not allowed in domain name',
                 ]);
+         $setting = Setting::find(1);
+         $user = \Auth::user()->email;
+         $mail = new \App\Http\Controllers\Common\PhpMailController();
+         $mailer = $mail->setMailConfig($settings);
+
         try {
             $faveoCloud = '.faveocloud.com';
             $licCode = Order::where('number', $request->input('orderNo'))->first()->serial_key;
@@ -107,7 +115,6 @@ class TenantController extends Controller
             }
             $token = str_random(32);
             \DB::table('third_party_tokens')->insert(['user_id' => \Auth::user()->id, 'token' => $token]);
-            $user = \Auth::user()->email;
             $client = new Client([]);
             $data = ['domain' => $request->input('domain').$faveoCloud, 'app_key' => $keys->app_key, 'token' => $token, 'lic_code' => $licCode, 'username' => $user, 'userId' => \Auth::user()->id, 'timestamp' => time()];
 
@@ -140,13 +147,29 @@ class TenantController extends Controller
 
                 $userData = $result->message.'.<br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password;
 
-                $setting = Setting::find(1);
+                
+              
+                
+                 
+                $email = (new Email())
+                    ->from($settings->email)
+                    ->to($user)
+                     ->subject('New instance created')
+                     ->html($result->message.'.<br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password);
+                   
+               $mailer->send($email);
+               
+               $mail->email_log_success($settings->email,$user,'New instance created',$result->message.'.<br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password);
+                
+                
                 $mail = new \App\Http\Controllers\Common\PhpMailController();
+                
                 $mail->sendEmail($setting->email, $user, $userData, 'New instance created');
 
                 return ['status' => $result->status, 'message' => $result->message.'.'.$cronFailureMessage];
             }
         } catch (Exception $e) {
+               $mail->email_log_fail($settings->email,$user,'New instance created',$result->message.'.<br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password);
             return ['status' => 'false', 'message' => $e->getMessage()];
         }
     }

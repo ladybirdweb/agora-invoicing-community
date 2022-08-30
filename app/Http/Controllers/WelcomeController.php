@@ -52,9 +52,8 @@ class WelcomeController extends Controller
         ->where('countries.nicename', '!=', '')
                 ->select('countries.nicename as country', 'countries.country_code_char2 as code', \DB::raw('COUNT(users.id) as count'))
                 ->orderBy('country', 'asc')
-                ->groupBy('users.country')
-                ->get();
-        $users = $users->sortBy('country');
+                ->groupBy('users.country');
+     
 
         return DataTables::of($users)
                             ->addColumn('country', function ($model) {

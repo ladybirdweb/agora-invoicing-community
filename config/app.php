@@ -215,6 +215,11 @@ return [
         Darryldecode\Cart\CartServiceProvider::class,
         // Voerro\Laravel\VisitorTracker\VisitorTrackerServiceProvider::class,
         Creativeorange\Gravatar\GravatarServiceProvider::class,
+        // Symfony\Component\Mailer\MailerInterface::class,
+        GrahamCampbell\Markdown\MarkdownServiceProvider::class,
+        
+   
+
        
 
 
@@ -248,6 +253,10 @@ return [
         'Redis' => Illuminate\Support\Facades\Redis::class,
         'Stripe' => Cartalyst\Stripe\Laravel\Facades\Stripe::class,
         'Gravatar' => Creativeorange\Gravatar\Facades\Gravatar::class,
+        'Markdown' => GrahamCampbell\Markdown\Facades\Markdown::class,
+        
+
+
 
     ])->toArray(),
 

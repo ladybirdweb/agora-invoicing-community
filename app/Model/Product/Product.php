@@ -5,6 +5,7 @@ namespace App\Model\Product;
 use App\BaseModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class Product extends BaseModel
 {
@@ -132,4 +133,9 @@ class Product extends BaseModel
 
         return $plan;
     }
+    
+       public function getActivitylogOptions(): LogOptions
+  {
+    return LogOptions::defaults();
+   }
 }

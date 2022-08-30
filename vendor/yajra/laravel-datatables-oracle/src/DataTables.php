@@ -48,20 +48,23 @@ class DataTables
     {
         $engines  = config('datatables.engines');
         $builders = config('datatables.builders');
-
+        
         $args = func_get_args();
         foreach ($builders as $class => $engine) {
             if ($source instanceof $class) {
                 return call_user_func_array([$engines[$engine], 'create'], $args);
             }
         }
-
+        
+       
         foreach ($engines as $engine => $class) {
-            if (call_user_func_array([$engines[$engine], 'canCreate'], $args)) {
+        
+            if (true) {
+              
                 return call_user_func_array([$engines[$engine], 'create'], $args);
             }
         }
-
+       
         throw new \Exception('No available engine for ' . get_class($source));
     }
 

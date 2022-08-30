@@ -20,7 +20,7 @@ Edit Templates
 <div class="card card-secondary card-outline">
 
 
-        {!! Form::model($template,['url'=>'templates/'.$template->id,'method'=>'patch']) !!}
+        {!! Form::model($template,['url'=>'template/'.$template->id,'method'=>'patch']) !!}
 
 
     <div class="card-body">

@@ -28,7 +28,7 @@ trait LogsActivity
 
     public bool $enableLoggingModelsEvents = true;
 
-    // abstract public function getActivitylogOptions(): LogOptions;
+    abstract public function getActivitylogOptions(): LogOptions;
 
     protected static function bootLogsActivity(): void
     {

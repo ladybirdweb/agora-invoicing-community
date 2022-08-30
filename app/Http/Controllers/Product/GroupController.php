@@ -9,6 +9,7 @@ use App\Model\Product\ConfigurableOption;
 use App\Model\Product\GroupFeatures;
 use App\Model\Product\ProductGroup;
 use Illuminate\Http\Request;
+use Yajra\DataTables\Datatables;
 
 class GroupController extends Controller
 {
@@ -49,9 +50,9 @@ class GroupController extends Controller
 
     public function getGroups()
     {
-        $product_group = ProductGroup::select('id', 'name')->get();
+        $product_group = ProductGroup::select('id', 'name');
 
-        return\DataTables::of($product_group)
+        return \DataTables::of($product_group)
         // return \Datatable::of($this->group->select('id', 'name')->get())
 
                        ->addColumn('checkbox', function ($model) {

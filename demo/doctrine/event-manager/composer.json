@@ -1,0 +1,50 @@
+{
+    "name": "doctrine/event-manager",
+    "type": "library",
+    "description": "The Doctrine Event Manager is a simple PHP event system that was built to be used with the various Doctrine projects.",
+    "keywords": [
+        "events",
+        "event",
+        "event dispatcher",
+        "event manager",
+        "event system"
+    ],
+    "homepage": "https://www.doctrine-project.org/projects/event-manager.html",
+    "license": "MIT",
+    "authors": [
+        {"name": "Guilherme Blanco", "email": "guilhermeblanco@gmail.com"},
+        {"name": "Roman Borschel", "email": "roman@code-factory.org"},
+        {"name": "Benjamin Eberlei", "email": "kontakt@beberlei.de"},
+        {"name": "Jonathan Wage", "email": "jonwage@gmail.com"},
+        {"name": "Johannes Schmitt", "email": "schmittjoh@gmail.com"},
+        {"name": "Marco Pivetta", "email": "ocramius@gmail.com"}
+    ],
+    "require": {
+        "php": "^7.1 || ^8.0"
+    },
+    "require-dev": {
+        "doctrine/coding-standard": "^9",
+        "phpstan/phpstan": "~1.4.10 || ^1.5.4",
+        "phpunit/phpunit": "^7.5 || ^8.5 || ^9.5",
+        "vimeo/psalm": "^4.22"
+    },
+    "conflict": {
+        "doctrine/common": "<2.9"
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        },
+        "sort-packages": true
+    },
+    "autoload": {
+        "psr-4": {
+            "Doctrine\\Common\\": "lib/Doctrine/Common"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Doctrine\\Tests\\": "tests/Doctrine/Tests"
+        }
+    }
+}

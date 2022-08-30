@@ -43,7 +43,7 @@ class QueueController extends Controller
     public function getQueues()
     {
         try {
-            $allQueues = $this->queue->select('id', 'name', 'status')->get();
+            $allQueues = $this->queue->select('id', 'name', 'status');
 
             return \DataTables::of($allQueues)
         ->addColumn('name', function ($model) {

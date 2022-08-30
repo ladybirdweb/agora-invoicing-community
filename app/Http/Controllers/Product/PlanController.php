@@ -67,7 +67,7 @@ class PlanController extends ExtendedPlanController
      */
     public function getPlans()
     {
-        $new_plan = Plan::select('id', 'name', 'days', 'product')->get();
+        $new_plan = Plan::select('id', 'name', 'days', 'product');
         $defaultCurrency = Setting::where('id', 1)->value('default_currency');
 
         return DataTables::of($new_plan)

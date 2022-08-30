@@ -1,0 +1,46 @@
+{
+    "name": "vemcogroup/laravel-sparkpost-driver",
+    "description": "SparkPost driver to use with Laravel 6.x|7.x|8.x",
+    "keywords": [
+        "mail",
+        "laravel",
+        "sparkpost"
+    ],
+    "homepage": "https://github.com/vemcogroup/laravel-sparkpost-driver",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Henrik B Hansen",
+            "email": "hbh@vemcount.com",
+            "homepage": "https://www.vemcogroup.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.0.2",
+        "guzzlehttp/guzzle": "^7.2",
+        "laravel/framework": "^9.0",
+        "symfony/mailer": "^6.0",
+        "ext-json": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Vemcogroup\\SparkPostDriver\\": "src/"
+        },
+        "files": [
+            "src/helpers.php"
+        ]
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Vemcogroup\\SparkPostDriver\\SparkPostDriverServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

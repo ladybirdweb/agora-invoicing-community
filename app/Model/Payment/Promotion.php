@@ -4,6 +4,7 @@ namespace App\Model\Payment;
 
 use App\BaseModel;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class Promotion extends BaseModel
 {
@@ -48,4 +49,9 @@ class Promotion extends BaseModel
 
         return parent::delete();
     }
+    
+       public function getActivitylogOptions(): LogOptions
+  {
+    return LogOptions::defaults();
+   }
 }

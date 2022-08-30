@@ -17,8 +17,8 @@ class BaseModel extends Model
 {
     public function setAttribute($property, $value)
     {
-        require_once base_path('vendor'.DIRECTORY_SEPARATOR.'htmlpurifier'
-            .DIRECTORY_SEPARATOR.'library'.DIRECTORY_SEPARATOR.'HTMLPurifier.auto.php');
+        // require_once base_path('vendor'.DIRECTORY_SEPARATOR.'htmlpurifier'
+        //     .DIRECTORY_SEPARATOR.'library'.DIRECTORY_SEPARATOR.'HTMLPurifier.auto.php');
         $path = base_path('vendor'.DIRECTORY_SEPARATOR.'htmlpurifier'
             .DIRECTORY_SEPARATOR.'library'.DIRECTORY_SEPARATOR.
             'HTMLPurifier'.DIRECTORY_SEPARATOR.'DefinitionCache'

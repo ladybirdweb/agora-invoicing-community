@@ -61,6 +61,8 @@ Email Logs
 <script type="text/javascript">
   
         $('#email-table').DataTable({
+          
+           
              processing: true,
              serverSide: true,
              stateSave: true,
@@ -68,6 +70,7 @@ Email Logs
                ajax: {
             "url":  '{!! route('get-email') !!}',
                error: function(xhr) {
+                   
                if(xhr.status == 401) {
                 alert('Your session has expired. Please login again to continue.')
                 window.location.href = '/login';

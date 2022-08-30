@@ -80,7 +80,9 @@ class ClientController extends BaseClientController
     ->groupBy('invoices.number')
     ->where('invoices.user_id', '=', \Auth::user()->id)
     ->orderBy('invoices.created_at', 'desc')
-    ->get();
+    ->take(50);
+    
+    
 
         return \DataTables::of($invoices)
                     ->addColumn('number', function ($model) {
@@ -383,16 +385,15 @@ class ClientController extends BaseClientController
 
     public function getClientPanelOrdersData()
     {
+       
+        
+        
         return Order::leftJoin('products', 'products.id', '=', 'orders.product')
             ->leftJoin('subscriptions', 'orders.id', '=', 'subscriptions.order_id')
             ->leftJoin('invoices', 'orders.invoice_id', 'invoices.id')
             ->select('products.name as product_name', 'products.github_owner', 'products.github_repository', 'products.type', 'products.id as product_id', 'orders.id', 'orders.number', 'orders.client', 'subscriptions.id as sub_id', 'subscriptions.version', 'subscriptions.update_ends_at', 'products.name', 'orders.client', 'invoices.id as invoice_id', 'invoices.number as invoice_number')
             ->where('orders.client', \Auth::user()->id)
-            ->get()->map(function ($element) {
-                $element->update_ends_at = strtotime($element->update_ends_at) > 1 ? $element->update_ends_at : '--';
-
-                return $element;
-            });
+            ->take(50);
     }
 
     public function profile()

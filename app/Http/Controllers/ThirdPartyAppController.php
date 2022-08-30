@@ -34,7 +34,7 @@ class ThirdPartyAppController extends Controller
     public function getThirdPartyDetails()
     {
         try {
-            $thirdPartyApps = $this->thirdParty->select('id', 'app_name', 'app_key', 'app_secret')->get();
+            $thirdPartyApps = $this->thirdParty->select('id', 'app_name', 'app_key', 'app_secret');
 
             return \DataTables::of($thirdPartyApps)
             ->addColumn('checkbox', function ($model) {

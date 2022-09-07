@@ -42,15 +42,15 @@ if($script->on_every_page == 1) {
           <link rel="stylesheet" href="{{asset('client/css/animate.min.css')}}">
           <link rel="stylesheet" href="{{asset('client/css/magnific-popup.min.css')}}">
 
-          <link rel="stylesheet" href="{{asset('client/porto/css/theme.css')}}">
-          <link rel="stylesheet" href="{{asset('client/porto/css/theme-elements.css')}}">
-        <link rel="stylesheet" href="{{asset('client/porto/css/theme-shop.css')}}">
+          <link rel="stylesheet" href="{{asset('client/porto/css-1/theme.css')}}">
+          <link rel="stylesheet" href="{{asset('client/porto/css-1/theme-elements.css')}}">
+        <link rel="stylesheet" href="{{asset('client/porto/css-1/theme-shop.css')}}">
 
            <link rel="stylesheet" href="{{asset('common/css/intlTelInput.css')}}">
 
 
         {{-- this can be customised to any skin available --}}
-        <link rel="stylesheet" href="{{asset('client/porto/css/skins/default.css')}}">
+        <link rel="stylesheet" href="{{asset('client/porto/css-1/skins/default.css')}}">
         {{--  any custom css can be defined in this  --}}
         <link rel="stylesheet" href="{{asset('client/porto/css/custom.css')}}">
 
@@ -719,13 +719,13 @@ if($script->on_every_page == 1) {
           <script src="{{asset('client/js/vide.min.js')}}"></script>
 
          <!-- Theme Base, Components and Settings -->
-          <script src="{{asset('client/porto/js/theme.js')}}"></script>
+          <script src="{{asset('client/porto/js-1/theme.js')}}"></script>
 
           <!-- any custom js/effects can be defined in this -->
           <script src="{{asset('client/porto/js/custom.js')}}"></script>
           
           <!-- Theme Initialization Files -->
-          <script src="{{asset('client/porto/js/theme.init.js')}}"></script>
+          <script src="{{asset('client/porto/js-1/theme.init.js')}}"></script>
           <script src="{{asset('common/js/intlTelInput.js')}}"></script>
 
           <script type="text/javascript">

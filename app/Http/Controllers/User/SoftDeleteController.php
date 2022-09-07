@@ -4,6 +4,8 @@ namespace App\Http\Controllers\User;
 
 use App\User;
 use Illuminate\Http\Request;
+use Yajra\DataTables\DataTables;
+
 
 class SoftDeleteController extends ClientController
 {
@@ -25,9 +27,9 @@ class SoftDeleteController extends ClientController
                 \DB::raw("CONCAT('+', mobile_code, ' ', mobile) as mobile"),
                 \DB::raw("CONCAT(first_name, ' ', last_name) as name"),
                 'country_name as country', 'created_at', 'active', 'mobile_verified', 'is_2fa_enabled', 'role', 'position')
-            ->onlyTrashed()->get();
+            ->onlyTrashed();
 
-        return\DataTables::of($baseQuery)
+        return \DataTables::of($baseQuery)
                         ->addColumn('checkbox', function ($model) {
                             return "<input type='checkbox' class='user_checkbox' value=".$model->id.' name=select[] id=check>';
                         })

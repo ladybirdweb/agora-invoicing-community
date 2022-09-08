@@ -6,6 +6,7 @@ use App\Model\Common\Setting;
 use Artisan;
 use Config;
 use Exception;
+use DB;
 
 class SyncBillingToLatestVersion
 {
@@ -20,6 +21,7 @@ class SyncBillingToLatestVersion
         // in case where isInstall is false(in case of new install) version number should be zero
         $latestVersion = $this->getPHPCompatibleVersionString(Config::get('app.version'));
         $olderVersion = $this->getOlderVersion();
+        $this->forceInnodbOnUpdate();
 
         try {
             if (version_compare($latestVersion, $olderVersion) == 1) {
@@ -42,6 +44,43 @@ class SyncBillingToLatestVersion
         }
 
         return $this->log;
+    }
+    
+      private function forceInnodbOnUpdate(){
+        try {
+            if (isInstall()) {
+                $this->writeToEnvAndRunConfigClear('DB_ENGINE','InnoDB');
+                $tables = DB::select('SHOW TABLES');
+                foreach ($tables as $table) {
+                    foreach ($table as $key => $value) {
+                        DB::statement('ALTER TABLE ' . $value . ' ENGINE = InnoDB');
+                    }
+                }
+
+            }
+        }
+        catch (Exception $e){
+           
+            return errorResponse($e->getMessage());
+        }
+    }
+    
+     private function writeToEnvAndRunConfigClear($key,$value){
+        try {
+            $path = app()->environmentFilePath();
+           
+            $escaped = preg_quote('=' . env($key), '/');
+            file_put_contents($path, preg_replace(
+                "/^{$key}{$escaped}/m",
+                "{$key}={$value}",
+                file_get_contents($path)
+            ));
+            Artisan::call('config:clear');
+        }
+        catch (Exception $e){
+            
+            return errorResponse($e->getMessage());
+        }
     }
 
     private function cacheDbVersion()

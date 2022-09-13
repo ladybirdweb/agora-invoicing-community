@@ -1,24 +1,22 @@
 <?php
 
 namespace App\Http\Controllers\Common;
-
 use Exception;
-use Symfony\Component\Mailer\Transport;
 use Symfony\Component\Mailer\Mailer;
+use Symfony\Component\Mailer\Transport;
 
 class CommonMailer
 {
     public function setSmtpDriver($config)
     {
        
-    
-        try {
+       try {
             if (! $config) {
                 return false;
             }
             
          
-              $transport = Transport::fromDsn('smtp://'. $config['username'] .':' . $config['password'] . '@smtp.gmail.com?verify_peer=0');
+             $transport = Transport::fromDsn('smtp://'. $config['username'] .':' . $config['password'] . '@smtp.gmail.com?verify_peer=0');
             
             $mailer = new Mailer($transport);
            

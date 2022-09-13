@@ -146,29 +146,24 @@ class TenantController extends Controller
                 }
 
                 $userData = $result->message.'.<br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password;
-
-                
-              
-                
-                 
                 $email = (new Email())
                     ->from($settings->email)
                     ->to($user)
-                     ->subject('New instance created')
-                     ->html($result->message.'.<br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password);
+                    ->subject('New instance created')
+                    ->html($result->message.'.<br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password);
                    
                $mailer->send($email);
                
                $mail->email_log_success($settings->email,$user,'New instance created',$result->message.'.<br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password);
                 
                 
-                $mail = new \App\Http\Controllers\Common\PhpMailController();
+               $mail = new \App\Http\Controllers\Common\PhpMailController();
                 
-                $mail->sendEmail($setting->email, $user, $userData, 'New instance created');
+               $mail->sendEmail($setting->email, $user, $userData, 'New instance created');
 
-                return ['status' => $result->status, 'message' => $result->message.'.'.$cronFailureMessage];
+              return ['status' => $result->status, 'message' => $result->message.'.'.$cronFailureMessage];
             }
-        } catch (Exception $e) {
+            } catch (Exception $e) {
                $mail->email_log_fail($settings->email,$user,'New instance created',$result->message.'.<br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password);
             return ['status' => 'false', 'message' => $e->getMessage()];
         }

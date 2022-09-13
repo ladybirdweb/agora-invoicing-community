@@ -144,10 +144,10 @@ class BaseAuthController extends Controller
 
     public function sendActivation($email, $method, $str = '')
     {
-           $user = new User();
-           $user = $user->where('email', $email)->first();
+            $user = new User();
+            $user = $user->where('email', $email)->first();
 
-         //check in the settings
+            //check in the settings
             $settings = new \App\Model\Common\Setting();
             $settings = $settings->where('id', 1)->first();
 
@@ -157,13 +157,13 @@ class BaseAuthController extends Controller
             $template = $template->where('id', $temp_id)->first();
             
             
-             $mail = new \App\Http\Controllers\Common\PhpMailController();
-             $mailer = $mail->setMailConfig($settings);
+            $mail = new \App\Http\Controllers\Common\PhpMailController();
+            $mailer = $mail->setMailConfig($settings);
            
             $html = $template->data;
         try {
             
-           $activate_model = new AccountActivate();
+            $activate_model = new AccountActivate();
             if (! $user) {
                 throw new \Exception('User with this email does not exist');
             }
@@ -184,17 +184,14 @@ class BaseAuthController extends Controller
             $email = (new Email())
                 ->from($settings->email)
                 ->to($user->email)
-                 ->subject($template->name)
-                 ->html($mail->mailTemplate($template->data,$templatevariables=['name' => $user->first_name.' '.$user->last_name,
-                'username' => $user->email, 'password' => $str, 'url' => $url, 'website_url' => $website_url, ]));
-               
-                
-                $mailer->send($email);
-                
-                 $mail->email_log_success($settings->email,$user->email,$template->name,$html);
+                ->subject($template->name)
+                ->html($mail->mailTemplate($template->data,$templatevariables=['name' => $user->first_name.' '.$user->last_name,
+                      'username' => $user->email, 'password' => $str, 'url' => $url, 'website_url' => $website_url, ]));
+           $mailer->send($email);
+           $mail->email_log_success($settings->email,$user->email,$template->name,$html);
        
-        } catch (\Exception $ex) {
-             $mail->email_log_fail($settings->email,$user->email,$template->name,$html);
+    } catch (\Exception $ex) {
+         $mail->email_log_fail($settings->email,$user->email,$template->name,$html);
             throw new \Exception($ex->getMessage());
         }
     }

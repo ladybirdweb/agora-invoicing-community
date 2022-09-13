@@ -12,26 +12,7 @@ use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use mail;
-use Symfony\Bridge\Twig\Mime\BodyRenderer;
-use Symfony\Bridge\Twig\Mime\TemplatedEmail;
-use Symfony\Component\EventDispatcher\EventDispatcher;
-use Symfony\Component\Mailer\EventListener\MessageListener;
-use Symfony\Component\Mailer\Mailer;
-use Symfony\Component\Mailer\Transport;
-use Twig\Environment;
-use Twig\Loader\FilesystemLoader;
 use Symfony\Component\Mime\Email;
-use  App\Http\Controllers\Common\CommonMailer;
-use Symfony\Component\Mailer\MailerInterface;
-use DB;
-
-
-
-
-
-
-
 
 
 
@@ -61,7 +42,7 @@ class RegisterController extends Controller
      *
      * @return void
      */
-        public function __construct()
+    public function __construct()
     {
         $this->middleware('guest');
     }
@@ -69,15 +50,15 @@ class RegisterController extends Controller
    public function postRegister(ProfileRequest $request, User $user)
     {
         
-        $apiKeys = StatusSetting::value('recaptcha_status');
-        $captchaRule = $apiKeys ? 'required|' : 'sometimes|';
-        $this->validate($request, [
+           $apiKeys = StatusSetting::value('recaptcha_status');
+           $captchaRule = $apiKeys ? 'required|' : 'sometimes|';
+           $this->validate($request, [
             'g-recaptcha-response-1' => $captchaRule.'captcha',
-        ], [
+            ], [
             'g-recaptcha-response-1.required' => 'Robot Verification Failed. Please Try Again.',
-        ]);
+           ]);
         
-          //check in the settings
+            //check in the settings
             $settings = new \App\Model\Common\Setting();
             $settings = $settings->where('id', 1)->first();
           
@@ -104,8 +85,8 @@ class RegisterController extends Controller
             $state = getStateByCode($state_code);
             $password = Str::random(20);
             
-         $user = 
-         [
+            $user = 
+            [
 
              'state' => $state['id'],
              'town' => $location['city'],
@@ -133,24 +114,21 @@ class RegisterController extends Controller
              
              $userInput = User::insertGetId($user);
             
-        
-                
-               
-                $email = (new Email())
-                    ->from($settings->email)
-                    ->to($user['email'])
-                     ->subject($template->name)
-                     ->html($mail->mailTemplate($template->data,$templatevariables=['name' => $user['first_name'].' '.$user['last_name'],
+             $email = (new Email())
+                   ->from($settings->email)
+                   ->to($user['email'])
+                   ->subject($template->name)
+                   ->html($mail->mailTemplate($template->data,$templatevariables=['name' => $user['first_name'].' '.$user['last_name'],
                     'username' => $user['email'], 'password' => $password,]));
                    
                     
-                    $mailer->send($email);
-                 $mail->email_log_success($settings->email,$user['email'],$template->name,$html);
+             $mailer->send($email);
+             $mail->email_log_success($settings->email,$user['email'],$template->name,$html);
             
             
              $emailMobileStatusResponse = $this->getEmailMobileStatusResponse($user,$userInput);
 
-            activity()->log('User <strong>'.$user['first_name'].' '.$user['last_name'].'</strong> was created');
+             activity()->log('User <strong>'.$user['first_name'].' '.$user['last_name'].'</strong> was created');
 
             return response()->json($emailMobileStatusResponse);
         }      catch (\Exception $ex) {
@@ -163,65 +141,6 @@ class RegisterController extends Controller
         }
     }
     
- 
-
-    
-    
-    
-    public function mailTemplate($contents,$templatevariables)
-    {
-        
-      
-       $variables = $this->getVariableValues($contents,$templatevariables);
-      
-       $messageBody = $contents;
-      
-       foreach($variables as $v =>$k)
-       {
-          
-           
-           $messageBody = str_replace($v,$k,$messageBody);
-          
-           
-       }
-       
-       return $messageBody;
-      
-      
-       
-    }
-    
-    public function getVariableValues($contents,$templatevariables)
-    {
-        
-     
-        $variables = [];
-        $name = $this->checkElement('name',$templatevariables);
-        $email = $this->checkElement('username',$templatevariables);
-        $password = $this->checkElement('password',$templatevariables);
-      
-        $variables['{$name}'] = $name;
-        $variables['{$username}'] = $email;
-        $variables['{$password}'] = $password;
-
-      
-       
-        return $variables;
-        
-    }
-    
-      public function checkElement($element, $array)
-    {
-        $value = "";
-        if (is_array($array)) {
-            if (key_exists($element, $array)) {
-                $value = $array[$element];
-            }
-        }
-        return $value;
-    }
-
-
     protected function getEmailMobileStatusResponse($user,$userId)
     {
        

@@ -112,10 +112,8 @@ class PhpMailController extends Controller
 
             return 'success';
         } catch (\Exception $ex) {
-            dd($ex);
-          
             
-            \DB::table('email_log')->insert([
+          \DB::table('email_log')->insert([
                 'date' => date('Y-m-d H:i:s'),
                 'from' => $from,
                 'to' => $to,
@@ -136,12 +134,11 @@ class PhpMailController extends Controller
     public function setMailConfig($settings)
     {
         
-       
-        switch ($settings->driver)
+       switch ($settings->driver)
         {
-             case 'smtp':
+            case 'smtp':
         
-          $config = ['host' => $settings->host,
+            $config = ['host' => $settings->host,
                     'port' => $settings->port,
                     'security' => $settings->encryption,
                     'username' => $settings->email,
@@ -161,8 +158,8 @@ class PhpMailController extends Controller
             return $mailer;
             break;
             
-             case 'send_mail':
-                $config = [
+            case 'send_mail':
+            $config = [
                     'host' => \Config::get('mail.host'),
                     'port' => \Config::get('mail.port'),
                     'security' => \Config::get('mail.encryption'),
@@ -177,7 +174,6 @@ class PhpMailController extends Controller
                 break;
             
     
-                    
         }
     }
     
@@ -185,25 +181,13 @@ class PhpMailController extends Controller
     public function mailTemplate($contents,$templatevariables)
     {
         
-      
-       $variables = $this->getVariableValues($contents,$templatevariables);
-      
-       $messageBody = $contents;
-      
-       foreach($variables as $v =>$k)
+      $variables = $this->getVariableValues($contents,$templatevariables);
+      $messageBody = $contents;
+      foreach($variables as $v =>$k)
        {
-          
-           
-           $messageBody = str_replace($v,$k,$messageBody);
-          
-           
+         $messageBody = str_replace($v,$k,$messageBody);
        }
-       
-     
-       return $messageBody;
-      
-      
-       
+      return $messageBody;
     }
     
     public function getVariableValues($contents,$templatevariables)
@@ -250,9 +234,6 @@ class PhpMailController extends Controller
         $variables['{$manager_skype}'] = $manager_skype;
         $variables['{$contact_us}'] = $contact_us;
 
-
-      
-       
         return $variables;
         
     }

@@ -5,9 +5,7 @@ namespace App\Http\Controllers\Common;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Email\EmailSettingRequest;
 use App\Model\Common\Setting;
-use Symfony\Component\Mime\Email;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
-use Symfony\Component\Mailer\Transport\Smtp\ESmtpTransport;
 use Swift_SmtpTransport;
 
 
@@ -87,7 +85,7 @@ class EmailSettingsController extends Controller
             $this->emailConfig = $emailConfig;
             $this->emailConfig;
             //if sending protocol is mail, no connection check is required
-            if ($this->emailConfig->driver == 'mail') {
+          if ($this->emailConfig->driver == 'mail') {
                 return $this->checkMailConnection();
             }
 

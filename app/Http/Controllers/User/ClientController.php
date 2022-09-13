@@ -268,8 +268,7 @@ class ClientController extends AdvanceSearchController
             return redirect()->back()->with('warning', 'User has been created successfully
              But email configuration has some problem!!'.$e->getMessage());
         } catch (\Exception $e) {
-            dd($e);
-            return redirect()->back()->with('fails', $e->getMessage());
+           return redirect()->back()->with('fails', $e->getMessage());
         }
     }
 
@@ -471,7 +470,7 @@ class ClientController extends AdvanceSearchController
     public function sendWelcomeMail($user)
     {
         try{
-       
+        //check in the settings
         $settings = new \App\Model\Common\Setting();
         $setting = $settings->where('id', 1)->first();
         $from = $setting->email;
@@ -489,26 +488,27 @@ class ClientController extends AdvanceSearchController
             $activate = $activate_model->create(['email' => $user['email'], 'token' => $str]);
             $token = $activate->token;
             $url = url("activate/$token");
-            //check in the settings
+            
 
-            //template
+        //template
           
-              $email = (new Email())
+         $email = (new Email())
                 ->from($setting->email)
                 ->to($user['email'])
-                 ->subject($template->name)
-                 ->html($mail->mailTemplate($template->data,$templatevariables= ['name' => $user['first_name'].' '.$user['last_name'],
-                'username' => $user['email'], 'password' => $str, 'url' => $url, ]));
-               $mailer->send($email);
+                ->subject($template->name)
+                ->html($mail->mailTemplate($template->data,$templatevariables= ['name' => $user['first_name'].' '.$user['last_name'],
+                    'username' => $user['email'], 'password' => $str, 'url' => $url, ]));
+         $mailer->send($email);
             
         } else {
-                $email = (new Email())
+            
+        $email = (new Email())
                 ->from($setting->email)
                 ->to($user['email'])
-                 ->subject('Login details ')
-                 ->html("You have been successfully registered. Your login details are:<br>Email:".$user['email']."<br> Password:demopass");
-                $mailer->send($email);
-             $mail->email_log_success($setting->email,$user['email'],$template->name,$html);
+                ->subject('Login details ')
+                ->html("You have been successfully registered. Your login details are:<br>Email:".$user['email']."<br> Password:demopass");
+        $mailer->send($email);
+        $mail->email_log_success($setting->email,$user['email'],$template->name,$html);
 
         }
         }

@@ -115,7 +115,7 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
 
     public function sendInvoiceMail($userid, $number, $total, $invoiceid)
     {
-         //user
+        //user
         $users = new User();
         $user = $users->find($userid);
         //check in the settings
@@ -127,26 +127,26 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
         $temp_id = $setting->invoice;
         $template = $templates->where('id', $temp_id)->first();
         
-         $mail = new \App\Http\Controllers\Common\PhpMailController();
-         $mailer = $mail->setMailConfig($setting);
+        $mail = new \App\Http\Controllers\Common\PhpMailController();
+        $mailer = $mail->setMailConfig($setting);
            
-            $html = $template->data;
+        $html = $template->data;
         try{
 
-           $email = (new Email())
+        $email = (new Email())
                 ->from($setting->email)
                 ->to($user->email)
-                 ->subject($template->name)
-                 ->html($mail->mailTemplate($template->data,$templatevariables=[ 'name' => $user->first_name.' '.$user->last_name,
+                ->subject($template->name)
+                ->html($mail->mailTemplate($template->data,$templatevariables=[  'name' => $user->first_name.' '.$user->last_name,
                      'number' => $number,
-                    'address' => $user->address,
-                   'invoiceurl' => $invoiceurl,
-                   'content' => $this->invoiceContent($invoiceid),
-                   'currency' => $this->currency($invoiceid),]));
+                     'address' => $user->address,
+                     'invoiceurl' => $invoiceurl,
+                     'content' => $this->invoiceContent($invoiceid),
+                    'currency' => $this->currency($invoiceid),]));
                
                 
-                $mailer->send($email);
-                 $mail->email_log_success($setting->email,$user->email,$template->name,$html);
+        $mailer->send($email);
+        $mail->email_log_success($setting->email,$user->email,$template->name,$html);
         }catch(\Exception $ex)
         {
              $mail->email_log_fail($setting->email,$user->email,$template->name,$html);

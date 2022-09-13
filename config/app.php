@@ -2,7 +2,6 @@
 
 use Illuminate\Support\Facades\Facade;
 
-
 return [
 
     /*
@@ -217,12 +216,6 @@ return [
         Creativeorange\Gravatar\GravatarServiceProvider::class,
         // Symfony\Component\Mailer\MailerInterface::class,
         GrahamCampbell\Markdown\MarkdownServiceProvider::class,
-        
-   
-
-       
-
-
 
     ],
 
@@ -254,9 +247,6 @@ return [
         'Stripe' => Cartalyst\Stripe\Laravel\Facades\Stripe::class,
         'Gravatar' => Creativeorange\Gravatar\Facades\Gravatar::class,
         'Markdown' => GrahamCampbell\Markdown\Facades\Markdown::class,
-        
-
-
 
     ])->toArray(),
 

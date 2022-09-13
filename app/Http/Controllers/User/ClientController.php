@@ -15,13 +15,8 @@ use App\Traits\PaymentsAndInvoices;
 use App\User;
 use DB;
 use Illuminate\Http\Request;
-use Yajra\DataTables\DataTables;
 use Symfony\Component\Mime\Email;
-
-
-
-
-
+use Yajra\DataTables\DataTables;
 
 class ClientController extends AdvanceSearchController
 {
@@ -248,13 +243,11 @@ class ClientController extends AdvanceSearchController
                 'skype' => $request->input('skype'),
                 'manager' => $request->input('manager'),
                 'account_manager' => $request->input('account_manager'),
-                'ip' => $location['ip'] 
-                ];  
-                $userInput = User::insert($user);
-                
-         
+                'ip' => $location['ip'],
+            ];
+            $userInput = User::insert($user);
+
             if (emailSendingStatus()) {
-                
                 $this->sendWelcomeMail($user);
             }
             $mailchimpStatus = StatusSetting::first()->value('mailchimp_status');
@@ -268,7 +261,7 @@ class ClientController extends AdvanceSearchController
             return redirect()->back()->with('warning', 'User has been created successfully
              But email configuration has some problem!!'.$e->getMessage());
         } catch (\Exception $e) {
-           return redirect()->back()->with('fails', $e->getMessage());
+            return redirect()->back()->with('fails', $e->getMessage());
         }
     }
 
@@ -469,52 +462,45 @@ class ClientController extends AdvanceSearchController
 
     public function sendWelcomeMail($user)
     {
-        try{
-        //check in the settings
-        $settings = new \App\Model\Common\Setting();
-        $setting = $settings->where('id', 1)->first();
-        $from = $setting->email;
-        $to = $user['email'];
-        $templates = new \App\Model\Common\Template();
-        $temp_id = $setting->welcome_mail;
-        $template = $templates->where('id', $temp_id)->first();
-         $html = $template->data;
-        $mail = new \App\Http\Controllers\Common\PhpMailController();
-        $mailer = $mail->setMailConfig($setting);
-        if (! $user['active']) {
-            
-            $activate_model = new AccountActivate();
-            $str = str_random(40);
-            $activate = $activate_model->create(['email' => $user['email'], 'token' => $str]);
-            $token = $activate->token;
-            $url = url("activate/$token");
-            
+        try {
+            //check in the settings
+            $settings = new \App\Model\Common\Setting();
+            $setting = $settings->where('id', 1)->first();
+            $from = $setting->email;
+            $to = $user['email'];
+            $templates = new \App\Model\Common\Template();
+            $temp_id = $setting->welcome_mail;
+            $template = $templates->where('id', $temp_id)->first();
+            $html = $template->data;
+            $mail = new \App\Http\Controllers\Common\PhpMailController();
+            $mailer = $mail->setMailConfig($setting);
+            if (! $user['active']) {
+                $activate_model = new AccountActivate();
+                $str = str_random(40);
+                $activate = $activate_model->create(['email' => $user['email'], 'token' => $str]);
+                $token = $activate->token;
+                $url = url("activate/$token");
 
-        //template
-          
-         $email = (new Email())
+                //template
+
+                $email = (new Email())
                 ->from($setting->email)
                 ->to($user['email'])
                 ->subject($template->name)
-                ->html($mail->mailTemplate($template->data,$templatevariables= ['name' => $user['first_name'].' '.$user['last_name'],
+                ->html($mail->mailTemplate($template->data, $templatevariables = ['name' => $user['first_name'].' '.$user['last_name'],
                     'username' => $user['email'], 'password' => $str, 'url' => $url, ]));
-         $mailer->send($email);
-            
-        } else {
-            
-        $email = (new Email())
+                $mailer->send($email);
+            } else {
+                $email = (new Email())
                 ->from($setting->email)
                 ->to($user['email'])
                 ->subject('Login details ')
-                ->html("You have been successfully registered. Your login details are:<br>Email:".$user['email']."<br> Password:demopass");
-        $mailer->send($email);
-        $mail->email_log_success($setting->email,$user['email'],$template->name,$html);
-
-        }
-        }
-        catch(\Exception $ex)
-        {
-              $mail->email_log_fail($setting->email,$user['email'],$template->name,$html);
+                ->html('You have been successfully registered. Your login details are:<br>Email:'.$user['email'].'<br> Password:demopass');
+                $mailer->send($email);
+                $mail->email_log_success($setting->email, $user['email'], $template->name, $html);
+            }
+        } catch (\Exception $ex) {
+            $mail->email_log_fail($setting->email, $user['email'], $template->name, $html);
         }
     }
 

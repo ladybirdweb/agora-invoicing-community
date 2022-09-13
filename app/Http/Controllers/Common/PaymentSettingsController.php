@@ -11,11 +11,10 @@ class PaymentSettingsController extends Controller
 {
     public function getPlugin()
     {
-        try{
-        $plugins = $this->fetchConfig();
-      
+        try {
+            $plugins = $this->fetchConfig();
 
-        return \DataTables::of(new Collection($plugins))
+            return \DataTables::of(new Collection($plugins))
                         // ->searchColumns('name')
                         ->addColumn('name', function ($model) {
                             return ucfirst($model['name']);
@@ -76,8 +75,7 @@ class PaymentSettingsController extends Controller
                         })
                       ->rawColumns(['name', 'description', 'author', 'website', 'version', 'action'])
                             ->make(true);
-        }catch(\Exception $e)
-        {
+        } catch (\Exception $e) {
             dd($e);
         }
     }
@@ -96,11 +94,9 @@ class PaymentSettingsController extends Controller
         }
         if (count($fields) > 0) {
             foreach ($fields as $key => $field) {
-                $plug = $plugs->where('name', $field['name'])->select(array('path', 'status'))->orderBy('name');
-            
-                
+                $plug = $plugs->where('name', $field['name'])->select(['path', 'status'])->orderBy('name');
+
                 if ($plug) {
-                   
                     foreach ($plug as $i => $value) {
                         $attributes[$key]['path'] = $plug[$i]['path'];
                         $attributes[$key]['status'] = $plug[$i]['status'];

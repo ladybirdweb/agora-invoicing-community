@@ -463,7 +463,6 @@ function bifurcateTax($taxName, $taxValue, $currency, $state, $price = '')
  */
 function setServiceConfig($emailConfig)
 {
-    
     $sendingProtocol = $emailConfig->driver;
     if ($sendingProtocol && $sendingProtocol != 'smtp' && $sendingProtocol != 'mail') {
         $services = \Config::get("services.$sendingProtocol");

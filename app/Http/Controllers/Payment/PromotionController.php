@@ -12,7 +12,6 @@ use Darryldecode\Cart\CartCondition;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 
-
 class PromotionController extends BasePromotionController
 {
     public $promotion;

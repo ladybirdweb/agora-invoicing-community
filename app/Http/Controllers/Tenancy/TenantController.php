@@ -38,10 +38,10 @@ class TenantController extends Controller
                     'GET',
                     $this->cloud->cloud_central_domain.'/tenants'
                 );
-              
+
             $responseBody = (string) $response->getBody();
             $response = json_decode($responseBody);
-           
+
             return \DataTables::of($response)
 
              ->addColumn('tenants', function ($model) {
@@ -65,7 +65,6 @@ class TenantController extends Controller
              ->rawColumns(['tenants', 'domain', 'db_name', 'db_username', 'action'])
              ->make(true);
         } catch (ConnectException|Exception $e) {
-            
             return redirect()->back()->with('fails', $e->getMessage());
         }
 
@@ -101,10 +100,10 @@ class TenantController extends Controller
                 [
                     'domain.regex' => 'Special characters are not allowed in domain name',
                 ]);
-         $setting = Setting::find(1);
-         $user = \Auth::user()->email;
-         $mail = new \App\Http\Controllers\Common\PhpMailController();
-         $mailer = $mail->setMailConfig($settings);
+        $setting = Setting::find(1);
+        $user = \Auth::user()->email;
+        $mail = new \App\Http\Controllers\Common\PhpMailController();
+        $mailer = $mail->setMailConfig($settings);
 
         try {
             $faveoCloud = '.faveocloud.com';
@@ -151,20 +150,20 @@ class TenantController extends Controller
                     ->to($user)
                     ->subject('New instance created')
                     ->html($result->message.'.<br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password);
-                   
-               $mailer->send($email);
-               
-               $mail->email_log_success($settings->email,$user,'New instance created',$result->message.'.<br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password);
-                
-                
-               $mail = new \App\Http\Controllers\Common\PhpMailController();
-                
-               $mail->sendEmail($setting->email, $user, $userData, 'New instance created');
 
-              return ['status' => $result->status, 'message' => $result->message.'.'.$cronFailureMessage];
+                $mailer->send($email);
+
+                $mail->email_log_success($settings->email, $user, 'New instance created', $result->message.'.<br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password);
+
+                $mail = new \App\Http\Controllers\Common\PhpMailController();
+
+                $mail->sendEmail($setting->email, $user, $userData, 'New instance created');
+
+                return ['status' => $result->status, 'message' => $result->message.'.'.$cronFailureMessage];
             }
-            } catch (Exception $e) {
-               $mail->email_log_fail($settings->email,$user,'New instance created',$result->message.'.<br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password);
+        } catch (Exception $e) {
+            $mail->email_log_fail($settings->email, $user, 'New instance created', $result->message.'.<br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password);
+
             return ['status' => 'false', 'message' => $e->getMessage()];
         }
     }

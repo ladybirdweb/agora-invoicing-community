@@ -15,7 +15,6 @@ use App\Model\Product\Subscription;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 
-
 class PlanController extends ExtendedPlanController
 {
     protected $currency;

@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('activity_log', function (Blueprint $table) {
-             $table->text('batch_uuid')->nullable();
+            $table->text('batch_uuid')->nullable();
         });
     }
 
@@ -26,7 +26,7 @@ return new class extends Migration
     public function down()
     {
         Schema::table('activity_log', function (Blueprint $table) {
-             Schema::drop(config('activity_log'));
+            Schema::drop(config('activity_log'));
         });
     }
 };

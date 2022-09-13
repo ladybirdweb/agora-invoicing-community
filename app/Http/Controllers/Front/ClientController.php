@@ -81,8 +81,6 @@ class ClientController extends BaseClientController
     ->where('invoices.user_id', '=', \Auth::user()->id)
     ->orderBy('invoices.created_at', 'desc')
     ->take(50);
-    
-    
 
         return \DataTables::of($invoices)
                     ->addColumn('number', function ($model) {
@@ -385,9 +383,6 @@ class ClientController extends BaseClientController
 
     public function getClientPanelOrdersData()
     {
-       
-        
-        
         return Order::leftJoin('products', 'products.id', '=', 'orders.product')
             ->leftJoin('subscriptions', 'orders.id', '=', 'subscriptions.order_id')
             ->leftJoin('invoices', 'orders.invoice_id', 'invoices.id')

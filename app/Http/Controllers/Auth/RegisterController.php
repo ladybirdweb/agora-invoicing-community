@@ -12,28 +12,7 @@ use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use mail;
-use Symfony\Bridge\Twig\Mime\BodyRenderer;
-use Symfony\Bridge\Twig\Mime\TemplatedEmail;
-use Symfony\Component\EventDispatcher\EventDispatcher;
-use Symfony\Component\Mailer\EventListener\MessageListener;
-use Symfony\Component\Mailer\Mailer;
-use Symfony\Component\Mailer\Transport;
-use Twig\Environment;
-use Twig\Loader\FilesystemLoader;
 use Symfony\Component\Mime\Email;
-use  App\Http\Controllers\Common\CommonMailer;
-use Symfony\Component\Mailer\MailerInterface;
-use DB;
-
-
-
-
-
-
-
-
-
 
 class RegisterController extends Controller
 {
@@ -61,14 +40,13 @@ class RegisterController extends Controller
      *
      * @return void
      */
-        public function __construct()
+    public function __construct()
     {
         $this->middleware('guest');
     }
 
-   public function postRegister(ProfileRequest $request, User $user)
+    public function postRegister(ProfileRequest $request, User $user)
     {
-        
         $apiKeys = StatusSetting::value('recaptcha_status');
         $captchaRule = $apiKeys ? 'required|' : 'sometimes|';
         $this->validate($request, [
@@ -76,35 +54,29 @@ class RegisterController extends Controller
         ], [
             'g-recaptcha-response-1.required' => 'Robot Verification Failed. Please Try Again.',
         ]);
-        
-          //check in the settings
-            $settings = new \App\Model\Common\Setting();
-            $settings = $settings->where('id', 1)->first();
-          
-          
-            
 
-            //template
-            $template = new \App\Model\Common\Template();
-            $temp_id = $settings->where('id', 1)->first()->password_mail;
-            $template = $template->where('id', $temp_id)->first();
+        //check in the settings
+        $settings = new \App\Model\Common\Setting();
+        $settings = $settings->where('id', 1)->first();
 
-            
-            $mail = new \App\Http\Controllers\Common\PhpMailController();
-            $mailer = $mail->setMailConfig($settings);
-               
-            $html = $template->data;
+        //template
+        $template = new \App\Model\Common\Template();
+        $temp_id = $settings->where('id', 1)->first()->password_mail;
+        $template = $template->where('id', $temp_id)->first();
+
+        $mail = new \App\Http\Controllers\Common\PhpMailController();
+        $mailer = $mail->setMailConfig($settings);
+
+        $html = $template->data;
         try {
-          
-          
             $location = getLocation();
 
             $state_code = $location['iso_code'].'-'.$location['state'];
 
             $state = getStateByCode($state_code);
             $password = Str::random(20);
-            
-         $user = 
+
+            $user =
          [
 
              'state' => $state['id'],
@@ -126,105 +98,77 @@ class RegisterController extends Controller
              'manager' => $user->assignSalesManager(),
              'ip' => $location['ip'],
              'timezone_id' => getTimezoneByName($location['timezone']),
-             'referrer' => Referer::get()
-             
-             
-             ];
-             
-             $userInput = User::insertGetId($user);
-            
-        
-                
-               
-                $email = (new Email())
+             'referrer' => Referer::get(),
+
+         ];
+
+            $userInput = User::insertGetId($user);
+
+            $email = (new Email())
                     ->from($settings->email)
                     ->to($user['email'])
                      ->subject($template->name)
-                     ->html($mail->mailTemplate($template->data,$templatevariables=['name' => $user['first_name'].' '.$user['last_name'],
-                    'username' => $user['email'], 'password' => $password,]));
-                   
-                    
-                    $mailer->send($email);
-                 $mail->email_log_success($settings->email,$user['email'],$template->name,$html);
-            
-            
-             $emailMobileStatusResponse = $this->getEmailMobileStatusResponse($user,$userInput);
+                     ->html($mail->mailTemplate($template->data, $templatevariables = ['name' => $user['first_name'].' '.$user['last_name'],
+                         'username' => $user['email'], 'password' => $password, ]));
+
+            $mailer->send($email);
+            $mail->email_log_success($settings->email, $user['email'], $template->name, $html);
+
+            $emailMobileStatusResponse = $this->getEmailMobileStatusResponse($user, $userInput);
 
             activity()->log('User <strong>'.$user['first_name'].' '.$user['last_name'].'</strong> was created');
 
             return response()->json($emailMobileStatusResponse);
-        }      catch (\Exception $ex) {
-           
-            $mail->email_log_fail($settings->email,$user['email'],$template->name,$html);
+        } catch (\Exception $ex) {
+            $mail->email_log_fail($settings->email, $user['email'], $template->name, $html);
             app('log')->error($ex->getMessage());
             $result = [$ex->getMessage()];
 
             return response()->json($result);
         }
     }
-    
- 
 
-    
-    
-    
-    public function mailTemplate($contents,$templatevariables)
+    public function mailTemplate($contents, $templatevariables)
     {
-        
-      
-       $variables = $this->getVariableValues($contents,$templatevariables);
-      
-       $messageBody = $contents;
-      
-       foreach($variables as $v =>$k)
-       {
-          
-           
-           $messageBody = str_replace($v,$k,$messageBody);
-          
-           
-       }
-       
-       return $messageBody;
-      
-      
-       
+        $variables = $this->getVariableValues($contents, $templatevariables);
+
+        $messageBody = $contents;
+
+        foreach ($variables as $v =>$k) {
+            $messageBody = str_replace($v, $k, $messageBody);
+        }
+
+        return $messageBody;
     }
-    
-    public function getVariableValues($contents,$templatevariables)
+
+    public function getVariableValues($contents, $templatevariables)
     {
-        
-     
         $variables = [];
-        $name = $this->checkElement('name',$templatevariables);
-        $email = $this->checkElement('username',$templatevariables);
-        $password = $this->checkElement('password',$templatevariables);
-      
+        $name = $this->checkElement('name', $templatevariables);
+        $email = $this->checkElement('username', $templatevariables);
+        $password = $this->checkElement('password', $templatevariables);
+
         $variables['{$name}'] = $name;
         $variables['{$username}'] = $email;
         $variables['{$password}'] = $password;
 
-      
-       
         return $variables;
-        
     }
-    
-      public function checkElement($element, $array)
+
+    public function checkElement($element, $array)
     {
-        $value = "";
+        $value = '';
         if (is_array($array)) {
             if (key_exists($element, $array)) {
                 $value = $array[$element];
             }
         }
+
         return $value;
     }
 
-
-    protected function getEmailMobileStatusResponse($user,$userId)
+    protected function getEmailMobileStatusResponse($user, $userId)
     {
-       
         $emailMobileSetting = StatusSetting::select('emailverification_status', 'msg91_status')->first();
         if ($emailMobileSetting->emailverification_status == 0 && $emailMobileSetting->msg91_status == 1) {
             $user['mobile_verified'] = 0;

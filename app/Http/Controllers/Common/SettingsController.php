@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Common;
 
 use App\ApiKey;
+use App\Email_log;
 use App\Model\Common\Mailchimp\MailchimpSetting;
 use App\Model\Common\Setting;
 use App\Model\Common\StatusSetting;
@@ -17,9 +18,6 @@ use GrahamCampbell\Markdown\Facades\Markdown;
 use Illuminate\Http\Request;
 use Spatie\Activitylog\Models\Activity;
 use Yajra\DataTables\DataTables;
-use App\Email_log;
-
-
 
 class SettingsController extends BaseSettingsController
 {
@@ -41,7 +39,6 @@ class SettingsController extends BaseSettingsController
 
     public function settings(Setting $settings)
     {
-        
         if (! $settings->where('id', '1')->first()) {
             $settings->create(['company' => '']);
         }
@@ -323,12 +320,9 @@ class SettingsController extends BaseSettingsController
 
     public function settingsMail()
     {
-       
         try {
             return view('themes.default1.common.email-log');
         } catch (\Exception $ex) {
-           
-           
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -410,74 +404,53 @@ class SettingsController extends BaseSettingsController
     public function getMails(Request $request)
     {
         try {
-            
             $email_log = Email_log::orderBy('date', 'desc')->take(50);
-           
-       
-           
-          
-      return Datatables::of($email_log)
-      
-      
+
+            return Datatables::of($email_log)
+
              ->addColumn('checkbox', function ($model) {
-                return "<input type='checkbox' class='email' value=".$model->id.' name=select[] id=check>';})
-                 
-                
+                 return "<input type='checkbox' class='email' value=".$model->id.' name=select[] id=check>';
+             })
+
                 ->addColumn('date', function ($model) {
-                             $date = $model->date;
+                    $date = $model->date;
 
-                              return getDateHtml($date);
-                      })
+                    return getDateHtml($date);
+                })
                         ->addColumn('from', function ($model) {
-                           
-                                  return ($model->from);
-                               
-                          })
+                            return $model->from;
+                        })
                           ->addColumn('to', function ($model) {
-                                  return ($model->to);
+                              return $model->to;
                           })
-                       
-                     ->addColumn('subject', function ($model) {
-                                  return ucfirst($model->subject);
-                          })
-                      ->rawColumns(['checkbox', 'date', 'from', 'to',
-                                 'bcc', 'subject',  'status', ])
-                        ->filterColumn('from', function ($query, $keyword) {
-                                  $sql = '`from` like ?';
-                                  $query->whereRaw($sql, ["%{$keyword}%"]);
-                              })
-                         ->filterColumn('to', function ($query, $keyword) {
-                                  $sql = '`to` like ?';
-                                  $query->whereRaw($sql, ["%{$keyword}%"]);
-                              })
-                         ->filterColumn('subject', function ($query, $keyword) {
-                                  $sql = '`subject` like ?';
-                                  $query->whereRaw($sql, ["%{$keyword}%"]);
-                              })
-                        ->filterColumn('status', function ($query, $keyword) {
-                                  $sql = '`status` like ?';
-                                  $query->whereRaw($sql, ["%{$keyword}%"]);
-                              })
-                        ->rawColumns(['checkbox', 'date', 'from', 'to',
-                                  'bcc', 'subject',  'status', ])
-                                  
-                        
-                         ->make(true);
-                    
-                    
-                    
-        
-                 
-        
-      
-       
-        
-    
-            
-          
-           
 
-        //   return DataTables::of($email_log)
+                     ->addColumn('subject', function ($model) {
+                         return ucfirst($model->subject);
+                     })
+                      ->rawColumns(['checkbox', 'date', 'from', 'to',
+                          'bcc', 'subject',  'status', ])
+                        ->filterColumn('from', function ($query, $keyword) {
+                            $sql = '`from` like ?';
+                            $query->whereRaw($sql, ["%{$keyword}%"]);
+                        })
+                         ->filterColumn('to', function ($query, $keyword) {
+                             $sql = '`to` like ?';
+                             $query->whereRaw($sql, ["%{$keyword}%"]);
+                         })
+                         ->filterColumn('subject', function ($query, $keyword) {
+                             $sql = '`subject` like ?';
+                             $query->whereRaw($sql, ["%{$keyword}%"]);
+                         })
+                        ->filterColumn('status', function ($query, $keyword) {
+                            $sql = '`status` like ?';
+                            $query->whereRaw($sql, ["%{$keyword}%"]);
+                        })
+                        ->rawColumns(['checkbox', 'date', 'from', 'to',
+                            'bcc', 'subject',  'status', ])
+
+                         ->make(true);
+
+            //   return DataTables::of($email_log)
         //     ->setTotalRecords($email_log->count())
         //      ->addColumn('checkbox', function ($model) {
         //          return "<input type='checkbox' class='email' value=".$model->id.' name=select[] id=check>';
@@ -496,7 +469,6 @@ class SettingsController extends BaseSettingsController
 
         //                           return $to;
         //                       })
-                            
 
         //                       ->addColumn('subject', function ($model) {
         //                           return ucfirst($model->subject);
@@ -523,9 +495,7 @@ class SettingsController extends BaseSettingsController
         //                       ->rawColumns(['checkbox', 'date', 'from', 'to',
         //                           'bcc', 'subject',  'status', ])
         //                     ->make(true);
-                            
         } catch (\Exception $e) {
-           
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }

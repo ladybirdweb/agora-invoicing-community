@@ -11,9 +11,8 @@ use App\User;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Validator;
 use Symfony\Component\Mime\Email;
-
+use Validator;
 
 class AuthController extends BaseAuthController
 {
@@ -316,99 +315,84 @@ class AuthController extends BaseAuthController
 
     public function salesManagerMail($user, $bcc = [])
     {
-         $settings = new \App\Model\Common\Setting();
-            $setting = $settings->first();
-             $templates = new \App\Model\Common\Template();
-            $template = $templates
+        $settings = new \App\Model\Common\Setting();
+        $setting = $settings->first();
+        $templates = new \App\Model\Common\Template();
+        $template = $templates
                     ->join('template_types', 'templates.type', '=', 'template_types.id')
                     ->where('template_types.name', '=', 'sales_manager_email')
                     ->select('templates.data', 'templates.name')
                     ->first();
 
-              $mail = new \App\Http\Controllers\Common\PhpMailController();
-             $mailer = $mail->setMailConfig($setting);
-           
-            $html = $template->data;
-        try{
-        
-        $manager = $user->manager()
+        $mail = new \App\Http\Controllers\Common\PhpMailController();
+        $mailer = $mail->setMailConfig($setting);
+
+        $html = $template->data;
+        try {
+            $manager = $user->manager()
 
                 ->where('position', 'manager')
                 ->select('first_name', 'last_name', 'email', 'mobile_code', 'mobile', 'skype')
                 ->first();
-        if ($user && $user->role == 'user' && $manager) {
-           
-            
-           
-            $email = (new Email())
+            if ($user && $user->role == 'user' && $manager) {
+                $email = (new Email())
                 ->from($setting->email)
                 ->to($user->email)
                  ->subject($template->name)
-                 ->html($mail->mailTemplate($template->data,$templatevariables=[ 'name' => $user->first_name.' '.$user->last_name,
-                'manager_first_name' => $manager->first_name,
-                'manager_last_name' => $manager->last_name,
-                'manager_email' => $manager->email,
-                'manager_code' => $manager->mobile_code,
-                'manager_mobile' => $manager->mobile,
-                'manager_skype' => $manager->skype,]));
-               
-                
+                 ->html($mail->mailTemplate($template->data, $templatevariables = ['name' => $user->first_name.' '.$user->last_name,
+                     'manager_first_name' => $manager->first_name,
+                     'manager_last_name' => $manager->last_name,
+                     'manager_email' => $manager->email,
+                     'manager_code' => $manager->mobile_code,
+                     'manager_mobile' => $manager->mobile,
+                     'manager_skype' => $manager->skype, ]));
+
                 $mailer->send($email);
-                 $mail->email_log_success($setting->email,$user->email,$template->name,$html);
-        
+                $mail->email_log_success($setting->email, $user->email, $template->name, $html);
+            }
+        } catch (\Exception $ex) {
+            $mail->email_log_fail($setting->email, $user->email, $template->name, $html);
         }
-        }catch(\Exception $ex)
-        {
-        $mail->email_log_fail($setting->email,$user->email,$template->name,$html);
-        }
-        
     }
 
     public function accountManagerMail($user, $bcc = [])
     {
-            $settings = new \App\Model\Common\Setting();
-            $setting = $settings->first();
-            $templates = new \App\Model\Common\Template();
-            $template = $templates
+        $settings = new \App\Model\Common\Setting();
+        $setting = $settings->first();
+        $templates = new \App\Model\Common\Template();
+        $template = $templates
                     ->join('template_types', 'templates.type', '=', 'template_types.id')
                     ->where('template_types.name', '=', 'account_manager_email')
                     ->select('templates.data', 'templates.name')
                     ->first();
-                    
-             
-              $mail = new \App\Http\Controllers\Common\PhpMailController();
-              $mailer = $mail->setMailConfig($setting);
-              $html = $template->data;
-       try{
-        $manager = $user->accountManager()
+
+        $mail = new \App\Http\Controllers\Common\PhpMailController();
+        $mailer = $mail->setMailConfig($setting);
+        $html = $template->data;
+        try {
+            $manager = $user->accountManager()
 
                 ->where('position', 'account_manager')
                 ->select('first_name', 'last_name', 'email', 'mobile_code', 'mobile', 'skype')
                 ->first();
-        if ($user && $user->role == 'user' && $manager) {
-           
-            
-           
-            $email = (new Email())
+            if ($user && $user->role == 'user' && $manager) {
+                $email = (new Email())
                 ->from($setting->email)
                 ->to($user->email)
                  ->subject($template->name)
-                 ->html($mail->mailTemplate($template->data,$templatevariables=[ 'name' => $user->first_name.' '.$user->last_name,
-                'manager_first_name' => $manager->first_name,
-                'manager_last_name' => $manager->last_name,
-                'manager_email' => $manager->email,
-                'manager_code' => $manager->mobile_code,
-                'manager_mobile' => $manager->mobile,
-                'manager_skype' => $manager->skype]));
-               
+                 ->html($mail->mailTemplate($template->data, $templatevariables = ['name' => $user->first_name.' '.$user->last_name,
+                     'manager_first_name' => $manager->first_name,
+                     'manager_last_name' => $manager->last_name,
+                     'manager_email' => $manager->email,
+                     'manager_code' => $manager->mobile_code,
+                     'manager_mobile' => $manager->mobile,
+                     'manager_skype' => $manager->skype, ]));
+
                 $mailer->send($email);
-                 $mail->email_log_success($setting->email,$user->email,$template->name,$html);
-                    
-         
+                $mail->email_log_success($setting->email, $user->email, $template->name, $html);
+            }
+        } catch (\Exception $ex) {
+            $mail->email_log_fail($setting->email, $user->email, $template->name, $html);
         }
-       }catch(\Exception $ex){
-           $mail->email_log_fail($setting->email,$user->email,$template->name,$html);
-       }
-       }
-    
+    }
 }

@@ -4,8 +4,6 @@ namespace App\Http\Controllers\User;
 
 use App\User;
 use Illuminate\Http\Request;
-use Yajra\DataTables\DataTables;
-
 
 class SoftDeleteController extends ClientController
 {

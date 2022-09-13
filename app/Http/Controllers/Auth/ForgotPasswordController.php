@@ -45,19 +45,18 @@ class ForgotPasswordController extends Controller
      */
     public function sendResetLinkEmail(Request $request)
     {
-          //check in the settings
-            $settings = new \App\Model\Common\Setting();
-            $setting = $settings->where('id', 1)->first();
-            //template
-            $templates = new \App\Model\Common\Template();
-            $temp_id = $setting->forgot_password;
-            $template = $templates->where('id', $temp_id)->first();
-            
-             $mail = new \App\Http\Controllers\Common\PhpMailController();
-             $mailer = $mail->setMailConfig($setting);
-             $html = $template->data;
+        //check in the settings
+        $settings = new \App\Model\Common\Setting();
+        $setting = $settings->where('id', 1)->first();
+        //template
+        $templates = new \App\Model\Common\Template();
+        $temp_id = $setting->forgot_password;
+        $template = $templates->where('id', $temp_id)->first();
+
+        $mail = new \App\Http\Controllers\Common\PhpMailController();
+        $mailer = $mail->setMailConfig($setting);
+        $html = $template->data;
         try {
-           
             $this->validate($request, ['email' => 'required|email|exists:users,email']);
             $email = $request->email;
             $token = str_random(40);
@@ -74,23 +73,22 @@ class ForgotPasswordController extends Controller
 
             $user = new \App\User();
             $user = $user->where('email', $email)->first();
-             $to = $user->email;
+            $to = $user->email;
             if (! $user) {
                 return redirect()->back()->with('fails', 'Invalid Email');
             }
-          
-             $contactUs = $setting->website;
 
+            $contactUs = $setting->website;
 
             if (emailSendingStatus()) {
-                 $email = (new Email())
+                $email = (new Email())
                 ->from($setting->email)
                 ->to($user->email)
                  ->subject($template->name)
-                 ->html($mail->mailTemplate($template->data,$templatevariables=[ 'name' => $user->first_name.' '.$user->last_name, 'url' => $url, 'contact_us' => $contactUs]));
-               
-                $mailer->send($email); 
-                 $mail->email_log_success($setting->email,$user->email,$template->name,$html);
+                 ->html($mail->mailTemplate($template->data, $templatevariables = ['name' => $user->first_name.' '.$user->last_name, 'url' => $url, 'contact_us' => $contactUs]));
+
+                $mailer->send($email);
+                $mail->email_log_success($setting->email, $user->email, $template->name, $html);
                 $response = ['type' => 'success',   'message' => 'Reset instructions have been mailed to '.$to.'
     .Be sure to check your Junk folder if you do not see an email from us in your Inbox within a few minutes.'];
             } else {
@@ -99,8 +97,8 @@ class ForgotPasswordController extends Controller
 
             return response()->json($response);
         } catch (\Exception $ex) {
-             $mail->email_log_fail($setting->email,$user->email,$template->name,$html);
-          
+            $mail->email_log_fail($setting->email, $user->email, $template->name, $html);
+
             // dd($ex,$ex->getCode());
             if ($ex instanceof \Illuminate\Validation\ValidationException) {
                 $errors = ['Reset instructions have been mailed to you.

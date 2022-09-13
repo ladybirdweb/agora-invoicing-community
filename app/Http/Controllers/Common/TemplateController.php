@@ -30,7 +30,6 @@ class TemplateController extends Controller
     public function index()
     {
         try {
-          
             return view('themes.default1.common.template.inbox');
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -63,7 +62,6 @@ class TemplateController extends Controller
     public function create()
     {
         try {
-            
             $controller = new ProductController();
             $url = $controller->GetMyUrl();
             $i = $this->template->orderBy('created_at', 'desc')->first()->id + 1;
@@ -96,7 +94,6 @@ class TemplateController extends Controller
     public function edit($id)
     {
         try {
-           
             $controller = new ProductController();
             $url = $controller->GetMyUrl();
 
@@ -120,7 +117,6 @@ class TemplateController extends Controller
         ]);
 
         try {
-            
             $template = $this->template->where('id', $id)->first();
             $template->fill($request->input())->save();
 

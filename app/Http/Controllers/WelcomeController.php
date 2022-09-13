@@ -6,7 +6,6 @@ use App\Model\Common\Country;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 
-
 class WelcomeController extends Controller
 {
     private $request;
@@ -53,7 +52,6 @@ class WelcomeController extends Controller
                 ->select('countries.nicename as country', 'countries.country_code_char2 as code', \DB::raw('COUNT(users.id) as count'))
                 ->orderBy('country', 'asc')
                 ->groupBy('users.country');
-     
 
         return DataTables::of($users)
                             ->addColumn('country', function ($model) {

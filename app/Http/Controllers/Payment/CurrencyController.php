@@ -35,7 +35,6 @@ class CurrencyController extends Controller
 
     public function getCurrency()
     {
-        
         $defaultCurrency = Setting::pluck('default_currency')->first();
         $model = Currency::where('name', '!=', null)->where('code', '!=', $defaultCurrency)->
         select('id', 'name', 'code', 'symbol', 'status')

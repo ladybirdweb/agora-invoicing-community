@@ -9,7 +9,6 @@ use App\Model\Product\ConfigurableOption;
 use App\Model\Product\GroupFeatures;
 use App\Model\Product\ProductGroup;
 use Illuminate\Http\Request;
-use Yajra\DataTables\Datatables;
 
 class GroupController extends Controller
 {

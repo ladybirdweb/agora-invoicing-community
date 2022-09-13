@@ -13,11 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        if (! Schema::hasColumn('email_log', 'status')) {
-            Schema::table('email_log', function (Blueprint $table) {
-                $table->string('status', 255)->nullable();
-            });
-        }
+        Schema::table('activity_log', function (Blueprint $table) {
+             $table->text('batch_uuid')->nullable();
+        });
     }
 
     /**
@@ -27,8 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('email_log', function (Blueprint $table) {
-            $table->dropColumn('status');
+        Schema::table('activity_log', function (Blueprint $table) {
+             Schema::drop(config('activity_log'));
         });
     }
 };

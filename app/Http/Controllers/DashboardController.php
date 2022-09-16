@@ -270,6 +270,7 @@ class DashboardController extends Controller
             ->groupBy('subscriptions.id');
 
         if ($past30Days) {
+           
             $baseQuery->where('update_ends_at', '<', $today)
                 ->where('update_ends_at', '>=', (new Carbon('-30 days'))->toDateTimeString());
         } else {

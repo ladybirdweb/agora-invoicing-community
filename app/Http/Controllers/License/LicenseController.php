@@ -41,8 +41,9 @@ class LicenseController extends Controller
             'grant_type' => $this->grant_type,
         ];
         $response = $this->postCurl($url.'oauth/token', $data);
-        $response = json_decode($response);
 
+        $response = json_decode($response);
+        
         return $response;
     }
 

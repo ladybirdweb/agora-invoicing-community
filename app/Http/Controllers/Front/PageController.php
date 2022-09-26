@@ -34,7 +34,7 @@ class PageController extends Controller
 
     public function getPages()
     {
-        return \DataTables::of($this->page->select('id','name','url','created_at'))
+        return \DataTables::of($this->page->select('id', 'name', 'url', 'created_at'))
                         ->addColumn('checkbox', function ($model) {
                             return "<input type='checkbox' class='page_checkbox' 
                             value=".$model->id.' name=select[] id=check>';

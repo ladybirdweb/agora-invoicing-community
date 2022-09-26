@@ -9,7 +9,6 @@ use App\Model\Product\ConfigurableOption;
 use App\Model\Product\GroupFeatures;
 use App\Model\Product\ProductGroup;
 use Illuminate\Http\Request;
-use Yajra\DataTables\Datatables;
 
 class GroupController extends Controller
 {
@@ -70,10 +69,10 @@ class GroupController extends Controller
                             " class='btn btn-sm btn-secondary btn-xs'".tooltip('Edit')."<i class='fa fa-edit' 
                             style='color:white;'> </i></a>";
                         })
-                          ->filterColumn('name', function($query, $keyword) {
-                                $sql = "name like ?";
-                                $query->whereRaw($sql, ["%{$keyword}%"]);
-                            })
+                          ->filterColumn('name', function ($query, $keyword) {
+                              $sql = 'name like ?';
+                              $query->whereRaw($sql, ["%{$keyword}%"]);
+                          })
                         ->rawColumns(['checkbox', 'name',  'action'])
                         ->make(true);
     }

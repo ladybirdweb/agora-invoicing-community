@@ -17,8 +17,6 @@ use App\Model\Product\Subscription;
 use App\User;
 use Bugsnag;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
-use App\Apikey;
 
 class OrderController extends BaseOrderController
 {
@@ -221,8 +219,6 @@ class OrderController extends BaseOrderController
         }
     }
 
-  
-
     /**
      * Store a newly created resource in storage.
      *
@@ -230,7 +226,6 @@ class OrderController extends BaseOrderController
      */
     public function show($id)
     {
-        
         try {
             $order = $this->order->findOrFail($id);
             if (User::onlyTrashed()->find($order->client)) {//If User is soft deleted for this order
@@ -264,7 +259,6 @@ class OrderController extends BaseOrderController
                 $noOfAllowedInstallation = $cont->getNoOfAllowedInstallation($order->serial_key, $order->product);
             }
             $allowDomainStatus = StatusSetting::pluck('domain_check')->first();
-   
 
             return view('themes.default1.order.show',
                 compact('user', 'order', 'subscription', 'licenseStatus', 'installationDetails', 'allowDomainStatus', 'noOfAllowedInstallation', 'lastActivity', 'versionLabel', 'date', 'licdate', 'supdate'));

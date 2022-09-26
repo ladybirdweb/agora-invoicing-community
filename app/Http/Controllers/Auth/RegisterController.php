@@ -14,8 +14,6 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Symfony\Component\Mime\Email;
 
-
-
 class RegisterController extends Controller
 {
     /*
@@ -47,103 +45,91 @@ class RegisterController extends Controller
         $this->middleware('guest');
     }
 
-   public function postRegister(ProfileRequest $request, User $user)
+    public function postRegister(ProfileRequest $request, User $user)
     {
-        
-           $apiKeys = StatusSetting::value('recaptcha_status');
-           $captchaRule = $apiKeys ? 'required|' : 'sometimes|';
-           $this->validate($request, [
+        $apiKeys = StatusSetting::value('recaptcha_status');
+        $captchaRule = $apiKeys ? 'required|' : 'sometimes|';
+        $this->validate($request, [
             'g-recaptcha-response-1' => $captchaRule.'captcha',
-            ], [
+        ], [
             'g-recaptcha-response-1.required' => 'Robot Verification Failed. Please Try Again.',
-           ]);
-        
-            //check in the settings
-            $settings = new \App\Model\Common\Setting();
-            $settings = $settings->where('id', 1)->first();
-          
-          
-            
+        ]);
 
-            //template
-            $template = new \App\Model\Common\Template();
-            $temp_id = $settings->where('id', 1)->first()->password_mail;
-            $template = $template->where('id', $temp_id)->first();
+        //check in the settings
+        $settings = new \App\Model\Common\Setting();
+        $settings = $settings->where('id', 1)->first();
 
-            
-            $mail = new \App\Http\Controllers\Common\PhpMailController();
-            $mailer = $mail->setMailConfig($settings);
-               
-            $html = $template->data;
+        //template
+        $template = new \App\Model\Common\Template();
+        $temp_id = $settings->where('id', 1)->first()->password_mail;
+        $template = $template->where('id', $temp_id)->first();
+
+        $mail = new \App\Http\Controllers\Common\PhpMailController();
+        $mailer = $mail->setMailConfig($settings);
+
+        $html = $template->data;
         try {
-          
-          
             $location = getLocation();
 
             $state_code = $location['iso_code'].'-'.$location['state'];
 
             $state = getStateByCode($state_code);
             $password = Str::random(20);
-            
-            $user = 
+
+            $user =
             [
 
-             'state' => $state['id'],
-             'town' => $location['city'],
-             'password' => \Hash::make($password),
-             'profile_pic' => '',
-             'active' => 0,
-             'mobile_verified' => 0,
-             'country' => $request->input('country'),
-             'mobile' => ltrim($request->input('mobile'), '0'),
-             'mobile_code' =>  $request->input('mobile_code'),
-             'role' => 'user',
-             'company' => strip_tags($request->input('company')),
-             'address' =>  strip_tags($request->input('address')),
-             'email' => strip_tags($request->input('email')),
-             'user_name' => strip_tags($request->input('email')),
-             'first_name' => strip_tags($request->input('first_name')),
-             'last_name' => strip_tags($request->input('last_name')),
-             'manager' => $user->assignSalesManager(),
-             'ip' => $location['ip'],
-             'timezone_id' => getTimezoneByName($location['timezone']),
-             'referrer' => Referer::get()
-             
-             
-             ];
-             
-             $userInput = User::insertGetId($user);
-            
-             $email = (new Email())
+                'state' => $state['id'],
+                'town' => $location['city'],
+                'password' => \Hash::make($password),
+                'profile_pic' => '',
+                'active' => 0,
+                'mobile_verified' => 0,
+                'country' => $request->input('country'),
+                'mobile' => ltrim($request->input('mobile'), '0'),
+                'mobile_code' =>  $request->input('mobile_code'),
+                'role' => 'user',
+                'company' => strip_tags($request->input('company')),
+                'address' =>  strip_tags($request->input('address')),
+                'email' => strip_tags($request->input('email')),
+                'user_name' => strip_tags($request->input('email')),
+                'first_name' => strip_tags($request->input('first_name')),
+                'last_name' => strip_tags($request->input('last_name')),
+                'manager' => $user->assignSalesManager(),
+                'ip' => $location['ip'],
+                'timezone_id' => getTimezoneByName($location['timezone']),
+                'referrer' => Referer::get(),
+
+            ];
+
+            $userInput = User::insertGetId($user);
+
+            $email = (new Email())
                    ->from($settings->email)
                    ->to($user['email'])
                    ->subject($template->name)
-                   ->html($mail->mailTemplate($template->data,$templatevariables=['name' => $user['first_name'].' '.$user['last_name'],
-                    'username' => $user['email'], 'password' => $password,]));
-                   
-                    
-             $mailer->send($email);
-             $mail->email_log_success($settings->email,$user['email'],$template->name,$html);
-            
-            
-             $emailMobileStatusResponse = $this->getEmailMobileStatusResponse($user,$userInput);
+                   ->html($mail->mailTemplate($template->data, $templatevariables = ['name' => $user['first_name'].' '.$user['last_name'],
+                       'username' => $user['email'], 'password' => $password, ]));
 
-             activity()->log('User <strong>'.$user['first_name'].' '.$user['last_name'].'</strong> was created');
+            $mailer->send($email);
+            $mail->email_log_success($settings->email, $user['email'], $template->name, $html);
+
+            $emailMobileStatusResponse = $this->getEmailMobileStatusResponse($user, $userInput);
+
+            activity()->log('User <strong>'.$user['first_name'].' '.$user['last_name'].'</strong> was created');
 
             return response()->json($emailMobileStatusResponse);
-        }      catch (\Exception $ex) {
-           
-            $mail->email_log_fail($settings->email,$user['email'],$template->name,$html);
+        } catch (\Exception $ex) {
+            $mail->email_log_fail($settings->email, $user['email'], $template->name, $html);
             app('log')->error($ex->getMessage());
             $result = [$ex->getMessage()];
 
             return response()->json($result);
         }
     }
-    
-    protected function getEmailMobileStatusResponse($user,$userId)
+
+    protected function getEmailMobileStatusResponse($user, $userId)
     {
-       
         $emailMobileSetting = StatusSetting::select('emailverification_status', 'msg91_status')->first();
         if ($emailMobileSetting->emailverification_status == 0 && $emailMobileSetting->msg91_status == 1) {
             $user['mobile_verified'] = 0;

@@ -35,7 +35,6 @@ class LicenseSettingsController extends LicensePermissionsController
     {
         try {
             $allTypes = $this->licenseType->select('id', 'name');
-            
 
             return \DataTables::of($allTypes)
             ->addColumn('checkbox', function ($model) {
@@ -51,14 +50,15 @@ class LicenseSettingsController extends LicensePermissionsController
              class='btn btn-sm btn-secondary btn-xs editType'".tooltip('Edit')."<i class='fa fa-edit'
              style='color:white;'> </i></button>&nbsp;</p>";
             })
-              ->filterColumn('type_name', function($query, $keyword) {
-                    $sql = "name like ?";
-                    $query->whereRaw($sql, ["%{$keyword}%"]);
-                })
+              ->filterColumn('type_name', function ($query, $keyword) {
+                  $sql = 'name like ?';
+                  $query->whereRaw($sql, ["%{$keyword}%"]);
+              })
              ->rawColumns(['checkbox', 'type_name', 'action'])
             ->make(true);
         } catch (\Exception $ex) {
             dd($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

@@ -53,14 +53,14 @@ class SocialMediaController extends Controller
                                 ." class='btn btn-sm btn-secondary btn-xs'".tooltip('Edit')."<i class='fa fa-edit'
                                  style='color:white;'> </i></a>";
                             })
-                             ->filterColumn('name', function($query, $keyword) {
-                                $sql = "name like ?";
-                                $query->whereRaw($sql, ["%{$keyword}%"]);
-                            })
-                             ->filterColumn('link', function($query, $keyword) {
-                                $sql = "link like ?";
-                                $query->whereRaw($sql, ["%{$keyword}%"]);
-                            })
+                             ->filterColumn('name', function ($query, $keyword) {
+                                 $sql = 'name like ?';
+                                 $query->whereRaw($sql, ["%{$keyword}%"]);
+                             })
+                             ->filterColumn('link', function ($query, $keyword) {
+                                 $sql = 'link like ?';
+                                 $query->whereRaw($sql, ["%{$keyword}%"]);
+                             })
                             ->rawColumns(['name', 'link', 'action'])
                             ->make(true);
             // ->searchColumns('name')

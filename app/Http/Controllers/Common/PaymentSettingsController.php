@@ -11,10 +11,10 @@ class PaymentSettingsController extends Controller
 {
     public function getPlugin()
     {
+        
         try{
         $plugins = $this->fetchConfig();
-      
-
+       
         return \DataTables::of(new Collection($plugins))
                         // ->searchColumns('name')
                         ->addColumn('name', function ($model) {
@@ -78,14 +78,15 @@ class PaymentSettingsController extends Controller
                             ->make(true);
         }catch(\Exception $e)
         {
-            dd($e);
+            dd($e,'pi');
         }
     }
 
     public function fetchConfig()
     {
+        try{
         $configs = $this->readConfigs();
-        //dd($configs);
+        // dd($configs);
         $plugs = new Plugin();
         $fields = [];
         $attributes = [];
@@ -94,12 +95,14 @@ class PaymentSettingsController extends Controller
                 $fields[$key] = include $config;
             }
         }
+
         if (count($fields) > 0) {
             foreach ($fields as $key => $field) {
-                $plug = $plugs->where('name', $field['name'])->select(array('path', 'status'))->orderBy('name');
+                $plug = $plugs->where('name', $field['name'])->select(['path', 'status'])->orderBy('name');
             
                 
                 if ($plug) {
+                  
                    
                     foreach ($plug as $i => $value) {
                         $attributes[$key]['path'] = $plug[$i]['path'];
@@ -117,12 +120,17 @@ class PaymentSettingsController extends Controller
                 $attributes[$key]['author'] = $field['author'];
             }
         }
-
+         
         return $attributes;
+        }catch(\Exception $e)
+        {
+            dd($e,'ji');
+        }
     }
 
     public function readConfigs()
     {
+        try{
         $dir = app_path().DIRECTORY_SEPARATOR.'Plugins'.DIRECTORY_SEPARATOR;
         $directories = scandir($dir);
         $files = [];
@@ -160,6 +168,10 @@ class PaymentSettingsController extends Controller
             return $config;
         } else {
             return 'null';
+        }
+        }catch(\Exception $e)
+        {
+            dd($e,'hi');
         }
     }
 

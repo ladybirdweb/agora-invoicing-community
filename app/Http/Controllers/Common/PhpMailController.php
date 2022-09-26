@@ -211,6 +211,17 @@ class PhpMailController extends Controller
         $manager_mobile = $this->checkElement('manager_mobile',$templatevariables);
         $manager_skype = $this->checkElement('manager_skype',$templatevariables);
         $contact_us = $this->checkElement('contact_us',$templatevariables);
+        
+        $serialkeyurl = $this->checkElement('serialkeyurl',$templatevariables);
+        $downloadurl = $this->checkElement('downloadurl',$templatevariables);
+        $invoiceurl = $this->checkElement('invoiceurl',$templatevariables);
+        $product = $this->checkElement('product',$templatevariables);
+        $number = $this->checkElement('number',$templatevariables);
+        $expiry = $this->checkElement('expiry',$templatevariables);
+        $url = $this->checkElement('url',$templatevariables);
+        $knowledge_base = $this->checkElement('knowledge_base',$templatevariables);
+
+       
 
         
 
@@ -233,6 +244,15 @@ class PhpMailController extends Controller
         $variables['{$manager_mobile}'] = $manager_mobile;
         $variables['{$manager_skype}'] = $manager_skype;
         $variables['{$contact_us}'] = $contact_us;
+        
+        $variables['{$serialkeyurl}'] = $serialkeyurl;
+        $variables['{$downloadurl}'] = $downloadurl;
+        $variables['{$invoiceurl}'] = $invoiceurl;
+        $variables['{$product}'] = $product;
+        $variables['{$number}'] = $number;
+        $variables['{$expiry}'] = $expiry;
+        $variables['{$url}'] = $url;
+        $variables['{$knowledge_base}'] = $knowledge_base;
 
         return $variables;
         

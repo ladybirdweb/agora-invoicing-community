@@ -82,7 +82,7 @@ License Types
             columns: [
                 {data: 'checkbox', name: 'checkbox'},
                 {data: 'type_name', name: 'type_name'},
-                {data: 'action', name: 'action'}
+                {data: 'action', name: 'action', searchable: true}
             ],
             "fnDrawCallback": function( oSettings ) {
                 bindEditButton();

@@ -45,6 +45,7 @@ class ForgotPasswordController extends Controller
      */
     public function sendResetLinkEmail(Request $request)
     {
+        
             //check in the settings
             $settings = new \App\Model\Common\Setting();
             $setting = $settings->where('id', 1)->first();
@@ -56,10 +57,15 @@ class ForgotPasswordController extends Controller
             $mail = new \App\Http\Controllers\Common\PhpMailController();
             $mailer = $mail->setMailConfig($setting);
             $html = $template->data;
-        try {
-           
+            
             $this->validate($request, ['email' => 'required|email|exists:users,email']);
             $email = $request->email;
+            $user = new \App\User();
+            $user = $user->where('email', $email)->first();
+        try {
+           
+           
+           
             $token = str_random(40);
             $password = new \App\Model\User\Password();
             if ($password->where('email', $email)->first()) {
@@ -72,8 +78,6 @@ class ForgotPasswordController extends Controller
 
             $url = url("password/reset/$token");
 
-            $user = new \App\User();
-            $user = $user->where('email', $email)->first();
              $to = $user->email;
             if (! $user) {
                 return redirect()->back()->with('fails', 'Invalid Email');
@@ -92,13 +96,14 @@ class ForgotPasswordController extends Controller
                  $mailer->send($email); 
                  $mail->email_log_success($setting->email,$user->email,$template->name,$html);
                 $response = ['type' => 'success',   'message' => 'Reset instructions have been mailed to '.$to.'
-    .Be sure to check your Junk folder if you do not see an email from us in your Inbox within a few minutes.'];
+             .Be sure to check your Junk folder if you do not see an email from us in your Inbox within a few minutes.'];
             } else {
                 $response = ['type' => 'fails',   'message' => 'System email is not configured. Please contact admin.'];
             }
 
             return response()->json($response);
         } catch (\Exception $ex) {
+            
                 $mail->email_log_fail($setting->email,$user->email,$template->name,$html);
           
             // dd($ex,$ex->getCode());

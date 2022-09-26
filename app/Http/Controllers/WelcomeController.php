@@ -53,6 +53,7 @@ class WelcomeController extends Controller
                 ->select('countries.nicename as country', 'countries.country_code_char2 as code', \DB::raw('COUNT(users.id) as count'))
                 ->orderBy('country', 'asc')
                 ->groupBy('users.country');
+                
      
 
         return DataTables::of($users)
@@ -63,6 +64,10 @@ class WelcomeController extends Controller
                                   return '<a href='.url('clients/'.$model->id.'?country='.$model->code).'>'
                             .($model->count).'</a>';
                               })
+                            ->filterColumn('country', function($query, $keyword) {
+                                    $sql = "countries.nicename like ?";
+                                    $query->whereRaw($sql, ["%{$keyword}%"]);
+                                })
                             ->rawColumns(['country', 'count'])
                             ->make(true);
     }

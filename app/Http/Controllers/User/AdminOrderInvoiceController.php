@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Model\Order\InstallationDetail;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
+use Yajra\DataTables\DataTables;
 
 class AdminOrderInvoiceController extends Controller
 {
@@ -16,10 +17,9 @@ class AdminOrderInvoiceController extends Controller
         ->select('invoices.id', 'invoices.user_id', 'invoices.date', 'invoices.number', 'invoices.grand_total', 'order_invoice_relations.order_id', 'invoices.is_renewed', 'invoices.status', 'invoices.currency')
         ->groupBy('invoices.number')
         ->where('invoices.user_id', '=', $id)
-        ->orderBy('invoices.created_at', 'desc')
-        ->get();
+        ->orderBy('invoices.created_at', 'desc');
 
-        return\DataTables::of($invoices)
+        return DataTables::of($invoices)
                         ->addColumn('checkbox', function ($model) {
                             return "<input type='checkbox' class='invoice_checkbox' 
                             value=".$model->id.' name=select[] id=check>';

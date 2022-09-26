@@ -167,6 +167,7 @@ class BaseClientController extends Controller
 
     public function getInvoicesByOrderId($orderid, $userid)
     {
+      
         try {
             $order = Order::where('id', $orderid)->where('client', $userid)->first();
 
@@ -180,7 +181,7 @@ class BaseClientController extends Controller
                         ->select('number', 'created_at', 'grand_total', 'id', 'status');
             }
 
-            return \DataTables::of($invoices->get())
+            return \DataTables::of($invoices)
              ->addColumn('number', function ($model) {
                  $url = $this->getInvoiceLinkUrl($model->id);
 
@@ -212,9 +213,11 @@ class BaseClientController extends Controller
                 class='btn btn-sm btn-primary btn-xs'".tooltip('View')."<i class='fa fa-eye' 
                 style='color:white;'> </i></a>";
             })
-                            ->rawColumns(['number', 'products', 'date', 'total', 'status', 'action'])
+            
+            ->rawColumns(['number', 'products', 'date', 'total', 'status', 'action'])
                             ->make(true);
         } catch (Exception $ex) {
+           
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

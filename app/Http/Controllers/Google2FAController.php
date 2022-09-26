@@ -5,11 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ValidateSecretRequest;
 use App\User;
 use Crypt;
-use Google2FA;
+
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
-use ParagonIE\ConstantTime\Base32;
 
+use PragmaRX\Google2FAQRCode\Google2FA;
 class Google2FAController extends Controller
 {
     use ValidatesRequests;
@@ -39,8 +39,10 @@ class Google2FAController extends Controller
      */
     public function enableTwoFactor(Request $request)
     {
+        
+        $google2fa = new Google2FA();
         //generate new secret
-        $secret = $this->generateSecret();
+        $secret = $google2fa->generateSecretKey();
 
         //get user
         $user = $request->user();
@@ -48,16 +50,16 @@ class Google2FAController extends Controller
         //encrypt and then save secret
         $user->google2fa_secret = Crypt::encrypt($secret);
         $user->save();
-
+       
         //generate image for QR barcode
-        $imageDataUri = Google2FA::getQRCodeInline(
+        $imageDataUri = $google2fa->getQRCodeInline(
             $request->getHttpHost(),
             $user->email,
             $secret,
             200
         );
-
-        return successResponse('', ['image' => $imageDataUri, 'secret' => $secret]);
+            
+    return successResponse('', ['image' => $imageDataUri, 'secret' => $secret]);
     }
 
     /**

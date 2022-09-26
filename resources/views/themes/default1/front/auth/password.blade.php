@@ -112,6 +112,7 @@ main
 
                         function resetpassword() 
                         {  
+                            
                              var mail_error = true;
                            var mobile_error = true;
                            $('#resetpasswordcheck').hide();
@@ -126,8 +127,9 @@ main
                                         url: '{{url('password/email')}}',
                                         type: 'POST',
                                         data: data,
+                                       
                                         success: function (response) {
-                                        
+                                            
                                         if(response.type == 'success'){
                                              var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+response.message+'!</div>';
                                             $('#error').hide(); 
@@ -138,6 +140,7 @@ main
                                           
                                               // response.success("Success");
                                            }  else {
+                                               
                                              var result =  '<div class="alert alert-warning alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+response.message+'!</div>';
                                             $('#error').hide(); 
                                             $('#alertMessage').show();
@@ -146,16 +149,15 @@ main
                                             $("#resetmail").html("Send Email");
                                            }
                                         },
-                                        error: function (data) {
+                                        error: function (ex) {
+                                       var myJSON = JSON.parse(ex.responseText);
                                                 var html = '<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><ul>';
-                                            $("#resetmail").html("Send Email");
-                                              for (var key in data.responseJSON.errors)
-                                            {
-                                                html += '<li>' + data.responseJSON.errors + '</li>'
-                                            }
+                                               
+                                         $("#resetmail").html("Send Email");
+                                         html += '<li>' + myJSON.message + '</li>'
+
                                             html += '</ul></div>';
                                           
-                                            
                                             $('#errorMessage').show();
                                              document.getElementById('errorMessage').innerHTML = html;
                                            

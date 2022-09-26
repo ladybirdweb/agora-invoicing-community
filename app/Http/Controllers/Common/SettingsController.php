@@ -18,6 +18,7 @@ use GrahamCampbell\Markdown\Facades\Markdown;
 use Illuminate\Http\Request;
 use Spatie\Activitylog\Models\Activity;
 use Yajra\DataTables\DataTables;
+use App\Http\Controllers\Common\PaymentSettings;
 
 
 
@@ -54,7 +55,12 @@ class SettingsController extends BaseSettingsController
 
     public function plugins()
     {
-        return view('themes.default1.common.plugins');
+        $payment = new PaymentSettingsController();
+        $pay = $payment->fetchConfig();
+        
+        $status = Plugin::where('status',1)->get();
+       
+        return view('themes.default1.common.plugins',compact('pay','status'));
     }
 
     /**

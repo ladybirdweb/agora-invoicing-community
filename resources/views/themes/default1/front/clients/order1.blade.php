@@ -69,8 +69,8 @@ active
             },
     
             columns: [
-                {data: 'product_name', name: 'product_name'},
-                 {data: 'number', name: 'number'},
+                {data: 'product_name', name: 'products.name'},
+                 {data: 'number', name: 'orders.number'},
                  {data: 'version', name: 'version'},
                 {data: 'expiry', name: 'expiry'},
               

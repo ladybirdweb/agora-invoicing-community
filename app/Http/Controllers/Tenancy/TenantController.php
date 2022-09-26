@@ -27,8 +27,22 @@ class TenantController extends Controller
     public function viewTenant()
     {
         $cloud = $this->cloud;
+        
+         $response = $this->client->request(
+                    'GET',
+                    $this->cloud->cloud_central_domain.'/tenants'
+                );
+             
+            $responseBody = (string) $response->getBody();
+            $response = json_decode($responseBody,true);
+         
+            $data = collect($response['message'])->paginate(5);
+            $de = $data->all();
+          
+            
+            
 
-        return view('themes.default1.tenant.index', compact('cloud'));
+        return view('themes.default1.tenant.index', compact('cloud','de'));
     }
 
     public function getTenants(Request $request)
@@ -38,10 +52,12 @@ class TenantController extends Controller
                     'GET',
                     $this->cloud->cloud_central_domain.'/tenants'
                 );
-              
+             
             $responseBody = (string) $response->getBody();
             $response = json_decode($responseBody);
            
+            
+          
             return \DataTables::of($response)
 
              ->addColumn('tenants', function ($model) {
@@ -65,7 +81,7 @@ class TenantController extends Controller
              ->rawColumns(['tenants', 'domain', 'db_name', 'db_username', 'action'])
              ->make(true);
         } catch (ConnectException|Exception $e) {
-            
+              dd($e);
             return redirect()->back()->with('fails', $e->getMessage());
         }
 
@@ -193,6 +209,7 @@ class TenantController extends Controller
 
     public function destroyTenant(Request $request)
     {
+        dd("rghrut");
         try {
             $keys = ThirdPartyApp::where('app_name', 'faveo_app_key')->select('app_key', 'app_secret')->first();
             $token = str_random(32);

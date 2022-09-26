@@ -79,7 +79,7 @@ class Invoice extends BaseModel
 
     public function orderRelation()
     {
-        return $this->hasMany(\App\Model\Order\OrderInvoiceRelation::class);
+        return $this->hasMany('App\Model\Order\OrderInvoiceRelation');
     }
 
     public function payment()

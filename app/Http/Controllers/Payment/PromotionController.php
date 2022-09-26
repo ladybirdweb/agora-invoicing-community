@@ -93,6 +93,11 @@ class PromotionController extends BasePromotionController
                             ." class='btn btn-sm btn-secondary btn-xs'".tooltip('Edit')."<i class='fa fa-edit' 
                             style='color:white;'> </i></a>";
                         })
+                         ->filterColumn('code', function($query, $keyword) {
+                                $sql = "code like ?";
+                                $query->whereRaw($sql, ["%{$keyword}%"]);
+                            })
+                       
                          ->rawColumns(['checkbox', 'code', 'products', 'action'])
 
                         ->make(true);

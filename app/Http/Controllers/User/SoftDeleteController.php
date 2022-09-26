@@ -5,7 +5,7 @@ namespace App\Http\Controllers\User;
 use App\User;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
-
+use Carbon;
 
 class SoftDeleteController extends ClientController
 {
@@ -28,7 +28,9 @@ class SoftDeleteController extends ClientController
                 \DB::raw("CONCAT(first_name, ' ', last_name) as name"),
                 'country_name as country', 'created_at', 'active', 'mobile_verified', 'is_2fa_enabled', 'role', 'position')
             ->onlyTrashed();
-
+           
+          
+ 
         return \DataTables::of($baseQuery)
                         ->addColumn('checkbox', function ($model) {
                             return "<input type='checkbox' class='user_checkbox' value=".$model->id.' name=select[] id=check>';
@@ -59,7 +61,28 @@ class SoftDeleteController extends ClientController
                             ." class='btn btn-sm btn-secondary btn-xs'".tooltip('Restore')."
                             <i class='fas fa-sync-alt' style='color:white;'> </i></a>";
                         })
-
+                          ->filterColumn('name', function($query, $keyword) {
+                            $sql = "CONCAT(first_name,' ',last_name)  like ?";
+                            $query->whereRaw($sql, ["%{$keyword}%"]);
+                        })
+                          ->filterColumn('email', function($query, $keyword) {
+                            $sql = "email  like ?";
+                            $query->whereRaw($sql, ["%{$keyword}%"]);
+                        })
+                          ->filterColumn('country', function($query, $keyword) {
+                            $sql = "country_name  like ?";
+                            $query->whereRaw($sql, ["%{$keyword}%"]);
+                        })
+                          ->filterColumn('mobile', function($query, $keyword) {
+                            $sql = "CONCAT('+',mobile_code, ' ', mobile)  like ?";
+                            $query->whereRaw($sql, ["%{$keyword}%"]);
+                        })
+                          ->filterColumn('created_at', function($query, $keyword) {
+                              
+                            $se = getDateHtml(created_at);
+                            $sql = $se . "like ?";
+                            $query->whereRaw($sql, ["%{$keyword}%"]);
+                        })
                         ->rawColumns(['checkbox', 'name', 'email',  'created_at', 'active', 'action'])
                         ->make(true);
     }

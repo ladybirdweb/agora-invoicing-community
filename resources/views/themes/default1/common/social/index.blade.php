@@ -80,7 +80,7 @@ Social Media
                
                 {data: 'name', name: 'name'},
                 {data: 'link', name: 'link'},
-                {data: 'action', name: 'Action'}
+                {data: 'action', name: 'action'}
             ],
             "fnDrawCallback": function( oSettings ) {
                 $(function () {

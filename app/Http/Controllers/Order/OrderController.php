@@ -17,6 +17,8 @@ use App\Model\Product\Subscription;
 use App\User;
 use Bugsnag;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
+use App\Apikey;
 
 class OrderController extends BaseOrderController
 {
@@ -219,55 +221,7 @@ class OrderController extends BaseOrderController
         }
     }
 
-    public function getInstallationDetails($orderId)
-    {
-        $order = $this->order->findOrFail($orderId);
-        $licenseStatus = StatusSetting::pluck('license_status')->first();
-        $installationDetails = [];
-
-        $cont = new \App\Http\Controllers\License\LicenseController();
-        $installationDetails = $cont->searchInstallationPath($order->serial_key, $order->product);
-
-        return \DataTables::of($installationDetails['installed_path'])
-            ->addColumn('path', function ($ip) {
-                // $installationDetails
-                $details = getInstallationDetail($ip);
-                if ($details) {
-                    return $details->installation_path;
-                } else {
-                    return '--';
-                }
-            })
-            ->addColumn('ip', function ($ip) {
-                $ip = getInstallationDetail($ip);
-                if ($ip) {
-                    return $ip->installation_ip;
-                } else {
-                    return '--';
-                }
-            })
-            ->addColumn('version', function ($ip) use ($order) {
-                $version = getInstallationDetail($ip);
-                if ($version) {
-                    $versionLabel = getVersionAndLabel($version->version, $order->product);
-
-                    return $versionLabel;
-                } else {
-                    return '--';
-                }
-            })
-              ->addColumn('active', function ($ip) {
-                  $version = getInstallationDetail($ip);
-                  if ($version) {
-                      return getDateHtml($version->updated_at).'&nbsp;'.installationStatusLabel($version->updated_at, $version->created_at);
-                  } else {
-                      return '--';
-                  }
-              })
-
-               ->rawColumns(['path', 'ip', 'version', 'active'])
-            ->make(true);
-    }
+  
 
     /**
      * Store a newly created resource in storage.
@@ -276,6 +230,7 @@ class OrderController extends BaseOrderController
      */
     public function show($id)
     {
+        
         try {
             $order = $this->order->findOrFail($id);
             if (User::onlyTrashed()->find($order->client)) {//If User is soft deleted for this order
@@ -309,6 +264,7 @@ class OrderController extends BaseOrderController
                 $noOfAllowedInstallation = $cont->getNoOfAllowedInstallation($order->serial_key, $order->product);
             }
             $allowDomainStatus = StatusSetting::pluck('domain_check')->first();
+   
 
             return view('themes.default1.order.show',
                 compact('user', 'order', 'subscription', 'licenseStatus', 'installationDetails', 'allowDomainStatus', 'noOfAllowedInstallation', 'lastActivity', 'versionLabel', 'date', 'licdate', 'supdate'));

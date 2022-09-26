@@ -19,14 +19,14 @@ class AutoUpdateController extends Controller
     {
         $model = new ApiKey();
         $this->license = $model->first();
-
+        
         $this->api_key_secret = $this->license->license_api_secret;
         $this->url = $this->license->license_api_url;
 
         $this->client_id = $this->license->license_client_id;
         $this->client_secret = $this->license->license_client_secret;
         $this->grant_type = $this->license->license_grant_type;
-
+       
         //need to remove this once we deprecate updates.faveohelpdesk.com
         $this->updateUrl = '';
         $this->update_api_secret = '';
@@ -44,7 +44,9 @@ class AutoUpdateController extends Controller
             'grant_type' => $this->grant_type,
 
         ];
+       
         $response = $this->postCurl($url.'oauth/token', $data);
+        
         $response = json_decode($response);
 
         return $response;
@@ -93,6 +95,7 @@ class AutoUpdateController extends Controller
         $api_key_secret = $this->api_key_secret;
         $OauthDetails = $this->oauthAuthorization();
         $token = $OauthDetails->access_token;
+        
         $addProduct = $this->postCurl($url.'api/admin/products/UpdateAdd', "api_key_secret=$api_key_secret&product_title=$product_name&product_sku=$product_sku&product_key=$key&product_status=1", $token);
         //need to remove this once we deprecate updates.faveohelpdesk.com
         $anotheradd = $this->postCurl($this->updateUrl, "api_key_secret=$this->update_api_secret&api_function=products_add&product_title=$product_name&product_sku=$product_sku&product_key=$key&product_status=1");

@@ -135,6 +135,35 @@ active
                     <th>  Last Active</th>
                     
                 </tr></thead>
+                    <tbody>
+                            <tr>
+                              @if($ip == "")
+                              <td>--</td>
+                              @else
+                                 <td>{{$ip}}</td>
+                               @endif
+                               @if($path == "")
+                               <td>--</td>
+                               @else
+                                  <td>{{$path}}</td>
+                                  @endif
+                                  @if($version == "")
+                                  <td>--</td>
+                                  @else
+                                  <td>
+                                    {{$version}}
+                                </td>
+                                @endif
+                                @if($active == "")
+                                <td>--</td>
+                                @else
+                                <td>
+                                    {{$active}}
+                                </td>
+                                @endif
+                            </tr>
+                          
+                        </tbody>
                 </table>
                   
                    <script>
@@ -151,55 +180,55 @@ active
 
                   <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
                   <script type="text/javascript">
-                          $('#installationDetail-table').DataTable({
-                              processing: true,
-                              serverSide: true,
-                               stateSave: true,
-                                ajax: {
-                              "url":  "{{Url('get-installation-details/'.$order->id)}}",
-                                 error: function(xhr) {
-                                 if(xhr.status == 401) {
-                                  alert('Your session has expired. Please login again to continue.')
-                                  window.location.href = '/login';
-                                 }
-                              }
+                //           $('#installationDetail-table').DataTable({
+                //               processing: true,
+                //               serverSide: true,
+                //               stateSave: true,
+                //                 ajax: {
+                //               "url":  "{{Url('get-installation-details/'.$order->id)}}",
+                //                  error: function(xhr) {
+                //                  if(xhr.status == 401) {
+                //                   alert('Your session has expired. Please login again to continue.')
+                //                   window.location.href = '/login';
+                //                  }
+                //               }
 
-                              },
+                //               },
                              
-                              "oLanguage": {
-                                  "sLengthMenu": "_MENU_ Records per page",
-                                  "sSearch"    : "Search: ",
-                                  "sProcessing": '<div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="text-bold pt-2">Loading...</div></div>'
-                              },
-                                  columnDefs: [
-                                  { 
-                                      targets: 'no-sort', 
-                                      orderable: false,
-                                      order: []
-                                  }
-                              ],
+                //               "oLanguage": {
+                //                   "sLengthMenu": "_MENU_ Records per page",
+                //                   "sSearch"    : "Search: ",
+                //                   "sProcessing": '<div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="text-bold pt-2">Loading...</div></div>'
+                //               },
+                //                   columnDefs: [
+                //                   { 
+                //                       targets: 'no-sort', 
+                //                       orderable: false,
+                //                       order: []
+                //                   }
+                //               ],
 
-                              columns: [
+                //               columns: [
                               
-                                  {data: 'path', name: 'path'},
-                                  {data: 'ip', name: 'ip'},
-                                  {data: 'version', name: 'version'},
-                                  {data: 'active', name: 'active'},
+                //                   {data: 'path', name: 'path'},
+                //                   {data: 'ip', name: 'ip'},
+                //                   {data: 'version', name: 'version'},
+                //                   {data: 'active', name: 'active'},
                                   
-                              ],
-                              "fnDrawCallback": function( oSettings ) {
-                                  $(function () {
-                                      $('[data-toggle="tooltip"]').tooltip({
-                                          container : 'body'
-                                      });
-                                  });
-                                  $('.loader').css('display', 'none');
-                              },
-                              "fnPreDrawCallback": function(oSettings, json) {
-                                  $('.loader').css('display', 'block');
-                              },
-                          });
-                        </script>
+                //               ],
+                //               "fnDrawCallback": function( oSettings ) {
+                //                   $(function () {
+                //                       $('[data-toggle="tooltip"]').tooltip({
+                //                           container : 'body'
+                //                       });
+                //                   });
+                //                   $('.loader').css('display', 'none');
+                //               },
+                //               "fnPreDrawCallback": function(oSettings, json) {
+                //                   $('.loader').css('display', 'block');
+                //               },
+                //           });
+                //         </script>
                 @endslot
                 @slot('user')
                     <table class="table">

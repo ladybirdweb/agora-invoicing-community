@@ -55,6 +55,10 @@ class QueueController extends Controller
         ->addColumn('action', function ($model) {
             return $model->getAction();
         })
+          ->filterColumn('name', function($query, $keyword) {
+                    $sql = "name like ?";
+                    $query->whereRaw($sql, ["%{$keyword}%"]);
+                })
         ->rawColumns(['checkbox', 'name', 'status', 'action'])
         ->make(true);
         } catch (\Exception $ex) {

@@ -10,6 +10,7 @@ use Illuminate\Support\Traits\Macroable;
 use stdClass;
 use Traversable;
 
+
 /**
  * @template TKey of array-key
  * @template TValue
@@ -19,6 +20,8 @@ use Traversable;
  */
 class Collection implements ArrayAccess, CanBeEscapedWhenCastToString, Enumerable
 {
+    
+
     /**
      * @use \Illuminate\Support\Traits\EnumeratesValues<TKey, TValue>
      */

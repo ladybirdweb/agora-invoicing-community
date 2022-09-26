@@ -95,7 +95,7 @@ Templates
                  {data: 'checkbox', name: 'checkbox'},
                 {data: 'name', name: 'name'},
                 {data: 'type', name: 'Type'},
-                {data: 'action', name: 'Action'}
+                {data: 'action', name: 'action'}
             ],
             "fnDrawCallback": function( oSettings ) {
                 $(function () {

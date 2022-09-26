@@ -9,6 +9,8 @@ class ProductGroup extends BaseModel
     protected $table = 'product_groups';
 
     protected $fillable = ['id', 'name', 'headline', 'tagline', 'available_payment', 'hidden', 'cart_link', 'pricing_templates_id'];
+    
+    
 
     public function config()
     {

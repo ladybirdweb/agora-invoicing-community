@@ -81,16 +81,17 @@ Products
                 { 
                     targets: 'no-sort', 
                     orderable: false,
-                    order: []
+                     order: []
                 }
             ],
             columns: [
                 {data: 'checkbox', name: 'checkbox'},
                 {data: 'name', name: 'name'},
                 {data: 'image', name: 'image'},
-                {data: 'type', name: 'type'},
+                {data: 'type', name: 'LicenseType.name'},
                 {data: 'group', name: 'group'},
-                {data: 'Action', name: 'Action'}
+                {data: 'Action', name: 'Action'},
+              
             ],
             "fnDrawCallback": function( oSettings ) {
                 $(function () {

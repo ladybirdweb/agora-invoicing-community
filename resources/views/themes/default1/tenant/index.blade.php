@@ -73,6 +73,7 @@ Tenants
 
 
 
+ 
     <div class="card card-secondary card-outline">
         <div class="card-header">
             <h3 class="card-title">Tenants</h3>
@@ -88,7 +89,7 @@ Tenants
             
             <div class="col-md-12">
                
-                 <table id="tenant-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
+                 <table id="tenant-table" class="table display" cellspacing="0" width="100%" styleClass="borderless" style="table-layout:fixed;">
                      
                     <thead><tr>
                        
@@ -98,6 +99,22 @@ Tenants
                             <th>Database username</th>
                             <th>Action</th>
                         </tr></thead>
+                        @foreach($de as $key => $data)
+                        
+                   <tbody>
+                       <tr>
+                           <td>{{$data['id']}}</td>
+                           <td>{{$data['domain']}}</td>
+                           <td>{{$data['database_name']}}</td>
+                           <td>{{$data['database_user_name']}}</td>
+                           <td><button 
+                 class='btn btn-sm btn-danger btn-xs delTenant' onclick=delete('"{{$data['id']}}"') id='delten" . {{$data['id']}}. "'><i class='fa fa-trash'
+                 style='color:white;'> </i></button></td>
+                       </tr>
+                      
+                   </tbody>
+                       @endforeach
+                      
 
                    </table>
             </div>
@@ -105,65 +122,20 @@ Tenants
 
     </div>
 
+
 </div>
+
+
 
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
 
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-<script type="text/javascript">
-$(document).ready(function(){
-    $(function () {
-        $('[data-toggle="tooltip"]').tooltip({
-            container : 'body'
-        });
-    });
-})
 
-        $('#tenant-table').DataTable({
-            processing: true,
-            serverSide: true,
-             stateSave: false,
-              order: [[ 0, "desc" ]],
-               ajax: {
-                 "url":  '{!! route('get-tenants') !!}',
-
-               error: function(xhr) {
-               if(xhr.status == 401) {
-                alert('Your session has expired. Please login again to continue.')
-                window.location.href = '/login';
-               }
-            }
-
-            },
-            "oLanguage": {
-                "sLengthMenu": "_MENU_ Records per page",
-                "sSearch"    : "Search: ",
-                "sProcessing": ' <div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="text-bold pt-2">Loading...</div></div>'
-            },
-            columnDefs: [
-             { orderable: false, targets:0 }
-          ],
-            columns: [
-                {data: 'tenants', name: 'tenants'},
-                {data: 'domain', name: 'domain'},
-                {data: 'db_name', name: 'db_name'},
-                {data: 'db_username', name: 'db_username'},
-                {data: 'action', name: 'action'},
-            ],
-            "fnDrawCallback": function( oSettings ) {
-              // deleteTenant();
-                $('.loader').css('display', 'none');
-                // deleteTenant();
-            },
-            "fnPreDrawCallback": function(oSettings, json) {
-                $('.loader').css('display', 'block');
-            },
-        });
-    </script>
 
 <script>
 
-  function deleteTenant(id) {
+  function delete(id) {
+      alert("kje");
      var id = id;
       if (confirm("Are you sure you want to destroy this tenant?")) {
          $.ajax({

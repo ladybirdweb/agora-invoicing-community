@@ -40,6 +40,35 @@ Plugins
                           <th>Version</th>
                           <th>Action</th>
                         </tr></thead>
+                        @foreach($pay as $key => $item)
+                       
+                        <tbody>
+                            <tr>
+                                <td>{{$item['name']}}</td>
+                                <td>{{$item['description']}}</td>
+                                 <td>{{$item['author']}}</td>
+                                 <td><a href='.{{$item['version']}}.' target='_blank'>{{$item['website']}}</a></td>
+                                  <td>{{$item['version']}}</td>
+                              
+                              @if(! $status)
+                                  <td><form method="post" action={{url('plugin/status/'.$item['name'])}}><input type="hidden" name="_token" value='.\Session::token().'>
+                                    <button type="submit" class="btn btn-secondary btn-sm btn-xs" title = "Activate"><i class="fa fa-tasks" style="color:white;"></i></button></form></td>
+                                 @endif
+                                    <td>
+                                       <a href= "{{url($item['settings'])}}" class="btn btn-secondary btn-sm btn-xs"><i class="nav-icon fa fa-fw fa-cogs" style="color:white;"></i></a> 
+                                       
+                                       <form method="post" action="plugin/status/'.$item['name']"><input type="hidden" name="_token" value="\Session::token()
+                                       ">
+                                       <button type="submit" class="btn btn-secondary btn-sm btn-xs" title="Deactivate"><i class="fa fa-tasks" style="color:white;"></i></button></form>
+                                    </td>
+                                    
+                           
+                           
+                              
+                            </tr>
+                        </tbody>
+                        @endforeach
+                      
                      </table>
               
             </div>
@@ -56,54 +85,7 @@ Plugins
 </div>
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
 <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-<script type="text/javascript">
-        $('#plugin').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: {
-            "url":  '{!! route('get-plugin') !!}',
-               error: function(xhr) {
-               if(xhr.status == 401) {
-                alert('Your session has expired. Please login again to continue.')
-                window.location.href = '/login';
-               }
-            }
 
-            },
-            "oLanguage": {
-                "sLengthMenu": "_MENU_ Records per page",
-                "sSearch"    : "Search: ",
-                "sProcessing": ' <div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="text-bold pt-2">Loading...</div></div>'
-            },
-                "columnDefs": [{
-                "defaultContent": "-",
-                "targets": "_all"
-              }],
-
-            columns: [
-               
-                {data: 'name', name: 'name'},
-                {data: 'description', name: 'Description'},
-                {data: 'author', name: 'Author'},
-                {data: 'website', name: 'Website'},
-                {data: 'version', name: 'Version'},
-                {data: 'action', name: 'action'},
-            ],
-            "fnDrawCallback": function( oSettings ) {
-                $(function () {
-                    $('[data-toggle="tooltip"]').tooltip({
-                        container : 'body'
-                    });
-                });
-                $('.loader').css('display', 'none');
-            },
-            "fnPreDrawCallback": function(oSettings, json) {
-                $('.loader').css('display', 'block');
-            },
-        });
-
-      
-    </script>
     <script>
      $('ul.nav-sidebar a').filter(function() {
         return this.id == 'setting';

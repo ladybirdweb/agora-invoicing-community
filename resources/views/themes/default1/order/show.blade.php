@@ -344,6 +344,7 @@ input:checked + .slider:before {
                             <th>  Last Active</th>
                             
                         </tr></thead>
+                  
                         </table>
 
                           </div>

@@ -9,4 +9,7 @@ class OrderInvoiceRelation extends BaseModel
     protected $table = 'order_invoice_relations';
 
     protected $fillable = ['order_id', 'invoice_id'];
+    
+   
+
 }

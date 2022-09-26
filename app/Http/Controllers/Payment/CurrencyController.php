@@ -83,7 +83,18 @@ class CurrencyController extends Controller
                         </label>';
                             }
                         })
-
+                          ->filterColumn('name', function($query, $keyword) {
+                            $sql = "name like ?";
+                            $query->whereRaw($sql, ["%{$keyword}%"]);
+                        })
+                           ->filterColumn('code', function($query, $keyword) {
+                            $sql = "code like ?";
+                            $query->whereRaw($sql, ["%{$keyword}%"]);
+                        })
+                           ->filterColumn('symbol', function($query, $keyword) {
+                            $sql = "symbol like ?";
+                            $query->whereRaw($sql, ["%{$keyword}%"]);
+                        })
                         ->rawColumns(['name', 'code', 'symbol', 'dashboard', 'status'])
                         ->make(true);
     }

@@ -39,9 +39,11 @@ class LicensePermissionsController extends Controller
     public function getPermissions()
     {
         try {
+            
             $allPermissions = $this->licensePermission->select('id', 'permissions')->get();
-            $licenseType = LicenseType::select('id', 'name');
-
+            $licenseType = LicenseType::with('permissions:id,permissions')->select(['id', 'name']);
+           
+        
             return \DataTables::of($licenseType)
             ->addColumn('checkbox', function ($model) {
                 return "<input type='checkbox' class='type_checkbox' 
@@ -64,9 +66,18 @@ class LicensePermissionsController extends Controller
              class='btn btn-sm btn-secondary get-license-type addPermission'><i class='fa fa-plus'
              style='color:white;'> </i>&nbsp;&nbsp;Add Permissions</button>&nbsp;</p>";
             })
+              ->filterColumn('license_type', function($query, $keyword) {
+                    $sql = "name like ?";
+                    $query->whereRaw($sql, ["%{$keyword}%"]);
+                })
+                 ->filterColumn('permissions', function($query, $keyword) {
+                    $sql = "permissions like ?";
+                    $query->whereRaw($sql, ["%{$keyword}%"]);
+                })
             ->rawColumns(['checkbox', 'type_name', 'permissions', 'action'])
             ->make(true);
         } catch (\Exception $ex) {
+            dd($ex);
             app('log')->error($ex->getMessage());
 
             return redirect()->back()->with('fails', $ex->getMessage());

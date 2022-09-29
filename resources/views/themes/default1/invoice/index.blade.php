@@ -222,11 +222,12 @@ Invoices
                  {data: 'checkbox', name: 'checkbox'},
                 {data: 'user_id', name: 'user_id'},
                 {data: 'number', name: 'number'},
-                {data: 'date', name: 'date'},
+                {data: 'date', name: 'created_at'},
                 {data: 'grand_total', name: 'grand_total'},
                 {data: 'status', name: 'status'},
                 {data: 'action', name: 'action'}
             ],
+
             "fnDrawCallback": function( oSettings ) {
                 $('[data-toggle="tooltip"]').tooltip({
                     container : 'body'

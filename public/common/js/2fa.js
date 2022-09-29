@@ -57,11 +57,13 @@ $(document).ready(function(){
                         "user_password" : password,
                     },
                     success: function(response) {
+                       
                         $('#2fa-modal1').modal('hide');
                         $.ajax({
                             url : "2fa-recovery-code",
                             method : 'post',
                             success: function(response){
+                                
                                 $('#next_rec_code').attr('disabled',true);
                                 $('#alertMessage').hide(); 
                                 $('#2fa-recover-code-modal').modal('show');
@@ -72,6 +74,8 @@ $(document).ready(function(){
                                         url : "2fa/enable",
                                         method : 'post',
                                         success: function(response) {
+                                            
+                                           
                                                $('#2fa-modal2').modal('show');
                                              $(".bar-code").attr("hidden",false);
                                              $(".secret-key").attr("hidden",true);
@@ -144,6 +148,7 @@ $(document).ready(function(){
                         })
                         }, 
                         error: function (data) {
+                            
                                         $("#verify_password").attr('disabled',false);
                                         $("#verify_password").html("<i class='fa fa-check'></i> Validate");
                                         $('#passerror').show();

@@ -12,7 +12,7 @@ class PaymentSettingsController extends Controller
     public function getPlugin()
     {
         
-        try{
+      
         $plugins = $this->fetchConfig();
        
         return \DataTables::of(new Collection($plugins))
@@ -76,15 +76,12 @@ class PaymentSettingsController extends Controller
                         })
                       ->rawColumns(['name', 'description', 'author', 'website', 'version', 'action'])
                             ->make(true);
-        }catch(\Exception $e)
-        {
-            dd($e,'pi');
-        }
+       
     }
 
     public function fetchConfig()
     {
-        try{
+      
         $configs = $this->readConfigs();
         // dd($configs);
         $plugs = new Plugin();
@@ -122,15 +119,12 @@ class PaymentSettingsController extends Controller
         }
          
         return $attributes;
-        }catch(\Exception $e)
-        {
-            dd($e,'ji');
-        }
+     
     }
 
     public function readConfigs()
     {
-        try{
+       
         $dir = app_path().DIRECTORY_SEPARATOR.'Plugins'.DIRECTORY_SEPARATOR;
         $directories = scandir($dir);
         $files = [];
@@ -169,10 +163,7 @@ class PaymentSettingsController extends Controller
         } else {
             return 'null';
         }
-        }catch(\Exception $e)
-        {
-            dd($e,'hi');
-        }
+       
     }
 
     public function statusPlugin($slug)

@@ -340,7 +340,7 @@ use Illuminate\Support\Facades\Route;
             Route::post('edit-license-expiry', [Order\BaseOrderController::class, 'editLicenseExpiry']);
             Route::post('edit-support-expiry', [Order\BaseOrderController::class, 'editSupportExpiry']);
             Route::post('edit-installation-limit', [Order\BaseOrderController::class, 'editInstallationLimit']);
-            Route::get('get-installation-details/{orderId}', [Order\OrderController::class, 'getInstallationDetails']);
+
             Route::post('choose', [License\LocalizedLicenseController::class, 'chooseLicenseMode']);
             Route::get('LocalizedLicense', function () {
                 return view('themes.default1.common.Localized');
@@ -459,7 +459,7 @@ use Illuminate\Support\Facades\Route;
              */
             Route::get('plugin', [Common\SettingsController::class, 'plugins']);
 
-            Route::get('get-plugin', [Common\PaymentSettingsController::class, 'getPlugin'])->name('get-plugin');
+            // Route::get('get-plugin', [Common\PaymentSettingsController::class, 'getPlugin'])->name('get-plugin');
             // Route::get('getplugin', [Common\SettingsController::class, 'getPlugin']);
             Route::post('post-plugin', [Common\PaymentSettingsController::class, 'postPlugins'])->name('post.plugin');
             Route::post('plugin/delete/{slug}', [Common\PaymentSettingsController::class, 'deletePlugin'])->name('delete.plugin');
@@ -504,7 +504,7 @@ use Illuminate\Support\Facades\Route;
             Route::delete('third-party-delete', [ThirdPartyAppController::class, 'destroy'])->name('third-party-delete');
             Route::post('create/tenant', [Tenancy\TenantController::class, 'createTenant']);
             Route::get('view/tenant', [Tenancy\TenantController::class, 'viewTenant'])->middleware('admin');
-            Route::get('get-tenants', [Tenancy\TenantController::class, 'getTenants'])->name('get-tenants')->middleware('admin');
+         
             Route::delete('delete-tenant', [Tenancy\TenantController::class, 'destroyTenant'])->name('delete-tenant')->middleware('admin');
 
             Route::post('cloud-details', [Tenancy\TenantController::class, 'saveCloudDetails'])->name('cloud-details')->middleware('admin');

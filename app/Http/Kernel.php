@@ -74,5 +74,8 @@ class Kernel extends HttpKernel
         'installAgora' => \App\Http\Middleware\Install::class,
         'isInstalled' => [\App\Http\Middleware\IsInstalled::class],
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
+        '2fa' => \PragmaRX\Google2FALaravel\Middleware::class,
+
+        
     ];
 }

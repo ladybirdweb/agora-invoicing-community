@@ -22,8 +22,8 @@ use App\Traits\CoupCodeAndInvoiceSearch;
 use App\Traits\PaymentsAndInvoices;
 use App\Traits\TaxCalculation;
 use App\User;
-use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class InvoiceController extends TaxRatesAndCodeExpiryController
 {
@@ -143,7 +143,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
     public function getInvoices(Request $request)
     {
-       
         $name = $request->input('name');
         $invoice_no = $request->input('invoice_no');
         $status = $request->input('status');
@@ -154,7 +153,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
         return \DataTables::of($query)
          ->setTotalRecords($query->count())
-         
 
          ->addColumn('checkbox', function ($model) {
              return "<input type='checkbox' class='invoice_checkbox' 
@@ -197,8 +195,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                             style='color:white;'> </i></a>"
                                     ."   $action";
                         })
-                        
-                       
+
                          ->filterColumn('user_id', function ($query, $keyword) {
                              $sql = 'first_name like ?';
                              $query->whereRaw($sql, ["%{$keyword}%"]);
@@ -218,33 +215,28 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                              $query->whereRaw($sql, ["%{$keyword}%"]);
                          })
                         //   ->filterColumn('date', function ($query, $keyword) {
-                    
-                              
+
                             //  $date = getTimeInLoggedInUserTimeZone($query->created_at, 'M j, Y');
-                             
+
                             //  $q->where(DB::raw("DATE(created_at) = '".$date."'"));
                             //  $q->whereDate('created_at', '=', $date);
 
-
                             //  $sql = $date. ' like ?';
                             //  $query->whereRaw($date, ["%{$keyword}%"]);
-                           
 
                         //   })
                         //             ->editColumn('date', function ($query) {
                         //     return $query->created_at ? with(new Carbon($query->created_at))->format('Y/m/d') : '';;
                         // })
-           
+
                          ->filter(function ($query) use ($request) {
-                            
                              if ($request->has('created_at')) {
-                            $date = getTimeInLoggedInUserTimeZone($query->created_at, 'M j, Y');
-                          $query->where($date, 'like', "%{$request->get('created_at')}%");
-                                 }
-                             
-                         })          
+                                 $date = getTimeInLoggedInUserTimeZone($query->created_at, 'M j, Y');
+                                 $query->where($date, 'like', "%{$request->get('created_at')}%");
+                             }
+                         })
                         //   ->filterColumn('date', function ($query, $keyword) {
-                              
+
                         //      $sql = 'number like ?';
                         //      $query->whereRaw($sql, ["%{$keyword}%"]);
                         //  })
@@ -317,7 +309,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
      */
     public function generateInvoice()
     {
-      
         try {
             $tax_rule = new \App\Model\Payment\TaxOption();
             $rule = $tax_rule->findOrFail(1);
@@ -337,7 +328,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 $this->createInvoiceItems($invoice->id, $cart);
             }
             if (emailSendingStatus()) {
-                
                 $this->sendMail($user_id, $invoice->id);
             }
 

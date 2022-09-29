@@ -11,10 +11,8 @@ class PaymentSettingsController extends Controller
 {
     public function getPlugin()
     {
-        
-      
         $plugins = $this->fetchConfig();
-       
+
         return \DataTables::of(new Collection($plugins))
                         // ->searchColumns('name')
                         ->addColumn('name', function ($model) {
@@ -76,12 +74,10 @@ class PaymentSettingsController extends Controller
                         })
                       ->rawColumns(['name', 'description', 'author', 'website', 'version', 'action'])
                             ->make(true);
-       
     }
 
     public function fetchConfig()
     {
-      
         $configs = $this->readConfigs();
         // dd($configs);
         $plugs = new Plugin();
@@ -96,11 +92,8 @@ class PaymentSettingsController extends Controller
         if (count($fields) > 0) {
             foreach ($fields as $key => $field) {
                 $plug = $plugs->where('name', $field['name'])->select(['path', 'status'])->orderBy('name');
-            
-                
+
                 if ($plug) {
-                  
-                   
                     foreach ($plug as $i => $value) {
                         $attributes[$key]['path'] = $plug[$i]['path'];
                         $attributes[$key]['status'] = $plug[$i]['status'];
@@ -117,14 +110,12 @@ class PaymentSettingsController extends Controller
                 $attributes[$key]['author'] = $field['author'];
             }
         }
-         
+
         return $attributes;
-     
     }
 
     public function readConfigs()
     {
-       
         $dir = app_path().DIRECTORY_SEPARATOR.'Plugins'.DIRECTORY_SEPARATOR;
         $directories = scandir($dir);
         $files = [];
@@ -163,7 +154,6 @@ class PaymentSettingsController extends Controller
         } else {
             return 'null';
         }
-       
     }
 
     public function statusPlugin($slug)

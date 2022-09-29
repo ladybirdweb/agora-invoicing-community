@@ -35,7 +35,6 @@ class CurrencyController extends Controller
 
     public function getCurrency()
     {
-        
         $defaultCurrency = Setting::pluck('default_currency')->first();
         $model = Currency::where('name', '!=', null)->where('code', '!=', $defaultCurrency)->
         select('id', 'name', 'code', 'symbol', 'status')
@@ -83,18 +82,18 @@ class CurrencyController extends Controller
                         </label>';
                             }
                         })
-                          ->filterColumn('name', function($query, $keyword) {
-                            $sql = "name like ?";
-                            $query->whereRaw($sql, ["%{$keyword}%"]);
-                        })
-                           ->filterColumn('code', function($query, $keyword) {
-                            $sql = "code like ?";
-                            $query->whereRaw($sql, ["%{$keyword}%"]);
-                        })
-                           ->filterColumn('symbol', function($query, $keyword) {
-                            $sql = "symbol like ?";
-                            $query->whereRaw($sql, ["%{$keyword}%"]);
-                        })
+                          ->filterColumn('name', function ($query, $keyword) {
+                              $sql = 'name like ?';
+                              $query->whereRaw($sql, ["%{$keyword}%"]);
+                          })
+                           ->filterColumn('code', function ($query, $keyword) {
+                               $sql = 'code like ?';
+                               $query->whereRaw($sql, ["%{$keyword}%"]);
+                           })
+                           ->filterColumn('symbol', function ($query, $keyword) {
+                               $sql = 'symbol like ?';
+                               $query->whereRaw($sql, ["%{$keyword}%"]);
+                           })
                         ->rawColumns(['name', 'code', 'symbol', 'dashboard', 'status'])
                         ->make(true);
     }

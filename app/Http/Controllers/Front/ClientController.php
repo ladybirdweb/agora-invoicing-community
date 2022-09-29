@@ -16,7 +16,6 @@ use App\Model\Product\Subscription;
 use App\User;
 use Exception;
 use GrahamCampbell\Markdown\Facades\Markdown;
-use Illuminate\Support\Collection;
 
 class ClientController extends BaseClientController
 {
@@ -76,20 +75,18 @@ class ClientController extends BaseClientController
 
     public function getInvoices()
     {
-        
+
     //     $invoices = Invoice::leftJoin('order_invoice_relations', 'invoices.id', '=', 'order_invoice_relations.invoice_id')
-    // ->select('invoices.id', 'invoices.user_id', 'invoices.date', 'invoices.number', 'invoices.grand_total', 'order_invoice_relations.order_id', 'invoices.is_renewed', 'invoices.status', 'invoices.currency')
-    // ->groupBy('invoices.number')
-    // ->where('invoices.user_id', '=', \Auth::user()->id)
-    // ->orderBy('invoices.created_at', 'desc')
-    // ->with('orderRelation')
-    // ->take(50);
-    
-    
-   
-    // dd($data->orderRelation[0]);
-   
-      $invoices = Invoice::with(['orderRelation:order_id,invoice_id','order'])->select('id','number','date','grand_total','status')->where('user_id',\Auth::user()->id)->orderBy('created_at','desc');
+        // ->select('invoices.id', 'invoices.user_id', 'invoices.date', 'invoices.number', 'invoices.grand_total', 'order_invoice_relations.order_id', 'invoices.is_renewed', 'invoices.status', 'invoices.currency')
+        // ->groupBy('invoices.number')
+        // ->where('invoices.user_id', '=', \Auth::user()->id)
+        // ->orderBy('invoices.created_at', 'desc')
+        // ->with('orderRelation')
+        // ->take(50);
+
+        // dd($data->orderRelation[0]);
+
+        $invoices = Invoice::with(['orderRelation:order_id,invoice_id', 'order'])->select('id', 'number', 'date', 'grand_total', 'status')->where('user_id', \Auth::user()->id)->orderBy('created_at', 'desc');
         // $data = Invoice::with(['orderRelation' => function($query) {
         //             $query->select(['id','invoice_id','order_id']);
         //             }])->where('user_id',\Auth::user()->id)->get();
@@ -99,8 +96,7 @@ class ClientController extends BaseClientController
         //              dd($order->orde_id);
         //              }
         //          }
-  
-   
+
         return \DataTables::of($invoices)
                     ->addColumn('number', function ($model) {
                         if ($model->is_renewed) {
@@ -112,7 +108,7 @@ class ClientController extends BaseClientController
                    ->addColumn('orderNo', function ($model) {
                        if ($model->is_renewed) {
                            $order = Order::find($model->orderRelation->order_id);
-                           
+
                            if ($order) {
                                return $order->first()->getOrderLink($model->order_id, 'my-order');
                            } else {
@@ -171,18 +167,14 @@ class ClientController extends BaseClientController
                         return '<p><a href='.url('my-invoice/'.$model->id).
                         " class='btn btn-primary btn-xs'><i class='fa fa-eye'></i>&nbsp;View</a>".$payment.'</p>';
                     })
-                     ->filterColumn('number', function($query, $keyword) {
-                    $sql = "number like ?";
-                    $query->whereRaw($sql, ["%{$keyword}%"]);
+                     ->filterColumn('number', function ($query, $keyword) {
+                         $sql = 'number like ?';
+                         $query->whereRaw($sql, ["%{$keyword}%"]);
+                     })
+                   ->filterColumn('orderNo', function ($query, $keyword) {
+                       $sql = 'order_id like ?';
+                       $query->whereRaw($sql, ["%{$keyword}%"]);
                    })
-                   ->filterColumn('orderNo', function($query, $keyword) {
-                  
-                    
-                     $sql = "order_id like ?";
-                     $query->whereRaw($sql, ["%{$keyword}%"]);
-                    
-                   })
-                 
 
                     ->rawColumns(['number', 'orderNo', 'date', 'total', 'status', 'Action'])
                     // ->orderColumns('number', 'created_at', 'total')
@@ -381,10 +373,8 @@ class ClientController extends BaseClientController
     public function getOrders()
     {
         try {
-            
             $orders = $this->getClientPanelOrdersData();
-           
-             
+
             return \DataTables::of($orders)
                             ->addColumn('id', function ($model) {
                                 return $model->id;
@@ -416,14 +406,14 @@ class ClientController extends BaseClientController
                                 class='btn  btn-primary btn-xs' style='margin-right:5px;'>
                                 <i class='fa fa-eye' title='Details of order'></i>&nbsp;View $listUrl $url </a>";
                             })
-                            ->filterColumn('product_name', function($query, $keyword) {
-                            $sql = "product.name like ?";
-                            $query->whereRaw($sql, ["%{$keyword}%"]);
-                           })
-                             ->filterColumn('number', function($query, $keyword) {
-                            $sql = "orders.number like ?";
-                            $query->whereRaw($sql, ["%{$keyword}%"]);
-                           })
+                            ->filterColumn('product_name', function ($query, $keyword) {
+                                $sql = 'product.name like ?';
+                                $query->whereRaw($sql, ["%{$keyword}%"]);
+                            })
+                             ->filterColumn('number', function ($query, $keyword) {
+                                 $sql = 'orders.number like ?';
+                                 $query->whereRaw($sql, ["%{$keyword}%"]);
+                             })
                             ->rawColumns(['id', 'product_name', 'number', 'version', 'expiry', 'Action'])
                             ->make(true);
         } catch (Exception $ex) {
@@ -434,15 +424,12 @@ class ClientController extends BaseClientController
 
     public function getClientPanelOrdersData()
     {
-       
         return Order::leftJoin('products', 'products.id', '=', 'orders.product')
             ->leftJoin('subscriptions', 'orders.id', '=', 'subscriptions.order_id')
             ->leftJoin('invoices', 'orders.invoice_id', 'invoices.id')
             ->select('products.name as product_name', 'products.github_owner', 'products.github_repository', 'products.type', 'products.id as product_id', 'orders.id', 'orders.number', 'orders.client', 'subscriptions.id as sub_id', 'subscriptions.version', 'subscriptions.update_ends_at', 'products.name', 'orders.client', 'invoices.id as invoice_id', 'invoices.number as invoice_number')
             ->where('orders.client', \Auth::user()->id)
             ->take(50);
-        
-      
     }
 
     public function profile()
@@ -515,31 +502,28 @@ class ClientController extends BaseClientController
             $price = $product->price()->first();
             $licenseStatus = StatusSetting::pluck('license_status')->first();
             $allowDomainStatus = StatusSetting::pluck('domain_check')->first();
-            
-         $licenseStatus = StatusSetting::pluck('license_status')->first();
-        $installationDetails = [];
-       
 
-        $cont = new \App\Http\Controllers\License\LicenseController();
-        $installationDetails = $cont->searchInstallationPath($order->serial_key, $order->product);       
-       $path = getInstallationDetail($installationDetails['installed_path']);  
-      
-       $ip = getInstallationDetail($installationDetails['installed_ip']);
-       
-       $version = getVersionAndLabel($path, $order->product);
-      if($version){
-        $active = getDateHtml($version->updated_at).'&nbsp;'.installationStatusLabel($version->updated_at, $version->created_at);
-        return $active;
-    
-      }
-      else
-      { 
-          $active = '';
-      }
+            $licenseStatus = StatusSetting::pluck('license_status')->first();
+            $installationDetails = [];
+
+            $cont = new \App\Http\Controllers\License\LicenseController();
+            $installationDetails = $cont->searchInstallationPath($order->serial_key, $order->product);
+            $path = getInstallationDetail($installationDetails['installed_path']);
+
+            $ip = getInstallationDetail($installationDetails['installed_ip']);
+
+            $version = getVersionAndLabel($path, $order->product);
+            if ($version) {
+                $active = getDateHtml($version->updated_at).'&nbsp;'.installationStatusLabel($version->updated_at, $version->created_at);
+
+                return $active;
+            } else {
+                $active = '';
+            }
 
             return view(
                 'themes.default1.front.clients.show-order',
-                compact('invoice', 'order', 'user', 'product', 'subscription', 'licenseStatus', 'installationDetails', 'allowDomainStatus', 'date', 'licdate', 'versionLabel','ip','path','version','active')
+                compact('invoice', 'order', 'user', 'product', 'subscription', 'licenseStatus', 'installationDetails', 'allowDomainStatus', 'date', 'licdate', 'versionLabel', 'ip', 'path', 'version', 'active')
             );
         } catch (Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -627,6 +611,7 @@ class ClientController extends BaseClientController
                             ->make(true);
         } catch (Exception $ex) {
             dd($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

@@ -30,7 +30,6 @@ class TemplateController extends Controller
     public function index()
     {
         try {
-          
             return view('themes.default1.common.template.inbox');
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -56,14 +55,14 @@ class TemplateController extends Controller
                             " class='btn btn-sm btn-secondary btn-xs'".tooltip('Edit')."<i class='fa fa-edit'
                                  style='color:white;'> </i></a>";
                         })
-                         ->filterColumn('name', function($query, $keyword) {
-                            $sql = "name like ?";
-                            $query->whereRaw($sql, ["%{$keyword}%"]);
-                        })
-                         ->filterColumn('type', function($query, $keyword) {
-                            $sql = "type like ?";
-                            $query->whereRaw($sql, ["%{$keyword}%"]);
-                        })
+                         ->filterColumn('name', function ($query, $keyword) {
+                             $sql = 'name like ?';
+                             $query->whereRaw($sql, ["%{$keyword}%"]);
+                         })
+                         ->filterColumn('type', function ($query, $keyword) {
+                             $sql = 'type like ?';
+                             $query->whereRaw($sql, ["%{$keyword}%"]);
+                         })
                         ->rawColumns(['checkbox', 'name', 'type', 'action'])
                         ->make(true);
     }
@@ -71,7 +70,6 @@ class TemplateController extends Controller
     public function create()
     {
         try {
-            
             $controller = new ProductController();
             $url = $controller->GetMyUrl();
             $i = $this->template->orderBy('created_at', 'desc')->first()->id + 1;
@@ -104,7 +102,6 @@ class TemplateController extends Controller
     public function edit($id)
     {
         try {
-           
             $controller = new ProductController();
             $url = $controller->GetMyUrl();
 
@@ -128,7 +125,6 @@ class TemplateController extends Controller
         ]);
 
         try {
-            
             $template = $this->template->where('id', $id)->first();
             $template->fill($request->input())->save();
 

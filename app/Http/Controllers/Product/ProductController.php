@@ -26,7 +26,6 @@ namespace App\Http\Controllers\Product;
     use Illuminate\Support\Facades\Input;
     use Spatie\Activitylog\Models\Activity;
     use Yajra\DataTables\DataTables;
-    use DB;
 
     // use Input;
 
@@ -123,11 +122,7 @@ class ProductController extends BaseProductController
     public function getProducts()
     {
         try {
-           
-             $new_product = Product::with(['LicenseType:id,name','group:id,name']);
-            
-         
-          
+            $new_product = Product::with(['LicenseType:id,name', 'group:id,name']);
 
             return DataTables::of($new_product)
 
@@ -170,22 +165,20 @@ class ProductController extends BaseProductController
                                 " class='btn btn-sm btn-secondary btn-xs'".tooltip('Edit')."<i class='fa fa-edit'
                                  style='color:white;'> </i></a>&nbsp;$url</p>";
                             })
-                           ->filterColumn('name', function($query, $keyword) {
-                                $sql = "name like ?";
-                                $query->whereRaw($sql, ["%{$keyword}%"]);
-                            })
-                             ->filterColumn('type', function($query, $keyword) {
-                                $sql = "LicenseType.name like ?";
-                                $query->whereRaw($sql, ["%{$keyword}%"]);
-                            })
-                          
-                           
-                           
-            
+                           ->filterColumn('name', function ($query, $keyword) {
+                               $sql = 'name like ?';
+                               $query->whereRaw($sql, ["%{$keyword}%"]);
+                           })
+                             ->filterColumn('type', function ($query, $keyword) {
+                                 $sql = 'LicenseType.name like ?';
+                                 $query->whereRaw($sql, ["%{$keyword}%"]);
+                             })
+
                             ->rawColumns(['checkbox', 'name', 'image', 'type', 'group', 'Action'])
                             ->make(true);
         } catch (\Exception $e) {
             dd($e);
+
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
@@ -226,7 +219,6 @@ class ProductController extends BaseProductController
 
             return $response;
         } catch (\Exception $e) {
-           
             app('log')->error($e->getMessage());
             $message = [$e->getMessage()];
             $response = ['success' => 'false', 'message' => $message];
@@ -309,7 +301,6 @@ class ProductController extends BaseProductController
             $licenseStatus = StatusSetting::pluck('license_status')->first();
             if ($licenseStatus) { //If License Setting Status is on,Add Product to the License Manager
                 $addProductToLicensing = $this->licensing->addNewProduct($input['name'], $input['product_sku']);
-               
             }
             $updateCont = new \App\Http\Controllers\AutoUpdate\AutoUpdateController();
             $addProductToLicensing = $updateCont->addNewProductToAUS($input['name'], $input['product_sku']);

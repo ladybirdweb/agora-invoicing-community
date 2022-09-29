@@ -73,7 +73,6 @@ class TaxController extends Controller
      */
     public function getTax()
     {
-       
         return \DataTables::of($this->tax->select('id', 'tax_classes_id', 'name', 'country', 'state', 'rate'))
                             ->addColumn('checkbox', function ($model) {
                                 return "<input type='checkbox' class='tax_checkbox' 
@@ -155,7 +154,6 @@ class TaxController extends Controller
      */
     public function edit($id)
     {
-       
         try {
             $options = $this->tax_option->find(1);
             $tax = $this->tax->where('id', $id)->first();
@@ -284,8 +282,6 @@ class TaxController extends Controller
      */
     public function getState(Request $request, $stateid)
     {
-        
-       
         try {
             $id = $stateid;
             $states = \App\Model\Common\State::where('country_code_char2', $id)

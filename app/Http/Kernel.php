@@ -76,6 +76,5 @@ class Kernel extends HttpKernel
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         '2fa' => \PragmaRX\Google2FALaravel\Middleware::class,
 
-        
     ];
 }

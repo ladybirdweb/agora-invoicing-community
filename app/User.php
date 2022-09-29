@@ -9,10 +9,9 @@ use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Models\Activity;
 use Spatie\Activitylog\Traits\LogsActivity;
-use Spatie\Activitylog\LogOptions;
-
 
 //use Laravel\Cashier\Billable;
 //use LinkThrow\Billing\CustomerBillableTrait;
@@ -234,9 +233,9 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
             $auth->accountManagerMail($this);
         }
     }
-    
-public function getActivitylogOptions(): LogOptions
-  {
-    return LogOptions::defaults();
-   }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults();
+    }
 }

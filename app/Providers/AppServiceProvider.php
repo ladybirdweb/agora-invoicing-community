@@ -2,10 +2,10 @@
 
 namespace App\Providers;
 
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -17,8 +17,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Schema::defaultStringLength(191);
-        
-         Collection::macro('paginate', function($perPage, $total = null, $page = null, $pageName = 'page') {
+
+        Collection::macro('paginate', function ($perPage, $total = null, $page = null, $pageName = 'page') {
             $page = $page ?: LengthAwarePaginator::resolveCurrentPage($pageName);
 
             return new LengthAwarePaginator(
@@ -43,11 +43,9 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->alias('bugsnag.logger', \Illuminate\Contracts\Logging\Log::class);
         $this->app->alias('bugsnag.logger', \Psr\Log\LoggerInterface::class);
-        
-       
-       $this->app->bind('\Symfony\Component\Mailer\MailerInterface::class', 'ProviderRepository');
 
-            // $this->app->bind('\Symfony\Component\Mailer\MailerInterface::class',  'Illuminate\Foundation\ProviderRepository::class');
+        $this->app->bind('\Symfony\Component\Mailer\MailerInterface::class', 'ProviderRepository');
 
+        // $this->app->bind('\Symfony\Component\Mailer\MailerInterface::class',  'Illuminate\Foundation\ProviderRepository::class');
     }
 }

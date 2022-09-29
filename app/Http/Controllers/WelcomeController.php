@@ -6,7 +6,6 @@ use App\Model\Common\Country;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 
-
 class WelcomeController extends Controller
 {
     private $request;
@@ -53,8 +52,6 @@ class WelcomeController extends Controller
                 ->select('countries.nicename as country', 'countries.country_code_char2 as code', \DB::raw('COUNT(users.id) as count'))
                 ->orderBy('country', 'asc')
                 ->groupBy('users.country');
-                
-     
 
         return DataTables::of($users)
                             ->addColumn('country', function ($model) {
@@ -64,10 +61,10 @@ class WelcomeController extends Controller
                                   return '<a href='.url('clients/'.$model->id.'?country='.$model->code).'>'
                             .($model->count).'</a>';
                               })
-                            ->filterColumn('country', function($query, $keyword) {
-                                    $sql = "countries.nicename like ?";
-                                    $query->whereRaw($sql, ["%{$keyword}%"]);
-                                })
+                            ->filterColumn('country', function ($query, $keyword) {
+                                $sql = 'countries.nicename like ?';
+                                $query->whereRaw($sql, ["%{$keyword}%"]);
+                            })
                             ->rawColumns(['country', 'count'])
                             ->make(true);
     }

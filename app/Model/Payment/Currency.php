@@ -3,8 +3,8 @@
 namespace App\Model\Payment;
 
 use App\BaseModel;
-use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Currency extends BaseModel
 {
@@ -46,9 +46,9 @@ class Currency extends BaseModel
     {
         return $this->hasMany(\App\Model\Common\Country::class, 'currency_id');
     }
-    
-          public function getActivitylogOptions(): LogOptions
-  {
-    return LogOptions::defaults();
-   }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults();
+    }
 }

@@ -167,7 +167,6 @@ function getInstallationDetail($ip)
 {
     $ip = collect([$ip])->implode('-');
 
-    
     $ipAndDomain = explode(',', $ip);
 
     return InstallationDetail::where('installation_path', 'like', '%'.$ipAndDomain[0].'%')
@@ -466,7 +465,6 @@ function bifurcateTax($taxName, $taxValue, $currency, $state, $price = '')
  */
 function setServiceConfig($emailConfig)
 {
-    
     $sendingProtocol = $emailConfig->driver;
     if ($sendingProtocol && $sendingProtocol != 'smtp' && $sendingProtocol != 'mail') {
         $services = \Config::get("services.$sendingProtocol");

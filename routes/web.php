@@ -504,7 +504,7 @@ use Illuminate\Support\Facades\Route;
             Route::delete('third-party-delete', [ThirdPartyAppController::class, 'destroy'])->name('third-party-delete');
             Route::post('create/tenant', [Tenancy\TenantController::class, 'createTenant']);
             Route::get('view/tenant', [Tenancy\TenantController::class, 'viewTenant'])->middleware('admin');
-         
+
             Route::delete('delete-tenant', [Tenancy\TenantController::class, 'destroyTenant'])->name('delete-tenant')->middleware('admin');
 
             Route::post('cloud-details', [Tenancy\TenantController::class, 'saveCloudDetails'])->name('cloud-details')->middleware('admin');

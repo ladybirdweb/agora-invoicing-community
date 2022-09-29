@@ -3,17 +3,13 @@
 namespace App\Model\Common;
 
 use Illuminate\Database\Eloquent\Model;
-use Spatie\Activitylog\Models\Activity;
 use Spatie\Activitylog\Traits\LogsActivity;
 
 class ChatScript extends Model
 {
-   
     // use LogsActivity;
 
     protected $table = 'chat_scripts';
-    
-    
 
     protected $fillable = ['name', 'script', 'on_registration', 'on_every_page', 'google_analytics', 'google_analytics_tag'];
 
@@ -22,7 +18,6 @@ class ChatScript extends Model
     protected static $logAttributes = ['name', 'script'];
 
     protected static $logOnlyDirty = true;
-
 
     public function getDescriptionForEvent(string $eventName): string
     {
@@ -39,9 +34,5 @@ class ChatScript extends Model
         }
 
         return '';
-
-       
     }
-
- 
 }

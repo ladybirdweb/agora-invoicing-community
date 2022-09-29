@@ -14,7 +14,6 @@ use App\User;
 use Crypt;
 use Symfony\Component\Mime\Email;
 
-
 class BaseOrderController extends ExtendedOrderController
 {
     protected $sendMail;
@@ -276,12 +275,12 @@ class BaseOrderController extends ExtendedOrderController
 
     public function getMail($setting, $user, $downloadurl, $invoiceurl, $order, $product, $orderid, $myaccounturl)
     {
-          $mail = new \App\Http\Controllers\Common\PhpMailController();
-          $mailer = $mail->setMailConfig($setting);
-          $templates = new \App\Model\Common\Template();
-          $temp_id = $setting->order_mail;
-          $template = $templates->where('id', $temp_id)->first();
-          $html = $template->data;
+        $mail = new \App\Http\Controllers\Common\PhpMailController();
+        $mailer = $mail->setMailConfig($setting);
+        $templates = new \App\Model\Common\Template();
+        $temp_id = $setting->order_mail;
+        $template = $templates->where('id', $temp_id)->first();
+        $html = $template->data;
 
         try {
             $knowledgeBaseUrl = $setting->company_url;
@@ -291,32 +290,31 @@ class BaseOrderController extends ExtendedOrderController
                 $temp_type = new \App\Model\Common\TemplateType();
                 $type = $temp_type->where('id', $type_id)->first()->name;
             }
-             $email = (new Email())
+            $email = (new Email())
                    ->from($setting->email)
                    ->to($user->email)
                    ->subject($template->name)
-                   ->html($mail->mailTemplate($template->data,$templatevariables=[
-                'name' => $user->first_name.' '.$user->last_name,
-                'serialkeyurl' => $myaccounturl,
-                'downloadurl' => $downloadurl,
-                'invoiceurl' => $invoiceurl,
-                'product' => $product,
-                'number' => $order->number,
-                'expiry' => app(\App\Http\Controllers\Order\OrderController::class)->expiry($orderid),
-                'url' => app(\App\Http\Controllers\Order\OrderController::class)->renew($orderid),
-                'knowledge_base' => $knowledgeBaseUrl,
+                   ->html($mail->mailTemplate($template->data, $templatevariables = [
+                       'name' => $user->first_name.' '.$user->last_name,
+                       'serialkeyurl' => $myaccounturl,
+                       'downloadurl' => $downloadurl,
+                       'invoiceurl' => $invoiceurl,
+                       'product' => $product,
+                       'number' => $order->number,
+                       'expiry' => app(\App\Http\Controllers\Order\OrderController::class)->expiry($orderid),
+                       'url' => app(\App\Http\Controllers\Order\OrderController::class)->renew($orderid),
+                       'knowledge_base' => $knowledgeBaseUrl,
 
-            ]));
-                   
-                    
-             $mailer->send($email);
-             $mail->email_log_success($setting->email,$user->email,$template->name,$html);
+                   ]));
+
+            $mailer->send($email);
+            $mail->email_log_success($setting->email, $user->email, $template->name, $html);
 
             if ($order->invoice->grand_total) {
                 SettingsController::sendPaymentSuccessMailtoAdmin($order->invoice->currency, $order->invoice->grand_total, $user, $product);
             }
         } catch (\Exception $ex) {
-              $mail->email_log_fail($setting->email,$user->email,$template->name,$html);
+            $mail->email_log_fail($setting->email, $user->email, $template->name, $html);
             throw new \Exception($ex->getMessage());
         }
     }

@@ -3,8 +3,8 @@
 namespace App\Model\License;
 
 use Illuminate\Database\Eloquent\Model;
-use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class LicenseType extends Model
 {
@@ -50,8 +50,9 @@ class LicenseType extends Model
 
         return parent::delete();
     }
-       public function getActivitylogOptions(): LogOptions
-  {
-    return LogOptions::defaults();
-   }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults();
+    }
 }

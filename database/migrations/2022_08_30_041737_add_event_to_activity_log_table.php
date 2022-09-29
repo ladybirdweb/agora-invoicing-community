@@ -27,7 +27,6 @@ return new class extends Migration
     {
         Schema::table('activity_log', function (Blueprint $table) {
             $table->dropColumn('event');
-
         });
     }
 };

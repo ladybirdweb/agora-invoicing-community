@@ -6,8 +6,8 @@ use DateTime;
 use DateTimeZone;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Subscription extends Model
 {
@@ -85,8 +85,8 @@ class Subscription extends Model
 //
 //        return parent::delete();
 //    }
-       public function getActivitylogOptions(): LogOptions
-  {
-    return LogOptions::defaults();
-   }
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults();
+    }
 }

@@ -43,7 +43,7 @@ class LicenseController extends Controller
         $response = $this->postCurl($url.'oauth/token', $data);
 
         $response = json_decode($response);
-        
+
         return $response;
     }
 

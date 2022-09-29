@@ -57,7 +57,6 @@ class SettingsController extends BaseSettingsController
      */
     public function getKeys(ApiKey $apikeys)
     {
-       
         try {
             $licenseSecret = $apikeys->pluck('license_api_secret')->first();
             $licenseUrl = $apikeys->pluck('license_api_url')->first();

@@ -1,0 +1,37 @@
+{
+    "name": "endroid/installer",
+    "type": "composer-plugin",
+    "description": "Composer plugin for installing configuration files",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jeroen van den Enden",
+            "email": "info@endroid.nl"
+        }
+    ],
+    "require": {
+        "php": "^7.4||^8.0",
+        "composer-plugin-api": "^1.1||^2.0"
+    },
+    "require-dev": {
+        "composer/composer": "^2.0",
+        "endroid/quality": "dev-master"
+    },
+    "suggest": {
+        "roave/security-advisories": "Avoids installation of package versions with vulnerabilities"
+    },
+    "autoload": {
+        "psr-4": {
+            "Endroid\\Installer\\": "src"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.x-dev"
+        },
+        "class": "Endroid\\Installer\\Installer"
+    },
+    "config": {
+        "sort-packages": true
+    }
+}

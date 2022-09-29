@@ -15,6 +15,7 @@ trait QRCode
      */
     public function getQRCodeUrl($company, $holder, $secret)
     {
+       
         return 'otpauth://totp/'.
             rawurlencode($company).
             ':'.

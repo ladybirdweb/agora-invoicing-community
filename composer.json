@@ -26,6 +26,7 @@
         "creativeorange/gravatar": "~1.0",
         "darryldecode/cart": "^4.2",
         "devio/pipedrive": "^2.12",
+        "endroid/qr-code-bundle": "^4.1",
         "ezyang/htmlpurifier": "^4.14",
         "geoip2/geoip2": "^2.12",
         "graham-campbell/markdown": "^14.0",
@@ -41,10 +42,12 @@
         "php-mock/php-mock": "^2.3",
         "pion/laravel-chunk-upload": "^1.5",
         "pragmarx/google2fa-laravel": "^2.0",
+        "pragmarx/google2fa-qrcode": "^3.0",
         "predis/predis": "^2.0",
         "rachidlaasri/laravel-installer": "~4.1.0",
         "razorpay/razorpay": "^2.8",
         "shvetsgroup/laravel-email-database-log": "^10.0",
+        "simplesoftwareio/simple-qrcode": "^4.2",
         "slavka/mailchimp-apiv3": "dev-master#d4c99f784559ae791eece8341faafdd79d41a353",
         "spatie/laravel-activitylog": "^4.5",
         "spatie/laravel-referer": "^1.8",
@@ -126,6 +129,9 @@
     "config": {
         "preferred-install": "dist",
         "sort-packages": true,
-        "optimize-autoloader": true
+        "optimize-autoloader": true,
+        "allow-plugins": {
+            "endroid/installer": true
+        }
     }
 }

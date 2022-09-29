@@ -119,6 +119,7 @@ class OrderController extends BaseOrderController
 
     public function getOrders(Request $request)
     {
+        
         $orderSearch = new OrderSearchController();
         $query = $orderSearch->advanceOrderSearch($request);
 
@@ -167,7 +168,7 @@ class OrderController extends BaseOrderController
 
                 return $this->getUrl($model, $status, $model->subscription_id);
             })
-
+         
             ->filterColumn('client', function ($query, $keyword) {
                 $query->whereRaw("concat(first_name, ' ', last_name) like ?", ["%$keyword%"]);
             })

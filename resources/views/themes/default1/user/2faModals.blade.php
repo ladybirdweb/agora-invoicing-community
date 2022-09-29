@@ -1,3 +1,11 @@
+<style>
+    .hide {
+
+display: none;
+
+}
+</style>
+
 <div class="modal fade" id="2fa-modal1" data-backdrop="static" data-keyboard="false">
 <div class="modal-dialog">
   <div class="modal-content" style="width:700px;">
@@ -80,7 +88,13 @@
 </div>
 <!-- /.modal-dialog -->
 </div>
+<?php
+$google2fa = (new \PragmaRX\Google2FAQRCode\Google2FA());
+$secretKey = $google2fa->generateSecretKey();
+$companyName = Request()->getHttpHost();
+$user = Request()->user();
 
+?>
 
 
 
@@ -98,7 +112,10 @@
               <li>Choose <b>Scan a barcode.</b></li>
             </ul>     
       <div id="barcode">
-         <img id="image"/>
+         <img type="hidden" id="image"/ class="hide">
+       
+             {!! QrCode::size(100)->generate($google2fa->getQRCodeUrl($companyName, $user->email, $secretKey)); !!}
+
       </div>
       <a href="javascript:;" id="cantscanit">CAN'T SCAN IT?</a>
     </div>

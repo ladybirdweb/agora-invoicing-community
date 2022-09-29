@@ -98,11 +98,13 @@ class OrderController extends BaseOrderController
         try {
             $products = $this->product->where('id', '!=', 1)->pluck('name', 'id')->toArray();
 
-            $paidUnpaidOptions = ['paid' => 'Paid Products', 'unpaid' => 'Unpaid Products'];
-            $insNotIns = ['installed' => 'Yes (Installed atleast once)', 'not_installed' => 'No (Not Installed)'];
-            $activeInstallationOptions = ['paid_ins' => 'Active installation'];
-            $inactiveInstallationOptions = ['paid_inactive_ins' => 'Inactive installation'];
-            $renewal = ['expired_subscription' => 'Expired Subscriptions', 'active_subscription' => 'Active Subscriptions'];
+
+            $paidUnpaidOptions = ['paid'=>'Paid Products', 'unpaid'=>'Unpaid Products'];
+            $insNotIns = ['installed'=>'Yes (Installed atleast once)', 'not_installed'=>'No (Not Installed)'];
+            $activeInstallationOptions = ['paid_ins'=>'Active installation'];
+            $inactiveInstallationOptions = ['paid_inactive_ins'=>'Inactive installation'];
+            $renewal = ['expired_subscription'=>'Expired Subscriptions', 'active_subscription'=> 'Active Subscriptions','expiring_subscription'=>'Expiring Subscriptions',];
+
             $selectedVersion = $request->version;
             $allVersions = Subscription::where('version', '!=', '')->whereNotNull('version')
                 ->orderBy('version', 'desc')->groupBy('version')
@@ -117,6 +119,7 @@ class OrderController extends BaseOrderController
 
     public function getOrders(Request $request)
     {
+       
         $orderSearch = new OrderSearchController();
         $query = $orderSearch->advanceOrderSearch($request);
 

@@ -24,12 +24,12 @@ Orders
         <div class="card-tools">
 
             <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
-                <i class="fas fa-plus"></i></button>
+                <i class="fas fa-minus" ></i></button>
             
         </div>
     </div>
     <!-- /.box-header -->
-    <div class="card-body table-responsive">
+    <div class="card-body table-responsive"  style="display: block;">
         {!! Form::open(['method'=>'get']) !!}
 
         <div class="row">
@@ -65,7 +65,7 @@ Orders
             </div>
             <div class="col-md-3 form-group">
                 <!-- first name -->
-                {!! Form::label('till','Till') !!}
+                {!! Form::label('till','To') !!}
                 <div class="input-group date" id="order_till" data-target-input="nearest">
                     <input type="text" name="till" class="form-control datetimepicker-input" autocomplete="off" value="{!! $request->till !!}" data-target="#order_till"/>
 

@@ -6,8 +6,8 @@ use App\BaseModel;
 use DateTime;
 use DateTimeZone;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Invoice extends BaseModel
 {
@@ -114,9 +114,9 @@ class Invoice extends BaseModel
 
         return parent::delete();
     }
-    
+
     public function getActivitylogOptions(): LogOptions
-  {
-    return LogOptions::defaults();
-   }
+    {
+        return LogOptions::defaults();
+    }
 }

@@ -13,7 +13,6 @@ use App\User;
 use Illuminate\Http\Request;
 use Symfony\Component\Mime\Email;
 
-
 class BaseAuthController extends Controller
 {
     //Required Fields for Zoho
@@ -144,25 +143,23 @@ class BaseAuthController extends Controller
 
     public function sendActivation($email, $method, $str = '')
     {
-            $user = new User();
-            $user = $user->where('email', $email)->first();
+        $user = new User();
+        $user = $user->where('email', $email)->first();
 
-            //check in the settings
-            $settings = new \App\Model\Common\Setting();
-            $settings = $settings->where('id', 1)->first();
+        //check in the settings
+        $settings = new \App\Model\Common\Setting();
+        $settings = $settings->where('id', 1)->first();
 
-            //template
-            $template = new \App\Model\Common\Template();
-            $temp_id = $settings->where('id', 1)->first()->welcome_mail;
-            $template = $template->where('id', $temp_id)->first();
-            
-            
-            $mail = new \App\Http\Controllers\Common\PhpMailController();
-            $mailer = $mail->setMailConfig($settings);
-           
-            $html = $template->data;
+        //template
+        $template = new \App\Model\Common\Template();
+        $temp_id = $settings->where('id', 1)->first()->welcome_mail;
+        $template = $template->where('id', $temp_id)->first();
+
+        $mail = new \App\Http\Controllers\Common\PhpMailController();
+        $mailer = $mail->setMailConfig($settings);
+
+        $html = $template->data;
         try {
-            
             $activate_model = new AccountActivate();
             if (! $user) {
                 throw new \Exception('User with this email does not exist');
@@ -176,22 +173,21 @@ class BaseAuthController extends Controller
                 $activate = $activate_model->create(['email' => $email, 'token' => $token]);
                 $token = $activate->token;
             }
-          
+
             $url = url("activate/$token");
-           
+
             $website_url = url('/');
-           
+
             $email = (new Email())
                 ->from($settings->email)
                 ->to($user->email)
                 ->subject($template->name)
-                ->html($mail->mailTemplate($template->data,$templatevariables=['name' => $user->first_name.' '.$user->last_name,
-                      'username' => $user->email, 'password' => $str, 'url' => $url, 'website_url' => $website_url, ]));
-           $mailer->send($email);
-           $mail->email_log_success($settings->email,$user->email,$template->name,$html);
-       
-    } catch (\Exception $ex) {
-         $mail->email_log_fail($settings->email,$user->email,$template->name,$html);
+                ->html($mail->mailTemplate($template->data, $templatevariables = ['name' => $user->first_name.' '.$user->last_name,
+                    'username' => $user->email, 'password' => $str, 'url' => $url, 'website_url' => $website_url, ]));
+            $mailer->send($email);
+            $mail->email_log_success($settings->email, $user->email, $template->name, $html);
+        } catch (\Exception $ex) {
+            $mail->email_log_fail($settings->email, $user->email, $template->name, $html);
             throw new \Exception($ex->getMessage());
         }
     }

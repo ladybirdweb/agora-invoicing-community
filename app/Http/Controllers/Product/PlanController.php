@@ -15,7 +15,6 @@ use App\Model\Product\Subscription;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 
-
 class PlanController extends ExtendedPlanController
 {
     protected $currency;
@@ -67,7 +66,7 @@ class PlanController extends ExtendedPlanController
      */
     public function getPlans()
     {
-        $new_plan = Plan::with(['product','planPrice'])->select('id', 'name', 'days', 'product');
+        $new_plan = Plan::with(['product', 'planPrice'])->select('id', 'name', 'days', 'product');
         $defaultCurrency = Setting::where('id', 1)->value('default_currency');
 
         return DataTables::of($new_plan)
@@ -118,26 +117,26 @@ class PlanController extends ExtendedPlanController
                             class='btn btn-sm btn-secondary btn-xs'".tooltip('Edit')."<i class='fa fa-edit' 
                             style='color:white;'> </i></a>";
                         })
-                          ->filterColumn('name', function($query, $keyword) {
-                                $sql = "name like ?";
+                          ->filterColumn('name', function ($query, $keyword) {
+                              $sql = 'name like ?';
+                              $query->whereRaw($sql, ["%{$keyword}%"]);
+                          })
+                          ->filterColumn('product', function ($query, $keyword) {
+                              $sql = 'product like ?';
+                              $query->whereRaw($sql, ["%{$keyword}%"]);
+                          })
+                            ->filterColumn('days', function ($query, $keyword) {
+                                $sql = 'days like ?';
                                 $query->whereRaw($sql, ["%{$keyword}%"]);
                             })
-                          ->filterColumn('product', function($query, $keyword) {
-                                $sql = "product like ?";
-                                $query->whereRaw($sql, ["%{$keyword}%"]);
-                            })
-                            ->filterColumn('days', function($query, $keyword) {
-                                $sql = "days like ?";
-                                $query->whereRaw($sql, ["%{$keyword}%"]);
-                            })
-                              ->filterColumn('product', function($query, $keyword) {
-                                $sql = "product like ?";
-                                $query->whereRaw($sql, ["%{$keyword}%"]);
-                            })
-                              ->filterColumn('price', function($query, $keyword) {
-                                $sql = "price like ?";
-                                $query->whereRaw($sql, ["%{$keyword}%"]);
-                            })
+                              ->filterColumn('product', function ($query, $keyword) {
+                                  $sql = 'product like ?';
+                                  $query->whereRaw($sql, ["%{$keyword}%"]);
+                              })
+                              ->filterColumn('price', function ($query, $keyword) {
+                                  $sql = 'price like ?';
+                                  $query->whereRaw($sql, ["%{$keyword}%"]);
+                              })
                         ->rawColumns(['checkbox', 'name', 'days', 'product', 'price', 'currency', 'action'])
                         ->make(true);
     }

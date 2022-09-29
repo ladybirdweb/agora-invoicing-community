@@ -10,7 +10,7 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
 use ParagonIE\ConstantTime\Base32;
 use PragmaRX\Google2FAQRCode\Google2FA;
-use Endroid\QrCode\QrCode;
+
 class Google2FAController extends Controller
 {
     use ValidatesRequests;
@@ -40,10 +40,9 @@ class Google2FAController extends Controller
      */
     public function enableTwoFactor(Request $request)
     {
-   
         $user = $request->user();
         $google2fa = new Google2FA();
-        $secret =  $google2fa->generateSecretKey();
+        $secret = $google2fa->generateSecretKey();
         $user->google2fa_secret = $google2fa->generateSecretKey();
         $user->save();
         $imageDataUri = $google2fa->getQRCodeInline(
@@ -52,9 +51,8 @@ class Google2FAController extends Controller
                     $secret,
                     200
                 );
-      
-  
-        return successResponse('', ['image' => $imageDataUri, 'secret' => $secret,'user' => $user]);
+
+        return successResponse('', ['image' => $imageDataUri, 'secret' => $secret, 'user' => $user]);
     }
 
     /**

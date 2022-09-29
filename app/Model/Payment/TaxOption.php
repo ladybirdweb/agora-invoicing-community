@@ -3,8 +3,8 @@
 namespace App\Model\Payment;
 
 use App\BaseModel;
-use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class TaxOption extends BaseModel
 {
@@ -37,9 +37,9 @@ class TaxOption extends BaseModel
 
         return '';
     }
-    
+
     public function getActivitylogOptions(): LogOptions
-  {
-    return LogOptions::defaults();
-   }
+    {
+        return LogOptions::defaults();
+    }
 }

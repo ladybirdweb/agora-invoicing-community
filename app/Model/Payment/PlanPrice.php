@@ -3,8 +3,8 @@
 namespace App\Model\Payment;
 
 use Illuminate\Database\Eloquent\Model;
-use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class PlanPrice extends Model
 {
@@ -39,8 +39,9 @@ class PlanPrice extends Model
         // return "Product  has been {$eventName}";
          // \Auth::user()->activity;
     }
-       public function getActivitylogOptions(): LogOptions
-  {
-    return LogOptions::defaults();
-   }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults();
+    }
 }

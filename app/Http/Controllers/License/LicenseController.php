@@ -37,24 +37,18 @@ class LicenseController extends Controller
      * */
     private function oauthAuthorization()
     {
-        
         $url = $this->url;
         $data = [
             'client_id' => $this->client_id,
             'client_secret' => $this->client_secret,
             'grant_type' => $this->grant_type,
         ];
-        
+
         $response = $this->postCurl($url.'oauth/token', $data);
-       
-     
+
         $response = json_decode($response);
-       
-        
-      
 
         return $response;
-       
     }
 
     private function postCurl($post_url, $post_info, $token = null)
@@ -115,13 +109,11 @@ class LicenseController extends Controller
      */
     public function getLicensekey()
     {
-        
         $url = $this->url;
         $api_key_secret = $this->api_key_secret;
         $OauthDetails = $this->oauthAuthorization();
         $token = $OauthDetails->access_token;
         $getkey = $this->getCurl($url.'api/admin/viewApiKeys', $token);
-        
 
         return ['data' => $getkey, 'url' => $url];
     }
@@ -131,19 +123,13 @@ class LicenseController extends Controller
     */
     public function addNewProduct($product_name, $product_sku)
     {
-    
         $url = $this->url;
         $api_key_secret = $this->api_key_secret;
-        
-           
+
         $OauthDetails = $this->oauthAuthorization();
         $token = $OauthDetails->access_token;
-        
-        
+
         $addProduct = $this->postCurl($url.'api/admin/products/add', "api_key_secret=$api_key_secret&product_title=$product_name&product_sku=$product_sku&product_status=1", $token);
-        
-       
-        
     }
 
     /*
@@ -362,7 +348,7 @@ class LicenseController extends Controller
         //Search for the Installation Id
         $searchInstallationId = $this->searchInstallationId($licenseCode);
         $details = json_decode($searchInstallationId);
-       
+
         if ($details->api_error_detected == 0 && is_array($details->page_message)) {
             $OauthDetails = $this->oauthAuthorization();
             $token = $OauthDetails->access_token;
@@ -384,7 +370,7 @@ class LicenseController extends Controller
         $OauthDetails = $this->oauthAuthorization();
         $token = $OauthDetails->access_token;
         $getInstallId = $this->postCurl($url.'api/admin/search', "api_key_secret=$api_key_secret&search_type=installation&search_keyword=$licenseCode&isLicenseSearchApi=1", $token);
-        
+
         return $getInstallId;
     }
 
@@ -393,11 +379,9 @@ class LicenseController extends Controller
         $installation_domain = [];
         $installation_ip = [];
         $details = json_decode($this->searchInstallationId($licenseCode));
-        
+
         if ($details->api_error_detected == 0 && is_array($details->page_message)) {
-          
             foreach ($details->page_message as $detail) {
-               
                 if ($detail->product_id == $productId) {
                     // $installation_domain[] = "<a href=https://$detail->installation_domain target = '_blank'>  "."$detail->installation_domain</a>".' | '.$detail->installation_ip;
                     $installation_domain[] = $detail->installation_domain.','.$detail->installation_ip;
@@ -405,7 +389,7 @@ class LicenseController extends Controller
                 }
             }
         }
-      
+
         return ['installed_path' => $installation_domain, 'installed_ip' => $installation_ip];
     }
 

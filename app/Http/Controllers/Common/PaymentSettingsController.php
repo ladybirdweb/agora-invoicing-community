@@ -11,11 +11,10 @@ class PaymentSettingsController extends Controller
 {
     public function getPlugin()
     {
-        
-        try{
-        $plugins = $this->fetchConfig();
-       
-        return \DataTables::of(new Collection($plugins))
+        try {
+            $plugins = $this->fetchConfig();
+
+            return \DataTables::of(new Collection($plugins))
                         // ->searchColumns('name')
                         ->addColumn('name', function ($model) {
                             return ucfirst($model['name']);
@@ -76,102 +75,96 @@ class PaymentSettingsController extends Controller
                         })
                       ->rawColumns(['name', 'description', 'author', 'website', 'version', 'action'])
                             ->make(true);
-        }catch(\Exception $e)
-        {
-            dd($e,'pi');
+        } catch (\Exception $e) {
+            dd($e, 'pi');
         }
     }
 
     public function fetchConfig()
     {
-        try{
-        $configs = $this->readConfigs();
-        // dd($configs);
-        $plugs = new Plugin();
-        $fields = [];
-        $attributes = [];
-        if ($configs != 'null') {
-            foreach ($configs as $key => $config) {
-                $fields[$key] = include $config;
-            }
-        }
-
-        if (count($fields) > 0) {
-            foreach ($fields as $key => $field) {
-                $plug = $plugs->where('name', $field['name'])->select(['path', 'status'])->orderBy('name');
-            
-                
-                if ($plug) {
-                  
-                   
-                    foreach ($plug as $i => $value) {
-                        $attributes[$key]['path'] = $plug[$i]['path'];
-                        $attributes[$key]['status'] = $plug[$i]['status'];
-                    }
-                } else {
-                    $attributes[$key]['path'] = $field['name'];
-                    $attributes[$key]['status'] = 0;
+        try {
+            $configs = $this->readConfigs();
+            // dd($configs);
+            $plugs = new Plugin();
+            $fields = [];
+            $attributes = [];
+            if ($configs != 'null') {
+                foreach ($configs as $key => $config) {
+                    $fields[$key] = include $config;
                 }
-                $attributes[$key]['name'] = $field['name'];
-                $attributes[$key]['settings'] = $field['settings'];
-                $attributes[$key]['description'] = $field['description'];
-                $attributes[$key]['website'] = $field['website'];
-                $attributes[$key]['version'] = $field['version'];
-                $attributes[$key]['author'] = $field['author'];
             }
-        }
-         
-        return $attributes;
-        }catch(\Exception $e)
-        {
-            dd($e,'ji');
+
+            if (count($fields) > 0) {
+                foreach ($fields as $key => $field) {
+                    $plug = $plugs->where('name', $field['name'])->select(['path', 'status'])->orderBy('name');
+
+                    if ($plug) {
+                        foreach ($plug as $i => $value) {
+                            $attributes[$key]['path'] = $plug[$i]['path'];
+                            $attributes[$key]['status'] = $plug[$i]['status'];
+                        }
+                    } else {
+                        $attributes[$key]['path'] = $field['name'];
+                        $attributes[$key]['status'] = 0;
+                    }
+                    $attributes[$key]['name'] = $field['name'];
+                    $attributes[$key]['settings'] = $field['settings'];
+                    $attributes[$key]['description'] = $field['description'];
+                    $attributes[$key]['website'] = $field['website'];
+                    $attributes[$key]['version'] = $field['version'];
+                    $attributes[$key]['author'] = $field['author'];
+                }
+            }
+
+            return $attributes;
+        } catch (\Exception $e) {
+            dd($e, 'ji');
         }
     }
 
     public function readConfigs()
     {
-        try{
-        $dir = app_path().DIRECTORY_SEPARATOR.'Plugins'.DIRECTORY_SEPARATOR;
-        $directories = scandir($dir);
-        $files = [];
-        foreach ($directories as $key => $file) {
-            if ($file === '.' or $file === '..') {
-                continue;
-            }
+        try {
+            $dir = app_path().DIRECTORY_SEPARATOR.'Plugins'.DIRECTORY_SEPARATOR;
+            $directories = scandir($dir);
+            $files = [];
+            foreach ($directories as $key => $file) {
+                if ($file === '.' or $file === '..') {
+                    continue;
+                }
 
-            if (is_dir($dir.DIRECTORY_SEPARATOR.$file)) {
-                $files[$key] = $file;
-            }
-        }
-        //dd($files);
-        $config = [];
-        $plugins = [];
-        if (count($files) > 0) {
-            foreach ($files as $key => $file) {
-                $plugin = $dir.$file;
-                $plugins[$key] = array_diff(scandir($plugin), ['.', '..', 'ServiceProvider.php']);
-                $plugins[$key]['file'] = $plugin;
-            }
-            foreach ($plugins as $plugin) {
-                $dir = $plugin['file'];
-                //opendir($dir);
-                if ($dh = opendir($dir)) {
-                    while (($file = readdir($dh)) !== false) {
-                        if ($file == 'config.php') {
-                            $config[] = $dir.DIRECTORY_SEPARATOR.$file;
-                        }
-                    }
-                    closedir($dh);
+                if (is_dir($dir.DIRECTORY_SEPARATOR.$file)) {
+                    $files[$key] = $file;
                 }
             }
+            //dd($files);
+            $config = [];
+            $plugins = [];
+            if (count($files) > 0) {
+                foreach ($files as $key => $file) {
+                    $plugin = $dir.$file;
+                    $plugins[$key] = array_diff(scandir($plugin), ['.', '..', 'ServiceProvider.php']);
+                    $plugins[$key]['file'] = $plugin;
+                }
+                foreach ($plugins as $plugin) {
+                    $dir = $plugin['file'];
+                    //opendir($dir);
+                    if ($dh = opendir($dir)) {
+                        while (($file = readdir($dh)) !== false) {
+                            if ($file == 'config.php') {
+                                $config[] = $dir.DIRECTORY_SEPARATOR.$file;
+                            }
+                        }
+                        closedir($dh);
+                    }
+                }
 
-            return $config;
-        } else {
-            return 'null';
-        }
-        }catch(\Exception $e)
-        {
-            dd($e,'hi');
+                return $config;
+            } else {
+                return 'null';
+            }
+        } catch (\Exception $e) {
+            dd($e, 'hi');
         }
     }
 

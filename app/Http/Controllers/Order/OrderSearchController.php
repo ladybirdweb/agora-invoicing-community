@@ -9,7 +9,6 @@ use App\Model\Product\Subscription;
 use Carbon\Carbon;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
-use App\Http\Controllers\DashboardController;
 
 class OrderSearchController extends Controller
 {
@@ -31,12 +30,10 @@ class OrderSearchController extends Controller
      */
     public function advanceOrderSearch(Request $request)
     {
-       
-          try {
-             if($request->renewal == 'expiring_subscription')
-              {
-              $baseQuery = $this->getBaseQueryForOrders();
-              }
+        try {
+            if ($request->renewal == 'expiring_subscription') {
+                $baseQuery = $this->getBaseQueryForOrders();
+            }
             $baseQuery = $this->getBaseQueryForOrders();
             $this->orderNum($request->input('order_no'), $baseQuery);
             $this->product($request->input('product_id'), $baseQuery);
@@ -46,7 +43,8 @@ class OrderSearchController extends Controller
             $this->allInstallations($request->input('act_ins'), $baseQuery);
             $this->allRenewals($request->input('renewal'), $baseQuery);
 
-            $this->getSelectedVersionOrders($baseQuery, $request->input('version'), $request->input('product_id'),$request);
+            $this->getSelectedVersionOrders($baseQuery, $request->input('version'), $request->input('product_id'), $request);
+
 
             return $request->renewal == 'expiring_subscription' ? $baseQuery->orderBy('subscriptions.update_ends_at', 'asc') :
              $baseQuery->orderBy('subscriptions.update_ends_at', 'asc');
@@ -61,10 +59,9 @@ class OrderSearchController extends Controller
      *
      * @return Builder
      */
-        private function getBaseQueryForOrders()
-         {
-
-          return Order::leftJoin('subscriptions', 'orders.id', '=', 'subscriptions.order_id')
+    private function getBaseQueryForOrders()
+    {
+        return Order::leftJoin('subscriptions', 'orders.id', '=', 'subscriptions.order_id')
             ->leftJoin('users', 'orders.client', '=', 'users.id')
             ->leftJoin('products', 'orders.product', '=', 'products.id')
             ->select(
@@ -72,7 +69,7 @@ class OrderSearchController extends Controller
                 'subscriptions.update_ends_at as subscription_ends_at', 'subscriptions.id as subscription_id', 'subscriptions.version as product_version', 'subscriptions.updated_at as subscription_updated_at', 'subscriptions.created_at as subscription_created_at',
                 'products.name as product_name', \DB::raw("concat(first_name, ' ', last_name) as client_name"), 'client as client_id',
             );
-          }
+    }
 
     public function getProductVersions(Request $request, $productId)
     {
@@ -113,10 +110,8 @@ class OrderSearchController extends Controller
      *
      * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
      */
-    private function getSelectedVersionOrders($baseQuery, $version, $productId,$request)
+    private function getSelectedVersionOrders($baseQuery, $version, $productId, $request)
     {
-    
-
         if ($version) {
             if ($productId == 'paid') {
                 $latestVersion = ProductUpload::orderBy('version', 'desc')->value('version');
@@ -136,14 +131,10 @@ class OrderSearchController extends Controller
                 $latestVersion = Subscription::where('product_id', $productId)->orderBy('version', 'desc')->value('version');
 
                 $baseQuery->where('subscriptions.version', '<', $latestVersion);
-            }
-            
-             else {
+            } else {
                 $baseQuery->where('subscriptions.version', '=', $version);
             }
         }
-        
-        
 
         return $baseQuery;
     }
@@ -254,7 +245,7 @@ class OrderSearchController extends Controller
      */
     public function orderFrom($till, $from, $join)
     {
-        $subFrom =  $request->renewal = "expiring_subscription" ? 'subscriptions.update_ends_at' :'orders.created_at';
+        $subFrom = $request->renewal = 'expiring_subscription' ? 'subscriptions.update_ends_at' : 'orders.created_at';
         if ($from) {
             $from = Carbon::parse($from)->startOfDay();
             $till = Carbon::parse($till)->endOfDay();
@@ -270,8 +261,6 @@ class OrderSearchController extends Controller
         }
     }
 
-
-
     /**
      * Searches for Order Till Date.
      *
@@ -281,7 +270,7 @@ class OrderSearchController extends Controller
      */
     public function orderTill($from, $till, $join)
     {
-        $subTo = $request->renewal = "expiring_subscription" ? 'subscriptions.update_ends_at' : 'orders.created_at';
+        $subTo = $request->renewal = 'expiring_subscription' ? 'subscriptions.update_ends_at' : 'orders.created_at';
         if ($till) {
             $from = Carbon::parse($from)->startOfDay();
             $till = Carbon::parse($till)->endOfDay();
@@ -294,8 +283,6 @@ class OrderSearchController extends Controller
             return $join;
         }
     }
-
-
 
     /**
      * Searches for Domain.

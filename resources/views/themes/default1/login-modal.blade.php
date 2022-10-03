@@ -83,7 +83,7 @@ $country = findCountryByGeoip($location['iso_code']);
         </div>
 
         <div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-             aria-hidden="true" >
+             aria-hidden="true" style="margin-top: 15%;" >
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header text-center">
@@ -198,7 +198,7 @@ $country = findCountryByGeoip($location['iso_code']);
         </div>
 
         <div class="modal fade" id="register-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-             aria-hidden="true">
+             aria-hidden="true" style="margin-top: 13%;">
             <div class="modal-dialog" role="document" style=" overflow-y: initial !important;">
                 <div class="modal-content">
                     <div class="modal-header text-center">

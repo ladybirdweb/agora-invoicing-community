@@ -114,7 +114,7 @@ Create Group
                         <td>
 
                            <div class="form-group">
-                            @foreach($pricingTemplates as $template)
+                            
                             <div class="col-md-4">
                              <img src='{{ asset("images/$template->image")}}' class="img-thumbnail" style="height: 150;">
                              <br/>
@@ -124,7 +124,7 @@ Create Group
                              <br/><br/>
                         </div>
                    
-                            @endforeach
+                            
                             </div> 
                         </td>
 

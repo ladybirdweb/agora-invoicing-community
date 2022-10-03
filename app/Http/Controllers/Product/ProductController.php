@@ -190,7 +190,6 @@ class ProductController extends BaseProductController
     // Save file Info in Modal popup
     public function save(Request $request)
     {
-
         $this->validate(
             $request,
             [
@@ -215,7 +214,6 @@ class ProductController extends BaseProductController
             $this->product_upload->is_private = $request->input('is_private');
             $this->product_upload->is_restricted = $request->input('is_restricted');
             $this->product_upload->dependencies = json_encode($request->input('dependencies'));
-            
 
             $this->product_upload->save();
 
@@ -285,7 +283,6 @@ class ProductController extends BaseProductController
      */
     public function store(Request $request)
     {
-       
         $input = $request->all();
         $v = \Validator::make($input, [
             'name' => 'required|unique:products,name',
@@ -309,7 +306,6 @@ class ProductController extends BaseProductController
         }
 
         try {
-
             $licenseStatus = StatusSetting::pluck('license_status')->first();
             if ($licenseStatus) { //If License Setting Status is on,Add Product to the License Manager
                 $addProductToLicensing = $this->licensing->addNewProduct($input['name'], $input['product_sku']);
@@ -325,10 +321,9 @@ class ProductController extends BaseProductController
             $can_modify_agent = $request->input('can_modify_agent');
             $can_modify_quantity = $request->input('can_modify_quantity');
             $highlight = $request->input('highlight');
-            $this->saveCartValues($input, $can_modify_agent, $can_modify_quantity,$highlight);
+            $this->saveCartValues($input, $can_modify_agent, $can_modify_quantity, $highlight);
             $this->product->fill($request->except('image', 'file'))->save();
-            
-            
+
             $taxes = $request->input('tax');
             if ($taxes) {
                 foreach ($taxes as $key => $value) {
@@ -338,7 +333,7 @@ class ProductController extends BaseProductController
                     $newtax->save();
                 }
             }
-            
+
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (\Exception $e) {
             app('log')->error($e->getMessage());
@@ -451,7 +446,7 @@ class ProductController extends BaseProductController
 
             $product->fill($request->except('image', 'file'))->save();
             $highlight = $request->input('highlight');
-            $this->saveCartDetailsWhileUpdating($input, $request, $product,$highlight);
+            $this->saveCartDetailsWhileUpdating($input, $request, $product, $highlight);
 
             if ($request->input('github_owner') && $request->input('github_repository')) {
                 $this->updateVersionFromGithub($product->id, $request->input('github_owner'), $request->input('github_repository'));

@@ -265,6 +265,7 @@ return [
     'retired'                                                                                         => 'Deny All Downloads after expiry',
    'perpetual-download'                                                                               => 'Perpetual Download Till Expiry',
     'hidden'                                                                                          => 'Hidden',
+    'highlight'                                                                                       => 'highlight',
     'enable-quantity-in-stock'                                                                        => 'Enable - Quantity in Stock:',
     'tick-this-box-to-charge-tax-for-this-product'                                                    => 'Tick this box to charge tax for this product',
     'tick-to-show-domain-registration-options'                                                        => 'Tick to show domain registration options',
@@ -292,6 +293,7 @@ return [
     'sku'                                                                                             => 'Product SKU (Stock Keeping Unit)',
     'perpetual_license'                                                                               => 'Perpetual License',
     'perpetual_license-detail'                                                                        => 'If selected ,the license expiration date would not be generated, ie, the product can be used perpetually',
+    'tick-to-highlight-product'                                                                    => 'Check to highlight the product',
     /*
      * Addons
      */

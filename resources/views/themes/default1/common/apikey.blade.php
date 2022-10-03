@@ -59,52 +59,41 @@
             border-radius: 34px;
         }
 
-.slider.round:before {
-  border-radius: 50%;
-}
-.scrollit {
-    overflow:scroll;
-    height:600px;
-}
-<?php
-
-$key = new App\Http\Controllers\License\LicenseController;
-$details = $key->getLicensekey();
-$licensekey = $details["data"]["data"][0]["api_key_secret"];
-$licenseurl =  $details["url"];
-?>
-</style>
-<div class="col-sm-6 md-6">
-    <h1>API Keys</h1>
-</div>
-<div class="col-sm-6 md-6">
-    <ol class="breadcrumb float-sm-right">
-        <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li class="breadcrumb-item"><a href="{{url('settings')}}"> Settings</a></li>
-        <li class="breadcrumb-item active">Api Key</li>
-    </ol>
-</div><!-- /.col -->
+        .slider.round:before {
+            border-radius: 50%;
+        }
+        .scrollit {
+            overflow:scroll;
+            height:600px;
+        }
+    </style>
+    <div class="col-sm-6 md-6">
+        <h1>API Keys</h1>
+    </div>
+    <div class="col-sm-6 md-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="breadcrumb-item"><a href="{{url('settings')}}"> Settings</a></li>
+            <li class="breadcrumb-item active">Api Key</li>
+        </ol>
+    </div><!-- /.col -->
 @stop
 @section('content')
 
 
     <div class="card card-secondary card-outline">
 
-            <!-- /.box-header -->
-            <div class="card-body">
-          
-               <div id="alertMessage"></div>
-                <div id="alertMessage1"></div>
-               
-              <div class="scrollit">
-                  <div class="row">
-               <div class="col-md-12">
+        <!-- /.box-header -->
+        <div class="card-body">
+            <div id="alertMessage"></div>
+            <div class="scrollit">
+                <div class="row">
+                    <div class="col-md-12">
 
                         <table class="table table-bordered ">
                             <thead>
                             <tr>
 
-<<<<<<< HEAD
                                 <th>Options</th>
                                 <th>Status</th>
                                 <th>Fields</th>
@@ -126,12 +115,9 @@ $licenseurl =  $details["url"];
                                 </td>
 
                                 <td class="col-md-4 licenseEmptyField">
-                                     {!! Form::label('lic_api_secret',Lang::get('message.lic_api_secret')) !!}
-                                     {!! Form::text('license_api',null,['class' => 'form-control secretHide','disabled'=>'disabled'
-                                      ]) !!}
-                         @if($errors->has('license_api_secret'))
-                         <div class="error">{{ $errors->first('license_api_secret') }}</div>
-                          @endif
+                                    {!! Form::label('lic_api_secret',Lang::get('message.lic_api_secret')) !!}
+                                    {!! Form::text('license_api',null,['class' => 'form-control secretHide','disabled'=>'disabled'
+                                    ]) !!}
 
                                     <!-- last name -->
                                     {!! Form::label('lic_api_url',Lang::get('message.lic_api_url')) !!} :
@@ -148,14 +134,13 @@ $licenseurl =  $details["url"];
 
                                 </td>
                                 <td class="col-md-4 LicenseField hide">
+
+
                                     <!-- last name -->
                                     {!! Form::label('lic_api_secret',Lang::get('message.lic_api_secret')) !!}
                                     {!! Form::text('license_api_secret',$licenseSecret,['class' => 'form-control','id'=>'license_api_secret']) !!}
                                     <h6 id="license_apiCheck"></h6>
                                     <br/>
-                                      @if($errors->has('license_api_secret'))
-                         <div class="error">{{ $errors->first('license_api_secret') }}</div>
-                          @endif
 
                                     <!-- last name -->
                                     {!! Form::label('lic_api_url',Lang::get('message.lic_api_url')) !!} :
@@ -167,7 +152,6 @@ $licenseurl =  $details["url"];
                                     {!! Form::text('license_client_id',$licenseClientId,['class' => 'form-control','id'=>'license_client_id']) !!}
                                     <h6 id="license_clientIdCheck"></h6>
                                     <br/>
-
 
                                     {!! Form::label('lic_client_secret',Lang::get('message.lic_client_secret')) !!} :
                                     {!! Form::text('license_client_secret',$licenseClientSecret,['class' => 'form-control','id'=>'license_client_secret']) !!}
@@ -181,7 +165,7 @@ $licenseurl =  $details["url"];
 
 
                                 </td>
-                                <td class="col-md-2"><button type="submit" class="form-group btn btn-primary"  onclick="licenseDetails('{{$licensekey}}','{{$licenseurl}}')" id="submit"><i class="fa fa-save">&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
+                                <td class="col-md-2"><button type="submit" class="form-group btn btn-primary"  onclick="licenseDetails()" id="submit"><i class="fa fa-save">&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
                             </tr>
 
                             <tr>
@@ -549,89 +533,10 @@ $licenseurl =  $details["url"];
                 $('.LicenseField').hide();
                 $('.nocapsecretHide').val('');
                 $('.siteKeyHide').val('');
+                $('.licenseEmptyField').show();
 
-               $('.licenseEmptyField').show();
-               
-               
-        }
-    });
 
-function licenseDetails($licensekey, $licenseurl){
-   if ($('#License').prop("checked")) {
-          var checkboxvalue = 1;
-          var valid = true;
-          if ($('#license_api_secret').val() =="" ) {
-             $('#license_apiCheck').show();
-             $('#license_apiCheck').html("Please Enter API Secret Key");
-              $('#license_api_secret').css("border-color","red");
-              $('#license_apiCheck').css({"color":"red","margin-top":"5px"});
-                setTimeout(function(){
-                    $('#license_apiCheck').hide();
-                      $('#license_api_secret').css("border-color","");
-                        }, 1500);
-              valid = false;
-          }
-            if ($('#license_api_secret').val() != $licensekey ) {
-             $('#license_apiCheck').show();
-             $('#license_apiCheck').html("Please Enter Valid APT Secret Key");
-              $('#license_api_secret').css("border-color","red");
-              $('#license_apiCheck').css({"color":"red","margin-top":"5px"});
-              setTimeout(function(){
-                    $('#license_apiCheck').hide();
-                      $('#license_api_secret').css("border-color","");
-                        }, 1500);
-              valid = false;
-
-          }
-
-            if ($('#license_api_url').val() =="" ) {
-             $('#license_urlCheck').show();
-             $('#license_urlCheck').html("Please Enter API URL");
-              $('#license_api_url').css("border-color","red");
-              $('#license_urlCheck').css({"color":"red","margin-top":"5px"});
-                setTimeout(function(){
-                    $('#license_urlCheck').hide();
-                      $('#license_api_url').css("border-color","");
-                        }, 1500);
-              valid = false;
-          }
-          if ($('#license_api_url').val() != $licenseurl) {
-             $('#license_urlCheck').show();
-             $('#license_urlCheck').html("Please Enter Valid API URL");
-              $('#license_api_url').css("border-color","red");
-              $('#license_urlCheck').css({"color":"red","margin-top":"5px"});
-                setTimeout(function(){
-                    $('#license_urlCheck').hide();
-                      $('#license_api_url').css("border-color","");
-                        }, 1500);
-              valid = false;
-          }
-          return valid;
-         
-    }
-    else{
-          var checkboxvalue = 0;
-         }
-       $("#submit").html("<i class='fas fa-circle-notch fa-spin'></i>Please Wait...");
-  $.ajax({
-    
-    url : '{{url("licenseDetails")}}',
-    type : 'post',
-    data: {
-       "status": checkboxvalue,
-       "license_api_secret": $('#license_api_secret').val(),
-       "license_api_url" :$('#license_api_url').val(),
-      },
-      success: function (response) {
-            $('#alertMessage').show();
-            var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>'+response.update+'.</div>';
-            $('#alertMessage').html(result+ ".");
-            $("#submit").html("<i class='fa fa-save'>&nbsp;&nbsp;</i>Save");
-                setInterval(function(){ 
-                $('#alertMessage').slideUp(3000); 
-            }, 1000);
-          },
-            
+            }
         });
 
         function licenseDetails(){

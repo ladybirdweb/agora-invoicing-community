@@ -285,6 +285,7 @@ class PageController extends Controller
 
     public function transform($type, $data, $trasform = [])
     {
+
         $config = \Config::get("transform.$type");
         $result = '';
         $array = [];
@@ -293,8 +294,11 @@ class PageController extends Controller
         }
         $c = count($array);
         for ($i = 0; $i < $c; $i++) {
+            
             $array1 = $this->keyArray($array[$i]);
             $array2 = $this->valueArray($array[$i]);
+           
+            $data = Product::where('name', $array2[0])->value('highlight') ? PricingTemplate::findorFail(2)->data : PricingTemplate::findorFail(1)->data;
             $result .= str_replace($array1, $array2, $data);
         }
 
@@ -313,19 +317,24 @@ class PageController extends Controller
      * @param  int  $templateid  Id of the Template
      * @return longtext The Template to be displayed
      */
-    public function pageTemplates(int $templateid, int $groupid)
+    public function pageTemplates(int $templateid = null, int $groupid)
     {
         try {
-            $data = PricingTemplate::findorFail($templateid)->data;
+
+          
+            $productsHightlight = Product::wherehighlight(1)->get();
+           
+            // $data = PricingTemplate::findorFail($templateid)->data;
             $headline = ProductGroup::findorFail($groupid)->headline;
             $tagline = ProductGroup::findorFail($groupid)->tagline;
             $productsRelatedToGroup = ProductGroup::find($groupid)->product()->where('hidden', '!=', 1)
             ->orderBy('created_at', 'desc')->get(); //Get ALL the Products Related to the Group
             $trasform = [];
-            $templates = $this->getTemplateOne($productsRelatedToGroup, $data, $trasform);
+            $templates = $this->getTemplateOne($productsRelatedToGroup, $trasform);
 
             return view('themes.default1.common.template.shoppingcart', compact('templates', 'headline', 'tagline'));
         } catch (\Exception $ex) {
+            dd($ex);
             app('log')->error($ex->getMessage());
 
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -349,13 +358,15 @@ class PageController extends Controller
      * @param $trasform
      * @return string
      */
-    public function getTemplateOne($helpdesk_products, $data, $trasform)
+    public function getTemplateOne($helpdesk_products, $trasform)
     {
         try {
+           
             $template = '';
             $temp_controller = new TemplateController();
             if (count($helpdesk_products) > 0) {
                 foreach ($helpdesk_products as $product) {
+                
                     //Store all the values in $trasform variable for shortcodes to read from
                     $trasform[$product['id']]['price'] = $temp_controller->leastAmount($product['id']);
                     $trasform[$product['id']]['price-description'] = self::getPriceDescription($product['id']);
@@ -365,10 +376,13 @@ class PageController extends Controller
                     ->plans($product['shoping_cart_link'], $product['id']);
                     $trasform[$product['id']]['url'] = "<input type='submit' 
                     value='Order Now' class='btn btn-dark btn-modern btn-outline py-2 px-4'></form>";
-                }
-                $template = $this->transform('cart', $data, $trasform);
-            }
 
+                }
+                $data = PricingTemplate::findorFail(1)->data;
+                $template = $this->transform('cart', $data, $trasform);
+            
+            }
+            
             return $template;
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -416,11 +430,13 @@ class PageController extends Controller
 
     public function keyArray($array)
     {
+
         $result = [];
         foreach ($array as $key => $value) {
+
             $result[] = $key;
         }
-
+       
         return $result;
     }
 
@@ -428,8 +444,16 @@ class PageController extends Controller
     {
         $result = [];
         foreach ($array as $key => $value) {
+            
             $result[] = $value;
+            
         }
+        
+        $result[5] = Product::where('name', $result[0])->value('highlight') ? "<input type='submit'
+                     value='Order Now' class='btn btn-primary btn-modern btn-outline py-2 px-4'></form>" : "<input type='submit' 
+                   value='Order Now' class='btn btn-dark btn-modern btn-outline py-2 px-4'></form>";
+       
+        
 
         return $result;
     }

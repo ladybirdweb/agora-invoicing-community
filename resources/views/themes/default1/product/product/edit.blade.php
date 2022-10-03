@@ -247,6 +247,25 @@ Edit Product
 
                                             </div>
                                         </li>
+                                          <li>
+                                            <div class="row">
+
+                                               <div class="form-group {{ $errors->has('highlight') ? 'has-error' : '' }}">
+                                                <!-- first name -->
+                                                {!! Form::label('highlight',Lang::get('message.highlight')) !!}
+                                                {!! Form::hidden('highlight', 0) !!}
+                                                <?php 
+                                                $value=  "";
+                                                if ($product->highlight==1) {
+                                                    $value = 'true';
+                                                }
+                                                ?>
+                                                <p>{!! Form::checkbox('highlight',1,$value) !!}  {{Lang::get('message.tick-to-highlight-product')}}</p>
+
+                                            </div>
+
+                                            </div>
+                                        </li>
                                    
                                 </div>
 

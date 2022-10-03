@@ -85,20 +85,16 @@
 
     <div class="card card-secondary card-outline">
 
-            <!-- /.box-header -->
-            <div class="card-body">
-          
-               <div id="alertMessage"></div>
-                <div id="alertMessage1"></div>
-               
-              <div class="scrollit">
-                  <div class="row">
-               <div class="col-md-12">
+        <!-- /.box-header -->
+        <div class="card-body">
+            <div id="alertMessage"></div>
+            <div class="scrollit">
+                <div class="row">
+                    <div class="col-md-12">
 
                         <table class="table table-bordered ">
                             <thead>
                             <tr>
-
 
                                 <th>Options</th>
                                 <th>Status</th>
@@ -121,12 +117,9 @@
                                 </td>
 
                                 <td class="col-md-4 licenseEmptyField">
-                                     {!! Form::label('lic_api_secret',Lang::get('message.lic_api_secret')) !!}
-                                     {!! Form::text('license_api',null,['class' => 'form-control secretHide','disabled'=>'disabled'
-                                      ]) !!}
-                         @if($errors->has('license_api_secret'))
-                         <div class="error">{{ $errors->first('license_api_secret') }}</div>
-                          @endif
+                                    {!! Form::label('lic_api_secret',Lang::get('message.lic_api_secret')) !!}
+                                    {!! Form::text('license_api',null,['class' => 'form-control secretHide','disabled'=>'disabled'
+                                    ]) !!}
 
                                     <!-- last name -->
                                     {!! Form::label('lic_api_url',Lang::get('message.lic_api_url')) !!} :
@@ -143,14 +136,13 @@
 
                                 </td>
                                 <td class="col-md-4 LicenseField hide">
+
+
                                     <!-- last name -->
                                     {!! Form::label('lic_api_secret',Lang::get('message.lic_api_secret')) !!}
                                     {!! Form::text('license_api_secret',$licenseSecret,['class' => 'form-control','id'=>'license_api_secret']) !!}
                                     <h6 id="license_apiCheck"></h6>
                                     <br/>
-                                      @if($errors->has('license_api_secret'))
-                         <div class="error">{{ $errors->first('license_api_secret') }}</div>
-                          @endif
 
                                     <!-- last name -->
                                     {!! Form::label('lic_api_url',Lang::get('message.lic_api_url')) !!} :
@@ -162,7 +154,6 @@
                                     {!! Form::text('license_client_id',$licenseClientId,['class' => 'form-control','id'=>'license_client_id']) !!}
                                     <h6 id="license_clientIdCheck"></h6>
                                     <br/>
-
 
                                     {!! Form::label('lic_client_secret',Lang::get('message.lic_client_secret')) !!} :
                                     {!! Form::text('license_client_secret',$licenseClientSecret,['class' => 'form-control','id'=>'license_client_secret']) !!}
@@ -546,6 +537,7 @@
                 $('.LicenseField').hide();
                 $('.nocapsecretHide').val('');
                 $('.siteKeyHide').val('');
+                $('.licenseEmptyField').show();
 
                $('.licenseEmptyField').show();
                

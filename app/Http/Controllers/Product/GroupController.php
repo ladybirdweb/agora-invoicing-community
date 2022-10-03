@@ -85,10 +85,12 @@ class GroupController extends Controller
     public function create()
     {
         try {
-            $pricingTemplates = PricingTemplate::select('image', 'id', 'name')->get();
+            $template = PricingTemplate::select('image', 'id', 'name')->first();
 
-            return view('themes.default1.product.group.create', compact('pricingTemplates'));
+
+            return view('themes.default1.product.group.create', compact('template'));
         } catch (\Exception $ex) {
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -127,9 +129,9 @@ class GroupController extends Controller
         try {
             $group = $this->group->where('id', $id)->first();
             $selectedTemplate = $group->pricing_templates_id;
-            $pricingTemplates = PricingTemplate::get();
+            $template = PricingTemplate::first();
 
-            return view('themes.default1.product.group.edit', compact('group', 'selectedTemplate', 'pricingTemplates'));
+            return view('themes.default1.product.group.edit', compact('group', 'selectedTemplate', 'template'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }

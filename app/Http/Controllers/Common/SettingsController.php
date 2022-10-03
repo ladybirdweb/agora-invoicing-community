@@ -78,6 +78,9 @@ class SettingsController extends BaseSettingsController
             $licenseGrantType = ApiKey::pluck('license_grant_type')->first();
             $licenseSecret = $apikeys->pluck('license_api_secret')->first();
             $licenseUrl = $apikeys->pluck('license_api_url')->first();
+            $licenseClientId = $apikeys->pluck('license_client_id')->first();
+            $licenseClientSecret = $apikeys->pluck('license_client_secret')->first();
+            $licenseGrantType = $apikeys->pluck('license_grant_type')->first();
             $status = StatusSetting::pluck('license_status')->first();
             $captchaStatus = StatusSetting::pluck('recaptcha_status')->first();
             $updateStatus = StatusSetting::pluck('update_settings')->first();
@@ -172,9 +175,9 @@ class SettingsController extends BaseSettingsController
             $set = $settings->find(1);
             $state = getStateByCode($set->state);
             $selectedCountry = \DB::table('countries')->where('country_code_char2', $set->country)
-            ->pluck('nicename', 'country_code_char2')->toArray();
+                ->pluck('nicename', 'country_code_char2')->toArray();
             $selectedCurrency = \DB::table('currencies')->where('code', $set->default_currency)
-            ->pluck('name', 'symbol')->toArray();
+                ->pluck('name', 'symbol')->toArray();
             $states = findStateByRegionId($set->country);
 
             return view(
@@ -477,7 +480,6 @@ class SettingsController extends BaseSettingsController
                 })
                 ->rawColumns(['checkbox', 'date', 'from', 'to',
                     'bcc', 'subject',  'status', ])
-
                 ->make(true);
         } catch (\Exception $e) {
             return redirect()->back()->with('fails', $e->getMessage());
@@ -518,7 +520,7 @@ class SettingsController extends BaseSettingsController
                         <i class='fa fa-ban'></i>
 
                         <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
-                        /* @scrutinizer ignore-type */     \Lang::get('message.failed').'
+                            /* @scrutinizer ignore-type */     \Lang::get('message.failed').'
 
                         <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                             './* @scrutinizer ignore-type */\Lang::get('message.no-record').'
@@ -529,7 +531,7 @@ class SettingsController extends BaseSettingsController
                 echo "<div class='alert alert-success alert-dismissable'>
                         <i class='fa fa-ban'></i>
                         <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '
-                        ./* @scrutinizer ignore-type */\Lang::get('message.success').'
+                    ./* @scrutinizer ignore-type */\Lang::get('message.success').'
                         <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                             './* @scrutinizer ignore-type */ \Lang::get('message.deleted-successfully').'
                     </div>';
@@ -537,7 +539,7 @@ class SettingsController extends BaseSettingsController
                 echo "<div class='alert alert-danger alert-dismissable'>
                         <i class='fa fa-ban'></i>
                         <b>"./* @scrutinizer ignore-type */ \Lang::get('message.alert').
-                        '!</b> './* @scrutinizer ignore-type */\Lang::get('message.failed').'
+                    '!</b> './* @scrutinizer ignore-type */\Lang::get('message.failed').'
                         <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                             './* @scrutinizer ignore-type */ \Lang::get('message.select-a-row').'
                     </div>';
@@ -547,7 +549,7 @@ class SettingsController extends BaseSettingsController
             echo "<div class='alert alert-danger alert-dismissable'>
                         <i class='fa fa-ban'></i>
                         <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
-                        /* @scrutinizer ignore-type */\Lang::get('message.failed').'
+                /* @scrutinizer ignore-type */\Lang::get('message.failed').'
                         <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                             '.\Lang::get('message.err_msg.').'
                     </div>';

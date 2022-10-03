@@ -81,10 +81,8 @@ class GroupController extends Controller
         try {
             $template = PricingTemplate::select('image', 'id', 'name')->first();
 
-
             return view('themes.default1.product.group.create', compact('template'));
         } catch (\Exception $ex) {
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

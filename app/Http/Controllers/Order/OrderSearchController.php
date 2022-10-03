@@ -47,14 +47,9 @@ class OrderSearchController extends Controller
             $this->allRenewals($request->input('renewal'), $baseQuery);
 
             $this->getSelectedVersionOrders($baseQuery, $request->input('version'), $request->input('product_id'),$request);
-            if($request->renewal == 'expiring_subscription')
-            {
-              return $baseQuery->orderBy('subscriptions.update_ends_at', 'asc');
-            }
-           else
-            {
-             return $baseQuery->orderBy('orders.created_at', 'desc');
-         }
+
+            return $request->renewal == 'expiring_subscription' ? $baseQuery->orderBy('subscriptions.update_ends_at', 'asc') :
+             $baseQuery->orderBy('subscriptions.update_ends_at', 'asc');
 
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -259,14 +254,7 @@ class OrderSearchController extends Controller
      */
     public function orderFrom($till, $from, $join)
     {
-           if($request->renewal = "expiring_subscription" )
-           {
-            $subFrom = 'subscriptions.update_ends_at';
-           }
-           else
-           {
-            $subFrom = 'orders.created_at';
-           }
+        $subFrom =  $request->renewal = "expiring_subscription" ? 'subscriptions.update_ends_at' :'orders.created_at';
         if ($from) {
             $from = Carbon::parse($from)->startOfDay();
             $till = Carbon::parse($till)->endOfDay();
@@ -293,14 +281,7 @@ class OrderSearchController extends Controller
      */
     public function orderTill($from, $till, $join)
     {
-           if($request->renewal = "expiring_subscription" )
-           {
-            $subTo = 'subscriptions.update_ends_at';
-           }
-           else
-           {
-            $subTo = 'orders.created_at';
-           }
+        $subTo = $request->renewal = "expiring_subscription" ? 'subscriptions.update_ends_at' : 'orders.created_at';
         if ($till) {
             $from = Carbon::parse($from)->startOfDay();
             $till = Carbon::parse($till)->endOfDay();

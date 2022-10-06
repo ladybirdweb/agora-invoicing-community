@@ -533,7 +533,7 @@ class ClientController extends BaseClientController
     public function getPaymentByOrderId($orderid, $userid)
     {
         try {
-            
+
             // dd($orderid);
             $order = $this->order->where('id', $orderid)->where('client', $userid)->first();
             // dd($order);
@@ -574,6 +574,7 @@ class ClientController extends BaseClientController
                             ->make(true);
         } catch (Exception $ex) {
             dd($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

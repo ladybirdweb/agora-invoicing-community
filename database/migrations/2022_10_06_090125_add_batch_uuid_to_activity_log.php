@@ -29,4 +29,4 @@ class AddBatchUuidToActivityLog extends Migration
             //
         });
     }
-};
+}

@@ -259,7 +259,7 @@ class OrderController extends BaseOrderController
                 $noOfAllowedInstallation = $cont->getNoOfAllowedInstallation($order->serial_key, $order->product);
             }
             $allowDomainStatus = StatusSetting::pluck('domain_check')->first();
-            
+
             $licenseStatus = StatusSetting::pluck('license_status')->first();
             $installationDetails = [];
 

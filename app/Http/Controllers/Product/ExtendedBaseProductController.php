@@ -16,8 +16,7 @@ class ExtendedBaseProductController extends Controller
     public function getUpload($id)
     {
         $new_upload = ProductUpload::where('product_id', '=', $id)
-        ->select('id', 'product_id', 'title', 'description', 'version', 'file')
-        ->get();
+        ->select('id', 'product_id', 'title', 'description', 'version', 'file');
 
         return \DataTables::of($new_upload)
         ->addColumn('checkbox', function ($model) {

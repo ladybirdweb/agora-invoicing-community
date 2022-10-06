@@ -98,6 +98,7 @@ class ProcessController extends Controller
                 echo view('plugins::middle-page', compact('invoice', 'amount', 'invoice_no', 'payment_method', 'invoice', 'regularPayment', 'rzp_key', 'rzp_secret', 'apilayer_key'))->render();
             }
         } catch (\Exception $ex) {
+            dd($ex);
             throw new \Exception($ex->getMessage());
         }
     }

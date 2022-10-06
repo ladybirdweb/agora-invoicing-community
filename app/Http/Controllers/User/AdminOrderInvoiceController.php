@@ -116,7 +116,7 @@ class AdminOrderInvoiceController extends Controller
                 'products.name as product_name', \DB::raw("concat(first_name, ' ', last_name) as client_name"), 'client as client_id',
             );
 
-        return\DataTables::of($order)
+        return DataTables::of($order)
                         ->addColumn('checkbox', function ($model) {
                             return "<input type='checkbox' class='order_checkbox' 
                             value=".$model->id.' name=select[] id=checkorder>';
@@ -168,10 +168,10 @@ class AdminOrderInvoiceController extends Controller
     public function getPaymentDetail($id)
     {
         $client = $this->user->where('id', $id)->first();
-        $payments = $client->payment()->orderBy('created_at', 'desc')->get();
+        $payments = $client->payment()->orderBy('created_at', 'desc');
         $extraAmt = $this->getExtraAmtPaid($id);
 
-        return\DataTables::of($payments)
+        return DataTables::of($payments)
                         ->addColumn('checkbox', function ($model) {
                             return "<input type='checkbox' class='payment_checkbox' 
                             value=".$model->id.' name=select[] id=checkpayment>';

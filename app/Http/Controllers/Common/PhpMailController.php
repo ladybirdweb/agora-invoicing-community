@@ -258,10 +258,10 @@ class PhpMailController extends Controller
     {
         \DB::table('email_log')->insert([
             'date' => date('Y-m-d H:i:s'),
-            'from' => $setting->email,
-            'to' => $user['email'],
-            'subject' => $template->name,
-            'body' => $template->data,
+            'from' => $from,
+            'to' => $to,
+            'subject' => $subject,
+            'body' => $body,
             'status' => 'failed',
         ]);
     }

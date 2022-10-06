@@ -120,6 +120,7 @@ class BaseOrderController extends ExtendedOrderController
                 $this->addtoMailchimp($product, $user_id, $item);
             }
         } catch (\Exception $ex) {
+            dd($ex);
             app('log')->error($ex->getMessage());
 
             throw new \Exception($ex->getMessage());
@@ -290,6 +291,7 @@ class BaseOrderController extends ExtendedOrderController
                 $temp_type = new \App\Model\Common\TemplateType();
                 $type = $temp_type->where('id', $type_id)->first()->name;
             }
+            
             $email = (new Email())
                    ->from($setting->email)
                    ->to($user->email)
@@ -306,6 +308,7 @@ class BaseOrderController extends ExtendedOrderController
                        'knowledge_base' => $knowledgeBaseUrl,
 
                    ]));
+                   
 
             $mailer->send($email);
             $mail->email_log_success($setting->email, $user->email, $template->name, $html);
@@ -314,6 +317,7 @@ class BaseOrderController extends ExtendedOrderController
                 SettingsController::sendPaymentSuccessMailtoAdmin($order->invoice->currency, $order->invoice->grand_total, $user, $product);
             }
         } catch (\Exception $ex) {
+            dd($ex);
             $mail->email_log_fail($setting->email, $user->email, $template->name, $html);
             throw new \Exception($ex->getMessage());
         }

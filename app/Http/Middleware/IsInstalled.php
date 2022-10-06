@@ -32,6 +32,8 @@ class IsInstalled
 
     public function alreadyInstalled()
     {
+        unlink(storage_path('installed'));
+
         return file_exists(storage_path('installed'));
     }
 }

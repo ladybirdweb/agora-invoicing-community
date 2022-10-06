@@ -129,6 +129,7 @@ class CheckoutController extends InfoController
 
             return view('themes.default1.front.checkout', compact('content', 'taxConditions'));
         } catch (\Exception $ex) {
+            dd($ex);
             app('log')->error($ex->getMessage());
 
             return redirect()->back()->with('fails', $ex->getMessage());

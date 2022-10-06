@@ -43,11 +43,11 @@ class LicenseController extends Controller
             'client_secret' => $this->client_secret,
             'grant_type' => $this->grant_type,
         ];
-
+           
         $response = $this->postCurl($url.'oauth/token', $data);
 
         $response = json_decode($response);
-
+        
         return $response;
     }
 
@@ -110,11 +110,12 @@ class LicenseController extends Controller
     public function getLicensekey()
     {
         $url = $this->url;
+        
         $api_key_secret = $this->api_key_secret;
         $OauthDetails = $this->oauthAuthorization();
         $token = $OauthDetails->access_token;
         $getkey = $this->getCurl($url.'api/admin/viewApiKeys', $token);
-
+        
         return ['data' => $getkey, 'url' => $url];
     }
 
@@ -234,13 +235,17 @@ class LicenseController extends Controller
     public function createNewLicene($orderid, $product, $user_id,
                                     $licenseExpiry, $updatesExpiry, $supportExpiry, $serial_key)
     {
+       
         $url = $this->url;
         $api_key_secret = $this->api_key_secret;
+       
         $sku = Product::where('id', $product)->first()->product_sku;
+        
         $licenseExpiry = ($licenseExpiry != '') ? $licenseExpiry->toDateString() : '';
         $updatesExpiry = ($updatesExpiry != '') ? $updatesExpiry->toDateString() : '';
         $supportExpiry = ($supportExpiry != '') ? $supportExpiry->toDateString() : '';
         $order = Order::where('id', $orderid)->first();
+        
         $orderNo = $order->number;
         $domain = $order->domain;
         $ipAndDomain = $this->getIpAndDomain($domain);
@@ -251,6 +256,7 @@ class LicenseController extends Controller
         $OauthDetails = $this->oauthAuthorization();
         $token = $OauthDetails->access_token;
         $addLicense = $this->postCurl($url.'api/admin/license/add', "api_key_secret=$api_key_secret&product_id=$productId&license_code=$serial_key&license_require_domain=1&license_status=1&license_order_number=$orderNo&license_domain=$domain&license_ip=$ip&license_require_domain=$requireDomain&license_limit=6&license_expire_date=$licenseExpiry&license_updates_date=$updatesExpiry&license_support_date=$supportExpiry&license_disable_ip_verification=0&license_limit=2", $token);
+        
 
         //return response(['message'=>'its created','data'=> $addLicense]);
     }

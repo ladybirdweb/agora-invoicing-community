@@ -603,18 +603,18 @@ $licenseGrantType =  app\ApiKey::pluck('license_grant_type')->first();
                         }, 1500);
                     return false;
                 }
-                  if ($('#license_api_url').val() != $licenseurl) {
-             $('#license_urlCheck').show();
-             $('#license_urlCheck').html("Please Enter Valid API URL");
-              $('#license_api_url').css("border-color","red");
-              $('#license_urlCheck').css({"color":"red","margin-top":"5px"});
-              setTimeout(function(){
-                    $('#license_urlCheck').hide();
-                      $('#license_api_url').css("border-color","");
-                        }, 1500);
+        //           if ($('#license_api_url').val() != $licenseurl) {
+        //      $('#license_urlCheck').show();
+        //      $('#license_urlCheck').html("Please Enter Valid API URL");
+        //       $('#license_api_url').css("border-color","red");
+        //       $('#license_urlCheck').css({"color":"red","margin-top":"5px"});
+        //       setTimeout(function(){
+        //             $('#license_urlCheck').hide();
+        //               $('#license_api_url').css("border-color","");
+        //                 }, 1500);
                 
-              return false;
-          }
+        //       return false;
+        //   }
                 if ($('#license_client_id').val() =="" ) {
                     $('#license_clientIdCheck').show();
                     $('#license_clientIdCheck').html("Please Enter Client Id For License Manager");

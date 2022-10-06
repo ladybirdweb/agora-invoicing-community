@@ -533,6 +533,7 @@ class ClientController extends BaseClientController
     public function getPaymentByOrderId($orderid, $userid)
     {
         try {
+            
             // dd($orderid);
             $order = $this->order->where('id', $orderid)->where('client', $userid)->first();
             // dd($order);
@@ -545,7 +546,7 @@ class ClientController extends BaseClientController
             $payments = $this->payment->whereIn('invoice_id', $invoices)
                     ->select('id', 'invoice_id', 'user_id', 'amount', 'payment_method', 'payment_status', 'created_at');
 
-            return \DataTables::of($payments->get())
+            return \DataTables::of($payments)
                             ->addColumn('checkbox', function ($model) {
                                 return "<input type='checkbox' class='payment_checkbox' 
                                     value=".$model->id.' name=select[] id=check>';
@@ -572,6 +573,7 @@ class ClientController extends BaseClientController
                                 'payment_method', 'payment_status', 'created_at', ])
                             ->make(true);
         } catch (Exception $ex) {
+            dd($ex);
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

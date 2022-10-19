@@ -184,6 +184,7 @@ input:checked + .slider:before {
                     <!-- company -->
                     <label for "company_type" class="">Company Type</label>
                     <select name="company_type"  class="form-control">
+                        
                         <option value="">Choose</option>
                         @foreach($types as $key=>$type)
                             <option value="{{$key}}" <?php  if(in_array($type, $selectedCompany) ) { echo "selected";} ?>>{{$type}}</option>
@@ -192,12 +193,13 @@ input:checked + .slider:before {
                     </select>
                 </div>
 
-                <div class="form-group col {{ $errors->has('company_size') ? 'has-error' : '' }}">
+                 <div class="form-group col {{ $errors->has('company_size') ? 'has-error' : '' }}">
                     <!-- company -->
                     <label for "company_size" class="">Company Size</label>
                     <select name="company_size"  class="form-control">
                         <option value="">Choose</option>
                         @foreach($sizes as $key=>$size)
+                        
                             <option value="{{$key}}" <?php  if(in_array($size, $selectedCompanySize) ) { echo "selected";} ?>>{{$size}}</option>
 
                         @endforeach
@@ -206,14 +208,20 @@ input:checked + .slider:before {
             </div>
 
             <div class="form-row">
-                <div class="form-group col {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
+                 <div class="form-group col">
+                      
+                        <div class="form-group col {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
                     {!! Form::label('mobile',null,['class' => 'required'],Lang::get('message.mobile'),['class'=>'required']) !!}
-                    {!! Form::hidden('mobile_code',null,['id'=>'mobile_code_hidden']) !!}
-                    <input class="form-control selected-dial-code"  id="mobile_code" value="{{$user->mobile}}" name="mobile" type="tel">
-                <!-- {!! Form::hidden('mobile_code',null,['class'=>'form-control input-lg','disabled','id'=>'mobile_code']) !!} -->
-                    <span id="valid-msg" class="hide"></span>
-                    <span id="error-msg" class="hide"></span>
-                <!-- {!! Form::text('mobil',null,['class'=>'form-control', 'id'=>'mobile_code']) !!} -->
+                    {!! Form::hidden('mobile_code',null,['id'=>'code_hidden']) !!}
+                   
+                    <!--<input class="form-control selected-dial-code"  id="number" value="{{$user->mobile}}" name="mobile" type="tel">-->
+                       {!! Form::text('mobile',$user->mobile,['class'=>'form-control selected-dial-code', 'type'=>'tel','id'=>'number']) !!}
+                
+                    <span id="valid-msg3" class="hide"></span>
+                    <span id="error-msg3" class="hide"></span>
+            
+                </div>
+                    
                 </div>
 
 
@@ -260,15 +268,18 @@ input:checked + .slider:before {
                 <div class="col-md-6 form-group {{ $errors->has('state') ? 'has-error' : '' }}">
                     <label for"state" class=""><b>State</b></label>
 
-                    <select name="state" id="state-list" class="form-control input-lg ">
+                    <select name="state" class="form-control input-lg ">
+                       
                         @if(count($state)>0)
+                        
                             <option value="{{$state['id']}}">{{$state['name']}}</option>
-                        @endif
+                        
                         <option value="">Select State</option>
                         @foreach($states as $key=>$value)
+                        
                             <option value="{{$key}}">{{$value}}</option>
                         @endforeach
-
+                       @endif
                     </select>
                     <h6 id="stateCheck"></h6>
                 </div>
@@ -512,89 +523,91 @@ input:checked + .slider:before {
                                 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 <script src="{{asset('common/js/intlTelInput.js')}}"></script>
+
 <script type="text/javascript">
-     $(document).ready(function(){
-    var country = $('#country').val();
-    console.log(country,'sdfs')
-    if(country == 'IN') {
-        $('#gstin').show()
-    } else {
-        $('#gstin').hide();
-    }
-    var telInput = $('#mobile_code'),
-     addressDropdown = $("#country");
-     errorMsg = document.querySelector("#error-msg"),
-    validMsg = document.querySelector("#valid-msg");
-    var errorMap = [ "Invalid number", "Invalid country code", "Number Too short", "Number Too long", "Invalid number"];
-     let currentCountry="";
-    telInput.intlTelInput({
-        initialCountry: "auto",
+var protelInput = $('#number'),
+
+            proerrorMsg = document.querySelector("#error-msg3"),
+            provalidMsg = document.querySelector("#valid-msg3"),
+            addressDropdown = $("#country");
+             var proerrorMap = [ "Invalid number", "Invalid country code", "Number Too short", "Number Too long", "Invalid number"];
+            
+    protelInput.intlTelInput({
         geoIpLookup: function (callback) {
             $.get("https://ipinfo.io", function () {}, "jsonp").always(function (resp) {
-                resp.country = country;
-                var countryCode = (resp && resp.country) ? resp.country : "";
-                    currentCountry=countryCode.toLowerCase()
-                    callback(countryCode);
+                var procountryCode = (resp && resp.country) ? resp.country : "";
+                callback(procountryCode);
             });
         },
-          separateDialCode: true,
+        initialCountry: "auto",
+        separateDialCode: true,
          utilsScript: "{{asset('js/intl/js/utils.js')}}",
     });
-    setTimeout(()=>{
-         telInput.intlTelInput("setCountry", currentCountry);
-    },500)
+    
       var reset = function() {
-      errorMsg.innerHTML = "";
-      errorMsg.classList.add("hide");
-      validMsg.classList.add("hide");
-    };
-    setTimeout(()=>{
-         telInput.intlTelInput("setCountry", currentCountry);
-    },500)
-    $('.intl-tel-input').css('width', '100%');
-    telInput.on('blur', function () {
-      reset();
-        if ($.trim(telInput.val())) {
-            if (telInput.intlTelInput("isValidNumber")) {
-              $('#mobile_code').css("border-color","");
-              validMsg.classList.remove("hide");
-              $('#submit').attr('disabled',false);
-            } else {
-              var errorCode = telInput.intlTelInput("getValidationError");
-             errorMsg.innerHTML = errorMap[errorCode];
-             $('#mobile_code').css("border-color","red");
-             $('#error-msg').css({"color":"red","margin-top":"5px"});
-             errorMsg.classList.remove("hide");
-             $('#submit').attr('disabled',true);
-            }
-        }
-    });
 
-    addressDropdown.change(function() {
-     telInput.intlTelInput("setCountry", $(this).val());
-       if ($.trim(telInput.val())) {
-            if (telInput.intlTelInput("isValidNumber")) {
-              $('#mobile_code').css("border-color","");
-               errorMsg.classList.add("hide");
-              $('#submit').attr('disabled',false);
-            } else {
-              var errorCode = telInput.intlTelInput("getValidationError");
-             errorMsg.innerHTML = errorMap[errorCode];
-             $('#mobile_code').css("border-color","red");
-             $('#error-msg').css({"color":"red","margin-top":"5px"});
-             errorMsg.classList.remove("hide");
-             $('#submit').attr('disabled',true);
+            proerrorMsg.innerHTML = "";
+            proerrorMsg.classList.add("hide");
+            provalidMsg.classList.add("hide");
+        };
+        
+    $('.intl-tel-input').css('width', '100%');
+
+    protelInput.on('blur', function () {
+            reset();
+            if ($.trim(protelInput.val())) {
+                 
+                if (protelInput.intlTelInput("isValidNumber")) {
+                    $('#number').css("border-color","");
+                    $("#error-msg3").html('');
+                    proerrorMsg.classList.add("hide");
+                    $('#submit').attr('disabled',false);
+                } else {
+                   
+                    var errorCode = protelInput.intlTelInput("getValidationError");
+                    proerrorMsg.innerHTML = proerrorMap[errorCode];
+                    $('#codecheck').html("");
+
+                    $('#number').css("border-color","red");
+                    $('#error-msg3').css({"color":"red","margin-top":"5px"});
+                    proerrorMsg.classList.remove("hide");
+                    $('#submit').attr('disabled',true);
+                }
             }
-        }
-    });
+        });
     $('input').on('focus', function () {
         $(this).parent().removeClass('has-error');
     });
+    
+      addressDropdown.change(function() {
+            protelInput.intlTelInput("setCountry", $(this).val());
+            if ($.trim(protelInput.val())) {
+                
+                if (protelInput.intlTelInput("isValidNumber")) {
+                    $('#number').css("border-color","");
+                    $("#error-msg3").html('');
+                    proerrorMsg.classList.add("hide");
+                    $('#submit').attr('disabled',false);
+                } else {
+                    
+                    var errorCode = protelInput.intlTelInput("getValidationError");
+                    proerrorMsg.innerHTML = proerrorMap[errorCode];
+                    $('#codecheck').html("");
+
+                    $('#number').css("border-color","red");
+                    $('#error-msg3').css({"color":"red","margin-top":"5px"});
+                    proerrorMsg.classList.remove("hide");
+                    $('#submit').attr('disabled',true);
+                }
+            }
+        });
 
     $('form').on('submit', function (e) {
-        $('input[name=mobile]').attr('value', $('.selected-dial-code').text());
+        $('input[name=country_code]').attr('value', $('.selected-dial-code').text());
     });
-});
+    
+
+    
 
    function getCountryAttr(val) {
         if(val == 'IN') {
@@ -628,8 +641,9 @@ input:checked + .slider:before {
             url: "{{url('get-code')}}",
             data: 'country_id=' + val,
             success: function (data) {
+            
                 // $("#mobile_code").val(data);
-                $("#mobile_code_hidden").val(data);
+                $("#code_hidden").val(data);
             }
         });
     }

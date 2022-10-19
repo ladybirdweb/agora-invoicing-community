@@ -238,8 +238,11 @@ class DashboardController extends Controller
             ->where('price_override', '>', 0)
             ->orderBy('orders.id', 'desc')
             ->get()->map(function ($element) {
+                
                 $element->order_created_at = getDateHtml($element->order_created_at);
+            
                 $element->client_name = $element->user ? $element->user->first_name.' '.$element->user->last_name : User::onlyTrashed()->find($element->client)->first_name.' '.User::onlyTrashed()->find($element->client)->last_name;
+                
                 $element->client_profile_link = \Config('app.url').'/clients/'.$element->client;
                 unset($element->user);
 

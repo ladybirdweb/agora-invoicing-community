@@ -311,7 +311,7 @@ active
 
             columns: [
                 {data: 'number', name: 'number'},
-                {data: 'products', name: 'products'},
+                {data: 'products', name: 'invoiceItem.product_name'},
                 {data: 'date', name: 'date'},
                 {data: 'total', name: 'total'},
                 {data: 'status', name: 'status'},
@@ -357,7 +357,7 @@ active
                     },
 
                     columns: [
-                        {data: 'number', name: 'number'},
+                        {data: 'number', name: 'invoice.number'},
                         {data: 'total', name: 'total'},
                         {data: 'payment_method', name: 'payment_method'},
                         {data: 'payment_status', name: 'payment_status'},

@@ -489,6 +489,7 @@ if($script->on_every_page == 1) {
 </div><!-- /.modal --> 
 @endauth
 
+          
             <footer id="footer">
               
                 <div class="container">
@@ -647,7 +648,6 @@ if($script->on_every_page == 1) {
                             
                           }
                             ?>
-                            @if(Request::path() != 'login')
 
                       @if($widgets != null)
                         @component('mini_views.footer_widget', ['title'=> $widgets->name,'colClass'=>"col-md-6 col-lg-$class mb-$class mb-lg-0"])
@@ -670,18 +670,17 @@ if($script->on_every_page == 1) {
                             @endforeach
                           </ul>
                             @endif
-                            @endif
                         @endcomponent
                       @endif
 
                 </div>
                 </div>
-                
+
                 <div class="footer-copyright">
                     <div class="container py-2">
                         <div class="row py-4">
-                            <div class="col-md-12 align-items-center justify-content-center justify-content-lg-start mb-2 mb-lg-0 " <?php if(Request::path() == 'login') { ?> style="margin-top: 95%;<?php } ?>">
-                              <p>Copyright &copy; <?php echo date('Y') ?> <a href="{{$set->website}}" target="_blank">{{$set->company}}</a>. All Rights Reserved.Powered by
+                            <div class="col-md-12 align-items-center justify-content-center justify-content-lg-start mb-2 mb-lg-0">
+                              <p>Copyright 漏 <?php echo date('Y') ?> 路 <a href="{{$set->website}}" target="_blank">{{$set->company}}</a>. All Rights Reserved.Powered by
                                     <a href="https://www.ladybirdweb.com/" target="_blank"><img src="{{asset('common/images/Ladybird1.png')}}" alt="Ladybird"></a></p>
                             </div>
 
@@ -689,7 +688,6 @@ if($script->on_every_page == 1) {
                     </div>
                 </div>
             </footer>
-
         </div>
 
 

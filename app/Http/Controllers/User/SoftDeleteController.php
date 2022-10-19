@@ -24,15 +24,16 @@ class SoftDeleteController extends ClientController
             ->select('id', 'first_name', 'last_name', 'email',
                 \DB::raw("CONCAT('+', mobile_code, ' ', mobile) as mobile"),
                 \DB::raw("CONCAT(first_name, ' ', last_name) as name"),
-                'country_name as country', 'created_at', 'active', 'mobile_verified', 'is_2fa_enabled', 'role', 'position')
-            ->onlyTrashed();
+                'country_name as country', 'created_at', 'active', 'mobile_verified', 'is_2fa_enabled', 'role', 'position'
+            )->onlyTrashed();
+            
 
         return \DataTables::of($baseQuery)
                         ->addColumn('checkbox', function ($model) {
                             return "<input type='checkbox' class='user_checkbox' value=".$model->id.' name=select[] id=check>';
                         })
                         ->addColumn('name', function ($model) {
-                            return ucfirst($model->first_name.' '.$model->last_name);
+                            return ucfirst($model->name);
                         })
                          ->addColumn('email', function ($model) {
                              return $model->email;
@@ -57,27 +58,26 @@ class SoftDeleteController extends ClientController
                             ." class='btn btn-sm btn-secondary btn-xs'".tooltip('Restore')."
                             <i class='fas fa-sync-alt' style='color:white;'> </i></a>";
                         })
-                          ->filterColumn('name', function ($query, $keyword) {
-                              $sql = "CONCAT(first_name,' ',last_name)  like ?";
-                              $query->whereRaw($sql, ["%{$keyword}%"]);
-                          })
-                          ->filterColumn('email', function ($query, $keyword) {
-                              $sql = 'email  like ?';
-                              $query->whereRaw($sql, ["%{$keyword}%"]);
-                          })
-                          ->filterColumn('country', function ($query, $keyword) {
-                              $sql = 'country_name  like ?';
-                              $query->whereRaw($sql, ["%{$keyword}%"]);
-                          })
-                          ->filterColumn('mobile', function ($query, $keyword) {
-                              $sql = "CONCAT('+',mobile_code, ' ', mobile)  like ?";
-                              $query->whereRaw($sql, ["%{$keyword}%"]);
-                          })
-                          ->filterColumn('created_at', function ($query, $keyword) {
-                              $se = getDateHtml(created_at);
-                              $sql = $se.'like ?';
-                              $query->whereRaw($sql, ["%{$keyword}%"]);
-                          })
+                    
+                           ->filterColumn('name', function ($model, $keyword) {
+                            // removing all white spaces so that it can be searched irrespective of number of spaces
+                            $model->whereRaw("CONCAT(first_name, ' ',last_name) like ?", ["%$keyword%"]);
+                        })
+                        ->filterColumn('email', function ($model, $keyword) {
+                            $model->whereRaw('email like ?', ["%$keyword%"]);
+                        })
+                        ->filterColumn('country', function ($model, $keyword) {
+                            // removing all white spaces so that it can be searched in a single query
+                            $searchQuery = str_replace(' ', '', $keyword);
+                            $model->whereRaw('country_name like ?', ["%$searchQuery%"]);
+                        })
+                        ->filterColumn('mobile', function ($model, $keyword) {
+                            // removing all white spaces so that it can be searched in a single query
+                            $searchQuery = str_replace(' ', '', $keyword);
+                            $model->whereRaw("CONCAT('+', mobile_code, mobile) like ?", ["%$searchQuery%"]);
+                        })
+                      
+                      
                         ->rawColumns(['checkbox', 'name', 'email',  'created_at', 'active', 'action'])
                         ->make(true);
     }

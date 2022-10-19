@@ -150,6 +150,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         $from = $request->input('from');
         $till = $request->input('till');
         $query = $this->advanceSearch($name, $invoice_no, $currency, $status, $from, $till);
+     
 
         return \DataTables::of($query)
          ->setTotalRecords($query->count())
@@ -197,49 +198,15 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                         })
 
                          ->filterColumn('user_id', function ($query, $keyword) {
-                             $sql = 'first_name like ?';
-                             $query->whereRaw($sql, ["%{$keyword}%"]);
+                             $sql = "CONCAT(first_name,' ',last_name)  like ?";
+                             $sql2 = 'first_name like ?';
+                            $query->whereRaw($sql, ["%{$keyword}%"])->orWhereRaw($sql2, ["%{$keyword}%"]);
                          })
-
-                          ->filterColumn('status', function ($query, $keyword) {
-                              $sql = 'status like ?';
-                              $query->whereRaw($sql, ["%{$keyword}%"]);
-                          })
-
-                        ->filterColumn('number', function ($query, $keyword) {
-                            $sql = 'number like ?';
-                            $query->whereRaw($sql, ["%{$keyword}%"]);
+                         ->filterColumn('number', function ($query, $keyword) {
+                         $sql = 'number like ?';
+                         $query->whereRaw($sql, ["%{$keyword}%"]);
                         })
-                         ->filterColumn('grand_total', function ($query, $keyword) {
-                             $sql = 'grand_total like ?';
-                             $query->whereRaw($sql, ["%{$keyword}%"]);
-                         })
-                        //   ->filterColumn('date', function ($query, $keyword) {
 
-                            //  $date = getTimeInLoggedInUserTimeZone($query->created_at, 'M j, Y');
-
-                            //  $q->where(DB::raw("DATE(created_at) = '".$date."'"));
-                            //  $q->whereDate('created_at', '=', $date);
-
-                            //  $sql = $date. ' like ?';
-                            //  $query->whereRaw($date, ["%{$keyword}%"]);
-
-                        //   })
-                        //             ->editColumn('date', function ($query) {
-                        //     return $query->created_at ? with(new Carbon($query->created_at))->format('Y/m/d') : '';;
-                        // })
-
-                         ->filter(function ($query) use ($request) {
-                             if ($request->has('created_at')) {
-                                 $date = getTimeInLoggedInUserTimeZone($query->created_at, 'M j, Y');
-                                 $query->where($date, 'like', "%{$request->get('created_at')}%");
-                             }
-                         })
-                        //   ->filterColumn('date', function ($query, $keyword) {
-
-                        //      $sql = 'number like ?';
-                        //      $query->whereRaw($sql, ["%{$keyword}%"]);
-                        //  })
 
                          ->rawColumns(['checkbox', 'user_id', 'number', 'date', 'grand_total', 'status', 'action'])
                         ->make(true);

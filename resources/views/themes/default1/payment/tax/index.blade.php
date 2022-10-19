@@ -242,7 +242,7 @@ $('.btn-off-3').css("background-color", "#DA4F49","color", "white");
              
                 columns: [
                     {data: 'checkbox', name: 'checkbox'},
-                    {data: 'tax_classes_id', name: 'tax_classes_id'},
+                    {data: 'tax_classes_id', name: 'taxClass.name'},
                     {data: 'name', name: 'name'},
                     {data: 'country', name: 'country'},
                     {data: 'state', name: 'state'},

@@ -63,11 +63,13 @@ class Google2FA extends Google2FAPackage
             );
         }
  
-        $this->qrCodeService->getQRCodeInline(
+        return $this->qrCodeService->getQRCodeInline(
             $this->getQRCodeUrl($company, $holder, $secret),
             $size,
             $encoding
         );
+        
+      
    
     }
 
@@ -103,11 +105,11 @@ class Google2FA extends Google2FAPackage
      */
     public function qrCodeServiceFactory($imageBackEnd = null)
     {
-     
         if (
             class_exists('BaconQrCode\Writer') &&
             class_exists('BaconQrCode\Renderer\ImageRenderer')
         ) {
+           
             return new Bacon($imageBackEnd);
         }
 

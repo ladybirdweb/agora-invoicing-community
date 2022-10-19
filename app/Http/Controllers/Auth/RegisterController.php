@@ -62,11 +62,12 @@ class RegisterController extends Controller
         //template
         $template = new \App\Model\Common\Template();
         $temp_id = $settings->where('id', 1)->first()->password_mail;
+       
         $template = $template->where('id', $temp_id)->first();
 
         $mail = new \App\Http\Controllers\Common\PhpMailController();
         $mailer = $mail->setMailConfig($settings);
-
+       
         $html = $template->data;
         try {
             $location = getLocation();
@@ -77,8 +78,8 @@ class RegisterController extends Controller
             $password = Str::random(20);
 
             $user =
-            [
-
+            
+[
                 'state' => $state['id'],
                 'town' => $location['city'],
                 'password' => \Hash::make($password),
@@ -103,13 +104,14 @@ class RegisterController extends Controller
             ];
 
             $userInput = User::insertGetId($user);
-
+            
             $email = (new Email())
                    ->from($settings->email)
                    ->to($user['email'])
                    ->subject($template->name)
                    ->html($mail->mailTemplate($template->data, $templatevariables = ['name' => $user['first_name'].' '.$user['last_name'],
                        'username' => $user['email'], 'password' => $password, ]));
+                 
 
             $mailer->send($email);
             $mail->email_log_success($settings->email, $user['email'], $template->name, $html);
@@ -120,6 +122,7 @@ class RegisterController extends Controller
 
             return response()->json($emailMobileStatusResponse);
         } catch (\Exception $ex) {
+            dd($ex);
             $mail->email_log_fail($settings->email, $user['email'], $template->name, $html);
             app('log')->error($ex->getMessage());
             $result = [$ex->getMessage()];

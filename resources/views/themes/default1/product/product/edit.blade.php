@@ -5,6 +5,7 @@ Edit Product
 @section('content-header')
     <div class="col-sm-6">
         <h1>Edit Product</h1>
+      
     </div>
     <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">

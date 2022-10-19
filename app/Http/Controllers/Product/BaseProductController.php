@@ -164,7 +164,9 @@ class BaseProductController extends ExtendedBaseProductController
                     $product_id = $invoice->order()->value('product');
                     $name = Product::where('id', $product_id)->value('name');
                     $invoice_id = $invoice->id;
+                    
                     $release = $this->downloadProduct($uploadid, $userid, $invoice_id, $version_id);
+                   
                     if (is_array($release) && array_key_exists('type', $release)) {
                         $release = $release['release'];
 
@@ -186,6 +188,7 @@ class BaseProductController extends ExtendedBaseProductController
                 throw new \Exception(\Lang::get('message.no_permission_for_action'));
             }
         } catch (\Exception $ex) {
+           
             app('log')->error($ex->getMessage());
 
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -231,6 +234,7 @@ class BaseProductController extends ExtendedBaseProductController
     public function downloadProductAdmin($id)
     {
         try {
+            
             $product = Product::findOrFail($id);
             $type = $product->type;
             $owner = $product->github_owner;

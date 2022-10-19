@@ -73,7 +73,7 @@ class TaxController extends Controller
      */
     public function getTax()
     {
-        return \DataTables::of($this->tax->select('id', 'tax_classes_id', 'name', 'country', 'state', 'rate'))
+        return \DataTables::of($this->tax->with('taxClass')->select('id', 'tax_classes_id', 'name', 'country', 'state', 'rate'))
                             ->addColumn('checkbox', function ($model) {
                                 return "<input type='checkbox' class='tax_checkbox' 
                                 value=".$model->id.' name=select[] id=check>';
@@ -116,6 +116,14 @@ class TaxController extends Controller
                                 " class='btn btn-sm btn-secondary btn-xs'".tooltip('Edit')."<i class='fa fa-edit' 
                                 style='color:white;'> </i></a>";
                             })
+                            ->filterColumn('tax_classes_id', function ($query, $keyword) {
+                                 $sql = 'name like ?';
+                                 $query->whereRaw($sql, ["%{$keyword}%"]);
+                             })
+                             ->filterColumn('name', function ($query, $keyword) {
+                                 $sql = 'name like ?';
+                                 $query->whereRaw($sql, ["%{$keyword}%"]);
+                             })
                             ->rawColumns(['checkbox', 'tax_classes_id', 'name', 'country', 'state', 'rate', 'action'])
                             ->make(true);
     }

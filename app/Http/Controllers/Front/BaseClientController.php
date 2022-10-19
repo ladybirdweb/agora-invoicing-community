@@ -57,6 +57,7 @@ class BaseClientController extends Controller
 
     public function downloadGithubPopup($clientid, $invoiceid, $productid)
     {
+     
         return view('themes.default1.front.clients.download-github-list',
             compact('clientid', 'invoiceid', 'productid'));
     }
@@ -106,6 +107,7 @@ class BaseClientController extends Controller
      */
     public function postProfile(ProfileRequest $request)
     {
+       
         try {
             $user = \Auth::user();
             if ($request->hasFile('profile_pic')) {
@@ -129,8 +131,13 @@ class BaseClientController extends Controller
             $user->timezone_id = strip_tags($request->input('timezone_id'));
             $user->state = ($request->input('state'));
             $user->zip = strip_tags($request->input('zip'));
+            $user->company_size = ($request->input('company_size'));
+            $user->company_type = ($request->input('company_type'));
+            $user->bussiness = ($request->input('bussiness'));
             $user->save();
-
+            
+            
+            
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -172,11 +179,12 @@ class BaseClientController extends Controller
 
             $relation = $order->invoiceRelation()->pluck('invoice_id')->toArray();
             $invoice = new Invoice();
-            $invoices = $invoice
+            $invoices = $invoice->with('invoiceItem:invoice_id')
                     ->select('number', 'created_at', 'grand_total', 'currency', 'id', 'status')
                     ->whereIn('id', $relation);
+                 
             if ($invoices->get()->count() == 0) {
-                $invoices = $order->invoice()
+                        $invoices = $order->invoice()
                         ->select('number', 'created_at', 'grand_total', 'id', 'status');
             }
 
@@ -212,7 +220,16 @@ class BaseClientController extends Controller
                 class='btn btn-sm btn-primary btn-xs'".tooltip('View')."<i class='fa fa-eye' 
                 style='color:white;'> </i></a>";
             })
-
+              ->filterColumn('number', function ($query, $keyword) {
+                         $sql = 'number like ?';
+                         $query->whereRaw($sql, ["%{$keyword}%"]);
+                         })
+              ->filterColumn('products', function ($query, $keyword) {
+                         $sql = 'product_name like ?';
+                         $query->whereRaw($sql, ["%{$keyword}%"]);
+                         })
+              
+            
             ->rawColumns(['number', 'products', 'date', 'total', 'status', 'action'])
                             ->make(true);
         } catch (Exception $ex) {
@@ -243,12 +260,14 @@ class BaseClientController extends Controller
     {
         if ($versions->created_at->toDateTimeString()
         < $updateEndDate->update_ends_at) {
+          
             return '<p><a href='.url('download/'.$productid.'/'
             .$clientid.'/'.$invoiceid.'/'.$versions->id).
             " class='btn btn-sm btn-primary'><i class='fa fa-download'>
             </i>&nbsp;&nbsp;Download</a>".'&nbsp;
 
        </p>';
+        
         } else {
             return '<button class="btn btn-danger 
         btn-sm disabled">Please Renew </button>';
@@ -257,6 +276,7 @@ class BaseClientController extends Controller
 
     public function whenDownloadExpiresAfterExpiry($countExpiry, $countVersions, $updatesEndDate, $productid, $versions, $clientid, $invoiceid)
     {
+      
         if ($countExpiry == $countVersions) {
             return '<p><a href='.url('download/'.$productid.'/'
             .$clientid.'/'.$invoiceid.'/'.$versions->id).

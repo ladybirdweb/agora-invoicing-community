@@ -40,34 +40,54 @@ Plugins
                           <th>Version</th>
                           <th>Action</th>
                         </tr></thead>
+                       
                         @foreach($pay as $key => $item)
+                       
+                         
                        
                         <tbody>
                             <tr>
                                 <td>{{$item['name']}}</td>
                                 <td>{{$item['description']}}</td>
                                  <td>{{$item['author']}}</td>
-                                 <td><a href='.{{$item['version']}}.' target='_blank'>{{$item['website']}}</a></td>
+                                 
+                                 <td><a href={{$item['website']}}>{{$item['website']}}</a></td>
                                   <td>{{$item['version']}}</td>
-                              
-                              @if(! $status)
-                                  <td><form method="post" action={{url('plugin/status/'.$item['name'])}}><input type="hidden" name="_token" value='.\Session::token().'>
+                             
+                            
+                        
+                              @foreach($status as $s)
+                              @if($item['name'] == $s->name && !$s->status)
+                               <td><form method="post" action="{{url('plugin/status/'.$item['name'])}}"><input type="hidden" name="_token" value='.\Session::token().'>
+                                   @csrf
                                     <button type="submit" class="btn btn-secondary btn-sm btn-xs" title = "Activate"><i class="fa fa-tasks" style="color:white;"></i></button></form></td>
-                                 @endif
-                                    <td>
+                                    @elseif($item['name'] == $s->name && $s->status)
+                                     <td>
                                        <a href= "{{url($item['settings'])}}" class="btn btn-secondary btn-sm btn-xs"><i class="nav-icon fa fa-fw fa-cogs" style="color:white;"></i></a> 
-                                       
-                                       <form method="post" action="plugin/status/'.$item['name']"><input type="hidden" name="_token" value="\Session::token()
+                                     
+                                       <form method="post" action="{{ url('plugin/status/'.$item['name']) }}"><input type="hidden" name="_token" value="\Session::token()
                                        ">
+                                       @csrf
+                                    
                                        <button type="submit" class="btn btn-secondary btn-sm btn-xs" title="Deactivate"><i class="fa fa-tasks" style="color:white;"></i></button></form>
                                     </td>
+                                    
+                              @endif
+                              
+                              @endforeach
+                                 
+                                     
+                                
+
                                     
                            
                            
                               
                             </tr>
                         </tbody>
+                        
                         @endforeach
+                        
                       
                      </table>
               
@@ -86,14 +106,6 @@ Plugins
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
 <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 
-    <script>
-     $('ul.nav-sidebar a').filter(function() {
-        return this.id == 'setting';
-    }).addClass('active');
 
-    // for treeview
-    $('ul.nav-treeview a').filter(function() {
-        return this.id == 'setting';
-    }).parentsUntil(".nav-sidebar > .nav-treeview").addClass('menu-open').prev('a').addClass('active');
-</script>
+
 @stop

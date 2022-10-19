@@ -49,11 +49,17 @@ class SettingsController extends BaseSettingsController
 
     public function plugins()
     {
+        $a = [];
         $payment = new PaymentSettingsController();
         $pay = $payment->fetchConfig();
 
-        $status = Plugin::where('status', 1)->get();
+        $status = Plugin::all();
+       
+       
+        // $demo = json_decode(json_encode($plug));
+        // $status = collect($demo)->all();
 
+        
         return view('themes.default1.common.plugins', compact('pay', 'status'));
     }
 

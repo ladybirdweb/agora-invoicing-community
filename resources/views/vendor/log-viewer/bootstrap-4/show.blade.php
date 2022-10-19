@@ -46,6 +46,7 @@ Log-Viewer
                         <thead>
                             <tr>
                                 <td>File path :</td>
+                                
                                 <td colspan="5">{{ $log->getPath() }}</td>
                             </tr>
                         </thead>
@@ -71,6 +72,7 @@ Log-Viewer
                         </tbody>
                     </table>
                 </div>
+                
                 <div class="panel-footer">
                     {{-- Search --}}
                     <form action="{{ route('log-viewer::logs.search', [$log->date, $level]) }}" method="GET">
@@ -89,7 +91,7 @@ Log-Viewer
                     </form>
                 </div>
             </div>
-
+    
             {{-- Log Entries --}}
             <div class="panel panel-default">
                 @if ($entries->hasPages())
@@ -114,6 +116,7 @@ Log-Viewer
                             </tr>
                         </thead>
                         <tbody>
+                          
                             @forelse($entries as $key => $entry)
                                 <tr>
                                     <td>
@@ -125,10 +128,12 @@ Log-Viewer
                                         </span>
                                     </td>
                                     <td>
+                                       
                                         <span class="label label-default">
                                             {{ $entry->datetime->format('H:i:s') }}
                                         </span>
                                     </td>
+                                    
                                     <td>
                                         <p>{{ $entry->header }}</p>
                                     </td>
@@ -140,6 +145,7 @@ Log-Viewer
                                         @endif
                                     </td>
                                 </tr>
+                                 
                                 @if ($entry->hasStack())
                                     <tr>
                                         <td colspan="5" class="stack">
@@ -159,7 +165,7 @@ Log-Viewer
                         </tbody>
                     </table>
                 </div>
-
+ 
                 @if ($entries->hasPages())
                     <div class="panel-footer">
                         {!! $entries->appends(compact('query'))->render() !!}
@@ -174,6 +180,7 @@ Log-Viewer
     </div>
 </div>
 </div>
+
 @endsection
 
 @section('modals')
@@ -244,7 +251,8 @@ Log-Viewer
             $('.stack-content').each(function() {
                 var $this = $(this);
                 var html = $this.html().trim()
-                    .replace(/({!! join(log_styler()->toHighlight(), '|') !!})/gm, '<strong>$1</strong>');
+                    .replace(/({!! join('|',log_styler()->toHighlight()) !!})/gm, '<strong>$1</strong>');
+                  
 
                 $this.html(html);
             });

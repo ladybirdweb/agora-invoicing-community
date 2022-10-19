@@ -82,9 +82,9 @@ Widgets
             columns: [
                 {data: 'checkbox', name: 'checkbox'},
                 {data: 'name', name: 'name'},
-                {data: 'type', name: 'Type'},
-                {data: 'created_at', name: 'Created At'},
-                {data: 'action', name: 'Action'}
+                {data: 'type', name: 'type'},
+                {data: 'created_at', name: 'created_at'},
+                {data: 'action', name: 'action'}
             ],
             "fnDrawCallback": function( oSettings ) {
                 $(function () {

@@ -4,12 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ValidateSecretRequest;
 use App\User;
-use Crypt;
-// use Google2FA;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
 use ParagonIE\ConstantTime\Base32;
 use PragmaRX\Google2FAQRCode\Google2FA;
+use Illuminate\Support\Facades\Crypt;
+use Endroid\QrCode\QrCode;
+
 
 class Google2FAController extends Controller
 {
@@ -43,7 +44,7 @@ class Google2FAController extends Controller
         $user = $request->user();
         $google2fa = new Google2FA();
         $secret = $google2fa->generateSecretKey();
-        $user->google2fa_secret = $google2fa->generateSecretKey();
+        // $user->google2fa_secret = Crypt::encrypt($secret);
         $user->save();
         $imageDataUri = $google2fa->getQRCodeInline(
                     $request->getHttpHost(),
@@ -51,20 +52,10 @@ class Google2FAController extends Controller
                     $secret,
                     200
                 );
-
+        
         return successResponse('', ['image' => $imageDataUri, 'secret' => $secret, 'user' => $user]);
-    }
+    
 
-    /**
-     * Generate a secret key in Base32 format.
-     *
-     * @return string
-     */
-    private function generateSecret()
-    {
-        $randomBytes = random_bytes(10);
-
-        return Base32::encodeUpper($randomBytes);
     }
 
     /**
@@ -88,6 +79,7 @@ class Google2FAController extends Controller
         //get user id and create cache key
         $userId = $request->session()->pull('2fa:user:id');
         $this->user = User::findorFail($userId);
+       
         $secret = Crypt::decrypt($this->user->google2fa_secret);
         $checkValidPasscode = Google2FA::verifyKey($secret, $request->totp);
 
@@ -138,19 +130,24 @@ class Google2FAController extends Controller
 
     public function postSetupValidateToken(Request $request)
     {
+       
         $user = $request->user();
-        $secret = Crypt::decrypt($user->google2fa_secret);
-        $checkValidPasscode = Google2FA::verifyKey($secret, $request->totp);
-        if ($checkValidPasscode == true) {
-            $user->is_2fa_enabled = 1;
-            $user->google2fa_activation_date = \Carbon\Carbon::now();
-            $user->save();
-
-            return successResponse(\Lang::get('message.valid_passcode'));
+        $google2fa = new Google2FA();
+        // $secret = Crypt::decrypt($user->google2fa_secret);
+       
+      
+        $valid = $google2fa->verifyKey($user->google2fa_secret,$request->totp);
+       
+        if($valid == true){
+        $user->is_2fa_enabled = 1;
+        $user->google2fa_activation_date = \Carbon\Carbon::now();
+        $user->save();
+        return successResponse(\Lang::get('message.valid_passcode'));
         }
-
         return errorResponse(\Lang::get('message.invalid_passcode'));
-    }
+      
+     }
+     
 
     /**
      * Disables 2FA for a user/agent, wipes out all the details related to 2FA from the Database.
@@ -201,6 +198,7 @@ class Google2FAController extends Controller
 
     public function verifyRecoveryCode(Request $request)
     {
+      
         $this->validate($request, [
             'rec_code' => 'required',
         ],

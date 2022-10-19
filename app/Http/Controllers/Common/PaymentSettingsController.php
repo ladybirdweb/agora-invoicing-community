@@ -12,6 +12,7 @@ class PaymentSettingsController extends Controller
     public function getPlugin()
     {
         $plugins = $this->fetchConfig();
+        // dd($plugins);
 
         return \DataTables::of(new Collection($plugins))
                         // ->searchColumns('name')
@@ -79,7 +80,7 @@ class PaymentSettingsController extends Controller
     public function fetchConfig()
     {
         $configs = $this->readConfigs();
-        // dd($configs);
+        
         $plugs = new Plugin();
         $fields = [];
         $attributes = [];
@@ -91,8 +92,10 @@ class PaymentSettingsController extends Controller
 
         if (count($fields) > 0) {
             foreach ($fields as $key => $field) {
+                
                 $plug = $plugs->where('name', $field['name'])->select(['path', 'status'])->orderBy('name');
-
+                
+                
                 if ($plug) {
                     foreach ($plug as $i => $value) {
                         $attributes[$key]['path'] = $plug[$i]['path'];
@@ -158,8 +161,10 @@ class PaymentSettingsController extends Controller
 
     public function statusPlugin($slug)
     {
+        
         $plugs = new Plugin();
         $plug = $plugs->where('name', $slug)->first();
+        
         if (! $plug) {
             $app = base_path().DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'app.php';
             $str = "\n'App\\Plugins\\$slug"."\\ServiceProvider',";
@@ -172,9 +177,10 @@ class PaymentSettingsController extends Controller
             return redirect()->back()->with('success', 'Status has changed');
         }
         $status = $plug->status;
+        
         if ($status == 0) {
             $plug->status = 1;
-
+           
             $app = base_path().DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'app.php';
             $str = "\n'App\\Plugins\\$slug"."\\ServiceProvider',";
             $line_i_am_looking_for = 102;
@@ -182,7 +188,7 @@ class PaymentSettingsController extends Controller
             $lines[$line_i_am_looking_for] = $str;
             file_put_contents($app, implode("\n", $lines));
         }
-        if ($status == 1) {
+        elseif($status == 1) {
             $plug->status = 0;
             /*
              * remove service provider from app.php
@@ -194,6 +200,7 @@ class PaymentSettingsController extends Controller
             $file_contents = str_replace($str, '//', $file_contents);
             file_put_contents($path_to_file, $file_contents);
         }
+       
         $plug->save();
 
         return redirect()->back()->with('success', 'Status has changed');

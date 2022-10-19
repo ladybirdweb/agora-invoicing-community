@@ -55,13 +55,13 @@ class WidgetController extends Controller
                                  style='color:white;'> </i></a>";
                         })
                          ->filterColumn('name', function ($query, $keyword) {
-                               $sql = 'name like ?';
-                               $query->whereRaw($sql, ["%{$keyword}%"]);
-                           })
+                             $sql = 'name like ?';
+                             $query->whereRaw($sql, ["%{$keyword}%"]);
+                         })
                         ->filterColumn('type', function ($query, $keyword) {
-                           $sql = 'type like ?';
-                           $query->whereRaw($sql, ["%{$keyword}%"]);
-                       })
+                            $sql = 'type like ?';
+                            $query->whereRaw($sql, ["%{$keyword}%"]);
+                        })
                         ->rawColumns(['checkbox', 'name', 'type', 'created_at', 'content', 'action'])
                         ->make(true);
         // ->searchColumns('name', 'content')

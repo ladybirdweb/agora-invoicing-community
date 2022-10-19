@@ -117,9 +117,9 @@ class TaxController extends Controller
                                 style='color:white;'> </i></a>";
                             })
                             ->filterColumn('tax_classes_id', function ($query, $keyword) {
-                                 $sql = 'name like ?';
-                                 $query->whereRaw($sql, ["%{$keyword}%"]);
-                             })
+                                $sql = 'name like ?';
+                                $query->whereRaw($sql, ["%{$keyword}%"]);
+                            })
                              ->filterColumn('name', function ($query, $keyword) {
                                  $sql = 'name like ?';
                                  $query->whereRaw($sql, ["%{$keyword}%"]);

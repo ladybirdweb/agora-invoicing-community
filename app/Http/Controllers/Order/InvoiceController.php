@@ -22,7 +22,6 @@ use App\Traits\CoupCodeAndInvoiceSearch;
 use App\Traits\PaymentsAndInvoices;
 use App\Traits\TaxCalculation;
 use App\User;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class InvoiceController extends TaxRatesAndCodeExpiryController
@@ -150,7 +149,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         $from = $request->input('from');
         $till = $request->input('till');
         $query = $this->advanceSearch($name, $invoice_no, $currency, $status, $from, $till);
-     
 
         return \DataTables::of($query)
          ->setTotalRecords($query->count())
@@ -200,13 +198,12 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                          ->filterColumn('user_id', function ($query, $keyword) {
                              $sql = "CONCAT(first_name,' ',last_name)  like ?";
                              $sql2 = 'first_name like ?';
-                            $query->whereRaw($sql, ["%{$keyword}%"])->orWhereRaw($sql2, ["%{$keyword}%"]);
+                             $query->whereRaw($sql, ["%{$keyword}%"])->orWhereRaw($sql2, ["%{$keyword}%"]);
                          })
                          ->filterColumn('number', function ($query, $keyword) {
-                         $sql = 'number like ?';
-                         $query->whereRaw($sql, ["%{$keyword}%"]);
-                        })
-
+                             $sql = 'number like ?';
+                             $query->whereRaw($sql, ["%{$keyword}%"]);
+                         })
 
                          ->rawColumns(['checkbox', 'user_id', 'number', 'date', 'grand_total', 'status', 'action'])
                         ->make(true);

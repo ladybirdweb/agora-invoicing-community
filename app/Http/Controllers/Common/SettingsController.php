@@ -54,12 +54,10 @@ class SettingsController extends BaseSettingsController
         $pay = $payment->fetchConfig();
 
         $status = Plugin::all();
-       
-       
+
         // $demo = json_decode(json_encode($plug));
         // $status = collect($demo)->all();
 
-        
         return view('themes.default1.common.plugins', compact('pay', 'status'));
     }
 

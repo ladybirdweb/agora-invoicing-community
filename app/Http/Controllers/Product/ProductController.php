@@ -26,8 +26,6 @@ namespace App\Http\Controllers\Product;
     use Illuminate\Support\Facades\Input;
     use Spatie\Activitylog\Models\Activity;
     use Yajra\DataTables\DataTables;
-   
-
 
     // use Input;
 
@@ -179,14 +177,13 @@ class ProductController extends BaseProductController
                             ->rawColumns(['checkbox', 'name', 'image', 'type', 'group', 'Action'])
                             ->make(true);
         } catch (\Exception $e) {
-              return redirect()->back()->with('fails', $e->getMessage());
+            return redirect()->back()->with('fails', $e->getMessage());
         }
     }
 
     // Save file Info in Modal popup
     public function save(Request $request)
     {
-       
         $this->validate(
             $request,
             [
@@ -198,9 +195,8 @@ class ProductController extends BaseProductController
        ['filename.required' => 'Please Uplaod A file',
        ]
         );
-      
+
         try {
-     
             $product_id = Product::where('name', $request->input('productname'))->select('id')->first();
 
             $this->product_upload->product_id = $product_id->id;
@@ -208,7 +204,7 @@ class ProductController extends BaseProductController
             $this->product_upload->description = $request->input('description');
             $this->product_upload->version = $request->input('version');
             $this->product_upload->file = $request->input('filename');
-            
+
             $this->product_upload->is_private = $request->input('is_private');
             $this->product_upload->is_restricted = $request->input('is_restricted');
             $this->product_upload->dependencies = json_encode($request->input('dependencies'));
@@ -281,7 +277,6 @@ class ProductController extends BaseProductController
      */
     public function store(Request $request)
     {
-        
         $input = $request->all();
         $v = \Validator::make($input, [
             'name' => 'required|unique:products,name',
@@ -408,7 +403,6 @@ class ProductController extends BaseProductController
      */
     public function update($id, Request $request)
     {
-        
         $input = $request->all();
         $v = \Validator::make($input, [
             'name' => 'required',
@@ -418,12 +412,11 @@ class ProductController extends BaseProductController
             'product_sku' => 'required',
             'group' => 'required',
         ]);
-       
+
         if ($v->fails()) {
-            
             return redirect()->back()->with('errors', $v->errors());
         }
-         
+
         try {
             $licenseStatus = StatusSetting::pluck('license_status')->first();
             if ($licenseStatus) {
@@ -442,11 +435,11 @@ class ProductController extends BaseProductController
                 $request->file('file')->move($filedestinationPath, $file);
                 $product->file = $file;
             }
-            
+
             $product->fill($request->except('image', 'file'))->save();
             $this->saveCartDetailsWhileUpdating($input, $request, $product);
 
-                if ($request->input('github_owner') && $request->input('github_repository')) {
+            if ($request->input('github_owner') && $request->input('github_repository')) {
                 $this->updateVersionFromGithub($product->id, $request->input('github_owner'), $request->input('github_repository'));
             }
             //add tax class to tax_product_relation table
@@ -454,7 +447,6 @@ class ProductController extends BaseProductController
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $e) {
-           
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }

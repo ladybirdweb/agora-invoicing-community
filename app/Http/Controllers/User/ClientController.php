@@ -262,6 +262,7 @@ class ClientController extends AdvanceSearchController
              But email configuration has some problem!!'.$e->getMessage());
         } catch (\Exception $e) {
             dd($e);
+
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }

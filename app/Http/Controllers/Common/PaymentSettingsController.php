@@ -80,7 +80,7 @@ class PaymentSettingsController extends Controller
     public function fetchConfig()
     {
         $configs = $this->readConfigs();
-        
+
         $plugs = new Plugin();
         $fields = [];
         $attributes = [];
@@ -92,10 +92,8 @@ class PaymentSettingsController extends Controller
 
         if (count($fields) > 0) {
             foreach ($fields as $key => $field) {
-                
                 $plug = $plugs->where('name', $field['name'])->select(['path', 'status'])->orderBy('name');
-                
-                
+
                 if ($plug) {
                     foreach ($plug as $i => $value) {
                         $attributes[$key]['path'] = $plug[$i]['path'];
@@ -161,10 +159,9 @@ class PaymentSettingsController extends Controller
 
     public function statusPlugin($slug)
     {
-        
         $plugs = new Plugin();
         $plug = $plugs->where('name', $slug)->first();
-        
+
         if (! $plug) {
             $app = base_path().DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'app.php';
             $str = "\n'App\\Plugins\\$slug"."\\ServiceProvider',";
@@ -177,18 +174,17 @@ class PaymentSettingsController extends Controller
             return redirect()->back()->with('success', 'Status has changed');
         }
         $status = $plug->status;
-        
+
         if ($status == 0) {
             $plug->status = 1;
-           
+
             $app = base_path().DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'app.php';
             $str = "\n'App\\Plugins\\$slug"."\\ServiceProvider',";
             $line_i_am_looking_for = 102;
             $lines = file($app, FILE_IGNORE_NEW_LINES);
             $lines[$line_i_am_looking_for] = $str;
             file_put_contents($app, implode("\n", $lines));
-        }
-        elseif($status == 1) {
+        } elseif ($status == 1) {
             $plug->status = 0;
             /*
              * remove service provider from app.php
@@ -200,7 +196,7 @@ class PaymentSettingsController extends Controller
             $file_contents = str_replace($str, '//', $file_contents);
             file_put_contents($path_to_file, $file_contents);
         }
-       
+
         $plug->save();
 
         return redirect()->back()->with('success', 'Status has changed');

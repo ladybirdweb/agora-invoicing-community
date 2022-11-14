@@ -12,7 +12,6 @@ use App\Model\Product\ProductGroup;
 use Illuminate\Http\Request;
 use Symfony\Component\Mime\Email;
 
-
 class PageController extends Controller
 {
     public $page;
@@ -463,21 +462,21 @@ class PageController extends Controller
             if (emailSendingStatus()) {
                 $mail = new \App\Http\Controllers\Common\PhpMailController();
                 $mail->sendEmail($from, $to, $data, $subject);
-                
-                
-                  $email = (new Email())
+
+                $email = (new Email())
                    ->from($set->email)
                    ->to($set->company_email)
                    ->subject('Faveo billing enquiry')
                    ->html($data);
-                   
-                 $mailer->send($email);
+
+                $mailer->send($email);
             }
 
             //$this->templateController->Mailing($from, $to, $data, $subject);
             return redirect()->back()->with('success', 'Your message was sent successfully. Thanks.');
         } catch (\Exception $ex) {
             dd($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

@@ -76,6 +76,7 @@ class ClientController extends AdvanceSearchController
     public function getClients(Request $request)
     {
         $baseQuery = $this->getBaseQueryForUserSearch($request);
+
         return DataTables::of($baseQuery)
                         ->orderColumn('name', '-id $1')
                         ->orderColumn('email', '-id $1')
@@ -83,7 +84,6 @@ class ClientController extends AdvanceSearchController
                         ->orderColumn('country', '-id $1')
                         ->orderColumn('created_at', '-id $1')
                         ->orderColumn('active', '-id $1')
-
 
                         ->addColumn('checkbox', function ($model) {
                             $isAccountManager = User::where('account_manager', $model->id)->get();
@@ -213,7 +213,6 @@ class ClientController extends AdvanceSearchController
      */
     public function store(ClientRequest $request)
     {
-      
         try {
             $user = $this->user;
             $str = 'demopass';
@@ -270,6 +269,7 @@ class ClientController extends AdvanceSearchController
              But email configuration has some problem!!'.$e->getMessage());
         } catch (\Exception $e) {
             dd($e);
+
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
@@ -328,7 +328,6 @@ class ClientController extends AdvanceSearchController
      */
     public function edit($id)
     {
-        
         try {
             $user = $this->user->where('id', $id)->first();
             $timezonesList = \App\Model\Common\Timezone::get();

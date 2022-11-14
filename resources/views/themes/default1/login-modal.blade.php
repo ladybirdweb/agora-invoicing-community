@@ -304,7 +304,7 @@ $country = findCountryByGeoip($location['iso_code']);
                             <div class="form-group pull-right">
                                 <button type="button" class="btn btn-default closebutton" id="closebutton" data-dismiss="modal"><i class="fa fa-times">&nbsp;&nbsp;</i>Close</button>
 
-                                <button type="button"  class="btn btn-primary" value="0" name="register" id="register" onclick="registerUser()">Submit</button>
+                                <button type="button"  class="btn btn-primary" value="0" name="register" id="register" onclick="registerUser()">Register</button>
                                 <!-- <button type="button" class="btn btn-primary mb-xl next-step float-right" name="logsendOtp" id="login" onclick="loginUser()">
                                             Send Email
                                 </button> -->

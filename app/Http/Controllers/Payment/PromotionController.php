@@ -64,6 +64,10 @@ class PromotionController extends BasePromotionController
         $new_promotion = $this->promotion->select('code', 'type', 'id');
 
         return DataTables::of($new_promotion)
+                            ->orderColumn('code', '-created_at $1')
+                            ->orderColumn('type', '-created_at $1')
+                            ->orderColumn('products', '-created_at $1')
+
                             ->addColumn('checkbox', function ($model) {
                                 return "<input type='checkbox' class='promotion_checkbox'
                                  value=".$model->id.' name=select[] id=check>';

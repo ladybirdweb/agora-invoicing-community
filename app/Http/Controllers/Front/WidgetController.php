@@ -32,6 +32,9 @@ class WidgetController extends Controller
     public function getPages()
     {
         return \DataTables::of($this->widget->select('id', 'name', 'type', 'created_at', 'content'))
+                       ->orderColumn('name', '-created_at $1')
+                       ->orderColumn('type', '-created_at $1')
+                       ->orderColumn('created_at', '-created_at $1')
                        ->addColumn('checkbox', function ($model) {
                            return "<input type='checkbox' class='widget_checkbox' 
                             value=".$model->id.' name=select[] id=check>';

@@ -109,7 +109,7 @@
                 <!-- Messages Dropdown Menu -->
                 <li class="nav-item dropdown">
                     <a class="nav-link" data-toggle="dropdown" href="#">
-                        <img src="{{Auth::user()->profile_pic}}" style="width:30px;" class="img-size-50 mr-3 img-circle" alt="User Image" />
+                        <img src="{{Auth::user()->profile_pic}}" style="width:30px;height: 30px;" class="img-size-50 mr-3 img-circle" alt="User Image" />
                         <span class="hidden-xs">{{ucfirst(Auth::user()->first_name)}} {{ucfirst(Auth::user()->last_name)}}</span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">

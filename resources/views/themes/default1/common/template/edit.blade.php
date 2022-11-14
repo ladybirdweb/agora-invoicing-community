@@ -10,7 +10,7 @@ Edit Templates
         <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
             <li class="breadcrumb-item"><a href="{{url('settings')}}"><i class="fa fa-dashboard"></i> Settings</a></li>
-            <li class="breadcrumb-item"><a href="{{url('templates')}}"><i class="fa fa-dashboard"></i> Templates</a></li>
+            <li class="breadcrumb-item"><a href="{{url('template')}}"><i class="fa fa-dashboard"></i> Templates</a></li>
             <li class="breadcrumb-item active">Edit Template</li>
         </ol>
     </div><!-- /.col -->

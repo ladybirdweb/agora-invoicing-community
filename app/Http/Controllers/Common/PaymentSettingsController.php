@@ -152,7 +152,6 @@ class PaymentSettingsController extends Controller
                     closedir($dh);
                 }
             }
-
             return $config;
         } else {
             return 'null';

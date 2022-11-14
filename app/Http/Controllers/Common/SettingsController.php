@@ -231,6 +231,7 @@ class SettingsController extends BaseSettingsController
      */
     public function delete(Request $request)
     {
+  
         if (isset($request->id)) {
             $todo = Setting::findOrFail($request->id);
             if ($request->column == 'logo') {
@@ -348,6 +349,14 @@ class SettingsController extends BaseSettingsController
 
             return \DataTables::of($query->take(50))
              ->setTotalRecords($query->count())
+              ->orderColumn('name', '-created_at $1')
+              ->orderColumn('description', '-created_at $1')
+              ->orderColumn('role', '-created_at $1')
+              ->orderColumn('new', '-created_at $1')
+              ->orderColumn('old', '-created_at $1')
+              ->orderColumn('created_at', '-created_at $1')
+
+
              ->addColumn('checkbox', function ($model) {
                  return "<input type='checkbox' class='activity' value=".$model->id.' name=select[] id=check>';
              })
@@ -414,9 +423,14 @@ class SettingsController extends BaseSettingsController
     public function getMails(Request $request)
     {
         try {
-            $email_log = Email_log::orderBy('date', 'desc')->take(50);
+            $email_log = Email_log::take(50);
 
             return Datatables::of($email_log)
+            ->orderColumn('date', '-date $1')
+            ->orderColumn('from', '-date $1')
+             ->orderColumn('to', '-date $1')
+            ->orderColumn('subject', '-date $1')
+
                 ->addColumn('checkbox', function ($model) {
                     return "<input type='checkbox' class='email' value=".$model->id.' name=select[] id=check>';
                 })

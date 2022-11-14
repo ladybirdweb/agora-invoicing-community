@@ -119,8 +119,17 @@ class OrderController extends BaseOrderController
     {
         $orderSearch = new OrderSearchController();
         $query = $orderSearch->advanceOrderSearch($request);
-
         return \DataTables::of($query)
+            ->orderColumn('client', '-client_id $1')
+            ->orderColumn('product_name', '-client_id $1')
+            ->orderColumn('version', '-client_id $1')
+            ->orderColumn('number', '-client_id $1')
+            ->orderColumn('order_status', '-client_id $1')
+            ->orderColumn('order_date', '-client_id $1')
+            ->orderColumn('update_ends_at', '-client_id $1')
+
+
+
             ->setTotalRecords($query->count())
             ->addColumn('checkbox', function ($model) {
                 return "<input type='checkbox' class='order_checkbox' value=".$model->id.' name=select[] id=check>';
@@ -255,9 +264,11 @@ class OrderController extends BaseOrderController
             $noOfAllowedInstallation = '';
             $getInstallPreference = '';
             if ($licenseStatus == 1) {
+                
                 $cont = new \App\Http\Controllers\License\LicenseController();
                 $noOfAllowedInstallation = $cont->getNoOfAllowedInstallation($order->serial_key, $order->product);
             }
+            
             $allowDomainStatus = StatusSetting::pluck('domain_check')->first();
             
             $licenseStatus = StatusSetting::pluck('license_status')->first();

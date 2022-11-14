@@ -69,12 +69,11 @@ class MailChimpController extends BaseMailChimpController
             $result = $this->mailchimp->post("lists/$this->list_id/members", [
                 'status' => $this->mailchimp_set->subscribe_status,
                 'email_address' => $email,
-                'merge_fields' => $merge_fields,
+                // 'merge_fields' => $merge_fields,
 
-                'interests' => [$interestGroupIdForNo => true, $interestGroupIdForYes => false],
+                // 'interests' => [$interestGroupIdForNo => true, $interestGroupIdForYes => false],
 
             ]);
-
             return $result;
         } catch (Exception $ex) {
             $exe = json_decode($ex->getMessage(), true);
@@ -87,6 +86,7 @@ class MailChimpController extends BaseMailChimpController
     //Update to Mailchimp For Paid Product
     public function addSubscriberByClientPanel(Request $request)
     {
+       
         $this->validate($request, [
             'email' => 'required|email',
         ]);
@@ -98,11 +98,9 @@ class MailChimpController extends BaseMailChimpController
                 'email_address' => $email,
 
             ]);
-
             return successResponse('Email added to mailchimp');
         } catch (Exception $ex) {
             $exe = json_decode($ex->getMessage(), true);
-            // dd($exe);
             if ($exe['status'] == 400) {
                 $error = $exe['detail'];
 

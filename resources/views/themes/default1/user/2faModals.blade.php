@@ -88,6 +88,9 @@ display: none;
 </div>
 <!-- /.modal-dialog -->
 </div>
+<?php
+$imageDataUri = app(App\Http\Controllers\Google2FAController::class)->enableTwoFactor(Request());
+?>
 
 
 <div class="modal fade" id="2fa-modal2" data-backdrop="static" data-keyboard="false">
@@ -104,7 +107,9 @@ display: none;
               <li>Choose <b>Scan a barcode.</b></li>
             </ul>     
       <div id="barcode">
-         <img id="image"/>
+         <!--<img id="image"/>-->
+         
+         {!! $imageDataUri !!}
    
       </div>
       <a href="javascript:;" id="cantscanit">CAN'T SCAN IT?</a>

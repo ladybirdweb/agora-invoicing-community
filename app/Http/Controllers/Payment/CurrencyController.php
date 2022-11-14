@@ -37,11 +37,13 @@ class CurrencyController extends Controller
     {
         $defaultCurrency = Setting::pluck('default_currency')->first();
         $model = Currency::where('name', '!=', null)->where('code', '!=', $defaultCurrency)->
-        select('id', 'name', 'code', 'symbol', 'status')
-        ->orderBy('id', 'desc');
+        select('id', 'name', 'code', 'symbol', 'status');
 
         return \DataTables::of($model)
-
+                        ->orderColumn('name', '-id $1')
+                        ->orderColumn('code', '-id $1')
+                        ->orderColumn('symbol', '-id $1')
+                        ->orderColumn('dashboard', '-id $1')
                         ->addColumn('name', function ($model) {
                             return $model->name;
                         })

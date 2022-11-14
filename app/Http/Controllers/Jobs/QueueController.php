@@ -46,6 +46,8 @@ class QueueController extends Controller
             $allQueues = $this->queue->select('id', 'name', 'status');
 
             return \DataTables::of($allQueues)
+            ->orderColumn('name', '-id $1')
+            ->orderColumn('status', '-id $1')
         ->addColumn('name', function ($model) {
             return $model->getName();
         })

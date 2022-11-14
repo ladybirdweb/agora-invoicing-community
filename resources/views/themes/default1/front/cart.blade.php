@@ -233,10 +233,10 @@ $cartTotal = 0;
                         <div class="col col-md-7">
                             @if(count($domain)>0)
 
-                            <a href="#domain" data-toggle="modal" data-target="#domain"><button class="btn btn-primary btn-sm " > Proceed to Checkout&nbsp;<i class="fa fa-angle-right ml-xs"></i></button></a>
+                            <a href="#domain" data-toggle="modal" data-target="#domain"><button class="btn btn-primary btn-sm style="white-space: nowrap;" > Proceed to Checkout&nbsp;<i class="fa fa-angle-right ml-xs"></i></button></a>
 
                             @else
-                            <a href="{{url('checkout')}}"><button class="btn btn-primary btn-modern" style="margin-bottom: 20px;">Proceed to Checkout&nbsp;<i class="fa fa-angle-right ml-xs"></i></button></a>
+                            <a href="{{url('checkout')}}"><button class="btn btn-primary btn-modern" style="white-space: nowrap;">Proceed to Checkout&nbsp;<i class="fa fa-angle-right ml-xs"></i></button></a>
                             @endif
                           
 

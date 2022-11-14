@@ -67,7 +67,7 @@ active
             columns: [
                 {data: 'number', name: 'number'},
                 {data: 'date', name: 'date'},
-                {data: 'orderNo', name: 'order.number'},
+                {data: 'orderNo', name: 'orderNo'},
                 {data: 'total', name: 'grand_total'},
                 {data: 'paid', name: 'paid'},
                 {data: 'balance', name: 'balance'},

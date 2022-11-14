@@ -59,8 +59,8 @@ License Permission
         $('#permissions-table').DataTable({
             processing: true,
             serverSide: true,
-             stateSave: false,
-              order: [[ 0, "desc" ]],
+            stateSave: false,
+            order: [[ 0, "desc" ]],
               ajax: {
             "url":  '{!! route('get-license-permission') !!}',
                error: function(xhr) {
@@ -78,15 +78,15 @@ License Permission
             },
             columnDefs: [
                 { 
-                    targets: 'no-sort', 
+                     targets: 'no-sort', 
                     orderable: false,
                     order: []
                 }
             ],
             columns: [
                 {data: 'license_type', name: 'license_type'},
-                {data: 'permissions', name: 'permissions.permissions'},
-                {data: 'action', name: 'action'}
+                {data: 'permissions', name: 'permissions.permissions',orderable:'true'},
+                {data: 'action', name: 'action',orderable:'false'}
             ],
             "fnDrawCallback": function( oSettings ) {
                 bindEditButton();

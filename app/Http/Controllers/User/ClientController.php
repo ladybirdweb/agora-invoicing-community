@@ -76,6 +76,7 @@ class ClientController extends AdvanceSearchController
     public function getClients(Request $request)
     {
         $baseQuery = $this->getBaseQueryForUserSearch($request);
+        // dd($baseQuery->get()->last());
         return DataTables::of($baseQuery)
                         ->orderColumn('name', '-id $1')
                         ->orderColumn('email', '-id $1')
@@ -253,7 +254,7 @@ class ClientController extends AdvanceSearchController
                 'account_manager' => $request->input('account_manager'),
                 'ip' => $location['ip'],
             ];
-            $userInput = User::insert($user);
+            $userInput = User::create($user);
 
             if (emailSendingStatus()) {
                 $this->sendWelcomeMail($user);
@@ -269,7 +270,6 @@ class ClientController extends AdvanceSearchController
             return redirect()->back()->with('warning', 'User has been created successfully
              But email configuration has some problem!!'.$e->getMessage());
         } catch (\Exception $e) {
-            dd($e);
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }

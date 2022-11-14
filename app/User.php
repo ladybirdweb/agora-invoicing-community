@@ -33,6 +33,8 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      *
      * @var string
      */
+    public $timestamps = true;
+
     protected $table = 'users';
 
     /**

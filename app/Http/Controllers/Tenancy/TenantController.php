@@ -36,8 +36,8 @@ class TenantController extends Controller
         $responseBody = (string) $response->getBody();
         $response = json_decode($responseBody, true);
 
-        $data = collect($response['message'])->paginate(5);
-        $de = $data->all();
+        $de = collect($response['message'])->paginate(5);
+        // $de = $data->all();
 
         return view('themes.default1.tenant.index', compact('cloud', 'de'));
     }

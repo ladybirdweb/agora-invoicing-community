@@ -24,7 +24,7 @@ trait CoupCodeAndInvoiceSearch
 
         $join = $join->select('id', 'user_id', 'number', 'date', 'grand_total', 'currency', 'status', 'created_at');
 
-        $join = $join->orderBy('created_at', 'desc')
+        $join = $join
         ->select(
             'invoices.id',
             'first_name',

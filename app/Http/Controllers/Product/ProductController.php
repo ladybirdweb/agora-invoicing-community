@@ -124,16 +124,20 @@ class ProductController extends BaseProductController
     public function getProducts()
     {
         try {
-            $new_product = Product::with(['LicenseType:id,name', 'group:id,name']);
+            $new_product = Product::leftJoin('license_types','products.type', '=', 'license_types.id')
+                ->select('products.id', 'products.name as product', 'products.type', 'products.image', 'products.group', 'products.image','license_types.name');
 
             return DataTables::of($new_product)
-
+                            ->orderColumn('name', '-products.id $1')
+                            ->orderColumn('image', '-products.id $1')
+                            ->orderColumn('type', '-products.id $1')
+                            ->orderColumn('group', '-products.id $1')
                             ->addColumn('checkbox', function ($model) {
                                 return "<input type='checkbox' class='product_checkbox' 
                                 value=".$model->id.' name=select[] id=check>';
                             })
                             ->addColumn('name', function ($model) {
-                                return ucfirst($model->name);
+                                return ucfirst($model->product);
                             })
                               ->addColumn('image', function ($model) {
                                   // return $model->image;
@@ -157,22 +161,24 @@ class ProductController extends BaseProductController
                             ->addColumn('Action', function ($model) {
                                 $permissions = LicensePermissionsController::getPermissionsForProduct($model->id);
                                 $url = '';
+                                if(is_array($permissions)){
                                 if ($permissions['downloadPermission'] == 1) {
                                     $url = '<a href='.url('product/download/'.$model->id).
                                     " class='btn btn-sm btn-secondary btn-xs'".tooltip('Download')."<i class='fas fa-cloud-download-alt' 
                                     style='color:white;'> </i></a>";
                                 }
+                            }
 
                                 return '<p><a href='.url('products/'.$model->id.'/edit').
                                 " class='btn btn-sm btn-secondary btn-xs'".tooltip('Edit')."<i class='fa fa-edit'
                                  style='color:white;'> </i></a>&nbsp;$url</p>";
                             })
-                           ->filterColumn('name', function ($query, $keyword) {
-                               $sql = 'name like ?';
+                             ->filterColumn('name', function ($query, $keyword) {
+                               $sql = 'products.name like ?';
                                $query->whereRaw($sql, ["%{$keyword}%"]);
                            })
                              ->filterColumn('type', function ($query, $keyword) {
-                                 $sql = 'LicenseType.name like ?';
+                                 $sql = 'license_types.name like ?';
                                  $query->whereRaw($sql, ["%{$keyword}%"]);
                              })
 
@@ -224,7 +230,6 @@ class ProductController extends BaseProductController
 
             return $response;
         } catch (\Exception $e) {
-            dd($e);
             app('log')->error($e->getMessage());
             $message = [$e->getMessage()];
             $response = ['success' => 'false', 'message' => $message];

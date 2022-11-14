@@ -210,16 +210,26 @@ input:checked + .slider:before {
             <div class="form-row">
                  <div class="form-group col">
                       
-                        <div class="form-group col {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
-                    {!! Form::label('mobile',null,['class' => 'required'],Lang::get('message.mobile'),['class'=>'required']) !!}
-                    {!! Form::hidden('mobile_code',null,['id'=>'code_hidden']) !!}
+                    <!--    <div class="form-group col {{ $errors->has('mobile_code') ? 'has-error' : '' }}">-->
+                    <!--{!! Form::label('mobile',null,['class' => 'required'],Lang::get('message.mobile'),['class'=>'required']) !!}-->
+                    <!--{!! Form::hidden('mobile_code',null,['id'=>'']) !!}-->
                    
                     <!--<input class="form-control selected-dial-code"  id="number" value="{{$user->mobile}}" name="mobile" type="tel">-->
-                       {!! Form::text('mobile',$user->mobile,['class'=>'form-control selected-dial-code', 'type'=>'tel','id'=>'number']) !!}
+                <!--       {!! Form::text('mobile',$user->mobile,['class'=>'form-control selected-dial-code', 'type'=>'tel','id'=>'number']) !!}-->
                 
-                    <span id="valid-msg3" class="hide"></span>
-                    <span id="error-msg3" class="hide"></span>
+                <!--    <span id="valid-msg3" class="hide"></span>-->
+                <!--    <span id="error-msg3" class="hide"></span>-->
             
+                <!--</div>-->
+                
+                <div class="form-group {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
+                  {!! Form::label('mobile',null,Lang::get('message.mobile')) !!}
+                     {!! Form::hidden('incode',null,['id'=>'code_hidden']) !!}
+                     <!--  <input class="form-control selected-dial-code"  id="mobile_code" value="{{$user->mobile}}" name="mobile" type="tel"> -->
+                        
+                    {!! Form::text('mobile',$user->mobile,['class'=>'form-control selected-dial-code', 'type'=>'tel','id'=>'incode']) !!}
+                    <span id="invalid-msg" class="hide"></span>
+                       <span id="inerror-msg" class="hide"></span>
                 </div>
                     
                 </div>
@@ -525,88 +535,178 @@ input:checked + .slider:before {
 <script src="{{asset('common/js/intlTelInput.js')}}"></script>
 
 <script type="text/javascript">
-var protelInput = $('#number'),
+// var protelInput = $('#number'),
 
-            proerrorMsg = document.querySelector("#error-msg3"),
-            provalidMsg = document.querySelector("#valid-msg3"),
-            addressDropdown = $("#country");
-             var proerrorMap = [ "Invalid number", "Invalid country code", "Number Too short", "Number Too long", "Invalid number"];
+//             proerrorMsg = document.querySelector("#error-msg3"),
+//             provalidMsg = document.querySelector("#valid-msg3"),
+//             addressDropdown = $("#country");
+//              var proerrorMap = [ "Invalid number", "Invalid country code", "Number Too short", "Number Too long", "Invalid number"];
             
-    protelInput.intlTelInput({
+//     protelInput.intlTelInput({
+//         geoIpLookup: function (callback) {
+//             $.get("https://ipinfo.io", function () {}, "jsonp").always(function (resp) {
+//                 var procountryCode = (resp && resp.country) ? resp.country : "";
+//                 callback(procountryCode);
+//             });
+//         },
+//         initialCountry: "auto",
+//         separateDialCode: true,
+//          utilsScript: "{{asset('js/intl/js/utils.js')}}",
+//     });
+    
+//       var reset = function() {
+
+//             proerrorMsg.innerHTML = "";
+//             proerrorMsg.classList.add("hide");
+//             provalidMsg.classList.add("hide");
+//         };
+        
+//     $('.intl-tel-input').css('width', '100%');
+
+//     protelInput.on('blur', function () {
+//             reset();
+//             if ($.trim(protelInput.val())) {
+                 
+//                 if (protelInput.intlTelInput("isValidNumber")) {
+//                     $('#number').css("border-color","");
+//                     $("#error-msg3").html('');
+//                     proerrorMsg.classList.add("hide");
+//                     $('#submit').attr('disabled',false);
+//                 } else {
+                   
+//                     var errorCode = protelInput.intlTelInput("getValidationError");
+//                     proerrorMsg.innerHTML = proerrorMap[errorCode];
+//                     $('#codecheck').html("");
+
+//                     $('#number').css("border-color","red");
+//                     $('#error-msg3').css({"color":"red","margin-top":"5px"});
+//                     proerrorMsg.classList.remove("hide");
+//                     $('#submit').attr('disabled',true);
+//                 }
+//             }
+//         });
+//     $('input').on('focus', function () {
+//         $(this).parent().removeClass('has-error');
+//     });
+    
+//       addressDropdown.change(function() {
+//             protelInput.intlTelInput("setCountry", $(this).val());
+//             if ($.trim(protelInput.val())) {
+                
+//                 if (protelInput.intlTelInput("isValidNumber")) {
+//                     $('#number').css("border-color","");
+//                     $("#error-msg3").html('');
+//                     proerrorMsg.classList.add("hide");
+//                     $('#submit').attr('disabled',false);
+//                 } else {
+                    
+//                     var errorCode = protelInput.intlTelInput("getValidationError");
+//                     proerrorMsg.innerHTML = proerrorMap[errorCode];
+//                     $('#codecheck').html("");
+
+//                     $('#number').css("border-color","red");
+//                     $('#error-msg3').css({"color":"red","margin-top":"5px"});
+//                     proerrorMsg.classList.remove("hide");
+//                     $('#submit').attr('disabled',true);
+//                 }
+//             }
+//         });
+
+//     $('form').on('submit', function (e) {
+//         $('input[name=country_code]').attr('value', $('.selected-dial-code').text());
+//     });
+    
+
+
+
+  $(function () {
+   
+         });
+    var incountry = $('#country').val();
+
+    getCode(incountry);
+  
+    var intelInput = $('#incode');
+    inaddressDropdown = $("#country");
+    inerrorMsg = document.querySelector("#inerror-msg"),
+    invalidMsg = document.querySelector("#invalid-msg");
+    var inerrorMap = [ "Invalid number", "Invalid country code", "Number Too short", "Number Too long", "Invalid number"];
+     let currentCountry="";
+    intelInput.intlTelInput({
+        initialCountry: "auto",
         geoIpLookup: function (callback) {
-            $.get("https://ipinfo.io", function () {}, "jsonp").always(function (resp) {
-                var procountryCode = (resp && resp.country) ? resp.country : "";
-                callback(procountryCode);
+
+            $.get("http://ipinfo.io", function () {}, "jsonp").always(function (resp) {
+                resp.country = country;
+
+                var countryCode = (resp && resp.country) ? resp.country : "";
+                    currentCountry=countryCode.toLowerCase()
+                    callback(countryCode);
             });
         },
-        initialCountry: "auto",
         separateDialCode: true,
-         utilsScript: "{{asset('js/intl/js/utils.js')}}",
+       utilsScript: "{{asset('js/intl/js/utils.js')}}"
     });
-    
-      var reset = function() {
-
-            proerrorMsg.innerHTML = "";
-            proerrorMsg.classList.add("hide");
-            provalidMsg.classList.add("hide");
-        };
-        
-    $('.intl-tel-input').css('width', '100%');
-
-    protelInput.on('blur', function () {
-            reset();
-            if ($.trim(protelInput.val())) {
-                 
-                if (protelInput.intlTelInput("isValidNumber")) {
-                    $('#number').css("border-color","");
-                    $("#error-msg3").html('');
-                    proerrorMsg.classList.add("hide");
-                    $('#submit').attr('disabled',false);
-                } else {
-                   
-                    var errorCode = protelInput.intlTelInput("getValidationError");
-                    proerrorMsg.innerHTML = proerrorMap[errorCode];
-                    $('#codecheck').html("");
-
-                    $('#number').css("border-color","red");
-                    $('#error-msg3').css({"color":"red","margin-top":"5px"});
-                    proerrorMsg.classList.remove("hide");
-                    $('#submit').attr('disabled',true);
-                }
+     var inreset = function() {
+      inerrorMsg.innerHTML = "";
+      inerrorMsg.classList.add("hide");
+      invalidMsg.classList.add("hide");
+    };
+    setTimeout(()=>{
+         intelInput.intlTelInput("setCountry", currentCountry);
+    },500)
+     $('.intl-tel-input').css('width', '100%');
+    intelInput.on('blur', function () {
+      reset();
+        if ($.trim(intelInput.val())) {
+            if (intelInput.intlTelInput("isValidNumber")) {
+              $('#incode').css("border-color","");
+              invalidMsg.classList.remove("hide");
+              $('#submit').attr('disabled',false);
+            } else {
+                console.log('l');
+              var inerrorCode = intelInput.intlTelInput("getValidationError");
+             inerrorMsg.innerHTML = inerrorMap[inerrorCode];
+             $('#incode').css("border-color","red");
+             $('#inerror-msg').css({"color":"red","margin-top":"5px"});
+             inerrorMsg.classList.remove("hide");
+             $('#submit').attr('disabled',true);
             }
-        });
+        }
+    });
+
+     inaddressDropdown.change(function() {
+     intelInput.intlTelInput("setCountry", $(this).val());
+             if ($.trim(intelInput.val())) {
+            if (intelInput.intlTelInput("isValidNumber")) {
+              $('#incode').css("border-color","");
+              inerrorMsg.classList.add("hide");
+              $('#submit').attr('disabled',false);
+            } else {
+                console.log('l');
+              var inerrorCode = intelInput.intlTelInput("getValidationError");
+             inerrorMsg.innerHTML = inerrorMap[errorCode];
+             $('#incode').css("border-color","red");
+             $('#inerror-msg').css({"color":"red","margin-top":"5px"});
+             inerrorMsg.classList.remove("hide");
+             $('#submit').attr('disabled',true);
+            }
+        }
+    });
     $('input').on('focus', function () {
         $(this).parent().removeClass('has-error');
     });
-    
-      addressDropdown.change(function() {
-            protelInput.intlTelInput("setCountry", $(this).val());
-            if ($.trim(protelInput.val())) {
-                
-                if (protelInput.intlTelInput("isValidNumber")) {
-                    $('#number').css("border-color","");
-                    $("#error-msg3").html('');
-                    proerrorMsg.classList.add("hide");
-                    $('#submit').attr('disabled',false);
-                } else {
-                    
-                    var errorCode = protelInput.intlTelInput("getValidationError");
-                    proerrorMsg.innerHTML = proerrorMap[errorCode];
-                    $('#codecheck').html("");
-
-                    $('#number').css("border-color","red");
-                    $('#error-msg3').css({"color":"red","margin-top":"5px"});
-                    proerrorMsg.classList.remove("hide");
-                    $('#submit').attr('disabled',true);
-                }
-            }
-        });
 
     $('form').on('submit', function (e) {
-        $('input[name=country_code]').attr('value', $('.selected-dial-code').text());
+        $('input[name=sds]').attr('value', $('.selected-dial-code').text());
     });
-    
 
+// get the country data from the plugin
+     $(document).ready(function(){
+           
+
+
+});
     
 
    function getCountryAttr(val) {
@@ -643,7 +743,7 @@ var protelInput = $('#number'),
             success: function (data) {
             
                 // $("#mobile_code").val(data);
-                $("#code_hidden").val(data);
+                $("#code_hidden").val('+91');
             }
         });
     }

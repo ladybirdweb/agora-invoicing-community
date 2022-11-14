@@ -14,15 +14,20 @@ trait ChunkUpload
 {
     public function uploadFile(Request $request)
     {
+        
         try {
-            $receiver = new FileReceiver('file', $request, HandlerFactory::classFromRequest($request));
+            
+           $receiver = new FileReceiver('file', $request, HandlerFactory::classFromRequest($request));
+          
             if ($receiver->isUploaded() === false) {
-                throw new UploadMissingFileException();
+               throw new UploadMissingFileException();
             }
-
+            
             $save = $receiver->receive();
             // check if the upload has finished (in chunk mode it will send smaller files)
+            
             if ($save->isFinished()) {
+                
                 // save the file and return any response you need, current example uses `move` function. If you are
                 // not using move, you need to manually delete the file by unlink($save->getFile()->getPathname())
                 return $this->saveFile($save->getFile());
@@ -30,12 +35,13 @@ trait ChunkUpload
             // we are in chunk mode, lets send the current progress
             /** @var AbstractHandler $handler */
             $handler = $save->handler();
-
+            
             return response()->json([
                 'done' => $handler->getPercentageDone(),
                 'status' => true,
             ]);
         } catch (Exception $ex) {
+            
             $response = ['success' => 'false', 'message' => $ex->getMessage()];
 
             return response()->json(compact('response'), 500);
@@ -50,6 +56,7 @@ trait ChunkUpload
      */
     protected function saveFile(UploadedFile $file)
     {
+        
         $fileName = $this->createFilename($file);
         // Group files by mime type
         //$mime = str_replace('/', '-', $file->getMimeType());
@@ -61,7 +68,7 @@ trait ChunkUpload
         $finalPath = Setting::find(1)->value('file_storage');
         // move the file name
         $file->move($finalPath, $fileName);
-
+        
         return response()->json([
             'path' => $filePath,
             'name' => $fileName,

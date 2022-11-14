@@ -63,7 +63,6 @@ $(document).ready(function(){
                             url : "2fa-recovery-code",
                             method : 'post',
                             success: function(response){
-                                
                                 $('#next_rec_code').attr('disabled',true);
                                 $('#alertMessage').hide(); 
                                 $('#2fa-recover-code-modal').modal('show');
@@ -74,12 +73,10 @@ $(document).ready(function(){
                                         url : "2fa/enable",
                                         method : 'post',
                                         success: function(response) {
-                                            
-                                           
-                                               $('#2fa-modal2').modal('show');
+                                            $('#2fa-modal2').modal('show');
                                              $(".bar-code").attr("hidden",false);
                                              $(".secret-key").attr("hidden",true);
-                                             document.querySelectorAll('[id="image"]')[0].src = response.data.image;
+                                            //  document.querySelectorAll('[id="image"]')[0].src = response.data.image;
                                              $('#cantscanit').on('click',function(){
                                                 $(".bar-code").attr("hidden",true);
                                                 $("#secretkeyid").val(response.data.secret);

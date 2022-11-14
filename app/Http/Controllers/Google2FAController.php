@@ -43,8 +43,8 @@ class Google2FAController extends Controller
     {
         $user = $request->user();
         $google2fa = new Google2FA();
-        $secret = $google2fa->generateSecretKey();
-        // $user->google2fa_secret = Crypt::encrypt($secret);
+        $secret = $this->generateSecret();
+        $user->google2fa_secret = Crypt::encrypt($secret);
         $user->save();
         $imageDataUri = $google2fa->getQRCodeInline(
                     $request->getHttpHost(),
@@ -53,10 +53,18 @@ class Google2FAController extends Controller
                     200
                 );
         
-        return successResponse('', ['image' => $imageDataUri, 'secret' => $secret, 'user' => $user]);
+        return $imageDataUri;
     
 
     }
+    
+    private function generateSecret()
+    {
+        $randomBytes = random_bytes(10);
+
+        return Base32::encodeUpper($randomBytes) ;
+    }
+
 
     /**
      * @return \Illuminate\Http\Response
@@ -133,10 +141,10 @@ class Google2FAController extends Controller
        
         $user = $request->user();
         $google2fa = new Google2FA();
-        // $secret = Crypt::decrypt($user->google2fa_secret);
+        $secret = Crypt::decrypt($user->google2fa_secret);
        
       
-        $valid = $google2fa->verifyKey($user->google2fa_secret,$request->totp);
+        $valid = $google2fa->verifyKey($secret,$request->totp);
        
         if($valid == true){
         $user->is_2fa_enabled = 1;

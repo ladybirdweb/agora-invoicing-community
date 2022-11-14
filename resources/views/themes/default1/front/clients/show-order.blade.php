@@ -311,7 +311,7 @@ active
 
             columns: [
                 {data: 'number', name: 'number'},
-                {data: 'products', name: 'invoiceItem.product_name'},
+                {data: 'products', name: 'products'},
                 {data: 'date', name: 'date'},
                 {data: 'total', name: 'total'},
                 {data: 'status', name: 'status'},

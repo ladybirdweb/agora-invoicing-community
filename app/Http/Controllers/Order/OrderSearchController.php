@@ -41,7 +41,7 @@ class OrderSearchController extends Controller
             $this->allRenewals($request->input('renewal'), $baseQuery);
             $this->getSelectedVersionOrders($baseQuery, $request->input('version'), $request->input('product_id'));
 
-            return $baseQuery->orderBy('orders.created_at', 'desc');
+            return $baseQuery;
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }

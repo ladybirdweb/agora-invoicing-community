@@ -37,6 +37,8 @@ class SocialMediaController extends Controller
             $social = $this->social->select('id', 'name', 'link');
 
             return \DataTables::of($social)
+                            ->orderColumn('name', '-created_at $1')
+                            ->orderColumn('link', '-created_at $1')
                             ->addColumn('#', function ($model) {
                                 return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
                             })

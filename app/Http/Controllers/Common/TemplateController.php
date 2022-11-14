@@ -39,6 +39,8 @@ class TemplateController extends Controller
     public function getTemplates()
     {
         return \DataTables::of($this->template->select('id', 'name', 'type'))
+                        ->orderColumn('name', '-id $1')
+                        ->orderColumn('type', '-created_at $1')
                         ->addColumn('checkbox', function ($model) {
                             return "<input type='checkbox' class='template_checkbox' 
                             value=".$model->id.' name=select[] id=check>';

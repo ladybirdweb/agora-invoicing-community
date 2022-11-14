@@ -15,6 +15,7 @@ use App\Model\Product\ProductUpload;
 use App\Model\Product\Subscription;
 use App\User;
 use Exception;
+use DB;
 use GrahamCampbell\Markdown\Facades\Markdown;
 
 class ClientController extends BaseClientController
@@ -76,28 +77,22 @@ class ClientController extends BaseClientController
     public function getInvoices()
     {
 
-    //     $invoices = Invoice::leftJoin('order_invoice_relations', 'invoices.id', '=', 'order_invoice_relations.invoice_id')
-        // ->select('invoices.id', 'invoices.user_id', 'invoices.date', 'invoices.number', 'invoices.grand_total', 'order_invoice_relations.order_id', 'invoices.is_renewed', 'invoices.status', 'invoices.currency')
-        // ->groupBy('invoices.number')
-        // ->where('invoices.user_id', '=', \Auth::user()->id)
-        // ->orderBy('invoices.created_at', 'desc')
-        // ->with('orderRelation')
-        // ->take(50);
-
-        // dd($data->orderRelation[0]);
-
-        $invoices = Invoice::with(['orderRelation:order_id,invoice_id', 'order'])->select('id', 'number', 'date', 'grand_total', 'status')->where('user_id', \Auth::user()->id)->orderBy('created_at', 'desc');
-        // $data = Invoice::with(['orderRelation' => function($query) {
-        //             $query->select(['id','invoice_id','order_id']);
-        //             }])->where('user_id',\Auth::user()->id)->get();
-        //          foreach($data as $item)
-        //          {
-        //              foreach($item->OrderRelation as $order){
-        //              dd($order->orde_id);
-        //              }
-        //          }
+        $invoices = Invoice::leftJoin('order_invoice_relations', 'invoices.id', '=', 'order_invoice_relations.invoice_id')
+            ->leftJoin('orders','order_invoice_relations.order_id', '=', 'orders.id')
+            ->select('orders.number')
+            ->select('invoices.id', 'invoices.user_id', 'invoices.date', 'invoices.number', 'invoices.grand_total', 'order_invoice_relations.order_id as orderNo', 'invoices.is_renewed', 'invoices.status', 'invoices.currency')
+            ->groupBy('invoices.number')
+            ->where('invoices.user_id', '=', \Auth::user()->id);
 
         return \DataTables::of($invoices)
+                    ->orderColumn('number', '-invoices.id $1')
+                    ->orderColumn('orderNo', '-invoices.id $1')
+                    ->orderColumn('date', '-invoices.id $1')
+                    ->orderColumn('total', '-invoices.id $1')
+                    ->orderColumn('paid', '-invoices.id $1')
+                    ->orderColumn('status', '-invoices.id $1')
+                    ->orderColumn('date', '-invoices.id $1')
+
                     ->addColumn('number', function ($model) {
                         if ($model->is_renewed) {
                             return '<a href='.url('my-invoice/'.$model->id).'>'.$model->number.'</a>&nbsp;'.getStatusLabel('renewed', 'badge');
@@ -105,10 +100,9 @@ class ClientController extends BaseClientController
                             return '<a href='.url('my-invoice/'.$model->id).'>'.$model->number.'</a>';
                         }
                     })
-                   ->addColumn('orderNo', function ($model) {
+                        ->addColumn('orderNo', function ($model) {
                        if ($model->is_renewed) {
-                           $order = Order::find($model->orderRelation->order_id);
-
+                           $order = Order::find($model->order_id);
                            if ($order) {
                                return $order->first()->getOrderLink($model->order_id, 'my-order');
                            } else {
@@ -168,12 +162,14 @@ class ClientController extends BaseClientController
                         " class='btn btn-primary btn-xs'><i class='fa fa-eye'></i>&nbsp;View</a>".$payment.'</p>';
                     })
                      ->filterColumn('number', function ($query, $keyword) {
-                         $sql = 'number like ?';
+                         $sql = 'invoices.number like ?';
                          $query->whereRaw($sql, ["%{$keyword}%"]);
                      })
-                   ->filterColumn('orderNo', function ($query, $keyword) {
-                       $sql = 'order_id like ?';
-                       $query->whereRaw($sql, ["%{$keyword}%"]);
+                    ->filterColumn('orderNo', function($query, $keyword) {
+                   
+                      $sql = "orders.number like ?";
+                      $query->whereRaw($sql, ["%{$keyword}%"]);
+                    
                    })
 
                     ->rawColumns(['number', 'orderNo', 'date', 'total', 'status', 'Action'])
@@ -381,6 +377,13 @@ class ClientController extends BaseClientController
             $orders = $this->getClientPanelOrdersData();
 
             return \DataTables::of($orders)
+                        ->orderColumn('product_name', '-created_at $1')
+                        ->orderColumn('number', '-created_at $1')
+                        ->orderColumn('version', '-invoice_id $1')
+                         ->orderColumn('expiry', '-invoice_id $1')
+
+                       
+
                             ->addColumn('id', function ($model) {
                                 return $model->id;
                             })
@@ -422,7 +425,6 @@ class ClientController extends BaseClientController
                             ->rawColumns(['id', 'product_name', 'number', 'version', 'expiry', 'Action'])
                             ->make(true);
         } catch (Exception $ex) {
-            dd($ex);
             app('log')->error($ex->getMessage());
             echo $ex->getMessage();
         }
@@ -610,6 +612,14 @@ class ClientController extends BaseClientController
                    
         
             return \DataTables::of($payments)
+                        ->orderColumn('number', '-created_at $1')
+                        ->orderColumn('total', '-created_at $1')
+                        ->orderColumn('payment_method', '-created_at $1')
+                        ->orderColumn('payment_status', '-created_at $1')
+                        ->orderColumn('created_at', '-created_at $1')
+
+
+
                             ->addColumn('number', function ($payments) {
                                 return '<a href='.url('my-invoice/'.$payments->invoice()->first()->id).'>'.$payments->invoice()->first()->number.'</a>';
                             })

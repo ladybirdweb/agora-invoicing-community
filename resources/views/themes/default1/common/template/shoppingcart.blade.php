@@ -19,7 +19,13 @@ main
 
 
 @section('content')
-
+<style>
+    .subscription {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    }
+</style>
 
 <div class="row">
 

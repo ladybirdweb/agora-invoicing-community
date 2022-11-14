@@ -50,10 +50,12 @@ class WelcomeController extends Controller
         $users = \App\User::leftJoin('countries', 'users.country', '=', 'countries.country_code_char2')
         ->where('countries.nicename', '!=', '')
                 ->select('countries.nicename as country', 'countries.country_code_char2 as code', \DB::raw('COUNT(users.id) as count'))
-                ->orderBy('country', 'asc')
+                
                 ->groupBy('users.country');
 
         return DataTables::of($users)
+                            ->orderColumn('country', '-id $1')
+                            ->orderColumn('count', '-id $1')
                             ->addColumn('country', function ($model) {
                                 return ucfirst($model->country);
                             })

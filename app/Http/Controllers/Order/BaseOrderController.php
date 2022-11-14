@@ -174,8 +174,10 @@ class BaseOrderController extends ExtendedOrderController
             if ($licenseStatus == 1) {
                 $cont = new \App\Http\Controllers\License\LicenseController();
                 $createNewLicense = $cont->createNewLicene($orderid, $product, $user_id, $licenseExpiry, $updatesExpiry, $supportExpiry, $serial_key);
+               
             }
         } catch (\Exception $ex) {
+          
             app('log')->error($ex->getMessage());
 
             throw new \Exception('Can not Generate Subscription');

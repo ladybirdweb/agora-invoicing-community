@@ -59,8 +59,11 @@ License Types
         $('#products-table').DataTable({
             processing: true,
             serverSide: true,
-             stateSave: false,
-              order: [[ 0, "desc" ]],
+            stateSave: false,
+            ordering: true,
+            searching:true,
+            select: true,
+            order: [[ 0, 'desc' ], [ 1, 'desc' ]],
                ajax: {
             "url":  '{!! route('get-license-type') !!}',
                error: function(xhr) {
@@ -77,12 +80,12 @@ License Types
                 "sProcessing": ' <div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="text-bold pt-2">Loading...</div></div>'
             },
             columnDefs: [
-             { orderable: false, targets:0 }
+             { orderable: true, targets:0 }
           ],
             columns: [
                 {data: 'checkbox', name: 'checkbox'},
                 {data: 'type_name', name: 'type_name'},
-                {data: 'action', name: 'action', searchable: true}
+                {data: 'action', name: 'action'}
             ],
             "fnDrawCallback": function( oSettings ) {
                 bindEditButton();

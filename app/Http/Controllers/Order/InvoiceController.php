@@ -150,11 +150,14 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         $from = $request->input('from');
         $till = $request->input('till');
         $query = $this->advanceSearch($name, $invoice_no, $currency, $status, $from, $till);
-     
 
         return \DataTables::of($query)
          ->setTotalRecords($query->count())
-
+         ->orderColumn('number', '-invoices.id $1')
+         ->orderColumn('user_id', 'invoices.id $1')
+         ->orderColumn('date', 'invoices.id $1')
+         ->orderColumn('status', 'invoices.id $1')
+         ->orderColumn('grand_total', 'invoices.id $1')
          ->addColumn('checkbox', function ($model) {
              return "<input type='checkbox' class='invoice_checkbox' 
                             value=".$model->id.' name=select[] id=check>';
@@ -197,15 +200,20 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                                     ."   $action";
                         })
 
-                         ->filterColumn('user_id', function ($query, $keyword) {
+                        ->filterColumn('user_id', function ($query, $keyword) {
                              $sql = "CONCAT(first_name,' ',last_name)  like ?";
                              $sql2 = 'first_name like ?';
                             $query->whereRaw($sql, ["%{$keyword}%"])->orWhereRaw($sql2, ["%{$keyword}%"]);
                          })
-                         ->filterColumn('number', function ($query, $keyword) {
+                        ->filterColumn('number', function ($query, $keyword) {
                          $sql = 'number like ?';
                          $query->whereRaw($sql, ["%{$keyword}%"]);
                         })
+                        ->filterColumn('status', function ($query, $keyword) {
+                         $sql = 'status like ?';
+                         $query->whereRaw($sql, ["%{$keyword}%"]);
+                        })
+
 
 
                          ->rawColumns(['checkbox', 'user_id', 'number', 'date', 'grand_total', 'status', 'action'])

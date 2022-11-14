@@ -92,8 +92,8 @@ Plans
                 {data: 'checkbox', name: 'checkbox'},
                 {data: 'name', name: 'name'},
                 {data: 'days', name: 'days'},
-                {data: 'product', name: 'product.name'},
-                {data: 'price', name: 'planPrice.add_price'},
+                {data: 'product', name: 'name'},
+                {data: 'price', name: 'price'},
                 {data: 'currency', name: 'currency'},
                 {data: 'action', name: 'action'}
             ],

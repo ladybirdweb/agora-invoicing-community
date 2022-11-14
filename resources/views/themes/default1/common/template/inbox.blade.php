@@ -68,6 +68,9 @@ Templates
         $('#templates-table').DataTable({
             processing: true,
             serverSide: true,
+            ordering: true,
+            searching:true,
+            select: true,
             ajax: {
             "url":  '{!! route('get-templates') !!}',
                error: function(xhr) {
@@ -86,7 +89,7 @@ Templates
                 columnDefs: [
                 { 
                     targets: 'no-sort', 
-                    orderable: false,
+                    orderable: true,
                     order: []
                 }
             ],

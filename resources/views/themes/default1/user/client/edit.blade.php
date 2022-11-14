@@ -74,10 +74,10 @@ Edit User
                         <!-- company -->
                         {!! Form::label('bussiness','Industry') !!}
 
-                        {!! Form::select('bussiness', [''=>'Choose','Industries'=>$bussinesses],null,['class' => 'form-control chosen-select select2','data-live-search'=>'true','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false']) !!}
+                        <!--{!! Form::select('bussiness', [''=>'Choose','Industries'=>$bussinesses],null,['class' => 'form-control chosen-select select2','data-live-search'=>'true','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false']) !!}-->
 
 
-                       <!--  <select name="bussiness"  class="form-control select2">
+                        <select name="bussiness"  class="form-control select2" data-live-search="true" data-live-search-placeholder="Search" data-dropup-auto="false">
                             <option value="">Choose</option>
                          @foreach($bussinesses as $key=>$bussiness)
                          
@@ -86,7 +86,7 @@ Edit User
 
                         { echo "selected";} ?>>{{$bussiness}}</option>
                             @endforeach
-                         </select> -->
+                         </select> 
                            
                     </div>
 
@@ -125,16 +125,16 @@ Edit User
                         <!-- email -->
                         {!! Form::label('company_type','Company Type') !!}
                         
-                         {!! Form::select('company_type', [''=>'Choose','Company Type'=>$types],null,['class' => 'form-control chosen-select select2','data-live-search'=>'true','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false']) !!}
+                         <!--{!! Form::select('company_type', [''=>'Choose','Company Type'=>$types],null,['class' => 'form-control chosen-select select2','data-live-search'=>'true','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false']) !!}-->
 
 
-                          <!-- <select name="company_type"  class="form-control">
+                           <select name="company_type"  class="form-control chosen-select select2" data-live-search="true" data-live-search-placeholder="Search" data-dropup-auto="false">
                             <option value="">Choose</option>
                          @foreach($types as $key=>$type)
                                    <option value="{{$key}}" <?php  if(in_array($type, $selectedCompany) ) { echo "selected";} ?>>{{$type}}</option>
                            
                              @endforeach
-                              </select> -->
+                              </select> 
 
                     </div>
                      <div class="col-md-3 form-group {{ $errors->has('company_size') ? 'has-error' : '' }}">

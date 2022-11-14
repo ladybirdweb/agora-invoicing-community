@@ -66,6 +66,9 @@ Email Logs
              processing: true,
              serverSide: true,
              stateSave: true,
+             ordering: true,
+             searching:true,
+             select: true,
               order: [[ 0, "desc" ]],
                ajax: {
             "url":  '{!! route('get-email') !!}',
@@ -86,7 +89,7 @@ Email Logs
             columnDefs: [
                 { 
                     targets: 'no-sort', 
-                    orderable: false,
+                    orderable: true,
                     order: []
                 }
             ],

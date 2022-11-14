@@ -27,7 +27,7 @@ if($script->on_every_page == 1) {
           <meta name="author" content="okler.net">
   
           <!-- Favicon -->
-          <link rel="shortcut icon" href='{{asset("common/images/$setting->fav_icon")}}' type="image/x-icon" />
+          <link rel="shortcut icon" href='{{asset("common/$setting->fav_icon")}}' type="image/x-icon" />
   
           <!-- Mobile Metas -->
           <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1.0, shrink-to-fit=no">
@@ -279,11 +279,16 @@ if($script->on_every_page == 1) {
 
                                                                             </tr>
                                                                             @empty
-
+                                                                            @php       
+                                                                             $data = \App\Model\Product\ProductGroup::where('hidden','!=', 1)->first();
+                                                                             @endphp   
+                           
                                                                             <tr>
                                                                               <td>
+
+
                                                                                 @if(Auth::check())
-                                                                              <a href="{{url('my-invoices')}}">Choose a Product
+                                                                              <a href="{{url("group/$data->pricing_templates_id/$data->id")}}">Choose a Product
                                                                                 @else
                                                                                 <a href="{{url('login')}}">Choose a Product
                                                                                   @endif
@@ -492,11 +497,11 @@ if($script->on_every_page == 1) {
           
             <footer id="footer">
               
-                <div class="container">
+                <div class="container" >
 
                     <div class="footer-ribbon"><span>Get in Touch</span></div>
                       <div id="mailchimp-message"></div>
-                    <div class="row py-5 my-4">
+                    <div class="row py-5 my-4" style = "margin-top: 50%;" >
                          <?php
                          $count  = \App\Model\Front\Widgets::where('publish', 1)->count();
                          switch ($count) {
@@ -680,7 +685,7 @@ if($script->on_every_page == 1) {
                     <div class="container py-2">
                         <div class="row py-4">
                             <div class="col-md-12 align-items-center justify-content-center justify-content-lg-start mb-2 mb-lg-0">
-                              <p>Copyright 漏 <?php echo date('Y') ?> 路 <a href="{{$set->website}}" target="_blank">{{$set->company}}</a>. All Rights Reserved.Powered by
+                              <p>Copyright ©<?php echo date('Y') ?> . <a href="{{$set->website}}" target="_blank">{{$set->company}}</a>. All Rights Reserved.Powered by
                                     <a href="https://www.ladybirdweb.com/" target="_blank"><img src="{{asset('common/images/Ladybird1.png')}}" alt="Ladybird"></a></p>
                             </div>
 
@@ -745,6 +750,7 @@ if($script->on_every_page == 1) {
               }
           });
           </script>
+          @if(Request::path() != 'my-profile')
           <script type="text/javascript">
             var logtelInput = $('#phonenum'),
             logerrorMsg = document.querySelector("#error-msg2"),
@@ -890,7 +896,7 @@ if($script->on_every_page == 1) {
         });
     </script>
    
-         
+        @endif 
 
         <script>
 

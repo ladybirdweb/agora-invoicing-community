@@ -204,7 +204,7 @@ trait UpdateDates
         $cont = new \App\Http\Controllers\License\LicenseController();
         $getInstallPreference = $cont->getInstallPreference($order->serial_key, $order->product);
         $updateLicensedDomain = $cont->updateLicensedDomain($order->serial_key, $order->domain, $order->product, $licenseExpiry, $expiryDate, $supportExpiry, $order->number, $request->input('limit'), $getInstallPreference);
-
+    
         return ['message' => 'success', 'update' => 'Installation Limit Updated'];
     }
 }

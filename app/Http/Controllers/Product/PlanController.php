@@ -66,14 +66,22 @@ class PlanController extends ExtendedPlanController
      */
     public function getPlans()
     {
-        $new_plan = Plan::with(['product', 'planPrice'])->select('id', 'name', 'days', 'product');
+        $new_plan = Plan::leftJoin('products','products.id', '=', 'plans.product')
+            ->leftJoin('plan_prices','plan_prices.plan_id', '=', 'plans.id')
+            ->select('plans.id', 'plans.name', 'plans.days', 'products.name as product','plan_prices.add_price');
         $defaultCurrency = Setting::where('id', 1)->value('default_currency');
 
         return DataTables::of($new_plan)
+                        ->orderColumn('name', '-plans.id $1')
+                        ->orderColumn('days', '-plans.id  $1')
+                        ->orderColumn('product', '-plans.id  $1')
+                        ->orderColumn('price', '-plans.id  $1')
+                        ->orderColumn('currency', '-plans.id  $1')
                         ->addColumn('checkbox', function ($model) {
                             return "<input type='checkbox' class='plan_checkbox' 
                             value=".$model->id.' name=select[] id=check>';
                         })
+                      
                         ->addColumn('name', function ($model) {
                             return ucfirst($model->name);
                         })
@@ -87,11 +95,10 @@ class PlanController extends ExtendedPlanController
                             return 'Not Available';
                         })
                         ->addColumn('product', function ($model) {
-                            $productid = $model->product;
-                            $product = $this->product->where('id', $productid)->first();
-                            $response = '';
+                            $product = $model->product;
+                          
                             if ($product) {
-                                $response = $product->name;
+                                $response = $model->product;
                             }
 
                             return ucfirst($response);
@@ -118,23 +125,19 @@ class PlanController extends ExtendedPlanController
                             style='color:white;'> </i></a>";
                         })
                           ->filterColumn('name', function ($query, $keyword) {
-                              $sql = 'name like ?';
+                              $sql = 'plans.name like ?';
                               $query->whereRaw($sql, ["%{$keyword}%"]);
                           })
-                          ->filterColumn('product', function ($query, $keyword) {
-                              $sql = 'product like ?';
-                              $query->whereRaw($sql, ["%{$keyword}%"]);
+                          ->filterColumn('product', function ($model, $keyword) {
+                              $sql = 'products.name like ?';
+                              $model->whereRaw($sql, ["%{$keyword}%"]);
                           })
                             ->filterColumn('days', function ($query, $keyword) {
-                                $sql = 'days like ?';
+                                $sql = 'plans.days like ?';
                                 $query->whereRaw($sql, ["%{$keyword}%"]);
                             })
-                              ->filterColumn('product', function ($query, $keyword) {
-                                  $sql = 'product like ?';
-                                  $query->whereRaw($sql, ["%{$keyword}%"]);
-                              })
-                              ->filterColumn('price', function ($query, $keyword) {
-                                  $sql = 'price like ?';
+                              ->filterColumn('price', function ($query, $keyword)  {
+                                  $sql = 'plan_prices.add_price like ?';
                                   $query->whereRaw($sql, ["%{$keyword}%"]);
                               })
                         ->rawColumns(['checkbox', 'name', 'days', 'product', 'price', 'currency', 'action'])

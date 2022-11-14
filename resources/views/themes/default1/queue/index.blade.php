@@ -99,7 +99,10 @@ Queues
         $('#products-table').DataTable({
             processing: true,
             serverSide: true,
-             stateSave: false,
+            stateSave: false,
+            ordering: true,
+            searching:true,
+            select: true,
               order: [[ 0, "desc" ]],
                ajax: {
             "url":  '{!! route('get-queue') !!}',
@@ -119,7 +122,7 @@ Queues
             columnDefs: [
                 { 
                     targets: 'no-sort', 
-                    orderable: false,
+                    orderable: true,
                     order: []
                 }
             ],

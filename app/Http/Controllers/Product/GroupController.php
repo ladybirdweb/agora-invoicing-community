@@ -53,7 +53,7 @@ class GroupController extends Controller
 
         return \DataTables::of($product_group)
         // return \Datatable::of($this->group->select('id', 'name')->get())
-
+                         ->orderColumn('name', '-id $1')
                        ->addColumn('checkbox', function ($model) {
                            return "<input type='checkbox' class='group_checkbox' 
                             value=".$model->id.' name=select[] id=check>';

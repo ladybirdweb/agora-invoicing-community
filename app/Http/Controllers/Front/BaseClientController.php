@@ -179,26 +179,28 @@ class BaseClientController extends Controller
 
             $relation = $order->invoiceRelation()->pluck('invoice_id')->toArray();
             $invoice = new Invoice();
-            $invoices = $invoice->with('invoiceItem:invoice_id')
-                    ->select('number', 'created_at', 'grand_total', 'currency', 'id', 'status')
-                    ->whereIn('id', $relation);
-                 
+            $invoices = $invoice->leftJoin('invoice_items','invoices.id', '=', 'invoice_items.invoice_id')
+                    ->select('invoices.number', 'invoices.created_at', 'invoices.grand_total', 'invoices.currency', 'invoices.id', 'invoices.status','invoice_items.product_name as products')
+                    ->whereIn('invoices.id', $relation);
             if ($invoices->get()->count() == 0) {
                         $invoices = $order->invoice()
                         ->select('number', 'created_at', 'grand_total', 'id', 'status');
             }
 
             return \DataTables::of($invoices)
+            ->orderColumn('number', '-invoices.id $1')
+            ->orderColumn('products', '-invoices.id $1')
+            ->orderColumn('date', '-invoices.id $1')
+            ->orderColumn('total', '-invoices.id $1')
+             ->orderColumn('status', '-invoices.id $1')
+
              ->addColumn('number', function ($model) {
                  $url = $this->getInvoiceLinkUrl($model->id);
 
                  return '<a href='.url($url).'>'.$model->number.'</a>';
              })
             ->addColumn('products', function ($model) {
-                $invoice = $this->invoice->find($model->id);
-                $products = $invoice->invoiceItem()->pluck('product_name')->toArray();
-
-                return ucfirst(implode(',', $products));
+               return ucfirst($model->products);
             })
             ->addColumn('date', function ($model) {
                 return getDateHtml($model->created_at);
@@ -225,7 +227,7 @@ class BaseClientController extends Controller
                          $query->whereRaw($sql, ["%{$keyword}%"]);
                          })
               ->filterColumn('products', function ($query, $keyword) {
-                         $sql = 'product_name like ?';
+                         $sql = 'invoice_items.product_name like ?';
                          $query->whereRaw($sql, ["%{$keyword}%"]);
                          })
               

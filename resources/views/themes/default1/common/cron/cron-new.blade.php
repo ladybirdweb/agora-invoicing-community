@@ -84,7 +84,7 @@
             <div class="info-box">
                 <span class="info-box-icon bg-info" style="height: 70px;"><i class="fa fa-envelope"></i></span>
                 <!-- Apply any bg-* class to to the icon to color it -->
-                <div class="info-box-content">
+                <div class="info-box-content" style="display: block;">
                
                     <div class="col-md-6">
 
@@ -112,7 +112,7 @@
             <div class="info-box">
                 <span class="info-box-icon bg-info" style="height: 70px;"><i class="fa fa-archive"></i></span>
                 <!-- Apply any bg-* class to to the icon to color it -->
-                <div class="info-box-content">
+                <div class="info-box-content" style="display: block;">
                     <div class="col-md-6">
                         <div class="form-group">
                             {!! Form::label('activity',Lang::get('message.delete_activity')) !!}<br>

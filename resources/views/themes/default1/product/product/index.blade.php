@@ -88,7 +88,7 @@ Products
                 {data: 'checkbox', name: 'checkbox'},
                 {data: 'name', name: 'name'},
                 {data: 'image', name: 'image'},
-                {data: 'type', name: 'LicenseType.name'},
+                {data: 'type', name: 'type'},
                 {data: 'group', name: 'group'},
                 {data: 'Action', name: 'Action'},
               

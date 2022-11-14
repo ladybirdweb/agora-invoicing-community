@@ -36,7 +36,7 @@ class ChatScriptController extends Controller
                             return "<input type='checkbox' class='chat_checkbox' 
                             value=".$model->id.' name=select[] id=check>';
                         })
-
+                        ->orderColumn('name', '-created_at $1')
                          ->addColumn('name', function ($model) {
                              return $model->name;
                          })

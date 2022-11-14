@@ -10,6 +10,8 @@ use App\Model\Front\FrontendPage;
 use App\Model\Product\Product;
 use App\Model\Product\ProductGroup;
 use Illuminate\Http\Request;
+use Symfony\Component\Mime\Email;
+
 
 class PageController extends Controller
 {
@@ -35,6 +37,9 @@ class PageController extends Controller
     public function getPages()
     {
         return \DataTables::of($this->page->select('id', 'name', 'url', 'created_at'))
+                        ->orderColumn('name', '-id $1')
+                        ->orderColumn('url', '-id $1')
+                        ->orderColumn('Created At', '-id $1')
                         ->addColumn('checkbox', function ($model) {
                             return "<input type='checkbox' class='page_checkbox' 
                             value=".$model->id.' name=select[] id=check>';
@@ -441,6 +446,8 @@ class PageController extends Controller
 
         $set = new \App\Model\Common\Setting();
         $set = $set->findOrFail(1);
+        $mail = new \App\Http\Controllers\Common\PhpMailController();
+        $mailer = $mail->setMailConfig($set);
 
         try {
             $from = $set->email;
@@ -456,11 +463,21 @@ class PageController extends Controller
             if (emailSendingStatus()) {
                 $mail = new \App\Http\Controllers\Common\PhpMailController();
                 $mail->sendEmail($from, $to, $data, $subject);
+                
+                
+                  $email = (new Email())
+                   ->from($set->email)
+                   ->to($set->company_email)
+                   ->subject('Faveo billing enquiry')
+                   ->html($data);
+                   
+                 $mailer->send($email);
             }
 
             //$this->templateController->Mailing($from, $to, $data, $subject);
             return redirect()->back()->with('success', 'Your message was sent successfully. Thanks.');
         } catch (\Exception $ex) {
+            dd($ex);
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

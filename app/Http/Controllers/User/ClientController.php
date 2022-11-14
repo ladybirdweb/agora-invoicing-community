@@ -85,7 +85,6 @@ class ClientController extends AdvanceSearchController
                         ->orderColumn('created_at', '-id $1')
                         ->orderColumn('active', '-id $1')
 
-
                         ->addColumn('checkbox', function ($model) {
                             $isAccountManager = User::where('account_manager', $model->id)->get();
                             $isSalesManager = User::where('manager', $model->id)->get();
@@ -214,7 +213,6 @@ class ClientController extends AdvanceSearchController
      */
     public function store(ClientRequest $request)
     {
-      
         try {
             $user = $this->user;
             $str = 'demopass';
@@ -328,7 +326,6 @@ class ClientController extends AdvanceSearchController
      */
     public function edit($id)
     {
-        
         try {
             $user = $this->user->where('id', $id)->first();
             $timezonesList = \App\Model\Common\Timezone::get();

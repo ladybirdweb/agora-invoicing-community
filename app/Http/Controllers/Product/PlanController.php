@@ -66,9 +66,9 @@ class PlanController extends ExtendedPlanController
      */
     public function getPlans()
     {
-        $new_plan = Plan::leftJoin('products','products.id', '=', 'plans.product')
-            ->leftJoin('plan_prices','plan_prices.plan_id', '=', 'plans.id')
-            ->select('plans.id', 'plans.name', 'plans.days', 'products.name as product','plan_prices.add_price');
+        $new_plan = Plan::leftJoin('products', 'products.id', '=', 'plans.product')
+            ->leftJoin('plan_prices', 'plan_prices.plan_id', '=', 'plans.id')
+            ->select('plans.id', 'plans.name', 'plans.days', 'products.name as product', 'plan_prices.add_price');
         $defaultCurrency = Setting::where('id', 1)->value('default_currency');
 
         return DataTables::of($new_plan)
@@ -81,7 +81,7 @@ class PlanController extends ExtendedPlanController
                             return "<input type='checkbox' class='plan_checkbox' 
                             value=".$model->id.' name=select[] id=check>';
                         })
-                      
+
                         ->addColumn('name', function ($model) {
                             return ucfirst($model->name);
                         })
@@ -96,7 +96,7 @@ class PlanController extends ExtendedPlanController
                         })
                         ->addColumn('product', function ($model) {
                             $product = $model->product;
-                          
+
                             if ($product) {
                                 $response = $model->product;
                             }
@@ -136,7 +136,7 @@ class PlanController extends ExtendedPlanController
                                 $sql = 'plans.days like ?';
                                 $query->whereRaw($sql, ["%{$keyword}%"]);
                             })
-                              ->filterColumn('price', function ($query, $keyword)  {
+                              ->filterColumn('price', function ($query, $keyword) {
                                   $sql = 'plan_prices.add_price like ?';
                                   $query->whereRaw($sql, ["%{$keyword}%"]);
                               })

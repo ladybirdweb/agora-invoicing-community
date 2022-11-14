@@ -38,7 +38,6 @@ class LicenseSettingsController extends LicensePermissionsController
 
             return \DataTables::of($allTypes)
             ->orderColumn('type_name', '-created_at $1')
-          
 
             ->addColumn('checkbox', function ($model) {
                 return "<input type='checkbox' class='type_checkbox' 
@@ -60,7 +59,7 @@ class LicenseSettingsController extends LicensePermissionsController
              ->rawColumns(['checkbox', 'type_name', 'action'])
             ->make(true);
         } catch (\Exception $ex) {
-           return redirect()->back()->with('fails', $ex->getMessage());
+            return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 

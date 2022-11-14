@@ -85,7 +85,7 @@ License Permission
             ],
             columns: [
                 {data: 'license_type', name: 'license_type'},
-                {data: 'permissions', name: 'permissions.permissions',orderable:'true'},
+                {data: 'permissions', name: 'permissions'},
                 {data: 'action', name: 'action',orderable:'false'}
             ],
             "fnDrawCallback": function( oSettings ) {

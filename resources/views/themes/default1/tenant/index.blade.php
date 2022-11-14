@@ -3,6 +3,7 @@
 Tenants
 @stop
 @section('content-header')
+
     <div class="col-sm-6">
         <h1>Cloud Details</h1>
     </div>
@@ -92,7 +93,7 @@ Tenants
                  <table id="tenant-table" class="table display" cellspacing="0" width="100%" styleClass="borderless" style="table-layout:fixed;">
                      
                     <thead><tr>
-                       
+                            <th>S.No</th>
                             <th>Tenant</th>
                             <th>Domain</th>
                             <th>Database name</th>
@@ -103,12 +104,13 @@ Tenants
                         
                    <tbody>
                        <tr>
+                           <td>{{++$key}}</td>
                            <td>{{$data['id']}}</td>
                            <td>{{$data['domain']}}</td>
                            <td>{{$data['database_name']}}</td>
                            <td>{{$data['database_user_name']}}</td>
                            <td><button 
-                 class='btn btn-sm btn-danger btn-xs delTenant' onclick=delete('"{{$data['id']}}"') id='delten" . {{$data['id']}}. "'><i class='fa fa-trash'
+                 class='btn btn-sm btn-danger btn-xs delTenant' onclick=delete("{{$data['id']}}")><i class='fa fa-trash'
                  style='color:white;'> </i></button></td>
                        </tr>
                       
@@ -117,6 +119,9 @@ Tenants
                       
 
                    </table>
+               {!! $de->links('pagination::bootstrap-4') !!}
+
+
             </div>
         </div>
 
@@ -135,7 +140,6 @@ Tenants
 <script>
 
   function delete(id) {
-      alert("kje");
      var id = id;
       if (confirm("Are you sure you want to destroy this tenant?")) {
          $.ajax({

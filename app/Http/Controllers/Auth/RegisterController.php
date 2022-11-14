@@ -103,8 +103,9 @@ class RegisterController extends Controller
 
             ];
 
-            $userInput = User::insertGetId($user);
-            
+            $userInput = User::create($user);
+            $userId = User::get()->last()->id;
+
             $email = (new Email())
                    ->from($settings->email)
                    ->to($user['email'])
@@ -116,7 +117,7 @@ class RegisterController extends Controller
             $mailer->send($email);
             $mail->email_log_success($settings->email, $user['email'], $template->name, $html);
 
-            $emailMobileStatusResponse = $this->getEmailMobileStatusResponse($user, $userInput);
+            $emailMobileStatusResponse = $this->getEmailMobileStatusResponse($user, $userId);
 
             activity()->log('User <strong>'.$user['first_name'].' '.$user['last_name'].'</strong> was created');
 

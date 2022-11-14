@@ -41,11 +41,17 @@ class LicensePermissionsController extends Controller
     {
         try {
             $allPermissions = $this->licensePermission->select('id', 'permissions')->get();
-            $licenseType = LicenseType::with('permissions:id,permissions')->select('license_types.id','license_types.name');
-       
+            // $licenseType = LicenseType::select('id', 'name');
+
+            $licenseType = LicenseType::leftJoin('license_license_permissions','license_license_permissions.license_type_id', '=', 'license_types.id')
+              ->leftJoin('license_permissions','license_permissions.id', '=', 'license_license_permissions.license_permission_id')
+              -> select('license_types.id','license_types.name','license_permissions.permissions','license_license_permissions.license_permission_id')->groupBy('license_types.id');
+            //   dd($licenseType->first());
+        
+
             return \DataTables::of($licenseType)
-            ->orderColumn('license_type', '-created_at $1')
-            ->orderColumn('permissions', '-created_at $1')
+            ->orderColumn('license_type', '-license_types.id $1')
+            ->orderColumn('permissions', '-license_types.id $1')
             ->addColumn('checkbox', function ($model) {
                 return "<input type='checkbox' class='type_checkbox' 
             value=".$model->id.' name=select[] id=check>';
@@ -63,7 +69,7 @@ class LicensePermissionsController extends Controller
                 
             })
             ->addColumn('action', function ($model) {
-                $selectedPermission = $model->permissions->pluck('id');
+                $selectedPermission = $model->license_permission_id;
 
                 return "<p><button data-toggle='modal' 
              data-id=".$model->id." data-permission= '$selectedPermission' 
@@ -74,17 +80,17 @@ class LicensePermissionsController extends Controller
                   $sql = 'name like ?';
                   $query->whereRaw($sql, ["%{$keyword}%"]);
               })
-              ->filterColumn('permissions', function ($query, $keyword)  {
-                     $sql = 'permissions like ?';
-                     $query->whereRaw($sql, ["%{$keyword}%"]);
-                 })
+                ->filterColumn('permissions', function ($query, $keyword) {
+                  $sql = 'license_permissions.permissions like ?';
+                  $query->whereRaw($sql, ["%{$keyword}%"]);
+              })
+        
 
    
             ->rawColumns(['checkbox', 'type_name', 'permissions', 'action'])
             
             ->make(true);
         } catch (\Exception $ex) {
-            dd($ex);
             app('log')->error($ex->getMessage());
             return redirect()->back()->with('fails', $ex->getMessage());
         }

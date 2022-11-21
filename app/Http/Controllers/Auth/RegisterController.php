@@ -62,12 +62,12 @@ class RegisterController extends Controller
         //template
         $template = new \App\Model\Common\Template();
         $temp_id = $settings->where('id', 1)->first()->password_mail;
-       
+
         $template = $template->where('id', $temp_id)->first();
 
         $mail = new \App\Http\Controllers\Common\PhpMailController();
         $mailer = $mail->setMailConfig($settings);
-       
+
         $html = $template->data;
         try {
             $location = getLocation();
@@ -78,30 +78,30 @@ class RegisterController extends Controller
             $password = Str::random(20);
 
             $user =
-            
-[
-                'state' => $state['id'],
-                'town' => $location['city'],
-                'password' => \Hash::make($password),
-                'profile_pic' => '',
-                'active' => 0,
-                'mobile_verified' => 0,
-                'country' => $request->input('country'),
-                'mobile' => ltrim($request->input('mobile'), '0'),
-                'mobile_code' =>  $request->input('mobile_code'),
-                'role' => 'user',
-                'company' => strip_tags($request->input('company')),
-                'address' =>  strip_tags($request->input('address')),
-                'email' => strip_tags($request->input('email')),
-                'user_name' => strip_tags($request->input('email')),
-                'first_name' => strip_tags($request->input('first_name')),
-                'last_name' => strip_tags($request->input('last_name')),
-                'manager' => $user->assignSalesManager(),
-                'ip' => $location['ip'],
-                'timezone_id' => getTimezoneByName($location['timezone']),
-                'referrer' => Referer::get(),
 
-            ];
+[
+    'state' => $state['id'],
+    'town' => $location['city'],
+    'password' => \Hash::make($password),
+    'profile_pic' => '',
+    'active' => 0,
+    'mobile_verified' => 0,
+    'country' => $request->input('country'),
+    'mobile' => ltrim($request->input('mobile'), '0'),
+    'mobile_code' =>  $request->input('mobile_code'),
+    'role' => 'user',
+    'company' => strip_tags($request->input('company')),
+    'address' =>  strip_tags($request->input('address')),
+    'email' => strip_tags($request->input('email')),
+    'user_name' => strip_tags($request->input('email')),
+    'first_name' => strip_tags($request->input('first_name')),
+    'last_name' => strip_tags($request->input('last_name')),
+    'manager' => $user->assignSalesManager(),
+    'ip' => $location['ip'],
+    'timezone_id' => getTimezoneByName($location['timezone']),
+    'referrer' => Referer::get(),
+
+];
 
             $userInput = User::create($user);
             $userId = User::get()->last()->id;
@@ -112,7 +112,6 @@ class RegisterController extends Controller
                    ->subject($template->name)
                    ->html($mail->mailTemplate($template->data, $templatevariables = ['name' => $user['first_name'].' '.$user['last_name'],
                        'username' => $user['email'], 'password' => $password, ]));
-                 
 
             $mailer->send($email);
             $mail->email_log_success($settings->email, $user['email'], $template->name, $html);

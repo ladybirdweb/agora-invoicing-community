@@ -214,7 +214,6 @@ class ClientController extends AdvanceSearchController
      */
     public function store(ClientRequest $request)
     {
-      
         try {
             $user = $this->user;
             $str = 'demopass';

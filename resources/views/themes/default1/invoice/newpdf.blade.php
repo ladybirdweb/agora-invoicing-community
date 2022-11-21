@@ -50,7 +50,9 @@
                                     @else
                                     {{ucfirst($set->company)}}
                                 @endif
-                            <small class="float-right">Date: {!! $date !!}</small>
+                            <!--<small  style="height: 50px;color: red;" class="float-right">Date: {!! $date !!}</small>-->
+                        <p class="float-right" style=" position: relative;
+    top: 5px;left: 3px;">{!! $date !!}</p><p class="float-right">Date:</p>
                             </h4>
                         </div><!-- /.col -->
                     </div>

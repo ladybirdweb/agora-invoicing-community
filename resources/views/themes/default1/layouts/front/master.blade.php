@@ -27,8 +27,9 @@ if($script->on_every_page == 1) {
           <meta name="author" content="okler.net">
   
           <!-- Favicon -->
-          <link rel="shortcut icon" href='{{asset("common/$setting->fav_icon")}}' type="image/x-icon" />
-  
+          @if($setting->fav_icon)
+          <link rel="shortcut icon" href='{{asset("common/images/$setting->fav_icon")}}' type="image/x-icon" />
+          @endif
           <!-- Mobile Metas -->
           <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1.0, shrink-to-fit=no">
           <meta name="csrf-token" content="{{ csrf_token() }}" />

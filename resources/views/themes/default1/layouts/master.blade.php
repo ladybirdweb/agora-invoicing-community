@@ -9,7 +9,9 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
         <meta name="csrf-token" content="{{ csrf_token() }}" />
+        @if($set->fav_icon)
         <link rel="shortcut icon" href='{{asset("common/images/$set->fav_icon")}}' type="image/x-icon" />
+        @endif
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
 
@@ -116,7 +118,7 @@
                         <div class="dropdown-item">
                             <!-- Message Start -->
                             <div class="media">
-                                <img src="{{Auth::user()->profile_pic}}"  class="img-size-50 mr-3 img-circle" alt="User Image" />
+                                <img src="{{Auth::user()->profile_pic}}"  class="img-size-50 mr-3 img-circle" alt="User Image" / style="height: 50px;">
                                 <div class="media-body">
                                     <h3 class="dropdown-item-title">
                                         {{ucfirst(Auth::user()->first_name)}} {{ucfirst(Auth::user()->last_name)}}

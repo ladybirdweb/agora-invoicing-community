@@ -122,13 +122,11 @@ function getTimeInLoggedInUserTimeZone(string $dateTimeString, $format = 'M j, Y
 function getDateHtml(string $dateTimeString = null)
 {
     try {
-        if (! $dateTimeString) {
+        if (!$dateTimeString) {
             return '--';
         }
-
         $date = getTimeInLoggedInUserTimeZone($dateTimeString, 'M j, Y');
         $dateTime = getTimeInLoggedInUserTimeZone($dateTimeString);
-
         return "<label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='".$dateTime."'>".$date.'</label>';
     } catch (Exception $e) {
         return '--';

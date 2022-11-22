@@ -7,7 +7,6 @@ use App\Model\License\LicensePermission;
 use App\Model\License\LicenseType;
 use App\Model\Product\Product;
 use Illuminate\Http\Request;
-use DB;
 
 /*
 * Operations for License Permissions Module to be performed here
@@ -43,11 +42,10 @@ class LicensePermissionsController extends Controller
             $allPermissions = $this->licensePermission->select('id', 'permissions')->get();
             // $licenseType = LicenseType::select('id', 'name');
 
-            $licenseType = LicenseType::leftJoin('license_license_permissions','license_license_permissions.license_type_id', '=', 'license_types.id')
-              ->leftJoin('license_permissions','license_permissions.id', '=', 'license_license_permissions.license_permission_id')
-              -> select('license_types.id','license_types.name','license_permissions.permissions','license_license_permissions.license_permission_id')->groupBy('license_types.id');
+            $licenseType = LicenseType::leftJoin('license_license_permissions', 'license_license_permissions.license_type_id', '=', 'license_types.id')
+              ->leftJoin('license_permissions', 'license_permissions.id', '=', 'license_license_permissions.license_permission_id')
+              ->select('license_types.id', 'license_types.name', 'license_permissions.permissions', 'license_license_permissions.license_permission_id')->groupBy('license_types.id');
             //   dd($licenseType->first());
-        
 
             return \DataTables::of($licenseType)
             ->orderColumn('license_type', '-license_types.id $1')
@@ -56,17 +54,15 @@ class LicensePermissionsController extends Controller
                 return "<input type='checkbox' class='type_checkbox' 
             value=".$model->id.' name=select[] id=check>';
             })
-    
+
             ->addColumn('license_type', function ($model) {
                 return ucfirst($model->name);
             })
             ->addColumn('permissions', function ($model) {
-                
                 $permissions = $model->permissions()->pluck('permissions');
                 $allPermissions = $this->showPermissions($permissions);
 
                 return $allPermissions;
-                
             })
             ->addColumn('action', function ($model) {
                 $selectedPermission = $model->license_permission_id;
@@ -81,17 +77,16 @@ class LicensePermissionsController extends Controller
                   $query->whereRaw($sql, ["%{$keyword}%"]);
               })
                 ->filterColumn('permissions', function ($query, $keyword) {
-                  $sql = 'license_permissions.permissions like ?';
-                  $query->whereRaw($sql, ["%{$keyword}%"]);
-              })
-        
+                    $sql = 'license_permissions.permissions like ?';
+                    $query->whereRaw($sql, ["%{$keyword}%"]);
+                })
 
-   
             ->rawColumns(['checkbox', 'type_name', 'permissions', 'action'])
-            
+
             ->make(true);
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

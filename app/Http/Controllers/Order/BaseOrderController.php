@@ -174,10 +174,8 @@ class BaseOrderController extends ExtendedOrderController
             if ($licenseStatus == 1) {
                 $cont = new \App\Http\Controllers\License\LicenseController();
                 $createNewLicense = $cont->createNewLicene($orderid, $product, $user_id, $licenseExpiry, $updatesExpiry, $supportExpiry, $serial_key);
-               
             }
         } catch (\Exception $ex) {
-          
             app('log')->error($ex->getMessage());
 
             throw new \Exception('Can not Generate Subscription');
@@ -293,7 +291,7 @@ class BaseOrderController extends ExtendedOrderController
                 $temp_type = new \App\Model\Common\TemplateType();
                 $type = $temp_type->where('id', $type_id)->first()->name;
             }
-            
+
             $email = (new Email())
                    ->from($setting->email)
                    ->to($user->email)
@@ -310,7 +308,6 @@ class BaseOrderController extends ExtendedOrderController
                        'knowledge_base' => $knowledgeBaseUrl,
 
                    ]));
-                   
 
             $mailer->send($email);
             $mail->email_log_success($setting->email, $user->email, $template->name, $html);

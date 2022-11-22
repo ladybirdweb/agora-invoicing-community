@@ -57,17 +57,17 @@ class ThirdPartyAppController extends Controller
              style='color:white;'> </i></button>&nbsp;</p>";
             })
              ->filterColumn('app_name', function ($query, $keyword) {
-                       $sql = 'app_name like ?';
-                       $query->whereRaw($sql, ["%{$keyword}%"]);
-                   })
+                 $sql = 'app_name like ?';
+                 $query->whereRaw($sql, ["%{$keyword}%"]);
+             })
              ->filterColumn('app_key', function ($query, $keyword) {
-                       $sql = 'app_key like ?';
-                       $query->whereRaw($sql, ["%{$keyword}%"]);
-                   })
+                 $sql = 'app_key like ?';
+                 $query->whereRaw($sql, ["%{$keyword}%"]);
+             })
             ->filterColumn('app_secret', function ($query, $keyword) {
-                       $sql = 'app_secret like ?';
-                       $query->whereRaw($sql, ["%{$keyword}%"]);
-                   })
+                $sql = 'app_secret like ?';
+                $query->whereRaw($sql, ["%{$keyword}%"]);
+            })
             ->rawColumns(['checkbox', 'app_name', 'app_key', 'app_secret', 'action'])
             ->make(true);
         } catch (\Exception $ex) {

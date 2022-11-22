@@ -77,7 +77,6 @@ if($script->on_every_page == 1) {
             $analyticsTag = App\Model\Common\ChatScript::where('google_analytics', 1)->where('on_registration', 1)->value('google_analytics_tag');
             $location = getLocation();
         ?>
-       @include('themes.default1.login-modal')
 
         <?php
         $domain = [];
@@ -397,15 +396,15 @@ if($script->on_every_page == 1) {
                 </section>
 
                 <div class="container">
-                      @if(Request::path() != 'login' && Request::path() != 'contact_us' && Request::path() != 'cart' && Request::path() != 'store' && Session::has('warning') )
-                    
+                    @if(Session::has('warning'))
+
                     <div class="alert alert-warning alert-dismissable">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                         {{Session::get('warning')}}
                     </div>
                     @endif
 
-                @if(Request::path() != 'login' && Request::path() != 'contact_us' && Request::path() != 'cart' && Request::path() != 'store' && Session::has('success'))                    
+                @if(Session::has('success'))                    
                
                 <div class="alert alert-success">
                      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -417,7 +416,7 @@ if($script->on_every_page == 1) {
                 @endif
                 
                  <!--fail message -->
-                   @if(Request::path() != 'login' && Request::path() != 'contact_us' && Request::path() != 'cart' && Request::path() != 'store' && Session::has('fails') )
+                   @if(Session::has('fails') )
                 
                  <div class="alert alert-danger alert-dismissable" role="alert">
                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -426,7 +425,7 @@ if($script->on_every_page == 1) {
                 </div>
             
                 @endif
-                       @if(Request::path() != 'login' && Request::path() != 'contact_us' && Request::path() != 'cart' && Request::path() != 'store' && count($errors) > 0)
+                       @if (count($errors) > 0)
                     
                      <div class="alert alert-danger alert-dismissable" role="alert">
                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -751,153 +750,7 @@ if($script->on_every_page == 1) {
               }
           });
           </script>
-          @if(Request::path() != 'my-profile')
-          <script type="text/javascript">
-            var logtelInput = $('#phonenum'),
-            logerrorMsg = document.querySelector("#error-msg2"),
-            logvalidMsg = document.querySelector("#valid-msg2"),
-            addressDropdown = $("#country");
-            var logerrorMap = [ "Invalid number", "Invalid country code", "Number Too short", "Number Too long", "Invalid number"];
 
-        logtelInput.intlTelInput({
-
-            geoIpLookup: function (callback) {
-                $.get("https://ipinfo.io", function () {}, "jsonp").always(function (resp) {
-                    var logcountryCode = (resp && resp.country) ? resp.country : "";
-                    callback(logcountryCode);
-                });
-            },
-             utilsScript: "{{asset('js/intl/js/utils.js')}}",
-
-            initialCountry: "auto",
-            separateDialCode: true,
-        });
-        var reset = function() {
-
-            logerrorMsg.innerHTML = "";
-            logerrorMsg.classList.add("hide");
-            logvalidMsg.classList.add("hide");
-        };
-
-        $('.intl-tel-input').css('width', '100%');
-
-        logtelInput.on('blur', function () {
-            reset();
-            if ($.trim(logtelInput.val())) {
-                 
-                if (logtelInput.intlTelInput("isValidNumber")) {
-                    $('#phonenum').css("border-color","");
-                    $("#error-msg2").html('');
-                    logerrorMsg.classList.add("hide");
-                    $('#register').attr('disabled',false);
-                } else {
-                   
-                    var errorCode = logtelInput.intlTelInput("getValidationError");
-                    logerrorMsg.innerHTML = logerrorMap[errorCode];
-                    $('#mobile_codecheck').html("");
-
-                    $('#phonenum').css("border-color","red");
-                    $('#error-msg2').css({"color":"red","margin-top":"5px"});
-                    logerrorMsg.classList.remove("hide");
-                    $('#register').attr('disabled',true);
-                }
-            }
-        });
-        $('input').on('focus', function () {
-            $(this).parent().removeClass('has-error');
-        });
-        addressDropdown.change(function() {
-            logtelInput.intlTelInput("setCountry", $(this).val());
-            if ($.trim(logtelInput.val())) {
-                
-                if (logtelInput.intlTelInput("isValidNumber")) {
-                    $('#phonenum').css("border-color","");
-                    $("#error-msg2").html('');
-                    logerrorMsg.classList.add("hide");
-                    $('#register').attr('disabled',false);
-                } else {
-                    
-                    var errorCode = logtelInput.intlTelInput("getValidationError");
-                    logerrorMsg.innerHTML = logerrorMap[errorCode];
-                    $('#mobile_codecheck').html("");
-
-                    $('#phonenum').css("border-color","red");
-                    $('#error-msg2').css({"color":"red","margin-top":"5px"});
-                    logerrorMsg.classList.remove("hide");
-                    $('#register').attr('disabled',true);
-                }
-            }
-        });
-
-        $('form').on('submit', function (e) {
-            $('input[name=country_code]').attr('value', $('.selected-dial-code').text());
-        });
-
-    </script>
-    
-     <script>
-        var tel = $('.phone'),
-            country = $('#country').val();
-        addressDropdown = $("#country");
-        errorMsg1 = document.querySelector("#error-msg1"),
-            validMsg1 = document.querySelector("#valid-msg1");
-        var errorMap = [ "Invalid number", "Invalid country code", "Number Too short", "Number Too long", "Invalid number"];
-        tel.intlTelInput({
-            // allowDropdown: false,
-            // autoHideDialCode: false,
-            // autoPlaceholder: "off",
-            // dropdownContainer: "body",
-            // excludeCountries: ["us"],
-            // formatOnDisplay: false,
-            geoIpLookup: function(callback) {
-                $.get("https://ipinfo.io", function() {}, "jsonp").always(function(resp) {
-                    resp.country = country;
-                    var countryCode = (resp && resp.country) ? resp.country : "";
-                    callback(countryCode);
-                });
-            },
-            // hiddenInput: "full_number",
-            initialCountry: "auto",
-            // nationalMode: false,
-            // onlyCountries: ['us', 'gb', 'ch', 'ca', 'do'],
-            placeholderNumberType: "MOBILE",
-            // preferredCountries: ['cn', 'jp'],
-            separateDialCode: true,
-
-            utilsScript: "{{asset('js/intl/js/utils.js')}}"
-        });
-        var reset = function() {
-            errorMsg1.innerHTML = "";
-            errorMsg1.classList.add("hide");
-            validMsg1.classList.add("hide");
-        };
-
-        addressDropdown.change(function() {
-            tel.intlTelInput("setCountry", $(this).val());
-        });
-
-        tel.on('blur', function () {
-            reset();
-            if ($.trim(tel.val())) {
-                if (tel.intlTelInput("isValidNumber")) {
-                    $('.phone').css("border-color","");
-                    validMsg1.classList.remove("hide");
-                    $('#sendOtp').attr('disabled',false);
-                } else {
-                    var errorCode = tel.intlTelInput("getValidationError");
-                    errorMsg1.innerHTML = errorMap[errorCode];
-                    $('#conmobile').html("");
-
-                    $('.phone').css("border-color","red");
-                    $('#error-msg1').css({"color":"red","margin-top":"5px"});
-                    errorMsg1.classList.remove("hide");
-                    $('#sendOtp').attr('disabled',true);
-                }
-            }
-        });
-    </script>
-   
-        @endif 
 
         <script>
 
@@ -1051,30 +904,6 @@ if($script->on_every_page == 1) {
 
 
 </script>
- 
- <!--@if (!count($errors) > 0)-->
- <!-- <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>-->
- <!--@endif-->
-
-   
-
-@if(!empty(Session::get('popup')) && Session::get('popup') == 1)
-  <script type="text/javascript">
-
-        jQuery( document ).ready(function() {
-            jQuery('#login-modal').modal('show');
-        });
-        </script>
-        
-@endif
- @if(Route::current()->getName() == 'login')
- <script type="text/javascript">
-
-        jQuery( document ).ready(function() {
-            jQuery('#login-modal').modal('show');
-        });
-        </script>
- @endif
 
  
 

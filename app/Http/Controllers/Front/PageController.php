@@ -438,6 +438,7 @@ class PageController extends Controller
 
     public function postContactUs(Request $request)
     {
+      
         $this->validate($request, [
             'name' => 'required',
             'email' => 'required|email',
@@ -458,7 +459,7 @@ class PageController extends Controller
             $data .= 'Name: '.strip_tags($request->input('name')).'<br/>';
             $data .= 'Email: '.strip_tags($request->input('email')).'<br/>';
             $data .= 'Message: '.strip_tags($request->input('message')).'<br/>';
-            $data .= 'Mobile: '.strip_tags('+'  . $request->input('mobile'). ' ' . $request->input('Mobile')).'<br/>';
+            $data .= 'Mobile: '.strip_tags($request->input('country_code'). ' ' . $request->input('Mobile')).'<br/>';
             $subject = 'Faveo billing enquiry';
             if (emailSendingStatus()) {
                 $mail = new \App\Http\Controllers\Common\PhpMailController();

@@ -1,13 +1,12 @@
 @extends('themes.default1.layouts.front.master')
-
- @section('title')
+@section('title')
     Login | Register
 @stop
 @section('page-header')
     Login | Register
 @stop
 @section('page-heading')
-    Sign in or Register
+Sign in or Register
 @stop
 @section('breadcrumb')
     @if(Auth::check())
@@ -21,7 +20,7 @@
     main
 @stop
 @section('content')
-     <?php
+    <?php
     use App\Http\Controllers\Front\CartController;
     $country = findCountryByGeoip($location['iso_code']);
     $states = findStateByRegionId($location['iso_code']);
@@ -30,18 +29,22 @@
     $state = getStateByCode($state_code);
 
 
-    ?>  
+    ?>
     <style>
-       /* .required:after{
+  .bootstrap-select.btn-group .btn .filter-option 
+  {
+      font-weight: normal;
+  }
+        .required:after{
             content:'*';
             color:red;
             padding-left:0px;
         }
 
 
-        }*/
+        }
 
-       /* .wizard-inner
+        .wizard-inner
         {
             display:none;
         }
@@ -61,7 +64,7 @@
             /*padding: 15px;*/
         }
 
-        /*.open>.dropdown-menu {
+        .open>.dropdown-menu {
             display: block;
             color:black;
         }
@@ -69,40 +72,29 @@
             margin-top: 0px;
         }
         .bootstrap-select .dropdown-toggle .caret {
-            display: none;
-        }*/
+           display: none;
+        }
 
         .form-control:not(.form-control-sm):not(.form-control-lg) {
-            /*font-size: 13.6px;
-            font-size: 0.85rem;*/
-            line-height: normal;
-        }*/
-
+        /*font-size: 13.6px;
+        font-size: 0.85rem;*/
+        line-height: normal;
+    }
 
 
 
     </style>
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link rel="stylesheet" href="{{asset('client/css/selectpicker.css')}}" />
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/css/bootstrap-select.css" /> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/2.0.0-beta1/css/bootstrap-select.min.css" />
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 
-    
-    <!-- <link rel="stylesheet" href="{{asset('client/css/selectpicker.css')}}" /> -->
+    <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
+     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
-
-    
-   
-     <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/css/bootstrap-select.css" /> -->
-     <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/2.0.0-beta1/css/bootstrap-select.min.css" /> -->
-
-     <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> -->
-
-     <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
-     <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> -->
-
-
-     <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/js/bootstrap-select.js"></script> -->
-     <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/2.0.0-beta1/js/bootstrap-select.min.js"></script> -->
-
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/js/bootstrap-select.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/2.0.0-beta1/js/bootstrap-select.min.js"></script> 
     <div class="row">
         <div class="col-md-12">
 
@@ -111,25 +103,25 @@
                     <div class="wizard-inner" style="display: none">
 
                         <ul class="nav nav-tabs" role="tablist" style=" margin: -5px!important;">
-                            <!--<li role="presentation" class="active">-->
-                                <!--<a href="#step1" data-toggle="tab" aria-controls="step1" role="tab">-->
+                            <li role="presentation" class="active">
+                                <a href="#step1" data-toggle="tab" aria-controls="step1" role="tab">
 
 
-                                <!--</a>-->
-                                <!--<p style="display: none">Contact Information</p>-->
-                            <!--</li>-->
-                            <!--<li role="presentation" class="disabled" >-->
-                                <!--<a href="#step2" data-toggle="tab" aria-controls="step2" role="tab" >-->
+                                </a>
+                                <p style="display: none">Contact Information</p>
+                            </li>
+                            <li role="presentation" class="disabled" >
+                                <a href="#step2" data-toggle="tab" aria-controls="step2" role="tab" >
 
 
-                                <!--</a>-->
-                                <!--<p style="display: none">Identity Verification</p>-->
-                            <!--</li>-->
-                            <!--<li role="presentation" class="disabled">-->
-                                <!--<a href="#step3" data-toggle="tab" aria-controls="complete" role="tab" title="Confirmation">-->
+                                </a>
+                                <p style="display: none">Identity Verification</p>
+                            </li>
+                            <li role="presentation" class="disabled">
+                                <a href="#step3" data-toggle="tab" aria-controls="complete" role="tab" title="Confirmation">
 
 
-            <!--                     </a>
+                                </a>
                                 <p style="display: none">Confirmation</p>
                             </li>
 
@@ -147,8 +139,10 @@
                                 </div>
                                 <div id="alertMessage1"></div>
                                 <div id="alertMessage2"></div>
-                             
-
+                                <!-- <div id="error2">
+                                </div>
+                                <div id="alertMessage2" class="-text" ></div> -->
+              
                                 <div class="row">
                                     <div class="col-sm-6">
                                         <div class="featured-box featured-box-primary text-left mt-5">
@@ -161,38 +155,36 @@
                                                     {!!  Form::open(['url'=>'login', 'method'=>'post','id'=>'formoid']) !!}
                                                 @endif
                                                 <div class="form-row">
-                                                    <div class="form-group col">
-                                             <label class="required" >E-mail Address</label>
+                                                    <div class="form-group col {{ $errors->has('email1') ? 'has-error' : '' }}">
+
+                                                        <label class="required">Username or E-mail Address</label>
                                                         <div class="input-group">
                                                             {!! Form::text('email1',null,['class' => 'form-control input-lg','id'=>'username','autocomplete'=>"off" ]) !!}
                                                             <div class="input-group-append">
-                                                            <span class="input-group-text"><i class="fa fa-user"></i></span>
+                                                                <span class="input-group-text"><i class="fa fa-user"></i></span>
                                                             </div>
 
-                                                        </div>  
-                                                        <span  style="color:#ff0000;">  <div>{{ $errors->login->first('email1') }}</div></span>
- -->
+                                                        </div>
                                                         <!-- <h6 id="usercheck"></h6> -->
 
-<!-- 
+
                                                     </div>
                                                 </div>
                                                 <div class="form-row">
                                                     <div class="form-group col {{ $errors->has('password1') ? 'has-error' : '' }}">
 
                                                         <a class="pull-right" href="{{url('password/reset')}}">({{Lang::get('message.forgot-my-password')}})</a>
-                                                        <label class="required" >Password</label>
+                                                        <label class="required">Password</label>
                                                         <div class="input-group">
                                                             {!! Form::password('password1',['class' => 'form-control input-lg' ,'id'=>'pass']) !!}
                                                             <div class="input-group-append">
-                                                                      <span class="input-group-text"><i class="fa fa-key"></i></span>
+                                                                <span class="input-group-text"><i class="fa fa-key"></i></span>
                                                             </div>
 
                                                         </div>
-                                                           <span  style="color:#ff0000;">  <div>{{ $errors->login->first('password1') }}</div></span>
-                                          -->               <!-- <h6 id="passcheck"></h6> -->
+                                                        <!-- <h6 id="passcheck"></h6> -->
                                                         <!--<input type="password" value="" class="form-control input-lg">-->
-<!-- 
+
                                                     </div>
                                                 </div>
 
@@ -201,7 +193,6 @@
                                                     {!! NoCaptcha::display() !!}
                                                     <div class="loginrobot-verification"></div>
                                                 @endif
-
                                                 <div class="form-row">
                                                     <div class="form-group col-lg-6">
                                                         <div class="form-check form-check-inline">
@@ -213,13 +204,11 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group col-lg-6">
-                                                        <input type="submit" name="form" value="Login" id="submitbtn" class="btn btn-primary pull-right mb-xl" data-loading-text="Loading...">
-
-                                               -->           
+                                                        <input type="submit" value="Login" id="submitbtn" class="btn btn-primary pull-right mb-xl" data-loading-text="Loading...">
                                                         <!-- <button type="button" class="btn btn-primary mb-xl next-step float-right" name="sendOtp" id="login" onclick="loginUser()">
                                                                     Send Email
                                                         </button> -->
-<!-- 
+
                                                     </div>
                                                 </div>
                                                 {!! Form::close() !!}
@@ -231,59 +220,141 @@
                                             <div class="box-content">
                                                 <h4 class="heading-primary text-uppercase mb-3">Register An Account</h4>
 
-                                                <form name="logregisterForm" id="logregiser-form">
+                                                <form name="registerForm" id="regiser-form">
 
                                                     <div class="row">
 
                                                         <div class="form-group col-lg-6 {{ $errors->has('first_name') ? 'has-error' : '' }}">
-
+                                                        <!--   {!! Form::label('first_name',Lang::get('message.first_name'),['class'=>'required']) !!} -->
                                                             <label class="required">First Name</label>
 
-                                                            {!! Form::text('first_name',null,['class'=>'form-control input-lg', 'id'=>'logfirst_name']) !!}
-                                                            <span id="logfirst_namecheck"></span>
+                                                            {!! Form::text('first_name',null,['class'=>'form-control input-lg', 'id'=>'first_name']) !!}
+                                                            <span id="first_namecheck"></span>
                                                         </div>
 
 
 
                                                         <div class="form-group col-lg-6 {{ $errors->has('last_name') ? 'has-error' : '' }}">
                                                             <label class="required">Last Name</label>
-                                                            {!! Form::text('last_name',null,['class'=>'form-control input-lg', 'id'=>'loglast_name']) !!}
-                                                            <span id="loglast_namecheck"></span>
+                                                            {!! Form::text('last_name',null,['class'=>'form-control input-lg', 'id'=>'last_name']) !!}
+                                                            <span id="last_namecheck"></span>
 
                                                         </div>
 
 
                                                     </div>
- 
                                                     <div class="form-row">
+
                                                         <div class="form-group col {{ $errors->has('email') ? 'has-error' : '' }}">
                                                             <label class="required">Email Address</label>
-                                                            {!! Form::email('email',null,['class'=>'form-control input-lg', 'id'=>'logmail']) !!}
-                                                            <span id="logemailcheck"></span>
+                                                            {!! Form::email('email',null,['class'=>'form-control input-lg', 'id'=>'email']) !!}
+                                                            <span id="emailcheck"></span>
                                                         </div>
+
+
+                                                    </div>
+
+
+                                                    <div class="row">
+
+                                                        <div class="form-group col{{ $errors->has('company') ? 'has-error' : '' }}">
+                                                            <label  class="required">Company Name</label>
+                                                            {!! Form::text('company',null,['class'=>'form-control input-lg', 'id'=>'company']) !!}
+                                                            <span id="companycheck"></span>
+                                                        </div>
+
+
+
+
+
+
+                                                    </div>
+
+
+                                                     <div class="row">
+                                                   
+                                                        <div class="form-group col {{ $errors->has('address') ? 'has-error' : '' }}">
+                                                            <label class="required">Address</label>
+                                                            {!! Form::textarea('address',null,['class'=>'form-control','rows'=>4, 'id'=>'address']) !!}
+
+                                                       <span id="addresscheck"></span>
+                                                    </div>
+                                                </div>
+
+
+                                                    <div class="form-row">
+                                                        <div class="form-group col {{ $errors->has('country') ? 'has-error' : '' }}">
+                                                            {!! Form::label('country',Lang::get('message.country'),['class'=>'required']) !!}
+                                                            <?php $countries = \App\Model\Common\Country::pluck('nicename', 'country_code_char2')->toArray(); ?>
+                                                            {!! Form::select('country',[''=>'','Choose'=>$countries],$country,['class' => 'form-control selectpicker con','data-live-search-style'=>"startsWith",'data-live-search'=>'true','data-live-search-placeholder'=>'Search','data-dropup-auto'=>'false','data-size'=>'10','onChange'=>'getCountryAttr(this.value);','id'=>'country']) !!}
+                                                            <span id="countrycheck"></span>
+
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="form-row">
+                                                        <div class="col-lg-12 form-group {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
+                                                            <label class="required">Mobile</label>
+                                                            {!! Form::hidden('mobile',null,['id'=>'mobile_code_hidden']) !!}
+                                                            <input class="form-control input-lg" id="mobilenum" name="mobile" type="tel">
+                                                            {!! Form::hidden('mobile_code',null,['class'=>'form-control input-lg','disabled','id'=>'mobile_code']) !!}
+                                                            <span id="valid-msg" class="hide"></span>
+                                                            <span id="error-msg" class="hide"></span>
+                                                            <span id="mobile_codecheck"></span>
+                                                        </div>
+
+
+
+                                                    </div>
+
+                                                    <div class="form-row hidden">
+                                                        <div class="form-group col{{ $errors->has('state') ? 'has-error' : '' }}">
+                                                            {!! Form::label('state',Lang::get('message.state')) !!}
+                                                            <?php
+                                                            $value = "";
+                                                            if (count($state) > 0) {
+                                                                $value = $state;
+                                                            }
+                                                            if (old('state')) {
+                                                                $value = old('state');
+                                                            }
+                                                            ?>
+
+                                                            {!! Form::select('state',[$states],$value,['class' => 'form-control input-lg','id'=>'state-list']) !!}
+
+                                                            <span id="statecheck"></span>
+                                                        </div>
+
+
+
+
                                                     </div>
 
                                                     <div class="form-row">
-                                                        <div class="form-group col col-lg-6 {{ $errors->has('country') ? 'has-error' : '' }}">
-                                                            {!! Form::label('country',Lang::get('message.country'),['class'=>'required']) !!}
-                                                            <?php $countries = \App\Model\Common\Country::pluck('nicename', 'country_code_char2')->toArray(); ?>
-                                                            {!! Form::select('country',[''=>'','Choose'=>$countries],$country,['class' => 'form-control selectpicker','data-live-search-style'=>"startsWith",'data-live-search'=>'true','data-live-search-placeholder'=>'Search','data-dropup-auto'=>'false','data-size'=>'10','onChange'=>'getCountryAttr(this.value);','id'=>'logcountry']) !!}
-                                                            <span id="logcountrycheck"></span>
+
+                                                        <div class="form-group col {{ $errors->has('password') ? 'has-error' : '' }}">
+                                                            <label class="required">Password</label>
+                                                            {!! Form::password('password',['class'=>'form-control input-lg', 'id'=>'password']) !!}
+                                                            <span id="password1check"></span>
                                                         </div>
 
 
-                                                        <div class="col-lg-6 form-group {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
-                                                            <label class="required">Mobile</label>
-                                                            {!! Form::hidden('mobile',null,['id'=>'logphone_code_hidden']) !!}
-                                                            <input class="form-control input-lg" id="logphonenum" name="mobile" type="tel" >
-                                                            {!! Form::hidden('mobile_code',null,['class'=>'form-control input-lg','disabled','id'=>'logmobile_code']) !!}
-                                                            <span id="valid-msg" class="hide"></span>
-                                                            <span id="error-msg" class="hide"></span>
-                                                            <span id="logmobile_codecheck"></span>
+
+
+                                                    </div>
+                                                    <div class="form-row">
+
+                                                        <div class="form-group col {{ $errors->has('password_confirmation') ? 'has-error' : '' }}">
+                                                            <label class="required">Re-enter Password</label>
+
+                                                            {!! Form::password('password_confirmation',['class'=>'form-control input-lg', 'id'=>'confirm_pass']) !!}
+                                                            <span id="conpasscheck"></span>
                                                         </div>
-                                                    </div> -->
+
+                                                    </div>
+
                                                 <!--   <input type="checkbox" name="checkbox" id="option" value="{{old('option')}}"><label for="option"><span></span> <p>I agree to the <a href="#">terms</a></p></label>-->
-                                                   <!--  <div class="form-row">
+                                                    <div class="form-row">
                                                         <div class="form-group col-lg-6">
                                                             @if ($status->recaptcha_status==1 && $apiKeys->nocaptcha_sitekey != '00' && $apiKeys->captcha_secretCheck != '00')
 
@@ -297,20 +368,20 @@
                                                     <div class="form-row">
                                                         @if ($status->terms ==0)
                                                             <div class="form-group col-lg-6">
-                                                                <input type="hidden" value="true" name="logterms" id="logterm">
+                                                                <input type="hidden" value="true" name="terms" id="term">
                                                             </div>
                                                         @else
                                                             <div class="form-group col-lg-6">
                                                                 <label>
 
-                                                                    <input type="checkbox" value="false" name="logterms" id="logterm" > {{Lang::get('message.i-agree-to-the')}} <a href="{{$apiKeys->terms_url}}" target="_blank">{{Lang::get('message.terms')}}</a>
+                                                                    <input type="checkbox" value="false" name="terms" id="term" > {{Lang::get('message.i-agree-to-the')}} <a href="{{$apiKeys->terms_url}}" target="_blank">{{Lang::get('message.terms')}}</a>
                                                                 </label>
-                                                                <br><span id="logtermscheck"></span>
+                                                                <br><span id="termscheck"></span>
                                                             </div>
                                                         @endif
 
                                                         <div class="form-group col-lg-6">
-                                                            <button type="button"  class="btn btn-primary pull-right marginright mb-xl next-step" name="register" id="logregister" onclick="logregisterUser(1)">Submit</button>
+                                                            <button type="button"  class="btn btn-primary pull-right marginright mb-xl next-step"  name="register" id="register" onclick="registerUser()">Submit</button>
                                                         </div>
 
                                                     </div>
@@ -335,13 +406,13 @@
 
 
                                 <!-- fail message -->
-                                <!-- <div class="row">
+                                <div class="row">
                                     <div class="col-lg-6 offset-lg-3">
                                         <div id="successMessage1"></div>
-                                        <div id = "emailsuccess"></div> -->
+                                        <div id = "emailsuccess"></div>
                                         <!-- <div id="successMessage2"></div> -->
 
-                                       <!--  <div id="error1">
+                                        <div id="error1">
                                         </div>
                                         <div class="featured-box featured-box-primary text-left mt-5">
                                             <div class="box-content">
@@ -370,10 +441,10 @@
                                                             </div>
 
                                                         </div>
-                                                    @endif -->
+                                                    @endif
 
 
-<!-- 
+
                                                     @if($status->msg91_status == 1)
                                                         <p>You will be sent an OTP on your mobile immediately by an automated system, Please enter the OTP in the next step. Click next to continue</p>
                                                         <div class="form-row">
@@ -390,9 +461,9 @@
                                                             </div>
 
                                                         </div>
-                                                    @endif -->
+                                                    @endif
 
-                                                  <!--   <div class="form-row">
+                                                    <div class="form-row">
                                                         <div class="form-group col">
 
                                                             <button type="button" class="btn btn-primary mb-xl next-step float-right" name="sendOtp" id="sendOtp" onclick="sendOTP()">
@@ -412,10 +483,10 @@
                         </div>
                         <div class="col-md-12 tab-pane" id="step3">
 
-                            <div class="featured-boxes"> -->
+                            <div class="featured-boxes">
                                 <!-- fail message -->
-                                <!-- <div class="row"> -->
-                               <!--      <div class="col-lg-6 offset-lg-3">
+                                <div class="row">
+                                    <div class="col-lg-6 offset-lg-3">
                                         <div id="error2">
                                         </div>
                                         <div id="successMessage2"></div>
@@ -425,7 +496,7 @@
                                         <div class="featured-box featured-box-primary text-left mt-5">
                                             <input type="hidden" id="checkOtpStatus" value="{{$status->msg91_status}}">
                                             <div class="box-content" id="showOtpBox">
-                                                <h4 class="heading-primary text-uppercase mb-md">OTP Confirmation</h4> -->
+                                                <h4 class="heading-primary text-uppercase mb-md">OTP Confirmation</h4>
                                                 <!-- <div class="row verify">
                                                     <div class="col-md-12">
                                                         <label>
@@ -433,7 +504,7 @@
                                                         </label>
                                                     </div>
                                                 </div> -->
-                                               <!--  <form name="verify_otp_form">
+                                                <form name="verify_otp_form">
                                                     <label for="mobile" class="required">Enter OTP</label><br/>
                                                     <div class="row ">
                                                         <div class="col-md-6">
@@ -448,9 +519,9 @@
                                                             <button type="button" class="btn btn-primary float-right mb-5" name="verifyOtp" style="width: max-content;" id="verifyOtp" value="Verify OTP" onclick="verifyBySendOtp()" >
                                                                 Verify OTP
                                                             </button>
-                                                        </div> -->
+                                                        </div>
 
-<!-- 
+
                                                         <div class="col-md-3">
                                                             <button type="button" class="btn btn-danger float-right mb-5" style="width: max-content;" name="resendOTP" id="resendOTP">
                                                                 Resend OTP
@@ -486,187 +557,26 @@
         </section>
     </div>
     </div>
-@stop 
-
-
-
-
-  <!--  <script type="text/javascript">
-           var telInput = $('#logphonenum'),
-          
-
-            errorMsg = document.querySelector("#error-msg"),
-            validMsg = document.querySelector("#valid-msg"),
-            addressDropdown = $("#country");
-             var errorMap = [ "Invalid number", "Invalid country code", "Number Too short", "Number Too long", "Invalid number"];
-
-          
-        telInput.intlTelInput({
-
-
-           
-            geoIpLookup: function (callback) {
-                $.get("https://ipinfo.io", function () {}, "jsonp").always(function (resp) {
-                    var countryCode = (resp && resp.country) ? resp.country : "";
-                    callback(countryCode);
-                });
-            },
-            utilsScript: "{{asset('js/intl/js/utils.js')}}",
-
-            initialCountry: "auto",
-            separateDialCode: true,
-        });
-        var reset = function() {
-
-            errorMsg.innerHTML = "";
-            errorMsg.classList.add("hide");
-            validMsg.classList.add("hide");
-        };
-
-        $('.intl-tel-input').css('width', '100%');
-
-        telInput.on('blur', function () {
-            reset();
-            if ($.trim(telInput.val())) {
-                 
-                if (telInput.intlTelInput("isValidNumber")) {
-                    $('#logphonenum').css("border-color","");
-                    $("#error-msg").html('');
-                    errorMsg.classList.add("hide");
-                    $('#register').attr('disabled',false);
-                } else {
-                   
-                    var errorCode = telInput.intlTelInput("getValidationError");
-                    errorMsg.innerHTML = errorMap[errorCode];
-                    $('#logmobile_codecheck').html("");
-
-                    $('#logphonenum').css("border-color","red");
-                    $('#error-msg').css({"color":"red","margin-top":"5px"});
-                    errorMsg.classList.remove("hide");
-                    $('#register').attr('disabled',true);
-                }
-            }
-        });
-        $('input').on('focus', function () {
-            $(this).parent().removeClass('has-error');
-        });
-        addressDropdown.change(function() {
-            telInput.intlTelInput("setCountry", $(this).val());
-            if ($.trim(telInput.val())) {
-                
-                if (telInput.intlTelInput("isValidNumber")) {
-                    $('#logphonenum').css("border-color","");
-                    $("#error-msg").html('');
-                    errorMsg.classList.add("hide");
-                    $('#register').attr('disabled',false);
-                } else {
-                    
-                    var errorCode = telInput.intlTelInput("getValidationError");
-                    errorMsg.innerHTML = errorMap[errorCode];
-                    $('#logmobile_codecheck').html("");
-
-                    $('#logphonenum').css("border-color","red");
-                    $('#error-msg').css({"color":"red","margin-top":"5px"});
-                    errorMsg.classList.remove("hide");
-                    $('#register').attr('disabled',true);
-                }
-            }
-        });
-
-        $('form').on('submit', function (e) {
-            $('input[name=country_code]').attr('value', $('.selected-dial-code').text());
-        });
-
-    </script>
-
+@stop
+@section('script')
+    <script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo $analyticsTag; ?>"></script>
 
     <script>
-        // var tel = $('.phone'),
-        //     country = $('#country').val();
-        // addressDropdown = $("#country");
-        // errorMsg1 = document.querySelector("#error-msg1"),
-        //     validMsg1 = document.querySelector("#valid-msg1");
-        // var errorMap = [ "Invalid number", "Invalid country code", "Number Too short", "Number Too long", "Invalid number"];
-        // tel.intlTelInput({
-            // allowDropdown: false,
-            // autoHideDialCode: false,
-            // autoPlaceholder: "off",
-            // dropdownContainer: "body",
-            // excludeCountries: ["us"],
-            // formatOnDisplay: false,
-            // geoIpLookup: function(callback) {
-            //     $.get("https://ipinfo.io", function() {}, "jsonp").always(function(resp) {
-            //         resp.country = country;
-            //         var countryCode = (resp && resp.country) ? resp.country : "";
-            //         callback(countryCode);
-            //     });
-            // },
-            // hiddenInput: "full_number",
-            // initialCountry: "auto",
-            // nationalMode: false,
-            // onlyCountries: ['us', 'gb', 'ch', 'ca', 'do'],
-            // placeholderNumberType: "MOBILE",
-            // preferredCountries: ['cn', 'jp'],
-            // separateDialCode: true,
-
-        //     utilsScript: "{{asset('js/intl/js/utils.js')}}"
-        // });
-        // var reset = function() {
-        //     errorMsg1.innerHTML = "";
-        //     errorMsg1.classList.add("hide");
-        //     validMsg1.classList.add("hide");
-        // };
-
-        // addressDropdown.change(function() {
-        //     tel.intlTelInput("setCountry", $(this).val());
-        // });
-
-        // tel.on('blur', function () {
-        //     reset();
-        //     if ($.trim(tel.val())) {
-        //         if (tel.intlTelInput("isValidNumber")) {
-        //             $('.phone').css("border-color","");
-        //             validMsg1.classList.remove("hide");
-        //             $('#sendOtp').attr('disabled',false);
-        //         } else {
-        //             var errorCode = tel.intlTelInput("getValidationError");
-        //             errorMsg1.innerHTML = errorMap[errorCode];
-        //             $('#conmobile').html("");
-
-        //             $('.phone').css("border-color","red");
-        //             $('#error-msg1').css({"color":"red","margin-top":"5px"});
-        //             errorMsg1.classList.remove("hide");
-        //             $('#sendOtp').attr('disabled',true);
-        //         }
-        //     }
-        // });
-     <!--</script>-->
-
-
-
-
-
-
-    
-    <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo $analyticsTag; ?>"></script> -->
-
-    <!-- <script> -->
-        
-        <!-- ///Google Recaptcha -->
-        <!-- function recaptchaCallback() {
+        ///////////////////////////////////////////////////////////////////////////////
+        ///Google Recaptcha
+        function recaptchaCallback() {
             document.querySelectorAll('.g-recaptcha').forEach(function (el) {
                 grecaptcha.render(el);
             });
-        } -->
-        
-    <!-- </script> -->
+        }
+        ///////////////////////////////////////////////////////////////////////////////////
+    </script>
+
+    <script type="text/javascript">
 
 
- <!-- <script type="text/javascript"> -->
 
-
-
-       <!--  function verify_otp_check(){
+        function verify_otp_check(){
             var userOtp = $('#oneTimePassword').val();
             if (userOtp.length < 4){
                 $('#enterotp').show();
@@ -744,8 +654,8 @@
             }
         }
 
- -->
-       <!--  function getLoginTab(){
+
+        function getLoginTab(){
             registerForm.elements['first_name'].value = '';
             registerForm.elements['last_name'].value = '';
             registerForm.elements['email'].value = '';
@@ -814,9 +724,9 @@
                 }
             })
 
-        }); -->
+        });
 
-      <!--   //---------------------------------------Resend OTP via voice call--------------------------------------------------//
+        //---------------------------------------Resend OTP via voice call--------------------------------------------------//
 
         $('#voiceOTP').on('click',function(){
             var data = {
@@ -863,15 +773,12 @@
 
 
 
- -->
 
-<!-- 
-    <script type="text/javascript"> -->
-
-     <!--         /*
+    <script type="text/javascript">
+        /*
         * Email ANd Mobile Validation when Send Button is cliced on Tab2
          */
-        
+        /////////////////////////////////////////////////////////////////////////////////////////////////
         $('#verify_email').keyup(function(){//Email
             verify_email_check();
         });
@@ -913,8 +820,8 @@
                     $('#verify_number').css("border-color","red");
                     $('#conmobile').css({"color":"red","margin-top":"5px"});
 
- -->
-                  <!--   // mobile_error = false;
+
+                    // mobile_error = false;
                     return false;
                 }
                 else{
@@ -928,7 +835,7 @@
             return true;
 
         }
-      
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /*
           * After Send Button is Clicked on Tab 2 fOR sending OTP AND Email
          */
@@ -938,9 +845,9 @@
             var mail_error = true;
             var mobile_error = true;
             if((verify_email_check()) && (verify_number_check()))
-            { -->
+            {
 
-               <!--  var oldemail=sessionStorage.getItem('oldemail');
+                var oldemail=sessionStorage.getItem('oldemail');
                 var newemail = $('#verify_email').val(); // this.value
                 var oldnumber = sessionStorage.getItem('oldemail');
                 var newnumber = $('#verify_number').val();
@@ -972,9 +879,9 @@
                             $('.wizard-inner').css('display','none');
                             var $active = $('.wizard .nav-tabs li.active');
                             $active.next().removeClass('disabled');
-                            nextTab($active); -->
+                            nextTab($active);
 
-                          <!--   setTimeout(function(){
+                            setTimeout(function(){
                                 sessionStorage.removeItem('oldemail');
                                 sessionStorage.clear();
                             }, 500);
@@ -1013,8 +920,10 @@
 
         }
 
-       -->
-      <!--   //robot validation for Login Form
+  
+
+
+        //robot validation for Login Form
         function validateform() {
             var input = $(".g-recaptcha :input[name='g-recaptcha-response']");
             console.log(input.val());
@@ -1028,206 +937,337 @@
             }
         }
 
-        //Registration Form Validation -->
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //Registration Form Validation
 
-       <!--  function logfirst_namecheck(){
-            var firrstname_val = $('#logfirst_name').val();
+        function first_namecheck(){
+            var firrstname_val = $('#first_name').val();
             if(firrstname_val.length == ''){
-                $('#logfirst_namecheck').show();
-                $('#logfirst_namecheck').html("Please Enter First Name");
-                $('#logfirst_namecheck').focus();
-                $('#logfirst_name').css("border-color","red");
-                $('#logfirst_namecheck').css("color","red");
+                $('#first_namecheck').show();
+                $('#first_namecheck').html("Please Enter First Name");
+                $('#first_namecheck').focus();
+                $('#first_name').css("border-color","red");
+                $('#first_namecheck').css("color","red");
                 // userErr =false;
 
                 $('html, body').animate({
-                    scrollTop: $("#logfirst_namecheck").offset().top -200
+                    scrollTop: $("#first_namecheck").offset().top -200
                 }, 1000)
                 return false;
             }
 
             if(firrstname_val.length > 30){
-                $('#logfirst_namecheck').show();
-                $('#logfirst_namecheck').html("Max 30 characters allowed ");
-                $('#logfirst_namecheck').focus();
-                $('#logfirst_name').css("border-color","red");
-                $('#logfirst_namecheck').css("color","red");
+                $('#first_namecheck').show();
+                $('#first_namecheck').html("Max 30 characters allowed ");
+                $('#first_namecheck').focus();
+                $('#first_name').css("border-color","red");
+                $('#first_namecheck').css("color","red");
                 // userErr =false;
 
                 $('html, body').animate({
-                    scrollTop: $("#logfirst_namecheck").offset().top -200
+                    scrollTop: $("#first_namecheck").offset().top -200
                 }, 1000)
                 return false;
             }
 
             var pattern = new RegExp(/[^a-zA-Z0-9]/);
             if(pattern.test(firrstname_val)) {
-                $('#logfirst_namecheck').show();
-                $('#logfirst_namecheck').html("Special characters not allowed");
-                $('#logfirst_namecheck').focus();
-                $('#logfirst_name').css("border-color","red");
-                $('#logfirst_namecheck').css("color","red");
+                $('#first_namecheck').show();
+                $('#first_namecheck').html("Special characters not allowed");
+                $('#first_namecheck').focus();
+                $('#first_name').css("border-color","red");
+                $('#first_namecheck').css("color","red");
 
                 $('html, body').animate({
-                    scrollTop: $("#logfirst_namecheck").offset().top -200
+                    scrollTop: $("#first_namecheck").offset().top -200
                 }, 1000)
                 return false;
             }
 
             else{
-                $('#logfirst_namecheck').hide();
-                $('#logfirst_name').css("border-color","");
+                $('#first_namecheck').hide();
+                $('#first_name').css("border-color","");
                 return true;
             }
         }
         //Validating last name field
-        function loglast_namecheck(){
-            var lastname_val = $('#loglast_name').val();
+        function last_namecheck(){
+            var lastname_val = $('#last_name').val();
             if(lastname_val.length == ''){
-                $('#loglast_namecheck').show();
-                $('#loglast_namecheck').html("Please Enter Last Name");
-                $('#loglast_namecheck').focus();
-                $('#loglast_name').css("border-color","red");
-                $('#loglast_namecheck').css({"color":"red","margin-top":"5px"});
+                $('#last_namecheck').show();
+                $('#last_namecheck').html("Please Enter Last Name");
+                $('#last_namecheck').focus();
+                $('#last_name').css("border-color","red");
+                $('#last_namecheck').css({"color":"red","margin-top":"5px"});
                 // userErr =false;
                 $('html, body').animate({
 
-                    scrollTop: $("#loglast_namecheck").offset().top - 200
+                    scrollTop: $("#last_namecheck").offset().top - 200
                 }, 1000)
                 return false;
             }
 
             if(lastname_val.length > 30 ){
-                $('#loglast_namecheck').show();
-                $('#loglast_namecheck').html("Maximum 30 characters allowed");
-                $('#loglast_namecheck').focus();
-                $('#loglast_name').css("border-color","red");
-                $('#loglast_namecheck').css({"color":"red","margin-top":"5px"});
+                $('#last_namecheck').show();
+                $('#last_namecheck').html("Maximum 30 characters allowed");
+                $('#last_namecheck').focus();
+                $('#last_name').css("border-color","red");
+                $('#last_namecheck').css({"color":"red","margin-top":"5px"});
                 // userErr =false;
                 $('html, body').animate({
 
-                    scrollTop: $("#loglast_namecheck").offset().top - 200
+                    scrollTop: $("#last_namecheck").offset().top - 200
                 }, 1000)
                 return false;
-            } -->
+            }
 
-<!-- 
+
             var pattern = new RegExp(/[^a-zA-Z0-9]/);
             if(pattern.test(lastname_val)){
-                $('#loglast_namecheck').show();
-                $('#loglast_namecheck').html("Special characters not allowed");
-                $('#loglast_namecheck').focus();
-                $('#loglast_name').css("border-color","red");
-                $('#loglast_namecheck').css({"color":"red","margin-top":"5px"});
+                $('#last_namecheck').show();
+                $('#last_namecheck').html("Special characters not allowed");
+                $('#last_namecheck').focus();
+                $('#last_name').css("border-color","red");
+                $('#last_namecheck').css({"color":"red","margin-top":"5px"});
                 // userErr =false;
                 $('html, body').animate({
 
-                    scrollTop: $("#loglast_namecheck").offset().top - 200
+                    scrollTop: $("#last_namecheck").offset().top - 200
                 }, 1000)
                 return false;
             }
 
             else{
-                $('#loglast_namecheck').hide();
-                $('#loglast_name').css("border-color","");
+                $('#last_namecheck').hide();
+                $('#last_name').css("border-color","");
                 return true;
             }
         }
-
         //Validating email field
-        function logemailcheck(){
+        function emailcheck(){
 
             var pattern = new RegExp(/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/);
-            if (pattern.test($('#logmail').val())){
-                $('#logemailcheck').hide();
+            if (pattern.test($('#email').val())){
+                $('#emailcheck').hide();
                 $('#email').css("border-color","");
                 return true;
 
             }
             else{
-                $('#logemailcheck').show();
-                $('#logemailcheck').html("Please Enter a valid email");
-                $('#logemailcheck').focus();
-                $('#logmail').css("border-color","red");
-                $('#logemailcheck').css({"color":"red","margin-top":"5px"});
+                $('#emailcheck').show();
+                $('#emailcheck').html("Please Enter a valid email");
+                $('#emailcheck').focus();
+                $('#email').css("border-color","red");
+                $('#emailcheck').css({"color":"red","margin-top":"5px"});
                 // mail_error = false;
                 $('html, body').animate({
-                    scrollTop: $("#logemailcheck").offset().top -200
+                    scrollTop: $("#emailcheck").offset().top -200
                 }, 1000)
             }
 
         }
 
- -->
+        function companycheck(){
+            var company_val = $('#company').val();
+            if(company_val.length == ''){
+                $('#companycheck').show();
+                $('#companycheck').html("Please Enter Company Name");
+                $('#companycheck').focus();
+                $('#company').css("border-color","red");
+                $('#companycheck').css({"color":"red","margin-top":"5px"});
+                // userErr =false;
+                $('html, body').animate({
+                    scrollTop: $("#companycheck").offset().top - 200
+                }, 1000)
+            }
+
+            else{
+                $('#companycheck').hide();
+                $('#company').css("border-color","");
+                return true;
+            }
+        }
+
+
+            function addresscheck(){
+                var address_val = $('#address').val();
+                if(address_val.length == ''){
+                    $('#addresscheck').show();
+                    $('#addresscheck').html("Please Enter Address ");
+                    $('#addresscheck').focus();
+                     $('#address').css("border-color","red");
+                    $('#addresscheck').css({"color":"red","margin-top":"5px"});
+                    // userErr =false;
+                   $('html, body').animate({
+                    scrollTop: $("#addresscheck").offset().top -200
+                }, 1000)
+                }
+                else{
+                     $('#addresscheck').hide();
+                      $('#address').css("border-color","");
+                     return true;
+                }
+               }
 
 
 
 
-       <!--  function logcountrycheck(){
-            var country_val = $('#logcountry').val();
+
+        function countrycheck(){
+            var country_val = $('#country').val();
             if(country_val == ''){
-                $('#logcountrycheck').show();
-                $('#logcountrycheck').html("Please Select One Country ");
-                $('#logcountrycheck').focus();
-                $('#logcountry').css("border-color","red");
-                $('#logcountrycheck').css({"color":"red","margin-top":"5px"});
+                $('#countrycheck').show();
+                $('#countrycheck').html("Please Select One Country ");
+                $('#countrycheck').focus();
+                $('#country').css("border-color","red");
+                $('#countrycheck').css({"color":"red","margin-top":"5px"});
                 // userErr =false;
                 $('html, body').animate({
-                    scrollTop: $("#logcountrycheck").offset().top - 200
+                    scrollTop: $("#countrycheck").offset().top - 200
                 }, 1000)
             }
             else{
-                $('#logcountrycheck').hide();
-                $('#logcountry').css("border-color","");
+                $('#countrycheck').hide();
+                $('#country').css("border-color","");
                 return true;
             }
         }
 
-        function logmobile_codecheck(){
-            var mobile_val = $('#logphonenum').val();
+        function mobile_codecheck(){
+            var mobile_val = $('#mobilenum').val();
             if(mobile_val.length == ''){
-                $('#logmobile_codecheck').show();
-                $('#logmobile_codecheck').html("Please Enter Mobile No. ");
-                $('#logmobile_codecheck').focus();
-                $('#logphonenum').css("border-color","red");
-                $('#logmobile_codecheck').css({"color":"red","margin-top":"5px"});
+                $('#mobile_codecheck').show();
+                $('#mobile_codecheck').html("Please Enter Mobile No. ");
+                $('#mobile_codecheck').focus();
+                $('#mobilenum').css("border-color","red");
+                $('#mobile_codecheck').css({"color":"red","margin-top":"5px"});
                 // userErr =false;
                 $('html, body').animate({
-                    scrollTop: $("#logmobile_codecheck").offset().top -200
+                    scrollTop: $("#mobile_codecheck").offset().top -200
                 }, 1000)
             }
             else{
-                $('#logmobile_codecheck').hide();
-                $('#logphonenum').css("border-color","");
+                $('#mobile_codecheck').hide();
+                $('#mobilenum').css("border-color","");
                 return true;
             }
         }
 
- --><!-- 
+
+
+        function towncheck(){
+            var town_val = $('#city').val();
+            if(town_val.length == ''){
+                $('#towncheck').show();
+                $('#towncheck').html("Please Enter Town ");
+                $('#towncheck').focus();
+                $('#city').css("border-color","red");
+                $('#towncheck').css({"color":"red","margin-top":"5px"});
+                // userErr =false;
+                $('html, body').animate({
+                    scrollTop: $("#towncheck").offset().top -200
+                }, 1000)
+            }
+            else{
+                $('#towncheck').hide();
+                $('#city').css("border-color","");
+                return true;
+            }
+        }
+
+        function statecheck(){
+            var state_val = $('#state-list').val();
+            if(state_val.length == ''){
+                $('#statecheck').show();
+                $('#statecheck').html("Please Select a State ");
+                $('#statecheck').focus();
+                $('#state-list').css("border-color","red");
+                $('#statecheck').css({"color":"red","margin-top":"5px"});
+                // userErr =false;
+                $('html, body').animate({
+                    scrollTop: $("#statecheck").offset().top -200
+                }, 1000)
+            }
+
+            else{
+                $('#statecheck').hide();
+                $('#state-list').css("border-color","");
+                return true;
+            }
+        }
+
+
+
+
+
+        function password1check(){
+            var pattern = new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*(_|[^\w])).+$/);
+            if (pattern.test($('#password').val())){
+                $('#password1check').hide();
+                $('#password').css("border-color","");
+                return true;
+
+            }
+            else{
+                $('#password1check').show();
+                $('#password1check').html("Password must contain Upper/Lowercase/special Character and number");
+                $('#password1check').focus();
+                $('#password').css("border-color","red");
+                $('#password1check').css({"color":"red","margin-top":"0px"});
+
+                // mail_error = false;
+                return false;
+
+            }
+
+        }
+
+
+
         //    $('#conpassword').keyup(function(){
         //     con_password_check();
+        // });
 
+        function conpasscheck(){
+            var confirmPassStore= $('#confirm_pass').val();
+            var passwordStore = $('#password').val();
+            if(confirmPassStore != passwordStore){
+                $('#conpasscheck').show();
+                $('#conpasscheck').html("Passwords Don't Match");
+                $('#conpasscheck').focus();
+                $('#confirm_pass').css("border-color","red");
+                $('#conpasscheck').css("color","red");
+                $('html, body').animate({
+                    scrollTop: $("#conpasscheck").offset().top -200
+                }, 1000)
+            }
+            else{
+                $('#conpasscheck').hide();
+                $('#confirm_pass').css("border-color","");
+                return true;
+            }
+        }
 
-        function logterms(){
-            var term_val = $('#logterm').val();
+        function terms(){
+            var term_val = $('#term').val();
             if(term_val == 'false'){
-                $('#logtermscheck').show();
-                $('#logtermscheck').html("Terms must be accepted");
-                $('#logtermscheck').focus();
-                $('#logterm').css("border-color","red");
-                $('#logtermscheck').css({"color":"red","margin-top":"5px"});
+                $('#termscheck').show();
+                $('#termscheck').html("Terms must be accepted");
+                $('#termscheck').focus();
+                $('#term').css("border-color","red");
+                $('#termscheck').css({"color":"red","margin-top":"5px"});
                 // userErr =false;
-                return false;
+                return false;;
             }
 
             else{
-                $('#logtermscheck').hide();
-                $('#logterm').css("border-color","");
+                $('#termscheck').hide();
+                $('#term').css("border-color","");
                 return true;
             }
-        } -->
+        }
 
-      <!--   function gcaptcha(){
+        function gcaptcha(){
             var captcha_val = $('#g-recaptcha-response-1').val();
             if(captcha_val == ''){
                 $('#captchacheck').show();
@@ -1236,7 +1276,7 @@
                 $('#captcha').css("border-color","red");
                 $('#captchacheck').css({"color":"red","margin-top":"5px"});
                 // userErr =false;
-                return false;
+                return false;;
             }
 
             else{
@@ -1244,13 +1284,13 @@
                 $('#captcha').css("border-color","");
                 return true;
             }
-        } -->
+        }
 
-<!-- 
+
         ////////////////////////Registration Valdation Ends////////////////////////////////////////////////////////////////////////////////////////////
         ///
         ///////////////////////VALIDATE TERMS AND CNDITION////////////////////////////////////////
-        $(document).on('change','#logterm',function(){
+        $(document).on('change','#term',function(){
             if($(this).val()=="false"){
                 $(this).val("true");
             }
@@ -1261,72 +1301,87 @@
         //////////////////////////////Google Analytics Code after Submit button is clicked//////////////////
         function gtag_report_conversion(tag) {
             window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-
-            gtag('config', tag);
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+            
+              gtag('config', tag);
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        function logregisterUser(value) {
-            this.value= value;     -->
-                             
-
-
-          <!--   $('#logfirst_namecheck').hide();
-            $('#loglast_namecheck').hide();
-            $('#logemailcheck').hide();
-            $('#logcountrycheck').hide();
-            $('#logmobile_codecheck').hide();
-            $('#logtermscheck').hide();
+        function registerUser() {
+            
+            $('#first_namecheck').hide();
+            $('#last_namecheck').hide();
+            $('#emailcheck').hide();
+            $('#companycheck').hide();
+            $('#countrycheck').hide();
+            $('#mobile_codecheck').hide();
+            $('#addresscheck').hide();
+            $('#towncheck').hide();
+            $('#statecheck').hide();
+            $('#password1check').hide();
+            $('#conpasscheck').hide();
+            $('#termscheck').hide();
 
 
             var first_nameErr = true;
             var last_nameErr = true;
             var emailErr = true;
+            var companyeErr = true;
             var countryErr = true;
+            var addressErr = true;
             var mobile_codeErr = true;
+            var password1Err = true;
+            var conPassErr = true;
             var termsErr = true;
             // con_password_check();
 
-            if(logfirst_namecheck() && loglast_namecheck() && logemailcheck() &&   logmobile_codecheck()  && logcountrycheck()  && logterms() && gcaptcha())
+            if(first_namecheck() && last_namecheck() && emailcheck() && companycheck() && addresscheck() && mobile_codecheck()  && countrycheck()  && password1check() && conpasscheck()  && terms() && gcaptcha())
             {
+               
+                 var tag = "<?php echo $analyticsTag; ?>";
+                 if (tag !== "" ){
+                        gtag_report_conversion(tag);
+                    }
                 
-
-
-                var tag = "<?php echo $analyticsTag; ?>";
-                if (tag !== "" ){
-                    gtag_report_conversion(tag);
-                } -->
-<!-- 
-                $("#logregister").attr('disabled',true);
-                $("#logregister").html("<i class='fas fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
+                $("#register").attr('disabled',true);
+                $("#register").html("<i class='fas fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
                 $.ajax({
                     url: '{{url("auth/register")}}',
                     type: 'POST',
                     data: {
-                        "first_name": $('#logfirst_name').val(),
-                        "last_name": $('#loglast_name').val(),
-                        "email": $('#logmail').val(),
-                        "country": $('#logcountry').val(),
-                        "mobile_code": $('#logmobile_code').val().replace(/\s/g, '') ,
-                        "mobile": $('#logphonenum').val().replace(/[\. ,:-]+/g, ''),
+                        "first_name": $('#first_name').val(),
+                        "last_name": $('#last_name').val(),
+                        "email": $('#email').val(),
+                        "company": $('#company').val(),
+                        "bussiness": $('#business').val(),
+                        "company_type": $('#company_type').val(),
+                        "company_size": $('#company_size').val(),
+                        "country": $('#country').val(),
+                        "mobile_code": $('#mobile_code').val().replace(/\s/g, '') ,
+                        "mobile": $('#mobilenum').val().replace(/[\. ,:-]+/g, ''),
+                        "address": $('#address').val(),
+                        "city": $('#city').val(),
+                        "state": $('#state-list').val(),
+                        "zip": $('#zip').val(),
+                        "user_name": $('#user_name').val(),
+                        "password": $('#password').val(),
+                        "password_confirmation": $('#confirm_pass').val(),
                         "g-recaptcha-response-1":$('#g-recaptcha-response-1').val(),
-                        "logterms": $('#logterm').val(),
-                        "_token": "{!! csrf_token() !!}",
-                        "value": value,
+                        "terms": $('#term').val(),
 
+                        "_token": "{!! csrf_token() !!}",
                     },
                     success: function (response) {
                         // window.history.pushState(response.type, "TitleTest", "thankyou");
 
-                        $("#logregister").attr('disabled',false);
+                        $("#register").attr('disabled',false);
                         if(response.type == 'success'){
                             $('.wizard-inner').css('display','block');
                             if($("#checkEmailStatus").val() == 0 && $("#checkOtpStatus").val() == 0) {
                                 var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Thank You! </strong>'+response.message+'!!</div>';
                                 $('#alertMessage1').html(result);
                                 window.scrollTo(0,0);
-                                $("#logregister").html("Submit");
+                                $("#register").html("Submit");
                             } else {
                                 var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Thank You! </strong>'+response.message+'!!</div>';
                                 $('#successMessage1').html(result);
@@ -1336,27 +1391,26 @@
                                 window.scrollTo(0,0);
                                 verifyForm.elements['user_id'].value = response.user_id;
                                 if($("#emailstatusConfirm").val() == 1) {
-                                    var emailverfy = verifyForm.elements['verify_email'].value = $('#logmail').val();
+                                    var emailverfy = verifyForm.elements['verify_email'].value = $('#email').val();
                                     sessionStorage.setItem('oldemail',emailverfy);
+
                                 }
- --><!-- 
+
                             }
-                            verifyForm.elements['verify_country_code'].value =$('#logmobile_code').val();
-                            var numberverify= verifyForm.elements['verify_number'].value = $('#logphonenum').val().replace(/[\. ,:-]+/g, '');
+
+                            verifyForm.elements['verify_country_code'].value =$('#mobile_code').val();
+                            var numberverify= verifyForm.elements['verify_number'].value = $('#mobilenum').val().replace(/[\. ,:-]+/g, '');
                             sessionStorage.setItem('oldenumber',numberverify);
                             verifyForm.elements['email_password'].value = $('#password').val();
-                            $("#logregister").html("Register");
+                            $("#register").html("Register");
                             /*setTimeout(function(){
                                 $('#alertMessage1').hide();
                             }, 3000);*/
                         }
                     },
                     error: function (data) {
-
-                        $("#logregister").attr('disabled',false);
-                        // location.reload();
-                        $("#logregister").html("Register");
-
+                        $("#register").attr('disabled',false);
+                        $("#register").html("Register");
                         $('html, body').animate({scrollTop:0}, 500);
 
 
@@ -1378,11 +1432,11 @@
             else{
                 return false;
             }
-        }
+        };
 
- -->
 
-<!-- 
+
+
         //get login tab1
 
 
@@ -1397,53 +1451,65 @@
             }
 
         });
- -->
-
-
-    <!-- </script> -->
 
 
 
-    <!-- <script> -->
+    </script>
 
 
-       <!--  // console.log(state)
+
+    <script>
+
+        var data='{{json_encode($value)}}';
+        var state=JSON.parse(data.replace(/&quot;/g,'"'));
+        // console.log(state)
         $(document).ready(function () {
-            var val = $("#logcountry").val();
+            var val = $("#country").val();
             getCountryAttr(val);
         });
 
         function getCountryAttr(val) {
             if(val!=""){
-
+                getState(val);
                 getCode(val);
             }
- -->
+            else{
+                console.log(val)
+                $("#state-list").html('<option value="">Please select Country</option>').val('');
+            }
 
-
-         <!--    // getCurrency(val);
-
+//        getCurrency(val);
 
         }
- -->
 
-
-<!-- 
-        function getCode(val) {
+        function getState(val) {
             $.ajax({
-                headers: {
-                   'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
                 type: "GET",
-                url: "{{url('get-code')}}",
-                data: {'country_id':val},//'country_id=' + val,
+                url: "{{url('get-loginstate')}}/" + val,
+                data: {'country_id':val,'_token':"{{csrf_token()}}"},//'country_id=' + val,
                 success: function (data) {
-                    $("#logmobile_code").val(data);
-                    $("#logphone_code_hidden").val(data);
+
+                    $("#state-list").html('<option value="">Please select Country</option>').val('');
+
+
+                    $("#state-list").html(data).val(state.id);
                 }
             });
-        } -->
-       <!--  function getCurrency(val) {
+        }
+
+
+        function getCode(val) {
+            $.ajax({
+                type: "GET",
+                url: "{{url('get-code')}}",
+                data: {'country_id':val,'_token':"{{csrf_token()}}"},//'country_id=' + val,
+                success: function (data) {
+                    $("#mobile_code").val(data);
+                    $("#mobile_code_hidden").val(data);
+                }
+            });
+        }
+        function getCurrency(val) {
             $.ajax({
                 type: "GET",
                 url: "{{url('get-currency')}}",
@@ -1453,34 +1519,34 @@
                 }
             });
         }
-    </script> -->
+    </script>
     <!-- Google Code for Help Desk Pro | Campaign 001 Conversion Page
     In your html page, add the snippet and call
     goog_report_conversion when someone clicks on the
     chosen link or button. -->
     <script type="text/javascript">
         //<![CDATA[
-        // goog_snippet_vars = function() {
-        //     var w = window;
-        //     w.google_conversion_id = 1027628032;
-        //     w.google_conversion_label = "uBhoCLT3i3AQgLiB6gM";
-        //     w.google_remarketing_only = false;
-        // }
+        goog_snippet_vars = function() {
+            var w = window;
+            w.google_conversion_id = 1027628032;
+            w.google_conversion_label = "uBhoCLT3i3AQgLiB6gM";
+            w.google_remarketing_only = false;
+        }
         // DO NOT CHANGE THE CODE BELOW.
-        // goog_report_conversion = function(url) {
-        //     goog_snippet_vars();
-        //     window.google_conversion_format = "3";
-        //     var opt = new Object();
-        //     opt.onload_callback = function() {
-        //         if (typeof(url) != 'undefined') {
-        //             window.location = url;
-        //         }
-        //     }
-        //     var conv_handler = window['google_trackConversion'];
-        //     if (typeof(conv_handler) == 'function') {
-        //         conv_handler(opt);
-        //     }
-        //     fbq('track', 'CompleteRegistration');
+        goog_report_conversion = function(url) {
+            goog_snippet_vars();
+            window.google_conversion_format = "3";
+            var opt = new Object();
+            opt.onload_callback = function() {
+                if (typeof(url) != 'undefined') {
+                    window.location = url;
+                }
+            }
+            var conv_handler = window['google_trackConversion'];
+            if (typeof(conv_handler) == 'function') {
+                conv_handler(opt);
+            }
+            fbq('track', 'CompleteRegistration');
         }
         //]]>
     </script>
@@ -1490,83 +1556,241 @@
     chosen link or button. -->
     <script type="text/javascript">
         //<![CDATA[
-        // goog_snippet_vars = function() {
-        //     var w = window;
-        //     w.google_conversion_id = 1027628032;
-        //     w.google_conversion_label = "uBhoCLT3i3AQgLiB6gM";
-        //     w.google_remarketing_only = false;
-        // }
+        goog_snippet_vars = function() {
+            var w = window;
+            w.google_conversion_id = 1027628032;
+            w.google_conversion_label = "uBhoCLT3i3AQgLiB6gM";
+            w.google_remarketing_only = false;
+        }
         // DO NOT CHANGE THE CODE BELOW.
-        // goog_report_conversion = function(url) {
-        //     goog_snippet_vars();
-        //     window.google_conversion_format = "3";
-        //     var opt = new Object();
-        //     opt.onload_callback = function() {
-        //         if (typeof(url) != 'undefined') {
-        //             window.location = url;
-        //         }
-        //     }
-        //     var conv_handler = window['google_trackConversion'];
-        //     if (typeof(conv_handler) == 'function') {
-        //         conv_handler(opt);
-        //     }
-        //     fbq('track', 'CompleteRegistration');
-        // }
+        goog_report_conversion = function(url) {
+            goog_snippet_vars();
+            window.google_conversion_format = "3";
+            var opt = new Object();
+            opt.onload_callback = function() {
+                if (typeof(url) != 'undefined') {
+                    window.location = url;
+                }
+            }
+            var conv_handler = window['google_trackConversion'];
+            if (typeof(conv_handler) == 'function') {
+                conv_handler(opt);
+            }
+            fbq('track', 'CompleteRegistration');
+        }
         //]]>
     </script>
-   <!--  <script type="text/javascript"
+    <script type="text/javascript"
             src="//www.googleadservices.com/pagead/conversion_async.js">
-    </script> -->
-   
-
-  <!--   <script type="text/javascript"
-            src="//www.googleadservices.com/pagead/conversion_async.js">
-    </script> -->
-   <script>
-        // $(document).ready(function () {
-
-        //     $.ajaxSetup({ headers: { 'csrftoken' : '{{ csrf_token() }}' } });
-
-        //     //Initialize tooltips
-        //     $('.nav-tabs > li a[title]').tooltip();
-        //     $('.nav-tabs .active a[href="#step1"]').click(function(){
-        //         $('.wizard-inner').css('display','none');
-        //     })
-        //     //Wizard
-        //     if(!$('.nav-tabs .active a[href="#step1"]')){
-        //         $('.wizard-inner').css('display','block');
-        //     }
-        //     $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
-
-        //         var $target = $(e.target);
-
-        //         if ($target.parent().hasClass('disabled')) {
-        //             return false;
-        //         }
-        //     });
-
-        
-
-        //     $(".prev").click(function (e) {
-
-        //         var $active = $('.wizard .nav-tabs li.active');
-        //         $active.next().removeClass('disabled');
-        //         prevTab($active);
-        //         $('.wizard-inner').css('display','block');
-        //     });
-        // });
-
-        // function nextTab(elem) {
-
-        //     $(elem).next().find('a[data-toggle="tab"]').click();
-        // }
-        // function prevTab(elem) {
-        //     $(elem).prev().find('a[data-toggle="tab"]').click();
-        // }
     </script>
-  
+    <!-- Facebook Pixel Code -->
+    <!-- <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window,document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+     fbq('init', '308328899511239');
+    fbq('track', 'PageView');
 
+    </script> -->
 
+    <script type="text/javascript"
+            src="//www.googleadservices.com/pagead/conversion_async.js">
+    </script>
+    <script>
+        $(document).ready(function () {
 
+            $.ajaxSetup({ headers: { 'csrftoken' : '{{ csrf_token() }}' } });
 
+            //Initialize tooltips
+            $('.nav-tabs > li a[title]').tooltip();
+            $('.nav-tabs .active a[href="#step1"]').click(function(){
+                $('.wizard-inner').css('display','none');
+            })
+            //Wizard
+            if(!$('.nav-tabs .active a[href="#step1"]')){
+                $('.wizard-inner').css('display','block');
+            }
+            $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
 
+                var $target = $(e.target);
+
+                if ($target.parent().hasClass('disabled')) {
+                    return false;
+                }
+            });
+
+            /*$(".next-step").click(function (e) {
+                $('.wizard-inner').show();
+                var $active = $('.wizard .nav-tabs li.active');
+                $active.next().removeClass('disabled');
+                nextTab($active);
+                window.scrollTo(0, 10);
+
+            });*/
+
+            $(".prev").click(function (e) {
+
+                var $active = $('.wizard .nav-tabs li.active');
+                $active.next().removeClass('disabled');
+                prevTab($active);
+                $('.wizard-inner').css('display','block');
+            });
+        });
+
+        function nextTab(elem) {
+
+            $(elem).next().find('a[data-toggle="tab"]').click();
+        }
+        function prevTab(elem) {
+            $(elem).prev().find('a[data-toggle="tab"]').click();
+        }
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <script type="text/javascript">
+        var telInput = $('#mobilenum'),
+            errorMsg = document.querySelector("#error-msg"),
+            validMsg = document.querySelector("#valid-msg"),
+            addressDropdown = $("#country");
+        var errorMap = [ "Invalid number", "Invalid country code", "Number Too short", "Number Too long", "Invalid number"];
+
+        telInput.intlTelInput({
+            geoIpLookup: function (callback) {
+                $.get("https://ipinfo.io", function () {}, "jsonp").always(function (resp) {
+                    var countryCode = (resp && resp.country) ? resp.country : "";
+                    callback(countryCode);
+                });
+            },
+            initialCountry: "auto",
+            separateDialCode: true,
+        });
+        var reset = function() {
+            errorMsg.innerHTML = "";
+            errorMsg.classList.add("hide");
+            validMsg.classList.add("hide");
+        };
+
+        $('.intl-tel-input').css('width', '100%');
+
+        telInput.on('blur', function () {
+            reset();
+            if ($.trim(telInput.val())) {
+                if (telInput.intlTelInput("isValidNumber")) {
+                    $('#mobilenum').css("border-color","");
+                    $("#error-msg").html('');
+                    errorMsg.classList.add("hide");
+                    $('#register').attr('disabled',false);
+                } else {
+                    var errorCode = telInput.intlTelInput("getValidationError");
+                    errorMsg.innerHTML = errorMap[errorCode];
+                    $('#mobile_codecheck').html("");
+
+                    $('#mobilenum').css("border-color","red");
+                    $('#error-msg').css({"color":"red","margin-top":"5px"});
+                    errorMsg.classList.remove("hide");
+                    $('#register').attr('disabled',true);
+                }
+            }
+        });
+        $('input').on('focus', function () {
+            $(this).parent().removeClass('has-error');
+        });
+        addressDropdown.change(function() {
+            telInput.intlTelInput("setCountry", $(this).val());
+            if ($.trim(telInput.val())) {
+                if (telInput.intlTelInput("isValidNumber")) {
+                    $('#mobilenum').css("border-color","");
+                    $("#error-msg").html('');
+                    errorMsg.classList.add("hide");
+                    $('#register').attr('disabled',false);
+                } else {
+                    var errorCode = telInput.intlTelInput("getValidationError");
+                    errorMsg.innerHTML = errorMap[errorCode];
+                    $('#mobile_codecheck').html("");
+
+                    $('#mobilenum').css("border-color","red");
+                    $('#error-msg').css({"color":"red","margin-top":"5px"});
+                    errorMsg.classList.remove("hide");
+                    $('#register').attr('disabled',true);
+                }
+            }
+        });
+
+        $('form').on('submit', function (e) {
+            $('input[name=country_code]').attr('value', $('.selected-dial-code').text());
+        });
+
+    </script>
+    <script>
+        var tel = $('.phone'),
+            country = $('#country').val();
+        addressDropdown = $("#country");
+        errorMsg1 = document.querySelector("#error-msg1"),
+            validMsg1 = document.querySelector("#valid-msg1");
+        var errorMap = [ "Invalid number", "Invalid country code", "Number Too short", "Number Too long", "Invalid number"];
+        tel.intlTelInput({
+            // allowDropdown: false,
+            // autoHideDialCode: false,
+            // autoPlaceholder: "off",
+            // dropdownContainer: "body",
+            // excludeCountries: ["us"],
+            // formatOnDisplay: false,
+            geoIpLookup: function(callback) {
+                $.get("https://ipinfo.io", function() {}, "jsonp").always(function(resp) {
+                    resp.country = country;
+                    var countryCode = (resp && resp.country) ? resp.country : "";
+                    callback(countryCode);
+                });
+            },
+            // hiddenInput: "full_number",
+            initialCountry: "auto",
+            // nationalMode: false,
+            // onlyCountries: ['us', 'gb', 'ch', 'ca', 'do'],
+            placeholderNumberType: "MOBILE",
+            // preferredCountries: ['cn', 'jp'],
+            separateDialCode: true,
+
+            utilsScript: "{{asset('js/intl/js/utils.js')}}"
+        });
+        var reset = function() {
+            errorMsg1.innerHTML = "";
+            errorMsg1.classList.add("hide");
+            validMsg1.classList.add("hide");
+        };
+
+        addressDropdown.change(function() {
+            tel.intlTelInput("setCountry", $(this).val());
+        });
+
+        tel.on('blur', function () {
+            reset();
+            if ($.trim(tel.val())) {
+                if (tel.intlTelInput("isValidNumber")) {
+                    $('.phone').css("border-color","");
+                    validMsg1.classList.remove("hide");
+                    $('#sendOtp').attr('disabled',false);
+                } else {
+                    var errorCode = tel.intlTelInput("getValidationError");
+                    errorMsg1.innerHTML = errorMap[errorCode];
+                    $('#conmobile').html("");
+
+                    $('.phone').css("border-color","red");
+                    $('#error-msg1').css({"color":"red","margin-top":"5px"});
+                    errorMsg1.classList.remove("hide");
+                    $('#sendOtp').attr('disabled',true);
+                }
+            }
+        });
+    </script>
+    <noscript>
+        <img height="1" width="1"
+             src="https://www.facebook.com/tr?id=308328899511239&ev=PageView
+&noscript=1"/>
+    </noscript>
+    <!-- End Facebook Pixel Code -->
+@stop

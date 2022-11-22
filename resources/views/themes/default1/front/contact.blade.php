@@ -25,11 +25,9 @@ What can we help you with?
         padding-left:5px;
     }
 </style>
-
 <?php 
 $set = new \App\Model\Common\Setting();
 $set = $set->findOrFail(1);
- $analyticsTag = App\Model\Common\ChatScript::where('google_analytics', 1)->where('on_registration', 1)->value('google_analytics_tag');
 ?>
 
 <div class="row">
@@ -52,16 +50,11 @@ $set = $set->findOrFail(1);
             <div class="form-row">
                     <div class="form-group col">
                         <label class="required">Mobile No</label>
-                        {!! Form::hidden('mobile',null,['id'=>'con_code_hidden']) !!}
-                        <input type="tel" value=""  id="connumber" data-msg-required="Please enter the mobile No." maxlength="10" class="form-control" name="Mobile"  required>
-                         <span id="convalid-msg" class="hide"></span>
-                         <span id="conerror-msg" class="hide"></span>
-                        <span id="con_codecheck"></span>
+                        {!! Form::hidden('mobile',null,['id'=>'mobile_code_hidden','name'=>'country_code']) !!}
+                        <input type="text" value=""  id="mobilenum" data-msg-required="Please enter the mobile No." maxlength="10" class="form-control" name="Mobile"  required>
                        
                     
                 </div>
-                
-              
             </div>
            <div class="form-row">
                <div class="form-group col">
@@ -73,7 +66,7 @@ $set = $set->findOrFail(1);
             </div>
               <div class="form-row">
                 <div class="form-group col">
-                    <input type="submit" value="Send Message" id="submit" class="btn btn-primary btn-lg mb-xlg" data-loading-text="Loading...">
+                    <input type="submit" value="Send Message" class="btn btn-primary btn-lg mb-xlg" data-loading-text="Loading...">
                 </div>
             </div>
         {!! Form::close() !!}
@@ -101,75 +94,25 @@ $set = $set->findOrFail(1);
 </div>
 @stop
 @section('script')
-
 <script type="text/javascript">
-
-
-// get the country data from the plugin
-     $(document).ready(function(){
-
-
-    var intelInput = $('#connumber');
-    conaddressDropdown = $("#country");
-    conerrorMsg = document.querySelector("#conerror-msg"),
-    convalidMsg = document.querySelector("#convalid-msg");
-    var conerrorMap = [ "Invalid number", "Invalid country code", "Number Too short", "Number Too long", "Invalid number"];
-    intelInput.intlTelInput({
-        initialCountry: "auto",
+    var telInput = $('#mobilenum');
+    telInput.intlTelInput({
         geoIpLookup: function (callback) {
-
-            $.get("http://ipinfo.io", function () {}, "jsonp").always(function (resp) {
-
-                var countryCode = (resp && resp.concountry) ? resp.concountry : "";
-                    currentCountry=countryCode.toLowerCase()
-                    callback(countryCode);
+            $.get("https://ipinfo.io", function () {}, "jsonp").always(function (resp) {
+                var countryCode = (resp && resp.country) ? resp.country : "";
+                callback(countryCode);
             });
         },
+        initialCountry: "auto",
         separateDialCode: true,
-      utilsScript: "{{asset('js/intl/js/utils.js')}}"
+        utilsScript: "{{asset('common/js/utils.js')}}"
     });
-     var reset = function() {
-      conerrorMsg.innerHTML = "";
-      conerrorMsg.classList.add("hide");
-      convalidMsg.classList.add("hide");
-    };
-    setTimeout(()=>{
-         intelInput.intlTelInput("setCountry", currentCountry);
-    },500)
-     $('.intl-tel-input').css('width', '100%');
-    intelInput.on('blur', function () {
-        reset();
-        if ($.trim(intelInput.val())) {
-            if (intelInput.intlTelInput("isValidNumber")) {
-              $('#connumber').css("border-color","");
-              convalidMsg.classList.remove("hide");
-              $('#submit').attr('disabled',false);
-            } else {
-              var conerrorCode = intelInput.intlTelInput("getValidationError");
-             conerrorMsg.innerHTML = conerrorMap[conerrorCode];
-             $('#connumber').css("border-color","red");
-             $('#conerror-msg').css({"color":"red","margin-top":"5px"});
-            conerrorMsg.classList.remove("hide");
-             $('#submit').attr('disabled',true);
-            }
-        }
-    });
+    $('.intl-tel-input').css('width', '100%');
 
-     conaddressDropdown.change(function() {
-     intelInput.intlTelInput("setCountry", $(this).val());
-             reset();
-             if ($.trim(intelInput.val())) {
-            if (intelInput.intlTelInput("isValidNumber")) {
-              $('#connumber').css("border-color","");
-              conerrorMsg.classList.add("hide");
-              $('#submit').attr('disabled',false);
-            } else {
-              var conerrorCode = intelInput.intlTelInput("getValidationError");
-             conerrorMsg.innerHTML = conerrorMap[conerrorCode];
-             $('#connumber').css("border-color","red");
-             $('#conerror-msg').css({"color":"red","margin-top":"5px"});
-             cerrorMsg.classList.remove("hide");
-             $('#submit').attr('disabled',true);
+    telInput.on('blur', function () {
+        if ($.trim(telInput.val())) {
+            if (!telInput.intlTelInput("isValidNumber")) {
+                telInput.parent().addClass('has-error');
             }
         }
     });
@@ -178,29 +121,8 @@ $set = $set->findOrFail(1);
     });
 
     $('form').on('submit', function (e) {
-        $('input[name=sds]').attr('value', $('.selected-dial-code').text());
+        $('input[name=country_code]').attr('value', $('.selected-dial-code').text());
     });
 
-
-           
-
-
-});
-       function getCode(val) {
-            $.ajax({
-                type: "GET",
-                url: "{{url('get-code')}}",
-                data: {'country_id':val,'_token':"{{csrf_token()}}"},//'country_id=' + val,
-                success: function (data) {
-                    // $("#con_code").val(data);
-                    $("#con_code_hidden").val(data);
-                }
-            });
-        }
-    </script>
-
-
- 
-
-
+</script>
 @stop

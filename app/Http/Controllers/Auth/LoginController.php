@@ -124,7 +124,7 @@ class LoginController extends Controller
 
             return property_exists($this, 'redirectTo') ? $this->redirectTo : '/'.$url;
         } else {
-            return property_exists($this, 'redirectTo') ? $this->redirectTo : '/';
+            return property_exists($this, 'redirectTo') ? '/my-invoices' : '/';
         }
     }
 }

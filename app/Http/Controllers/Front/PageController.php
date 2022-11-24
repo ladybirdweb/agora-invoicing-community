@@ -39,7 +39,7 @@ class PageController extends Controller
         return \DataTables::of($this->page->select('id', 'name', 'url', 'created_at'))
                         ->orderColumn('name', '-id $1')
                         ->orderColumn('url', '-id $1')
-                        ->orderColumn('Created At', '-id $1')
+                        ->orderColumn('created_at', '-id $1')
                         ->addColumn('checkbox', function ($model) {
                             return "<input type='checkbox' class='page_checkbox' 
                             value=".$model->id.' name=select[] id=check>';
@@ -59,6 +59,14 @@ class PageController extends Controller
                             ." class='btn btn-sm btn-secondary btn-xs'".tooltip('Edit')."<i class='fa fa-edit'
                                  style='color:white;'> </i></a>";
                         })
+                          ->filterColumn('name', function ($query, $keyword) {
+                              $sql = 'name like ?';
+                              $query->whereRaw($sql, ["%{$keyword}%"]);
+                          })
+                            ->filterColumn('url', function ($query, $keyword) {
+                                  $sql = 'url like ?';
+                                  $query->whereRaw($sql, ["%{$keyword}%"]);
+                              })
 
                           ->rawColumns(['checkbox', 'name', 'url',  'created_at', 'action'])
                         ->make(true);

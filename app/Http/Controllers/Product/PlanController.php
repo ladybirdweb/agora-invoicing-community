@@ -100,6 +100,10 @@ class PlanController extends ExtendedPlanController
                             if ($product) {
                                 $response = $model->product;
                             }
+                            else
+                            {
+                             $response = "--";
+                            }
 
                             return ucfirst($response);
                         })

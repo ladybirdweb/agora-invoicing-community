@@ -88,9 +88,9 @@ All Pages
             columns: [
                 {data: 'checkbox', name: 'checkbox'},
                 {data: 'name', name: 'name'},
-                {data: 'url', name: 'Url'},
-                {data: 'created_at', name: 'Created At'},
-                {data: 'action', name: 'Action'}
+                {data: 'url', name: 'url'},
+                {data: 'created_at', name: 'created_at'},
+                {data: 'action', name: 'action'}
             ],
             "fnDrawCallback": function( oSettings ) {
                 $(function () {

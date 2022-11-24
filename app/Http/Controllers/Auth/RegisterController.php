@@ -11,7 +11,6 @@ use Facades\Spatie\Referer\Referer;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
 use Symfony\Component\Mime\Email;
 
 class RegisterController extends Controller
@@ -62,12 +61,12 @@ class RegisterController extends Controller
         //template
         // $template = new \App\Model\Common\Template();
         // $temp_id = $settings->where('id', 1)->first()->password_mail;
-       
+
         // $template = $template->where('id', $temp_id)->first();
 
         // $mail = new \App\Http\Controllers\Common\PhpMailController();
         // $mailer = $mail->setMailConfig($settings);
-       
+
         // $html = $template->data;
         try {
             $location = getLocation();
@@ -109,7 +108,6 @@ class RegisterController extends Controller
             //       ->subject($template->name)
             //       ->html($mail->mailTemplate($template->data, $templatevariables = ['name' => $user['first_name'].' '.$user['last_name'],
             //           'username' => $user['email'], 'password' => $password, ]));
-                 
 
             // $mailer->send($email);
             // $mail->email_log_success($settings->email, $user['email'], $template->name, $html);

@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Auth;
 
 use App\ApiKey;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\verifyOtp;
 use App\Model\Common\Country;
 use App\Model\Common\Setting;
 use App\Model\Common\StatusSetting;
@@ -92,7 +91,7 @@ class BaseAuthController extends Controller
         return $array['type'];
     }
 
-   /**
+    /**
      * Sends otp and email for confirmatiob.
      */
     public function requestOtpFromAjax(Request $request)

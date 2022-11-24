@@ -17,9 +17,9 @@ class ExtendedBaseProductController extends Controller
     {
         // $new_upload = ProductUpload::where('product_id', '=', $id)
         // ->select('id', 'product_id', 'title', 'description', 'version', 'file');
-        
-        $new_upload = ProductUpload::leftJoin('products','products.id', '=', 'product_uploads.product_id')
-                      ->select('product_uploads.title','product_uploads.description','product_uploads.version','product_uploads.file','products.name','products.id','product_uploads.product_id')
+
+        $new_upload = ProductUpload::leftJoin('products', 'products.id', '=', 'product_uploads.product_id')
+                      ->select('product_uploads.title', 'product_uploads.description', 'product_uploads.version', 'product_uploads.file', 'products.name', 'products.id', 'product_uploads.product_id')
                       ->where('product_id', '=', $id);
 
         return \DataTables::of($new_upload)
@@ -54,21 +54,21 @@ class ExtendedBaseProductController extends Controller
                                  style='color:white;'> </i></a></p>";
         })
          ->filterColumn('title', function ($query, $keyword) {
-                              $sql = 'title like ?';
-                              $query->whereRaw($sql, ["%{$keyword}%"]);
-                          })
+             $sql = 'title like ?';
+             $query->whereRaw($sql, ["%{$keyword}%"]);
+         })
          ->filterColumn('description', function ($query, $keyword) {
-                              $sql = 'product_uploads.description like ?';
-                              $query->whereRaw($sql, ["%{$keyword}%"]);
-                          })
+             $sql = 'product_uploads.description like ?';
+             $query->whereRaw($sql, ["%{$keyword}%"]);
+         })
         ->filterColumn('version', function ($query, $keyword) {
-                              $sql = 'product_uploads.version like ?';
-                              $query->whereRaw($sql, ["%{$keyword}%"]);
-                          })
+            $sql = 'product_uploads.version like ?';
+            $query->whereRaw($sql, ["%{$keyword}%"]);
+        })
         ->filterColumn('file', function ($query, $keyword) {
-                              $sql = 'product_uploads.file like ?';
-                              $query->whereRaw($sql, ["%{$keyword}%"]);
-                          })
+            $sql = 'product_uploads.file like ?';
+            $query->whereRaw($sql, ["%{$keyword}%"]);
+        })
         ->rawcolumns(['checkbox', 'product_id', 'title', 'description', 'version', 'file', 'action'])
         ->make(true);
     }

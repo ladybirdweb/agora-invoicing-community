@@ -47,7 +47,7 @@ class AuthController extends BaseAuthController
         $this->licensing = $license;
     }
 
-      public function activate($token, AccountActivate $activate, Request $request, User $user)
+    public function activate($token, AccountActivate $activate, Request $request, User $user)
     {
         try {
             $activate = $activate->where('token', $token)->first();

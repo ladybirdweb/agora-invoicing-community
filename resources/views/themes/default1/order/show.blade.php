@@ -335,41 +335,58 @@ input:checked + .slider:before {
                          <table id="installationDetail-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
                              
 
-                    <thead><tr>
-                        
-                         <th >Installation Path</th>
-                          <th>Installation IP</th>
-                           
-                            <th>Current Version </th>
-                            <th>  Last Active</th>
-                            
-                        </tr></thead>
-                          <tbody>
+                       <thead>
+                <tr>
+                
+                 <th >Installation Path</th>
+                  <th>Installation IP</th>
+                   
+                    <th>Current Version </th>
+                    <th>  Last Active</th>
+                    
+                </tr></thead>
+                    <tbody>
                             <tr>
-                              @if($ip == "")
-                              <td>--</td>
-                              @else
-                                 <td>{{$ip}}</td>
-                               @endif
-                               @if($path == "")
-                               <td>--</td>
-                               @else
-                                  <td>{{$path}}</td>
+                          
+                            
+                            @foreach($installationDetails["installed_path"] as $key => $ins)
+                             <?php
+                                $latestVersion =  DB::table('product_uploads')->where('product_id', $product->id)->latest()->value('version');
+                                $ver = DB::table('installation_details')->where('installation_path',$ins)->pluck('version');
+                                $date = DB::table('installation_details')->where('installation_path',$ins)->pluck('updated_at');
+                                $created_at = DB::table('installation_details')->where('installation_path',$ins)->pluck('created_at');
+                                // $dateTimeString = getDateHtml($date[$key]);
+                                $date = getTimeInLoggedInUserTimeZone($date[$key], 'M j, Y');
+                                $dateTime = getTimeInLoggedInUserTimeZone($date[$key]);
+                                $status = $date[$key] > (new Carbon\Carbon('-30 days'))->toDateTimeString() && $date[$key] != $created_at[$key];
+                                ?>
+                     
+                                 <td>{{$ins}}</td>
+                                 <td>{{$installationDetails["installed_ip"][$key]}}</td>
+                                 @if($ver[$key])
+                                 <!--<td>{{$ver[$key]}}</td>-->
+                                 @if($ver[$key] < $latestVersion)
+                                 <td data-toggle="tooltip" data-placement="top" title="Outdated Version">{{$ver[$key]}}</td>
+                                 @else
+                                 <td data-toggle="tooltip" data-placement="top" title="Latest Version">{{$ver[$key]}}</td>
+                                 @endif
+                                 @else
+                                 <td>--</td>
+                                 @endif
+                                  @if($ver[$key])
+                                  <td data-toggle="tooltip" data-placement="top" title="{{$dateTime}}" >{{$date}}</td>
                                   @endif
-                                  @if($version == "")
-                                  <td>--</td>
+                                  @if($status == true)
+                                  <td><span class='badge badge-primary' style='background-color:darkcyan !important;' <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Installation is Active'>
+                     </label>Active</span></td>
                                   @else
-                                  <td>
-                                    {{$version}}
-                                </td>
-                                @endif
-                                @if($active == "")
-                                <td>--</td>
-                                @else
-                                <td>
-                                    {{$active}}
-                                </td>
-                                @endif
+                                  <span class='badge badge-info' <label data-toggle='tooltip' style='font-weight:500;background-color:crimson;' data-placement='top' title='Installation inactive for more than 30 days'>
+                    </label>Inactive</span>
+                                  @endif
+                                 
+                             
+                            @endforeach
+                             
                             </tr>
                           
                         </tbody>

@@ -236,6 +236,7 @@ class OrderController extends BaseOrderController
     {
         try {
             $order = $this->order->findOrFail($id);
+            $product = $order->product()->first();
             if (User::onlyTrashed()->find($order->client)) {//If User is soft deleted for this order
                 throw new \Exception('The user for this order is suspended from the system. Restore the user to view order details.');
             }
@@ -274,21 +275,11 @@ class OrderController extends BaseOrderController
 
             $cont = new \App\Http\Controllers\License\LicenseController();
             $installationDetails = $cont->searchInstallationPath($order->serial_key, $order->product);
-            $path = getInstallationDetail($installationDetails['installed_path']);
+            $des = collect($installationDetails);
 
-            $ip = getInstallationDetail($installationDetails['installed_ip']);
-
-            $version = getVersionAndLabel($path, $order->product);
-            if ($version) {
-                $active = getDateHtml($version->updated_at).'&nbsp;'.installationStatusLabel($version->updated_at, $version->created_at);
-
-                return $active;
-            } else {
-                $active = '';
-            }
-
+      
             return view('themes.default1.order.show',
-                compact('user', 'order', 'subscription', 'licenseStatus', 'installationDetails', 'allowDomainStatus', 'noOfAllowedInstallation', 'lastActivity', 'versionLabel', 'date', 'licdate', 'supdate', 'ip', 'path', 'version', 'active'));
+                compact('user', 'order', 'subscription', 'licenseStatus', 'installationDetails', 'allowDomainStatus', 'noOfAllowedInstallation', 'lastActivity', 'versionLabel', 'date', 'licdate', 'supdate','des','product'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }

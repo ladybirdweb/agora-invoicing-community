@@ -155,7 +155,7 @@ Dashboard
         <ul class="users-list clearfix">
             @foreach($users as $user)
                 <li>
-                    <a class="users-list-name" href="{{url('clients/'.$user['id'])}}"> <img src="{{$user['profile_pic']}}" alt="User Image"></a>
+                    <a class="users-list-name" href="{{url('clients/'.$user['id'])}}"> <img src="{{$user['profile_pic']}}" alt="User Image" style="height: 120px;"></a>
                     <a class="users-list-name" href="{{url('clients/'.$user['id'])}}">{{$user['first_name']." ".$user['last_name']}}</a>
 
                     @php

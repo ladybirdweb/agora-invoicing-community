@@ -16,6 +16,7 @@ use App\Model\Product\Subscription;
 use App\User;
 use Exception;
 use GrahamCampbell\Markdown\Facades\Markdown;
+use App\Model\Order\InstallationDetail;
 
 class ClientController extends BaseClientController
 {
@@ -507,24 +508,14 @@ class ClientController extends BaseClientController
 
             $cont = new \App\Http\Controllers\License\LicenseController();
             $installationDetails = $cont->searchInstallationPath($order->serial_key, $order->product);
-            $path = getInstallationDetail($installationDetails['installed_path']);
-
-            $ip = getInstallationDetail($installationDetails['installed_ip']);
-
-            $version = getVersionAndLabel($path, $order->product);
-            if ($version) {
-                $active = getDateHtml($version->updated_at).'&nbsp;'.installationStatusLabel($version->updated_at, $version->created_at);
-
-                return $active;
-            } else {
-                $active = '';
-            }
-
+            $des = collect($installationDetails);
+         
             return view(
                 'themes.default1.front.clients.show-order',
-                compact('invoice', 'order', 'user', 'product', 'subscription', 'licenseStatus', 'installationDetails', 'allowDomainStatus', 'date', 'licdate', 'versionLabel', 'ip', 'path', 'version', 'active')
+                compact('invoice', 'order', 'user', 'product', 'subscription', 'licenseStatus', 'installationDetails', 'allowDomainStatus', 'date', 'licdate', 'versionLabel', 'des','product')
             );
         } catch (Exception $ex) {
+            dd($ex);
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

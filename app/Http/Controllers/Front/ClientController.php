@@ -16,7 +16,6 @@ use App\Model\Product\Subscription;
 use App\User;
 use Exception;
 use GrahamCampbell\Markdown\Facades\Markdown;
-use App\Model\Order\InstallationDetail;
 
 class ClientController extends BaseClientController
 {
@@ -509,13 +508,14 @@ class ClientController extends BaseClientController
             $cont = new \App\Http\Controllers\License\LicenseController();
             $installationDetails = $cont->searchInstallationPath($order->serial_key, $order->product);
             $des = collect($installationDetails);
-         
+
             return view(
                 'themes.default1.front.clients.show-order',
-                compact('invoice', 'order', 'user', 'product', 'subscription', 'licenseStatus', 'installationDetails', 'allowDomainStatus', 'date', 'licdate', 'versionLabel', 'des','product')
+                compact('invoice', 'order', 'user', 'product', 'subscription', 'licenseStatus', 'installationDetails', 'allowDomainStatus', 'date', 'licdate', 'versionLabel', 'des', 'product')
             );
         } catch (Exception $ex) {
             dd($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

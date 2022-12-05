@@ -154,9 +154,14 @@ class MailChimpController extends BaseMailChimpController
             $mailchimpProducts = $this->mailchimp->get("lists/$this->list_id/interest-categories");
             $selectedProducts = MailchimpGroupAgoraRelation::select('agora_product_id', 'mailchimp_group_cat_id')->orderBy('id', 'asc')->get()->toArray();
             $allGroups = $this->mailchimp->get("lists/$this->list_id/interest-categories"); //Get all the groups(interest-categories for a list)
+           
             foreach ($allGroups['categories']  as $key => $value) {
-                $display[] = (['id' => $value->id, 'title' => $value->title]);
+               
+              $display[] = (['id' => $value->id, 'title' => $value->title]);
+          
+              
             }
+            
 
             $this->addProductInterestFieldsToAgora(); //add all the fields in Product Section of Groups to the db
             $group_fields = $this->groups->where('list_id', $this->list_id)
@@ -176,8 +181,14 @@ class MailChimpController extends BaseMailChimpController
             $isPaidYesId = MailchimpFieldAgoraRelation::first()->pluck('is_paid_yes')->toArray();
             $selectedIsPaid[] = $isPaidYesId ? MailchimpGroup::where('category_option_id', $isPaidYesId)->pluck('category_id')->first() : '';
             $status = StatusSetting::select('mailchimp_product_status', 'mailchimp_ispaid_status')->first();
-
+             if(isset($display)){
             return view('themes.default1.common.mailchimp.map', compact('mailchimp_fields', 'model2', 'model', 'agoraProducts', 'display', 'selectedProducts', 'relations', 'group_fields', 'categoryList', 'productList', 'status', 'selectedIsPaid'));
+             }
+             else
+             {
+            return view('themes.default1.common.mailchimp.map', compact('mailchimp_fields', 'model2', 'model', 'agoraProducts', 'selectedProducts', 'relations', 'group_fields', 'categoryList', 'productList', 'status', 'selectedIsPaid'));
+
+             }
         } catch (Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }

@@ -192,11 +192,13 @@ input:checked + .slider:before {
                         <h5>Select A Group</h5>
                          <select name="group"  class="form-control col-md-2"  id="group" onChange="getGroup(this.value)">
                             <option value="">Choose</option>
+                            @if(isset($display))
                 @foreach ($display as $key=>$value)
                <option value="{{$value['id']}}">{{$value['title']}}</option>
                  
             
                 @endforeach
+                @endif
             </select>
                 <table class="table table-hover">
                     <tr>
@@ -535,12 +537,14 @@ input:checked + .slider:before {
                         <h5>Select A Group</h5>
                          <select name="group"  class="form-control col-md-2"  id="group" onChange="getGroup(this.value)">
                             <option value="">Choose</option>
+                            @if(isset($display))
                 @foreach ($display as $key=>$value)
                <option value="{{$value['id']}}"<?php  if(in_array($value['id'], $selectedIsPaid) ) 
                         { echo "selected";} ?>>{{$value['title']}}</option>
                  
             
                 @endforeach
+                @endif
             </select>
 
 

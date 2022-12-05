@@ -327,7 +327,7 @@ if($script->on_every_page == 1) {
                                                 
                                                      <li class="dropdown">
                                                         <a  class="nav-link" data-toggle="modal" data-target="#register-modal" style="cursor: pointer;">
-                                                            Free Signup 
+                                                            Login
                                          
                                                         </a>
                                                     </li>

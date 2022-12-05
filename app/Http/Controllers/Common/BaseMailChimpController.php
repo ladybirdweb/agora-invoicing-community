@@ -130,7 +130,6 @@ class BaseMailChimpController extends Controller
 
     public function postMailChimpSettings(Request $request)
     {
-    
         $this->validate($request, [
             'api_key' => 'required',
             'list_id' => 'required',

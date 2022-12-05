@@ -82,7 +82,6 @@ class ExtendedBaseProductController extends Controller
      */
     public function editProductUpload($id)
     {
-      
         $model = ProductUpload::where('product_id', $id)->first();
         $selectedProduct = $model->product->name;
 

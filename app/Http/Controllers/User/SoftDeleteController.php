@@ -26,7 +26,6 @@ class SoftDeleteController extends ClientController
                 \DB::raw("CONCAT(first_name, ' ', last_name) as name"),
                 'country_name as country', 'created_at', 'active', 'mobile_verified', 'is_2fa_enabled', 'role', 'position'
             )->onlyTrashed();
-            
 
         return \DataTables::of($baseQuery)
                         ->addColumn('checkbox', function ($model) {
@@ -58,11 +57,11 @@ class SoftDeleteController extends ClientController
                             ." class='btn btn-sm btn-secondary btn-xs'".tooltip('Restore')."
                             <i class='fas fa-sync-alt' style='color:white;'> </i></a>";
                         })
-                    
+
                            ->filterColumn('name', function ($model, $keyword) {
-                            // removing all white spaces so that it can be searched irrespective of number of spaces
-                            $model->whereRaw("CONCAT(first_name, ' ',last_name) like ?", ["%$keyword%"]);
-                        })
+                               // removing all white spaces so that it can be searched irrespective of number of spaces
+                               $model->whereRaw("CONCAT(first_name, ' ',last_name) like ?", ["%$keyword%"]);
+                           })
                         ->filterColumn('email', function ($model, $keyword) {
                             $model->whereRaw('email like ?', ["%$keyword%"]);
                         })
@@ -76,8 +75,7 @@ class SoftDeleteController extends ClientController
                             $searchQuery = str_replace(' ', '', $keyword);
                             $model->whereRaw("CONCAT('+', mobile_code, mobile) like ?", ["%$searchQuery%"]);
                         })
-                      
-                      
+
                         ->rawColumns(['checkbox', 'name', 'email',  'created_at', 'active', 'action'])
                         ->make(true);
     }

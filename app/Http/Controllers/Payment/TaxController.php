@@ -73,8 +73,8 @@ class TaxController extends Controller
      */
     public function getTax()
     {
-        
-        $tax = Tax::join('tax_classes','tax_classes.id', '=', 'taxes.tax_classes_id')->select('taxes.id','taxes.name as name','taxes.country','taxes.state','taxes.rate','tax_classes.name as tax_classes_id');
+        $tax = Tax::join('tax_classes', 'tax_classes.id', '=', 'taxes.tax_classes_id')->select('taxes.id', 'taxes.name as name', 'taxes.country', 'taxes.state', 'taxes.rate', 'tax_classes.name as tax_classes_id');
+
         return \DataTables::of($tax)
                             ->orderColumn('tax_classes_id', '-taxes.id $1')
                             ->orderColumn('name', '-taxes.id $1')
@@ -123,10 +123,9 @@ class TaxController extends Controller
                                 style='color:white;'> </i></a>";
                             })
                             ->filterColumn('tax_classes_id', function ($query, $keyword) {
-                                 $sql = ' tax_classes.name like ?';
+                                $sql = ' tax_classes.name like ?';
                                 $query->whereRaw($sql, ["%{$keyword}%"]);
-                                
-                             })
+                            })
                              ->filterColumn('name', function ($query, $keyword) {
                                  $sql = 'taxes.name like ?';
                                  $query->whereRaw($sql, ["%{$keyword}%"]);
@@ -164,9 +163,9 @@ class TaxController extends Controller
                              return ucfirst($model->ut_gst);
                          })
                          ->filterColumn('state', function ($query, $keyword) {
-                              $sql = 'state like ?';
-                              $query->whereRaw($sql, ["%{$keyword}%"]);
-                          })
+                             $sql = 'state like ?';
+                             $query->whereRaw($sql, ["%{$keyword}%"]);
+                         })
                           ->filterColumn('c_gst', function ($query, $keyword) {
                               $sql = 'c_gst like ?';
                               $query->whereRaw($sql, ["%{$keyword}%"]);

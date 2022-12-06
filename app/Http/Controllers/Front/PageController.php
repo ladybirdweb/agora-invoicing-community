@@ -12,7 +12,6 @@ use App\Model\Product\ProductGroup;
 use Illuminate\Http\Request;
 use Symfony\Component\Mime\Email;
 
-
 class PageController extends Controller
 {
     public $page;
@@ -64,9 +63,9 @@ class PageController extends Controller
                               $query->whereRaw($sql, ["%{$keyword}%"]);
                           })
                             ->filterColumn('url', function ($query, $keyword) {
-                                  $sql = 'url like ?';
-                                  $query->whereRaw($sql, ["%{$keyword}%"]);
-                              })
+                                $sql = 'url like ?';
+                                $query->whereRaw($sql, ["%{$keyword}%"]);
+                            })
 
                           ->rawColumns(['checkbox', 'name', 'url',  'created_at', 'action'])
                         ->make(true);
@@ -446,7 +445,6 @@ class PageController extends Controller
 
     public function postContactUs(Request $request)
     {
-      
         $this->validate($request, [
             'name' => 'required',
             'email' => 'required|email',
@@ -467,20 +465,19 @@ class PageController extends Controller
             $data .= 'Name: '.strip_tags($request->input('name')).'<br/>';
             $data .= 'Email: '.strip_tags($request->input('email')).'<br/>';
             $data .= 'Message: '.strip_tags($request->input('message')).'<br/>';
-            $data .= 'Mobile: '.strip_tags($request->input('country_code'). ' ' . $request->input('Mobile')).'<br/>';
+            $data .= 'Mobile: '.strip_tags($request->input('country_code').' '.$request->input('Mobile')).'<br/>';
             $subject = 'Faveo billing enquiry';
             if (emailSendingStatus()) {
                 $mail = new \App\Http\Controllers\Common\PhpMailController();
                 $mail->sendEmail($from, $to, $data, $subject);
-                
-                
-                  $email = (new Email())
+
+                $email = (new Email())
                    ->from($set->email)
                    ->to($set->company_email)
                    ->subject('Faveo billing enquiry')
                    ->html($data);
-                   
-                 $mailer->send($email);
+
+                $mailer->send($email);
             }
 
             //$this->templateController->Mailing($from, $to, $data, $subject);

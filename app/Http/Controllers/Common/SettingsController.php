@@ -54,12 +54,10 @@ class SettingsController extends BaseSettingsController
         $pay = $payment->fetchConfig();
 
         $status = Plugin::all();
-       
-       
+
         // $demo = json_decode(json_encode($plug));
         // $status = collect($demo)->all();
 
-        
         return view('themes.default1.common.plugins', compact('pay', 'status'));
     }
 
@@ -231,7 +229,6 @@ class SettingsController extends BaseSettingsController
      */
     public function delete(Request $request)
     {
-  
         if (isset($request->id)) {
             $todo = Setting::findOrFail($request->id);
             if ($request->column == 'logo') {
@@ -355,7 +352,6 @@ class SettingsController extends BaseSettingsController
               ->orderColumn('new', '-created_at $1')
               ->orderColumn('old', '-created_at $1')
               ->orderColumn('created_at', '-created_at $1')
-
 
              ->addColumn('checkbox', function ($model) {
                  return "<input type='checkbox' class='activity' value=".$model->id.' name=select[] id=check>';

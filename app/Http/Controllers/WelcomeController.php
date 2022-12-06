@@ -50,7 +50,7 @@ class WelcomeController extends Controller
         $users = \App\User::leftJoin('countries', 'users.country', '=', 'countries.country_code_char2')
         ->where('countries.nicename', '!=', '')
                 ->select('countries.nicename as country', 'countries.country_code_char2 as code', \DB::raw('COUNT(users.id) as count'))
-                
+
                 ->groupBy('users.country');
 
         return DataTables::of($users)

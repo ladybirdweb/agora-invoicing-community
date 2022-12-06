@@ -15,7 +15,6 @@ use App\Model\Product\ProductUpload;
 use App\Model\Product\Subscription;
 use App\User;
 use Exception;
-use DB;
 use GrahamCampbell\Markdown\Facades\Markdown;
 
 class ClientController extends BaseClientController
@@ -76,9 +75,8 @@ class ClientController extends BaseClientController
 
     public function getInvoices()
     {
-
         $invoices = Invoice::leftJoin('order_invoice_relations', 'invoices.id', '=', 'order_invoice_relations.invoice_id')
-            ->leftJoin('orders','order_invoice_relations.order_id', '=', 'orders.id')
+            ->leftJoin('orders', 'order_invoice_relations.order_id', '=', 'orders.id')
             ->select('orders.number')
             ->select('invoices.id', 'invoices.user_id', 'invoices.date', 'invoices.number', 'invoices.grand_total', 'order_invoice_relations.order_id as orderNo', 'invoices.is_renewed', 'invoices.status', 'invoices.currency')
             ->groupBy('invoices.number')
@@ -101,23 +99,23 @@ class ClientController extends BaseClientController
                         }
                     })
                         ->addColumn('orderNo', function ($model) {
-                       if ($model->is_renewed) {
-                           $order = Order::find($model->order_id);
-                           if ($order) {
-                               return $order->first()->getOrderLink($model->order_id, 'my-order');
-                           } else {
-                               return '--';
-                           }
-                       } else {
-                           $allOrders = $model->order()->select('id', 'number')->get();
-                           $orderArray = '';
-                           foreach ($allOrders as $orders) {
-                               $orderArray .= $orders->getOrderLink($orders->id, 'my-order');
-                           }
+                            if ($model->is_renewed) {
+                                $order = Order::find($model->order_id);
+                                if ($order) {
+                                    return $order->first()->getOrderLink($model->order_id, 'my-order');
+                                } else {
+                                    return '--';
+                                }
+                            } else {
+                                $allOrders = $model->order()->select('id', 'number')->get();
+                                $orderArray = '';
+                                foreach ($allOrders as $orders) {
+                                    $orderArray .= $orders->getOrderLink($orders->id, 'my-order');
+                                }
 
-                           return $orderArray;
-                       }
-                   })
+                                return $orderArray;
+                            }
+                        })
                     ->addColumn('date', function ($model) {
                         return getDateHtml($model->created_at);
                     })
@@ -165,12 +163,10 @@ class ClientController extends BaseClientController
                          $sql = 'invoices.number like ?';
                          $query->whereRaw($sql, ["%{$keyword}%"]);
                      })
-                    ->filterColumn('orderNo', function($query, $keyword) {
-                   
-                      $sql = "orders.number like ?";
-                      $query->whereRaw($sql, ["%{$keyword}%"]);
-                    
-                   })
+                    ->filterColumn('orderNo', function ($query, $keyword) {
+                        $sql = 'orders.number like ?';
+                        $query->whereRaw($sql, ["%{$keyword}%"]);
+                    })
 
                     ->rawColumns(['number', 'orderNo', 'date', 'total', 'status', 'Action'])
                     // ->orderColumns('number', 'created_at', 'total')
@@ -271,11 +267,10 @@ class ClientController extends BaseClientController
 
                                 //if product has Update expiry date ie subscription is generated
                                 if ($updateEndDate) {
-                                    if
-                                    ($downloadPermission['allowDownloadTillExpiry'] == 1) {
-                                       //Perpetual download till expiry permission selected
+                                    if ($downloadPermission['allowDownloadTillExpiry'] == 1) {
+                                        //Perpetual download till expiry permission selected
                                         $getDownload = $this->whenDownloadTillExpiry($updateEndDate, $productid, $versions, $clientid, $invoiceid);
-                                        
+
                                         return $getDownload;
                                     } elseif ($downloadPermission['allowDownloadTillExpiry'] == 0) {//When download retires after subscription
                                         $getDownload = $this->whenDownloadExpiresAfterExpiry($countExpiry, $countVersions, $updateEndDate, $productid, $versions, $clientid, $invoiceid);
@@ -287,7 +282,6 @@ class ClientController extends BaseClientController
                             ->rawColumns(['version', 'title', 'description', 'file'])
                             ->make(true);
         } catch (Exception $ex) {
-           
             echo $ex->getMessage();
         }
     }
@@ -302,7 +296,6 @@ class ClientController extends BaseClientController
     public function getGithubVersionList($productid, $clientid, $invoiceid)
     {
         try {
-           
             $products = $this->product::where('id', $productid)
             ->select('name', 'version', 'github_owner', 'github_repository')->get();
             $owner = '';
@@ -362,7 +355,6 @@ class ClientController extends BaseClientController
                             ->rawColumns(['version', 'name', 'description', 'file'])
                             ->make(true);
         } catch (Exception $ex) {
-           
             echo $ex->getMessage();
         }
     }
@@ -381,8 +373,6 @@ class ClientController extends BaseClientController
                         ->orderColumn('number', '-created_at $1')
                         ->orderColumn('version', '-invoice_id $1')
                          ->orderColumn('expiry', '-invoice_id $1')
-
-                       
 
                             ->addColumn('id', function ($model) {
                                 return $model->id;
@@ -468,7 +458,7 @@ class ClientController extends BaseClientController
             ->pluck('name', 'short')->toArray();
             $selectedCompanySize = \DB::table('company_sizes')->where('short', $user->company_size)
             ->pluck('name', 'short')->toArray();
-            
+
             $selectedCountry = \DB::table('countries')->where('country_code_char2', $user->country)
             ->value('nicename');
 
@@ -542,7 +532,7 @@ class ClientController extends BaseClientController
     public function getPaymentByOrderId($orderid, $userid)
     {
         try {
-            
+
             // dd($orderid);
             $order = $this->order->where('id', $orderid)->where('client', $userid)->first();
             // dd($order);
@@ -582,7 +572,6 @@ class ClientController extends BaseClientController
                                 'payment_method', 'payment_status', 'created_at', ])
                             ->make(true);
         } catch (Exception $ex) {
-         
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -604,21 +593,18 @@ class ClientController extends BaseClientController
             // ->get();
             // $payments = $this->payment->whereIn('invoice_id', $invoices)->with('invoice:id,number')
             //         ->select('id', 'invoice_id', 'user_id', 'amount', 'payment_method', 'payment_status', 'created_at');
-            
-           $payments =  $this->payment::query()
+
+            $payments = $this->payment::query()
                     ->with(['invoice' => function ($query) {
                         $query->select('id', 'number');
                     }])->whereIn('invoice_id', $invoices);
-                   
-        
+
             return \DataTables::of($payments)
                         ->orderColumn('number', '-created_at $1')
                         ->orderColumn('total', '-created_at $1')
                         ->orderColumn('payment_method', '-created_at $1')
                         ->orderColumn('payment_status', '-created_at $1')
                         ->orderColumn('created_at', '-created_at $1')
-
-
 
                             ->addColumn('number', function ($payments) {
                                 return '<a href='.url('my-invoice/'.$payments->invoice()->first()->id).'>'.$payments->invoice()->first()->number.'</a>';
@@ -634,12 +620,12 @@ class ClientController extends BaseClientController
                             ->filterColumn('number', function ($query, $keyword) {
                                 $sql = 'number like ?';
                                 $query->whereRaw($sql, ["%{$keyword}%"]);
-                             })
+                            })
 
                             ->rawColumns(['number', 'total', 'payment_method', 'payment_status', 'created_at'])
                             ->make(true);
         } catch (Exception $ex) {
-              return redirect()->back()->with('fails', $ex->getMessage());
+            return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 }

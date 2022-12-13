@@ -345,32 +345,49 @@ input:checked + .slider:before {
                             
                         </tr></thead>
                           <tbody>
+                      
+                        @foreach($installationDetails['installed_path'] as $key => $ins)
+                        <?php
+                        
+                        $Latestversion = DB::table('product_uploads')->where('product_id', $order->product)->latest()->value('version');
+                     
+                        $productversion = DB::table('installation_details')->where('installation_path',$installationDetails['installed_path'])->first();
+                       
+                        $date = getTimeInLoggedInUserTimeZone($productversion->updated_at, 'M j, Y');
+                        $dateTime = getTimeInLoggedInUserTimeZone($productversion->updated_at);
+                       
+                      $active = (new Carbon\Carbon('-30 days'))->toDateTimeString() && $productversion->updated_at != $productversion->created_at ;
+                     
+                       
+                       
+                        ?>
                             <tr>
-                              @if($ip == "")
-                              <td>--</td>
-                              @else
-                                 <td>{{$ip}}</td>
-                               @endif
-                               @if($path == "")
-                               <td>--</td>
-                               @else
-                                  <td>{{$path}}</td>
-                                  @endif
-                                  @if($version == "")
-                                  <td>--</td>
-                                  @else
-                                  <td>
-                                    {{$version}}
-                                </td>
-                                @endif
-                                @if($active == "")
-                                <td>--</td>
-                                @else
-                                <td>
-                                    {{$active}}
-                                </td>
-                                @endif
+                            <td>{{$ins}}</td>
+                            <td>{{$installationDetails['installed_ip'][$key]}}</td>
+                            @if($productversion)
+                            @if($productversion < $Latestversion)
+                            <td><span class='.'"'.$badge.' '.$badge.'-warning" <label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="Outdated Version">
+                            </label>{{$productversion->version}}</span></td>
+                            @else
+                            <td><span class='.'"'.$badge.' '.$badge.'-success" <label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="Latest Version">
+                            </label>{{$productversion->version}}</span></td>
+                            @endif
+                            
+                            @endif
+                            @if($productversion)
+                            <td><label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='{{$dateTime}}'>{{$date}}</label></td>
+                            @endif
+                            @if($active == true)
+                            <td><span class='badge badge-primary' style='background-color:darkcyan !important;' <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Installation is Active'>
+                     </label>Active</span></td>
+                            @else
+                            <td><span class='badge badge-info' <label data-toggle='tooltip' style='font-weight:500;background-color:crimson;' data-placement='top' title='Installation inactive for more than 30 days'>
+                    </label>Inactive</span></td>
+                            @endif
+                            
+                            
                             </tr>
+                            @endforeach
                           
                         </tbody>
                   

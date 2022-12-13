@@ -136,32 +136,49 @@ active
                     
                 </tr></thead>
                     <tbody>
+                    
+                        @foreach($installationDetails['installed_path'] as $key => $ins)
+                        <?php
+                        
+                        $Latestversion = DB::table('product_uploads')->where('product_id', $order->product)->latest()->value('version');
+                     
+                        $productversion = DB::table('installation_details')->where('installation_path',$installationDetails['installed_path'])->first();
+                       
+                        $date = getTimeInLoggedInUserTimeZone($productversion->updated_at, 'M j, Y');
+                        $dateTime = getTimeInLoggedInUserTimeZone($productversion->updated_at);
+                       
+                      $active = (new Carbon\Carbon('-30 days'))->toDateTimeString() && $productversion->updated_at != $productversion->created_at ;
+                     
+                       
+                       
+                        ?>
                             <tr>
-                              @if($ip == "")
-                              <td>--</td>
-                              @else
-                                 <td>{{$ip}}</td>
-                               @endif
-                               @if($path == "")
-                               <td>--</td>
-                               @else
-                                  <td>{{$path}}</td>
-                                  @endif
-                                  @if($version == "")
-                                  <td>--</td>
-                                  @else
-                                  <td>
-                                    {{$version}}
-                                </td>
-                                @endif
-                                @if($active == "")
-                                <td>--</td>
-                                @else
-                                <td>
-                                    {{$active}}
-                                </td>
-                                @endif
+                            <td>{{$ins}}</td>
+                            <td>{{$installationDetails['installed_ip'][$key]}}</td>
+                            @if($productversion)
+                            @if($productversion < $Latestversion)
+                            <td><span class='.'"'.$badge.' '.$badge.'-warning" <label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="Outdated Version">
+                            </label>{{$productversion->version}}</span></td>
+                            @else
+                            <td><span class='.'"'.$badge.' '.$badge.'-success" <label data-toggle="tooltip" style="font-weight:500;" data-placement="top" title="Latest Version">
+                            </label>{{$productversion->version}}</span></td>
+                            @endif
+                            
+                            @endif
+                            @if($productversion)
+                            <td><label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='{{$dateTime}}'>{{$date}}</label></td>
+                            @endif
+                            @if($active == true)
+                            <td><span class='badge badge-primary' style='background-color:darkcyan !important;' <label data-toggle='tooltip' style='font-weight:500;' data-placement='top' title='Installation is Active'>
+                     </label>Active</span></td>
+                            @else
+                            <td><span class='badge badge-info' <label data-toggle='tooltip' style='font-weight:500;background-color:crimson;' data-placement='top' title='Installation inactive for more than 30 days'>
+                    </label>Inactive</span></td>
+                            @endif
+                            
+                            
                             </tr>
+                            @endforeach
                           
                         </tbody>
                 </table>
@@ -179,56 +196,7 @@ active
                  <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
 
                   <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-                  <script type="text/javascript">
-                //           $('#installationDetail-table').DataTable({
-                //               processing: true,
-                //               serverSide: true,
-                //               stateSave: true,
-                //                 ajax: {
-                //               "url":  "{{Url('get-installation-details/'.$order->id)}}",
-                //                  error: function(xhr) {
-                //                  if(xhr.status == 401) {
-                //                   alert('Your session has expired. Please login again to continue.')
-                //                   window.location.href = '/login';
-                //                  }
-                //               }
-
-                //               },
-                             
-                //               "oLanguage": {
-                //                   "sLengthMenu": "_MENU_ Records per page",
-                //                   "sSearch"    : "Search: ",
-                //                   "sProcessing": '<div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="text-bold pt-2">Loading...</div></div>'
-                //               },
-                //                   columnDefs: [
-                //                   { 
-                //                       targets: 'no-sort', 
-                //                       orderable: false,
-                //                       order: []
-                //                   }
-                //               ],
-
-                //               columns: [
-                              
-                //                   {data: 'path', name: 'path'},
-                //                   {data: 'ip', name: 'ip'},
-                //                   {data: 'version', name: 'version'},
-                //                   {data: 'active', name: 'active'},
-                                  
-                //               ],
-                //               "fnDrawCallback": function( oSettings ) {
-                //                   $(function () {
-                //                       $('[data-toggle="tooltip"]').tooltip({
-                //                           container : 'body'
-                //                       });
-                //                   });
-                //                   $('.loader').css('display', 'none');
-                //               },
-                //               "fnPreDrawCallback": function(oSettings, json) {
-                //                   $('.loader').css('display', 'block');
-                //               },
-                //           });
-                //         </script>
+               
                 @endslot
                 @slot('user')
                     <table class="table">

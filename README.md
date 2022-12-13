@@ -12,9 +12,9 @@ Agora is designed & developed by <a href="http://www.ladybirdweb.com/" target="_
 <h4>To run Agora your host just needs a couple of things:</h4>
 <ul>
 <li> Web Server: Apache or IIS or Nginx</li>
-<li> PHP Version: 7.1+</li>
+<li> PHP Version: 8.1+</li>
 <li> PHP Extensions: Mcrypt, OpenSSL, Mbstring, Tokenizer</li>
-<li> Database: MySQL(5.0+) or Postgres or SQLite or SQL Server</li>
+<li> Database: MySQL(8.0+) or Postgres or SQLite or SQL Server</li>
 <li> Web Server Extension: Pretty URLs or Search Engine Friendly URL's have to be enabled in your web server configuration</li>
 </ul>
 <h4>Credits</h4>

@@ -82,7 +82,7 @@ class ExtendedBaseProductController extends Controller
      */
     public function editProductUpload($id)
     {
-        $model = ProductUpload::where('id', $id)->first();
+        $model = ProductUpload::where('product_id', $id)->first();
         $selectedProduct = $model->product->name;
 
         return view('themes.default1.product.product.edit-upload-option', compact('model', 'selectedProduct'));

@@ -82,7 +82,7 @@ class ExtendedBaseProductController extends Controller
      */
     public function editProductUpload($id)
     {
-        $model = ProductUpload::where('product_id', $id)->first();
+        $model = ProductUpload::where('id', $id)->first();
         $selectedProduct = $model->product->name;
 
         return view('themes.default1.product.product.edit-upload-option', compact('model', 'selectedProduct'));
@@ -118,7 +118,7 @@ class ExtendedBaseProductController extends Controller
 
     public function saveTax($taxes, $product_id)
     {
-        TaxProductRelation::where('product_id', $product_id)->delete();
+        TaxProductRelation::where('id', $product_id)->delete();
         if ($taxes) {
             foreach ($taxes as $tax) {
                 $newTax = new TaxProductRelation();

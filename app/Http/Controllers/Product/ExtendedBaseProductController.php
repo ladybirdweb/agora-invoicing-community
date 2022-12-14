@@ -19,7 +19,7 @@ class ExtendedBaseProductController extends Controller
         // ->select('id', 'product_id', 'title', 'description', 'version', 'file');
 
         $new_upload = ProductUpload::leftJoin('products', 'products.id', '=', 'product_uploads.product_id')
-                      ->select('product_uploads.title', 'product_uploads.description', 'product_uploads.version', 'product_uploads.file', 'products.name', 'products.id', 'product_uploads.product_id')
+                      ->select('product_uploads.title', 'product_uploads.description', 'product_uploads.version', 'product_uploads.file', 'products.name', 'product_uploads.id', 'product_uploads.product_id')
                       ->where('product_id', '=', $id);
 
         return \DataTables::of($new_upload)

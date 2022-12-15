@@ -73,6 +73,7 @@ $(document).ready(function(){
                                         url : "2fa/enable",
                                         method : 'post',
                                         success: function(response) {
+                                             $('#svgshow').append(response.data.image);
                                             $('#2fa-modal2').modal('show');
                                              $(".bar-code").attr("hidden",false);
                                              $(".secret-key").attr("hidden",true);
@@ -86,7 +87,7 @@ $(document).ready(function(){
                                              $('#scanbarcode').on('click',function(){
                                                 $('#alertMessage2').hide();
                                                 $(".bar-code").attr("hidden",false);
-                                                document.querySelectorAll('[id="image"]')[0].src = response.data.image;
+                                                // document.querySelectorAll('[id="image"]')[0].src = response.data.image;
                                                 $(".secret-key").attr("hidden",true)
 
                                              })

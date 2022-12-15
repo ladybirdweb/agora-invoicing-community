@@ -51,7 +51,7 @@ class Google2FAController extends Controller
                     200
                 );
 
-        return $imageDataUri;
+        return successResponse('', ['image' => $imageDataUri, 'secret' => $secret]);
     }
 
     private function generateSecret()

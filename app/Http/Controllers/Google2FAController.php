@@ -80,11 +80,12 @@ class Google2FAController extends Controller
     public function postLoginValidateToken(ValidateSecretRequest $request)
     {
         //get user id and create cache key
+        $google2fa = new Google2FA();
         $userId = $request->session()->pull('2fa:user:id');
         $this->user = User::findorFail($userId);
 
         $secret = Crypt::decrypt($this->user->google2fa_secret);
-        $checkValidPasscode = Google2FA::verifyKey($secret, $request->totp);
+        $checkValidPasscode = $google2fa->verifyKey($secret, $request->totp);
 
         //login and redirect user
         if ($checkValidPasscode) {

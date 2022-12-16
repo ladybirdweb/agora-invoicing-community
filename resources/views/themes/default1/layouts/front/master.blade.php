@@ -323,12 +323,10 @@ if($script->on_every_page == 1) {
                                                     </li>
 
 
-                                                        @if(!Auth::user())
-                                                
-                                                     <li class="dropdown">
-                                                        <a  class="nav-link" data-toggle="modal" data-target="#register-modal" style="cursor: pointer;">
-                                                            Free Signup 
-                                         
+                                                   @if(!Auth::user())
+                                                    <li class="dropdown">
+                                                        <a  class="nav-link"  href="{{url('login')}}">
+                                                            Login
                                                         </a>
                                                     </li>
                                       

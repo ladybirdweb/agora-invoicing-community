@@ -98,7 +98,7 @@ class Google2FAController extends Controller
             }
             \Auth::loginUsingId($userId);
 
-            return redirect()->intended($this->redirectPath());
+            return redirect($this->redirectPath());
         } else {
             \Session::put('2fa:user:id', $userId);
 
@@ -118,7 +118,8 @@ class Google2FAController extends Controller
 
             return property_exists($this, 'redirectTo') ? $this->redirectTo : '/'.$url;
         } else {
-            return property_exists($this, 'redirectTo') ? $this->redirectTo : '/';
+            $user = \Auth::user()->role;
+             return ($user === 'user') ? 'my-invoices' : '/';
         }
     }
 

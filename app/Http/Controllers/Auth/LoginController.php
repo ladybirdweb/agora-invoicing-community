@@ -109,7 +109,7 @@ class LoginController extends Controller
         }
         activity()->log('Logged In');
 
-        return redirect()->intended($this->redirectPath());
+        return redirect($this->redirectPath());
     }
 
     /**
@@ -124,7 +124,9 @@ class LoginController extends Controller
 
             return property_exists($this, 'redirectTo') ? $this->redirectTo : '/'.$url;
         } else {
-            return property_exists($this, 'redirectTo') ? '/my-invoices' : '/';
+            $user = \Auth::user()->role;
+             return ($user === 'user') ? 'my-invoices' : '/';
+          
         }
     }
 }

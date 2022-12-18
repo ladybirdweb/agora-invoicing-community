@@ -119,7 +119,8 @@ class Google2FAController extends Controller
             return property_exists($this, 'redirectTo') ? $this->redirectTo : '/'.$url;
         } else {
             $user = \Auth::user()->role;
-             return ($user === 'user') ? 'my-invoices' : '/';
+
+            return ($user === 'user') ? 'my-invoices' : '/';
         }
     }
 

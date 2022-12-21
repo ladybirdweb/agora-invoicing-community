@@ -101,13 +101,14 @@ class MailChimpController extends BaseMailChimpController
 
             return successResponse('Email added to mailchimp');
         } catch (Exception $ex) {
+           
             $exe = json_decode($ex->getMessage(), true);
             if ($exe['status'] == 400) {
                 $error = $exe['detail'];
 
-                return errorResponse($error, 400);
+                return errorResponse('Member already exists!', 400);
             }
-
+          
             return errorResponse($ex->getMessage());
         }
     }

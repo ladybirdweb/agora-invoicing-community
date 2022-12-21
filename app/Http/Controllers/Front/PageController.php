@@ -77,9 +77,6 @@ class PageController extends Controller
     public function create()
     {
         try {
-          
-            
-           
             $parents = $this->page->pluck('name', 'id')->toArray();
 
             return view('themes.default1.front.page.create', compact('parents'));
@@ -131,18 +128,13 @@ class PageController extends Controller
             $this->page->parent_page_id = $request->input('parent_page_id');
             $this->page->type = $request->input('type');
             $this->page->content = $request->input('content');
-            if($pages_count <= 2)
-            {
+            if ($pages_count <= 2) {
                 $this->page->save();
-                
-               return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
+
+                return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
+            } else {
+                return redirect()->back()->with('fails', 'The Page limit is Exceeded');
             }
-            else
-           {
-               return redirect()->back()->with('fails', 'The Page limit is Exceeded');
-
-           }
-
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
 

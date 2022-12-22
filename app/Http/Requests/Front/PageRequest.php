@@ -24,7 +24,7 @@ class PageRequest extends FormRequest
     public function rules()
     {
         return [
-             'name' => 'required|unique:frontend_pages,name',
+            'name' => 'required|unique:frontend_pages,name',
             'publish' => 'required',
             'slug' => 'required',
             'url' => 'required',

@@ -37,8 +37,8 @@ class OrderSearchController extends Controller
             $baseQuery = $this->getBaseQueryForOrders();
             $this->orderNum($request->input('order_no'), $baseQuery);
             $this->product($request->input('product_id'), $baseQuery);
-            $this->orderFrom($request->input('till'), $request->input('from'), $baseQuery,$request->renewal);
-            $this->orderTill($request->input('from'), $request->input('till'), $baseQuery,$request->renewal);
+            $this->orderFrom($request->input('till'), $request->input('from'), $baseQuery, $request->renewal);
+            $this->orderTill($request->input('from'), $request->input('till'), $baseQuery, $request->renewal);
             $this->domain($request->input('domain'), $baseQuery);
             $this->allInstallations($request->input('act_ins'), $baseQuery);
             $this->allRenewals($request->input('renewal'), $baseQuery);
@@ -241,7 +241,7 @@ class OrderSearchController extends Controller
      * @param  object  $join
      * @return Query
      */
-    public function orderFrom($till, $from, $join,$renewal)
+    public function orderFrom($till, $from, $join, $renewal)
     {
         $subFrom = $renewal = 'expiring_subscription' ? 'subscriptions.update_ends_at' : 'orders.created_at';
         if ($from) {
@@ -266,7 +266,7 @@ class OrderSearchController extends Controller
      * @param  object  $join
      * @return Query
      */
-    public function orderTill($from, $till, $join,$renewal)
+    public function orderTill($from, $till, $join, $renewal)
     {
         $subTo = $renewal = 'expiring_subscription' ? 'subscriptions.update_ends_at' : 'orders.created_at';
         if ($till) {

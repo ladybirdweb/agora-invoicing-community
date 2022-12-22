@@ -102,7 +102,7 @@ class Google2FAController extends Controller
         } else {
             \Session::put('2fa:user:id', $userId);
 
-            return redirect('verify-2fa')->with('fails', 'Passcode entered is invalid');
+            return redirect('verify-2fa')->with('fails', trans('message.invalid_passcode'));
         }
     }
 

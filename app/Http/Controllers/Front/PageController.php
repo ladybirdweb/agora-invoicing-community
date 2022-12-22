@@ -10,6 +10,7 @@ use App\Model\Front\FrontendPage;
 use App\Model\Product\Product;
 use App\Model\Product\ProductGroup;
 use Illuminate\Http\Request;
+use App\Http\Requests\Front\PageRequest;
 use Symfony\Component\Mime\Email;
 
 class PageController extends Controller
@@ -108,15 +109,9 @@ class PageController extends Controller
         }
     }
 
-    public function store(Request $request)
+    public function store(PageRequest $request)
     {
-        $this->validate($request, [
-            'name' => 'required|unique:frontend_pages,name',
-            'publish' => 'required',
-            'slug' => 'required',
-            'url' => 'required',
-            'content' => 'required',
-        ]);
+       
 
         try {
             $pages_count = count($this->page->all());
@@ -135,11 +130,11 @@ class PageController extends Controller
             {
                 $this->page->save();
                 
-               return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
+               return redirect()->back()->with('success', trans('message.saved-successfully'));
             }
             else
            {
-               return redirect()->back()->with('fails', 'The Page limit is Exceeded');
+               return redirect()->back()->with('fails', trans('message.limit_exceed'));
 
            }
 

@@ -492,6 +492,7 @@ return [
     'default-page' => 'Default Page',
     'publish-date' => 'Publishing Date',
     'page_type' => 'Page Type',
+    'limit_exceed' => 'The Page limit is Exceeded',
     /*
      * Widgets
      */
@@ -535,6 +536,7 @@ return [
     'mailchimp-list-added-to-agora' => 'Mailchimp list added to agora',
     'agora-fields' => 'Agora fields',
     'mailchimp-fields' => 'Mailchimp fields',
+    'member_exist' => 'Member already exists',
     /*
      * Socail Media
      */

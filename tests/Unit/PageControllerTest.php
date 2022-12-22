@@ -2,8 +2,8 @@
 
 namespace Tests\Unit;
 
-use Tests\TestCase;
 use App\User;
+use Tests\TestCase;
 
 class PageControllerTest extends TestCase
 {
@@ -12,21 +12,18 @@ class PageControllerTest extends TestCase
      *
      * @return void
      */
-   public function test_createpage_returnstatus200()
+    public function test_createpage_returnstatus200()
     {
-      $user = User::factory()->create(['role' => 'admin']);
-      $this->actingAs($user);
-      
-       $response = $this->post('/pages',[
+        $user = User::factory()->create(['role' => 'admin']);
+        $this->actingAs($user);
+
+        $response = $this->post('/pages', [
             'name'=>'demo',
             'slug'=> 'demopass',
             'url' => 'http://demo.com',
             'publish' => 'yes',
-            'content' => 'Here the new page created'
+            'content' => 'Here the new page created',
         ]);
-        $this->assertDatabaseHas('frontend_pages',['slug'=>'contact-us']);
-
-
-
+        $this->assertDatabaseHas('frontend_pages', ['slug'=>'contact-us']);
     }
 }

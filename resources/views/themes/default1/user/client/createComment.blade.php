@@ -17,7 +17,7 @@
                 </div>
             </div>
             <div class="modal-footer justify-content-between">
-                 <button type="button" id="close" class="btn btn-default btn-sm" data-dismiss="modal"><i class="fas fa-times">&nbsp;</i>Close</button>
+                 <button type="button" id="commentclose" class="btn btn-default btn-sm" data-dismiss="modal"><i class="fas fa-times">&nbsp;</i>Close</button>
                 <button type="submit" class="btn btn-primary btn-sm" id="submit"><i class="fas fa-save">&nbsp;</i>{!!Lang::get('Save')!!}</button>
             </div>
             {!! Form::close() !!}

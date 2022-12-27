@@ -127,7 +127,7 @@ input:checked + .slider:before {
                                  <div class="scrollit">
                            <div class="card-body table-responsive">
                                <div class="card-header">
-                              <h5 class="card-title">
+                              <h5 class="card-title" style="position: absolute;left: 15px;bottom: 10px;">
                               User Details
                              </h5>
                                </div>
@@ -1037,7 +1037,9 @@ input:checked + .slider:before {
         });
 
 
-   
+   $("#installLimitClose").on('click',function(){
+       window.location.reload();
+   });
 </script>
 
 <script>

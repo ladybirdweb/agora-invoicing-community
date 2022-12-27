@@ -21,7 +21,7 @@
 		</div>
 		
 		  <div class="modal-footer justify-content-between">
-                <button type="button" id="close" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i>&nbsp;Close</button>
+                <button type="button" id="installLimitClose" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i>&nbsp;Close</button>
 			  <button type="submit" id="installLimitSave" class="btn btn-primary" ><i class="fas fa-save"></i>&nbsp;Save</button>
             </div>
 	</div>

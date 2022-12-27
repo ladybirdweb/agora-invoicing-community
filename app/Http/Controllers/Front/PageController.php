@@ -123,11 +123,10 @@ class PageController extends Controller
             $this->page->content = $request->input('content');
             if ($pages_count <= 2) {
                 $this->page->save();
-
-                return redirect()->back()->with('success', trans('message.saved-successfully'));
-            } else {
-                return redirect()->back()->with('fails', trans('message.limit_exceed'));
+               return redirect()->back()->with('success', trans('message.saved-successfully'));
             }
+                return redirect()->back()->with('fails', trans('message.limit_exceed'));
+            
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
 

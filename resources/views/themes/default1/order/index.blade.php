@@ -319,6 +319,7 @@ Orders
             else
             {
                 alert("Please select at least one checkbox");
+                return false;
             }
         }  
 

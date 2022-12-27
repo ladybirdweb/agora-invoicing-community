@@ -218,7 +218,7 @@ Dashboard
             'collection'=> $expiredSubscriptions,
             'columns'=> ['User', 'Order No', 'Expiry', 'Days Passed', 'Product'],
             'linkRight'=> ['Place New Order' => url('invoice/generate')],
-            'linkLeft'=> ['View Orders Expired' => url('orders?expiry='.$expiredSubscriptionDate.'&expiryTill='.$currentDate.'&p_un=paid')]
+            'linkLeft'=> ['View Orders Expired' => url('orders?from='.$expiredSubscriptionDate.'&till='.$currentDate.'&renewal=expired_subscription&product_id=paid')]
      ])
 
          @foreach($expiredSubscriptions as $element)
@@ -239,8 +239,9 @@ Dashboard
             'collection'=> $subscriptions,
             'columns'=> ['User', 'Order No', 'Expiry', 'Days Left', 'Product'],
             'linkRight'=> ['Place New Order' => url('invoice/generate')],
-            'linkLeft'=> ['View Orders Expiring Soon' => url('orders?expiry='.$currentDate.'&expiryTill='.$expiringSubscriptionDate.'&p_un=paid')]
+            'linkLeft'=> ['View Orders Expiring Soon' => url('orders?from='.$currentDate.'&till='.$expiringSubscriptionDate.'&renewal=expiring_subscription&product_id=paid')]
      ])
+     
 
          @foreach($subscriptions as $element)
              <tr>

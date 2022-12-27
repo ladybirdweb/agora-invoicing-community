@@ -89,7 +89,6 @@ class CommentController extends Controller
      */
     public function destroy(Request $request)
     {
-     
         try {
             $delComment = $this->comment->where('id', $request->input('data-comment-id'))->delete();
 

@@ -155,7 +155,7 @@ Invoice
                         <div class="col-6">
 
                         </div>
-                        <div class="col-6">
+                        <div class="col-6" style="left: 4%;">
                             <div class="table-responsive">
                               
                                        
@@ -211,7 +211,7 @@ Invoice
                     <!-- this row will not appear when printing -->
                     <div class="row no-print">
                         <div class="col-6"></div>
-                        <div class="col-6">
+                        <div class="col-6" style="left: 5%;">
                             <a href="{{url('pdf?invoiceid='.$invoice->id)}}"><button class="btn btn-primary pull-right" style="margin-right: 5px;"><i class="fa fa-download"></i> Generate PDF</button></a>
                         </div>
                     </div>

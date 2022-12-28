@@ -74,21 +74,23 @@
                                 Mobile: {{$set->phone}}<br/>
                                 Email: {{$set->email}}
                             </address>
-                        </div><!-- /.col -->
-                         <div class="col-sm-4" style="float:right!important">
-                            <b>Invoice   #{{$invoice->number}}</b><br>
-                            <br>
-
-
+                            
+                            
                              @if($set->gstin)
                             <b>GSTIN:</b>  &nbsp; #{{$set->gstin}}
                             <br>
                             @endif
 
                             @if($set->cin_no)
-                            <b>CIN:</b>  &nbsp; #{{$set->cin_no}}
+                            <b>CIN:</b>  #{{$set->cin_no}}
                             <br>
                             @endif
+
+                        </div><!-- /.col -->
+                         <div class="col-sm-4" style="float:right!important">
+                            <b>Invoice   #{{$invoice->number}}</b><br>
+                            <br>
+
 
 
                         </div><!-- /.col -->
@@ -160,7 +162,7 @@
                         <!-- accepted payments column -->
             
                         <div class="col-6"></div>
-                        <div class="col-6" style="width: 50%;">
+                        <div class="col-6" style="width: 50%;margin-left: 54%">
                               <div class="table-responsive">
                                  <table class="table">
                                      <tr>

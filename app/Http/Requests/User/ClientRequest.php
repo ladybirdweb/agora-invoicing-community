@@ -36,6 +36,7 @@ class ClientRequest extends Request
                         'state' => 'required_if:country,in',
                         'timezone_id' => 'required',
                         'user_name' => 'unique:users,user_name',
+                        'zip' => 'regex:/^[0-9]{3,6}$/',
                     ];
 
             case 'PATCH':
@@ -52,6 +53,7 @@ class ClientRequest extends Request
                         'timezone_id' => 'required',
                         'state' => 'required_if:country,IN',
                         'user_name' => 'unique:users,user_name,'.$id,
+                        'zip' => 'regex:/^[0-9]{3,6}$/',
                     ];
 
             default:
@@ -63,6 +65,9 @@ class ClientRequest extends Request
     {
         return[
             'state.required_if' => 'The state field is required when country is India.',
+            'zip.regex'=> 'The zip/postal code in invalid',
+           
+            
         ];
     }
 

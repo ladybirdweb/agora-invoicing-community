@@ -54,7 +54,6 @@ class PlanController extends ExtendedPlanController
         $currency = $this->currency->where('status', '1')->pluck('name', 'code')->toArray();
         $periods = $this->period->pluck('name', 'days')->toArray();
         $products = $this->product->pluck('name', 'id')->toArray();
-     
 
         return view(
             'themes.default1.product.plan.index',
@@ -69,7 +68,7 @@ class PlanController extends ExtendedPlanController
     {
         $new_plan = Plan::leftJoin('products', 'products.id', '=', 'plans.product')
             ->leftJoin('plan_prices', 'plan_prices.plan_id', '=', 'plans.id')
-            ->select('plans.id', 'plans.name', 'plans.days', 'products.name as product', 'plan_prices.add_price','plan_prices.currency');
+            ->select('plans.id', 'plans.name', 'plans.days', 'products.name as product', 'plan_prices.add_price', 'plan_prices.currency');
         $defaultCurrency = Setting::where('id', 1)->value('default_currency');
 
         return DataTables::of($new_plan)
@@ -106,7 +105,7 @@ class PlanController extends ExtendedPlanController
 
                             return ucfirst($response);
                         })
-                         ->addColumn('price', function ($model) use ($defaultCurrency) {
+                         ->addColumn('price', function ($model) {
                              $price = PlanPrice::where('plan_id', $model->id)->where('currency', $model->currency)
                             ->pluck('add_price')->first();
                              if ($price != null) {

@@ -115,7 +115,6 @@
             processing: true,
             serverSide: true,
             bDeferRender: true,
-            stateSave: true,
             order: [[ 0, "desc" ]],
             ajax: "{!! Url('get-github-versions') !!}/" + $productid + '/' + $clientid + '/' + $invoiceid,
             "oLanguage": {

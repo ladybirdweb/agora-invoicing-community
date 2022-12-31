@@ -531,7 +531,6 @@ User
                                         processing: true,
                                         "bDestroy": true,
                                         serverSide: true,
-                                        stateSave: true,
                                         order: [[ 0, "desc" ]],
                                         ajax: {
                                         "url":  '{{url("getOrderDetail/".$client->id)}}',

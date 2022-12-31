@@ -538,7 +538,6 @@ input:checked + .slider:before {
         $('#editorder-table').DataTable({
             processing: true,
             serverSide: true,
-             stateSave: true,
               ajax: {
             "url":  "{{Url('get-my-invoices/'.$order->id.'/'.$user->id)}}",
                error: function(xhr) {
@@ -646,7 +645,7 @@ input:checked + .slider:before {
         $('#order1-table').DataTable({
             processing: true,
             serverSide: true,
-             stateSave: true,
+         
      
              ajax: {
             "url":  "{{Url('get-my-payment/'.$order->id.'/'.$user->id)}}",

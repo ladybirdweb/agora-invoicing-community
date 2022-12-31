@@ -66,7 +66,6 @@ Settings
             destroy:true,
             processing: true,
             stateSave: true,
-            serverSide: true,
             order: [[ 0, "desc" ]],
             ajax: {
             "url":  '{!! route('country-count') !!}',

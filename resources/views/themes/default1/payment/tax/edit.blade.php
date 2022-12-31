@@ -153,7 +153,6 @@ Edit Tax
         $('#tax-table').DataTable({
             processing: true,
             serverSide: true,
-             stateSave: true,
              ajax: {
               "url":  '{!! route('get-taxtable') !!}',
                  error: function(xhr) {

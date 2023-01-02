@@ -23,7 +23,7 @@ Orders
 
         <div class="card-tools">
 
-            <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Fillters">
                 <i class="fas fa-plus"></i></button>
             
         </div>

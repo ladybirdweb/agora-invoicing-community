@@ -79,6 +79,13 @@
         outline-offset: 0px;
         -webkit-appearance: none;
     }
+    
+   
+    .table.dataTable thead th
+    {
+        padding: 8px 10px ;
+    }
+
     </style>
     <?php
     $set = new \App\Model\Common\Setting();

@@ -26,4 +26,26 @@ class PageControllerTest extends TestCase
         ]);
         $this->assertDatabaseHas('frontend_pages', ['slug'=>'contact-us']);
     }
+    public function test_validation_fails_if_required_field_empty()
+    {
+        $rules = [
+            'name' => 'required|unique:frontend_pages,name',
+            'publish' => 'required',
+            'slug' => 'required',
+            'url' => 'required',
+            'content' => 'required',
+        ];
+
+        $data = [
+            'name' => 'contact',
+            'publish' => '2016-06-06 08:47:41',
+            'slug' => 'demo',
+            'url' => 'https://demo.com',
+            'content' => 'hkshd ksdh kzhdd',
+        ];
+        $v = $this->app['validator']->make($data, $rules);
+        $this->assertTrue($v->passes());
+
+
+    }
 }

@@ -30,7 +30,6 @@ class OrderSearchController extends Controller
      */
     public function advanceOrderSearch(Request $request)
     {
-
         try {
             if ($request->renewal == 'expiring_subscription') {
                 $baseQuery = $this->getBaseQueryForOrders();
@@ -45,7 +44,6 @@ class OrderSearchController extends Controller
             $this->allRenewals($request->input('renewal'), $baseQuery);
 
             $this->getSelectedVersionOrders($baseQuery, $request->input('version'), $request->input('product_id'), $request);
-
 
             return $request->renewal == 'expiring_subscription' ? $baseQuery->orderBy('subscriptions.update_ends_at', 'asc') :
              $baseQuery->orderBy('orders.created_at', 'asc');
@@ -245,9 +243,8 @@ class OrderSearchController extends Controller
      */
     public function orderFrom($till, $from, $join, $request)
     {
-       
         $subFrom = $request->renewal ? 'subscriptions.update_ends_at' : 'orders.created_at';
-      
+
         if ($from) {
             $from = Carbon::parse($from)->startOfDay();
             $till = Carbon::parse($till)->endOfDay();

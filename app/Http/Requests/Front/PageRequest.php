@@ -23,29 +23,27 @@ class PageRequest extends FormRequest
      */
     public function rules()
     {
-        
-        
-          if ($this->method() == 'POST') {
-             return [
-            'name' => 'required|unique:frontend_pages,name',
-            'publish' => 'required',
-            'slug' => 'required',
-            'url' => 'required',
-            'content' => 'required',
-        ];
+        if ($this->method() == 'POST') {
+            return [
+                'name' => 'required|unique:frontend_pages,name',
+                'publish' => 'required',
+                'slug' => 'required',
+                'url' => 'required',
+                'content' => 'required',
+            ];
         } elseif ($this->method() == 'PATCH') {
             return [
-             'name' => 'required',
-            'publish' => 'required',
-            'slug' => 'required',
-            'url' => 'required',
-            'content' => 'required',
-            'created_at' => 'required',
+                'name' => 'required',
+                'publish' => 'required',
+                'slug' => 'required',
+                'url' => 'required',
+                'content' => 'required',
+                'created_at' => 'required',
             ];
         }
-      
     }
-     public function messages()
+
+    public function messages()
     {
         return[
             'created_at.required'           => 'Publish Date is required',

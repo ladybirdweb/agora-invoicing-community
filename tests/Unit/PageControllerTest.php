@@ -2,8 +2,8 @@
 
 namespace Tests\Unit;
 
-use App\User;
 use App\Model\Front\FrontendPage;
+use App\User;
 use Tests\TestCase;
 
 class PageControllerTest extends TestCase
@@ -48,6 +48,7 @@ class PageControllerTest extends TestCase
         $v = $this->app['validator']->make($data, $rules);
         $this->assertTrue($v->passes());
     }
+
     public function test_updatepage_returnstatus200()
     {
         $user = User::factory()->create(['role' => 'admin']);
@@ -56,18 +57,16 @@ class PageControllerTest extends TestCase
             'slug'=> 'demopass',
             'url' => 'http://demo.com',
             'publish' => 'yes',
-            'content' => 'Here the new page created']);
+            'content' => 'Here the new page created', ]);
 
-          $response = $this->post('/pages',[
+        $response = $this->post('/pages', [
             'id'=> $page->id,
             'name'=>'Contact Us',
             'slug'=> 'demopass',
             'url' => 'http://demo.com',
             'publish' => 'yes',
-            'content' => 'Here the new page created'
+            'content' => 'Here the new page created',
         ]);
         $this->assertDatabaseHas('frontend_pages', ['name'=>'Contact Us']);
-
-
     }
 }

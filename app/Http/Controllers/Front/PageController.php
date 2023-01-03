@@ -137,7 +137,6 @@ class PageController extends Controller
 
     public function update($id, PageRequest $request)
     {
-    
         try {
             if ($request->input('default_page_id') != '') {
                 $page = $this->page->where('id', $id)->first();

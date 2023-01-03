@@ -135,17 +135,9 @@ class PageController extends Controller
         }
     }
 
-    public function update($id, Request $request)
+    public function update($id, PageRequest $request)
     {
-        $this->validate($request, [
-            'name' => 'required',
-            'publish' => 'required',
-            'slug' => 'required',
-            'url' => 'required',
-            'content' => 'required',
-            'created_at' => 'required',
-        ]);
-
+    
         try {
             if ($request->input('default_page_id') != '') {
                 $page = $this->page->where('id', $id)->first();

@@ -26,6 +26,7 @@ class PageControllerTest extends TestCase
         ]);
         $this->assertDatabaseHas('frontend_pages', ['slug'=>'contact-us']);
     }
+
     public function test_validation_fails_if_required_field_empty()
     {
         $rules = [
@@ -45,7 +46,5 @@ class PageControllerTest extends TestCase
         ];
         $v = $this->app['validator']->make($data, $rules);
         $this->assertTrue($v->passes());
-
-
     }
 }

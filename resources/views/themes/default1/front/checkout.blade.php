@@ -273,10 +273,13 @@ $cartSubtotalWithoutCondition = 0;
                     <div class="box-content">
 
                         <div class="col-md-offset-5">
+                         @php       
+                         $data = \App\Model\Product\ProductGroup::where('hidden','!=', 1)->first();
+                         @endphp  
 
                             @if(Auth::check())
 
-                                <a href="{{url('my-invoices')}}" class="btn btn-primary">CONTINUE SHOPPING
+                                <a href="{{url("group/$data->pricing_templates_id/$data->id")}}" class="btn btn-primary">CONTINUE SHOPPING
                                     @else
                                         <a href="{{url('login')}}" class="btn btn-primary">CONTINUE SHOPPING
                                             @endif

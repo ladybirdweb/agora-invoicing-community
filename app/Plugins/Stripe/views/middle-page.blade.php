@@ -181,7 +181,7 @@ $currency = $invoice->currency;
 
                 @else
                 @foreach(Cart::getContent() as $tax)
-                @if($tax->conditions->getName() != 'null')
+                @if($tax->conditions)
                 <tr class="Taxes">
                     <?php
                     $bifurcateTax = bifurcateTax($tax->conditions->getName(),$tax->conditions->getValue(),$item->attributes->currency, \Auth::user()->state, $tax->price*$tax->quantity);
@@ -197,6 +197,7 @@ $currency = $invoice->currency;
                   
                    
                 </tr>
+         
                 @endif
                 
                 @endforeach

@@ -15,6 +15,7 @@ use App\User;
 use DB;
 use File;
 use Illuminate\Http\Request;
+use App\Http\Requests\Common\SettingsRequest;
 use Spatie\Activitylog\Models\Activity;
 use Yajra\DataTables\DataTables;
 
@@ -176,22 +177,9 @@ class SettingsController extends BaseSettingsController
         }
     }
 
-    public function postSettingsSystem(Setting $settings, Request $request)
+    public function postSettingsSystem(Setting $settings, SettingsRequest $request)
     {
-        $this->validate($request, [
-            'company' => 'required|max:50',
-            'company_email' => 'required|email',
-            'website' => 'required|url',
-            'phone' => 'required',
-            'address' => 'required',
-            'state' => 'required',
-            'country' => 'required',
-            'default_currency' => 'required',
-            'admin-logo' => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
-            'fav-icon' => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
-            'logo' => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
-        ]);
-
+   
         try {
             $setting = $settings->find(1);
             if ($request->hasFile('logo')) {

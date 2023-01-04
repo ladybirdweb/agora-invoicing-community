@@ -3,10 +3,26 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title" id="defaultModalLabel">{{Lang::get('message.create-tax-class')}}</h4>
-                <!-- <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button> -->
+                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button> 
             </div>
 
             <div class="modal-body">
+                    @if (count($errors) > 0)
+
+                        <div class="alert alert-danger alert-dismissable">
+                            <strong>Whoops!</strong> There were some problems with your input.
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+
+
+
+                    @endif
+
                 <!-- Form  -->
                 {!! Form::open(['url'=>'taxes/class','id'=>'taxClass', 'method'=>'post']) !!}
 
@@ -29,7 +45,7 @@
                  <div class="form-group {{ $errors->has('name') ? 'has-error' : '' }}">
                     <!-- name -->
                     
-                    {!! Form::label('tax-name',Lang::get('Tax Name'),['class'=>'required']) !!}
+                    {!! Form::label('tax-name',Lang::get('Tax Name')) !!}
                     {!! Form::text('tax-name',null,['class' => 'form-control','id'=>'taxname']) !!}
                    <h6 id ="namecheck"></h6>
                 </div>
@@ -88,7 +104,7 @@
 
             </div>
             <div class="modal-footer justify-content-between">
-                <button type="button" class="btn btn-default " data-dismiss="modal"><i class="fa fa-times"></i>&nbsp;Close</button>
+                <button type="button" class="btn btn-default " data-dismiss="modal" id="closeTax"><i class="fa fa-times"></i>&nbsp;Close</button>
                 <button type="submit"  class="btn btn-primary"><i class="fas fa-save"></i>&nbsp;Save</button>
 
             </div>
@@ -97,8 +113,20 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->  
+
+@if (count($errors) > 0)
+    <script type="text/javascript">
+        $( document ).ready(function() {
+             $('#create-tax-option"').modal('show');
+        });
+    </script>
+  @endif
 <script>
 
+
+$("#closeTax").click(function() {
+   location.reload();
+});
     function getState(val) {
       $.ajax({
             type: "GET",

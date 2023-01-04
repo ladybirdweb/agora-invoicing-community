@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Common;
 use App\ApiKey;
 use App\Http\Controllers\Common\Twitter\TwitterOAuth;
 use App\Http\Controllers\Controller;
-use App\Model\Common\SocialMedia;
 use App\Http\Requests\Common\SocialMediaRequest;
+use App\Model\Common\SocialMedia;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -85,7 +85,6 @@ class SocialMediaController extends Controller
 
     public function store(SocialMediaRequest $request)
     {
-
         try {
             $this->social->fill($request->input())->save();
 
@@ -108,7 +107,6 @@ class SocialMediaController extends Controller
 
     public function update($id, SocialMediaRequest $request)
     {
-
         try {
             $social = $this->social->findOrFail($id);
             $social->fill($request->input())->save();

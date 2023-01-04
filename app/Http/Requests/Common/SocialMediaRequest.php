@@ -26,18 +26,15 @@ class SocialMediaRequest extends FormRequest
         $regex = '/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/';
 
         if ($this->method() == 'POST') {
-            
             return [
                 'name' => 'required|unique:social_media',
-               'link' => 'required|url|regex:'.$regex,
+                'link' => 'required|url|regex:'.$regex,
             ];
-          }
-        elseif ($this->method() == 'PATCH'){
+        } elseif ($this->method() == 'PATCH') {
             return [
-               'name' => 'required',
-               'link' => 'required|url|regex:'.$regex,
+                'name' => 'required',
+                'link' => 'required|url|regex:'.$regex,
             ];
         }
- 
     }
 }

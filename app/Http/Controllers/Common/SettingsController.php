@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Common;
 
 use App\ApiKey;
 use App\Email_log;
+use App\Http\Requests\Common\SettingsRequest;
 use App\Model\Common\Mailchimp\MailchimpSetting;
 use App\Model\Common\Setting;
 use App\Model\Common\StatusSetting;
@@ -15,7 +16,6 @@ use App\User;
 use DB;
 use File;
 use Illuminate\Http\Request;
-use App\Http\Requests\Common\SettingsRequest;
 use Spatie\Activitylog\Models\Activity;
 use Yajra\DataTables\DataTables;
 
@@ -179,7 +179,6 @@ class SettingsController extends BaseSettingsController
 
     public function postSettingsSystem(Setting $settings, SettingsRequest $request)
     {
-   
         try {
             $setting = $settings->find(1);
             if ($request->hasFile('logo')) {

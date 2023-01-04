@@ -26,7 +26,7 @@ class SettingsControllerTest extends TestCase
             'fav-icon' => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
             'logo' => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
         ];
-          $data = [
+        $data = [
             'company' => 'Ladybird',
             'company_email' => 'demo@gmail.com',
             'website' => 'https://lws.com',
@@ -35,7 +35,7 @@ class SettingsControllerTest extends TestCase
             'state' => 'karnataka',
             'default_currency' => 'USD',
             'country' => 'IN',
-            ];
+        ];
         $v = $this->app['validator']->make($data, $rules);
         $this->assertTrue($v->passes());
     }

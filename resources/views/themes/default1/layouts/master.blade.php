@@ -150,7 +150,8 @@
         <!-- Main Sidebar Container -->
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
-                @if ($set->title != '')
+            
+                @if ($set->admin_logo == '')
                     <!-- Brand Logo -->
                         <a href="{{url('/')}}" class="brand-link">
 
@@ -158,7 +159,7 @@
                         </a>
                 @else
                         <a href="{{url('/')}}" class="brand-link">
-                <span style="margin-left: 50px;" class="brand-text font-weight-light"><img src='{{ asset("admin/images/$set->admin_logo")}}' alt="Admin-Logo" class="brand-image img-circle elevation-3"
+                <span style="margin-left: 20px;" class="brand-text font-weight-light"><img style="width: 40px;height: 35px;margin-left: 5.5rem;" src='{{ asset("admin/images/$set->admin_logo")}}' alt="Admin-Logo" class="brand-image img-circle elevation-3"
                      style="opacity: .8;"></span>
                         </a>
                 @endif
@@ -363,7 +364,7 @@
             <!-- Main content -->
             <section class="content">
                 <div class="container-fluid">
-                    @if(Route::current()->getName() !== 'plans.index')
+                    @if(Route::current()->getName() !== 'plans.index' && Route::current()->getName() !== 'tax.index' )
 
                     @if (count($errors) > 0)
 

@@ -26,7 +26,7 @@ return new class extends Migration
     public function down()
     {
         Schema::table('activity_log', function (Blueprint $table) {
-          $table->dropColumn('event');
+            $table->dropColumn('event');
         });
     }
 };

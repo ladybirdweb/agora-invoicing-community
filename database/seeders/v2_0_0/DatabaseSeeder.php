@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Seeders;
+namespace Database\Seeders\v2_0_0;
 
 use App\ApiKey;
 use App\Model\Common\Mailchimp\MailchimpFieldAgoraRelation;
@@ -83,8 +83,6 @@ class DatabaseSeeder extends Seeder
         $this->call([PricingTemplateSeeder::class]);
         $this->command->info('Pricing Template Table Seeded!');
 
-        $this->call([UserTableSeeder::class]);
-        $this->command->info('User table seeded!');
 
         $this->call([ConditionSeeder::class]);
         $this->command->info('Condition table seeded!');
@@ -912,34 +910,3 @@ class FormatCurrenciesSeeder extends Seeder
     }
 }
 
-class UserTableSeeder extends Seeder
-{
-    public function run()
-    {
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        DB::table('users')->truncate();
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-
-        return \App\User::create([
-            'first_name' => 'Demo',
-            'last_name' => 'Admin',
-            'user_name' => 'demo',
-            'email' => 'demo@admin.com',
-            'role' => 'admin',
-            'password' => Hash::make('password'),
-            'active' => 1,
-            'mobile_verified' => 1,
-            'currency' => 'INR',
-            'company' => 'My Company Name',
-            'mobile' => '',
-            'mobile_code' => '',
-            'address' => '',
-            'town' => '',
-            'country' => 'IN',
-            'state' => 'IN-KA',
-            'zip' => '',
-            'profile_pic' => '',
-            'debit' => 0,
-        ]);
-    }
-}

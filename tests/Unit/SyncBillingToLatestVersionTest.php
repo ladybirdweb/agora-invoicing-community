@@ -5,7 +5,6 @@ namespace Tests;
 use App\Http\Controllers\SyncBillingToLatestVersion;
 use App\Model\Common\Setting;
 use Illuminate\Http\Request;
-use Tests\TestCase;
 
 class SyncBillingToLatestVersionTest extends TestCase
 {

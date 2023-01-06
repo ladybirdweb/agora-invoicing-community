@@ -360,7 +360,7 @@
 
                     @if (count($errors) > 0)
 
-                        <div class="alert alert-danger alert-dismissable">
+                        <div class="alert alert-danger alert-dismissable" id="fail">
                             <strong>Whoops!</strong> There were some problems with your input.
                             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                             <ul>
@@ -376,7 +376,7 @@
                     @endif
 
                     @if(Session::has('success'))
-                        <div class="alert alert-success alert-dismissable">
+                        <div class="alert alert-success alert-dismissable" id="success">
                             <i class="fa fa-check"></i>
                             <b>{{Lang::get('message.success')}}!</b>
                             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
@@ -499,6 +499,12 @@
                   'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
               }
           });
+
+$("document").ready(function(){
+    setTimeout(function(){
+        $("#success").remove();
+    }, 3000 );
+});
 
 
           </script>

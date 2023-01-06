@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Seeders;
+namespace Database\Seeders\v2_0_0;
 
 use App\Model\Common\Setting;
 use App\Model\Payment\PlanPrice;

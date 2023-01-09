@@ -26,12 +26,12 @@ Users
                     <h3 class="card-title">Advance Search</h3>
 
                     <div class="card-tools">
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Fillters">
-                            <i class="fas fa-plus"></i></button>
+                        <button type="button" class="btn btn-tool" id="tip-search" title="Expand"> <i id="search-icon" class="fas fa-plus"></i>
+                            </button>
                        
                     </div>
                 </div>
-                <div class="card-body">
+                <div class="card-body table-responsive" id="advance-search" style="display:none;">
                     {!! Form::open(['method'=>'get']) !!}
 
                     <div class="row">
@@ -214,6 +214,8 @@ Users
     <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
 
 <script type="text/javascript">
+
+
      $('ul.nav-sidebar a').filter(function() {
         return this.id == 'all_user';
     }).addClass('active');
@@ -334,6 +336,6 @@ Users
    });
         $('#reservationdate_from').datetimepicker({
       format: 'L'
-    })
+    });
 </script>
 @stop

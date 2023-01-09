@@ -508,6 +508,21 @@
           });
 
 
+      $('#tip-search').click(function() {
+            var advance = $('#advance-search');
+            
+            if (advance.css('display') == 'none') {
+                this.setAttribute('title', 'Collapse');
+                $('#search-icon').removeClass('fas fa-plus').addClass('fas fa-minus');
+        
+                advance.show();
+            }else {
+                this.setAttribute('title', 'Expand');
+                 $('#search-icon').removeClass('fas fa-minus').addClass('fas fa-plus');
+                advance.hide();
+            }
+        });
+
           </script>
 
 

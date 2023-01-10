@@ -156,7 +156,7 @@ Invoices
                 <table id="invoice-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
                     <button  value="" class="btn btn-secondary btn-sm btn-alldell" id="bulk_delete"><i class="fa fa-trash"></i>&nbsp;&nbsp;Delete Selected</button><br /><br />
                     <thead><tr>
-                        <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
+                        <th class="no-sort"><input type="checkbox"  name="select_all" onchange="checking(this)"></th>
                          <th>User</th>
                           <th>Invoice No</th>
                            <th>Date</th>
@@ -189,11 +189,13 @@ Invoices
 
 <script type="text/javascript">
 
+
         $('#invoice-table').DataTable({
             processing: true,
             serverSide: true,
-             stateSave: false,
-            order: [[ 0, "desc" ]],
+            stateSave: false,
+            order: [[ {!! $request->sort_field ?: 5 !!}, {!! "'".$request->sort_order."'" ?: "'desc'" !!} ]],
+
             ajax: {
             "url":  '{!! route('get-invoices',"name=$name&invoice_no=$invoice_no&status=$status&currency_id=$currency_id&from=$from&till=$till") !!}',
                error: function(xhr) {
@@ -277,7 +279,7 @@ Invoices
             }
             else
             {
-                alert("Please select at least one checkbox");
+              alert("Please select at least one checkbox");
             }
         }  
 

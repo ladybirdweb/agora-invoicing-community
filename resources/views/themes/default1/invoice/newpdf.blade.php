@@ -44,7 +44,7 @@
 
                     <div class="row">
                         <div class="col-12">
-                            <h4>
+                            <h4 style="position:relative;top: 2%;">
                                 @if($set->logo)
                                     <img alt="Logo" width="100" height="50" src="{{asset('common/images/'.$set->logo)}}">
                                     @else
@@ -52,7 +52,7 @@
                                 @endif
                             <!--<small  style="height: 50px;color: red;" class="float-right">Date: {!! $date !!}</small>-->
                         <p class="float-right" style=" position: relative;
-    top: 5px;left: 3px;">{!! $date !!}</p><p class="float-right">Date:</p>
+                          top: 3.5px;left: 3px;">{!! $date !!}</p><p class="float-right">Date:</p>
                             </h4>
                         </div><!-- /.col -->
                     </div>
@@ -87,7 +87,8 @@
                             @endif
 
                         </div><!-- /.col -->
-                         <div class="col-sm-4" style="float:right!important">
+                         <div class="col-sm-4 float-right" style=" position: relative;
+                        top: 1px;left: 5%;">
                             <b>Invoice   #{{$invoice->number}}</b><br>
                             <br>
 

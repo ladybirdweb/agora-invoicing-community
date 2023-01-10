@@ -2,6 +2,7 @@
   <?php
     $set = new \App\Model\Common\Setting();
     $set = $set->findOrFail(1);
+    $page_count = DB::table('frontend_pages')->count();
     ?>
 <html>
     <head>
@@ -206,6 +207,7 @@
                                         <p>All Users</p>
                                     </a>
                                 </li>
+                                
                                 <li class="nav-item">
                                     <a href="{{url('clients/create')}}" class="nav-link" id="add_new_user">
                                         <i class="far fa-circle nav-icon"></i>
@@ -281,12 +283,14 @@
                                         <p>{{Lang::get('message.all-pages')}}</p>
                                     </a>
                                 </li>
+                                @if($page_count <= 2)
                                 <li class="nav-item">
                                     <a href="{{url('pages/create')}}" class="nav-link" id="all_new_page">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>{{Lang::get('message.add-new')}}</p>
                                     </a>
                                 </li>
+                                @endif
                             </ul>
                         </li>
                         <li class="nav-item has-treeview">

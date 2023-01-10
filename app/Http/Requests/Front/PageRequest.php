@@ -23,20 +23,22 @@ class PageRequest extends FormRequest
      */
     public function rules()
     {
+       $regex = '/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/';
+
         if ($this->method() == 'POST') {
             return [
-                'name' => 'required|unique:frontend_pages,name',
+                'name' => 'required|unique:frontend_pages,name|max:10|regex:/^[a-zA-Z]+$/u',
                 'publish' => 'required',
                 'slug' => 'required',
-                'url' => 'required',
+                'url' => 'required|url|regex:'.$regex,
                 'content' => 'required',
             ];
         } elseif ($this->method() == 'PATCH') {
             return [
-                'name' => 'required',
+                'name' => 'required|max:10|regex:/^[a-zA-Z]+$/u',
                 'publish' => 'required',
                 'slug' => 'required',
-                'url' => 'required',
+                'url' => 'required|url|regex:'.$regex,
                 'content' => 'required',
                 'created_at' => 'required',
             ];

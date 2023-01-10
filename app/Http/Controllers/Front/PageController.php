@@ -28,7 +28,9 @@ class PageController extends Controller
     public function index()
     {
         try {
-            return view('themes.default1.front.page.index');
+            $pages_count = count($this->page->all());
+
+            return view('themes.default1.front.page.index',compact('pages_count'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }

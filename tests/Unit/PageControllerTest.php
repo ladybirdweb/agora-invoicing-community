@@ -30,23 +30,17 @@ class PageControllerTest extends TestCase
 
     public function test_validation_fails_if_required_field_empty()
     {
-        $rules = [
-            'name' => 'required|unique:frontend_pages,name',
-            'publish' => 'required',
-            'slug' => 'required',
-            'url' => 'required',
-            'content' => 'required',
-        ];
-
-        $data = [
-            'name' => 'contact',
-            'publish' => '2016-06-06 08:47:41',
-            'slug' => 'demo',
-            'url' => 'https://demo.com',
-            'content' => 'hkshd ksdh kzhdd',
-        ];
-        $v = $this->app['validator']->make($data, $rules);
-        $this->assertTrue($v->passes());
+        $user = User::factory()->create(['role' => 'admin']);
+        $this->actingAs($user);
+        $response = $this->post('/pages', [
+            'name'=>'demo',
+            'slug'=> 'demopass',
+            'url' => 'http://demo.com',
+            'content' => 'Here the new page created',
+        ]);
+       $errors = session('errors');
+       $response->assertStatus(302);
+       $this->assertEquals($errors->get('publish')[0], 'The publish field is required.');
     }
 
     public function test_updatepage_returnstatus200()

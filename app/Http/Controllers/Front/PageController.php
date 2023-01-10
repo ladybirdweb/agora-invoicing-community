@@ -30,7 +30,7 @@ class PageController extends Controller
         try {
             $pages_count = count($this->page->all());
 
-            return view('themes.default1.front.page.index',compact('pages_count'));
+            return view('themes.default1.front.page.index', compact('pages_count'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }

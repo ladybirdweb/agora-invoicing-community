@@ -38,9 +38,9 @@ class PageControllerTest extends TestCase
             'url' => 'http://demo.com',
             'content' => 'Here the new page created',
         ]);
-       $errors = session('errors');
-       $response->assertStatus(302);
-       $this->assertEquals($errors->get('publish')[0], 'The publish field is required.');
+        $errors = session('errors');
+        $response->assertStatus(302);
+        $this->assertEquals($errors->get('publish')[0], 'The publish field is required.');
     }
 
     public function test_updatepage_returnstatus200()

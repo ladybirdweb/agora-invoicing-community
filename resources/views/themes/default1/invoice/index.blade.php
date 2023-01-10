@@ -156,7 +156,7 @@ Invoices
                 <table id="invoice-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
                     <button  value="" class="btn btn-secondary btn-sm btn-alldell" id="bulk_delete"><i class="fa fa-trash"></i>&nbsp;&nbsp;Delete Selected</button><br /><br />
                     <thead><tr>
-                        <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
+                        <th class="no-sort"><input type="checkbox"  name="select_all" onchange="checking(this)"></th>
                          <th>User</th>
                           <th>Invoice No</th>
                            <th>Date</th>
@@ -188,6 +188,7 @@ Invoices
     <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
 
 <script type="text/javascript">
+
 
         $('#invoice-table').DataTable({
             processing: true,
@@ -277,7 +278,7 @@ Invoices
             }
             else
             {
-                alert("Please select at least one checkbox");
+              alert("Please select at least one checkbox");
             }
         }  
 

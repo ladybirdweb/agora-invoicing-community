@@ -35,6 +35,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
         // VisitStats::routes();
             Route::post('refresh-csrf', function () {
                 return response()->json([
@@ -345,7 +346,15 @@ use Illuminate\Support\Facades\Route;
             Route::get('LocalizedLicense', function () {
                 return view('themes.default1.common.Localized');
             });
+
+             Route::get('UpgradePlanSettings', function () {
+                 return view('themes.default1.common.setting.PlanUpgrade');
+             });
+            Route::get('UpgradePlanSettings/edit/{editId}', function () {
+                return view('themes.default1.common.setting.PlanUpgradeEdit');
+            });
             Route::get('LocalizedLicense/delete/{fileName}', [License\LocalizedLicenseController::class, 'deleteFile']);
+
             //Route::post('LocalizedLicense/updateLicenseFile/{fileName}',[LocalizedLicenseController::class,'fileEdit']);
 
             /*
@@ -482,9 +491,12 @@ use Illuminate\Support\Facades\Route;
              */
 
             Route::get('renew/{id}', [Order\RenewController::class, 'renewForm']);
+            Route::get('upgrade/{id}', [\App\Http\Controllers\AutoUpdate\PlanUpgradeController::class, 'upgradeForm']);
             Route::post('renew/{id}', [Order\RenewController::class, 'renew']);
             Route::get('get-renew-cost', [Order\RenewController::class, 'getCost']);
+            Route::get('get-upgrade-cost', [\App\Http\Controllers\AutoUpdate\PlanUpgradeController::class, 'getCost']);
             Route::post('client/renew/{id}', [Order\RenewController::class, 'renewByClient']);
+            Route::post('client/upgrade/{id}', [\App\Http\Controllers\AutoUpdate\PlanUpgradeController::class, 'upgradeByClient']);
 
             Route::get('generate-keys', [HomeController::class, 'createEncryptionKeys']);
 
@@ -554,8 +566,10 @@ use Illuminate\Support\Facades\Route;
         Route::get('new-version-available', [HomeController::class, 'isNewVersionAvailable']);
         Route::post('update-installation-detail', [HomeController::class, 'updateInstallationDetails']);
         Route::get('verify/third-party-token', [Tenancy\TenantController::class, 'verifyThirdPartyToken']);
+        Route::post('/UpgradeSettingSave',[\App\Http\Controllers\AutoUpdate\PlanUpgradeController::class,'storeUpgrade']);
 
-        Route::get('404', function () {
+
+Route::get('404', function () {
             return view('errors.404');
         })->name('error404');
     // });

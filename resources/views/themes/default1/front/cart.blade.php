@@ -56,11 +56,10 @@ $cartTotal = 0;
                                         }
                                            $cartTotal += $item->getPriceSum();; 
                                             $domain = [];
-
                                             if ($item->associatedModel->require_domain) {
                                                 $domain[$key] = $item->associatedModel->id;
                                                 $productName = $item->associatedModel->name;
-                                            
+
                                             }
                                             $cont = new \App\Http\Controllers\Product\ProductController();
                                             $isAgentAllowed = $cont->allowQuantityOrAgent($item->id);

@@ -66,6 +66,10 @@ class BaseClientController extends Controller
         return view('themes.default1.renew.popup', compact('id', 'productid'));
     }
 
+    public function upgradePopup($id, $productid){
+        return view('themes.default1.upgrade.upgradepopup',compact('id','productid'));
+    }
+
     public function getActionButton($countExpiry, $countVersions, $link, $orderEndDate, $productid)
     {
         $downloadPermission = LicensePermissionsController::getPermissionsForProduct($productid);

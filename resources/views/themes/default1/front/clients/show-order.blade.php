@@ -14,7 +14,7 @@ active
   @else
   <li><a href="{{url('login')}}">Home</a></li>
   @endif
-<li><a href= "{{url('my-orders')}}">My Orders</a></li>
+<li><a href= "{{url('my-orders')}}">My Order</a></li>
 <li class="active">View Order</li>
 @stop
 

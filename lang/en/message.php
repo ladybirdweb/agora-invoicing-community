@@ -689,4 +689,6 @@ return [
     'cron_server_url' => 'Cron server URL',
     'cron_server_key' => 'Cron server key',
 
+    'yes_its_done' => 'Product upgrade settings has been saved.'
+
 ];

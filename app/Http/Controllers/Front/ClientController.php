@@ -394,15 +394,17 @@ class ClientController extends BaseClientController
                                 $order_cont = new \App\Http\Controllers\Order\OrderController();
                                 $status = $order_cont->checkInvoiceStatusByOrderId($model->id);
                                 $url = '';
+                                $url1='';
                                 if ($status == 'success') {
                                     $url = $this->renewPopup($model->sub_id, $model->product_id);
+                                    $url1 = $this->upgradePopup($model->sub_id, $model->product_id);
                                 }
 
                                 $listUrl = $this->getPopup($model, $model->product_id);
 
                                 return '<a href='.url('my-order/'.$model->id)." 
                                 class='btn  btn-primary btn-xs' style='margin-right:5px;'>
-                                <i class='fa fa-eye' title='Details of order'></i>&nbsp;View $listUrl $url </a>";
+                                <i class='fa fa-eye' title='Details of order'></i>&nbsp;View $listUrl $url $url1</a>";
                             })
                             ->filterColumn('product_name', function ($query, $keyword) {
                                 $sql = 'product.name like ?';

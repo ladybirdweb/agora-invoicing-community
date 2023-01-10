@@ -138,4 +138,5 @@ class Product extends BaseModel
     {
         return LogOptions::defaults();
     }
+
 }

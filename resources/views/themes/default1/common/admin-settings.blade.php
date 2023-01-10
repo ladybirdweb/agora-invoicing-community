@@ -186,6 +186,19 @@ Settings
                         <p class="box-title">Localized License</p>
                     </div>
                 </div>
+
+            <div class="col-md-2 col-sm-6">
+                <div class="settingiconblue">
+                    <div class="settingdivblue">
+                        <a href="{{url('UpgradePlanSettings')}}">
+                                <span class="fa-stack fa-2x">
+                                    <i class="fa fa-upload fa-stack-1x"></i>
+                                </span>
+                        </a>
+                    </div>
+                    <p class="box-title">Plan Upgrade</p>
+                </div>
+            </div>
                   
             </div>
     </div>

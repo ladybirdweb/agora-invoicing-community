@@ -35,7 +35,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-
         // VisitStats::routes();
             Route::post('refresh-csrf', function () {
                 return response()->json([
@@ -347,9 +346,9 @@ use Illuminate\Support\Facades\Route;
                 return view('themes.default1.common.Localized');
             });
 
-             Route::get('UpgradePlanSettings', function () {
-                 return view('themes.default1.common.setting.PlanUpgrade');
-             });
+            Route::get('UpgradePlanSettings', function () {
+                return view('themes.default1.common.setting.PlanUpgrade');
+            });
             Route::get('UpgradePlanSettings/edit/{editId}', function () {
                 return view('themes.default1.common.setting.PlanUpgradeEdit');
             });
@@ -566,10 +565,9 @@ use Illuminate\Support\Facades\Route;
         Route::get('new-version-available', [HomeController::class, 'isNewVersionAvailable']);
         Route::post('update-installation-detail', [HomeController::class, 'updateInstallationDetails']);
         Route::get('verify/third-party-token', [Tenancy\TenantController::class, 'verifyThirdPartyToken']);
-        Route::post('/UpgradeSettingSave',[\App\Http\Controllers\AutoUpdate\PlanUpgradeController::class,'storeUpgrade']);
-
+        Route::post('/UpgradeSettingSave', [\App\Http\Controllers\AutoUpdate\PlanUpgradeController::class, 'storeUpgrade']);
 
 Route::get('404', function () {
-            return view('errors.404');
-        })->name('error404');
+    return view('errors.404');
+})->name('error404');
     // });

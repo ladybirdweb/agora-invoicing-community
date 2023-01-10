@@ -1,7 +1,7 @@
 <?php
 
 namespace Tests\Unit\Common;
-
+use App\User;
 use Tests\TestCase;
 
 class SettingsControllerTest extends TestCase
@@ -11,32 +11,41 @@ class SettingsControllerTest extends TestCase
      *
      * @return void
      */
-    public function test_validation_settings()
+    public function test_validation_when_company_not_given()
     {
-        $rules = [
-            'company' => 'required|max:35',
-            'company_email' => 'required|email',
-            'website' => 'required|url',
-            'phone' => 'required',
-            'address' => 'required',
-            'state' => 'required',
-            'country' => 'required',
-            'default_currency' => 'required',
-            'admin-logo' => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
-            'fav-icon' => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
-            'logo' => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
-        ];
-        $data = [
-            'company' => 'Ladybird',
+        $user = User::factory()->create(['role' => 'admin']);
+        $this->actingAs($user);
+        $response = $this->patch('/settings/system', [
+            'company' => '',
             'company_email' => 'demo@gmail.com',
             'website' => 'https://lws.com',
             'phone' => '9789909887',
             'address' => 'bangalore',
             'state' => 'karnataka',
             'default_currency' => 'USD',
-            'country' => 'IN',
-        ];
-        $v = $this->app['validator']->make($data, $rules);
-        $this->assertTrue($v->passes());
+            'country' => 'IN',        
+         ]);
+       $errors = session('errors');
+       $response->assertStatus(302);
+       $this->assertEquals($errors->get('company')[0], 'The company field is required.');
     }
+    
+     public function test_when_settings_saved_successfully()
+    {
+        $user = User::factory()->create(['role' => 'admin']);
+        $this->actingAs($user);
+        $response = $this->patch('/settings/system', [
+            'company' => 'lws',
+            'company_email' => 'demo@gmail.com',
+            'website' => 'https://lws.com',
+            'phone' => '9789909887',
+            'address' => 'bangalore',
+            'state' => 'karnataka',
+            'default_currency' => 'USD',
+            'country' => 'IN',        
+         ]);
+        $this->assertDatabaseHas('settings',['company' => 'lws']);
+        $response->assertSessionHas('success','Updated Successfully');
+      
+ }
 }

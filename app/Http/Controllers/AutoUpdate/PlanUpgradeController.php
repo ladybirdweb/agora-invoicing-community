@@ -14,75 +14,77 @@ use Illuminate\Http\Request;
 
 class PlanUpgradeController extends Controller
 {
-    public function __construct(){
-
+    public function __construct()
+    {
         $this->middleware('auth');
         $this->middleware('admin');
     }
-    public function storeUpgrade(Request $request){
-        $upgraded=$request->upgradeOrDowngrade;
-        $oldProduct=$request->oldProduct;
+
+    public function storeUpgrade(Request $request)
+    {
+        $upgraded = $request->upgradeOrDowngrade;
+        $oldProduct = $request->oldProduct;
         try {
-            foreach ($upgraded as $upgrade){
+            foreach ($upgraded as $upgrade) {
                 UpgradeSettings::updateOrCreate(['product_id' => $oldProduct, 'upgrade_product_id' => $upgrade]);
-             }
-            UpgradeSettings::where('product_id',$oldProduct)->whereNotIn('upgrade_product_id',$upgraded)->delete();
+            }
+            UpgradeSettings::where('product_id', $oldProduct)->whereNotIn('upgrade_product_id', $upgraded)->delete();
+
             return redirect()->back()->with('success', trans('message.yes_its_done'));
-        }
-        Catch(\Exception $e){
+        } catch (\Exception $e) {
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
 
-    public function getCost(Request $request,$id=null)
+    public function getCost(Request $request, $id = null)
     {
         try {
             $planid = $request->input('plan');
             $userid = $request->input('user');
-            if(is_null($id)){
-                $id=$request->input('subscription');
+            if (is_null($id)) {
+                $id = $request->input('subscription');
             }
-            $subscription=Subscription::find($id);
+            $subscription = Subscription::find($id);
             $licenseDate = \Carbon\Carbon::parse($subscription->ends_at);
             if (strtotime($licenseDate) < 0) {
                 $licenseDate = '';
             }
             $orderDetails = array_first(Order::find($subscription->order()->value('id'))->invoice()->cursor());
-            $plan = array_first(Plan::where('product',$planid)->cursor());
+            $plan = array_first(Plan::where('product', $planid)->cursor());
             $planDetails = userCurrencyAndPrice($userid, Plan::find($plan->id));
-            if(Carbon::now()>$subscription->update_ends_at ||
-                Carbon::now()>$subscription->support_ends_at ||
-                Carbon::now()>$licenseDate){
+            if (Carbon::now() > $subscription->update_ends_at ||
+                Carbon::now() > $subscription->support_ends_at ||
+                Carbon::now() > $licenseDate) {
                 return $planDetails['plan']->add_price;
-            }
-            else{
+            } else {
                 if ($orderDetails->is_renewed) {
-                         $price = $this->decideThePrice($planDetails['plan']->renew_price,$orderDetails->grand_total,$subscription->update_ends_at,$plan->days);
-
-                    } else {
-                        $price = $this->decideThePrice($planDetails['plan']->add_price,$orderDetails->grand_total,$subscription->update_ends_at,$plan->days);
-                    }
-
+                    $price = $this->decideThePrice($planDetails['plan']->renew_price, $orderDetails->grand_total, $subscription->update_ends_at, $plan->days);
+                } else {
+                    $price = $this->decideThePrice($planDetails['plan']->add_price, $orderDetails->grand_total, $subscription->update_ends_at, $plan->days);
+                }
             }
+
             return $price;
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());
         }
     }
 
-    private function decideThePrice($planPrice,$grandTotal,$subEndsAt,$plan){
+    private function decideThePrice($planPrice, $grandTotal, $subEndsAt, $plan)
+    {
         $months_remaining = (Carbon::now())->diffInMonths($subEndsAt);
         $month = floor(($plan / 30));
-        if($month-$months_remaining) {
-            $renewPrice = (($planPrice)/$month);
-            $PriceToBeConsidered = $renewPrice*$months_remaining;
+        if ($month - $months_remaining) {
+            $renewPrice = (($planPrice) / $month);
+            $PriceToBeConsidered = $renewPrice * $months_remaining;
             $price = $PriceToBeConsidered - $grandTotal;
-        }
-        else {
+        } else {
             $price = $planPrice - $grandTotal;
         }
+
         return $price;
     }
+
     public function upgradeForm($id)
     {
         try {
@@ -99,14 +101,18 @@ class PlanUpgradeController extends Controller
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-    public function upgradeByClient($id, Request $request){
-        $price = $this->getCost($request,$id);
 
-        $items = $this->addUpgradeProduct($request->plan,$price);
-            \Cart::add($items); //Add Items To the Cart Collection
-            return redirect('show/cart');
+    public function upgradeByClient($id, Request $request)
+    {
+        $price = $this->getCost($request, $id);
+
+        $items = $this->addUpgradeProduct($request->plan, $price);
+        \Cart::add($items); //Add Items To the Cart Collection
+
+        return redirect('show/cart');
     }
-    private function addUpgradeProduct(int $id,$price)
+
+    private function addUpgradeProduct(int $id, $price)
     {
         try {
             $qty = 1;

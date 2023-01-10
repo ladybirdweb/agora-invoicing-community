@@ -108,7 +108,7 @@ class CartController extends BaseCartController
             $qty = 1;
             $agents = 0; //Unlmited Agents
             if (\Session::has('plan_id')) { //If a plan is selected from dropdown in pricing page, this is true
-                $planid = Plan::where('product', $id)->pluck('id')->first();
+                $planid = \Session::get('plan_id');
             } else {
                 $planid = Plan::where('product', $id)->pluck('id')->first();
             }

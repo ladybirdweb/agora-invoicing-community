@@ -394,7 +394,7 @@ class ClientController extends BaseClientController
                                 $order_cont = new \App\Http\Controllers\Order\OrderController();
                                 $status = $order_cont->checkInvoiceStatusByOrderId($model->id);
                                 $url = '';
-                                $url1='';
+                                $url1 = '';
                                 if ($status == 'success') {
                                     $url = $this->renewPopup($model->sub_id, $model->product_id);
                                     $url1 = $this->upgradePopup($model->sub_id, $model->product_id);

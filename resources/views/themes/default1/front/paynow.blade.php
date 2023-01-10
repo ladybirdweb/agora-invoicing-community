@@ -7,7 +7,7 @@ Checkout
 @stop
 @section('breadcrumb')
 <li><a href="{{url('home')}}">Home</a></li>
-<li class="active">Checkouttt</li>
+<li class="active">Checkout</li>
 @stop
 @section('main-class') "main shop" @stop
 @section('content')

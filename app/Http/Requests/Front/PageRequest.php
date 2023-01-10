@@ -23,7 +23,7 @@ class PageRequest extends FormRequest
      */
     public function rules()
     {
-       $regex = '/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/';
+        $regex = '/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/';
 
         if ($this->method() == 'POST') {
             return [

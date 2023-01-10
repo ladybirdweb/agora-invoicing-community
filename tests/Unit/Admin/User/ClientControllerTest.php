@@ -117,5 +117,4 @@ class ClientControllerTest extends DBTestCase
         $this->assertDatabaseHas('users', ['email'=>'test@test.com']);
         $response->status(200);
     }
-
 }

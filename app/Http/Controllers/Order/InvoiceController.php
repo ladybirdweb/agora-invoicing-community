@@ -209,23 +209,23 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                             $query->whereRaw($sql, ["%{$keyword}%"]);
                         })
                         ->filterColumn('status', function ($query, $keyword) {
-                        $query->where('status','LIKE', '%'.$this->fetchKeyWordForQuery($keyword).'%' );
+                            $query->where('status', 'LIKE', '%'.$this->fetchKeyWordForQuery($keyword).'%');
                         })
 
                          ->rawColumns(['checkbox', 'user_id', 'number', 'date', 'grand_total', 'status', 'action'])
                         ->make(true);
     }
 
-     private function fetchKeyWordForQuery($keyword = 'Paid'): string
-        {
-        return match ($keyword){
-        'Paid','paid'     => 'success',
+    private function fetchKeyWordForQuery($keyword = 'Paid'): string
+    {
+        return match ($keyword) {
+            'Paid','paid'     => 'success',
         'Unpaid','unpaid' => 'pending',
         'Partiallypaid',
         'Partially',
         'partiallypaid'   => 'partially paid'
         };
-        }
+    }
 
     /**
      * Shoe Invoice when view Invoice is selected from dropdown in Admin Panel.

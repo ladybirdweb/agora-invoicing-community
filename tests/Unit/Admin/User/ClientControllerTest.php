@@ -100,7 +100,7 @@ class ClientControllerTest extends DBTestCase
     {
         $admin = User::factory()->create(['role'=>'admin']);
         $this->actingAs($admin);
-        $this->post('clients', [
+        $response = $this->post('clients', [
             'first_name'=>'Abc',
             'last_name'=>'Xyz',
             'company'=> 'demo',
@@ -110,8 +110,12 @@ class ClientControllerTest extends DBTestCase
             'timezone_id' => '79',
             'mobile' => '9898789887',
             'mobile_code' => '91',
+            'address' => 'bangalore',
 
         ]);
+
         $this->assertDatabaseHas('users', ['email'=>'test@test.com']);
+        $response->status(200);
     }
+
 }

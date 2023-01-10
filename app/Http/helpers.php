@@ -303,6 +303,7 @@ function userCurrencyAndPrice($userid, $plan, $productid = '')
         return ['currency' => $currency, 'symbol' => $symbol, 'plan' => $plan];
     } catch (\Exception $ex) {
         dd($ex);
+
         return redirect()->back()->with('fails', $ex->getMessage());
     }
 }

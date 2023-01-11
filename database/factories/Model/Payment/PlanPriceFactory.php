@@ -21,7 +21,7 @@ class PlanPriceFactory extends Factory
             'add_price' => 500000,
             'renew_price' => 25000,
             'product_quantity' => 1,
-            'no_of_agents' => 1
+            'no_of_agents' => 1,
         ];
     }
 }

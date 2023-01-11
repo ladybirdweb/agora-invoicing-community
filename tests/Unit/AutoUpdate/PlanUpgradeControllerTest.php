@@ -35,7 +35,7 @@ class PlanUpgradeControllerTest extends DBTestCase
         $this->assertEquals(32800, $price);
     }
 
-    public function test_profofodfo()
+    public function test_CheckThePriceBasedOnRenewalAndExpiry_returnThePrice()
     {
         $product = Product::factory()->create();
         $plan = Plan::factory()->create(['product'=>$product->id]);

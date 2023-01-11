@@ -15,7 +15,9 @@ return new class extends Migration
     {
         Schema::create('upgrade_settings', function (Blueprint $table) {
             $table->id();
-            $table->integer('upgrade_product_id');
+            $table->integer('product_id')->unsigned();
+            $table->integer('upgrade_product_id')->unsigned();
+            $table->foreign('product_id')->references('id')->on('products');
             $table->foreign('upgrade_product_id')->references('id')->on('products');
             $table->timestamps();
         });

@@ -54,7 +54,7 @@ class OrderSearchControllerTest extends DBTestCase
         $this->createOrder('v3.1.0');
         $this->createOrder('v3.2.0');
         $baseQuery = $this->getPrivateMethod($this->classObject, 'getBaseQueryForOrders');
-        $query = $this->getPrivateMethod($this->classObject, 'getSelectedVersionOrders', [$baseQuery,null,'v3.1.0']);
+        $query = $this->getPrivateMethod($this->classObject, 'getSelectedVersionOrders', [$baseQuery, null, 'v3.1.0']);
         $records = $query->get();
         $this->assertEquals(3, $records->count());
         $this->assertEquals('v3.0.0', $records[0]->product_version);

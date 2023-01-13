@@ -47,7 +47,7 @@ class DashboardControllerTest extends DBTestCase
         $this->getLoggedInUser();
         $user = $this->user;
         $date = date('Y-m-d H:m:i');
-        $invoice = Invoice::factory()->create(['user_id' => $user->id,'date' => $date ]);
+        $invoice = Invoice::factory()->create(['user_id' => $user->id, 'date' => $date]);
         $payment = Payment::create(['invoice_id' => $invoice->id, 'user_id' => $user->id, 'amount' => '10000']);
         $controller = new \App\Http\Controllers\DashboardController();
         $allowedCurrencies2 = 'INR';
@@ -64,7 +64,7 @@ class DashboardControllerTest extends DBTestCase
         $this->getLoggedInUser();
         $user = $this->user;
         $date = date('Y-m-d H:m:i');
-        $invoice = Invoice::factory()->count(3)->create(['created_at' => 2017, 'user_id' => $user->id,'date' => $date]);
+        $invoice = Invoice::factory()->count(3)->create(['created_at' => 2017, 'user_id' => $user->id, 'date' => $date]);
         $controller = new \App\Http\Controllers\DashboardController();
         $allowedCurrencies2 = 'INR';
         $response = $controller->getYearlySales($allowedCurrencies2);

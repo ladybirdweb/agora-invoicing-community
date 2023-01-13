@@ -1,7 +1,7 @@
 <?php
 
 namespace Database\Factories\Model\Order;
-
+use App\Model\Order\Invoice;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class InvoiceFactory extends Factory
@@ -11,6 +11,8 @@ class InvoiceFactory extends Factory
      *
      * @return array
      */
+    protected $model = Invoice::class;
+
     public function definition()
     {
         return [

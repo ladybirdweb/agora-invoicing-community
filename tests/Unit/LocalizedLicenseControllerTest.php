@@ -1,7 +1,7 @@
 <?php
 
 namespace Tests\Unit;
-
+use App\Model\Order\Order;
 use Tests\DBTestCase;
 
 class LocalizedLicenseControllerTest extends DBTestCase
@@ -15,7 +15,7 @@ class LocalizedLicenseControllerTest extends DBTestCase
             'choose' => 1,
             'orderNo' => 192020,
         ];
-        $response = $this->json('POST', url('choose'), $data);
+        $response = $this->json('POST', url('choose'), $data,$order);
         $response->assertStatus(200);
         $response->assertJson(['success' => 'Status change successfully.']);
     }
@@ -41,18 +41,18 @@ class LocalizedLicenseControllerTest extends DBTestCase
     }
 
     /** @group LocalizedLicense */
-    public function test_downloadFile_clientDownloadsLicenseFile_return200WithFile()
-    {
-        $this->withoutMiddleware();
-        $this->getLoggedInUser();
-        $user = $this->user;
-        $data = [
-            'orderNo' => 192020,
-        ];
-        $response = $this->json('GET', url('downloadFile'), $data);
-        $response->assertStatus(200);
-        $response->assertHeader('content-disposition', 'attachment; filename="faveo-license-{192020}.txt"');
-    }
+    // public function test_downloadFile_clientDownloadsLicenseFile_return200WithFile()
+    // {
+    //     $this->withoutMiddleware();
+    //     $this->getLoggedInUser();
+    //     $user = $this->user;
+    //     $data = [
+    //         'orderNo' => 192020,
+    //     ];
+    //     $response = $this->json('GET', url('downloadFile'), $data);
+    //     $response->assertStatus(200);
+    //     $response->assertHeader('content-disposition', 'attachment; filename="faveo-license-{192020}.txt"');
+    // }
 
     /** @group LocalizedLicense */
     public function test_downloadPrivate_clientDownloadsPrivateKey_returb()

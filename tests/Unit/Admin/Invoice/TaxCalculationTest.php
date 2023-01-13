@@ -38,7 +38,7 @@ class TaxCalculationTest extends DBTestCase
     {
         $user = User::factory()->create();
         $this->withoutMiddleware();
-        $this->call('POST', 'taxes/class', ['name' => 'Intra State GST', 'tax-name' => 'CGST+SGST', 'active' => 1]);
+        $this->call('POST', 'taxes/class', ['name' => 'Intra State GST', 'tax-name' => 'null', 'active' => 0]);
         $this->call('POST', 'license-type', ['name' => 'Download Perpetual']);
         $taxClass = TaxClass::first();
         $licenseType = LicenseType::first();

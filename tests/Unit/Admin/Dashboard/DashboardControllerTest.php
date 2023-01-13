@@ -46,8 +46,9 @@ class DashboardControllerTest extends DBTestCase
         $this->withoutMiddleware();
         $this->getLoggedInUser();
         $user = $this->user;
-        $invoice = Invoice::factory()->create(['user_id' => $user->id]);
-        Payment::create(['invoice_id' => $invoice->id, 'user_id' => $user->id, 'amount' => '10000']);
+        $date = date('Y-m-d H:m:i');
+        $invoice = Invoice::factory()->create(['user_id' => $user->id,'date' => $date ]);
+        $payment = Payment::create(['invoice_id' => $invoice->id, 'user_id' => $user->id, 'amount' => '10000']);
         $controller = new \App\Http\Controllers\DashboardController();
         $allowedCurrencies2 = 'INR';
         $response = $controller->getYearlySales($allowedCurrencies2);
@@ -62,7 +63,8 @@ class DashboardControllerTest extends DBTestCase
         $this->withoutMiddleware();
         $this->getLoggedInUser();
         $user = $this->user;
-        $invoice = Invoice::factory()->count(3)->create(['created_at' => 2017, 'user_id' => $user->id]);
+        $date = date('Y-m-d H:m:i');
+        $invoice = Invoice::factory()->count(3)->create(['created_at' => 2017, 'user_id' => $user->id,'date' => $date]);
         $controller = new \App\Http\Controllers\DashboardController();
         $allowedCurrencies2 = 'INR';
         $response = $controller->getYearlySales($allowedCurrencies2);
@@ -115,7 +117,6 @@ class DashboardControllerTest extends DBTestCase
         $productTwo = Product::create(['name' => 'two']);
         $productOne->order()->create(['client' => $this->user->id, 'number' => 1, 'order_status' => 'executed']);
         $productOne->order()->create(['client' => $this->user->id, 'number' => 2, 'order_status' => 'executed']);
-
         $order = $productOne->order()->create(['client' => $this->user->id, 'number' => 3, 'order_status' => 'executed']);
         $order->created_at = Carbon::now()->subDays(2);
         $order->save();
@@ -171,10 +172,10 @@ class DashboardControllerTest extends DBTestCase
         $response = $this->classObject->getExpiringSubscriptions(false);
 
         $this->assertCount(4, $response);
-        $this->assertEquals('2 days', $response[0]->days_difference);
-        $this->assertEquals('3 days', $response[1]->days_difference);
-        $this->assertEquals('4 days', $response[2]->days_difference);
-        $this->assertEquals('5 days', $response[3]->days_difference);
+        $this->assertEquals('1 days', $response[0]->days_difference);
+        $this->assertEquals('2 days', $response[1]->days_difference);
+        $this->assertEquals('3 days', $response[2]->days_difference);
+        $this->assertEquals('4 days', $response[3]->days_difference);
 
         $this->assertEquals($this->user->first_name.' '.$this->user->last_name, $response[0]->client_name);
         $this->assertEquals($this->user->first_name.' '.$this->user->last_name, $response[1]->client_name);

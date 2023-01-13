@@ -76,8 +76,7 @@ class InvoiceControllerTest extends DBTestCase
         $product = Product::factory()->create();
         $plan = Plan::create(['name' => 'Hepldesk 1 year', 'product' => $product->id, 'days' => 365]);
         $planPrice = PlanPrice::create(['plan_id' => $plan->id, 'currency' => $this->user->currency, 'add_price' => '1000', 'renew_price' => '500', 'product_quantity' => 1, 'no_of_agents' => 0]);
-
-        $invoice = $this->classObject->invoiceGenerateByForm(new Request(['user' => $this->user->id, 'date' => '09/16/2020', 'product' => $product->id, 'price' => $planPrice->add_price, 'code' => '', 'quantity' => $planPrice->product_quantity, 'plan' => $plan->id, 'subscription' => true, 'description' => '']));
+          $invoice = $this->call('POST', 'generate/invoice/'.$this->user->id, ['user' => $this->user->id, 'date' => '09/16/2020', 'product' => $product->id, 'price' => $planPrice->add_price, 'code' => '', 'quantity' => $planPrice->product_quantity, 'plan' => $plan->id, 'subscription' => true, 'description' => '']);
         $message = json_decode($invoice->getContent())->message->success;
         $this->assertEquals($message, 'Invoice generated successfully');
     }

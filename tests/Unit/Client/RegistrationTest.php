@@ -11,7 +11,6 @@ class RegistrationTest extends DBTestCase
 {
     use DatabaseTransactions;
 
-
     private $address;
 
     private $mock;

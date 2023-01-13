@@ -1,7 +1,7 @@
 <?php
 
 namespace Tests\Unit;
-use App\Model\Order\Order;
+
 use Tests\DBTestCase;
 
 class LocalizedLicenseControllerTest extends DBTestCase
@@ -15,7 +15,7 @@ class LocalizedLicenseControllerTest extends DBTestCase
             'choose' => 1,
             'orderNo' => 192020,
         ];
-        $response = $this->json('POST', url('choose'), $data,$order);
+        $response = $this->json('POST', url('choose'), $data, $order);
         $response->assertStatus(200);
         $response->assertJson(['success' => 'Status change successfully.']);
     }

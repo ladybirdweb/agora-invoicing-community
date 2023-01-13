@@ -1,6 +1,7 @@
 <?php
 
 namespace Database\Factories\Model\Order;
+
 use App\Model\Order\Order;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -11,8 +12,8 @@ class OrderFactory extends Factory
      *
      * @return array
      */
-
     protected $model = Order::class;
+
     public function definition()
     {
         return [

@@ -18,10 +18,9 @@ class FreeTrailControllerTest extends DBTestCase
         Product::factory()->create();
         $auth = Auth::loginUsingId($user->id);
         $this->actingAs($user);
-        $response = (new FreeTrailController())->firstLoginAttempt(new Request(['id' => $user->id,'first_time_login' => 1]));
+        $response = (new FreeTrailController())->firstLoginAttempt(new Request(['id' => $user->id, 'first_time_login' => 1]));
         $this->expectExceptionMessage('Can not Generate Freetrial Cloud instance');
         $response = $response->getOriginalContent();
         $this->assertFalse(auth()->check());
-     
     }
 }

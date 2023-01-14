@@ -347,9 +347,9 @@ class Twitter_Autolink extends Twitter_Regex
     public function addLinksToHashtags()
     {
         return preg_replace_callback(
-      self::REGEX_HASHTAG,
-      [$this, '_addLinksToHashtags'],
-      $this->tweet);
+            self::REGEX_HASHTAG,
+            [$this, '_addLinksToHashtags'],
+            $this->tweet);
     }
 
     /**
@@ -360,9 +360,9 @@ class Twitter_Autolink extends Twitter_Regex
     public function addLinksToURLs()
     {
         return preg_replace_callback(
-      self::$REGEX_VALID_URL,
-      [$this, '_addLinksToURLs'],
-      $this->tweet);
+            self::$REGEX_VALID_URL,
+            [$this, '_addLinksToURLs'],
+            $this->tweet);
     }
 
     /**
@@ -373,9 +373,9 @@ class Twitter_Autolink extends Twitter_Regex
     public function addLinksToUsernamesAndLists()
     {
         return preg_replace_callback(
-      self::REGEX_USERNAME_LIST,
-      [$this, '_addLinksToUsernamesAndLists'],
-      $this->tweet);
+            self::REGEX_USERNAME_LIST,
+            [$this, '_addLinksToUsernamesAndLists'],
+            $this->tweet);
     }
 
     /**

@@ -51,35 +51,35 @@
      public function __construct($options = [])
      {
          $this->options = array_merge(
-      [
-          'consumer_key' => '',
-          'consumer_secret' => '',
-          'access_token' => '',
-          'access_token_secret' => '',
-          'twitter_screen_name' => '',
-          'cache_file' => dirname(__FILE__).'/cache/twitter.txt', // Where on the server to save the cached formatted tweets
-          'cache_file_raw' => dirname(__FILE__).'/cache/twitter-array.txt', // Where on the server to save the cached raw tweets
-          'cachetime' => 60 * 60, // Seconds to cache feed (1 hour).
-          'tweets_to_display' => 10, // How many tweets to fetch
-          'ignore_replies' => true, // Ignore @replies
-          'ignore_retweets' => true, // Ignore retweets
-          'twitter_style_dates' => false, // Use twitter style dates e.g. 2 hours ago
-          'twitter_date_text' => ['seconds', 'minutes', 'about', 'hour', 'ago'],
-          'date_format' => '%I:%M %p %b %e%O', // The defult date format e.g. 12:08 PM Jun 12th. See: http://php.net/manual/en/function.strftime.php
-          'date_lang' => null, // Language for date e.g. 'fr_FR'. See: http://php.net/manual/en/function.setlocale.php
-          'format' => 'html', // Can be 'html' or 'array'
-          'twitter_wrap_open' => '<h2>Latest tweets</h2><ul id="twitter">',
-          'twitter_wrap_close' => '</ul>',
-          'tweet_wrap_open' => '<li><span class="status">',
-          'meta_wrap_open' => '</span><span class="meta"> ',
-          'meta_wrap_close' => '</span>',
-          'tweet_wrap_close' => '</li>',
-          'error_message' => 'Oops, our twitter feed is unavailable right now.',
-          'error_link_text' => 'Follow us on Twitter',
-          'debug' => false,
-      ],
-        $options
-      );
+             [
+                 'consumer_key' => '',
+                 'consumer_secret' => '',
+                 'access_token' => '',
+                 'access_token_secret' => '',
+                 'twitter_screen_name' => '',
+                 'cache_file' => dirname(__FILE__).'/cache/twitter.txt', // Where on the server to save the cached formatted tweets
+                 'cache_file_raw' => dirname(__FILE__).'/cache/twitter-array.txt', // Where on the server to save the cached raw tweets
+                 'cachetime' => 60 * 60, // Seconds to cache feed (1 hour).
+                 'tweets_to_display' => 10, // How many tweets to fetch
+                 'ignore_replies' => true, // Ignore @replies
+                 'ignore_retweets' => true, // Ignore retweets
+                 'twitter_style_dates' => false, // Use twitter style dates e.g. 2 hours ago
+                 'twitter_date_text' => ['seconds', 'minutes', 'about', 'hour', 'ago'],
+                 'date_format' => '%I:%M %p %b %e%O', // The defult date format e.g. 12:08 PM Jun 12th. See: http://php.net/manual/en/function.strftime.php
+                 'date_lang' => null, // Language for date e.g. 'fr_FR'. See: http://php.net/manual/en/function.setlocale.php
+                 'format' => 'html', // Can be 'html' or 'array'
+                 'twitter_wrap_open' => '<h2>Latest tweets</h2><ul id="twitter">',
+                 'twitter_wrap_close' => '</ul>',
+                 'tweet_wrap_open' => '<li><span class="status">',
+                 'meta_wrap_open' => '</span><span class="meta"> ',
+                 'meta_wrap_close' => '</span>',
+                 'tweet_wrap_close' => '</li>',
+                 'error_message' => 'Oops, our twitter feed is unavailable right now.',
+                 'error_link_text' => 'Follow us on Twitter',
+                 'debug' => false,
+             ],
+             $options
+         );
 
          if ($this->options['debug']) {
              error_reporting(E_ALL);
@@ -199,26 +199,26 @@
              $current_time = time();
              $time_diff = abs($current_time - $tweet_time);
              switch ($time_diff) {
-          case $time_diff < 60:
-            $display_time = $time_diff.' '.$this->options['twitter_date_text'][0].' '.$this->options['twitter_date_text'][4];
-            break;
-          case $time_diff >= 60 && $time_diff < 3600:
-            $min = floor($time_diff / 60);
-            $display_time = $min.' '.$this->options['twitter_date_text'][1].' '.$this->options['twitter_date_text'][4];
-            break;
-          case $time_diff >= 3600 && $time_diff < 86400:
-            $hour = floor($time_diff / 3600);
-            $display_time = $this->options['twitter_date_text'][2].' '.$hour.' '.$this->options['twitter_date_text'][3];
-            if ($hour > 1) {
-                $display_time .= 's';
-            }
-            $display_time .= ' '.$this->options['twitter_date_text'][4];
-            break;
-          default:
-            $format = str_replace('%O', date('S', $tweet_time), $this->options['date_format']);
-            $display_time = strftime($format, $tweet_time);
-            break;
-        }
+                 case $time_diff < 60:
+                     $display_time = $time_diff.' '.$this->options['twitter_date_text'][0].' '.$this->options['twitter_date_text'][4];
+                     break;
+                 case $time_diff >= 60 && $time_diff < 3600:
+                     $min = floor($time_diff / 60);
+                     $display_time = $min.' '.$this->options['twitter_date_text'][1].' '.$this->options['twitter_date_text'][4];
+                     break;
+                 case $time_diff >= 3600 && $time_diff < 86400:
+                     $hour = floor($time_diff / 3600);
+                     $display_time = $this->options['twitter_date_text'][2].' '.$hour.' '.$this->options['twitter_date_text'][3];
+                     if ($hour > 1) {
+                         $display_time .= 's';
+                     }
+                     $display_time .= ' '.$this->options['twitter_date_text'][4];
+                     break;
+                 default:
+                     $format = str_replace('%O', date('S', $tweet_time), $this->options['date_format']);
+                     $display_time = strftime($format, $tweet_time);
+                     break;
+             }
          } else {
              $format = str_replace('%O', date('S', $tweet_time), $this->options['date_format']);
              $display_time = strftime($format, $tweet_time);

@@ -66,8 +66,8 @@ class SocialMediaController extends Controller
                             ->rawColumns(['name', 'link', 'action'])
                             ->make(true);
             // ->searchColumns('name')
-                            // ->orderColumns('class')
-                            // ->make();
+            // ->orderColumns('class')
+            // ->make();
         } catch (Exception $ex) {
             echo $ex->getMessage();
         }

@@ -184,13 +184,13 @@ function getStatusLabel($status, $badge = 'badge')
         case 'Success':
             return '<span class='.'"'.$badge.' '.$badge.'-success">Paid</span>';
 
-            case 'Pending':
+        case 'Pending':
             return '<span class='.'"'.$badge.' '.$badge.'-danger">Unpaid</span>';
 
-            case 'renewed':
+        case 'renewed':
             return '<span class='.'"'.$badge.' '.$badge.'-primary">Renewed</span>';
 
-            default:
+        default:
             return '<span class='.'"'.$badge.' '.$badge.'-warning">Partially paid</span>';
     }
 }
@@ -396,8 +396,8 @@ function getIndianCurrencyFormat($number)
     if (strlen($num) > 3) {
         $lastthree = substr($num, strlen($num) - 3, strlen($num));
         $restunits = substr($num, 0, strlen($num) - 3); // extracts the last three digits
-      $restunits = (strlen($restunits) % 2 == 1) ? '0'.$restunits : $restunits; // explodes the remaining digits in 2's formats, adds a zero in the beginning to maintain the 2's grouping.
-      $expunit = str_split($restunits, 2);
+        $restunits = (strlen($restunits) % 2 == 1) ? '0'.$restunits : $restunits; // explodes the remaining digits in 2's formats, adds a zero in the beginning to maintain the 2's grouping.
+        $expunit = str_split($restunits, 2);
         for ($i = 0; $i < count($expunit); $i++) {
             // creates each of the 2's group and adds a comma to the end
             if ($i == 0) {
@@ -526,15 +526,15 @@ function getRootUrl($url, $remove_scheme, $remove_www, $remove_path, $remove_las
         $url = str_ireplace($url_array['scheme'].'://', '', $url); //make URL without scheme, so no :// is included when searching for first or last /
 
         if ($remove_path == 1) { //remove everything after FIRST / in URL, so it becomes "real" root URL
-        $first_slash_position = stripos($url, '/'); //find FIRST slash - the end of root URL
-        if ($first_slash_position > 0) { //cut URL up to FIRST slash
-            $url = substr($url, 0, $first_slash_position + 1);
-        }
+            $first_slash_position = stripos($url, '/'); //find FIRST slash - the end of root URL
+            if ($first_slash_position > 0) { //cut URL up to FIRST slash
+                $url = substr($url, 0, $first_slash_position + 1);
+            }
         } else { //remove everything after LAST / in URL, so it becomes "normal" root URL
-        $last_slash_position = strripos($url, '/'); //find LAST slash - the end of root URL
-        if ($last_slash_position > 0) { //cut URL up to LAST slash
-            $url = substr($url, 0, $last_slash_position + 1);
-        }
+            $last_slash_position = strripos($url, '/'); //find LAST slash - the end of root URL
+            if ($last_slash_position > 0) { //cut URL up to LAST slash
+                $url = substr($url, 0, $last_slash_position + 1);
+            }
         }
 
         if ($remove_scheme != 1) { //scheme was already removed, add it again
@@ -546,9 +546,9 @@ function getRootUrl($url, $remove_scheme, $remove_www, $remove_path, $remove_las
         }
 
         if ($remove_last_slash == 1) { //remove / from the end of URL if it exists
-        while (substr($url, -1) == '/') { //use cycle in case URL already contained multiple // at the end
-            $url = substr($url, 0, -1);
-        }
+            while (substr($url, -1) == '/') { //use cycle in case URL already contained multiple // at the end
+                $url = substr($url, 0, -1);
+            }
         }
     }
 

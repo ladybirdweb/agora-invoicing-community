@@ -148,8 +148,8 @@ return array(
     'Dflydev\\DotAccessData\\' => array($vendorDir . '/dflydev/dot-access-data/src'),
     'Devio\\Pipedrive\\' => array($vendorDir . '/devio/pipedrive/src'),
     'DeepCopy\\' => array($vendorDir . '/myclabs/deep-copy/src/DeepCopy'),
-    'Database\\Seeders\\' => array($baseDir . '/database/seeders'),
-    'Database\\Factories\\' => array($baseDir . '/database/factories'),
+    'Database\\Seeders\\' => array($baseDir . '/database/seeders', $vendorDir . '/laravel/pint/database/seeders'),
+    'Database\\Factories\\' => array($baseDir . '/database/factories', $vendorDir . '/laravel/pint/database/factories'),
     'Darryldecode\\' => array($vendorDir . '/darryldecode/cart/src/Darryldecode'),
     'DASPRiD\\Enum\\' => array($vendorDir . '/dasprid/enum/src'),
     'Cron\\' => array($vendorDir . '/dragonmantank/cron-expression/src/Cron'),
@@ -172,6 +172,6 @@ return array(
     'Aws\\' => array($vendorDir . '/aws/aws-sdk-php/src'),
     'Arcanedev\\Support\\' => array($vendorDir . '/arcanedev/support/src'),
     'Arcanedev\\LogViewer\\' => array($vendorDir . '/arcanedev/log-viewer/src'),
-    'App\\' => array($baseDir . '/app'),
+    'App\\' => array($baseDir . '/app', $vendorDir . '/laravel/pint/app'),
     'Anhskohbo\\NoCaptcha\\' => array($vendorDir . '/anhskohbo/no-captcha/src'),
 );

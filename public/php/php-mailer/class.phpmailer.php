@@ -13,6 +13,7 @@
  * @copyright 2010 - 2012 Jim Jagielski
  * @copyright 2004 - 2009 Andy Prevost
  * @license http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
+ *
  * @note This program is distributed in the hope that it will be useful - WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE.
@@ -261,6 +262,7 @@ class PHPMailer
      * The default SMTP server port.
      *
      * @var int
+     *
      * @TODO Why is this needed when the SMTP class takes care of it?
      */
     public $Port = 25;
@@ -413,6 +415,7 @@ class PHPMailer
      * Storage for addresses when SingleTo is enabled.
      *
      * @var array
+     *
      * @TODO This should really not be public
      */
     public $SingleToArray = [];
@@ -528,6 +531,7 @@ class PHPMailer
      * @see PHPMailer::validateAddress()
      *
      * @var string|callable
+     *
      * @static
      */
     public static $validator = 'auto';
@@ -1169,6 +1173,7 @@ class PHPMailer
      *                                       });
      *                                       You can also set the PHPMailer::$validator static to a callable, allowing built-in methods to use your validator.
      * @return bool
+     *
      * @static
      */
     public static function validateAddress($address, $patternselect = null)
@@ -2205,9 +2210,9 @@ class PHPMailer
 
         // sendmail and mail() extract Bcc from the header before sending
         if ((
-                $this->Mailer == 'sendmail' or $this->Mailer == 'qmail' or $this->Mailer == 'mail'
-            )
-            and count($this->bcc) > 0
+            $this->Mailer == 'sendmail' or $this->Mailer == 'qmail' or $this->Mailer == 'mail'
+        )
+        and count($this->bcc) > 0
         ) {
             $result .= $this->addrAppend('Bcc', $this->bcc);
         }
@@ -2302,7 +2307,7 @@ class PHPMailer
                 if ($this->Encoding == '8bit') {
                     $result .= $this->headerLine('Content-Transfer-Encoding', '8bit');
                 }
-                // The only remaining alternatives are quoted-printable and base64, which are both 7bit compatible
+            // The only remaining alternatives are quoted-printable and base64, which are both 7bit compatible
             } else {
                 $result .= $this->headerLine('Content-Transfer-Encoding', $this->Encoding);
             }
@@ -2940,7 +2945,7 @@ class PHPMailer
                 }
                 $matchcount = preg_match_all('/[^\040\041\043-\133\135-\176]/', $str, $matches);
                 break;
-            /* @noinspection PhpMissingBreakStatementInspection */
+                /* @noinspection PhpMissingBreakStatementInspection */
             case 'comment':
                 $matchcount = preg_match_all('/[()"]/', $str, $matches);
                 // Intentional fall-through
@@ -3118,7 +3123,7 @@ class PHPMailer
                 // RFC 2047 section 5.3
                 $pattern = '^A-Za-z0-9!*+\/ -';
                 break;
-            /* @noinspection PhpMissingBreakStatementInspection */
+                /* @noinspection PhpMissingBreakStatementInspection */
             case 'comment':
                 // RFC 2047 section 5.2
                 $pattern = '\(\)"';
@@ -3454,6 +3459,7 @@ class PHPMailer
      * Return an RFC 822 formatted date.
      *
      * @return string
+     *
      * @static
      */
     public static function rfcDate()
@@ -3613,6 +3619,7 @@ class PHPMailer
                             $message
                         );
                     }
+
                     continue;
                 }
                 if (
@@ -3702,6 +3709,7 @@ class PHPMailer
      *
      * @param  string  $ext File extension
      * @return string MIME type of file.
+     *
      * @static
      */
     public static function _mime_types($ext = '')
@@ -3819,6 +3827,7 @@ class PHPMailer
      *
      * @param  string  $filename A file name or full path, does not need to exist as a file
      * @return string
+     *
      * @static
      */
     public static function filenameToType($filename)
@@ -3844,6 +3853,7 @@ class PHPMailer
      * @param  int|string  $options Either a PATHINFO_* constant,
      *                            or a string name to return only the specified piece, allows 'filename' to work on PHP < 5.2
      * @return string|array
+     *
      * @static
      */
     public static function mb_pathinfo($path, $options = null)
@@ -3894,6 +3904,7 @@ class PHPMailer
      * @param  string  $name  The property name to set
      * @param  mixed  $value The value to set the property to
      * @return bool
+     *
      * @TODO Should this not be using the __set() magic function?
      */
     public function set($name, $value = '')
@@ -3928,6 +3939,7 @@ class PHPMailer
      * @param  string  $text
      * @param  string  $breaktype What kind of line break to use, defaults to CRLF
      * @return string
+     *
      * @static
      */
     public static function normalizeBreaks($text, $breaktype = "\r\n")
@@ -4153,6 +4165,7 @@ class PHPMailer
      *
      * @param  string  $str
      * @return bool
+     *
      * @static
      */
     public static function hasLineLongerThanMax($str)

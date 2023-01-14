@@ -7762,6 +7762,7 @@ return array(
     'Spatie\\Referer\\Sources\\RequestHeader' => $vendorDir . '/spatie/laravel-referer/src/Sources/RequestHeader.php',
     'Spatie\\Referer\\Sources\\UtmSource' => $vendorDir . '/spatie/laravel-referer/src/Sources/UtmSource.php',
     'Stringable' => $vendorDir . '/myclabs/php-enum/stubs/Stringable.php',
+    'Svg\\CssLength' => $vendorDir . '/phenx/php-svg-lib/src/Svg/CssLength.php',
     'Svg\\DefaultStyle' => $vendorDir . '/phenx/php-svg-lib/src/Svg/DefaultStyle.php',
     'Svg\\Document' => $vendorDir . '/phenx/php-svg-lib/src/Svg/Document.php',
     'Svg\\Gradient\\Stop' => $vendorDir . '/phenx/php-svg-lib/src/Svg/Gradient/Stop.php',

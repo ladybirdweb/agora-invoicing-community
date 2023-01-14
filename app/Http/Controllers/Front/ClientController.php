@@ -520,7 +520,6 @@ class ClientController extends BaseClientController
     public function getPaymentByOrderId($orderid, $userid)
     {
         try {
-
             // dd($orderid);
             $order = $this->order->where('id', $orderid)->where('client', $userid)->first();
             // dd($order);

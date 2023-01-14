@@ -97,15 +97,15 @@ class BaseAuthController extends Controller
     public function requestOtpFromAjax(Request $request)
     {
         $this->validate($request, [
-            'verify_email'   => 'sometimes|required|verify_email|email',
-            'verify_email'   => 'sometimes|required||verify_country_code|numeric',
-            'verify_email'   => 'sometimes|required|verify_number|numeric',
+            'verify_email' => 'sometimes|required|verify_email|email',
+            'verify_email' => 'sometimes|required||verify_country_code|numeric',
+            'verify_email' => 'sometimes|required|verify_number|numeric',
         ]);
         $email = $request->oldemail;
         $newEmail = $request->newemail;
         $number = ltrim($request->oldnumber, '0');
         $newNumber = ltrim($request->newnumber, '0');
-        User::where('email', $email)->update(['email'=>$newEmail, 'mobile'=>$newNumber]);
+        User::where('email', $email)->update(['email' => $newEmail, 'mobile' => $newNumber]);
 
         try {
             $code = $request->input('code');
@@ -133,12 +133,12 @@ class BaseAuthController extends Controller
             }
 
             $response = ['type' => 'success',
-                'message'           => $msg1.'<br><br>'.$msg2, ];
+                'message' => $msg1.'<br><br>'.$msg2, ];
 
             return response()->json($response);
         } catch (\Exception $ex) {
             $response = ['type' => 'fail',
-                'message'           => $ex->getMessage(), ];
+                'message' => $ex->getMessage(), ];
             $result = [$ex->getMessage()];
 
             return response()->json(compact('response'), 500);

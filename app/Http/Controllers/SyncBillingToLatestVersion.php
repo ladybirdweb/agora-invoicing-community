@@ -84,8 +84,8 @@ class SyncBillingToLatestVersion
     {
         $filesystemVersion = \Config::get('app.version');
         \Cache::forget($filesystemVersion);
-        $dbversion = \Cache::remember($filesystemVersion, 3600, function () {//Caching version for 1 hr
-            return Setting::first()->value('version');
+        $dbversion = \Cache::remember($filesystemVersion, 3600, function () { //Caching version for 1 hr
+        return Setting::first()->value('version');
         });
     }
 

@@ -21,7 +21,8 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 {
     use HasFactory;
     use Authenticatable,
-    CanResetPassword;
+        CanResetPassword;
+
     // use LogsActivity;
     use SoftDeletes;
 

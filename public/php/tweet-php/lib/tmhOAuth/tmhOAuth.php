@@ -36,61 +36,61 @@ class tmhOAuth
     {
         // default configuration options
         $this->config = array_merge(
-      [
-          // leave 'user_agent' blank for default, otherwise set this to
-          // something that clearly identifies your app
-          'user_agent' => '',
-          'host' => 'api.twitter.com',
+            [
+                // leave 'user_agent' blank for default, otherwise set this to
+                // something that clearly identifies your app
+                'user_agent' => '',
+                'host' => 'api.twitter.com',
 
-          'consumer_key' => '',
-          'consumer_secret' => '',
-          'token' => '',
-          'secret' => '',
+                'consumer_key' => '',
+                'consumer_secret' => '',
+                'token' => '',
+                'secret' => '',
 
-          // OAuth2 bearer token. This should already be URL encoded
-          'bearer' => '',
+                // OAuth2 bearer token. This should already be URL encoded
+                'bearer' => '',
 
-          // oauth signing variables that are not dynamic
-          'oauth_version' => '1.0',
-          'oauth_signature_method' => 'HMAC-SHA1',
+                // oauth signing variables that are not dynamic
+                'oauth_version' => '1.0',
+                'oauth_signature_method' => 'HMAC-SHA1',
 
-          // you probably don't want to change any of these curl values
-          'curl_connecttimeout' => 30,
-          'curl_timeout' => 10,
+                // you probably don't want to change any of these curl values
+                'curl_connecttimeout' => 30,
+                'curl_timeout' => 10,
 
-          // for security this should always be set to 2.
-          'curl_ssl_verifyhost' => 2,
-          // for security this should always be set to true.
-          'curl_ssl_verifypeer' => true,
-          // for security this should always be set to true.
-          'use_ssl' => true,
+                // for security this should always be set to 2.
+                'curl_ssl_verifyhost' => 2,
+                // for security this should always be set to true.
+                'curl_ssl_verifypeer' => true,
+                // for security this should always be set to true.
+                'use_ssl' => true,
 
-          // you can get the latest cacert.pem from here http://curl.haxx.se/ca/cacert.pem
-          // if you're getting HTTP 0 responses, check cacert.pem exists and is readable
-          // without it curl won't be able to create an SSL connection
-          'curl_cainfo' => __DIR__.DIRECTORY_SEPARATOR.'cacert.pem',
-          'curl_capath' => __DIR__,
+                // you can get the latest cacert.pem from here http://curl.haxx.se/ca/cacert.pem
+                // if you're getting HTTP 0 responses, check cacert.pem exists and is readable
+                // without it curl won't be able to create an SSL connection
+                'curl_cainfo' => __DIR__.DIRECTORY_SEPARATOR.'cacert.pem',
+                'curl_capath' => __DIR__,
 
-          'curl_followlocation' => false, // whether to follow redirects or not
+                'curl_followlocation' => false, // whether to follow redirects or not
 
-          // support for proxy servers
-          'curl_proxy' => false, // really you don't want to use this if you are using streaming
-          'curl_proxyuserpwd' => false, // format username:password for proxy, if required
-          'curl_encoding' => '',    // leave blank for all supported formats, else use gzip, deflate, identity etc
+                // support for proxy servers
+                'curl_proxy' => false, // really you don't want to use this if you are using streaming
+                'curl_proxyuserpwd' => false, // format username:password for proxy, if required
+                'curl_encoding' => '',    // leave blank for all supported formats, else use gzip, deflate, identity etc
 
-          // streaming API configuration
-          'is_streaming' => false,
-          'streaming_eol' => "\r\n",
-          'streaming_metrics_interval' => 10,
+                // streaming API configuration
+                'is_streaming' => false,
+                'streaming_eol' => "\r\n",
+                'streaming_metrics_interval' => 10,
 
-          // header or querystring. You should always use header!
-          // this is just to help me debug other developers implementations
-          'as_header' => true,
-          'force_nonce' => false, // used for checking signatures. leave as false for auto
-          'force_timestamp' => false, // used for checking signatures. leave as false for auto
-      ],
-      $config
-    );
+                // header or querystring. You should always use header!
+                // this is just to help me debug other developers implementations
+                'as_header' => true,
+                'force_nonce' => false, // used for checking signatures. leave as false for auto
+                'force_timestamp' => false, // used for checking signatures. leave as false for auto
+            ],
+            $config
+        );
     }
 
     private function reset_request_settings($options = [])
@@ -174,10 +174,10 @@ class tmhOAuth
             return array_map([$this, 'safe_encode'], $data);
         } elseif (is_scalar($data)) {
             return str_ireplace(
-        ['+', '%7E'],
-        [' ', '~'],
-        rawurlencode($data)
-      );
+                ['+', '%7E'],
+                [' ', '~'],
+                rawurlencode($data)
+            );
         } else {
             return '';
         }
@@ -369,6 +369,7 @@ class tmhOAuth
 
                 if (strpos($k, 'oauth') === 0) {
                     $oauth1[$k] = $v;
+
                     continue;
                 }
             }
@@ -385,13 +386,13 @@ class tmhOAuth
             $content = implode('&', $prepared_pairs);
 
             switch ($this->request_settings['method']) {
-        case 'POST':
-          $this->request_settings['postfields'] = $this->request_settings['multipart'] ? $prepared : $content;
-          break;
-        default:
-          $this->request_settings['querystring'] = $content;
-          break;
-      }
+                case 'POST':
+                    $this->request_settings['postfields'] = $this->request_settings['multipart'] ? $prepared : $content;
+                    break;
+                default:
+                    $this->request_settings['querystring'] = $content;
+                    break;
+            }
         }
     }
 
@@ -422,10 +423,10 @@ class tmhOAuth
         // on the server side
         if (! empty($this->request_settings['headers']['Host'])) {
             $url = str_ireplace(
-        $this->config['host'],
-        $this->request_settings['headers']['Host'],
-        $url
-      );
+                $this->config['host'],
+                $this->request_settings['headers']['Host'],
+                $url
+            );
         }
 
         $base = [
@@ -444,10 +445,10 @@ class tmhOAuth
     private function prepare_oauth_signature()
     {
         $this->request_settings['oauth1_params']['oauth_signature'] = $this->safe_encode(
-      base64_encode(
-        hash_hmac(
-          'sha1', $this->request_settings['basestring'], $this->request_settings['signing_key'], true
-    )));
+            base64_encode(
+                hash_hmac(
+                    'sha1', $this->request_settings['basestring'], $this->request_settings['signing_key'], true
+                )));
     }
 
     /**
@@ -765,11 +766,11 @@ class tmhOAuth
 
         $metrics = $this->update_metrics();
         $stop = call_user_func(
-      $this->config['streaming_callback'],
-      $content,
-      strlen($content),
-      $metrics
-    );
+            $this->config['streaming_callback'],
+            $content,
+            strlen($content),
+            $metrics
+        );
         $this->buffer = $buffered[1];
         if ($stop) {
             return 0;
@@ -795,26 +796,26 @@ class tmhOAuth
         // configure curl
         $c = curl_init();
         switch ($this->request_settings['method']) {
-      case 'GET':
-        if (isset($this->request_settings['querystring'])) {
-            $this->request_settings['url'] = $this->request_settings['url'].'?'.$this->request_settings['querystring'];
-        }
-        break;
-      case 'POST':
-        curl_setopt($c, CURLOPT_POST, true);
-        if (isset($this->request_settings['postfields'])) {
-            $postfields = $this->request_settings['postfields'];
-        } else {
-            $postfields = [];
-        }
+            case 'GET':
+                if (isset($this->request_settings['querystring'])) {
+                    $this->request_settings['url'] = $this->request_settings['url'].'?'.$this->request_settings['querystring'];
+                }
+                break;
+            case 'POST':
+                curl_setopt($c, CURLOPT_POST, true);
+                if (isset($this->request_settings['postfields'])) {
+                    $postfields = $this->request_settings['postfields'];
+                } else {
+                    $postfields = [];
+                }
 
-        curl_setopt($c, CURLOPT_POSTFIELDS, $postfields);
-        break;
-      default:
-        if (isset($this->request_settings['postfields'])) {
-            curl_setopt($c, CURLOPT_CUSTOMREQUEST, $this->request_settings['postfields']);
+                curl_setopt($c, CURLOPT_POSTFIELDS, $postfields);
+                break;
+            default:
+                if (isset($this->request_settings['postfields'])) {
+                    curl_setopt($c, CURLOPT_CUSTOMREQUEST, $this->request_settings['postfields']);
+                }
         }
-    }
 
         curl_setopt_array($c, [
             CURLOPT_USERAGENT => $this->config['user_agent'],

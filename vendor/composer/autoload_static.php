@@ -872,10 +872,12 @@ class ComposerStaticInit2955b800a3d45855083212747d565e16
         'Database\\Seeders\\' => 
         array (
             0 => __DIR__ . '/../..' . '/database/seeders',
+            1 => __DIR__ . '/..' . '/laravel/pint/database/seeders',
         ),
         'Database\\Factories\\' => 
         array (
             0 => __DIR__ . '/../..' . '/database/factories',
+            1 => __DIR__ . '/..' . '/laravel/pint/database/factories',
         ),
         'Darryldecode\\' => 
         array (
@@ -968,6 +970,7 @@ class ComposerStaticInit2955b800a3d45855083212747d565e16
         'App\\' => 
         array (
             0 => __DIR__ . '/../..' . '/app',
+            1 => __DIR__ . '/..' . '/laravel/pint/app',
         ),
         'Anhskohbo\\NoCaptcha\\' => 
         array (
@@ -8763,6 +8766,7 @@ class ComposerStaticInit2955b800a3d45855083212747d565e16
         'Spatie\\Referer\\Sources\\RequestHeader' => __DIR__ . '/..' . '/spatie/laravel-referer/src/Sources/RequestHeader.php',
         'Spatie\\Referer\\Sources\\UtmSource' => __DIR__ . '/..' . '/spatie/laravel-referer/src/Sources/UtmSource.php',
         'Stringable' => __DIR__ . '/..' . '/myclabs/php-enum/stubs/Stringable.php',
+        'Svg\\CssLength' => __DIR__ . '/..' . '/phenx/php-svg-lib/src/Svg/CssLength.php',
         'Svg\\DefaultStyle' => __DIR__ . '/..' . '/phenx/php-svg-lib/src/Svg/DefaultStyle.php',
         'Svg\\Document' => __DIR__ . '/..' . '/phenx/php-svg-lib/src/Svg/Document.php',
         'Svg\\Gradient\\Stop' => __DIR__ . '/..' . '/phenx/php-svg-lib/src/Svg/Gradient/Stop.php',

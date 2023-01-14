@@ -86,6 +86,7 @@ foreach ($data['tests'] as $group => $tests) {
         echo 'Skipping Test...';
         echo $browser ? '</p>' : "\033[0m".PHP_EOL;
         echo PHP_EOL;
+
         continue;
     }
     $function = $functions[$group];
@@ -163,6 +164,7 @@ foreach ($data['tests'] as $group => $tests) {
         echo 'Skipping Test...';
         echo $browser ? '</p>' : "\033[0m".PHP_EOL;
         echo PHP_EOL;
+
         continue;
     }
     $function = $functions[$group];
@@ -254,6 +256,7 @@ foreach ($data['tests'] as $group => $tests) {
         echo 'Skipping Test...';
         echo $browser ? '</p>' : "\033[0m".PHP_EOL;
         echo PHP_EOL;
+
         continue;
     }
     $function = $functions[$group];

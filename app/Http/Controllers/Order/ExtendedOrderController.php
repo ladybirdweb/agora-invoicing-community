@@ -46,21 +46,20 @@ class ExtendedOrderController extends Controller
         try {
             $len = strlen($agents);
             switch ($len) {//Get Last Four digits based on No.Of Agents
-
                 case '1':
-                   $lastFour = '000'.$agents;
+                    $lastFour = '000'.$agents;
                     break;
-                   case '2':
+                case '2':
 
                     $lastFour = '00'.$agents;
-                     break;
-                      case '3':
+                    break;
+                case '3':
                     $lastFour = '0'.$agents;
-                     break;
-                      case '4':
+                    break;
+                case '4':
                     $lastFour = $agents;
 
-                     break;
+                    break;
                 default:
                     $lastFour = '0000';
                     break;

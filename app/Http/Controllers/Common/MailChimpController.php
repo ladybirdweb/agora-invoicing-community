@@ -65,7 +65,7 @@ class MailChimpController extends BaseMailChimpController
         try {
             $merge_fields = $this->field($email);
             $interestGroupIdForNo = $this->relation->is_paid_no; //Interest GroupId for IsPaid Is No
-              $interestGroupIdForYes = $this->relation->is_paid_yes; //Interest GroupId for IsPaid Is Yes
+            $interestGroupIdForYes = $this->relation->is_paid_yes; //Interest GroupId for IsPaid Is Yes
             $result = $this->mailchimp->post("lists/$this->list_id/members", [
                 'status' => $this->mailchimp_set->subscribe_status,
                 'email_address' => $email,

@@ -1,10 +1,7 @@
 <?php
 /**
  * @package dompdf
- * @link    http://dompdf.github.com/
- * @author  Benj Carson <benjcarson@digitaljunkies.ca>
- * @author  Helmut Tischer <htischer@weihenstephan.org>
- * @author  Fabien Ménager <fabien.menager@gmail.com>
+ * @link    https://github.com/dompdf/dompdf
  * @license http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
  */
 namespace Dompdf\Css;
@@ -1481,7 +1478,7 @@ class Stylesheet
     {
         $descriptors = $this->_parse_properties($str);
 
-        preg_match_all("/(url|local)\s*\([\"\']?([^\"\'\)]+)[\"\']?\)\s*(format\s*\([\"\']?([^\"\'\)]+)[\"\']?\))?/i", $descriptors->src, $src);
+        preg_match_all("/(url|local)\s*\(\s*[\"\']?([^\"\'\)]+)[\"\']?\s*\)\s*(format\s*\(\s*[\"\']?([^\"\'\)]+)[\"\']?\s*\))?/i", $descriptors->src, $src);
 
         $valid_sources = [];
         foreach ($src[0] as $i => $value) {

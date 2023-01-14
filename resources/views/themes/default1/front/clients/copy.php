@@ -14,10 +14,10 @@
                     <?php
                     //All the versions of Uploades Files
                    $versions = \App\Model\Product\ProductUpload::where('product_id', $productid)->select('id', 'title', 'description', 'version', 'file', 'created_at')->get();
-                   //End Date of the Current Product Version
-                   $endDate = \App\Model\Product\Subscription::select('ends_at')->where('product_id', $productid)->first();
+                    //End Date of the Current Product Version
+                    $endDate = \App\Model\Product\Subscription::select('ends_at')->where('product_id', $productid)->first();
 
-                ?>
+                    ?>
                <head>
                 <style>
                 table {

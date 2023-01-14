@@ -63,7 +63,7 @@ print_r($_SESSION['captcha']);
         <?php
         echo '<img src="'.$_SESSION['captcha']['image_src'].'" alt="CAPTCHA code">';
 
-        ?>
+?>
     </p>
 
     <p>

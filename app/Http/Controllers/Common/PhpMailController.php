@@ -123,39 +123,38 @@ class PhpMailController extends Controller
         switch ($settings->driver) {
             case 'smtp':
 
-            $config = ['host' => $settings->host,
-                'port' => $settings->port,
-                'security' => $settings->encryption,
-                'username' => $settings->email,
-                'password' => $settings->password,
-            ];
+                $config = ['host' => $settings->host,
+                    'port' => $settings->port,
+                    'security' => $settings->encryption,
+                    'username' => $settings->email,
+                    'password' => $settings->password,
+                ];
 
-            $mail = new \App\Http\Controllers\Common\CommonMailer();
-            $mailer = $mail->setSmtpDriver($config);
-              if (! $this->commonMailer->setSmtpDriver($config)) {
-                  \Log::info('Invaid configuration :- '.$config);
+                $mail = new \App\Http\Controllers\Common\CommonMailer();
+                $mailer = $mail->setSmtpDriver($config);
+                if (! $this->commonMailer->setSmtpDriver($config)) {
+                    \Log::info('Invaid configuration :- '.$config);
 
-                  return 'invalid mail configuration';
-              }
+                    return 'invalid mail configuration';
+                }
 
-            return $mailer;
-            break;
+                return $mailer;
+                break;
 
             case 'send_mail':
-            $config = [
-                'host' => \Config::get('mail.host'),
-                'port' => \Config::get('mail.port'),
-                'security' => \Config::get('mail.encryption'),
-                'username' => \Config::get('mail.username'),
-                'password' => \Config::get('mail.password'),
-            ];
+                $config = [
+                    'host' => \Config::get('mail.host'),
+                    'port' => \Config::get('mail.port'),
+                    'security' => \Config::get('mail.encryption'),
+                    'username' => \Config::get('mail.username'),
+                    'password' => \Config::get('mail.password'),
+                ];
                 $this->commonMailer->setSmtpDriver($config);
                 break;
 
             default:
                 setServiceConfig($settings);
                 break;
-
         }
     }
 
@@ -163,7 +162,7 @@ class PhpMailController extends Controller
     {
         $variables = $this->getVariableValues($contents, $templatevariables);
         $messageBody = $contents;
-        foreach ($variables as $v =>$k) {
+        foreach ($variables as $v => $k) {
             $messageBody = str_replace($v, $k, $messageBody);
         }
 
@@ -234,7 +233,7 @@ class PhpMailController extends Controller
     {
         $value = '';
         if (is_array($array)) {
-            if (key_exists($element, $array)) {
+            if (array_key_exists($element, $array)) {
                 $value = $array[$element];
             }
         }

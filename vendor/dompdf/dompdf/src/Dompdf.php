@@ -1,9 +1,7 @@
 <?php
 /**
  * @package dompdf
- * @link    http://dompdf.github.com/
- * @author  Benj Carson <benjcarson@digitaljunkies.ca>
- * @author  Fabien Ménager <fabien.menager@gmail.com>
+ * @link    https://github.com/dompdf/dompdf
  * @license http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
  */
 namespace Dompdf;
@@ -723,16 +721,13 @@ class Dompdf
         }
 
         $canvas = $this->canvas;
-        $root = null;
 
+        $root_frame = $this->tree->get_root();
+        $root = Factory::decorate_root($root_frame, $this);
         foreach ($this->tree as $frame) {
-            // Set up the root frame
-            if (is_null($root)) {
-                $root = Factory::decorate_root($this->tree->get_root(), $this);
+            if ($frame === $root_frame) {
                 continue;
             }
-
-            // Create the appropriate decorators, reflowers & positioners.
             Factory::decorate_frame($frame, $this, $root);
         }
 

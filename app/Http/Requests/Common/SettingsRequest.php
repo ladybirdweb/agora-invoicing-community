@@ -24,7 +24,7 @@ class SettingsRequest extends FormRequest
     public function rules()
     {
         return [
-            'company' => 'required|max:35',
+            'company' => 'required|max:50',
             'company_email' => 'required|email',
             'website' => 'required|url',
             'phone' => 'required',
@@ -35,6 +35,13 @@ class SettingsRequest extends FormRequest
             'admin-logo' => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
             'fav-icon' => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
             'logo' => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
+        ];
+    }
+     public function messages()
+    {
+        return[
+            'company.required'           => 'The Company name field is required',
+            'company.max'                => 'The Company name must not be greater than 50 characters',
         ];
     }
 }

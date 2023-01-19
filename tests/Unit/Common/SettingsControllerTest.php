@@ -1,6 +1,7 @@
 <?php
 
 namespace Tests\Unit\Common;
+
 use App\User;
 use Tests\TestCase;
 
@@ -23,14 +24,14 @@ class SettingsControllerTest extends TestCase
             'address' => 'bangalore',
             'state' => 'karnataka',
             'default_currency' => 'USD',
-            'country' => 'IN',        
-         ]);
-       $errors = session('errors');
-       $response->assertStatus(302);
-       $this->assertEquals($errors->get('company')[0], 'The company field is required.');
+            'country' => 'IN',
+        ]);
+        $errors = session('errors');
+        $response->assertStatus(302);
+        $this->assertEquals($errors->get('company')[0], 'The company field is required.');
     }
-    
-     public function test_when_settings_saved_successfully()
+
+    public function test_when_settings_saved_successfully()
     {
         $user = User::factory()->create(['role' => 'admin']);
         $this->actingAs($user);
@@ -42,10 +43,9 @@ class SettingsControllerTest extends TestCase
             'address' => 'bangalore',
             'state' => 'karnataka',
             'default_currency' => 'USD',
-            'country' => 'IN',        
-         ]);
-        $this->assertDatabaseHas('settings',['company' => 'lws']);
-        $response->assertSessionHas('success','Updated Successfully');
-      
- }
+            'country' => 'IN',
+        ]);
+        $this->assertDatabaseHas('settings', ['company' => 'lws']);
+        $response->assertSessionHas('success', 'Updated Successfully');
+    }
 }

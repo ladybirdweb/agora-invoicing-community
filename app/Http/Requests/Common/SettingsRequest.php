@@ -37,7 +37,8 @@ class SettingsRequest extends FormRequest
             'logo' => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
         ];
     }
-     public function messages()
+
+    public function messages()
     {
         return[
             'company.required'           => 'The Company name field is required',

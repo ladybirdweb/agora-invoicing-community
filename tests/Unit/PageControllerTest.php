@@ -13,7 +13,6 @@ class PageControllerTest extends TestCase
      *
      * @return void
      */
-
     public function test_validation_fails_if_required_field_empty()
     {
         $user = User::factory()->create(['role' => 'admin']);

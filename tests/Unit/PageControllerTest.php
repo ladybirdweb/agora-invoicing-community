@@ -25,7 +25,7 @@ class PageControllerTest extends TestCase
             'publish' => 'yes',
             'content' => 'Here the new page created',
         ]);
-        $this->assertDatabaseHas('frontend_pages', ['slug'=>'contact-us']);
+        $this->assertDatabaseHas('frontend_pages', ['slug'=>'demopass']);
     }
 
     public function test_validation_fails_if_required_field_empty()
@@ -55,12 +55,12 @@ class PageControllerTest extends TestCase
 
         $response = $this->post('/pages', [
             'id'=> $page->id,
-            'name'=>'Contact Us',
+            'name'=>'demo',
             'slug'=> 'demopass',
             'url' => 'http://demo.com',
             'publish' => 'yes',
             'content' => 'Here the new page created',
         ]);
-        $this->assertDatabaseHas('frontend_pages', ['name'=>'Contact Us']);
+        $this->assertDatabaseHas('frontend_pages', ['name'=>'demo']);
     }
 }

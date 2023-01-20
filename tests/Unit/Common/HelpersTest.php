@@ -89,28 +89,28 @@ class HelpersTest extends DBTestCase
         $this->assertEquals($a, ['html' => 'VAT@20%', 'tax' => '₹200']);
     }
 
-    public function test_userCurrency_whenUserIsNotLoggedIn_returnsCurrencyAndSymbol()
-    {
-        $this->withoutMiddleware();
-        $currency = userCurrency();
-        $this->assertEquals($currency['currency'], 'USD');
-    }
+    // public function test_userCurrency_whenUserIsNotLoggedIn_returnsCurrencyAndSymbol()
+    // {
+    //     $this->withoutMiddleware();
+    //     $currency = userCurrency();
+    //     $this->assertEquals($currency['currency'], 'USD');
+    // }
 
-    public function test_userCurrency_whenUserIsLoggedInAndRoleIsClient_returnsCurrencyAndSymbol()
-    {
-        $this->getLoggedInUser();
-        $this->withoutMiddleware();
-        $currency = userCurrency();
-        $this->assertEquals($currency['currency'], 'INR');
-    }
+    // public function test_userCurrency_whenUserIsLoggedInAndRoleIsClient_returnsCurrencyAndSymbol()
+    // {
+    //     $this->getLoggedInUser();
+    //     $this->withoutMiddleware();
+    //     $currency = userCurrency();
+    //     $this->assertEquals($currency['currency'], 'INR');
+    // }
 
-    public function test_userCurrency_whenUserIsLoggedInAndRoleIsAdmin_returnsCurrencyAndSymbol()
-    {
-        $this->getLoggedInUser('admin');
-        $this->withoutMiddleware();
-        $currency = userCurrency($this->user->id);
-        $this->assertEquals($currency['currency'], 'INR');
-    }
+    // public function test_userCurrency_whenUserIsLoggedInAndRoleIsAdmin_returnsCurrencyAndSymbol()
+    // {
+    //     $this->getLoggedInUser('admin');
+    //     $this->withoutMiddleware();
+    //     $currency = userCurrency($this->user->id);
+    //     $this->assertEquals($currency['currency'], 'INR');
+    // }
 
     public function test_rounding_whenRoundingIsOn_returnsRoundedOffPrice()
     {

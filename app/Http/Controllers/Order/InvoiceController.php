@@ -22,7 +22,6 @@ use App\Traits\CoupCodeAndInvoiceSearch;
 use App\Traits\PaymentsAndInvoices;
 use App\Traits\TaxCalculation;
 use App\User;
-use DB;
 use Illuminate\Http\Request;
 
 class InvoiceController extends TaxRatesAndCodeExpiryController
@@ -392,7 +391,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             if (! $grandTotalAfterCoupon) {
                 $status = 'success';
             }
-            $user = DB::table('users')->where('id', $user_id)->select('state', 'country')->first();
+            $user = User::where('id', $user_id)->select('state', 'country')->first();
             $tax = $this->calculateTax($product->id, $user->state, $user->country, true);
             $grand_total = rounding($this->calculateTotal($tax['value'], $grandTotalAfterCoupon));
             $invoice = Invoice::create(['user_id' => $user_id, 'number' => $number, 'date' => $date,

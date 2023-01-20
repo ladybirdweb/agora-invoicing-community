@@ -293,7 +293,7 @@ function userCurrencyAndPrice($userid, $plan, $productid = '')
         }
 
         if ($userid) {//For Admin Panel Clients
-            $userCountry = User::where('id', $userid)->first()->country;
+            $userCountry = DB::table('users')->where('id', $userid)->first()->country;
             $currencyAndSymbol = getCurrencySymbolAndPriceForPlans($userCountry, $plan);
         }
         $currency = $currencyAndSymbol['currency'];
@@ -332,7 +332,7 @@ function getCurrencySymbolAndPriceForPlans($countryCode, $plan)
  */
 function getCurrencyForClient($countryCode)
 {
-    $defaultCurrency = Setting::find(1)->default_currency;
+    $defaultCurrency = Setting::first()->default_currency;
     $country = Country::where('country_code_char2', $countryCode)->first();
     $currencyStatus = $country->currency->status;
     if ($currencyStatus) {

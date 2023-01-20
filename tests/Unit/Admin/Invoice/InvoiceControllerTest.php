@@ -28,7 +28,7 @@ class InvoiceControllerTest extends DBTestCase
         $this->getLoggedInUser();
         $this->withoutMiddleware();
         $product = Product::factory()->create();
-        $setting = Setting::factory()->create(['id' => '1','default_currency' => 'INR']);
+        $setting = Setting::factory()->create(['default_currency' => 'INR']);
         $taxCondition = new \Darryldecode\Cart\CartCondition([
             'name' => 'GST', 'type' => 'tax',
             'value' => 5,

@@ -392,8 +392,8 @@ class ClientController extends AdvanceSearchController
     public function update($id, ClientRequest $request)
     {
         try {
-            $user = $this->user->where('id', $id)->first();
-            $user->fill($request->input())->save();
+            $user = DB::table('users')->where('id', $id)->update($request->input());
+            // $user->fill($request->input())->save();
             // \Session::put('test', 1000);
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $ex) {
@@ -519,7 +519,7 @@ class ClientController extends AdvanceSearchController
      */
     private function getBaseQueryForUserSearch(Request $request)
     {
-        $baseQuery = User::leftJoin('countries', 'users.country', '=', 'countries.country_code_char2')
+        $baseQuery = DB::table('users')->leftJoin('countries', 'users.country', '=', 'countries.country_code_char2')
             ->select('id', 'first_name', 'last_name', 'email',
                 \DB::raw("CONCAT('+', mobile_code, ' ', mobile) as mobile"),
                 \DB::raw("CONCAT(first_name, ' ', last_name) as name"),

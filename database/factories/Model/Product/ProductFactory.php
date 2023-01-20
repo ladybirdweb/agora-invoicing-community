@@ -1,7 +1,7 @@
 <?php
 
 namespace Database\Factories\Model\Product;
-
+use App\Model\Product\Product;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ProductFactory extends Factory
@@ -11,6 +11,7 @@ class ProductFactory extends Factory
      *
      * @return array
      */
+    protected $model = Product::class;
     public function definition()
     {
         return [

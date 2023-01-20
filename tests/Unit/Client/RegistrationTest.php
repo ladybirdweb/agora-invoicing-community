@@ -11,7 +11,6 @@ use Tests\Unit\MailTracker;
 class RegistrationTest extends DBTestCase
 {
     use DatabaseTransactions;
-    use MailTracker;
 
     private $address;
 

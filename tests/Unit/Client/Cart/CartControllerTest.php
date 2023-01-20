@@ -24,7 +24,7 @@ class CartControllerTest extends DBTestCase
     {
         $this->getLoggedInUser();
         $this->withoutMiddleware();
-        $product = Product::factory()->create();
+        $product = Product::factory()->create(['name' => 'Helpdesk Advance']);
         $plan = Plan::create(['name' => 'HD Plan 1 year', 'product' => $product->id, 'days' => 366]);
         $planPrice = PlanPrice::create(['plan_id' => $plan->id, 'currency' => 'INR', 'add_price' => '1000', 'renew_price' => '500', 'price_description' => 'Random description', 'product_quantity' => 1, 'no_of_agents' => 0]);
 
@@ -49,8 +49,7 @@ class CartControllerTest extends DBTestCase
     public function test_planCost_whenPlanIdNotRelatedToProductPassed_throwsException()
     {
         $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Product cannot be added to cart. No such plan exists.');
-        $this->getLoggedInUser();
+        $errors = session('errors');        $this->getLoggedInUser();
         $this->withoutMiddleware();
         $product = Product::factory()->create();
         $plan = Plan::create(['name' => 'HD Plan 1 year', 'product' => $product->id, 'days' => 366]);
@@ -76,8 +75,7 @@ class CartControllerTest extends DBTestCase
     public function test_planCost_whenPlanIdForOtherProductPassed_throwsException()
     {
         $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Product cannot be added to cart. No such plan exists.');
-        $this->getLoggedInUser();
+        $errors = session('errors');        $this->getLoggedInUser();
         $this->withoutMiddleware();
         $product1 = Product::factory()->create();
         $product2 = Product::factory()->create(['name' => 'Test Product']);

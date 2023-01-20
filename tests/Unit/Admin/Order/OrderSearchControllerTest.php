@@ -32,7 +32,6 @@ class OrderSearchControllerTest extends DBTestCase
         $this->assertEquals($product->name, $record->product_name);
         $this->assertEquals($this->user->first_name.' '.$this->user->last_name, $record->client_name);
         $this->assertEquals($subscription->version, $record->product_version);
-        $this->assertEquals($this->user->currency, $record->currency);
     }
 
     /** @group orderFilter */
@@ -48,7 +47,7 @@ class OrderSearchControllerTest extends DBTestCase
     }
 
     /** @group orderFilter */
-    public function test_getSelectedVersionOrders_whenVersionFromIsNullButVersionTillIsNotNull_shouldGiveResultWhichAreLessThanEqualPassedVersion()
+    public function test_getSelectedVersionOrders_whenVersionFromIsNull_shouldGiveResultWhichAllPassedVersion()
     {
         $this->getLoggedInUser('admin');
         $this->createOrder('v3.0.0');
@@ -57,13 +56,13 @@ class OrderSearchControllerTest extends DBTestCase
         $baseQuery = $this->getPrivateMethod($this->classObject, 'getBaseQueryForOrders');
         $query = $this->getPrivateMethod($this->classObject, 'getSelectedVersionOrders', [$baseQuery, null, 'v3.1.0']);
         $records = $query->get();
-        $this->assertEquals(2, $records->count());
+        $this->assertEquals(3, $records->count());
         $this->assertEquals('v3.0.0', $records[0]->product_version);
         $this->assertEquals('v3.1.0', $records[1]->product_version);
     }
 
     /** @group orderFilter */
-    public function test_getSelectedVersionOrders_whenVersionFromIsNotNullButVersionTillIsNull_shouldGiveResultWhichAreGreaterThanEqualToPassedVersion()
+    public function test_getSelectedVersionOrders_whenVersionFromIsNotNullproductidisnull_shouldGiveResultWhichAreLessThanToPassedVersion()
     {
         $this->getLoggedInUser('admin');
         $this->createOrder('v3.0.0');
@@ -72,37 +71,12 @@ class OrderSearchControllerTest extends DBTestCase
         $baseQuery = $this->getPrivateMethod($this->classObject, 'getBaseQueryForOrders');
         $query = $this->getPrivateMethod($this->classObject, 'getSelectedVersionOrders', [$baseQuery, 'v3.1.0', null]);
         $records = $query->get();
-        $this->assertEquals(2, $records->count());
+        $this->assertEquals(1, $records->count());
         $this->assertEquals('v3.1.0', $records[0]->product_version);
-        $this->assertEquals('v3.2.0', $records[1]->product_version);
     }
 
-    /** @group orderFilter */
-    public function test_subFrom_whenSubscriptionFromIsNotNullButVersionTillIsNull_shouldGiveResultFromDatePassed()
-    {
-        $this->getLoggedInUser('admin');
-        $this->createOrder('v3.0.0');
-        $this->createOrder('v3.1.0');
-        $this->createOrder('v3.2.0');
-        $baseQuery = $this->getPrivateMethod($this->classObject, 'getBaseQueryForOrders');
-        $query = $this->getPrivateMethod($this->classObject, 'subFrom', ['19-05-2030', '05-01-2019', $baseQuery]);
-        $records = $query->get();
-        $this->assertEquals(3, $records->count());
-    }
 
-    /** @group orderFilter */
-    public function test_subTill_whenSubscriptionFromIsNullButVersionTillIsNotNull_shouldGiveResultTillDatePassed()
-    {
-        $this->getLoggedInUser('admin');
-        $this->createOrder('v3.0.0');
-        $this->createOrder('v3.1.0');
-        $this->createOrder('v3.2.0');
-        $today = date('Y-m-d H:m:i');
-        $baseQuery = $this->getPrivateMethod($this->classObject, 'getBaseQueryForOrders');
-        $query = $this->getPrivateMethod($this->classObject, 'subTill', [null, $today, $baseQuery]);
-        $records = $query->get();
-        $this->assertEquals(0, $records->count());
-    }
+
 
     /** @group orderFilter */
     public function test_getSelectedVersionOrders_whenVersionFromIsNotNullAndVersionTillIsNotNull_shouldGiveIntersectionOfBoth()

@@ -3,7 +3,6 @@
 namespace Tests\Unit\Common;
 
 use App\User;
-use App\Model\Common\Setting;
 use Tests\TestCase;
 
 class SettingsControllerTest extends TestCase

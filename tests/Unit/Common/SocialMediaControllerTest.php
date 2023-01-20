@@ -2,7 +2,6 @@
 
 namespace Tests\Unit\Common;
 
-use App\Model\Common\SocialMedia;
 use App\User;
 use Tests\TestCase;
 
@@ -13,7 +12,6 @@ class SocialMediaControllerTest extends TestCase
      *
      * @return void
      */
-
     public function test_validation_when_given_invalid_link()
     {
         $user = User::factory()->create(['role' => 'admin']);
@@ -26,7 +24,7 @@ class SocialMediaControllerTest extends TestCase
         $response->assertStatus(302);
     }
 
-      public function test_validation_when_given_name_empty()
+    public function test_validation_when_given_name_empty()
     {
         $user = User::factory()->create(['role' => 'admin']);
         $this->actingAs($user);

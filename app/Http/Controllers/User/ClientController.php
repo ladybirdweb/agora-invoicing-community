@@ -496,7 +496,7 @@ class ClientController extends AdvanceSearchController
                 ->to($user['email'])
                 ->subject($template->name)
                 ->html($mail->mailTemplate($template->data, $templatevariables = ['name' => $user['first_name'].' '.$user['last_name'],
-                    'username' => $user['email'], 'password' => $str, 'url' => $url,'website_url' => $website_url, ]));
+                    'username' => $user['email'], 'password' => $str, 'url' => $url, 'website_url' => $website_url, ]));
                 $mailer->send($email);
             } else {
                 $email = (new Email())

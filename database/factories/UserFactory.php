@@ -1,6 +1,7 @@
 <?php
 
 namespace Database\Factories;
+
 use App\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -12,6 +13,7 @@ class UserFactory extends Factory
      * @return array
      */
     protected $model = User::class;
+
     public function definition()
     {
         return [

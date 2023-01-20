@@ -66,7 +66,8 @@ class ResetPasswordController extends Controller
                     return \Redirect::to('password/reset')->with('fails', 'It looks like you clicked on an invalid password reset link. Please try again.');
                 }
             } else {
-                 return redirect('login')->with('fails', 'This link is already used.Please try to login');            }
+                return redirect('login')->with('fails', 'This link is already used.Please try to login');
+            }
         } catch (\Exception $ex) {
             return redirect('login')->with('fails', $ex->getMessage());
         }

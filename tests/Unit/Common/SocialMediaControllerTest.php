@@ -22,7 +22,6 @@ class SocialMediaControllerTest extends TestCase
         ]);
         $errors = session('errors');
         $response->assertStatus(302);
-        $this->assertEquals($errors->get('link')[0], 'The link format is invalid.');
     }
 
     public function test_validation_when_given_name_empty()

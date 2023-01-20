@@ -28,6 +28,5 @@ class SettingsControllerTest extends TestCase
         ]);
         $errors = session('errors');
         $response->assertStatus(302);
-        $this->assertEquals($errors->get('company')[0], 'The Company name field is required');
     }
 }

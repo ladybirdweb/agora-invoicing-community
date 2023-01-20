@@ -1,6 +1,7 @@
 <?php
 
 namespace Database\Factories\Model\Product;
+
 use App\Model\Product\Subscription;
 use Illuminate\Database\Eloquent\Factories\Factory;
 

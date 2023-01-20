@@ -3,13 +3,13 @@
 namespace Tests\Unit\Admin\Invoice;
 
 use App\Http\Controllers\Order\InvoiceController;
+use App\Model\Common\Setting;
 use App\Model\License\LicenseType;
 use App\Model\Payment\TaxClass;
 use App\Model\Payment\TaxOption;
 use App\Model\Payment\TaxProductRelation;
 use App\Model\Product\Product;
 use App\User;
-use App\Model\Common\Setting;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\DBTestCase;
 
@@ -56,7 +56,7 @@ class TaxCalculationTest extends DBTestCase
     public function test_calculateTax_whenIntraStateGstAppliedOnProduct_taxValueAndNameIsReturned()
     {
         $user = User::factory()->create(['state' => 'IN-KA', 'country' => 'IN']);
-        $setting = Setting::factory()->create(['state' => 'IN-KA','country' => 'IN']);
+        $setting = Setting::factory()->create(['state' => 'IN-KA', 'country' => 'IN']);
         $this->withoutMiddleware();
         $this->call('POST', 'taxes/class', ['name' => 'Intra State GST', 'tax-name' => 'CGST+SGST', 'active' => 1]);
         $this->call('POST', 'license-type', ['name' => 'Download Perpetual']);
@@ -92,7 +92,7 @@ class TaxCalculationTest extends DBTestCase
     public function test_calculateTax_whenInterStateGstApplied_taxValueAndNameIsReturned()
     {
         $user = User::factory()->create(['state' => 'IN-DL', 'country' => 'IN']);
-        $setting = Setting::factory()->create(['state' => 'IN-KA','country' => 'IN']);
+        $setting = Setting::factory()->create(['state' => 'IN-KA', 'country' => 'IN']);
         $taxClass = TaxClass::first();
         $this->withoutMiddleware();
         $this->call('POST', 'taxes/class', ['name' => 'Inter State GST', 'tax-name' => 'IGST', 'active' => 1]);
@@ -147,7 +147,7 @@ class TaxCalculationTest extends DBTestCase
     public function test_calculateTax_whenUnionTerritoryGstApplied_taxValueAndNameIsReturned()
     {
         $user = User::factory()->create(['state' => 'IN-AN', 'country' => 'IN']);
-        $setting = Setting::factory()->create(['state' => 'IN-KA','country' => 'IN']);
+        $setting = Setting::factory()->create(['state' => 'IN-KA', 'country' => 'IN']);
         $this->withoutMiddleware();
         $this->call('POST', 'taxes/class', ['name' => 'Union Territory GST', 'tax-name' => 'CGST+UTGST', 'active' => 1]);
         $this->call('POST', 'license-type', ['name' => 'Download Perpetual']);
@@ -165,7 +165,7 @@ class TaxCalculationTest extends DBTestCase
     public function test_calculateTax_whenOtherTaxAppliedWhenUserStateIsIndian_taxValueIsNull()
     {
         $user = User::factory()->create(['state' => 'IN-DL', 'country' => 'IN']);
-        $setting = Setting::factory()->create(['state' => 'IN-KA','country' => 'IN']);
+        $setting = Setting::factory()->create(['state' => 'IN-KA', 'country' => 'IN']);
         $this->withoutMiddleware();
         $this->call('POST', 'taxes/class', ['name' => 'Others', 'tax-name' => 'VAT', 'active' => 1, 'rate' => '20']);
         $this->call('POST', 'license-type', ['name' => 'Download Perpetual']);

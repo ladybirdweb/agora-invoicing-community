@@ -6,7 +6,6 @@ use App\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use phpmock\MockBuilder;
 use Tests\DBTestCase;
-use Tests\Unit\MailTracker;
 
 class RegistrationTest extends DBTestCase
 {

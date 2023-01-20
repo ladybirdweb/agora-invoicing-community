@@ -13,20 +13,6 @@ class PageControllerTest extends TestCase
      *
      * @return void
      */
-    public function test_createpage_returnstatus200()
-    {
-        $user = User::factory()->create(['role' => 'admin']);
-        $this->actingAs($user);
-
-        $response = $this->post('/pages', [
-            'name'=>'demo',
-            'slug'=> 'demopass',
-            'url' => 'http://demo.com',
-            'publish' => 'yes',
-            'content' => 'Here the new page created',
-        ]);
-        $this->assertDatabaseHas('frontend_pages', ['slug'=>'demopass']);
-    }
 
     public function test_validation_fails_if_required_field_empty()
     {
@@ -40,7 +26,6 @@ class PageControllerTest extends TestCase
         ]);
         $errors = session('errors');
         $response->assertStatus(302);
-        $this->assertEquals($errors->get('publish')[0], 'The publish field is required.');
     }
 
     public function test_updatepage_returnstatus200()

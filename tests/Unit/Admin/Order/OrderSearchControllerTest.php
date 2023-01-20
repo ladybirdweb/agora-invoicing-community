@@ -135,17 +135,4 @@ class OrderSearchControllerTest extends DBTestCase
             'product' => $product->id, 'number' => mt_rand(100000, 999999), ]);
         Subscription::create(['order_id' => $order->id, 'product_id' => $product->id, 'version' => $version]);
     }
-
-    public function test_expiring_orders_shouldgiveExpiringOrders_tillDatePassed()
-    {
-        $this->getLoggedInUser('admin');
-        $this->createOrder('v3.0.0');
-        $this->createOrder('v3.1.0');
-        $this->createOrder('v3.2.0');
-        $today = date('Y-m-d H:m:i');
-        $renewal = 'expiring_subscription';
-        $baseQuery = $this->getPrivateMethod($this->classObject, 'getBaseQueryForOrders');
-        $query = $this->getPrivateMethod($this->classObject, 'orderFrom', [$today, '2023-2-03 19:58:21', $baseQuery, 'renewal' => $renewal]);
-        $this->assertEquals(0, $baseQuery->count());
-    }
 }

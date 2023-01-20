@@ -28,7 +28,7 @@ class InvoiceControllerTest extends DBTestCase
         $this->getLoggedInUser();
         $this->withoutMiddleware();
         $product = Product::factory()->create();
-        $setting = Setting::factory()->create(['id' => '1','default_currency' => 'INR']);
+        $setting = Setting::factory()->create(['default_currency' => 'INR']);
         $taxCondition = new \Darryldecode\Cart\CartCondition([
             'name' => 'GST', 'type' => 'tax',
             'value' => 5,
@@ -50,7 +50,7 @@ class InvoiceControllerTest extends DBTestCase
     {
         $this->getLoggedInUser();
         $this->withoutMiddleware();
-        $setting = Setting::factory()->create(['id' => '1','default_currency' => 'INR']);
+        $setting = Setting::factory()->create(['default_currency' => 'INR']);
         $product = Product::factory()->create();
         $plan = Plan::create(['name' => 'Hepldesk 1 year', 'product' => $product->id, 'days' => 365]);
         $taxCondition = new \Darryldecode\Cart\CartCondition([

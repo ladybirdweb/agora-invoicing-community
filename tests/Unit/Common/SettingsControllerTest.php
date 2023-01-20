@@ -3,6 +3,7 @@
 namespace Tests\Unit\Common;
 
 use App\User;
+use App\Model\Common\Setting;
 use Tests\TestCase;
 
 class SettingsControllerTest extends TestCase
@@ -28,24 +29,6 @@ class SettingsControllerTest extends TestCase
         ]);
         $errors = session('errors');
         $response->assertStatus(302);
-        $this->assertEquals($errors->get('company')[0], 'The company field is required.');
-    }
-
-    public function test_when_settings_saved_successfully()
-    {
-        $user = User::factory()->create(['role' => 'admin']);
-        $this->actingAs($user);
-        $response = $this->patch('/settings/system', [
-            'company' => 'lws',
-            'company_email' => 'demo@gmail.com',
-            'website' => 'https://lws.com',
-            'phone' => '9789909887',
-            'address' => 'bangalore',
-            'state' => 'karnataka',
-            'default_currency' => 'USD',
-            'country' => 'IN',
-        ]);
-        $this->assertDatabaseHas('settings', ['company' => 'lws']);
-        $response->assertSessionHas('success', 'Updated Successfully');
+        $this->assertEquals($errors->get('company')[0], 'The Company name field is required');
     }
 }

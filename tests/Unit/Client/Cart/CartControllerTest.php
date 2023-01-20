@@ -49,7 +49,8 @@ class CartControllerTest extends DBTestCase
     public function test_planCost_whenPlanIdNotRelatedToProductPassed_throwsException()
     {
         $this->expectException(\Exception::class);
-        $errors = session('errors');        $this->getLoggedInUser();
+        $errors = session('errors');
+        $this->getLoggedInUser();
         $this->withoutMiddleware();
         $product = Product::factory()->create();
         $plan = Plan::create(['name' => 'HD Plan 1 year', 'product' => $product->id, 'days' => 366]);
@@ -75,7 +76,8 @@ class CartControllerTest extends DBTestCase
     public function test_planCost_whenPlanIdForOtherProductPassed_throwsException()
     {
         $this->expectException(\Exception::class);
-        $errors = session('errors');        $this->getLoggedInUser();
+        $errors = session('errors');
+        $this->getLoggedInUser();
         $this->withoutMiddleware();
         $product1 = Product::factory()->create();
         $product2 = Product::factory()->create(['name' => 'Test Product']);

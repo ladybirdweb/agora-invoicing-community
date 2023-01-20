@@ -75,9 +75,6 @@ class OrderSearchControllerTest extends DBTestCase
         $this->assertEquals('v3.1.0', $records[0]->product_version);
     }
 
-
-
-
     /** @group orderFilter */
     public function test_getSelectedVersionOrders_whenVersionFromIsNotNullAndVersionTillIsNotNull_shouldGiveIntersectionOfBoth()
     {

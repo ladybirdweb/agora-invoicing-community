@@ -1,9 +1,9 @@
 <?php
 
 namespace Tests\Unit;
+
 use App\Model\Order\Order;
 use Storage;
-use Illuminate\Http\UploadedFile;
 use Tests\DBTestCase;
 
 class LocalizedLicenseControllerTest extends DBTestCase
@@ -67,7 +67,7 @@ class LocalizedLicenseControllerTest extends DBTestCase
     //     $response = $this->json('GET', url('downloadPrivate/'.$order->number));
     //     $response->assertStatus(200);
     //     $response->assertHeader('content-disposition', 'attachment; filename=privateKey-192020.txt');
-    
+
     // }
 
     // /** @group LocalizedLicense */

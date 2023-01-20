@@ -1,7 +1,7 @@
 <?php
 
 namespace Database\Factories;
-
+use App\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class UserFactory extends Factory
@@ -11,6 +11,7 @@ class UserFactory extends Factory
      *
      * @return array
      */
+    protected $model = User::class;
     public function definition()
     {
         return [
@@ -22,12 +23,12 @@ class UserFactory extends Factory
             'bussiness' => 'abcd',
             'company_type' => 'public_company',
             'company_size' => '2-50',
-            'country' => $this->faker->country(),
+            'country' => 'IN',
             'mobile' => $this->faker->e164PhoneNumber(),
             'currency' => 'INR',
             'address' => $this->faker->address(),
             'town' => $this->faker->city(),
-            'state' => $this->faker->state(),
+            'state' => 'Tamilnadu',
             'zip' => $this->faker->postcode(),
             'password' => bcrypt('password'),
             'timezone_id' => 79,

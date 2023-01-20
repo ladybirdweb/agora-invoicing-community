@@ -332,7 +332,7 @@ function getCurrencySymbolAndPriceForPlans($countryCode, $plan)
  */
 function getCurrencyForClient($countryCode)
 {
-    $defaultCurrency = Setting::find(1)->default_currency;
+    $defaultCurrency = Setting::first()->default_currency;
     $country = Country::where('country_code_char2', $countryCode)->first();
     $currencyStatus = $country->currency->status;
     if ($currencyStatus) {

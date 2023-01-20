@@ -3,13 +3,12 @@
 namespace Tests\Unit\Admin\Invoice;
 
 use App\Http\Controllers\Order\InvoiceController;
+use App\Http\Requests\InvoiceRequest;
+use App\Model\Common\Setting;
 use App\Model\Payment\Plan;
 use App\Model\Payment\PlanPrice;
 use App\Model\Product\Product;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use App\Http\Requests\InvoiceRequest;
-use App\Model\Common\Setting;
-use App\User;
 use Tests\DBTestCase;
 
 class InvoiceControllerTest extends DBTestCase

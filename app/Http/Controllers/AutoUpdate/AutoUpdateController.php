@@ -90,6 +90,7 @@ class AutoUpdateController extends Controller
     */
     public function addNewProductToAUS($product_name, $product_sku)
     {
+        try{
         $url = $this->url;
         $key = str_random(16);
         $api_key_secret = $this->api_key_secret;
@@ -99,6 +100,10 @@ class AutoUpdateController extends Controller
         $addProduct = $this->postCurl($url.'api/admin/products/UpdateAdd', "api_key_secret=$api_key_secret&product_title=$product_name&product_sku=$product_sku&product_key=$key&product_status=1", $token);
         //need to remove this once we deprecate updates.faveohelpdesk.com
         $anotheradd = $this->postCurl($this->updateUrl, "api_key_secret=$this->update_api_secret&api_function=products_add&product_title=$product_name&product_sku=$product_sku&product_key=$key&product_status=1");
+         } catch (\Exception $ex) {
+            throw new \Exception('Please configure the valid license details in Apikey settings.');
+
+        }
     }
 
     /*
@@ -107,6 +112,7 @@ class AutoUpdateController extends Controller
 
     public function addNewVersion($product_id, $version_number, $upgrade_zip_file, $version_status)
     {
+        try{
         $url = $this->url;
         $api_key_secret = $this->api_key_secret;
         $OauthDetails = $this->oauthAuthorization();
@@ -114,6 +120,10 @@ class AutoUpdateController extends Controller
         $addNewVersion = $this->postCurl($url.'api/admin/versions/add', "api_key_secret=$api_key_secret&product_id=$product_id&version_number=$version_number&version_upgrade_file=$upgrade_zip_file&version_status=$version_status&product_status=1", $token);
         //need to remove this once we deprecate updates.faveohelpdesk.com
         $anotherVersion = $this->postCurl($this->updateUrl, "api_key_secret=$this->update_api_secret&api_function=versions_add&product_id=$product_id&version_number=$version_number&version_upgrade_file=$upgrade_zip_file&version_status=$version_status&product_status=1");
+         } catch (\Exception $ex) {
+            throw new \Exception('Please configure the valid license details in Apikey settings.');
+
+        }
     }
 
     /*
@@ -121,6 +131,7 @@ class AutoUpdateController extends Controller
     */
     public function editVersion($version_number, $product_sku)
     {
+        try{
         $url = $this->url;
         $api_key_secret = $this->api_key_secret;
         $searchLicense = $this->searchVersion($version_number, $product_sku);
@@ -131,6 +142,10 @@ class AutoUpdateController extends Controller
         $addNewVersion = $this->postCurl($url.'api/admin/versions/edit', "api_key_secret=$api_key_secret&product_id=productId&version_id=$versionId&version_number=$version_number&version_status=1", $token);
         //need to remove this once we deprecate updates.faveohelpdesk.com
         $editNewVersion = $this->postCurl($this->updateUrl, "api_key_secret=$api_key_secret&api_function=versions_edit&product_id=productId&version_id=$versionId&version_number=$version_number&version_status=1");
+         } catch (\Exception $ex) {
+            throw new \Exception('Please configure the valid license details in Apikey settings.');
+
+        }
     }
 
     /*
@@ -138,6 +153,7 @@ class AutoUpdateController extends Controller
     */
     public function searchVersion($version_number, $product_sku)
     {
+        try{
         $versionId = '';
         $productId = '';
         $url = $this->url;
@@ -156,5 +172,9 @@ class AutoUpdateController extends Controller
         }
 
         return ['version_id' => $versionId, 'product_id' => $productId];
+         } catch (\Exception $ex) {
+            throw new \Exception('Please configure the valid license details in Apikey settings.');
+
+        }
     }
 }

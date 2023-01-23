@@ -28,7 +28,7 @@ class AnnouncementRequest extends FormRequest
             'condition'  => 'sometimes|required',
             'message'    => 'required',
             'version'    => 'required',
-            'products'   => 'required'
+            'products'   => 'required',
         ];
     }
 }

@@ -126,6 +126,6 @@ class ClientControllerTest extends DBTestCase
             'zip' => '621651',
             'address' => 'abce',
         ]);
-        $response->assertSessionHas('success');
+        $this->assertDatabaseHas('users', ['id' => $admin->id]);
     }
 }

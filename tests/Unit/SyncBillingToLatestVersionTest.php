@@ -20,5 +20,4 @@ class SyncBillingToLatestVersionTest extends TestCase
     //     $response = (new SyncBillingToLatestVersion())->sync(new Request(['latestVersion' => $latestVersion, 'olderVersion' => $olderVersion->version]));
     //     $this->assertDatabaseHas('settings', ['version' => 'v2.0.0']);
     // }
-
 }

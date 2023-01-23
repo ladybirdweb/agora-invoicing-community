@@ -177,7 +177,7 @@ class BaseOrderController extends ExtendedOrderController
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
 
-            throw new \Exception('Cannot generate Subscription' . '.' . $ex->getMessage());
+            throw new \Exception('Cannot generate Subscription'.'.'.$ex->getMessage());
         }
     }
 

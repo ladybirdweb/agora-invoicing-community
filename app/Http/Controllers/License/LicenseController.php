@@ -124,17 +124,16 @@ class LicenseController extends Controller
     */
     public function addNewProduct($product_name, $product_sku)
     {
-        try{
-        $url = $this->url;
-        $api_key_secret = $this->api_key_secret;
+        try {
+            $url = $this->url;
+            $api_key_secret = $this->api_key_secret;
 
-        $OauthDetails = $this->oauthAuthorization();
-        $token = $OauthDetails->access_token;
+            $OauthDetails = $this->oauthAuthorization();
+            $token = $OauthDetails->access_token;
 
-        $addProduct = $this->postCurl($url.'api/admin/products/add', "api_key_secret=$api_key_secret&product_title=$product_name&product_sku=$product_sku&product_status=1", $token);
-         } catch (\Exception $ex) {
+            $addProduct = $this->postCurl($url.'api/admin/products/add', "api_key_secret=$api_key_secret&product_title=$product_name&product_sku=$product_sku&product_status=1", $token);
+        } catch (\Exception $ex) {
             throw new \Exception('Please configure the valid license details in Apikey settings.');
-
         }
     }
 
@@ -143,15 +142,14 @@ class LicenseController extends Controller
    */
     public function addNewUser($first_name, $last_name, $email)
     {
-        try{
-        $url = $this->url;
-        $api_key_secret = $this->api_key_secret;
-        $OauthDetails = $this->oauthAuthorization();
-        $token = $OauthDetails->access_token;
-        $addProduct = $this->postCurl($url.'api/admin/clients/add', "api_key_secret=$api_key_secret&client_fname=$first_name&client_lname=$last_name&client_email=$email&client_status=1", $token);
-         } catch (\Exception $ex) {
+        try {
+            $url = $this->url;
+            $api_key_secret = $this->api_key_secret;
+            $OauthDetails = $this->oauthAuthorization();
+            $token = $OauthDetails->access_token;
+            $addProduct = $this->postCurl($url.'api/admin/clients/add', "api_key_secret=$api_key_secret&client_fname=$first_name&client_lname=$last_name&client_email=$email&client_status=1", $token);
+        } catch (\Exception $ex) {
             throw new \Exception('Please configure the valid license details in Apikey settings.');
-
         }
     }
 
@@ -160,16 +158,15 @@ class LicenseController extends Controller
    */
     public function editProduct($product_name, $product_sku)
     {
-        try{
-        $productId = $this->searchProductId($product_sku);
-        $url = $this->url;
-        $api_key_secret = $this->api_key_secret;
-        $OauthDetails = $this->oauthAuthorization();
-        $token = $OauthDetails->access_token;
-        $addProduct = $this->postCurl($url.'api/admin/products/edit', "api_key_secret=$api_key_secret&product_id=$productId&product_title=$product_name&product_sku=$product_sku&product_status=1", $token);
-         } catch (\Exception $ex) {
+        try {
+            $productId = $this->searchProductId($product_sku);
+            $url = $this->url;
+            $api_key_secret = $this->api_key_secret;
+            $OauthDetails = $this->oauthAuthorization();
+            $token = $OauthDetails->access_token;
+            $addProduct = $this->postCurl($url.'api/admin/products/edit', "api_key_secret=$api_key_secret&product_id=$productId&product_title=$product_name&product_sku=$product_sku&product_status=1", $token);
+        } catch (\Exception $ex) {
             throw new \Exception('Please configure the valid license details in Apikey settings.');
-
         }
     }
 
@@ -194,24 +191,22 @@ class LicenseController extends Controller
             return $productId;
         } catch (\Exception $ex) {
             throw new \Exception('Please configure the valid license details in Apikey settings.');
-
         }
     }
 
     public function deleteProductFromAPL($product)
     {
-        try{
-        $url = $this->url;
-        $api_key_secret = $this->api_key_secret;
-        $productId = $this->searchProductId($product->product_sku);
-        $OauthDetails = $this->oauthAuthorization();
-        $token = $OauthDetails->access_token;
-        $productTitle = $product->name;
-        $productSku = $product->sku;
-        $delProduct = $this->postCurl($url.'api/admin/products/delete', "api_key_secret=$api_key_secret&product_id=$productId&product_title=$productTitle&product_sku=$productSku&product_status=1&delete_record=1", $token);
-          } catch (\Exception $ex) {
+        try {
+            $url = $this->url;
+            $api_key_secret = $this->api_key_secret;
+            $productId = $this->searchProductId($product->product_sku);
+            $OauthDetails = $this->oauthAuthorization();
+            $token = $OauthDetails->access_token;
+            $productTitle = $product->name;
+            $productSku = $product->sku;
+            $delProduct = $this->postCurl($url.'api/admin/products/delete', "api_key_secret=$api_key_secret&product_id=$productId&product_title=$productTitle&product_sku=$productSku&product_status=1&delete_record=1", $token);
+        } catch (\Exception $ex) {
             throw new \Exception('Please configure the valid license details in Apikey settings.');
-
         }
     }
 
@@ -220,16 +215,15 @@ class LicenseController extends Controller
    */
     public function editUserInLicensing($first_name, $last_name, $email)
     {
-        try{
-        $userId = $this->searchForUserId($email);
-        $url = $this->url;
-        $api_key_secret = $this->api_key_secret;
-        $OauthDetails = $this->oauthAuthorization();
-        $token = $OauthDetails->access_token;
-        $addProduct = $this->postCurl($url.'api/admin/clients/edit', "api_key_secret=$api_key_secret&client_id=$userId&client_fname=$first_name&client_lname=$last_name&client_email=$email&client_status=1", $token);
-         } catch (\Exception $ex) {
+        try {
+            $userId = $this->searchForUserId($email);
+            $url = $this->url;
+            $api_key_secret = $this->api_key_secret;
+            $OauthDetails = $this->oauthAuthorization();
+            $token = $OauthDetails->access_token;
+            $addProduct = $this->postCurl($url.'api/admin/clients/edit', "api_key_secret=$api_key_secret&client_id=$userId&client_fname=$first_name&client_lname=$last_name&client_email=$email&client_status=1", $token);
+        } catch (\Exception $ex) {
             throw new \Exception('Please configure the valid license details in Apikey settings.');
-
         }
     }
 
@@ -238,23 +232,22 @@ class LicenseController extends Controller
    */
     public function searchForUserId($email)
     {
-        try{
-        $userId = '';
-        $url = $this->url;
-        $api_key_secret = $this->api_key_secret;
-        $OauthDetails = $this->oauthAuthorization();
-        $token = $OauthDetails->access_token;
-        $getUserId = $this->postCurl($url.'api/admin/search', "api_key_secret=$api_key_secret&search_type=client&search_keyword=$email&isLicenseSearchApi=1", $token);
+        try {
+            $userId = '';
+            $url = $this->url;
+            $api_key_secret = $this->api_key_secret;
+            $OauthDetails = $this->oauthAuthorization();
+            $token = $OauthDetails->access_token;
+            $getUserId = $this->postCurl($url.'api/admin/search', "api_key_secret=$api_key_secret&search_type=client&search_keyword=$email&isLicenseSearchApi=1", $token);
 
-        $details = json_decode($getUserId);
-        if ($details->api_error_detected == 0 && is_array($details->page_message)) {//This is not true if email is updated
-            $userId = $details->page_message[0]->client_id;
-        }
+            $details = json_decode($getUserId);
+            if ($details->api_error_detected == 0 && is_array($details->page_message)) {//This is not true if email is updated
+                $userId = $details->page_message[0]->client_id;
+            }
 
-        return $userId;
-         } catch (\Exception $ex) {
+            return $userId;
+        } catch (\Exception $ex) {
             throw new \Exception('Please configure the valid license details in Apikey settings.');
-
         }
     }
 
@@ -264,30 +257,29 @@ class LicenseController extends Controller
     public function createNewLicene($orderid, $product, $user_id,
                                     $licenseExpiry, $updatesExpiry, $supportExpiry, $serial_key)
     {
-        try{
-        $url = $this->url;
-        $api_key_secret = $this->api_key_secret;
+        try {
+            $url = $this->url;
+            $api_key_secret = $this->api_key_secret;
 
-        $sku = Product::where('id', $product)->first()->product_sku;
+            $sku = Product::where('id', $product)->first()->product_sku;
 
-        $licenseExpiry = ($licenseExpiry != '') ? $licenseExpiry->toDateString() : '';
-        $updatesExpiry = ($updatesExpiry != '') ? $updatesExpiry->toDateString() : '';
-        $supportExpiry = ($supportExpiry != '') ? $supportExpiry->toDateString() : '';
-        $order = Order::where('id', $orderid)->first();
+            $licenseExpiry = ($licenseExpiry != '') ? $licenseExpiry->toDateString() : '';
+            $updatesExpiry = ($updatesExpiry != '') ? $updatesExpiry->toDateString() : '';
+            $supportExpiry = ($supportExpiry != '') ? $supportExpiry->toDateString() : '';
+            $order = Order::where('id', $orderid)->first();
 
-        $orderNo = $order->number;
-        $domain = $order->domain;
-        $ipAndDomain = $this->getIpAndDomain($domain);
-        $ip = $ipAndDomain['ip'];
-        $domain = $ipAndDomain['domain'];
-        $requireDomain = $ipAndDomain['requireDomain'];
-        $productId = $this->searchProductId($sku);
-        $OauthDetails = $this->oauthAuthorization();
-        $token = $OauthDetails->access_token;
-        $addLicense = $this->postCurl($url.'api/admin/license/add', "api_key_secret=$api_key_secret&product_id=$productId&license_code=$serial_key&license_require_domain=1&license_status=1&license_order_number=$orderNo&license_domain=$domain&license_ip=$ip&license_require_domain=$requireDomain&license_limit=6&license_expire_date=$licenseExpiry&license_updates_date=$updatesExpiry&license_support_date=$supportExpiry&license_disable_ip_verification=0&license_limit=2", $token);
-           } catch (\Exception $ex) {
+            $orderNo = $order->number;
+            $domain = $order->domain;
+            $ipAndDomain = $this->getIpAndDomain($domain);
+            $ip = $ipAndDomain['ip'];
+            $domain = $ipAndDomain['domain'];
+            $requireDomain = $ipAndDomain['requireDomain'];
+            $productId = $this->searchProductId($sku);
+            $OauthDetails = $this->oauthAuthorization();
+            $token = $OauthDetails->access_token;
+            $addLicense = $this->postCurl($url.'api/admin/license/add', "api_key_secret=$api_key_secret&product_id=$productId&license_code=$serial_key&license_require_domain=1&license_status=1&license_order_number=$orderNo&license_domain=$domain&license_ip=$ip&license_require_domain=$requireDomain&license_limit=6&license_expire_date=$licenseExpiry&license_updates_date=$updatesExpiry&license_support_date=$supportExpiry&license_disable_ip_verification=0&license_limit=2", $token);
+        } catch (\Exception $ex) {
             throw new \Exception('Please configure the valid license details in Apikey settings.');
-
         }
 
         //return response(['message'=>'its created','data'=> $addLicense]);
@@ -298,36 +290,35 @@ class LicenseController extends Controller
     */
     public function updateLicensedDomain($licenseCode, $domain, $productId, $licenseExpiry, $updatesExpiry, $supportExpiry, $orderNo, $license_limit = 2, $requiredomain = 1)
     {
-        try{
-        $l_expiry = '';
-        $s_expiry = '';
-        $u_expiry = '';
-        if (strtotime($licenseExpiry) > 1) {
-            $l_expiry = date('Y-m-d', strtotime($licenseExpiry));
-        }
-        if (strtotime($updatesExpiry) > 1) {
-            $u_expiry = date('Y-m-d', strtotime($updatesExpiry));
-        }
-        if (strtotime($supportExpiry) > 1) {
-            $s_expiry = date('Y-m-d', strtotime($supportExpiry));
-        }
-        $url = $this->url;
-        $ipAndDomain = $this->getIpAndDomain($domain);
-        $token = $this->token;
-        $ip = $ipAndDomain['ip'];
-        $domain = $ipAndDomain['domain'];
-        $requireDomain = $ipAndDomain['requireDomain'];
-        $api_key_secret = $this->api_key_secret;
-        $searchLicense = $this->searchLicenseId($licenseCode, $productId);
-        $OauthDetails = $this->oauthAuthorization();
-        $token = $OauthDetails->access_token;
-        $licenseId = $searchLicense['licenseId'];
-        $productId = $searchLicense['productId'];
-        $licenseCode = $searchLicense['code'];
-        $updateLicense = $this->postCurl($url.'api/admin/license/edit', "api_key_secret=$api_key_secret&product_id=$productId&license_code=$licenseCode&license_id=$licenseId&license_order_number=$orderNo&license_require_domain=$requireDomain&license_status=1&license_expire_date=$l_expiry&license_updates_date=$u_expiry&license_support_date=$s_expiry&license_domain=$domain&license_ip=$ip&license_limit=$license_limit", $token);
-           } catch (\Exception $ex) {
+        try {
+            $l_expiry = '';
+            $s_expiry = '';
+            $u_expiry = '';
+            if (strtotime($licenseExpiry) > 1) {
+                $l_expiry = date('Y-m-d', strtotime($licenseExpiry));
+            }
+            if (strtotime($updatesExpiry) > 1) {
+                $u_expiry = date('Y-m-d', strtotime($updatesExpiry));
+            }
+            if (strtotime($supportExpiry) > 1) {
+                $s_expiry = date('Y-m-d', strtotime($supportExpiry));
+            }
+            $url = $this->url;
+            $ipAndDomain = $this->getIpAndDomain($domain);
+            $token = $this->token;
+            $ip = $ipAndDomain['ip'];
+            $domain = $ipAndDomain['domain'];
+            $requireDomain = $ipAndDomain['requireDomain'];
+            $api_key_secret = $this->api_key_secret;
+            $searchLicense = $this->searchLicenseId($licenseCode, $productId);
+            $OauthDetails = $this->oauthAuthorization();
+            $token = $OauthDetails->access_token;
+            $licenseId = $searchLicense['licenseId'];
+            $productId = $searchLicense['productId'];
+            $licenseCode = $searchLicense['code'];
+            $updateLicense = $this->postCurl($url.'api/admin/license/edit', "api_key_secret=$api_key_secret&product_id=$productId&license_code=$licenseCode&license_id=$licenseId&license_order_number=$orderNo&license_require_domain=$requireDomain&license_status=1&license_expire_date=$l_expiry&license_updates_date=$u_expiry&license_support_date=$s_expiry&license_domain=$domain&license_ip=$ip&license_limit=$license_limit", $token);
+        } catch (\Exception $ex) {
             throw new \Exception('Please configure the valid license details in Apikey settings.');
-
         }
     }
 
@@ -356,79 +347,76 @@ class LicenseController extends Controller
 
     public function searchLicenseId($licenseCode, $productId)
     {
-        try{
-        $license = '';
-        $product = '';
-        $code = '';
-        $limit = '';
-        $ipOrDomain = '';
-        $url = $this->url;
-        $api_key_secret = $this->api_key_secret;
-        $OauthDetails = $this->oauthAuthorization();
-        $token = $OauthDetails->access_token;
-        $getLicenseId = $this->postCurl($url.'api/admin/search', "api_key_secret=$api_key_secret&search_type=license&search_keyword=$licenseCode&isLicenseSearchApi=1", $token);
-        $details = json_decode($getLicenseId);
-        if ($details->api_error_detected == 0 && is_array($details->page_message)) {
-            foreach ($details->page_message as $detail) {
-                if ($detail->product_id == $productId) {
-                    $license = $detail->license_id;
-                    $product = $detail->product_id;
-                    $code = $detail->license_code;
-                    $limit = $detail->license_limit;
-                    $ipOrDomain = $detail->license_require_domain;
+        try {
+            $license = '';
+            $product = '';
+            $code = '';
+            $limit = '';
+            $ipOrDomain = '';
+            $url = $this->url;
+            $api_key_secret = $this->api_key_secret;
+            $OauthDetails = $this->oauthAuthorization();
+            $token = $OauthDetails->access_token;
+            $getLicenseId = $this->postCurl($url.'api/admin/search', "api_key_secret=$api_key_secret&search_type=license&search_keyword=$licenseCode&isLicenseSearchApi=1", $token);
+            $details = json_decode($getLicenseId);
+            if ($details->api_error_detected == 0 && is_array($details->page_message)) {
+                foreach ($details->page_message as $detail) {
+                    if ($detail->product_id == $productId) {
+                        $license = $detail->license_id;
+                        $product = $detail->product_id;
+                        $code = $detail->license_code;
+                        $limit = $detail->license_limit;
+                        $ipOrDomain = $detail->license_require_domain;
+                    }
                 }
             }
-        }
 
-        return ['productId' => $product, 'code' => $code, 'licenseId' => $license, 'allowedInstalltion' => $ipOrDomain, 'installationLimit' => $limit];
-           } catch (\Exception $ex) {
+            return ['productId' => $product, 'code' => $code, 'licenseId' => $license, 'allowedInstalltion' => $ipOrDomain, 'installationLimit' => $limit];
+        } catch (\Exception $ex) {
             throw new \Exception('Please configure the valid license details in Apikey settings.');
-
         }
     }
 
     //Update the Installation status as Inactive after Licensed Domain Is Chnaged
     public function updateInstalledDomain($licenseCode, $productId)
     {
-        try{
-        $url = $this->url;
-        $api_key_secret = $this->api_key_secret;
+        try {
+            $url = $this->url;
+            $api_key_secret = $this->api_key_secret;
 
-        //Search for the Installation Id
-        $searchInstallationId = $this->searchInstallationId($licenseCode);
-        $details = json_decode($searchInstallationId);
+            //Search for the Installation Id
+            $searchInstallationId = $this->searchInstallationId($licenseCode);
+            $details = json_decode($searchInstallationId);
 
-        if ($details->api_error_detected == 0 && is_array($details->page_message)) {
-            $OauthDetails = $this->oauthAuthorization();
-            $token = $OauthDetails->access_token;
-            foreach ($details->page_message as $detail) {
-                if ($detail->product_id == $productId) {
-                    $installation_id = $detail->installation_id;
-                    $installation_ip = $detail->installation_ip;
-                    //delete all existing installation
-                    $updateInstallation = $this->postCurl($url.'api/admin/installations/edit', "api_key_secret=$api_key_secret&installation_id=$installation_id&installation_ip=$installation_ip&installation_status=0&delete_record=1", $token);
+            if ($details->api_error_detected == 0 && is_array($details->page_message)) {
+                $OauthDetails = $this->oauthAuthorization();
+                $token = $OauthDetails->access_token;
+                foreach ($details->page_message as $detail) {
+                    if ($detail->product_id == $productId) {
+                        $installation_id = $detail->installation_id;
+                        $installation_ip = $detail->installation_ip;
+                        //delete all existing installation
+                        $updateInstallation = $this->postCurl($url.'api/admin/installations/edit', "api_key_secret=$api_key_secret&installation_id=$installation_id&installation_ip=$installation_ip&installation_status=0&delete_record=1", $token);
+                    }
                 }
             }
-        }
-           } catch (\Exception $ex) {
+        } catch (\Exception $ex) {
             throw new \Exception('Please configure the valid license details in Apikey settings.');
-
         }
     }
 
     public function searchInstallationId($licenseCode)
     {
-        try{
-        $url = $this->url;
-        $api_key_secret = $this->api_key_secret;
-        $OauthDetails = $this->oauthAuthorization();
-        $token = $OauthDetails->access_token;
-        $getInstallId = $this->postCurl($url.'api/admin/search', "api_key_secret=$api_key_secret&search_type=installation&search_keyword=$licenseCode&isLicenseSearchApi=1", $token);
+        try {
+            $url = $this->url;
+            $api_key_secret = $this->api_key_secret;
+            $OauthDetails = $this->oauthAuthorization();
+            $token = $OauthDetails->access_token;
+            $getInstallId = $this->postCurl($url.'api/admin/search', "api_key_secret=$api_key_secret&search_type=installation&search_keyword=$licenseCode&isLicenseSearchApi=1", $token);
 
-        return $getInstallId;
-         } catch (\Exception $ex) {
+            return $getInstallId;
+        } catch (\Exception $ex) {
             throw new \Exception('Please configure the valid license details in Apikey settings.');
-
         }
     }
 
@@ -454,24 +442,23 @@ class LicenseController extends Controller
     //Update  Expiration Date After Renewal
     public function updateExpirationDate($licenseCode, $expiryDate, $productId, $domain, $orderNo, $licenseExpiry, $supportExpiry, $license_limit = 2, $requiredomain = 1)
     {
-        try{
-        $url = $this->url;
-        $ipAndDomain = $this->getIpAndDomain($domain);
-        $ip = $ipAndDomain['ip'];
-        $domain = $ipAndDomain['domain'];
-        $requireDomain = $ipAndDomain['requireDomain'];
-        $api_key_secret = $this->api_key_secret;
+        try {
+            $url = $this->url;
+            $ipAndDomain = $this->getIpAndDomain($domain);
+            $ip = $ipAndDomain['ip'];
+            $domain = $ipAndDomain['domain'];
+            $requireDomain = $ipAndDomain['requireDomain'];
+            $api_key_secret = $this->api_key_secret;
 
-        $searchLicense = $this->searchLicenseId($licenseCode, $productId);
-        $OauthDetails = $this->oauthAuthorization();
-        $token = $OauthDetails->access_token;
-        $licenseId = $searchLicense['licenseId'];
-        $productId = $searchLicense['productId'];
-        $code = $searchLicense['code'];
-        $updateLicense = $this->postCurl($url.'api/admin/license/edit', "api_key_secret=$api_key_secret&product_id=$productId&license_code=$code&license_id=$licenseId&license_order_number=$orderNo&license_domain=$domain&license_ip=$ip&license_require_domain=$requireDomain&license_status=1&license_expire_date=$licenseExpiry&license_updates_date=$expiryDate&license_support_date=$supportExpiry&license_limit=$license_limit", $token);
-         } catch (\Exception $ex) {
+            $searchLicense = $this->searchLicenseId($licenseCode, $productId);
+            $OauthDetails = $this->oauthAuthorization();
+            $token = $OauthDetails->access_token;
+            $licenseId = $searchLicense['licenseId'];
+            $productId = $searchLicense['productId'];
+            $code = $searchLicense['code'];
+            $updateLicense = $this->postCurl($url.'api/admin/license/edit', "api_key_secret=$api_key_secret&product_id=$productId&license_code=$code&license_id=$licenseId&license_order_number=$orderNo&license_domain=$domain&license_ip=$ip&license_require_domain=$requireDomain&license_status=1&license_expire_date=$licenseExpiry&license_updates_date=$expiryDate&license_support_date=$supportExpiry&license_limit=$license_limit", $token);
+        } catch (\Exception $ex) {
             throw new \Exception('Please configure the valid license details in Apikey settings.');
-
         }
     }
 

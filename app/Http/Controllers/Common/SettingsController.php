@@ -70,8 +70,8 @@ class SettingsController extends BaseSettingsController
     {
         try {
             $licenseClientId = ApiKey::pluck('license_client_id')->first();
-            $licenseClientSecret =  ApiKey::pluck('license_client_secret')->first();
-            $licenseGrantType =  ApiKey::pluck('license_grant_type')->first();
+            $licenseClientSecret = ApiKey::pluck('license_client_secret')->first();
+            $licenseGrantType = ApiKey::pluck('license_grant_type')->first();
             $licenseSecret = $apikeys->pluck('license_api_secret')->first();
             $licenseUrl = $apikeys->pluck('license_api_url')->first();
             $status = StatusSetting::pluck('license_status')->first();
@@ -102,7 +102,7 @@ class SettingsController extends BaseSettingsController
             $mailSendingStatus = Setting::value('sending_status');
             $model = $apikeys->find(1);
 
-            return view('themes.default1.common.apikey', compact('model', 'status', 'licenseSecret', 'licenseUrl', 'siteKey', 'secretKey', 'captchaStatus', 'updateStatus', 'updateSecret', 'updateUrl', 'mobileStatus', 'mobileauthkey', 'msg91Sender', 'emailStatus', 'twitterStatus', 'twitterKeys', 'zohoStatus', 'zohoKey', 'rzpStatus', 'rzpKeys', 'mailchimpSetting', 'mailchimpKey', 'termsStatus', 'termsUrl', 'pipedriveKey', 'pipedriveStatus', 'domainCheckStatus', 'mailSendingStatus','licenseClientId','licenseClientSecret','licenseGrantType'));
+            return view('themes.default1.common.apikey', compact('model', 'status', 'licenseSecret', 'licenseUrl', 'siteKey', 'secretKey', 'captchaStatus', 'updateStatus', 'updateSecret', 'updateUrl', 'mobileStatus', 'mobileauthkey', 'msg91Sender', 'emailStatus', 'twitterStatus', 'twitterKeys', 'zohoStatus', 'zohoKey', 'rzpStatus', 'rzpKeys', 'mailchimpSetting', 'mailchimpKey', 'termsStatus', 'termsUrl', 'pipedriveKey', 'pipedriveStatus', 'domainCheckStatus', 'mailSendingStatus', 'licenseClientId', 'licenseClientSecret', 'licenseGrantType'));
         } catch (\Exception $ex) {
             return redirect('/')->with('fails', $ex->getMessage());
         }

@@ -2,6 +2,7 @@
 
 namespace Database\Factories\Model\Product;
 
+use App\Model\Product\Subscription;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class SubscriptionFactory extends Factory
@@ -11,6 +12,8 @@ class SubscriptionFactory extends Factory
      *
      * @return array
      */
+    protected $model = Subscription::class;
+
     public function definition()
     {
         return [

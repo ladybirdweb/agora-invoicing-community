@@ -21,9 +21,16 @@ class Announcement implements ShouldQueue
      *
      * @return void
      */
-    protected $message, $message_type, $version, $product, $from, $till, $reappear,$condition;
+    protected $message;
+    protected $message_type;
+    protected $version;
+    protected $product;
+    protected $from;
+    protected $till;
+    protected $reappear;
+    protected $condition;
 
-    public function __construct($message,$message_type,$version,$product,$from="",$till="",$reappear="",$condition="")
+    public function __construct($message, $message_type, $version, $product, $from = '', $till = '', $reappear = '', $condition = '')
     {
         dd('e');
         $this->setDriver();
@@ -33,7 +40,7 @@ class Announcement implements ShouldQueue
         $this->product = $product;
         $this->from = $from;
         $this->till = $till;
-        $this->reappear= $reappear;
+        $this->reappear = $reappear;
         $this->condition = $condition;
     }
 
@@ -48,9 +55,9 @@ class Announcement implements ShouldQueue
             ini_set('memory_limit', '-1');
             ini_set('max_execution_time', '-1');
             set_time_limit(0);
-            $urls=InstallationDetail::whereIn('order_id',
+            $urls = InstallationDetail::whereIn('order_id',
                 Order::whereIn('product',
-                    Product::whereIn('name',$this->product)
+                    Product::whereIn('name', $this->product)
                         ->pluck('id')->toArray())
                     ->pluck('id')->toArray())
                 ->pluck('installation_path')->toArray();
@@ -58,26 +65,23 @@ class Announcement implements ShouldQueue
                 dump($url);
                 $this->aplCustomPost('https://'.$url.'/api/message', "message=$this->message");
             }
-        }
-        Catch(\Exception $e){
+        } catch (\Exception $e) {
         }
     }
 
     //make post requests with cookies and referrers, return array with server headers, errors, and body content
-    private function aplCustomPost($url, $post_info="", $refer="")
+    private function aplCustomPost($url, $post_info = '', $refer = '')
     {
-        $user_agent="phpmillion cURL";
-        $connect_timeout=10;
-        $server_response_array=array();
-        $formatted_headers_array=array();
+        $user_agent = 'phpmillion cURL';
+        $connect_timeout = 10;
+        $server_response_array = [];
+        $formatted_headers_array = [];
 
-        if (filter_var($url, FILTER_VALIDATE_URL) && !empty($post_info))
-        {
-            if (empty($refer) || !filter_var($refer, FILTER_VALIDATE_URL)) //use original URL as refer when no valid refer URL provided
-            {
-                $refer=$url;
+        if (filter_var($url, FILTER_VALIDATE_URL) && ! empty($post_info)) {
+            if (empty($refer) || ! filter_var($refer, FILTER_VALIDATE_URL)) { //use original URL as refer when no valid refer URL provided
+                $refer = $url;
             }
-            $ch=curl_init();
+            $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $url);
             curl_setopt($ch, CURLOPT_USERAGENT, $user_agent);
             curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $connect_timeout);
@@ -93,36 +97,38 @@ class Announcement implements ShouldQueue
 
             //this function is called by curl for each header received - https://stackoverflow.com/questions/9183178/can-php-curl-retrieve-response-headers-and-body-in-a-single-request
             curl_setopt($ch, CURLOPT_HEADERFUNCTION,
-                function($curl, $header) use (&$formatted_headers_array)
-                {
-                    $len=strlen($header);
-                    $header=explode(":", $header, 2);
-                    if (count($header)<2) //ignore invalid headers
+                function ($curl, $header) use (&$formatted_headers_array) {
+                    $len = strlen($header);
+                    $header = explode(':', $header, 2);
+                    if (count($header) < 2) { //ignore invalid headers
                         return $len;
+                    }
 
-                    $name=strtolower(trim($header[0]));
-                    $formatted_headers_array[$name]=trim($header[1]);
+                    $name = strtolower(trim($header[0]));
+                    $formatted_headers_array[$name] = trim($header[1]);
 
                     return $len;
                 }
             );
 
-            $result=curl_exec($ch);
-            $curl_error=curl_error($ch);//returns a human readable error (if any)
+            $result = curl_exec($ch);
+            $curl_error = curl_error($ch); //returns a human readable error (if any)
             curl_close($ch);
 
-            $server_response_array['headers']=$formatted_headers_array;
-            $server_response_array['error']=$curl_error;
-            $server_response_array['body']=$result;
+            $server_response_array['headers'] = $formatted_headers_array;
+            $server_response_array['error'] = $curl_error;
+            $server_response_array['body'] = $result;
         }
 
         return $server_response_array;
     }
 
-    private function setDriver(){
+    private function setDriver()
+    {
         $queue_driver = 'sync';
-        if($driver = QueueService::where('status', 1)->first())
+        if ($driver = QueueService::where('status', 1)->first()) {
             $queue_driver = $driver->short_name;
+        }
         app('queue')->setDefaultDriver($queue_driver);
     }
 }

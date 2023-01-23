@@ -13,9 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-//        Schema::table('settings', function (Blueprint $table) {
-//            $table->string('version', 255)->nullable();
-//        });
+        Schema::create('announcement_conditions', function (Blueprint $table) {
+            $table->id();
+            $table->string('condition');
+            $table->string('name');
+            $table->timestamps();
+        });
     }
 
     /**
@@ -25,8 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('settings', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('announcement_conditions');
     }
 };

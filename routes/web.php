@@ -540,6 +540,12 @@ use Illuminate\Support\Facades\Route;
 
                 return redirect('login');
             });
+
+            /*
+             * messaging/Announcement
+             */
+            Route::get('announcement', [\App\Http\Controllers\MessagingController::class, 'announcementPage'])->middleware('admin');
+            Route::post('message-announcement',[\App\Http\Controllers\MessagingController::class,'sendMessage']);
         });
          /*
          * Faveo APIs
@@ -559,3 +565,4 @@ use Illuminate\Support\Facades\Route;
             return view('errors.404');
         })->name('error404');
     // });
+Route::get('message',[\App\Http\Controllers\MessagingController::class,'sendMessage']);

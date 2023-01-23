@@ -13,9 +13,9 @@ class AddBatchUuidToActivityLog extends Migration
      */
     public function up()
     {
-        Schema::table('activity_log', function (Blueprint $table) {
-            $table->string('batch_uuid')->nullable();
-        });
+//        Schema::table('activity_log', function (Blueprint $table) {
+//            $table->string('batch_uuid')->nullable();
+//        });
     }
 
     /**

@@ -696,10 +696,5 @@ class TimezoneSeeder extends Seeder
             'location' => '(GMT+12:00) Fiji',
         ]);
 
-        Timezone::create([
-            'id' => 114,
-            'name' => 'UTC',
-            'location' => null,
-        ]);
     }
 }

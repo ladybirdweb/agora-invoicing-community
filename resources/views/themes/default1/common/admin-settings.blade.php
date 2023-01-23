@@ -460,6 +460,19 @@ Settings
                         <p class="box-title" >Country List</p>
                     </div>
                 </div>
+
+            <div class="col-md-2 col-sm-6">
+                <div class="settingiconblue">
+                    <div class="settingdivblue">
+                        <a href="{{url('announcement')}}">
+                                <span class="fa-stack fa-2x">
+                                    <i class="fa fa-bullhorn fa-stack-1x"></i>
+                                </span>
+                        </a>
+                    </div>
+                    <p class="box-title" >Announcement</p>
+                </div>
+            </div>
                 
                
         </div>

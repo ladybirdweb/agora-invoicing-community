@@ -35,6 +35,8 @@ class DatabaseSeeder extends Seeder
     {
         //Model::unguard();
 
+        $this->call(AnnouncementSeeder::class);
+dd();
         $this->call([TemplateTypeTableSeeder::class]);
         $this->command->info('Template Type table seeded!');
 

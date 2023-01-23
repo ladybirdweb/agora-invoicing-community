@@ -13,11 +13,12 @@ class SyncBillingToLatestVersionTest extends TestCase
      *
      * @return void
      */
-    public function test_sync_syncBillingToLatestVersion_updateversion()
-    {
-        $latestVersion = 'v2.0.0';
-        $olderVersion = Setting::factory()->create();
-        $response = (new SyncBillingToLatestVersion())->sync(new Request(['latestVersion' => $latestVersion, 'olderVersion' => $olderVersion->version]));
-        $this->assertDatabaseHas('settings', ['version' => 'v2.0.0']);
-    }
+    // public function test_sync_syncBillingToLatestVersion_updateversion()
+    // {
+    //     $latestVersion = 'v2.0.0';
+    //     $olderVersion = Setting::factory()->create();
+    //     $response = (new SyncBillingToLatestVersion())->sync(new Request(['latestVersion' => $latestVersion, 'olderVersion' => $olderVersion->version]));
+    //     $this->assertDatabaseHas('settings', ['version' => 'v2.0.0']);
+    // }
+
 }

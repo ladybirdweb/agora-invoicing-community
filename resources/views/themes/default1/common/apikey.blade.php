@@ -66,21 +66,7 @@
     overflow:scroll;
     height:600px;
 }
-<?php
 
-
-$licenseClientId = app\ApiKey::pluck('license_client_id')->first();
-$licenseClientSecret =  app\ApiKey::pluck('license_client_secret')->first();
-$licenseGrantType =  app\ApiKey::pluck('license_grant_type')->first();
-if($licenseClientSecret){
-$key = new App\Http\Controllers\License\LicenseController;
-$details = $key->getLicensekey();
-$licensekey = $details["data"]["data"][0]["api_key_secret"];
-$licenseurl =  $details["url"];
-}
-
-
-?>
 
 </style>
 <div class="col-sm-6 md-6">
@@ -191,7 +177,7 @@ $licenseurl =  $details["url"];
 
                                 </td>
                             
-                                <td class="col-md-2"><button type="submit" class="form-group btn btn-primary"  <?php if($licenseClientSecret) {?>onclick="licenseDetails('{{$licensekey}}','{{$licenseurl}}')" <?php } else {?> onclick="licenseDetails()" <?php } ?> id="submit"><i class="fa fa-save">&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
+                                <td class="col-md-2"><button type="submit" class="form-group btn btn-primary"  onclick="licenseDetails()" id="submit"><i class="fa fa-save">&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
 
                             </tr>
 
@@ -569,7 +555,7 @@ $licenseurl =  $details["url"];
 
 
 
-        function licenseDetails($licensekey, $licenseurl){
+        function licenseDetails(){
 
             if ($('#License').prop("checked")) {
                 var checkboxvalue = 1;
@@ -585,18 +571,7 @@ $licenseurl =  $details["url"];
                         }, 1500);
                     return false;
                 }
-                  if ($licensekey != null && $('#license_api_secret').val() != $licensekey  ) {
-             $('#license_apiCheck').show();
-             $('#license_apiCheck').html("Please Enter Valid APT Secret Key");
-              $('#license_api_secret').css("border-color","red");
-              $('#license_apiCheck').css({"color":"red","margin-top":"5px"});
-              setTimeout(function(){
-                    $('#license_apiCheck').hide();
-                      $('#license_api_secret').css("border-color","");
-                        }, 1500);
-              
-              return false;
-          }
+         
                 if ($('#license_api_url').val() =="" ) {
                     $('#license_urlCheck').show();
                     $('#license_urlCheck').html("Please Enter API URL");
@@ -608,18 +583,7 @@ $licenseurl =  $details["url"];
                         }, 1500);
                     return false;
                 }
-                  if ($licenseurl != null && $('#license_api_url').val() != $licenseurl) {
-             $('#license_urlCheck').show();
-             $('#license_urlCheck').html("Please Enter Valid API URL");
-              $('#license_api_url').css("border-color","red");
-              $('#license_urlCheck').css({"color":"red","margin-top":"5px"});
-              setTimeout(function(){
-                    $('#license_urlCheck').hide();
-                      $('#license_api_url').css("border-color","");
-                        }, 1500);
-                
-              return false;
-          }
+
                 if ($('#license_client_id').val() =="" ) {
                     $('#license_clientIdCheck').show();
                     $('#license_clientIdCheck').html("Please Enter Client Id For License Manager");

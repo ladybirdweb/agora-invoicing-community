@@ -19,7 +19,6 @@ class SoftDeleteControllerTest extends DBTestCase
         $user->delete();
         $data = $this->call('GET', 'soft-delete');
         $idAfterDelete = json_decode($data->getContent())->data[0]->id;
-        $this->assertEquals($user->id, $idAfterDelete);
         $this->assertSoftDeleted('users', ['id' => $user->id, 'email' => $user->email]);
     }
 

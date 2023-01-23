@@ -62,7 +62,7 @@ class SetupTestEnv extends Command
 
         echo "\nRunning seeders!\n";
 
-        Artisan::call('db:seed', ['--force' => true]);
+                    Artisan::call('db:seed', ['--class' => "Database\Seeders\\v2_0_0\DatabaseSeeder", '--force' => true]);
 
         echo Artisan::output();
 

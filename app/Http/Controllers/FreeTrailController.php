@@ -70,8 +70,6 @@ class FreeTrailController extends Controller
                 if ($isSuccess['status'] == 'false') {
                     return $isSuccess;
                 }
-                User::where('id', $userId)->update(['first_time_login' => 1]);
-
                 return $isSuccess;
             }
         } catch (\Exception $ex) {

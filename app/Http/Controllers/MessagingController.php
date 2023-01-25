@@ -27,7 +27,8 @@ class MessagingController extends Controller
                         'products'=> implode(',', $request->products),
                         'reappear'=> $daysReappear, 'condition' => $condition, ]
             );
-            AnnouncementJob::dispatch($message,$messageType,$request->version,$request->products,$from,$till,$daysReappear,$condition);
+            AnnouncementJob::dispatch($message, $messageType, $request->version, $request->products, $from, $till, $daysReappear, $condition);
+
             return redirect()->back()->with('success', trans('message.announce_in_progress'));
         } catch (\Exception $e) {
             return redirect()->back()->with('fails', $e->getMessage());

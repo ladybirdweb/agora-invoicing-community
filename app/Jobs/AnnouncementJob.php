@@ -2,7 +2,6 @@
 
 namespace App\Jobs;
 
-use App\Http\Controllers\Common\CronController;
 use App\Model\MailJob\QueueService;
 use App\Model\Order\InstallationDetail;
 use App\Model\Order\Order;
@@ -59,30 +58,29 @@ class AnnouncementJob implements ShouldQueue
             ini_set('max_execution_time', '-1');
             set_time_limit(0);
             //Gets the product based on the filter that has been passed from the front end.
-            $products = (in_array('Every Product available',$this->product))?
-                Product::all()->pluck('id')->toArray():
-                Product::whereIn('name',$this->product)->pluck('id')->toArray();
+            $products = (in_array('Every Product available', $this->product)) ?
+                Product::all()->pluck('id')->toArray() :
+                Product::whereIn('name', $this->product)->pluck('id')->toArray();
             //Gets the order_id of the product based on versions expiry
-            $subscriptions=Subscription::whereIn('product_id',$products)
-                ->when($this->version,function($query){
-                      (in_array('Every version available',$this->version))?:
-                          $query->whereIn('version',$this->version);
-                })->when($this->from || $this->till, function ($query){
-                    $from = empty($this->from)?Carbon::nowWithSameTz():Carbon::parse($this->from);
-                    $to = empty($this->till)?Carbon::parse('01/01/5050'):Carbon::parse($this->till);
+            $subscriptions = Subscription::whereIn('product_id', $products)
+                ->when($this->version, function ($query) {
+                    (in_array('Every version available', $this->version)) ?:
+                          $query->whereIn('version', $this->version);
+                })->when($this->from || $this->till, function ($query) {
+                    $from = empty($this->from) ? Carbon::nowWithSameTz() : Carbon::parse($this->from);
+                    $to = empty($this->till) ? Carbon::parse('01/01/5050') : Carbon::parse($this->till);
                     $query->whereBetween('update_ends_at', [$from, $to])
-                          ->orWhereBetween('support_ends_at',[$from,$to])
-                          ->orWhereBetween('ends_at',[$from,$to]);
+                          ->orWhereBetween('support_ends_at', [$from, $to])
+                          ->orWhereBetween('ends_at', [$from, $to]);
                 })->pluck('order_id')->toArray();
             //Gets the Installation path based on the filtered order_id
-            $urls=InstallationDetail::whereIn('order_id',$subscriptions)
+            $urls = InstallationDetail::whereIn('order_id', $subscriptions)
                 ->pluck('installation_path')->toArray();
-           //Pushes the messages to the product closeable and non-closeable
+            //Pushes the messages to the product closeable and non-closeable
             foreach ($urls as $url) {
                 $this->aplCustomPost('https://'.$url.'/api/message', "message=$this->message&condition=$this->condition&reappear=$this->reappear");
             }
-        }
-        Catch(\Exception $e){
+        } catch (\Exception $e) {
             //ignore if there are exceptions, because of one client the others should not be stopped.
         }
     }

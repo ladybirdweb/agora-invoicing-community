@@ -444,55 +444,6 @@ $set = $set->findOrFail(1);
         </div>
 
     </div>
-
-
-
-    @auth
-
-
-        <div class="modal fade" id="tenant" data-backdrop="static" data-keyboard="false">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    {!! Form::open() !!}
-                    <div class="modal-header">
-                        <h4 class="modal-title">Create an instance</h4>
-                    </div>
-
-                    <div class="modal-body">
-                        <div id="success">
-                        </div>
-                        <div id="error">
-                        </div>
-                        <!-- Form  -->
-
-                        <div class="container">
-                            <form action="" method="post" style="width:500px; margin: auto auto;" class="card card-body">
-                                <div class="form-group">
-                                    <label>Domain</label>
-                                    <div class="row" style="margin-left: 2px; margin-right: 2px;">
-
-                                        <input  type="text"   name="domain" autocomplete="off" id= "userdomain"  class="form-control col col-4" placeholder="Domain" required>
-                                        <input type="text" class="form-control col col-8" value=".faveocloud.com" disabled="true">
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-
-
-
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default pull-left closebutton" id="closebutton" data-dismiss="modal"><i class="fa fa-times">&nbsp;&nbsp;</i>Close</button>
-                        <button type="submit" data-id=""  class="btn btn-primary createTenant" id="createTenant" onclick="firstlogin({{Auth::user()->id}})"><i class="fa fa-check">&nbsp;&nbsp;</i>Submit</button>
-                        {!! Form::close()  !!}
-                    </div>
-                    <!-- /Form -->
-                </div><!-- /.modal-content -->
-            </div><!-- /.modal-dialog -->
-        </div><!-- /.modal -->
-    @endauth
-
-
     <footer id="footer">
 
         <div class="container" >

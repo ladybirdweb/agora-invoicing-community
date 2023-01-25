@@ -21,6 +21,8 @@ Sign in or Register
 @stop
 @section('content')
     <?php
+
+
     use App\Http\Controllers\Front\CartController;
     $country = findCountryByGeoip($location['iso_code']);
     $states = findStateByRegionId($location['iso_code']);

@@ -138,5 +138,20 @@
                 $('#reappears').show();
             }
         });
+
+        $('#expiry_from').on('change',function (){
+           from = $('#expiry_from').val();
+           to = $('#expiry_till').val();
+           if(from<to){
+               console.log('eeee');
+           }
+        });
+        $('#expiry_till').on('change',function (){
+            from = $('#expiry_from').val();
+            to = $('#expiry_till').val();
+            if(from<to){
+                console.log('eeeeeee');
+            }
+        });
     </script>
 @stop

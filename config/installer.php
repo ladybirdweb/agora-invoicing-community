@@ -60,10 +60,6 @@ return [
             'rules' => [
                 'environment' => 'required|string|max:50',
                 'environment_custom' => 'required_if:environment,other|max:50',
-                'app_debug' => [
-                    'required',
-                    Rule::in(['true', 'false']),
-                ],
                 'app_log_level' => 'required|string|max:50',
                 'database_connection' => 'required|string|max:50',
                 'database_hostname' => 'required|string|max:50',

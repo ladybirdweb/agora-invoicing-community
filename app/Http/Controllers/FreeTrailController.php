@@ -58,6 +58,7 @@ class FreeTrailController extends Controller
                 if ($userLogin->first_time_login != 0) {
                     return errorResponse(Lang::get('message.false'), 400);
                 }
+                User::where('id', $userId)->update(['first_time_login' => 1]);
 
                 $this->generateFreetrailInvoice();
 
@@ -96,7 +97,7 @@ class FreeTrailController extends Controller
             $number = rand(11111111, 99999999);
             $date = \Carbon\Carbon::now();
             $currency = \Session::has('cart_currency') ? \Session::get('cart_currency') : getCurrencyForClient(\Auth::user()->country);
-            $invoice = $this->invoice->create(['user_id' => $user_id, 'number' => $number, 'date'=> $date, 'grand_total' => $grand_total, 'status' => 'pending',
+            $invoice = $this->invoice->create(['user_id' => $user_id, 'number' => $number, 'date' => $date, 'grand_total' => $grand_total, 'status' => 'pending',
                 'currency' => $currency, ]);
 
             return $invoice;
@@ -124,18 +125,18 @@ class FreeTrailController extends Controller
                 $invoice = $this->invoice->where('user_id', $userId)->first();
                 $invoiceid = $invoice->id;
                 $invoiceItem = $this->invoiceItem->create([
-                    'invoice_id'     => $invoiceid,
-                    'product_name'   => $product->name,
-                    'regular_price'  => planPrice::where('plan_id', $plan_id)
-                                        ->where('currency', \Auth::user()->currency)->pluck('add_price'),
-                    'quantity'       => 1,
-                    'tax_name'       => 'null',
+                    'invoice_id' => $invoiceid,
+                    'product_name' => $product->name,
+                    'regular_price' => planPrice::where('plan_id', $plan_id)
+                        ->where('currency', \Auth::user()->currency)->pluck('add_price'),
+                    'quantity' => 1,
+                    'tax_name' => 'null',
                     'tax_percentage' => $product->planRelation()->pluck('allow_tax'),
-                    'subtotal'       => 0,
-                    'domain'         => '',
-                    'plan_id'        => 0,
-                    'agents'         => planPrice::where('plan_id', $plan_id)
-                                        ->where('currency', \Auth::user()->currency)->pluck('no_of_agents'),
+                    'subtotal' => 0,
+                    'domain' => '',
+                    'plan_id' => 0,
+                    'agents' => planPrice::where('plan_id', $plan_id)
+                        ->where('currency', \Auth::user()->currency)->pluck('no_of_agents'),
                 ]);
 
                 return $invoiceItem;
@@ -191,20 +192,20 @@ class FreeTrailController extends Controller
             $domain = $item->domain;
             //$plan_id = $this->plan($item->id);
             $plan_id = Plan::where('product', $product)
-                           ->value('id');
+                ->value('id');
 
             $order = $this->order->create([
 
-                'invoice_id'      => $invoiceid,
+                'invoice_id' => $invoiceid,
                 'invoice_item_id' => $item->id,
-                'client'          => $user_id,
-                'order_status'    => $order_status,
-                'serial_key'      => Crypt::encrypt($serial_key),
-                'product'         => $product,
-                'price_override'  => $item->subtotal,
-                'qty'             => $item->quantity,
-                'domain'          => $domain,
-                'number'          => $this->generateFreetrailNumber(),
+                'client' => $user_id,
+                'order_status' => $order_status,
+                'serial_key' => Crypt::encrypt($serial_key),
+                'product' => $product,
+                'price_override' => $item->subtotal,
+                'qty' => $item->quantity,
+                'domain' => $domain,
+                'number' => $this->generateFreetrailNumber(),
             ]);
             $this->orderNo = $order->number;
             $baseorder = new BaseOrderController();

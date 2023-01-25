@@ -512,7 +512,7 @@ Route::middleware('installAgora')->group(function () {
             Route::get('view/tenant', [Tenancy\TenantController::class, 'viewTenant'])->middleware('admin');
             Route::get('get-tenants', [Tenancy\TenantController::class, 'getTenants'])->name('get-tenants')->middleware('admin');
             Route::delete('delete-tenant', [Tenancy\TenantController::class, 'destroyTenant'])->name('delete-tenant')->middleware('admin');
-            Route::get('delete/domain/{orderNumber}/{isDelete}',[Tenancy\TenantController::class,'DeleteCloudInstanceForClient']);
+            Route::get('delete/domain/{orderNumber}/{isDelete}', [Tenancy\TenantController::class, 'DeleteCloudInstanceForClient']);
 
     Route::delete('delete-tenant', [Tenancy\TenantController::class, 'destroyTenant'])->name('delete-tenant')->middleware('admin');
 

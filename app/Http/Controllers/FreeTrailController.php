@@ -70,6 +70,7 @@ class FreeTrailController extends Controller
                 if ($isSuccess['status'] == 'false') {
                     return $isSuccess;
                 }
+
                 return $isSuccess;
             }
         } catch (\Exception $ex) {

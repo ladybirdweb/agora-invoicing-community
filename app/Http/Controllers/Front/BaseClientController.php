@@ -292,4 +292,24 @@ class BaseClientController extends Controller
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
+
+    /**
+     * Get the Delete instance popup for cloud.
+     *
+     * @param  Order  $orders  Order For the Client
+     * @param  int  $productid  Product id for the Order
+     * @return array Show Modal Popup if Condition Satisfies
+     */
+    public function getCloudDeletePopup($query, int $productid){
+        $permissions = LicensePermissionsController::getPermissionsForProduct($productid);
+        if ($permissions['downloadPermission'] != 1) { //If the Product has doownlaod permission
+            return $this->deleteCloudPopup($query->number);
+        }
+    }
+    /**
+     * returns the view for the delete cloud button
+     */
+    public function deleteCloudPopup($orderNumber){
+        return view('themes.default1.front.clients.delete-cloud-popup', compact('orderNumber'));
+    }
 }

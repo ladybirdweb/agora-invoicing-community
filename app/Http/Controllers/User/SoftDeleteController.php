@@ -38,7 +38,6 @@ class SoftDeleteController extends ClientController
                          ->orderColumn('created_at', '-users.created_at $1')
                           ->orderColumn('active', '-users.created_at $1')
 
-            
                         ->addColumn('checkbox', function ($model) {
                             return "<input type='checkbox' class='user_checkbox' value=".$model->id.' name=select[] id=check>';
                         })

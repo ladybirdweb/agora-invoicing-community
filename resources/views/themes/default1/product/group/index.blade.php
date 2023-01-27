@@ -60,8 +60,13 @@ Groups
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript">
         $('#group-table').DataTable({
-            processing: true,
+             processing: true,
             serverSide: true,
+            stateSave: false,
+            ordering: true,
+            searching:true,
+            select: true,
+            order: [[ 1, "desc" ]],
             ajax: {
             "url":  '{!! route('get-groups') !!}',
                error: function(xhr) {

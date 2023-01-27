@@ -217,6 +217,11 @@ $('.btn-off-3').css("background-color", "#DA4F49","color", "white");
             $('#tax-table').DataTable({
                 processing: true,
                 serverSide: true,
+                stateSave: false,
+                ordering: true,
+                searching:true,
+                select: true,
+                order: [[ 1, "desc" ]],
                  ajax: {
               "url":  '{!! route('get-tax') !!}',
                  error: function(xhr) {

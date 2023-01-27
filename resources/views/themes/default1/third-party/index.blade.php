@@ -61,8 +61,11 @@ Third party Apps
         $('#third-party-app-table').DataTable({
             processing: true,
             serverSide: true,
-             stateSave: false,
-              order: [[ 0, "desc" ]],
+            stateSave: false,
+            ordering: true,
+            searching:true,
+            select: true,
+            order: [[ 1, "desc" ]],
                ajax: {
             "url":  '{!! route('get-third-party-app') !!}',
                error: function(xhr) {

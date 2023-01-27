@@ -213,6 +213,10 @@ Orders
             processing: true,
             serverSide: true,
             stateSave: false,
+            order: [[ {!! $request->sort_field ?: 5 !!}, {!! "'".$request->sort_order."'" ?: "'asc'" !!} ]],
+
+
+
             ajax: {
             "url":  '{!! route('get-orders',"order_no=$request->order_no&product_id=$request->product_id&expiry=$request->expiry&expiryTill=$request->expiryTill&from=$request->from&till=$request->till&sub_from=$request->sub_from&sub_till=$request->sub_till&ins_not_ins=$request->ins_not_ins&domain=$request->domain&p_un=$request->p_un&act_ins=$request->act_inst&renewal=$request->renewal&inact_ins=$request->inact_inst&version=$request->version" ) !!}',
                error: function(xhr) {

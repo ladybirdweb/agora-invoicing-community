@@ -2,7 +2,11 @@
 @section('title')
 Users
 @stop
-
+<style type="text/css">
+    .sorting, .sorting_asc, .sorting_desc {
+    background : none;
+}
+</style>
 
 @section('content-header')
     <div class="col-sm-6">
@@ -232,7 +236,7 @@ Users
             stateSave: false,
             // if in request sort field is present, it will take that else default order
             // need to stringify the sort_order, else it will be considered as a javascript variable
-            order: [[ {!! $request->sort_field ?: 5 !!}, {!! "'".$request->sort_order."'" ?: "'desc'" !!} ]],
+            order: [[ {!! $request->sort_field ?: 5 !!}, {!! "'".$request->sort_order."'" ?: "'asc'" !!} ]],
             ajax: {
             "url":  '{!! route('get-clients',"company=$request->company&country=$request->country&industry=$request->industry&role=$request->role&position=$request->position&reg_from=$request->reg_from&reg_till=$request->reg_till&actmanager=$request->actmanager&salesmanager=$request->salesmanager" ) !!}',
                error: function(xhr) {

@@ -208,7 +208,6 @@ class CheckoutController extends InfoController
 
     public function postCheckout(Request $request)
     {
-
         $cost = $request->input('cost');
         if (Cart::getSubTotal() != 0 && $cost > 0) {
             $this->validate($request, [

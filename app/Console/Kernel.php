@@ -24,6 +24,7 @@ class Kernel extends ConsoleKernel
         \App\Console\Commands\ExpiryCron::class,
         SetupTestEnv::class,
         \App\Console\Commands\SyncDatabaseToLatestVersion::class,
+        \App\Console\Commands\RenewalCron::class,
 
     ];
 
@@ -37,6 +38,8 @@ class Kernel extends ConsoleKernel
     {
         $this->execute($schedule, 'expiryMail');
         $this->execute($schedule, 'deleteLogs');
+        $schedule->command('renewal:cron')
+                 ->daily();
     }
 
     public function execute($schedule, $task)

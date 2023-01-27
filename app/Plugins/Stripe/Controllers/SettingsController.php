@@ -11,6 +11,7 @@ use App\Model\Payment\Currency;
 use App\Plugins\Stripe\Model\StripePayment;
 use Cartalyst\Stripe\Laravel\Facades\Stripe;
 use Illuminate\Http\Request;
+use App\Auto_renewal;
 use Schema;
 use Symfony\Component\Mime\Email;
 use Validator;
@@ -114,7 +115,8 @@ class SettingsController extends Controller
      */
     public function postPaymentWithStripe(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+      
+       $validator = Validator::make($request->all(), [
         ]);
         $input = $request->all();
         $validation = [

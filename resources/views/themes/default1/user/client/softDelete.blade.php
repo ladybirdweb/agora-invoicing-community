@@ -68,8 +68,12 @@ Suspended users
 
         $('#deleted-user-table').DataTable({
 
-            processing: true,
-            serverSide: true,
+                serverSide: true,
+                stateSave: false,
+                ordering: true,
+                searching:true,
+                select: true,
+                order: [[ 1, "desc" ]],
               
             ajax: {
             "url":  '{!! route('soft-delete') !!}',

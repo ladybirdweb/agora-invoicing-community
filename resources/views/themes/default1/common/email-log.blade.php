@@ -34,7 +34,7 @@ Email Logs
                      
                     <thead><tr>
 
-                            <th class="no-sort" style="width:1px"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
+                            <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
 
                             <th>Date</th>
                             <th>From</th>
@@ -63,13 +63,13 @@ Email Logs
         $('#email-table').DataTable({
           
            
-             processing: true,
-             serverSide: true,
-             stateSave: true,
-             ordering: true,
-             searching:true,
-             select: true,
-              order: [[ 0, "desc" ]],
+            processing: true,
+            serverSide: true,
+            stateSave: false,
+            ordering: true,
+            searching:true,
+            select: true,
+            order: [[ 1, "desc" ]],
                ajax: {
             "url":  '{!! route('get-email') !!}',
                error: function(xhr) {
@@ -89,7 +89,7 @@ Email Logs
             columnDefs: [
                 { 
                     targets: 'no-sort', 
-                    orderable: true,
+                    orderable: false,
                     order: []
                 }
             ],

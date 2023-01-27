@@ -188,8 +188,8 @@ Activity Log
             // },
             processing: true,
             serverSide: true,
-             stateSave: false,
-              order: [[ 0, "desc" ]],
+            stateSave: false,
+            order: [[ 1, "asc" ]],
               ajax: {
             "url":  '{!! route('get-activity',"log_from=$from&log_till=$till&delFrom=$delFrom&delTill=$delTill") !!}',
                error: function(xhr) {

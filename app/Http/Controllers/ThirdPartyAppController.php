@@ -38,6 +38,8 @@ class ThirdPartyAppController extends Controller
 
             return \DataTables::of($thirdPartyApps)
              ->orderColumn('app_name', '-created_at $1')
+             ->orderColumn('app_key', '-created_at $1')
+             ->orderColumn('app_secret', '-created_at $1')
             ->addColumn('checkbox', function ($model) {
                 return "<input type='checkbox' class='type_checkbox' 
             value=".$model->id.' name=select[] id=check>';

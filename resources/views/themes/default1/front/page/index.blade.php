@@ -61,6 +61,9 @@ All Pages
         $('#pages-table').DataTable({
             processing: true,
             serverSide: true,
+            order: [[1, 'asc']],
+
+
             ajax: {
             "url":  '{!! route('get-pages') !!}',
                error: function(xhr) {

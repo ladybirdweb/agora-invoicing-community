@@ -66,6 +66,8 @@ Plans
         $('#plan-table').DataTable({
             processing: true,
             serverSide: true,
+            order: [[ 1, "desc" ]],
+
              ajax: {
             "url":  '{!! route('get-plans') !!}',
                error: function(xhr) {

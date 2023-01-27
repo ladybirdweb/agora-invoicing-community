@@ -10,6 +10,7 @@ use App\Model\Payment\Currency;
 use App\Plugins\Stripe\Model\StripePayment;
 use Cartalyst\Stripe\Laravel\Facades\Stripe;
 use Illuminate\Http\Request;
+use App\Auto_renewal;
 use Schema;
 use Validator;
 
@@ -112,7 +113,8 @@ class SettingsController extends Controller
      */
     public function postPaymentWithStripe(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+      
+       $validator = Validator::make($request->all(), [
         ]);
         $input = $request->all();
         $validation = [
@@ -123,6 +125,25 @@ class SettingsController extends Controller
         ];
 
         $this->validate($request, $validation);
+
+        //saving card details for future payment
+
+        if($request->renewal == 'on')
+        {
+         $invoice_details = \Session::get('invoice');
+
+         $card_details = new Auto_renewal();
+         $card_details->card_no = \Hash::make($request->card_no);
+         $card_details->exp_month = $request->exp_month;
+         $card_details->exp_year = $request->exp_year;
+         $card_details->cvv = $request->cvv;
+         $card_details->amount = $request->amount;
+         $card_details->renewal = '1';
+         $card_details->user_id = $invoice_details->user_id;
+         $card_details->invoice_number = $invoice_details->number;
+         $card_details->save();
+        }
+         
         $stripeSecretKey = ApiKey::pluck('stripe_secret')->first();
         $stripe = Stripe::make($stripeSecretKey);
         try {

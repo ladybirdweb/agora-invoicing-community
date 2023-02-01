@@ -23,15 +23,16 @@ Activity Log
                 <div class="card-header">
                     <h3 class="card-title">{{Lang::get('message.filters')}}</h3>
 
-                    <div class="card-tools">
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
-                            <i class="fas fa-plus"></i></button>
-                      
-                    </div>
+                   <div class="card-tools">
+
+            <button type="button" class="btn btn-tool" id="tip-search" title="Expand"> <i id="search-icon" class="fas fa-plus"></i>
+                            </button>
+            
+        </div>
                 </div>
 
     <!-- /.box-header -->
-    <div class="card-body">
+    <div class="card-body" table-responsive" id="advance-search" style="display:none;">
         {!! Form::open(['method'=>'get']) !!}
 
         <div class="row">

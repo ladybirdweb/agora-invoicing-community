@@ -6,7 +6,7 @@ return [
 
     'author' => 'Ladybird Web Solution',
 
-    'description' => 'This is the Stripe paymeny gateway plugin for the Agora.',
+    'description' => 'This is the Stripe payment gateway plugin for the Agora.',
 
     'version' => '1.0.0',
 

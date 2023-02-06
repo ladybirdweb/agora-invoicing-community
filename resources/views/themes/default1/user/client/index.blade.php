@@ -334,6 +334,7 @@ Users
                 return false;
             }
         }
+        return false;
 
      });
    $('#reservationdate').datetimepicker({

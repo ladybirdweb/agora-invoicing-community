@@ -3,7 +3,7 @@
         <div class="modal-content">
             <div class="modal-header">
                   <h4 class="modal-title">{{Lang::get('message.add_new_comment')}}</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <button type="button" class="close" data-dismiss="modal" id="crossclose" aria-label="Close"><span aria-hidden="true">&times;</span></button>
               
             </div>
             {!! Form::open(['url'=>'comment']) !!} 

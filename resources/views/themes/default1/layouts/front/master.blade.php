@@ -288,7 +288,7 @@ if($script->on_every_page == 1) {
 
 
                                                                                 @if(Auth::check())
-                                                                              <a href="{{url("group/$data->pricing_templates_id/$data->id")}}">Choose a Product
+                                                                              <a href="">Choose a Product
                                                                                 @else
                                                                                 <a href="{{url('login')}}">Choose a Product
                                                                                   @endif

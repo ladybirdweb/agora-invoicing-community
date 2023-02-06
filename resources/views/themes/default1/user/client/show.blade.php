@@ -793,6 +793,10 @@ User
      $("#commentclose").on('click',function(){
        window.location.reload();
       });
+      
+      $("#crossclose").on('click',function(){
+       window.location.reload();
+      });
 
 
     $('.closeandrefresh').on('click',function(){

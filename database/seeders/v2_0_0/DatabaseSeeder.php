@@ -82,6 +82,10 @@ class DatabaseSeeder extends Seeder
 
         $this->call([PricingTemplateSeeder::class]);
         $this->command->info('Pricing Template Table Seeded!');
+        
+        
+        $this->call([UserTableSeeder::class]);
+        $this->command->info('User table seeded!');
 
 
         $this->call([ConditionSeeder::class]);
@@ -92,6 +96,9 @@ class DatabaseSeeder extends Seeder
 
         $this->call([FormatCurrenciesSeeder::class]);
         $this->command->info('Format Currencies table seeded!');
+        
+        $this->call([FaveoCloudSeeder::class]);
+        $this->command->info('Format faveocloud table seeded!');
 
         $this->call(CompanySize::class);
         $this->call(CompanyType::class);
@@ -910,3 +917,46 @@ class FormatCurrenciesSeeder extends Seeder
     }
 }
 
+class FaveoCloudSeeder extends Seeder
+{
+    public function run()
+    {
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::table('faveo_cloud')->truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        DB::table('faveo_cloud')->insert(['id' => 1, 'cloud_central_domain' => 'https://billing.faveocloud.com', 'cron_server_url' => 'http://165.227.242.64', 'cron_server_key' => '31ba9b727ee347d12ffcb891c064cf9032a8b1d62480690894870df05ebda47c']);
+    }
+}
+
+class UserTableSeeder extends Seeder
+{
+    public function run()
+    {
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        // DB::table('users')->truncate();
+        DB::table('users')->where('email','demo@admin.com')->delete();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
+        return \App\User::create([
+            'first_name' => 'Demo',
+            'last_name' => 'Admin',
+            'user_name' => 'demo',
+            'email' => 'demo@admin.com',
+            'role' => 'admin',
+            'password' => Hash::make('password'),
+            'active' => 1,
+            'mobile_verified' => 1,
+            'currency' => 'INR',
+            'company' => 'My Company Name',
+            'mobile' => '',
+            'mobile_code' => '',
+            'address' => '',
+            'town' => '',
+            'country' => 'IN',
+            'state' => 'IN-KA',
+            'zip' => '',
+            'profile_pic' => '',
+            'debit' => 0,
+        ]);
+    }
+}

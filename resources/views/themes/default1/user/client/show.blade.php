@@ -789,6 +789,12 @@ User
 @section('icheck')
 
 <script>
+
+     $("#commentclose").on('click',function(){
+       window.location.reload();
+      });
+
+
     $('.closeandrefresh').on('click',function(){
             location.reload();
         })

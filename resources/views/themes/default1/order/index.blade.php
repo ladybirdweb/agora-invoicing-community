@@ -321,7 +321,9 @@ Orders
                 alert("Please select at least one checkbox");
                 return false;
             }
-        }  
+        } 
+                return false;
+
 
      });
     $('#update_expiry').datetimepicker({

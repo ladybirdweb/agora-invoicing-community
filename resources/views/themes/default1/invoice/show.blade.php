@@ -156,7 +156,7 @@ Invoice
                         <div class="col-6">
 
                         </div>
-                        <div class="col-6" style="left: 4%;">
+                        <div class="col-6" style="left: 2.5%;">
                             <div class="table-responsive">
                               
                                        

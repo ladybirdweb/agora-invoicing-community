@@ -63,7 +63,7 @@
                             From
                             <address>
 
-                                 <strong>{{$set->company}}</strong><br>
+                                <strong style="word-wrap: break-word;">{{$set->company}}</strong><br>
                                 {{$set->address}}<br>
                                 {{$set->city}}<br/>
                                 @if(key_exists('name',getStateByCode($set->state)))
@@ -163,7 +163,7 @@
                         <!-- accepted payments column -->
             
                         <div class="col-6"></div>
-                        <div class="col-6" style="width: 50%;margin-left: 54%">
+                        <div class="col-6" style="width: 50%;margin-left: 45%">
                               <div class="table-responsive">
                                  <table class="table">
                                      <tr>

@@ -208,24 +208,26 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                             $sql = 'number like ?';
                             $query->whereRaw($sql, ["%{$keyword}%"]);
                         })
-                        ->filterColumn('status', function ($query, $keyword) {
-                            $query->where('status', 'LIKE', '%'.$this->fetchKeyWordForQuery($keyword).'%');
-                        })
-
+                         ->filterColumn('status', function ($query, $keyword) {
+                           if ($keyword == 'Paid'|| $keyword == 'paid') {
+                               $sql = 'status like ?';
+                               $sql2 = 'success';
+                               $query->whereRaw($sql, ["%{$sql2}%"]);
+                           } elseif ($keyword == 'Unpaid' || $keyword == 'unpaid') {
+                               $sql = 'status like ?';
+                               $sql2 = 'pending';
+                               $query->whereRaw($sql, ["%{$sql2}%"]);
+                           } elseif ($keyword == 'Partiallypaid' || $keyword == 'Partially'|| $keyword == 'partially') {
+                               $sql = 'status like ?';
+                               $sql2 = 'partially paid';
+                               $query->whereRaw($sql, ["%{$sql2}%"]);
+                           }
+                       })
                          ->rawColumns(['checkbox', 'user_id', 'number', 'date', 'grand_total', 'status', 'action'])
                         ->make(true);
     }
 
-    private function fetchKeyWordForQuery($keyword = 'Paid'): string
-    {
-        return match ($keyword) {
-            'Paid','paid'     => 'success',
-        'Unpaid','unpaid' => 'pending',
-        'Partiallypaid',
-        'Partially',
-        'partiallypaid'   => 'partially paid'
-        };
-    }
+
 
     /**
      * Shoe Invoice when view Invoice is selected from dropdown in Admin Panel.

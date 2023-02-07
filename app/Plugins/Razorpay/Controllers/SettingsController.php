@@ -4,10 +4,10 @@ namespace App\Plugins\Razorpay\Controllers;
 
 use App\ApiKey;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\SyncBillingToLatestVersion;
 use App\Model\Common\Setting;
 use App\Model\Common\StatusSetting;
 use App\Plugins\Razorpay\Model\RazorpayPayment;
-use App\Http\Controllers\SyncBillingToLatestVersion;
 use Cartalyst\Stripe\Laravel\Facades\Stripe;
 use Illuminate\Http\Request;
 use Razorpay\Api\Api;

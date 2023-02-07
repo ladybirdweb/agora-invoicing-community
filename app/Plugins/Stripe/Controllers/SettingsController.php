@@ -4,10 +4,10 @@ namespace App\Plugins\Stripe\Controllers;
 
 use App\ApiKey;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\SyncBillingToLatestVersion;
 use App\Model\Common\Setting;
 use App\Model\Payment\Currency;
 use App\Plugins\Stripe\Model\StripePayment;
-use App\Http\Controllers\SyncBillingToLatestVersion;
 use Cartalyst\Stripe\Laravel\Facades\Stripe;
 use Illuminate\Http\Request;
 use Schema;

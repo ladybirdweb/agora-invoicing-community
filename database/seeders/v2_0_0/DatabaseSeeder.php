@@ -100,6 +100,9 @@ class DatabaseSeeder extends Seeder
         $this->call([FaveoCloudSeeder::class]);
         $this->command->info('Format faveocloud table seeded!');
 
+        $this->call([PluginSeeder::class]);
+        $this->command->info('Format plugin table seeded!');
+
         $this->call(CompanySize::class);
         $this->call(CompanyType::class);
         $this->call(SettingsSeeder::class);
@@ -925,6 +928,20 @@ class FaveoCloudSeeder extends Seeder
         DB::table('faveo_cloud')->truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         DB::table('faveo_cloud')->insert(['id' => 1, 'cloud_central_domain' => 'https://billing.faveocloud.com', 'cron_server_url' => 'http://165.227.242.64', 'cron_server_key' => '31ba9b727ee347d12ffcb891c064cf9032a8b1d62480690894870df05ebda47c']);
+    }
+}
+
+class PluginSeeder extends Seeder
+{
+    public function run()
+    {
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::table('plugins')->truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        DB::table('plugins')->insert(['id' => 1, 'name' => 'Ccavenue', 'path' => 'Ccavenue', 'status' => '0']);
+        DB::table('plugins')->insert(['id' => 2, 'name' => 'Ccavenue', 'path' => 'Ccavenue', 'status' => '0']);
+        DB::table('plugins')->insert(['id' => 3, 'name' => 'Stripe', 'path' => 'Stripe', 'status' => '1']);
+        DB::table('plugins')->insert(['id' => 4, 'name' => 'Razorpay', 'path' => 'Razorpay', 'status' => '1']);
     }
 }
 

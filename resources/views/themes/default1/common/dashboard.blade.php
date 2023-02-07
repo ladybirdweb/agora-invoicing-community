@@ -208,8 +208,8 @@ Dashboard
      {{-- Paid Orders Expired in Last 30 days --}}
      @php
         $currentDate = date('m/d/Y');
-        $expiringSubscriptionDate = date('m/d/Y', strtotime('+3 months'));
-        $expiredSubscriptionDate = date('m/d/Y', strtotime('-3 months'));
+        $expiringSubscriptionDate = date('m/d/Y', strtotime('+1 months'));
+        $expiredSubscriptionDate = date('m/d/Y', strtotime('-1 months'));
      @endphp
 
      @component('mini_views.card', [

@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Model\Common\Setting;
 use App\Model\Common\StatusSetting;
 use App\Plugins\Razorpay\Model\RazorpayPayment;
+use App\Http\Controllers\SyncBillingToLatestVersion;
 use Cartalyst\Stripe\Laravel\Facades\Stripe;
 use Illuminate\Http\Request;
 use Razorpay\Api\Api;
@@ -40,7 +41,7 @@ class SettingsController extends Controller
             $razorpay = $razorpay1->where('id', '1')->first();
 
             if (! $razorpay) {
-                \Artisan::call('db:seed', ['--class' => 'database\\seeds\RazorpaySupportedCurrencySeeder', '--force' => true]);
+                (new SyncBillingToLatestVersion)->sync();
             }
             $allCurrencies = RazorpayPayment::pluck('currencies', 'id')->toArray();
             $rzpkey = new ApiKey();

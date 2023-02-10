@@ -35,7 +35,7 @@ class PageRequest extends FormRequest
             ];
         } elseif ($this->method() == 'PATCH') {
             return [
-                'name' => 'required|max:10|regex:/^[a-zA-Z]+$/u',
+                'name' => 'required|max:10',
                 'publish' => 'required',
                 'slug' => 'required',
                 'url' => 'required|url|regex:'.$regex,

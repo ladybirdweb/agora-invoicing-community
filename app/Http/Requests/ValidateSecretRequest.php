@@ -15,6 +15,7 @@ class ValidateSecretRequest extends Request
     {
         return[
             'totp.required' => 'Please enter code',
+            'totp.digits' => 'Please enter the valid 6 digit code'
         ];
     }
 }

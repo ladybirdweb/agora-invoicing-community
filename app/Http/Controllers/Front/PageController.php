@@ -97,7 +97,7 @@ class PageController extends Controller
             $parents = $this->page->where('id', '!=', $id)->pluck('name', 'id')->toArray();
             $selectedDefault = DefaultPage::value('page_id');
             $date = $this->page->where('id', $id)->pluck('created_at')->first();
-            $publishingDate = date('d/m/Y', strtotime($date));
+            $publishingDate = date('m/d/Y', strtotime($date));
             $selectedParent = $this->page->where('id', $id)->pluck('parent_page_id')->toArray();
             $parentName = $this->page->where('id', $selectedParent)->pluck('name', 'id')->toArray();
 

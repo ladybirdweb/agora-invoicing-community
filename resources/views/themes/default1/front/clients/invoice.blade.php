@@ -18,6 +18,11 @@ active
 @stop
 
 @section('content')
+<style>
+[type=search] {
+        padding-right: 20px;
+}
+</style>
 
 <div class="col-md-12 pull-center">
 

@@ -33,9 +33,10 @@ class ExtendedPlanController extends Controller
         try {
             if ($request->ajax()) {
                 $data = [
-                    'name' => $request->input('name') . ' ' . $request->input('select-period'),
+                    'name' => $request->input('name').' '.$request->input('select-period'),
                     'days' => $request->input('days'),
                 ];
+
                 return response(Period::create($data));
             }
         } catch (\Exception $ex) {

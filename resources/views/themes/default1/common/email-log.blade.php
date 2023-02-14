@@ -63,13 +63,12 @@ Email Logs
         $('#email-table').DataTable({
           
            
-            processing: true,
-            serverSide: true,
-            stateSave: false,
-            ordering: true,
-            searching:true,
-            select: true,
-            order: [[ 1, "desc" ]],
+             processing: true,
+             serverSide: true,
+             ordering: true,
+             searching:true,
+             select: true,
+              order: [[ 0, "desc" ]],
                ajax: {
             "url":  '{!! route('get-email') !!}',
                error: function(xhr) {

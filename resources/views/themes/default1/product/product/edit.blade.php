@@ -530,7 +530,6 @@ Edit Product
             },
             processing: true,
             serverSide: true,
-             stateSave: true,
                order: [[ 0, "desc" ]],
                
              ajax: '{!! route('get-upload',$product->id) !!}',

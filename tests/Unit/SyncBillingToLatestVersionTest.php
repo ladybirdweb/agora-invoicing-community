@@ -6,7 +6,7 @@ use App\Http\Controllers\SyncBillingToLatestVersion;
 use App\Model\Common\Setting;
 use Illuminate\Http\Request;
 
-class SyncBillingToLatestVersionTest extends DBTestCase
+class SyncBillingToLatestVersionTest extends TestCase
 {
     /**
      * A basic unit test example.
@@ -15,9 +15,9 @@ class SyncBillingToLatestVersionTest extends DBTestCase
      */
     // public function test_sync_syncBillingToLatestVersion_updateversion()
     // {
-    //     $latestVersion = 'v1.5.3';
+    //     $latestVersion = 'v2.0.0';
     //     $olderVersion = Setting::factory()->create();
     //     $response = (new SyncBillingToLatestVersion())->sync(new Request(['latestVersion' => $latestVersion, 'olderVersion' => $olderVersion->version]));
-    //     $this->assertDatabaseHas('settings', ['version' => 'v1.5.3']);
+    //     $this->assertDatabaseHas('settings', ['version' => 'v2.0.0']);
     // }
 }

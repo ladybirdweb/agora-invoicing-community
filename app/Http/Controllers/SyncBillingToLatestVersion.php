@@ -21,19 +21,19 @@ class SyncBillingToLatestVersion
         // in case where isInstall is false(in case of new install) version number should be zero
         $latestVersion = $this->getPHPCompatibleVersionString(Config::get('app.version'));
         $olderVersion = $this->getOlderVersion();
-        $this->forceInnodbOnUpdate();
+        (env('DB_ENGINE') == 'InnoDB') ?: $this->forceInnodbOnUpdate();
 
         try {
             if (version_compare($latestVersion, $olderVersion) == 1) {
                 $this->updateToLatestVersion($latestVersion, $olderVersion);
-                $this->clearViewCache();
-                $this->clearConfig();
             }
 
             // Setting::first()->update(['version'=> 'v'.$latestVersion]);
             \DB::table('settings')->update(['version' => 'v'.$latestVersion]);
 
             $this->cacheDbVersion();
+            $this->clearViewCache();
+            $this->clearConfig();
         } catch (Exception $ex) {
             if (! isInstall()) {
                 //if system is not installed chances are logs tables are not present
@@ -111,7 +111,7 @@ class SyncBillingToLatestVersion
         $this->updateMigrationTable($olderVersion);
 
         // after older version is updated, update to the latest version in which seeder versioning is implemented
-        Artisan::call('migrate:rollback', ['--force' => true]);
+        // Artisan::call('migrate', ['--force' => true]);
         // Artisan::call('migrate', ['--force' => true]);
 
         $this->handleArtisanLogs();
@@ -132,7 +132,7 @@ class SyncBillingToLatestVersion
                     // scan for $version directory and get file names
                     $this->log = $this->log."\n"."Running Seeder for version $version";
 
-                    Artisan::call('db:seed', ['--class' => "database\seeders", '--force' => true]);
+                    Artisan::call('db:seed', ['--class' => "Database\Seeders\\$version\DatabaseSeeder", '--force' => true]);
                     $this->handleArtisanLogs();
                 }
             }
@@ -142,7 +142,7 @@ class SyncBillingToLatestVersion
     private function updateMigrationTable(string $olderVersion)
     {
         if ($olderVersion != '0.0.0') {
-            \Artisan::call('migrate', ['--path' => 'database/migrations', '--force' => true]);
+            \Artisan::call('migrate', ['--force' => true]);
         }
     }
 

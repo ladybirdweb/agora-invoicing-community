@@ -99,7 +99,8 @@ Invoice
                             <br>
                             @endif
                         </div><!-- /.col -->
-                        <div class="col-sm-4 invoice-col">
+                        <div class="col-sm-4 invoice-col" style=" position: relative;
+                        top: 1px;left: 21%;">
                             <b>Invoice   #{{$invoice->number}}</b><br>
                            
                         </div><!-- /.col -->
@@ -155,7 +156,7 @@ Invoice
                         <div class="col-6">
 
                         </div>
-                        <div class="col-6">
+                        <div class="col-6" style="left: 2.5%;">
                             <div class="table-responsive">
                               
                                        
@@ -211,7 +212,7 @@ Invoice
                     <!-- this row will not appear when printing -->
                     <div class="row no-print">
                         <div class="col-6"></div>
-                        <div class="col-6">
+                        <div class="col-6" style="left: 5%;">
                             <a href="{{url('pdf?invoiceid='.$invoice->id)}}"><button class="btn btn-primary pull-right" style="margin-right: 5px;"><i class="fa fa-download"></i> Generate PDF</button></a>
                         </div>
                     </div>

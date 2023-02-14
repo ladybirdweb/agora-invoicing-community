@@ -4,6 +4,7 @@ namespace App\Plugins\Stripe\Controllers;
 
 use App\ApiKey;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\SyncBillingToLatestVersion;
 use App\Model\Common\Setting;
 use App\Model\Payment\Currency;
 use App\Plugins\Stripe\Model\StripePayment;
@@ -39,7 +40,7 @@ class SettingsController extends Controller
             $stripe = $stripe1->where('id', '1')->first();
 
             if (! $stripe) {
-                \Artisan::call('db:seed', ['--class' => 'database\\seeds\StripeSupportedCurrencySeeder', '--force' => true]);
+                (new SyncBillingToLatestVersion)->sync();
             }
             $allCurrencies = StripePayment::pluck('currencies', 'id')->toArray();
             $apikey = new ApiKey();

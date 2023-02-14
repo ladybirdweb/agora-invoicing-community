@@ -65,7 +65,7 @@ Settings
         $('#country-count').DataTable({
             destroy:true,
             processing: true,
-            stateSave: true,
+            stateSave: false,
             serverSide: true,
             order: [[ 0, "desc" ]],
             ajax: {

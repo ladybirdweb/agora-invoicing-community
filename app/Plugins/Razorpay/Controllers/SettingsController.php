@@ -4,6 +4,7 @@ namespace App\Plugins\Razorpay\Controllers;
 
 use App\ApiKey;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\SyncBillingToLatestVersion;
 use App\Model\Common\Setting;
 use App\Model\Common\StatusSetting;
 use App\Plugins\Razorpay\Model\RazorpayPayment;
@@ -40,7 +41,7 @@ class SettingsController extends Controller
             $razorpay = $razorpay1->where('id', '1')->first();
 
             if (! $razorpay) {
-                \Artisan::call('db:seed', ['--class' => 'database\\seeds\RazorpaySupportedCurrencySeeder', '--force' => true]);
+                (new SyncBillingToLatestVersion)->sync();
             }
             $allCurrencies = RazorpayPayment::pluck('currencies', 'id')->toArray();
             $rzpkey = new ApiKey();

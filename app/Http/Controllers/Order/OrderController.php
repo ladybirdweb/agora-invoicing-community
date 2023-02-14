@@ -102,7 +102,7 @@ class OrderController extends BaseOrderController
             $insNotIns = ['installed' => 'Yes (Installed atleast once)', 'not_installed' => 'No (Not Installed)'];
             $activeInstallationOptions = ['paid_ins' => 'Active installation'];
             $inactiveInstallationOptions = ['paid_inactive_ins' => 'Inactive installation'];
-            $renewal = ['expired_subscription' => 'Expired Subscriptions', 'active_subscription' => 'Active Subscriptions'];
+            $renewal = ['expired_subscription'=>'Expired Subscriptions', 'active_subscription'=> 'Active Subscriptions','expiring_subscription'=>'Expiring Subscriptions',];
             $selectedVersion = $request->version;
             $allVersions = Subscription::where('version', '!=', '')->whereNotNull('version')
                 ->orderBy('version', 'desc')->groupBy('version')

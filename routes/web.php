@@ -4,7 +4,6 @@ use App\Http\Controllers\Api;
 use App\Http\Controllers\Auth;
 use App\Http\Controllers\Common;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\FreeTrailController;
 use App\Http\Controllers\Front;
 use App\Http\Controllers\Github;
 use App\Http\Controllers\Google2FAController;

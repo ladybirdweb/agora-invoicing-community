@@ -27,7 +27,7 @@ class PageRequest extends FormRequest
 
         if ($this->method() == 'POST') {
             return [
-                'name' => 'required|unique:frontend_pages,name|max:10|regex:/^[a-zA-Z]+$/u',
+                'name' => 'required|unique:frontend_pages,name|max:20|regex:/^[a-zA-Z]+$/u',
                 'publish' => 'required',
                 'slug' => 'required',
                 'url' => 'required|url|regex:'.$regex,
@@ -35,7 +35,7 @@ class PageRequest extends FormRequest
             ];
         } elseif ($this->method() == 'PATCH') {
             return [
-                'name' => 'required|max:10',
+                'name' => 'required|max:20',
                 'publish' => 'required',
                 'slug' => 'required',
                 'url' => 'required|url|regex:'.$regex,

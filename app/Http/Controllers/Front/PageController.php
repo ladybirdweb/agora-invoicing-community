@@ -143,7 +143,7 @@ class PageController extends Controller
             if ($request->input('default_page_id') != '') {
                 $page = $this->page->where('id', $id)->first();
                 $page->fill($request->except('created_at'))->save();
-                $date = \DateTime::createFromFormat('d/m/Y', $request->input('created_at'));
+                $date = \DateTime::createFromFormat('m/d/Y', $request->input('created_at'));
                 $page->created_at = $date->format('Y-m-d H:i:s');
                 $page->save();
                 $defaultUrl = $this->page->where('id', $request->input('default_page_id'))->pluck('url')->first();

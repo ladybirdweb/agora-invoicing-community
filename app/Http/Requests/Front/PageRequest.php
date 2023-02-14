@@ -27,7 +27,7 @@ class PageRequest extends FormRequest
 
         if ($this->method() == 'POST') {
             return [
-                'name' => 'required|unique:frontend_pages,name|max:20|regex:/^[a-zA-Z]+$/u',
+                'name' => 'required|unique:frontend_pages,name|max:20|regex:/^[a-zA-Z\s]*$/',
                 'publish' => 'required',
                 'slug' => 'required',
                 'url' => 'required|url|regex:'.$regex,

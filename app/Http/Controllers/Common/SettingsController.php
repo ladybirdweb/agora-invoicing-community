@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Common;
 
 use App\ApiKey;
-use App\Email_log;
 use App\Http\Requests\Common\SettingsRequest;
 use App\Model\Common\Mailchimp\MailchimpSetting;
 use App\Model\Common\Setting;
@@ -18,7 +17,6 @@ use File;
 use GrahamCampbell\Markdown\Facades\Markdown;
 use Illuminate\Http\Request;
 use Spatie\Activitylog\Models\Activity;
-use Yajra\DataTables\DataTables;
 
 class SettingsController extends BaseSettingsController
 {

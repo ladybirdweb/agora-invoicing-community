@@ -31,10 +31,9 @@ class OrderSearchController extends Controller
     public function advanceOrderSearch(Request $request)
     {
         try {
-             if($request->renewal == 'expiring_subscription')
-              {
-              $baseQuery = $this->getBaseQueryForOrders();
-              }
+            if ($request->renewal == 'expiring_subscription') {
+                $baseQuery = $this->getBaseQueryForOrders();
+            }
             $baseQuery = $this->getBaseQueryForOrders();
             $this->orderNum($request->input('order_no'), $baseQuery);
             $this->product($request->input('product_id'), $baseQuery);
@@ -43,8 +42,8 @@ class OrderSearchController extends Controller
             $this->domain($request->input('domain'), $baseQuery);
             $this->allInstallations($request->input('act_ins'), $baseQuery);
             $this->allRenewals($request->input('renewal'), $baseQuery);
-                 $this->getSelectedVersionOrders($baseQuery, $request->input('version'), $request->input('product_id'),$request);
-           
+            $this->getSelectedVersionOrders($baseQuery, $request->input('version'), $request->input('product_id'), $request);
+
             return $request->renewal == 'expiring_subscription' ? $baseQuery->orderBy('subscriptions.update_ends_at', 'asc') :
              $baseQuery->orderBy('orders.created_at', 'asc');
         } catch (\Exception $ex) {
@@ -108,7 +107,7 @@ class OrderSearchController extends Controller
      *
      * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
      */
-    private function getSelectedVersionOrders($baseQuery, $version, $productId,$request)
+    private function getSelectedVersionOrders($baseQuery, $version, $productId, $request)
     {
         if ($version) {
             if ($productId == 'paid') {
@@ -241,9 +240,9 @@ class OrderSearchController extends Controller
      * @param  object  $join
      * @return Query
      */
-      public function orderFrom($till, $from, $join, $request)
-            {
-          $subFrom = $request->renewal ? 'subscriptions.update_ends_at' : 'orders.created_at';
+    public function orderFrom($till, $from, $join, $request)
+    {
+        $subFrom = $request->renewal ? 'subscriptions.update_ends_at' : 'orders.created_at';
         if ($from) {
             $from = Carbon::parse($from)->startOfDay();
             $till = Carbon::parse($till)->endOfDay();
@@ -254,6 +253,7 @@ class OrderSearchController extends Controller
 
             $tillDate = $this->getTillDate($from, $till, $tills);
             $join = $join->whereBetween($subFrom, [$from, $tillDate]);
+
             return $join;
         }
     }
@@ -276,6 +276,7 @@ class OrderSearchController extends Controller
             $froms = Order::first()->created_at;
             $fromDate = $this->getFromDate($from, $froms);
             $join = $join->whereBetween($subTo, [$fromDate, $till]);
+
             return $join;
         }
     }

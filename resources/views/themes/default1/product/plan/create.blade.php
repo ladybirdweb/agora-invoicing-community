@@ -198,7 +198,7 @@
 
 <script>
 
-      $("#close-plan").click(function() {
+$("#close-plan").click(function() {
    location.reload();
 });
       
@@ -275,7 +275,8 @@
         url: "{{ url('postInsertPeriod') }}",
         data: {
           "name": $('#new-period').val(),
-          "days": $('#new-days').val()
+          "days": $('#new-days').val(),
+          'select-period': $('#select-period').val(),
         },
         success: function (data) {
           $('#plandays').append($("<option/>", {
@@ -284,6 +285,7 @@
           }))
           $('#new-period').val("");
           $('#new-days').val("");
+          $('#select-period').val("");
           var result =
             '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>Period Added Successfully</div>';
           $('#error').hide();

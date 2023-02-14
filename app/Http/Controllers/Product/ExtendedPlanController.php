@@ -24,7 +24,7 @@ class ExtendedPlanController extends Controller
     public function postInsertPeriod(Request $request)
     {
         $this->validate($request, [
-            'name' => 'required',
+            'name' => 'required|integer',
             'days' => 'required|numeric',
         ], [
             'name.required' => 'Please enter period',
@@ -32,7 +32,11 @@ class ExtendedPlanController extends Controller
 
         try {
             if ($request->ajax()) {
-                return response(Period::create($request->all()));
+                $data = [
+                    'name' => $request->input('name') . ' ' . $request->input('select-period'),
+                    'days' => $request->input('days'),
+                ];
+                return response(Period::create($data));
             }
         } catch (\Exception $ex) {
             $result = [$ex->getMessage()];

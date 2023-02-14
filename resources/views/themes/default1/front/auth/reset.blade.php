@@ -46,7 +46,7 @@ main
                                       
 
                                      
-                                        <input type="password" value="" class="form-control input-lg" placeholder="Password" name='password'<?php if( count($errors) > 0) {?> style="width: 98%;position: relative;left: 5px;"<?}?>>
+                                        <input type="password" value="" class="form-control input-lg" placeholder="Password" name='password'<?php if( count($errors) > 0) {?> style="width: 98%;position: relative;left: 5px;"<?php } ?>>
                                    
                                 </div>
                             </div>

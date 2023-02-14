@@ -317,7 +317,7 @@ Email
                     }, 1000);
                 },error: function(response) {
                     $("#emailSetting").attr('disabled',false);
-                    var html = '<div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<br><br><ul>';
+                    var html = '<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong>Whoops! </strong>Something went wrong<br><br><ul>';
                     $("#emailSetting").html("<i class='fa fa-save'>&nbsp;&nbsp;</i>Save");
                     if(response.status == 422) {
                         for (key in response.responseJSON.errors) {
@@ -329,6 +329,7 @@ Email
                     }
                     html += '</ul></div>';
                     $('#alertMessage').show();
+                    
                     document.getElementById('alertMessage').innerHTML = html;
                     // location.reload();
                 }

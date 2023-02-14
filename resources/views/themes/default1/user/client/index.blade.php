@@ -2,6 +2,11 @@
 @section('title')
 Users
 @stop
+<style type="text/css">
+    .sorting, .sorting_asc, .sorting_desc {
+    background : none;
+}
+</style>
 
 @section('content-header')
     <div class="col-sm-6">
@@ -25,12 +30,12 @@ Users
                     <h3 class="card-title">Advance Search</h3>
 
                     <div class="card-tools">
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
-                            <i class="fas fa-plus"></i></button>
+                        <button type="button" class="btn btn-tool" id="tip-search" title="Expand"> <i id="search-icon" class="fas fa-plus"></i>
+                            </button>
                        
                     </div>
                 </div>
-                <div class="card-body">
+                <div class="card-body table-responsive" id="advance-search" style="display:none;">
                     {!! Form::open(['method'=>'get']) !!}
 
                     <div class="row">
@@ -47,7 +52,7 @@ Users
                         <div class="col-md-3 form-group">
                             <!-- first name -->
                             {!! Form::label('country','Country') !!}<br>
-                            <select style="width:100%;" name="country" value= "Choose" onChange="getCountryAttr(this.value)" class="form-control select2" data-live-search="true" data-live-search-placeholder="Search" data-dropup-auto="false" data-size="10">
+                            <select style="width:100%;" name="country" value= "Choose"  class="form-control select2" data-live-search="true" data-live-search-placeholder="Search" data-dropup-auto="false" data-size="10">
                                 <option value="" style="">Choose</option>
                                 @foreach($countries as $key=> $country)
                                     @if($key == $request->country)
@@ -213,6 +218,8 @@ Users
     <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
 
 <script type="text/javascript">
+
+
      $('ul.nav-sidebar a').filter(function() {
         return this.id == 'all_user';
     }).addClass('active');
@@ -229,7 +236,7 @@ Users
             stateSave: false,
             // if in request sort field is present, it will take that else default order
             // need to stringify the sort_order, else it will be considered as a javascript variable
-            order: [[ {!! $request->sort_field ?: 5 !!}, {!! "'".$request->sort_order."'" ?: "'desc'" !!} ]],
+            order: [[ {!! $request->sort_field ?: 5 !!}, {!! "'".$request->sort_order."'" ?: "'asc'" !!} ]],
             ajax: {
             "url":  '{!! route('get-clients',"company=$request->company&country=$request->country&industry=$request->industry&role=$request->role&position=$request->position&reg_from=$request->reg_from&reg_till=$request->reg_till&actmanager=$request->actmanager&salesmanager=$request->salesmanager" ) !!}',
                error: function(xhr) {
@@ -324,8 +331,10 @@ Users
             else
             {
                 alert("Please select at least one checkbox");
+                return false;
             }
         }
+        return false;
 
      });
    $('#reservationdate').datetimepicker({
@@ -333,6 +342,6 @@ Users
    });
         $('#reservationdate_from').datetimepicker({
       format: 'L'
-    })
+    });
 </script>
 @stop

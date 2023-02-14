@@ -127,7 +127,7 @@ input:checked + .slider:before {
                                  <div class="scrollit">
                            <div class="card-body table-responsive">
                                <div class="card-header">
-                              <h5 class="card-title">
+                              <h5 class="card-title" style="position: absolute;left: 7px;bottom: 10px;">
                               User Details
                              </h5>
                                </div>
@@ -195,7 +195,7 @@ input:checked + .slider:before {
                                                    </div>
                                                </div>
                                            <div class="card-header">
-                                               <h4 class="card-title">
+                                               <h4 class="card-title" style="position: absolute;left: 7px;bottom: 10px;">
                                                    License Details
                                                </h4>
                                            </div>
@@ -485,7 +485,7 @@ input:checked + .slider:before {
 
                      <a data-toggle="collapse" data-parent="#accordion3" href="#collapseFour">
                    <div class="card-header with-border">
-                    <h4 class="card-title" style="color:black;">
+                    <h4 class="card-title" style="color:black;margin-left: -8px;">
                       <i class="fa fa-credit-card"></i>
                         Invoice List
                     </h4>
@@ -498,7 +498,7 @@ input:checked + .slider:before {
 
                     <thead><tr>
                         
-                         <th >Invoioce No</th>
+                         <th >Invoice No</th>
                           <th>Products</th>
                            
                             <th>Date</th>
@@ -1037,7 +1037,9 @@ input:checked + .slider:before {
         });
 
 
-   
+   $("#installLimitClose").on('click',function(){
+       window.location.reload();
+   });
 </script>
 
 <script>

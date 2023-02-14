@@ -95,4 +95,37 @@ class ClientControllerTest extends DBTestCase
         $users = $methodResponse->get();
         $this->assertEquals('+1 9087654321', $users->first()->mobile);
     }
+
+    public function test_Admin_Can_Add_User_successfully()
+    {
+        $admin = User::factory()->create(['role'=>'admin']);
+        $this->actingAs($admin);
+        $response = $this->call('POST', url('clients'), [
+            'first_name'=>'Abc',
+            'user_name' => 'demopass',
+            'active' => '1',
+            'mobile_verified' => 1,
+            'last_name'=>'Xyz',
+            'company'=> 'demo',
+            'country'=>'IN',
+            'email'=>'test@test.com',
+            'state' => 'karnataka',
+            'timezone_id' => '79',
+            'mobile' => '9898789887',
+            'mobile_code' => '91',
+            'address' => 'bangalore',
+            'role' => 'user',
+            'bussiness' => 'abcd',
+            'company_type' => 'public_company',
+            'company_size' => '2-50',
+            'country' => 'IN',
+            'timezone_id' => 79,
+            'state' => 'Tamilnadu',
+            'currency' => 'INR',
+            'town' => 'trichy',
+            'zip' => '621651',
+            'address' => 'abce',
+        ]);
+        $this->assertDatabaseHas('users', ['id' => $admin->id]);
+    }
 }

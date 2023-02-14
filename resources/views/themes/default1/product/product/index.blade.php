@@ -60,8 +60,11 @@ Products
         $('#products-table').DataTable({
             processing: true,
             serverSide: true,
-             stateSave: true,
-              order: [[ 0, "desc" ]],
+            stateSave: false,
+            ordering: true,
+            searching:true,
+            select: true,
+            order: [[ 1, "desc" ]],
               ajax: {
             "url":  '{!! route('get-products') !!}',
                error: function(xhr) {

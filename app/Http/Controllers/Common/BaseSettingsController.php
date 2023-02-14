@@ -139,7 +139,7 @@ class BaseSettingsController extends PaymentSettingsController
             $fromDate = (new OrderSearchController())->getFromDate($delFrom, $froms);
             $join->whereBetween('created_at', [$fromDate, $till])->delete();
         }
-        $join = $join->orderBy('created_at', 'desc')
+        $join = $join
         ->select(
             'id',
             'log_name',

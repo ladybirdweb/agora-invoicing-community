@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Common;
 use App\ApiKey;
 use App\Http\Controllers\Common\Twitter\TwitterOAuth;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Common\SocialMediaRequest;
 use App\Model\Common\SocialMedia;
 use Exception;
 use Illuminate\Http\Request;
@@ -82,16 +83,8 @@ class SocialMediaController extends Controller
         }
     }
 
-    public function store(Request $request)
+    public function store(SocialMediaRequest $request)
     {
-        $regex = '/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/';
-
-        $this->validate($request, [
-            'name' => 'required',
-            'link' => 'required|url|regex:'.$regex,
-
-        ]);
-
         try {
             $this->social->fill($request->input())->save();
 
@@ -112,16 +105,8 @@ class SocialMediaController extends Controller
         }
     }
 
-    public function update($id, Request $request)
+    public function update($id, SocialMediaRequest $request)
     {
-        $regex = '/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/';
-
-        $this->validate($request, [
-            'name' => 'required',
-            'link' => 'required|regex:'.$regex,
-
-        ]);
-
         try {
             $social = $this->social->findOrFail($id);
             $social->fill($request->input())->save();

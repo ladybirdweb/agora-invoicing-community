@@ -178,7 +178,7 @@
 
         </div>
          <div class="modal-footer justify-content-between">
-                <button type="button" class="btn btn-default " data-dismiss="modal"><i class="fa fa-times"></i>&nbsp;Close</button>
+                <button type="button" class="btn btn-default " data-dismiss="modal" id="close-plan"><i class="fa fa-times"></i>&nbsp;Close</button>
                 <button type="submit"  class="btn btn-primary"><i class="fas fa-save"></i>&nbsp;Save</button>
 
             </div>
@@ -197,6 +197,11 @@
 
 
 <script>
+
+      $("#close-plan").click(function() {
+   location.reload();
+});
+      
   $(document).ready(function(){
     myProduct();
   })

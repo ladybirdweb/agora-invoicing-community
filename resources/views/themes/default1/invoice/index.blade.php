@@ -21,13 +21,13 @@ Invoices
         <h3 class="card-title">Advance Search</h3>
 
                 <div class="card-tools">
-                    <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
-                        <i class="fas fa-plus"></i></button>
+                   <button type="button" class="btn btn-tool" id="tip-search" title="Expand"> <i id="search-icon" class="fas fa-plus"></i>
+                            </button>
                    
                 </div>
     </div>
     <!-- /.box-header -->
-    <div class="card-body">
+    <div class="card-body table-responsive" id="advance-search" style="display:none;">
 
         {!! Form::open(['method'=>'get']) !!}
 
@@ -192,8 +192,8 @@ Invoices
         $('#invoice-table').DataTable({
             processing: true,
             serverSide: true,
-             stateSave: false,
-            order: [[ 0, "desc" ]],
+            stateSave: false,
+            order: [[ {!! $request->sort_field ?: 5 !!}, {!! "'".$request->sort_order."'" ?: "'asc'" !!} ]],
             ajax: {
             "url":  '{!! route('get-invoices',"name=$name&invoice_no=$invoice_no&status=$status&currency_id=$currency_id&from=$from&till=$till") !!}',
                error: function(xhr) {

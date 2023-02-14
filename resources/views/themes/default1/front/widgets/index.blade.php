@@ -55,8 +55,12 @@ Widgets
 <script src="//cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript">
         $('#widgets-table').DataTable({
-            processing: true,
-            serverSide: true,
+                serverSide: true,
+                stateSave: false,
+                ordering: true,
+                searching:true,
+                select: true,
+                order: [[ 1, "desc" ]],
              ajax: {
             "url":  '{!! route('get-widgets') !!}',
                error: function(xhr) {

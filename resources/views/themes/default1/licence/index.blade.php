@@ -63,7 +63,7 @@ License Types
             ordering: true,
             searching:true,
             select: true,
-            order: [[ 0, 'desc' ], [ 1, 'desc' ]],
+            order: [[ 1, "desc" ]],
                ajax: {
             "url":  '{!! route('get-license-type') !!}',
                error: function(xhr) {
@@ -80,7 +80,10 @@ License Types
                 "sProcessing": ' <div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="text-bold pt-2">Loading...</div></div>'
             },
             columnDefs: [
-             { orderable: true, targets:0 }
+             { targets: 'no-sort', 
+                    orderable: false,
+                    order: []
+                }
           ],
             columns: [
                 {data: 'checkbox', name: 'checkbox'},

@@ -79,6 +79,13 @@
         outline-offset: 0px;
         -webkit-appearance: none;
     }
+    
+   
+    .table.dataTable thead th
+    {
+        padding: 8px 10px ;
+    }
+
     </style>
     <?php
     $set = new \App\Model\Common\Setting();
@@ -143,7 +150,8 @@
         <!-- Main Sidebar Container -->
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
-                @if ($set->title != '')
+            
+                @if ($set->admin_logo == '')
                     <!-- Brand Logo -->
                         <a href="{{url('/')}}" class="brand-link">
 
@@ -151,7 +159,7 @@
                         </a>
                 @else
                         <a href="{{url('/')}}" class="brand-link">
-                <span style="margin-left: 50px;" class="brand-text font-weight-light"><img src='{{ asset("admin/images/$set->admin_logo")}}' alt="Admin-Logo" class="brand-image img-circle elevation-3"
+                <span style="margin-left: 20px;" class="brand-text font-weight-light"><img style="width: 40px;height: 35px;margin-left: 5.5rem;" src='{{ asset("admin/images/$set->admin_logo")}}' alt="Admin-Logo" class="brand-image img-circle elevation-3"
                      style="opacity: .8;"></span>
                         </a>
                 @endif
@@ -356,11 +364,11 @@
             <!-- Main content -->
             <section class="content">
                 <div class="container-fluid">
-                    @if(Route::current()->getName() !== 'plans.index')
+                    @if(Route::current()->getName() !== 'plans.index' && Route::current()->getName() !== 'tax.index' )
 
                     @if (count($errors) > 0)
 
-                        <div class="alert alert-danger alert-dismissable">
+                        <div class="alert alert-danger alert-dismissable" id="fail">
                             <strong>Whoops!</strong> There were some problems with your input.
                             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                             <ul>
@@ -376,7 +384,7 @@
                     @endif
 
                     @if(Session::has('success'))
-                        <div class="alert alert-success alert-dismissable">
+                        <div class="alert alert-success alert-dismissable" id="success">
                             <i class="fa fa-check"></i>
                             <b>{{Lang::get('message.success')}}!</b>
                             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
@@ -500,6 +508,27 @@
               }
           });
 
+$("document").ready(function(){
+    setTimeout(function(){
+        $("#success").remove();
+    }, 3000 );
+});
+
+
+      $('#tip-search').click(function() {
+            var advance = $('#advance-search');
+            
+            if (advance.css('display') == 'none') {
+                this.setAttribute('title', 'Collapse');
+                $('#search-icon').removeClass('fas fa-plus').addClass('fas fa-minus');
+        
+                advance.show();
+            }else {
+                this.setAttribute('title', 'Expand');
+                 $('#search-icon').removeClass('fas fa-minus').addClass('fas fa-plus');
+                advance.hide();
+            }
+        });
 
           </script>
 

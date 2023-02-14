@@ -66,8 +66,11 @@ Promotions
         $('#promotion-table').DataTable({
             processing: true,
             serverSide: true,
-             stateSave: true,
-              order: [[ 0, "desc" ]],
+            stateSave: false,
+            ordering: true,
+            searching:true,
+            select: true,
+            order: [[ 1, "asc" ]],
               ajax: {
             "url":  '{!! route('get-promotions') !!}',
                error: function(xhr) {

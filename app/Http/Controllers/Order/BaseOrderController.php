@@ -120,7 +120,6 @@ class BaseOrderController extends ExtendedOrderController
                 $this->addtoMailchimp($product, $user_id, $item);
             }
         } catch (\Exception $ex) {
-            dd($ex);
             app('log')->error($ex->getMessage());
 
             throw new \Exception($ex->getMessage());
@@ -178,7 +177,7 @@ class BaseOrderController extends ExtendedOrderController
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
 
-            throw new \Exception('Can not Generate Subscription');
+            throw new \Exception('Cannot generate Subscription'.'.'.$ex->getMessage());
         }
     }
 

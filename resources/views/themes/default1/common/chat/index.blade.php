@@ -57,8 +57,12 @@ Create Script
 <script src="//cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript">
         $('#script-table').DataTable({
-            processing: true,
-            serverSide: true,
+                serverSide: true,
+                stateSave: false,
+                ordering: true,
+                searching:true,
+                select: true,
+                order: [[ 1, "desc" ]],
              ajax: {
             "url":  '{!! route('get-script') !!}',
                error: function(xhr) {

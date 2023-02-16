@@ -2,11 +2,7 @@
 @section('title')
 Users
 @stop
-<style type="text/css">
-    .sorting, .sorting_asc, .sorting_desc {
-    background : none;
-}
-</style>
+
 
 @section('content-header')
     <div class="col-sm-6">

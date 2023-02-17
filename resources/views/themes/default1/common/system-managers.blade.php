@@ -3,6 +3,11 @@
 System Managers
 @stop
 @section('content-header')
+<style>
+  .select2-container--default .select2-selection--multiple .select2-selection__choice {
+      background-color: #1b1818 !important;
+  }
+</style>
     <div class="col-sm-6">
         <h1>System Managers</h1>
     </div>
@@ -17,10 +22,6 @@ System Managers
      <script src="{{asset('admin/plugins/select2.full.min.js')}}"></script>
 
 @stop
- <style>
-  .select2-container--default .select2-selection--multiple .select2-selection__choice {
-      background-color: #1b1818 !important;
-</style>
 @section('content')
 <div class="card card-secondary card-outline">
 

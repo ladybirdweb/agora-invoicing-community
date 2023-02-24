@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\Auth;
 
 use App\ApiKey;
-use GuzzleHttp\Client;
 use App\Http\Controllers\Controller;
 use App\Model\Common\Country;
 use App\Model\Common\Setting;
 use App\Model\Common\StatusSetting;
 use App\Model\User\AccountActivate;
 use App\User;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Symfony\Component\Mime\Email;
 
@@ -80,7 +80,7 @@ class BaseAuthController extends Controller
             'query' => [
                 'authkey'    => ApiKey::first()->msg91_auth_key, 
                 'mobile'     => "{$code}{$mobile}", 
-                'retrytype'  => $type
+                'retrytype'  => $type,
             ],
         ])
         ->getBody()
@@ -89,7 +89,7 @@ class BaseAuthController extends Controller
         $response_decoded = json_decode($response, true);
 
         return ($response_decoded['type'] == 'error') ? 
-            throw new \Exception($response_decoded['message']) : 
+            throw new \Exception($response_decoded['message']) :
             $response_decoded['type'];
     }
 

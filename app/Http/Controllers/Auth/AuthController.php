@@ -169,7 +169,7 @@ class AuthController extends BaseAuthController
             return $response;
         } catch (\Exception $e) {
             return response()->json([
-                'response' => $e->getMessage()
+                'response' => $e->getMessage(),
             ], 500);
         }
     }

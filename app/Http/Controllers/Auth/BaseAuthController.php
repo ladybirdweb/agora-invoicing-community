@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\ApiKey;
+use GuzzleHttp\Client;
 use App\Http\Controllers\Controller;
 use App\Model\Common\Country;
 use App\Model\Common\Setting;
@@ -75,20 +76,21 @@ class BaseAuthController extends Controller
      */
     public function sendForReOtp($mobile, $code, $type)
     {
-        $client = new \GuzzleHttp\Client();
-        $number = $code.$mobile;
-        $key = ApiKey::where('id', 1)->value('msg91_auth_key');
+        $response = (new Client())->request('GET', 'https://api.msg91.com/api/v5/otp/retry', [
+            'query' => [
+                'authkey'    => ApiKey::first()->msg91_auth_key, 
+                'mobile'     => "{$code}{$mobile}", 
+                'retrytype'  => $type
+            ],
+        ])
+        ->getBody()
+        ->getContents();
 
-        $response = $client->request('GET', 'https://api.msg91.com/api/v5/otp/retry', [
-            'query' => ['authkey' => $key, 'mobile' => $number, 'retrytype' => $type],
-        ]);
-        $send = $response->getBody()->getContents();
-        $array = json_decode($send, true);
-        if ($array['type'] == 'error') {
-            throw new \Exception($array['message']);
-        }
+        $response_decoded = json_decode($response, true);
 
-        return $array['type'];
+        return ($response_decoded['type'] == 'error') ? 
+            throw new \Exception($response_decoded['message']) : 
+            $response_decoded['type'];
     }
 
     /**

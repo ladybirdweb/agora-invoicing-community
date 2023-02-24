@@ -78,8 +78,8 @@ class BaseAuthController extends Controller
     {
         $response = (new Client())->request('GET', 'https://api.msg91.com/api/v5/otp/retry', [
             'query' => [
-                'authkey'    => ApiKey::first()->msg91_auth_key, 
-                'mobile'     => "{$code}{$mobile}", 
+                'authkey'    => ApiKey::first()->msg91_auth_key,
+                'mobile'     => "{$code}{$mobile}",
                 'retrytype'  => $type,
             ],
         ])
@@ -88,7 +88,7 @@ class BaseAuthController extends Controller
 
         $response_decoded = json_decode($response, true);
 
-        return ($response_decoded['type'] == 'error') ? 
+        return ($response_decoded['type'] == 'error') ?
             throw new \Exception($response_decoded['message']) :
             $response_decoded['type'];
     }

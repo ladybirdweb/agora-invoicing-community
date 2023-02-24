@@ -156,7 +156,6 @@ class AuthController extends BaseAuthController
         try {
             $code = $request->input('code');
             $mobile = ltrim($request->input('mobile'), '0');
-            $otp = $request->input('otp');
             $number = '(+'.$code.') '.$mobile;
 
             $result = $this->sendForReOtp($mobile, $code, $request->input('type'));
@@ -176,7 +175,6 @@ class AuthController extends BaseAuthController
                     break;
 
                 default:
-                    $array = json_decode($result, true);
                     $response = ['type' => 'success',
                         'message' => 'Voice call has been sent to '.$number.'.Please Enter the OTP received on the call to login!!', ];
                     break;

@@ -150,7 +150,7 @@ class AuthController extends BaseAuthController
     {
         $this->validate($request, [
             'code' => 'required|numeric',
-            'mobile' => 'required|numeric',
+            'mobile' => 'required',
         ]);
 
         try {

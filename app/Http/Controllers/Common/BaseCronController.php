@@ -8,6 +8,7 @@ use App\Model\Order\Order;
 use App\Model\Product\Subscription;
 use App\User;
 use Carbon\Carbon;
+use Symfony\Component\Mime\Email;
 
 class BaseCronController extends Controller
 {
@@ -45,6 +46,7 @@ class BaseCronController extends Controller
     {
         $sub = [];
         foreach ($allDays as $allDay) {
+
             if ($allDay >= 2) {
                 if ($this->getAllDaysSubscription($allDay) != []) {
                     array_push($sub, $this->getAllDaysSubscription($allDay));
@@ -141,6 +143,7 @@ class BaseCronController extends Controller
         $yesterday = new Carbon('today');
         $tomorrow = new Carbon('+2 days');
         $sub = Subscription::whereNotNull('update_ends_at')
+                ->where('is_subscribed',0)
                 ->whereBetween('update_ends_at', [$yesterday, $tomorrow]);
 
         return $sub;
@@ -151,6 +154,7 @@ class BaseCronController extends Controller
         $yesterday = new Carbon('yesterday');
         $tomorrow = new Carbon('tomorrow');
         $sub = Subscription::whereNotNull('update_ends_at')
+            ->where('is_subscribed',0)
             ->whereBetween('update_ends_at', [$yesterday, $tomorrow]);
 
         return $sub;
@@ -161,6 +165,7 @@ class BaseCronController extends Controller
         $yesterday = new Carbon('-2 days');
         $today = new Carbon('today');
         $sub = Subscription::whereNotNull('update_ends_at')
+                ->where('is_subscribed',0)
                 ->whereBetween('update_ends_at', [$yesterday, $today]);
 
         return $sub;
@@ -171,6 +176,7 @@ class BaseCronController extends Controller
         $plus14days = new Carbon('+14 days');
         $plus16days = new Carbon('+16 days');
         $sub = Subscription::whereNotNull('update_ends_at')
+            ->where('is_subscribed',0)
             ->whereBetween('update_ends_at', [$plus14days, $plus16days]);
 
         return $sub;
@@ -181,6 +187,7 @@ class BaseCronController extends Controller
         $minus1day = new Carbon('+'.($day - 1).' days');
         $plus1day = new Carbon('+'.($day + 1).' days');
         $sub = Subscription::whereNotNull('update_ends_at')
+            ->where('is_subscribed',0)
             ->whereBetween('update_ends_at', [$minus1day, $plus1day]);
 
         return $sub;
@@ -188,9 +195,13 @@ class BaseCronController extends Controller
 
     public function mail($user, $end, $product, $order, $sub)
     {
+    
         //check in the settings
         $settings = new \App\Model\Common\Setting();
         $setting = $settings->where('id', 1)->first();
+
+        $mail = new \App\Http\Controllers\Common\PhpMailController();
+        $mailer = $mail->setMailConfig($setting);
         $url = url('my-orders');
         //template
         $templates = new \App\Model\Common\Template();
@@ -201,25 +212,94 @@ class BaseCronController extends Controller
         }
 
         $template = $templates->where('id', $temp_id)->first();
-        $from = $setting->email;
-        $to = $user->email;
-        $subject = $template->name;
         $data = $template->data;
         $date = date_create($end);
         $end = date_format($date, 'l, F j, Y H:m A');
-        $replace = ['name' => ucfirst($user->first_name).' '.ucfirst($user->last_name),
+
+
+     try{
+        $email = (new Email())
+        ->from($setting->email)
+        ->to($user->email)
+         ->subject($template->name)
+         ->html($mail->mailTemplate($template->data, $templatevariables = ['name' => ucfirst($user->first_name).' '.ucfirst($user->last_name),
             'expiry' => $end,
             'product' => $product,
             'number' => $order->number,
-            'url' => $url,
-        ];
-        $type = '';
-        if ($template) {
-            $type_id = $template->type;
-            $temp_type = new \App\Model\Common\TemplateType();
-            $type = $temp_type->where('id', $type_id)->first()->name;
+            'url' => $url,]));
+         $mailer->send($email);
+         $mail->email_log_success($setting->email, $user->email, $template->name, $data);
+       }catch (\Exception $ex) {
+            $mail->email_log_fail($setting->email, $user->email, $template->name, $data);
         }
+
+    }
+    public function Auto_renewalMail($user, $end, $product, $order, $sub)
+    {
+        //check in the settings
+        $settings = new \App\Model\Common\Setting();
+        $setting = $settings->where('id', 1)->first();
+
         $mail = new \App\Http\Controllers\Common\PhpMailController();
-        $mail->sendEmail($from, $to, $data, $subject, $replace, $type);
+        $mailer = $mail->setMailConfig($setting);
+
+        //template
+        $templates = new \App\Model\Common\Template();
+        $temp_id = $setting->autosubscription_going_to_end;
+
+        $template = $templates->where('id', $temp_id)->first();
+        $data = $template->data;
+        $date = date_create($end);
+        $end = date_format($date, 'l, F j, Y H:m A');
+
+        try{
+        $email = (new Email())
+        ->from($setting->email)
+        ->to($user->email)
+         ->subject($template->name)
+         ->html($mail->mailTemplate($template->data, $templatevariables = ['name' => ucfirst($user->first_name).' '.ucfirst($user->last_name),
+            'expiry' => $end,
+            'product' => $product,
+            'number' => $order->number,]));
+         $mailer->send($email);
+         $mail->email_log_success($setting->email, $user->email, $template->name, $data);
+       }catch (\Exception $ex) {
+            $mail->email_log_fail($setting->email, $user->email, $template->name, $data);
+        }
+    }
+
+    public function Expiredsub_Mail($user, $end, $product, $order, $sub)
+    {
+        //check in the settings
+        $settings = new \App\Model\Common\Setting();
+        $setting = $settings->where('id', 1)->first();
+
+        $mail = new \App\Http\Controllers\Common\PhpMailController();
+        $mailer = $mail->setMailConfig($setting);
+
+        //template
+        $templates = new \App\Model\Common\Template();
+        $temp_id = $setting->subscription_over;
+
+        $template = $templates->where('id', $temp_id)->first();
+        $data = $template->data;
+        $url = url('my-orders');
+
+
+        try{
+        $email = (new Email())
+        ->from($setting->email)
+        ->to($user->email)
+         ->subject($template->name)
+         ->html($mail->mailTemplate($template->data, $templatevariables = ['name' => ucfirst($user->first_name).' '.ucfirst($user->last_name),
+            'expiry' => $end,
+            'product' => $product,
+            'number' => $order->number,
+            'url' => $url,]));
+         $mailer->send($email);
+         $mail->email_log_success($setting->email, $user->email, $template->name, $data);
+       }catch (\Exception $ex) {
+            $mail->email_log_fail($setting->email, $user->email, $template->name, $data);
+        }
     }
 }

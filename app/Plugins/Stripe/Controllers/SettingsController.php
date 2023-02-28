@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use App\Auto_renewal;
 use Schema;
 use Validator;
+use Symfony\Component\Mime\Email;
 
 class SettingsController extends Controller
 {
@@ -113,7 +114,6 @@ class SettingsController extends Controller
      */
     public function postPaymentWithStripe(Request $request)
     {
-      
        $validator = Validator::make($request->all(), [
         ]);
         $input = $request->all();
@@ -128,21 +128,10 @@ class SettingsController extends Controller
 
         //saving card details for future payment
 
-        if($request->renewal == 'on')
-        {
+  
          $invoice_details = \Session::get('invoice');
 
-         $card_details = new Auto_renewal();
-         $card_details->card_no = \Hash::make($request->card_no);
-         $card_details->exp_month = $request->exp_month;
-         $card_details->exp_year = $request->exp_year;
-         $card_details->cvv = $request->cvv;
-         $card_details->amount = $request->amount;
-         $card_details->renewal = '1';
-         $card_details->user_id = $invoice_details->user_id;
-         $card_details->invoice_number = $invoice_details->number;
-         $card_details->save();
-        }
+
          
         $stripeSecretKey = ApiKey::pluck('stripe_secret')->first();
         $stripe = Stripe::make($stripeSecretKey);
@@ -163,6 +152,7 @@ class SettingsController extends Controller
                     'cvc' => $request->get('cvv'),
                 ],
             ]);
+       
             if (! isset($token['id'])) {
                 \Session::put('error', 'The Stripe Token was not generated correctly');
 
@@ -180,6 +170,15 @@ class SettingsController extends Controller
                 ],
             ]);
             $stripeCustomerId = $customer['id'];
+
+            $customer_details = 
+            [
+                'user_id' => $invoice->user_id,
+                'invoice_number' => $invoice->number,
+                'customer_id' => $stripeCustomerId,
+            ];
+            Auto_renewal::create($customer_details);
+
             $currency = strtolower($invoice->currency);
             $card = $stripe->cards()->create($stripeCustomerId, $token['id']);
             $charge = $stripe->charges()->create([
@@ -189,6 +188,8 @@ class SettingsController extends Controller
                 'description' => 'Add in wallet',
             ]);
             if ($charge['status'] == 'succeeded') {
+
+
                 //Change order Status as Success if payment is Successful
                 $stateCode = \Auth::user()->state;
                 $cont = new \App\Http\Controllers\RazorpayController();
@@ -249,20 +250,44 @@ class SettingsController extends Controller
 
     public static function sendFailedPaymenttoAdmin($amount, $exceptionMessage)
     {
-        $setting = Setting::find(1);
-        $paymentFailData = 'Payment for'.' '.'of'.' '.\Auth::user()->currency.' '.$amount.' '.'failed by'.' '.\Auth::user()->first_name.' '.\Auth::user()->last_name.' '.'. User Email:'.' '.\Auth::user()->email.'<br>'.'Reason:'.$exceptionMessage;
+    try{
 
-        $mail = new \App\Http\Controllers\Common\PhpMailController();
-        $mail->sendEmail($setting->email, $setting->company_email, $paymentFailData, 'Payment failed ');
+        $email = (new Email())
+               ->from($set->email)
+               ->to($set->company_email)
+               ->subject('Payment Successful')
+               ->html('Payment for'.' '.$productName.' '.'of'.' '.$currency.' '.$total.' '.'successful by'.' '.$user->first_name.' '.$user->last_name.' '.'Email:'.' '.$user->email);
+        $mailer->send($email);
+        $mail->email_log_success($set->email, $set->company_email, 'Payment Successful', 'Payment for'.' '.'of'.' '.\Auth::user()->currency.' '.$amount.' '.'failed by'.' '.\Auth::user()->first_name.' '.\Auth::user()->last_name.' '.'. User Email:'.' '.\Auth::user()->email.'<br>'.'Reason:'.$exceptionMessage);
+
+    }catch(\Exception $e)
+    {
+        $mail->email_log_fail($set->email, $set->company_email, 'Payment Successful', 'Payment for'.' '.'of'.' '.\Auth::user()->currency.' '.$amount.' '.'failed by'.' '.\Auth::user()->first_name.' '.\Auth::user()->last_name.' '.'. User Email:'.' '.\Auth::user()->email.'<br>'.'Reason:'.$exceptionMessage);
+
+    }
     }
 
     public static function sendPaymentSuccessMailtoAdmin($currency, $total, $user, $productName)
     {
-        $setting = Setting::find(1);
-        $templateController = new \App\Http\Controllers\Common\TemplateController();
-        $paymentSuccessdata = 'Payment for'.' '.$productName.' '.'of'.' '.$currency.' '.$total.' '.'successful by'.' '.$user->first_name.' '.$user->last_name.' '.'Email:'.' '.$user->email;
-
+        $set = new \App\Model\Common\Setting();
+        $set = $set->findOrFail(1);
         $mail = new \App\Http\Controllers\Common\PhpMailController();
-        $mail->sendEmail($setting->email, $setting->company_email, $paymentSuccessdata, 'Payment Successful ');
+        $mailer = $mail->setMailConfig($set);
+        try{
+
+        $email = (new Email())
+               ->from($set->email)
+               ->to($set->company_email)
+               ->subject('Payment Successful')
+               ->html('Payment for'.' '.$productName.' '.'of'.' '.$currency.' '.$total.' '.'successful by'.' '.$user->first_name.' '.$user->last_name.' '.'Email:'.' '.$user->email);
+        $mailer->send($email);
+        $mail->email_log_success($set->email, $set->company_email, 'Payment Successful', 'Payment for'.' '.$productName.' '.'of'.' '.$currency.' '.$total.' '.'successful by'.' '.$user->first_name.' '.$user->last_name.' '.'Email:'.' '.$user->email);
+    }catch(\Exception $e)
+    {
+        $mail->email_log_fail($set->email, $set->company_email, 'Payment Successful', 'Payment for'.' '.$productName.' '.'of'.' '.$currency.' '.$total.' '.'successful by'.' '.$user->first_name.' '.$user->last_name.' '.'Email:'.' '.$user->email);
+
+    }
+
+     
     }
 }

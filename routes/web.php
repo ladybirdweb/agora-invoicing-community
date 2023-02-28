@@ -46,277 +46,278 @@ Route::post('refresh-csrf', function () {
 * Installer Routes
 */
 
-Route::prefix('install')->name('AgoraInstaller::')->middleware('isInstalled')->group(function () {
-    Route::get('/', [Installer\WelcomeController::class, 'welcome'])->name('welcome');
+            Route::prefix('install')->name('AgoraInstaller::')->middleware('isInstalled')->group(function () {
+                Route::get('/', [Installer\WelcomeController::class, 'welcome'])->name('welcome');
 
-    Route::get('requirements', [Installer\RequirementsController::class, 'requirements'])->name('requirements');
+                Route::get('requirements', [Installer\RequirementsController::class, 'requirements'])->name('requirements');
 
-    Route::get('permissions', [Installer\PermissionsController::class, 'permissions'])->name('permissions');
+                Route::get('permissions', [Installer\PermissionsController::class, 'permissions'])->name('permissions');
 
-    Route::get('environment', [Installer\EnvironmentController::class, 'environmentMenu'])->name('environment');
+                Route::get('environment', [Installer\EnvironmentController::class, 'environmentMenu'])->name('environment');
 
-    Route::get('environment/wizard', [Installer\EnvironmentController::class, 'environmentWizard'])->name('environmentWizard');
+                Route::get('environment/wizard', [Installer\EnvironmentController::class, 'environmentWizard'])->name('environmentWizard');
 
-    Route::post('environment/saveWizard', [Installer\EnvironmentController::class, 'saveWizard'])->name('environmentSaveWizard');
+                Route::post('environment/saveWizard', [Installer\EnvironmentController::class, 'saveWizard'])->name('environmentSaveWizard');
 
-    Route::get('database', [Installer\DatabaseController::class, 'database'])->name('database');
+                Route::get('database', [Installer\DatabaseController::class, 'database'])->name('database');
 
-    Route::get('final', [Installer\FinalController::class, 'finish'])->name('final');
-});
+                Route::get('final', [Installer\FinalController::class, 'finish'])->name('final');
+            });
 
-Route::middleware('installAgora')->group(function () {
-    Route::get('pricing', [Front\CartController::class, 'cart'])->name('pricing');
-    Route::get('group/{templateid}/{groupid}/', [Front\PageController::class, 'pageTemplates']);
-    Route::post('cart/remove', [Front\CartController::class, 'cartRemove']);
-    Route::post('update-agent-qty', [Front\CartController::class, 'updateAgentQty']);
-    Route::post('update-qty', [Front\CartController::class, 'updateProductQty']);
-    Route::post('reduce-product-qty', [Front\CartController::class, 'reduceProductQty']);
-    Route::post('reduce-agent-qty', [Front\CartController::class, 'reduceAgentQty']);
-    Route::post('cart/clear', [Front\CartController::class, 'clearCart']);
-    Route::get('show/cart', [Front\CartController::class, 'showCart']);
+        Route::middleware('installAgora')->group(function () {
+            Route::get('pricing', [Front\CartController::class, 'cart'])->name('pricing');
+            Route::get('group/{templateid}/{groupid}/', [Front\PageController::class, 'pageTemplates']);
+            Route::post('cart/remove', [Front\CartController::class, 'cartRemove']);
+            Route::post('update-agent-qty', [Front\CartController::class, 'updateAgentQty']);
+            Route::post('update-qty', [Front\CartController::class, 'updateProductQty']);
+            Route::post('reduce-product-qty', [Front\CartController::class, 'reduceProductQty']);
+            Route::post('reduce-agent-qty', [Front\CartController::class, 'reduceAgentQty']);
+            Route::post('cart/clear', [Front\CartController::class, 'clearCart']);
+            Route::get('show/cart', [Front\CartController::class, 'showCart']);
 
-    Route::get('checkout', [Front\CheckoutController::class, 'checkoutForm']);
-    Route::match(['post', 'patch'], 'checkout-and-pay', [Front\CheckoutController::class, 'postCheckout']);
+            Route::get('checkout', [Front\CheckoutController::class, 'checkoutForm']);
+            Route::match(['post', 'patch'], 'checkout-and-pay', [Front\CheckoutController::class, 'postCheckout']);
 
-    Route::post('pricing/update', [Front\CartController::class, 'addCouponUpdate']);
-    Route::post('mail-chimp/subcribe', [Common\MailChimpController::class, 'addSubscriberByClientPanel']);
-    Route::get('mailchimp', [Common\MailChimpController::class, 'mailChimpSettings'])->middleware('admin');
-    Route::patch('mailchimp', [Common\MailChimpController::class, 'postMailChimpSettings']);
-    Route::get('mail-chimp/mapping', [Common\MailChimpController::class, 'mapField'])->middleware('admin');
-    Route::patch('mail-chimp/mapping', [Common\MailChimpController::class, 'postMapField']);
-    Route::patch('mailchimp-ispaid/mapping', [Common\MailChimpController::class, 'postIsPaidMapField']);
-    Route::patch('mailchimp-group/mapping', [Common\MailChimpController::class, 'postGroupMapField']);
-    Route::get('get-group-field/{value}', [Common\MailChimpController::class, 'addInterestFieldsToAgora']);
-    Route::get('contact-us', [Front\PageController::class, 'contactUs']);
-    Route::post('contact-us', [Front\PageController::class, 'postContactUs']);
+            Route::post('pricing/update', [Front\CartController::class, 'addCouponUpdate']);
+            Route::post('mail-chimp/subcribe', [Common\MailChimpController::class, 'addSubscriberByClientPanel']);
+            Route::get('mailchimp', [Common\MailChimpController::class, 'mailChimpSettings'])->middleware('admin');
+            Route::patch('mailchimp', [Common\MailChimpController::class, 'postMailChimpSettings']);
+            Route::get('mail-chimp/mapping', [Common\MailChimpController::class, 'mapField'])->middleware('admin');
+            Route::patch('mail-chimp/mapping', [Common\MailChimpController::class, 'postMapField']);
+            Route::patch('mailchimp-ispaid/mapping', [Common\MailChimpController::class, 'postIsPaidMapField']);
+            Route::patch('mailchimp-group/mapping', [Common\MailChimpController::class, 'postGroupMapField']);
+            Route::get('get-group-field/{value}', [Common\MailChimpController::class, 'addInterestFieldsToAgora']);
+            Route::get('contact-us', [Front\PageController::class, 'contactUs']);
+            Route::post('contact-us', [Front\PageController::class, 'postContactUs']);
 
-    /*
-     * Front Client Pages
-     */
+            /*
+             * Front Client Pages
+             */
 
-    Route::post('first-login', [FreeTrailController::class, 'firstLoginAttempt']);
+            Route::post('first-login', [FreeTrailController::class, 'firstLoginAttempt']);
 
-    Route::get('my-invoices', [Front\ClientController::class, 'invoices'])->name('my-invoices');
+            Route::get('my-invoices', [Front\ClientController::class, 'invoices'])->name('my-invoices');
 
-    Route::get('get-my-invoices', [Front\ClientController::class, 'getInvoices'])->name('get-my-invoices');
-    Route::get('get-my-invoices/{orderid}/{userid}', [Front\ClientController::class, 'getInvoicesByOrderId']);
+            Route::get('get-my-invoices', [Front\ClientController::class, 'getInvoices'])->name('get-my-invoices');
+            Route::get('get-my-invoices/{orderid}/{userid}', [Front\ClientController::class, 'getInvoicesByOrderId']);
 
-    Route::get('get-my-payment/{orderid}/{userid}', [Front\ClientController::class, 'getPaymentByOrderId'])->name('get-my-payment');
+            Route::get('get-my-payment/{orderid}/{userid}', [Front\ClientController::class, 'getPaymentByOrderId'])->name('get-my-payment');
 
-    Route::get('get-my-payment-client/{orderid}/{userid}', [Front\ClientController::class, 'getPaymentByOrderIdClient'])->name('get-my-payment-client');
+            Route::get('get-my-payment-client/{orderid}/{userid}', [Front\ClientController::class, 'getPaymentByOrderIdClient'])->name('get-my-payment-client');
+            
+            Route::post('post-status', [Front\ClientController::class, 'postAutorenewalStatus'])->name('post-status');
+            Route::get('my-orders', [Front\ClientController::class, 'orders']);
+            Route::get('get-my-orders', [Front\ClientController::class, 'getOrders'])->name('get-my-orders');
+            Route::get('my-subscriptions', [Front\ClientController::class, 'subscriptions']);
+            Route::get('get-my-subscriptions', [Front\ClientController::class, 'getSubscriptions']);
+            Route::get('my-invoice/{id}', [Front\ClientController::class, 'getInvoice']);
+            Route::get('my-order/{id}', [Front\ClientController::class, 'getOrder']);
+            Route::get('uploadFile', [License\LocalizedLicenseController::class, 'storeFile']);
+            Route::get('my-profile', [Front\ClientController::class, 'profile']);
+            Route::patch('my-profile', [Front\ClientController::class, 'postProfile']);
+            Route::patch('my-password', [Front\ClientController::class, 'postPassword']);
+            Route::get('paynow/{id}', [Front\CheckoutController::class, 'payNow']);
 
-    Route::get('my-orders', [Front\ClientController::class, 'orders']);
-    Route::get('get-my-orders', [Front\ClientController::class, 'getOrders'])->name('get-my-orders');
-    Route::get('my-subscriptions', [Front\ClientController::class, 'subscriptions']);
-    Route::get('get-my-subscriptions', [Front\ClientController::class, 'getSubscriptions']);
-    Route::get('my-invoice/{id}', [Front\ClientController::class, 'getInvoice']);
-    Route::get('my-order/{id}', [Front\ClientController::class, 'getOrder']);
-    Route::get('uploadFile', [License\LocalizedLicenseController::class, 'storeFile']);
-    Route::get('my-profile', [Front\ClientController::class, 'profile']);
-    Route::patch('my-profile', [Front\ClientController::class, 'postProfile']);
-    Route::patch('my-password', [Front\ClientController::class, 'postPassword']);
-    Route::get('paynow/{id}', [Front\CheckoutController::class, 'payNow']);
+            Route::get('get-versions/{productid}/{clientid}/{invoiceid}/', [Front\ClientController::class, 'getVersionList'])->name('get-versions');
+            Route::get('get-github-versions/{productid}/{clientid}/{invoiceid}/', [Front\ClientController::class, 'getGithubVersionList'])->name('get-github-versions');
 
-    Route::get('get-versions/{productid}/{clientid}/{invoiceid}/', [Front\ClientController::class, 'getVersionList'])->name('get-versions');
-    Route::get('get-github-versions/{productid}/{clientid}/{invoiceid}/', [Front\ClientController::class, 'getGithubVersionList'])->name('get-github-versions');
+            // Post Route For Make Razorpay Payment Request
+            Route::post('payment/{invoice}', [RazorpayController::class, 'payment'])->name('payment');
 
-    // Post Route For Make Razorpay Payment Request
-    Route::post('payment/{invoice}', [RazorpayController::class, 'payment'])->name('payment');
+            Route::get('downloadLicenseFile', [License\LocalizedLicenseController::class, 'downloadFile'])->name('event.rsvp')->middleware('signed');
+            Route::get('downloadPrivate/{orderNo}', [License\LocalizedLicenseController::class, 'downloadPrivate']);
+            Route::get('LocalizedLicense/downloadLicense/{fileName}', [License\LocalizedLicenseController::class, 'downloadFileAdmin']);
+            Route::get('request', [License\LocalizedLicenseController::class, 'tempOrderLink']);
+            Route::get('LocalizedLicense/downloadPrivateKey/{fileName}', [License\LocalizedLicenseController::class, 'downloadPrivateKeyAdmin']);
 
-    Route::get('downloadLicenseFile', [License\LocalizedLicenseController::class, 'downloadFile'])->name('event.rsvp')->middleware('signed');
-    Route::get('downloadPrivate/{orderNo}', [License\LocalizedLicenseController::class, 'downloadPrivate']);
-    Route::get('LocalizedLicense/downloadLicense/{fileName}', [License\LocalizedLicenseController::class, 'downloadFileAdmin']);
-    Route::get('request', [License\LocalizedLicenseController::class, 'tempOrderLink']);
-    Route::get('LocalizedLicense/downloadPrivateKey/{fileName}', [License\LocalizedLicenseController::class, 'downloadPrivateKeyAdmin']);
+            /*
+             * 2FA Routes
+             */
 
-    /*
-     * 2FA Routes
-     */
+            Route::post('/2fa/enable', [Google2FAController::class, 'enableTwoFactor']);
+            Route::post('2fa/disable/{userId?}', [Google2FAController::class, 'disableTwoFactor']);
+            Route::get('/2fa/validate', [Google2FAController::class, 'getValidateToken']);
+            Route::get('verify-2fa', [Google2FAController::class, 'verify2fa']);
+            Route::get('2fa/loginValidate', [Google2FAController::class, 'postLoginValidateToken'])->name('2fa/loginValidate');
+            Route::post('2fa/setupValidate', [Google2FAController::class, 'postSetupValidateToken']);
+            Route::get('verify-password', [Google2FAController::class, 'verifyPassword']);
+            Route::post('2fa-recovery-code', [Google2FAController::class, 'generateRecoveryCode']);
+            Route::get('get-recovery-code', [Google2FAController::class, 'getRecoveryCode']);
+            Route::get('recovery-code', [Google2FAController::class, 'showRecoveryCode']);
+            Route::post('verify-recovery-code', [Google2FAController::class, 'verifyRecoveryCode'])->name('verify-recovery-code');
+            /*
+             * Social Media
+             */
 
-    Route::post('/2fa/enable', [Google2FAController::class, 'enableTwoFactor']);
-    Route::post('2fa/disable/{userId?}', [Google2FAController::class, 'disableTwoFactor']);
-    Route::get('/2fa/validate', [Google2FAController::class, 'getValidateToken']);
-    Route::get('verify-2fa', [Google2FAController::class, 'verify2fa']);
-    Route::get('2fa/loginValidate', [Google2FAController::class, 'postLoginValidateToken'])->name('2fa/loginValidate');
-    Route::post('2fa/setupValidate', [Google2FAController::class, 'postSetupValidateToken']);
-    Route::get('verify-password', [Google2FAController::class, 'verifyPassword']);
-    Route::post('2fa-recovery-code', [Google2FAController::class, 'generateRecoveryCode']);
-    Route::get('get-recovery-code', [Google2FAController::class, 'getRecoveryCode']);
-    Route::get('recovery-code', [Google2FAController::class, 'showRecoveryCode']);
-    Route::post('verify-recovery-code', [Google2FAController::class, 'verifyRecoveryCode'])->name('verify-recovery-code');
-    /*
-     * Social Media
-     */
+            Route::resource('social-media', Common\SocialMediaController::class);
+            Route::get('get-social-media', [Common\SocialMediaController::class, 'getSocials'])->name('get-social-media');
+            /*
+             * Tweeter api
+             */
+            Route::get('twitter', [Common\SocialMediaController::class, 'getTweets'])->name('twitter');
 
-    Route::resource('social-media', Common\SocialMediaController::class);
-    Route::get('get-social-media', [Common\SocialMediaController::class, 'getSocials'])->name('get-social-media');
-    /*
-     * Tweeter api
-     */
-    Route::get('twitter', [Common\SocialMediaController::class, 'getTweets'])->name('twitter');
+            Route::auth();
+            Route::post('auth/register', [Auth\RegisterController::class, 'postRegister'])->name('auth/register');
+            Route::get('auth/logout', [Auth\LoginController::class, 'logout'])->name('logout');
+            Route::get('/', [DashboardController::class, 'index']);
 
-    Route::auth();
-    Route::post('auth/register', [Auth\RegisterController::class, 'postRegister'])->name('auth/register');
-    Route::get('auth/logout', [Auth\LoginController::class, 'logout'])->name('logout');
-    Route::get('/', [DashboardController::class, 'index']);
+            Route::get('activate/{token}', [Auth\AuthController::class, 'activate']);
 
-    Route::get('activate/{token}', [Auth\AuthController::class, 'activate']);
+            /*
+             * Client
+             */
 
-    /*
-     * Client
-     */
+            /*
+             * Client
+             */
 
-    /*
-     * Client
-     */
+            /*
+             * Client
+             */
 
-    /*
-     * Client
-     */
+            /*
+             * Client
+             */
 
-    /*
-     * Client
-     */
+            /*
+             * Profile Process
+             */
 
-    /*
-     * Profile Process
-     */
+            Route::get('profile', [User\ProfileController::class, 'profile']);
+            Route::patch('profile', [User\ProfileController::class, 'updateProfile']);
+            Route::patch('password', [User\ProfileController::class, 'updatePassword']);
 
-    Route::get('profile', [User\ProfileController::class, 'profile']);
-    Route::patch('profile', [User\ProfileController::class, 'updateProfile']);
-    Route::patch('password', [User\ProfileController::class, 'updatePassword']);
+            /*
+             * Settings
+             */
 
-    /*
-     * Settings
-     */
+            Route::post('changeLogo', [Common\SettingsController::class, 'delete']);
 
-    Route::post('changeLogo', [Common\SettingsController::class, 'delete']);
+            Route::get('settings', [Common\SettingsController::class, 'settings']);
+            Route::get('settings/system', [Common\SettingsController::class, 'settingsSystem']);
+            Route::patch('settings/system', [Common\SettingsController::class, 'postSettingsSystem']);
+            Route::get('settings/email', [Common\EmailSettingsController::class, 'settingsEmail'])->middleware('auth');
+            Route::patch('settings/email', [Common\EmailSettingsController::class, 'postSettingsEmail']);
+            Route::get('settings/template', [Common\SettingsController::class, 'settingsTemplate']);
+            Route::patch('settings/template', [Common\SettingsController::class, 'postSettingsTemplate']);
+            Route::patch('settings/error', [Common\SettingsController::class, 'postSettingsError']);
+            Route::get('settings/activitylog', [Common\SettingsController::class, 'settingsActivity']);
+            Route::get('settings/maillog', [Common\SettingsController::class, 'settingsMail']);
+            Route::get('get-activity', [Common\SettingsController::class, 'getActivity'])->name('get-activity');
+            Route::get('get-email', [Common\SettingsController::class, 'getMails'])->name('get-email');
+            Route::delete('activity-delete', [Common\SettingsController::class, 'destroy'])->name('activity-delete');
+            Route::delete('email-delete', [Common\SettingsController::class, 'destroyEmail'])->name('email-delete');
+            Route::post('licenseDetails', [Common\BaseSettingsController::class, 'licenseDetails'])->name('licenseDetails');
+            Route::post('updateDetails', [Common\BaseSettingsController::class, 'updateDetails'])->name('updateDetails');
+            Route::post('captchaDetails', [Common\BaseSettingsController::class, 'captchaDetails'])->name('captchaDetails');
+            Route::post('updatemobileDetails', [Common\BaseSettingsController::class, 'updateMobileDetails'])->name('updatemobileDetails');
+            Route::post('updateemailDetails', [Common\BaseSettingsController::class, 'updateEmailDetails'])->name('updateemailDetails');
+            Route::post('updatetwitterDetails', [Common\BaseSettingsController::class, 'updateTwitterDetails'])->name('updatetwitterDetails');
+            Route::post('updateMailchimpDetails', [Common\BaseSettingsController::class, 'updateMailchimpDetails'])->name('updateMailchimpDetails');
+            Route::post('updateTermsDetails', [Common\BaseSettingsController::class, 'updateTermsDetails'])->name('updateTermsDetails');
+            Route::post('updatezohoDetails', [Common\BaseSettingsController::class, 'updateZohoDetails'])->name('updatezohoDetails');
+            Route::post('updatepipedriveDetails', [Common\BaseSettingsController::class, 'updatepipedriveDetails'])->name('updatepipedriveDetails');
+            Route::post('mailchimp-prod-status', [Common\BaseSettingsController::class, 'updateMailchimpProductStatus'])->name('mailchimp-prod-status');
+            Route::post('mailchimp-paid-status', [Common\BaseSettingsController::class, 'updateMailchimpIsPaidStatus'])->name('mailchimp-paid-status');
+            Route::post('updatedomainCheckDetails', [Common\BaseSettingsController::class, 'updatedomainCheckDetails'])->name('updatedomainCheckDetails');
+            Route::get('system-managers', [Common\SystemManagerController::class, 'getSystemManagers'])->name('system-managers');
+            Route::get('search-admins', [Common\SystemManagerController::class, 'searchAdmin'])->name('search-admins');
+            Route::post('replace-acc-manager', [Common\SystemManagerController::class, 'replaceAccountManager'])->name('replace-acc-manager');
+            Route::post('replace-sales-manager', [Common\SystemManagerController::class, 'replaceSalesManager'])->name('replace-sales-manager');
 
-    Route::get('settings', [Common\SettingsController::class, 'settings']);
-    Route::get('settings/system', [Common\SettingsController::class, 'settingsSystem']);
-    Route::patch('settings/system', [Common\SettingsController::class, 'postSettingsSystem']);
-    Route::get('settings/email', [Common\EmailSettingsController::class, 'settingsEmail'])->middleware('auth');
-    Route::patch('settings/email', [Common\EmailSettingsController::class, 'postSettingsEmail']);
-    Route::get('settings/template', [Common\SettingsController::class, 'settingsTemplate']);
-    Route::patch('settings/template', [Common\SettingsController::class, 'postSettingsTemplate']);
-    Route::patch('settings/error', [Common\SettingsController::class, 'postSettingsError']);
-    Route::get('settings/activitylog', [Common\SettingsController::class, 'settingsActivity']);
-    Route::get('settings/maillog', [Common\SettingsController::class, 'settingsMail']);
-    Route::get('get-activity', [Common\SettingsController::class, 'getActivity'])->name('get-activity');
-    Route::get('get-email', [Common\SettingsController::class, 'getMails'])->name('get-email');
-    Route::delete('activity-delete', [Common\SettingsController::class, 'destroy'])->name('activity-delete');
-    Route::delete('email-delete', [Common\SettingsController::class, 'destroyEmail'])->name('email-delete');
-    Route::post('licenseDetails', [Common\BaseSettingsController::class, 'licenseDetails'])->name('licenseDetails');
-    Route::post('updateDetails', [Common\BaseSettingsController::class, 'updateDetails'])->name('updateDetails');
-    Route::post('captchaDetails', [Common\BaseSettingsController::class, 'captchaDetails'])->name('captchaDetails');
-    Route::post('updatemobileDetails', [Common\BaseSettingsController::class, 'updateMobileDetails'])->name('updatemobileDetails');
-    Route::post('updateemailDetails', [Common\BaseSettingsController::class, 'updateEmailDetails'])->name('updateemailDetails');
-    Route::post('updatetwitterDetails', [Common\BaseSettingsController::class, 'updateTwitterDetails'])->name('updatetwitterDetails');
-    Route::post('updateMailchimpDetails', [Common\BaseSettingsController::class, 'updateMailchimpDetails'])->name('updateMailchimpDetails');
-    Route::post('updateTermsDetails', [Common\BaseSettingsController::class, 'updateTermsDetails'])->name('updateTermsDetails');
-    Route::post('updatezohoDetails', [Common\BaseSettingsController::class, 'updateZohoDetails'])->name('updatezohoDetails');
-    Route::post('updatepipedriveDetails', [Common\BaseSettingsController::class, 'updatepipedriveDetails'])->name('updatepipedriveDetails');
-    Route::post('mailchimp-prod-status', [Common\BaseSettingsController::class, 'updateMailchimpProductStatus'])->name('mailchimp-prod-status');
-    Route::post('mailchimp-paid-status', [Common\BaseSettingsController::class, 'updateMailchimpIsPaidStatus'])->name('mailchimp-paid-status');
-    Route::post('updatedomainCheckDetails', [Common\BaseSettingsController::class, 'updatedomainCheckDetails'])->name('updatedomainCheckDetails');
-    Route::get('system-managers', [Common\SystemManagerController::class, 'getSystemManagers'])->name('system-managers');
-    Route::get('search-admins', [Common\SystemManagerController::class, 'searchAdmin'])->name('search-admins');
-    Route::post('replace-acc-manager', [Common\SystemManagerController::class, 'replaceAccountManager'])->name('replace-acc-manager');
-    Route::post('replace-sales-manager', [Common\SystemManagerController::class, 'replaceSalesManager'])->name('replace-sales-manager');
+            /*
+             * Client
+             */
 
-    /*
-     * Client
-     */
+            Route::resource('clients', User\ClientController::class);
+            Route::get('deleted-users', [User\SoftDeleteController::class, 'index']);
+            Route::get('soft-delete', [User\SoftDeleteController::class, 'softDeletedUsers'])->name('soft-delete');
+            Route::get('clients/{id}/restore', [User\SoftDeleteController::class, 'restoreUser']);
+            Route::delete('permanent-delete-client', [User\SoftDeleteController::class, 'permanentDeleteUser']);
+            Route::get('getClientDetail/{id}', [User\ClientController::class, 'getClientDetail']);
+            Route::get('getPaymentDetail/{id}', [User\ClientController::class, 'getPaymentDetail']);
+            Route::get('getOrderDetail/{id}', [User\ClientController::class, 'getOrderDetail']);
+            Route::get('get-clients', [User\ClientController::class, 'getClients'])->name('get-clients');
+            Route::delete('clients-delete', [User\ClientController::class, 'destroy']);
+            Route::get('get-users', [User\ClientController::class, 'getUsers']);
+            Route::get('search-email', [User\ClientController::class, 'search'])->name('search-email');
 
-    Route::resource('clients', User\ClientController::class);
-    Route::get('deleted-users', [User\SoftDeleteController::class, 'index']);
-    Route::get('soft-delete', [User\SoftDeleteController::class, 'softDeletedUsers'])->name('soft-delete');
-    Route::get('clients/{id}/restore', [User\SoftDeleteController::class, 'restoreUser']);
-    Route::delete('permanent-delete-client', [User\SoftDeleteController::class, 'permanentDeleteUser']);
-    Route::get('getClientDetail/{id}', [User\ClientController::class, 'getClientDetail']);
-    Route::get('getPaymentDetail/{id}', [User\ClientController::class, 'getPaymentDetail']);
-    Route::get('getOrderDetail/{id}', [User\ClientController::class, 'getOrderDetail']);
-    Route::get('get-clients', [User\ClientController::class, 'getClients'])->name('get-clients');
-    Route::delete('clients-delete', [User\ClientController::class, 'destroy']);
-    Route::get('get-users', [User\ClientController::class, 'getUsers']);
-    Route::get('search-email', [User\ClientController::class, 'search'])->name('search-email');
+            Route::resource('products', Product\ProductController::class);
+            Route::get('get-products', [Product\ProductController::class, 'getProducts'])->name('get-products');
+            // Route::get('get-products', [Product\ProductController::class, 'GetProducts']);
+            Route::delete('products-delete', [Product\ProductController::class, 'destroy'])->name('products-delete');
+            Route::delete('uploads-delete', [Product\ProductController::class, 'fileDestroy'])->name('uploads-delete');
 
-    Route::resource('products', Product\ProductController::class);
-    Route::get('get-products', [Product\ProductController::class, 'getProducts'])->name('get-products');
-    // Route::get('get-products', [Product\ProductController::class, 'GetProducts']);
-    Route::delete('products-delete', [Product\ProductController::class, 'destroy'])->name('products-delete');
-    Route::delete('uploads-delete', [Product\ProductController::class, 'fileDestroy'])->name('uploads-delete');
+            Route::post('get-price', [Product\ProductController::class, 'getPrice']);
+            Route::get('get-subscription/{id}', [Product\ProductController::class, 'getSubscriptionCheck']);
+            Route::get('edit-upload/{id}', [Product\ProductController::class, 'editProductUpload']);
+            Route::get('get-upload/{id}', [Product\ProductController::class, 'getUpload'])->name('get-upload');
+            Route::post('upload/save', [Product\ProductController::class, 'save'])->name('upload/save');
+            Route::post('chunkupload', [Product\ProductController::class, 'uploadFile']);
+            Route::patch('upload/{id}', [Product\ProductController::class, 'uploadUpdate']);
+            Route::get('get-group-url', [Product\GroupController::class, 'generateGroupUrl']);
 
-    Route::post('get-price', [Product\ProductController::class, 'getPrice']);
-    Route::get('get-subscription/{id}', [Product\ProductController::class, 'getSubscriptionCheck']);
-    Route::get('edit-upload/{id}', [Product\ProductController::class, 'editProductUpload']);
-    Route::get('get-upload/{id}', [Product\ProductController::class, 'getUpload'])->name('get-upload');
-    Route::post('upload/save', [Product\ProductController::class, 'save'])->name('upload/save');
-    Route::post('chunkupload', [Product\ProductController::class, 'uploadFile']);
-    Route::patch('upload/{id}', [Product\ProductController::class, 'uploadUpdate']);
-    Route::get('get-group-url', [Product\GroupController::class, 'generateGroupUrl']);
+            /*
+             * Plan
+             */
 
-    /*
-     * Plan
-     */
+            Route::resource('plans', Product\PlanController::class);
+            Route::get('get-plans', [Product\PlanController::class, 'getPlans'])->name('get-plans');
+            // Route::get('get-plans', [Product\PlanController::class, 'GetPlans']);
+            Route::delete('plans-delete', [Product\PlanController::class, 'destroy'])->name('plans-delete');
+            Route::get('get-period', [Product\PlanController::class, 'checkSubscription'])->name('get-period');
+            Route::post('postInsertPeriod', [Product\PlanController::class, 'postInsertPeriod']);
 
-    Route::resource('plans', Product\PlanController::class);
-    Route::get('get-plans', [Product\PlanController::class, 'getPlans'])->name('get-plans');
-    // Route::get('get-plans', [Product\PlanController::class, 'GetPlans']);
-    Route::delete('plans-delete', [Product\PlanController::class, 'destroy'])->name('plans-delete');
-    Route::get('get-period', [Product\PlanController::class, 'checkSubscription'])->name('get-period');
-    Route::post('postInsertPeriod', [Product\PlanController::class, 'postInsertPeriod']);
+            /*
+             * Currency
+             */
 
-    /*
-     * Currency
-     */
+            Route::resource('currency', Payment\CurrencyController::class);
+            Route::get('get-currency/datatable', [Payment\CurrencyController::class, 'getCurrency'])->name('get-currency.datatable');
+            Route::post('change/currency/status', [Payment\CurrencyController::class, 'updatecurrency'])->name('change.currency.status');
 
-    Route::resource('currency', Payment\CurrencyController::class);
-    Route::get('get-currency/datatable', [Payment\CurrencyController::class, 'getCurrency'])->name('get-currency.datatable');
-    Route::post('change/currency/status', [Payment\CurrencyController::class, 'updatecurrency'])->name('change.currency.status');
+            /*
+             * Tax
+             */
 
-    /*
-     * Tax
-     */
+            Route::resource('tax', Payment\TaxController::class);
+            Route::get('get-state/{state}', [Payment\TaxController::class, 'getState']);
+            Route::get('get-tax', [Payment\TaxController::class, 'getTax'])->name('get-tax');
 
-    Route::resource('tax', Payment\TaxController::class);
-    Route::get('get-state/{state}', [Payment\TaxController::class, 'getState']);
-    Route::get('get-tax', [Payment\TaxController::class, 'getTax'])->name('get-tax');
+            Route::get('get-taxtable', [Payment\TaxController::class, 'getTaxTable'])->name('get-taxtable');
+            Route::get('get-loginstate/{state}', [Auth\AuthController::class, 'getState']);
 
-    Route::get('get-taxtable', [Payment\TaxController::class, 'getTaxTable'])->name('get-taxtable');
-    Route::get('get-loginstate/{state}', [Auth\AuthController::class, 'getState']);
+            // Route::get('get-tax', [Payment\TaxController::class, 'GetTax']);
 
-    // Route::get('get-tax', [Payment\TaxController::class, 'GetTax']);
+            Route::delete('tax-delete', [Payment\TaxController::class, 'destroy'])->name('tax-delete');
+            Route::post('taxes/option', [Payment\TaxController::class, 'saveTaxOptionSetting'])->name('taxes/option');
+            Route::post('taxes/class', [Payment\TaxController::class, 'saveTaxClassSetting']);
 
-    Route::delete('tax-delete', [Payment\TaxController::class, 'destroy'])->name('tax-delete');
-    Route::post('taxes/option', [Payment\TaxController::class, 'saveTaxOptionSetting'])->name('taxes/option');
-    Route::post('taxes/class', [Payment\TaxController::class, 'saveTaxClassSetting']);
+            /*
+             * Promotion
+             */
 
-    /*
-     * Promotion
-     */
+            Route::resource('promotions', Payment\PromotionController::class);
 
-    Route::resource('promotions', Payment\PromotionController::class);
+            Route::get('get-promotion-code', [Payment\PromotionController::class, 'getCode'])->name('get-code');
+            Route::get('get-promotions', [Payment\PromotionController::class, 'getPromotion'])->name('get-promotions');
+            Route::delete('promotions-delete', [Payment\PromotionController::class, 'destroy'])->name('promotions-delete');
 
-    Route::get('get-promotion-code', [Payment\PromotionController::class, 'getCode'])->name('get-code');
-    Route::get('get-promotions', [Payment\PromotionController::class, 'getPromotion'])->name('get-promotions');
-    Route::delete('promotions-delete', [Payment\PromotionController::class, 'destroy'])->name('promotions-delete');
+            /*
+             * Category
+             */
 
-    /*
-     * Category
-     */
+            Route::resource('category', Product\CategoryController::class);
+            Route::get('get-category', [Product\CategoryController::class, 'getCategory'])->name('get-category');
+            Route::delete('category-delete', [Product\CategoryController::class, 'destroy'])->name('category-delete');
 
-    Route::resource('category', Product\CategoryController::class);
-    Route::get('get-category', [Product\CategoryController::class, 'getCategory'])->name('get-category');
-    Route::delete('category-delete', [Product\CategoryController::class, 'destroy'])->name('category-delete');
+            /*
+             * Comment
+             */
+            Route::resource('comment', User\CommentController::class);
+            Route::delete('comment-delete', [User\CommentController::class, 'destroy'])->name('comment-delete');
 
-    /*
-     * Comment
-     */
-    Route::resource('comment', User\CommentController::class);
-    Route::delete('comment-delete', [User\CommentController::class, 'destroy'])->name('comment-delete');
-
-    /*
+            /*
          * License
          */
     Route::resource('license-type', License\LicenseSettingsController::class);

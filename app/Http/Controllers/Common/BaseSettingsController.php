@@ -165,6 +165,7 @@ class BaseSettingsController extends PaymentSettingsController
         $warn = '';
         $condition = new \App\Model\Mailjob\Condition();
 
+
         $commands = [
             'everyMinute' => 'Every Minute',
             'everyFiveMinutes' => 'Every Five Minute',
@@ -264,6 +265,11 @@ class BaseSettingsController extends PaymentSettingsController
         $this->saveConditions();
         /* redirect to Index page with Success Message */
         return redirect('job-scheduler')->with('success', \Lang::get('message.updated-successfully'));
+    }
+    public function postSubsSchedular(Request $request)
+    {
+      
+
     }
 
     public function postSubsSchedular(Request $request)

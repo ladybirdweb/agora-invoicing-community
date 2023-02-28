@@ -15,6 +15,7 @@ use App\Auto_renewal;
 use Schema;
 use Symfony\Component\Mime\Email;
 use Validator;
+use Symfony\Component\Mime\Email;
 
 class SettingsController extends Controller
 {
@@ -115,7 +116,6 @@ class SettingsController extends Controller
      */
     public function postPaymentWithStripe(Request $request)
     {
-      
        $validator = Validator::make($request->all(), [
         ]);
         $input = $request->all();
@@ -151,7 +151,6 @@ class SettingsController extends Controller
                     'cvc' => $request->get('cvv'),
                 ],
             ]);
-
             if (! isset($token['id'])) {
                 \Session::put('error', 'The Stripe Token was not generated correctly');
 

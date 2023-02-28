@@ -15,6 +15,7 @@ use App\Model\Product\ProductUpload;
 use App\Model\Product\Subscription;
 use App\User;
 use Exception;
+use Illuminate\Http\Request;
 use GrahamCampbell\Markdown\Facades\Markdown;
 use Illuminate\Http\Request;
 
@@ -434,7 +435,6 @@ class ClientController extends BaseClientController
                                 class='btn  btn-primary btn-xs' style='margin-right:5px;'>
                                 <i class='fa fa-eye' title='Details of order'></i>&nbsp;View $listUrl $url</a>";
                             })
-
                             ->filterColumn('product_name', function ($query, $keyword) {
                                 $sql = 'product.name like ?';
                                 $query->whereRaw($sql, ["%{$keyword}%"]);

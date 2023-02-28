@@ -1,11 +1,7 @@
 <?php
 /**
  * @package dompdf
- * @link    http://dompdf.github.com/
- * @author  Benj Carson <benjcarson@digitaljunkies.ca>
- * @author  Orion Richardson <orionr@yahoo.com>
- * @author  Helmut Tischer <htischer@weihenstephan.org>
- * @author  Fabien Ménager <fabien.menager@gmail.com>
+ * @link    https://github.com/dompdf/dompdf
  * @license http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
  */
 
@@ -159,7 +155,7 @@ class CPDF implements Canvas
      */
     protected $_current_opacity = 1;
 
-    public function __construct($paper = "letter", $orientation = "portrait", ?Dompdf $dompdf = null)
+    public function __construct($paper = "letter", string $orientation = "portrait", ?Dompdf $dompdf = null)
     {
         if (is_array($paper)) {
             $size = array_map("floatval", $paper);
@@ -299,17 +295,13 @@ class CPDF implements Canvas
     }
 
     /**
-     * @access private
+     * Serialize the pdf object's current state for retrieval later
      */
     public function serialize_object($id)
     {
-        // Serialize the pdf object's current state for retrieval later
         return $this->_pdf->serializeObject($id);
     }
 
-    /**
-     * @access private
-     */
     public function reopen_serialized_object($obj)
     {
         return $this->_pdf->restoreSerializedObject($obj);

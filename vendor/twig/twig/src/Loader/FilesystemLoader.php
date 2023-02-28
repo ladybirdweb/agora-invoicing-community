@@ -36,7 +36,6 @@ class FilesystemLoader implements LoaderInterface
      */
     public function __construct($paths = [], string $rootPath = null)
     {
-        
         $this->rootPath = (null === $rootPath ? getcwd() : $rootPath).\DIRECTORY_SEPARATOR;
         if (null !== $rootPath && false !== ($realPath = realpath($rootPath))) {
             $this->rootPath = $realPath.\DIRECTORY_SEPARATOR;
@@ -89,8 +88,6 @@ class FilesystemLoader implements LoaderInterface
         $this->cache = $this->errorCache = [];
 
         $checkPath = $this->isAbsolutePath($path) ? $path : $this->rootPath.$path;
-     
-     
         if (!is_dir($checkPath)) {
             throw new LoaderError(sprintf('The "%s" directory does not exist ("%s").', $path, $checkPath));
         }
@@ -186,9 +183,9 @@ class FilesystemLoader implements LoaderInterface
         }
 
         try {
-            $this->validateName($name);
-
             list($namespace, $shortname) = $this->parseName($name);
+
+            $this->validateName($shortname);
         } catch (LoaderError $e) {
             if (!$throw) {
                 return null;
@@ -275,8 +272,6 @@ class FilesystemLoader implements LoaderInterface
 
     private function isAbsolutePath(string $file): bool
     {
-        
-       
         return strspn($file, '/\\', 0, 1)
             || (\strlen($file) > 3 && ctype_alpha($file[0])
                 && ':' === $file[1]

@@ -8,6 +8,8 @@
 
 namespace Svg\Tag;
 
+use Svg\Style;
+
 class Image extends AbstractTag
 {
     protected $x = 0;
@@ -28,31 +30,35 @@ class Image extends AbstractTag
 
     public function start($attributes)
     {
-        $document = $this->document;
         $height = $this->document->getHeight();
+        $width = $this->document->getWidth();
         $this->y = $height;
 
         if (isset($attributes['x'])) {
-            $this->x = $attributes['x'];
+            $this->x = $this->convertSize($attributes['x'], $width);
         }
         if (isset($attributes['y'])) {
-            $this->y = $height - $attributes['y'];
+            $this->y = $height - $this->convertSize($attributes['y'], $height);
         }
 
         if (isset($attributes['width'])) {
-            $this->width = $attributes['width'];
+            $this->width = $this->convertSize($attributes['width'], $width);
         }
         if (isset($attributes['height'])) {
-            $this->height = $attributes['height'];
+            $this->height = $this->convertSize($attributes['height'], $height);
         }
 
         if (isset($attributes['xlink:href'])) {
             $this->href = $attributes['xlink:href'];
         }
 
-        $document->getSurface()->transform(1, 0, 0, -1, 0, $height);
+        if (isset($attributes['href'])) {
+            $this->href = $attributes['href'];
+        }
 
-        $document->getSurface()->drawImage($this->href, $this->x, $this->y, $this->width, $this->height);
+        $this->document->getSurface()->transform(1, 0, 0, -1, 0, $height);
+
+        $this->document->getSurface()->drawImage($this->href, $this->x, $this->y, $this->width, $this->height);
     }
 
     protected function after()

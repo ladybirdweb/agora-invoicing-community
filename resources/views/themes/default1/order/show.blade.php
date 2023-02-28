@@ -627,6 +627,66 @@ input:checked + .slider:before {
           </div>
         </div>
         </div>
+        <div id="alertMessage"></div>
+
+         <div class="card card-secondary card-outline">
+         <div class="row">
+            <div class="col-md-12">
+            <div class="card-body table-responsive">
+                <div class="box-group" id="accordion4">
+                     <a data-toggle="collapse" data-parent="#accordion4" href="#collapseFive">
+                   <div class="card-header">
+                    <h4 class="card-title" style="color:black;">
+                       <i class="fa fa-bars"></i>
+                       Auto Renewal
+                    </h4>
+                  </div>
+                </a>
+                       <div class="card-body">
+                       <div class="col-md-12">
+                         <div class="row">
+
+              <div class="col-8">
+                @if($statusAutorenewal == 1)
+
+              <label class="switch toggle_event_editing">
+
+                         <input type="checkbox" value="1"  name="is_subscribed"
+                          class="checkbox" id="is_subscribed" checked>
+                          <span class="slider round"></span>
+
+                    </label>
+                    <h6>Disable Auto Renewal</h6>
+
+                    @else
+
+                       <label class="switch toggle_event_editing">
+
+                         <input type="checkbox" value="0"  name="is_subscribed"
+                          class="checkbox" id="is_subscribed">
+                          <span class="slider round"></span>
+
+                    </label>
+                     <h6>Enable Auto Renewal for Future Subscription</h6>
+
+                    @endif
+          </div>
+              <div class="col-4">
+             <button type="submit" class="form-group btn btn-primary" onclick="saveStatus('{{$id}}')"  id="submitSub"><i class="fa fa-save">&nbsp;</i>Save</button>
+
+          </div>
+            </div>
+
+                          </div>
+      
+
+                          </div>
+                    </div>
+
+            </div>
+          </div>
+        </div>
+        </div>
 <script>
 
     $(document).ready(function(){
@@ -1060,6 +1120,35 @@ input:checked + .slider:before {
         });
     })
   })
+
+
+   function saveStatus($id)
+          {
+              // $("#submitSub").html("<i class='fas fa-circle-notch fa-spin'></i>Please Wait...");
+              var status = ($('#is_subscribed').prop("checked"));
+              var id = $id;
+
+            $.ajax({
+
+                url : '{{url("post-status")}}',
+                type : 'post',
+                data: {
+                    data: { "is_subscribed" : status, "order_id" : id },
+                   },
+                success: function (response) {
+                    $('#alertMessage').show();
+                    var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>'+response.update+'.</div>';
+                    $('#alertMessage').html(result+ ".");
+                    $("#submit").html("<i class='fa fa-save'>&nbsp;&nbsp;</i>Save");
+                    setInterval(function(){
+                        $('#alertMessage').slideUp(3000);
+                    }, 1000);
+                },
+
+
+            });
+
+          };
 </script>
 
 @stop

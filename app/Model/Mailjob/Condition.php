@@ -12,7 +12,7 @@ class Condition extends Model
 
     public function checkActiveJob()
     {
-        $result = ['expiryMail' => '', 'deleteLogs' => ''];
+        $result = ['expiryMail' => '', 'deleteLogs' => '', 'subsExpirymail' => '', 'postExpirymail' => ''];
         $allStatus = new \App\Model\Common\StatusSetting();
         $status = $allStatus->find(1);
         if ($status) {
@@ -22,8 +22,15 @@ class Condition extends Model
             if ($status->activity_log_delete == 1) {
                 $result['deleteLogs'] = true;
             }
+            if ($status->subs_expirymail == 1)
+            {
+                $result['subsExpirymail'] = true;
+            }
+            if ($status->post_expirymail == 1)
+            {
+                $result['postExpirymail'] = true;
+            }
         }
-
         return $result;
     }
 

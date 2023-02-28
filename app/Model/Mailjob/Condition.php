@@ -29,6 +29,7 @@ class Condition extends Model
                 $result['postExpirymail'] = true;
             }
         }
+
         return $result;
     }
 

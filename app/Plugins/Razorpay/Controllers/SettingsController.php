@@ -23,7 +23,6 @@ class SettingsController extends Controller
 
     public function Settings()
     {
-
         try {
             if (! Schema::hasTable('razorpay')) {
                 Schema::create('razorpay', function ($table) {

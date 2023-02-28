@@ -22,15 +22,14 @@ class Condition extends Model
             if ($status->activity_log_delete == 1) {
                 $result['deleteLogs'] = true;
             }
-            if ($status->subs_expirymail == 1)
-            {
+            if ($status->subs_expirymail == 1) {
                 $result['subsExpirymail'] = true;
             }
-            if ($status->post_expirymail == 1)
-            {
+            if ($status->post_expirymail == 1) {
                 $result['postExpirymail'] = true;
             }
         }
+
         return $result;
     }
 

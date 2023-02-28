@@ -165,7 +165,6 @@ class BaseSettingsController extends PaymentSettingsController
         $warn = '';
         $condition = new \App\Model\Mailjob\Condition();
 
-
         $commands = [
             'everyMinute' => 'Every Minute',
             'everyFiveMinutes' => 'Every Five Minute',
@@ -251,17 +250,14 @@ class BaseSettingsController extends PaymentSettingsController
         } else {
             $allStatus->activity_log_delete = 0;
         }
-        if($request->subs_expirymail){
+        if ($request->subs_expirymail) {
             $allStatus->subs_expirymail = $request->subs_expirymail;
-        }else{
+        } else {
             $allStatus->subs_expirymail = 0;
         }
-        if($request->postsubs_expirymail)
-        {
+        if ($request->postsubs_expirymail) {
             $allStatus->post_expirymail = $request->postsubs_expirymail;
-        }
-        else
-        {
+        } else {
             $allStatus->post_expirymail = 0;
         }
         $allStatus->save();
@@ -269,10 +265,9 @@ class BaseSettingsController extends PaymentSettingsController
         /* redirect to Index page with Success Message */
         return redirect('job-scheduler')->with('success', \Lang::get('message.updated-successfully'));
     }
+
     public function postSubsSchedular(Request $request)
     {
-      
-
     }
 
     //Save the Cron Days for expiry Mails and Activity Log
@@ -286,9 +281,7 @@ class BaseSettingsController extends PaymentSettingsController
             }
         }
 
-     
-        ExpiryMailDay::create(['days' => $request->input('expiryday'), 'autorenewal_days' => $request->input('subexpiryday'),'postexpiry_days' => $request->input('postsubexpiry_days')]);
-
+        ExpiryMailDay::create(['days' => $request->input('expiryday'), 'autorenewal_days' => $request->input('subexpiryday'), 'postexpiry_days' => $request->input('postsubexpiry_days')]);
 
         ActivityLogDay::findorFail(1)->update(['days' => $request->logdelday]);
 

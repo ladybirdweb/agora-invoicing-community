@@ -104,7 +104,7 @@ use Illuminate\Support\Facades\Route;
             Route::get('get-my-payment/{orderid}/{userid}', [Front\ClientController::class, 'getPaymentByOrderId'])->name('get-my-payment');
 
             Route::get('get-my-payment-client/{orderid}/{userid}', [Front\ClientController::class, 'getPaymentByOrderIdClient'])->name('get-my-payment-client');
-            
+
             Route::post('post-status', [Front\ClientController::class, 'postAutorenewalStatus'])->name('post-status');
             Route::get('my-orders', [Front\ClientController::class, 'orders']);
             Route::get('get-my-orders', [Front\ClientController::class, 'getOrders'])->name('get-my-orders');

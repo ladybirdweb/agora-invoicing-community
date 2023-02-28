@@ -15,8 +15,8 @@ use App\Model\Product\ProductUpload;
 use App\Model\Product\Subscription;
 use App\User;
 use Exception;
-use Illuminate\Http\Request;
 use GrahamCampbell\Markdown\Facades\Markdown;
+use Illuminate\Http\Request;
 
 class ClientController extends BaseClientController
 {
@@ -69,16 +69,14 @@ class ClientController extends BaseClientController
     {
         $status = $request['data']['is_subscribed'];
         $orderid = $request['data']['order_id'];
-        $subcribe_id = Subscription::where('order_id',$orderid)->value('subscribe_id');
-        if($status == 'false'){
-            Subscription::where('subscribe_id',$subcribe_id)->update(['is_subscribed' => 0]);
-        }elseif($status == 'true')
-        {
-         Subscription::where('subscribe_id',$subcribe_id)->update(['is_subscribed' => 1]);
-         }
-        return ['message' => 'success', 'update' => 'settings saved successfully'];
-    
+        $subcribe_id = Subscription::where('order_id', $orderid)->value('subscribe_id');
+        if ($status == 'false') {
+            Subscription::where('subscribe_id', $subcribe_id)->update(['is_subscribed' => 0]);
+        } elseif ($status == 'true') {
+            Subscription::where('subscribe_id', $subcribe_id)->update(['is_subscribed' => 1]);
+        }
 
+        return ['message' => 'success', 'update' => 'settings saved successfully'];
     }
 
     public function invoices()
@@ -421,7 +419,7 @@ class ClientController extends BaseClientController
                                 class='btn  btn-primary btn-xs' style='margin-right:5px;'>
                                 <i class='fa fa-eye' title='Details of order'></i>&nbsp;View $listUrl $url</a>";
                             })
-            
+
                             ->filterColumn('product_name', function ($query, $keyword) {
                                 $sql = 'product.name like ?';
                                 $query->whereRaw($sql, ["%{$keyword}%"]);
@@ -526,11 +524,11 @@ class ClientController extends BaseClientController
             $cont = new \App\Http\Controllers\License\LicenseController();
             $installationDetails = $cont->searchInstallationPath($order->serial_key, $order->product);
 
-            $statusAutorenewal = Subscription::where('order_id',$id)->value('is_subscribed');
+            $statusAutorenewal = Subscription::where('order_id', $id)->value('is_subscribed');
 
             return view(
                 'themes.default1.front.clients.show-order',
-                compact('invoice', 'order', 'user', 'product', 'subscription', 'licenseStatus', 'installationDetails', 'allowDomainStatus', 'date', 'licdate', 'versionLabel', 'installationDetails', 'id','statusAutorenewal')
+                compact('invoice', 'order', 'user', 'product', 'subscription', 'licenseStatus', 'installationDetails', 'allowDomainStatus', 'date', 'licdate', 'versionLabel', 'installationDetails', 'id', 'statusAutorenewal')
             );
         } catch (Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());

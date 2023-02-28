@@ -77,7 +77,6 @@
             },
             processing: true,
             serverSide: true,
-            stateSave: true,
             order: [[ 0, "desc" ]],
             ajax: "{!! Url('get-versions') !!}/" + $productid + '/' + $clientid + '/' + $invoiceid,
             "oLanguage": {

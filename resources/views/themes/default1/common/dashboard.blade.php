@@ -155,7 +155,7 @@ Dashboard
         <ul class="users-list clearfix">
             @foreach($users as $user)
                 <li>
-                    <a class="users-list-name" href="{{url('clients/'.$user['id'])}}"> <img src="{{$user['profile_pic']}}" alt="User Image"></a>
+                    <a class="users-list-name" href="{{url('clients/'.$user['id'])}}"> <img src="{{$user['profile_pic']}}" style="height: 80px;width: 80px;" alt="User Image"></a>
                     <a class="users-list-name" href="{{url('clients/'.$user['id'])}}">{{$user['first_name']." ".$user['last_name']}}</a>
 
                     @php
@@ -208,8 +208,8 @@ Dashboard
      {{-- Paid Orders Expired in Last 30 days --}}
      @php
         $currentDate = date('m/d/Y');
-        $expiringSubscriptionDate = date('m/d/Y', strtotime('+3 months'));
-        $expiredSubscriptionDate = date('m/d/Y', strtotime('-3 months'));
+        $expiringSubscriptionDate = date('m/d/Y', strtotime('+1 months'));
+        $expiredSubscriptionDate = date('m/d/Y', strtotime('-1 months'));
      @endphp
 
      @component('mini_views.card', [
@@ -218,7 +218,7 @@ Dashboard
             'collection'=> $expiredSubscriptions,
             'columns'=> ['User', 'Order No', 'Expiry', 'Days Passed', 'Product'],
             'linkRight'=> ['Place New Order' => url('invoice/generate')],
-            'linkLeft'=> ['View Orders Expired' => url('orders?expiry='.$expiredSubscriptionDate.'&expiryTill='.$currentDate.'&p_un=paid')]
+            'linkLeft'=> ['View Orders Expired' => url('orders?from='.$expiredSubscriptionDate.'&till='.$currentDate.'&renewal=expired_subscription&product_id=paid')]
      ])
 
          @foreach($expiredSubscriptions as $element)
@@ -239,7 +239,7 @@ Dashboard
             'collection'=> $subscriptions,
             'columns'=> ['User', 'Order No', 'Expiry', 'Days Left', 'Product'],
             'linkRight'=> ['Place New Order' => url('invoice/generate')],
-            'linkLeft'=> ['View Orders Expiring Soon' => url('orders?expiry='.$currentDate.'&expiryTill='.$expiringSubscriptionDate.'&p_un=paid')]
+            'linkLeft'=> ['View Orders Expiring Soon' => url('orders?from='.$currentDate.'&till='.$expiringSubscriptionDate.'&renewal=expiring_subscription&product_id=paid')]
      ])
 
          @foreach($subscriptions as $element)

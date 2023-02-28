@@ -49,7 +49,6 @@ active
         $('#order-table').DataTable({
             destroy:true,
             processing: true,
-            stateSave: true,
             serverSide: true,
             order: [[ 0, "desc" ]],
             ajax: {

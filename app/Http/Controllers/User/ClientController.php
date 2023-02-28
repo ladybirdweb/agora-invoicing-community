@@ -487,6 +487,7 @@ class ClientController extends AdvanceSearchController
                 $activate = $activate_model->create(['email' => $user['email'], 'token' => $str]);
                 $token = $activate->token;
                 $url = url("activate/$token");
+                $website_url = url('/');
 
                 //template
 
@@ -495,7 +496,7 @@ class ClientController extends AdvanceSearchController
                 ->to($user['email'])
                 ->subject($template->name)
                 ->html($mail->mailTemplate($template->data, $templatevariables = ['name' => $user['first_name'].' '.$user['last_name'],
-                    'username' => $user['email'], 'password' => $str, 'url' => $url, ]));
+                    'username' => $user['email'], 'password' => $str, 'url' => $url, 'website_url' => $website_url, ]));
                 $mailer->send($email);
             } else {
                 $email = (new Email())

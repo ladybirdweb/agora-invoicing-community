@@ -288,7 +288,7 @@ if($script->on_every_page == 1) {
 
 
                                                                                 @if(Auth::check())
-                                                                              <a href="{{url("group/$data->pricing_templates_id/$data->id")}}">Choose a Product
+                                                                              <a href="">Choose a Product
                                                                                 @else
                                                                                 <a href="{{url('login')}}">Choose a Product
                                                                                   @endif
@@ -418,7 +418,6 @@ if($script->on_every_page == 1) {
                 
                  <div class="alert alert-danger alert-dismissable" role="alert">
                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <strong><i class="fas fa-exclamation-triangle"></i>Oh snap!</strong>
                     {{Session::get('fails')}}
                 </div>
             
@@ -427,7 +426,6 @@ if($script->on_every_page == 1) {
                     
                      <div class="alert alert-danger alert-dismissable" role="alert">
                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                       <strong><i class="fas fa-exclamation-triangle"></i>Oh snap!</strong> Change a few things up and try submitting again.
 
                         <ul>
                             @foreach ($errors->all() as $error)

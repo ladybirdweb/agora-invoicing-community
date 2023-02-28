@@ -96,7 +96,7 @@ input:checked + .slider:before {
 
                     <thead>
                         <tr>
-                         <th>CurrencyName</th>
+                         <th>Currency Name</th>
                           <th>Currency Code</th>
                           <th>Currency symbol</th>
                           <th>Dashboard Currency</th>

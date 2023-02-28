@@ -16,9 +16,7 @@ Create User
 
 
 @stop
-<style>
 
-</style>
 @section('content')
 
 

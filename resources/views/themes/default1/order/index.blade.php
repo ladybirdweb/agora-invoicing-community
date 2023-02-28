@@ -23,13 +23,13 @@ Orders
 
         <div class="card-tools">
 
-            <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
-                <i class="fas fa-plus"></i></button>
+             <button type="button" class="btn btn-tool" id="tip-search" title="Expand"> <i id="search-icon" class="fas fa-plus"></i>
+                            </button>
             
         </div>
     </div>
     <!-- /.box-header -->
-    <div class="card-body table-responsive">
+      <div class="card-body table-responsive" id="advance-search" style="display:none;">
         {!! Form::open(['method'=>'get']) !!}
 
         <div class="row">
@@ -65,7 +65,7 @@ Orders
             </div>
             <div class="col-md-3 form-group">
                 <!-- first name -->
-                {!! Form::label('till','Till') !!}
+                {!! Form::label('till','To') !!}
                 <div class="input-group date" id="order_till" data-target-input="nearest">
                     <input type="text" name="till" class="form-control datetimepicker-input" autocomplete="off" value="{!! $request->till !!}" data-target="#order_till"/>
 
@@ -213,6 +213,10 @@ Orders
             processing: true,
             serverSide: true,
             stateSave: false,
+            order: [[ {!! $request->sort_field ?: 5 !!}, {!! "'".$request->sort_order."'" ?: "'asc'" !!} ]],
+
+
+
             ajax: {
             "url":  '{!! route('get-orders',"order_no=$request->order_no&product_id=$request->product_id&expiry=$request->expiry&expiryTill=$request->expiryTill&from=$request->from&till=$request->till&sub_from=$request->sub_from&sub_till=$request->sub_till&ins_not_ins=$request->ins_not_ins&domain=$request->domain&p_un=$request->p_un&act_ins=$request->act_inst&renewal=$request->renewal&inact_ins=$request->inact_inst&version=$request->version" ) !!}',
                error: function(xhr) {
@@ -315,8 +319,11 @@ Orders
             else
             {
                 alert("Please select at least one checkbox");
+                return false;
             }
-        }  
+        } 
+                return false;
+
 
      });
     $('#update_expiry').datetimepicker({

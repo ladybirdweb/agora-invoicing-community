@@ -21,13 +21,13 @@ Invoices
         <h3 class="card-title">Advance Search</h3>
 
                 <div class="card-tools">
-                    <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
-                        <i class="fas fa-plus"></i></button>
+                   <button type="button" class="btn btn-tool" id="tip-search" title="Expand"> <i id="search-icon" class="fas fa-plus"></i>
+                            </button>
                    
                 </div>
     </div>
     <!-- /.box-header -->
-    <div class="card-body">
+    <div class="card-body table-responsive" id="advance-search" style="display:none;">
 
         {!! Form::open(['method'=>'get']) !!}
 
@@ -156,7 +156,7 @@ Invoices
                 <table id="invoice-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
                     <button  value="" class="btn btn-secondary btn-sm btn-alldell" id="bulk_delete"><i class="fa fa-trash"></i>&nbsp;&nbsp;Delete Selected</button><br /><br />
                     <thead><tr>
-                        <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
+                        <th class="no-sort"><input type="checkbox"  name="select_all" onchange="checking(this)"></th>
                          <th>User</th>
                           <th>Invoice No</th>
                            <th>Date</th>
@@ -189,11 +189,12 @@ Invoices
 
 <script type="text/javascript">
 
+
         $('#invoice-table').DataTable({
             processing: true,
             serverSide: true,
-             stateSave: false,
-            order: [[ 0, "desc" ]],
+            stateSave: false,
+            order: [[ {!! $request->sort_field ?: 5 !!}, {!! "'".$request->sort_order."'" ?: "'asc'" !!} ]],
             ajax: {
             "url":  '{!! route('get-invoices',"name=$name&invoice_no=$invoice_no&status=$status&currency_id=$currency_id&from=$from&till=$till") !!}',
                error: function(xhr) {
@@ -277,7 +278,7 @@ Invoices
             }
             else
             {
-                alert("Please select at least one checkbox");
+              alert("Please select at least one checkbox");
             }
         }  
 

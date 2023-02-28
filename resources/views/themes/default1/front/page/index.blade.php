@@ -23,7 +23,7 @@ All Pages
             <h3 class="card-title">{{Lang::get('message.pages')}}</h3>
 
             <div class="card-tools">
-                <a href="{{url('pages/create')}}" class="btn btn-default btn-sm pull-right"><span class="fas fa-plus"></span>&nbsp;{{Lang::get('message.create')}}</a>
+                <a href="{{url('pages/create')}}" class="btn btn-default btn-sm pull-right" <?php if($pages_count >= 3)  {?>  onclick="return false" title="Page limit has been exceeded.Please delete any of them to create new page!"  <?php  }?> ><span class="fas fa-plus"></span>&nbsp;{{Lang::get('message.create')}}</a>
 
 
             </div>
@@ -61,6 +61,9 @@ All Pages
         $('#pages-table').DataTable({
             processing: true,
             serverSide: true,
+            order: [[1, 'asc']],
+
+
             ajax: {
             "url":  '{!! route('get-pages') !!}',
                error: function(xhr) {

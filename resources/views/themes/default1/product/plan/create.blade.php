@@ -178,7 +178,7 @@
 
         </div>
          <div class="modal-footer justify-content-between">
-                <button type="button" class="btn btn-default " data-dismiss="modal"><i class="fa fa-times"></i>&nbsp;Close</button>
+                <button type="button" class="btn btn-default " data-dismiss="modal" id="close-plan"><i class="fa fa-times"></i>&nbsp;Close</button>
                 <button type="submit"  class="btn btn-primary"><i class="fas fa-save"></i>&nbsp;Save</button>
 
             </div>
@@ -197,6 +197,11 @@
 
 
 <script>
+
+$("#close-plan").click(function() {
+   location.reload();
+});
+      
   $(document).ready(function(){
     myProduct();
   })
@@ -270,7 +275,8 @@
         url: "{{ url('postInsertPeriod') }}",
         data: {
           "name": $('#new-period').val(),
-          "days": $('#new-days').val()
+          "days": $('#new-days').val(),
+          'select-period': $('#select-period').val(),
         },
         success: function (data) {
           $('#plandays').append($("<option/>", {
@@ -279,6 +285,7 @@
           }))
           $('#new-period').val("");
           $('#new-days').val("");
+          $('#select-period').val("");
           var result =
             '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>Period Added Successfully</div>';
           $('#error').hide();

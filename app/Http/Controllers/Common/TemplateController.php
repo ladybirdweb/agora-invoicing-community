@@ -50,7 +50,7 @@ class TemplateController extends Controller
                              return $model->name;
                          })
                         ->addColumn('type', function ($model) {
-                            return $this->type->where('id', $model->type)->first()->name;
+                            return $this->type->where('id', $model->type)->value('name');
                         })
                         ->addColumn('action', function ($model) {
                             return '<a href='.url('template/'.$model->id.'/edit').

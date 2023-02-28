@@ -101,7 +101,12 @@ System Setting
                             <div class="form-group {{ $errors->has('phone') ? 'has-error' : '' }}">
 
 
-                                {!! Form::text('phone',null,['class' => 'form-control']) !!}
+                                {!! Form::text('phone',null,['class' => 'form-control selected-dial-code', 'type'=>'tel','id'=>'phone']) !!}
+                                
+                                 {!! Form::hidden('phone_code',null,['id'=>'phone_code_hidden']) !!}
+     
+                                <span id="valid-msg" class="hide"></span>
+                                <span id="error-msg" class="hide"></span>
                                
 
                             </div>
@@ -359,6 +364,95 @@ System Setting
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
 <script type="text/javascript">
  
+      $(document).ready(function(){
+         $(function () {
+             //Initialize Select2 Elements
+             $('.select2').select2()
+         });
+    var country = $('#country').val();
+    if(country == 'IN') {
+        $('#gstin').show()
+    } else {
+        $('#gstin').hide();
+    }
+    getCode(country);
+    var telInput = $('#phone');
+    addressDropdown = $("#country");
+     errorMsg = document.querySelector("#error-msg"),
+    validMsg = document.querySelector("#valid-msg");
+    var errorMap = [ "Invalid number", "Invalid country code", "Number Too short", "Number Too long", "Invalid number"];
+     let currentCountry="";
+    telInput.intlTelInput({
+        initialCountry: "auto",
+        geoIpLookup: function (callback) {
+
+            $.get("http://ipinfo.io", function () {}, "jsonp").always(function (resp) {
+                resp.country = country;
+
+                var countryCode = (resp && resp.country) ? resp.country : "";
+                    currentCountry=countryCode.toLowerCase()
+                    callback(countryCode);
+            });
+        },
+        separateDialCode: true,
+       utilsScript: "{{asset('js/intl/js/utils.js')}}"
+    });
+     var reset = function() {
+      errorMsg.innerHTML = "";
+      errorMsg.classList.add("hide");
+      validMsg.classList.add("hide");
+    };
+    setTimeout(()=>{
+         telInput.intlTelInput("setCountry", currentCountry);
+    },500)
+     $('.intl-tel-input').css('width', '100%');
+    telInput.on('blur', function () {
+      reset();
+        if ($.trim(telInput.val())) {
+            if (telInput.intlTelInput("isValidNumber")) {
+              $('#phone').css("border-color","");
+              validMsg.classList.remove("hide");
+              $('#submit').attr('disabled',false);
+            } else {
+              var errorCode = telInput.intlTelInput("getValidationError");
+             errorMsg.innerHTML = errorMap[errorCode];
+             $('#phone').css("border-color","red");
+             $('#error-msg').css({"color":"red","margin-top":"5px"});
+             errorMsg.classList.remove("hide");
+             $('#submit').attr('disabled',true);
+            }
+        }
+    });
+
+     addressDropdown.change(function() {
+     telInput.intlTelInput("setCountry", $(this).val());
+             if ($.trim(telInput.val())) {
+            if (telInput.intlTelInput("isValidNumber")) {
+              $('#phone').css("border-color","");
+              errorMsg.classList.add("hide");
+              $('#submit').attr('disabled',false);
+            } else {
+              var errorCode = telInput.intlTelInput("getValidationError");
+             errorMsg.innerHTML = errorMap[errorCode];
+             $('#phone').css("border-color","red");
+             $('#error-msg').css({"color":"red","margin-top":"5px"});
+             errorMsg.classList.remove("hide");
+             $('#submit').attr('disabled',true);
+            }
+        }
+    });
+    $('input').on('focus', function () {
+        $(this).parent().removeClass('has-error');
+    });
+
+    $('form').on('submit', function (e) {
+        $('input[name=mobileds]').attr('value', $('.selected-dial-code').text());
+    });
+
+
+});
+ 
+ 
      $('.show_confirm').click(function(event) {
           var id = $(this).attr('id');
           var column = $(this).attr('value');
@@ -444,6 +538,18 @@ System Setting
             data: 'country_id=' + val,
             success: function (data) {
                 $("#state-list").html(data);
+            }
+        });
+    }
+    
+        function getCode(val) {
+        $.ajax({
+            type: "GET",
+            url: "{{url('get-code')}}",
+            data: 'country_id=' + val,
+            success: function (data) {
+                // $("#mobile_code").val(data);
+                $("#phone_code_hidden").val(data);
             }
         });
     }

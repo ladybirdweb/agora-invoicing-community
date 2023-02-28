@@ -121,7 +121,11 @@ Edit Product
                                 <div class="col-md-6 form-group {{ $errors->has('description') ? 'has-error' : '' }}">
                                     
                                     {!! Form::label('description',Lang::get('message.description'),['class'=>'required']) !!}
-                                    {!! Form::textarea('description',null,['class' => 'form-control','id'=>'textarea1']) !!}
+                                    <!--{!! Form::text('description',null,['class' => 'form-control','id'=>'textarea1']) !!}-->
+                                    <textarea hidden class="form-control"  name="description" id='textarea1'>{!! $product->description !!}</textarea>
+
+                                    
+                                   
                                      <h6 id= "descheck"></h6>
                                      </div>
                                    <div class="col-md-6">
@@ -148,6 +152,10 @@ Edit Product
                                                         <!-- last name -->
                                                 {!! Form::label('image',Lang::get('message.image')) !!}
                                                 {!! Form::file('image') !!}
+                                                <br>
+                                                @if($product->image)
+                                               <img src="{{$product->image }}" width="100px" alt="slider Image">
+                                               @endif
 
                                         </div>
                                                 </li>
@@ -297,7 +305,7 @@ Edit Product
                                                    <select id="editTax" placeholder="Select Taxes" name="tax[]" style="width:500px;" class="select2" multiple="true">
                                                     
                                                        @foreach($taxes as $value)
-                                                        <option value={{$value['id']}} <?php echo (in_array($value['id'], $savedTaxes)) ?  "selected" : "" ;  ?>>{{$value['name'].'('.$value['tax'][0]['name'].')'}}</option> 
+                                                        <option value={{$value['id']}} <?php echo (in_array($value['id'], $savedTaxes)) ?  "selected" : "" ;  ?>>{{$value['name'].'('.$value['name'].')'}}</option> 
                                                         
                                                        @endforeach
                                                     </select>
@@ -530,7 +538,6 @@ Edit Product
             },
             processing: true,
             serverSide: true,
-             stateSave: true,
                order: [[ 0, "desc" ]],
                
              ajax: '{!! route('get-upload',$product->id) !!}',

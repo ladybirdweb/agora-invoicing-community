@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Front;
 use App\DefaultPage;
 use App\Http\Controllers\Common\TemplateController;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Front\PageRequest;
 use App\Model\Common\PricingTemplate;
 use App\Model\Front\FrontendPage;
 use App\Model\Product\Product;
@@ -27,7 +28,9 @@ class PageController extends Controller
     public function index()
     {
         try {
-            return view('themes.default1.front.page.index');
+            $pages_count = count($this->page->all());
+
+            return view('themes.default1.front.page.index', compact('pages_count'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -94,7 +97,7 @@ class PageController extends Controller
             $parents = $this->page->where('id', '!=', $id)->pluck('name', 'id')->toArray();
             $selectedDefault = DefaultPage::value('page_id');
             $date = $this->page->where('id', $id)->pluck('created_at')->first();
-            $publishingDate = date('d/m/Y', strtotime($date));
+            $publishingDate = date('m/d/Y', strtotime($date));
             $selectedParent = $this->page->where('id', $id)->pluck('parent_page_id')->toArray();
             $parentName = $this->page->where('id', $selectedParent)->pluck('name', 'id')->toArray();
 
@@ -105,17 +108,10 @@ class PageController extends Controller
         }
     }
 
-    public function store(Request $request)
+    public function store(PageRequest $request)
     {
-        $this->validate($request, [
-            'name' => 'required',
-            'publish' => 'required',
-            'slug' => 'required',
-            'url' => 'required',
-            'content' => 'required',
-        ]);
-
         try {
+            $pages_count = count($this->page->all());
             $url = $request->input('url');
             if ($request->input('type') == 'contactus') {
                 $url = url('/contact-us');
@@ -127,9 +123,13 @@ class PageController extends Controller
             $this->page->parent_page_id = $request->input('parent_page_id');
             $this->page->type = $request->input('type');
             $this->page->content = $request->input('content');
-            $this->page->save();
+            if ($pages_count <= 2) {
+                $this->page->save();
 
-            return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
+                return redirect()->back()->with('success', trans('message.saved-successfully'));
+            } else {
+                return redirect()->back()->with('fails', trans('message.limit_exceed'));
+            }
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
 
@@ -137,22 +137,13 @@ class PageController extends Controller
         }
     }
 
-    public function update($id, Request $request)
+    public function update($id, PageRequest $request)
     {
-        $this->validate($request, [
-            'name' => 'required',
-            'publish' => 'required',
-            'slug' => 'required',
-            'url' => 'required',
-            'content' => 'required',
-            'created_at' => 'required',
-        ]);
-
         try {
             if ($request->input('default_page_id') != '') {
                 $page = $this->page->where('id', $id)->first();
                 $page->fill($request->except('created_at'))->save();
-                $date = \DateTime::createFromFormat('d/m/Y', $request->input('created_at'));
+                $date = \DateTime::createFromFormat('m/d/Y', $request->input('created_at'));
                 $page->created_at = $date->format('Y-m-d H:i:s');
                 $page->save();
                 $defaultUrl = $this->page->where('id', $request->input('default_page_id'))->pluck('url')->first();

@@ -208,11 +208,21 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                             $sql = 'number like ?';
                             $query->whereRaw($sql, ["%{$keyword}%"]);
                         })
-                        ->filterColumn('status', function ($query, $keyword) {
-                            $sql = 'status like ?';
-                            $query->whereRaw($sql, ["%{$keyword}%"]);
-                        })
-
+                         ->filterColumn('status', function ($query, $keyword) {
+                             if ($keyword == 'Paid' || $keyword == 'paid') {
+                                 $sql = 'status like ?';
+                                 $sql2 = 'success';
+                                 $query->whereRaw($sql, ["%{$sql2}%"]);
+                             } elseif ($keyword == 'Unpaid' || $keyword == 'unpaid') {
+                                 $sql = 'status like ?';
+                                 $sql2 = 'pending';
+                                 $query->whereRaw($sql, ["%{$sql2}%"]);
+                             } elseif ($keyword == 'Partiallypaid' || $keyword == 'Partially' || $keyword == 'partially') {
+                                 $sql = 'status like ?';
+                                 $sql2 = 'partially paid';
+                                 $query->whereRaw($sql, ["%{$sql2}%"]);
+                             }
+                         })
                          ->rawColumns(['checkbox', 'user_id', 'number', 'date', 'grand_total', 'status', 'action'])
                         ->make(true);
     }

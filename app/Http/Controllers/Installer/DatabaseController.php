@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Installer;
 
+use App\Http\Controllers\SyncBillingToLatestVersion;
 use Exception;
 use Illuminate\Database\SQLiteConnection;
 use Illuminate\Support\Facades\Artisan;
@@ -70,7 +71,7 @@ class DatabaseController extends BaseDatabaseController
     private function seed(BufferedOutput $outputLog)
     {
         try {
-            Artisan::call('db:seed', ['--force' => true], $outputLog);
+            (new SyncBillingToLatestVersion)->sync();
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
         }

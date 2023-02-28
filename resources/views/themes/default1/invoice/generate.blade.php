@@ -30,7 +30,7 @@ Create Invoice
             @endif
         <div id="error">
         </div>
-        <div id="success">
+        <div id="successs">
         </div>
         <div id="fails">
         </div>
@@ -288,9 +288,9 @@ Create Invoice
                 if(data.success == true) {
                     $('#fails').hide();
                         $('#error').hide();
-                        $('#success').show();
+                        $('#successs').show();
                     var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="fa fa-check"></i>Success! </strong>'+data.message.success+'!</div>';
-                    $('#success').html(result);
+                    $('#successs').html(result);
                      $('#formoid').trigger("reset");
                      $('select').prop('selectedIndex', 0);
                      $("#users").val("");

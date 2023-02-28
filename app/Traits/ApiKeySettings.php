@@ -180,9 +180,18 @@ trait ApiKeySettings
             $expiry_dailyAt = \Request::get('expiry-dailyAt');
             $activity_commands = \Request::get('activity-commands');
             $activity_dailyAt = \Request::get('activity-dailyAt');
+            $subexpiry_commands = \Request::get('subexpiry-commands');
+            $subexpiry_dailyAt = \Request::get('subexpiry-dailyAt');
+            $postexpiry_commands = \Request::get('postsubexpiry-commands');
+            $postexpiry_dailyAt = \Request::get('postsubexpiry-dailyAt');
+
+
+
             $activity_command = $this->getCommand($activity_commands, $activity_dailyAt);
             $expiry_command = $this->getCommand($expiry_commands, $expiry_dailyAt);
-            $jobs = ['expiryMail' => $expiry_command, 'deleteLogs' => $activity_command];
+            $subexpiry_command = $this->getCommand($subexpiry_commands,$subexpiry_dailyAt);
+            $postexpiry_command = $this->getCommand($postexpiry_commands,$postexpiry_dailyAt);
+            $jobs = ['expiryMail' => $expiry_command, 'deleteLogs' => $activity_command,'subsExpirymail' => $subexpiry_commands,'postExpirymail' => $postexpiry_command ];
             $this->storeCommand($jobs);
         }
     }

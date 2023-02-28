@@ -157,7 +157,6 @@ trait CoupCodeAndInvoiceSearch
                 $invoice->coupon_code = $code;
                 $invoice->processing_fee = $processingFee;
                 $invoice->status = $invoice_status;
-                $invoice->save();
             }
 
             return $payment;

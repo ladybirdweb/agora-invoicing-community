@@ -25,6 +25,8 @@ class Kernel extends ConsoleKernel
         SetupTestEnv::class,
         \App\Console\Commands\SyncDatabaseToLatestVersion::class,
         \App\Console\Commands\RenewalCron::class,
+        \App\Console\Commands\AutorenewalExpirymail::class,
+        \App\Console\Commands\PostExpiryCron::class,
 
     ];
 
@@ -40,6 +42,8 @@ class Kernel extends ConsoleKernel
         $this->execute($schedule, 'deleteLogs');
         $schedule->command('renewal:cron')
                  ->daily();
+        $this->execute($schedule, 'subsExpirymail');
+        $this->execute($schedule,'postExpirymail');
     }
 
     public function execute($schedule, $task)
@@ -48,6 +52,8 @@ class Kernel extends ConsoleKernel
         if (\File::exists($env) && (env('DB_INSTALL') == 1)) {
             $expiryMailStatus = StatusSetting::pluck('expiry_mail')->first();
             $logDeleteStatus = StatusSetting::pluck('activity_log_delete')->first();
+            $RenewalexpiryMailStatus = StatusSetting::pluck('subs_expirymail')->first();
+            $postExpirystatus = StatusSetting::pluck('post_expirymail')->first();
             $delLogDays = ActivityLogDay::pluck('days')->first();
             if ($delLogDays == null) {
                 $delLogDays = 99999999;
@@ -64,6 +70,19 @@ class Kernel extends ConsoleKernel
             case 'deleteLogs':
              if ($logDeleteStatus == 1) {
                  return $this->getCondition($schedule->command('activitylog:clean'), $command);
+             }
+
+             case 'subsExpirymail':
+             if ($RenewalexpiryMailStatus)
+             {
+                return $this->getCondition($schedule->command('renewal:notification'), $command);
+
+             }
+              case 'postExpirymail':
+             if ($postExpirystatus)
+             {
+                return $this->getCondition($schedule->command('postexpiry:notification'), $command);
+
              }
             }
         }

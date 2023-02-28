@@ -53,6 +53,7 @@ Cron Setting
               <?php 
                    $mailStatus = \App\Model\Common\StatusSetting::pluck('expiry_mail')->first();
                    $activityStatus =\App\Model\Common\StatusSetting::pluck('activity_log_delete')->first();
+                   $Autorenewal_status = \App\Model\Common\StatusSetting::pluck('subs_expirymail')->first();
                   ?>
          <div class="card-header">
              <h3 class="card-title">{{Lang::get('message.set_cron_period')}}  </h3>
@@ -89,11 +90,11 @@ Cron Setting
                  ?>
                   
                    @if ($mailStatus == 0)
-                    <select id ="days" name="expiryday[]" class="form-control selectpicker"   style="width: 100%; color:black;" disabled>
+                    <select id ="days" name="expiryday" class="form-control selectpicker"   style="width: 100%; color:black;" disabled>
                       <option value="">{{Lang::get('message.enable_mail_cron')}}</option>
                     </select>
                       @else
-                <select id ="days" name="expiryday[]" class="form-control selectpicker"  data-live-search="true" data-live-search-placeholder="Search" multiple="true" style="width: 100%; color:black;">
+                <select id ="days" name="expiryday" class="form-control selectpicker"  data-live-search="true" data-live-search-placeholder="Search" multiple="true" style="width: 100%; color:black;">
 
                     
                     @foreach ($expiryDays as $key=>$value)
@@ -110,7 +111,7 @@ Cron Setting
               <div class="form-group">
                 <label>{{Lang::get('message.log_del_days')}}</label>
                   @if ($activityStatus == 0)
-                    <select id ="days" name="expiryday[]" class="form-control selectpicker"   style="width: 100%; color:black;" disabled>
+                    <select id ="days" name="expiryday" class="form-control selectpicker"   style="width: 100%; color:black;" disabled>
                       <option value="">{{Lang::get('message.enable_activityLog_cron')}}</option>
                     </select>
                       @else
@@ -126,6 +127,93 @@ Cron Setting
               <!-- /.form-group -->
             </div>
             <!-- /.col -->
+
+                <!-- /.col -->
+            <div class="col-md-6">
+             
+              <!-- /.form-group -->
+              <div class="form-group select2">
+                <label>{{Lang::get('Expiry Mail for Auto Renewal to be sent before..')}}</label>
+                <?php 
+                 if (count($selectedDays) > 0) {
+                foreach ($selectedDays as $selectedDay) {
+                    $saved[$selectedDay->days] = 'true';
+                }
+               }  else {
+                    $saved=[];
+                }
+                 if (count($saved) > 0) {
+                   foreach ($saved as $key => $value) {
+                     $savedkey[]=$key;
+                   }
+                   $saved1=$savedkey?$savedkey:[''];
+                       }
+                       else{
+                        $saved1=[];
+                       }
+                 ?>
+                  
+                   @if ($mailStatus == 0)
+                    <select id ="days" name="subexpiryday" class="form-control selectpicker"   style="width: 100%; color:black;" disabled>
+                      <option value="">{{Lang::get('message.enable_mail_cron')}}</option>
+                    </select>
+                      @else
+                <select id ="days" name="subexpiryday" class="form-control selectpicker"  data-live-search="true" data-live-search-placeholder="Search" multiple="true" style="width: 100%; color:black;">
+
+                    
+                    @foreach ($Subs_expiry as $key=>$value)
+                  <option value="{{$key}}" <?php echo (in_array($key, $Auto_expiryday)) ?  "selected" : "" ;  ?>>{{$value}}</option>
+                   @endforeach
+                   
+                </select>
+                @endif
+              </div>
+              <!-- /.form-group -->
+            </div>
+
+
+                  <!-- /.col -->
+            <div class="col-md-6">
+             
+              <!-- /.form-group -->
+              <div class="form-group select2">
+                <label>{{Lang::get('Expiry Mail to be sent After..')}}</label>
+                <?php 
+                 if (count($selectedDays) > 0) {
+                foreach ($selectedDays as $selectedDay) {
+                    $saved[$selectedDay->days] = 'true';
+                }
+               }  else {
+                    $saved=[];
+                }
+                 if (count($saved) > 0) {
+                   foreach ($saved as $key => $value) {
+                     $savedkey[]=$key;
+                   }
+                   $saved1=$savedkey?$savedkey:[''];
+                       }
+                       else{
+                        $saved1=[];
+                       }
+                 ?>
+                  
+                   @if ($mailStatus == 0)
+                    <select id ="days" name="postsubexpiry_days" class="form-control selectpicker"   style="width: 100%; color:black;" disabled>
+                      <option value="">{{Lang::get('message.enable_mail_cron')}}</option>
+                    </select>
+                      @else
+                <select id ="days" name="postsubexpiry_days" class="form-control selectpicker"  data-live-search="true" data-live-search-placeholder="Search" multiple="true" style="width: 100%; color:black;">
+
+                    
+                    @foreach ($post_expiry as $key=>$value)
+                  <option value="{{$key}}" <?php echo (in_array($key, $post_expiryday)) ?  "selected" : "" ;  ?>>{{$value}}</option>
+                   @endforeach
+                   
+                </select>
+                @endif
+              </div>
+              <!-- /.form-group -->
+            </div>
           </div>
           <!-- /.row -->
           @if ( $mailStatus || $activityStatus ==1)
@@ -145,6 +233,8 @@ Cron Setting
     </div>
     <!-- /.col -->
 </div>
+
+
 
 <script>
      $('ul.nav-sidebar a').filter(function() {

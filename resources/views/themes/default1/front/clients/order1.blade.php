@@ -75,7 +75,7 @@ active
               
                 // {data: 'group', name: 'Group'},
                 // {data: 'currency', name: 'Currency'},
-                {data: 'Action', name: 'Action'}
+                {data: 'Action', name: 'Action'},
             ],
             "fnDrawCallback": function( oSettings ) {
                  $(function () {

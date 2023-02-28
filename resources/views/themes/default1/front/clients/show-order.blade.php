@@ -9,6 +9,67 @@ active
  View Order
 @stop
 @section('breadcrumb')
+<style>
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input {display:none;}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+.scrollit {
+    overflow:scroll;
+    height:600px;
+}
+</style>
  @if(Auth::check())
 <li><a href="{{url('my-invoices')}}">Home</a></li>
   @else
@@ -60,13 +121,16 @@ active
            </div>
            </div>
            </div>
+            <div id="alertMessage"></div>
+
 
             @component('mini_views.navigational_view', [
                 'navigations'=>[
                     ['id'=>'license-details', 'name'=>'License Details', 'active'=>1, 'slot'=>'license','icon'=>'fas fa-file'],
                     ['id'=>'user-details', 'name'=>'User Details', 'slot'=>'user','icon'=>'fas fa-users'],
                     ['id'=>'invoice-list', 'name'=>'Invoice List', 'slot'=>'invoice','icon'=>'fas fa-credit-card'],
-                    ['id'=>'payment-receipts', 'name'=>'Payment Receipts', 'slot'=>'payment','icon'=>'fas fa-briefcase']
+                    ['id'=>'payment-receipts', 'name'=>'Payment Receipts', 'slot'=>'payment','icon'=>'fas fa-briefcase'],
+                    ['id'=>'auto-renewals', 'name'=>'Auto Renewal', 'slot'=>'autorenewal','icon'=>'fas fa-briefcase']
                 ]
             ])
                
@@ -238,6 +302,46 @@ active
                         </thead>
                     </table>
                 @endslot
+
+            @slot('autorenewal')
+           
+                <div class="row">
+
+              <div class="col-8">
+                @if($statusAutorenewal == 1)
+
+              <label class="switch toggle_event_editing">
+
+                         <input type="checkbox" value="1"  name="is_subscribed"
+                          class="checkbox" id="is_subscribed" checked>
+                          <span class="slider round"></span>
+
+                    </label>
+                    <h6>Disable Auto Renewal</h6>
+
+                    @else
+
+                       <label class="switch toggle_event_editing">
+
+                         <input type="checkbox" value="0"  name="is_subscribed"
+                          class="checkbox" id="is_subscribed">
+                          <span class="slider round"></span>
+
+                    </label>
+                     <h6>Enable Auto Renewal for Future Subscription</h6>
+
+                    @endif
+          </div>
+              <div class="col-4">
+             <button type="submit" class="form-group btn btn-primary" onclick="saveStatus('{{$id}}')"  id="submitSub"><i class="fa fa-save">&nbsp;</i>Save</button>
+
+          </div>
+            </div>
+               
+                @endslot
+            </div>
+
+
 
             @endcomponent
         </div>
@@ -427,6 +531,34 @@ active
         });
          }
          });
+
+          function saveStatus($id)
+          {
+              // $("#submitSub").html("<i class='fas fa-circle-notch fa-spin'></i>Please Wait...");
+              var status = ($('#is_subscribed').prop("checked"));
+              var id = $id;
+
+            $.ajax({
+
+                url : '{{url("post-status")}}',
+                type : 'post',
+                data: {
+                    data: { "is_subscribed" : status, "order_id" : id },
+                   },
+                success: function (response) {
+                    $('#alertMessage').show();
+                    var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>'+response.update+'.</div>';
+                    $('#alertMessage').html(result+ ".");
+                    $("#submit").html("<i class='fa fa-save'>&nbsp;&nbsp;</i>Save");
+                    setInterval(function(){
+                        $('#alertMessage').slideUp(3000);
+                    }, 1000);
+                },
+
+
+            });
+
+          };
 
     </script>
 

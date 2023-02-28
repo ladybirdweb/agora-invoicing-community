@@ -131,6 +131,62 @@
                 </div><!-- /.info-box-content -->
             </div><!-- /.info-box -->
         </div>
+         <div class="col-md-6">
+            <div class="info-box">
+                <span class="info-box-icon bg-info" style="height: 70px;"><i class="fa fa-bell"></i></span>
+                <!-- Apply any bg-* class to to the icon to color it -->
+                <div class="info-box-content" style="display: block;">
+               
+                    <div class="col-md-6">
+
+                        <div class="form-group">
+
+                            {!! Form::label('sub_fetching',Lang::get('Expiry Mails(Auto Renewal)')) !!}<br>
+                            {!! Form::checkbox('subs_expirymail',1,$condition->checkActiveJob()['subsExpirymail'],['id'=>'sub_fetching']) !!}&nbsp;{{Lang::get('message.enable_expiry-cron')}}
+                            <!-- <input type="checkbox" name="subs_expirymail" value="1"> -->
+                        </div>
+
+                    </div>
+                    <div class="col-md-6" id="subfetching">
+                        {!! Form::select('subexpiry-commands',$commands,$condition->getConditionValue('subsExpirymail')['condition'],['class'=>'form-control','id'=>'subfetching-command']) !!}
+                          <div id='subfetching-daily-at'>
+                            {!! Form::text('subexpiry-dailyAt',$condition->getConditionValue('subsExpirymail')['at'],['class'=>'form-control time-picker',"placeholder" => "HH:MM"]) !!}
+
+                        </div>
+                      
+                    </div>
+                </div>
+            </div><!-- /.info-box-content -->
+
+        </div><!-- /.info-box -->
+
+        <div class="col-md-6">
+            <div class="info-box">
+                <span class="info-box-icon bg-info" style="height: 70px;"><i class="fa fa-envelope"></i></span>
+                <!-- Apply any bg-* class to to the icon to color it -->
+                <div class="info-box-content" style="display: block;">
+               
+                    <div class="col-md-6">
+
+                        <div class="form-group">
+
+                            {!! Form::label('postsub_fetching',Lang::get('Expiry Mails(After Expiry)')) !!}<br>
+                            {!! Form::checkbox('postsubs_expirymail',1,$condition->checkActiveJob()['postExpirymail'],['id'=>'postsub_fetching']) !!}&nbsp;{{Lang::get('message.enable_expiry-cron')}}
+                        </div>
+
+                    </div>
+                    <div class="col-md-6" id="postsubfetching">
+                        {!! Form::select('postsubexpiry-commands',$commands,$condition->getConditionValue('postExpirymail')['condition'],['class'=>'form-control','id'=>'postsubfetching-command']) !!}
+                          <div id='postsubfetching-daily-at'>
+                            {!! Form::text('postsubexpiry-dailyAt',$condition->getConditionValue('postExpirymail')['at'],['class'=>'form-control time-picker',"placeholder" => "HH:MM"]) !!}
+
+                        </div>
+                      
+                    </div>
+                </div>
+            </div><!-- /.info-box-content -->
+
+        </div><!-- /.info-box -->
     </div>
     <h4><button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-sync-alt">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button></h4>
         </div>
@@ -272,6 +328,94 @@ $('#tab2url').click(function(){
         }
     });
 
+
+         $(document).ready(function () {
+$(".time-picker").datetimepicker({
+        format: 'HH:ss',
+        // useCurrent: false, //Important! See issue #1075
+    });
+
+
+
+        var checked = $("#sub_fetching").is(':checked');
+        check(checked, 'sub_fetching');
+        $("#sub_fetching").on('click', function () {
+            checked = $("#sub_fetching").is(':checked');
+            check(checked);
+        });
+        var command = $("#subfetching-command").val();
+        showDailyAt(command);
+        $("#subfetching-command").on('change', function () {
+            command = $("#subfetching-command").val();
+            showDailyAt(command);
+        });
+        function check(checked, id) {
+            if (checked) {
+                $("#subfetching").show();
+            } else {
+                $("#subfetching").hide();
+            }
+        }
+        function showDailyAt(command) {
+            if (command === 'dailyAt') {
+                $("#subfetching-daily-at").show();
+                // $("input").prop('required',true);
+            } else {
+                $("#subfetching-daily-at").hide();
+            }
+        }
+
+      
+
+
+
+        // Ldap cron settings end //
+    });
+
+
+
+         $(document).ready(function () {
+$(".time-picker").datetimepicker({
+        format: 'HH:ss',
+        // useCurrent: false, //Important! See issue #1075
+    });
+
+
+
+        var checked = $("#postsub_fetching").is(':checked');
+        check(checked, 'postsub_fetching');
+        $("#postsub_fetching").on('click', function () {
+            checked = $("#postsub_fetching").is(':checked');
+            check(checked);
+        });
+        var command = $("#postsubfetching-command").val();
+        showDailyAt(command);
+        $("#postsubfetching-command").on('change', function () {
+            command = $("#postsubfetching-command").val();
+            showDailyAt(command);
+        });
+        function check(checked, id) {
+            if (checked) {
+                $("#postsubfetching").show();
+            } else {
+                $("#postsubfetching").hide();
+            }
+        }
+        function showDailyAt(command) {
+            if (command === 'dailyAt') {
+                $("#postsubfetching-daily-at").show();
+                // $("input").prop('required',true);
+            } else {
+                $("#postsubfetching-daily-at").hide();
+            }
+        }
+
+      
+
+
+
+        // Ldap cron settings end //
+    });
 //-------------------------------------------------------------//
 
     function checksome(showtext = true)

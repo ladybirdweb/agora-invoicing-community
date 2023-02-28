@@ -1,12 +1,9 @@
 <?php
 /**
  * @package dompdf
- * @link    http://dompdf.github.com/
- * @author  Benj Carson <benjcarson@digitaljunkies.ca>
- * @author  Fabien Ménager <fabien.menager@gmail.com>
+ * @link    https://github.com/dompdf/dompdf
  * @license http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
  */
-
 namespace Dompdf;
 
 /**
@@ -28,9 +25,9 @@ interface Canvas
      * @param string|float[] $paper       The paper size to use as either a standard paper size (see {@link Dompdf\Adapter\CPDF::$PAPER_SIZES})
      *                                    or an array of the form `[x1, y1, x2, y2]` (typically `[0, 0, width, height]`).
      * @param string         $orientation The paper orientation, either `portrait` or `landscape`.
-     * @param Dompdf         $dompdf      The Dompdf instance.
+     * @param Dompdf|null    $dompdf      The Dompdf instance.
      */
-    public function __construct($paper = "letter", $orientation = "portrait", ?Dompdf $dompdf = null);
+    public function __construct($paper = "letter", string $orientation = "portrait", ?Dompdf $dompdf = null);
 
     /**
      * @return Dompdf

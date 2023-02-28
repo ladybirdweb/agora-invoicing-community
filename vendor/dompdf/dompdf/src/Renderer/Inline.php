@@ -1,8 +1,7 @@
 <?php
 /**
  * @package dompdf
- * @link    http://dompdf.github.com/
- * @author  Benj Carson <benjcarson@digitaljunkies.ca>
+ * @link    https://github.com/dompdf/dompdf
  * @license http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
  */
 namespace Dompdf\Renderer;
@@ -13,7 +12,6 @@ use Dompdf\Helpers;
 /**
  * Renders inline frames
  *
- * @access  private
  * @package dompdf
  */
 class Inline extends AbstractRenderer
@@ -95,20 +93,24 @@ class Inline extends AbstractRenderer
             }
 
             $style = $child->get_style();
-            list(, , $child_w, $child_h) = $child->get_padding_box();
+            $auto_width = $style->width === "auto";
+            $auto_height = $style->height === "auto";
+            [, , $child_w, $child_h] = $child->get_padding_box();
 
-            $child_h2 = 0.0;
+            if ($auto_width || $auto_height) {
+                [$child_w2, $child_h2] = $this->get_child_size($child, $do_debug_layout_line);
 
-            if ($style->width === "auto") {
-                list($child_w, $child_h2) = $this->get_child_size($child, $do_debug_layout_line);
-            }
-
-            if ($style->height === "auto") {
-                list(, $child_h2) = $this->get_child_size($child, $do_debug_layout_line);
+                if ($auto_width) {
+                    $child_w = $child_w2;
+                }
+    
+                if ($auto_height) {
+                    $child_h = $child_h2;
+                }
             }
 
             $w += $child_w;
-            $h = max($h, $child_h, $child_h2);
+            $h = max($h, $child_h);
 
             if ($do_debug_layout_line) {
                 $this->_debug_layout($child->get_border_box(), "blue");

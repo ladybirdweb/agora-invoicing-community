@@ -6,16 +6,13 @@ use App\ApiKey;
 use App\Auto_renewal;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\SyncBillingToLatestVersion;
-use App\Model\Common\Setting;
 use App\Model\Payment\Currency;
 use App\Plugins\Stripe\Model\StripePayment;
 use Cartalyst\Stripe\Laravel\Facades\Stripe;
 use Illuminate\Http\Request;
-use App\Auto_renewal;
 use Schema;
 use Symfony\Component\Mime\Email;
 use Validator;
-use Symfony\Component\Mime\Email;
 
 class SettingsController extends Controller
 {
@@ -116,7 +113,7 @@ class SettingsController extends Controller
      */
     public function postPaymentWithStripe(Request $request)
     {
-       $validator = Validator::make($request->all(), [
+        $validator = Validator::make($request->all(), [
         ]);
         $input = $request->all();
         $validation = [

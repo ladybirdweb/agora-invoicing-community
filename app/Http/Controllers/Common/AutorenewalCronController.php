@@ -3,27 +3,21 @@
 namespace App\Http\Controllers\Common;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Model\Order\Invoice;
-use App\Model\Order\Order;
 use App\Model\Product\Subscription;
-use App\User;
 use Carbon\Carbon;
 
 class AutorenewalCronController extends Controller
 {
-
- public function __construct()
+    public function __construct()
     {
         $subscription = new Subscription();
         $this->sub = $subscription;
-
     }
- public function getAutoSubscriptions($allDays)
+
+    public function getAutoSubscriptions($allDays)
     {
         $sub = [];
         foreach ($allDays as $allDay) {
-
             if ($allDay >= 2) {
                 if ($this->getAllDaysSubscription($allDay) != []) {
                     array_push($sub, $this->getAllDaysSubscription($allDay));
@@ -49,7 +43,7 @@ class AutorenewalCronController extends Controller
         return $users;
     }
 
-  public function getAllDaysExpiryUsers($day)
+    public function getAllDaysExpiryUsers($day)
     {
         $sub = $this->getAllDaysExpiryInfo($day);
         //dd($sub->get());
@@ -65,20 +59,18 @@ class AutorenewalCronController extends Controller
         return $users;
     }
 
-    
-  public function getAllDaysExpiryInfo($day)
+    public function getAllDaysExpiryInfo($day)
     {
         $minus1day = new Carbon('+'.($day - 1).' days');
         $plus1day = new Carbon('+'.($day + 1).' days');
         $sub = Subscription::whereNotNull('update_ends_at')
             ->whereBetween('update_ends_at', [$minus1day, $plus1day])
-            ->where('is_subscribed','1');
-
+            ->where('is_subscribed', '1');
 
         return $sub;
     }
 
- public function get1DaysUsers()
+    public function get1DaysUsers()
     {
         $users = [];
         $users = $this->getOneDayExpiryUsers();
@@ -89,7 +81,7 @@ class AutorenewalCronController extends Controller
         return $users;
     }
 
- public function getOneDayExpiryUsers()
+    public function getOneDayExpiryUsers()
     {
         $sub = $this->getOneDayExpiryInfo();
         $users = [];
@@ -104,18 +96,18 @@ class AutorenewalCronController extends Controller
         return $users;
     }
 
-  public function getOneDayExpiryInfo()
+    public function getOneDayExpiryInfo()
     {
         $yesterday = new Carbon('-2 days');
         $today = new Carbon('today');
         $sub = Subscription::whereNotNull('update_ends_at')
-                ->where('is_subscribed','1')
+                ->where('is_subscribed', '1')
                 ->whereBetween('update_ends_at', [$yesterday, $today]);
 
         return $sub;
     }
 
-  public function get1DaysSubscription()
+    public function get1DaysSubscription()
     {
         $users = [];
         $users = $this->getOneDayExpiryUsers();
@@ -130,24 +122,21 @@ class AutorenewalCronController extends Controller
     {
         $sub = [];
         foreach ($days as $allDay) {
-            
             if ($allDay >= 2) {
                 if ($this->getAllDaysPostSubscription($allDay) != []) {
                     array_push($sub, $this->getAllDaysPostSubscription($allDay));
                 }
-            }
-            elseif ($allDay == 1) {
+            } elseif ($allDay == 1) {
                 if (count($this->get1DaysPostUsers()) > 0) {
                     array_push($sub, $this->get1DaysPostSubscription());
                 }
-            } 
+            }
         }
 
         return $sub;
     }
 
-
-  public function getAllDaysPostSubscription($day)
+    public function getAllDaysPostSubscription($day)
     {
         $users = [];
         $users = $this->getAllDaysPostExpiryUsers($day);
@@ -158,7 +147,7 @@ class AutorenewalCronController extends Controller
         return $users;
     }
 
-  public function getAllDaysPostExpiryUsers($day)
+    public function getAllDaysPostExpiryUsers($day)
     {
         $sub = $this->getAllDaysPostExpiryInfo($day);
         //dd($sub->get());
@@ -174,15 +163,15 @@ class AutorenewalCronController extends Controller
         return $users;
     }
 
-    
-  public function getAllDaysPostExpiryInfo($day)
+    public function getAllDaysPostExpiryInfo($day)
     {
         $dayUtc = new Carbon();
         $now = $dayUtc->toDateTimeString();
-        $past =  Carbon::now()->subDays($day + 1);
+        $past = Carbon::now()->subDays($day + 1);
 
         $sub = Subscription::whereNotNull('update_ends_at')
-               ->whereBetween('update_ends_at',[$past,$now]);
+               ->whereBetween('update_ends_at', [$past, $now]);
+
         return $sub;
     }
 
@@ -196,6 +185,7 @@ class AutorenewalCronController extends Controller
 
         return $users;
     }
+
     public function get1DaysPostSubscription()
     {
         $users = [];
@@ -207,7 +197,7 @@ class AutorenewalCronController extends Controller
         return $users;
     }
 
-     public function getOneDayPostExpiryUsers()
+    public function getOneDayPostExpiryUsers()
     {
         $sub = $this->getOneDayPostExpiryInfo();
         $users = [];
@@ -222,12 +212,12 @@ class AutorenewalCronController extends Controller
         return $users;
     }
 
-  public function getOneDayPostExpiryInfo()
+    public function getOneDayPostExpiryInfo()
     {
         $yesterday = new Carbon('-2 days');
         $today = new Carbon('today');
         $sub = Subscription::whereNotNull('update_ends_at')
-                ->where('is_subscribed','1')
+                ->where('is_subscribed', '1')
                 ->whereBetween('update_ends_at', [$yesterday, $today]);
 
         return $sub;

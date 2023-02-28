@@ -46,6 +46,7 @@ class BaseCronController extends Controller
     {
         $sub = [];
         foreach ($allDays as $allDay) {
+
             if ($allDay >= 2) {
                 if ($this->getAllDaysSubscription($allDay) != []) {
                     array_push($sub, $this->getAllDaysSubscription($allDay));
@@ -142,7 +143,7 @@ class BaseCronController extends Controller
         $yesterday = new Carbon('today');
         $tomorrow = new Carbon('+2 days');
         $sub = Subscription::whereNotNull('update_ends_at')
-                ->where('is_subscribed', 0)
+                ->where('is_subscribed',0)
                 ->whereBetween('update_ends_at', [$yesterday, $tomorrow]);
 
         return $sub;
@@ -153,7 +154,7 @@ class BaseCronController extends Controller
         $yesterday = new Carbon('yesterday');
         $tomorrow = new Carbon('tomorrow');
         $sub = Subscription::whereNotNull('update_ends_at')
-            ->where('is_subscribed', 0)
+            ->where('is_subscribed',0)
             ->whereBetween('update_ends_at', [$yesterday, $tomorrow]);
 
         return $sub;
@@ -164,7 +165,7 @@ class BaseCronController extends Controller
         $yesterday = new Carbon('-2 days');
         $today = new Carbon('today');
         $sub = Subscription::whereNotNull('update_ends_at')
-                ->where('is_subscribed', 0)
+                ->where('is_subscribed',0)
                 ->whereBetween('update_ends_at', [$yesterday, $today]);
 
         return $sub;
@@ -186,7 +187,7 @@ class BaseCronController extends Controller
         $minus1day = new Carbon('+'.($day - 1).' days');
         $plus1day = new Carbon('+'.($day + 1).' days');
         $sub = Subscription::whereNotNull('update_ends_at')
-            ->where('is_subscribed', 0)
+            ->where('is_subscribed',0)
             ->whereBetween('update_ends_at', [$minus1day, $plus1day]);
 
         return $sub;
@@ -194,7 +195,7 @@ class BaseCronController extends Controller
 
     public function mail($user, $end, $product, $order, $sub)
     {
-
+    
         //check in the settings
         $settings = new \App\Model\Common\Setting();
         $setting = $settings->where('id', 1)->first();

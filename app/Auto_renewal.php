@@ -11,5 +11,5 @@ class Auto_renewal extends Model
 
     protected $table = 'auto_renewals';
 
-    protected $fillable = ['user_id','customer_id','invoice_number'];
+    protected $fillable = ['user_id', 'customer_id', 'invoice_number'];
 }

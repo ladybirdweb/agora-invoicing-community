@@ -43,7 +43,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('renewal:cron')
                  ->daily();
         $this->execute($schedule, 'subsExpirymail');
-        $this->execute($schedule,'postExpirymail');
+        $this->execute($schedule, 'postExpirymail');
     }
 
     public function execute($schedule, $task)
@@ -73,16 +73,12 @@ class Kernel extends ConsoleKernel
              }
 
              case 'subsExpirymail':
-             if ($RenewalexpiryMailStatus)
-             {
-                return $this->getCondition($schedule->command('renewal:notification'), $command);
-
+             if ($RenewalexpiryMailStatus) {
+                 return $this->getCondition($schedule->command('renewal:notification'), $command);
              }
               case 'postExpirymail':
-             if ($postExpirystatus)
-             {
-                return $this->getCondition($schedule->command('postexpiry:notification'), $command);
-
+             if ($postExpirystatus) {
+                 return $this->getCondition($schedule->command('postexpiry:notification'), $command);
              }
             }
         }

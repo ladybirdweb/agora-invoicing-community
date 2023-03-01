@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Http\Controllers\SyncBillingToLatestVersion;
 use Artisan;
 use Config;
 use DB;
@@ -84,10 +83,9 @@ class SetupTestEnv extends Command
      * @param  string  $dbPassword
      * @return null
      */
-
-        private function handleFaveoDatabaseOperations()
+    private function handleFaveoDatabaseOperations()
     {
-        
+
         // getting seeder base path
         $seederBasePath = base_path().DIRECTORY_SEPARATOR.'database'.DIRECTORY_SEPARATOR.'seeders';
 
@@ -111,7 +109,7 @@ class SetupTestEnv extends Command
         }
     }
 
-      private function getPHPCompatibleVersionString(string $version): string
+    private function getPHPCompatibleVersionString(string $version): string
     {
         return preg_replace('#v\.|v#', '', str_replace('_', '.', $version));
     }

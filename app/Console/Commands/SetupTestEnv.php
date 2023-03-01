@@ -83,7 +83,6 @@ class SetupTestEnv extends Command
      * @param  string  $dbPassword
      * @return null
      */
-
     private function createEnv(string $dbUsername, string $dbPassword, string $dbName)
     {
         $env['DB_USERNAME'] = $dbUsername;

@@ -350,6 +350,7 @@ class CronController extends BaseCronController
         try {
             $subscriptions_detail = $this->getOnDayExpiryInfoSubs()->get();
             foreach ($subscriptions_detail as $subscription) {
+
                 $status = $subscription->is_subscribed;
                 if ($status == '1') {
                     $userid = $subscription->user_id;
@@ -452,19 +453,19 @@ class CronController extends BaseCronController
                             'amount' => $amount,
                             'currency' => $currency, ], ]],
                 ]);
-
                 //Afer Renew
-                if ($rzp_subscription['status'] == 'active') {
+                if ($rzp_subscription['status'] == 'created' || $rzp_subscription['status'] == 'active') {
                     Subscription::where('id', $subscription->id)->update(['subscribe_id' => $rzp_subscription['id']]);
                     $this->successRenew($invoice, $subscription);
                     $this->postRazorpayPayment($invoice, $payment_method = 'Razorpay');
                     if ($invoice->grand_total && emailSendingStatus()) {
                         $this->sendPaymentSuccessMailtoAdmin($invoice->currency, $invoice->grand_total, $user, $invoice->invoiceItem()->first()->product_name);
+                        http_response_code(200);
                     }
                 }
             }
-        } catch (\Exception $e) {
-            dd($e);
+        } 
+        catch (\Exception $e) {
             if (emailSendingStatus()) {
                 $this->sendFailedPaymenttoAdmin($invoice->grand_total, $e->getMessage(), $user);
             }
@@ -473,7 +474,6 @@ class CronController extends BaseCronController
 
     public static function sendFailedPaymenttoAdmin($amount, $exceptionMessage, $user)
     {
-        dd($exceptionMessage);
         $setting = Setting::find(1);
         $paymentFailData = 'Payment for'.' '.'of'.' '.$user->currency.' '.$amount.' '.'failed by'.' '.$user->first_name.' '.$user->last_name.' '.'. User Email:'.' '.$user->email.'Reason:'.$exceptionMessage;
 
@@ -550,7 +550,7 @@ class CronController extends BaseCronController
             $date = \Carbon\Carbon::parse($sub->ends_at);
             $expiry_date = $date->addDays($days);
         }
-
+       
         return $expiry_date;
     }
 

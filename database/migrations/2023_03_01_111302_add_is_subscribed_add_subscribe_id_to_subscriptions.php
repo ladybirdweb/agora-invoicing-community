@@ -14,8 +14,8 @@ return new class extends Migration
     public function up()
     {
         Schema::table('subscriptions', function (Blueprint $table) {
-              $table->boolean('is_subscribed')->nullable();
-              $table->string('subscribe_id')->nullable();
+            $table->boolean('is_subscribed')->nullable();
+            $table->string('subscribe_id')->nullable();
         });
     }
 

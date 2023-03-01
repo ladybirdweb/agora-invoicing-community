@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Http\Controllers\SyncBillingToLatestVersion;
 use Artisan;
 use Config;
 use DB;
@@ -63,7 +62,7 @@ class SetupTestEnv extends Command
 
         echo "\nRunning seeders!\n";
 
-        $this->handlePluginsDatabaseOperations();
+        Artisan::call('db:seed', ['--class' => "Database\Seeders\\v2_0_0\DatabaseSeeder", '--force' => true]);
 
         echo Artisan::output();
 
@@ -84,38 +83,6 @@ class SetupTestEnv extends Command
      * @param  string  $dbPassword
      * @return null
      */
-
-        private function handleFaveoDatabaseOperations()
-    {
-        
-        // getting seeder base path
-        $seederBasePath = base_path().DIRECTORY_SEPARATOR.'database'.DIRECTORY_SEPARATOR.'seeders';
-
-        // get all directories inside seeder folder
-        // sort versions from oldest to latest
-        if (file_exists($seederBasePath)) {
-            $seederVersions = scandir($seederBasePath);
-
-            natsort($seederVersions);
-            // convert older and newer version into underscore format
-            $formattedOlderVersion = $olderVersion;
-            foreach ($seederVersions as $version) {
-                if (version_compare($this->getPHPCompatibleVersionString($version), $formattedOlderVersion) == 1) {
-                    // scan for $version directory and get file names
-                    $this->log = $this->log."\n"."Running Seeder for version $version";
-
-                    Artisan::call('db:seed', ['--class' => "Database\Seeders\\$version\DatabaseSeeder", '--force' => true]);
-                    $this->handleArtisanLogs();
-                }
-            }
-        }
-    }
-
-      private function getPHPCompatibleVersionString(string $version): string
-    {
-        return preg_replace('#v\.|v#', '', str_replace('_', '.', $version));
-    }
-
     private function createEnv(string $dbUsername, string $dbPassword, string $dbName)
     {
         $env['DB_USERNAME'] = $dbUsername;

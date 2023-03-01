@@ -14,9 +14,9 @@ return new class extends Migration
     public function up()
     {
         Schema::table('expiry_mail_days', function (Blueprint $table) {
-        $table->string('autorenewal_days')->nullable();
-        $table->string('postexpiry_days')->nullable();
-    });
+            $table->string('autorenewal_days')->nullable();
+            $table->string('postexpiry_days')->nullable();
+        });
     }
 
     /**
@@ -27,8 +27,8 @@ return new class extends Migration
     public function down()
     {
         Schema::table('expiry_mail_days', function (Blueprint $table) {
-        $table->dropColumn('autorenewal_days');
-        $table->dropColumn('postexpiry_days');
-    });
+            $table->dropColumn('autorenewal_days');
+            $table->dropColumn('postexpiry_days');
+        });
     }
 };

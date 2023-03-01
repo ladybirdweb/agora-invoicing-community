@@ -2,10 +2,10 @@
 
 namespace App\Console\Commands;
 
+use App\Http\Controllers\SyncBillingToLatestVersion;
 use Artisan;
 use Config;
 use DB;
-use App\Http\Controllers\SyncBillingToLatestVersion;
 use Illuminate\Console\Command;
 
 class SetupTestEnv extends Command

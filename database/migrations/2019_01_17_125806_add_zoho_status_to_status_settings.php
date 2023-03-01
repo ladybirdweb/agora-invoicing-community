@@ -57,7 +57,7 @@ return new class extends Migration
                 'terms',
                 'pipedrive_status',
                 'post_expirymail',
-                'subs_expirymail'
+                'subs_expirymail',
             ]);
         });
     }

@@ -348,7 +348,6 @@ class CronController extends BaseCronController
         try {
             $subscriptions_detail = $this->getOnDayExpiryInfoSubs()->get();
             foreach ($subscriptions_detail as $subscription) {
-
                 $status = $subscription->is_subscribed;
                 if ($status == '1') {
                     $userid = $subscription->user_id;
@@ -462,8 +461,7 @@ class CronController extends BaseCronController
                     }
                 }
             }
-        } 
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             if (emailSendingStatus()) {
                 $this->sendFailedPaymenttoAdmin($invoice->grand_total, $e->getMessage(), $user);
             }
@@ -548,7 +546,7 @@ class CronController extends BaseCronController
             $date = \Carbon\Carbon::parse($sub->ends_at);
             $expiry_date = $date->addDays($days);
         }
-       
+
         return $expiry_date;
     }
 

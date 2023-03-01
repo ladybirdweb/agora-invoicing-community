@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Artisan;
 use Config;
 use DB;
+use App\Http\Controllers\SyncBillingToLatestVersion;
 use Illuminate\Console\Command;
 
 class SetupTestEnv extends Command
@@ -62,7 +63,7 @@ class SetupTestEnv extends Command
 
         echo "\nRunning seeders!\n";
 
-        Artisan::call('db:seed', ['--class' => "Database\Seeders\\v2_0_0\DatabaseSeeder", '--force' => true]);
+        (new SyncBillingToLatestVersion)->sync();
 
         echo Artisan::output();
 

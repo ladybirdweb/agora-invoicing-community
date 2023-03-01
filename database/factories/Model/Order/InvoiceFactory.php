@@ -17,6 +17,7 @@ class InvoiceFactory extends Factory
     public function definition()
     {
         return [
+            'id' => mt_rand(1,999),
             'number' => '2344353',
             'grand_total' => 10000,
             'currency' => 'INR',

@@ -6,7 +6,7 @@ return [
 
     'author' => 'Ladybird Web Solution',
 
-    'description' => 'This is the Razorpay paymeny gateway plugin for the Agora.',
+    'description' => 'This is the Razorpay payment gateway plugin for the Agora.',
 
     'version' => '1.0.0',
 

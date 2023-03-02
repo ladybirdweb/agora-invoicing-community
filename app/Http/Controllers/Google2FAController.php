@@ -102,7 +102,7 @@ class Google2FAController extends Controller
         } else {
             \Session::put('2fa:user:id', $userId);
 
-            return redirect('verify-2fa')->with('fails', 'Invalid Code');
+            return redirect('verify-2fa')->with('fails', trans('message.invalid_passcode'));
         }
     }
 
@@ -219,7 +219,7 @@ class Google2FAController extends Controller
                 $this->user->save();
                 \Auth::loginUsingId($userId);
 
-                return redirect()->intended($this->redirectPath());
+                return redirect($this->redirectPath());
             } else {
                 \Session::put('2fa:user:id', $userId);
                 throw new \Exception('Invalid recovery code.');

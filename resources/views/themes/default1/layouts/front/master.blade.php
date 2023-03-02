@@ -265,49 +265,30 @@ $set = $set->findOrFail(1);
                                                                                 <?php
                                                                                 $total = rounding($item->getPriceSumWithConditions())
                                                                                 ?>
-                                                                            <a>{{$item->name}}<br><span class="amount"><strong>{{currencyFormat($total,$code = $currency)}}</strong></span></a>
-                                                                        </td>
+                                                                                    <a>{{$item->name}}<br><span class="amount"><strong>{{currencyFormat($total,$code = $currency)}}</strong></span></a>
+                                                                                </td>
 
-                                                                        <td class="product-actions">
-                                                                            <a title="Remove this item" class="remove" href="#" onclick="removeItem('{{$item->id}}');">
-                                                                                <!--  @if(Session::has('items'))
-                                                                                    {{Session::forget('items')}}
-                                                                                @endif -->
-                                                                                <i class="fa fa-times"></i>
-                                                                            </a>
-                                                                        </td>
+                                                                                <td class="product-actions">
+                                                                                    <a title="Remove this item" class="remove" href="#" onclick="removeItem('{{$item->id}}');">
+                                                                                      <!--  @if(Session::has('items'))
+                                                                                       {{Session::forget('items')}}
+                                                                                       @endif -->
+                                                                                        <i class="fa fa-times"></i>
+                                                                                    </a>
+                                                                                </td>
 
-                                                                    </tr>
-                                                                @empty
-                                                                    @php
-                                                                        $data = \App\Model\Product\ProductGroup::where('hidden','!=', 1)->first();
-                                                                    @endphp
-
-                                                                    <tr>
-                                                                        <td>
-
-
-                                                                            @if(Auth::check())
-                                                                                <a href="{{url("group/$data->pricing_templates_id/$data->id")}}">Choose a Product
-                                                                                    @else
-                                                                                        <a href="{{url('login')}}">Choose a Product
-                                                                                            @endif
-                                                                                        </a></td>
-                                                                    </tr>
+                                                                            </tr>
+                                                                            @empty
+                                                                            @php       
+                                                                             $data = \App\Model\Product\ProductGroup::where('hidden','!=', 1)->first();
+                                                                             @endphp   
+                           
+                                                                            <tr>
+                                                                              <td>
 
 
-                                                                @endforelse
-
-
-                                                                @if(!Cart::isEmpty())
-                                                                    <tr>
-                                                                        <td class="actions" colspan="6">
-                                                                            <div class="actions-continue">
-                                                                                <a href="{{url('show/cart')}}"><button class="btn btn-default pull-left">View Cart</button></a>
-
-
-                                                                                @if(count($domain)>0)
-                                                                                    <a href="#domain" data-toggle="modal" data-target="#domain"><button class="btn btn-primary pull-right">Proceed to Checkout</button></a>
+                                                                                @if(Auth::check())
+                                                                              <a href="">Choose a Product
                                                                                 @else
                                                                                     <a href="{{url('checkout')}}"><button class="btn btn-primary pull-right">Proceed to Checkout</button></a>
                                                                                 @endif
@@ -410,17 +391,34 @@ $set = $set->findOrFail(1);
 
                     {!!Session::get('success')!!}
                 </div>
-
-            @endif
-
-            <!--fail message -->
-            @if(Session::has('fails') )
-
-                <div class="alert alert-danger alert-dismissable" role="alert">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <strong><i class="fas fa-exclamation-triangle"></i>Oh snap!</strong>
+                
+                @endif
+                
+                 <!--fail message -->
+                   @if(Session::has('fails') )
+                
+                 <div class="alert alert-danger alert-dismissable" role="alert">
+                   <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     {{Session::get('fails')}}
                 </div>
+            
+                @endif
+                       @if (count($errors) > 0)
+                    
+                     <div class="alert alert-danger alert-dismissable" role="alert">
+                       <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                            <li>{!! $error !!}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                    
+                    @endif
+                      
+                    @include('themes.default1.front.domain')
+                    @yield('content')
 
             @endif
             @if (count($errors) > 0)

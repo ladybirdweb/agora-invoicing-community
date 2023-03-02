@@ -105,7 +105,7 @@ class MailChimpController extends BaseMailChimpController
             if ($exe['status'] == 400) {
                 $error = $exe['detail'];
 
-                return errorResponse($error, 400);
+                return errorResponse(trans('message.member_exist'));
             }
 
             return errorResponse($ex->getMessage());

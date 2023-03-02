@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Common;
 
 use App\ApiKey;
 use App\Email_log;
+use App\Http\Requests\Common\SettingsRequest;
 use App\Model\Common\Mailchimp\MailchimpSetting;
 use App\Model\Common\Setting;
 use App\Model\Common\StatusSetting;
@@ -69,6 +70,9 @@ class SettingsController extends BaseSettingsController
     public function getKeys(ApiKey $apikeys)
     {
         try {
+            $licenseClientId = ApiKey::pluck('license_client_id')->first();
+            $licenseClientSecret = ApiKey::pluck('license_client_secret')->first();
+            $licenseGrantType = ApiKey::pluck('license_grant_type')->first();
             $licenseSecret = $apikeys->pluck('license_api_secret')->first();
             $licenseUrl = $apikeys->pluck('license_api_url')->first();
             $status = StatusSetting::pluck('license_status')->first();
@@ -99,7 +103,7 @@ class SettingsController extends BaseSettingsController
             $mailSendingStatus = Setting::value('sending_status');
             $model = $apikeys->find(1);
 
-            return view('themes.default1.common.apikey', compact('model', 'status', 'licenseSecret', 'licenseUrl', 'siteKey', 'secretKey', 'captchaStatus', 'updateStatus', 'updateSecret', 'updateUrl', 'mobileStatus', 'mobileauthkey', 'msg91Sender', 'emailStatus', 'twitterStatus', 'twitterKeys', 'zohoStatus', 'zohoKey', 'rzpStatus', 'rzpKeys', 'mailchimpSetting', 'mailchimpKey', 'termsStatus', 'termsUrl', 'pipedriveKey', 'pipedriveStatus', 'domainCheckStatus', 'mailSendingStatus'));
+            return view('themes.default1.common.apikey', compact('model', 'status', 'licenseSecret', 'licenseUrl', 'siteKey', 'secretKey', 'captchaStatus', 'updateStatus', 'updateSecret', 'updateUrl', 'mobileStatus', 'mobileauthkey', 'msg91Sender', 'emailStatus', 'twitterStatus', 'twitterKeys', 'zohoStatus', 'zohoKey', 'rzpStatus', 'rzpKeys', 'mailchimpSetting', 'mailchimpKey', 'termsStatus', 'termsUrl', 'pipedriveKey', 'pipedriveStatus', 'domainCheckStatus', 'mailSendingStatus', 'licenseClientId', 'licenseClientSecret', 'licenseGrantType'));
         } catch (\Exception $ex) {
             return redirect('/')->with('fails', $ex->getMessage());
         }
@@ -176,22 +180,8 @@ class SettingsController extends BaseSettingsController
         }
     }
 
-    public function postSettingsSystem(Setting $settings, Request $request)
+    public function postSettingsSystem(Setting $settings, SettingsRequest $request)
     {
-        $this->validate($request, [
-            'company' => 'required|max:50',
-            'company_email' => 'required|email',
-            'website' => 'required|url',
-            'phone' => 'required',
-            'address' => 'required',
-            'state' => 'required',
-            'country' => 'required',
-            'default_currency' => 'required',
-            'admin-logo' => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
-            'fav-icon' => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
-            'logo' => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
-        ]);
-
         try {
             $setting = $settings->find(1);
             if ($request->hasFile('logo')) {

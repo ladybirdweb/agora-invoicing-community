@@ -531,7 +531,6 @@ User
                                         processing: true,
                                         "bDestroy": true,
                                         serverSide: true,
-                                        stateSave: true,
                                         order: [[ 0, "desc" ]],
                                         ajax: {
                                         "url":  '{{url("getOrderDetail/".$client->id)}}',
@@ -682,7 +681,7 @@ User
                                                     <div class="timeline-footer">
                                                         <button type="submit" class="btn btn-secondary btn-sm btn-xs edit-comment"data-description="{{$comment->description}}" data-comment-id="{{$comment->id}}" data-user_id="{{$comment->user_id}}" data-admin_id="{{$comment->updated_by_user_id}}"><i class='fa fa-edit' style='color:white;'{!! tooltip('Edit') !!} </i></button>
 
-                                                        <button type="submit" class="btn btn-danger btn-sm btn-xs"  id="deleteComment" data-id="{{$comment->id}}"> <i class='fa fa-trash' style='color:white;' {!! tooltip('Delete') !!} </i></button>
+                                                        <button type="submit" class="btn btn-danger btn-sm btn-xs deleteComment" data-comment-id="{{$comment->id}}"> <i class='fa fa-trash' style='color:white;' {!! tooltip('Delete') !!} </i></button>
 
                                                     </div>
                                                 </div>
@@ -789,6 +788,16 @@ User
 @section('icheck')
 
 <script>
+
+     $("#commentclose").on('click',function(){
+       window.location.reload();
+      });
+      
+      $("#crossclose").on('click',function(){
+       window.location.reload();
+      });
+
+
     $('.closeandrefresh').on('click',function(){
             location.reload();
         })
@@ -818,15 +827,15 @@ User
                 })
             })
 
-    $('#deleteComment').on('click',function(){
+    $('.deleteComment').on('click',function(){
             var id=[];
       if (confirm("Are you sure you want to delete this?"))
         {
-          var id = $(this).attr('data-id');
+          var id = $(this).attr('data-comment-id');
           $.ajax({
                       url:"{!! route('comment-delete') !!}",
                       method:"delete",
-                      data: {'comment-id':id},
+                      data: {'data-comment-id':id},
                 success: function (data) {
                 $('#response').show();
                   var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>Success! </strong>'+data.message+'!</div>';

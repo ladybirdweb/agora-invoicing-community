@@ -1,6 +1,6 @@
 <?php
 
-namespace database\seeds;
+namespace database\seeds\v2_0_0;
 
 use App\Plugins\Stripe\Model\StripePayment;
 use Database\Seeders\StripeSupportedCurrencySeeder;

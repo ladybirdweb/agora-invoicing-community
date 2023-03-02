@@ -195,7 +195,7 @@ use Illuminate\Support\Facades\Route;
             Route::get('settings', [Common\SettingsController::class, 'settings']);
             Route::get('settings/system', [Common\SettingsController::class, 'settingsSystem']);
             Route::patch('settings/system', [Common\SettingsController::class, 'postSettingsSystem']);
-            Route::get('settings/email', [Common\EmailSettingsController::class, 'settingsEmail']);
+            Route::get('settings/email', [Common\EmailSettingsController::class, 'settingsEmail'])->middleware('auth');
             Route::patch('settings/email', [Common\EmailSettingsController::class, 'postSettingsEmail']);
             Route::get('settings/template', [Common\SettingsController::class, 'settingsTemplate']);
             Route::patch('settings/template', [Common\SettingsController::class, 'postSettingsTemplate']);
@@ -344,7 +344,7 @@ use Illuminate\Support\Facades\Route;
             Route::post('choose', [License\LocalizedLicenseController::class, 'chooseLicenseMode']);
             Route::get('LocalizedLicense', function () {
                 return view('themes.default1.common.Localized');
-            });
+            })->middleware('auth');
             Route::get('LocalizedLicense/delete/{fileName}', [License\LocalizedLicenseController::class, 'deleteFile']);
             //Route::post('LocalizedLicense/updateLicenseFile/{fileName}',[LocalizedLicenseController::class,'fileEdit']);
 

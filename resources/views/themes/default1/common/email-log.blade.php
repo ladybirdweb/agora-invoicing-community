@@ -34,7 +34,7 @@ Email Logs
                      
                     <thead><tr>
 
-                            <th class="no-sort" style="width:1px"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
+                            <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
 
                             <th>Date</th>
                             <th>From</th>
@@ -65,7 +65,6 @@ Email Logs
            
              processing: true,
              serverSide: true,
-             stateSave: true,
              ordering: true,
              searching:true,
              select: true,
@@ -89,7 +88,7 @@ Email Logs
             columnDefs: [
                 { 
                     targets: 'no-sort', 
-                    orderable: true,
+                    orderable: false,
                     order: []
                 }
             ],

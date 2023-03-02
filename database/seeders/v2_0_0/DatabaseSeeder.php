@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Seeders;
+namespace Database\Seeders\v2_0_0;
 
 use App\ApiKey;
 use App\Model\Common\Mailchimp\MailchimpFieldAgoraRelation;
@@ -82,9 +82,11 @@ class DatabaseSeeder extends Seeder
 
         $this->call([PricingTemplateSeeder::class]);
         $this->command->info('Pricing Template Table Seeded!');
-
+        
+        
         $this->call([UserTableSeeder::class]);
         $this->command->info('User table seeded!');
+
 
         $this->call([ConditionSeeder::class]);
         $this->command->info('Condition table seeded!');
@@ -94,6 +96,12 @@ class DatabaseSeeder extends Seeder
 
         $this->call([FormatCurrenciesSeeder::class]);
         $this->command->info('Format Currencies table seeded!');
+        
+        $this->call([FaveoCloudSeeder::class]);
+        $this->command->info('Format faveocloud table seeded!');
+
+        $this->call([PluginSeeder::class]);
+        $this->command->info('Format plugin table seeded!');
 
         $this->call(CompanySize::class);
         $this->call(CompanyType::class);
@@ -276,7 +284,7 @@ class TemplateTableSeeder extends Seeder
 <tr>
 <td style="background: #fff; border-left: 1px solid #ccc; border-top: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;"> </td>
 <td style="background: #fff; border-top: 1px solid #ccc; padding: 40px 0 10px 0; width: 560px;" align="left">
-<p>Dear {$name}, <br /><br /> Before you can login, you must active your account. Click <a href="{$url}">{$url}</a> to activate your account.<br /><br /> <strong>Your Profile & Control Panel Login</strong><br /><br /> You can start exploring our feature-rich Control Panel, which will allow you to manage all your Products, buy new Products, check all your transactions and more.<br /><br /> <strong>Login Details:</strong><br /> <strong>URL: </strong><a href="{$website_url}">{$website_url}</a> <br /> <strong>Username:</strong> {$username}<br /><br /> Thank You.<br /> Regards,<br /> Faveo Helpdesk</p>
+<p>Dear {$name}, <br /><br /> Before you can login, you must active your account. Click <a href="{$url}">{$url}</a> to activate your account.<br /><br /> <strong>Your Profile & Control Panel Login</strong><br /><br /> You can start exploring our feature-rich Control Panel, which will allow you to manage all your Products, buy new Products, check all your transactions and more.<br /><br /> <strong>Login Details:</strong><br /> <strong>URL: </strong><a href="{$website_url}">{$website_url}</a> <br /> <strong>Username:</strong> {$username}<br /><br /> <strong>Password:</strong> If you can not recall your current password, <a href="{$website_url}/password/reset">click here</a> to request a new password to login.<br /><br /> Thank You.<br /> Regards,<br /> Faveo Helpdesk</p>Thank You.<br /> Regards,<br /> Faveo Helpdesk</p>
 </td>
 <td style="background: #fff; border-right: 1px solid #ccc; border-top: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;"> </td>
 </tr>
@@ -912,12 +920,38 @@ class FormatCurrenciesSeeder extends Seeder
     }
 }
 
+class FaveoCloudSeeder extends Seeder
+{
+    public function run()
+    {
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::table('faveo_cloud')->truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        DB::table('faveo_cloud')->insert(['id' => 1, 'cloud_central_domain' => 'https://billing.faveocloud.com', 'cron_server_url' => 'http://165.227.242.64', 'cron_server_key' => '31ba9b727ee347d12ffcb891c064cf9032a8b1d62480690894870df05ebda47c']);
+    }
+}
+
+class PluginSeeder extends Seeder
+{
+    public function run()
+    {
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::table('plugins')->truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        DB::table('plugins')->insert(['id' => 1, 'name' => 'Ccavenue', 'path' => 'Ccavenue', 'status' => '0']);
+        DB::table('plugins')->insert(['id' => 2, 'name' => 'Ccavenue', 'path' => 'Ccavenue', 'status' => '0']);
+        DB::table('plugins')->insert(['id' => 3, 'name' => 'Stripe', 'path' => 'Stripe', 'status' => '1']);
+        DB::table('plugins')->insert(['id' => 4, 'name' => 'Razorpay', 'path' => 'Razorpay', 'status' => '1']);
+    }
+}
+
 class UserTableSeeder extends Seeder
 {
     public function run()
     {
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        DB::table('users')->truncate();
+        // DB::table('users')->truncate();
+        DB::table('users')->where('email','demo@admin.com')->delete();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         return \App\User::create([

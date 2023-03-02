@@ -70,10 +70,10 @@
                 <table class="table table-responsive table-bordered table-hover" id="dynamic_table">
                   <thead>
                     <tr>
-                      <th class="col-sm-3" style="width:35%">{{ Lang::get('message.country') }} <span class="text-red">*</span> </th>
-                      <th class="col-sm-3" style="width:25%">{{ Lang::get('message.currency') }} <span class="text-red">*</span> </th>
-                      <th class="col-sm-3" style="width:25%">{{ Lang::get('message.regular-price') }} <span class="text-red">*</span> </th>
-                      <th class="col-sm-3" style="width:25%">
+                      <th class="col-sm-6" style="width:27%">{{ Lang::get('message.country') }} <span class="text-red">*</span> </th>
+                      <th class="col-sm-6" style="width:27%">{{ Lang::get('message.currency') }} <span class="text-red">*</span> </th>
+                      <th class="col-sm-6" style="width:27%">{{ Lang::get('message.regular-price') }} <span class="text-red">*</span> </th>
+                      <th class="col-sm-6" style="width:27%">
                         {{ Lang::get('message.renew-price') }} <span class="text-red">*</span>
                       </th>
                     </tr>

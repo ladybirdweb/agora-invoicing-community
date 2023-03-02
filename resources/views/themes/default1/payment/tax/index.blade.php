@@ -167,7 +167,13 @@ Tax
 
     <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" />
     <script src="//cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    </script>
+
+
+  
+ 
     <script type="text/javascript">
+
       $(document).ready(function(){
       var btn = {{($options->tax_enable)}};
      if(btn== '1'){
@@ -217,6 +223,11 @@ $('.btn-off-3').css("background-color", "#DA4F49","color", "white");
             $('#tax-table').DataTable({
                 processing: true,
                 serverSide: true,
+                stateSave: false,
+                ordering: true,
+                searching:true,
+                select: true,
+                order: [[ 1, "desc" ]],
                  ajax: {
               "url":  '{!! route('get-tax') !!}',
                  error: function(xhr) {
@@ -322,6 +333,12 @@ $('.btn-off-3').css("background-color", "#DA4F49","color", "white");
 
        
     </script>
-   
+     @if(count($errors) > 0)
+      <script type="text/javascript">
+       $( document ).ready(function() {
+             $('#create-tax-option').modal('show');
+        });
+      </script>
+      @endif
     @stop
    

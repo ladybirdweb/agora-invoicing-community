@@ -28,6 +28,16 @@ class SoftDeleteController extends ClientController
             )->onlyTrashed();
 
         return \DataTables::of($baseQuery)
+                        ->orderColumn('name', '-users.created_at $1')
+                        ->orderColumn('email', '-users.created_at $1')
+                        ->orderColumn('mobile', '-users.created_at $1')
+                        ->orderColumn('email', '-users.created_at $1')
+                        ->orderColumn('mobile', '-users.created_at $1')
+                        ->orderColumn('country', '-users.created_at $1')
+                        ->orderColumn('company', '-users.created_at $1')
+                         ->orderColumn('created_at', '-users.created_at $1')
+                          ->orderColumn('active', '-users.created_at $1')
+
                         ->addColumn('checkbox', function ($model) {
                             return "<input type='checkbox' class='user_checkbox' value=".$model->id.' name=select[] id=check>';
                         })

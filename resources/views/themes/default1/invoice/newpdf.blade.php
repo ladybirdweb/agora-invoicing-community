@@ -44,7 +44,7 @@
 
                     <div class="row">
                         <div class="col-12">
-                            <h4>
+                            <h4 style="position:relative;top: 2%;">
                                 @if($set->logo)
                                     <img alt="Logo" width="100" height="50" src="{{asset('common/images/'.$set->logo)}}">
                                     @else
@@ -52,7 +52,7 @@
                                 @endif
                             <!--<small  style="height: 50px;color: red;" class="float-right">Date: {!! $date !!}</small>-->
                         <p class="float-right" style=" position: relative;
-    top: 5px;left: 3px;">{!! $date !!}</p><p class="float-right">Date:</p>
+                          top: 3.5px;left: 3px;">{!! $date !!}</p><p class="float-right">Date:</p>
                             </h4>
                         </div><!-- /.col -->
                     </div>
@@ -63,7 +63,7 @@
                             From
                             <address>
 
-                                 <strong>{{$set->company}}</strong><br>
+                                <strong style="word-wrap: break-word;">{{$set->company}}</strong><br>
                                 {{$set->address}}<br>
                                 {{$set->city}}<br/>
                                 @if(key_exists('name',getStateByCode($set->state)))
@@ -74,21 +74,24 @@
                                 Mobile: {{$set->phone}}<br/>
                                 Email: {{$set->email}}
                             </address>
-                        </div><!-- /.col -->
-                         <div class="col-sm-4" style="float:right!important">
-                            <b>Invoice   #{{$invoice->number}}</b><br>
-                            <br>
-
-
+                            
+                            
                              @if($set->gstin)
                             <b>GSTIN:</b>  &nbsp; #{{$set->gstin}}
                             <br>
                             @endif
 
                             @if($set->cin_no)
-                            <b>CIN:</b>  &nbsp; #{{$set->cin_no}}
+                            <b>CIN:</b>  #{{$set->cin_no}}
                             <br>
                             @endif
+
+                        </div><!-- /.col -->
+                         <div class="col-sm-4 float-right" style=" position: relative;
+                        top: 1px;left: 5%;">
+                            <b>Invoice   #{{$invoice->number}}</b><br>
+                            <br>
+
 
 
                         </div><!-- /.col -->
@@ -160,7 +163,7 @@
                         <!-- accepted payments column -->
             
                         <div class="col-6"></div>
-                        <div class="col-6" style="width: 50%;">
+                        <div class="col-6" style="width: 50%;margin-left: 45%">
                               <div class="table-responsive">
                                  <table class="table">
                                      <tr>

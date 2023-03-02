@@ -68,7 +68,7 @@ class PlanController extends ExtendedPlanController
     {
         $new_plan = Plan::leftJoin('products', 'products.id', '=', 'plans.product')
             ->leftJoin('plan_prices', 'plan_prices.plan_id', '=', 'plans.id')
-            ->select('plans.id', 'plans.name', 'plans.days', 'products.name as product', 'plan_prices.add_price');
+            ->select('plans.id', 'plans.name', 'plans.days', 'products.name as product', 'plan_prices.add_price', 'plan_prices.currency');
         $defaultCurrency = Setting::where('id', 1)->value('default_currency');
 
         return DataTables::of($new_plan)
@@ -105,8 +105,8 @@ class PlanController extends ExtendedPlanController
 
                             return ucfirst($response);
                         })
-                         ->addColumn('price', function ($model) use ($defaultCurrency) {
-                             $price = PlanPrice::where('plan_id', $model->id)->where('currency', $defaultCurrency)
+                         ->addColumn('price', function ($model) {
+                             $price = PlanPrice::where('plan_id', $model->id)->where('currency', $model->currency)
                             ->pluck('add_price')->first();
                              if ($price != null) {
                                  return $price;
@@ -115,8 +115,8 @@ class PlanController extends ExtendedPlanController
                              }
                          })
                          ->addColumn('currency', function ($model) use ($defaultCurrency) {
-                             if ($defaultCurrency && $defaultCurrency != null) {
-                                 return $defaultCurrency;
+                             if ($defaultCurrency && $model->currency != null) {
+                                 return $model->currency;
                              } else {
                                  return 'Not Available';
                              }

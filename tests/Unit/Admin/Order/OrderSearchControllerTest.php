@@ -42,7 +42,7 @@ class OrderSearchControllerTest extends DBTestCase
         $this->createOrder('v3.1.0');
         $this->createOrder('v3.2.0');
         $baseQuery = $this->getPrivateMethod($this->classObject, 'getBaseQueryForOrders');
-        $query = $this->getPrivateMethod($this->classObject, 'getSelectedVersionOrders', [$baseQuery, null, null]);
+        $query = $this->getPrivateMethod($this->classObject, 'getSelectedVersionOrders', [$baseQuery, null, null, null]);
         $this->assertEquals(3, $query->count());
     }
 
@@ -54,7 +54,7 @@ class OrderSearchControllerTest extends DBTestCase
         $this->createOrder('v3.1.0');
         $this->createOrder('v3.2.0');
         $baseQuery = $this->getPrivateMethod($this->classObject, 'getBaseQueryForOrders');
-        $query = $this->getPrivateMethod($this->classObject, 'getSelectedVersionOrders', [$baseQuery, null, 'v3.1.0']);
+        $query = $this->getPrivateMethod($this->classObject, 'getSelectedVersionOrders', [$baseQuery, null, 'v3.1.0', null]);
         $records = $query->get();
         $this->assertEquals(3, $records->count());
         $this->assertEquals('v3.0.0', $records[0]->product_version);
@@ -69,7 +69,7 @@ class OrderSearchControllerTest extends DBTestCase
         $this->createOrder('v3.1.0');
         $this->createOrder('v3.2.0');
         $baseQuery = $this->getPrivateMethod($this->classObject, 'getBaseQueryForOrders');
-        $query = $this->getPrivateMethod($this->classObject, 'getSelectedVersionOrders', [$baseQuery, 'v3.1.0', null]);
+        $query = $this->getPrivateMethod($this->classObject, 'getSelectedVersionOrders', [$baseQuery, 'v3.1.0', null, null]);
         $records = $query->get();
         $this->assertEquals(1, $records->count());
         $this->assertEquals('v3.1.0', $records[0]->product_version);
@@ -83,7 +83,7 @@ class OrderSearchControllerTest extends DBTestCase
         $this->createOrder('v3.1.0');
         $this->createOrder('v3.2.0');
         $baseQuery = $this->getPrivateMethod($this->classObject, 'getBaseQueryForOrders');
-        $query = $this->getPrivateMethod($this->classObject, 'getSelectedVersionOrders', [$baseQuery, 'v3.1.0', 'v3.1.0']);
+        $query = $this->getPrivateMethod($this->classObject, 'getSelectedVersionOrders', [$baseQuery, 'v3.1.0', 'v3.1.0', null]);
         $records = $query->get();
         $this->assertEquals(1, $records->count());
         $this->assertEquals('v3.1.0', $records[0]->product_version);

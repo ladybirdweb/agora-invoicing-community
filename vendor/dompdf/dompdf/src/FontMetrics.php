@@ -1,13 +1,9 @@
 <?php
 /**
  * @package dompdf
- * @link    http://dompdf.github.com/
- * @author  Benj Carson <benjcarson@digitaljunkies.ca>
- * @author  Helmut Tischer <htischer@weihenstephan.org>
- * @author  Fabien Ménager <fabien.menager@gmail.com>
+ * @link    https://github.com/dompdf/dompdf
  * @license http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
  */
-
 namespace Dompdf;
 
 use FontLib\Font;
@@ -217,12 +213,14 @@ class FontMetrics
         $allowed_protocols = $this->options->getAllowedProtocols();
         if (!array_key_exists($protocol, $allowed_protocols)) {
             Helpers::record_warnings(E_USER_WARNING, "Permission denied on $remoteFile. The communication protocol is not supported.", __FILE__, __LINE__);
+            return false;
         }
 
         foreach ($allowed_protocols[$protocol]["rules"] as $rule) {
             [$result, $message] = $rule($remoteFile);
             if ($result !== true) {
                 Helpers::record_warnings(E_USER_WARNING, "Error loading $remoteFile: $message", __FILE__, __LINE__);
+                return false;
             }
         }
 

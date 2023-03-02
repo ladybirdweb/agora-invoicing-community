@@ -6,7 +6,6 @@ use App\ApiKey;
 use App\Auto_renewal;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\SyncBillingToLatestVersion;
-use App\Model\Common\Setting;
 use App\Model\Payment\Currency;
 use App\Plugins\Stripe\Model\StripePayment;
 use Cartalyst\Stripe\Laravel\Facades\Stripe;

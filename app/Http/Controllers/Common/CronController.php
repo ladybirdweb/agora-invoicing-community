@@ -450,9 +450,8 @@ class CronController extends BaseCronController
                             'amount' => $amount,
                             'currency' => $currency, ], ]],
                 ]);
-
                 //Afer Renew
-                if ($rzp_subscription['status'] == 'active') {
+                if ($rzp_subscription['status'] == 'created' || $rzp_subscription['status'] == 'active') {
                     Subscription::where('id', $subscription->id)->update(['subscribe_id' => $rzp_subscription['id']]);
                     $this->successRenew($invoice, $subscription);
                     $this->postRazorpayPayment($invoice, $payment_method = 'Razorpay');
@@ -462,7 +461,6 @@ class CronController extends BaseCronController
                 }
             }
         } catch (\Exception $e) {
-            dd($e);
             if (emailSendingStatus()) {
                 $this->sendFailedPaymenttoAdmin($invoice->grand_total, $e->getMessage(), $user);
             }
@@ -471,7 +469,6 @@ class CronController extends BaseCronController
 
     public static function sendFailedPaymenttoAdmin($amount, $exceptionMessage, $user)
     {
-        dd($exceptionMessage);
         $setting = Setting::find(1);
         $paymentFailData = 'Payment for'.' '.'of'.' '.$user->currency.' '.$amount.' '.'failed by'.' '.$user->first_name.' '.$user->last_name.' '.'. User Email:'.' '.$user->email.'Reason:'.$exceptionMessage;
 

@@ -3,19 +3,10 @@
  * A PHP class to provide the basic functionality to create a pdf document without
  * any requirement for additional modules.
  *
- * Extended by Orion Richardson to support Unicode / UTF-8 characters using
- * TCPDF and others as a guide.
- *
- * @author  Wayne Munro <pdf@ros.co.nz>
- * @author  Orion Richardson <orionr@yahoo.com>
- * @author  Helmut Tischer <htischer@weihenstephan.org>
- * @author  Ryan H. Masten <ryan.masten@gmail.com>
- * @author  Brian Sweeney <eclecticgeek@gmail.com>
- * @author  Fabien Ménager <fabien.menager@gmail.com>
- * @license Public Domain http://creativecommons.org/licenses/publicdomain/
+ * @author  Wayne Munro
+ * @license http://creativecommons.org/licenses/publicdomain/ Public Domain
  * @package Cpdf
  */
-
 namespace Dompdf;
 
 use FontLib\Exception\FontNotFoundException;
@@ -4229,9 +4220,9 @@ EOT;
         $this->addContent(sprintf("\n%.3F %.3F %.3F %.3F re", $x1, $y1, $width, $height));
     }
 
-    function stroke()
+    function stroke(bool $close = false)
     {
-        $this->addContent("\nS");
+        $this->addContent("\n" . ($close ? "s" : "S"));
     }
 
     function fill()
@@ -4239,9 +4230,9 @@ EOT;
         $this->addContent("\nf" . ($this->fillRule === "evenodd" ? "*" : ""));
     }
 
-    function fillStroke()
+    function fillStroke(bool $close = false)
     {
-        $this->addContent("\nb" . ($this->fillRule === "evenodd" ? "*" : ""));
+        $this->addContent("\n" . ($close ? "b" : "B") . ($this->fillRule === "evenodd" ? "*" : ""));
     }
 
     /**
@@ -4832,8 +4823,6 @@ EOT;
      * filter the text, this is applied to all text just before being inserted into the pdf document
      * it escapes the various things that need to be escaped, and so on
      *
-     * @access private
-     *
      * @param $text
      * @param bool $bom
      * @param bool $convert_encoding
@@ -4868,12 +4857,7 @@ EOT;
      * based on the excellent TCPDF code by Nicola Asuni and the
      * RFC for UTF-8 at http://www.faqs.org/rfcs/rfc3629.html
      *
-     * @access private
-     * @author Orion Richardson
-     * @since  January 5, 2008
-     *
      * @param string $text UTF-8 string to process
-     *
      * @return array UTF-8 codepoints array for the string
      */
     function utf8toCodePointsArray(&$text)
@@ -4943,13 +4927,8 @@ EOT;
      * based on the excellent TCPDF code by Nicola Asuni and the
      * RFC for UTF-8 at http://www.faqs.org/rfcs/rfc3629.html
      *
-     * @access private
-     * @author Orion Richardson
-     * @since  January 5, 2008
-     *
      * @param string  $text UTF-8 string to process
      * @param boolean $bom  whether to add the byte order marker
-     *
      * @return string UTF-16 result string
      */
     function utf8toUtf16BE(&$text, $bom = true)
@@ -5034,7 +5013,8 @@ EOT;
         }
 
         if (!isset($this->stringSubsets[$font])) {
-            $this->stringSubsets[$font] = [];
+            $base_subset = "\u{fffd}\u{fffe}\u{ffff}";
+            $this->stringSubsets[$font] = $this->utf8toCodePointsArray($base_subset);
         }
 
         $this->stringSubsets[$font] = array_unique(

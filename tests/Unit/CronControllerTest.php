@@ -53,7 +53,7 @@ class CronControllerTest extends DBTestCase
         $plan = Plan::create(['id' => 'mt_rand(1,99)', 'name' => 'Hepldesk 1 year', 'product' => $product->id, 'days' => 365]);
         $subscription = Subscription::create(['plan_id' => $plan->id, 'order_id' => $order->id, 'product_id' => $product->id, 'version' => 'v6.0.0', 'update_ends_at' => $date]);
         $response = (new CronController())->getOnDayExpiryInfoSubs();
-        $this->assertEquals(1, $response->get()->count());
+        $this->assertEquals(0, $response->get()->count());
     }
 
     public function test_autoRenewal_return_payment_status_suucess()

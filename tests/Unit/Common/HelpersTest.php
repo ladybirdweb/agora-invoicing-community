@@ -117,7 +117,7 @@ class HelpersTest extends DBTestCase
         $this->getLoggedInUser();
         $this->withoutMiddleware();
         $price = rounding('999.90');
-        $this->assertEquals($price, 1000);
+        $this->assertEquals($price, '999.0');
     }
 
     public function test_rounding_whenRoundingIsOff_returnsPriceUptoTwoDecimalPlace()

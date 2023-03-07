@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Common;
 use App\ApiKey;
 use App\Auto_renewal;
 use App\Http\Controllers\License\LicensePermissionsController;
-use App\Model\Common\Setting;
 use App\Model\Common\StatusSetting;
 use App\Model\Common\Template;
 use App\Model\Common\StatusSetting;
@@ -351,7 +350,6 @@ class CronController extends BaseCronController
     public function autoRenewal()
     {
         try {
-        
             $subscriptions_detail = $this->getOnDayExpiryInfoSubs()->get();
             foreach ($subscriptions_detail as $subscription) {
                 $status = $subscription->is_subscribed;
@@ -371,7 +369,6 @@ class CronController extends BaseCronController
 
                     $user = \DB::table('users')->where('id', $userid)->first();
                     $customer_id = Auto_renewal::where('user_id', $userid)->value('customer_id');
-
 
                     //create product
                     $product = $stripe->products->create([
@@ -427,7 +424,7 @@ class CronController extends BaseCronController
         }
     }
 
-    public function razorpay_payment($days, $product_name, $invoice, $currency, $subscription, $user,$number,$end)
+    public function razorpay_payment($days, $product_name, $invoice, $currency, $subscription, $user, $number, $end)
     {
         try {
             $status = $subscription->is_subscribed;
@@ -498,7 +495,6 @@ class CronController extends BaseCronController
         $data = $template->data;
         $url = url("my-order/$order->id");
 
-
         try {
             $email = (new Email())
          ->from($setting->email)
@@ -512,7 +508,7 @@ class CronController extends BaseCronController
              'expiry' => date('d-m-Y', strtotime($end)),
              'exception' => $exceptionMessage,
              'url' => $url,
-             ]));
+         ]));
             $mailer->send($email);
             $mail->email_log_success($setting->email, $user->email, $template->name, $data);
         } catch (\Exception $ex) {
@@ -536,7 +532,6 @@ class CronController extends BaseCronController
         $data = $template->data;
         $url = url('my-orders');
 
-
         try {
             $email = (new Email())
          ->from($setting->email)
@@ -548,7 +543,7 @@ class CronController extends BaseCronController
              'currency' => $currency,
              'total' => $total,
              'number' => $number,
-             ]));
+         ]));
             $mailer->send($email);
             $mail->email_log_success($setting->email, $user->email, $template->name, $data);
         } catch (\Exception $ex) {
@@ -681,8 +676,6 @@ class CronController extends BaseCronController
         $getInstallPreference = $cont->getInstallPreference($licenseCode, $productId);
         $updateLicensedDomain = $cont->updateExpirationDate($licenseCode, $expiryDate, $productId, $domain, $orderNo, $licenseExpiry, $supportExpiry, $noOfAllowedInstallation, $getInstallPreference);
     }
-
-
 
     public function postRazorpayPayment($invoice, $payment_method)
     {

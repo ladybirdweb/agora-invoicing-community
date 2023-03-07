@@ -198,8 +198,8 @@ class PhpMailController extends Controller
         $expiry = $this->checkElement('expiry', $templatevariables);
         $url = $this->checkElement('url', $templatevariables);
         $knowledge_base = $this->checkElement('knowledge_base', $templatevariables);
-        $total = $this->checkElement('total',$templatevariables);
-        $exceptionMessage = $this->checkElement('exception',$templatevariables);
+        $total = $this->checkElement('total', $templatevariables);
+        $exceptionMessage = $this->checkElement('exception', $templatevariables);
 
         $variables['{$name}'] = $name;
         $variables['{$username}'] = $email;

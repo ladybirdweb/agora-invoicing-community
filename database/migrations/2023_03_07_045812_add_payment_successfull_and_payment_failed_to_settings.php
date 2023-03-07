@@ -16,7 +16,6 @@ return new class extends Migration
         Schema::table('settings', function (Blueprint $table) {
             $table->string('payment_successfull')->nullable();
             $table->string('payment_failed')->nullable();
-
         });
     }
 
@@ -29,7 +28,6 @@ return new class extends Migration
     {
         Schema::table('settings', function (Blueprint $table) {
             $table->dropColumn(['payment_successfull', 'payment_failed']);
-
         });
     }
 };

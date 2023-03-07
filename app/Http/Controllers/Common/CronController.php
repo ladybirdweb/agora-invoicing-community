@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Common;
 use App\ApiKey;
 use App\Auto_renewal;
 use App\Http\Controllers\License\LicensePermissionsController;
-use App\Model\Common\Setting;
 use App\Model\Common\StatusSetting;
 use App\Model\Common\Template;
 use App\Model\Mailjob\ExpiryMailDay;
@@ -349,7 +348,6 @@ class CronController extends BaseCronController
     public function autoRenewal()
     {
         try {
-        
             $subscriptions_detail = $this->getOnDayExpiryInfoSubs()->get();
             foreach ($subscriptions_detail as $subscription) {
                 $status = $subscription->is_subscribed;
@@ -369,7 +367,6 @@ class CronController extends BaseCronController
 
                     $user = \DB::table('users')->where('id', $userid)->first();
                     $customer_id = Auto_renewal::where('user_id', $userid)->value('customer_id');
-
 
                     //create product
                     $product = $stripe->products->create([
@@ -401,8 +398,7 @@ class CronController extends BaseCronController
                         $this->successRenew($invoice, $subscription);
                         $this->postRazorpayPayment($invoice, $payment_method = 'stripe');
                         if ($invoice->grand_total && emailSendingStatus()) {
-                            $this->sendPaymentSuccessMailtoAdmin($invoice->currency, $invoice->grand_total, $user, $invoice->invoiceItem()->first()->product_name,$order->number);
-
+                            $this->sendPaymentSuccessMailtoAdmin($invoice->currency, $invoice->grand_total, $user, $invoice->invoiceItem()->first()->product_name, $order->number);
                         }
                     }
                 }
@@ -411,18 +407,18 @@ class CronController extends BaseCronController
             throw new \Exception($ex->getMessage());
         } catch (\Cartalyst\Stripe\Exception\CardErrorException $e) {
             if (emailSendingStatus()) {
-                $this->sendFailedPaymenttoAdmin($invoice->grand_total, $e->getMessage(), $user,$order->number,$end,$invoice->currency);
+                $this->sendFailedPaymenttoAdmin($invoice->grand_total, $e->getMessage(), $user, $order->number, $end, $invoice->currency);
             }
             \Session::put('amount', $amount);
             \Session::put('error', $e->getMessage());
 
             return redirect()->route('checkout');
         } catch (\Exception $ex) {
-            $this->razorpay_payment($plan->days, $product_details->name, $invoice, $currency, $subscription, $user,$order->number,$end);
+            $this->razorpay_payment($plan->days, $product_details->name, $invoice, $currency, $subscription, $user, $order->number, $end);
         }
     }
 
-    public function razorpay_payment($days, $product_name, $invoice, $currency, $subscription, $user,$number,$end)
+    public function razorpay_payment($days, $product_name, $invoice, $currency, $subscription, $user, $number, $end)
     {
         try {
             $status = $subscription->is_subscribed;
@@ -460,18 +456,18 @@ class CronController extends BaseCronController
                     $this->successRenew($invoice, $subscription);
                     $this->postRazorpayPayment($invoice, $payment_method = 'Razorpay');
                     if ($invoice->grand_total && emailSendingStatus()) {
-                        $this->sendPaymentSuccessMailtoAdmin($invoice->currency, $invoice->grand_total, $user, $invoice->invoiceItem()->first()->product_name,$number);
+                        $this->sendPaymentSuccessMailtoAdmin($invoice->currency, $invoice->grand_total, $user, $invoice->invoiceItem()->first()->product_name, $number);
                     }
                 }
             }
         } catch (\Exception $e) {
             if (emailSendingStatus()) {
-                $this->sendFailedPaymenttoAdmin($invoice->grand_total, $e->getMessage(), $user,$number,$end,$invoice->currency);
+                $this->sendFailedPaymenttoAdmin($invoice->grand_total, $e->getMessage(), $user, $number, $end, $invoice->currency);
             }
         }
     }
 
-    public static function sendFailedPaymenttoAdmin($total, $exceptionMessage, $user,$number,$end,$currency)
+    public static function sendFailedPaymenttoAdmin($total, $exceptionMessage, $user, $number, $end, $currency)
     {
 
         //check in the settings
@@ -488,7 +484,6 @@ class CronController extends BaseCronController
         $data = $template->data;
         $url = url('my-orders');
 
-
         try {
             $email = (new Email())
         ->from($setting->email)
@@ -503,7 +498,7 @@ class CronController extends BaseCronController
              'expiry' => $end,
              'exception' => $exceptionMessage,
              'url' => $url,
-             ]));
+         ]));
             $mailer->send($email);
             $mail->email_log_success($setting->email, $user->email, $template->name, $data);
         } catch (\Exception $ex) {
@@ -511,7 +506,7 @@ class CronController extends BaseCronController
         }
     }
 
-    public static function sendPaymentSuccessMailtoAdmin($currency, $total, $user, $product,$number)
+    public static function sendPaymentSuccessMailtoAdmin($currency, $total, $user, $product, $number)
     {
         //check in the settings
         $settings = new \App\Model\Common\Setting();
@@ -527,7 +522,6 @@ class CronController extends BaseCronController
         $data = $template->data;
         $url = url('my-orders');
 
-
         try {
             $email = (new Email())
         ->from($setting->email)
@@ -539,7 +533,7 @@ class CronController extends BaseCronController
              'currency' => $currency,
              'total' => $total,
              'number' => $number,
-             ]));
+         ]));
             $mailer->send($email);
             $mail->email_log_success($setting->email, $user->email, $template->name, $data);
         } catch (\Exception $ex) {
@@ -631,8 +625,6 @@ class CronController extends BaseCronController
         $getInstallPreference = $cont->getInstallPreference($licenseCode, $productId);
         $updateLicensedDomain = $cont->updateExpirationDate($licenseCode, $expiryDate, $productId, $domain, $orderNo, $licenseExpiry, $supportExpiry, $noOfAllowedInstallation, $getInstallPreference);
     }
-
-
 
     public function postRazorpayPayment($invoice, $payment_method)
     {

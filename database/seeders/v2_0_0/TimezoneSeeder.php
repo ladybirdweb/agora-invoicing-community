@@ -699,7 +699,7 @@ class TimezoneSeeder extends Seeder
         Timezone::create([
             'id' => 114,
             'name' => 'UTC',
-            'location' => null,
+            'location' => '',
         ]);
     }
 }

@@ -199,6 +199,8 @@ class PhpMailController extends Controller
         $expiry = $this->checkElement('expiry', $templatevariables);
         $url = $this->checkElement('url', $templatevariables);
         $knowledge_base = $this->checkElement('knowledge_base', $templatevariables);
+        $total = $this->checkElement('total',$templatevariables);
+        $exceptionMessage = $this->checkElement('exception',$templatevariables);
 
         $variables['{$name}'] = $name;
         $variables['{$username}'] = $email;
@@ -226,6 +228,8 @@ class PhpMailController extends Controller
         $variables['{$expiry}'] = $expiry;
         $variables['{$url}'] = $url;
         $variables['{$knowledge_base}'] = $knowledge_base;
+        $variables['{$total}'] = $total;
+        $variables['{$exception}'] = $exceptionMessage;
 
         return $variables;
     }

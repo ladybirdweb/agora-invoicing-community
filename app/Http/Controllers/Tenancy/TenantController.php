@@ -76,8 +76,6 @@ class TenantController extends Controller
              ->rawColumns(['tenants', 'domain', 'db_name', 'db_username', 'action'])
              ->make(true);
         } catch (ConnectException|Exception $e) {
-            dd($e);
-
             return redirect()->back()->with('fails', $e->getMessage());
         }
 
@@ -175,7 +173,7 @@ class TenantController extends Controller
                 return ['status' => $result->status, 'message' => $result->message.'.'.$cronFailureMessage];
             }
         } catch (Exception $e) {
-            $mail->email_log_fail($settings->email, $user, 'New instance created', $result->message.'.<br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password);
+            $mail->email_log_fail($settings->email, $user, 'New instance created', $e->getMessage().'.<br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password);
 
             return ['status' => 'false', 'message' => $e->getMessage()];
         }
@@ -205,7 +203,6 @@ class TenantController extends Controller
 
     public function destroyTenant(Request $request)
     {
-        dd('rghrut');
         try {
             $keys = ThirdPartyApp::where('app_name', 'faveo_app_key')->select('app_key', 'app_secret')->first();
             $token = str_random(32);

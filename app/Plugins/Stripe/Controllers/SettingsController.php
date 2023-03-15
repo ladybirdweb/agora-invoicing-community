@@ -125,12 +125,6 @@ class SettingsController extends Controller
 
         $this->validate($request, $validation);
 
-        //saving card details for future payment
-
-        $invoice_details = \Session::get('invoice');
-
-        $stripeSecretKey = ApiKey::pluck('stripe_secret')->first();
-        $stripe = Stripe::make($stripeSecretKey);
         try {
             $invoice = \Session::get('invoice');
             // $invoiceTotal = \Session::get('totalToBePaid');
@@ -138,51 +132,20 @@ class SettingsController extends Controller
             if (! $amount) {//During renewal
                 $amount = rounding(\Session::get('totalToBePaid'));
             }
-            $stripeSecretKey = ApiKey::pluck('stripe_secret')->first();
-            $stripe = Stripe::make($stripeSecretKey);
-            $token = $stripe->tokens()->create([
-                'card' => [
-                    'number' => $request->get('card_no'),
-                    'exp_month' => $request->get('exp_month'),
-                    'exp_year' => $request->get('exp_year'),
-                    'cvc' => $request->get('cvv'),
-                ],
-            ]);
-            if (! isset($token['id'])) {
-                \Session::put('error', 'The Stripe Token was not generated correctly');
+            $currency = strtolower($invoice->currency);
+            
 
-                return redirect()->route('stripform');
-            }
-            $customer = $stripe->customers()->create([
-                'name' => \Auth::user()->first_name.' '.\Auth::user()->last_name,
-                'email' => \Auth::user()->email,
-                'address' => [
-                    'line1' => \Auth::user()->address,
-                    'postal_code' => \Auth::user()->zip,
-                    'city' => \Auth::user()->town,
-                    'state' => \Auth::user()->state,
-                    'country' => \Auth::user()->country,
-                ],
-            ]);
-            $stripeCustomerId = $customer['id'];
+            $strCharge = $this->stripePay($request);
+        
+            if ($strCharge['charge']['status'] == 'succeeded') {
 
-            $customer_details =
-            [
+                $stripeCustomerId = $strCharge['customer']['id'];
+                $customer_details =[
                 'user_id' => $invoice->user_id,
                 'invoice_number' => $invoice->number,
                 'customer_id' => $stripeCustomerId,
-            ];
-            Auto_renewal::create($customer_details);
-
-            $currency = strtolower($invoice->currency);
-            $card = $stripe->cards()->create($stripeCustomerId, $token['id']);
-            $charge = $stripe->charges()->create([
-                'customer' => $customer['id'],
-                'currency' => $currency,
-                'amount' => $amount,
-                'description' => 'Add in wallet',
-            ]);
-            if ($charge['status'] == 'succeeded') {
+                ];
+                Auto_renewal::create($customer_details);
 
                 //Change order Status as Success if payment is Successful
                 $stateCode = \Auth::user()->state;
@@ -224,12 +187,14 @@ class SettingsController extends Controller
                 return redirect('checkout')->with('fails', 'Your Payment was declined. Please try making payment with other gateway');
             }
         } catch (\Cartalyst\Stripe\Exception\ApiLimitExceededException|\Cartalyst\Stripe\Exception\BadRequestException|\Cartalyst\Stripe\Exception\MissingParameterException|\Cartalyst\Stripe\Exception\NotFoundException|\Cartalyst\Stripe\Exception\ServerErrorException|\Cartalyst\Stripe\Exception\StripeException|\Cartalyst\Stripe\Exception\UnauthorizedException $e) {
+            dd($e);
             if (emailSendingStatus()) {
                 $this->sendFailedPaymenttoAdmin($amount, $e->getMessage());
             }
 
             return redirect('checkout')->with('fails', 'Your Payment was declined. '.$e->getMessage().'. Please try again or try the other gateway');
         } catch (\Cartalyst\Stripe\Exception\CardErrorException $e) {
+            dd($e);
             if (emailSendingStatus()) {
                 $this->sendFailedPaymenttoAdmin($request['amount'], $e->getMessage());
             }
@@ -239,6 +204,71 @@ class SettingsController extends Controller
             return redirect()->route('checkout');
         } catch (\Exception $e) {
             return redirect('checkout')->with('fails', 'Your payment was declined. '.$e->getMessage().'. Please try again or try the other gateway.');
+        }
+    }
+
+    public function stripePay($request)
+    {
+        try{
+            $stripeSecretKey = ApiKey::pluck('stripe_secret')->first();
+            $stripe = Stripe::make($stripeSecretKey);
+
+
+           if(\Session::get('invoice'))
+           {
+            $invoice = \Session::get('invoice');
+            // $invoiceTotal = \Session::get('totalToBePaid');
+            $amount = rounding(\Cart::getTotal());
+            if (! $amount) {//During renewal
+                $amount = rounding(\Session::get('totalToBePaid'));
+            }
+            $currency = strtolower($invoice->currency);
+           }
+           else
+           {
+            $amount = 1;
+            $currency = \Auth::user()->currency;
+           }
+
+            $token = $stripe->tokens()->create([
+                'card' => [
+                    'number' => $request->get('card_no'),
+                    'exp_month' => $request->get('exp_month'),
+                    'exp_year' => $request->get('exp_year'),
+                    'cvc' => $request->get('cvv'),
+                ],
+            ]);
+
+            if (! isset($token['id'])) {
+                \Session::put('error', 'The Stripe Token was not generated correctly');
+
+                return redirect()->route('stripform');
+            }
+            $customer = $stripe->customers()->create([
+                'name' => \Auth::user()->first_name.' '.\Auth::user()->last_name,
+                'email' => \Auth::user()->email,
+                'address' => [
+                    'line1' => \Auth::user()->address,
+                    'postal_code' => \Auth::user()->zip,
+                    'city' => \Auth::user()->town,
+                    'state' => \Auth::user()->state,
+                    'country' => \Auth::user()->country,
+                ],
+            ]);
+
+            $stripeCustomerId = $customer['id'];
+            $card = $stripe->cards()->create($stripeCustomerId, $token['id']);
+            $charge = $stripe->charges()->create([
+                'customer' => $customer['id'],
+                'currency' => $currency,
+                'amount' => $amount,
+                'description' => 'Add in wallet',
+            ]);
+            return ['charge' => $charge,'customer' => $customer];
+        }catch(\Exception $e)
+        { 
+            dd($e);
+            return errorResponse($e->getMessage());
         }
     }
 

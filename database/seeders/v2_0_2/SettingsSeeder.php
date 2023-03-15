@@ -22,6 +22,7 @@ class SettingsSeeder extends Seeder
             'autosubscription_going_to_end' => 12,
             'payment_successfull' => 13,
             'payment_failed' => 14,
+            'card_failed' => 15,
 
         ]);
     }

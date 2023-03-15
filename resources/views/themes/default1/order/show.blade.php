@@ -629,6 +629,7 @@ input:checked + .slider:before {
         </div>
         <div id="alertMessage"></div>
 
+
          <div class="card card-secondary card-outline">
          <div class="row">
             <div class="col-md-12">
@@ -644,38 +645,34 @@ input:checked + .slider:before {
                 </a>
                        <div class="card-body">
                        <div class="col-md-12">
+                        
                          <div class="row">
 
+
               <div class="col-8">
-                @if($statusAutorenewal == 1)
+              
 
-              <label class="switch toggle_event_editing">
+                     <h6 style="margin-top: 8px;">Auto Renewal for Future Subscription</h6>
 
-                         <input type="checkbox" value="1"  name="is_subscribed"
-                          class="checkbox" id="is_subscribed" checked>
-                          <span class="slider round"></span>
-
-                    </label>
-                    <h6>Disable Auto Renewal</h6>
-
-                    @else
-
-                       <label class="switch toggle_event_editing">
-
-                         <input type="checkbox" value="0"  name="is_subscribed"
-                          class="checkbox" id="is_subscribed">
-                          <span class="slider round"></span>
-
-                    </label>
-                     <h6>Enable Auto Renewal for Future Subscription</h6>
-
-                    @endif
+                 
           </div>
               <div class="col-4">
-             <button type="submit" class="form-group btn btn-primary" onclick="saveStatus('{{$id}}')"  id="submitSub"><i class="fa fa-save">&nbsp;</i>Save</button>
+                 <label class="switch toggle_event_editing">
 
-          </div>
+              <label class="switch toggle_event_editing">
+                         <input type="checkbox" value="{{$statusAutorenewal}}"  name="is_subscribed"
+                          class="renewcheckbox" id="renew">
+                          <span class="slider round"></span>
+                          <input type="hidden" name="" id="autoorder" value="{{$order->id}}">
+
+
+                    </label>
+                    
+
+
             </div>
+            </div>
+           
 
                           </div>
       
@@ -702,6 +699,41 @@ input:checked + .slider:before {
 <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
  <script src="{{asset('common/js/licCode.js')}}"></script>
 <script type="text/javascript">
+
+        $(document).ready(function(){
+         var status = $('.renewcheckbox').val();
+         if(status ==1) {
+         $('#renew').prop('checked',true)
+         } else if(status ==0) {
+          $('#renew').prop('checked',false)
+          $('#renew').prop('disabled',true)
+             }
+        });
+
+     $('#renew').on('change',function () {
+         if (!$(this).prop("checked")) {
+            var id = $('#autoorder').val();
+              $.ajax({
+                    url : '{{url("renewal-disable")}}',
+                    method : 'post',
+                    data : {
+                        "order_id" : id,
+
+                    },
+                    success: function(response){
+                    $('#alertMessage').show();
+                    var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>'+response.message+'.</div>';
+                    $('#alertMessage').html(result+ ".");
+                    $("#pay").html("<i class='fa fa-save'>&nbsp;&nbsp;</i>Save");
+                    setInterval(function(){
+                        $('#alertMessage').slideUp(3000);
+                    }, 1000);
+                    },
+                })
+         }
+     });
+
+
         $('#order1-table').DataTable({
             processing: true,
             serverSide: true,

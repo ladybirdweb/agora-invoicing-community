@@ -104,8 +104,10 @@ use Illuminate\Support\Facades\Route;
             Route::get('get-my-payment/{orderid}/{userid}', [Front\ClientController::class, 'getPaymentByOrderId'])->name('get-my-payment');
 
             Route::get('get-my-payment-client/{orderid}/{userid}', [Front\ClientController::class, 'getPaymentByOrderIdClient'])->name('get-my-payment-client');
-
-            Route::post('post-status', [Front\ClientController::class, 'postAutorenewalStatus'])->name('post-status');
+            Route::get('autoPayment-client/{orderid}',[Front\ClientController::class,'getAutoPaymentStatus']);
+            Route::post('strRenewal-enable', [Front\ClientController::class, 'enableAutorenewalStatus']);
+            Route::post('renewal-disable', [Front\ClientController::class, 'disableAutorenewalStatus']);
+            Route::post('rzpRenewal-disable/{orderid}', [Front\ClientController::class, 'enableRzpStatus']);
             Route::get('my-orders', [Front\ClientController::class, 'orders']);
             Route::get('get-my-orders', [Front\ClientController::class, 'getOrders'])->name('get-my-orders');
             Route::get('my-subscriptions', [Front\ClientController::class, 'subscriptions']);
@@ -486,6 +488,7 @@ use Illuminate\Support\Facades\Route;
             Route::post('renew/{id}', [Order\RenewController::class, 'renew']);
             Route::get('get-renew-cost', [Order\RenewController::class, 'getCost']);
             Route::post('client/renew/{id}', [Order\RenewController::class, 'renewByClient']);
+            Route::get('autopaynow/{id}', [Front\ClientController::class,'autoRenewbyid']);
 
             Route::get('generate-keys', [HomeController::class, 'createEncryptionKeys']);
 

@@ -10,6 +10,14 @@ active
 @stop
 @section('breadcrumb')
 <style>
+    option
+    {
+     font-size: 15px;
+    }
+.modal-backdrop {
+    /* bug fix - no overlay */    
+    display: none;    
+}
 .switch {
   position: relative;
   display: inline-block;
@@ -78,6 +86,119 @@ input:checked + .slider:before {
 <li><a href= "{{url('my-orders')}}">My Orders</a></li>
 <li class="active">View Order</li>
 @stop
+<?php
+
+$cartSubtotalWithoutCondition = 0;
+ 
+use Razorpay\Api\Api;
+ $merchant_orderid= generateMerchantRandomString();  
+
+function generateMerchantRandomString($length = 10) {
+$characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+$charactersLength = strlen($characters);
+$randomString = '';
+for ($i = 0; $i < $length; $i++) {
+    $randomString .= $characters[rand(0, $charactersLength - 1)];
+}
+return $randomString;
+}
+$rzp_key = app\ApiKey::where('id', 1)->value('rzp_key');
+$rzp_secret = app\ApiKey::where('id', 1)->value('rzp_secret');
+ $api = new Api($rzp_key, $rzp_secret);
+$displayCurrency = \Auth::user()->currency;
+$symbol = \Auth::user()->currency;
+if ($symbol == 'INR'){
+
+
+$exchangeRate= '';
+
+
+$orderData = [
+'receipt'         => 3456,
+'amount'          => round(1.00*100), // 2000 rupees in paise
+
+'currency'        => 'INR',
+'payment_capture' => 0 // auto capture
+ 
+];
+
+
+} else {
+ 
+ $url = "http://apilayer.net/api/live?access_key=$apilayer_key";
+ $exchange = json_decode(file_get_contents($url));
+
+ $exchangeRate = $exchange->quotes->USDINR;
+ // dd($exchangeRate);
+ $displayAmount =$exchangeRate * round(1.00*100) ;
+
+
+ $orderData = [
+'receipt'         => 3456,
+'amount'          =>  round(1.00*100), // 2000 rupees in paise
+
+'currency'        => 'INR',
+'payment_capture' => 0 // auto capture
+     
+];
+}
+$razorpayOrder = $api->order->create($orderData);
+$razorpayOrderId = $razorpayOrder['id'];
+$_SESSION['razorpay_order_id'] = $razorpayOrderId;
+$displayAmount = $amount = $orderData['amount'];
+
+
+
+$data = [
+
+
+    "key"               => $rzp_key,
+    "name"              => 'Faveo Helpdesk',
+    "currency"          => 'INR',
+     "prefill"=> [
+        "contact"=>    \Auth::user()->mobile_code .\Auth::user()->mobile,
+        "email"=>      \Auth::user()->email,
+    ],
+    "description"       =>  'Order for Invoice No' .-$invoice->number,
+    "notes"             => [
+    "First Name"         => \Auth::user()->first_name,
+    "Last Name"         =>  \Auth::user()->last_name,
+    "Company Name"      => \Auth::user()->company,
+    "Address"           =>  \Auth::user()->address,
+    "Email"             =>  \Auth::user()->email,
+    "Country"           =>  \Auth::user()->country,
+    "State"             => \Auth::user()->state,
+    "City"              => \Auth::user()->town,
+    "Zip"               => \Auth::user()->zip,
+    "Currency"          => \Auth::user()->currency,
+    "Amount Paid"   => '1',
+    "Exchange Rate"   =>  $exchangeRate,
+
+
+
+    "merchant_order_id" =>  $merchant_orderid,
+    ],
+    "theme"             => [
+    "color"             => "#F37254"
+    ],
+    "order_id"          => $razorpayOrderId,
+];
+
+if ($displayCurrency !== 'INR')
+{
+    $data['display_currency']  = 'USD';
+    $data['display_amount']    ='1';
+    
+}
+$json = json_encode($data);
+
+
+ $currency = \Auth::user()->currency;
+
+
+
+
+?>
 
 @section('content')
  @include('themes.default1.front.clients.reissue-licenseModal')
@@ -86,9 +207,11 @@ input:checked + .slider:before {
         <div class="col-lg-12 mb-12 mb-lg-0">
             <div class="alert alert-tertiary" style="padding-bottom: 5px; background-color: #49b1bf">
                 <div class="row">
-                    <div class="col col-md-4">Order No: #{{$order->number}}</div>
-                    <div class="col col-md-4">Date: {!! getDateHtml($order->created_at) !!}</div>
-                    <div class="col col-md-4">Status: {{$order->order_status}}</div>
+                    <div class="col col-md-3">Order No: #{{$order->number}}</div>
+                    <div class="col col-md-3">Date: {!! getDateHtml($order->created_at) !!}</div>
+                    <div class="col col-md-3">Status: {{$order->order_status}}</div>
+                    <div class="col col-md-3">Expiry Date: {!! getDateHtml($subscription->update_ends_at) !!}</div>
+
                 </div>
             </div>
 
@@ -121,16 +244,16 @@ input:checked + .slider:before {
            </div>
            </div>
            </div>
-            <div id="alertMessage"></div>
+            <div id="alertMessage-2"></div>
 
 
             @component('mini_views.navigational_view', [
                 'navigations'=>[
-                    ['id'=>'license-details', 'name'=>'License Details', 'active'=>1, 'slot'=>'license','icon'=>'fas fa-file'],
+                    ['id'=>'auto-renewals', 'name'=>'Auto Renewal', 'active'=>1, 'slot'=>'autorenewal','icon'=>'fas fa-bell'],
+                    ['id'=>'license-details', 'name'=>'License Details','slot'=>'license','icon'=>'fas fa-file'],
                     ['id'=>'user-details', 'name'=>'User Details', 'slot'=>'user','icon'=>'fas fa-users'],
                     ['id'=>'invoice-list', 'name'=>'Invoice List', 'slot'=>'invoice','icon'=>'fas fa-credit-card'],
-                    ['id'=>'payment-receipts', 'name'=>'Payment Receipts', 'slot'=>'payment','icon'=>'fas fa-briefcase'],
-                    ['id'=>'auto-renewals', 'name'=>'Auto Renewal', 'slot'=>'autorenewal','icon'=>'fas fa-briefcase']
+                    ['id'=>'payment-receipts', 'name'=>'Payment Receipts', 'slot'=>'payment','icon'=>'fas fa-briefcase']
                 ]
             ])
                
@@ -308,38 +431,43 @@ input:checked + .slider:before {
                 <div class="row">
 
               <div class="col-8">
-                @if($statusAutorenewal == 1)
+              
 
-              <label class="switch toggle_event_editing">
+                     <h6 style="margin-top: 8px;">Click and Update your Card Details</h6>
 
-                         <input type="checkbox" value="1"  name="is_subscribed"
-                          class="checkbox" id="is_subscribed" checked>
-                          <span class="slider round"></span>
-
-                    </label>
-                    <h6>Disable Auto Renewal</h6>
-
-                    @else
-
-                       <label class="switch toggle_event_editing">
-
-                         <input type="checkbox" value="0"  name="is_subscribed"
-                          class="checkbox" id="is_subscribed">
-                          <span class="slider round"></span>
-
-                    </label>
-                     <h6>Enable Auto Renewal for Future Subscription</h6>
-
-                    @endif
+                 
           </div>
               <div class="col-4">
-             <button type="submit" class="form-group btn btn-primary" onclick="saveStatus('{{$id}}')"  id="submitSub"><i class="fa fa-save">&nbsp;</i>Save</button>
+                 <label class="switch toggle_event_editing">
+
+              <label class="switch toggle_event_editing">
+                         <input type="checkbox" value="{{$statusAutorenewal}}"  name="is_subscribed"
+                          class="renewcheckbox" id="renew">
+                          <span class="slider round"></span>
+                        <input type="hidden" name="" id="order" value="{{$id}}">
+
+
+                    </label>
 
           </div>
             </div>
+
+            <label style="font-size: 1.3em;font-weight: 100;color: #0088CC;letter-spacing: -0.7px;">Payment Log</label>
+
+                <table id="showAutopayment-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
+                        <thead>
+                        <tr>
+                            <th>Order No</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                            <th>Payment Date</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                    </table>
+
                
                 @endslot
-            </div>
 
 
 
@@ -348,10 +476,297 @@ input:checked + .slider:before {
     </div>
 
 
+    <div class="modal fade" id="renewal-modal" data-backdrop="static" data-keyboard="false">
+<div class="modal-dialog">
+  <div class="modal-content" style="width:400px;">
+    <div class="modal-header">
+      <h4 class="modal-title">Select the Payment</h4>
+    </div>
+    <div class="modal-body">
+                <div id="alertMessage-1"></div>
+      <div class= "form-group {{ $errors->has('name') ? 'has-error' : '' }}">
+          {!! Form::label('name',Lang::get('Select the payment gateway'),['class'=>'required']) !!}
+
+           <select name=""  id="sel-payment" class="form-control" >
+                <option value="" disabled selected>Choose your option</option>
+                <option value="stripe">Stripe</option>
+                <option value="razorpay">Razorpay</option>
+               </select>
+           </div>
+      <span id="payerr"></span>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default pull-left closeandrefresh" id="srclose" data-dismiss="modal"><i class="fa fa-times">&nbsp;&nbsp;</i>Close</button>
+      <button type="button" id="payment" class="btn btn-primary"><i class="fa fa-check">&nbsp;&nbsp;</i>Save</button>
+    </div>
+  </div>
+  <!-- /.modal-content -->
+</div>
+<!-- /.modal-dialog -->
+</div>
+
+
+<div class="modal fade" id="stripe-Modal" data-keyboard="false" data-backdrop="static">
+
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+             <div class="modal-header">
+                 
+                <h4 class="modal-title" id="defaultModalLabel">Stripe Payment</h4>
+                <button type="button" id="strclose" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div id="alertMessage-2"></div>
+            <div id="error-1"></div>
+            <div class="col-md-12 ">
+            <div class="modal-body">
+            <div class="card">
+                <div class="card-header">Stripe
+                 <img class="img-responsive pull-right" src="http://i76.imgup.net/accepted_c22e0.png">
+             </div>
+
+                <div class="card-body">
+                    <form>
+                        <div id="payment-element">
+                        <div class="form-group row">
+                            <div class="col-md-12">
+                                <input id="card_no" type="number" class="form-control @error('card_no') is-invalid @enderror" name="card_no" value="{{ old('card_no') }}" required autocomplete="card_no" placeholder="Card No." autofocus>
+                                @error('card_no')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-6">
+                                <input id="exp_month" type="number" class="form-control @error('exp_month') is-invalid @enderror" name="exp_month" value="{{ old('exp_month') }}" required autocomplete="exp_month" placeholder="Exp. Month(02)" autofocus>
+                                @error('exp_month')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                            <div class="col-md-6">
+                                <input id="exp_year" type="number" class="form-control @error('exp_year') is-invalid @enderror" name="exp_year" value="{{ old('exp_year') }}" required autocomplete="exp_year" placeholder="Exp. Year(2020)" autofocus>
+                                @error('exp_year')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-12">
+                                <input id="cvv" type="password" class="form-control @error('cvv') is-invalid @enderror" name="cvv" required autocomplete="current-password" placeholder="CVV">
+                                @error('cvv')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-12">
+                                <input id="amount" type="text" value={{currencyFormat(1,'INR')}} class="form-control @error('amount') is-invalid @enderror" required autocomplete="current-password" name="amount" placeholder="Amount" readonly>
+                                @error('amount')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                        <!-- <input type="hidden" value="{{$id}}" name="orderid"> -->
+
+                        <div class="form-group row mb-0">
+                            <div class="col-md-12">
+                                <button type="button" id="pay" class="btn btn-primary btn-block">
+                                    {{ __('PAY NOW') }}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        </div>
+            <!-- /Form -->
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal --> 
+
+
+
 
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+ <form name='razorpayform' action="{!!url('rzpRenewal-disable/'.$order->id)!!}" method="POST">
+      {{ csrf_field() }}
+ <!--<button id="rzp-button1" class="btn btn-primary pull-right mb-xl" data-loading-text="Loading...">Pay Now</button>-->
+<!--<form name='razorpayform' action="verify.php" method="POST">                                -->
+<input type="hidden" name="razorpay_payment_id" id="razorpay_payment_id">
+<input type="hidden" name="razorpay_signature"  id="razorpay_signature" >
+
+
+</form>
+
+
 
 <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript">
+
+      $('#srclose').click(function() 
+               {
+               location.reload();
+               });
+      $('#strclose').click(function() 
+               {
+               location.reload();
+               });
+
+        // Checkout details as a json
+var options = <?php echo $json; ?>
+
+
+/**
+ * The entire list of Checkout fields is available at
+ * https://docs.razorpay.com/docs/checkout-form#checkout-fields
+ */
+options.handler = function (response){
+    document.getElementById('razorpay_payment_id').value = response.razorpay_payment_id;
+    document.getElementById('razorpay_signature').value = response.razorpay_signature;
+   
+    document.razorpayform.submit();
+};
+
+// Boolean whether to show image inside a white frame. (default: true)
+options.theme.image_padding = false;
+
+options.modal = {
+    ondismiss: function() {
+    },
+    // Boolean indicating whether pressing escape key 
+    // should close the checkout form. (default: true)
+    escape: true,
+    // Boolean indicating whether clicking translucent blank
+    // space outside checkout form should close the form. (default: false)
+    backdropclose: false
+};
+
+var rzp = new Razorpay(options);
+    $(document).ready(function(){
+         var status = $('.renewcheckbox').val();
+         if(status ==1) {
+         $('#renew').prop('checked',true)
+         } else if(status ==0) {
+          $('#renew').prop('checked',false)
+         }
+        });
+    $('#renew').on('change',function () {
+         if ($(this).prop("checked")) {
+            $('#renewal-modal').modal('show');
+            var id = $('#order').val();
+            $('#payment').on('click',function(){
+                var pay = $('#sel-payment').val();
+                if(pay == null) {
+                $("#payment").html("<i class='fa fa-check'></i> Validate");
+                $('#payerr').show();
+                $('#payerr').html("Please Select the Payment");
+                $('#payerr').focus();
+                $('#sel-payment').css("border-color","red");
+                $('#payerr').css({"color":"red"});
+                return false;
+                }
+                if(pay == 'stripe'){
+                 $('#renewal-modal').modal('hide');
+                 $('#stripe-Modal').modal('show');
+
+                 $('#pay').on('click',function(){
+                     $.ajax({
+
+                url : '{{url("strRenewal-enable")}}',
+                type : 'POST',
+                    data: { 
+                         "order_id" : id,
+                         "card_no": $('#card_no').val(),
+                         "exp_month": $('#exp_month').val(),
+                         "exp_year": $('#exp_year').val(),
+                         "cvv": $('#password').val(),
+                         "amount": $('#amount').val(),
+                         "_token": "{!! csrf_token() !!}",
+                          },
+
+                success: function (response) {
+                    $('#stripe-Modal').modal('hide');
+                    $('#alertMessage-2').show();
+                    var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>'+response.message+'.</div>';
+                    $('#alertMessage-2').html(result+ ".");
+                    $("#pay").html("<i class='fa fa-save'>&nbsp;&nbsp;</i>Save");
+                    setInterval(function(){
+                        $('#alertMessage-2').slideUp(3000);
+                    }, 1000);
+                    location.reload();
+                },
+                  error: function (data) {
+                     $('#stripe-Modal').modal('hide');
+                        $("#pay").attr('disabled',false);
+                        $("#pay").html("Register");
+                        $('html, body').animate({scrollTop:0}, 500);
+
+
+                        var html = '<div class="alert alert-danger alert-dismissable"><strong><i class="fas fa-exclamation-triangle"></i>Oh Snap! </strong>'+data.responseJSON.message+' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><br><ul>';
+                        for (var key in data.responseJSON.errors)
+                        {
+                            html += '<li>' + data.responseJSON.errors[key][0] + '</li>'
+                        }
+                        html += '</ul></div>';
+
+                        $('#error-1').show();
+                        document.getElementById('error-1').innerHTML = html;
+                        setInterval(function(){
+                            $('#error-1').slideUp(3000);
+                        }, 8000);
+                    }
+
+
+            });
+                 });
+             }else if(pay == 'razorpay')
+             {
+                $('#renewal-modal').modal('hide');
+                rzp.open();
+                e.preventDefault();
+
+             }
+   
+
+
+            });
+         
+         
+         }else{
+            var id = $('#order').val();
+              $.ajax({
+                    url : '{{url("renewal-disable")}}',
+                    method : 'post',
+                    data : {
+                        "order_id" : id,
+
+                    },
+                    success: function(response){
+                    $('#alertMessage-2').show();
+                    var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>'+response.message+'.</div>';
+                    $('#alertMessage-2').html(result+ ".");
+                    $("#pay").html("<i class='fa fa-save'>&nbsp;&nbsp;</i>Save");
+                    setInterval(function(){
+                        $('#alertMessage-2').slideUp(3000);
+                    }, 1000);
+                    },
+                })
+          }
+    });
+</script>
 
 
 <script type="text/javascript">
@@ -406,6 +821,47 @@ input:checked + .slider:before {
          <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
 
         <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+        <script type="text/javascript">
+             $('#showAutopayment-table').DataTable({
+                    processing: true,
+                    serverSide: true,
+                    ajax: {
+                        "url":  '{!! Url('autoPayment-client/'.$order->id) !!}',
+                           error: function(xhr) {
+                           if(xhr.status == 401) {
+                            alert('Your session has expired. Please login again to continue.')
+                            window.location.href = '/login';
+                           }
+                        }
+
+                        },
+
+                    "oLanguage": {
+                        "sLengthMenu": "_MENU_ Records per page",
+                        "sSearch"    : "Search: ",
+                        "sProcessing": '<img id="blur-bg" class="backgroundfadein" style="top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;" src="{!! asset("lb-faveo/media/images/gifloader3.gif") !!}">'
+                    },
+
+                    columns: [
+                        {data: 'number', name: 'number'},
+                        {data: 'total', name: 'total'},
+                        {data: 'payment_status', name: 'payment_status'},
+                        {data: 'created_at', name: 'created_at'},
+                        {data: 'action', name: 'action'}    
+                    ],
+                    "fnDrawCallback": function( oSettings ) {
+                         $(function () {
+                          $('[data-toggle="tooltip"]').tooltip({
+                            container : 'body'
+                          });
+                        });
+                        $('.loader').css('display', 'none');
+                    },
+                    "fnPreDrawCallback": function(oSettings, json) {
+                        $('.loader').css('display', 'block');
+                    },
+                });
+        </script>
     
         <script type="text/javascript">
              $('#showpayment-table').DataTable({
@@ -532,11 +988,12 @@ input:checked + .slider:before {
          }
          });
 
-          function saveStatus($id)
-          {
+       $('#kok  ').click(function() {
               // $("#submitSub").html("<i class='fas fa-circle-notch fa-spin'></i>Please Wait...");
               var status = ($('#is_subscribed').prop("checked"));
-              var id = $id;
+              alert(status);
+              var id = $('#renew').val();
+              alert(id);
 
             $.ajax({
 
@@ -558,8 +1015,73 @@ input:checked + .slider:before {
 
             });
 
-          };
+          });
 
     </script>
+
+<script>
+    $('#stripe-button1').on('click',function(){
+        $('#stripeModal').modal('show');
+    })
+
+        $('#submit_total').submit(function(){
+     $("#pay_now").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Processing...Please Wait..")
+    $("#pay_now").prop('disabled', true);
+
+  });
+$(function() {
+    var $form         = $(".require-validation");
+  $('form.require-validation').bind('submit', function(e) {
+    var $form         = $(".require-validation"),
+        inputSelector = ['input[type=email]', 'input[type=password]',
+                         'input[type=text]', 'input[type=file]',
+                         'textarea'].join(', '),
+        $inputs       = $form.find('.required').find(inputSelector),
+        $errorMessage = $form.find('div.error'),
+        valid         = true;
+        $errorMessage.addClass('hide');
+ 
+        $('.has-error').removeClass('has-error');
+    $inputs.each(function(i, el) {
+      var $input = $(el);
+      if ($input.val() === '') {
+        $input.parent().addClass('has-error');
+        $errorMessage.removeClass('hide');
+        e.preventDefault();
+      }
+    });
+  
+    // if (!$form.data('cc-on-file')) {
+    //   e.preventDefault();
+    //   Stripe.setPublishableKey($form.data('stripe-publishable-key'));
+    //   Stripe.createToken({
+    //     number: $('.card-number').val(),
+    //     cvc: $('.card-cvc').val(),
+    //     exp_month: $('.card-expiry-month').val(),
+    //     exp_year: $('.card-expiry-year').val()
+    //   }, stripeResponseHandler);
+    // }
+  
+  });
+  
+  function stripeResponseHandler(status, response) {
+        if (response.error) {
+            $('.error')
+                .removeClass('hide')
+                .find('.alert')
+                .text(response.error.message);
+        } else {
+            // token contains id, last4, and card type
+            var token = response['id'];
+            // insert the token into the form so it gets submitted to the server
+            $form.find('input[type=text]').empty();
+            $form.append("<input type='hidden' name='stripeToken' value='" + token + "'/>");
+            $form.get(0).submit();
+        }
+    }
+  
+});
+</script>
+
 
 @stop

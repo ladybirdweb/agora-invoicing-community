@@ -112,6 +112,7 @@ class RenewController extends BaseRenewController
             $sub->ends_at = $licenseExpiry;
             $sub->update_ends_at = $updatesExpiry;
             $sub->support_ends_at = $supportExpiry;
+            $sub->autoRenew_status = 'Success';
             $sub->save();
             if (Order::where('id', $sub->order_id)->value('license_mode') == 'File') {
                 Order::where('id', $sub->order_id)->update(['is_downloadable' => 0]);

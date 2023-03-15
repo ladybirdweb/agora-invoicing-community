@@ -133,17 +133,15 @@ class SettingsController extends Controller
                 $amount = rounding(\Session::get('totalToBePaid'));
             }
             $currency = strtolower($invoice->currency);
-            
 
             $strCharge = $this->stripePay($request);
-        
-            if ($strCharge['charge']['status'] == 'succeeded') {
 
+            if ($strCharge['charge']['status'] == 'succeeded') {
                 $stripeCustomerId = $strCharge['customer']['id'];
-                $customer_details =[
-                'user_id' => $invoice->user_id,
-                'invoice_number' => $invoice->number,
-                'customer_id' => $stripeCustomerId,
+                $customer_details = [
+                    'user_id' => $invoice->user_id,
+                    'invoice_number' => $invoice->number,
+                    'customer_id' => $stripeCustomerId,
                 ];
                 Auto_renewal::create($customer_details);
 
@@ -209,26 +207,22 @@ class SettingsController extends Controller
 
     public function stripePay($request)
     {
-        try{
+        try {
             $stripeSecretKey = ApiKey::pluck('stripe_secret')->first();
             $stripe = Stripe::make($stripeSecretKey);
 
-
-           if(\Session::get('invoice'))
-           {
-            $invoice = \Session::get('invoice');
-            // $invoiceTotal = \Session::get('totalToBePaid');
-            $amount = rounding(\Cart::getTotal());
-            if (! $amount) {//During renewal
-                $amount = rounding(\Session::get('totalToBePaid'));
+            if (\Session::get('invoice')) {
+                $invoice = \Session::get('invoice');
+                // $invoiceTotal = \Session::get('totalToBePaid');
+                $amount = rounding(\Cart::getTotal());
+                if (! $amount) {//During renewal
+                    $amount = rounding(\Session::get('totalToBePaid'));
+                }
+                $currency = strtolower($invoice->currency);
+            } else {
+                $amount = 1;
+                $currency = \Auth::user()->currency;
             }
-            $currency = strtolower($invoice->currency);
-           }
-           else
-           {
-            $amount = 1;
-            $currency = \Auth::user()->currency;
-           }
 
             $token = $stripe->tokens()->create([
                 'card' => [
@@ -264,10 +258,11 @@ class SettingsController extends Controller
                 'amount' => $amount,
                 'description' => 'Add in wallet',
             ]);
-            return ['charge' => $charge,'customer' => $customer];
-        }catch(\Exception $e)
-        { 
+
+            return ['charge' => $charge, 'customer' => $customer];
+        } catch(\Exception $e) {
             dd($e);
+
             return errorResponse($e->getMessage());
         }
     }

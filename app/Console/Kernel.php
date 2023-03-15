@@ -67,19 +67,19 @@ class Kernel extends ConsoleKernel
                         return $this->getCondition($schedule->command('expiry:notification'), $command);
                     }
 
-            case 'deleteLogs':
-             if ($logDeleteStatus == 1) {
-                 return $this->getCondition($schedule->command('activitylog:clean'), $command);
-             }
+                case 'deleteLogs':
+                    if ($logDeleteStatus == 1) {
+                        return $this->getCondition($schedule->command('activitylog:clean'), $command);
+                    }
 
-             case 'subsExpirymail':
-             if ($RenewalexpiryMailStatus) {
-                 return $this->getCondition($schedule->command('renewal:notification'), $command);
-             }
-              case 'postExpirymail':
-             if ($postExpirystatus) {
-                 return $this->getCondition($schedule->command('postexpiry:notification'), $command);
-             }
+                case 'subsExpirymail':
+                    if ($RenewalexpiryMailStatus) {
+                        return $this->getCondition($schedule->command('renewal:notification'), $command);
+                    }
+                case 'postExpirymail':
+                    if ($postExpirystatus) {
+                        return $this->getCondition($schedule->command('postexpiry:notification'), $command);
+                    }
             }
         }
     }

@@ -2,29 +2,29 @@
 
 namespace App\Http\Controllers\Front;
 
+use App\ApiKey;
+use App\Auto_renewal;
 use App\Http\Controllers\Github\GithubApiController;
 use App\Http\Controllers\License\LicensePermissionsController;
-use App\Plugins\Stripe\Controllers\SettingsController;
-use App\Http\Controllers\Common\CronController;
 use App\Model\Common\StatusSetting;
 use App\Model\Github\Github;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
+use App\Model\Order\OrderInvoiceRelation;
 use App\Model\Order\Payment;
 use App\Model\Payment\Currency;
 use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
 use App\Model\Product\Subscription;
+use App\Plugins\Stripe\Controllers\SettingsController;
 use App\User;
 use Exception;
-use App\Auto_renewal;
-use App\Model\Order\OrderInvoiceRelation;
 use GrahamCampbell\Markdown\Facades\Markdown;
 use Illuminate\Http\Request;
 use Razorpay\Api\Api;
-use App\ApiKey;
-use Validator;
 use Symfony\Component\Mime\Email;
+use Validator;
+
 class ClientController extends BaseClientController
 {
     public $user;
@@ -83,152 +83,139 @@ class ClientController extends BaseClientController
             'exp_year' => 'required',        ];
 
         $this->validate($request, $validation);
-        try{
-        $controller = new SettingsController();
-        $payment = $controller->stripePay($request);
-        if($payment['charge']['status'])
-        {
-            $orderid = $request->get('order_id');
-            $invoice_id = OrderInvoiceRelation::where('order_id',$orderid)->value('invoice_id');
-            $number = Invoice::where('id',$invoice_id)->value('number');
+        try {
+            $controller = new SettingsController();
+            $payment = $controller->stripePay($request);
+            if ($payment['charge']['status']) {
+                $orderid = $request->get('order_id');
+                $invoice_id = OrderInvoiceRelation::where('order_id', $orderid)->value('invoice_id');
+                $number = Invoice::where('id', $invoice_id)->value('number');
 
-            Auto_renewal::where('invoice_number',$number)->update(['customer_id' => $payment['customer']['id']]);
-            Subscription::where('order_id',$orderid)->update(['is_subscribed' => '1']);
-            $response = ['type' => 'success', 'message' => 'Your Card details are updated successfully'];
-            return response()->json($response);
+                Auto_renewal::where('invoice_number', $number)->update(['customer_id' => $payment['customer']['id']]);
+                Subscription::where('order_id', $orderid)->update(['is_subscribed' => '1']);
+                $response = ['type' => 'success', 'message' => 'Your Card details are updated successfully'];
+
+                return response()->json($response);
+            }
+        } catch(\Exception $ex) {
+            $result = [$ex->getMessage()];
+
+            return response()->json(compact('result'), 500);
         }
-    }catch(\Exception $ex)
-    {
-       $result = [$ex->getMessage()];
-       return response()->json(compact('result'), 500);
-    }
     }
 
     public function disableAutorenewalStatus(Request $request)
     {
-      try{
-      $orderid = $request->get('order_id');
-      $userid = Subscription::where('order_id',$orderid)->value('user_id');
-      $user = User::find($userid);
-      Subscription::where('order_id',$orderid)->update(['is_subscribed' => '0']);
-      $response = ['type' => 'success', 'message' => 'Auto subscription Disabled successfully'];
-        // $settings = new \App\Model\Common\Setting();
-        // $setting = $settings->where('id', 1)->first();
+        try {
+            $orderid = $request->get('order_id');
+            $userid = Subscription::where('order_id', $orderid)->value('user_id');
+            $user = User::find($userid);
+            Subscription::where('order_id', $orderid)->update(['is_subscribed' => '0']);
+            $response = ['type' => 'success', 'message' => 'Auto subscription Disabled successfully'];
+            // $settings = new \App\Model\Common\Setting();
+            // $setting = $settings->where('id', 1)->first();
 
-        // $mail = new \App\Http\Controllers\Common\PhpMailController();
-        // $mailer = $mail->setMailConfig($setting);
- 
+            // $mail = new \App\Http\Controllers\Common\PhpMailController();
+            // $mailer = $mail->setMailConfig($setting);
 
-
-        // $email = (new Email())
-        //  ->from($setting->email)
-        //  ->to($user->email)
-        //  ->subject('AutoRenewal Status Disable')
-        //  ->html('Dear ' .$user->first_name.' '.$user->last_name. ' ' . 'Your Auto subscription is Disabled Successfully by'. ' ' . \Auth::user()->first_name.' '.\Auth::user()->last_name); 
+            // $email = (new Email())
+            //  ->from($setting->email)
+            //  ->to($user->email)
+            //  ->subject('AutoRenewal Status Disable')
+            //  ->html('Dear ' .$user->first_name.' '.$user->last_name. ' ' . 'Your Auto subscription is Disabled Successfully by'. ' ' . \Auth::user()->first_name.' '.\Auth::user()->last_name);
         //     $mailer->send($email);
 
-        return response()->json($response);
+            return response()->json($response);
+        } catch(\Exception $ex) {
+            $result = [$ex->getMessage()];
 
-       }catch(\Exception $ex){
-       $result = [$ex->getMessage()];
-       return response()->json(compact('result'), 500);
+            return response()->json(compact('result'), 500);
+        }
     }
-}
 
-    
     public function enableRzpStatus(Request $request)
     {
-        try{
-        $orderid = $request->route('orderid');
-        $input = $request->all();
-        $error = 'Payment Failed';
-        $rzp_key = ApiKey::where('id', 1)->value('rzp_key');
-        $rzp_secret = ApiKey::where('id', 1)->value('rzp_secret');
-        $api = new Api($rzp_key, $rzp_secret);
-        $payment = $api->payment->fetch($input['razorpay_payment_id']);
-        $response = $api->payment->fetch($input['razorpay_payment_id']);
-        if($response['status'] == 'authorized')
-        {
-            $invoice_id = OrderInvoiceRelation::where('order_id',$orderid)->value('invoice_id');
-            $number = Invoice::where('id',$invoice_id)->value('number');
-            Auto_renewal::where('invoice_number',$number)->update(['customer_id' => $response['id']]);
-            Subscription::where('order_id',$orderid)->update(['is_subscribed' => '1']);
-            return redirect()->back()->with('success','Your Card details are updated successfully');
+        try {
+            $orderid = $request->route('orderid');
+            $input = $request->all();
+            $error = 'Payment Failed';
+            $rzp_key = ApiKey::where('id', 1)->value('rzp_key');
+            $rzp_secret = ApiKey::where('id', 1)->value('rzp_secret');
+            $api = new Api($rzp_key, $rzp_secret);
+            $payment = $api->payment->fetch($input['razorpay_payment_id']);
+            $response = $api->payment->fetch($input['razorpay_payment_id']);
+            if ($response['status'] == 'authorized') {
+                $invoice_id = OrderInvoiceRelation::where('order_id', $orderid)->value('invoice_id');
+                $number = Invoice::where('id', $invoice_id)->value('number');
+                Auto_renewal::where('invoice_number', $number)->update(['customer_id' => $response['id']]);
+                Subscription::where('order_id', $orderid)->update(['is_subscribed' => '1']);
 
+                return redirect()->back()->with('success', 'Your Card details are updated successfully');
+            }
+        } catch(\Exception $ex) {
+            return redirect()->back()->with('fails', 'Your Payment was declined. '.$ex->getMessage().'. Please try again or try the other gateway');
         }
-    }catch(\Exception $ex)
-    {
-       return redirect()->back()->with('fails', 'Your Payment was declined. '.$ex->getMessage().'. Please try again or try the other gateway');
-    }
-      
     }
 
-    
     public function autoRenewbyid()
     {
-       $id = request()->route('id');
-       $sub = Subscription::where('order_id',$id)->first();
-       $planid = $sub->plan_id;
-       $plan = Plan::find($planid);
-       $planDetails = userCurrencyAndPrice($sub->user_id, $plan);
-       $cost = $planDetails['plan']->renew_price;
-       $currency = $planDetails['currency'];
-       $items = $this->invoiceBySubscriptionId($sub->id, $planid, $cost, $currency);
-       $invoiceid = $items->invoice_id;
-       $this->setSession($id, $planid);
-       return redirect('paynow/'.$invoiceid);
+        $id = request()->route('id');
+        $sub = Subscription::where('order_id', $id)->first();
+        $planid = $sub->plan_id;
+        $plan = Plan::find($planid);
+        $planDetails = userCurrencyAndPrice($sub->user_id, $plan);
+        $cost = $planDetails['plan']->renew_price;
+        $currency = $planDetails['currency'];
+        $items = $this->invoiceBySubscriptionId($sub->id, $planid, $cost, $currency);
+        $invoiceid = $items->invoice_id;
+        $this->setSession($id, $planid);
 
-
+        return redirect('paynow/'.$invoiceid);
     }
-
 
     public function getAutoPaymentStatus()
     {
-       $order = Order::leftJoin('products', 'products.id', '=', 'orders.product')
-            ->leftJoin('subscriptions', 'orders.id', '=', 'subscriptions.order_id')
-            ->leftJoin('invoices', 'orders.invoice_id', 'invoices.id')
-            ->select('products.name as product_name', 'products.github_owner', 'products.github_repository', 'products.type', 'products.id as product_id', 'orders.id', 'orders.number', 'orders.client', 'subscriptions.id as sub_id', 'subscriptions.version', 'subscriptions.update_ends_at', 'products.name', 'orders.client', 'invoices.id as invoice_id', 'invoices.number as invoice_number','invoices.grand_total','subscriptions.created_at','subscriptions.autoRenew_status','invoices.currency')
-            ->where('subscriptions.order_id', request()->route('orderid'));
-       
+        $order = Order::leftJoin('products', 'products.id', '=', 'orders.product')
+             ->leftJoin('subscriptions', 'orders.id', '=', 'subscriptions.order_id')
+             ->leftJoin('invoices', 'orders.invoice_id', 'invoices.id')
+             ->select('products.name as product_name', 'products.github_owner', 'products.github_repository', 'products.type', 'products.id as product_id', 'orders.id', 'orders.number', 'orders.client', 'subscriptions.id as sub_id', 'subscriptions.version', 'subscriptions.update_ends_at', 'products.name', 'orders.client', 'invoices.id as invoice_id', 'invoices.number as invoice_number', 'invoices.grand_total', 'subscriptions.created_at', 'subscriptions.autoRenew_status', 'invoices.currency')
+             ->where('subscriptions.order_id', request()->route('orderid'));
 
-       
         return \DataTables::of($order)
                     ->addColumn('number', function ($model) {
                         return $model->number;
                     })
                     ->addColumn('total', function ($model) {
                         $total = currencyFormat($model->grand_total, $code = $model->currency);
+
                         return $total;
                     })
                      ->addColumn('payment_status', function ($model) {
-                        if($model->autoRenew_status){
-                        return $model->autoRenew_status;
-                    }
-                       return 'Pending';
-                    })
-                      ->addColumn('created_at', function ($model) {
-                        return getDateHtml($model->created_at);
-                    })
-          
-                      ->addColumn('action', function ($model) {
-                        $url = '';  
-                        if ($model->autoRenew_status == 'Failed') {
-                      
-                            return '<a href='.url('autopaynow/' . $model->id).
-                            " class='btn btn-primary btn-xs'>&nbsp;Make Payment</a>";
-                        
-                            }
-                        return '<a href='.url('my-orders').
-                            " class='btn btn-primary btn-xs'><i class='fa fa-eye'></i>&nbsp;view</a>";
-                
-                    })
-                  
+                         if ($model->autoRenew_status) {
+                             return $model->autoRenew_status;
+                         }
 
-                    ->rawColumns(['number', 'total', 'payment_status', 'created_at','action'])
-                    
+                         return 'Pending';
+                     })
+                      ->addColumn('created_at', function ($model) {
+                          return getDateHtml($model->created_at);
+                      })
+
+                      ->addColumn('action', function ($model) {
+                          $url = '';
+                          if ($model->autoRenew_status == 'Failed') {
+                              return '<a href='.url('autopaynow/'.$model->id).
+                              " class='btn btn-primary btn-xs'>&nbsp;Make Payment</a>";
+                          }
+
+                          return '<a href='.url('my-orders').
+                              " class='btn btn-primary btn-xs'><i class='fa fa-eye'></i>&nbsp;view</a>";
+                      })
+
+                    ->rawColumns(['number', 'total', 'payment_status', 'created_at', 'action'])
+
                     ->make(true);
     }
-    
 
     public function invoices()
     {
@@ -691,11 +678,11 @@ class ClientController extends BaseClientController
 
             $statusAutorenewal = Subscription::where('order_id', $id)->value('is_subscribed');
 
-            $status = Subscription::where('order_id',$id)->value('autoRenew_status');
+            $status = Subscription::where('order_id', $id)->value('autoRenew_status');
 
             return view(
                 'themes.default1.front.clients.show-order',
-                compact('invoice', 'order', 'user', 'product', 'subscription', 'licenseStatus', 'installationDetails', 'allowDomainStatus', 'date', 'licdate', 'versionLabel', 'installationDetails', 'id', 'statusAutorenewal','status')
+                compact('invoice', 'order', 'user', 'product', 'subscription', 'licenseStatus', 'installationDetails', 'allowDomainStatus', 'date', 'licdate', 'versionLabel', 'installationDetails', 'id', 'statusAutorenewal', 'status')
             );
         } catch (Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -785,11 +772,11 @@ class ClientController extends BaseClientController
                                   return $payments->amount;
                               })
                                ->addColumn('payment_method', function ($payments) {
-                                  return $payments->payment_method;
-                              })
+                                   return $payments->payment_method;
+                               })
                                 ->addColumn('payment_status', function ($payments) {
-                                  return $payments->payment_status;
-                              })
+                                    return $payments->payment_status;
+                                })
                                ->addColumn('created_at', function ($payments) {
                                    return  getDateHtml($payments->created_at);
                                })

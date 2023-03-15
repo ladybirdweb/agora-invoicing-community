@@ -15,7 +15,6 @@ return new class extends Migration
     {
         Schema::table('subscriptions', function (Blueprint $table) {
             $table->string('autoRenew_status')->nullable();
-
         });
     }
 
@@ -28,7 +27,6 @@ return new class extends Migration
     {
         Schema::table('subscriptions', function (Blueprint $table) {
             $table->dropColumn('autoRenew_status');
-
         });
     }
 };

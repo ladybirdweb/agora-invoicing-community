@@ -179,46 +179,46 @@ class QueueController extends Controller
             $short = $this->getShortNameById($id);
             $form = '';
             switch ($short) {
-        case 'beanstalkd':
-            $form .= "<div class='row'>";
-            $form .= $this->form($short, 'Driver', 'driver', 'col-md-6 form-group', 'beanstalkd');
-            $form .= $this->form($short, 'Host', 'host', 'col-md-6 form-group', 'localhost');
-            $form .= $this->form($short, 'Queue', 'queue', 'col-md-6 form-group', 'default');
-            $form .= '</div>';
+                case 'beanstalkd':
+                    $form .= "<div class='row'>";
+                    $form .= $this->form($short, 'Driver', 'driver', 'col-md-6 form-group', 'beanstalkd');
+                    $form .= $this->form($short, 'Host', 'host', 'col-md-6 form-group', 'localhost');
+                    $form .= $this->form($short, 'Queue', 'queue', 'col-md-6 form-group', 'default');
+                    $form .= '</div>';
 
-            return $form;
-        case 'sqs':
-            $form .= "<div class='row'>";
-            $form .= $this->form($short, 'Driver', 'driver', 'col-md-6 form-group', 'sqs');
-            $form .= $this->form($short, 'Key', 'key', 'col-md-6 form-group', 'your-public-key');
-            $form .= $this->form($short, 'Secret', 'secret', 'col-md-6 form-group', 'your-queue-url');
-            $form .= $this->form($short, 'Region', 'region', 'col-md-6 form-group', 'us-east-1');
-            $form .= '</div>';
+                    return $form;
+                case 'sqs':
+                    $form .= "<div class='row'>";
+                    $form .= $this->form($short, 'Driver', 'driver', 'col-md-6 form-group', 'sqs');
+                    $form .= $this->form($short, 'Key', 'key', 'col-md-6 form-group', 'your-public-key');
+                    $form .= $this->form($short, 'Secret', 'secret', 'col-md-6 form-group', 'your-queue-url');
+                    $form .= $this->form($short, 'Region', 'region', 'col-md-6 form-group', 'us-east-1');
+                    $form .= '</div>';
 
-            return $form;
-        case 'iron':
-            $form .= "<div class='row'>";
-            $form .= $this->form($short, 'Driver', 'driver', 'col-md-6 form-group', 'iron');
-            $form .= $this->form($short, 'Host', 'host', 'col-md-6 form-group', 'mq-aws-us-east-1.iron.io');
-            $form .= $this->form($short, 'Token', 'token', 'col-md-6 form-group', 'your-token');
-            $form .= $this->form($short, 'Project', 'project', 'col-md-6 form-group', 'your-project-id');
-            $form .= $this->form($short, 'Queue', 'queue', 'col-md-6 form-group', 'your-queue-name');
-            $form .= '</div>';
+                    return $form;
+                case 'iron':
+                    $form .= "<div class='row'>";
+                    $form .= $this->form($short, 'Driver', 'driver', 'col-md-6 form-group', 'iron');
+                    $form .= $this->form($short, 'Host', 'host', 'col-md-6 form-group', 'mq-aws-us-east-1.iron.io');
+                    $form .= $this->form($short, 'Token', 'token', 'col-md-6 form-group', 'your-token');
+                    $form .= $this->form($short, 'Project', 'project', 'col-md-6 form-group', 'your-project-id');
+                    $form .= $this->form($short, 'Queue', 'queue', 'col-md-6 form-group', 'your-queue-name');
+                    $form .= '</div>';
 
-            return $form;
-        case 'redis':
-            if (! extension_loaded('redis')) {
-                return errorResponse(\Lang::get('message.extension_required_error', ['extension' => 'redis']), 500);
+                    return $form;
+                case 'redis':
+                    if (! extension_loaded('redis')) {
+                        return errorResponse(\Lang::get('message.extension_required_error', ['extension' => 'redis']), 500);
+                    }
+                    $form .= "<div class='row'>";
+                    $form .= $this->form($short, 'Driver', 'driver', 'col-md-6 form-group', 'redis');
+                    $form .= $this->form($short, 'Queue', 'queue', 'col-md-6 form-group', 'default');
+                    $form .= '</div>';
+
+                    return $form;
+                default:
+                    return $form;
             }
-            $form .= "<div class='row'>";
-            $form .= $this->form($short, 'Driver', 'driver', 'col-md-6 form-group', 'redis');
-            $form .= $this->form($short, 'Queue', 'queue', 'col-md-6 form-group', 'default');
-            $form .= '</div>';
-
-            return $form;
-        default:
-            return $form;
-    }
         } catch (Exception $e) {
             return errorResponse($e->getMessage());
         }

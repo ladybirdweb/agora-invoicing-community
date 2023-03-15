@@ -104,7 +104,10 @@ Route::post('refresh-csrf', function () {
             Route::get('get-my-payment/{orderid}/{userid}', [Front\ClientController::class, 'getPaymentByOrderId'])->name('get-my-payment');
 
             Route::get('get-my-payment-client/{orderid}/{userid}', [Front\ClientController::class, 'getPaymentByOrderIdClient'])->name('get-my-payment-client');
-            Route::post('post-status', [Front\ClientController::class, 'postAutorenewalStatus'])->name('post-status');
+            Route::get('autoPayment-client/{orderid}',[Front\ClientController::class,'getAutoPaymentStatus']);
+            Route::post('strRenewal-enable', [Front\ClientController::class, 'enableAutorenewalStatus']);
+            Route::post('renewal-disable', [Front\ClientController::class, 'disableAutorenewalStatus']);
+            Route::post('rzpRenewal-disable/{orderid}', [Front\ClientController::class, 'enableRzpStatus']);
             Route::get('my-orders', [Front\ClientController::class, 'orders']);
             Route::get('get-my-orders', [Front\ClientController::class, 'getOrders'])->name('get-my-orders');
             Route::get('my-subscriptions', [Front\ClientController::class, 'subscriptions']);
@@ -319,202 +322,231 @@ Route::post('refresh-csrf', function () {
             /*
          * License
          */
-    Route::resource('license-type', License\LicenseSettingsController::class);
-    Route::get('get-license-type', [License\LicenseSettingsController::class, 'getLicenseTypes'])->name('get-license-type');
-    Route::delete('license-type-delete', [License\LicenseSettingsController::class, 'destroy'])->name('license-type-delete');
-    Route::get('license-permissions', [License\LicensePermissionsController::class, 'index']);
-    Route::get('get-license-permission', [License\LicensePermissionsController::class, 'getPermissions'])->name('get-license-permission');
-    Route::delete('add-permission', [License\LicensePermissionsController::class, 'addPermission'])->name('add-permission');
-    Route::get('tick-permission', [License\LicensePermissionsController::class, 'tickPermission'])->name('tick-permission');
-    /*
-     * Order
-     */
+            Route::resource('license-type', License\LicenseSettingsController::class);
+            Route::get('get-license-type', [License\LicenseSettingsController::class, 'getLicenseTypes'])->name('get-license-type');
+            Route::delete('license-type-delete', [License\LicenseSettingsController::class, 'destroy'])->name('license-type-delete');
+            Route::get('license-permissions', [License\LicensePermissionsController::class, 'index']);
+            Route::get('get-license-permission', [License\LicensePermissionsController::class, 'getPermissions'])->name('get-license-permission');
+            Route::delete('add-permission', [License\LicensePermissionsController::class, 'addPermission'])->name('add-permission');
+            Route::get('tick-permission', [License\LicensePermissionsController::class, 'tickPermission'])->name('tick-permission');
+            /*
+             * Order
+             */
 
-    Route::resource('orders', Order\OrderController::class);
-    Route::get('get-orders', [Order\OrderController::class, 'getOrders'])->name('get-orders');
-    Route::get('get-product-versions/{product}', [Order\OrderSearchController::class, 'getProductVersions'])->name('get-product-versions');
-    Route::delete('orders-delete', [Order\OrderController::class, 'destroy'])->name('orders-delete');
-    Route::patch('change-domain', [Order\ExtendedOrderController::class, 'changeDomain']);
-    Route::patch('reissue-license', [Order\ExtendedOrderController::class, 'reissueLicense']);
-    Route::post('edit-update-expiry', [Order\BaseOrderController::class, 'editUpdateExpiry']);
-    Route::post('edit-license-expiry', [Order\BaseOrderController::class, 'editLicenseExpiry']);
-    Route::post('edit-support-expiry', [Order\BaseOrderController::class, 'editSupportExpiry']);
-    Route::post('edit-installation-limit', [Order\BaseOrderController::class, 'editInstallationLimit']);
+            Route::resource('orders', Order\OrderController::class);
+            Route::get('get-orders', [Order\OrderController::class, 'getOrders'])->name('get-orders');
+            Route::get('get-product-versions/{product}', [Order\OrderSearchController::class, 'getProductVersions'])->name('get-product-versions');
+            Route::delete('orders-delete', [Order\OrderController::class, 'destroy'])->name('orders-delete');
+            Route::patch('change-domain', [Order\ExtendedOrderController::class, 'changeDomain']);
+            Route::patch('reissue-license', [Order\ExtendedOrderController::class, 'reissueLicense']);
+            Route::post('edit-update-expiry', [Order\BaseOrderController::class, 'editUpdateExpiry']);
+            Route::post('edit-license-expiry', [Order\BaseOrderController::class, 'editLicenseExpiry']);
+            Route::post('edit-support-expiry', [Order\BaseOrderController::class, 'editSupportExpiry']);
+            Route::post('edit-installation-limit', [Order\BaseOrderController::class, 'editInstallationLimit']);
 
-    Route::post('choose', [License\LocalizedLicenseController::class, 'chooseLicenseMode']);
-    Route::get('LocalizedLicense', function () {
-        return view('themes.default1.common.Localized');
-    })->middleware('auth');
-    Route::get('LocalizedLicense/delete/{fileName}', [License\LocalizedLicenseController::class, 'deleteFile']);
-    //Route::post('LocalizedLicense/updateLicenseFile/{fileName}',[LocalizedLicenseController::class,'fileEdit']);
+            Route::post('choose', [License\LocalizedLicenseController::class, 'chooseLicenseMode']);
+            Route::get('LocalizedLicense', function () {
+                return view('themes.default1.common.Localized');
+            })->middleware('auth');
+            Route::get('LocalizedLicense/delete/{fileName}', [License\LocalizedLicenseController::class, 'deleteFile']);
+            //Route::post('LocalizedLicense/updateLicenseFile/{fileName}',[LocalizedLicenseController::class,'fileEdit']);
 
-    /*
-     * Groups
-     */
+            /*
+             * Groups
+             */
 
-    Route::resource('groups', Product\GroupController::class);
-    Route::get('get-groups', [Product\GroupController::class, 'getGroups'])->name('get-groups');
-    Route::delete('groups-delete', [Product\GroupController::class, 'destroy'])->name('groups-delete');
+            Route::resource('groups', Product\GroupController::class);
+            Route::get('get-groups', [Product\GroupController::class, 'getGroups'])->name('get-groups');
+            Route::delete('groups-delete', [Product\GroupController::class, 'destroy'])->name('groups-delete');
 
-    /*
-     * Templates
-     */
+            /*
+             * Templates
+             */
 
-    Route::resource('template', Common\TemplateController::class);
-    Route::get('get-templates', [Common\TemplateController::class, 'getTemplates'])->name('get-templates');
-    // Route::get('get-templates', [Common\TemplateController::class, 'GetTemplates']);
-    Route::delete('templates-delete', [Common\TemplateController::class, 'destroy'])->name('templates-delete');
+            Route::resource('template', Common\TemplateController::class);
+            Route::get('get-templates', [Common\TemplateController::class, 'getTemplates'])->name('get-templates');
+            // Route::get('get-templates', [Common\TemplateController::class, 'GetTemplates']);
+            Route::delete('templates-delete', [Common\TemplateController::class, 'destroy'])->name('templates-delete');
 
-    /**
-     * Queue.
-     */
-    Route::get('queue', [Jobs\QueueController::class, 'index'])->name('queue');
-    Route::get('get-queue', [Jobs\QueueController::class, 'getQueues'])->name('get-queue');
-    Route::get('queue/{id}', [Jobs\QueueController::class, 'edit'])->name('queue.edit');
-    Route::post('queue/{id}', [Jobs\QueueController::class, 'update'])->name('queue.update');
+            /**
+             * Queue.
+             */
+            Route::get('queue', [Jobs\QueueController::class, 'index'])->name('queue');
+            Route::get('get-queue', [Jobs\QueueController::class, 'getQueues'])->name('get-queue');
+            Route::get('queue/{id}', [Jobs\QueueController::class, 'edit'])->name('queue.edit');
+            Route::post('queue/{id}', [Jobs\QueueController::class, 'update'])->name('queue.update');
 
-    Route::post('queue/{queue}/activate', [Jobs\QueueController::class, 'activate']);
-    Route::get('form/queue', [Jobs\QueueController::class, 'getForm'])->name('queue.form');
-    // Route::get('queue-monitoring', [Jobs\QueueController::class, 'monitorQueues']]);
+            Route::post('queue/{queue}/activate', [Jobs\QueueController::class, 'activate']);
+            Route::get('form/queue', [Jobs\QueueController::class, 'getForm'])->name('queue.form');
+            // Route::get('queue-monitoring', [Jobs\QueueController::class, 'monitorQueues']]);
 
-    /*
-     * Chat Script
-     */
-    Route::resource('chat', Common\ChatScriptController::class);
-    Route::get('get-script', [Common\ChatScriptController::class, 'getScript'])->name('get-script');
-    Route::delete('script-delete', [Common\ChatScriptController::class, 'destroy'])->name('script-delete');
-    Route::post('order/execute', [Order\OrderController::class, 'orderExecute']);
-    /*
-     * Invoices
-     */
+            /*
+             * Chat Script
+             */
+            Route::resource('chat', Common\ChatScriptController::class);
+            Route::get('get-script', [Common\ChatScriptController::class, 'getScript'])->name('get-script');
+            Route::delete('script-delete', [Common\ChatScriptController::class, 'destroy'])->name('script-delete');
+            Route::post('order/execute', [Order\OrderController::class, 'orderExecute']);
+            /*
+             * Invoices
+             */
 
-    Route::get('invoices', [Order\InvoiceController::class, 'index']);
-    Route::get('invoices/{id}', [Order\InvoiceController::class, 'show']);
-    Route::get('get-client-invoice/{id}', [User\ClientController::class, 'getClientInvoice']);
-    Route::get('invoices/edit/{id}', [Order\InvoiceController::class, 'edit']);
-    Route::post('invoice/edit/{id}', [Order\InvoiceController::class, 'postEdit']);
-    Route::get('get-invoices', [Order\InvoiceController::class, 'getInvoices'])->name('get-invoices');
-    Route::get('pdf', [Order\InvoiceController::class, 'pdf']);
-    Route::delete('invoice-delete', [Order\InvoiceController::class, 'destroy'])->name('invoice-delete');
-    Route::get('invoice/generate', [Order\InvoiceController::class, 'generateById']);
-    Route::post('generate/invoice/{user_id?}', [Order\InvoiceController::class, 'invoiceGenerateByForm']);
-    Route::post('change-invoiceTotal', [Order\InvoiceController::class, 'invoiceTotalChange'])->name('change-invoiceTotal');
-    Route::post('change-paymentTotal', [Order\InvoiceController::class, 'paymentTotalChange'])->name('change-paymentTotal');
+            Route::get('invoices', [Order\InvoiceController::class, 'index']);
+            Route::get('invoices/{id}', [Order\InvoiceController::class, 'show']);
+            Route::get('get-client-invoice/{id}', [User\ClientController::class, 'getClientInvoice']);
+            Route::get('invoices/edit/{id}', [Order\InvoiceController::class, 'edit']);
+            Route::post('invoice/edit/{id}', [Order\InvoiceController::class, 'postEdit']);
+            Route::get('get-invoices', [Order\InvoiceController::class, 'getInvoices'])->name('get-invoices');
+            Route::get('pdf', [Order\InvoiceController::class, 'pdf']);
+            Route::delete('invoice-delete', [Order\InvoiceController::class, 'destroy'])->name('invoice-delete');
+            Route::get('invoice/generate', [Order\InvoiceController::class, 'generateById']);
+            Route::post('generate/invoice/{user_id?}', [Order\InvoiceController::class, 'invoiceGenerateByForm']);
+            Route::post('change-invoiceTotal', [Order\InvoiceController::class, 'invoiceTotalChange'])->name('change-invoiceTotal');
+            Route::post('change-paymentTotal', [Order\InvoiceController::class, 'paymentTotalChange'])->name('change-paymentTotal');
 
-    /*
-     * Payment
-     */
-    Route::get('newPayment/receive', [Order\InvoiceController::class, 'newPayment']);
-    Route::post('newPayment/receive/{clientid}', [Order\InvoiceController::class, 'postNewPayment']);
-    Route::get('payment/receive', [Order\InvoiceController::class, 'payment']);
-    Route::post('payment/receive/{id}', [Order\InvoiceController::class, 'postPayment']);
-    Route::delete('payment-delete', [Order\InvoiceController::class, 'deletePayment'])->name('payment-delete');
-    Route::get('payments/{payment_id}/edit', [Order\InvoiceController::class, 'paymentEditById']);
-    Route::post('newMultiplePayment/receive/{clientid}', [Order\InvoiceController::class, 'postNewMultiplePayment']);
-    Route::post('newMultiplePayment/update/{clientid}', [Order\InvoiceController::class, 'updateNewMultiplePayment']);
+            /*
+             * Payment
+             */
+            Route::get('newPayment/receive', [Order\InvoiceController::class, 'newPayment']);
+            Route::post('newPayment/receive/{clientid}', [Order\InvoiceController::class, 'postNewPayment']);
+            Route::get('payment/receive', [Order\InvoiceController::class, 'payment']);
+            Route::post('payment/receive/{id}', [Order\InvoiceController::class, 'postPayment']);
+            Route::delete('payment-delete', [Order\InvoiceController::class, 'deletePayment'])->name('payment-delete');
+            Route::get('payments/{payment_id}/edit', [Order\InvoiceController::class, 'paymentEditById']);
+            Route::post('newMultiplePayment/receive/{clientid}', [Order\InvoiceController::class, 'postNewMultiplePayment']);
+            Route::post('newMultiplePayment/update/{clientid}', [Order\InvoiceController::class, 'updateNewMultiplePayment']);
 
-    /*
-     * Pages
-     */
-    Route::resource('pages', Front\PageController::class)->middleware('admin');
-    Route::get('pages/{slug}', [Front\PageController::class, 'show']);
-    Route::get('page/search', [Front\PageController::class, 'search']);
-    Route::get('get-pages', [Front\PageController::class, 'getPages'])->name('get-pages');
-    Route::delete('pages-delete', [Front\PageController::class, 'destroy'])->name('pages-delete');
+            /*
+             * Pages
+             */
+            Route::resource('pages', Front\PageController::class)->middleware('admin');
+            Route::get('pages/{slug}', [Front\PageController::class, 'show']);
+            Route::get('page/search', [Front\PageController::class, 'search']);
+            Route::get('get-pages', [Front\PageController::class, 'getPages'])->name('get-pages');
+            Route::delete('pages-delete', [Front\PageController::class, 'destroy'])->name('pages-delete');
 
-    /*
-     * Widgets
-     */
-    Route::resource('widgets', Front\WidgetController::class);
-    Route::get('get-widgets', [Front\WidgetController::class, 'getPages'])->name('get-widgets');
-    // Route::get('get-widgets', [Front\WidgetController::class, 'GetPages']);
-    Route::delete('widgets-delete', [Front\WidgetController::class, 'destroy']);
+            /*
+             * Widgets
+             */
+            Route::resource('widgets', Front\WidgetController::class);
+            Route::get('get-widgets', [Front\WidgetController::class, 'getPages'])->name('get-widgets');
+            // Route::get('get-widgets', [Front\WidgetController::class, 'GetPages']);
+            Route::delete('widgets-delete', [Front\WidgetController::class, 'destroy']);
 
-    /*
-     * github
-     */
-    Route::get('github-auth-app', [Github\GithubController::class, 'authForSpecificApp']);
-    Route::get('github-releases', [Github\GithubController::class, 'listRepositories']);
-    Route::get('github-downloads', [Github\GithubController::class, 'getDownloadCount']);
-    Route::get('github', [Github\GithubController::class, 'getSettings']);
-    Route::post('github-setting', [Github\GithubController::class, 'postSettings']);
+            /*
+             * github
+             */
+            Route::get('github-auth-app', [Github\GithubController::class, 'authForSpecificApp']);
+            Route::get('github-releases', [Github\GithubController::class, 'listRepositories']);
+            Route::get('github-downloads', [Github\GithubController::class, 'getDownloadCount']);
+            Route::get('github', [Github\GithubController::class, 'getSettings']);
+            Route::post('github-setting', [Github\GithubController::class, 'postSettings']);
 
-    /*
-     * download
-     */
-    Route::get('download/{uploadid}/{userid}/{invoice_number}/{versionid}', [Product\ProductController::class, 'userDownload']);
-    Route::get('product/download/{id}/{invoice?}', [Product\ProductController::class, 'adminDownload']);
+            /*
+             * download
+             */
+            Route::get('download/{uploadid}/{userid}/{invoice_number}/{versionid}', [Product\ProductController::class, 'userDownload']);
+            Route::get('product/download/{id}/{invoice?}', [Product\ProductController::class, 'adminDownload']);
 
-    /*
-     * check version
-     */
+            /*
+             * check version
+             */
 
-    Route::get('version', [HomeController::class, 'getVersion']);
-    Route::post('verification', [HomeController::class, 'faveoVerification']);
-    Route::get('create-keys', [HomeController::class, 'createEncryptionKeys']);
-    Route::get('encryption', [HomeController::class, 'getEncryptedData']);
+            Route::get('version', [HomeController::class, 'getVersion']);
+            Route::post('verification', [HomeController::class, 'faveoVerification']);
+            Route::get('create-keys', [HomeController::class, 'createEncryptionKeys']);
+            Route::get('encryption', [HomeController::class, 'getEncryptedData']);
 
-    /*
-     * plugins
-     */
-    Route::get('plugin', [Common\SettingsController::class, 'plugins']);
+            /*
+             * plugins
+             */
+            Route::get('plugin', [Common\SettingsController::class, 'plugins']);
 
-    // Route::get('get-plugin', [Common\PaymentSettingsController::class, 'getPlugin'])->name('get-plugin');
-    // Route::get('getplugin', [Common\SettingsController::class, 'getPlugin']);
-    Route::post('post-plugin', [Common\PaymentSettingsController::class, 'postPlugins'])->name('post.plugin');
-    Route::post('plugin/delete/{slug}', [Common\PaymentSettingsController::class, 'deletePlugin'])->name('delete.plugin');
-    Route::post('plugin/status/{slug}', [Common\PaymentSettingsController::class, 'statusPlugin'])->name('status.plugin');
+            // Route::get('get-plugin', [Common\PaymentSettingsController::class, 'getPlugin'])->name('get-plugin');
+            // Route::get('getplugin', [Common\SettingsController::class, 'getPlugin']);
+            Route::post('post-plugin', [Common\PaymentSettingsController::class, 'postPlugins'])->name('post.plugin');
+            Route::post('plugin/delete/{slug}', [Common\PaymentSettingsController::class, 'deletePlugin'])->name('delete.plugin');
+            Route::post('plugin/status/{slug}', [Common\PaymentSettingsController::class, 'statusPlugin'])->name('status.plugin');
 
-    /*
-     * Cron Jobs
-     */
+            /*
+             * Cron Jobs
+             */
 
-    Route::get('job-scheduler', [Common\SettingsController::class, 'getScheduler'])->name('get.job.scheduler');
-    Route::patch('post-scheduler', [Common\SettingsController::class, 'postSchedular'])->name('post.job.scheduler')->name('post-scheduler'); //to update job scheduler
-    Route::patch('cron-days', [Common\SettingsController::class, 'saveCronDays'])->name('cron-days')->name('cron-days');
-    Route::post('verify-php-path', [Common\SettingsController::class, 'checkPHPExecutablePath'])->name('verify-cron');
-    Route::get('file-storage', [Common\SettingsController::class, 'showFileStorage']);
-    Route::post('file-storage-path', [Common\SettingsController::class, 'updateStoragePath']);
-    Route::get('expired-subscriptions', [Common\CronController::class, 'eachSubscription']);
+            Route::get('job-scheduler', [Common\SettingsController::class, 'getScheduler'])->name('get.job.scheduler');
+            Route::patch('post-scheduler', [Common\SettingsController::class, 'postSchedular'])->name('post.job.scheduler')->name('post-scheduler'); //to update job scheduler
+            Route::patch('cron-days', [Common\SettingsController::class, 'saveCronDays'])->name('cron-days')->name('cron-days');
+            Route::post('verify-php-path', [Common\SettingsController::class, 'checkPHPExecutablePath'])->name('verify-cron');
+            Route::get('file-storage', [Common\SettingsController::class, 'showFileStorage']);
+            Route::post('file-storage-path', [Common\SettingsController::class, 'updateStoragePath']);
+            Route::get('expired-subscriptions', [Common\CronController::class, 'eachSubscription']);
 
-    /*
-     * Renew
-     */
+            /*
+             * Renew
+             */
 
-    Route::get('renew/{id}', [Order\RenewController::class, 'renewForm']);
-    Route::post('renew/{id}', [Order\RenewController::class, 'renew']);
-    Route::get('get-renew-cost', [Order\RenewController::class, 'getCost']);
-    Route::post('client/renew/{id}', [Order\RenewController::class, 'renewByClient']);
+            Route::get('renew/{id}', [Order\RenewController::class, 'renewForm']);
+            Route::post('renew/{id}', [Order\RenewController::class, 'renew']);
+            Route::get('get-renew-cost', [Order\RenewController::class, 'getCost']);
+            Route::post('client/renew/{id}', [Order\RenewController::class, 'renewByClient']);
+            Route::get('autopaynow/{id}', [Front\ClientController::class,'autoRenewbyid']);
 
-    Route::get('generate-keys', [HomeController::class, 'createEncryptionKeys']);
+            Route::get('generate-keys', [HomeController::class, 'createEncryptionKeys']);
 
-    Route::get('get-code', [WelcomeController::class, 'getCode']);
-    Route::get('get-currency', [WelcomeController::class, 'getCurrency'])->middleware('admin');
-    Route::post('dashboard-currency/{id}', [Payment\CurrencyController::class, 'setDashboardCurrency']);
-    Route::get('get-country', [WelcomeController::class, 'getCountry'])->middleware('admin');
-    Route::get('country-count', [WelcomeController::class, 'countryCount'])->name('country-count')->middleware('admin');
+            Route::get('get-code', [WelcomeController::class, 'getCode']);
+            Route::get('get-currency', [WelcomeController::class, 'getCurrency'])->middleware('admin');
+            Route::post('dashboard-currency/{id}', [Payment\CurrencyController::class, 'setDashboardCurrency']);
+            Route::get('get-country', [WelcomeController::class, 'getCountry'])->middleware('admin');
+            Route::get('country-count', [WelcomeController::class, 'countryCount'])->name('country-count')->middleware('admin');
 
-    /*
-    Cloud APIs
-     */
+            /*
+            Cloud APIs
+             */
 
-    Route::resource('third-party-keys', ThirdPartyAppController::class);
-    Route::get('get-third-party-app', [ThirdPartyAppController::class, 'getThirdPartyDetails'])->name('get-third-party-app');
-    Route::get('get-app-key', [ThirdPartyAppController::class, 'getAppKey'])->name('get-app-key');
-    Route::delete('third-party-delete', [ThirdPartyAppController::class, 'destroy'])->name('third-party-delete');
-    Route::post('create/tenant', [Tenancy\TenantController::class, 'createTenant']);
-    Route::get('view/tenant', [Tenancy\TenantController::class, 'viewTenant'])->middleware('admin');
+            Route::resource('third-party-keys', ThirdPartyAppController::class);
+            Route::get('get-third-party-app', [ThirdPartyAppController::class, 'getThirdPartyDetails'])->name('get-third-party-app');
+            Route::get('get-app-key', [ThirdPartyAppController::class, 'getAppKey'])->name('get-app-key');
+            Route::delete('third-party-delete', [ThirdPartyAppController::class, 'destroy'])->name('third-party-delete');
+            Route::post('create/tenant', [Tenancy\TenantController::class, 'createTenant']);
+            Route::get('view/tenant', [Tenancy\TenantController::class, 'viewTenant'])->middleware('admin');
 
-    Route::delete('delete-tenant', [Tenancy\TenantController::class, 'destroyTenant'])->name('delete-tenant')->middleware('admin');
+            Route::delete('delete-tenant', [Tenancy\TenantController::class, 'destroyTenant'])->name('delete-tenant')->middleware('admin');
 
-    Route::post('cloud-details', [Tenancy\TenantController::class, 'saveCloudDetails'])->name('cloud-details')->middleware('admin');
+            Route::post('cloud-details', [Tenancy\TenantController::class, 'saveCloudDetails'])->name('cloud-details')->middleware('admin');
 
-    /*
-     * Api
-     */
-    Route::prefix('api')->group(function () {
-        /*
-         * Unautherised requests
+            /*
+             * Api
+             */
+            Route::prefix('api')->group(function () {
+                /*
+                 * Unautherised requests
+                 */
+                Route::get('check-url', [Api\ApiController::class, 'checkDomain']);
+            });
+
+            /*
+             * Api Keys
+             */
+            Route::get('apikeys', [Common\SettingsController::class, 'getKeys']);
+            Route::patch('apikeys', [Common\SettingsController::class, 'postKeys']);
+            Route::post('login', [Auth\LoginController::class, 'login'])->name('login');
+            // Route::post('login', [Auth\LoginController::class, 'login'])->name('login');
+
+            Route::get('otp/send', [Auth\AuthController::class, 'requestOtp']);
+            Route::post('otp/sendByAjax', [Auth\AuthController::class, 'requestOtpFromAjax']);
+            Route::post('otp/verify', [Auth\AuthController::class, 'postOtp']);
+            Route::get('email/verify', [Auth\AuthController::class, 'verifyEmail']);
+            Route::get('resend_otp', [Auth\AuthController::class, 'retryOTP']);
+            Route::get('verify', function () {
+                $user = \Session::get('user');
+                if ($user) {
+                    return view('themes.default1.user.verify', compact('user'));
+                }
+
+                return redirect('login');
+            });
+        });
+         /*
+         * Faveo APIs
          */
         Route::get('check-url', [Api\ApiController::class, 'checkDomain']);
     });

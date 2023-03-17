@@ -470,14 +470,10 @@ class CronController extends BaseCronController
                 }
             }
         } catch (\Razorpay\Api\Errors\SignatureVerificationError|\Razorpay\Api\Errors\BadRequestError|\Razorpay\Api\Errors\GatewayError|\Razorpay\Api\Errors\ServerError $e) {
-            $this->cardfailedMail($invoice->grand_total, $e->getMessage(), $user,$order->number,$end,$invoice->currency,$order,$product_details);
-
-            } 
-        catch (\Exception $e) {
+            $this->cardfailedMail($invoice->grand_total, $e->getMessage(), $user, $order->number, $end, $invoice->currency, $order, $product_details);
+        } catch (\Exception $e) {
             if (emailSendingStatus()) {
-
-                $this->sendFailedPayment($invoice->grand_total, $e->getMessage(), $user,$order->number,$end,$invoice->currency,$order,$product_details);
-
+                $this->sendFailedPayment($invoice->grand_total, $e->getMessage(), $user, $order->number, $end, $invoice->currency, $order, $product_details);
             }
         }
     }

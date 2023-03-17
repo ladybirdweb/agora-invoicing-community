@@ -32,12 +32,7 @@ return new class extends Migration
             if (! Schema::hasColumn('status_settings', 'pipedrive_status')) {
                 $table->boolean('pipedrive_status')->nullable();
             }
-            if (! Schema::hasColumn('status_settings', 'subs_expirymail')) {
-                $table->boolean('subs_expirymail')->nullable();
-            }
-            if (! Schema::hasColumn('status_settings', 'post_expirymail')) {
-                $table->boolean('post_expirymail')->nullable();
-            }
+
         });
     }
 
@@ -56,8 +51,7 @@ return new class extends Migration
                 'mailchimp_ispaid_status',
                 'terms',
                 'pipedrive_status',
-                'post_expirymail',
-                'subs_expirymail',
+
             ]);
         });
     }

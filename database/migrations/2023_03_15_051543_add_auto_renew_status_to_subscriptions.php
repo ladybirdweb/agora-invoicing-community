@@ -13,12 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        if (!Schema::hasColumn('is_subscribed', 'subscribe_id')) {
-            Schema::table('subscriptions', function (Blueprint $table) {
-                $table->boolean('is_subscribed')->nullable();
-                $table->string('subscribe_id')->nullable();
-            });
-        }
+        if (! Schema::hasColumn('subscriptions', 'autoRenew_status')) {
+        Schema::table('subscriptions', function (Blueprint $table) {
+            $table->string('autoRenew_status')->nullable();
+        });
+    }
     }
 
     /**
@@ -29,7 +28,7 @@ return new class extends Migration
     public function down()
     {
         Schema::table('subscriptions', function (Blueprint $table) {
-            $table->dropColumn(['is_subscribed', 'subscribe_id']);
+            $table->dropColumn('autoRenew_status');
         });
     }
 };

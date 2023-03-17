@@ -48,7 +48,7 @@ class BaseSettingsController extends PaymentSettingsController
         $oldData = '';
         $oldData = (array_key_exists('old', $data->toArray())) ? ($model->properties['old']) : null;
         if ($oldData != null) {
-            if ((count($oldData) > 0)) {
+            if (count($oldData) > 0) {
                 foreach ($oldData as $key => $value) {
                     $display[] = '<strong>'.'ucfirst'($key).'</strong>'.' : '.$value.'<br/>';
                 }

@@ -13,9 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        if (! Schema::hasColumn('activity_log', 'event')) {
-            Schema::table('activity_log', function (Blueprint $table) {
-                $table->string('event')->nullable();
+        if (Schema::hasColumn('subs_expirymail', 'post_expirymail')) {
+            Schema::table('status_settings', function (Blueprint $table) {
+                $table->boolean('subs_expirymail')->default(0);
+                $table->boolean('post_expirymail')->default(0);
             });
         }
     }
@@ -27,8 +28,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('activity_log', function (Blueprint $table) {
-            $table->dropColumn('event');
+        Schema::table('status_settings', function (Blueprint $table) {
+            $table->dropColumn(['subs_expirymail', 'post_expirymail']);
         });
     }
 };

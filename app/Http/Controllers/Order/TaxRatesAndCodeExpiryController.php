@@ -198,7 +198,7 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
 
             return view('themes.default1.invoice.editPayment',
                 compact('amountReceived', 'clientid', 'client', 'invoices', 'orders',
-                  'invoiceSum', 'amountReceived', 'pendingAmount', 'currency', 'symbol'));
+                    'invoiceSum', 'amountReceived', 'pendingAmount', 'currency', 'symbol'));
         } catch (\Exception $e) {
             return redirect()->back()->with('fails', $e->getMessage());
         }

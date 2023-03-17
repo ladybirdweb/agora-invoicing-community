@@ -15,7 +15,6 @@ return new class extends Migration
     {
         Schema::table('settings', function (Blueprint $table) {
             $table->string('card_failed')->nullable();
-
         });
     }
 

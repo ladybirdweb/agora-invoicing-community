@@ -28,7 +28,7 @@ class ProfileController extends Controller
                     $end = strpos($location, ')', $start + 1);
                     $length = $end - $start;
                     $result = substr($location, $start + 1, $length - 1);
-                    $display[] = (['id' => $timezone->id, 'name' => '('.$result.')'.' '.$timezone->name]);
+                    $display[] = ['id' => $timezone->id, 'name' => '('.$result.')'.' '.$timezone->name];
                 }
             }
             //for display

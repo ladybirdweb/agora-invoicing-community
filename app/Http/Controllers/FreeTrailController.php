@@ -235,7 +235,6 @@ class FreeTrailController extends Controller
         try {
             $len = strlen($agents);
             switch ($len) {//Get Last Four digits based on No.Of Agents
-
                 case '1':
                     $lastFour = '000'.$agents;
                     break;

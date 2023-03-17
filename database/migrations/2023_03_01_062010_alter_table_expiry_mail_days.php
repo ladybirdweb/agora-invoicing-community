@@ -13,10 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('expiry_mail_days', function (Blueprint $table) {
-            $table->string('autorenewal_days')->nullable();
-            $table->string('postexpiry_days')->nullable();
-        });
+        if (Schema::hasColumn('autorenewal_days', 'postexpiry_days')) {
+            Schema::table('expiry_mail_days', function (Blueprint $table) {
+                $table->string('autorenewal_days')->nullable();
+                $table->string('postexpiry_days')->nullable();
+            });
+        }
     }
 
     /**

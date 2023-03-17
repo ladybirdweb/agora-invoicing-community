@@ -395,24 +395,20 @@ class CronController extends BaseCronController
                     ]);
                     if ($stripe_subscription['status'] == 'active') {
                         //Afer Renew
-                        Subscription::where('id', $subscription->id)->update(['subscribe_id' => $stripe_subscription['id'],'autoRenew_status' => 'Success']);
+                        Subscription::where('id', $subscription->id)->update(['subscribe_id' => $stripe_subscription['id'], 'autoRenew_status' => 'Success']);
                         $this->successRenew($invoice, $subscription);
                         $this->postRazorpayPayment($invoice, $payment_method = 'stripe');
                         if ($invoice->grand_total && emailSendingStatus()) {
-                            $this->sendPaymentSuccessMail($invoice->currency, $invoice->grand_total, $user, $invoice->invoiceItem()->first()->product_name,$order->number);
-
-
+                            $this->sendPaymentSuccessMail($invoice->currency, $invoice->grand_total, $user, $invoice->invoiceItem()->first()->product_name, $order->number);
                         }
                     }
                 }
             }
         } catch (\Cartalyst\Stripe\Exception\ApiLimitExceededException|\Cartalyst\Stripe\Exception\BadRequestException|\Cartalyst\Stripe\Exception\MissingParameterException|\Cartalyst\Stripe\Exception\NotFoundException|\Cartalyst\Stripe\Exception\ServerErrorException|\Cartalyst\Stripe\Exception\StripeException|\Cartalyst\Stripe\Exception\UnauthorizedException $e) {
-                $this->cardfailedMail($invoice->grand_total, $e->getMessage(), $user,$number,$end,$invoice->currency,$order,$product_details);
-
+            $this->cardfailedMail($invoice->grand_total, $e->getMessage(), $user, $number, $end, $invoice->currency, $order, $product_details);
         } catch (\Cartalyst\Stripe\Exception\CardErrorException $e) {
             if (emailSendingStatus()) {
-                $this->sendFailedPayment($invoice->grand_total, $e->getMessage(), $user,$order->number,$end,$invoice->currency,$order,$product_details);
-
+                $this->sendFailedPayment($invoice->grand_total, $e->getMessage(), $user, $order->number, $end, $invoice->currency, $order, $product_details);
             }
             \Session::put('amount', $amount);
             \Session::put('error', $e->getMessage());
@@ -421,8 +417,7 @@ class CronController extends BaseCronController
         } catch (\Exception $ex) {
             // $this->sendFailedPaymenttoAdmin($invoice->grand_total, $ex->getMessage(), $user,$order->number,$end,$invoice->currency,$order,$product_details);
 
-            $this->razorpay_payment($plan->days, $product_details->name, $invoice, $currency, $subscription, $user,$order,$end);
-
+            $this->razorpay_payment($plan->days, $product_details->name, $invoice, $currency, $subscription, $user, $order, $end);
         }
     }
 
@@ -444,9 +439,9 @@ class CronController extends BaseCronController
                         'currency' => $currency, ],
 
                 ]
-            );
+                );
 
-            $rzp_subscription = $api->subscription->create([
+                $rzp_subscription = $api->subscription->create([
                     'plan_id' => $rzp_plan['id'],
                     'customer_notify' => 1,
                     'quantity'=>1,
@@ -458,40 +453,32 @@ class CronController extends BaseCronController
                             'amount' => $amount,
                             'currency' => $currency, ], ]],
                 ]);
-            //Afer Renew
-            if ($rzp_subscription['status'] == 'created' || $rzp_subscription['status'] == 'active') {
-                    Subscription::where('id', $subscription->id)->update(['subscribe_id' => $rzp_subscription['id'],'autoRenew_status' => 'Success']);
+                //Afer Renew
+                if ($rzp_subscription['status'] == 'created' || $rzp_subscription['status'] == 'active') {
+                    Subscription::where('id', $subscription->id)->update(['subscribe_id' => $rzp_subscription['id'], 'autoRenew_status' => 'Success']);
                     $this->successRenew($invoice, $subscription);
                     $this->postRazorpayPayment($invoice, $payment_method = 'Razorpay');
                     if ($invoice->grand_total && emailSendingStatus()) {
-
-                        $this->sendPaymentSuccessMail($invoice->currency, $invoice->grand_total, $user, $invoice->invoiceItem()->first()->product_name,$order->number);
-
+                        $this->sendPaymentSuccessMail($invoice->currency, $invoice->grand_total, $user, $invoice->invoiceItem()->first()->product_name, $order->number);
                     }
                 }
             }
         } catch (\Razorpay\Api\Errors\SignatureVerificationError|\Razorpay\Api\Errors\BadRequestError|\Razorpay\Api\Errors\GatewayError|\Razorpay\Api\Errors\ServerError $e) {
-            $this->cardfailedMail($invoice->grand_total, $e->getMessage(), $user,$order->number,$end,$invoice->currency,$order,$product_details);
-
-            } 
-        catch (\Exception $e) {
+            $this->cardfailedMail($invoice->grand_total, $e->getMessage(), $user, $order->number, $end, $invoice->currency, $order, $product_details);
+        } catch (\Exception $e) {
             if (emailSendingStatus()) {
-
-                $this->sendFailedPayment($invoice->grand_total, $e->getMessage(), $user,$order->number,$end,$invoice->currency,$order,$product_details);
-
+                $this->sendFailedPayment($invoice->grand_total, $e->getMessage(), $user, $order->number, $end, $invoice->currency, $order, $product_details);
             }
         }
     }
 
-
-    public static function sendFailedPayment($total, $exceptionMessage, $user,$number,$end,$currency,$order,$product_details)
-
+    public static function sendFailedPayment($total, $exceptionMessage, $user, $number, $end, $currency, $order, $product_details)
     {
         //check in the settings
         $settings = new \App\Model\Common\Setting();
         $setting = $settings->where('id', 1)->first();
 
-        Subscription::where('order_id',$order->id)->update(['autoRenew_status' => 'Failed','is_subscribed' => '0']);
+        Subscription::where('order_id', $order->id)->update(['autoRenew_status' => 'Failed', 'is_subscribed' => '0']);
 
         $mail = new \App\Http\Controllers\Common\PhpMailController();
         $mailer = $mail->setMailConfig($setting);
@@ -524,9 +511,7 @@ class CronController extends BaseCronController
         }
     }
 
-
-    public static function sendPaymentSuccessMail($currency, $total, $user, $product,$number)
-
+    public static function sendPaymentSuccessMail($currency, $total, $user, $product, $number)
     {
         //check in the settings
         $settings = new \App\Model\Common\Setting();
@@ -561,27 +546,26 @@ class CronController extends BaseCronController
         }
     }
 
-        public static function cardfailedMail($total, $exceptionMessage, $user,$number,$end,$currency,$order,$product_details)
-    {
-        //check in the settings
-        $settings = new \App\Model\Common\Setting();
-        $setting = $settings->where('id', 1)->first();
+        public static function cardfailedMail($total, $exceptionMessage, $user, $number, $end, $currency, $order, $product_details)
+        {
+            //check in the settings
+            $settings = new \App\Model\Common\Setting();
+            $setting = $settings->where('id', 1)->first();
 
-        Subscription::where('order_id',$order->id)->update(['autoRenew_status' => 'Failed','is_subscribed' => '0']);
+            Subscription::where('order_id', $order->id)->update(['autoRenew_status' => 'Failed', 'is_subscribed' => '0']);
 
-        $mail = new \App\Http\Controllers\Common\PhpMailController();
-        $mailer = $mail->setMailConfig($setting);
-        //template
-        $templates = new \App\Model\Common\Template();
-        $temp_id = $setting->card_failed;
+            $mail = new \App\Http\Controllers\Common\PhpMailController();
+            $mailer = $mail->setMailConfig($setting);
+            //template
+            $templates = new \App\Model\Common\Template();
+            $temp_id = $setting->card_failed;
 
-        $template = $templates->where('id', $temp_id)->first();
-        $data = $template->data;
-        $url = url("autopaynow/$order->id");
+            $template = $templates->where('id', $temp_id)->first();
+            $data = $template->data;
+            $url = url("autopaynow/$order->id");
 
-
-        try {
-            $email = (new Email())
+            try {
+                $email = (new Email())
          ->from($setting->email)
          ->to($user->email)
          ->subject($template->name)
@@ -593,13 +577,13 @@ class CronController extends BaseCronController
              'expiry' => date('d-m-Y', strtotime($end)),
              'exception' => $exceptionMessage,
              'url' => $url,
-             ]));
-            $mailer->send($email);
-            $mail->email_log_success($setting->email, $user->email, $template->name, $data);
-        } catch (\Exception $ex) {
-            $mail->email_log_fail($setting->email, $user->email, $template->name, $data);
+         ]));
+                $mailer->send($email);
+                $mail->email_log_success($setting->email, $user->email, $template->name, $data);
+            } catch (\Exception $ex) {
+                $mail->email_log_fail($setting->email, $user->email, $template->name, $data);
+            }
         }
-    }
 
     public function successRenew($invoice, $subscription)
     {

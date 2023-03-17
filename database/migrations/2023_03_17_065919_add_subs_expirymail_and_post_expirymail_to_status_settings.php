@@ -16,7 +16,6 @@ return new class extends Migration
         Schema::table('status_settings', function (Blueprint $table) {
             $table->boolean('subs_expirymail')->default(0);
             $table->boolean('post_expirymail')->default(0);
-
         });
     }
 

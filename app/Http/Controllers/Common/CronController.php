@@ -417,9 +417,7 @@ class CronController extends BaseCronController
         } catch (\Exception $ex) {
             // $this->sendFailedPaymenttoAdmin($invoice->grand_total, $ex->getMessage(), $user,$order->number,$end,$invoice->currency,$order,$product_details);
 
-            $this->razorpay_payment($plan->days, $product_details->name, $invoice, $currency, $subscription, $user,$order,$end);
-
-
+            $this->razorpay_payment($plan->days, $product_details->name, $invoice, $currency, $subscription, $user, $order, $end);
         }
     }
 
@@ -461,23 +459,15 @@ class CronController extends BaseCronController
                     $this->successRenew($invoice, $subscription);
                     $this->postRazorpayPayment($invoice, $payment_method = 'Razorpay');
                     if ($invoice->grand_total && emailSendingStatus()) {
-
-
-                        $this->sendPaymentSuccessMail($invoice->currency, $invoice->grand_total, $user, $invoice->invoiceItem()->first()->product_name,$order->number);
-
-
+                        $this->sendPaymentSuccessMail($invoice->currency, $invoice->grand_total, $user, $invoice->invoiceItem()->first()->product_name, $order->number);
                     }
                 }
             }
         } catch (\Razorpay\Api\Errors\SignatureVerificationError|\Razorpay\Api\Errors\BadRequestError|\Razorpay\Api\Errors\GatewayError|\Razorpay\Api\Errors\ServerError $e) {
-            $this->cardfailedMail($invoice->grand_total, $e->getMessage(), $user,$order->number,$end,$invoice->currency,$order,$product_details);
-
-            } 
-        catch (\Exception $e) {
+            $this->cardfailedMail($invoice->grand_total, $e->getMessage(), $user, $order->number, $end, $invoice->currency, $order, $product_details);
+        } catch (\Exception $e) {
             if (emailSendingStatus()) {
-
-                $this->sendFailedPayment($invoice->grand_total, $e->getMessage(), $user,$order->number,$end,$invoice->currency,$order,$product_details);
-
+                $this->sendFailedPayment($invoice->grand_total, $e->getMessage(), $user, $order->number, $end, $invoice->currency, $order, $product_details);
             }
         }
     }

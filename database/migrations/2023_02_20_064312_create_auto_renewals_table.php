@@ -13,6 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
+        if (! Schema::hasTable('email_log')) {
         Schema::create('auto_renewals', function (Blueprint $table) {
             $table->id();
             $table->integer('user_id')->unsigned();

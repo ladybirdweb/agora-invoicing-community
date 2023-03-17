@@ -14,14 +14,14 @@ return new class extends Migration
     public function up()
     {
         if (! Schema::hasTable('auto_renewals')) {
-        Schema::create('auto_renewals', function (Blueprint $table) {
-            $table->id();
-            $table->integer('user_id')->unsigned();
-            $table->foreign('user_id')->references('id')->on('users');
-            $table->string('customer_id');
-            $table->timestamps();
-        });
-    }
+            Schema::create('auto_renewals', function (Blueprint $table) {
+                $table->id();
+                $table->integer('user_id')->unsigned();
+                $table->foreign('user_id')->references('id')->on('users');
+                $table->string('customer_id');
+                $table->timestamps();
+            });
+        }
     }
 
     /**

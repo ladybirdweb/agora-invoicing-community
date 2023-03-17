@@ -13,12 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        if (Schema::hasColumn('subs_expirymail', 'post_expirymail')){
-        Schema::table('status_settings', function (Blueprint $table) {
-            $table->boolean('subs_expirymail')->default(0);
-            $table->boolean('post_expirymail')->default(0);
-        });
-    }
+        if (Schema::hasColumn('subs_expirymail', 'post_expirymail')) {
+            Schema::table('status_settings', function (Blueprint $table) {
+                $table->boolean('subs_expirymail')->default(0);
+                $table->boolean('post_expirymail')->default(0);
+            });
+        }
     }
 
     /**

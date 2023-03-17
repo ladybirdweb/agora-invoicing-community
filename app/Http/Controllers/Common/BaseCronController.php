@@ -194,7 +194,6 @@ class BaseCronController extends Controller
 
     public function mail($user, $end, $product, $order, $sub)
     {
-
         //check in the settings
         $settings = new \App\Model\Common\Setting();
         $setting = $settings->where('id', 1)->first();

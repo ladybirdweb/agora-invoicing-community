@@ -13,20 +13,22 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('email_log', function (Blueprint $table) {
-            $table->id();
-            $table->dateTime('date');
-            $table->string('from')->nullable();
-            $table->string('to')->nullable();
-            $table->string('cc')->nullable();
-            $table->string('bcc')->nullable();
-            $table->string('subject');
-            $table->text('body');
-            $table->text('headers')->nullable();
-            $table->text('attachments')->nullable();
-            $table->string('status', 255)->nullable();
-            $table->timestamps();
-        });
+        if (! Schema::hasTable('email_log')) {
+            Schema::create('email_log', function (Blueprint $table) {
+                $table->id();
+                $table->dateTime('date');
+                $table->string('from')->nullable();
+                $table->string('to')->nullable();
+                $table->string('cc')->nullable();
+                $table->string('bcc')->nullable();
+                $table->string('subject');
+                $table->text('body');
+                $table->text('headers')->nullable();
+                $table->text('attachments')->nullable();
+                $table->string('status', 255)->nullable();
+                $table->timestamps();
+            });
+        }
     }
 
     /**

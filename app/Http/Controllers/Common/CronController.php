@@ -342,6 +342,7 @@ class CronController extends BaseCronController
         $sub = Subscription::whereNotNull('update_ends_at')
             ->where('is_subscribed', 1)
             ->whereBetween('update_ends_at', [$yesterday, $tomorrow])
+            ->whereBetween('support_ends_at', [$yesterday, $tomorrow])
             ->orwhereBetween('update_ends_at', [$daybefore, $today]);
 
         return $sub;
@@ -420,11 +421,12 @@ class CronController extends BaseCronController
         } catch (\Exception $ex) {
             // $this->sendFailedPaymenttoAdmin($invoice->grand_total, $ex->getMessage(), $user,$order->number,$end,$invoice->currency,$order,$product_details);
 
-            $this->razorpay_payment($plan->days, $product_details->name, $invoice, $currency, $subscription, $user,$order->number,$end);
+            $this->razorpay_payment($plan->days, $product_details->name, $invoice, $currency, $subscription, $user,$order,$end);
+
         }
     }
 
-    public function razorpay_payment($days, $product_name, $invoice, $currency, $subscription, $user, $number, $end)
+    public function razorpay_payment($days, $product_name, $invoice, $currency, $subscription, $user, $order, $end)
     {
         try {
             $status = $subscription->is_subscribed;
@@ -462,17 +464,21 @@ class CronController extends BaseCronController
                     $this->successRenew($invoice, $subscription);
                     $this->postRazorpayPayment($invoice, $payment_method = 'Razorpay');
                     if ($invoice->grand_total && emailSendingStatus()) {
-                        $this->sendPaymentSuccessMail($invoice->currency, $invoice->grand_total, $user, $invoice->invoiceItem()->first()->product_name,$number);
+
+                        $this->sendPaymentSuccessMail($invoice->currency, $invoice->grand_total, $user, $invoice->invoiceItem()->first()->product_name,$order->number);
+
                     }
                 }
             }
         } catch (\Razorpay\Api\Errors\SignatureVerificationError|\Razorpay\Api\Errors\BadRequestError|\Razorpay\Api\Errors\GatewayError|\Razorpay\Api\Errors\ServerError $e) {
-            $this->cardfailedMail($invoice->grand_total, $e->getMessage(), $user,$number,$end,$invoice->currency,$order,$product_details);
+            $this->cardfailedMail($invoice->grand_total, $e->getMessage(), $user,$order->number,$end,$invoice->currency,$order,$product_details);
 
             } 
         catch (\Exception $e) {
             if (emailSendingStatus()) {
-                $this->sendFailedPayment($invoice->grand_total, $e->getMessage(), $user,$number,$end,$invoice->currency,$order,$product_details);
+
+                $this->sendFailedPayment($invoice->grand_total, $e->getMessage(), $user,$order->number,$end,$invoice->currency,$order,$product_details);
+
             }
         }
     }

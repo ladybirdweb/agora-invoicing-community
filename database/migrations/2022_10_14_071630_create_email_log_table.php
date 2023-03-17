@@ -13,6 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
+        if (! Schema::hasTable('email_log')) {
         Schema::create('email_log', function (Blueprint $table) {
             $table->id();
             $table->dateTime('date');
@@ -27,6 +28,7 @@ return new class extends Migration
             $table->string('status', 255)->nullable();
             $table->timestamps();
         });
+    }
     }
 
     /**

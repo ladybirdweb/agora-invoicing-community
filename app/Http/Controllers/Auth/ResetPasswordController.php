@@ -60,8 +60,8 @@ class ResetPasswordController extends Controller
                     }
 
                     return view('themes.default1.front.auth.reset', compact('captchaKeys', 'captchaStatus'))->with(
-                ['reset_token' => $token, 'email' => $reset->email]
-            );
+                        ['reset_token' => $token, 'email' => $reset->email]
+                    );
                 } else {
                     return \Redirect::to('password/reset')->with('fails', 'It looks like you clicked on an invalid password reset link. Please try again.');
                 }

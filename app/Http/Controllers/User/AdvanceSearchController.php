@@ -77,7 +77,7 @@ class AdvanceSearchController extends AdminOrderInvoiceController
         }
         $client->country = ucwords(strtolower(getCountryByCode($client->country)));
 
-        $displayData = (['currency' => $currency, 'client' => $client]);
+        $displayData = ['currency' => $currency, 'client' => $client];
 
         return $displayData;
     }

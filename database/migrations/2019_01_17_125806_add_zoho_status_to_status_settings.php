@@ -32,7 +32,6 @@ return new class extends Migration
             if (! Schema::hasColumn('status_settings', 'pipedrive_status')) {
                 $table->boolean('pipedrive_status')->nullable();
             }
-
         });
     }
 

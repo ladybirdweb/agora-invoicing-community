@@ -264,7 +264,7 @@ Template::create(['id' => 14, 'name' => '[Faveo Helpdesk] AutoPayment failed', '
 <tr>
 <td style="background: #fff; border-left: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;">&nbsp;</td>
 <td style="background: #fff; padding: 0; width: 560px;" align="left">
-<p style="color: #333; font-family: Arial, sans-serif; font-size: 14px; line-height: 20px; text-align: left;">Your Payment failed for your subscription. Don't worry, We'll try again over the next few days.</p>
+<p style="color: #333; font-family: Arial, sans-serif; font-size: 14px; line-height: 20px; text-align: left;">Your Payment failed for your subscription. Dont worry, Well try again over the next few days.</p>
 <p style="color: #333; font-family: Arial, sans-serif; font-size: 14px; line-height: 20px; text-align: left;">To keep your product active you may need to update your payment, Please use the below link to renew your order.&nbsp;&nbsp;</p>
 <p style="color: #333; font-family: Arial, sans-serif; font-size: 14px; line-height: 20px; text-align: left;"><strong>Reason for Failure:</strong></p>
 <p style="color: #333; font-family: Arial, sans-serif; font-size: 14px; line-height: 20px; text-align: left;">{$exception}.</p>

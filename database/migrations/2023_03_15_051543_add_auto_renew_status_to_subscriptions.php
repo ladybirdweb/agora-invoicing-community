@@ -14,10 +14,10 @@ return new class extends Migration
     public function up()
     {
         if (! Schema::hasColumn('subscriptions', 'autoRenew_status')) {
-        Schema::table('subscriptions', function (Blueprint $table) {
-            $table->string('autoRenew_status')->nullable();
-        });
-    }
+            Schema::table('subscriptions', function (Blueprint $table) {
+                $table->string('autoRenew_status')->nullable();
+            });
+        }
     }
 
     /**

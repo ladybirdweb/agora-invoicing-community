@@ -13,9 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('activity_log', function (Blueprint $table) {
+        if (! Schema::hasColumn('activity_log', 'event')) {
+         Schema::table('activity_log', function (Blueprint $table) {
             $table->string('event')->nullable();
         });
+     }
     }
 
     /**

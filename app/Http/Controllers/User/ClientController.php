@@ -198,7 +198,7 @@ class ClientController extends AdvanceSearchController
                 $end = strpos($location, ')', $start + 1);
                 $length = $end - $start;
                 $result = substr($location, $start + 1, $length - 1);
-                $display[] = (['id' => $timezone->id, 'name' => '('.$result.')'.' '.$timezone->name]);
+                $display[] = ['id' => $timezone->id, 'name' => '('.$result.')'.' '.$timezone->name];
             }
         }
         $timezones = array_column($display, 'name', 'id');
@@ -336,7 +336,7 @@ class ClientController extends AdvanceSearchController
                     $end = strpos($location, ')', $start + 1);
                     $length = $end - $start;
                     $result = substr($location, $start + 1, $length - 1);
-                    $display[] = (['id' => $timezone->id, 'name' => '('.$result.')'.' '.$timezone->name]);
+                    $display[] = ['id' => $timezone->id, 'name' => '('.$result.')'.' '.$timezone->name];
                 }
             }
             //for display

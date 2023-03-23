@@ -45,11 +45,11 @@ class Google2FAController extends Controller
         $user->google2fa_secret = Crypt::encrypt($secret);
         $user->save();
         $imageDataUri = $google2fa->getQRCodeInline(
-                    $request->getHttpHost(),
-                    $user->email,
-                    $secret,
-                    200
-                );
+            $request->getHttpHost(),
+            $user->email,
+            $secret,
+            200
+        );
 
         return successResponse('', ['image' => $imageDataUri, 'secret' => $secret]);
     }
@@ -205,8 +205,8 @@ class Google2FAController extends Controller
         $this->validate($request, [
             'rec_code' => 'required',
         ],
-        ['rec_code.required' => 'Plase enter recovery code',
-        ]);
+            ['rec_code.required' => 'Plase enter recovery code',
+            ]);
         try {
             $userId = $request->session()->pull('2fa:user:id');
             $this->user = User::findorFail($userId);

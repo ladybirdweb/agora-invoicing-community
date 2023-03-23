@@ -68,8 +68,8 @@ class WidgetController extends Controller
                         ->rawColumns(['checkbox', 'name', 'type', 'created_at', 'content', 'action'])
                         ->make(true);
         // ->searchColumns('name', 'content')
-                        // ->orderColumns('name')
-                        // ->make();
+        // ->orderColumns('name')
+        // ->make();
     }
 
     public function create()

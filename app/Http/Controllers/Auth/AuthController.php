@@ -64,13 +64,13 @@ class AuthController extends BaseAuthController
                     $user->save();
                     $status = StatusSetting::select('mailchimp_status', 'pipedrive_status', 'zoho_status')->first();
                     $this->addUserToPipedrive($user, $status->pipedrive_status); //Add user to pipedrive
-                $this->addUserToZoho($user, $status->zoho_status); //Add user to zoho
-                $this->addUserToMailchimp($user, $status->mailchimp_status); // Add user to mailchimp
-                if (\Session::has('session-url')) {
-                    $url = \Session::get('session-url');
+                    $this->addUserToZoho($user, $status->zoho_status); //Add user to zoho
+                    $this->addUserToMailchimp($user, $status->mailchimp_status); // Add user to mailchimp
+                    if (\Session::has('session-url')) {
+                        $url = \Session::get('session-url');
 
-                    return redirect($url);
-                }
+                        return redirect($url);
+                    }
 
                     return redirect($url)->with('success', 'Email verification successful.
                     Please login to access your account !!');
@@ -163,13 +163,13 @@ class AuthController extends BaseAuthController
 
             switch ($request->input('type')) {
                 case 'text':
-                   $array = json_decode($result, true);
-                   $response = ['type' => 'success',
-                       'message' => 'OTP has been resent to '.$number.'.Please Enter the OTP to login!!', ];
+                    $array = json_decode($result, true);
+                    $response = ['type' => 'success',
+                        'message' => 'OTP has been resent to '.$number.'.Please Enter the OTP to login!!', ];
 
                     break;
 
-                    case 'voice':
+                case 'voice':
                     $array = json_decode($result, true);
                     $response = ['type' => 'success',
                         'message' => 'Voice call has been sent to '.$number.'.Please Enter the OTP received on the call to login!!', ];
@@ -180,7 +180,6 @@ class AuthController extends BaseAuthController
                     $response = ['type' => 'success',
                         'message' => 'Voice call has been sent to '.$number.'.Please Enter the OTP received on the call to login!!', ];
                     break;
-
             }
 
             return response()->json($response);

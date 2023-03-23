@@ -53,15 +53,15 @@ class Kernel extends ConsoleKernel
             $condition = new \App\Model\Mailjob\Condition();
             $command = $condition->getConditionValue($task);
             switch ($task) {
-            case 'expiryMail':
-               if ($expiryMailStatus == 1) {
-                   return $this->getCondition($schedule->command('expiry:notification'), $command);
-               }
+                case 'expiryMail':
+                    if ($expiryMailStatus == 1) {
+                        return $this->getCondition($schedule->command('expiry:notification'), $command);
+                    }
 
-            case 'deleteLogs':
-             if ($logDeleteStatus == 1) {
-                 return $this->getCondition($schedule->command('activitylog:clean'), $command);
-             }
+                case 'deleteLogs':
+                    if ($logDeleteStatus == 1) {
+                        return $this->getCondition($schedule->command('activitylog:clean'), $command);
+                    }
             }
         }
     }

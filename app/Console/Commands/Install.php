@@ -40,7 +40,7 @@ class Install extends Command
         if ($this->confirm('Do you want to intall Agora?')) {
             $this->createEnv();
             $default = $this->choice(
-                    'Which sql engine would you like to use?', ['mysql']
+                'Which sql engine would you like to use?', ['mysql']
             );
             $host = $this->ask('Enter your sql host');
             $database = $this->ask('Enter your database name');

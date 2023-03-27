@@ -368,13 +368,13 @@ class SettingsController extends BaseSettingsController
                                   return json_decode($role);
                               })
                                ->addColumn('new', function ($model) {
-                                   $properties = ($model->properties);
+                                   $properties = $model->properties;
                                    $newEntry = $this->getNewEntry($properties, $model);
 
                                    return $newEntry;
                                })
                                 ->addColumn('old', function ($model) {
-                                    $data = ($model->properties);
+                                    $data = $model->properties;
                                     $oldEntry = $this->getOldEntry($data, $model);
 
                                     return $oldEntry;

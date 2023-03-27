@@ -54,11 +54,11 @@ class ThirdPartyApiController extends Controller
                 'filename' => 'required',
                 'dependencies' => 'required',
             ],
-       ['filename.required' => 'Please Uplaod A file',
-       ]
+            ['filename.required' => 'Please Uplaod A file',
+            ]
         );
         try {
-            $product_id = Product::whereRaw('LOWER(`name`) LIKE ? ', (strtolower($request->input('productname'))))->select('id')->first();
+            $product_id = Product::whereRaw('LOWER(`name`) LIKE ? ', strtolower($request->input('productname')))->select('id')->first();
             if ($product_id) {
                 $this->product_upload->product_id = $product_id->id;
                 $this->product_upload->title = $request->input('producttitle');

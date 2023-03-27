@@ -35,7 +35,7 @@ class ExtendedBaseInvoiceController extends Controller
             $orders = $order->where('client', $clientid)->get();
 
             return view('themes.default1.invoice.newpayment', compact('clientid', 'client', 'invoices', 'orders',
-                  'invoiceSum', 'amountReceived', 'pendingAmount', 'currency', 'symbol'));
+                'invoiceSum', 'amountReceived', 'pendingAmount', 'currency', 'symbol'));
         } catch (Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -116,7 +116,7 @@ class ExtendedBaseInvoiceController extends Controller
             $amtToCredit = $request->amtToCredit;
             $payment_status = 'success';
             $payment = $this->multiplePayment($clientid, $invoiceChecked, $payment_method,
-             $payment_date, $totalAmt, $invoicAmount, $amtToCredit, $payment_status);
+                $payment_date, $totalAmt, $invoicAmount, $amtToCredit, $payment_status);
             $response = ['type' => 'success', 'message' => 'Payment Updated Successfully'];
 
             return response()->json($response);
@@ -201,9 +201,9 @@ class ExtendedBaseInvoiceController extends Controller
             'totalAmt' => 'required|numeric',
             'invoiceChecked' => 'required',
         ],
-        [
-            'invoiceChecked.required' => 'Please link the amount with at least one Invoice',
-        ]
+            [
+                'invoiceChecked.required' => 'Please link the amount with at least one Invoice',
+            ]
         );
 
         try {
@@ -215,7 +215,7 @@ class ExtendedBaseInvoiceController extends Controller
             $amtToCredit = $request->amtToCredit;
             $payment_status = 'success';
             $payment = $this->updatePaymentByInvoice($clientid, $invoiceChecked, $payment_method,
-             $payment_date, $totalAmt, $invoicAmount, $amtToCredit, $payment_status);
+                $payment_date, $totalAmt, $invoicAmount, $amtToCredit, $payment_status);
             $response = ['type' => 'success', 'message' => 'Payment Updated Successfully'];
 
             return response()->json($response);
@@ -270,7 +270,7 @@ class ExtendedBaseInvoiceController extends Controller
         //         'payment_status' => $payment_status,
         //         'created_at'     => $payment_date,
         //     ]);
-        // }
+                // }
             }
 
             // return $payment;

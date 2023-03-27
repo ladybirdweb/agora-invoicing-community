@@ -44,7 +44,7 @@ class Admin
             $url = \Session::get('session-url');
             if ($url) {
                 $content = \Cart::getContent();
-                $currency = (\Session::get('currency'));
+                $currency = \Session::get('currency');
                 if (\Auth::user()->currency != $currency) {//If user currency is not equal to the cart currency then redirect to default url and clear his cart items and let the customer add the Product again so that the tax could be calculated properly
                     foreach ($content as $key => $item) {
                         $id = $item->id;

@@ -22,7 +22,7 @@ class Condition extends Model
             if ($status->activity_log_delete == 1) {
                 $result['deleteLogs'] = true;
             }
-             if ($status->cloud_mail_status == 1) {
+            if ($status->cloud_mail_status == 1) {
                 $result['cloud'] = true;
             }
         }

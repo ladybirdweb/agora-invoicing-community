@@ -203,6 +203,12 @@ class BaseSettingsController extends PaymentSettingsController
             '15' => '15 days',
             '5' => '5 days',
             '1' => '1 days',
+         $cloudDays = [
+            '120' => '120 Days',
+            '90' => '90 Days',
+            '60' => '60 Days',
+            '30' => '30 Days',
+            '15' => '15 Days',
         ];
 
         $selectedDays = [];
@@ -217,6 +223,7 @@ class BaseSettingsController extends PaymentSettingsController
         $beforeLogDay[] = ActivityLogDay::first()->days;
         $Auto_expiryday[] = ExpiryMailDay::first()->autorenewal_days;
         $post_expiryday[] = ExpiryMailDay::first()->postexpiry_days;
+        $beforeCloudDay[] = ExpiryMailDay::first()->cloud_days;
 
         return view('themes.default1.common.cron.cron', compact(
             'cronPath',
@@ -234,6 +241,8 @@ class BaseSettingsController extends PaymentSettingsController
             'Auto_expiryday',
             'post_expiry',
             'post_expiryday'
+            'cloudDays',
+            'beforeCloudDay'
         ));
     }
 
@@ -260,6 +269,7 @@ class BaseSettingsController extends PaymentSettingsController
         } else {
             $allStatus->post_expirymail = 0;
         }
+        $allStatus->cloud_mail_status = $request->cloud_cron ? $request->cloud_cron : 0;
         $allStatus->save();
         $this->saveConditions();
         /* redirect to Index page with Success Message */
@@ -279,6 +289,14 @@ class BaseSettingsController extends PaymentSettingsController
 
         ExpiryMailDay::create(['days' => $request->input('expiryday'), 'autorenewal_days' => $request->input('subexpiryday'), 'postexpiry_days' => $request->input('postsubexpiry_days')]);
 
+        if ($request['expiryday'] != null) {
+            foreach ($request['expiryday'] as $key => $value) {
+                $daysList->create([
+                    'days' => $value,
+                ]);
+            }
+        }
+        \DB::table('expiry_mail_days')->update(['cloud_days' => $request->input('cloud_days')]);
         ActivityLogDay::findorFail(1)->update(['days' => $request->logdelday]);
 
         return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));

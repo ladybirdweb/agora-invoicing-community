@@ -9,6 +9,7 @@ use App\Model\Mailjob\ActivityLogDay;
 use App\Model\Mailjob\CloudEmail as cloudemailsend;
 use GuzzleHttp\Client;
 use Illuminate\Console\Scheduling\Schedule;
+use App\Jobs\NotifyMail;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Illuminate\Support\Facades\Schema;
 use Symfony\Component\Mime\Email;
@@ -67,6 +68,11 @@ class Kernel extends ConsoleKernel
                 unlink($lockFilePath);
             }
         })->everyFiveMinutes()->name('sendCloudEmail');
+        $condition = new \App\Model\Mailjob\Condition();
+        $command = $condition->getConditionValue($task = 'cloud');
+        $this->getCondition($schedule->job(new NotifyMail), $command);
+
+
     }
 
     public function execute($schedule, $task)

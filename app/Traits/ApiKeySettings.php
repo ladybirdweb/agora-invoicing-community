@@ -189,7 +189,14 @@ trait ApiKeySettings
             $expiry_command = $this->getCommand($expiry_commands, $expiry_dailyAt);
             $subexpiry_command = $this->getCommand($subexpiry_commands, $subexpiry_dailyAt);
             $postexpiry_command = $this->getCommand($postexpiry_commands, $postexpiry_dailyAt);
-            $jobs = ['expiryMail' => $expiry_command, 'deleteLogs' => $activity_command, 'subsExpirymail' => $subexpiry_commands, 'postExpirymail' => $postexpiry_command];
+            $cloud_commands = \Request::get('cloud-commands');
+            $cloud_dailyAt = \Request::get('cloud-dailyAt');
+
+            $activity_command = $this->getCommand($activity_commands, $activity_dailyAt);
+            $expiry_command = $this->getCommand($expiry_commands, $expiry_dailyAt);
+            $cloud_command = $this->getCommand($cloud_commands, $cloud_dailyAt);
+            $jobs = ['expiryMail' => $expiry_command, 'deleteLogs' => $activity_command, 'subsExpirymail' => $subexpiry_commands, 'postExpirymail' => $postexpiry_command, 'cloud' => $cloud_command];
+
             $this->storeCommand($jobs);
         }
     }

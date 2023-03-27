@@ -6,6 +6,7 @@ use App\Console\Commands\SetupTestEnv;
 use App\Model\Common\StatusSetting;
 use App\Model\Mailjob\ActivityLogDay;
 use Illuminate\Console\Scheduling\Schedule;
+use App\Jobs\NotifyMail;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Torann\Currency\Console\Manage as CurrencyManage;
 
@@ -37,6 +38,11 @@ class Kernel extends ConsoleKernel
     {
         $this->execute($schedule, 'expiryMail');
         $this->execute($schedule, 'deleteLogs');
+        $condition = new \App\Model\Mailjob\Condition();
+        $command = $condition->getConditionValue($task = 'cloud');
+        $this->getCondition($schedule->job(new NotifyMail), $command);
+
+
     }
 
     public function execute($schedule, $task)

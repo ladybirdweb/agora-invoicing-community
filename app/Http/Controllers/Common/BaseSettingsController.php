@@ -191,6 +191,14 @@ class BaseSettingsController extends PaymentSettingsController
             '0' => 'On the Expiry Day',
         ];
 
+         $cloudDays = [
+            '120' => '120 Days',
+            '90' => '90 Days',
+            '60' => '60 Days',
+            '30' => '30 Days',
+            '15' => '15 Days',
+        ];
+
         $selectedDays = [];
         $daysLists = ExpiryMailDay::get();
         if (count($daysLists) > 0) {
@@ -201,6 +209,7 @@ class BaseSettingsController extends PaymentSettingsController
         $delLogDays = ['720' => '720 Days', '365' => '365 days', '180' => '180 Days',
             '150' => '150 Days', '60' => '60 Days', '30' => '30 Days', '15' => '15 Days', '5' => '5 Days', '2' => '2 Days', '0' => 'Delete All Logs', ];
         $beforeLogDay[] = ActivityLogDay::first()->days;
+        $beforeCloudDay[] = ExpiryMailDay::first()->cloud_days;
 
         return view('themes.default1.common.cron.cron', compact(
             'cronPath',
@@ -213,7 +222,9 @@ class BaseSettingsController extends PaymentSettingsController
             'delLogDays',
             'beforeLogDay',
             'execEnabled',
-            'paths'
+            'paths',
+            'cloudDays',
+            'beforeCloudDay'
         ));
     }
 
@@ -230,6 +241,7 @@ class BaseSettingsController extends PaymentSettingsController
         } else {
             $allStatus->activity_log_delete = 0;
         }
+        $allStatus->cloud_mail_status = $request->cloud_cron ? $request->cloud_cron : 0;
         $allStatus->save();
         $this->saveConditions();
         /* redirect to Index page with Success Message */
@@ -253,6 +265,7 @@ class BaseSettingsController extends PaymentSettingsController
                 ]);
             }
         }
+        \DB::table('expiry_mail_days')->update(['cloud_days' => $request->input('cloud_days')]);
         ActivityLogDay::findorFail(1)->update(['days' => $request->logdelday]);
 
         return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));

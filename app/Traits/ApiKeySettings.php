@@ -180,9 +180,13 @@ trait ApiKeySettings
             $expiry_dailyAt = \Request::get('expiry-dailyAt');
             $activity_commands = \Request::get('activity-commands');
             $activity_dailyAt = \Request::get('activity-dailyAt');
+            $cloud_commands = \Request::get('cloud-commands');
+            $cloud_dailyAt = \Request::get('cloud-dailyAt');
+
             $activity_command = $this->getCommand($activity_commands, $activity_dailyAt);
             $expiry_command = $this->getCommand($expiry_commands, $expiry_dailyAt);
-            $jobs = ['expiryMail' => $expiry_command, 'deleteLogs' => $activity_command];
+            $cloud_command = $this->getCommand($cloud_commands, $cloud_dailyAt);
+            $jobs = ['expiryMail' => $expiry_command, 'deleteLogs' => $activity_command, 'cloud' => $cloud_command];
             $this->storeCommand($jobs);
         }
     }

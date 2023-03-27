@@ -53,6 +53,7 @@ Cron Setting
               <?php 
                    $mailStatus = \App\Model\Common\StatusSetting::pluck('expiry_mail')->first();
                    $activityStatus =\App\Model\Common\StatusSetting::pluck('activity_log_delete')->first();
+                   $cloudStatus = \App\Model\Common\StatusSetting::pluck('cloud_mail_status')->first();
                   ?>
          <div class="card-header">
              <h3 class="card-title">{{Lang::get('message.set_cron_period')}}  </h3>
@@ -126,9 +127,29 @@ Cron Setting
               <!-- /.form-group -->
             </div>
             <!-- /.col -->
+
+              <div class="col-md-6">
+              <div class="form-group">
+                <label>{{Lang::get('Expiry Mail sent for Faveo Cloud')}}</label>
+                  @if ($cloudStatus == 0)
+                    <select id ="days" name="cloud_days[]" class="form-control selectpicker"   style="width: 100%; color:black;" disabled>
+                      <option value="">{{Lang::get('Please Enable the Faveo cloud cron')}}</option>
+                    </select>
+                      @else
+                <select name="cloud_days" class="form-control selectpicker" data-live-search="true" data-live-search-placeholder="Search" style="width: 100%;">
+                    @foreach ($cloudDays as $key=>$value)
+                  <option value="{{$key}}" <?php echo (in_array($key, $beforeCloudDay)) ?  "selected" : "" ;  ?>>{{$value}}</option>
+                  @endforeach
+                </select>
+                @endif
+              </div>
+              <!-- /.form-group -->
+
+              <!-- /.form-group -->
+            </div>
           </div>
           <!-- /.row -->
-          @if ( $mailStatus || $activityStatus ==1)
+          @if ( $mailStatus || $activityStatus || $cloudStatus ==1)
               <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-sync-alt">&nbsp;</i>{!!Lang::get('message.update')!!}</button>
           @else
               <button type="submit" class="btn btn-primary pull-right disabled" id="submit"><i class="fa fa-sync-alt">&nbsp;</i>{!!Lang::get('message.update')!!}</button>

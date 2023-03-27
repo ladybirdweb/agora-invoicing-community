@@ -131,6 +131,35 @@
                 </div><!-- /.info-box-content -->
             </div><!-- /.info-box -->
         </div>
+
+         <div class="col-md-6">
+            <div class="info-box">
+                <span class="info-box-icon bg-info" style="height: 70px;"><i class="fa fa-cloud"></i></span>
+                <!-- Apply any bg-* class to to the icon to color it -->
+                <div class="info-box-content" style="display: block;">
+               
+                    <div class="col-md-6">
+
+                        <div class="form-group">
+
+                            {!! Form::label('cloud_fetching',Lang::get('Cloud Expiry Mail')) !!}<br>
+                            {!! Form::checkbox('cloud_cron',1,$condition->checkActiveJob()['cloud'],['id'=>'cloud_fetching']) !!}&nbsp;{{Lang::get('Enable Faveo Cloud')}}
+                        </div>
+
+                    </div>
+                    <div class="col-md-6" id="cloud">
+                        {!! Form::select('cloud-commands',$commands,$condition->getConditionValue('cloud')['condition'],['class'=>'form-control','id'=>'cloud-command']) !!}
+                          <div id='cloud-daily-at'>
+                            {!! Form::text('cloud-dailyAt',$condition->getConditionValue('cloud')['at'],['class'=>'form-control time-picker',"placeholder" => "HH:MM"]) !!}
+
+                        </div>
+                      
+                    </div>
+                </div>
+            </div><!-- /.info-box-content -->
+
+        </div><!-- /.info-box -->
+
     </div>
     <h4><button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-sync-alt">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button></h4>
         </div>
@@ -186,6 +215,52 @@ $('#tab2url').click(function(){
 
         // Ldap cron settings end //
     });
+
+        $(document).ready(function () {
+$(".time-picker").datetimepicker({
+        format: 'HH:ss',
+        // useCurrent: false, //Important! See issue #1075
+    });
+
+
+        var checked = $("#cloud_fetching").is(':checked');
+        check(checked, 'cloud_fetching');
+        $("#cloud_fetching").on('click', function () {
+            checked = $("#cloud_fetching").is(':checked');
+            check(checked);
+        });
+        var command = $("#cloud-command").val();
+        showDailyAt(command);
+        $("#cloud-command").on('change', function () {
+            command = $("#cloud-command").val();
+            showDailyAt(command);
+        });
+        function check(checked, id) {
+            if (checked) {
+                $("#cloud").show();
+            } else {
+                $("#cloud").hide();
+            }
+        }
+        function showDailyAt(command) {
+            if (command === 'dailyAt') {
+                $("#cloud-daily-at").show();
+                // $("input").prop('required',true);
+            } else {
+                $("#cloud-daily-at").hide();
+            }
+        }
+
+      
+
+
+
+        // Ldap cron settings end //
+    });
+
+
+
+
     $(document).ready(function () {
         var checked = $("#notification_cron").is(':checked');
         check(checked, 'notification_cron');

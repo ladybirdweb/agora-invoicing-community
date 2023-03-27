@@ -45,8 +45,7 @@ class ForgotPasswordController extends Controller
      */
     public function sendResetLinkEmail(Request $request)
     {
-
-            //check in the settings
+        //check in the settings
         $settings = new \App\Model\Common\Setting();
         $setting = $settings->where('id', 1)->first();
         //template

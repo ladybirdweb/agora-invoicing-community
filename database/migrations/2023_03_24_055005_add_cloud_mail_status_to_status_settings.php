@@ -14,11 +14,10 @@ return new class extends Migration
     public function up()
     {
         if (! Schema::hasColumn('status_settings', 'cloud_mail_status')) {
-        Schema::table('status_settings', function (Blueprint $table) {
-            $table->boolean('cloud_mail_status')->default(0);
-            
-        });
-    }
+            Schema::table('status_settings', function (Blueprint $table) {
+                $table->boolean('cloud_mail_status')->default(0);
+            });
+        }
     }
 
     /**

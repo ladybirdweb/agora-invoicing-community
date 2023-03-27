@@ -29,9 +29,9 @@ class TenantController extends Controller
         $cloud = $this->cloud;
 
         $response = $this->client->request(
-                    'GET',
-                    $this->cloud->cloud_central_domain.'/tenants'
-                );
+            'GET',
+            $this->cloud->cloud_central_domain.'/tenants'
+        );
 
         $responseBody = (string) $response->getBody();
         $response = json_decode($responseBody, true);
@@ -46,9 +46,9 @@ class TenantController extends Controller
     {
         try {
             $response = $this->client->request(
-                    'GET',
-                    $this->cloud->cloud_central_domain.'/tenants'
-                );
+                'GET',
+                $this->cloud->cloud_central_domain.'/tenants'
+            );
 
             $responseBody = (string) $response->getBody();
             $response = json_decode($responseBody);
@@ -106,13 +106,13 @@ class TenantController extends Controller
     public function createTenant(Request $request)
     {
         $this->validate($request,
-                [
-                    'orderNo' => 'required',
-                    'domain' => 'required||regex:/^[a-zA-Z0-9]+$/u',
-                ],
-                [
-                    'domain.regex' => 'Special characters are not allowed in domain name',
-                ]);
+            [
+                'orderNo' => 'required',
+                'domain' => 'required||regex:/^[a-zA-Z0-9]+$/u',
+            ],
+            [
+                'domain.regex' => 'Special characters are not allowed in domain name',
+            ]);
         $setting = Setting::find(1);
         $user = \Auth::user()->email;
         $mail = new \App\Http\Controllers\Common\PhpMailController();
@@ -133,9 +133,9 @@ class TenantController extends Controller
             $encodedData = http_build_query($data);
             $hashedSignature = hash_hmac('sha256', $encodedData, $keys->app_secret);
             $response = $client->request(
-                    'POST',
-                    $this->cloud->cloud_central_domain.'/tenants', ['form_params' => $data, 'headers' => ['signature' => $hashedSignature]]
-                );
+                'POST',
+                $this->cloud->cloud_central_domain.'/tenants', ['form_params' => $data, 'headers' => ['signature' => $hashedSignature]]
+            );
 
             $response = explode('{', (string) $response->getBody());
 
@@ -205,7 +205,6 @@ class TenantController extends Controller
 
     public function destroyTenant(Request $request)
     {
-
         try {
             $keys = ThirdPartyApp::where('app_name', 'faveo_app_key')->select('app_key', 'app_secret')->first();
             $token = str_random(32);
@@ -214,9 +213,9 @@ class TenantController extends Controller
             $hashedSignature = hash_hmac('sha256', $encodedData, $keys->app_secret);
             $client = new Client([]);
             $response = $client->request(
-                        'DELETE',
-                        $this->cloud->cloud_central_domain.'/tenants', ['form_params' => $data, 'headers' => ['signature' => $hashedSignature]]
-                    );
+                'DELETE',
+                $this->cloud->cloud_central_domain.'/tenants', ['form_params' => $data, 'headers' => ['signature' => $hashedSignature]]
+            );
             $responseBody = (string) $response->getBody();
             $response = json_decode($responseBody);
             if ($response->status == 'success') {

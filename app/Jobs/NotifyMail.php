@@ -1,9 +1,9 @@
 <?php
 
 namespace App\Jobs;
+
 use App\Http\Controllers\Common\PhpMailController;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -13,7 +13,6 @@ class NotifyMail implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-
     /**
      * Create a new job instance.
      *
@@ -21,17 +20,17 @@ class NotifyMail implements ShouldQueue
      */
     public function __construct()
     {
-
     }
 
-    /**
-     * Execute the job.
-     *
-     * @return void
-     */
+      /**
+       * Execute the job.
+       *
+       * @return void
+       */
       public function handle(PhpMailController $phpMailController)
-    {
-        $p = $phpMailController->NotifyMailing();
-        return $p;
-    }
+      {
+          $p = $phpMailController->NotifyMailing();
+
+          return $p;
+      }
 }

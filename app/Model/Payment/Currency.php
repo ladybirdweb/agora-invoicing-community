@@ -22,7 +22,6 @@ class Currency extends BaseModel
 
     public function getDescriptionForEvent(string $eventName): string
     {
-
         // dd(Activity::where('subject_id',)->pluck('subject_id'));
         if ($eventName == 'created') {
             return 'Currency  <strong> '.$this->name.' </strong> was created';
@@ -39,7 +38,7 @@ class Currency extends BaseModel
         return '';
 
         // return "Product  has been {$eventName}";
-         // \Auth::user()->activity;
+        // \Auth::user()->activity;
     }
 
     public function country()

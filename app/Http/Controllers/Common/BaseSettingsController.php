@@ -48,7 +48,7 @@ class BaseSettingsController extends PaymentSettingsController
         $oldData = '';
         $oldData = (array_key_exists('old', $data->toArray())) ? ($model->properties['old']) : null;
         if ($oldData != null) {
-            if ((count($oldData) > 0)) {
+            if (count($oldData) > 0) {
                 foreach ($oldData as $key => $value) {
                     $display[] = '<strong>'.'ucfirst'($key).'</strong>'.' : '.$value.'<br/>';
                 }
@@ -191,7 +191,7 @@ class BaseSettingsController extends PaymentSettingsController
             '0' => 'On the Expiry Day',
         ];
 
-         $cloudDays = [
+        $cloudDays = [
             '120' => '120 Days',
             '90' => '90 Days',
             '60' => '60 Days',

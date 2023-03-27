@@ -141,7 +141,7 @@ class ClientController extends BaseClientController
                          for ($i = 0; $i <= $c - 1; $i++) {
                              $sum = $sum + $payment[$i]->amount;
                          }
-                         $pendingAmount = ($model->grand_total) - ($sum);
+                         $pendingAmount = $model->grand_total - $sum;
 
                          return currencyFormat($pendingAmount, $code = $model->currency);
                      })
@@ -324,7 +324,7 @@ class ClientController extends BaseClientController
             $link = $this->github_api->getCurl1($url);
             $link = $link['body'];
             $countVersions = 10; //because we are taking only the first 10 versions
-            $link = (array_slice($link, 0, 10, true));
+            $link = array_slice($link, 0, 10, true);
             $order = Order::where('invoice_id', '=', $invoiceid)->first();
             $order_id = $order->id;
             $orderEndDate = Subscription::select('update_ends_at')
@@ -459,7 +459,7 @@ class ClientController extends BaseClientController
                     $end = strpos($location, ')', $start + 1);
                     $length = $end - $start;
                     $result = substr($location, $start + 1, $length - 1);
-                    $display[] = (['id' => $timezone->id, 'name' => '('.$result.')'.' '.$timezone->name]);
+                    $display[] = ['id' => $timezone->id, 'name' => '('.$result.')'.' '.$timezone->name];
                 }
             }
             //for display
@@ -535,7 +535,6 @@ class ClientController extends BaseClientController
     public function getPaymentByOrderId($orderid, $userid)
     {
         try {
-
             // dd($orderid);
             $order = $this->order->where('id', $orderid)->where('client', $userid)->first();
             // dd($order);

@@ -236,7 +236,6 @@ class TenantController extends Controller
 
     public function destroyTenant(Request $request)
     {
-
         try {
             $keys = ThirdPartyApp::where('app_name', 'faveo_app_key')->select('app_key', 'app_secret')->first();
             $token = str_random(32);

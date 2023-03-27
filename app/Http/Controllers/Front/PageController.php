@@ -73,8 +73,8 @@ class PageController extends Controller
                           ->rawColumns(['checkbox', 'name', 'url',  'created_at', 'action'])
                         ->make(true);
         // ->searchColumns('name', 'content')
-                        // ->orderColumns('name')
-                        // ->make();
+        // ->orderColumns('name')
+        // ->make();
     }
 
     public function create()

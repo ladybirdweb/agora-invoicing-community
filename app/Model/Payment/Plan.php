@@ -39,7 +39,7 @@ class Plan extends BaseModel
         return '';
 
         // return "Product  has been {$eventName}";
-         // \Auth::user()->activity;
+        // \Auth::user()->activity;
     }
 
     public function planPrice()

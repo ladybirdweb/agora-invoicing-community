@@ -22,7 +22,7 @@ class FinalController extends BaseFinalController
             file_put_contents($env, str_replace(
 
                 'DB_INSTALL=0', 'DB_INSTALL=1', file_get_contents($env)
-        ));
+            ));
 
             $fileManager->update();
         }

@@ -108,6 +108,7 @@ Route::middleware('installAgora')->group(function () {
     Route::post('strRenewal-enable', [Front\ClientController::class, 'enableAutorenewalStatus']);
     Route::post('renewal-disable', [Front\ClientController::class, 'disableAutorenewalStatus']);
     Route::post('rzpRenewal-disable/{orderid}', [Front\ClientController::class, 'enableRzpStatus']);
+
     Route::get('my-orders', [Front\ClientController::class, 'orders']);
     Route::get('get-my-orders', [Front\ClientController::class, 'getOrders'])->name('get-my-orders');
     Route::get('my-subscriptions', [Front\ClientController::class, 'subscriptions']);

@@ -203,7 +203,8 @@ class BaseSettingsController extends PaymentSettingsController
             '15' => '15 days',
             '5' => '5 days',
             '1' => '1 days',
-         $cloudDays = [
+        ];
+        $cloudDays = [
             '120' => '120 Days',
             '90' => '90 Days',
             '60' => '60 Days',

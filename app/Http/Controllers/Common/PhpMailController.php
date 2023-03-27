@@ -1,18 +1,17 @@
 <?php
 
 namespace App\Http\Controllers\Common;
-use App\Model\Product\Subscription;
-use App\Model\Product\Product;
+
 use App\Http\Controllers\Controller;
-use Carbon\Carbon;
-use Symfony\Component\Mime\Email;
-use App\Model\Common\Setting;
-use App\Model\Mailjob\ExpiryMailDay;
-use GuzzleHttp\Client;
-use App\Model\Common\FaveoCloud;
 use App\Http\Controllers\Tenancy\TenantController;
+use App\Model\Common\FaveoCloud;
+use App\Model\Mailjob\ExpiryMailDay;
+use App\Model\Product\Product;
+use App\Model\Product\Subscription;
+use Carbon\Carbon;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Common\CronController;
+use Symfony\Component\Mime\Email;
 
 class PhpMailController extends Controller
 {
@@ -34,11 +33,11 @@ class PhpMailController extends Controller
     }
 
      public function NotifyMail($from, $to, $template_data, $template_name)
-    {
-        $this->setQueue();
-        $job = new \App\Jobs\NotifyMail();
-        dispatchNow($job);
-    }
+     {
+         $this->setQueue();
+         $job = new \App\Jobs\NotifyMail();
+         dispatchNow($job);
+     }
 
     /**
      * set the queue service.
@@ -72,26 +71,23 @@ class PhpMailController extends Controller
     }
 
     public function NotifyMailing()
-    { 
-      try
     {
-      $this->mailSendForCloud();
+        try {
+            $this->mailSendForCloud();
 
-      $this->deleteCloudDetails();
-
-     }catch(\Exception $ex){
-        dd($ex);
-       \Log::error($ex->getMessage());
-     }
-
+            $this->deleteCloudDetails();
+        } catch(\Exception $ex) {
+            dd($ex);
+            \Log::error($ex->getMessage());
+        }
     }
 
     public function getCloudSubscriptions()
     {
         $day = ExpiryMailDay::value('cloud_days');
         $today = new Carbon('today');
-        $sub = Subscription::where('product_id','117')
-                            ->whereDate('update_ends_at', '<' ,$today)
+        $sub = Subscription::where('product_id', '117')
+                            ->whereDate('update_ends_at', '<', $today)
                             ->whereBetween('update_ends_at', [Carbon::now()->subDays($day)->toDateString(), Carbon::now()->toDateString()])
                             ->get();
 
@@ -100,31 +96,29 @@ class PhpMailController extends Controller
 
     public function mailSendForCloud()
     {
-          $sub_data = $this->getCloudSubscriptions();
-          if($sub_data){
-          foreach($sub_data as $data)
-         {
-            $cron = new CronController();
-            $user = \DB::table('users')->find($data->user_id);
-            $product = Product::find($data->product_id);
-            $order = $cron->getOrderById($data->order_id);
-            $invoice = $cron->getInvoiceByOrderId($data->order_id);
-            $date = Carbon::parse($data->update_ends_at)->format('d/m/Y');
+        $sub_data = $this->getCloudSubscriptions();
+        if ($sub_data) {
+            foreach ($sub_data as $data) {
+                $cron = new CronController();
+                $user = \DB::table('users')->find($data->user_id);
+                $product = Product::find($data->product_id);
+                $order = $cron->getOrderById($data->order_id);
+                $invoice = $cron->getInvoiceByOrderId($data->order_id);
+                $date = Carbon::parse($data->update_ends_at)->format('d/m/Y');
 
-            //check in the settings
-            $settings = new \App\Model\Common\Setting();
-            $settings = $settings->where('id', 1)->first();
+                //check in the settings
+                $settings = new \App\Model\Common\Setting();
+                $settings = $settings->where('id', 1)->first();
 
+                $mail = new \App\Http\Controllers\Common\PhpMailController();
+                $mailer = $mail->setMailConfig($settings);
+                $url = url('my-orders');
 
-            $mail = new \App\Http\Controllers\Common\PhpMailController();
-            $mailer = $mail->setMailConfig($settings);
-            $url = url('my-orders');
-
-             $email = (new Email())
-                      ->from($settings->email)
-                      ->to($user->email)
-                      ->subject('Reminder email')
-                      ->html('<table style="background: #f2f2f2; width: 700px;" border="0" cellspacing="0" cellpadding="0">
+                $email = (new Email())
+                         ->from($settings->email)
+                         ->to($user->email)
+                         ->subject('Reminder email')
+                         ->html('<table style="background: #f2f2f2; width: 700px;" border="0" cellspacing="0" cellpadding="0">
                                 <tbody>
                                 <tr>
                                 <td style="width: 30px;">&nbsp;</td>
@@ -140,7 +134,7 @@ class PhpMailController extends Controller
                                 <tbody>
                                 <tr>
                                 <td style="background: #fff; border-left: 1px solid #ccc; border-top: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;">&nbsp;</td>
-                                <td style="background: #fff; border-top: 1px solid #ccc; padding: 40px 0 10px 0; width: 560px;" align="left">Dear' . ' '. $user->first_name. ' ' . $user->last_name . '' . ',<br /><br />
+                                <td style="background: #fff; border-top: 1px solid #ccc; padding: 40px 0 10px 0; width: 560px;" align="left">Dear'.' '.$user->first_name.' '.$user->last_name.''.',<br /><br />
                                 <h1 style="color: #0088cc; font-family: Arial, sans-serif; font-size: 24px; font-weight: bold; padding: 0; margin: 0;">Your Faveo Cloud - Free Trail has Expired</h1>
                                 </td>
                                 <td style="background: #fff; border-right: 1px solid #ccc; border-top: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;">&nbsp;</td>
@@ -162,9 +156,9 @@ class PhpMailController extends Controller
                                 </thead>
                                 <tbody>
                                 <tr>
-                                <td style="border-bottom: 1px; color: #333; font-family: Arial, sans-serif; font-size: 14px; line-height: 20px; padding: 15px 8px;" valign="top">' . $order->number. '</td>
-                                <td style="border-bottom: 1px; color: #333; font-family: Arial, sans-serif; font-size: 14px; line-height: 20px; padding: 15px 8px;" valign="top">' . $product->name . '</td>
-                                <td style="border-bottom: 1px; color: #333; font-family: Arial, sans-serif; font-size: 14px; line-height: 20px; padding: 15px 8px;" valign="top">' . $data->update_ends_at . '</td>
+                                <td style="border-bottom: 1px; color: #333; font-family: Arial, sans-serif; font-size: 14px; line-height: 20px; padding: 15px 8px;" valign="top">'.$order->number.'</td>
+                                <td style="border-bottom: 1px; color: #333; font-family: Arial, sans-serif; font-size: 14px; line-height: 20px; padding: 15px 8px;" valign="top">'.$product->name.'</td>
+                                <td style="border-bottom: 1px; color: #333; font-family: Arial, sans-serif; font-size: 14px; line-height: 20px; padding: 15px 8px;" valign="top">'.$data->update_ends_at.'</td>
                                 </tr>
                                 </tbody>
                                 </table>
@@ -174,7 +168,7 @@ class PhpMailController extends Controller
                                 </tr>
                                 <tr>
                                 <td style="background: #fff; border-left: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;">&nbsp;</td>
-                                <td style="background: #fff; padding: 20px 0 50px 0; width: 560px;" align="left"><a style="background: #00aeef; border: 1px solid                        #0088CC; padding: 10px 20px; border-radius: 5px; font-size: 14px; font-weight: bold; color: #fff; outline: none; text-shadow: none; text-decoration: none; font-family: Arial,sans-serif;" href="'. $url.'" target="_blank"> Renew Order </a></td>
+                                <td style="background: #fff; padding: 20px 0 50px 0; width: 560px;" align="left"><a style="background: #00aeef; border: 1px solid                        #0088CC; padding: 10px 20px; border-radius: 5px; font-size: 14px; font-weight: bold; color: #fff; outline: none; text-shadow: none; text-decoration: none; font-family: Arial,sans-serif;" href="'.$url.'" target="_blank"> Renew Order </a></td>
                                 <td style="background: #fff; border-right: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;">&nbsp;</td>
                                 </tr>
                                 </tbody>
@@ -211,8 +205,8 @@ class PhpMailController extends Controller
                                 </tbody>
                                 </table>
                                 <p>&nbsp;</p>');
-            $mailer->send($email);
-         }
+                $mailer->send($email);
+            }
         }
     }
 
@@ -221,46 +215,43 @@ class PhpMailController extends Controller
         $day = ExpiryMailDay::value('cloud_days');
         $today = new Carbon('today');
         $sub = Subscription::whereNotNull('update_ends_at')
-                           ->where('product_id','117')
-                           ->whereDate('update_ends_at', '<' ,$today)
-                           ->whereDate('update_ends_at',$today->subDays($day + 1))
+                           ->where('product_id', '117')
+                           ->whereDate('update_ends_at', '<', $today)
+                           ->whereDate('update_ends_at', $today->subDays($day + 1))
                            ->get();
-         if($sub){
-         foreach($sub as $data){
-            $cron = new CronController();
-            $user = \DB::table('users')->find($data->user_id);
-            $product = Product::find($data->product_id);
-            $order = $cron->getOrderById($data->order_id);
-            $id = \DB::table('installation_details')->where('order_id',$order->id)->value('installation_path');   
+        if ($sub) {
+            foreach ($sub as $data) {
+                $cron = new CronController();
+                $user = \DB::table('users')->find($data->user_id);
+                $product = Product::find($data->product_id);
+                $order = $cron->getOrderById($data->order_id);
+                $id = \DB::table('installation_details')->where('order_id', $order->id)->value('installation_path');
 
-            //Destroy the tenat
-            $destroy = (new TenantController(new Client, new FaveoCloud()))->destroyTenant(new Request(['id' => $id]));
+                //Destroy the tenat
+                $destroy = (new TenantController(new Client, new FaveoCloud()))->destroyTenant(new Request(['id' => $id]));
 
-            //Mail Sending
+                //Mail Sending
 
-            if($destroy->status() == 200){
-            //check in the settings
-            $settings = new \App\Model\Common\Setting();
-            $settings = $settings->where('id', 1)->first();
+                if ($destroy->status() == 200) {
+                    //check in the settings
+                    $settings = new \App\Model\Common\Setting();
+                    $settings = $settings->where('id', 1)->first();
 
+                    $mail = new \App\Http\Controllers\Common\PhpMailController();
+                    $mailer = $mail->setMailConfig($settings);
 
-            $mail = new \App\Http\Controllers\Common\PhpMailController();
-            $mailer = $mail->setMailConfig($settings);
+                    $email = (new Email())
+                              ->from($settings->email)
+                              ->to($user->email)
+                              ->subject('Destroyed email')
+                              ->html('<p>Your Free trail product is Expired we deleted your instance</p>');
+                    $mailer->send($email);
+                }
 
-            $email = (new Email())
-                      ->from($settings->email)
-                      ->to($user->email)
-                      ->subject('Destroyed email')
-                      ->html('<p>Your Free trail product is Expired we deleted your instance</p>');
-            $mailer->send($email);
-         }
-            return $destroy;
-         } 
-
-         }
-
-
-    } 
+                return $destroy;
+            }
+        }
+    }
 
     public function mailing($from, $to, $data, $subject, $replace = [],
      $type = '', $bcc = [], $fromname = '', $toname = '', $cc = [], $attach = [])

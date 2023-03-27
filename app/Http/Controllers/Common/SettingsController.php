@@ -219,28 +219,28 @@ class SettingsController extends BaseSettingsController
      */
     public function delete(Request $request)
     {
-        try{
-        if (isset($request->id)) {
-            $todo = Setting::findOrFail($request->id);
-            if ($request->column == 'logo') {
-                File::delete(public_path('images/').$todo->logo);
+        try {
+            if (isset($request->id)) {
+                $todo = Setting::findOrFail($request->id);
+                if ($request->column == 'logo') {
+                    File::delete(public_path('images/').$todo->logo);
 
-                $todo->logo = null;
-            }
-            if ($request->column == 'admin') {
-                File::delete(public_path('admin/images/').$todo->admin_logo);
+                    $todo->logo = null;
+                }
+                if ($request->column == 'admin') {
+                    File::delete(public_path('admin/images/').$todo->admin_logo);
 
-                $todo->admin_logo = null;
-            }
-            if ($request->column == 'fav') {
-                File::delete(public_path('common/images/').$todo->fav_icon);
-                $todo->fav_icon = null;
-            }
-            $todo->save();
-             $response = ['type' => 'success', 'message' => 'Logo Deleted successfully'];
+                    $todo->admin_logo = null;
+                }
+                if ($request->column == 'fav') {
+                    File::delete(public_path('common/images/').$todo->fav_icon);
+                    $todo->fav_icon = null;
+                }
+                $todo->save();
+                $response = ['type' => 'success', 'message' => 'Logo Deleted successfully'];
 
-            return response()->json($response);
-        }
+                return response()->json($response);
+            }
         } catch (\Exception $ex) {
             $result = [$ex->getMessage()];
 

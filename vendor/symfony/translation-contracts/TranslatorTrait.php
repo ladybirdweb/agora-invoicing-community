@@ -23,24 +23,18 @@ trait TranslatorTrait
     private ?string $locale = null;
 
     /**
-     * {@inheritdoc}
+     * @return void
      */
     public function setLocale(string $locale)
     {
         $this->locale = $locale;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getLocale(): string
     {
         return $this->locale ?: (class_exists(\Locale::class) ? \Locale::getDefault() : 'en');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function trans(?string $id, array $parameters = [], string $domain = null, string $locale = null): string
     {
         if (null === $id || '' === $id) {

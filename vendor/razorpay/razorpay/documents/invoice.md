@@ -516,7 +516,7 @@ $api->invoice->fetch($invoiceId)->cancel();
 ### Send notification
 
 ```php
-$api->invoice->fetch($invoiceId)->notify($medium);
+$api->invoice->fetch($invoiceId)->notifyBy($medium);
 ```
 
 **Parameters:**

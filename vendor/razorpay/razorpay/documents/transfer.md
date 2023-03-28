@@ -506,7 +506,7 @@ $api->transfer->all(array('expand[]'=> 'recipient_settlement'));
 ### Refund payments and reverse transfer from a linked account
 
 ```php
-$api->payment->fetch($paymentId)->refund(array('amount'=> '100','reverse_all'=>'1'));
+$api->payment->fetch("pay_JsPSazUg9UnOX2")->refund(array('amount'=> '100','reverse_all'=>'1'));
 ```
 
 **Parameters:**

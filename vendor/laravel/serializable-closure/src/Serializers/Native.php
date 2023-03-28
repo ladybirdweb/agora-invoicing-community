@@ -3,12 +3,14 @@
 namespace Laravel\SerializableClosure\Serializers;
 
 use Closure;
+use DateTimeInterface;
 use Laravel\SerializableClosure\Contracts\Serializable;
 use Laravel\SerializableClosure\SerializableClosure;
 use Laravel\SerializableClosure\Support\ClosureScope;
 use Laravel\SerializableClosure\Support\ClosureStream;
 use Laravel\SerializableClosure\Support\ReflectionClosure;
 use Laravel\SerializableClosure\Support\SelfReference;
+use Laravel\SerializableClosure\UnsignedSerializableClosure;
 use ReflectionObject;
 use UnitEnum;
 
@@ -378,7 +380,7 @@ class Native implements Serializable
 
                     $item = $property->getValue($data);
 
-                    if ($item instanceof SerializableClosure || ($item instanceof SelfReference && $item->hash === $this->code['self'])) {
+                    if ($item instanceof SerializableClosure || $item instanceof UnsignedSerializableClosure || ($item instanceof SelfReference && $item->hash === $this->code['self'])) {
                         $this->code['objects'][] = [
                             'instance' => $data,
                             'property' => $property,
@@ -451,7 +453,7 @@ class Native implements Serializable
             }
 
             unset($value);
-        } elseif (is_object($data) && ! $data instanceof SerializableClosure) {
+        } elseif (is_object($data) && ! $data instanceof SerializableClosure && ! $data instanceof UnsignedSerializableClosure) {
             if (isset($this->scope[$data])) {
                 $data = $this->scope[$data];
 
@@ -459,6 +461,12 @@ class Native implements Serializable
             }
 
             $instance = $data;
+
+            if ($data instanceof DateTimeInterface) {
+                $this->scope[$instance] = $data;
+
+                return;
+            }
 
             if ($data instanceof UnitEnum) {
                 $this->scope[$instance] = $data;

@@ -8,29 +8,28 @@ use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
-class Configuration implements ConfigurationInterface
+final class Configuration implements ConfigurationInterface
 {
-    /** @psalm-suppress PossiblyUndefinedMethod */
     public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder('endroid_qr_code');
 
-        /** @var ArrayNodeDefinition $node */
-        $node = $treeBuilder->getRootNode();
+        /** @var ArrayNodeDefinition $rootNode */
+        $rootNode = $treeBuilder->getRootNode();
 
-        $node
+        $rootNode
             ->beforeNormalization()
                 ->ifTrue(fn (array $config) => !$this->hasMultipleConfigurations($config))
                 ->then(fn (array $value) => ['default' => $value]);
 
-        $node->useAttributeAsKey('name');
-        $node->prototype('array');
-        $node->prototype('variable');
+        $rootNode->useAttributeAsKey('name');
+        $rootNode->prototype('array');
+        $rootNode->prototype('variable');
 
         return $treeBuilder;
     }
 
-    /** @param array<mixed> $config */
+    /** @param array<string, mixed> $config */
     private function hasMultipleConfigurations(array $config): bool
     {
         foreach ($config as $value) {

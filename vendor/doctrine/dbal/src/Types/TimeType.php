@@ -29,6 +29,12 @@ class TimeType extends Type
 
     /**
      * {@inheritdoc}
+     *
+     * @param T $value
+     *
+     * @return (T is null ? null : string)
+     *
+     * @template T
      */
     public function convertToDatabaseValue($value, AbstractPlatform $platform)
     {
@@ -45,6 +51,12 @@ class TimeType extends Type
 
     /**
      * {@inheritdoc}
+     *
+     * @param T $value
+     *
+     * @return (T is null ? null : DateTimeInterface)
+     *
+     * @template T
      */
     public function convertToPHPValue($value, AbstractPlatform $platform)
     {
@@ -57,7 +69,7 @@ class TimeType extends Type
             throw ConversionException::conversionFailedFormat(
                 $value,
                 $this->getName(),
-                $platform->getTimeFormatString()
+                $platform->getTimeFormatString(),
             );
         }
 

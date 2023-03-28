@@ -3,7 +3,7 @@
 /*
  * This file is part of Psy Shell.
  *
- * (c) 2012-2022 Justin Hileman
+ * (c) 2012-2023 Justin Hileman
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -154,8 +154,6 @@ class ConfigPaths
      * everywhere else).
      *
      * @see self::homeConfigDir
-     *
-     * @return string
      */
     public function currentConfigDir(): string
     {
@@ -258,8 +256,6 @@ class ConfigPaths
      * Get a runtime directory.
      *
      * Defaults to `/psysh` inside the system's temp dir.
-     *
-     * @return string
      */
     public function runtimeDir(): string
     {
@@ -279,6 +275,40 @@ class ConfigPaths
     public static function getRuntimeDir(): string
     {
         return (new self())->runtimeDir();
+    }
+
+    /**
+     * Get a list of directories in PATH.
+     *
+     * If $PATH is unset/empty it defaults to '/usr/sbin:/usr/bin:/sbin:/bin'.
+     *
+     * @return string[]
+     */
+    public function pathDirs(): array
+    {
+        return $this->getEnvArray('PATH') ?: ['/usr/sbin', '/usr/bin', '/sbin', '/bin'];
+    }
+
+    /**
+     * Locate a command (an executable) in $PATH.
+     *
+     * Behaves like 'command -v COMMAND' or 'which COMMAND'.
+     * If $PATH is unset/empty it defaults to '/usr/sbin:/usr/bin:/sbin:/bin'.
+     *
+     * @param string $command the executable to locate
+     *
+     * @return string
+     */
+    public function which($command)
+    {
+        foreach ($this->pathDirs() as $path) {
+            $fullpath = $path.\DIRECTORY_SEPARATOR.$command;
+            if (@\is_file($fullpath) && @\is_executable($fullpath)) {
+                return $fullpath;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -405,7 +435,7 @@ class ConfigPaths
     private function getEnvArray($key)
     {
         if ($value = $this->getEnv($key)) {
-            return \explode(':', $value);
+            return \explode(\PATH_SEPARATOR, $value);
         }
 
         return null;

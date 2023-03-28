@@ -296,6 +296,19 @@ abstract class HasOneOrMany extends Relation
     }
 
     /**
+     * Attach a collection of models to the parent instance without raising any events to the parent model.
+     *
+     * @param  iterable  $models
+     * @return iterable
+     */
+    public function saveManyQuietly($models)
+    {
+        return Model::withoutEvents(function () use ($models) {
+            return $this->saveMany($models);
+        });
+    }
+
+    /**
      * Create a new instance of the related model.
      *
      * @param  array  $attributes
@@ -308,6 +321,17 @@ abstract class HasOneOrMany extends Relation
 
             $instance->save();
         });
+    }
+
+    /**
+     * Create a new instance of the related model without raising any events to the parent model.
+     *
+     * @param  array  $attributes
+     * @return \Illuminate\Database\Eloquent\Model
+     */
+    public function createQuietly(array $attributes = [])
+    {
+        return Model::withoutEvents(fn () => $this->create($attributes));
     }
 
     /**
@@ -338,6 +362,17 @@ abstract class HasOneOrMany extends Relation
         }
 
         return $instances;
+    }
+
+    /**
+     * Create a Collection of new instances of the related model without raising any events to the parent model.
+     *
+     * @param  iterable  $records
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function createManyQuietly(iterable $records)
+    {
+        return Model::withoutEvents(fn () => $this->createMany($records));
     }
 
     /**

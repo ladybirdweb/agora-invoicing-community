@@ -15,14 +15,15 @@
         }
     ],
     "require": {
-        "php": "^7.4|^8.0",
-        "illuminate/contracts": "^7.0|^8.0|^9.0"
+        "php": "^8.0",
+        "illuminate/contracts": "^9.28|^10.0"
     },
     "require-dev": {
-        "orchestra/testbench": "^5.0|^6.23|^7.0",
-        "phpunit/phpunit": "^9.4",
-        "spatie/test-time": "^1.2",
-        "mockery/mockery": "^1.4"
+        "mockery/mockery": "^1.5",
+        "orchestra/testbench": "^7.7|^8.0",
+        "pestphp/pest": "^1.22",
+        "phpunit/phpunit": "^9.5.24",
+        "spatie/pest-plugin-test-time": "^1.1"
     },
     "autoload": {
         "psr-4": {
@@ -35,11 +36,14 @@
         }
     },
     "scripts": {
-        "test": "vendor/bin/phpunit --colors=always",
-        "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
+        "test": "vendor/bin/pest",
+        "test-coverage": "vendor/bin/pest --coverage"
     },
     "config": {
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
     },
     "minimum-stability": "dev",
     "prefer-stable": true

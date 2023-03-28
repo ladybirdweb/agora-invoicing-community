@@ -174,21 +174,11 @@ class Router implements RouterInterface, RequestMatcherInterface
         return $this->options[$key];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getRouteCollection()
     {
-        if (null === $this->collection) {
-            $this->collection = $this->loader->load($this->resource, $this->options['resource_type']);
-        }
-
-        return $this->collection;
+        return $this->collection ??= $this->loader->load($this->resource, $this->options['resource_type']);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setContext(RequestContext $context)
     {
         $this->context = $context;
@@ -201,9 +191,6 @@ class Router implements RouterInterface, RequestMatcherInterface
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getContext(): RequestContext
     {
         return $this->context;
@@ -217,25 +204,16 @@ class Router implements RouterInterface, RequestMatcherInterface
         $this->configCacheFactory = $configCacheFactory;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function generate(string $name, array $parameters = [], int $referenceType = self::ABSOLUTE_PATH): string
     {
         return $this->getGenerator()->generate($name, $parameters, $referenceType);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function match(string $pathinfo): array
     {
         return $this->getMatcher()->match($pathinfo);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function matchRequest(Request $request): array
     {
         $matcher = $this->getMatcher();
@@ -299,14 +277,12 @@ class Router implements RouterInterface, RequestMatcherInterface
 
         if (null === $this->options['cache_dir']) {
             $routes = $this->getRouteCollection();
-            $aliases = [];
             $compiled = is_a($this->options['generator_class'], CompiledUrlGenerator::class, true);
             if ($compiled) {
                 $generatorDumper = new CompiledUrlGeneratorDumper($routes);
-                $routes = $generatorDumper->getCompiledRoutes();
-                $aliases = $generatorDumper->getCompiledAliases();
+                $routes = array_merge($generatorDumper->getCompiledRoutes(), $generatorDumper->getCompiledAliases());
             }
-            $this->generator = new $this->options['generator_class'](array_merge($routes, $aliases), $this->context, $this->logger, $this->defaultLocale);
+            $this->generator = new $this->options['generator_class']($routes, $this->context, $this->logger, $this->defaultLocale);
         } else {
             $cache = $this->getConfigCacheFactory()->cache($this->options['cache_dir'].'/url_generating_routes.php',
                 function (ConfigCacheInterface $cache) {
@@ -352,7 +328,7 @@ class Router implements RouterInterface, RequestMatcherInterface
 
     private static function getCompiledRoutes(string $path): array
     {
-        if ([] === self::$cache && \function_exists('opcache_invalidate') && filter_var(\ini_get('opcache.enable'), \FILTER_VALIDATE_BOOLEAN) && (!\in_array(\PHP_SAPI, ['cli', 'phpdbg'], true) || filter_var(\ini_get('opcache.enable_cli'), \FILTER_VALIDATE_BOOLEAN))) {
+        if ([] === self::$cache && \function_exists('opcache_invalidate') && filter_var(\ini_get('opcache.enable'), \FILTER_VALIDATE_BOOL) && (!\in_array(\PHP_SAPI, ['cli', 'phpdbg'], true) || filter_var(\ini_get('opcache.enable_cli'), \FILTER_VALIDATE_BOOL))) {
             self::$cache = null;
         }
 

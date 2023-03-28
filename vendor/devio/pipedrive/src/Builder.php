@@ -78,6 +78,14 @@ class Builder
                 continue;
             }
 
+            if (is_object($value)) {
+                if (isset($value->id)) {
+                    $value = $value->id;
+                } else {
+                    continue;   
+                }
+            }
+
             $endpoint = preg_replace("/:{$key}/", $value, $endpoint);
         }
 

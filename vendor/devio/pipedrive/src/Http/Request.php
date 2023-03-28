@@ -10,6 +10,7 @@ use Devio\Pipedrive\Exceptions\ItemNotFoundException;
  * @method Response get($type, $target, $options = [])
  * @method Response post($type, $target, $options = [])
  * @method Response put($type, $target, $options = [])
+ * @method Response patch($type, $target, $options = [])
  * @method Response delete($type, $target, $options = [])
  */
 class Request
@@ -20,6 +21,13 @@ class Request
      * @var Client
      */
     protected $client;
+
+    /**
+     * The Builder instance.
+     *
+     * @var Builder
+     */
+    protected $builder;
 
     /**
      * Request constructor.
@@ -88,16 +96,31 @@ class Request
                 throw new ItemNotFoundException(isset($content->error) ? $content->error : "Error unknown.");
             }
 
+            if ($response->getStatusCode() == 401) {
+                throw new PipedriveException(
+                    isset($content->error) ? $content->error : 'Unauthorized',
+                    $response->getStatusCode()
+                );
+            }
+
+            if ($response->getStatusCode() == 403) {
+                throw new PipedriveException(
+                    isset($content->error) ? $content->error : 'Forbidden',
+                    $response->getStatusCode()
+                );
+            }
+
             $this->throwPipedriveException($content);
         }
 
         return $response;
     }
-    
+
     /**
      * Throws PipedriveException with message depending on content.
      *
      * @param string $content
+     * @throws \Devio\Pipedrive\Exceptions\PipedriveException
      */
     protected function throwPipedriveException($content)
     {
@@ -143,7 +166,7 @@ class Request
      */
     public function __call($name, $args = [])
     {
-        if (in_array($name, ['get', 'post', 'put', 'delete'])) {
+        if (in_array($name, ['get', 'post', 'put', 'patch', 'delete'])) {
             $options = !empty($args[1]) ? $args[1] : [];
 
             // Will pass the function name as the request type. The second argument

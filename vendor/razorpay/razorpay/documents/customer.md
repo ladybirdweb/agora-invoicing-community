@@ -69,7 +69,7 @@ $api->customer->fetch($customerId)->edit(array('name' => 'Razorpay User', 'email
 
 ### Fetch all customer
 ```php
-$api->customer->all($options)
+$api->customer->all($options);
 ```
 
 **Parameters:**
@@ -106,7 +106,7 @@ $api->customer->all($options)
 
 ### Fetch a customer
 ```php
-$api->customer->fetch($customerId)
+$api->customer->fetch($customerId);
 ```
 
 **Parameters:**

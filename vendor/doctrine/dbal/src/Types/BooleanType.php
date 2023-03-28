@@ -30,6 +30,12 @@ class BooleanType extends Type
 
     /**
      * {@inheritdoc}
+     *
+     * @param T $value
+     *
+     * @return (T is null ? null : bool)
+     *
+     * @template T
      */
     public function convertToPHPValue($value, AbstractPlatform $platform)
     {
@@ -63,7 +69,7 @@ class BooleanType extends Type
             'doctrine/dbal',
             'https://github.com/doctrine/dbal/pull/5509',
             '%s is deprecated.',
-            __METHOD__
+            __METHOD__,
         );
 
         // We require a commented boolean type in order to distinguish between

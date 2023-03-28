@@ -58,7 +58,7 @@ class FreeTrailController extends Controller
                 if ($userLogin->first_time_login != 0) {
                     return errorResponse(Lang::get('message.false'), 400);
                 }
-                User::where('id', $userId)->update(['first_time_login' => 1]);
+                //User::where('id', $userId)->update(['first_time_login' => 1]);
 
                 $this->generateFreetrailInvoice();
 
@@ -74,9 +74,9 @@ class FreeTrailController extends Controller
                 return $isSuccess;
             }
         } catch (\Exception $ex) {
-            app('log')->error($ex->getMessage());
+            dd($ex);//app('log')->error($ex->getMessage());
 
-            throw new \Exception('Can not Generate Freetrial Cloud instance');
+            //throw new \Exception('Can not Generate Freetrial Cloud instance');
         }
     }
 
@@ -116,17 +116,17 @@ class FreeTrailController extends Controller
     {
         try {
             $product = Product::with('planRelation')->find('117');
+
             if ($product) {
                 $plan_id = $product->planRelation()->pluck('id');
-
                 $cart = \Cart::getContent();
                 $userId = \Auth::user()->id;
-                $invoice = $this->invoice->where('user_id', $userId)->first();
+                $invoice = $this->invoice->where('user_id', $userId)->latest()->first();
                 $invoiceid = $invoice->id;
                 $invoiceItem = $this->invoiceItem->create([
                     'invoice_id' => $invoiceid,
                     'product_name' => $product->name,
-                    'regular_price' => planPrice::where('plan_id', $plan_id)
+                    'regular_price' => planPrice::whereIn('plan_id', $plan_id)
                         ->where('currency', \Auth::user()->currency)->pluck('add_price'),
                     'quantity' => 1,
                     'tax_name' => 'null',
@@ -134,7 +134,7 @@ class FreeTrailController extends Controller
                     'subtotal' => 0,
                     'domain' => '',
                     'plan_id' => 0,
-                    'agents' => planPrice::where('plan_id', $plan_id)
+                    'agents' => planPrice::whereIn('plan_id', $plan_id)
                         ->where('currency', \Auth::user()->currency)->pluck('no_of_agents'),
                 ]);
 
@@ -159,9 +159,9 @@ class FreeTrailController extends Controller
         try {
             $order_status = 'executed';
             $userId = \Auth::user()->id;
-            $invoice = $this->invoice->where('user_id', $userId)->first();
+            $invoice = $this->invoice->where('user_id', $userId)->latest()->first();
             $invoiceid = $invoice->id;
-            $item = $this->invoiceItem->where('invoice_id', $invoiceid)->first();
+            $item = $this->invoiceItem->where('invoice_id', $invoiceid)->latest()->first();
             $user_id = $this->invoice->find($invoiceid)->user_id;
             $items = $this->getIfFreetrailItemPresent($item, $invoiceid, $user_id, $order_status);
 

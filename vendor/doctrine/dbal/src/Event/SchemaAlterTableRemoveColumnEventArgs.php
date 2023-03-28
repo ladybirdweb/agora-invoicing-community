@@ -12,6 +12,8 @@ use function is_array;
 
 /**
  * Event Arguments used when SQL queries for removing table columns are generated inside {@see AbstractPlatform}.
+ *
+ * @deprecated
  */
 class SchemaAlterTableRemoveColumnEventArgs extends SchemaEventArgs
 {
@@ -29,25 +31,19 @@ class SchemaAlterTableRemoveColumnEventArgs extends SchemaEventArgs
         $this->platform  = $platform;
     }
 
-    /**
-     * @return Column
-     */
+    /** @return Column */
     public function getColumn()
     {
         return $this->column;
     }
 
-    /**
-     * @return TableDiff
-     */
+    /** @return TableDiff */
     public function getTableDiff()
     {
         return $this->tableDiff;
     }
 
-    /**
-     * @return AbstractPlatform
-     */
+    /** @return AbstractPlatform */
     public function getPlatform()
     {
         return $this->platform;
@@ -67,9 +63,7 @@ class SchemaAlterTableRemoveColumnEventArgs extends SchemaEventArgs
         return $this;
     }
 
-    /**
-     * @return string[]
-     */
+    /** @return string[] */
     public function getSql()
     {
         return $this->sql;

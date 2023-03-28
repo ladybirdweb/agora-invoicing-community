@@ -105,7 +105,7 @@ $api->qrCode->create(array("type" => "upi_qr","name" => "Store_1", "usage" => "s
 ### Fetch all Qr code
 
 ```php
-$api->qrCode->all($options)
+$api->qrCode->all($options);
 ```
 
 **Parameters:**
@@ -154,7 +154,7 @@ $api->qrCode->all($options)
 ### Fetch a Qr code
 
 ```php
-$api->qrCode->fetch($qrCodeId)
+$api->qrCode->fetch($qrCodeId);
 ```
 
 **Parameters:**
@@ -193,7 +193,7 @@ $api->qrCode->fetch($qrCodeId)
 ### Fetch a Qr code for customer id
 
 ```php
- $api->qrCode->all(["customer_id" => $customerId])
+ $api->qrCode->all(["customer_id" => $customerId]);
 ```
 
 **Parameters:**
@@ -236,7 +236,7 @@ $api->qrCode->fetch($qrCodeId)
 ### Fetch a Qr code for payment id
 
 ```php
- $api->qrCode->all(["payment_id" => $paymentId])
+ $api->qrCode->all(["payment_id" => $paymentId]);
 ```
 
 **Parameters:**
@@ -278,7 +278,7 @@ $api->qrCode->fetch($qrCodeId)
 ### Fetch Payments for a QR Code
 
 ```php
-$api->qrCode->fetch($qrCodeId)->fetchAllPayments($options)
+$api->qrCode->fetch($qrCodeId)->fetchAllPayments($options);
 ```
 
 **Parameters:**
@@ -398,7 +398,7 @@ $api->payment->fetch($paymentId)->refund(array("amount"=> "100","notes"=>array("
   "receipt": "Receipt No. 31",
   "currency": "INR",
   "payment_id": "pay_29QQoUBi66xm2f",
-  "notes": []
+  "notes": [],
   "receipt": null,
   "acquirer_data": {
     "arn": null

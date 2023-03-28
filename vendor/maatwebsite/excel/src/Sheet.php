@@ -192,10 +192,6 @@ class Sheet
         if ($sheetExport instanceof WithCharts) {
             $this->addCharts($sheetExport->charts());
         }
-
-        if ($sheetExport instanceof WithDrawings) {
-            $this->addDrawings($sheetExport->drawings());
-        }
     }
 
     /**
@@ -352,6 +348,10 @@ class Sheet
 
             $row = $row->toArray($nullValue, $calculateFormulas, $formatData, $endColumn);
 
+            if ($import && method_exists($import, 'isEmptyWhen') && $import->isEmptyWhen($row)) {
+                continue;
+            }
+
             if ($import instanceof WithMapping) {
                 $row = $import->map($row);
             }
@@ -394,6 +394,10 @@ class Sheet
      */
     public function close($sheetExport)
     {
+        if ($sheetExport instanceof WithDrawings) {
+            $this->addDrawings($sheetExport->drawings());
+        }
+
         $this->exportable = $sheetExport;
 
         if ($sheetExport instanceof WithColumnFormatting) {

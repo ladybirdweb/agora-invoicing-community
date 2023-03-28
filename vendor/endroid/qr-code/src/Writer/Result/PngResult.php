@@ -4,27 +4,22 @@ declare(strict_types=1);
 
 namespace Endroid\QrCode\Writer\Result;
 
-final class PngResult extends AbstractResult
+use Endroid\QrCode\Matrix\MatrixInterface;
+
+final class PngResult extends GdResult
 {
-    /** @var mixed */
-    private $image;
+    private int $quality;
 
-    /** @param mixed $image */
-    public function __construct($image)
+    public function __construct(MatrixInterface $matrix, \GdImage $image, int $quality = -1)
     {
-        $this->image = $image;
-    }
-
-    /** @return mixed */
-    public function getImage()
-    {
-        return $this->image;
+        parent::__construct($matrix, $image);
+        $this->quality = $quality;
     }
 
     public function getString(): string
     {
         ob_start();
-        imagepng($this->image);
+        imagepng($this->image, quality: $this->quality);
 
         return strval(ob_get_clean());
     }

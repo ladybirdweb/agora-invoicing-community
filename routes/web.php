@@ -518,38 +518,46 @@ Route::middleware('installAgora')->group(function () {
 
     Route::post('cloud-details', [Tenancy\TenantController::class, 'saveCloudDetails'])->name('cloud-details')->middleware('admin');
 
-    /*
-     * Api
-     */
-    Route::prefix('api')->group(function () {
-        /*
-         * Unautherised requests
+            Route::post('upgrade-plan-for-cloud',[Tenancy\CloudExtraActivities::class,'upgradePlan']);
+
+            /*
+             * Api
+             */
+            Route::prefix('api')->group(function () {
+                /*
+                 * Unautherised requests
+                 */
+                Route::get('check-url', [Api\ApiController::class, 'checkDomain']);
+            });
+
+            /*
+             * Api Keys
+             */
+            Route::get('apikeys', [Common\SettingsController::class, 'getKeys']);
+            Route::patch('apikeys', [Common\SettingsController::class, 'postKeys']);
+            Route::post('login', [Auth\LoginController::class, 'login'])->name('login');
+            // Route::post('login', [Auth\LoginController::class, 'login'])->name('login');
+
+            Route::get('otp/send', [Auth\AuthController::class, 'requestOtp']);
+            Route::post('otp/sendByAjax', [Auth\AuthController::class, 'requestOtpFromAjax']);
+            Route::post('otp/verify', [Auth\AuthController::class, 'postOtp']);
+            Route::get('email/verify', [Auth\AuthController::class, 'verifyEmail']);
+            Route::get('resend_otp', [Auth\AuthController::class, 'retryOTP']);
+            Route::get('verify', function () {
+                $user = \Session::get('user');
+                if ($user) {
+                    return view('themes.default1.user.verify', compact('user'));
+                }
+
+                return redirect('login');
+            });
+        });
+         /*
+         * Faveo APIs
          */
         Route::get('check-url', [Api\ApiController::class, 'checkDomain']);
-    });
 
-    /*
-     * Api Keys
-     */
-    Route::get('apikeys', [Common\SettingsController::class, 'getKeys']);
-    Route::patch('apikeys', [Common\SettingsController::class, 'postKeys']);
-    Route::post('login', [Auth\LoginController::class, 'login'])->name('login');
-    // Route::post('login', [Auth\LoginController::class, 'login'])->name('login');
 
-    Route::get('otp/send', [Auth\AuthController::class, 'requestOtp']);
-    Route::post('otp/sendByAjax', [Auth\AuthController::class, 'requestOtpFromAjax']);
-    Route::post('otp/verify', [Auth\AuthController::class, 'postOtp']);
-    Route::get('email/verify', [Auth\AuthController::class, 'verifyEmail']);
-    Route::get('resend_otp', [Auth\AuthController::class, 'retryOTP']);
-    Route::get('verify', function () {
-        $user = \Session::get('user');
-        if ($user) {
-            return view('themes.default1.user.verify', compact('user'));
-        }
-
-        return redirect('login');
-    });
-});
 /*
 * Faveo APIs
 */

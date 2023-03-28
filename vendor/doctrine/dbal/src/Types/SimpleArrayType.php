@@ -29,6 +29,10 @@ class SimpleArrayType extends Type
 
     /**
      * {@inheritdoc}
+     *
+     * @param mixed $value
+     *
+     * @return string|null
      */
     public function convertToDatabaseValue($value, AbstractPlatform $platform)
     {
@@ -41,6 +45,10 @@ class SimpleArrayType extends Type
 
     /**
      * {@inheritdoc}
+     *
+     * @param mixed $value
+     *
+     * @return list<string>
      */
     public function convertToPHPValue($value, AbstractPlatform $platform)
     {
@@ -72,7 +80,7 @@ class SimpleArrayType extends Type
             'doctrine/dbal',
             'https://github.com/doctrine/dbal/pull/5509',
             '%s is deprecated.',
-            __METHOD__
+            __METHOD__,
         );
 
         return true;

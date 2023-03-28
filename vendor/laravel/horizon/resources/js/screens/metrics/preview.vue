@@ -55,23 +55,14 @@
              * Prepare the response data for charts.
              */
             prepareData(data) {
-                return _.chain(data)
-                    .map(value => {
-                        value.time = this.formatDate(value.time).format("MMM-D hh:mmA");
-
-                        return value;
-                    })
-                    .groupBy(value => value.time)
-                    .map(value => {
-                        return _.reduce(value, (sum, value) => {
-                            return {
-                                runtime: parseFloat(sum.runtime) + parseFloat(value.runtime),
-                                throughput: parseInt(sum.throughput) + parseInt(value.throughput),
-                                time: value.time
-                            };
-                        })
-                    })
-                    .value();
+                return Object.values(this.groupBy(data.map(value => ({
+                    ...value,
+                    time: this.formatDate(value.time).format("MMM-D hh:mmA"),
+                })), 'time')).map(value => value.reduce((sum, value) => ({
+                    runtime: parseFloat(sum.runtime) + parseFloat(value.runtime),
+                    throughput: parseInt(sum.throughput) + parseInt(value.throughput),
+                    time: value.time
+                })))
             },
 
 
@@ -80,11 +71,11 @@
              */
             buildChartData(data, attribute, label) {
                 return {
-                    labels: _.map(data, 'time'),
+                    labels: data.map(entry => entry.time),
                     datasets: [
                         {
                             label: label,
-                            data: _.map(data, attribute),
+                            data: data.map(entry => entry[attribute]),
                             lineTension: 0,
                             backgroundColor: 'transparent',
                             pointBackgroundColor: '#fff',
@@ -101,9 +92,9 @@
 
 <template>
     <div>
-        <div class="card">
+        <div class="card overflow-hidden">
             <div class="card-header d-flex align-items-center justify-content-between">
-                <h5>Throughput - {{$route.params.slug}}</h5>
+                <h2 class="h6 m-0">Throughput - {{$route.params.slug}}</h2>
             </div>
 
             <div v-if="!ready" class="d-flex align-items-center justify-content-center card-bg-secondary p-5 bottom-radius">
@@ -123,9 +114,9 @@
             </div>
         </div>
 
-        <div class="card mt-4">
+        <div class="card overflow-hidden mt-4">
             <div class="card-header d-flex align-items-center justify-content-between">
-                <h5>Runtime - {{$route.params.slug}}</h5>
+                <h2 class="h6 m-0">Runtime - {{$route.params.slug}}</h2>
             </div>
 
             <div v-if="!ready" class="d-flex align-items-center justify-content-center card-bg-secondary p-5 bottom-radius">

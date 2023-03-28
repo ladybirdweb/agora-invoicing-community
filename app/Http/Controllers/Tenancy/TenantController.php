@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Tenancy;
 use App\Http\Controllers\Controller;
 use App\Model\Common\FaveoCloud;
 use App\Model\Common\Setting;
+use App\Model\Mailjob\CloudEmail;
 use App\Model\Order\Order;
 use App\ThirdPartyApp;
 use Exception;
@@ -46,9 +47,10 @@ class TenantController extends Controller
     {
         try {
             $response = $this->client->request(
-                'GET',
-                $this->cloud->cloud_central_domain.'/tenants'
-            );
+
+                    'GET',
+                        $this->cloud->cloud_central_domain.'/tenants'
+                );
 
             $responseBody = (string) $response->getBody();
             $response = json_decode($responseBody);
@@ -105,24 +107,34 @@ class TenantController extends Controller
      */
     public function createTenant(Request $request)
     {
+
+        $order=Order::wherenumber($request->orderNo)->get();
+        $product= strpos($order[0]->product()->value('name'),'ServiceDesk')?'ServiceDesk':'Helpdesk';
+        //This above code is only written
+        // to differentiate HD and SD when we reach the
+        // market place feature this needs to be removed
+
         $this->validate($request,
-            [
-                'orderNo' => 'required',
-                'domain' => 'required||regex:/^[a-zA-Z0-9]+$/u',
-            ],
-            [
-                'domain.regex' => 'Special characters are not allowed in domain name',
-            ]);
-        $setting = Setting::find(1);
+                [
+                    'orderNo' => 'required',
+                    'domain' => 'required||regex:/^[a-zA-Z0-9]+$/u',
+                ],
+                [
+                    'domain.regex' => 'Special characters are not allowed in domain name',
+                ]);
+
+        $settings = Setting::find(1);
         $user = \Auth::user()->email;
         $mail = new \App\Http\Controllers\Common\PhpMailController();
         $mailer = $mail->setMailConfig($settings);
 
         try {
-            $faveoCloud = $request->domain;
+            $faveoCloud = $request->input('domain');
             $dns_record = dns_get_record($faveoCloud, DNS_CNAME);
-            if (empty($dns_record) || $dns_record[0]['domain'] != $this->cloud->cloud_central_domain) {
-                throw new Exception('Your Domains DNS CNAME record is not pointing to our cloud!(CNAME record is missing) Please do it to proceed');
+            if(!strpos($faveoCloud,'faveocloud.com')) {
+                if (empty($dns_record) || $dns_record[0]['domain'] != '') {
+                    throw new Exception('Your Domains DNS CNAME record is not pointing to our cloud!(CNAME record is missing) Please do it to proceed');
+                }
             }
             $licCode = Order::where('number', $request->input('orderNo'))->first()->serial_key;
             $keys = ThirdPartyApp::where('app_name', 'faveo_app_key')->select('app_key', 'app_secret')->first();
@@ -132,7 +144,7 @@ class TenantController extends Controller
             $token = str_random(32);
             \DB::table('third_party_tokens')->insert(['user_id' => \Auth::user()->id, 'token' => $token]);
             $client = new Client([]);
-            $data = ['domain' => $request->input('domain'), 'app_key'=>$keys->app_key, 'token'=>$token, 'lic_code'=>$licCode, 'username'=>$user, 'userId'=>\Auth::user()->id, 'timestamp'=>time()];
+            $data = ['domain' => $faveoCloud, 'app_key'=>$keys->app_key, 'token'=>$token, 'lic_code'=>$licCode, 'username'=>$user, 'userId'=>\Auth::user()->id, 'timestamp'=>time(),'product'=>$product];
 
             $encodedData = http_build_query($data);
             $hashedSignature = hash_hmac('sha256', $encodedData, $keys->app_secret);
@@ -151,35 +163,53 @@ class TenantController extends Controller
             } elseif ($result->status == 'validationFailure') {
                 return ['status' => 'validationFailure', 'message' => $result->message];
             } else {
-                $url = $this->cloud->cron_server_url.'/croncreate.php';
-                $key = $this->cloud->cron_server_key;
-                $tenant = $result->tenant;
-                $response = $this->postCurl($url, "tenant=$tenant&key=$key");
-                $cronResult = json_decode($response)->status;
-                $cronFailureMessage = '';
-                if ($cronResult == 'fails') {
-                    $cronFailureMessage = '<br><br>Cron creation failed. You mail fetching would not work without this. Please contact Faveo team.';
+
+                if(!strpos($faveoCloud,'faveocloud.com')) {
+                    CloudEmail::create([
+                        'result_message' => $result->message,
+                        'user' => $user,
+                        'result_password' => $result->password,
+                        'domain' => $faveoCloud,
+                    ]);
+                    $client = new Client();
+                    $client->request('GET', env('CLOUD_JOB_URL'), [
+                        'auth' => ['clouduser', env('CLOUD_AUTH')],
+                        'query' => [
+                            'token' => env('CLOUD_OAUTH_TOKEN'),
+                            'domain' => $faveoCloud,
+                        ],
+                    ]);
+                    return ['status' => $result->status, 'message' => trans('create_in_progress').'.'];
+                }
+                else{
+                    $client->request('GET', env('CLOUD_JOB_URL_NORMAL'), [
+                        'auth' => ['clouduser', env('CLOUD_AUTH')],
+                        'query' => [
+                            'token' => env('CLOUD_OAUTH_TOKEN'),
+                            'domain' => $faveoCloud,
+                        ],
+                    ]);
+                    $userData = $result->message.'.<br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password;
+                    $email = (new Email())
+                        ->from($settings->email)
+                        ->to($user)
+                        ->subject('New instance created')
+                        ->html($result->message.'.<br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password);
+
+                    $mailer->send($email);
+
+                    $mail->email_log_success($settings->email, $user, 'New instance created', $result->message.'.<br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password);
+
+                    $mail = new \App\Http\Controllers\Common\PhpMailController();
+
+                    $mail->sendEmail($settings->email, $user, $userData, 'New instance created');
+
+                    return ['status' => $result->status, 'message' => $result->message.'.'];
                 }
 
-                $userData = $result->message.'.<br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password;
-                $email = (new Email())
-                    ->from($settings->email)
-                    ->to($user)
-                    ->subject('New instance created')
-                    ->html($result->message.'.<br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password);
-
-                $mailer->send($email);
-
-                $mail->email_log_success($settings->email, $user, 'New instance created', $result->message.'.<br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password);
-
-                $mail = new \App\Http\Controllers\Common\PhpMailController();
-
-                $mail->sendEmail($setting->email, $user, $userData, 'New instance created');
-
-                return ['status' => $result->status, 'message' => $result->message.'.'.$cronFailureMessage];
             }
         } catch (Exception $e) {
-            $mail->email_log_fail($settings->email, $user, 'New instance created', $result->message.'.<br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password);
+            //$mail->email_log_fail($settings->email, $user, 'New instance created', $result->message.'.<br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password);
 
             return ['status' => 'false', 'message' => $e->getMessage()];
         }
@@ -209,7 +239,6 @@ class TenantController extends Controller
 
     public function destroyTenant(Request $request)
     {
-        dd('rghrut');
         try {
             $keys = ThirdPartyApp::where('app_name', 'faveo_app_key')->select('app_key', 'app_secret')->first();
             $token = str_random(32);
@@ -274,8 +303,10 @@ class TenantController extends Controller
         $newDomain = $request->get('newDomain');
         $data = ['currentDomain' => $request->get('currentDomain'), 'newDomain'=>$newDomain, 'app_key'=>$keys->app_key, 'token'=>$token, 'timestamp'=>time()];
         $dns_record = dns_get_record($newDomain, DNS_CNAME);
-        if (empty($dns_record) || $dns_record[0]['domain'] != $this->cloud->cloud_central_domain) {
-            throw new Exception('Your Domains DNS CNAME record is not pointing to our cloud!(CNAME record is missing) Please do it to proceed');
+        if(!strpos($newDomain,'faveocloud.com')) {
+            if (empty($dns_record) || $dns_record[0]['domain'] != $this->cloud->cloud_central_domain) {
+                throw new Exception('Your Domains DNS CNAME record is not pointing to our cloud!(CNAME record is missing) Please do it to proceed');
+            }
         }
         $encodedData = http_build_query($data);
         $hashedSignature = hash_hmac('sha256', $encodedData, $keys->app_secret);
@@ -284,6 +315,15 @@ class TenantController extends Controller
             'POST',
             $this->cloud->cloud_central_domain.'/changeDomain', ['form_params'=>$data, 'headers'=>['signature'=>$hashedSignature]]
         );
+        if(!strpos($newDomain,'faveocloud.com')) {
+            $client->request('GET', env('CLOUD_JOB_URL_NORMAL'), [
+                'auth' => ['clouduser', env('CLOUD_AUTH')],
+                'query' => [
+                    'token' => env('CLOUD_OAUTH_TOKEN'),
+                    'domain' => $newDomain,
+                ],
+            ]);
+        }
 
         return response(['message'=> $response]);
     }
@@ -315,7 +355,7 @@ class TenantController extends Controller
                     $responseBody = (string) $response->getBody();
                     $response = json_decode($responseBody);
                     if ($response->status == 'success') {
-                        $this->deleteCronForTenant($domainArray[$i]->id);
+                        //$this->deleteCronForTenant($domainArray[$i]->id);
                         $this->reissueCloudLicense($order_id);
                         Order::where('number', $orderNumber)->where('client', \Auth::user()->id)->delete();
 
@@ -339,7 +379,7 @@ class TenantController extends Controller
         $order->domain = '';
         $licenseCode = $order->serial_key;
         $order->save();
-        $licenseStatus = StatusSetting::pluck('license_status')->first();
+        $licenseStatus = \DB::table('status_settings')->pluck('license_status')->first();
         if ($licenseStatus == 1) {
             $licenseExpiry = $order->subscription->ends_at;
             $updatesExpiry = $order->subscription->update_ends_at;

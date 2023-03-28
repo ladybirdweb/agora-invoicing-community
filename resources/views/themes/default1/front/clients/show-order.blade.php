@@ -257,12 +257,11 @@ $json = json_encode($data);
                     ['id'=>'user-details', 'name'=>'User Details', 'slot'=>'user','icon'=>'fas fa-users'],
                     ['id'=>'invoice-list', 'name'=>'Invoice List', 'slot'=>'invoice','icon'=>'fas fa-credit-card'],
                     ['id'=>'payment-receipts', 'name'=>'Payment Receipts', 'slot'=>'payment','icon'=>'fas fa-briefcase'],
-                    ['id'=>'auto-renewals', 'name'=>'Auto Renewal', 'slot'=>'autorenewal','icon'=>'fas fa-bell']
+                    ['id'=>'auto-renewals', 'name'=>'Auto Renewal', 'slot'=>'autorenewal','icon'=>'fas fa-bell'],
+                    ['id'=>'upgrade-cloud', 'name'=>'Upgrade Cloud', 'slot'=>'upgrade','icon'=>'fas fa-cloud'],
 
                 ]
             ])
-               
-               
                 @slot('license')
                  
                     <table class="table">
@@ -430,6 +429,44 @@ $json = json_encode($data);
                         </thead>
                     </table>
                 @endslot
+                    @slot('upgrade')
+                        <table id="showpayment-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
+
+                            <thead>
+                            <tr>
+                                <th>Cloud upgrade policies</th>
+                                <th>Action</th>
+
+                            </tr>
+                            <?php
+                            $plans = App\Model\Payment\Plan::where('name','LIKE','%Multitenant%')->pluck('name','id')->toArray();
+                            $agentCalculation  = ltrim(substr($order->serial_key, 12),'0');
+                            ?>
+                            <tr class="mdm">
+                                <td>Do you want to shift to a better plan and increase or decrease your agents?
+                                    <div class="row">
+                                    <div class="col-md-6 form-group {{ $errors->has('plan') ? 'has-error' : '' }}">
+                                        <label>
+                                            <select name="plan" value= "Choose a plan" id="plan_upgrade_agents" onchange="getPrice(this.value)" class="form-control" required>
+                                                @foreach($plans as $key=>$plan)
+                                                    <option value={{$key}}>{{$plan}}</option>
+                                                @endforeach
+                                            </select>
+                                        </label>
+
+                                    </div>
+                                        <div class="col-md-6">
+                                            <input type="number" value="{{$agentCalculation}}" id="number_agents" class="form-control" placeholder="Choose number of agents" required>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><button type="submit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" id="cloudPlanUpgrade" onclick="performThisAgentUpgrade()">
+                                        Lets do this!
+                                    </button></td>
+                            </tr>
+                            </thead>
+                        </table>
+                    @endslot
 
 
             @slot('autorenewal')
@@ -812,7 +849,6 @@ var rzp = new Razorpay(options);
 
 
 <script type="text/javascript">
-               
 
                $('.done').click(function() 
                {
@@ -1029,6 +1065,10 @@ var rzp = new Razorpay(options);
         });
          }
          });
+             function performThisAgentUpgrade(){
+                 var plan_value=$('#plan_upgrade_agents').val();
+                 var numberAgents = $('#number_agents').val();
+                 var order = {!! $order !!};
 
        $('#kok  ').click(function() {
               // $("#submitSub").html("<i class='fas fa-circle-notch fa-spin'></i>Please Wait...");
@@ -1059,7 +1099,52 @@ var rzp = new Razorpay(options);
 
           });
 
+                 $.ajax ({
+                     type: 'post',
+                     url : "{{url('upgrade-plan-for-cloud')}}",
+                     data : {'plan_id':plan_value,'number_agents':numberAgents, 'order':order},
+                     beforeSend: function () {
+                         $('#response').html( "<img id='blur-bg' class='backgroundfadein' style='top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
+
+                     },
+                     success: function (data) {
+                         window.location.href = data.redirectTo;
+                         if (data.message =='success'){
+                             window.location = data.redirectTo;
+                             var result =  '<div class="alert alert-success alert-dismissable"><strong><i class="far fa-thumbs-up"></i> Well Done! </strong> '+data.update+' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
+                             $('#response').html(result);
+                             $('#response').css('color', 'green');
+                             setTimeout(function(){
+                                 window.location.reload();
+                             },3000);
+                         }
+
+                     }, error: function(err) {
+                     }
+
+                 });
+
+             }
+
+             function getPrice(val) {
+
+                 var user = document.getElementsByName('user')[0].value;
+                 $.ajax({
+                     type: "get",
+                     url: "{{url('get-renew-cost')}}",
+                     data: {'user': user, 'plan': val},
+                     success: function (data) {
+                         var price = data
+                         $("#price").val(price);
+                     }
+                 });
+             }
     </script>
+    <style>
+        .mdm{
+            background-color: aliceblue;
+        }
+    </style>
 
 <script>
     $('#stripe-button1').on('click',function(){

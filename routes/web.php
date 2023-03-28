@@ -502,62 +502,55 @@ Route::middleware('installAgora')->group(function () {
     Cloud APIs
      */
 
-
-            Route::resource('third-party-keys', ThirdPartyAppController::class);
-            Route::get('get-third-party-app', [ThirdPartyAppController::class, 'getThirdPartyDetails'])->name('get-third-party-app');
-            Route::get('get-app-key', [ThirdPartyAppController::class, 'getAppKey'])->name('get-app-key');
-            Route::delete('third-party-delete', [ThirdPartyAppController::class, 'destroy'])->name('third-party-delete');
-            Route::post('create/tenant', [Tenancy\TenantController::class, 'createTenant']);
-            Route::post('change/domain', [Tenancy\TenantController::class, 'changeDomain']);
-            Route::get('view/tenant', [Tenancy\TenantController::class, 'viewTenant'])->middleware('admin');
-            Route::get('get-tenants', [Tenancy\TenantController::class, 'getTenants'])->name('get-tenants')->middleware('admin');
-            Route::delete('delete-tenant', [Tenancy\TenantController::class, 'destroyTenant'])->name('delete-tenant')->middleware('admin');
-            Route::get('delete/domain/{orderNumber}/{isDelete}', [Tenancy\TenantController::class, 'DeleteCloudInstanceForClient']);
+    Route::resource('third-party-keys', ThirdPartyAppController::class);
+    Route::get('get-third-party-app', [ThirdPartyAppController::class, 'getThirdPartyDetails'])->name('get-third-party-app');
+    Route::get('get-app-key', [ThirdPartyAppController::class, 'getAppKey'])->name('get-app-key');
+    Route::delete('third-party-delete', [ThirdPartyAppController::class, 'destroy'])->name('third-party-delete');
+    Route::post('create/tenant', [Tenancy\TenantController::class, 'createTenant']);
+    Route::post('change/domain', [Tenancy\TenantController::class, 'changeDomain']);
+    Route::get('view/tenant', [Tenancy\TenantController::class, 'viewTenant'])->middleware('admin');
+    Route::get('get-tenants', [Tenancy\TenantController::class, 'getTenants'])->name('get-tenants')->middleware('admin');
+    Route::delete('delete-tenant', [Tenancy\TenantController::class, 'destroyTenant'])->name('delete-tenant')->middleware('admin');
+    Route::get('delete/domain/{orderNumber}/{isDelete}', [Tenancy\TenantController::class, 'DeleteCloudInstanceForClient']);
 
     Route::delete('delete-tenant', [Tenancy\TenantController::class, 'destroyTenant'])->name('delete-tenant')->middleware('admin');
 
     Route::post('cloud-details', [Tenancy\TenantController::class, 'saveCloudDetails'])->name('cloud-details')->middleware('admin');
 
-            Route::post('upgrade-plan-for-cloud',[Tenancy\CloudExtraActivities::class,'upgradePlan']);
+    Route::post('upgrade-plan-for-cloud', [Tenancy\CloudExtraActivities::class, 'upgradePlan']);
 
-            /*
-             * Api
-             */
-            Route::prefix('api')->group(function () {
-                /*
-                 * Unautherised requests
-                 */
-                Route::get('check-url', [Api\ApiController::class, 'checkDomain']);
-            });
-
-            /*
-             * Api Keys
-             */
-            Route::get('apikeys', [Common\SettingsController::class, 'getKeys']);
-            Route::patch('apikeys', [Common\SettingsController::class, 'postKeys']);
-            Route::post('login', [Auth\LoginController::class, 'login'])->name('login');
-            // Route::post('login', [Auth\LoginController::class, 'login'])->name('login');
-
-            Route::get('otp/send', [Auth\AuthController::class, 'requestOtp']);
-            Route::post('otp/sendByAjax', [Auth\AuthController::class, 'requestOtpFromAjax']);
-            Route::post('otp/verify', [Auth\AuthController::class, 'postOtp']);
-            Route::get('email/verify', [Auth\AuthController::class, 'verifyEmail']);
-            Route::get('resend_otp', [Auth\AuthController::class, 'retryOTP']);
-            Route::get('verify', function () {
-                $user = \Session::get('user');
-                if ($user) {
-                    return view('themes.default1.user.verify', compact('user'));
-                }
-
-                return redirect('login');
-            });
-        });
-         /*
-         * Faveo APIs
+    /*
+     * Api
+     */
+    Route::prefix('api')->group(function () {
+        /*
+         * Unautherised requests
          */
         Route::get('check-url', [Api\ApiController::class, 'checkDomain']);
+    });
 
+    /*
+     * Api Keys
+     */
+    Route::get('apikeys', [Common\SettingsController::class, 'getKeys']);
+    Route::patch('apikeys', [Common\SettingsController::class, 'postKeys']);
+    Route::post('login', [Auth\LoginController::class, 'login'])->name('login');
+    // Route::post('login', [Auth\LoginController::class, 'login'])->name('login');
 
+    Route::get('otp/send', [Auth\AuthController::class, 'requestOtp']);
+    Route::post('otp/sendByAjax', [Auth\AuthController::class, 'requestOtpFromAjax']);
+    Route::post('otp/verify', [Auth\AuthController::class, 'postOtp']);
+    Route::get('email/verify', [Auth\AuthController::class, 'verifyEmail']);
+    Route::get('resend_otp', [Auth\AuthController::class, 'retryOTP']);
+    Route::get('verify', function () {
+        $user = \Session::get('user');
+        if ($user) {
+            return view('themes.default1.user.verify', compact('user'));
+        }
+
+        return redirect('login');
+    });
+});
 /*
 * Faveo APIs
 */

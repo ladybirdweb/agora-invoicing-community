@@ -13,9 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-//        Schema::table('activity_log', function (Blueprint $table) {
-//            $table->string('event')->nullable();
-//        });
+        Schema::table('activity_log', function (Blueprint $table) {
+            $table->string('event')->nullable();
+        });
     }
 
     /**

@@ -8,5 +8,5 @@ class CloudEmail extends Model
 {
     protected $table = 'cloud_email';
 
-    protected $guarded =[] ;
+    protected $guarded = [];
 }

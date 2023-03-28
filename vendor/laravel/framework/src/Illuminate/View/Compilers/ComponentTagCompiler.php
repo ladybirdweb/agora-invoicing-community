@@ -116,7 +116,15 @@ class ComponentTagCompiler
                             )
                             |
                             (?:
+                                @(?:style)(\( (?: (?>[^()]+) | (?-1) )* \))
+                            )
+                            |
+                            (?:
                                 \{\{\s*\\\$attributes(?:[^}]+?)?\s*\}\}
+                            )
+                            |
+                            (?:
+                                (\:\\\$)(\w+)
                             )
                             |
                             (?:
@@ -173,7 +181,15 @@ class ComponentTagCompiler
                             )
                             |
                             (?:
+                                @(?:style)(\( (?: (?>[^()]+) | (?-1) )* \))
+                            )
+                            |
+                            (?:
                                 \{\{\s*\\\$attributes(?:[^}]+?)?\s*\}\}
+                            )
+                            |
+                            (?:
+                                (\:\\\$)(\w+)
                             )
                             |
                             (?:
@@ -228,8 +244,12 @@ class ComponentTagCompiler
         // component and pass the component as a view parameter to the data so it
         // can be accessed within the component and we can render out the view.
         if (! class_exists($class)) {
+            $view = Str::startsWith($component, 'mail::')
+                ? "\$__env->getContainer()->make(Illuminate\\View\\Factory::class)->make('{$component}')"
+                : "'$class'";
+
             $parameters = [
-                'view' => "'$class'",
+                'view' => $view,
                 'data' => '['.$this->attributesToString($data->all(), $escapeBound = false).']',
             ];
 
@@ -239,7 +259,7 @@ class ComponentTagCompiler
         }
 
         return "##BEGIN-COMPONENT-CLASS##@component('{$class}', '{$component}', [".$this->attributesToString($parameters, $escapeBound = false).'])
-<?php if (isset($attributes) && $constructor = (new ReflectionClass('.$class.'::class))->getConstructor()): ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag && $constructor = (new ReflectionClass('.$class.'::class))->getConstructor()): ?>
 <?php $attributes = $attributes->except(collect($constructor->getParameters())->map->getName()->all()); ?>
 <?php endif; ?>
 <?php $component->withAttributes(['.$this->attributesToString($attributes->all(), $escapeAttributes = $class !== DynamicComponent::class).']); ?>';
@@ -279,7 +299,65 @@ class ComponentTagCompiler
             return $class;
         }
 
-        $guess = collect($this->blade->getAnonymousComponentNamespaces())
+        if (! is_null($guess = $this->guessAnonymousComponentUsingNamespaces($viewFactory, $component)) ||
+            ! is_null($guess = $this->guessAnonymousComponentUsingPaths($viewFactory, $component))) {
+            return $guess;
+        }
+
+        if (Str::startsWith($component, 'mail::')) {
+            return $component;
+        }
+
+        throw new InvalidArgumentException(
+            "Unable to locate a class or view for component [{$component}]."
+        );
+    }
+
+    /**
+     * Attempt to find an anonymous component using the registered anonymous component paths.
+     *
+     * @param  \Illuminate\Contracts\View\Factory  $viewFactory
+     * @param  string  $component
+     * @return string|null
+     */
+    protected function guessAnonymousComponentUsingPaths(Factory $viewFactory, string $component)
+    {
+        $delimiter = ViewFinderInterface::HINT_PATH_DELIMITER;
+
+        foreach ($this->blade->getAnonymousComponentPaths() as $path) {
+            try {
+                if (str_contains($component, $delimiter) &&
+                    ! str_starts_with($component, $path['prefix'].$delimiter)) {
+                    continue;
+                }
+
+                $formattedComponent = str_starts_with($component, $path['prefix'].$delimiter)
+                        ? Str::after($component, $delimiter)
+                        : $component;
+
+                if (! is_null($guess = match (true) {
+                    $viewFactory->exists($guess = $path['prefixHash'].$delimiter.$formattedComponent) => $guess,
+                    $viewFactory->exists($guess = $path['prefixHash'].$delimiter.$formattedComponent.'.index') => $guess,
+                    default => null,
+                })) {
+                    return $guess;
+                }
+            } catch (InvalidArgumentException $e) {
+                //
+            }
+        }
+    }
+
+    /**
+     * Attempt to find an anonymous component using the registered anonymous component namespaces.
+     *
+     * @param  \Illuminate\Contracts\View\Factory  $viewFactory
+     * @param  string  $component
+     * @return string|null
+     */
+    protected function guessAnonymousComponentUsingNamespaces(Factory $viewFactory, string $component)
+    {
+        return collect($this->blade->getAnonymousComponentNamespaces())
             ->filter(function ($directory, $prefix) use ($component) {
                 return Str::startsWith($component, $prefix.'::');
             })
@@ -299,14 +377,6 @@ class ComponentTagCompiler
                     return $view;
                 }
             });
-
-        if (! is_null($guess)) {
-            return $guess;
-        }
-
-        throw new InvalidArgumentException(
-            "Unable to locate a class or view for component [{$component}]."
-        );
     }
 
     /**
@@ -445,6 +515,10 @@ class ComponentTagCompiler
                             )
                             |
                             (?:
+                                @(?:style)(\( (?: (?>[^()]+) | (?-1) )* \))
+                            )
+                            |
+                            (?:
                                 \{\{\s*\\\$attributes(?:[^}]+?)?\s*\}\}
                             )
                             |
@@ -498,8 +572,10 @@ class ComponentTagCompiler
      */
     protected function getAttributesFromAttributeString(string $attributeString)
     {
+        $attributeString = $this->parseShortAttributeSyntax($attributeString);
         $attributeString = $this->parseAttributeBag($attributeString);
         $attributeString = $this->parseComponentTagClassStatements($attributeString);
+        $attributeString = $this->parseComponentTagStyleStatements($attributeString);
         $attributeString = $this->parseBindAttributes($attributeString);
 
         $pattern = '/
@@ -551,6 +627,21 @@ class ComponentTagCompiler
     }
 
     /**
+     * Parses a short attribute syntax like :$foo into a fully-qualified syntax like :foo="$foo".
+     *
+     * @param  string  $value
+     * @return string
+     */
+    protected function parseShortAttributeSyntax(string $value)
+    {
+        $pattern = "/\s\:\\\$(\w+)/x";
+
+        return preg_replace_callback($pattern, function (array $matches) {
+            return " :{$matches[1]}=\"\${$matches[1]}\"";
+        }, $value);
+    }
+
+    /**
      * Parse the attribute bag in a given attribute string into its fully-qualified syntax.
      *
      * @param  string  $attributeString
@@ -580,6 +671,27 @@ class ComponentTagCompiler
                      $match[2] = str_replace('"', "'", $match[2]);
 
                      return ":class=\"\Illuminate\Support\Arr::toCssClasses{$match[2]}\"";
+                 }
+
+                 return $match[0];
+             }, $attributeString
+        );
+    }
+
+    /**
+     * Parse @style statements in a given attribute string into their fully-qualified syntax.
+     *
+     * @param  string  $attributeString
+     * @return string
+     */
+    protected function parseComponentTagStyleStatements(string $attributeString)
+    {
+        return preg_replace_callback(
+             '/@(style)(\( ( (?>[^()]+) | (?2) )* \))/x', function ($match) {
+                 if ($match[1] === 'style') {
+                     $match[2] = str_replace('"', "'", $match[2]);
+
+                     return ":style=\"\Illuminate\Support\Arr::toCssStyles{$match[2]}\"";
                  }
 
                  return $match[0];

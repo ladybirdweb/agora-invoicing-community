@@ -23,17 +23,14 @@ abstract class Helper implements HelperInterface
 {
     protected $helperSet = null;
 
-    /**
-     * {@inheritdoc}
-     */
     public function setHelperSet(HelperSet $helperSet = null)
     {
+        if (1 > \func_num_args()) {
+            trigger_deprecation('symfony/console', '6.2', 'Calling "%s()" without any arguments is deprecated, pass null explicitly instead.', __METHOD__);
+        }
         $this->helperSet = $helperSet;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getHelperSet(): ?HelperSet
     {
         return $this->helperSet;
@@ -145,6 +142,8 @@ abstract class Helper implements HelperInterface
         $string = $formatter->format($string ?? '');
         // remove already formatted characters
         $string = preg_replace("/\033\[[^m]*m/", '', $string ?? '');
+        // remove terminal hyperlinks
+        $string = preg_replace('/\\033]8;[^;]*;[^\\033]*\\033\\\\/', '', $string ?? '');
         $formatter->setDecorated($isDecorated);
 
         return $string;

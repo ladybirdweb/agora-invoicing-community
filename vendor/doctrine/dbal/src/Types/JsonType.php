@@ -29,6 +29,12 @@ class JsonType extends Type
 
     /**
      * {@inheritdoc}
+     *
+     * @param T $value
+     *
+     * @return (T is null ? null : string)
+     *
+     * @template T
      */
     public function convertToDatabaseValue($value, AbstractPlatform $platform)
     {
@@ -82,7 +88,7 @@ class JsonType extends Type
             'doctrine/dbal',
             'https://github.com/doctrine/dbal/pull/5509',
             '%s is deprecated.',
-            __METHOD__
+            __METHOD__,
         );
 
         return ! $platform->hasNativeJsonType();

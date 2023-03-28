@@ -25,7 +25,7 @@ use Symfony\Contracts\Cache\TagAwareCacheInterface;
  * Implements simple and robust tag-based invalidation suitable for use with volatile caches.
  *
  * This adapter works by storing a version for each tags. When saving an item, it is stored together with its tags and
- * their corresponding versions. When retrieveing an item, those tag versions are compared to the current version of
+ * their corresponding versions. When retrieving an item, those tag versions are compared to the current version of
  * each tags. Invalidation is achieved by deleting tags, thereby ensuring that their versions change even when the
  * storage is out of space. When versions of non-existing tags are requested for item commits, this adapter assigns a
  * new random version to them.
@@ -114,9 +114,6 @@ class TagAwareAdapter implements TagAwareAdapterInterface, TagAwareCacheInterfac
         );
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function invalidateTags(array $tags): bool
     {
         $ids = [];
@@ -129,17 +126,11 @@ class TagAwareAdapter implements TagAwareAdapterInterface, TagAwareCacheInterfac
         return !$tags || $this->tags->deleteItems($ids);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function hasItem(mixed $key): bool
     {
         return $this->getItem($key)->isHit();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getItem(mixed $key): CacheItem
     {
         foreach ($this->getItems([$key]) as $item) {
@@ -147,9 +138,6 @@ class TagAwareAdapter implements TagAwareAdapterInterface, TagAwareCacheInterfac
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getItems(array $keys = []): iterable
     {
         $tagKeys = [];
@@ -206,9 +194,6 @@ class TagAwareAdapter implements TagAwareAdapterInterface, TagAwareCacheInterfac
         return (self::$setCacheItemTags)($bufferedItems, $itemTags);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function clear(string $prefix = ''): bool
     {
         if ('' !== $prefix) {
@@ -228,17 +213,11 @@ class TagAwareAdapter implements TagAwareAdapterInterface, TagAwareCacheInterfac
         return $this->pool->clear();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function deleteItem(mixed $key): bool
     {
         return $this->deleteItems([$key]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function deleteItems(array $keys): bool
     {
         foreach ($keys as $key) {
@@ -250,9 +229,6 @@ class TagAwareAdapter implements TagAwareAdapterInterface, TagAwareCacheInterfac
         return $this->pool->deleteItems($keys);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function save(CacheItemInterface $item): bool
     {
         if (!$item instanceof CacheItem) {
@@ -263,9 +239,6 @@ class TagAwareAdapter implements TagAwareAdapterInterface, TagAwareCacheInterfac
         return $this->commit();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function saveDeferred(CacheItemInterface $item): bool
     {
         if (!$item instanceof CacheItem) {
@@ -276,9 +249,6 @@ class TagAwareAdapter implements TagAwareAdapterInterface, TagAwareCacheInterfac
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function commit(): bool
     {
         if (!$items = $this->deferred) {
@@ -304,17 +274,11 @@ class TagAwareAdapter implements TagAwareAdapterInterface, TagAwareCacheInterfac
         return $ok;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function prune(): bool
     {
         return $this->pool instanceof PruneableInterface && $this->pool->prune();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function reset()
     {
         $this->commit();

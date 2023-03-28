@@ -7,6 +7,8 @@ use Doctrine\DBAL\Connection;
 
 /**
  * Event Arguments used when a Driver connection is established inside Doctrine\DBAL\Connection.
+ *
+ * @deprecated
  */
 class ConnectionEventArgs extends EventArgs
 {
@@ -17,9 +19,7 @@ class ConnectionEventArgs extends EventArgs
         $this->connection = $connection;
     }
 
-    /**
-     * @return Connection
-     */
+    /** @return Connection */
     public function getConnection()
     {
         return $this->connection;

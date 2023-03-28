@@ -304,7 +304,7 @@ class PrettyPageHandler extends Handler
      */
     protected function getExceptionFrames()
     {
-        $frames = $this->getInspector()->getFrames();
+        $frames = $this->getInspector()->getFrames($this->getRun()->getFrameFilters());
 
         if ($this->getApplicationPaths()) {
             foreach ($frames as $frame) {
@@ -353,7 +353,6 @@ class PrettyPageHandler extends Handler
      * will be flattened with `print_r`.
      *
      * @param string $label
-     * @param array  $data
      *
      * @return static
      */
@@ -383,7 +382,7 @@ class PrettyPageHandler extends Handler
             throw new InvalidArgumentException('Expecting callback argument to be callable');
         }
 
-        $this->extraTables[$label] = function (\Whoops\Exception\Inspector $inspector = null) use ($callback) {
+        $this->extraTables[$label] = function (\Whoops\Inspector\InspectorInterface $inspector = null) use ($callback) {
             try {
                 $result = call_user_func($callback, $inspector);
 
@@ -754,12 +753,10 @@ class PrettyPageHandler extends Handler
 
     /**
      * Set the application paths.
-     *
-     * @param array $applicationPaths
-     *
+     * 
      * @return void
      */
-    public function setApplicationPaths($applicationPaths)
+    public function setApplicationPaths(array $applicationPaths)
     {
         $this->applicationPaths = $applicationPaths;
     }

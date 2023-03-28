@@ -50,9 +50,18 @@ class SQLServerSchemaManager extends AbstractSchemaManager
 
     /**
      * {@inheritDoc}
+     *
+     * @deprecated Use {@see introspectTable()} instead.
      */
     public function listTableDetails($name)
     {
+        Deprecation::trigger(
+            'doctrine/dbal',
+            'https://github.com/doctrine/dbal/pull/5595',
+            '%s is deprecated. Use introspectTable() instead.',
+            __METHOD__,
+        );
+
         return $this->doListTableDetails($name);
     }
 
@@ -90,7 +99,7 @@ class SQLServerSchemaManager extends AbstractSchemaManager
 SELECT name
 FROM   sys.schemas
 WHERE  name NOT IN('guest', 'INFORMATION_SCHEMA', 'sys')
-SQL
+SQL,
         );
     }
 
@@ -253,7 +262,7 @@ SQL
             $tableForeignKey['foreign_table'],
             $tableForeignKey['foreign_columns'],
             $tableForeignKey['name'],
-            $tableForeignKey['options']
+            $tableForeignKey['options'],
         );
     }
 
@@ -288,7 +297,7 @@ SQL
             'doctrine/dbal',
             'https://github.com/doctrine/dbal/issues/4503',
             'SQLServerSchemaManager::getPortableNamespaceDefinition() is deprecated,'
-                . ' use SQLServerSchemaManager::listSchemaNames() instead.'
+                . ' use SQLServerSchemaManager::listSchemaNames() instead.',
         );
 
         return $namespace['name'];
@@ -308,15 +317,19 @@ SQL
      */
     public function alterTable(TableDiff $tableDiff)
     {
-        if (count($tableDiff->removedColumns) > 0) {
-            foreach ($tableDiff->removedColumns as $col) {
-                foreach ($this->getColumnConstraints($tableDiff->name, $col->getName()) as $constraint) {
+        $droppedColumns = $tableDiff->getDroppedColumns();
+
+        if (count($droppedColumns) > 0) {
+            $tableName = ($tableDiff->getOldTable() ?? $tableDiff->getName($this->_platform))->getName();
+
+            foreach ($droppedColumns as $col) {
+                foreach ($this->getColumnConstraints($tableName, $col->getName()) as $constraint) {
                     $this->_conn->executeStatement(
                         sprintf(
                             'ALTER TABLE %s DROP CONSTRAINT %s',
-                            $tableDiff->name,
-                            $constraint
-                        )
+                            $tableName,
+                            $constraint,
+                        ),
                     );
                 }
             }
@@ -350,21 +363,17 @@ WHERE t.name = ?
   AND c.name = ?
 SQL
             ,
-            [$table, $column]
+            [$table, $column],
         );
     }
 
-    /**
-     * @throws Exception
-     */
+    /** @throws Exception */
     public function createComparator(): Comparator
     {
         return new SQLServer\Comparator($this->_platform, $this->getDatabaseCollation());
     }
 
-    /**
-     * @throws Exception
-     */
+    /** @throws Exception */
     private function getDatabaseCollation(): string
     {
         if ($this->databaseCollation === null) {
@@ -521,7 +530,7 @@ SQL;
             $conditions[] = $this->getTableWhereClause(
                 $tableName,
                 'SCHEMA_NAME(f.schema_id)',
-                'OBJECT_NAME(f.parent_object_id)'
+                'OBJECT_NAME(f.parent_object_id)',
             );
 
             $sql .= ' WHERE ' . implode(' AND ', $conditions);

@@ -688,8 +688,8 @@ class BelongsToMany extends Relation
             return $this->getRelated()->newCollection();
         }
 
-        return $this->whereIn(
-            $this->getRelated()->getQualifiedKeyName(), $this->parseIds($ids)
+        return $this->whereKey(
+            $this->parseIds($ids)
         )->get($columns);
     }
 
@@ -1153,8 +1153,6 @@ class BelongsToMany extends Relation
      */
     public function touch()
     {
-        $key = $this->getRelated()->getKeyName();
-
         $columns = [
             $this->related->getUpdatedAtColumn() => $this->related->freshTimestampString(),
         ];
@@ -1163,7 +1161,7 @@ class BelongsToMany extends Relation
         // the related model's timestamps, to make sure these all reflect the changes
         // to the parent models. This will help us keep any caching synced up here.
         if (count($ids = $this->allRelatedIds()) > 0) {
-            $this->getRelated()->newQueryWithoutRelationships()->whereIn($key, $ids)->update($columns);
+            $this->getRelated()->newQueryWithoutRelationships()->whereKey($ids)->update($columns);
         }
     }
 
@@ -1225,6 +1223,20 @@ class BelongsToMany extends Relation
         $this->touchIfTouching();
 
         return $models;
+    }
+
+    /**
+     * Save an array of new models without raising any events and attach them to the parent model.
+     *
+     * @param  \Illuminate\Support\Collection|array  $models
+     * @param  array  $pivotAttributes
+     * @return array
+     */
+    public function saveManyQuietly($models, array $pivotAttributes = [])
+    {
+        return Model::withoutEvents(function () use ($models, $pivotAttributes) {
+            return $this->saveMany($models, $pivotAttributes);
+        });
     }
 
     /**

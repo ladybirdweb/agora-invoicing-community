@@ -6,6 +6,7 @@ use Illuminate\Contracts\Support\Arrayable;
 use Spatie\Ignition\Contracts\ConfigManager;
 use Throwable;
 
+/** @implements Arrayable<string, string|null|bool|array<string, mixed>> */
 class IgnitionConfig implements Arrayable
 {
     private ConfigManager $manager;
@@ -36,6 +37,7 @@ class IgnitionConfig implements Arrayable
     private function initConfigManager(): ConfigManager
     {
         try {
+            /** @phpstan-ignore-next-line  */
             return app(ConfigManager::class);
         } catch (Throwable) {
             return new FileConfigManager();
@@ -121,7 +123,7 @@ class IgnitionConfig implements Arrayable
         return (bool)($this->options['enable_runnable_solutions'] ?? false);
     }
 
-    /** @return array<string, mixed> */
+    /** @return array<string, string|null|bool|array<string, mixed>> */
     public function toArray(): array
     {
         return [
@@ -187,6 +189,10 @@ class IgnitionConfig implements Arrayable
                 'vscode-insiders-remote' => [
                     'label' => 'VS Code Insiders Remote',
                     'url' => 'vscode-insiders://vscode-remote/%path:%line',
+                ],
+                'vscodium' => [
+                    'label' => 'VS Codium',
+                    'url' => 'vscodium://file/%path:%line',
                 ],
                 'atom' => [
                     'label' => 'Atom',

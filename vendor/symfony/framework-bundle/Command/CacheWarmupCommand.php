@@ -39,9 +39,6 @@ class CacheWarmupCommand extends Command
         $this->cacheWarmer = $cacheWarmer;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function configure()
     {
         $this
@@ -53,19 +50,11 @@ The <info>%command.name%</info> command warms up the cache.
 
 Before running this command, the cache must be empty.
 
-This command does not generate the classes cache (as when executing this
-command, too many classes that should be part of the cache are already loaded
-in memory). Use <comment>curl</comment> or any other similar tool to warm up
-the classes cache if you want.
-
 EOF
             )
         ;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);

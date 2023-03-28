@@ -1,10 +1,10 @@
-<a data-id="{{$orderNumber}}" href="#edittenant" class="btn  btn-primary btn-xs" data-toggle="modal"><i class="fa fa-edit"></i>&nbsp;Change Cloud Domain</a>
-<div class="modal fade" id="edittenant" data-backdrop="static" data-keyboard="false">
+<a data-id="{{$orderNumber}}" href="#tenant" class="btn  btn-primary btn-xs open-createTenantDialog" data-toggle="modal"><i class="fa fa-refresh"></i>&nbsp;Deploy</a>
+<div class="modal fade" id="tenant" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog">
         <div class="modal-content">
             {!! Form::open() !!}
             <div class="modal-header">
-                <h4 class="modal-title">Do you want to change your existing faveo cloud domain?</h4>
+                <h4 class="modal-title">Create an instance</h4>
             </div>
 
             <div class="modal-body">
@@ -18,18 +18,10 @@
                     <form action="" method="post" style="width:500px; margin: auto auto;" class="card card-body">
                         <input type="hidden" id="orderNo" name="order" value={{$orderNumber}}>
                         <div class="form-group">
-                            <label>Enter current domain</label>
+                            <label>Domain</label>
                             <div class="row" style="margin-left: 2px; margin-right: 2px;">
                                 <input type="hidden"  name="order" id="orderId" value=""/>
-                                <input  type="text" name="userdomain" autocomplete="off" id= "userdomain"  class="form-control col col-12" placeholder="billing.faveocloud.com">
-                                <!-- <input type="text" class="form-control col col-8" value=".faveocloud.com" disabled="true">-->
-                            </div>
-                            <br>
-                            <label>Enter new domain</label>
-                            <div class="row" style="margin-left: 2px; margin-right: 2px;">
-                                <input type="hidden"  name="order" id="orderId" value=""/>
-                                <input  type="text" name="usernewdomain" autocomplete="off" id= "usernewdomain"  class="form-control col col-12" placeholder="billing.faveocloud.com">
-                                <!-- <input type="text" class="form-control col col-8" value=".faveocloud.com" disabled="true">-->
+                                <input  type="text" name="domain" autocomplete="off" id= "userdomain"  class="form-control col col-12" placeholder="https://yourCloud.faveocloud.com">
                             </div>
                         </div>
                     </form>
@@ -40,7 +32,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default pull-left closebutton" id="closebutton" data-dismiss="modal"><i class="fa fa-times">&nbsp;&nbsp;</i>Close</button>
-                <button type="submit"  class="btn btn-primary createTenant" id="createTenant" onclick="changeTenantDomain()"><i class="fa fa-check">&nbsp;&nbsp;</i>Submit</button>
+                <button type="submit"  class="btn btn-primary createTenant" id="createTenant" onclick="createTenant()"><i class="fa fa-check">&nbsp;&nbsp;</i>Submit</button>
                 {!! Form::close()  !!}
             </div>
             <!-- /Form -->
@@ -52,7 +44,7 @@
     $(document).on("click", ".open-createTenantDialog", function () {
         var orderId = $(this).data('id');
         $(".modal-body #orderId").val( orderId );
-        $('#edittenant').modal('show');
+        $('#tenant').modal('show');
     });
 
 
@@ -60,16 +52,16 @@
         location.reload();
     });
 
-    function changeTenantDomain(){
+    function createTenant(){
         $('#createTenant').attr('disabled',true)
         $("#createTenant").html("<i class='fas fa-circle-notch fa-spin'></i>Please Wait...");
         var domain = $('#userdomain').val();
-        var domainNew = $('#usernewdomain').val();
+        var password = $('#password').val();
         var order = $('#orderId').val();
         $.ajax({
-            url: "{{url('change/domain')}}",
+            url: "{{url('create/tenant')}}",
             type: "POST",
-            data: {'currentDomain': domain, 'newDomain': domainNew, 'orderNo': order},
+            data: {'domain': domain, 'password': password, 'orderNo': order},
             success: function (data) {
                 $('#createTenant').attr('disabled',false)
                 $("#createTenant").html("<i class='fa fa-check'>&nbsp;&nbsp;</i>Submit");

@@ -25,9 +25,6 @@ trait HttpClientTrait
 {
     private static int $CHUNK_SIZE = 16372;
 
-    /**
-     * {@inheritdoc}
-     */
     public function withOptions(array $options): static
     {
         $clone = clone $this;
@@ -97,7 +94,7 @@ trait HttpClientTrait
         }
 
         if (isset($options['body'])) {
-            if (\is_array($options['body'])) {
+            if (\is_array($options['body']) && (!isset($options['normalized_headers']['content-type'][0]) || !str_contains($options['normalized_headers']['content-type'][0], 'application/x-www-form-urlencoded'))) {
                 $options['normalized_headers']['content-type'] = ['Content-Type: application/x-www-form-urlencoded'];
             }
 
@@ -543,7 +540,7 @@ trait HttpClientTrait
             }
 
             // https://tools.ietf.org/html/rfc3986#section-3.3
-            $parts[$part] = preg_replace_callback("#[^-A-Za-z0-9._~!$&/'()*+,;=:@%]++#", function ($m) { return rawurlencode($m[0]); }, $parts[$part]);
+            $parts[$part] = preg_replace_callback("#[^-A-Za-z0-9._~!$&/'()[\]*+,;=:@\\\\^`{|}%]++#", function ($m) { return rawurlencode($m[0]); }, $parts[$part]);
         }
 
         return [
@@ -617,6 +614,31 @@ trait HttpClientTrait
         $queryArray = [];
 
         if ($queryString) {
+            if (str_contains($queryString, '%')) {
+                // https://tools.ietf.org/html/rfc3986#section-2.3 + some chars not encoded by browsers
+                $queryString = strtr($queryString, [
+                    '%21' => '!',
+                    '%24' => '$',
+                    '%28' => '(',
+                    '%29' => ')',
+                    '%2A' => '*',
+                    '%2B' => '+',
+                    '%2C' => ',',
+                    '%2F' => '/',
+                    '%3A' => ':',
+                    '%3B' => ';',
+                    '%40' => '@',
+                    '%5B' => '[',
+                    '%5C' => '\\',
+                    '%5D' => ']',
+                    '%5E' => '^',
+                    '%60' => '`',
+                    '%7B' => '{',
+                    '%7C' => '|',
+                    '%7D' => '}',
+                ]);
+            }
+
             foreach (explode('&', $queryString) as $v) {
                 $queryArray[rawurldecode(explode('=', $v, 2)[0])] = $v;
             }

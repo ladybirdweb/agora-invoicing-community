@@ -2,7 +2,7 @@
 
 ### Create customer
 ```php
-$api->customer->create(array('name' => 'Razorpay User', 'email' => 'customer@razorpay.com','contact'=>'9123456780', 'fail_existing'=> '0', 'notes'=> array('notes_key_1'=> 'Tea, Earl Grey, Hot','notes_key_2'=> 'Tea, Earl Grey… decaf'));
+$api->customer->create(array('name' => 'Razorpay User', 'email' => 'customer@razorpay.com','contact'=>'9123456780', 'fail_existing'=> '0', 'notes'=> array('notes_key_1'=> 'Tea, Earl Grey, Hot','notes_key_2'=> 'Tea, Earl Grey… decaf')));
 ```
 
 **Parameters:**
@@ -213,7 +213,7 @@ $api->order->create(array('amount' => '100', 'currency' => 'INR', 'customer_id'=
 ## Create a recurring payment
 
 ```php
-$api->payment->createRecurring(['email'=>'gaurav.kumar@example.com','contact'=>'9123456789','amount'=>100,'currency'=>'INR','order_id'=>$orderid,'customer_id'=>$customerId,'token'=>$tokenId,'recurring'=>'1','description'=>'Creating recurring payment for Gaurav Kumar', 'notes'=> array('key1'=> 'value3','key2'=> 'value2')));
+$api->payment->createRecurring(array('email'=>'gaurav.kumar@example.com','contact'=>'9123456789','amount'=>100,'currency'=>'INR','order_id'=>$orderid,'customer_id'=>$customerId,'token'=>$tokenId,'recurring'=>'1','description'=>'Creating recurring payment for Gaurav Kumar', 'notes'=> array('key1'=> 'value3','key2'=> 'value2')));
 ```
 **Parameters:**
 

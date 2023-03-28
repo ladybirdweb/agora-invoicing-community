@@ -54,6 +54,13 @@ class ServeCommand extends Command
     protected $requestsPool;
 
     /**
+     * Indicates if the "Server running on..." output message has been displayed.
+     *
+     * @var bool
+     */
+    protected $serverRunningHasBeenDisplayed = false;
+
+    /**
      * The environment variables that should be passed from host machine to the PHP server process.
      *
      * @var string[]
@@ -61,6 +68,7 @@ class ServeCommand extends Command
     public static $passthroughVariables = [
         'APP_ENV',
         'LARAVEL_SAIL',
+        'PATH',
         'PHP_CLI_SERVER_WORKERS',
         'PHP_IDE_CONFIG',
         'SYSTEMROOT',
@@ -105,6 +113,8 @@ class ServeCommand extends Command
                 $this->components->info('Environment modified. Restarting server...');
 
                 $process->stop(5);
+
+                $this->serverRunningHasBeenDisplayed = false;
 
                 $process = $this->startProcess($hasEnvironment);
             }
@@ -170,7 +180,7 @@ class ServeCommand extends Command
      */
     protected function host()
     {
-        [$host, ] = $this->getHostAndPort();
+        [$host] = $this->getHostAndPort();
 
         return $host;
     }
@@ -228,10 +238,16 @@ class ServeCommand extends Command
     {
         return fn ($type, $buffer) => str($buffer)->explode("\n")->each(function ($line) {
             if (str($line)->contains('Development Server (http')) {
+                if ($this->serverRunningHasBeenDisplayed) {
+                    return;
+                }
+
                 $this->components->info("Server running on [http://{$this->host()}:{$this->port()}].");
                 $this->comment('  <fg=yellow;options=bold>Press Ctrl+C to stop the server</>');
 
                 $this->newLine();
+
+                $this->serverRunningHasBeenDisplayed = true;
             } elseif (str($line)->contains(' Accepted')) {
                 $requestPort = $this->getRequestPortFromLine($line);
 
@@ -284,7 +300,11 @@ class ServeCommand extends Command
      */
     protected function getDateFromLine($line)
     {
-        preg_match('/^\[([^\]]+)\]/', $line, $matches);
+        $regex = env('PHP_CLI_SERVER_WORKERS', 1) > 1
+            ? '/^\[\d+]\s\[([a-zA-Z0-9: ]+)\]/'
+            : '/^\[([^\]]+)\]/';
+
+        preg_match($regex, $line, $matches);
 
         return Carbon::createFromFormat('D M d H:i:s Y', $matches[1]);
     }

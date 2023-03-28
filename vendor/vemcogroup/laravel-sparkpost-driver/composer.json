@@ -19,7 +19,7 @@
     "require": {
         "php": "^8.0.2",
         "guzzlehttp/guzzle": "^7.2",
-        "laravel/framework": "^9.0",
+        "laravel/framework": "^9.0|^10.0",
         "symfony/mailer": "^6.0",
         "ext-json": "*"
     },

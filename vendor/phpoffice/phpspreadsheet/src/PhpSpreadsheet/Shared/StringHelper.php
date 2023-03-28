@@ -2,16 +2,8 @@
 
 namespace PhpOffice\PhpSpreadsheet\Shared;
 
-use PhpOffice\PhpSpreadsheet\Calculation\Calculation;
-use UConverter;
-
 class StringHelper
 {
-    /**    Constants                */
-    /**    Regular Expressions        */
-    //    Fraction
-    const STRING_REGEXP_FRACTION = '~^\s*(-?)((\d*)\s+)?(\d+\/\d+)\s*$~';
-
     /**
      * Control characters array.
      *
@@ -334,26 +326,23 @@ class StringHelper
     public static function sanitizeUTF8(string $textValue): string
     {
         $textValue = str_replace(["\xef\xbf\xbe", "\xef\xbf\xbf"], "\xef\xbf\xbd", $textValue);
-        if (class_exists(UConverter::class)) {
-            $returnValue = UConverter::transcode($textValue, 'UTF-8', 'UTF-8');
-            if ($returnValue !== false) {
-                return $returnValue;
-            }
-        }
-        // @codeCoverageIgnoreStart
-        // I don't think any of the code below should ever be executed.
-        if (self::getIsIconvEnabled()) {
-            $returnValue = @iconv('UTF-8', 'UTF-8', $textValue);
-            if ($returnValue !== false) {
-                return $returnValue;
-            }
-        }
-
+        $subst = mb_substitute_character(); // default is question mark
+        mb_substitute_character(65533); // Unicode substitution character
         // Phpstan does not think this can return false.
         $returnValue = mb_convert_encoding($textValue, 'UTF-8', 'UTF-8');
+        mb_substitute_character(/** @scrutinizer ignore-type */ $subst);
 
-        return $returnValue;
-        // @codeCoverageIgnoreEnd
+        return self::returnString($returnValue);
+    }
+
+    /**
+     * Strictly to satisfy Scrutinizer.
+     *
+     * @param mixed $value
+     */
+    private static function returnString($value): string
+    {
+        return is_string($value) ? $value : '';
     }
 
     /**
@@ -447,7 +436,7 @@ class StringHelper
             }
         }
 
-        return mb_convert_encoding($textValue, $to, $from);
+        return self::returnString(mb_convert_encoding($textValue, $to, $from));
     }
 
     /**
@@ -541,28 +530,6 @@ class StringHelper
 
         return implode('', $characters);
     }
-
-    /**
-     * Identify whether a string contains a fractional numeric value,
-     * and convert it to a numeric if it is.
-     *
-     * @param string $operand string value to test
-     */
-    public static function convertToNumberIfFraction(string &$operand): bool
-    {
-        if (preg_match(self::STRING_REGEXP_FRACTION, $operand, $match)) {
-            $sign = ($match[1] == '-') ? '-' : '+';
-            $wholePart = ($match[3] === '') ? '' : ($sign . $match[3]);
-            $fractionFormula = '=' . $wholePart . $sign . $match[4];
-            $operand = Calculation::getInstance()->_calculateFormulaValue($fractionFormula);
-
-            return true;
-        }
-
-        return false;
-    }
-
-    //    function convertToNumberIfFraction()
 
     /**
      * Get the decimal separator. If it has not yet been set explicitly, try to obtain number

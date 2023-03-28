@@ -26,6 +26,7 @@ use Symfony\Contracts\Service\ResetInterface;
 abstract class KernelTestCase extends TestCase
 {
     use MailerAssertionsTrait;
+    use NotificationAssertionsTrait;
 
     protected static $class;
 
@@ -70,7 +71,7 @@ abstract class KernelTestCase extends TestCase
 
         $kernel = static::createKernel($options);
         $kernel->boot();
-        self::$kernel = $kernel;
+        static::$kernel = $kernel;
         static::$booted = true;
 
         return static::$kernel;
@@ -109,9 +110,7 @@ abstract class KernelTestCase extends TestCase
      */
     protected static function createKernel(array $options = []): KernelInterface
     {
-        if (null === static::$class) {
-            static::$class = static::getKernelClass();
-        }
+        static::$class ??= static::getKernelClass();
 
         if (isset($options['environment'])) {
             $env = $options['environment'];

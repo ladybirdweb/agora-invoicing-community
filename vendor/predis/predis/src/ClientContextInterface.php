@@ -3,7 +3,8 @@
 /*
  * This file is part of the Predis package.
  *
- * (c) Daniele Alessandri <suppakilla@gmail.com>
+ * (c) 2009-2020 Daniele Alessandri
+ * (c) 2021-2023 Till Krüss
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,16 +12,23 @@
 
 namespace Predis;
 
+use Predis\Command\Argument\Geospatial\ByInterface;
+use Predis\Command\Argument\Geospatial\FromInterface;
+use Predis\Command\Argument\Server\LimitOffsetCount;
+use Predis\Command\Argument\Server\To;
 use Predis\Command\CommandInterface;
+use Predis\Command\Redis\Container\FunctionContainer;
 
 /**
  * Interface defining a client-side context such as a pipeline or transaction.
  *
+ * @method $this copy(string $source, string $destination, int $db = -1, bool $replace = false)
  * @method $this del(array|string $keys)
  * @method $this dump($key)
  * @method $this exists($key)
- * @method $this expire($key, $seconds)
- * @method $this expireat($key, $timestamp)
+ * @method $this expire($key, $seconds, string $expireOption = '')
+ * @method $this expireat($key, $timestamp, string $expireOption = '')
+ * @method $this expiretime(string $key)
  * @method $this keys($pattern)
  * @method $this move($key, $db)
  * @method $this object($subcommand, $key)
@@ -33,18 +41,27 @@ use Predis\Command\CommandInterface;
  * @method $this renamenx($key, $target)
  * @method $this scan($cursor, array $options = null)
  * @method $this sort($key, array $options = null)
+ * @method $this sort_ro(string $key, ?string $byPattern = null, ?LimitOffsetCount $limit = null, array $getPatterns = [], ?string $sorting = null, bool $alpha = false)
  * @method $this ttl($key)
  * @method $this type($key)
  * @method $this append($key, $value)
- * @method $this bitcount($key, $start = null, $end = null)
+ * @method $this bitcount($key, $start = null, $end = null, string $index = 'byte')
  * @method $this bitop($operation, $destkey, $key)
  * @method $this bitfield($key, $subcommand, ...$subcommandArg)
- * @method $this bitpos($key, $bit, $start = null, $end = null)
+ * @method $this bitpos($key, $bit, $start = null, $end = null, string $index = 'byte')
+ * @method $this blmpop(int $timeout, array $keys, string $modifier = 'left', int $count = 1)
+ * @method $this bzpopmax(array $keys, int $timeout)
+ * @method $this bzpopmin(array $keys, int $timeout)
+ * @method $this bzmpop(int $timeout, array $keys, string $modifier = 'min', int $count = 1)
  * @method $this decr($key)
  * @method $this decrby($key, $decrement)
+ * @method $this failover(?To $to = null, bool $abort = false, int $timeout = -1)
+ * @method $this fcall(string $function, array $keys, ...$args)
  * @method $this get($key)
  * @method $this getbit($key, $offset)
+ * @method $this getex(string $key, $modifier = '', $value = false)
  * @method $this getrange($key, $start, $end)
+ * @method $this getdel(string $key)
  * @method $this getset($key, $value)
  * @method $this incr($key)
  * @method $this incrby($key, $increment)
@@ -69,17 +86,22 @@ use Predis\Command\CommandInterface;
  * @method $this hlen($key)
  * @method $this hmget($key, array $fields)
  * @method $this hmset($key, array $dictionary)
+ * @method $this hrandfield(string $key, int $count = 1, bool $withValues = false)
  * @method $this hscan($key, $cursor, array $options = null)
  * @method $this hset($key, $field, $value)
  * @method $this hsetnx($key, $field, $value)
  * @method $this hvals($key)
  * @method $this hstrlen($key, $field)
+ * @method $this blmove(string $source, string $destination, string $where, string $to, int $timeout)
  * @method $this blpop(array|string $keys, $timeout)
  * @method $this brpop(array|string $keys, $timeout)
  * @method $this brpoplpush($source, $destination, $timeout)
+ * @method $this lcs(string $key1, string $key2, bool $len = false, bool $idx = false, int $minMatchLen = 0, bool $withMatchLen = false)
  * @method $this lindex($key, $index)
  * @method $this linsert($key, $whence, $pivot, $value)
  * @method $this llen($key)
+ * @method $this lmove(string $source, string $destination, string $where, string $to)
+ * @method $this lmpop(array $keys, string $modifier = 'left', int $count = 1)
  * @method $this lpop($key)
  * @method $this lpush($key, array $values)
  * @method $this lpushx($key, array $values)
@@ -96,9 +118,11 @@ use Predis\Command\CommandInterface;
  * @method $this sdiff(array|string $keys)
  * @method $this sdiffstore($destination, array|string $keys)
  * @method $this sinter(array|string $keys)
+ * @method $this sintercard(array $keys, int $limit = 0)
  * @method $this sinterstore($destination, array|string $keys)
  * @method $this sismember($key, $member)
  * @method $this smembers($key)
+ * @method $this smismember(string $key, string ...$members)
  * @method $this smove($source, $destination, $member)
  * @method $this spop($key, $count = null)
  * @method $this srandmember($key, $count = null)
@@ -109,10 +133,18 @@ use Predis\Command\CommandInterface;
  * @method $this zadd($key, array $membersAndScoresDictionary)
  * @method $this zcard($key)
  * @method $this zcount($key, $min, $max)
+ * @method $this zdiff(array $keys, bool $withScores = false)
+ * @method $this zdiffstore(string $destination, array $keys)
  * @method $this zincrby($key, $increment, $member)
- * @method $this zinterstore($destination, array|string $keys, array $options = null)
+ * @method $this zintercard(array $keys, int $limit = 0)
+ * @method $this zinterstore(string $destination, array $keys, int[] $weights = [], string $aggregate = 'sum')
+ * @method $this zinter(array $keys, int[] $weights = [], string $aggregate = 'sum', bool $withScores = false)
+ * @method $this zmpop(array $keys, string $modifier = 'min', int $count = 1)
+ * @method $this zmscore(string $key, string ...$member)
+ * @method $this zrandmember(string $key, int $count = 1, bool $withScores = false)
  * @method $this zrange($key, $start, $stop, array $options = null)
  * @method $this zrangebyscore($key, $min, $max, array $options = null)
+ * @method $this zrangestore(string $destination, string $source, int|string $min, string|int $max, string|bool $by = false, bool $reversed = false, bool $limit = false, int $offset = 0, int $count = 0)
  * @method $this zrank($key, $member)
  * @method $this zrem($key, $member)
  * @method $this zremrangebyrank($key, $start, $stop)
@@ -120,13 +152,15 @@ use Predis\Command\CommandInterface;
  * @method $this zrevrange($key, $start, $stop, array $options = null)
  * @method $this zrevrangebyscore($key, $max, $min, array $options = null)
  * @method $this zrevrank($key, $member)
- * @method $this zunionstore($destination, array|string $keys, array $options = null)
+ * @method $this zunion(array $keys, int[] $weights = [], string $aggregate = 'sum', bool $withScores = false)
+ * @method $this zunionstore(string $destination, array $keys, int[] $weights = [], string $aggregate = 'sum')
  * @method $this zscore($key, $member)
  * @method $this zscan($key, $cursor, array $options = null)
  * @method $this zrangebylex($key, $start, $stop, array $options = null)
  * @method $this zrevrangebylex($key, $start, $stop, array $options = null)
  * @method $this zremrangebylex($key, $min, $max)
  * @method $this zlexcount($key, $min, $max)
+ * @method $this pexpiretime(string $key)
  * @method $this pfadd($key, array $elements)
  * @method $this pfmerge($destinationKey, array|string $sourceKeys)
  * @method $this pfcount(array|string $keys)
@@ -138,7 +172,9 @@ use Predis\Command\CommandInterface;
  * @method $this unwatch()
  * @method $this watch($key)
  * @method $this eval($script, $numkeys, $keyOrArg1 = null, $keyOrArgN = null)
+ * @method $this eval_ro(string $script, array $keys, ...$argument)
  * @method $this evalsha($script, $numkeys, $keyOrArg1 = null, $keyOrArgN = null)
+ * @method $this evalsha_ro(string $sha1, array $keys, ...$argument)
  * @method $this script($subcommand, $argument = null)
  * @method $this auth($password)
  * @method $this echo($message)
@@ -164,8 +200,11 @@ use Predis\Command\CommandInterface;
  * @method $this geodist($key, $member1, $member2, $unit = null)
  * @method $this georadius($key, $longitude, $latitude, $radius, $unit, array $options = null)
  * @method $this georadiusbymember($key, $member, $radius, $unit, array $options = null)
+ * @method $this geosearch(string $key, FromInterface $from, ByInterface $by, ?string $sorting = null, int $count = -1, bool $any = false, bool $withCoord = false, bool $withDist = false, bool $withHash = false)
+ * @method $this geosearchstore(string $destination, string $source, FromInterface $from, ByInterface $by, ?string $sorting = null, int $count = -1, bool $any = false, bool $storeDist = false)
  *
- * @author Daniele Alessandri <suppakilla@gmail.com>
+ * Container commands
+ * @property FunctionContainer $function
  */
 interface ClientContextInterface
 {

@@ -10,13 +10,14 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Git checkout
-              uses: actions/checkout@v2
+              uses: actions/checkout@v3
 
             - name: normalize composer.json
               run: |
+                  composer global config --no-plugins allow-plugins.ergebnis/composer-normalize true
                   composer global require ergebnis/composer-normalize
                   composer normalize
 
-            - uses: stefanzweifel/git-auto-commit-action@v4.0.0
+            - uses: stefanzweifel/git-auto-commit-action@v4.15.4
               with:
                   commit_message: normalize composer.json

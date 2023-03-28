@@ -1,6 +1,17 @@
 CHANGELOG
 =========
 
+6.2
+---
+
+ * Add constructor argument `bool $handleAllThrowable` to `HttpKernel`
+ * Add `ControllerEvent::getAttributes()` to handle attributes on controllers
+ * Add `#[Cache]` to describe the default HTTP cache headers on controllers
+ * Add `absolute_uri` option to surrogate fragment renderers
+ * Add `ValueResolverInterface` and deprecate `ArgumentValueResolverInterface`
+ * Add argument `$reflector` to `ArgumentResolverInterface` and `ArgumentMetadataFactoryInterface`
+ * Deprecate calling `ConfigDataCollector::setKernel()`, `RouterListener::setCurrentRequest()` without arguments
+
 6.1
 ---
 

@@ -13,7 +13,9 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use Symfony\Component\Notifier\Bridge\AllMySms\AllMySmsTransportFactory;
 use Symfony\Component\Notifier\Bridge\AmazonSns\AmazonSnsTransportFactory;
+use Symfony\Component\Notifier\Bridge\Chatwork\ChatworkTransportFactory;
 use Symfony\Component\Notifier\Bridge\Clickatell\ClickatellTransportFactory;
+use Symfony\Component\Notifier\Bridge\ContactEveryone\ContactEveryoneTransportFactory;
 use Symfony\Component\Notifier\Bridge\Discord\DiscordTransportFactory;
 use Symfony\Component\Notifier\Bridge\Engagespot\EngagespotTransportFactory;
 use Symfony\Component\Notifier\Bridge\Esendex\EsendexTransportFactory;
@@ -51,6 +53,7 @@ use Symfony\Component\Notifier\Bridge\Sms77\Sms77TransportFactory;
 use Symfony\Component\Notifier\Bridge\Smsapi\SmsapiTransportFactory;
 use Symfony\Component\Notifier\Bridge\SmsBiuras\SmsBiurasTransportFactory;
 use Symfony\Component\Notifier\Bridge\Smsc\SmscTransportFactory;
+use Symfony\Component\Notifier\Bridge\SmsFactor\SmsFactorTransportFactory;
 use Symfony\Component\Notifier\Bridge\SpotHit\SpotHitTransportFactory;
 use Symfony\Component\Notifier\Bridge\Telegram\TelegramTransportFactory;
 use Symfony\Component\Notifier\Bridge\Telnyx\TelnyxTransportFactory;
@@ -58,6 +61,7 @@ use Symfony\Component\Notifier\Bridge\TurboSms\TurboSmsTransportFactory;
 use Symfony\Component\Notifier\Bridge\Twilio\TwilioTransportFactory;
 use Symfony\Component\Notifier\Bridge\Vonage\VonageTransportFactory;
 use Symfony\Component\Notifier\Bridge\Yunpian\YunpianTransportFactory;
+use Symfony\Component\Notifier\Bridge\Zendesk\ZendeskTransportFactory;
 use Symfony\Component\Notifier\Bridge\Zulip\ZulipTransportFactory;
 use Symfony\Component\Notifier\Transport\AbstractTransportFactory;
 use Symfony\Component\Notifier\Transport\NullTransportFactory;
@@ -197,6 +201,10 @@ return static function (ContainerConfigurator $container) {
             ->parent('notifier.transport_factory.abstract')
             ->tag('texter.transport_factory')
 
+        ->set('notifier.transport_factory.contact-everyone', ContactEveryoneTransportFactory::class)
+            ->parent('notifier.transport_factory.abstract')
+            ->tag('texter.transport_factory')
+
         ->set('notifier.transport_factory.amazon-sns', AmazonSnsTransportFactory::class)
             ->parent('notifier.transport_factory.abstract')
             ->tag('texter.transport_factory')
@@ -216,6 +224,10 @@ return static function (ContainerConfigurator $container) {
             ->tag('texter.transport_factory')
 
         ->set('notifier.transport_factory.smsc', SmscTransportFactory::class)
+            ->parent('notifier.transport_factory.abstract')
+            ->tag('texter.transport_factory')
+
+        ->set('notifier.transport_factory.sms-factor', SmsFactorTransportFactory::class)
             ->parent('notifier.transport_factory.abstract')
             ->tag('texter.transport_factory')
 
@@ -266,5 +278,14 @@ return static function (ContainerConfigurator $container) {
         ->set('notifier.transport_factory.engagespot', EngagespotTransportFactory::class)
             ->parent('notifier.transport_factory.abstract')
             ->tag('texter.transport_factory')
+
+        ->set('notifier.transport_factory.zendesk', ZendeskTransportFactory::class)
+            ->parent('notifier.transport_factory.abstract')
+            ->tag('chatter.transport_factory')
+
+        ->set('notifier.transport_factory.chatwork', ChatworkTransportFactory::class)
+        ->parent('notifier.transport_factory.abstract')
+        ->tag('chatter.transport_factory')
+
     ;
 };

@@ -51,7 +51,7 @@ class MarkdownDescriptor extends Descriptor
             ."\n".'- Host Regex: '.('' !== $route->getHost() ? $route->compile()->getHostRegex() : '')
             ."\n".'- Scheme: '.($route->getSchemes() ? implode('|', $route->getSchemes()) : 'ANY')
             ."\n".'- Method: '.($route->getMethods() ? implode('|', $route->getMethods()) : 'ANY')
-            ."\n".'- Class: '.\get_class($route)
+            ."\n".'- Class: '.$route::class
             ."\n".'- Defaults: '.$this->formatRouterConfig($route->getDefaults())
             ."\n".'- Requirements: '.($route->getRequirements() ? $this->formatRouterConfig($route->getRequirements()) : 'NO CUSTOM')
             ."\n".'- Options: '.$this->formatRouterConfig($route->getOptions());
@@ -83,7 +83,7 @@ class MarkdownDescriptor extends Descriptor
             $this->write("\n\n".$tag."\n".str_repeat('-', \strlen($tag)));
             foreach ($definitions as $serviceId => $definition) {
                 $this->write("\n\n");
-                $this->describeContainerDefinition($definition, ['omit_tags' => true, 'id' => $serviceId]);
+                $this->describeContainerDefinition($definition, ['omit_tags' => true, 'id' => $serviceId], $builder);
             }
         }
     }
@@ -99,9 +99,9 @@ class MarkdownDescriptor extends Descriptor
         if ($service instanceof Alias) {
             $this->describeContainerAlias($service, $childOptions, $builder);
         } elseif ($service instanceof Definition) {
-            $this->describeContainerDefinition($service, $childOptions);
+            $this->describeContainerDefinition($service, $childOptions, $builder);
         } else {
-            $this->write(sprintf('**`%s`:** `%s`', $options['id'], \get_class($service)));
+            $this->write(sprintf('**`%s`:** `%s`', $options['id'], $service::class));
         }
     }
 
@@ -172,7 +172,7 @@ class MarkdownDescriptor extends Descriptor
             $this->write("\n\nDefinitions\n-----------\n");
             foreach ($services['definitions'] as $id => $service) {
                 $this->write("\n");
-                $this->describeContainerDefinition($service, ['id' => $id, 'show_arguments' => $showArguments]);
+                $this->describeContainerDefinition($service, ['id' => $id, 'show_arguments' => $showArguments], $builder);
             }
         }
 
@@ -188,12 +188,12 @@ class MarkdownDescriptor extends Descriptor
             $this->write("\n\nServices\n--------\n");
             foreach ($services['services'] as $id => $service) {
                 $this->write("\n");
-                $this->write(sprintf('- `%s`: `%s`', $id, \get_class($service)));
+                $this->write(sprintf('- `%s`: `%s`', $id, $service::class));
             }
         }
     }
 
-    protected function describeContainerDefinition(Definition $definition, array $options = [])
+    protected function describeContainerDefinition(Definition $definition, array $options = [], ContainerBuilder $builder = null)
     {
         $output = '';
 
@@ -211,6 +211,13 @@ class MarkdownDescriptor extends Descriptor
             ."\n".'- Autoconfigured: '.($definition->isAutoconfigured() ? 'yes' : 'no')
         ;
 
+        if ($definition->isDeprecated()) {
+            $output .= "\n".'- Deprecated: yes';
+            $output .= "\n".'- Deprecation message: '.$definition->getDeprecation($options['id'])['message'];
+        } else {
+            $output .= "\n".'- Deprecated: no';
+        }
+
         if (isset($options['show_arguments']) && $options['show_arguments']) {
             $output .= "\n".'- Arguments: '.($definition->getArguments() ? 'yes' : 'no');
         }
@@ -224,7 +231,7 @@ class MarkdownDescriptor extends Descriptor
                 if ($factory[0] instanceof Reference) {
                     $output .= "\n".'- Factory Service: `'.$factory[0].'`';
                 } elseif ($factory[0] instanceof Definition) {
-                    throw new \InvalidArgumentException('Factory is not describable.');
+                    $output .= "\n".sprintf('- Factory Service: inline factory service (%s)', $factory[0]->getClass() ? sprintf('`%s`', $factory[0]->getClass()) : 'not configured');
                 } else {
                     $output .= "\n".'- Factory Class: `'.$factory[0].'`';
                 }
@@ -250,6 +257,9 @@ class MarkdownDescriptor extends Descriptor
             }
         }
 
+        $inEdges = null !== $builder && isset($options['id']) ? $this->getServiceEdges($builder, $options['id']) : [];
+        $output .= "\n".'- Usages: '.($inEdges ? implode(', ', $inEdges) : 'none');
+
         $this->write(isset($options['id']) ? sprintf("### %s\n\n%s\n", $options['id'], $output) : $output);
     }
 
@@ -271,7 +281,7 @@ class MarkdownDescriptor extends Descriptor
         }
 
         $this->write("\n");
-        $this->describeContainerDefinition($builder->getDefinition((string) $alias), array_merge($options, ['id' => (string) $alias]));
+        $this->describeContainerDefinition($builder->getDefinition((string) $alias), array_merge($options, ['id' => (string) $alias]), $builder);
     }
 
     protected function describeContainerParameter(mixed $parameter, array $options = [])
@@ -377,7 +387,7 @@ class MarkdownDescriptor extends Descriptor
             }
             $string .= "\n".sprintf('- Name: `%s`', $r->name);
 
-            if ($class = $r->getClosureScopeClass()) {
+            if ($class = \PHP_VERSION_ID >= 80111 ? $r->getClosureCalledClass() : $r->getClosureScopeClass()) {
                 $string .= "\n".sprintf('- Class: `%s`', $class->name);
                 if (!$r->getClosureThis()) {
                     $string .= "\n- Static: yes";
@@ -389,7 +399,7 @@ class MarkdownDescriptor extends Descriptor
 
         if (method_exists($callable, '__invoke')) {
             $string .= "\n- Type: `object`";
-            $string .= "\n".sprintf('- Name: `%s`', \get_class($callable));
+            $string .= "\n".sprintf('- Name: `%s`', $callable::class);
 
             return $this->write($string."\n");
         }

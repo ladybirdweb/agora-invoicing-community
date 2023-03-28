@@ -408,7 +408,7 @@ $api->subscription->fetch($subscriptionId)->cancelScheduledChanges();
 ### Pause a subscription
 
 ```php
-$api->subscription->fetch($subscriptionId)->pause(array('pause_at'=>'now'))
+$api->subscription->fetch($subscriptionId)->pause(array('pause_at'=>'now'));
 ```
 
 **Parameters:**
@@ -457,7 +457,7 @@ $api->subscription->fetch($subscriptionId)->pause(array('pause_at'=>'now'))
 ### Resume a subscription
 
 ```php
-$api->subscription->fetch($subscriptionId)->resume(array('resume_at'=>'now'))
+$api->subscription->fetch($subscriptionId)->resume(array('resume_at'=>'now'));
 ```
 
 **Parameters:**
@@ -606,7 +606,7 @@ $api->invoice->all(['subscription_id'=>$subscriptionId]);
 ### Delete offer linked to a subscription
 
 ```php
-$api->subscription->fetch($subscriptionId)->deleteOffer($offerId)
+$api->subscription->fetch($subscriptionId)->deleteOffer($offerId);
 ```
 
 **Parameters:**

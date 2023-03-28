@@ -24,12 +24,13 @@
         "php": "^8.0",
         "ext-json": "*",
         "guzzlehttp/guzzle": "^7.0",
-        "illuminate/mail": "^9.0",
-        "illuminate/support": "^9.0"
+        "illuminate/mail": "^9.0|^10.0",
+        "illuminate/support": "^9.0|^10.0"
     },
     "require-dev": {
+        "ext-gd": "*",
         "fakerphp/faker": "^1.17",
-        "orchestra/testbench": "^7.0",
+        "orchestra/testbench": "^7.19|^8.0",
         "phpunit/phpunit": "^9.0"
     },
     "suggest": {

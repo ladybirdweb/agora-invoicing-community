@@ -4,6 +4,11 @@ Changelog for Razorpay-PHP SDK. Follows [keepachangelog.com](https://keepachange
 
 ## Unreleased
 
+## [2.8.5] - 2022-10-19
+
+### Added
+- Update [Request](https://github.com/WordPress/Requests/tree/v2.0.4) library to v2.0.4
+
 ## [2.8.4] - 2022-06-28
 
 - New APIs for Third party validation (createUpi, validateVpa, fetchPaymentMethods)

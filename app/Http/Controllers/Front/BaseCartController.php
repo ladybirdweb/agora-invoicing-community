@@ -20,7 +20,6 @@ class BaseCartController extends Controller
         try {
             $id = $request->input('productid');
             $hasPermissionToModifyAgent = Product::find($id)->can_modify_agent;
-
             if ($hasPermissionToModifyAgent) {
                 $cartValues = $this->getCartValues($id, true);
 
@@ -58,7 +57,6 @@ class BaseCartController extends Controller
 
             return successResponse('Cart updated successfully');
         } catch (\Exception $ex) {
-            dd($ex);
 
             return errorResponse($ex->getMessage());
         }
@@ -77,13 +75,25 @@ class BaseCartController extends Controller
         }
 
         if ($canReduceAgent) {
-            $agtqty = $agtqty / 2;
-            $price = \Cart::getTotal() / 2;
-        } else {
-            $agtqty = $agtqty * 2;
-            $price = \Cart::getTotal() * 2;
-        }
+            $price =\Cart::getTotal()/$agtqty;
+            dump($price);
+            $agtqty = $agtqty - 1;
+            dump($agtqty);
+            $price = \Cart::getTotal() - $price;
+            dump($price);
 
+
+        } else {
+            $price = \Cart::getTotal()/$agtqty;
+            dump($price);
+
+            $agtqty = $agtqty + 1;
+            dump($agtqty);
+
+            $price = $price * $agtqty;
+            dump($price);
+
+        }
         return ['agtqty' => $agtqty, 'price' => $price, 'currency' => $currency, 'symbol' => $symbol];
     }
 

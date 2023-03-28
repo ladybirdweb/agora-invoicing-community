@@ -25,9 +25,6 @@ class TagAwareMarshaller implements MarshallerInterface
         $this->marshaller = $marshaller ?? new DefaultMarshaller();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function marshall(array $values, ?array &$failed): array
     {
         $failed = $notSerialized = $serialized = [];
@@ -51,7 +48,7 @@ class TagAwareMarshaller implements MarshallerInterface
                     $serialized[$id][9] = "\x5F";
                 }
             } else {
-                // other arbitratry values are serialized using the decorated marshaller below
+                // other arbitrary values are serialized using the decorated marshaller below
                 $notSerialized[$id] = $value;
             }
         }
@@ -64,9 +61,6 @@ class TagAwareMarshaller implements MarshallerInterface
         return $serialized;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function unmarshall(string $value): mixed
     {
         // detect the compact format used in marshall() using magic numbers in the form 9D-..-..-..-..-00-..-..-..-5F

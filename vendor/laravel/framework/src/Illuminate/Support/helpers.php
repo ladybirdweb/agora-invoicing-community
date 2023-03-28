@@ -102,7 +102,7 @@ if (! function_exists('e')) {
     /**
      * Encode HTML special characters in a string.
      *
-     * @param  \Illuminate\Contracts\Support\DeferringDisplayableValue|\Illuminate\Contracts\Support\Htmlable|string|null  $value
+     * @param  \Illuminate\Contracts\Support\DeferringDisplayableValue|\Illuminate\Contracts\Support\Htmlable|\BackedEnum|string|null  $value
      * @param  bool  $doubleEncode
      * @return string
      */
@@ -114,6 +114,10 @@ if (! function_exists('e')) {
 
         if ($value instanceof Htmlable) {
             return $value->toHtml();
+        }
+
+        if ($value instanceof BackedEnum) {
+            $value = $value->value;
         }
 
         return htmlspecialchars($value ?? '', ENT_QUOTES, 'UTF-8', $doubleEncode);
@@ -408,10 +412,11 @@ if (! function_exists('with')) {
      * Return the given value, optionally passed through the given callback.
      *
      * @template TValue
+     * @template TReturn
      *
      * @param  TValue  $value
-     * @param  (callable(TValue): TValue)|null  $callback
-     * @return TValue
+     * @param  (callable(TValue): (TReturn))|null  $callback
+     * @return ($callback is null ? TValue : TReturn)
      */
     function with($value, callable $callback = null)
     {

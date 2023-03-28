@@ -604,6 +604,8 @@ class Process implements \IteratorAggregate
      *
      * @param int $flags A bit field of Process::ITER_* flags
      *
+     * @return \Generator<string, string>
+     *
      * @throws LogicException in case the output has been disabled
      * @throws LogicException In case the process is not started
      */
@@ -872,7 +874,7 @@ class Process implements \IteratorAggregate
      * Stops the process.
      *
      * @param int|float $timeout The timeout in seconds
-     * @param int       $signal  A POSIX signal to send in case the process has not stop at timeout, default is SIGKILL (9)
+     * @param int|null  $signal  A POSIX signal to send in case the process has not stop at timeout, default is SIGKILL (9)
      *
      * @return int|null The exit-code of the process or null if it's not running
      */
@@ -1204,11 +1206,7 @@ class Process implements \IteratorAggregate
     {
         static $isTtySupported;
 
-        if (null === $isTtySupported) {
-            $isTtySupported = (bool) @proc_open('echo 1 >/dev/null', [['file', '/dev/tty', 'r'], ['file', '/dev/tty', 'w'], ['file', '/dev/tty', 'w']], $pipes);
-        }
-
-        return $isTtySupported;
+        return $isTtySupported ??= ('/' === \DIRECTORY_SEPARATOR && stream_isatty(\STDOUT));
     }
 
     /**

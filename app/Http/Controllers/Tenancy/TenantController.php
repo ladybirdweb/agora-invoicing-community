@@ -30,9 +30,9 @@ class TenantController extends Controller
         $cloud = $this->cloud;
 
         $response = $this->client->request(
-                    'GET',
-                    $this->cloud->cloud_central_domain.'/tenants'
-                );
+            'GET',
+            $this->cloud->cloud_central_domain.'/tenants'
+        );
 
         $responseBody = (string) $response->getBody();
         $response = json_decode($responseBody, true);
@@ -47,9 +47,9 @@ class TenantController extends Controller
     {
         try {
             $response = $this->client->request(
-                    'GET',
-                        $this->cloud->cloud_central_domain.'/tenants'
-                );
+                'GET',
+                $this->cloud->cloud_central_domain.'/tenants'
+            );
 
             $responseBody = (string) $response->getBody();
             $response = json_decode($responseBody);
@@ -106,21 +106,20 @@ class TenantController extends Controller
      */
     public function createTenant(Request $request)
     {
-
-        $order=Order::wherenumber($request->orderNo)->get();
-        $product= strpos($order[0]->product()->value('name'),'ServiceDesk')?'ServiceDesk':'Helpdesk';
+        $order = Order::wherenumber($request->orderNo)->get();
+        $product = strpos($order[0]->product()->value('name'), 'ServiceDesk') ? 'ServiceDesk' : 'Helpdesk';
         //This above code is only written
         // to differentiate HD and SD when we reach the
         // market place feature this needs to be removed
 
         $this->validate($request,
-                [
-                    'orderNo' => 'required',
-                    'domain' => 'required||regex:/^[a-zA-Z0-9]+$/u',
-                ],
-                [
-                    'domain.regex' => 'Special characters are not allowed in domain name',
-                ]);
+            [
+                'orderNo' => 'required',
+                'domain' => 'required||regex:/^[a-zA-Z0-9]+$/u',
+            ],
+            [
+                'domain.regex' => 'Special characters are not allowed in domain name',
+            ]);
 
         $settings = Setting::find(1);
         $user = \Auth::user()->email;
@@ -130,7 +129,7 @@ class TenantController extends Controller
         try {
             $faveoCloud = $request->input('domain');
             $dns_record = dns_get_record($faveoCloud, DNS_CNAME);
-            if(!strpos($faveoCloud,'faveocloud.com')) {
+            if (! strpos($faveoCloud, 'faveocloud.com')) {
                 if (empty($dns_record) || $dns_record[0]['domain'] != '') {
                     throw new Exception('Your Domains DNS CNAME record is not pointing to our cloud!(CNAME record is missing) Please do it to proceed');
                 }
@@ -143,7 +142,7 @@ class TenantController extends Controller
             $token = str_random(32);
             \DB::table('third_party_tokens')->insert(['user_id' => \Auth::user()->id, 'token' => $token]);
             $client = new Client([]);
-            $data = ['domain' => $faveoCloud, 'app_key'=>$keys->app_key, 'token'=>$token, 'lic_code'=>$licCode, 'username'=>$user, 'userId'=>\Auth::user()->id, 'timestamp'=>time(),'product'=>$product];
+            $data = ['domain' => $faveoCloud, 'app_key'=>$keys->app_key, 'token'=>$token, 'lic_code'=>$licCode, 'username'=>$user, 'userId'=>\Auth::user()->id, 'timestamp'=>time(), 'product'=>$product];
 
             $encodedData = http_build_query($data);
             $hashedSignature = hash_hmac('sha256', $encodedData, $keys->app_secret);
@@ -162,8 +161,7 @@ class TenantController extends Controller
             } elseif ($result->status == 'validationFailure') {
                 return ['status' => 'validationFailure', 'message' => $result->message];
             } else {
-
-                if(!strpos($faveoCloud,'faveocloud.com')) {
+                if (! strpos($faveoCloud, 'faveocloud.com')) {
                     CloudEmail::create([
                         'result_message' => $result->message,
                         'user' => $user,
@@ -178,9 +176,9 @@ class TenantController extends Controller
                             'domain' => $faveoCloud,
                         ],
                     ]);
+
                     return ['status' => $result->status, 'message' => trans('create_in_progress').'.'];
-                }
-                else{
+                } else {
                     $client->request('GET', env('CLOUD_JOB_URL_NORMAL'), [
                         'auth' => ['clouduser', env('CLOUD_AUTH')],
                         'query' => [
@@ -205,7 +203,6 @@ class TenantController extends Controller
 
                     return ['status' => $result->status, 'message' => $result->message.'.'];
                 }
-
             }
         } catch (Exception $e) {
             //$mail->email_log_fail($settings->email, $user, 'New instance created', $result->message.'.<br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password);
@@ -246,9 +243,9 @@ class TenantController extends Controller
             $hashedSignature = hash_hmac('sha256', $encodedData, $keys->app_secret);
             $client = new Client([]);
             $response = $client->request(
-                        'DELETE',
-                        $this->cloud->cloud_central_domain.'/tenants', ['form_params' => $data, 'headers' => ['signature' => $hashedSignature]]
-                    );
+                'DELETE',
+                $this->cloud->cloud_central_domain.'/tenants', ['form_params' => $data, 'headers' => ['signature' => $hashedSignature]]
+            );
             $responseBody = (string) $response->getBody();
             $response = json_decode($responseBody);
             if ($response->status == 'success') {
@@ -302,7 +299,7 @@ class TenantController extends Controller
         $newDomain = $request->get('newDomain');
         $data = ['currentDomain' => $request->get('currentDomain'), 'newDomain'=>$newDomain, 'app_key'=>$keys->app_key, 'token'=>$token, 'timestamp'=>time()];
         $dns_record = dns_get_record($newDomain, DNS_CNAME);
-        if(!strpos($newDomain,'faveocloud.com')) {
+        if (! strpos($newDomain, 'faveocloud.com')) {
             if (empty($dns_record) || $dns_record[0]['domain'] != $this->cloud->cloud_central_domain) {
                 throw new Exception('Your Domains DNS CNAME record is not pointing to our cloud!(CNAME record is missing) Please do it to proceed');
             }
@@ -314,7 +311,7 @@ class TenantController extends Controller
             'POST',
             $this->cloud->cloud_central_domain.'/changeDomain', ['form_params'=>$data, 'headers'=>['signature'=>$hashedSignature]]
         );
-        if(!strpos($newDomain,'faveocloud.com')) {
+        if (! strpos($newDomain, 'faveocloud.com')) {
             $client->request('GET', env('CLOUD_JOB_URL_NORMAL'), [
                 'auth' => ['clouduser', env('CLOUD_AUTH')],
                 'query' => [

@@ -226,7 +226,6 @@ class CheckoutController extends InfoController
             $cost = $request->input('cost');
             $state = $this->getState();
             if ($paynow === false) {//When regular payment
-
                 $invoice = $invoice_controller->generateInvoice();
 
                 $amount = intval(Cart::getSubTotal());
@@ -246,7 +245,6 @@ class CheckoutController extends InfoController
                     return redirect('checkout')->with('success', $url);
                 }
             } else {//When renewal, pending payments
-
                 $invoiceid = $request->input('invoice_id');
                 $invoice = $this->invoice->find($invoiceid);
                 $amount = intval($invoice->grand_total);

@@ -57,7 +57,6 @@ class BaseCartController extends Controller
 
             return successResponse('Cart updated successfully');
         } catch (\Exception $ex) {
-
             return errorResponse($ex->getMessage());
         }
     }
@@ -75,16 +74,14 @@ class BaseCartController extends Controller
         }
 
         if ($canReduceAgent) {
-            $price =\Cart::getTotal()/$agtqty;
+            $price = \Cart::getTotal() / $agtqty;
             dump($price);
             $agtqty = $agtqty - 1;
             dump($agtqty);
             $price = \Cart::getTotal() - $price;
             dump($price);
-
-
         } else {
-            $price = \Cart::getTotal()/$agtqty;
+            $price = \Cart::getTotal() / $agtqty;
             dump($price);
 
             $agtqty = $agtqty + 1;
@@ -92,8 +89,8 @@ class BaseCartController extends Controller
 
             $price = $price * $agtqty;
             dump($price);
-
         }
+
         return ['agtqty' => $agtqty, 'price' => $price, 'currency' => $currency, 'symbol' => $symbol];
     }
 

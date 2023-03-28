@@ -16,6 +16,7 @@ use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Schema\TableDiff;
 use Doctrine\DBAL\TransactionIsolationLevel;
 use Doctrine\DBAL\Types;
+use Doctrine\DBAL\Types\IntegerType;
 use Doctrine\Deprecations\Deprecation;
 
 use function array_combine;
@@ -24,6 +25,7 @@ use function array_merge;
 use function array_search;
 use function array_unique;
 use function array_values;
+use function count;
 use function implode;
 use function is_numeric;
 use function sprintf;
@@ -63,7 +65,7 @@ class SqlitePlatform extends AbstractPlatform
         Deprecation::trigger(
             'doctrine/dbal',
             'https://github.com/doctrine/dbal/pull/4753',
-            'SqlitePlatform::getNowExpression() is deprecated. Generate dates within the application.'
+            'SqlitePlatform::getNowExpression() is deprecated. Generate dates within the application.',
         );
 
         switch ($type) {
@@ -77,6 +79,14 @@ class SqlitePlatform extends AbstractPlatform
             default:
                 return 'datetime(\'now\')';
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getModExpression($expression1, $expression2)
+    {
+        return $expression1 . ' % ' . $expression2;
     }
 
     /**
@@ -121,11 +131,13 @@ class SqlitePlatform extends AbstractPlatform
      */
     public function getLocateExpression($str, $substr, $startPos = false)
     {
-        if ($startPos === false) {
-            return 'LOCATE(' . $str . ', ' . $substr . ')';
+        if ($startPos === false || $startPos === 1 || $startPos === '1') {
+            return 'INSTR(' . $str . ', ' . $substr . ')';
         }
 
-        return 'LOCATE(' . $str . ', ' . $substr . ', ' . $startPos . ')';
+        return 'CASE WHEN INSTR(SUBSTR(' . $str . ', ' . $startPos . '), ' . $substr
+            . ') > 0 THEN INSTR(SUBSTR(' . $str . ', ' . $startPos . '), ' . $substr . ') + ' . $startPos
+            . ' - 1 ELSE 0 END';
     }
 
     /**
@@ -170,14 +182,15 @@ class SqlitePlatform extends AbstractPlatform
     /**
      * {@inheritDoc}
      *
-     * The SQLite platform doesn't support the concept of a database, therefore, it always returns an empty string
+     * The DBAL doesn't support databases on the SQLite platform. The expression here always returns a fixed string
      * as an indicator of an implicitly selected database.
      *
-     * @see \Doctrine\DBAL\Connection::getDatabase()
+     * @link https://www.sqlite.org/lang_select.html
+     * @see Connection::getDatabase()
      */
     public function getCurrentDatabaseExpression(): string
     {
-        return "''";
+        return "'main'";
     }
 
     /**
@@ -216,8 +229,8 @@ class SqlitePlatform extends AbstractPlatform
     {
         Deprecation::trigger(
             'doctrine/dbal',
-            'https://github.com/doctrine/dbal/pulls/1519',
-            'SqlitePlatform::prefersIdentityColumns() is deprecated.'
+            'https://github.com/doctrine/dbal/pull/1519',
+            'SqlitePlatform::prefersIdentityColumns() is deprecated.',
         );
 
         return true;
@@ -265,7 +278,7 @@ class SqlitePlatform extends AbstractPlatform
             'doctrine/dbal',
             'https://github.com/doctrine/dbal/pull/5511',
             '%s is deprecated. Use getSmallIntTypeDeclarationSQL() instead.',
-            __METHOD__
+            __METHOD__,
         );
 
         // SQLite autoincrement is implicit for INTEGER PKs, but not for TINYINT columns
@@ -302,7 +315,7 @@ class SqlitePlatform extends AbstractPlatform
             'doctrine/dbal',
             'https://github.com/doctrine/dbal/pull/5511',
             '%s is deprecated. Use getIntegerTypeDeclarationSQL() instead.',
-            __METHOD__
+            __METHOD__,
         );
 
         // SQLite autoincrement is implicit for INTEGER PKs, but not for MEDIUMINT columns
@@ -382,7 +395,7 @@ class SqlitePlatform extends AbstractPlatform
             $this->emulateSchemaNamespacing($foreignKey->getQuotedForeignTableName($this)),
             $foreignKey->getQuotedForeignColumns($this),
             $foreignKey->getName(),
-            $foreignKey->getOptions()
+            $foreignKey->getOptions(),
         ));
     }
 
@@ -486,7 +499,7 @@ class SqlitePlatform extends AbstractPlatform
         Deprecation::triggerIfCalledFromOutside(
             'doctrine/dbal',
             'https://github.com/doctrine/dbal/issues/3263',
-            'SqlitePlatform::getBinaryMaxLength() is deprecated.'
+            'SqlitePlatform::getBinaryMaxLength() is deprecated.',
         );
 
         return 0;
@@ -502,7 +515,7 @@ class SqlitePlatform extends AbstractPlatform
         Deprecation::trigger(
             'doctrine/dbal',
             'https://github.com/doctrine/dbal/issues/3263',
-            'Relying on the default binary column length is deprecated, specify the length explicitly.'
+            'Relying on the default binary column length is deprecated, specify the length explicitly.',
         );
 
         return 0;
@@ -527,7 +540,7 @@ class SqlitePlatform extends AbstractPlatform
 
         return sprintf(
             "SELECT sql FROM sqlite_master WHERE type='index' AND tbl_name = %s AND sql NOT NULL ORDER BY name",
-            $this->quoteStringLiteral($table)
+            $this->quoteStringLiteral($table),
         );
     }
 
@@ -617,7 +630,7 @@ class SqlitePlatform extends AbstractPlatform
             'doctrine/dbal',
             'https://github.com/doctrine/dbal/pull/5513',
             '%s is deprecated.',
-            __METHOD__
+            __METHOD__,
         );
 
         return false;
@@ -659,7 +672,7 @@ class SqlitePlatform extends AbstractPlatform
         Deprecation::triggerIfCalledFromOutside(
             'doctrine/dbal',
             'https://github.com/doctrine/dbal/issues/4749',
-            'SqlitePlatform::getName() is deprecated. Identify platforms by their class.'
+            'SqlitePlatform::getName() is deprecated. Identify platforms by their class.',
         );
 
         return 'sqlite';
@@ -794,7 +807,7 @@ class SqlitePlatform extends AbstractPlatform
             'doctrine/dbal',
             'https://github.com/doctrine/dbal/issues/4510',
             'SqlitePlatform::getReservedKeywordsClass() is deprecated,'
-                . ' use SqlitePlatform::createReservedKeywordsList() instead.'
+                . ' use SqlitePlatform::createReservedKeywordsList() instead.',
         );
 
         return Keywords\SQLiteKeywords::class;
@@ -813,11 +826,11 @@ class SqlitePlatform extends AbstractPlatform
      */
     protected function getPostAlterTableIndexForeignKeySQL(TableDiff $diff)
     {
-        $fromTable = $diff->fromTable;
+        $table = $diff->getOldTable();
 
-        if (! $fromTable instanceof Table) {
+        if (! $table instanceof Table) {
             throw new Exception(
-                'Sqlite platform requires for alter table the table diff with reference to original table schema'
+                'Sqlite platform requires for alter table the table diff with reference to original table schema',
             );
         }
 
@@ -828,7 +841,7 @@ class SqlitePlatform extends AbstractPlatform
             $tableName = $diff->getName($this);
         }
 
-        foreach ($this->getIndexesInAlteredTable($diff, $fromTable) as $index) {
+        foreach ($this->getIndexesInAlteredTable($diff, $table) as $index) {
             if ($index->isPrimary()) {
                 continue;
             }
@@ -885,7 +898,7 @@ class SqlitePlatform extends AbstractPlatform
         Deprecation::trigger(
             'doctrine/dbal',
             'https://github.com/doctrine/dbal/pull/4805',
-            'SqlitePlatform::canEmulateSchemas() is deprecated.'
+            'SqlitePlatform::canEmulateSchemas() is deprecated.',
         );
 
         return $this->schemaEmulationEnabled;
@@ -991,10 +1004,11 @@ class SqlitePlatform extends AbstractPlatform
             return $sql;
         }
 
-        $fromTable = $diff->fromTable;
-        if (! $fromTable instanceof Table) {
+        $table = $diff->getOldTable();
+
+        if (! $table instanceof Table) {
             throw new Exception(
-                'Sqlite platform requires for alter table the table diff with reference to original table schema'
+                'Sqlite platform requires for alter table the table diff with reference to original table schema',
             );
         }
 
@@ -1003,18 +1017,18 @@ class SqlitePlatform extends AbstractPlatform
         $newColumnNames = [];
         $columnSql      = [];
 
-        foreach ($fromTable->getColumns() as $columnName => $column) {
+        foreach ($table->getColumns() as $columnName => $column) {
             $columnName                  = strtolower($columnName);
             $columns[$columnName]        = $column;
             $oldColumnNames[$columnName] = $newColumnNames[$columnName] = $column->getQuotedName($this);
         }
 
-        foreach ($diff->removedColumns as $columnName => $column) {
+        foreach ($diff->getDroppedColumns() as $column) {
             if ($this->onSchemaAlterTableRemoveColumn($column, $diff, $columnSql)) {
                 continue;
             }
 
-            $columnName = strtolower($columnName);
+            $columnName = strtolower($column->getName());
             if (! isset($columns[$columnName])) {
                 continue;
             }
@@ -1022,17 +1036,23 @@ class SqlitePlatform extends AbstractPlatform
             unset(
                 $columns[$columnName],
                 $oldColumnNames[$columnName],
-                $newColumnNames[$columnName]
+                $newColumnNames[$columnName],
             );
         }
 
-        foreach ($diff->renamedColumns as $oldColumnName => $column) {
+        foreach ($diff->getRenamedColumns() as $oldColumnName => $column) {
             if ($this->onSchemaAlterTableRenameColumn($oldColumnName, $column, $diff, $columnSql)) {
                 continue;
             }
 
             $oldColumnName = strtolower($oldColumnName);
-            $columns       = $this->replaceColumn($diff->name, $columns, $oldColumnName, $column);
+
+            $columns = $this->replaceColumn(
+                $table->getName(),
+                $columns,
+                $oldColumnName,
+                $column,
+            );
 
             if (! isset($newColumnNames[$oldColumnName])) {
                 continue;
@@ -1041,41 +1061,49 @@ class SqlitePlatform extends AbstractPlatform
             $newColumnNames[$oldColumnName] = $column->getQuotedName($this);
         }
 
-        foreach ($diff->changedColumns as $oldColumnName => $columnDiff) {
+        foreach ($diff->getModifiedColumns() as $columnDiff) {
             if ($this->onSchemaAlterTableChangeColumn($columnDiff, $diff, $columnSql)) {
                 continue;
             }
 
-            $oldColumnName = strtolower($oldColumnName);
-            $columns       = $this->replaceColumn($diff->name, $columns, $oldColumnName, $columnDiff->column);
+            $oldColumn = $columnDiff->getOldColumn() ?? $columnDiff->getOldColumnName();
+
+            $oldColumnName = strtolower($oldColumn->getName());
+
+            $columns = $this->replaceColumn(
+                $table->getName(),
+                $columns,
+                $oldColumnName,
+                $columnDiff->getNewColumn(),
+            );
 
             if (! isset($newColumnNames[$oldColumnName])) {
                 continue;
             }
 
-            $newColumnNames[$oldColumnName] = $columnDiff->column->getQuotedName($this);
+            $newColumnNames[$oldColumnName] = $columnDiff->getNewColumn()->getQuotedName($this);
         }
 
-        foreach ($diff->addedColumns as $columnName => $column) {
+        foreach ($diff->getAddedColumns() as $column) {
             if ($this->onSchemaAlterTableAddColumn($column, $diff, $columnSql)) {
                 continue;
             }
 
-            $columns[strtolower($columnName)] = $column;
+            $columns[strtolower($column->getName())] = $column;
         }
 
         $sql      = [];
         $tableSql = [];
         if (! $this->onSchemaAlterTable($diff, $tableSql)) {
-            $dataTable = new Table('__temp__' . $fromTable->getName());
+            $dataTable = new Table('__temp__' . $table->getName());
 
             $newTable = new Table(
-                $fromTable->getQuotedName($this),
+                $table->getQuotedName($this),
                 $columns,
-                $this->getPrimaryIndexInAlteredTable($diff, $fromTable),
+                $this->getPrimaryIndexInAlteredTable($diff, $table),
                 [],
-                $this->getForeignKeysInAlteredTable($diff, $fromTable),
-                $fromTable->getOptions()
+                $this->getForeignKeysInAlteredTable($diff, $table),
+                $table->getOptions(),
             );
             $newTable->addOption('alter', true);
 
@@ -1085,9 +1113,9 @@ class SqlitePlatform extends AbstractPlatform
                 'CREATE TEMPORARY TABLE %s AS SELECT %s FROM %s',
                 $dataTable->getQuotedName($this),
                 implode(', ', $oldColumnNames),
-                $fromTable->getQuotedName($this)
+                $table->getQuotedName($this),
             );
-            $sql[] = $this->getDropTableSQL($fromTable);
+            $sql[] = $this->getDropTableSQL($table);
 
             $sql   = array_merge($sql, $this->getCreateTableSQL($newTable));
             $sql[] = sprintf(
@@ -1095,17 +1123,24 @@ class SqlitePlatform extends AbstractPlatform
                 $newTable->getQuotedName($this),
                 implode(', ', $newColumnNames),
                 implode(', ', $oldColumnNames),
-                $dataTable->getQuotedName($this)
+                $dataTable->getQuotedName($this),
             );
             $sql[] = $this->getDropTableSQL($dataTable->getQuotedName($this));
 
             $newName = $diff->getNewName();
 
             if ($newName !== false) {
+                Deprecation::trigger(
+                    'doctrine/dbal',
+                    'https://github.com/doctrine/dbal/pull/5663',
+                    'Generation of "rename table" SQL using %s is deprecated. Use getRenameTableSQL() instead.',
+                    __METHOD__,
+                );
+
                 $sql[] = sprintf(
                     'ALTER TABLE %s RENAME TO %s',
                     $newTable->getQuotedName($this),
-                    $newName->getQuotedName($this)
+                    $newName->getQuotedName($this),
                 );
             }
 
@@ -1151,22 +1186,28 @@ class SqlitePlatform extends AbstractPlatform
     private function getSimpleAlterTableSQL(TableDiff $diff)
     {
         // Suppress changes on integer type autoincrement columns.
-        foreach ($diff->changedColumns as $oldColumnName => $columnDiff) {
-            if (
-                $columnDiff->fromColumn === null ||
-                ! $columnDiff->column->getAutoincrement() ||
-                ! $columnDiff->column->getType() instanceof Types\IntegerType
-            ) {
+        foreach ($diff->getModifiedColumns() as $columnDiff) {
+            $oldColumn = $columnDiff->getOldColumn();
+
+            if ($oldColumn === null) {
                 continue;
             }
 
-            if (! $columnDiff->hasChanged('type') && $columnDiff->hasChanged('unsigned')) {
+            $newColumn = $columnDiff->getNewColumn();
+
+            if (! $newColumn->getAutoincrement() || ! $newColumn->getType() instanceof IntegerType) {
+                continue;
+            }
+
+            $oldColumnName = $oldColumn->getName();
+
+            if (! $columnDiff->hasTypeChanged() && $columnDiff->hasUnsignedChanged()) {
                 unset($diff->changedColumns[$oldColumnName]);
 
                 continue;
             }
 
-            $fromColumnType = $columnDiff->fromColumn->getType();
+            $fromColumnType = $oldColumn->getType();
 
             if (! ($fromColumnType instanceof Types\SmallIntType) && ! ($fromColumnType instanceof Types\BigIntType)) {
                 continue;
@@ -1176,27 +1217,27 @@ class SqlitePlatform extends AbstractPlatform
         }
 
         if (
-            ! empty($diff->renamedColumns)
-            || ! empty($diff->addedForeignKeys)
-            || ! empty($diff->addedIndexes)
-            || ! empty($diff->changedColumns)
-            || ! empty($diff->changedForeignKeys)
-            || ! empty($diff->changedIndexes)
-            || ! empty($diff->removedColumns)
-            || ! empty($diff->removedForeignKeys)
-            || ! empty($diff->removedIndexes)
-            || ! empty($diff->renamedIndexes)
+            count($diff->getModifiedColumns()) > 0
+            || count($diff->getDroppedColumns()) > 0
+            || count($diff->getRenamedColumns()) > 0
+            || count($diff->getAddedIndexes()) > 0
+            || count($diff->getModifiedIndexes()) > 0
+            || count($diff->getDroppedIndexes()) > 0
+            || count($diff->getRenamedIndexes()) > 0
+            || count($diff->getAddedForeignKeys()) > 0
+            || count($diff->getModifiedForeignKeys()) > 0
+            || count($diff->getDroppedForeignKeys()) > 0
         ) {
             return false;
         }
 
-        $table = new Table($diff->name);
+        $table = $diff->getOldTable() ?? $diff->getName($this);
 
         $sql       = [];
         $tableSql  = [];
         $columnSql = [];
 
-        foreach ($diff->addedColumns as $column) {
+        foreach ($diff->getAddedColumns() as $column) {
             if ($this->onSchemaAlterTableAddColumn($column, $diff, $columnSql)) {
                 continue;
             }
@@ -1228,6 +1269,14 @@ class SqlitePlatform extends AbstractPlatform
 
         if (! $this->onSchemaAlterTable($diff, $tableSql)) {
             if ($diff->newName !== false) {
+                Deprecation::trigger(
+                    'doctrine/dbal',
+                    'https://github.com/doctrine/dbal/pull/5663',
+                    'Generation of SQL that renames a table using %s is deprecated.'
+                        . ' Use getRenameTableSQL() instead.',
+                    __METHOD__,
+                );
+
                 $newTable = new Identifier($diff->newName);
 
                 $sql[] = 'ALTER TABLE ' . $table->getQuotedName($this) . ' RENAME TO '
@@ -1238,9 +1287,7 @@ class SqlitePlatform extends AbstractPlatform
         return array_merge($sql, $tableSql, $columnSql);
     }
 
-    /**
-     * @return string[]
-     */
+    /** @return string[] */
     private function getColumnNamesInAlteredTable(TableDiff $diff, Table $fromTable): array
     {
         $columns = [];
@@ -1249,8 +1296,8 @@ class SqlitePlatform extends AbstractPlatform
             $columns[strtolower($columnName)] = $column->getName();
         }
 
-        foreach ($diff->removedColumns as $columnName => $column) {
-            $columnName = strtolower($columnName);
+        foreach ($diff->getDroppedColumns() as $column) {
+            $columnName = strtolower($column->getName());
             if (! isset($columns[$columnName])) {
                 continue;
             }
@@ -1258,19 +1305,22 @@ class SqlitePlatform extends AbstractPlatform
             unset($columns[$columnName]);
         }
 
-        foreach ($diff->renamedColumns as $oldColumnName => $column) {
+        foreach ($diff->getRenamedColumns() as $oldColumnName => $column) {
             $columnName                          = $column->getName();
             $columns[strtolower($oldColumnName)] = $columnName;
             $columns[strtolower($columnName)]    = $columnName;
         }
 
-        foreach ($diff->changedColumns as $oldColumnName => $columnDiff) {
-            $columnName                          = $columnDiff->column->getName();
-            $columns[strtolower($oldColumnName)] = $columnName;
-            $columns[strtolower($columnName)]    = $columnName;
+        foreach ($diff->getModifiedColumns() as $columnDiff) {
+            $oldColumn = $columnDiff->getOldColumn() ?? $columnDiff->getOldColumnName();
+
+            $oldColumnName                       = $oldColumn->getName();
+            $newColumnName                       = $columnDiff->getNewColumn()->getName();
+            $columns[strtolower($oldColumnName)] = $newColumnName;
+            $columns[strtolower($newColumnName)] = $newColumnName;
         }
 
-        foreach ($diff->addedColumns as $column) {
+        foreach ($diff->getAddedColumns() as $column) {
             $columnName                       = $column->getName();
             $columns[strtolower($columnName)] = $columnName;
         }
@@ -1278,16 +1328,14 @@ class SqlitePlatform extends AbstractPlatform
         return $columns;
     }
 
-    /**
-     * @return Index[]
-     */
+    /** @return Index[] */
     private function getIndexesInAlteredTable(TableDiff $diff, Table $fromTable): array
     {
         $indexes     = $fromTable->getIndexes();
         $columnNames = $this->getColumnNamesInAlteredTable($diff, $fromTable);
 
         foreach ($indexes as $key => $index) {
-            foreach ($diff->renamedIndexes as $oldIndexName => $renamedIndex) {
+            foreach ($diff->getRenamedIndexes() as $oldIndexName => $renamedIndex) {
                 if (strtolower($key) !== strtolower($oldIndexName)) {
                     continue;
                 }
@@ -1321,11 +1369,11 @@ class SqlitePlatform extends AbstractPlatform
                 $indexColumns,
                 $index->isUnique(),
                 $index->isPrimary(),
-                $index->getFlags()
+                $index->getFlags(),
             );
         }
 
-        foreach ($diff->removedIndexes as $index) {
+        foreach ($diff->getDroppedIndexes() as $index) {
             $indexName = strtolower($index->getName());
             if (strlen($indexName) === 0 || ! isset($indexes[$indexName])) {
                 continue;
@@ -1334,7 +1382,13 @@ class SqlitePlatform extends AbstractPlatform
             unset($indexes[$indexName]);
         }
 
-        foreach (array_merge($diff->changedIndexes, $diff->addedIndexes, $diff->renamedIndexes) as $index) {
+        foreach (
+            array_merge(
+                $diff->getModifiedIndexes(),
+                $diff->getAddedIndexes(),
+                $diff->getRenamedIndexes(),
+            ) as $index
+        ) {
             $indexName = strtolower($index->getName());
             if (strlen($indexName) > 0) {
                 $indexes[$indexName] = $index;
@@ -1346,9 +1400,7 @@ class SqlitePlatform extends AbstractPlatform
         return $indexes;
     }
 
-    /**
-     * @return ForeignKeyConstraint[]
-     */
+    /** @return ForeignKeyConstraint[] */
     private function getForeignKeysInAlteredTable(TableDiff $diff, Table $fromTable): array
     {
         $foreignKeys = $fromTable->getForeignKeys();
@@ -1381,11 +1433,11 @@ class SqlitePlatform extends AbstractPlatform
                 $constraint->getForeignTableName(),
                 $constraint->getForeignColumns(),
                 $constraint->getName(),
-                $constraint->getOptions()
+                $constraint->getOptions(),
             );
         }
 
-        foreach ($diff->removedForeignKeys as $constraint) {
+        foreach ($diff->getDroppedForeignKeys() as $constraint) {
             if (! $constraint instanceof ForeignKeyConstraint) {
                 $constraint = new Identifier($constraint);
             }
@@ -1398,7 +1450,7 @@ class SqlitePlatform extends AbstractPlatform
             unset($foreignKeys[$constraintName]);
         }
 
-        foreach (array_merge($diff->changedForeignKeys, $diff->addedForeignKeys) as $constraint) {
+        foreach (array_merge($diff->getModifiedForeignKeys(), $diff->getAddedForeignKeys()) as $constraint) {
             $constraintName = strtolower($constraint->getName());
             if (strlen($constraintName) > 0) {
                 $foreignKeys[$constraintName] = $constraint;
@@ -1410,9 +1462,7 @@ class SqlitePlatform extends AbstractPlatform
         return $foreignKeys;
     }
 
-    /**
-     * @return Index[]
-     */
+    /** @return Index[] */
     private function getPrimaryIndexInAlteredTable(TableDiff $diff, Table $fromTable): array
     {
         $primaryIndex = [];

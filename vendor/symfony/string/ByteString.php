@@ -103,7 +103,10 @@ class ByteString extends AbstractString
     public function camel(): static
     {
         $str = clone $this;
-        $str->string = lcfirst(str_replace(' ', '', ucwords(preg_replace('/[^a-zA-Z0-9\x7f-\xff]++/', ' ', $this->string))));
+
+        $parts = explode(' ', trim(ucwords(preg_replace('/[^a-zA-Z0-9\x7f-\xff]++/', ' ', $this->string))));
+        $parts[0] = 1 !== \strlen($parts[0]) && ctype_upper($parts[0]) ? $parts[0] : lcfirst($parts[0]);
+        $str->string = implode('', $parts);
 
         return $str;
     }
@@ -237,15 +240,7 @@ class ByteString extends AbstractString
 
         try {
             if (false === $match($regexp, $this->string, $matches, $flags | \PREG_UNMATCHED_AS_NULL, $offset)) {
-                $lastError = preg_last_error();
-
-                foreach (get_defined_constants(true)['pcre'] as $k => $v) {
-                    if ($lastError === $v && str_ends_with($k, '_ERROR')) {
-                        throw new RuntimeException('Matching failed with '.$k.'.');
-                    }
-                }
-
-                throw new RuntimeException('Matching failed with unknown error code.');
+                throw new RuntimeException('Matching failed with error: '.preg_last_error_msg());
             }
         } finally {
             restore_error_handler();
@@ -347,7 +342,7 @@ class ByteString extends AbstractString
 
     public function snake(): static
     {
-        $str = $this->camel()->title();
+        $str = $this->camel();
         $str->string = strtolower(preg_replace(['/([A-Z]+)([A-Z][a-z])/', '/([a-z\d])([A-Z])/'], '\1_\2', $str->string));
 
         return $str;

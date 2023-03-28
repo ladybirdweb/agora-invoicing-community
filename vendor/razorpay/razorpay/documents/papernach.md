@@ -235,7 +235,7 @@ $api->subscription->createSubscriptionRegistration(array('customer' => array('na
 ### Send/Resend notifications
 
 ```php
-$api->invoice->fetch($invoiceId)->notify($medium);
+$api->invoice->fetch($invoiceId)->notifyBy($medium);
 ```
 
 **Parameters:**
@@ -360,7 +360,7 @@ $api->invoice->fetch($invoiceId)->cancel();
 ### Fetch Payment ID using Order ID
 
 ```php
-$api->order->fetch($orderId)->payments()
+$api->order->fetch($orderId)->payments();
 ```
 
 **Parameters:**

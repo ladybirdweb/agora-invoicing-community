@@ -32,8 +32,10 @@
 
     <style><?= $viewModel->getAssetContents('ignition.css') ?></style>
 
+    <?= $viewModel->customHtmlHead() ?>
+
 </head>
-<body class="scrollbar-lg">
+<body class="scrollbar-lg antialiased bg-center bg-dots-darker dark:bg-dots-lighter">
 
 <script>
     window.data = <?=
@@ -55,12 +57,16 @@
 <div id="app"></div>
 
 <script>
-<?= $viewModel->getAssetContents('ignition.js') ?>
+    <!--
+    <?= $viewModel->getAssetContents('ignition.js') ?>
+    -->
 </script>
 
 <script>
     window.ignite(window.data);
 </script>
+
+<?= $viewModel->customHtmlBody() ?>
 
 <!--
 <?= $viewModel->throwableString() ?>

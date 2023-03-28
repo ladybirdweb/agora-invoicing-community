@@ -2,6 +2,58 @@
 
 All notable changes to `spatie/laravel-activitylog` will be documented in this file
 
+## v4.7.2 - 2022-11-14
+
+### What's Changed
+
+- Bump actions/checkout from 2 to 3 by @dependabot in https://github.com/spatie/laravel-activitylog/pull/1117
+- Bump actions/stale from 2.0.0 to 6.0.1 by @dependabot in https://github.com/spatie/laravel-activitylog/pull/1118
+- Bump stefanzweifel/git-auto-commit-action from 4.0.0 to 4.15.4 by @dependabot in https://github.com/spatie/laravel-activitylog/pull/1119
+- Add missing properties to Activity model by @AndreasHerss in https://github.com/spatie/laravel-activitylog/pull/1101
+- Bump actions/cache from 2 to 3 by @dependabot in https://github.com/spatie/laravel-activitylog/pull/1120
+- Fix enum casting by @Gummibeer in https://github.com/spatie/laravel-activitylog/pull/1121
+
+### New Contributors
+
+- @dependabot made their first contribution in https://github.com/spatie/laravel-activitylog/pull/1117
+- @AndreasHerss made their first contribution in https://github.com/spatie/laravel-activitylog/pull/1101
+
+**Full Changelog**: https://github.com/spatie/laravel-activitylog/compare/4.7.1...4.7.2
+
+## v4.7.1 - 2022-11-11
+
+### What's Changed
+
+- Fix nullable custom properties in PHP 8.0 by @stevebauman in https://github.com/spatie/laravel-activitylog/pull/1115
+
+**Full Changelog**: https://github.com/spatie/laravel-activitylog/compare/4.7.0...4.7.1
+
+## v4.7.0 - 2022-11-10
+
+### What's Changed
+
+- Fix indentation by @mouadziani in https://github.com/spatie/laravel-activitylog/pull/1092
+- Support non backed enum  & php 8.1 by @pemudakoding in https://github.com/spatie/laravel-activitylog/pull/1110
+
+### New Contributors
+
+- @mouadziani made their first contribution in https://github.com/spatie/laravel-activitylog/pull/1092
+- @pemudakoding made their first contribution in https://github.com/spatie/laravel-activitylog/pull/1110
+
+**Full Changelog**: https://github.com/spatie/laravel-activitylog/compare/4.6.0...4.7.0
+
+## v4.6.0 - 2022-09-22
+
+### What's Changed
+
+- Add a default value to `getExtraProperty()` by @grantholle in https://github.com/spatie/laravel-activitylog/pull/1090
+
+### New Contributors
+
+- @grantholle made their first contribution in https://github.com/spatie/laravel-activitylog/pull/1090
+
+**Full Changelog**: https://github.com/spatie/laravel-activitylog/compare/4.5.3...4.6.0
+
 ## 4.5.3 - 2022-05-31
 
 - Fix default auth guard for causer - [#1053](https://github.com/spatie/laravel-activitylog/pull/1053)
@@ -88,6 +140,10 @@ Special thanks to [Ahmed Nagi](https://github.com/nagi1).
 - Add ability to batch activity logs [#560](https://github.com/spatie/laravel-activitylog/issues/560)
 - Add Pipeline to customize logged changes data.
 - - Deep diff array/JSON sub-keys and respect for only-dirty, no-empty ... [#692](https://github.com/spatie/laravel-activitylog/issues/692) using new pipeline. See implementation in the tests.
+- 
+- 
+- 
+- 
 - 
 - 
 - 

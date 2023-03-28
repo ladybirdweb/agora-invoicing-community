@@ -83,7 +83,6 @@ class Report
     {
         /** @phpstan-ignore-next-line */
         if ($throwable::class === ViewException::class) {
-
             /** @phpstan-ignore-next-line */
             if ($previous = $throwable->getPrevious()) {
                 return get_class($previous);

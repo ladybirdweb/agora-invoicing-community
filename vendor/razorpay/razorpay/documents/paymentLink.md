@@ -116,7 +116,7 @@ For canceling payment link response please click [here](https://razorpay.com/doc
 ### Send notification
 
 ```php
-$api->paymentLink->fetch($paymentLinkId)->notifyBy($medium));
+$api->paymentLink->fetch($paymentLinkId)->notifyBy($medium);
 ```
 
 **Parameters:**
@@ -191,7 +191,7 @@ $api->paymentLink->create(array('amount'=>20000, 'currency'=>'INR', 'accept_part
 ### Offers on payment links
 
 ```php
-$api->paymentLink->create(array('amount'=>20000, 'currency'=>'INR', 'accept_partial'=>false, 'description' => 'For XYZ purpose', 'customer' => array('name'=>'Gaurav Kumar', 'email' => 'gaurav.kumar@example.com', 'contact'=>'+919999999999'),  'notify'=>array('sms'=>true, 'email'=>true) ,'reminder_enable'=>false , 'options'=>array('order'=>array('offers'=>array('offer_I0PqexIiTmMRnA'))));
+$api->paymentLink->create(array('amount'=>20000, 'currency'=>'INR', 'accept_partial'=>false, 'description' => 'For XYZ purpose', 'customer' => array('name'=>'Gaurav Kumar', 'email' => 'gaurav.kumar@example.com', 'contact'=>'+919999999999'),  'notify'=>array('sms'=>true, 'email'=>true) ,'reminder_enable'=>false , 'options'=>array('order'=>array('offers'=>array('offer_I0PqexIiTmMRnA')))));
 ```
 
 **Parameters:**

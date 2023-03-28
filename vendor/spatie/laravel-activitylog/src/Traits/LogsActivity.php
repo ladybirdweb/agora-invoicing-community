@@ -70,9 +70,9 @@ trait LogsActivity
                 // each pipe receives the event carrier bag with changes and the model in
                 // question every pipe should manipulate new and old attributes.
                 $event = app(Pipeline::class)
-                ->send(new EventLogBag($eventName, $model, $changes, $model->activitylogOptions))
-                ->through(static::$changesPipes)
-                ->thenReturn();
+                    ->send(new EventLogBag($eventName, $model, $changes, $model->activitylogOptions))
+                    ->through(static::$changesPipes)
+                    ->thenReturn();
 
                 // Actual logging
                 $logger = app(ActivityLogger::class)
@@ -365,6 +365,17 @@ trait LogsActivity
 
             if ($model->hasCast($attribute)) {
                 $cast = $model->getCasts()[$attribute];
+
+                if (function_exists('enum_exists') && enum_exists($cast)) {
+                    if (method_exists($model, 'getStorableEnumValue')) {
+                        $changes[$attribute] = $model->getStorableEnumValue($changes[$attribute]);
+                    } else {
+                        // ToDo: DEPRECATED - only here for Laravel 8 support
+                        $changes[$attribute] = $changes[$attribute] instanceof \BackedEnum
+                            ? $changes[$attribute]->value
+                            : $changes[$attribute]->name;
+                    }
+                }
 
                 if ($model->isCustomDateTimeCast($cast) || $model->isImmutableCustomDateTimeCast($cast)) {
                     $changes[$attribute] = $model->asDateTime($changes[$attribute])->format(explode(':', $cast, 2)[1]);

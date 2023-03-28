@@ -4,9 +4,12 @@ namespace Devio\Pipedrive\Resources;
 
 use Devio\Pipedrive\Http\Response;
 use Devio\Pipedrive\Resources\Basics\Resource;
+use Devio\Pipedrive\Resources\Traits\Searches;
 
 class Leads extends Resource
 {
+    use Searches;
+
     /**
      * Disabled abstract methods.
      *
@@ -60,11 +63,25 @@ class Leads extends Resource
      * @param array $values
      * @return Response
      */
-    public function update($id, array $values = [])
+    public function updateLabel($id, array $values = [])
     {
         $this->request->setResource('leadLabels');
 
         return $this->request->put('/' . $id, $values);
+    }
+
+    /**
+     * @param $id
+     * @param array $values
+     * @return Response
+     */
+    public function update($id, array $values = [])
+    {
+        $values['json'] = true;
+
+        array_set($values, 'id', $id);
+
+        return $this->request->patch(':id', $values);
     }
 
     /**

@@ -36,7 +36,7 @@ $api->customer->create(array('name' => 'Razorpay User', 'email' => 'customer@raz
 ### Create Order
 
 ```php
-$api->order->create(array('amount' => 100, 'currency' => 'INR', 'method'=>'nach', 'customer_id'=>$customerId, 'receipt'=>'Receipt No. 5', 'notes'=> array('note_key 1'=> 'Beam me up Scotty','note_key 2'=> 'Tea. Earl Gray. Hot.'), 'token'=>array('first_payment_amount'=>10000, 'auth_type'=>'physical' ,'max_amount'=>'50000','expire_at'=>'1634215992', 'notes'=>array('note_key 1'=> 'Tea, Earl Grey… decaf.','note_key 2'=> 'Tea. Earl Gray. Hot.'), 'bank_account'=>array('beneficiary_name'=>'Gaurav Kumar', 'account_number'=>'11214311215411', 'account_type'=>'savings', 'ifsc_code'=>'HDFC0001233'), 'nach'=> array('form_reference1'=> 'Recurring Payment for Gaurav Kumar','form_reference2'=> 'Method Paper NACH', 'description'=>'Paper NACH Gaurav Kumar'))));
+$api->order->create(array('amount' => 0, 'currency' => 'INR', 'method'=>'nach', 'customer_id'=>$customerId, 'receipt'=>'Receipt No. 5', 'notes'=> array('note_key 1'=> 'Beam me up Scotty','note_key 2'=> 'Tea. Earl Gray. Hot.'), 'token'=>array('first_payment_amount'=>10000, 'auth_type'=>'physical' ,'max_amount'=>'50000','expire_at'=>'1634215992', 'notes'=>array('note_key 1'=> 'Tea, Earl Grey… decaf.','note_key 2'=> 'Tea. Earl Gray. Hot.'), 'bank_account'=>array('beneficiary_name'=>'Gaurav Kumar', 'account_number'=>'11214311215411', 'account_type'=>'savings', 'ifsc_code'=>'HDFC0001233'), 'nach'=> array('form_reference1'=> 'Recurring Payment for Gaurav Kumar','form_reference2'=> 'Method Paper NACH', 'description'=>'Paper NACH Gaurav Kumar'))));
 ```
 
 **Parameters:**
@@ -268,7 +268,7 @@ $api->order->create(array('amount' => '100', 'currency' => 'INR', 'payment_captu
 ## Create a recurring payment
 
 ```php
-$api->payment->createRecurring(['email'=>'gaurav.kumar@example.com','contact'=>'9123456789','amount'=>1000,'currency'=>'INR','order_id'=>$orderid,'customer_id'=>$customerId,'token'=>$tokenId,'recurring'=>'1','description'=>'Creating recurring payment for Gaurav Kumar', 'notes'=> array('key1'=> 'value3','key2'=> 'value2')));
+$api->payment->createRecurring(['email'=>'gaurav.kumar@example.com','contact'=>'9123456789','amount'=>1000,'currency'=>'INR','order_id'=>$orderid,'customer_id'=>$customerId,'token'=>$tokenId,'recurring'=>'1','description'=>'Creating recurring payment for Gaurav Kumar', 'notes'=> array('key1'=> 'value3','key2'=> 'value2'));
 ```
 **Parameters:**
 

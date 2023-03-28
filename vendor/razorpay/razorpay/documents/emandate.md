@@ -92,7 +92,7 @@ Create registration link response please click [here](https://razorpay.com/docs/
 ### Send/Resend notifications
 
 ```php
-$api->invoice->fetch($invoiceId)->notify($medium);
+$api->invoice->fetch($invoiceId)->notifyBy($medium);
 ```
 
 **Parameters:**

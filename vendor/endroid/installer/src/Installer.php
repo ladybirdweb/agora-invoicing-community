@@ -2,13 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * (c) Jeroen van den Enden <info@endroid.nl>
- *
- * This source file is subject to the MIT license that is bundled
- * with this source code in the file LICENSE.
- */
-
 namespace Endroid\Installer;
 
 use Composer\Composer;
@@ -57,14 +50,6 @@ final class Installer implements PluginInterface, EventSubscriberInterface
 
     public function install(): void
     {
-        $enabled = $this->composer->getPackage()->getExtra()['endroid']['installer']['enabled'] ?? true;
-
-        if (!$enabled) {
-            $this->io->write('<info>Endroid Installer was disabled</>');
-
-            return;
-        }
-
         $foundCompatibleProjectType = false;
         foreach ($this->projectTypes as $projectType => $paths) {
             if ($this->isCompatibleProjectType($paths)) {
@@ -78,8 +63,6 @@ final class Installer implements PluginInterface, EventSubscriberInterface
 
         if (!$foundCompatibleProjectType) {
             $this->io->write('<info>Endroid Installer did not detect a specific framework for auto-configuration</>');
-
-            return;
         }
     }
 

@@ -664,8 +664,8 @@ abstract class DataTablesEditor
     }
 
     /**
-     * @param string $field
-     * @param UploadedFile $uploadedFile
+     * @param  string  $field
+     * @param  UploadedFile  $uploadedFile
      * @return false|string
      */
     protected function storeUploadedFile($field, UploadedFile $uploadedFile)

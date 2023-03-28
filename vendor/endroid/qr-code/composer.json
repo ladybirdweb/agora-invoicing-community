@@ -12,14 +12,17 @@
         }
     ],
     "require": {
-        "php": "^7.4||^8.0",
+        "php": "^8.0",
         "bacon/bacon-qr-code": "^2.0.5"
     },
     "require-dev": {
         "ext-gd": "*",
         "endroid/quality": "dev-master",
-        "khanamiryan/qrcode-detector-decoder": "^1.0.4",
+        "khanamiryan/qrcode-detector-decoder": "^1.0.4||^2.0.2",
         "setasign/fpdf": "^1.8.2"
+    },
+    "conflict": {
+        "khanamiryan/qrcode-detector-decoder": "^1.0.6"
     },
     "suggest": {
         "ext-gd": "Enables you to write PNG images",
@@ -41,6 +44,9 @@
         "sort-packages": true,
         "preferred-install": {
             "endroid/*": "source"
+        },
+        "allow-plugins": {
+            "endroid/installer": true
         }
     },
     "extra": {

@@ -250,6 +250,16 @@ class PendingCommand
     }
 
     /**
+     * Assert that the command has the success exit code.
+     *
+     * @return $this
+     */
+    public function assertOk()
+    {
+        return $this->assertSuccessful();
+    }
+
+    /**
      * Assert that the command does not have the success exit code.
      *
      * @return $this
@@ -358,7 +368,7 @@ class PendingCommand
     protected function mockConsoleOutput()
     {
         $mock = Mockery::mock(OutputStyle::class.'[askQuestion]', [
-            (new ArrayInput($this->parameters)), $this->createABufferedOutputMock(),
+            new ArrayInput($this->parameters), $this->createABufferedOutputMock(),
         ]);
 
         foreach ($this->test->expectedQuestions as $i => $question) {
@@ -409,6 +419,8 @@ class PendingCommand
 
         foreach ($this->test->expectedOutputSubstrings as $i => $text) {
             $mock->shouldReceive('doWrite')
+                ->atLeast()
+                ->times(0)
                 ->withArgs(fn ($output) => str_contains($output, $text))
                 ->andReturnUsing(function () use ($i) {
                     unset($this->test->expectedOutputSubstrings[$i]);
@@ -417,6 +429,8 @@ class PendingCommand
 
         foreach ($this->test->unexpectedOutput as $output => $displayed) {
             $mock->shouldReceive('doWrite')
+                ->atLeast()
+                ->times(0)
                 ->ordered()
                 ->with($output, Mockery::any())
                 ->andReturnUsing(function () use ($output) {
@@ -426,6 +440,8 @@ class PendingCommand
 
         foreach ($this->test->unexpectedOutputSubstrings as $text => $displayed) {
             $mock->shouldReceive('doWrite')
+                 ->atLeast()
+                 ->times(0)
                  ->withArgs(fn ($output) => str_contains($output, $text))
                  ->andReturnUsing(function () use ($text) {
                      $this->test->unexpectedOutputSubstrings[$text] = true;

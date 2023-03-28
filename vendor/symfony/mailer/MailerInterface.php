@@ -23,7 +23,6 @@ use Symfony\Component\Mime\RawMessage;
  */
 interface MailerInterface
 {
-    
     /**
      * @throws TransportExceptionInterface
      */

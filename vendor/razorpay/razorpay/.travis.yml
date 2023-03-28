@@ -1,23 +1,18 @@
 dist: precise
 language: php
 php:
-- 5.3
-- 5.6
-- 5.5
-- 5.4
-- '7.0'
-- 7.1
-- 7.2
 - 7.3
 - 7.4
 - 8.0
+- 8.1
+
 install: composer install
 before_script:
   - cp phpunit.xml.dist phpunit.xml
   # These two are required in the build step for non-composer-tests
   - mkdir -p libs
-  - cd libs &&  wget https://github.com/rmccue/Requests/archive/v1.8.0.zip -O requests.zip && unzip requests.zip && rm requests.zip && cd ..
-  - rm -rf libs/Requests-1.8.0/examples libs/Requests-1.8.0/docs libs/Requests-1.8.0/bin libs/Requests-1.8.0/tests
+  - cd libs &&  wget https://github.com/rmccue/Requests/archive/v2.0.4.zip -O requests.zip && unzip requests.zip && rm requests.zip && cd ..
+  - rm -rf libs/Requests-2.0.4/examples libs/Requests-2.0.4/docs libs/Requests-2.0.4/bin libs/Requests-2.0.4/tests
 script:
   # Run a syntax validation check on all PHP files
   -  find . -path ./vendor -prune -o -iname '*.php' |xargs -n1 php -l
@@ -41,7 +36,7 @@ deploy:
   file: razorpay-php.zip
   on:
     # Only do the release for one build every tag
-    php: 5.6
+    php: 7.3
     # GitHub refuses to accept releases that are not tagged
     tags: true
     # Allow builds for non-master branches as well

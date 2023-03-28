@@ -36,10 +36,10 @@ class InputArgument
     private string $description;
 
     /**
-     * @param string                           $name        The argument name
-     * @param int|null                         $mode        The argument mode: self::REQUIRED or self::OPTIONAL
-     * @param string                           $description A description text
-     * @param string|bool|int|float|array|null $default     The default value (for self::OPTIONAL mode only)
+     * @param string                                                                        $name            The argument name
+     * @param int|null                                                                      $mode            The argument mode: self::REQUIRED or self::OPTIONAL
+     * @param string                                                                        $description     A description text
+     * @param string|bool|int|float|array|null                                              $default         The default value (for self::OPTIONAL mode only)
      * @param array|\Closure(CompletionInput,CompletionSuggestions):list<string|Suggestion> $suggestedValues The values used for input completion
      *
      * @throws InvalidArgumentException When argument mode is not valid
@@ -95,6 +95,9 @@ class InputArgument
      */
     public function setDefault(string|bool|int|float|array $default = null)
     {
+        if (1 > \func_num_args()) {
+            trigger_deprecation('symfony/console', '6.2', 'Calling "%s()" without any arguments is deprecated, pass null explicitly instead.', __METHOD__);
+        }
         if ($this->isRequired() && null !== $default) {
             throw new LogicException('Cannot set a default value except for InputArgument::OPTIONAL mode.');
         }

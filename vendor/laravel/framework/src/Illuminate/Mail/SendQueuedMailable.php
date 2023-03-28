@@ -6,10 +6,11 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Mail\Factory as MailFactory;
 use Illuminate\Contracts\Mail\Mailable as MailableContract;
 use Illuminate\Contracts\Queue\ShouldBeEncrypted;
+use Illuminate\Queue\InteractsWithQueue;
 
 class SendQueuedMailable
 {
-    use Queueable;
+    use Queueable, InteractsWithQueue;
 
     /**
      * The mailable message instance.
@@ -33,6 +34,13 @@ class SendQueuedMailable
     public $timeout;
 
     /**
+     * The maximum number of unhandled exceptions to allow before failing.
+     *
+     * @return int|null
+     */
+    public $maxExceptions;
+
+    /**
      * Indicates if the job should be encrypted.
      *
      * @var bool
@@ -50,6 +58,7 @@ class SendQueuedMailable
         $this->mailable = $mailable;
         $this->tries = property_exists($mailable, 'tries') ? $mailable->tries : null;
         $this->timeout = property_exists($mailable, 'timeout') ? $mailable->timeout : null;
+        $this->maxExceptions = property_exists($mailable, 'maxExceptions') ? $mailable->maxExceptions : null;
         $this->afterCommit = property_exists($mailable, 'afterCommit') ? $mailable->afterCommit : null;
         $this->shouldBeEncrypted = $mailable instanceof ShouldBeEncrypted;
     }

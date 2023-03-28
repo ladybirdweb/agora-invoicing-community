@@ -21,6 +21,12 @@ class DateTimeTzImmutableType extends DateTimeTzType
 
     /**
      * {@inheritdoc}
+     *
+     * @psalm-param T $value
+     *
+     * @return (T is null ? null : string)
+     *
+     * @template T
      */
     public function convertToDatabaseValue($value, AbstractPlatform $platform)
     {
@@ -35,12 +41,18 @@ class DateTimeTzImmutableType extends DateTimeTzType
         throw ConversionException::conversionFailedInvalidType(
             $value,
             $this->getName(),
-            ['null', DateTimeImmutable::class]
+            ['null', DateTimeImmutable::class],
         );
     }
 
     /**
      * {@inheritdoc}
+     *
+     * @param T $value
+     *
+     * @return (T is null ? null : DateTimeImmutable)
+     *
+     * @template T
      */
     public function convertToPHPValue($value, AbstractPlatform $platform)
     {
@@ -54,7 +66,7 @@ class DateTimeTzImmutableType extends DateTimeTzType
             throw ConversionException::conversionFailedFormat(
                 $value,
                 $this->getName(),
-                $platform->getDateTimeTzFormatString()
+                $platform->getDateTimeTzFormatString(),
             );
         }
 
@@ -72,7 +84,7 @@ class DateTimeTzImmutableType extends DateTimeTzType
             'doctrine/dbal',
             'https://github.com/doctrine/dbal/pull/5509',
             '%s is deprecated.',
-            __METHOD__
+            __METHOD__,
         );
 
         return true;

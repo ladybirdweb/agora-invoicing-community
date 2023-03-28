@@ -1,6 +1,4 @@
 <script type="text/ecmascript-6">
-    import _take from "lodash/take"
-
     export default {
         props: ['trace'],
 
@@ -16,7 +14,7 @@
 
         computed: {
             lines() {
-                return this.showAll ? _take(this.trace, 1000) : _take(this.trace, this.minimumLines);
+                return this.trace.slice(0, this.showAll ? 1000 : this.minimumLines);
             }
         }
     }
@@ -27,7 +25,7 @@
         <table class="table mb-0">
             <tbody>
             <tr v-for="line in lines">
-                <td class="card-bg-secondary">{{line}}</td>
+                <td class="card-bg-secondary"><code>{{line}}</code></td>
             </tr>
 
             <tr v-if="! showAll">

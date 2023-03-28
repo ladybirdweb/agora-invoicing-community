@@ -69,6 +69,22 @@ trait InteractsWithDatabase
     }
 
     /**
+     * Assert that the given table has no entries.
+     *
+     * @param  \Illuminate\Database\Eloquent\Model|string  $table
+     * @param  string|null  $connection
+     * @return $this
+     */
+    protected function assertDatabaseEmpty($table, $connection = null)
+    {
+        $this->assertThat(
+            $this->getTable($table), new CountInDatabase($this->getConnection($connection, $table), 0)
+        );
+
+        return $this;
+    }
+
+    /**
      * Assert the given record has been "soft deleted".
      *
      * @param  \Illuminate\Database\Eloquent\Model|string  $table
@@ -153,6 +169,30 @@ trait InteractsWithDatabase
     }
 
     /**
+     * Specify the number of database queries that should occur throughout the test.
+     *
+     * @param  int  $expected
+     * @param  string|null  $connection
+     * @return $this
+     */
+    public function expectsDatabaseQueryCount($expected, $connection = null)
+    {
+        with($this->getConnection($connection), function ($connection) use ($expected) {
+            $actual = 0;
+
+            $connection->listen(function () use (&$actual) {
+                $actual++;
+            });
+
+            $this->beforeApplicationDestroyed(function () use (&$actual, $expected, $connection) {
+                $this->assertSame($actual, $expected, "Expected {$expected} database queries on the [{$connection->getName()}] connection. {$actual} occurred.");
+            });
+        });
+
+        return $this;
+    }
+
+    /**
      * Determine if the argument is a soft deletable model.
      *
      * @param  mixed  $model
@@ -180,7 +220,9 @@ trait InteractsWithDatabase
 
         $value = DB::connection()->getPdo()->quote($value);
 
-        return DB::raw("CAST($value AS JSON)");
+        return DB::raw(
+            DB::connection()->getQueryGrammar()->compileJsonValueCast($value)
+        );
     }
 
     /**

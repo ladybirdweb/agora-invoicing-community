@@ -74,7 +74,7 @@ class FreeTrailController extends Controller
                 return $isSuccess;
             }
         } catch (\Exception $ex) {
-            dd($ex);//app('log')->error($ex->getMessage());
+            dd($ex); //app('log')->error($ex->getMessage());
 
             //throw new \Exception('Can not Generate Freetrial Cloud instance');
         }
@@ -234,7 +234,6 @@ class FreeTrailController extends Controller
         try {
             $len = strlen($agents);
             switch ($len) {//Get Last Four digits based on No.Of Agents
-
                 case '1':
                     $lastFour = '000'.$agents;
                     break;

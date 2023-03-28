@@ -28,7 +28,6 @@ class SecurityEnforcer
         $response = $next($request);
 
         if (method_exists($response, 'header')) {
-
             // tells browser that faveo cannot be used within in i-frame. ( XFS vulnerability )
             $response->header('X-Frame-Options', 'SAMEORIGIN');
             $response->header('X-Content-Type-Options', 'nosniff');

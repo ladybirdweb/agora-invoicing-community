@@ -407,7 +407,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 'coupon_code' => $couponTotal['code'], 'discount' => $couponTotal['value'], 'discount_mode' => $couponTotal['mode'], 'grand_total' => $grand_total,  'currency' => $currency, 'status' => $status, 'description' => $description, ]);
 
             $items = $this->createInvoiceItemsByAdmin($invoice->id, $productid,
-              $total, $currency, $qty, $agents, $plan, $user_id, $tax['name'], $tax['value'], $grandTotalAfterCoupon);
+                $total, $currency, $qty, $agents, $plan, $user_id, $tax['name'], $tax['value'], $grandTotalAfterCoupon);
             $result = $this->getMessage($items, $user_id);
 
             return successResponse($result);

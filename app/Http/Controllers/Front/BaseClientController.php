@@ -37,6 +37,7 @@ class BaseClientController extends Controller
         } else {
             $listUrl = $this->deployPopup($query->number);
         }
+
         return $listUrl;
     }
 
@@ -126,11 +127,11 @@ class BaseClientController extends Controller
             $user->address = strip_tags($request->input('address'));
             $user->town = strip_tags($request->input('town'));
             $user->timezone_id = strip_tags($request->input('timezone_id'));
-            $user->state = ($request->input('state'));
+            $user->state = $request->input('state');
             $user->zip = strip_tags($request->input('zip'));
-            $user->company_size = ($request->input('company_size'));
-            $user->company_type = ($request->input('company_type'));
-            $user->bussiness = ($request->input('bussiness'));
+            $user->company_size = $request->input('company_size');
+            $user->company_type = $request->input('company_type');
+            $user->bussiness = $request->input('bussiness');
             $user->save();
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));

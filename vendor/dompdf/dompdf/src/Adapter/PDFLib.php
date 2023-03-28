@@ -1,12 +1,9 @@
 <?php
 /**
  * @package dompdf
- * @link    http://dompdf.github.com/
- * @author  Benj Carson <benjcarson@digitaljunkies.ca>
- * @author  Helmut Tischer <htischer@weihenstephan.org>
+ * @link    https://github.com/dompdf/dompdf
  * @license http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
  */
-
 namespace Dompdf\Adapter;
 
 use Dompdf\Canvas;
@@ -190,7 +187,7 @@ class PDFLib implements Canvas
      */
     protected $_pages;
 
-    public function __construct($paper = "letter", $orientation = "portrait", ?Dompdf $dompdf = null)
+    public function __construct($paper = "letter", string $orientation = "portrait", ?Dompdf $dompdf = null)
     {
         if (is_array($paper)) {
             $size = array_map("floatval", $paper);

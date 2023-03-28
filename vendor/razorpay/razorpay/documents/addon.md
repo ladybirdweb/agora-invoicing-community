@@ -3,7 +3,7 @@
 ### Create an addon
 
 ```php
-$api->subscription->fetch($subscriptionId)->createAddon(array('item' => array('name' => 'Extra Chair', 'amount' => 30000, 'currency' => 'INR'), 'quantity' => 2))
+$api->subscription->fetch($subscriptionId)->createAddon(array('item' => array('name' => 'Extra Chair', 'amount' => 30000, 'currency' => 'INR'), 'quantity' => 2));
 ```
 
 **Parameters:**

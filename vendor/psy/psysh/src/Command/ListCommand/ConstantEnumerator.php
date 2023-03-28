@@ -3,7 +3,7 @@
 /*
  * This file is part of Psy Shell.
  *
- * (c) 2012-2022 Justin Hileman
+ * (c) 2012-2023 Justin Hileman
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -133,7 +133,7 @@ class ConstantEnumerator extends Enumerator
         if ($category === 'internal') {
             unset($consts['user']);
 
-            return \call_user_func_array('array_merge', \array_values($consts));
+            return \array_merge(...\array_values($consts));
         }
 
         foreach ($consts as $key => $value) {

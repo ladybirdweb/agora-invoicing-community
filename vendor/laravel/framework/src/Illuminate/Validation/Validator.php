@@ -207,9 +207,15 @@ class Validator implements ValidatorContract
         'Declined',
         'DeclinedIf',
         'Filled',
+        'Missing',
+        'MissingIf',
+        'MissingUnless',
+        'MissingWith',
+        'MissingWithAll',
         'Present',
         'Required',
         'RequiredIf',
+        'RequiredIfAccepted',
         'RequiredUnless',
         'RequiredWith',
         'RequiredWithAll',
@@ -240,6 +246,7 @@ class Validator implements ValidatorContract
         'AcceptedIf',
         'DeclinedIf',
         'RequiredIf',
+        'RequiredIfAccepted',
         'RequiredUnless',
         'RequiredWith',
         'RequiredWithAll',
@@ -272,7 +279,7 @@ class Validator implements ValidatorContract
      *
      * @var string[]
      */
-    protected $numericRules = ['Numeric', 'Integer'];
+    protected $numericRules = ['Numeric', 'Integer', 'Decimal'];
 
     /**
      * The current placeholder for dots in rule keys.
@@ -810,17 +817,21 @@ class Validator implements ValidatorContract
         }
 
         if (! $rule->passes($attribute, $value)) {
-            $this->failedRules[$attribute][get_class($rule)] = [];
+            $ruleClass = $rule instanceof InvokableValidationRule ?
+                get_class($rule->invokable()) :
+                get_class($rule);
 
-            $messages = $this->getFromLocalArray($attribute, get_class($rule)) ?? $rule->message();
+            $this->failedRules[$attribute][$ruleClass] = [];
 
-            $messages = $messages ? (array) $messages : [get_class($rule)];
+            $messages = $this->getFromLocalArray($attribute, $ruleClass) ?? $rule->message();
+
+            $messages = $messages ? (array) $messages : [$ruleClass];
 
             foreach ($messages as $key => $message) {
                 $key = is_string($key) ? $key : $attribute;
 
                 $this->messages->add($key, $this->makeReplacements(
-                    $message, $key, get_class($rule), []
+                    $message, $key, $ruleClass, []
                 ));
             }
         }
@@ -869,11 +880,7 @@ class Validator implements ValidatorContract
 
         $attributeWithPlaceholders = $attribute;
 
-        $attribute = str_replace(
-            [$this->dotPlaceholder, '__asterisk__'],
-            ['.', '*'],
-            $attribute
-        );
+        $attribute = $this->replacePlaceholderInString($attribute);
 
         if (in_array($rule, $this->excludeRules)) {
             return $this->excludeAttribute($attribute);
@@ -1087,6 +1094,20 @@ class Validator implements ValidatorContract
     public function getRules()
     {
         return $this->rules;
+    }
+
+    /**
+     * Get the validation rules with key placeholders removed.
+     *
+     * @return array
+     */
+    public function getRulesWithoutPlaceholders()
+    {
+        return collect($this->rules)
+            ->mapWithKeys(fn ($value, $key) => [
+                str_replace($this->dotPlaceholder, '\\.', $key) => $value,
+            ])
+            ->all();
     }
 
     /**

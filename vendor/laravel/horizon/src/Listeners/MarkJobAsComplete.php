@@ -43,7 +43,7 @@ class MarkJobAsComplete
      */
     public function handle(JobDeleted $event)
     {
-        $this->jobs->completed($event->payload, $event->job->hasFailed());
+        $this->jobs->completed($event->payload, $event->job->hasFailed(), $event->payload->isSilenced());
 
         if (! $event->job->hasFailed() && count($this->tags->monitored($event->payload->tags())) > 0) {
             $this->jobs->remember($event->connectionName, $event->queue, $event->payload);

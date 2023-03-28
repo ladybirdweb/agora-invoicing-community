@@ -244,7 +244,7 @@ abstract class AbstractString implements \Stringable, \JsonSerializable
     public function collapseWhitespace(): static
     {
         $str = clone $this;
-        $str->string = trim(preg_replace('/(?:\s{2,}+|[^\S ])/', ' ', $str->string));
+        $str->string = trim(preg_replace("/(?:[ \n\r\t\x0C]{2,}+|[\n\r\t\x0C])/", ' ', $str->string), " \n\r\t\x0C");
 
         return $str;
     }
@@ -452,15 +452,7 @@ abstract class AbstractString implements \Stringable, \JsonSerializable
 
         try {
             if (false === $chunks = preg_split($delimiter, $this->string, $limit, $flags)) {
-                $lastError = preg_last_error();
-
-                foreach (get_defined_constants(true)['pcre'] as $k => $v) {
-                    if ($lastError === $v && str_ends_with($k, '_ERROR')) {
-                        throw new RuntimeException('Splitting failed with '.$k.'.');
-                    }
-                }
-
-                throw new RuntimeException('Splitting failed with unknown error code.');
+                throw new RuntimeException('Splitting failed with error: '.preg_last_error_msg());
             }
         } finally {
             restore_error_handler();

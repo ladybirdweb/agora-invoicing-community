@@ -16,6 +16,7 @@ use App\Model\Product\Subscription;
 use App\User;
 use Exception;
 use GrahamCampbell\Markdown\Facades\Markdown;
+use function PHPUnit\Framework\isEmpty;
 
 class ClientController extends BaseClientController
 {
@@ -32,7 +33,6 @@ class ClientController extends BaseClientController
     public function __construct()
     {
         $this->middleware('auth');
-
         $user = new User();
         $this->user = $user;
 
@@ -417,9 +417,11 @@ class ClientController extends BaseClientController
 
                                 $deleteCloud = $this->getCloudDeletePopup($model, $model->product_id);
 
+                                $changeDomain = $this->changeDomain($model, $model->product_id);
+
                                 return '<a href='.url('my-order/'.$model->id)." 
                                 class='btn  btn-primary btn-xs' style='margin-right:5px;'>
-                                <i class='fa fa-eye' title='Details of order'></i>&nbsp;View $listUrl $url $deleteCloud</a>";
+                                <i class='fa fa-eye' title='Details of order'></i>&nbsp;View $listUrl $url $deleteCloud $changeDomain</a>";
                             })
                             ->filterColumn('product_name', function ($query, $keyword) {
                                 $sql = 'product.name like ?';

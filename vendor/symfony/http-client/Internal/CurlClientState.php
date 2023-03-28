@@ -38,7 +38,7 @@ final class CurlClientState extends ClientState
 
     public function __construct(int $maxHostConnections, int $maxPendingPushes)
     {
-        self::$curlVersion = self::$curlVersion ?? curl_version();
+        self::$curlVersion ??= curl_version();
 
         $this->handle = curl_multi_init();
         $this->dnsCache = new DnsCache();
@@ -96,7 +96,7 @@ final class CurlClientState extends ClientState
         curl_share_setopt($this->share, \CURLSHOPT_SHARE, \CURL_LOCK_DATA_DNS);
         curl_share_setopt($this->share, \CURLSHOPT_SHARE, \CURL_LOCK_DATA_SSL_SESSION);
 
-        if (\defined('CURL_LOCK_DATA_CONNECT')) {
+        if (\defined('CURL_LOCK_DATA_CONNECT') && \PHP_VERSION_ID >= 80000) {
             curl_share_setopt($this->share, \CURLSHOPT_SHARE, \CURL_LOCK_DATA_CONNECT);
         }
     }

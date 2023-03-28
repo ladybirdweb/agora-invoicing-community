@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use App\Console\Commands\SetupTestEnv;
+use App\Jobs\CloudEmail;
 use App\Model\Common\StatusSetting;
 use App\Model\Mailjob\ActivityLogDay;
 use Illuminate\Console\Scheduling\Schedule;
@@ -37,6 +38,7 @@ class Kernel extends ConsoleKernel
     {
         $this->execute($schedule, 'expiryMail');
         $this->execute($schedule, 'deleteLogs');
+        $schedule->job(new CloudEmail)->everyMinute();
     }
 
     public function execute($schedule, $task)

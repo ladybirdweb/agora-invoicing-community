@@ -74,10 +74,14 @@ class SparkPostTransport implements TransportInterface
     {
         $recipients = $this->getRecipients($message);
 
+        $headers = ['Authorization' => $this->key];
+        $subaccount_id = $message->getHeaders()->get('subaccount_id');
+        if ($subaccount_id) {
+            $headers['X-MSYS-SUBACCOUNT'] = $subaccount_id->getValue();
+        }
+
         $response = $this->client->request('POST', $this->getEndpoint() . '/transmissions', [
-            'headers' => [
-                'Authorization' => $this->key,
-            ],
+            'headers' => $headers,
             'json' => array_merge([
                 'recipients' => $recipients,
                 'content' => [

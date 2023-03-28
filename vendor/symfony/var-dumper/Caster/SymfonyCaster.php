@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Uid\Ulid;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\VarDumper\Cloner\Stub;
+use Symfony\Component\VarExporter\Internal\LazyObjectState;
 
 /**
  * @final
@@ -37,9 +38,7 @@ class SymfonyCaster
         foreach (self::REQUEST_GETTERS as $prop => $getter) {
             $key = Caster::PREFIX_PROTECTED.$prop;
             if (\array_key_exists($key, $a) && null === $a[$key]) {
-                if (null === $clone) {
-                    $clone = clone $request;
-                }
+                $clone ??= clone $request;
                 $a[Caster::PREFIX_VIRTUAL.$prop] = $clone->{$getter}();
             }
         }
@@ -49,7 +48,7 @@ class SymfonyCaster
 
     public static function castHttpClient($client, array $a, Stub $stub, bool $isNested)
     {
-        $multiKey = sprintf("\0%s\0multi", \get_class($client));
+        $multiKey = sprintf("\0%s\0multi", $client::class);
         if (isset($a[$multiKey])) {
             $a[$multiKey] = new CutStub($a[$multiKey]);
         }
@@ -64,6 +63,31 @@ class SymfonyCaster
 
         foreach ($response->getInfo() as $k => $v) {
             $a[Caster::PREFIX_VIRTUAL.$k] = $v;
+        }
+
+        return $a;
+    }
+
+    public static function castLazyObjectState($state, array $a, Stub $stub, bool $isNested)
+    {
+        if (!$isNested) {
+            return $a;
+        }
+
+        $stub->cut += \count($a) - 1;
+
+        $instance = $a['realInstance'] ?? null;
+
+        $a = ['status' => new ConstStub(match ($a['status']) {
+            LazyObjectState::STATUS_INITIALIZED_FULL => 'INITIALIZED_FULL',
+            LazyObjectState::STATUS_INITIALIZED_PARTIAL => 'INITIALIZED_PARTIAL',
+            LazyObjectState::STATUS_UNINITIALIZED_FULL => 'UNINITIALIZED_FULL',
+            LazyObjectState::STATUS_UNINITIALIZED_PARTIAL => 'UNINITIALIZED_PARTIAL',
+        }, $a['status'])];
+
+        if ($instance) {
+            $a['realInstance'] = $instance;
+            --$stub->cut;
         }
 
         return $a;

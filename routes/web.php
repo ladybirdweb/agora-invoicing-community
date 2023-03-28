@@ -513,6 +513,8 @@ use Illuminate\Support\Facades\Route;
 
             Route::post('cloud-details', [Tenancy\TenantController::class, 'saveCloudDetails'])->name('cloud-details')->middleware('admin');
 
+            Route::post('upgrade-plan-for-cloud',[Tenancy\CloudExtraActivities::class,'upgradePlan']);
+
             /*
              * Api
              */

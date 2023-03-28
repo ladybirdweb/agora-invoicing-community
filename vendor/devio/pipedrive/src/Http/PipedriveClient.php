@@ -159,6 +159,34 @@ class PipedriveClient implements Client
     }
 
     /**
+     * Perform a PATCH request.
+     *
+     * @param       $url
+     * @param array $parameters
+     * @return Response
+     */
+    public function patch($url, $parameters = [])
+    {
+        $request = new GuzzleRequest('PATCH', $url);
+        $form = 'form_params';
+
+        // If any file key is found, we will assume we have to convert the data
+        // into the multipart array structure. Otherwise, we will perform the
+        // request as usual using the form_params with the given parameters.
+        if (isset($parameters['file'])) {
+            $form = 'multipart';
+            $parameters = $this->multipart($parameters);
+        }
+
+        if (isset($parameters['json'])) {
+            $form = RequestOptions::JSON;
+            $parameters = array_except($parameters, RequestOptions::JSON);
+        }
+
+        return $this->execute($request, [$form => $parameters]);
+    }
+
+    /**
      * Perform a DELETE request.
      *
      * @param       $url

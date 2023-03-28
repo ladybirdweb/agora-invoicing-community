@@ -16,7 +16,9 @@ Route::prefix('api')->group(function () {
     Route::get('/monitoring', 'MonitoringController@index')->name('horizon.monitoring.index');
     Route::post('/monitoring', 'MonitoringController@store')->name('horizon.monitoring.store');
     Route::get('/monitoring/{tag}', 'MonitoringController@paginate')->name('horizon.monitoring-tag.paginate');
-    Route::delete('/monitoring/{tag}', 'MonitoringController@destroy')->name('horizon.monitoring-tag.destroy');
+    Route::delete('/monitoring/{tag}', 'MonitoringController@destroy')
+        ->name('horizon.monitoring-tag.destroy')
+        ->where('tag', '.*');
 
     // Job Metric Routes...
     Route::get('/metrics/jobs', 'JobMetricsController@index')->name('horizon.jobs-metrics.index');
@@ -34,6 +36,7 @@ Route::prefix('api')->group(function () {
     // Job Routes...
     Route::get('/jobs/pending', 'PendingJobsController@index')->name('horizon.pending-jobs.index');
     Route::get('/jobs/completed', 'CompletedJobsController@index')->name('horizon.completed-jobs.index');
+    Route::get('/jobs/silenced', 'SilencedJobsController@index')->name('horizon.silenced-jobs.index');
     Route::get('/jobs/failed', 'FailedJobsController@index')->name('horizon.failed-jobs.index');
     Route::get('/jobs/failed/{id}', 'FailedJobsController@show')->name('horizon.failed-jobs.show');
     Route::post('/jobs/retry/{id}', 'RetryController@store')->name('horizon.retry-jobs.show');

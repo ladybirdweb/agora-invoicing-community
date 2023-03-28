@@ -121,10 +121,10 @@ class BladeSourceMapCompiler
     {
         $map = explode("\n", $map);
 
-        // Max 10 lines between compiled and source line number.
+        // Max 20 lines between compiled and source line number.
         // Blade components can span multiple lines and the compiled line number is often
         // a couple lines below the source-mapped `<x-component>` code.
-        $maxDistance = 10;
+        $maxDistance = 20;
 
         $pattern = '/\|---LINE:(?P<line>[0-9]+)---\|/m';
         $lineNumberToCheck = $compiledLineNumber - 1;
@@ -132,7 +132,7 @@ class BladeSourceMapCompiler
         while (true) {
             if ($lineNumberToCheck < $compiledLineNumber - $maxDistance) {
                 // Something wrong. Return the $compiledLineNumber (unless it's out of range)
-                return $compiledLineNumber > count($map) ? count($map) : $compiledLineNumber;
+                return min($compiledLineNumber, count($map));
             }
 
             if (preg_match($pattern, $map[$lineNumberToCheck] ?? '', $matches)) {

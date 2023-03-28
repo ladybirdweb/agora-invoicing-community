@@ -1,9 +1,7 @@
 <?php
 /**
  * @package dompdf
- * @link    http://dompdf.github.com/
- * @author  Benj Carson <benjcarson@digitaljunkies.ca>
- * @author  Fabien Ménager <fabien.menager@gmail.com>
+ * @link    https://github.com/dompdf/dompdf
  * @license http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
  */
 namespace Dompdf\FrameReflower;
@@ -95,18 +93,20 @@ class Page extends AbstractFrameReflower
      */
     function reflow(BlockFrameDecorator $block = null)
     {
+        /** @var PageFrameDecorator $frame */
+        $frame = $this->_frame;
+        $child = $frame->get_first_child();
         $fixed_children = [];
         $prev_child = null;
-        $child = $this->_frame->get_first_child();
         $current_page = 0;
 
         while ($child) {
-            $this->apply_page_style($this->_frame, $current_page + 1);
+            $this->apply_page_style($frame, $current_page + 1);
 
-            $style = $this->_frame->get_style();
+            $style = $frame->get_style();
 
             // Pages are only concerned with margins
-            $cb = $this->_frame->get_containing_block();
+            $cb = $frame->get_containing_block();
             $left = (float)$style->length_in_pt($style->margin_left, $cb["w"]);
             $right = (float)$style->length_in_pt($style->margin_right, $cb["w"]);
             $top = (float)$style->length_in_pt($style->margin_top, $cb["h"]);
@@ -146,13 +146,13 @@ class Page extends AbstractFrameReflower
             $this->_check_callbacks("begin_page_render", $child);
 
             // Render the page
-            $this->_frame->get_renderer()->render($child);
+            $frame->get_renderer()->render($child);
 
             // Check for end render callback
             $this->_check_callbacks("end_page_render", $child);
 
             if ($next_child) {
-                $this->_frame->next_page();
+                $frame->next_page();
             }
 
             // Wait to dispose of all frames on the previous page

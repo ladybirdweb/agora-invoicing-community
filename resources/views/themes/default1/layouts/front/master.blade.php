@@ -243,11 +243,9 @@ $set = $set->findOrFail(1);
                                                         <div class="dropdown-mega-content">
                                                             <table class="cart">
                                                                 <tbody>
-
                                                                 @forelse(Cart::getContent() as $key=>$item)
 
                                                                         <?php
-                                                                        // dd($item);
                                                                         $product = App\Model\Product\Product::where('id', $item->id)->first();
                                                                         if ($product->require_domain == 1) {
                                                                             $domain[$key] = $item->id;
@@ -452,8 +450,7 @@ $set = $set->findOrFail(1);
                         <label>Domain</label>
                         <div class="row" style="margin-left: 2px; margin-right: 2px;">
 
-                            <input  type="text"   name="domain" autocomplete="off" id= "userdomain"  class="form-control col col-4" placeholder="Domain" required>
-                            <input type="text" class="form-control col col-8" value=".faveocloud.com" disabled="true">
+                            <input  type="text"   name="domain" autocomplete="off" id= "userdomain"  class="form-control col col-12" placeholder="https://Your.faveocloud.com" required>
                         </div>
                     </div>
                 </form>

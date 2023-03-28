@@ -86,9 +86,7 @@ class ValidationRuleParser
     protected function explodeExplicitRule($rule, $attribute)
     {
         if (is_string($rule)) {
-            [$name] = static::parseStringRule($rule);
-
-            return static::ruleIsRegex($name) ? [$rule] : explode('|', $rule);
+            return explode('|', $rule);
         }
 
         if (is_object($rule)) {
@@ -151,7 +149,7 @@ class ValidationRuleParser
 
         foreach ($data as $key => $value) {
             if (Str::startsWith($key, $attribute) || (bool) preg_match('/^'.$pattern.'\z/', $key)) {
-                foreach (Arr::flatten((array) $rules) as $rule) {
+                foreach ((array) $rules as $rule) {
                     if ($rule instanceof NestedRules) {
                         $compiled = $rule->compile($key, $value, $data);
 

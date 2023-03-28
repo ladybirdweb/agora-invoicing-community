@@ -25,6 +25,8 @@ use Twig\Extension\OptimizerExtension;
 use Twig\Loader\ArrayLoader;
 use Twig\Loader\ChainLoader;
 use Twig\Loader\LoaderInterface;
+use Twig\Node\Expression\Binary\AbstractBinary;
+use Twig\Node\Expression\Unary\AbstractUnary;
 use Twig\Node\ModuleNode;
 use Twig\Node\Node;
 use Twig\NodeVisitor\NodeVisitorInterface;
@@ -38,11 +40,11 @@ use Twig\TokenParser\TokenParserInterface;
  */
 class Environment
 {
-    public const VERSION = '3.4.2';
-    public const VERSION_ID = 30402;
+    public const VERSION = '3.5.1';
+    public const VERSION_ID = 30501;
     public const MAJOR_VERSION = 3;
-    public const MINOR_VERSION = 4;
-    public const RELEASE_VERSION = 2;
+    public const MINOR_VERSION = 5;
+    public const RELEASE_VERSION = 1;
     public const EXTRA_VERSION = '';
 
     private $charset;
@@ -53,6 +55,7 @@ class Environment
     private $lexer;
     private $parser;
     private $compiler;
+    /** @var array<string, mixed> */
     private $globals = [];
     private $resolvedGlobals;
     private $loadedTemplates;
@@ -326,7 +329,6 @@ class Environment
      */
     public function loadTemplate(string $cls, string $name, int $index = null): Template
     {
-       
         $mainCls = $cls;
         if (null !== $index) {
             $cls .= '___'.$index;
@@ -337,9 +339,7 @@ class Environment
         }
 
         if (!class_exists($cls, false)) {
-           
             $key = $this->cache->generateKey($name, $mainCls);
-            
 
             if (!$this->isAutoReload() || $this->isTemplateFresh($name, $this->cache->getTimestamp($key))) {
                 $this->cache->load($key);
@@ -778,6 +778,8 @@ class Environment
 
     /**
      * @internal
+     *
+     * @return array<string, mixed>
      */
     public function getGlobals(): array
     {
@@ -807,6 +809,8 @@ class Environment
 
     /**
      * @internal
+     *
+     * @return array<string, array{precedence: int, class: class-string<AbstractUnary>}>
      */
     public function getUnaryOperators(): array
     {
@@ -815,6 +819,8 @@ class Environment
 
     /**
      * @internal
+     *
+     * @return array<string, array{precedence: int, class: class-string<AbstractBinary>, associativity: ExpressionParser::OPERATOR_*}>
      */
     public function getBinaryOperators(): array
     {

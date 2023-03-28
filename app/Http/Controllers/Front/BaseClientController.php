@@ -37,7 +37,6 @@ class BaseClientController extends Controller
         } else {
             $listUrl = $this->deployPopup($query->number);
         }
-
         return $listUrl;
     }
 
@@ -314,5 +313,18 @@ class BaseClientController extends Controller
     public function deleteCloudPopup($orderNumber)
     {
         return view('themes.default1.front.clients.delete-cloud-popup', compact('orderNumber'));
+    }
+
+    public function changeDomain($query, int $productid)
+    {
+        $permissions = LicensePermissionsController::getPermissionsForProduct($productid);
+        if ($permissions['downloadPermission'] != 1) { //If the Product has doownlaod permission
+            return $this->changecloudDomain($query->number);
+        }
+    }
+
+    public function changecloudDomain($orderNumber)
+    {
+        return view('themes.default1.front.clients.changeDomain-popup', compact('orderNumber'));
     }
 }

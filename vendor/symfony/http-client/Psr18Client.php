@@ -79,9 +79,14 @@ final class Psr18Client implements ClientInterface, RequestFactoryInterface, Str
         $this->streamFactory = $streamFactory;
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    public function withOptions(array $options): static
+    {
+        $clone = clone $this;
+        $clone->client = $clone->client->withOptions($options);
+
+        return $clone;
+    }
+
     public function sendRequest(RequestInterface $request): ResponseInterface
     {
         try {
@@ -91,17 +96,26 @@ final class Psr18Client implements ClientInterface, RequestFactoryInterface, Str
                 $body->seek(0);
             }
 
-            $response = $this->client->request($request->getMethod(), (string) $request->getUri(), [
+            $options = [
                 'headers' => $request->getHeaders(),
                 'body' => $body->getContents(),
-                'http_version' => '1.0' === $request->getProtocolVersion() ? '1.0' : null,
-            ]);
+            ];
+
+            if ('1.0' === $request->getProtocolVersion()) {
+                $options['http_version'] = '1.0';
+            }
+
+            $response = $this->client->request($request->getMethod(), (string) $request->getUri(), $options);
 
             $psrResponse = $this->responseFactory->createResponse($response->getStatusCode());
 
             foreach ($response->getHeaders(false) as $name => $values) {
                 foreach ($values as $value) {
-                    $psrResponse = $psrResponse->withAddedHeader($name, $value);
+                    try {
+                        $psrResponse = $psrResponse->withAddedHeader($name, $value);
+                    } catch (\InvalidArgumentException $e) {
+                        // ignore invalid header
+                    }
                 }
             }
 
@@ -122,9 +136,6 @@ final class Psr18Client implements ClientInterface, RequestFactoryInterface, Str
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function createRequest(string $method, $uri): RequestInterface
     {
         if ($this->responseFactory instanceof RequestFactoryInterface) {
@@ -142,9 +153,6 @@ final class Psr18Client implements ClientInterface, RequestFactoryInterface, Str
         throw new \LogicException(sprintf('You cannot use "%s()" as the "nyholm/psr7" package is not installed. Try running "composer require nyholm/psr7".', __METHOD__));
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function createStream(string $content = ''): StreamInterface
     {
         $stream = $this->streamFactory->createStream($content);
@@ -156,25 +164,16 @@ final class Psr18Client implements ClientInterface, RequestFactoryInterface, Str
         return $stream;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function createStreamFromFile(string $filename, string $mode = 'r'): StreamInterface
     {
         return $this->streamFactory->createStreamFromFile($filename, $mode);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function createStreamFromResource($resource): StreamInterface
     {
         return $this->streamFactory->createStreamFromResource($resource);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function createUri(string $uri = ''): UriInterface
     {
         if ($this->responseFactory instanceof UriFactoryInterface) {

@@ -1,4 +1,4 @@
-# Laravel IDE Helper Generator
+# IDE Helper Generator for Laravel
 
 [![Tests](https://github.com/barryvdh/laravel-ide-helper/actions/workflows/run-tests.yml/badge.svg)](https://github.com/barryvdh/laravel-ide-helper/actions)
 [![Packagist License](https://poser.pugx.org/barryvdh/laravel-ide-helper/license.png)](http://choosealicense.com/licenses/mit/)
@@ -10,6 +10,8 @@
 
 This package generates helper files that enable your IDE to provide accurate autocompletion.
 Generation is done based on the files in your project, so they are always up-to-date.
+
+It supports Laravel 8+ and PHP 7.3+
 
 - [Installation](#installation)
 - [Usage](#usage)
@@ -225,6 +227,12 @@ You may use the [`::withCount`](https://laravel.com/docs/master/eloquent-relatio
 
 By default, these attributes are generated in the phpdoc. You can turn them off by setting the config `write_model_relation_count_properties` to `false`.
 
+#### Generics annotations
+
+Laravel 9 introduced generics annotations in DocBlocks for collections. PhpStorm 2022.3 and above support the use of generics annotations within `@property` and `@property-read` declarations in DocBlocks, e.g. `Collection<User>` instead of `Collection|User[]`.
+
+These can be disabled by setting the config `use_generics_annotations` to `false`.
+
 #### Support `@comment` based on DocBlock
 
 In order to better support IDEs, relations and getters/setters can also add a comment to a property like table columns. Therefore a custom docblock `@comment` is used:
@@ -279,6 +287,26 @@ For those special cases, you can map them via the config `custom_db_types`. Exam
 ],
 ```
 
+#### Custom Relationship Types
+
+If you are using relationships not built into Laravel you will need to specify the name and returning class in the config to get proper generation.
+
+```php
+'additional_relation_types' => [
+    'externalHasMany' => \My\Package\externalHasMany::class
+],
+```
+
+Found relationships will typically generate a return value based on the name of the relationship.
+
+If your custom relationships don't follow this traditional naming scheme you can define its return type manually. The available options are `many` and `morphTo`.
+
+```php
+'additional_relation_return_types' => [
+    'externalHasMultiple' => 'many'
+],
+```
+
 #### Model Hooks
 
 If you need additional information on your model from sources that are not handled by default, you can hook in to the
@@ -325,7 +353,7 @@ If you need PHPDocs support for Fluent methods in migration, for example
 $table->string("somestring")->nullable()->index();
 ```
 
-After publishing vendor, simply change the `include_fluent` line your `config/ide-helper.php` file into:
+After publishing vendor, simply change the `include_fluent` line in your `config/ide-helper.php` file into:
 
 ```php
 'include_fluent' => true,
@@ -336,7 +364,7 @@ Then run `php artisan ide-helper:generate`, you will now see all Fluent methods 
 ### Auto-completion for factory builders
 
 If you would like the `factory()->create()` and `factory()->make()` methods to return the correct model class,
-you can enable custom factory builders with the `include_factory_builders` line your `config/ide-helper.php` file.
+you can enable custom factory builders with the `include_factory_builders` line in your `config/ide-helper.php` file.
 Deprecated for Laravel 8 or latest.
 
 ```php
@@ -374,7 +402,7 @@ app(App\SomeClass::class);
 > Note: When you receive a FatalException: class not found, check your config
 > (for example, remove S3 as cloud driver when you don't have S3 configured. Remove Redis ServiceProvider when you don't use it).
 
-You can change the generated filename via the config `meta_filename`. This can be useful for cases you want to take advantage the PhpStorm also supports the _directory_ `.phpstorm.meta.php/` which would parse any file places there, should your want provide additional files to PhpStorm.
+You can change the generated filename via the config `meta_filename`. This can be useful for cases where you want to take advantage of PhpStorm's support of the _directory_ `.phpstorm.meta.php/`: all files placed there are parsed, should you want to provide additional files to PhpStorm.
 
 ## Usage with Lumen
 

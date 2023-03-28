@@ -74,7 +74,7 @@ class FreeTrailController extends Controller
                 return $isSuccess;
             }
         } catch (\Exception $ex) {
-             app('log')->error($ex->getMessage());
+            app('log')->error($ex->getMessage());
 
             throw new \Exception('Can not Generate Freetrial Cloud instance');
         }

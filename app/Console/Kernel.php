@@ -85,6 +85,7 @@ class Kernel extends ConsoleKernel
                             return $this->getCondition($schedule->command('postexpiry:notification'), $command);
                         }
                 }
+
             }
         }
     }

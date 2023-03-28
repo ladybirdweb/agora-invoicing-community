@@ -37,6 +37,7 @@ class BaseClientController extends Controller
         } else {
             $listUrl = $this->deployPopup($query->number);
         }
+
         return $listUrl;
     }
 

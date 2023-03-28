@@ -75,20 +75,14 @@ class BaseCartController extends Controller
 
         if ($canReduceAgent) {
             $price = \Cart::getTotal() / $agtqty;
-            dump($price);
             $agtqty = $agtqty - 1;
-            dump($agtqty);
             $price = \Cart::getTotal() - $price;
-            dump($price);
         } else {
             $price = \Cart::getTotal() / $agtqty;
-            dump($price);
 
             $agtqty = $agtqty + 1;
-            dump($agtqty);
 
             $price = $price * $agtqty;
-            dump($price);
         }
 
         return ['agtqty' => $agtqty, 'price' => $price, 'currency' => $currency, 'symbol' => $symbol];

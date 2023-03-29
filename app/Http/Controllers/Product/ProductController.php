@@ -3,31 +3,31 @@
 namespace App\Http\Controllers\Product;
 
 // use Illuminate\Http\Request;
-    use App\Http\Controllers\License\LicenseController;
-    use App\Http\Controllers\License\LicensePermissionsController;
-    use App\Model\Common\Setting;
-    use App\Model\Common\StatusSetting;
-    use App\Model\License\LicenseType;
-    use App\Model\Order\Order;
-    use App\Model\Payment\Currency;
-    use App\Model\Payment\Period;
-    use App\Model\Payment\Plan;
-    use App\Model\Payment\Tax;
-    use App\Model\Payment\TaxClass;
-    use App\Model\Payment\TaxProductRelation;
-    use App\Model\Product\Price;
-    use App\Model\Product\Product;
-    use App\Model\Product\ProductGroup;
-    use App\Model\Product\ProductUpload;
-    use App\Model\Product\Subscription;
-    use App\Model\Product\Type;
-    use App\Traits\Upload\ChunkUpload;
-    use Illuminate\Http\Request;
-    use Illuminate\Support\Facades\Input;
-    use Spatie\Activitylog\Models\Activity;
-    use Yajra\DataTables\DataTables;
+use App\Http\Controllers\License\LicenseController;
+use App\Http\Controllers\License\LicensePermissionsController;
+use App\Model\Common\Setting;
+use App\Model\Common\StatusSetting;
+use App\Model\License\LicenseType;
+use App\Model\Order\Order;
+use App\Model\Payment\Currency;
+use App\Model\Payment\Period;
+use App\Model\Payment\Plan;
+use App\Model\Payment\Tax;
+use App\Model\Payment\TaxClass;
+use App\Model\Payment\TaxProductRelation;
+use App\Model\Product\Price;
+use App\Model\Product\Product;
+use App\Model\Product\ProductGroup;
+use App\Model\Product\ProductUpload;
+use App\Model\Product\Subscription;
+use App\Model\Product\Type;
+use App\Traits\Upload\ChunkUpload;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Input;
+use Spatie\Activitylog\Models\Activity;
+use Yajra\DataTables\DataTables;
 
-    // use Input;
+// use Input;
 
 class ProductController extends BaseProductController
 {
@@ -198,8 +198,8 @@ class ProductController extends BaseProductController
                 'filename' => 'required',
                 'dependencies' => 'required',
             ],
-       ['filename.required' => 'Please Uplaod A file',
-       ]
+            ['filename.required' => 'Please Uplaod A file',
+            ]
         );
 
         try {

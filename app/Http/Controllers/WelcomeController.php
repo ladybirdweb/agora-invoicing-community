@@ -61,7 +61,7 @@ class WelcomeController extends Controller
                             })
                               ->addColumn('count', function ($model) {
                                   return '<a href='.url('clients/'.$model->id.'?country='.$model->code).'>'
-                            .($model->count).'</a>';
+                            .$model->count.'</a>';
                               })
                             ->filterColumn('country', function ($query, $keyword) {
                                 $sql = 'countries.nicename like ?';

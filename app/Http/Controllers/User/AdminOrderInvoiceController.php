@@ -75,7 +75,7 @@ class AdminOrderInvoiceController extends Controller
                              for ($i = 0; $i <= $c - 1; $i++) {
                                  $sum = $sum + $payment[$i]->amount;
                              }
-                             $pendingAmount = ($model->grand_total) - ($sum);
+                             $pendingAmount = $model->grand_total - $sum;
 
                              return currencyFormat($pendingAmount, $code = $model->currency);
                          })

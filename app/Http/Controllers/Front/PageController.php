@@ -361,7 +361,6 @@ class PageController extends Controller
             $temp_controller = new TemplateController();
             if (count($helpdesk_products) > 0) {
                 foreach ($helpdesk_products as $product) {
-
                     //Store all the values in $trasform variable for shortcodes to read from
                     $trasform[$product['id']]['price'] = $temp_controller->leastAmount($product['id']);
                     $trasform[$product['id']]['price-description'] = self::getPriceDescription($product['id']);

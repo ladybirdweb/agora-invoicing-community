@@ -263,7 +263,7 @@ class TenantController extends Controller
     private function deleteCronForTenant($tenantId)
     {
         $client = new Client();
-        if(strpos($tenantId, 'faveocloud.com')) {
+        if (strpos($tenantId, 'faveocloud.com')) {
             $client->request('GET', env('CLOUD__DELETE_JOB_URL_NORMAL'), [
                 'auth' => ['clouduser', env('CLOUD_AUTH')],
                 'query' => [
@@ -271,8 +271,7 @@ class TenantController extends Controller
                     'domain' => $tenantId,
                 ],
             ]);
-        }
-        else{
+        } else {
             $client->request('GET', env('CLOUD__DELETE_JOB_URL_CUSTOM'), [
                 'auth' => ['clouduser', env('CLOUD_AUTH')],
                 'query' => [

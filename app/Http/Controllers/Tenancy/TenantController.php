@@ -262,12 +262,24 @@ class TenantController extends Controller
 
     private function deleteCronForTenant($tenantId)
     {
-        $url = $this->cloud->cron_server_url.'/crondelete.php';
-        $key = $this->cloud->cron_server_key;
-        $response = $this->postCurl($url, "tenant=$tenantId&key=$key");
-        $cronResult = json_decode($response)->status;
-        if ($cronResult == 'fails') {
-            throw new \Exception('Tenant and storage deleted but cron deletion failed. Please contact server team');
+        $client = new Client();
+        if(strpos($tenantId, 'faveocloud.com')) {
+            $client->request('GET', env('CLOUD__DELETE_JOB_URL_NORMAL'), [
+                'auth' => ['clouduser', env('CLOUD_AUTH')],
+                'query' => [
+                    'token' => env('CLOUD_OAUTH_TOKEN'),
+                    'domain' => $tenantId,
+                ],
+            ]);
+        }
+        else{
+            $client->request('GET', env('CLOUD__DELETE_JOB_URL_CUSTOM'), [
+                'auth' => ['clouduser', env('CLOUD_AUTH')],
+                'query' => [
+                    'token' => env('CLOUD_OAUTH_TOKEN'),
+                    'domain' => $tenantId,
+                ],
+            ]);
         }
     }
 
@@ -351,7 +363,7 @@ class TenantController extends Controller
                     $responseBody = (string) $response->getBody();
                     $response = json_decode($responseBody);
                     if ($response->status == 'success') {
-                        //$this->deleteCronForTenant($domainArray[$i]->id);
+                        $this->deleteCronForTenant($domainArray[$i]->id);
                         $this->reissueCloudLicense($order_id);
                         Order::where('number', $orderNumber)->where('client', \Auth::user()->id)->delete();
 

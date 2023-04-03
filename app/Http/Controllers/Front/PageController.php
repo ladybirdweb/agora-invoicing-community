@@ -330,7 +330,6 @@ class PageController extends Controller
 
             return view('themes.default1.common.template.shoppingcart', compact('templates', 'headline', 'tagline'));
         } catch (\Exception $ex) {
-            dd($ex);
             app('log')->error($ex->getMessage());
 
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -438,8 +437,8 @@ class PageController extends Controller
         }
 
         $result[5] = Product::where('name', $result[0])->value('highlight') ? "<input type='submit'
-                     value='Order Now' class='btn btn-primary btn-modern btn-outline py-2 px-4'></form>" : "<input type='submit' 
-                   value='Order Now' class='btn btn-dark btn-modern btn-outline py-2 px-4'></form>";
+                     value='Order Now' class='btn btn-primary btn-modern py-2 px-4'></form>" : "<input type='submit' 
+                   value='Order Now' class='btn btn-dark btn-modern'></form>";
 
         return $result;
     }

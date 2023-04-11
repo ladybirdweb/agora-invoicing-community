@@ -56,28 +56,27 @@ class TenantController extends Controller
 
             return \DataTables::of($response)
 
-             ->addColumn('tenants', function ($model) {
-                 return $model->id;
-             })
-             ->addColumn('domain', function ($model) {
-                 return $model->domain;
-             })
-             ->addColumn('db_name', function ($model) {
-                 return $model->database_name;
-             })
-             ->addColumn('db_username', function ($model) {
-                 return $model->database_user_name;
-             })
-             ->addColumn('action', function ($model) {
-                 return "<p><button data-toggle='modal' 
+                ->addColumn('tenants', function ($model) {
+                    return $model->id;
+                })
+                ->addColumn('domain', function ($model) {
+                    return $model->domain;
+                })
+                ->addColumn('db_name', function ($model) {
+                    return $model->database_name;
+                })
+                ->addColumn('db_username', function ($model) {
+                    return $model->database_user_name;
+                })
+                ->addColumn('action', function ($model) {
+                    return "<p><button data-toggle='modal' 
                  data-id=".$model->id." data-name= '' onclick=deleteTenant('".$model->id."') id='delten".$model->id."'
                  class='btn btn-sm btn-danger btn-xs delTenant'".tooltip('Delete')."<i class='fa fa-trash'
                  style='color:white;'> </i></button>&nbsp;</p>";
-             })
-             ->rawColumns(['tenants', 'domain', 'db_name', 'db_username', 'action'])
-             ->make(true);
+                })
+                ->rawColumns(['tenants', 'domain', 'db_name', 'db_username', 'action'])
+                ->make(true);
         } catch (ConnectException|Exception $e) {
-            dd($e);
 
             return redirect()->back()->with('fails', $e->getMessage());
         }
@@ -115,10 +114,7 @@ class TenantController extends Controller
         $this->validate($request,
             [
                 'orderNo' => 'required',
-                'domain' => 'required||regex:/^[a-zA-Z0-9]+$/u',
-            ],
-            [
-                'domain.regex' => 'Special characters are not allowed in domain name',
+                'domain' => 'required',
             ]);
 
         $settings = Setting::find(1);
@@ -127,10 +123,10 @@ class TenantController extends Controller
         $mailer = $mail->setMailConfig($settings);
 
         try {
-            $faveoCloud = $request->input('domain');
+            $faveoCloud = (string)$request->input('domain');
             $dns_record = dns_get_record($faveoCloud, DNS_CNAME);
             if (! strpos($faveoCloud, 'faveocloud.com')) {
-                if (empty($dns_record) || $dns_record[0]['domain'] != '') {
+                if (empty($dns_record) || !in_array('faveocloud.com',array_column($dns_record,'target'))) {
                     throw new Exception('Your Domains DNS CNAME record is not pointing to our cloud!(CNAME record is missing) Please do it to proceed');
                 }
             }
@@ -205,6 +201,7 @@ class TenantController extends Controller
                 }
             }
         } catch (Exception $e) {
+            dd($e);
             //$mail->email_log_fail($settings->email, $user, 'New instance created', $result->message.'.<br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password);
 
             return ['status' => 'false', 'message' => $e->getMessage()];
@@ -311,7 +308,7 @@ class TenantController extends Controller
         $data = ['currentDomain' => $request->get('currentDomain'), 'newDomain'=>$newDomain, 'app_key'=>$keys->app_key, 'token'=>$token, 'timestamp'=>time()];
         $dns_record = dns_get_record($newDomain, DNS_CNAME);
         if (! strpos($newDomain, 'faveocloud.com')) {
-            if (empty($dns_record) || $dns_record[0]['domain'] != $this->cloud->cloud_central_domain) {
+            if (empty($dns_record) || !in_array('faveocloud.com',array_column($dns_record,'target'))) {
                 throw new Exception('Your Domains DNS CNAME record is not pointing to our cloud!(CNAME record is missing) Please do it to proceed');
             }
         }
@@ -332,7 +329,7 @@ class TenantController extends Controller
             ]);
         }
 
-        return response(['message'=> $response]);
+        return response(['status'=>true, 'message'=> "Domain changed please reissue your license and use the license code in your domain"]);
     }
 
     public function DeleteCloudInstanceForClient($orderNumber, $isDelete)

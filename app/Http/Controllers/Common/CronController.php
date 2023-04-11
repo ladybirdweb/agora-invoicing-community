@@ -372,7 +372,7 @@ class CronController extends BaseCronController
                     $stripe = new \Stripe\StripeClient($stripeSecretKey);
 
                     $user = \DB::table('users')->where('id', $userid)->first();
-                    $customer_id = Auto_renewal::where('user_id', $userid)->value('customer_id');
+                    $customer_id = Auto_renewal::where('user_id', $userid)->latest()->value('customer_id');
                     $planid = Plan::where('product', $product_details->id)->value('id');
                     $cost = PlanPrice::where('plan_id', $planid)->where('currency', $oldcurrency)->value('renew_price');
                     //create invoice
@@ -382,10 +382,10 @@ class CronController extends BaseCronController
                     $currency = Invoice::where('id', $invoice->invoice_id)->value('currency');
 
                     //create product
-                    // $product = $stripe->products->create([
-                    //     'name' => $product_details->name,
-                    // ]);
-                    // $product_id = $product['id'];
+                    $product = $stripe->products->create([
+                        'name' => $product_details->name,
+                    ]);
+                    $product_id = $product['id'];
 
                     //define product price and recurring interval
 

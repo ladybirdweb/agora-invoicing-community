@@ -208,15 +208,21 @@ class BaseClientController extends Controller
                 if (\Auth::user()->role == 'admin') {
                     return getStatusLabel($model->status);
                 }
-
+                 
                 return getStatusLabel($model->status, 'badge');
             })
             ->addColumn('action', function ($model) {
                 $url = $this->getInvoiceLinkUrl($model->id);
+                $status = $model->status;
+                $payment = '';
+                if ($status != 'Success' && $model->grand_total > 0) {
+                    $payment = '  <a href='.url('autopaynow/'.$model->id).
+                    " class='btn btn-primary btn-xs'><i class='fa fa-credit-card'></i>&nbsp;Pay</a>";
+                }
 
-                return '<a href='.url($url)." 
+                return '<p><a href='.url($url)." 
                 class='btn btn-sm btn-primary btn-xs'".tooltip('View')."<i class='fa fa-eye' 
-                style='color:white;'> </i></a>";
+                style='color:white;'> </i></a>".$payment.'</p>';
             })
               ->filterColumn('number', function ($query, $keyword) {
                   $sql = 'number like ?';

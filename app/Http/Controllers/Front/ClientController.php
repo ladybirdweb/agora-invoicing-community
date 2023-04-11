@@ -19,8 +19,11 @@ use App\Model\Product\Subscription;
 use App\Plugins\Stripe\Controllers\SettingsController;
 use App\User;
 use Exception;
+use App\Model\Order\InvoiceItem;
+use App\Model\Payment\Plan;
 use GrahamCampbell\Markdown\Facades\Markdown;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Order\RenewController;
 use Razorpay\Api\Api;
 use Symfony\Component\Mime\Email;
 use Validator;
@@ -160,62 +163,65 @@ class ClientController extends BaseClientController
     public function autoRenewbyid()
     {
         $id = request()->route('id');
-        $sub = Subscription::where('order_id', $id)->first();
+        $order_id = \DB::table('order_invoice_relations')->where('invoice_id', $id)->value('order_id');
+        $sub = Subscription::where('order_id',$order_id)->first();
         $planid = $sub->plan_id;
         $plan = Plan::find($planid);
         $planDetails = userCurrencyAndPrice($sub->user_id, $plan);
         $cost = $planDetails['plan']->renew_price;
         $currency = $planDetails['currency'];
-        $items = $this->invoiceBySubscriptionId($sub->id, $planid, $cost, $currency);
+        $controller = new RenewController();
+        $items = InvoiceItem::where('invoice_id',$id)->first();
         $invoiceid = $items->invoice_id;
-        $this->setSession($id, $planid);
+        // $this->setSession($id, $planid);
 
         return redirect('paynow/'.$invoiceid);
+
     }
 
-    public function getAutoPaymentStatus()
-    {
-        $order = Order::leftJoin('products', 'products.id', '=', 'orders.product')
-             ->leftJoin('subscriptions', 'orders.id', '=', 'subscriptions.order_id')
-             ->leftJoin('invoices', 'orders.invoice_id', 'invoices.id')
-             ->select('products.name as product_name', 'products.github_owner', 'products.github_repository', 'products.type', 'products.id as product_id', 'orders.id', 'orders.number', 'orders.client', 'subscriptions.id as sub_id', 'subscriptions.version', 'subscriptions.update_ends_at', 'products.name', 'orders.client', 'invoices.id as invoice_id', 'invoices.number as invoice_number', 'invoices.grand_total', 'subscriptions.created_at', 'subscriptions.autoRenew_status', 'invoices.currency')
-             ->where('subscriptions.order_id', request()->route('orderid'));
+    // public function getAutoPaymentStatus()
+    // {
+    //     $order = Order::leftJoin('products', 'products.id', '=', 'orders.product')
+    //          ->leftJoin('subscriptions', 'orders.id', '=', 'subscriptions.order_id')
+    //          ->leftJoin('invoices', 'orders.invoice_id', 'invoices.id')
+    //          ->select('products.name as product_name', 'products.github_owner', 'products.github_repository', 'products.type', 'products.id as product_id', 'orders.id', 'orders.number', 'orders.client', 'subscriptions.id as sub_id', 'subscriptions.version', 'subscriptions.update_ends_at', 'products.name', 'orders.client', 'invoices.id as invoice_id', 'invoices.number as invoice_number', 'invoices.grand_total', 'subscriptions.created_at', 'subscriptions.autoRenew_status', 'invoices.currency')
+    //          ->where('subscriptions.order_id', request()->route('orderid'));
 
-        return \DataTables::of($order)
-                    ->addColumn('number', function ($model) {
-                        return $model->number;
-                    })
-                    ->addColumn('total', function ($model) {
-                        $total = currencyFormat($model->grand_total, $code = $model->currency);
+    //     return \DataTables::of($order)
+    //                 ->addColumn('number', function ($model) {
+    //                     return $model->number;
+    //                 })
+    //                 ->addColumn('total', function ($model) {
+    //                     $total = currencyFormat($model->subtotal, $code = $model->currency);
 
-                        return $total;
-                    })
-                     ->addColumn('payment_status', function ($model) {
-                         if ($model->autoRenew_status) {
-                             return $model->autoRenew_status;
-                         }
+    //                     return $total;
+    //                 })
+    //                  ->addColumn('payment_status', function ($model) {
+    //                      if ($model->autoRenew_status) {
+    //                          return $model->autoRenew_status;
+    //                      }
 
-                         return 'Pending';
-                     })
-                      ->addColumn('created_at', function ($model) {
-                          return getDateHtml($model->created_at);
-                      })
+    //                      return 'Pending';
+    //                  })
+    //                   ->addColumn('created_at', function ($model) {
+    //                       return getDateHtml($model->created_at);
+    //                   })
 
-                      ->addColumn('action', function ($model) {
-                          $url = '';
-                          if ($model->autoRenew_status == 'Failed') {
-                              return '<a href='.url('autopaynow/'.$model->id).
-                              " class='btn btn-primary btn-xs'>&nbsp;Make Payment</a>";
-                          }
+    //                   ->addColumn('action', function ($model) {
+    //                       $url = '';
+    //                       if ($model->autoRenew_status == 'Failed') {
+    //                           return '<a href='.url('autopaynow/'.$model->id).
+    //                           " class='btn btn-primary btn-xs'>&nbsp;Make Payment</a>";
+    //                       }
 
-                          return '<a href='.url('my-orders').
-                              " class='btn btn-primary btn-xs'><i class='fa fa-eye'></i>&nbsp;view</a>";
-                      })
+    //                       return '<a href='.url('my-orders').
+    //                           " class='btn btn-primary btn-xs'><i class='fa fa-eye'></i>&nbsp;view</a>";
+    //                   })
 
-                    ->rawColumns(['number', 'total', 'payment_status', 'created_at', 'action'])
+    //                 ->rawColumns(['number', 'total', 'payment_status', 'created_at', 'action'])
 
-                    ->make(true);
-    }
+    //                 ->make(true);
+    // }
 
     public function invoices()
     {

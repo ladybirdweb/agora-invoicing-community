@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Common;
 use App\ApiKey;
 use App\Auto_renewal;
 use App\Http\Controllers\License\LicensePermissionsController;
+use App\Http\Controllers\Order\BaseRenewController;
 use App\Model\Common\StatusSetting;
 use App\Model\Common\Template;
 use App\Model\Mailjob\ExpiryMailDay;
@@ -14,9 +15,11 @@ use App\Model\Order\Payment;
 use App\Model\Payment\Plan;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
+use App\Model\Payment\PlanPrice;
 use App\User;
 use Carbon\Carbon;
 use Razorpay\Api\Api;
+use App\Traits\TaxCalculation;
 use Symfony\Component\Mime\Email;
 
 class CronController extends BaseCronController
@@ -340,7 +343,7 @@ class CronController extends BaseCronController
         $sub = Subscription::whereNotNull('update_ends_at')
             ->where('is_subscribed', 1)
             ->whereBetween('update_ends_at', [$yesterday, $tomorrow])
-            ->whereBetween('support_ends_at', [$yesterday, $tomorrow])
+            ->orwhereBetween('support_ends_at', [$yesterday, $tomorrow])
             ->orwhereBetween('update_ends_at', [$daybefore, $today]);
 
         return $sub;
@@ -350,35 +353,43 @@ class CronController extends BaseCronController
     {
         try {
             $subscriptions_detail = $this->getOnDayExpiryInfoSubs()->get();
+
             foreach ($subscriptions_detail as $subscription) {
                 $status = $subscription->is_subscribed;
                 if ($status == '1') {
                     $userid = $subscription->user_id;
                     $end = $subscription->update_ends_at;
                     $order = $this->getOrderById($subscription->order_id);
-                    $invoice = $this->getInvoiceByOrderId($subscription->order_id);
-                    $item = $this->getInvoiceItemByInvoiceId($invoice->id);
+                    $oldinvoice = $this->getInvoiceByOrderId($subscription->order_id);
+                    $item = $this->getInvoiceItemByInvoiceId($oldinvoice->id);
                     // $product = $item->product_name;
                     $product_details = Product::where('name', $item->product_name)->first();
                     $plan = Plan::where('product', $product_details->id)->first('days');
-                    $currency = $invoice->currency;
+                    $oldcurrency = $oldinvoice->currency;
 
                     $stripeSecretKey = ApiKey::pluck('stripe_secret')->first();
                     $stripe = new \Stripe\StripeClient($stripeSecretKey);
 
                     $user = \DB::table('users')->where('id', $userid)->first();
                     $customer_id = Auto_renewal::where('user_id', $userid)->value('customer_id');
+                    $planid = Plan::where('product', $product_details->id)->value('id');
+                    $cost = PlanPrice::where('plan_id',$planid)->where('currency',$oldcurrency)->value('renew_price');
+                    //create invoice
+                    $renewController = new BaseRenewController();
+                    $invoice = $renewController->generateInvoice($product_details, $user, $order->id, $plan->id, $cost, $code = '', $item->agents, $oldcurrency);
+                    $cost = Invoice::where('id',$invoice->invoice_id)->value('grand_total');
+                    $currency = Invoice::where('id',$invoice->invoice_id)->value('currency');
 
                     //create product
-                    $product = $stripe->products->create([
-                        'name' => $product_details->name,
-                    ]);
-                    $product_id = $product['id'];
+                    // $product = $stripe->products->create([
+                    //     'name' => $product_details->name,
+                    // ]);
+                    // $product_id = $product['id'];
 
                     //define product price and recurring interval
 
                     $price = $stripe->prices->create([
-                        'unit_amount' => $invoice->grand_total,
+                        'unit_amount' => round((int) $cost),
                         'currency' => $currency,
                         'recurring' => ['interval' => 'day', 'interval_count' => $plan->days],
                         'product' => $product_id,
@@ -396,19 +407,19 @@ class CronController extends BaseCronController
                     if ($stripe_subscription['status'] == 'active') {
                         //Afer Renew
                         Subscription::where('id', $subscription->id)->update(['subscribe_id' => $stripe_subscription['id'], 'autoRenew_status' => 'Success']);
-                        $this->successRenew($invoice, $subscription);
+                        $this->successRenew($invoice, $subscription,$payment_method = 'stripe',$currency);
                         $this->postRazorpayPayment($invoice, $payment_method = 'stripe');
-                        if ($invoice->grand_total && emailSendingStatus()) {
-                            $this->sendPaymentSuccessMail($invoice->currency, $invoice->grand_total, $user, $invoice->invoiceItem()->first()->product_name, $order->number);
+                        if ($cost && emailSendingStatus()) {
+                            $this->sendPaymentSuccessMail($currency, $cost, $user, $invoice->product_name, $order->number);
                         }
                     }
                 }
             }
         } catch (\Cartalyst\Stripe\Exception\ApiLimitExceededException|\Cartalyst\Stripe\Exception\BadRequestException|\Cartalyst\Stripe\Exception\MissingParameterException|\Cartalyst\Stripe\Exception\NotFoundException|\Cartalyst\Stripe\Exception\ServerErrorException|\Cartalyst\Stripe\Exception\StripeException|\Cartalyst\Stripe\Exception\UnauthorizedException $e) {
-            $this->cardfailedMail($invoice->grand_total, $e->getMessage(), $user, $number, $end, $invoice->currency, $order, $product_details);
+            $this->cardfailedMail($cost, $e->getMessage(), $user, $number, $end, $currency, $order, $product_details);
         } catch (\Cartalyst\Stripe\Exception\CardErrorException $e) {
             if (emailSendingStatus()) {
-                $this->sendFailedPayment($invoice->grand_total, $e->getMessage(), $user, $order->number, $end, $invoice->currency, $order, $product_details);
+                $this->sendFailedPayment($cost, $e->getMessage(), $user, $order->number, $end, $currency, $order, $product_details);
             }
             \Session::put('amount', $amount);
             \Session::put('error', $e->getMessage());
@@ -417,25 +428,25 @@ class CronController extends BaseCronController
         } catch (\Exception $ex) {
             // $this->sendFailedPaymenttoAdmin($invoice->grand_total, $ex->getMessage(), $user,$order->number,$end,$invoice->currency,$order,$product_details);
 
-            $this->razorpay_payment($plan->days, $product_details->name, $invoice, $currency, $subscription, $user, $order, $end);
+            $this->razorpay_payment($cost,$plan->days, $product_details->name, $invoice, $currency, $subscription, $user, $order, $end,$product_details );
         }
     }
 
-    public function razorpay_payment($days, $product_name, $invoice, $currency, $subscription, $user, $order, $end)
+    public function razorpay_payment($cost,$days, $product_name, $invoice, $currency, $subscription, $user, $order, $end,$product_details )
     {
         try {
             $status = $subscription->is_subscribed;
             if ($status == '1') {
                 $key_id = ApiKey::pluck('rzp_key')->first();
                 $secret = ApiKey::pluck('rzp_secret')->first();
-                $amount = $invoice->grand_total;
+                $amount = $cost;
                 $update_end = $subscription->update_ends_at;
                 $api = new Api($key_id, $secret);
                 $rzp_plan = $api->plan->create(['period' => 'monthly',
                     'interval' => round((int) $days / 30),
                     'item' => [
                         'name' => $product_name,
-                        'amount' => round((int) $invoice->grand_total),
+                        'amount' => round((int) $cost),
                         'currency' => $currency, ],
 
                 ]
@@ -456,18 +467,18 @@ class CronController extends BaseCronController
                 //Afer Renew
                 if ($rzp_subscription['status'] == 'created' || $rzp_subscription['status'] == 'active') {
                     Subscription::where('id', $subscription->id)->update(['subscribe_id' => $rzp_subscription['id'], 'autoRenew_status' => 'Success']);
-                    $this->successRenew($invoice, $subscription);
+                    $this->successRenew($invoice, $subscription,$payment_method = 'Razorpay',$currency);
                     $this->postRazorpayPayment($invoice, $payment_method = 'Razorpay');
-                    if ($invoice->grand_total && emailSendingStatus()) {
-                        $this->sendPaymentSuccessMail($invoice->currency, $invoice->grand_total, $user, $invoice->invoiceItem()->first()->product_name, $order->number);
+                    if ($cost && emailSendingStatus()) {
+                        $this->sendPaymentSuccessMail($currency, $cost, $user, $invoice->invoiceItem()->first()->product_name, $order->number);
                     }
                 }
             }
         } catch (\Razorpay\Api\Errors\SignatureVerificationError|\Razorpay\Api\Errors\BadRequestError|\Razorpay\Api\Errors\GatewayError|\Razorpay\Api\Errors\ServerError $e) {
-            $this->cardfailedMail($invoice->grand_total, $e->getMessage(), $user, $order->number, $end, $invoice->currency, $order, $product_details);
+            $this->cardfailedMail($cost, $e->getMessage(), $user, $order->number, $end, $currency, $order, $product_details);
         } catch (\Exception $e) {
             if (emailSendingStatus()) {
-                $this->sendFailedPayment($invoice->grand_total, $e->getMessage(), $user, $order->number, $end, $invoice->currency, $order, $product_details);
+                $this->sendFailedPayment($cost, $e->getMessage(), $user, $order->number, $end, $invoice->currency, $order, $product_details);
             }
         }
     }
@@ -478,7 +489,7 @@ class CronController extends BaseCronController
         $settings = new \App\Model\Common\Setting();
         $setting = $settings->where('id', 1)->first();
 
-        Subscription::where('order_id', $order->id)->update(['autoRenew_status' => 'Failed', 'is_subscribed' => '0']);
+        // Subscription::where('order_id', $order->id)->update(['autoRenew_status' => 'Failed', 'is_subscribed' => '0']);
 
         $mail = new \App\Http\Controllers\Common\PhpMailController();
         $mailer = $mail->setMailConfig($setting);
@@ -562,14 +573,15 @@ class CronController extends BaseCronController
 
             $template = $templates->where('id', $temp_id)->first();
             $data = $template->data;
-            $url = url("autopaynow/$order->id");
+            // $invoiceid = \DB::table('order_invoice_relations')->where('order_id',$order->id)->value('invoice_id');
+            $url = url("my-order/$order->id");
 
             try {
                 $email = (new Email())
-         ->from($setting->email)
-         ->to($user->email)
-         ->subject($template->name)
-         ->html($mail->mailTemplate($template->data, $templatevariables = [
+              ->from($setting->email)
+              ->to($user->email)
+              ->subject($template->name)
+              ->html($mail->mailTemplate($template->data, $templatevariables = [
              'name' => ucfirst($user->first_name).' '.ucfirst($user->last_name),
              'product' => $product_details->name,
              'total' => currencyFormat($total, $code = $currency),
@@ -585,12 +597,14 @@ class CronController extends BaseCronController
             }
         }
 
-    public function successRenew($invoice, $subscription)
+    public function successRenew($invoice, $subscription,$payment_method,$currency)
     {
         try {
-            $invoice->processing_fee = $invoice->processing_fee;
-            $invoice->status = 'success';
-            $invoice->save();
+            $processingFee = $this->getProcessingFee($payment_method, $currency);
+            // $invoice->processing_fee = $processingFee;
+            Invoice::where('id',$invoice->invoice_id)->update(['processing_fee' => $processingFee,'status' => 'success']);
+            // $invoice->status = 'success';
+            // $invoice->save();
             $id = $subscription->id;
             $planid = $subscription->plan_id;
             $plan = $this->plan->find($planid);
@@ -674,19 +688,19 @@ class CronController extends BaseCronController
     public function postRazorpayPayment($invoice, $payment_method)
     {
         try {
-            $amount = $invoice->grand_total;
+            $invoice = Invoice::where('id',$invoice->invoice_id)->first();
 
             $payment_status = 'success';
             $payment_date = \Carbon\Carbon::now()->toDateTimeString();
 
             $invoice = Invoice::find($invoice->id);
 
-            $invoice_status = 'pending';
+            $invoice_status = 'success';
 
             $payment = $this->payment->create([
                 'invoice_id' => $invoice->id,
                 'user_id' => $invoice->user_id,
-                'amount' => $amount,
+                'amount' => $invoice->grand_total,
                 'payment_method' => $payment_method,
                 'payment_status' => $payment_status,
                 'created_at' => $payment_date,
@@ -699,10 +713,19 @@ class CronController extends BaseCronController
             if ($total_paid >= $invoice->grand_total) {
                 $invoice_status = 'success';
             }
-
             return $payment;
+
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
+    }
+
+    private function getProcessingFee($paymentMethod, $currency)
+    {
+        if ($paymentMethod) {
+        $de = $paymentMethod == 'razorpay' ? 0 : \DB::table(strtolower($paymentMethod))->where('currencies', $currency)->value('processing_fee');
+        \DB::table(strtolower($paymentMethod))->where('currencies', $currency)->value('processing_fee');
+            }
+       
     }
 }

@@ -104,8 +104,7 @@ return $randomString;
 }
 $rzp_key = app\ApiKey::where('id', 1)->value('rzp_key');
 $rzp_secret = app\ApiKey::where('id', 1)->value('rzp_secret');
-$apilayer_key = app\ApiKey::where('id', 1)->value('apilayer_key');
-$api = new Api($rzp_key, $rzp_secret);
+ $api = new Api($rzp_key, $rzp_secret);
 $displayCurrency = \Auth::user()->currency;
 $symbol = \Auth::user()->currency;
 if ($symbol == 'INR'){
@@ -250,11 +249,12 @@ $json = json_encode($data);
 
             @component('mini_views.navigational_view', [
                 'navigations'=>[
-                    ['id'=>'auto-renewals', 'name'=>'Auto Renewal', 'active'=>1, 'slot'=>'autorenewal','icon'=>'fas fa-bell'],
-                    ['id'=>'license-details', 'name'=>'License Details','slot'=>'license','icon'=>'fas fa-file'],
+                    ['id'=>'license-details', 'name'=>'License Details','active'=>1, 'slot'=>'license','icon'=>'fas fa-file'],
                     ['id'=>'user-details', 'name'=>'User Details', 'slot'=>'user','icon'=>'fas fa-users'],
                     ['id'=>'invoice-list', 'name'=>'Invoice List', 'slot'=>'invoice','icon'=>'fas fa-credit-card'],
-                    ['id'=>'payment-receipts', 'name'=>'Payment Receipts', 'slot'=>'payment','icon'=>'fas fa-briefcase']
+                    ['id'=>'payment-receipts', 'name'=>'Payment Receipts', 'slot'=>'payment','icon'=>'fas fa-briefcase'],
+                    ['id'=>'auto-renewals', 'name'=>'Auto Renewal', 'slot'=>'autorenewal','icon'=>'fas fa-bell']
+
                 ]
             ])
                
@@ -434,7 +434,7 @@ $json = json_encode($data);
               <div class="col-8">
               
 
-                     <h6 style="margin-top: 8px;">Click and Update your Card Details</h6>
+                     <h6 style="margin-top: 8px;">Status of Auto Renewal</h6>
 
                  
           </div>
@@ -453,7 +453,7 @@ $json = json_encode($data);
           </div>
             </div>
 
-            <label style="font-size: 1.3em;font-weight: 100;color: #0088CC;letter-spacing: -0.7px;">Payment Log</label>
+         <!--    <label style="font-size: 1.3em;font-weight: 100;color: #0088CC;letter-spacing: -0.7px;">Payment Log</label>
 
                 <table id="showAutopayment-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
                         <thead>
@@ -465,7 +465,20 @@ $json = json_encode($data);
                             <th>Action</th>
                         </tr>
                         </thead>
-                    </table>
+                    </table> -->
+
+                                         <div class="row">
+
+              <div class="col-8"> 
+              <button type="button" class="btn btn-primary" id="cardUpdate" checked>Update CardDetails</button><br>
+              <h6 style="margin-top: 8px;">Click here to Update your Card Details</h6>
+
+                     <!-- <h6 style="margin-top: 8px;">Click and Update your Card Details</h6> -->
+
+                 
+          </div>
+  
+            </div>
 
                
                 @endslot
@@ -666,7 +679,39 @@ var rzp = new Razorpay(options);
         });
     $('#renew').on('change',function () {
          if ($(this).prop("checked")) {
-            $('#renewal-modal').modal('show');
+          cardUpdate();
+         
+         
+         }else{
+            var id = $('#order').val();
+              $.ajax({
+                    url : '{{url("renewal-disable")}}',
+                    method : 'post',
+                    data : {
+                        "order_id" : id,
+
+                    },
+                    success: function(response){
+                    $('#alertMessage-2').show();
+                    var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>'+response.message+'.</div>';
+                    $('#alertMessage-2').html(result+ ".");
+                    $("#pay").html("<i class='fa fa-save'>&nbsp;&nbsp;</i>Save");
+                    setInterval(function(){
+                        $('#alertMessage-2').slideUp(3000);
+                    }, 1000);
+                    },
+                })
+          }
+    });
+
+
+    $('#cardUpdate').on('click',function(){
+        cardUpdate();
+
+    });
+
+    function cardUpdate() {
+              $('#renewal-modal').modal('show');
             var id = $('#order').val();
             $('#payment').on('click',function(){
                 var pay = $('#sel-payment').val();
@@ -744,29 +789,7 @@ var rzp = new Razorpay(options);
 
 
             });
-         
-         
-         }else{
-            var id = $('#order').val();
-              $.ajax({
-                    url : '{{url("renewal-disable")}}',
-                    method : 'post',
-                    data : {
-                        "order_id" : id,
-
-                    },
-                    success: function(response){
-                    $('#alertMessage-2').show();
-                    var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>'+response.message+'.</div>';
-                    $('#alertMessage-2').html(result+ ".");
-                    $("#pay").html("<i class='fa fa-save'>&nbsp;&nbsp;</i>Save");
-                    setInterval(function(){
-                        $('#alertMessage-2').slideUp(3000);
-                    }, 1000);
-                    },
-                })
-          }
-    });
+    }
 </script>
 
 
@@ -822,7 +845,7 @@ var rzp = new Razorpay(options);
          <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
 
         <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-        <script type="text/javascript">
+<!--         <script type="text/javascript">
              $('#showAutopayment-table').DataTable({
                     processing: true,
                     serverSide: true,
@@ -862,7 +885,7 @@ var rzp = new Razorpay(options);
                         $('.loader').css('display', 'block');
                     },
                 });
-        </script>
+        </script> -->
     
         <script type="text/javascript">
              $('#showpayment-table').DataTable({

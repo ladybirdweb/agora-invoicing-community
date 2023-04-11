@@ -100,11 +100,15 @@ class RenewController extends BaseRenewController
             $invoice->processing_fee = $invoice->processing_fee;
             $invoice->status = 'success';
             $invoice->save();
-            $id = Session::get('subscription_id');
-            $planid = Session::get('plan_id');
+            $orderid = \DB::table('order_invoice_relations')->where('invoice_id',$invoice->id)->value('order_id');
+            // $id = Session::get('subscription_id');
+            // $planid = Session::get('plan_id');
+            $id = Subscription::where('order_id',$orderid)->value('id');
+            $planid = Subscription::where('order_id',$orderid)->value('plan_id');
             $plan = $this->plan->find($planid);
             $days = $plan->days;
             $sub = $this->sub->find($id);
+            Subscription::where('id',$id)->update(['is_subscribed' => '1']);
             $permissions = LicensePermissionsController::getPermissionsForProduct($sub->product_id);
             $licenseExpiry = $this->getExpiryDate($permissions['generateLicenseExpiryDate'], $sub, $days);
             $updatesExpiry = $this->getUpdatesExpiryDate($permissions['generateUpdatesxpiryDate'], $sub, $days);

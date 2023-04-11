@@ -25,7 +25,6 @@ Checkout
                  <h4 class="card-title m-0">
                     
                         Review & Payment
-                    
                 </h4>
             </div>
 

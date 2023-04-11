@@ -77,7 +77,6 @@ class TenantController extends Controller
                 ->rawColumns(['tenants', 'domain', 'db_name', 'db_username', 'action'])
                 ->make(true);
         } catch (ConnectException|Exception $e) {
-
             return redirect()->back()->with('fails', $e->getMessage());
         }
 
@@ -123,10 +122,10 @@ class TenantController extends Controller
         $mailer = $mail->setMailConfig($settings);
 
         try {
-            $faveoCloud = (string)$request->input('domain');
+            $faveoCloud = (string) $request->input('domain');
             $dns_record = dns_get_record($faveoCloud, DNS_CNAME);
             if (! strpos($faveoCloud, 'faveocloud.com')) {
-                if (empty($dns_record) || !in_array('faveocloud.com',array_column($dns_record,'target'))) {
+                if (empty($dns_record) || ! in_array('faveocloud.com', array_column($dns_record, 'target'))) {
                     throw new Exception('Your Domains DNS CNAME record is not pointing to our cloud!(CNAME record is missing) Please do it to proceed');
                 }
             }
@@ -308,7 +307,7 @@ class TenantController extends Controller
         $data = ['currentDomain' => $request->get('currentDomain'), 'newDomain'=>$newDomain, 'app_key'=>$keys->app_key, 'token'=>$token, 'timestamp'=>time()];
         $dns_record = dns_get_record($newDomain, DNS_CNAME);
         if (! strpos($newDomain, 'faveocloud.com')) {
-            if (empty($dns_record) || !in_array('faveocloud.com',array_column($dns_record,'target'))) {
+            if (empty($dns_record) || ! in_array('faveocloud.com', array_column($dns_record, 'target'))) {
                 throw new Exception('Your Domains DNS CNAME record is not pointing to our cloud!(CNAME record is missing) Please do it to proceed');
             }
         }
@@ -329,7 +328,7 @@ class TenantController extends Controller
             ]);
         }
 
-        return response(['status'=>true, 'message'=> "Domain changed please reissue your license and use the license code in your domain"]);
+        return response(['status'=>true, 'message'=> 'Domain changed please reissue your license and use the license code in your domain']);
     }
 
     public function DeleteCloudInstanceForClient($orderNumber, $isDelete)

@@ -38,7 +38,7 @@ class Kernel extends ConsoleKernel
     {
         $this->execute($schedule, 'expiryMail');
         $this->execute($schedule, 'deleteLogs');
-        $schedule->job(new CloudEmail)->everyMinute();
+        $schedule->job(new CloudEmail)->everyFiveMinutes();
     }
 
     public function execute($schedule, $task)

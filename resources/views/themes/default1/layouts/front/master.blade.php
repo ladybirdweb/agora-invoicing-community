@@ -263,219 +263,219 @@ $set = $set->findOrFail(1);
                                                                                 <?php
                                                                                 $total = rounding($item->getPriceSumWithConditions())
                                                                                 ?>
-                                                                                    <a>{{$item->name}}<br><span class="amount"><strong>{{currencyFormat($total,$code = $currency)}}</strong></span></a>
-                                                                                </td>
-
-                                                                                <td class="product-actions">
-                                                                                    <a title="Remove this item" class="remove" href="#" onclick="removeItem('{{$item->id}}');">
-                                                                                      <!--  @if(Session::has('items'))
-                                                                                       {{Session::forget('items')}}
-                                                                                       @endif -->
-                                                                                        <i class="fa fa-times"></i>
-                                                                                    </a>
-                                                                                </td>
-
-                                                                            </tr>
-                                                                            @empty
-                                                                            @php       
-                                                                             $data = \App\Model\Product\ProductGroup::where('hidden','!=', 1)->first();
-                                                                             @endphp   
-                           
-                                                                            <tr>
-                                                                              <td>
-
-
-                                                                                @if(Auth::check())
-                                                                              <a href="">Choose a Product
-                                                                                @else
-                                                                                    <a href="{{url('checkout')}}"><button class="btn btn-primary pull-right">Proceed to Checkout</button></a>
-                                                                                @endif
-                                                                            </div>
+                                                                            <a>{{$item->name}}<br><span class="amount"><strong>{{currencyFormat($total,$code = $currency)}}</strong></span></a>
                                                                         </td>
+
+                                                                        <td class="product-actions">
+                                                                            <a title="Remove this item" class="remove" href="#" onclick="removeItem('{{$item->id}}');">
+                                                                                <!--  @if(Session::has('items'))
+                                                                                    {{Session::forget('items')}}
+                                                                                @endif -->
+                                                                                <i class="fa fa-times"></i>
+                                                                            </a>
+                                                                        </td>
+
                                                                     </tr>
-                                                                @endif
-                                                                </tbody>
-                                                            </table>
+                                                                @empty
+                                                                    @php
+                                                                        $data = \App\Model\Product\ProductGroup::where('hidden','!=', 1)->first();
+                                                                    @endphp
+
+                                                                    <tr>
+                                                                        <td>
+
+
+                                                                            @if(Auth::check())
+                                                                                <a href="">Choose a Product
+                                                                                    @else
+                                                                                        <a href="{{url('checkout')}}"><button class="btn btn-primary pull-right">Proceed to Checkout</button></a>
+                                                            @endif
                                                         </div>
-                                                    </li>
-                                                </ul>
-                                            </li>
-
-
-                                            @if(!Auth::user())
-                                                <li class="dropdown">
-                                                    <a  class="nav-link"  href="{{url('login')}}">
-                                                        Login
-                                                    </a>
-                                                </li>
-
-
-
-
-
-                                            @else
-                                                <li class="dropdown">
-                                                    <a class="dropdown-item dropdown-toggle" href="#">
-                                                        My Account
-                                                    </a>
-                                                    <ul class="dropdown-menu">
-                                                        @if(Auth::user()->role == 'admin')
-                                                            <li><a class="dropdown-item" href="{{url('/')}}">Go to Admin Panel</a></li>
+                                                        </td>
+                                                        </tr>
                                                         @endif
-                                                        <li><a class="dropdown-item" href="{{url('my-orders')}}">My Orders</a></li>
-                                                        <li><a class="dropdown-item" href="{{url('my-invoices')}}">My Invoices</a></li>
-                                                        <li><a class="dropdown-item" href="{{url('my-profile')}}">My Profile</a></li>
-                                                        <li><a class="dropdown-item" href="{{url('auth/logout')}}">Logout</a></li>
-                                                    </ul>
-                                                </li>
-                                            @endif
-
-
-                                        </ul>
-                                    </nav>
+                                                        </tbody>
+                                                        </table>
                                 </div>
-
-                                <ul class="header-social-icons social-icons d-none d-sm-block">
-                                    @php
-                                        $social = App\Model\Common\SocialMedia::get();
-                                    @endphp
-                                    @foreach($social as $media)
-                                        <li class="social-icons-{{lcfirst($media->name)}}"><a href="{{$media->link}}" target="_blank" title="{{ucfirst($media->name)}}"><i class="fa fa-{{lcfirst($media->name)}}"></i></a></li>
-                                    @endforeach
+                                </li>
                                 </ul>
+                                </li>
+
+
+                                @if(!Auth::user())
+                                    <li class="dropdown">
+                                        <a  class="nav-link"  href="{{url('login')}}">
+                                            Login
+                                        </a>
+                                    </li>
+
+
+
+
+
+                                @else
+                                    <li class="dropdown">
+                                        <a class="dropdown-item dropdown-toggle" href="#">
+                                            My Account
+                                        </a>
+                                        <ul class="dropdown-menu">
+                                            @if(Auth::user()->role == 'admin')
+                                                <li><a class="dropdown-item" href="{{url('/')}}">Go to Admin Panel</a></li>
+                                            @endif
+                                            <li><a class="dropdown-item" href="{{url('my-orders')}}">My Orders</a></li>
+                                            <li><a class="dropdown-item" href="{{url('my-invoices')}}">My Invoices</a></li>
+                                            <li><a class="dropdown-item" href="{{url('my-profile')}}">My Profile</a></li>
+                                            <li><a class="dropdown-item" href="{{url('auth/logout')}}">Logout</a></li>
+                                        </ul>
+                                    </li>
+                                    @endif
+
+
+                                    </ul>
+                                    </nav>
                             </div>
+
+                            <ul class="header-social-icons social-icons d-none d-sm-block">
+                                @php
+                                    $social = App\Model\Common\SocialMedia::get();
+                                @endphp
+                                @foreach($social as $media)
+                                    <li class="social-icons-{{lcfirst($media->name)}}"><a href="{{$media->link}}" target="_blank" title="{{ucfirst($media->name)}}"><i class="fa fa-{{lcfirst($media->name)}}"></i></a></li>
+                                @endforeach
+                            </ul>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </header>
+</div>
+</header>
 
-    <div role="main" class=@yield('main-class')>
+<div role="main" class=@yield('main-class')>
 
-        <section class="page-header page-header-modern bg-color-light-scale-1 page-header-md">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-12 align-self-center p-static order-2 text-center">
-                        <h1 class="text-dark text-dark">
-                            <strong>
-                                @yield('page-heading')
-                            </strong>
-                        </h1>
-                    </div>
-                    <div class="col-md-12 align-self-center order-1">
-                        <ul class="breadcrumb d-block text-center" style="font-weight: initial;">
-                            @yield('breadcrumb')
-                        </ul>
-                    </div>
+    <section class="page-header page-header-modern bg-color-light-scale-1 page-header-md">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 align-self-center p-static order-2 text-center">
+                    <h1 class="text-dark text-dark">
+                        <strong>
+                            @yield('page-heading')
+                        </strong>
+                    </h1>
+                </div>
+                <div class="col-md-12 align-self-center order-1">
+                    <ul class="breadcrumb d-block text-center" style="font-weight: initial;">
+                        @yield('breadcrumb')
+                    </ul>
                 </div>
             </div>
-        </section>
-
-        <div class="container">
-            @if(Session::has('warning'))
-
-                <div class="alert alert-warning alert-dismissable">
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    {{Session::get('warning')}}
-                </div>
-            @endif
-
-            @if(Session::has('success'))
-
-                <div class="alert alert-success">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <strong><i class="far fa-thumbs-up"></i> Well done!</strong>
-
-                    {!!Session::get('success')!!}
-                </div>
-                
-                @endif
-                
-                 <!--fail message -->
-                   @if(Session::has('fails') )
-                
-                 <div class="alert alert-danger alert-dismissable" role="alert">
-                   <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    {{Session::get('fails')}}
-                </div>
-            
-                @endif
-                       @if (count($errors) > 0)
-                    
-                     <div class="alert alert-danger alert-dismissable" role="alert">
-                       <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                            <li>{!! $error !!}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                    
-                    @endif
-                      
-                    @include('themes.default1.front.domain')
-                    @yield('content')
-
-        
-       
-
         </div>
+    </section>
+
+    <div class="container">
+        @if(Session::has('warning'))
+
+            <div class="alert alert-warning alert-dismissable">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                {{Session::get('warning')}}
+            </div>
+        @endif
+
+        @if(Session::has('success'))
+
+            <div class="alert alert-success">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <strong><i class="far fa-thumbs-up"></i> Well done!</strong>
+
+                {!!Session::get('success')!!}
+            </div>
+
+        @endif
+
+        <!--fail message -->
+        @if(Session::has('fails') )
+
+            <div class="alert alert-danger alert-dismissable" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                {{Session::get('fails')}}
+            </div>
+
+        @endif
+        @if (count($errors) > 0)
+
+            <div class="alert alert-danger alert-dismissable" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{!! $error !!}</li>
+                    @endforeach
+                </ul>
+            </div>
+
+        @endif
+
+        @include('themes.default1.front.domain')
+        @yield('content')
+
+
+
 
     </div>
 
+</div>
 
- @auth
+
+@auth
 
 
-<div class="modal fade" id="tenant" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            {!! Form::open() !!}
-            <div class="modal-header">
-                 <h4 class="modal-title">Create an instance</h4>
-            </div>
+    <div class="modal fade" id="tenant" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                {!! Form::open() !!}
+                <div class="modal-header">
+                    <h4 class="modal-title">Create an instance</h4>
+                </div>
 
-            <div class="modal-body">
-                <div id="success">
-                 </div>
-                  <div id="error">
-                 </div>
-                <!-- Form  -->
-
-            <div class="container">
-                <form action="" method="post" style="width:500px; margin: auto auto;" class="card card-body">
-                    <div class="form-group">
-                        <label>Domain</label>
-                        <div class="row" style="margin-left: 2px; margin-right: 2px;">
-
-                            <input  type="text"   name="domain" autocomplete="off" id= "userdomain"  class="form-control col col-12" placeholder="https://Your.faveocloud.com" required>
-                        </div>
+                <div class="modal-body">
+                    <div id="success">
                     </div>
-                </form>
-            </div>
+                    <div id="error">
+                    </div>
+                    <!-- Form  -->
+
+                    <div class="container">
+                        <form action="" method="post" style="width:500px; margin: auto auto;" class="card card-body">
+                            <div class="form-group">
+                                <label>Domain</label>
+                                <div class="row" style="margin-left: 2px; margin-right: 2px;">
+
+                                    <input  type="text"   name="domain" autocomplete="off" id= "userdomain"  class="form-control col col-12" placeholder="https://Your.faveocloud.com" required>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
 
 
 
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default pull-left closebutton" id="closebutton" data-dismiss="modal"><i class="fa fa-times">&nbsp;&nbsp;</i>Close</button>
-                 <button type="submit" data-id=""  class="btn btn-primary createTenant" id="createTenant" onclick="firstlogin({{Auth::user()->id}})"><i class="fa fa-check">&nbsp;&nbsp;</i>Submit</button>
-                {!! Form::close()  !!}
-            </div>
-            <!-- /Form -->
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal --> 
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default pull-left closebutton" id="closebutton" data-dismiss="modal"><i class="fa fa-times">&nbsp;&nbsp;</i>Close</button>
+                    <button type="submit" data-id=""  class="btn btn-primary createTenant" id="createTenant" onclick="firstlogin({{Auth::user()->id}})"><i class="fa fa-check">&nbsp;&nbsp;</i>Submit</button>
+                    {!! Form::close()  !!}
+                </div>
+                <!-- /Form -->
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 @endauth
-    <footer id="footer">
+<footer id="footer">
 
-        <div class="container" >
+    <div class="container" >
 
-            <div class="footer-ribbon"><span>Get in Touch</span></div>
-            <div id="mailchimp-message"></div>
-            <div class="row py-5 my-4" style = "margin-top: 50%;" >
+        <div class="footer-ribbon"><span>Get in Touch</span></div>
+        <div id="mailchimp-message"></div>
+        <div class="row py-5 my-4" style = "margin-top: 50%;" >
                 <?php
                 $count  = \App\Model\Front\Widgets::where('publish', 1)->count();
                 switch ($count) {
@@ -502,33 +502,33 @@ $set = $set->findOrFail(1);
                 }
                 $mailchimpKey = \App\Model\Common\Mailchimp\MailchimpSetting::value('api_key');
                 ?>
-                @if($widgets != null)
-                    @component('mini_views.footer_widget', ['title'=> $widgets->name, 'colClass'=>"col-md-6 col-lg-$class mb-$class mb-lg-0"])
-                        <p class="pr-1"> {!! $widgets->content !!}</p>
-                        {!! $tweetDetails !!}
+            @if($widgets != null)
+                @component('mini_views.footer_widget', ['title'=> $widgets->name, 'colClass'=>"col-md-6 col-lg-$class mb-$class mb-lg-0"])
+                    <p class="pr-1"> {!! $widgets->content !!}</p>
+                    {!! $tweetDetails !!}
 
 
 
 
-                        <div class="alert alert-danger d-none" id="newsletterError"></div>
-                        @if($mailchimpKey != null && $widgets->allow_mailchimp ==1)
-                            <div class="input-group input-group-rounded">
-                                <input class="form-control form-control-sm" placeholder="Email Address" name="email" id="newsletterEmail" type="text">
-                                <span class="input-group-append">
+                    <div class="alert alert-danger d-none" id="newsletterError"></div>
+                    @if($mailchimpKey != null && $widgets->allow_mailchimp ==1)
+                        <div class="input-group input-group-rounded">
+                            <input class="form-control form-control-sm" placeholder="Email Address" name="email" id="newsletterEmail" type="text">
+                            <span class="input-group-append">
                                     <button class="btn btn-light text-color-dark" id="mailchimp-subscription" type="submit"><strong>Go!</strong></button>
                                 </span>
-                            </div>
-                        @endif
-                        @if($widgets->allow_social_media)
-                            <ul class="social-icons">
-                                @foreach($social as $media)
-                                    <li class="social-icons-{{lcfirst($media->name)}}"><a href="{{$media->link}}" target="_blank" title="{{ucfirst($media->name)}}"><i class="fa fa-{{lcfirst($media->name)}}"></i></a></li>
+                        </div>
+                    @endif
+                    @if($widgets->allow_social_media)
+                        <ul class="social-icons">
+                            @foreach($social as $media)
+                                <li class="social-icons-{{lcfirst($media->name)}}"><a href="{{$media->link}}" target="_blank" title="{{ucfirst($media->name)}}"><i class="fa fa-{{lcfirst($media->name)}}"></i></a></li>
 
-                                @endforeach
-                            </ul>
-                        @endif
-                    @endcomponent
-                @endif
+                            @endforeach
+                        </ul>
+                    @endif
+                @endcomponent
+            @endif
                 <?php
 
                 $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer2')->select('name','content','allow_tweets','allow_mailchimp','allow_social_media')->first();
@@ -537,31 +537,31 @@ $set = $set->findOrFail(1);
                             </div>' : '';
                 }
                 ?>
-                @if($widgets != null)
-                    @component('mini_views.footer_widget', ['title'=> $widgets->name,'colClass'=>"col-md-6 col-lg-$class mb-$class mb-lg-0"])
-                        <p class="pr-1"> {!! $widgets->content !!}</p>
-                        {!! $tweetDetails !!}
-                        @if($mailchimpKey != null && $widgets->allow_mailchimp ==1)
-                            <div class="input-group input-group-rounded">
-                                <input class="form-control form-control-sm" placeholder="Email Address" name="email" id="newsletterEmail" type="text">
-                                <span class="input-group-append">
+            @if($widgets != null)
+                @component('mini_views.footer_widget', ['title'=> $widgets->name,'colClass'=>"col-md-6 col-lg-$class mb-$class mb-lg-0"])
+                    <p class="pr-1"> {!! $widgets->content !!}</p>
+                    {!! $tweetDetails !!}
+                    @if($mailchimpKey != null && $widgets->allow_mailchimp ==1)
+                        <div class="input-group input-group-rounded">
+                            <input class="form-control form-control-sm" placeholder="Email Address" name="email" id="newsletterEmail" type="text">
+                            <span class="input-group-append">
                                     <button class="btn btn-light text-color-dark" id="mailchimp-subscription" type="submit"><strong>Go!</strong></button>
                                 </span>
-                            </div>
-                        @endif
-                        <br>
-                        @if($widgets->allow_social_media)
-                            <ul class="social-icons">
-                                @foreach($social as $media)
+                        </div>
+                    @endif
+                    <br>
+                    @if($widgets->allow_social_media)
+                        <ul class="social-icons">
+                            @foreach($social as $media)
 
-                                    <li class="social-icons-{{lcfirst($media->name)}}"><a href="{{$media->link}}" target="_blank" title="{{ucfirst($media->name)}}"><i class="fa fa-{{lcfirst($media->name)}}"></i></a></li>
+                                <li class="social-icons-{{lcfirst($media->name)}}"><a href="{{$media->link}}" target="_blank" title="{{ucfirst($media->name)}}"><i class="fa fa-{{lcfirst($media->name)}}"></i></a></li>
 
-                                    heelo
-                                @endforeach
-                            </ul>
-                        @endif
-                    @endcomponent
-                @endif
+                                heelo
+                            @endforeach
+                        </ul>
+                    @endif
+                @endcomponent
+            @endif
                 <?php
                 $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer3')->select('name','content','allow_tweets','allow_mailchimp','allow_social_media')->first();
                 if ($widgets) {
@@ -571,52 +571,52 @@ $set = $set->findOrFail(1);
 
 
                 ?>
-                @if($widgets != null)
-                    @component('mini_views.footer_widget', ['title'=> $widgets->name,'colClass'=>"col-md-6 col-lg-$class mb-$class mb-lg-0"])
-                        <p class="pr-1"> {!! $widgets->content !!}</p>
-                        {!! $tweetDetails !!}
-                        @if($mailchimpKey != null && $widgets->allow_mailchimp ==1)
-                            <div class="input-group input-group-rounded">
-                                <input class="form-control form-control-sm" placeholder="Email Address" name="email" id="newsletterEmail" type="text">
-                                <span class="input-group-append">
+            @if($widgets != null)
+                @component('mini_views.footer_widget', ['title'=> $widgets->name,'colClass'=>"col-md-6 col-lg-$class mb-$class mb-lg-0"])
+                    <p class="pr-1"> {!! $widgets->content !!}</p>
+                    {!! $tweetDetails !!}
+                    @if($mailchimpKey != null && $widgets->allow_mailchimp ==1)
+                        <div class="input-group input-group-rounded">
+                            <input class="form-control form-control-sm" placeholder="Email Address" name="email" id="newsletterEmail" type="text">
+                            <span class="input-group-append">
                                     <button class="btn btn-light text-color-dark" id="mailchimp-subscription" type="submit"><strong>Go!</strong></button>
                                 </span>
-                            </div>
-                        @endif
-                        <br>
-                        @if($widgets->allow_social_media)
-                            <ul class="social-icons">
-                                @foreach($social as $media)
+                        </div>
+                    @endif
+                    <br>
+                    @if($widgets->allow_social_media)
+                        <ul class="social-icons">
+                            @foreach($social as $media)
 
-                                    <li class="social-icons-{{lcfirst($media->name)}}"><a href="{{$media->link}}" target="_blank" title="{{ucfirst($media->name)}}"><i class="fa fa-{{lcfirst($media->name)}}"></i></a></li>
+                                <li class="social-icons-{{lcfirst($media->name)}}"><a href="{{$media->link}}" target="_blank" title="{{ucfirst($media->name)}}"><i class="fa fa-{{lcfirst($media->name)}}"></i></a></li>
 
-                                @endforeach
-                            </ul>
-                        @endif
-                        <!-- @if($set->company_email != NULL)
-                            <li class="mb-1">
-                                <i class="fas fa-envelope"></i>
-                                <p class="m-0">
-                                    <a style="color: inherit" href="mailto:{{$set->company_email}}">{{$set->company_email}}</a>
+                            @endforeach
+                        </ul>
+                    @endif
+                    <!-- @if($set->company_email != NULL)
+                        <li class="mb-1">
+                            <i class="fas fa-envelope"></i>
+                            <p class="m-0">
+                                <a style="color: inherit" href="mailto:{{$set->company_email}}">{{$set->company_email}}</a>
                                          </p>
                                      </li>
                                  @endif
-                        @if($set->phone != NULL)
-                            <li class="mb-1">
-                                <i class="fas fa-phone"></i>
-                                <p class="m-0">
-                                    <a style="color: inherit" href="tel:{{$set->phone}}">{{$set->phone}}</a>
+                    @if($set->phone != NULL)
+                        <li class="mb-1">
+                            <i class="fas fa-phone"></i>
+                            <p class="m-0">
+                                <a style="color: inherit" href="tel:{{$set->phone}}">{{$set->phone}}</a>
                                          </p>
                                      </li>
                                  @endif
-                        @if($set->address != NULL)
-                            <li class="mb-1">
-                                <i class="fa fa-map-marker"></i>
-                                <p class="m-0">{{$set->address}}</p>
+                    @if($set->address != NULL)
+                        <li class="mb-1">
+                            <i class="fa fa-map-marker"></i>
+                            <p class="m-0">{{$set->address}}</p>
                                      </li>
                                  @endif -->
-                    @endcomponent
-                @endif
+                @endcomponent
+            @endif
 
                 <?php
 
@@ -628,45 +628,45 @@ $set = $set->findOrFail(1);
                 }
                 ?>
 
-                @if($widgets != null)
-                    @component('mini_views.footer_widget', ['title'=> $widgets->name,'colClass'=>"col-md-6 col-lg-$class mb-$class mb-lg-0"])
-                        <p class="pr-1"> {!! $widgets->content !!}</p>
-                        {!! $tweetDetails !!}
-                        @if($mailchimpKey != null && $widgets->allow_mailchimp ==1)
-                            <div class="input-group input-group-rounded">
-                                <input class="form-control form-control-sm" placeholder="Email Address" name="email" id="newsletterEmail" type="text">
-                                <span class="input-group-append">
+            @if($widgets != null)
+                @component('mini_views.footer_widget', ['title'=> $widgets->name,'colClass'=>"col-md-6 col-lg-$class mb-$class mb-lg-0"])
+                    <p class="pr-1"> {!! $widgets->content !!}</p>
+                    {!! $tweetDetails !!}
+                    @if($mailchimpKey != null && $widgets->allow_mailchimp ==1)
+                        <div class="input-group input-group-rounded">
+                            <input class="form-control form-control-sm" placeholder="Email Address" name="email" id="newsletterEmail" type="text">
+                            <span class="input-group-append">
                                     <button class="btn btn-light text-color-dark" id="mailchimp-subscription" type="submit"><strong>Go!</strong></button>
                                 </span>
-                            </div>
-                        @endif
-                        <br>
-                        @if($widgets->allow_social_media)
-                            <ul class="social-icons">
-                                @foreach($social as $media)
-                                    <li class="social-icons-{{lcfirst($media->name)}}"><a href="{{$media->link}}" target="_blank" title="{{ucfirst($media->name)}}"><i class="fa fa-{{lcfirst($media->name)}}"></i></a></li>
+                        </div>
+                    @endif
+                    <br>
+                    @if($widgets->allow_social_media)
+                        <ul class="social-icons">
+                            @foreach($social as $media)
+                                <li class="social-icons-{{lcfirst($media->name)}}"><a href="{{$media->link}}" target="_blank" title="{{ucfirst($media->name)}}"><i class="fa fa-{{lcfirst($media->name)}}"></i></a></li>
 
-                                @endforeach
-                            </ul>
-                        @endif
-                    @endcomponent
-                @endif
+                            @endforeach
+                        </ul>
+                    @endif
+                @endcomponent
+            @endif
 
-            </div>
         </div>
+    </div>
 
-        <div class="footer-copyright">
-            <div class="container py-2">
-                <div class="row py-4">
-                    <div class="col-md-12 align-items-center justify-content-center justify-content-lg-start mb-2 mb-lg-0">
-                        <p>Copyright ©<?php echo date('Y') ?> . <a href="{{$set->website}}" target="_blank">{{$set->company}}</a>. All Rights Reserved.Powered by
-                            <a href="https://www.ladybirdweb.com/" target="_blank"><img src="{{asset('common/images/Ladybird1.png')}}" alt="Ladybird"></a></p>
-                    </div>
-
+    <div class="footer-copyright">
+        <div class="container py-2">
+            <div class="row py-4">
+                <div class="col-md-12 align-items-center justify-content-center justify-content-lg-start mb-2 mb-lg-0">
+                    <p>Copyright ©<?php echo date('Y') ?> . <a href="{{$set->website}}" target="_blank">{{$set->company}}</a>. All Rights Reserved.Powered by
+                        <a href="https://www.ladybirdweb.com/" target="_blank"><img src="{{asset('common/images/Ladybird1.png')}}" alt="Ladybird"></a></p>
                 </div>
+
             </div>
         </div>
-    </footer>
+    </div>
+</footer>
 </div>
 
 
@@ -828,27 +828,57 @@ $set = $set->findOrFail(1);
             data: {'id':id,'password': password,'domain' : domain},
             url: "{{url('first-login')}}",
             success: function (data) {
-                if (data.status == 'true') {
+                $('#createTenant').attr('disabled',false)
+                $("#createTenant").html("<i class='fa fa-check'>&nbsp;&nbsp;</i>Submit");
+                if(data.status == 'validationFailure') {
+
+                    var html = '<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong>Whoops! </strong>Something went wrong<ul>';
+                    for (var key in data.message)
+                    {
+                        html += '<li>' + data.message[key][0] + '</li>'
+                    }
+                    html += '</ul></div>';
+                    $('#error').show();
+                    $('#success').hide();
+                    document.getElementById('error').innerHTML = html;
+                } else if(data.status == 'false') {
+                    $('#error').show();
+                    $('#success').hide();
+                    var result =  '<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>Whoops! </strong>Something went wrong!!<br><ul><li>'+data.message+'</li></ul></div>';
+                    $('#error').html(result);
+                } else if(data.status == 'success_with_warning') {
+                    console.log('here');
+                    $('#error').show();
+                    $('#success').hide();
+                    var result =  '<div class="alert alert-warning alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>Whoops! </strong><br><ul><li>'+data.message+'</li></ul></div>';
+                    $('#error').html(result);
+                } else {
                     $('#error').hide();
                     $('#success').show();
                     var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="fa fa-check"></i>Success! </strong>'+data.message+'!</div>';
                     $('#success').html(result);
-
-                }else if(data.status == 'false') {
-                    console.log('here');
-                    $('#error').show();
-                    $('#success').hide();
-                    var result =  '<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>Whoops! </strong>Something went wrong<br><ul><li>'+data.message+'</li></ul></div>';
-                    $('#error').html(result);
                 }
             },error: function (response) {
                 $('#createTenant').attr('disabled',false)
                 $("#createTenant").html("<i class='fa fa-check'>&nbsp;&nbsp;</i>Submit");
                 $("#generate").html("<i class='fa fa-check'>&nbsp;&nbsp;</i>Submit");
-                $.each(data,function(value){
+                if(response.status == 422) {
+
+                    var html = '<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong>Whoops! </strong>Something went wrong<ul>';
+                    for (var key in response.responseJSON.errors)
+                    {
+                        html += '<li>' + response.responseJSON.errors[key][0] + '</li>'
+                    }
+
+                } else {
                     var html = '<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong>Whoops! </strong>Something went wrong<ul>';
-                    html += '<li>' + value.message + '</li>'
-                });
+                    html += '<li>' + response.responseJSON.message + '</li>'
+                }
+
+                html += '</ul></div>';
+                $('#error').show();
+                $('#success').hide();
+                document.getElementById('error').innerHTML = html;
 
             }
 
@@ -867,57 +897,57 @@ $set = $set->findOrFail(1);
 
 
 
-       $(document).ready(function(){
-    $('.createTenant').attr('disabled',true);
-    $('#userdomain').keyup(function(){
-        if($(this).val().length !=0)
-            $('.createTenant').attr('disabled', false);            
-        else
-            $('.createTenant').attr('disabled',true);
-    })
-   });
-                  
-    function firstlogin(id) 
-    {
-        $('#createTenant').attr('disabled',true)
-        $("#createTenant").html("<i class='fas fa-circle-notch fa-spin'></i>Please Wait...");
-        var domain = $('#userdomain').val();
-        var password = $('#password').val();
-           
-               $.ajax({
-                    type: 'POST',
-                    data: {'id':id,'password': password,'domain' : domain},
-                    url: "{{url('first-login')}}",
-                   success: function (data) {
-                        if (data.status == 'true') {
-                              $('#error').hide();
-                            $('#success').show();
-                           var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="fa fa-check"></i>Success! </strong>'+data.message+'!</div>';
-                              $('#success').html(result);
-                        }else if(data.status == 'false') {
-                             console.log('here');
-                            $('#error').show();
-                            $('#success').hide();
-                            var result =  '<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>Whoops! </strong>Something went wrong<br><ul><li>'+data.message+'</li></ul></div>';
-                                $('#error').html(result);
-                        }
-                },error: function (response) {
-                    $('#createTenant').attr('disabled',false)
-                    $("#createTenant").html("<i class='fa fa-check'>&nbsp;&nbsp;</i>Submit");
-                    $("#generate").html("<i class='fa fa-check'>&nbsp;&nbsp;</i>Submit");
-                     $.each(data,function(value){
-                          var html = '<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong>Whoops! </strong>Something went wrong<ul>';
-                    html += '<li>' + value.message + '</li>'
-                });
-                }
-            }) ;
-           }
-    
-  
-        $(document).on("click", ".open-createTenantDialog", function () {
-    
-     $('#tenant').modal('show');
-});
+    $(document).ready(function(){
+        $('.createTenant').attr('disabled',true);
+        $('#userdomain').keyup(function(){
+            if($(this).val().length !=0)
+                $('.createTenant').attr('disabled', false);
+            else
+                $('.createTenant').attr('disabled',true);
+        })
+    });
+
+    // function firstlogin(id)
+    // {
+    //     $('#createTenant').attr('disabled',true)
+    //     $("#createTenant").html("<i class='fas fa-circle-notch fa-spin'></i>Please Wait...");
+    //     var domain = $('#userdomain').val();
+    //     var password = $('#password').val();
+
+    //           $.ajax({
+    //                 type: 'POST',
+    //                 data: {'id':id,'password': password,'domain' : domain},
+    //
+    //               success: function (data) {
+    //                     if (data.status == 'true') {
+    //                           $('#error').hide();
+    //                         $('#success').show();
+    //                       var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="fa fa-check"></i>Success! </strong>'+data.message+'!</div>';
+    //                           $('#success').html(result);
+    //                     }else if(data.status == 'false') {
+    //                          console.log('here');
+    //                         $('#error').show();
+    //                         $('#success').hide();
+    //                         var result =  '<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>Whoops! </strong>Something went wrong<br><ul><li>'+data.message+'</li></ul></div>';
+    //                             $('#error').html(result);
+    //                     }
+    //             },error: function (response) {
+    //                 $('#createTenant').attr('disabled',false)
+    //                 $("#createTenant").html("<i class='fa fa-check'>&nbsp;&nbsp;</i>Submit");
+    //                 $("#generate").html("<i class='fa fa-check'>&nbsp;&nbsp;</i>Submit");
+    //                  $.each(data,function(value){
+    //                       var html = '<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong>Whoops! </strong>Something went wrong<ul>';
+    //                 html += '<li>' + value.message + '</li>'
+    //             });
+    //             }
+    //         }) ;
+    //       }
+
+
+    $(document).on("click", ".open-createTenantDialog", function () {
+
+        $('#tenant').modal('show');
+    });
     $('.closebutton').on('click',function(){
         location.reload();
     });

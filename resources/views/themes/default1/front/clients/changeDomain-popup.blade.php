@@ -21,14 +21,14 @@
                             <label>Enter current domain</label>
                             <div class="row" style="margin-left: 2px; margin-right: 2px;">
                                 <input type="hidden"  name="order" id="orderId" value=""/>
-                                <input  type="text" name="userdomain" autocomplete="off" id= "userdomain"  class="form-control col col-12" placeholder="billing.faveocloud.com">
+                                <input  type="text" name="userdomain" autocomplete="off" id= "userdomain"  class="form-control col col-12" placeholder="billing.faveocloud.com" required>
                                 <!-- <input type="text" class="form-control col col-8" value=".faveocloud.com" disabled="true">-->
                             </div>
                             <br>
                             <label>Enter new domain</label>
                             <div class="row" style="margin-left: 2px; margin-right: 2px;">
                                 <input type="hidden"  name="order" id="orderId" value=""/>
-                                <input  type="text" name="usernewdomain" autocomplete="off" id= "usernewdomain"  class="form-control col col-12" placeholder="billing.faveocloud.com">
+                                <input  type="text" name="usernewdomain" autocomplete="off" id= "usernewdomain"  class="form-control col col-12" placeholder="billing.faveocloud.com" required>
                                 <!-- <input type="text" class="form-control col col-8" value=".faveocloud.com" disabled="true">-->
                             </div>
                         </div>
@@ -58,6 +58,7 @@
         $('#createTenant').attr('disabled',true)
         $("#createTenant").html("<i class='fas fa-circle-notch fa-spin'></i>Please Wait...");
         var domain = $('#userdomain').val();
+        console.log(domain);
         var domainNew = $('#usernewdomain').val();
         var order = $('#orderId').val();
         $.ajax({

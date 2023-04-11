@@ -259,7 +259,6 @@ class SettingsController extends Controller
 
             return ['charge' => $charge, 'customer' => $customer];
         } catch(\Exception $e) {
-
             return errorResponse($e->getMessage());
         }
     }

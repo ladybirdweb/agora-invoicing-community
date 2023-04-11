@@ -63,7 +63,7 @@ class RazorpayController extends Controller
                 //Change order Status as Success if payment is Successful
                 $control = new \App\Http\Controllers\Order\RenewController();
                 //After Regular Payment
-                if ($control->checkRenew() === false) {
+                if ($control->checkRenew() === false && $invoice->is_renewed == 0) {
                     $checkout_controller = new \App\Http\Controllers\Front\CheckoutController();
                     $checkout_controller->checkoutAction($invoice);
                     $view = $this->getViewMessageAfterPayment($invoice, $state, $currency);

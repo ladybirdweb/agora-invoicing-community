@@ -65,7 +65,7 @@ class CronControllerTest extends DBTestCase
         $invoice = Invoice::factory()->create(['user_id' => $user->id]);
         $invoiceItem = InvoiceItem::create(['invoice_id' => $invoice->id, 'product_name' => $product->name]);
         $payment_method = 'stripe';
-        $response = (new CronController())->postRazorpayPayment($invoice, $payment_method);
+        $response = (new CronController())->postRazorpayPayment($invoiceItem, $payment_method);
         $this->assertEquals('success', $response->payment_status);
     }
 }

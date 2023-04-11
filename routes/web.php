@@ -104,7 +104,7 @@ Route::middleware('installAgora')->group(function () {
     Route::get('get-my-payment/{orderid}/{userid}', [Front\ClientController::class, 'getPaymentByOrderId'])->name('get-my-payment');
 
     Route::get('get-my-payment-client/{orderid}/{userid}', [Front\ClientController::class, 'getPaymentByOrderIdClient'])->name('get-my-payment-client');
-    Route::get('autoPayment-client/{orderid}', [Front\ClientController::class, 'getAutoPaymentStatus']);
+    // Route::get('autoPayment-client/{orderid}', [Front\ClientController::class, 'getAutoPaymentStatus']);
     Route::post('strRenewal-enable', [Front\ClientController::class, 'enableAutorenewalStatus']);
     Route::post('renewal-disable', [Front\ClientController::class, 'disableAutorenewalStatus']);
     Route::post('rzpRenewal-disable/{orderid}', [Front\ClientController::class, 'enableRzpStatus']);

@@ -153,7 +153,7 @@ class SettingsController extends Controller
 
                 $control = new \App\Http\Controllers\Order\RenewController();
                 //After Regular Payment
-                if ($control->checkRenew() === false) {
+                if ($control->checkRenew() === false && $invoice->is_renewed == 0) {
                     $checkout_controller = new \App\Http\Controllers\Front\CheckoutController();
                     $checkout_controller->checkoutAction($invoice);
 
@@ -185,14 +185,12 @@ class SettingsController extends Controller
                 return redirect('checkout')->with('fails', 'Your Payment was declined. Please try making payment with other gateway');
             }
         } catch (\Cartalyst\Stripe\Exception\ApiLimitExceededException|\Cartalyst\Stripe\Exception\BadRequestException|\Cartalyst\Stripe\Exception\MissingParameterException|\Cartalyst\Stripe\Exception\NotFoundException|\Cartalyst\Stripe\Exception\ServerErrorException|\Cartalyst\Stripe\Exception\StripeException|\Cartalyst\Stripe\Exception\UnauthorizedException $e) {
-            dd($e);
             if (emailSendingStatus()) {
                 $this->sendFailedPaymenttoAdmin($amount, $e->getMessage());
             }
 
             return redirect('checkout')->with('fails', 'Your Payment was declined. '.$e->getMessage().'. Please try again or try the other gateway');
         } catch (\Cartalyst\Stripe\Exception\CardErrorException $e) {
-            dd($e);
             if (emailSendingStatus()) {
                 $this->sendFailedPaymenttoAdmin($request['amount'], $e->getMessage());
             }
@@ -261,7 +259,6 @@ class SettingsController extends Controller
 
             return ['charge' => $charge, 'customer' => $customer];
         } catch(\Exception $e) {
-            dd($e);
 
             return errorResponse($e->getMessage());
         }

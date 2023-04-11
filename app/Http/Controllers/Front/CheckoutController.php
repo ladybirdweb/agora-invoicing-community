@@ -129,7 +129,6 @@ class CheckoutController extends InfoController
 
             return view('themes.default1.front.checkout', compact('content', 'taxConditions'));
         } catch (\Exception $ex) {
-            dd($ex);
             app('log')->error($ex->getMessage());
 
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -186,6 +185,7 @@ class CheckoutController extends InfoController
             if ($invoice->user_id != \Auth::user()->id) {
                 throw new \Exception('Cannot initiate payment. Invalid modification of data');
             }
+
             if (count($invoice->payment()->get())) {//If partial payment is made
                 $paid = array_sum($invoice->payment()->pluck('amount')->toArray());
                 $invoice->grand_total = $invoice->grand_total - $paid;
@@ -197,7 +197,6 @@ class CheckoutController extends InfoController
                     $product = $this->product($invoiceid);
                 }
             }
-
             return view('themes.default1.front.paynow', compact('invoice', 'items', 'product', 'paid'));
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
@@ -208,6 +207,7 @@ class CheckoutController extends InfoController
 
     public function postCheckout(Request $request)
     {
+
         $cost = $request->input('cost');
         if (Cart::getSubTotal() != 0 || $cost > 0) {
             $this->validate($request, [
@@ -222,7 +222,6 @@ class CheckoutController extends InfoController
             $payment_method = $request->input('payment_gateway');
             \Session::put('payment_method', $payment_method);
             $paynow = $this->checkregularPaymentOrRenewal($request->input('invoice_id'));
-
             $cost = $request->input('cost');
             $state = $this->getState();
             if ($paynow === false) {//When regular payment

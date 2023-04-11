@@ -47,6 +47,7 @@ class Kernel extends ConsoleKernel
         $this->execute($schedule, 'subsExpirymail');
         $this->execute($schedule, 'postExpirymail');
         $schedule->job(new CloudEmail)->everyMinute();
+
     }
 
     public function execute($schedule, $task)

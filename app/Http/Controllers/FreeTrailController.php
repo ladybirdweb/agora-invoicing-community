@@ -96,7 +96,7 @@ class FreeTrailController extends Controller
             $number = rand(11111111, 99999999);
             $date = \Carbon\Carbon::now();
             $currency = \Session::has('cart_currency') ? \Session::get('cart_currency') : getCurrencyForClient(\Auth::user()->country);
-            $invoice = $this->invoice->create(['user_id' => $user_id, 'number' => $number, 'date' => $date, 'grand_total' => $grand_total, 'status' => 'pending',
+            $invoice = $this->invoice->create(['user_id' => $user_id, 'number' => $number, 'date' => $date, 'grand_total' => $grand_total, 'status' => 'success',
                 'currency' => $currency, ]);
 
             return $invoice;

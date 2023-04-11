@@ -208,7 +208,7 @@ class BaseClientController extends Controller
                 if (\Auth::user()->role == 'admin') {
                     return getStatusLabel($model->status);
                 }
-                 
+
                 return getStatusLabel($model->status, 'badge');
             })
             ->addColumn('action', function ($model) {

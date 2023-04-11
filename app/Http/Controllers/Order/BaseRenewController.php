@@ -9,14 +9,14 @@ use App\Model\Order\Order;
 use App\Model\Payment\Plan;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
-use App\Http\Controllers\Order\RenewController;
-use Exception;
 use App\Traits\TaxCalculation;
+use Exception;
 use Illuminate\Http\Request;
 
 class BaseRenewController extends Controller
 {
-     use TaxCalculation;
+    use TaxCalculation;
+
     public function invoiceBySubscriptionId($id, $planid, $cost, $currency)
     {
         try {
@@ -122,6 +122,7 @@ class BaseRenewController extends Controller
             $renewController->createOrderInvoiceRelation($orderid, $invoice->id);
             $items = $controller->createInvoiceItemsByAdmin($invoice->id, $product->id,
                 $renewalPrice, $currency, $qty = 1, $agents, $planid, $user->id, $tax_name, $tax_rate, $renewalPrice);
+
             return $items;
         } catch (Exception $ex) {
             throw new Exception($ex->getMessage());

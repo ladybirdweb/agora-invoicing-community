@@ -6,24 +6,24 @@ use App\ApiKey;
 use App\Auto_renewal;
 use App\Http\Controllers\Github\GithubApiController;
 use App\Http\Controllers\License\LicensePermissionsController;
+use App\Http\Controllers\Order\RenewController;
 use App\Model\Common\StatusSetting;
 use App\Model\Github\Github;
 use App\Model\Order\Invoice;
+use App\Model\Order\InvoiceItem;
 use App\Model\Order\Order;
 use App\Model\Order\OrderInvoiceRelation;
 use App\Model\Order\Payment;
 use App\Model\Payment\Currency;
+use App\Model\Payment\Plan;
 use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
 use App\Model\Product\Subscription;
 use App\Plugins\Stripe\Controllers\SettingsController;
 use App\User;
 use Exception;
-use App\Model\Order\InvoiceItem;
-use App\Model\Payment\Plan;
 use GrahamCampbell\Markdown\Facades\Markdown;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Order\RenewController;
 use Razorpay\Api\Api;
 use Symfony\Component\Mime\Email;
 use Validator;
@@ -164,19 +164,18 @@ class ClientController extends BaseClientController
     {
         $id = request()->route('id');
         $order_id = \DB::table('order_invoice_relations')->where('invoice_id', $id)->value('order_id');
-        $sub = Subscription::where('order_id',$order_id)->first();
+        $sub = Subscription::where('order_id', $order_id)->first();
         $planid = $sub->plan_id;
         $plan = Plan::find($planid);
         $planDetails = userCurrencyAndPrice($sub->user_id, $plan);
         $cost = $planDetails['plan']->renew_price;
         $currency = $planDetails['currency'];
         $controller = new RenewController();
-        $items = InvoiceItem::where('invoice_id',$id)->first();
+        $items = InvoiceItem::where('invoice_id', $id)->first();
         $invoiceid = $items->invoice_id;
         // $this->setSession($id, $planid);
 
         return redirect('paynow/'.$invoiceid);
-
     }
 
     // public function getAutoPaymentStatus()

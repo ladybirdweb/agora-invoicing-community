@@ -584,11 +584,11 @@ class ClientController extends BaseClientController
 
                                 $deleteCloud = $this->getCloudDeletePopup($model, $model->product_id);
 
-                                $changeDomain = $this->changeDomain($model, $model->product_id);
+                                $changeDomain = $this->changeDomain($model, $model->product_id); // Need to add this if the client requirement intensifies.
 
                                 return '<a href='.url('my-order/'.$model->id)." 
                                 class='btn  btn-primary btn-xs' style='margin-right:5px;'>
-                                <i class='fa fa-eye' title='Details of order'></i>&nbsp;View $listUrl $url $deleteCloud $changeDomain</a>";
+                                <i class='fa fa-eye' title='Details of order'></i>&nbsp;View $listUrl $url $deleteCloud</a>";
                             })
                             ->filterColumn('product_name', function ($query, $keyword) {
                                 $sql = 'product.name like ?';

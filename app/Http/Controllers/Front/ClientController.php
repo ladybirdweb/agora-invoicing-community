@@ -175,7 +175,7 @@ class ClientController extends BaseClientController
         $invoiceid = $items->invoice_id;
         // $this->setSession($id, $planid);
 
-        return redirect('paynow/'.$invoiceid);
+        return redirect('paynow/'.$id);
     }
 
     // public function getAutoPaymentStatus()

@@ -378,6 +378,16 @@ class CronController extends BaseCronController
                     $invoice = $renewController->generateInvoice($product_details, $user, $order->id, $plan->id, $cost, $code = '', $item->agents, $oldcurrency);
                     $cost = Invoice::where('id', $invoice->invoice_id)->value('grand_total');
                     $currency = Invoice::where('id', $invoice->invoice_id)->value('currency');
+                    $zero_decimalCurrency = ['BIF','CLP','DJF','GNF','JPY','KMF','KRW','MGA','PYG','RWF','UGX','VND','VUV','XAF','XOF','XPF'];
+                    $three_decimalCurrency = ['BHD','JOD','KWD','OMR','TND'];
+                    if(in_array($currency, $three_decimalCurrency)){
+                        $unit_cost = round((int) $cost + 1)*1000;
+                    }
+                    elseif(in_array($currency, $zero_decimalCurrency)){
+                         $unit_cost = round((int) $cost + 1);
+                     }else{
+                         $unit_cost = round((int) $cost + 1)*100;
+                     }
 
                     //create product
                     $product = $stripe->products->create([
@@ -388,7 +398,7 @@ class CronController extends BaseCronController
                     //define product price and recurring interval
 
                     $price = $stripe->prices->create([
-                        'unit_amount' => round((int) $cost),
+                        'unit_amount' => $unit_cost,
                         'currency' => $currency,
                         'recurring' => ['interval' => 'day', 'interval_count' => $plan->days],
                         'product' => $product_id,
@@ -415,7 +425,7 @@ class CronController extends BaseCronController
                 }
             }
         } catch (\Cartalyst\Stripe\Exception\ApiLimitExceededException|\Cartalyst\Stripe\Exception\BadRequestException|\Cartalyst\Stripe\Exception\MissingParameterException|\Cartalyst\Stripe\Exception\NotFoundException|\Cartalyst\Stripe\Exception\ServerErrorException|\Cartalyst\Stripe\Exception\StripeException|\Cartalyst\Stripe\Exception\UnauthorizedException $e) {
-            $this->cardfailedMail($cost, $e->getMessage(), $user, $number, $end, $currency, $order, $product_details);
+            $this->cardfailedMail($cost, $e->getMessage(), $user, $number, $end, $currency, $order, $product_details,$invoice);
         } catch (\Cartalyst\Stripe\Exception\CardErrorException $e) {
             if (emailSendingStatus()) {
                 $this->sendFailedPayment($cost, $e->getMessage(), $user, $order->number, $end, $currency, $order, $product_details);
@@ -445,7 +455,7 @@ class CronController extends BaseCronController
                     'interval' => round((int) $days / 30),
                     'item' => [
                         'name' => $product_name,
-                        'amount' => round((int) $cost),
+                        'amount' => round((int) $cost)*100,
                         'currency' => $currency, ],
 
                 ]
@@ -469,15 +479,15 @@ class CronController extends BaseCronController
                     $this->successRenew($invoice, $subscription, $payment_method = 'Razorpay', $currency);
                     $this->postRazorpayPayment($invoice, $payment_method = 'Razorpay');
                     if ($cost && emailSendingStatus()) {
-                        $this->sendPaymentSuccessMail($currency, $cost, $user, $invoice->invoiceItem()->first()->product_name, $order->number);
+                        $this->sendPaymentSuccessMail($currency, $cost, $user, $invoice->product_name, $order->number);
                     }
                 }
             }
         } catch (\Razorpay\Api\Errors\SignatureVerificationError|\Razorpay\Api\Errors\BadRequestError|\Razorpay\Api\Errors\GatewayError|\Razorpay\Api\Errors\ServerError $e) {
-            $this->cardfailedMail($cost, $e->getMessage(), $user, $order->number, $end, $currency, $order, $product_details);
+            $this->cardfailedMail($cost, $e->getMessage(), $user, $order->number, $end, $currency, $order, $product_details,$invoice);
         } catch (\Exception $e) {
             if (emailSendingStatus()) {
-                $this->sendFailedPayment($cost, $e->getMessage(), $user, $order->number, $end, $invoice->currency, $order, $product_details);
+                $this->sendFailedPayment($cost, $e->getMessage(), $user, $order->number, $end, $currency, $order, $product_details);
             }
         }
     }
@@ -556,7 +566,7 @@ class CronController extends BaseCronController
         }
     }
 
-        public static function cardfailedMail($total, $exceptionMessage, $user, $number, $end, $currency, $order, $product_details)
+        public static function cardfailedMail($total, $exceptionMessage, $user, $number, $end, $currency, $order, $product_details,$invoice)
         {
             //check in the settings
             $settings = new \App\Model\Common\Setting();
@@ -573,7 +583,7 @@ class CronController extends BaseCronController
             $template = $templates->where('id', $temp_id)->first();
             $data = $template->data;
             // $invoiceid = \DB::table('order_invoice_relations')->where('order_id',$order->id)->value('invoice_id');
-            $url = url("my-order/$order->id");
+            $url = url("autopaynow/$invoice->invoice_id");
 
             try {
                 $email = (new Email())

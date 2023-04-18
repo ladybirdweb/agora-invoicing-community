@@ -9,8 +9,8 @@
             <div class="tabs tabs-vertical tabs-left">
             <ul class="nav nav-tabs">
                 @foreach($navigations as $navigation)
-                    <li class="nav-item {{isset($navigation['active'])? 'active': ''}}">
-                       <a class="nav-link" href="#{{$navigation['id']}}" data-toggle="tab"> <i class="{{$navigation['icon']}}"> </i>&nbsp;{{$navigation['name']}}</a>
+                    <li class="nav-item {{isset($navigation['active'])? 'active': ''}}" id="demo">
+                       <a class="nav-link {{isset($navigation['active'])? 'active': ''}}" href="#{{$navigation['id']}}" data-toggle="tab"> <i class="{{$navigation['icon']}}"> </i>&nbsp;{{$navigation['name']}}</a>
                     </li>
                 @endforeach
             </ul>

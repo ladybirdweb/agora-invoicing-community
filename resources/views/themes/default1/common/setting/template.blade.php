@@ -135,6 +135,112 @@
                         </td>
 
                     </tr>
+                     <tr>
+
+                        <td><b>{!! Form::label('invoice',Lang::get('Purchase Confirmation')) !!}</b></td>
+                        <td>
+                            <div class="form-group {{ $errors->has('invoice') ? 'has-error' : '' }}">
+
+
+                                {!! Form::select('invoice',['Templates'=>$template->where('type',7)->pluck('name','id')->toArray()],null,['class'=>'form-control']) !!}
+                                
+
+
+                            </div>
+                        </td>
+
+                    </tr>
+                     <tr>
+
+                        <td><b>{!! Form::label('invoice',Lang::get('New Sales Manager')) !!}</b></td>
+                        <td>
+                            <div class="form-group {{ $errors->has('invoice') ? 'has-error' : '' }}">
+
+
+                                {!! Form::select('invoice',['Templates'=>$template->where('type',9)->pluck('name','id')->toArray()],null,['class'=>'form-control']) !!}
+                                
+
+
+                            </div>
+                        </td>
+
+                    </tr>
+                      <tr>
+
+                        <td><b>{!! Form::label('invoice',Lang::get('New Account Manager')) !!}</b></td>
+                        <td>
+                            <div class="form-group {{ $errors->has('invoice') ? 'has-error' : '' }}">
+
+
+                                {!! Form::select('invoice',['Templates'=>$template->where('type',10)->pluck('name','id')->toArray()],null,['class'=>'form-control']) !!}
+                                
+
+
+                            </div>
+                        </td>
+
+                    </tr>
+                     <tr>
+
+                        <td><b>{!! Form::label('invoice',Lang::get('Auto Renewal Reminder')) !!}</b></td>
+                        <td>
+                            <div class="form-group {{ $errors->has('autosubscription_going_to_end') ? 'has-error' : '' }}">
+
+
+                                {!! Form::select('invoice',['Templates'=>$template->where('type',12)->pluck('name','id')->toArray()],null,['class'=>'form-control']) !!}
+                                
+
+
+                            </div>
+                        </td>
+
+                    </tr>
+                    <tr>
+
+                        <td><b>{!! Form::label('invoice',Lang::get('Auto Payment Successfull')) !!}</b></td>
+                        <td>
+                            <div class="form-group {{ $errors->has('payment_successfull') ? 'has-error' : '' }}">
+
+
+                                {!! Form::select('invoice',['Templates'=>$template->where('type',13)->pluck('name','id')->toArray()],null,['class'=>'form-control']) !!}
+                                
+
+
+                            </div>
+                        </td>
+
+                    </tr>
+                       <tr>
+
+                        <td><b>{!! Form::label('invoice',Lang::get('Auto Payment Failed')) !!}</b></td>
+                        <td>
+                            <div class="form-group {{ $errors->has('payment_failed') ? 'has-error' : '' }}">
+
+
+                                {!! Form::select('invoice',['Templates'=>$template->where('type',14)->pluck('name','id')->toArray()],null,['class'=>'form-control']) !!}
+                                
+
+
+                            </div>
+                        </td>
+
+                    </tr>
+                     <tr>
+
+                        <td><b>{!! Form::label('invoice',Lang::get('Credit Card Failed')) !!}</b></td>
+                        <td>
+                            <div class="form-group {{ $errors->has('card_failed') ? 'has-error' : '' }}">
+
+
+                                {!! Form::select('invoice',['Templates'=>$template->where('type',15)->pluck('name','id')->toArray()],null,['class'=>'form-control']) !!}
+                                
+
+
+                            </div>
+                        </td>
+
+                    </tr>
+
                 <br>
                 <button type="submit" class="btn btn-primary pull-right" id="submit" style="margin-top:-40px;"><i class="fa fa-sync-alt">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button>
                 {!! Form::close() !!}

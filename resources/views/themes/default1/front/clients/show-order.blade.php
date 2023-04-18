@@ -246,7 +246,6 @@ $json = json_encode($data);
            </div>
             <div id="alertMessage-2"></div>
 
-
             @component('mini_views.navigational_view', [
                 'navigations'=>[
                     ['id'=>'license-details', 'name'=>'License Details','active'=>1, 'slot'=>'license','icon'=>'fas fa-file'],
@@ -258,7 +257,7 @@ $json = json_encode($data);
                 ]
             ])
                
-
+               
                 @slot('license')
                  
                     <table class="table">
@@ -466,10 +465,10 @@ $json = json_encode($data);
                         </tr>
                         </thead>
                     </table> -->
+                    @if($statusAutorenewal == 1)
+             <div class="row">
 
-                                         <div class="row">
-
-              <div class="col-8"> 
+              <div class="col-8" id="updateButton"> 
               <button type="button" class="btn btn-primary" id="cardUpdate" checked>Update CardDetails</button><br>
               <h6 style="margin-top: 8px;">Click here to Update your Card Details</h6>
 
@@ -479,6 +478,7 @@ $json = json_encode($data);
           </div>
   
             </div>
+            @endif
 
                
                 @endslot
@@ -630,14 +630,14 @@ $json = json_encode($data);
 <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript">
 
-      $('#srclose').click(function() 
-               {
-               location.reload();
-               });
-      $('#strclose').click(function() 
-               {
-               location.reload();
-               });
+      // $('#srclose').click(function() 
+      //          {
+      //          location.reload();
+      //          });
+      // $('#strclose').click(function() 
+      //          {
+      //          location.reload();
+      //          });
 
         // Checkout details as a json
 var options = <?php echo $json; ?>
@@ -669,6 +669,7 @@ options.modal = {
 };
 
 var rzp = new Razorpay(options);
+
     $(document).ready(function(){
          var status = $('.renewcheckbox').val();
          if(status ==1) {
@@ -699,7 +700,8 @@ var rzp = new Razorpay(options);
                     setInterval(function(){
                         $('#alertMessage-2').slideUp(3000);
                     }, 1000);
-                    },
+                    $('#updateButton').hide();
+                },
                 })
           }
     });
@@ -752,7 +754,7 @@ var rzp = new Razorpay(options);
                     setInterval(function(){
                         $('#alertMessage-2').slideUp(3000);
                     }, 1000);
-                    location.reload();
+                    $('#updateButton').show();
                 },
                   error: function (data) {
                      $('#stripe-Modal').modal('hide');

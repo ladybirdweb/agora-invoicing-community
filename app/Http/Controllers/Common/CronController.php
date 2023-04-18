@@ -350,6 +350,7 @@ class CronController extends BaseCronController
 
     public function autoRenewal()
     {
+        ini_set('memory_limit','-1');
         try {
             $subscriptions_detail = $this->getOnDayExpiryInfoSubs()->get();
 

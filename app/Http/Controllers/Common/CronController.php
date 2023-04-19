@@ -498,7 +498,7 @@ class CronController extends BaseCronController
         $settings = new \App\Model\Common\Setting();
         $setting = $settings->where('id', 1)->first();
 
-        // Subscription::where('order_id', $order->id)->update(['autoRenew_status' => 'Failed', 'is_subscribed' => '0']);
+        Subscription::where('order_id', $order->id)->update(['autoRenew_status' => 'Failed', 'is_subscribed' => '0']);
 
         $mail = new \App\Http\Controllers\Common\PhpMailController();
         $mailer = $mail->setMailConfig($setting);

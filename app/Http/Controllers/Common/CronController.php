@@ -466,7 +466,7 @@ class CronController extends BaseCronController
                     'customer_notify' => 1,
                     'quantity'=>1,
                     'total_count' => 1,
-                    'start_at' =>  Carbon::parse($update_end)->timestamp,
+                    'start_at' =>  Carbon::parse($update_end)->addDays(1)->timestamp,
                     'addons' => [[
                         'item' => [
                             'name' => 'Delivery charges',

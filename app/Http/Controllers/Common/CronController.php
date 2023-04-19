@@ -430,7 +430,7 @@ class CronController extends BaseCronController
             $this->cardfailedMail($cost, $e->getMessage(), $user, $number, $end, $currency, $order, $product_details, $invoice);
         } catch (\Cartalyst\Stripe\Exception\CardErrorException $e) {
             if (emailSendingStatus()) {
-                $this->sendFailedPayment($cost, $e->getMessage(), $user, $order->number, $end, $currency, $order, $product_details);
+                $this->sendFailedPayment($cost, $e->getMessage(), $user, $order->number, $end, $currency, $order, $product_details,$invoice);
             }
             \Session::put('amount', $amount);
             \Session::put('error', $e->getMessage());
@@ -489,12 +489,12 @@ class CronController extends BaseCronController
             $this->cardfailedMail($cost, $e->getMessage(), $user, $order->number, $end, $currency, $order, $product_details, $invoice);
         } catch (\Exception $e) {
             if (emailSendingStatus()) {
-                $this->sendFailedPayment($cost, $e->getMessage(), $user, $order->number, $end, $currency, $order, $product_details);
+                $this->sendFailedPayment($cost, $e->getMessage(), $user, $order->number, $end, $currency, $order, $product_details,$invoice);
             }
         }
     }
 
-    public static function sendFailedPayment($total, $exceptionMessage, $user,$number,$end,$currency,$order,$product_details)
+    public static function sendFailedPayment($total, $exceptionMessage, $user, $number, $end, $currency, $order, $product_details,$invoice)
     {
         //check in the settings
         $settings = new \App\Model\Common\Setting();
@@ -510,7 +510,7 @@ class CronController extends BaseCronController
 
         $template = $templates->where('id', $temp_id)->first();
         $data = $template->data;
-        $url = url("my-order/$order->id");
+        $url = url("autopaynow/$invoice->invoice_id");
 
         try {
             $email = (new Email())

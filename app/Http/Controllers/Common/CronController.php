@@ -7,8 +7,8 @@ use App\Auto_renewal;
 use App\Http\Controllers\License\LicensePermissionsController;
 use App\Http\Controllers\Order\BaseRenewController;
 use App\Model\Common\StatusSetting;
-use App\Model\Common\Template;
 use App\Model\Common\StatusSetting;
+use App\Model\Common\Template;
 use App\Model\Common\Template;
 use App\Model\Mailjob\ExpiryMailDay;
 use App\Model\Order\Invoice;
@@ -533,7 +533,7 @@ class CronController extends BaseCronController
         }
     }
 
-    public static function sendPaymentSuccessMail($currency, $total, $user, $product,$number)
+    public static function sendPaymentSuccessMail($currency, $total, $user, $product, $number)
     {
         //check in the settings
         $settings = new \App\Model\Common\Setting();

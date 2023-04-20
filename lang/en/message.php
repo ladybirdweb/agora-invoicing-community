@@ -691,4 +691,7 @@ return [
     'cron_server_url' => 'Cron server URL',
     'cron_server_key' => 'Cron server key',
 
+    //Delete message
+    'confirm' => 'Are you sure you want to delete this?',
+
 ];

@@ -186,7 +186,7 @@ class SettingsController extends BaseSettingsController
             $setting = $settings->find(1);
             if ($request->hasFile('logo')) {
                 $name = $request->file('logo')->getClientOriginalName();
-                $destinationPath = public_path('common/images');
+                $destinationPath = public_path('images');
                 $request->file('logo')->move($destinationPath, $name);
                 $setting->logo = $name;
             }
@@ -219,10 +219,11 @@ class SettingsController extends BaseSettingsController
      */
     public function delete(Request $request)
     {
+        try{
         if (isset($request->id)) {
             $todo = Setting::findOrFail($request->id);
             if ($request->column == 'logo') {
-                File::delete(public_path('common/images/').$todo->logo);
+                File::delete(public_path('images/').$todo->logo);
 
                 $todo->logo = null;
             }
@@ -236,8 +237,14 @@ class SettingsController extends BaseSettingsController
                 $todo->fav_icon = null;
             }
             $todo->save();
+             $response = ['type' => 'success', 'message' => 'Logo Deleted successfully'];
 
-            return back();
+            return response()->json($response);
+        }
+        } catch (\Exception $ex) {
+            $result = [$ex->getMessage()];
+
+            return response()->json(compact('result'), 500);
         }
     }
 
@@ -368,13 +375,13 @@ class SettingsController extends BaseSettingsController
                                   return json_decode($role);
                               })
                                ->addColumn('new', function ($model) {
-                                   $properties = $model->properties;
+                                   $properties = ($model->properties);
                                    $newEntry = $this->getNewEntry($properties, $model);
 
                                    return $newEntry;
                                })
                                 ->addColumn('old', function ($model) {
-                                    $data = $model->properties;
+                                    $data = ($model->properties);
                                     $oldEntry = $this->getOldEntry($data, $model);
 
                                     return $oldEntry;

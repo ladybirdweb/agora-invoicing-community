@@ -16,6 +16,8 @@ System Setting
 @stop
 @section('content')
 
+    <div id="alertMessage3"></div>
+    <div id="error2"></div>
 
 <div class="row">
 
@@ -334,7 +336,7 @@ System Setting
                                 {!! Form::file('logo') !!}
                                 <p><i> {{Lang::get('Upload the company logo')}}</i> </p>
                                 @if($set->logo) 
-                                <img src='{{asset("common/images/$set->logo")}}' class="img-thumbnail" style="height: 50px;"> &nbsp;&nbsp;
+                                <img src='{{asset("images/$set->logo")}}' class="img-thumbnail" style="height: 50px;"> &nbsp;&nbsp;
                                  
                                  <button  type="button"  id="{{$set->id}}" data-url=""  data-toggle="tooltip"  value="logo" class="btn btn-sm btn-secondary show_confirm " label="" style="font-weight:500;" name="logo" value="client_logo" title="Delete  logo." style="background-color: #6c75c7d;">
                                 <i class="fa fa-trash"></i></button>
@@ -458,16 +460,9 @@ System Setting
           var column = $(this).attr('value');
         
 
-          event.preventDefault();
-          swal({
-              title: `Are you sure to delete this record?`,
-              text: "If you delete this, it will be gone forever.",
-              
-              buttons: true,
-              dangerMode: true,
-          })
-          .then((willDelete) => {
-            if (willDelete) {
+        
+            if (confirm("{{Lang::get('message.confirm') }}")) 
+        {
                 $.ajax({
                
                 type: 'POST',
@@ -475,17 +470,32 @@ System Setting
                 dataType: 'json',
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 data: {id:id,column:column,"_token": "{{ csrf_token() }}"},
-               success: function (data) {
-                location.reload();
+               success: function (response) {
+                    $('#alertMessage3').show();
+                    var result =  '<div class="alert alert-success"> <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Well Done! </strong>'+response.message+'!</div>';
+                    $('#alertMessage3').html(result+ ".");
+                    setTimeout(function(){
+                       window.location.reload(1);
+                    }, 3000); 
                                
                },
-               error: function (data) {
-                  location.reload();   
+               error: function (ex) {
+        
+                    var myJSON = JSON.parse(ex.responseText);
+                    var html = '<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>Oh Snap! </strong>Something went wrong<br><br><ul>';
+                    for (var key in myJSON)
+                    {
+                        html += '<li>' + myJSON[key][0] + '</li>'
+                    }
+                    html += '</ul></div>';
+
+                    $('#error2').show();
+                    document.getElementById('error2').innerHTML = html;
                }
               
             });
             }
-          });
+            return false;
       });
   
 </script>

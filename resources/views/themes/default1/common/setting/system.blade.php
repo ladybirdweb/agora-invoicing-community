@@ -461,7 +461,7 @@ System Setting
         
 
         
-           if (confirm("Are you sure you want to suspend this user?"))
+          if (confirm("{{Lang::get('message.confirm') }}")) 
         {
                 $.ajax({
                

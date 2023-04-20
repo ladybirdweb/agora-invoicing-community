@@ -699,4 +699,7 @@ return [
     //Delete message
     'confirm' => 'Are you sure you want to delete this?',
 
+    //Delete message
+    'confirm' => 'Are you sure you want to delete this?',
+
 ];

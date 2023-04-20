@@ -219,11 +219,11 @@ class SettingsController extends BaseSettingsController
      */
     public function delete(Request $request)
     {
-        try {
-            if (isset($request->id)) {
-                $todo = Setting::findOrFail($request->id);
-                if ($request->column == 'logo') {
-                    File::delete(public_path('images/').$todo->logo);
+        try{
+        if (isset($request->id)) {
+            $todo = Setting::findOrFail($request->id);
+            if ($request->column == 'logo') {
+                File::delete(public_path('images/').$todo->logo);
 
                     $todo->logo = null;
                 }
@@ -241,6 +241,11 @@ class SettingsController extends BaseSettingsController
 
                 return response()->json($response);
             }
+            $todo->save();
+             $response = ['type' => 'success', 'message' => 'Logo Deleted successfully'];
+
+            return response()->json($response);
+        }
         } catch (\Exception $ex) {
             $result = [$ex->getMessage()];
 
@@ -375,13 +380,13 @@ class SettingsController extends BaseSettingsController
                                   return json_decode($role);
                               })
                                ->addColumn('new', function ($model) {
-                                   $properties = $model->properties;
+                                   $properties = ($model->properties);
                                    $newEntry = $this->getNewEntry($properties, $model);
 
                                    return $newEntry;
                                })
                                 ->addColumn('old', function ($model) {
-                                    $data = $model->properties;
+                                    $data = ($model->properties);
                                     $oldEntry = $this->getOldEntry($data, $model);
 
                                     return $oldEntry;

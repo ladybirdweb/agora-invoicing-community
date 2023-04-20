@@ -266,13 +266,6 @@ class BaseSettingsController extends PaymentSettingsController
         return redirect('job-scheduler')->with('success', \Lang::get('message.updated-successfully'));
     }
 
-    public function postSubsSchedular(Request $request)
-    {
-    }
-
-    public function postSubsSchedular(Request $request)
-    {
-    }
 
     //Save the Cron Days for expiry Mails and Activity Log
     public function saveCronDays(Request $request)

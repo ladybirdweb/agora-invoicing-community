@@ -7,8 +7,6 @@ use App\Auto_renewal;
 use App\Http\Controllers\License\LicensePermissionsController;
 use App\Http\Controllers\Order\BaseRenewController;
 use App\Model\Common\StatusSetting;
-use App\Model\Common\StatusSetting;
-use App\Model\Common\Template;
 use App\Model\Common\Template;
 use App\Model\Mailjob\ExpiryMailDay;
 use App\Model\Order\Invoice;

@@ -691,7 +691,6 @@ return [
     'cron_server_url' => 'Cron server URL',
     'cron_server_key' => 'Cron server key',
 
-
     //Delete messages
 
     'confirm' => 'Are you sure you want to suspend this user?',

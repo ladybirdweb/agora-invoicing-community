@@ -461,7 +461,7 @@ System Setting
         
 
         
-          if (confirm("{{Lang::get('message.confirm') }}")) 
+            if (confirm("{{Lang::get('message.confirm') }}")) 
         {
                 $.ajax({
                

@@ -266,7 +266,6 @@ class BaseSettingsController extends PaymentSettingsController
         return redirect('job-scheduler')->with('success', \Lang::get('message.updated-successfully'));
     }
 
-
     //Save the Cron Days for expiry Mails and Activity Log
     public function saveCronDays(Request $request)
     {

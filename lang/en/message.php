@@ -696,4 +696,9 @@ return [
     'cloud_live_info'=> 'Welcome to Faveo! You can deploy your cloud instance with just one click. if you wish to use our domain you can just enter CloudName.faveocloud.com and the instance creation will begin instantly. Also, we do provide support to create a cloud instance with your own custom domain as well.If you wish to purchase a domain please <a href="https://store.ladybirdwebhost.com/" style="color:white"><u>Click here.</u></a> Further queries contact our <a href="https://support.faveohelpdesk.com" style="color:white"><u>Support Center</u></a>',
     'cname' => 'Your domain\'s DNS CNAME record is not pointing to our cloud. Please ensure that the CNAME record is correctly set to proceed with the desired action. Please <a href="https://docs.faveohelpdesk.com/docs/helper/cname">Click here!</a> to know more.',
 
+
+    //Delete messages
+
+    'confirm' => 'Are you sure you want to suspend this user?',
+
 ];

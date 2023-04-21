@@ -502,10 +502,10 @@ class Request
         $cookies = [];
 
         foreach ($this->cookies as $k => $v) {
-            $cookies[] = $k.'='.$v;
+            $cookies[] = \is_array($v) ? http_build_query([$k => $v], '', '; ', \PHP_QUERY_RFC3986) : "$k=$v";
         }
 
-        if (!empty($cookies)) {
+        if ($cookies) {
             $cookieHeader = 'Cookie: '.implode('; ', $cookies)."\r\n";
         }
 
@@ -1577,7 +1577,8 @@ class Request
 
         $languages = AcceptHeader::fromString($this->headers->get('Accept-Language'))->all();
         $this->languages = [];
-        foreach ($languages as $lang => $acceptHeaderItem) {
+        foreach ($languages as $acceptHeaderItem) {
+            $lang = $acceptHeaderItem->getValue();
             if (str_contains($lang, '-')) {
                 $codes = explode('-', $lang);
                 if ('i' === $codes[0]) {
@@ -1613,7 +1614,7 @@ class Request
             return $this->charsets;
         }
 
-        return $this->charsets = array_keys(AcceptHeader::fromString($this->headers->get('Accept-Charset'))->all());
+        return $this->charsets = array_map('strval', array_keys(AcceptHeader::fromString($this->headers->get('Accept-Charset'))->all()));
     }
 
     /**
@@ -1625,7 +1626,7 @@ class Request
             return $this->encodings;
         }
 
-        return $this->encodings = array_keys(AcceptHeader::fromString($this->headers->get('Accept-Encoding'))->all());
+        return $this->encodings = array_map('strval', array_keys(AcceptHeader::fromString($this->headers->get('Accept-Encoding'))->all()));
     }
 
     /**
@@ -1637,7 +1638,7 @@ class Request
             return $this->acceptableContentTypes;
         }
 
-        return $this->acceptableContentTypes = array_keys(AcceptHeader::fromString($this->headers->get('Accept'))->all());
+        return $this->acceptableContentTypes = array_map('strval', array_keys(AcceptHeader::fromString($this->headers->get('Accept'))->all()));
     }
 
     /**

@@ -50,7 +50,7 @@ final class WrappedListener
             $r = new \ReflectionFunction($listener);
             if (str_contains($r->name, '{closure}')) {
                 $this->pretty = $this->name = 'closure';
-            } elseif ($class = $r->getClosureScopeClass()) {
+            } elseif ($class = \PHP_VERSION_ID >= 80111 ? $r->getClosureCalledClass() : $r->getClosureScopeClass()) {
                 $this->name = $class->name;
                 $this->pretty = $this->name.'::'.$r->name;
             } else {
@@ -61,7 +61,7 @@ final class WrappedListener
         } else {
             $this->name = get_debug_type($listener);
             $this->pretty = $this->name.'::__invoke';
-            $this->callableRef = \get_class($listener).'::__invoke';
+            $this->callableRef = $listener::class.'::__invoke';
         }
 
         if (null !== $name) {

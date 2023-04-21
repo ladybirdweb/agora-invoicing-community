@@ -1,8 +1,7 @@
 <?php
 /**
  * @package dompdf
- * @link    http://dompdf.github.com/
- * @author  Benj Carson <benjcarson@digitaljunkies.ca>
+ * @link    https://github.com/dompdf/dompdf
  * @license http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
  */
 namespace Dompdf\FrameReflower;
@@ -104,9 +103,12 @@ class TableCell extends Block
         // Determine our height
         $style_height = (float)$style->length_in_pt($style->height, $h);
 
-        $this->_frame->set_content_height($this->_calculate_content_height());
+        /** @var FrameDecorator\TableCell */
+        $frame = $this->_frame;
 
-        $height = max($style_height, (float)$this->_frame->get_content_height());
+        $frame->set_content_height($this->_calculate_content_height());
+
+        $height = max($style_height, (float)$frame->get_content_height());
 
         // Let the cellmap know our height
         $cell_height = $height / count($cells["rows"]);

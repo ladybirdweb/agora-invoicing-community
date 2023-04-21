@@ -216,6 +216,10 @@ return [
         Creativeorange\Gravatar\GravatarServiceProvider::class,
         // Symfony\Component\Mailer\MailerInterface::class,
         GrahamCampbell\Markdown\MarkdownServiceProvider::class,
+        App\Providers\QueryListenerProvider::class,
+        BeyondCode\QueryDetector\QueryDetectorServiceProvider::class,
+
+
 
     ],
 

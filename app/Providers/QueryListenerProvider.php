@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Providers;
+
 use Illuminate\Support\ServiceProvider;
 
 class QueryListenerProvider extends ServiceProvider
@@ -22,7 +23,7 @@ class QueryListenerProvider extends ServiceProvider
      */
     public function boot()
     {
-          \DB::listen(function ($query) {
+        \DB::listen(function ($query) {
             \Clockwork::info($query->sql, [$query->time]);
         });
 

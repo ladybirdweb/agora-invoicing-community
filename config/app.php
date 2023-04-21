@@ -219,8 +219,6 @@ return [
         App\Providers\QueryListenerProvider::class,
         BeyondCode\QueryDetector\QueryDetectorServiceProvider::class,
 
-
-
     ],
 
     /*

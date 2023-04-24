@@ -8,6 +8,8 @@
 
 namespace Svg\Tag;
 
+use Svg\Style;
+
 class Circle extends Shape
 {
     protected $cx = 0;
@@ -17,13 +19,16 @@ class Circle extends Shape
     public function start($attributes)
     {
         if (isset($attributes['cx'])) {
-            $this->cx = $attributes['cx'];
+            $width = $this->document->getWidth();
+            $this->cx = $this->convertSize($attributes['cx'], $width);
         }
         if (isset($attributes['cy'])) {
-            $this->cy = $attributes['cy'];
+            $height = $this->document->getHeight();
+            $this->cy = $this->convertSize($attributes['cy'], $height);
         }
         if (isset($attributes['r'])) {
-            $this->r = $attributes['r'];
+            $diagonal = $this->document->getDiagonal();
+            $this->r = $this->convertSize($attributes['r'], $diagonal);
         }
 
         $this->document->getSurface()->circle($this->cx, $this->cy, $this->r);

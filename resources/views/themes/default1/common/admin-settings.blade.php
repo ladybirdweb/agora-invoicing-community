@@ -186,6 +186,20 @@ Settings
                         <p class="box-title">Localized License</p>
                     </div>
                 </div>
+
+                  <!--/.col-md-2-->
+                  <div class="col-md-2 col-sm-6">
+                    <div class="settingiconblue">
+                        <div class="settingdivblue">
+                            <a href="{{url('clockwork/app')}}">
+                                <span class="fa-stack fa-2x">
+                                   <i style="margin-right: 10px;" class="fa fa-bug" aria-hidden="true"></i>
+                                </span>
+                            </a>
+                        </div>
+                        <p class="box-title">Debug</p>
+                    </div>
+                </div>
                   
             </div>
     </div>

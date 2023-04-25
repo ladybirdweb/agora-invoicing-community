@@ -467,11 +467,6 @@ class CronController extends BaseCronController
                     'quantity'=>1,
                     'total_count' => 1,
                     'start_at' =>  Carbon::parse($update_end)->addDays(1)->timestamp,
-                    'addons' => [[
-                        'item' => [
-                            'name' => 'Delivery charges',
-                            'amount' => $amount,
-                            'currency' => $currency, ], ]],
                 ]);
                 //Afer Renew
                 if ($rzp_subscription['status'] == 'created' || $rzp_subscription['status'] == 'active') {

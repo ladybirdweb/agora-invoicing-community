@@ -1,9 +1,7 @@
 <?php
 /**
  * @package dompdf
- * @link    http://dompdf.github.com/
- * @author  Benj Carson <benjcarson@digitaljunkies.ca>
- * @author  Helmut Tischer <htischer@weihenstephan.org>
+ * @link    https://github.com/dompdf/dompdf
  * @license http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
  */
 namespace Dompdf\Renderer;
@@ -11,12 +9,12 @@ namespace Dompdf\Renderer;
 use Dompdf\Helpers;
 use Dompdf\Frame;
 use Dompdf\FrameDecorator\ListBullet as ListBulletFrameDecorator;
+use Dompdf\FrameDecorator\ListBulletImage;
 use Dompdf\Image\Cache;
 
 /**
  * Renders list bullets
  *
- * @access  private
  * @package dompdf
  */
 class ListBullet extends AbstractRenderer
@@ -149,7 +147,7 @@ class ListBullet extends AbstractRenderer
 
         // Handle list-style-image
         // If list style image is requested but missing, fall back to predefined types
-        if ($style->list_style_image !== "none" && !Cache::is_broken($img = $frame->get_image_url())) {
+        if ($frame instanceof ListBulletImage && !Cache::is_broken($img = $frame->get_image_url())) {
             [$x, $y] = $frame->get_position();
             $w = $frame->get_width();
             $h = $frame->get_height();

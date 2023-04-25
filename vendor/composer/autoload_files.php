@@ -40,6 +40,7 @@ return array(
     '941748b3c8cae4466c827dfb5ca9602a' => $vendorDir . '/rmccue/requests/library/Deprecated.php',
     'def43f6c87e4f8dfd0c9e1b1bab14fe8' => $vendorDir . '/symfony/polyfill-iconv/bootstrap.php',
     '24be6d98d7c305f36699ba4e34b6df3c' => $vendorDir . '/arcanedev/log-viewer/helpers.php',
+    '4a1f389d6ce373bda9e57857d3b61c84' => $vendorDir . '/barryvdh/laravel-debugbar/src/helpers.php',
     '9e7a8ca9c2c682ec2704dd873a0e3618' => $vendorDir . '/php-mock/php-mock/autoload.php',
     'ec07570ca5a812141189b1fa81503674' => $vendorDir . '/phpunit/phpunit/src/Framework/Assert/Functions.php',
     'd7354eb4c8441fbf08eec280b61c7c73' => $vendorDir . '/rachidlaasri/laravel-installer/src/Helpers/functions.php',

@@ -3,7 +3,7 @@
         'name' => 'laravel/laravel',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => '58ec2b212dd2dd01b691e5204522422e2159eb67',
+        'reference' => '44dd964adfc021fa68187bffe3aba9ffb7546b21',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -64,6 +64,15 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
+        'barryvdh/laravel-debugbar' => array(
+            'pretty_version' => 'v3.8.1',
+            'version' => '3.8.1.0',
+            'reference' => 'aff3235fecb4104203b1e62c32239c56530eee32',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../barryvdh/laravel-debugbar',
+            'aliases' => array(),
+            'dev_requirement' => true,
+        ),
         'barryvdh/laravel-dompdf' => array(
             'pretty_version' => 'v2.0.1',
             'version' => '2.0.1.0',
@@ -88,6 +97,15 @@
             'reference' => 'bf44b757feb8ba1734659029357646466ded673e',
             'type' => 'library',
             'install_path' => __DIR__ . '/../barryvdh/reflection-docblock',
+            'aliases' => array(),
+            'dev_requirement' => true,
+        ),
+        'beyondcode/laravel-query-detector' => array(
+            'pretty_version' => '1.7.0',
+            'version' => '1.7.0.0',
+            'reference' => '40c7e168fcf7eeb80d8e96f7922e05ab194269c8',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../beyondcode/laravel-query-detector',
             'aliases' => array(),
             'dev_requirement' => true,
         ),
@@ -664,6 +682,17 @@
                 0 => 'v9.52.4',
             ),
         ),
+        'itsgoingd/clockwork' => array(
+            'pretty_version' => 'dev-master',
+            'version' => 'dev-master',
+            'reference' => 'e29be8125ce999947d60986dcd8e606c04c012ab',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../itsgoingd/clockwork',
+            'aliases' => array(
+                0 => '9999999-dev',
+            ),
+            'dev_requirement' => false,
+        ),
         'kodova/hamcrest-php' => array(
             'dev_requirement' => true,
             'replaced' => array(
@@ -700,7 +729,7 @@
         'laravel/laravel' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => '58ec2b212dd2dd01b691e5204522422e2159eb67',
+            'reference' => '44dd964adfc021fa68187bffe3aba9ffb7546b21',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -846,6 +875,15 @@
             'install_path' => __DIR__ . '/../masterminds/html5',
             'aliases' => array(),
             'dev_requirement' => false,
+        ),
+        'maximebf/debugbar' => array(
+            'pretty_version' => 'v1.18.2',
+            'version' => '1.18.2.0',
+            'reference' => '17dcf3f6ed112bb85a37cf13538fd8de49f5c274',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../maximebf/debugbar',
+            'aliases' => array(),
+            'dev_requirement' => true,
         ),
         'maxmind-db/reader' => array(
             'pretty_version' => 'v1.11.0',

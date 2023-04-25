@@ -1,8 +1,7 @@
 <?php
 /**
  * @package dompdf
- * @link    http://dompdf.github.com/
- * @author  Benj Carson <benjcarson@digitaljunkies.ca>
+ * @link    https://github.com/dompdf/dompdf
  * @license http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
  */
 namespace Dompdf\Renderer;
@@ -33,12 +32,10 @@ class Block extends AbstractRenderer
         [$x, $y, $w, $h] = $frame->get_border_box();
 
         if ($node->nodeName === "body") {
-            $h = $frame->get_containing_block("h") - (float)$style->length_in_pt([
-                        $style->margin_top,
-                        $style->border_top_width,
-                        $style->border_bottom_width,
-                        $style->margin_bottom],
-                    (float)$style->length_in_pt($style->width));
+            // Margins should be fully resolved at this point
+            $mt = $style->margin_top;
+            $mb = $style->margin_bottom;
+            $h = $frame->get_containing_block("h") - $mt - $mb;
         }
 
         $border_box = [$x, $y, $w, $h];

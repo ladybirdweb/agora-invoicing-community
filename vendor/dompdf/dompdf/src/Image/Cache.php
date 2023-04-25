@@ -1,10 +1,7 @@
 <?php
 /**
  * @package dompdf
- * @link    http://dompdf.github.com/
- * @author  Benj Carson <benjcarson@digitaljunkies.ca>
- * @author  Helmut Tischer <htischer@weihenstephan.org>
- * @author  Fabien Ménager <fabien.menager@gmail.com>
+ * @link    https://github.com/dompdf/dompdf
  * @license http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
  */
 namespace Dompdf\Image;
@@ -136,17 +133,21 @@ class Cache
                 xml_set_element_handler(
                     $parser,
                     function ($parser, $name, $attributes) use ($options, $parsed_url, $full_url) {
-                        if ($name === "image") {
+                        if (strtolower($name) === "image") {
                             $attributes = array_change_key_case($attributes, CASE_LOWER);
-                            $url = $attributes["xlink:href"] ?? $attributes["href"];
-                            if (!empty($url)) {
-                                $inner_full_url = Helpers::build_url($parsed_url["protocol"], $parsed_url["host"], $parsed_url["path"], $url);
-                                if ($inner_full_url === $full_url) {
-                                    throw new ImageException("SVG self-reference is not allowed", E_WARNING);
-                                }
-                                [$resolved_url, $type, $message] = self::resolve_url($url, $parsed_url["protocol"], $parsed_url["host"], $parsed_url["path"], $options);
-                                if (!empty($message)) {
-                                    throw new ImageException("This SVG document references a restricted resource. $message", E_WARNING);
+                            $urls = [];
+                            $urls[] = $attributes["xlink:href"] ?? "";
+                            $urls[] = $attributes["href"] ?? "";
+                            foreach ($urls as $url) {
+                                if (!empty($url)) {
+                                    $inner_full_url = Helpers::build_url($parsed_url["protocol"], $parsed_url["host"], $parsed_url["path"], $url);
+                                    if ($inner_full_url === $full_url) {
+                                        throw new ImageException("SVG self-reference is not allowed", E_WARNING);
+                                    }
+                                    [$resolved_url, $type, $message] = self::resolve_url($url, $parsed_url["protocol"], $parsed_url["host"], $parsed_url["path"], $options);
+                                    if (!empty($message)) {
+                                        throw new ImageException("This SVG document references a restricted resource. $message", E_WARNING);
+                                    }
                                 }
                             }
                         }
@@ -159,6 +160,7 @@ class Cache
                         xml_parse($parser, $line, false);
                     }
                     fclose($fp);
+                    xml_parse($parser, "", true);
                 }
                 xml_parser_free($parser);
             }

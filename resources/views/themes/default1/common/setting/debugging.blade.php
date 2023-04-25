@@ -1,0 +1,60 @@
+@extends('themes.default1.layouts.master')
+@section('title')
+File Storage
+@stop
+@section('content-header')
+    <div class="col-sm-6">
+        <h1>File Storage</h1>
+    </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="breadcrumb-item"><a href="{{url('settings')}}"><i class="fa fa-dashboard"></i> Settings</a></li>
+            <li class="breadcrumb-item active">Debugging Settings</li>
+        </ol>
+    </div><!-- /.col -->
+@stop
+@section('content')
+    <div class="card card-secondary card-outline">
+
+    <div class="card-header">
+
+        <div id="response"></div>
+        <h5>Set Debugg Option
+          </h5>
+    </div>
+    <?php
+    $de = env('APP_DEBUG');
+    ?>
+        <div class="card-body">
+        {!! Form::open(['url' => 'save/debugg', 'method' => 'POST']) !!}
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    {!! Form::label('debug',Lang::get('debugging')) !!}
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <input type="radio" name="debug" value="true" @if($de == true) checked="true" @endif > {{Lang::get('enable')}}
+                        </div>
+                        <div class="col-sm-3">
+                            <input type="radio" name="debug" value="false" @if($de == false) checked="true" @endif> {{Lang::get('disable')}}
+                        </div>
+                    </div>
+                </div> 
+            </div>            
+
+    </div>
+    <div>
+    <button type="submit" class="btn btn-primary">save</button>
+    </div>
+
+</div>
+
+</div>
+
+
+
+
+@stop
+
+

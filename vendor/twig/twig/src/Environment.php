@@ -38,11 +38,11 @@ use Twig\TokenParser\TokenParserInterface;
  */
 class Environment
 {
-    public const VERSION = '3.4.2';
-    public const VERSION_ID = 30402;
+    public const VERSION = '3.4.3';
+    public const VERSION_ID = 30403;
     public const MAJOR_VERSION = 3;
     public const MINOR_VERSION = 4;
-    public const RELEASE_VERSION = 2;
+    public const RELEASE_VERSION = 3;
     public const EXTRA_VERSION = '';
 
     private $charset;
@@ -326,7 +326,6 @@ class Environment
      */
     public function loadTemplate(string $cls, string $name, int $index = null): Template
     {
-       
         $mainCls = $cls;
         if (null !== $index) {
             $cls .= '___'.$index;
@@ -337,9 +336,7 @@ class Environment
         }
 
         if (!class_exists($cls, false)) {
-           
             $key = $this->cache->generateKey($name, $mainCls);
-            
 
             if (!$this->isAutoReload() || $this->isTemplateFresh($name, $this->cache->getTimestamp($key))) {
                 $this->cache->load($key);

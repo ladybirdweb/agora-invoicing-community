@@ -63,13 +63,16 @@ class Logger extends AbstractLogger implements DebugLoggerInterface
             $minLevel = null === $output || 'php://stdout' === $output || 'php://stderr' === $output ? LogLevel::ERROR : LogLevel::WARNING;
 
             if (isset($_ENV['SHELL_VERBOSITY']) || isset($_SERVER['SHELL_VERBOSITY'])) {
-                $minLevel = match ((int) ($_ENV['SHELL_VERBOSITY'] ?? $_SERVER['SHELL_VERBOSITY'])) {
-                    -1 => LogLevel::ERROR,
-                    1 => LogLevel::NOTICE,
-                    2 => LogLevel::INFO,
-                    3 => LogLevel::DEBUG,
-                    default => $minLevel,
-                };
+                switch ((int) ($_ENV['SHELL_VERBOSITY'] ?? $_SERVER['SHELL_VERBOSITY'])) {
+                    case -1: $minLevel = LogLevel::ERROR;
+                        break;
+                    case 1: $minLevel = LogLevel::NOTICE;
+                        break;
+                    case 2: $minLevel = LogLevel::INFO;
+                        break;
+                    case 3: $minLevel = LogLevel::DEBUG;
+                        break;
+                }
             }
         }
 

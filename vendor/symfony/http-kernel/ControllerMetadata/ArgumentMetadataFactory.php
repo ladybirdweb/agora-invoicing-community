@@ -23,7 +23,20 @@ final class ArgumentMetadataFactory implements ArgumentMetadataFactoryInterface
         $arguments = [];
         $reflector ??= new \ReflectionFunction($controller(...));
 
-        foreach ($reflector->getParameters() as $param) {
+        if (\is_array($controller)) {
+            $reflection = new \ReflectionMethod($controller[0], $controller[1]);
+            $class = $reflection->class;
+        } elseif (\is_object($controller) && !$controller instanceof \Closure) {
+            $reflection = new \ReflectionMethod($controller, '__invoke');
+            $class = $reflection->class;
+        } else {
+            $reflection = new \ReflectionFunction($controller);
+            if ($class = str_contains($reflection->name, '{closure}') ? null : (\PHP_VERSION_ID >= 80111 ? $reflection->getClosureCalledClass() : $reflection->getClosureScopeClass())) {
+                $class = $class->name;
+            }
+        }
+
+        foreach ($reflection->getParameters() as $param) {
             $attributes = [];
             foreach ($param->getAttributes() as $reflectionAttribute) {
                 if (class_exists($reflectionAttribute->getName())) {

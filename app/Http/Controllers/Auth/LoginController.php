@@ -121,12 +121,12 @@ class LoginController extends Controller
     {
         if (\Session::has('session-url')) {
             $url = \Session::get('session-url');
-
             return property_exists($this, 'redirectTo') ? $this->redirectTo : '/'.$url;
         } else {
             $user = \Auth::user()->role;
-
-            return ($user === 'user') ? 'my-invoices' : '/';
+            $redirectResponse = redirect()->intended('/');
+            $intendedUrl = $redirectResponse->getTargetUrl();
+            return property_exists($this, 'redirectTo') ? $intendedUrl : '/';
         }
     }
 }

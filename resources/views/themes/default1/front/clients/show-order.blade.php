@@ -104,7 +104,8 @@ return $randomString;
 }
 $rzp_key = app\ApiKey::where('id', 1)->value('rzp_key');
 $rzp_secret = app\ApiKey::where('id', 1)->value('rzp_secret');
- $api = new Api($rzp_key, $rzp_secret);
+$apilayer_key = app\ApiKey::where('id', 1)->value('apilayer_key');
+$api = new Api($rzp_key, $rzp_secret);
 $displayCurrency = \Auth::user()->currency;
 $symbol = \Auth::user()->currency;
 if ($symbol == 'INR'){
@@ -582,7 +583,7 @@ $json = json_encode($data);
                         </div>
                         <div class="form-group row">
                             <div class="col-md-12">
-                                <input id="amount" type="text" value={{currencyFormat(1,'INR')}} class="form-control @error('amount') is-invalid @enderror" required autocomplete="current-password" name="amount" placeholder="Amount" readonly>
+                                <input id="amount" type="text" value={{currencyFormat(1,Auth::user()->currency)}} class="form-control @error('amount') is-invalid @enderror" required autocomplete="current-password" name="amount" placeholder="Amount" readonly>
                                 @error('amount')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>

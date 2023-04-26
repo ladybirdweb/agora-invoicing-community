@@ -274,7 +274,6 @@ Template::create(['id' => 14, 'name' => '[Faveo Helpdesk] AutoPayment failed', '
 <th style="color: #333333; font-family: Arial, sans-serif; font-size: 14px; font-weight: bold; line-height: 20px; padding: 15px 8px; width: 139.516px;" align="left" valign="top">Order ID</th>
 <th style="color: #333333; font-family: Arial, sans-serif; font-size: 14px; font-weight: bold; line-height: 20px; padding: 15px 8px; width: 138.031px;" align="left" valign="top">Product</th>
 <th style="color: #333333; font-family: Arial, sans-serif; font-size: 14px; font-weight: bold; line-height: 20px; padding: 15px 8px; width: 83.6016px;" align="left" valign="top">Expiry Date</th>
-<th style="color: #333333; font-family: Arial, sans-serif; font-size: 14px; font-weight: bold; line-height: 20px; padding: 15px 8px; width: 77.0234px;">Currency</th>
 <th style="color: #333333; font-family: Arial, sans-serif; font-size: 14px; font-weight: bold; line-height: 20px; padding: 15px 8px; width: 35.8281px;">Total</th>
 </tr>
 </thead>
@@ -283,8 +282,7 @@ Template::create(['id' => 14, 'name' => '[Faveo Helpdesk] AutoPayment failed', '
 <td style="border-bottom: 1px; color: #333333; font-family: Arial, sans-serif; font-size: 14px; line-height: 20px; padding: 15px 8px; width: 139.516px;" valign="top">{$number}</td>
 <td style="border-bottom: 1px; color: #333333; font-family: Arial, sans-serif; font-size: 14px; line-height: 20px; padding: 15px 8px; width: 138.031px;" valign="top">{$product}</td>
 <td style="border-bottom: 1px; color: #333333; font-family: Arial, sans-serif; font-size: 14px; line-height: 20px; padding: 15px 8px; width: 83.6016px;" valign="top">{$expiry}</td>
-<td style="border-bottom: 1px; color: #333333; font-family: Arial, sans-serif; font-size: 14px; line-height: 20px; padding: 15px 8px; width: 77.0234px;">{$currency}</td>
-<td style="border-bottom: 1px; color: #333333; font-family: Arial, sans-serif; font-size: 14px; line-height: 20px; padding: 15px 8px; width: 35.8281px;">{total}</td>
+<td style="border-bottom: 1px; color: #333333; font-family: Arial, sans-serif; font-size: 14px; line-height: 20px; padding: 15px 8px; width: 35.8281px;">{$total}</td>
 </tr>
 </tbody>
 </table>
@@ -294,7 +292,7 @@ Template::create(['id' => 14, 'name' => '[Faveo Helpdesk] AutoPayment failed', '
 </tr>
 <tr>
 <td style="background: #fff; border-left: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;">&nbsp;</td>
-<td style="background: #fff; padding: 20px 0 50px 0; width: 560px;" align="left"><a style="background: #00aeef; border: 1px solid #0088CC; padding: 10px 20px; border-radius: 5px; font-size: 14px; font-weight: bold; color: #fff; outline: none; text-shadow: none; text-decoration: none; font-family: Arial,sans-serif;" href="{$url}" target="_blank" rel="noopener"> Renew Order </a></td>
+<td style="background: #fff; padding: 20px 0 50px 0; width: 560px;" align="left"><a style="background: #00aeef; border: 1px solid #0088CC; padding: 10px 20px; border-radius: 5px; font-size: 14px; font-weight: bold; color: #fff; outline: none; text-shadow: none; text-decoration: none; font-family: Arial,sans-serif;" href="{$url}" target="_blank" rel="noopener"> Make Payment </a></td>
 <td style="background: #fff; border-right: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;">&nbsp;</td>
 </tr>
 </tbody>

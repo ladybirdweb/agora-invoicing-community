@@ -14,10 +14,10 @@ return new class extends Migration
     public function up()
     {
         if (! Schema::hasColumn('settings', 'version')) {
-        Schema::table('settings', function (Blueprint $table) {
-            $table->string('version', 255)->nullable();
-        });
-    }
+            Schema::table('settings', function (Blueprint $table) {
+                $table->string('version', 255)->nullable();
+            });
+        }
     }
 
     /**

@@ -105,7 +105,7 @@ return $randomString;
 $rzp_key = app\ApiKey::where('id', 1)->value('rzp_key');
 $rzp_secret = app\ApiKey::where('id', 1)->value('rzp_secret');
 $apilayer_key = app\ApiKey::where('id', 1)->value('apilayer_key');
-$api = new Api($rzp_key, $rzp_secret);
+ $api = new Api($rzp_key, $rzp_secret);
 $displayCurrency = \Auth::user()->currency;
 $symbol = \Auth::user()->currency;
 if ($symbol == 'INR'){
@@ -130,7 +130,6 @@ $orderData = [
  $exchange = json_decode(file_get_contents($url));
 
  $exchangeRate = $exchange->quotes->USDINR;
- // dd($exchangeRate);
  $displayAmount =$exchangeRate * round(1.00*100) ;
 
 
@@ -197,7 +196,12 @@ $json = json_encode($data);
  $currency = \Auth::user()->currency;
 
 
+   
+ $gateways = \App\Http\Controllers\Common\SettingsController::checkPaymentGateway(\Auth::user()->currency);
+// $processingFee = \DB::table(strtolower($gateways))->where('currencies',\Auth::user()->currency)->value('processing_fee');
 
+
+    
 
 ?>
 
@@ -427,9 +431,11 @@ $json = json_encode($data);
                     </table>
                 @endslot
 
+
             @slot('autorenewal')
            
                 <div class="row">
+                     @if($gateways)
 
               <div class="col-8">
               
@@ -440,6 +446,7 @@ $json = json_encode($data);
           </div>
               <div class="col-4">
                  <label class="switch toggle_event_editing">
+                   
 
               <label class="switch toggle_event_editing">
                          <input type="checkbox" value="{{$statusAutorenewal}}"  name="is_subscribed"
@@ -449,6 +456,9 @@ $json = json_encode($data);
 
 
                     </label>
+                    @else
+                    <h6 style="margin-top: 8px;">Please enable the Payment gateways</h6>
+                    @endif
 
           </div>
             </div>
@@ -489,7 +499,7 @@ $json = json_encode($data);
             @endcomponent
         </div>
     </div>
-
+ 
 
     <div class="modal fade" id="renewal-modal" data-backdrop="static" data-keyboard="false">
 <div class="modal-dialog">
@@ -501,12 +511,16 @@ $json = json_encode($data);
                 <div id="alertMessage-1"></div>
       <div class= "form-group {{ $errors->has('name') ? 'has-error' : '' }}">
           {!! Form::label('name',Lang::get('Select the payment gateway'),['class'=>'required']) !!}
+           
 
            <select name=""  id="sel-payment" class="form-control" >
                 <option value="" disabled selected>Choose your option</option>
-                <option value="stripe">Stripe</option>
-                <option value="razorpay">Razorpay</option>
+                 @foreach($gateways as $key =>  $gateway)
+                <option value="{{strtolower($gateway)}}">{{$gateway}}</option>
+                    @endforeach
+                <!-- <option value="razorpay">Razorpay</option> -->
                </select>
+           
            </div>
       <span id="payerr"></span>
     </div>
@@ -519,6 +533,7 @@ $json = json_encode($data);
 </div>
 <!-- /.modal-dialog -->
 </div>
+
 
 
 <div class="modal fade" id="stripe-Modal" data-keyboard="false" data-backdrop="static">

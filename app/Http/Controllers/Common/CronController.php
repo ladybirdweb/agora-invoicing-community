@@ -435,9 +435,10 @@ class CronController extends BaseCronController
 
             return redirect()->route('checkout');
         } catch (\Exception $ex) {
-            // $this->sendFailedPaymenttoAdmin($invoice->grand_total, $ex->getMessage(), $user,$order->number,$end,$invoice->currency,$order,$product_details);
+            $this->sendFailedPayment($cost, $ex->getMessage(), $user, $order->number, $end, $currency, $order, $product_details, $invoice);
 
-            $this->razorpay_payment($cost, $plan->days, $product_details->name, $invoice, $currency, $subscription, $user, $order, $end, $product_details);
+            // $gateways = \App\Http\Controllers\Common\SettingsController::checkPaymentGateway($currency);
+            // $this->razorpay_payment($cost, $plan->days, $product_details->name, $invoice, $currency, $subscription, $user, $order, $end, $product_details);
         }
     }
 

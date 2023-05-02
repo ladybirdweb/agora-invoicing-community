@@ -6,6 +6,7 @@ use App\Console\Commands\SetupTestEnv;
 use App\Model\Common\StatusSetting;
 use App\Model\Mailjob\ActivityLogDay;
 use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Torann\Currency\Console\Manage as CurrencyManage;
 
@@ -49,7 +50,8 @@ class Kernel extends ConsoleKernel
     public function execute($schedule, $task)
     {
         $env = base_path('.env');
-        if (\File::exists($env) && (env('DB_INSTALL') == 1)) {
+         if (\File::exists($env) && (env('DB_INSTALL') == 1)) {
+         if (Schema::hasColumn('expiry_mail', 'activity_log_delete','subs_expirymail','post_expirymail','days')){
             $expiryMailStatus = StatusSetting::pluck('expiry_mail')->first();
             $logDeleteStatus = StatusSetting::pluck('activity_log_delete')->first();
             $RenewalexpiryMailStatus = StatusSetting::pluck('subs_expirymail')->first();
@@ -82,6 +84,7 @@ class Kernel extends ConsoleKernel
                     }
             }
         }
+    }
     }
 
     public function getCondition($schedule, $command)

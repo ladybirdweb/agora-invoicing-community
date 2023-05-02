@@ -14,10 +14,10 @@ return new class extends Migration
     public function up()
     {
         if (! Schema::hasColumn('settings', 'autosubscription_going_to_end')) {
-        Schema::table('settings', function (Blueprint $table) {
-            $table->string('autosubscription_going_to_end')->nullable();
-        });
-    }
+            Schema::table('settings', function (Blueprint $table) {
+                $table->string('autosubscription_going_to_end')->nullable();
+            });
+        }
     }
 
     /**
@@ -29,7 +29,6 @@ return new class extends Migration
     {
         Schema::table('settings', function (Blueprint $table) {
             $table->dropColumn('autosubscription_going_to_end');
-
         });
     }
 };

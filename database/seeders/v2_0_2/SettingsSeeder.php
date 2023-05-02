@@ -15,9 +15,6 @@ class SettingsSeeder extends Seeder
      */
     public function run()
     {
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-
         \App\Model\Common\Setting::create([
             'autosubscription_going_to_end' => 12,
             'payment_successfull' => 13,

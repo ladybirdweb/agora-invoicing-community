@@ -24,21 +24,8 @@ class DatabaseSeeder extends Seeder
         $this->call([TemplateTableSeeder::class]);
         $this->command->info('Template table seeded!');
 
-        $this->call([StatusSettingSeeder::class]);
-        $this->command->info('Status Setting table seeded!');
-
         $this->call(SettingsSeeder::class);
 
-    }
-}
-
-    class StatusSettingSeeder extends Seeder
-{
-    public function run()
-    {
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        StatusSetting::create(['id' => 1, 'subs_expirymail' => 0,'post_expirymail' => 0]);
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 }
 
@@ -64,6 +51,8 @@ class DatabaseSeeder extends Seeder
 
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
+        Template::where('id',11)->delete();
         Template::create(['id' => 12, 'name' => '[Faveo Helpdesk] Auto renewal reminder', 'type' => 12, 'url' => 'null', 'data' => '<table style="background: #f2f2f2; width: 700px;" border="0" cellspacing="0" cellpadding="0">
 <tbody>
 <tr>

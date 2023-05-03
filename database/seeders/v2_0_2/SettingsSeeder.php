@@ -15,7 +15,7 @@ class SettingsSeeder extends Seeder
      */
     public function run()
     {
-        \App\Model\Common\Setting::create([
+        \App\Model\Common\Setting::where('id',1)->update([
             'autosubscription_going_to_end' => 12,
             'payment_successfull' => 13,
             'payment_failed' => 14,

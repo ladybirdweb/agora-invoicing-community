@@ -379,10 +379,11 @@ input:checked + .slider:before {
                 </div>
                 <div class="col-md-2">
                     <label class="switch toggle_event_editing pull-right">
-
+                       
                         <input type="checkbox" value="{{$is2faEnabled}}"  name="modules_settings"
                                class="checkbox" id="2fa">
                         <span class="slider round"></span>
+                    
                     </label>
                 </div>
             </div>

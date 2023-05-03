@@ -38,7 +38,9 @@ $(document).ready(function(){
             $('#2fa-modal1').modal('show');
             $('#verify_password').on('click',function(){
                 var password = $('#user_password').val();
-                if(password.length == 0) {
+                var login_type = $('#login_type').val();
+                
+                if(password.length == 0 && login_type == 'login') {
                 $("#verify_password").html("<i class='fa fa-check'></i> Validate");
                 $('#passerror').show();
                 $('#passerror').html("Please Enter Password");
@@ -55,9 +57,9 @@ $(document).ready(function(){
                     method : 'GET',
                     data : {
                         "user_password" : password,
+                        "login_type" : login_type,
                     },
                     success: function(response) {
-                       
                         $('#2fa-modal1').modal('hide');
                         $.ajax({
                             url : "2fa-recovery-code",

@@ -140,7 +140,6 @@ class SettingsController extends Controller
                 $stripeCustomerId = $strCharge['customer']['id'];
                 $customer_details = [
                     'user_id' => $invoice->user_id,
-                    'invoice_number' => $invoice->number,
                     'customer_id' => $stripeCustomerId,
                 ];
                 Auto_renewal::create($customer_details);

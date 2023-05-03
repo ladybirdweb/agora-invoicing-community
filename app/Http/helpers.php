@@ -365,7 +365,7 @@ function rounding($price)
         if ($rounding) {
             return round((int) $price);
         } else {
-            return round($price, 2);
+            return round((int) $price, 2);
         }
     } catch (\Exception $ex) {
     }

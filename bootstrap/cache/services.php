@@ -291,6 +291,7 @@ return [
         'Arcanedev\\LogViewer\\Contracts\\Utilities\\Filesystem' => 'Arcanedev\\LogViewer\\Providers\\DeferredServicesProvider',
         'Arcanedev\\LogViewer\\Contracts\\Utilities\\Factory' => 'Arcanedev\\LogViewer\\Providers\\DeferredServicesProvider',
         'Arcanedev\\LogViewer\\Contracts\\Utilities\\LogChecker' => 'Arcanedev\\LogViewer\\Providers\\DeferredServicesProvider',
+        'Laravel\\Socialite\\Contracts\\Factory' => 'Laravel\\Socialite\\SocialiteServiceProvider',
         'command.tinker' => 'Laravel\\Tinker\\TinkerServiceProvider',
         'html' => 'Collective\\Html\\HtmlServiceProvider',
         'form' => 'Collective\\Html\\HtmlServiceProvider',
@@ -323,6 +324,8 @@ return [
         'Illuminate\\Validation\\ValidationServiceProvider' => [
         ],
         'Arcanedev\\LogViewer\\Providers\\DeferredServicesProvider' => [
+        ],
+        'Laravel\\Socialite\\SocialiteServiceProvider' => [
         ],
         'Laravel\\Tinker\\TinkerServiceProvider' => [
         ],

@@ -169,11 +169,7 @@ class ClientController extends BaseClientController
             if ($response['status'] == 'authorized') {
                 $invoice_id = OrderInvoiceRelation::where('order_id', $orderid)->value('invoice_id');
                 $number = Invoice::where('id', $invoice_id)->value('number');
-                // $customer_details = [
-                //     'user_id' => \Auth::user()->id,
-                //     'customer_id' => $payment['customer']['id'],
-                // ];
-                // Auto_renewal::create($customer_details);
+
                 // Auto_renewal::where('invoice_number', $number)->update(['customer_id' => $response['id']]);
                 Subscription::where('order_id', $orderid)->update(['is_subscribed' => '1']);
 
@@ -571,7 +567,7 @@ class ClientController extends BaseClientController
 
                                 $changeDomain = $this->changeDomain($model, $model->product_id); // Need to add this if the client requirement intensifies.
 
-                                return '<a href='.url('my-order/'.$model->id)." 
+                                return '<a href='.url('my-order/'.$model->id)."
                                 class='btn  btn-primary btn-xs' style='margin-right:5px;'>
                                 <i class='fa fa-eye' title='Details of order'></i>&nbsp;View $listUrl $url $deleteCloud</a>";
                             })
@@ -708,7 +704,7 @@ class ClientController extends BaseClientController
 
             return \DataTables::of($payments)
                             ->addColumn('checkbox', function ($model) {
-                                return "<input type='checkbox' class='payment_checkbox' 
+                                return "<input type='checkbox' class='payment_checkbox'
                                     value=".$model->id.' name=select[] id=check>';
                             })
                             ->addColumn('number', function ($model) {

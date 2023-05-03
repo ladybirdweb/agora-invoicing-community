@@ -126,11 +126,15 @@ class Google2FAController extends Controller
 
     public function verifyPassword(Request $request)
     {
-        $user = \Auth::user();
-        if (\Hash::check($request->input('user_password'), $user->getAuthPassword())) {
+        if (! $request->user_password && $request->login_type == 'social') {
             return successResponse('password_verified');
         } else {
-            return errorResponse('password_incorrect');
+            $user = \Auth::user();
+            if (\Hash::check($request->input('user_password'), $user->getAuthPassword())) {
+                return successResponse('password_verified');
+            } else {
+                return errorResponse('password_incorrect');
+            }
         }
     }
 

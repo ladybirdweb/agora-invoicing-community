@@ -65,7 +65,7 @@ Settings
                         <p class="box-title">System Settings</p>
                     </div>
                 </div>
-               
+
 
                 <div class="col-md-2 col-sm-6">
                     <div class="settingiconblue">
@@ -80,7 +80,7 @@ Settings
                     </div>
                 </div>
 
-              
+
 
                  <div class="col-md-2 col-sm-6">
                     <div class="settingiconblue">
@@ -187,6 +187,7 @@ Settings
                     </div>
                 </div>
 
+
                                 <!--/.col-md-2-->
                   <div class="col-md-2 col-sm-6">
                     <div class="settingiconblue">
@@ -214,7 +215,20 @@ Settings
                     </div>
                 </div>
                 @endif
-                  
+                <!--/.col-md-2-->
+                 <div class="col-md-2 col-sm-6">
+                <div class="settingiconblue">
+                    <div class="settingdivblue">
+                        <a href="{{url('social-logins')}}">
+                            <span class="fa-stack fa-2x">
+                                <i class="fas fa-globe fa-stack-1x"></i>
+                            </span>
+                        </a>
+                    </div>
+                    <p class="box-title">Social Logins</p>
+                </div>
+            </div>
+
             </div>
     </div>
         <!-- /.row -->
@@ -231,8 +245,8 @@ Settings
     <div class="card-body">
         <div class="row">
                 <!--/.col-md-2-->
-               
-               
+
+
 
                  <div class="col-md-2 col-sm-6">
                     <div class="settingiconblue">
@@ -287,10 +301,10 @@ Settings
                 </div> -->
 
 
-               
+
 
                  <!--/.col-md-2-->
-                  
+
         </div>
         <!-- /.row -->
     </div>
@@ -376,7 +390,7 @@ Settings
                     </div>
                 </div>
                 @endif
-               
+
         </div>
         <!-- /.row -->
     </div>
@@ -488,8 +502,8 @@ Settings
                         <p class="box-title" >Country List</p>
                     </div>
                 </div>
-                
-               
+
+
         </div>
         <!-- /.row -->
     </div>
@@ -515,7 +529,7 @@ Settings
                         <p class="box-title" >Footer</p>
                     </div>
                 </div>
-                <!--/.col-md-2-->                                        
+                <!--/.col-md-2-->
                 <!--col-md-2-->
                 <div class="col-md-2 col-sm-6">
                     <div class="settingiconblue">
@@ -529,7 +543,7 @@ Settings
                         <p class="box-title" >Social Media</p>
                     </div>
                 </div>
-                <!--/.col-md-2--> 
+                <!--/.col-md-2-->
 
                     <div class="col-md-2 col-sm-6">
                     <div class="settingiconblue">
@@ -542,7 +556,7 @@ Settings
                         </div>
                         <p class="box-title" >Analytics/Custom Code</p>
                     </div>
-                </div>                                       
+                </div>
         </div>
         <!-- /.row -->
     </div>

@@ -93,8 +93,12 @@ class ClientController extends BaseClientController
                 $orderid = $request->get('order_id');
                 $invoice_id = OrderInvoiceRelation::where('order_id', $orderid)->value('invoice_id');
                 $number = Invoice::where('id', $invoice_id)->value('number');
-
-                Auto_renewal::where('invoice_number', $number)->update(['customer_id' => $payment['customer']['id']]);
+                $customer_details = [
+                    'user_id' => \Auth::user()->id,
+                    'customer_id' => $payment['customer']['id'],
+                ];
+                Auto_renewal::create($customer_details);
+                // Auto_renewal::where('invoice_number', $number)->update(['customer_id' => $payment['customer']['id']]);
                 Subscription::where('order_id', $orderid)->update(['is_subscribed' => '1']);
                 $response = ['type' => 'success', 'message' => 'Your Card details are updated successfully'];
 
@@ -150,7 +154,12 @@ class ClientController extends BaseClientController
             if ($response['status'] == 'authorized') {
                 $invoice_id = OrderInvoiceRelation::where('order_id', $orderid)->value('invoice_id');
                 $number = Invoice::where('id', $invoice_id)->value('number');
-                Auto_renewal::where('invoice_number', $number)->update(['customer_id' => $response['id']]);
+                $customer_details = [
+                    'user_id' => \Auth::user()->id,
+                    'customer_id' => $payment['customer']['id'],
+                ];
+                Auto_renewal::create($customer_details);
+                // Auto_renewal::where('invoice_number', $number)->update(['customer_id' => $response['id']]);
                 Subscription::where('order_id', $orderid)->update(['is_subscribed' => '1']);
 
                 return redirect()->back()->with('success', 'Your Card details are updated successfully');

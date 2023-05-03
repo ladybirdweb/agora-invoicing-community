@@ -13,11 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-         if (! Schema::hasColumn('auto_renewals', 'invoice_number')) {
-        Schema::table('auto_renewals', function (Blueprint $table) {
-            $table->string('invoice_number')->nullable();
-        });
-         }
+        if (! Schema::hasColumn('auto_renewals', 'invoice_number')) {
+            Schema::table('auto_renewals', function (Blueprint $table) {
+                $table->string('invoice_number')->nullable();
+            });
+        }
     }
 
     /**
@@ -28,7 +28,7 @@ return new class extends Migration
     public function down()
     {
         Schema::table('auto_renewals', function (Blueprint $table) {
-           $table->dropColumn('invoice_number');
+            $table->dropColumn('invoice_number');
         });
     }
 };

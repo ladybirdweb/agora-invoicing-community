@@ -22,11 +22,10 @@ use App\Model\Product\Subscription;
 use App\Plugins\Stripe\Controllers\SettingsController;
 use App\User;
 use Exception;
-use Stripe\Stripe;
 use GrahamCampbell\Markdown\Facades\Markdown;
 use Illuminate\Http\Request;
 use Razorpay\Api\Api;
-use Symfony\Component\Mime\Email;
+use Stripe\Stripe;
 use Validator;
 
 class ClientController extends BaseClientController
@@ -93,9 +92,9 @@ class ClientController extends BaseClientController
             $stripeSecretKey = ApiKey::pluck('stripe_secret')->first();
             Stripe::setApiKey($stripeSecretKey);
 
-             $refund = \Stripe\Refund::create([
-            'charge' => $payment['charge']['id'],
-            'amount' => 1, // the amount to be refunded, in cents
+            $refund = \Stripe\Refund::create([
+                'charge' => $payment['charge']['id'],
+                'amount' => 1, // the amount to be refunded, in cents
             ]);
             if ($payment['charge']['status']) {
                 $orderid = $request->get('order_id');
@@ -125,19 +124,19 @@ class ClientController extends BaseClientController
             $orderid = $request->get('order_id');
             $userid = Subscription::where('order_id', $orderid)->value('user_id');
             $user = User::find($userid);
-            $subscription = Subscription::where('order_id',$orderid)->first();
-            if($subscription->rzp_subscription == '1')
-            {
+            $subscription = Subscription::where('order_id', $orderid)->first();
+            if ($subscription->rzp_subscription == '1') {
                 $rzp_key = ApiKey::where('id', 1)->value('rzp_key');
                 $rzp_secret = ApiKey::where('id', 1)->value('rzp_secret');
                 $api = new Api($rzp_key, $rzp_secret);
-                $pause = $api->subscription->fetch($subscription->subscribe_id)->pause(array('pause_at'=>'now'));
-                if($pause['status'] == 'paused'){
-                Subscription::where('order_id', $orderid)->update(['rzp_subscription' => '0']);
-            }
+                $pause = $api->subscription->fetch($subscription->subscribe_id)->pause(['pause_at'=>'now']);
+                if ($pause['status'] == 'paused') {
+                    Subscription::where('order_id', $orderid)->update(['rzp_subscription' => '0']);
+                }
             }
             Subscription::where('order_id', $orderid)->update(['is_subscribed' => '0']);
             $response = ['type' => 'success', 'message' => 'Auto subscription Disabled successfully'];
+
             return response()->json($response);
         } catch(\Exception $ex) {
             $result = [$ex->getMessage()];
@@ -150,18 +149,17 @@ class ClientController extends BaseClientController
     {
         try {
             $orderid = $request->route('orderid');
-            $subscription = Subscription::where('order_id',$orderid)->first();
+            $subscription = Subscription::where('order_id', $orderid)->first();
             $input = $request->all();
             $error = 'Payment Failed';
             $rzp_key = ApiKey::where('id', 1)->value('rzp_key');
             $rzp_secret = ApiKey::where('id', 1)->value('rzp_secret');
             $api = new Api($rzp_key, $rzp_secret);
             $subscribe = $api->subscription->fetch($subscription->subscribe_id);
-            if(isset($subscribe) && $subscribe['status'] == 'paused')
-            {
-                $data = $api->subscription->fetch($subscription->subscribe_id)->resume(array('resume_at'=>'now'));
-                if($data['status'] == 'active'){
-                subscription::where('order_id',$orderid)->update(['rzp_subscription' => '1','is_subscribed' => '1']);
+            if (isset($subscribe) && $subscribe['status'] == 'paused') {
+                $data = $api->subscription->fetch($subscription->subscribe_id)->resume(['resume_at'=>'now']);
+                if ($data['status'] == 'active') {
+                    subscription::where('order_id', $orderid)->update(['rzp_subscription' => '1', 'is_subscribed' => '1']);
                 }
             }
             $payment = $api->payment->fetch($input['razorpay_payment_id']);
@@ -186,24 +184,24 @@ class ClientController extends BaseClientController
 
     public function autoRenewbyid()
     {
-        try{
-        $id = request()->route('id');
-        $order_id = \DB::table('order_invoice_relations')->where('invoice_id', $id)->value('order_id');
-        $sub = Subscription::where('order_id', $order_id)->first();
-        $planid = $sub->plan_id;
-        $plan = Plan::find($planid);
-        $planDetails = userCurrencyAndPrice($sub->user_id, $plan);
-        $cost = $planDetails['plan']->renew_price;
-        $currency = $planDetails['currency'];
-        $controller = new RenewController();
-        $items = InvoiceItem::where('invoice_id', $id)->first();
-        $invoiceid = $items->invoice_id;
-        // $this->setSession($id, $planid);
+        try {
+            $id = request()->route('id');
+            $order_id = \DB::table('order_invoice_relations')->where('invoice_id', $id)->value('order_id');
+            $sub = Subscription::where('order_id', $order_id)->first();
+            $planid = $sub->plan_id;
+            $plan = Plan::find($planid);
+            $planDetails = userCurrencyAndPrice($sub->user_id, $plan);
+            $cost = $planDetails['plan']->renew_price;
+            $currency = $planDetails['currency'];
+            $controller = new RenewController();
+            $items = InvoiceItem::where('invoice_id', $id)->first();
+            $invoiceid = $items->invoice_id;
+            // $this->setSession($id, $planid);
 
-        return redirect('paynow/'.$id);
-    }catch(\Exception $ex){
-        echo $ex->getMessage();
-    }
+            return redirect('paynow/'.$id);
+        } catch(\Exception $ex) {
+            echo $ex->getMessage();
+        }
     }
 
     public function invoices()

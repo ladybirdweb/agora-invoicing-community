@@ -14,10 +14,10 @@ return new class extends Migration
     public function up()
     {
         if (! Schema::hasColumn('subscriptions', 'rzp_subscription')) {
-        Schema::table('subscriptions', function (Blueprint $table) {
-            $table->string('rzp_subscription')->default(0);
-        });
-    }
+            Schema::table('subscriptions', function (Blueprint $table) {
+                $table->string('rzp_subscription')->default(0);
+            });
+        }
     }
 
     /**
@@ -28,8 +28,7 @@ return new class extends Migration
     public function down()
     {
         Schema::table('subscriptions', function (Blueprint $table) {
-          $table->dropColumn('rzp_subscription');
-
+            $table->dropColumn('rzp_subscription');
         });
     }
 };

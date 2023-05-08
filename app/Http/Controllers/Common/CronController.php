@@ -354,47 +354,53 @@ class CronController extends BaseCronController
         try {
             $subscriptions_detail = $this->getOnDayExpiryInfoSubs()->get();
             foreach ($subscriptions_detail as $subscription) {
+                $userid = $subscription->user_id;
+                $end = $subscription->update_ends_at;
+                $order = $this->getOrderById($subscription->order_id);
+                $oldinvoice = $this->getInvoiceByOrderId($subscription->order_id);
+                $item = $this->getInvoiceItemByInvoiceId($oldinvoice->id);
+                // $product = $item->product_name;
+                $product_details = Product::where('name', $item->product_name)->first();
+
+                $plan = Plan::where('product', $product_details->id)->first('days');
+                $oldcurrency = $oldinvoice->currency;
+
+                $stripeSecretKey = ApiKey::pluck('stripe_secret')->first();
+                $stripe = new \Stripe\StripeClient($stripeSecretKey);
+
+                $user = \DB::table('users')->where('id', $userid)->first();
+                $customer_id = Auto_renewal::where('user_id', $userid)->latest()->value('customer_id');
+                $planid = Plan::where('product', $product_details->id)->value('id');
+                $cost = ($product_details->type == '4') ? $oldinvoice->grand_total : PlanPrice::where('plan_id', $planid)->where('currency', $oldcurrency)->value('renew_price');
+                //razorpay sunscription status
+
+                $subscriptionId = Subscription::where('id', $subscription->id)->value('subscribe_id');
+                $rzp_sta = Subscription::where('id', $subscription->id)->value('rzp_subscription');
+
+                if ($subscriptionId != null) {
+                    $authenticatesubs = $this->authenticatesubs($subscriptionId, $subscription);
+                    if ($rzp_sta != '0') {
+                        $activeSubs = $this->activeSubs($subscriptionId, $subscription);
+                        $key_id = ApiKey::pluck('rzp_key')->first();
+                        $secret = ApiKey::pluck('rzp_secret')->first();
+                        $api = new Api($key_id, $secret);
+
+                        $invoiceCount = $api->invoice->all(['subscription_id'=> $subscriptionId]);
+                        if ($invoiceCount['count'] > 99) {
+                            $updateCount = $api->subscription->fetch($subscriptionId)->update(['remaining_count' => 100]);
+                        }
+                    }
+                }
                 $productType = Product::find($subscription->product_id);
                 $price = PlanPrice::where('plan_id', $subscription->plan_id)->value('renew_price');
                 if ($productType->type == '4' && $price == '0') {
                     Subscription::where('id', $subscription->id)->update(['is_subscribed' => 0]);
                 }
-                $status = $subscription->is_subscribed;
-                if ($status == '1') {
-                    $userid = $subscription->user_id;
-                    $end = $subscription->update_ends_at;
-                    $order = $this->getOrderById($subscription->order_id);
-                    $oldinvoice = $this->getInvoiceByOrderId($subscription->order_id);
-                    $item = $this->getInvoiceItemByInvoiceId($oldinvoice->id);
-                    // $product = $item->product_name;
-                    $product_details = Product::where('name', $item->product_name)->first();
-                    $plan = Plan::where('product', $product_details->id)->first('days');
-                    $oldcurrency = $oldinvoice->currency;
-
-                    $stripeSecretKey = ApiKey::pluck('stripe_secret')->first();
-                    $stripe = new \Stripe\StripeClient($stripeSecretKey);
-
-                    $user = \DB::table('users')->where('id', $userid)->first();
-                    $customer_id = Auto_renewal::where('user_id', $userid)->latest()->value('customer_id');
-                    $planid = Plan::where('product', $product_details->id)->value('id');
-                    $cost = PlanPrice::where('plan_id', $planid)->where('currency', $oldcurrency)->value('renew_price');
-
-                    //razorpay sunscription status
-
-                    $subscriptionId = Subscription::where('id',$subscription->id)->value('subscribe_id');
-                    if($subscriptionId != null){
-                       $authenticatesubs = $this->authenticatesubs($subscriptionId,$subscription);
-                       $activeSubs = $this->activeSubs($subscriptionId,$subscription);
-                       $key_id = ApiKey::pluck('rzp_key')->first();
-                       $secret = ApiKey::pluck('rzp_secret')->first();
-                       $api = new Api($key_id, $secret);
-                       $invoiceCount = $api->invoice->all(['subscription_id'=> $subscriptionId]);
-                       if($invoiceCount['count'] > 99)
-                       {
-                        $updateCount = $api->subscription->fetch($subscriptionId)->update(['remaining_count' => 100]);
-                    }
+                $productType = Product::find($subscription->product_id);
+                $price = PlanPrice::where('plan_id', $subscription->plan_id)->value('renew_price');
+                if ($productType->type == '4' && $price == '0') {
+                    Subscription::where('id', $subscription->id)->update(['is_subscribed' => 0]);
                 }
-
                 $status = $subscription->is_subscribed;
                 if ($status == '1') {
                     //create invoice
@@ -473,7 +479,7 @@ class CronController extends BaseCronController
                 $key_id = ApiKey::pluck('rzp_key')->first();
                 $secret = ApiKey::pluck('rzp_secret')->first();
                 $amount = $cost;
-                $count = Subscription::where('id', $subscription->id)->value('rzp_subattempts');
+                // $count = Subscription::where('id', $subscription->id)->value('rzp_subattempts');
                 $update_end = $subscription->update_ends_at;
                 $api = new Api($key_id, $secret);
                 // $paymentId = \DB::table('rzp_payments')->where('user_id', $user->id)->latest()->value('payment_id');
@@ -506,27 +512,13 @@ class CronController extends BaseCronController
                 Subscription::where('id', $subscription->id)->update(['subscribe_id' => $rzp_subscriptionLink['id'], 'autoRenew_status' => 'Pending']);
             }
         } catch (\Razorpay\Api\Errors\SignatureVerificationError|\Razorpay\Api\Errors\BadRequestError|\Razorpay\Api\Errors\GatewayError|\Razorpay\Api\Errors\ServerError $e) {
-             $this->cardfailedMail($cost, $e->getMessage(), $user, $order->number, $end, $currency, $order, $product_details, $invoice);
+            $this->cardfailedMail($cost, $e->getMessage(), $user, $order->number, $end, $currency, $order, $product_details, $invoice);
         } catch (\Exception $e) {
             if (emailSendingStatus()) {
                 $this->sendFailedPayment($cost, $e->getMessage(), $user, $order->number, $end, $currency, $order, $product_details, $invoice);
             }
         }
     }
-    public function authenticatesubs($subId,$subscription)
-    {
-        try{
-        $key_id = ApiKey::pluck('rzp_key')->first();
-        $secret = ApiKey::pluck('rzp_secret')->first();
-        $api = new Api($key_id, $secret);
-        $subscriptionStatus = $api->subscription->fetch($subId);
-        if ($subscriptionStatus['status'] == 'authenticated') {
-                Subscription::where('id', $subscription->id)->update(['subscribe_id' => $subId, 'autoRenew_status' => 'Success','rzp_subscription' => '1']);
-                $product_name = Product::where('id',$subscription->product_id)->value('name');
-                $invoiceid = \DB::table('order_invoice_relations')->where('order_id',$subscription->order_id)->latest()->value('invoice_id');
-                $invoiceItem = \DB::table('invoice_items')->where('invoice_id',$invoiceid)->where('product_name',$product_name)->first();
-                $invoice = Invoice::where('id',$invoiceItem->invoice_id)->where('status','pending')->first();
-                if($invoice){
 
     public function authenticatesubs($subId, $subscription)
     {
@@ -706,45 +698,6 @@ class CronController extends BaseCronController
             }
         }
 
-        public static function authorizationMail($total, $exceptionMessage, $user, $number, $end, $currency, $order, $product_details, $invoice)
-        {
-            //check in the settings
-            $settings = new \App\Model\Common\Setting();
-            $setting = $settings->where('id', 1)->first();
-
-            Subscription::where('order_id', $order->id)->update(['autoRenew_status' => 'Failed', 'is_subscribed' => '0']);
-
-            $mail = new \App\Http\Controllers\Common\PhpMailController();
-            $mailer = $mail->setMailConfig($setting);
-            //template
-            $templates = new \App\Model\Common\Template();
-            $temp_id = $setting->Authorization_request;
-
-            $template = $templates->where('id', $temp_id)->first();
-            $data = $template->data;
-            // $invoiceid = \DB::table('order_invoice_relations')->where('order_id',$order->id)->value('invoice_id');
-            $url = url("autopaynow/$invoice->invoice_id");
-
-            try {
-                $email = (new Email())
-              ->from($setting->email)
-              ->to($user->email)
-              ->subject($template->name)
-              ->html($mail->mailTemplate($template->data, $templatevariables = [
-                  'name' => ucfirst($user->first_name).' '.ucfirst($user->last_name),
-                  'product' => $product_details->name,
-                  'total' => currencyFormat($total, $code = $currency),
-                  'number' => $number,
-                  'expiry' => date('d-m-Y', strtotime($end)),
-                  'url' => $url,
-              ]));
-                $mailer->send($email);
-                $mail->email_log_success($setting->email, $user->email, $template->name, $data);
-            } catch (\Exception $ex) {
-                $mail->email_log_fail($setting->email, $user->email, $template->name, $data);
-            }
-        }
-
     public function successRenew($invoice, $subscription, $payment_method, $currency)
     {
         try {
@@ -861,6 +814,7 @@ class CronController extends BaseCronController
             if ($total_paid >= $invoice->grand_total) {
                 $invoice_status = 'success';
             }
+
             return $payment;
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());

@@ -149,7 +149,15 @@ foreach($scripts as $script)
 
                                                 @if(Auth::check() && $user == 0)
 
+                                                      @auth 
+                                                    <?php
+                                                    $id = \Auth::user()->id;
+                                                    $user = \App\User::where('id', '=', $id)->value('first_time_login');
+                                                    $cloud = \App\Model\Common\StatusSetting::where('id','1')->value('cloud_button');
+                                                    ?>
 
+                                                     @if(Auth::check() && $user == 0 && $cloud == 1)
+                                                    
 
                                                     <li class="dropdown">
                                                         <a  class="nav-link open-createTenantDialog" style="cursor: pointer;">

@@ -117,7 +117,7 @@ Checkout
                         ?>
                         {!! Form::radio('payment_gateway',$gateway,false,['id'=>'allow_gateway','onchange' => 'getGateway(this)','processfee'=>$processingFee]) !!}
                          <img alt="Porto" width="111"  data-sticky-width="52" data-sticky-height="10" data-sticky-top="10" src="{{asset('client/images/'.$gateway.'.png')}}">
-                          <br><br>
+                          <br>
                          <div id="fee" style="display:none"><p>An extra processing fee of <b>{{$processingFee}}%</b> will be charged on your Order Total during the time of payment</p></div>
                         @endforeach
                     </div>

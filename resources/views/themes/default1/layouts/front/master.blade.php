@@ -14,6 +14,9 @@ if($script->on_every_page == 1) {
     .dataTables_wrapper {
         overflow-x: auto;
     }
+    .breadcrumb > li + li:before{
+        content: "\3e";
+    }
 </style>
     <head>
           <!-- Basic -->

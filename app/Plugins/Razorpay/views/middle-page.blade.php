@@ -200,9 +200,12 @@ $json = json_encode($data);
                </div>
         </div>
     </div>
-    <div class="col-md-4">
+      <div class="col-md-4">
+    <div class="card card-default" style="margin-bottom: 40px;">
+        <div class="card-header" style="height: 50px;">
          
         <h4 class="heading-primary">Cart Totals</h4>
+    </div>
         <table class="cart-totals">
             <tbody>
                 <tr class="cart-subtotal">
@@ -349,8 +352,11 @@ $json = json_encode($data);
         </div>
     </div>
     <div class="col-md-4">
+    <div class="card card-default" style="margin-bottom: 40px;">
+        <div class="card-header" style="height: 50px;">
          
         <h4 class="heading-primary">Cart Totals</h4>
+    </div>
         <table class="cart-totals">
             <tbody>
                 <tr class="cart-subtotal">
@@ -453,7 +459,7 @@ $json = json_encode($data);
                     </table>
                     
                     
-                 <div class="form-group">
+                <br> <div class="form-group">
                    <div class="col-md-12" id="not-razor">
         <input type="submit" name="submit" value="Place Your Order And Pay" id="rzp-button1" class="btn btn-primary " data-loading-text="Loading..." style="width:100%;margin-left: -6px">
     </div>

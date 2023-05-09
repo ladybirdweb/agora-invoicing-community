@@ -45,7 +45,7 @@ class OrderSearchController extends Controller
             $this->getSelectedVersionOrders($baseQuery, $request->input('version'), $request->input('product_id'), $request);
 
             return $request->renewal == 'expiring_subscription' ? $baseQuery->orderBy('subscriptions.update_ends_at', 'asc') :
-             $baseQuery->orderBy('orders.created_at', 'asc');
+             $baseQuery;
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }

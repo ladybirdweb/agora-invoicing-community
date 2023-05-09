@@ -213,7 +213,7 @@ Orders
             processing: true,
             serverSide: true,
             stateSave: false,
-            order: [[ {!! $request->sort_field ?: 5 !!}, {!! "'".$request->sort_order."'" ?: "'asc'" !!} ]],
+            order: [[ 1, "asc" ]],
 
 
 
@@ -236,13 +236,6 @@ Orders
                 "sSearch"    : "Search: ",
                 "sProcessing": ' <div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="text-bold pt-2">Loading...</div></div>'
             },
-                columnDefs: [
-                { 
-                    targets: 'no-sort', 
-                    orderable: false,
-                    order: []
-                }
-            ],
             columns: [
                 {data: 'checkbox', name: 'checkbox'},
                 {data: 'client', name: 'client'},

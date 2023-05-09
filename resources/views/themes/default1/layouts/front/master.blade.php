@@ -143,9 +143,11 @@ if($script->on_every_page == 1) {
                                                       @auth 
                                                     <?php
                                                     $id = \Auth::user()->id;
-                                                    $user = \App\User::where('id', '=', $id)->value('first_time_login');?>
+                                                    $user = \App\User::where('id', '=', $id)->value('first_time_login');
+                                                    $cloud = \App\Model\Common\StatusSetting::where('id','1')->value('cloud_button');
+                                                    ?>
 
-                                                     @if(Auth::check() && $user == 0)
+                                                     @if(Auth::check() && $user == 0 && $cloud == 1)
                                                     
 
                                                   

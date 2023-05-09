@@ -70,6 +70,43 @@ Tenants
 
     </div>
 </div>
+
+
+<div class="card card-secondary card-outline">
+
+    <div class="card-header">
+
+        <div id="response"></div>
+        <h5>Set Cloud Free Trial Button display Option
+          </h5>
+    </div>
+ 
+        <div class="card-body">
+        {!! Form::open(['url' => 'enable/cloud', 'method' => 'POST']) !!}
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    {!! Form::label('debug',Lang::get('Clount Free Trial')) !!}
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <input type="radio" name="debug" value="true" @if($cloudButton == 1) checked="true" @endif > {{Lang::get('enable')}}
+                        </div>
+                        <div class="col-sm-3">
+                            <input type="radio" name="debug" value="false"@if($cloudButton == 0) checked="true" @endif > {{Lang::get('disable')}}
+                        </div>
+                    </div>
+                </div> 
+            </div>            
+
+    </div>
+    <div>
+    <button type="submit" class="btn btn-primary">save</button>
+    </div>
+
+</div>
+
+</div>
+
   
 
 

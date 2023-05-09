@@ -14,6 +14,9 @@ foreach($scripts as $script)
     .dataTables_wrapper {
         overflow-x: auto;
     }
+    .breadcrumb > li + li:before{
+        content: "\3e";
+    }
 </style>
 <head>
     <!-- Basic -->

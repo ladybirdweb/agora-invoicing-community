@@ -17,7 +17,7 @@
      <li><a href="{{url('login')}}">Home</a></li>
  @endif
  <li><a href="{{url('checkout')}}">Checkout</a></li>
- <li class="active">Razorpay</li>
+ <li class="active">Stripe</li>
 @stop
 @section('main-class') "main shop" @stop
 @section('content')
@@ -125,8 +125,10 @@ $currency = $invoice->currency;
         </div>
     </div>
     <div class="col-md-4">
-         
-        <h4 class="heading-primary">Cart Totals</h4>
+         <div class="card card-default">
+         <div class="card-header" style="height: 50px;"> 
+        <h4 class="heading-primary" >Cart Totals</h4>
+    </div>
         <table class="cart-totals">
             <tbody>
                 <tr class="cart-subtotal">
@@ -288,9 +290,12 @@ $currency = $invoice->currency;
                </div>
         </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-4 ">
+        <div class="card card-default">
+            <div class="card-header" style="height: 50px;">
          
         <h4 class="heading-primary">Cart Totals</h4>
+    </div>
         <table class="cart-totals">
             <tbody>
                 <tr class="cart-subtotal">
@@ -393,7 +398,7 @@ $currency = $invoice->currency;
                     </table>
                     
                     
-                 <div class="form-group">
+                <br> <div class="form-group">
                    <div class="col-md-12" id="stripe-modal">
         <input type="submit" name="submit" value="Place Your Order And Pay" id="stripe-button1" class="btn btn-primary " data-loading-text="Loading..." style="width:100%;margin-left: -6px">
     </div>

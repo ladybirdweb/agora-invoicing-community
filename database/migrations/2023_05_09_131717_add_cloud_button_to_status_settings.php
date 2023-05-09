@@ -13,12 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-         if (! Schema::hasColumn('status_settings', 'cloud_button')) {
-        Schema::table('status_settings', function (Blueprint $table) {
-            $table->string('cloud_button')->default(1);
-
-        });
-    }
+        if (! Schema::hasColumn('status_settings', 'cloud_button')) {
+            Schema::table('status_settings', function (Blueprint $table) {
+                $table->string('cloud_button')->default(1);
+            });
+        }
     }
 
     /**
@@ -30,7 +29,6 @@ return new class extends Migration
     {
         Schema::table('status_settings', function (Blueprint $table) {
             $table->dropColumn('cloud_button');
-
         });
     }
 };

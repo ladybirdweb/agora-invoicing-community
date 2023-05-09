@@ -5,10 +5,10 @@ namespace App\Http\Controllers\Tenancy;
 use App\Http\Controllers\Controller;
 use App\Model\Common\FaveoCloud;
 use App\Model\Common\Setting;
+use App\Model\Common\StatusSetting;
 use App\Model\Order\Order;
 use App\ThirdPartyApp;
 use Exception;
-use App\Model\Common\StatusSetting;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Symfony\Component\Mime\Email;
@@ -38,21 +38,22 @@ class TenantController extends Controller
         $response = json_decode($responseBody, true);
 
         $de = collect($response['message'])->paginate(5);
-        $cloudButton = StatusSetting::where('id','1')->value('cloud_button');
+        $cloudButton = StatusSetting::where('id', '1')->value('cloud_button');
         // $de = $data->all();
 
-        return view('themes.default1.tenant.index', compact('cloud', 'de','cloudButton'));
+        return view('themes.default1.tenant.index', compact('cloud', 'de', 'cloudButton'));
     }
 
     public function enableCloud(Request $request)
     {
-        try{
-       $debug = $request->input('debug');
-       $debug == 'true' ? StatusSetting::where('id','1')->update(['cloud_button' => '1']) : StatusSetting::where('id','1')->update(['cloud_button' => '0']);
-       return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
-      }catch(\Exception $ex){
-        return redirect()->back()->with('fails', $ex->getMessage());
-      }
+        try {
+            $debug = $request->input('debug');
+            $debug == 'true' ? StatusSetting::where('id', '1')->update(['cloud_button' => '1']) : StatusSetting::where('id', '1')->update(['cloud_button' => '0']);
+
+            return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
+        } catch(\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
     }
 
     public function getTenants(Request $request)

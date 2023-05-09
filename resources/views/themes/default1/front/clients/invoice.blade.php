@@ -52,7 +52,7 @@ active
         $('#invoice-table').DataTable({
             processing: true,
             serverSide: true,
-            order: [[ 0, "desc" ]],
+            order: [[ 1, "asc" ]],
             ajax: {
             "url":  '{!! route('get-my-invoices') !!}',
                error: function(xhr) {

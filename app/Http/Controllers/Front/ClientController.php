@@ -255,6 +255,7 @@ class ClientController extends BaseClientController
                     ->orderColumn('date', '-invoices.id $1')
                     ->orderColumn('total', '-invoices.id $1')
                     ->orderColumn('paid', '-invoices.id $1')
+                    ->orderColumn('balance', '-invoices.id $1')
                     ->orderColumn('status', '-invoices.id $1')
                     ->orderColumn('date', '-invoices.id $1')
 
@@ -284,7 +285,7 @@ class ClientController extends BaseClientController
                             }
                         })
                     ->addColumn('date', function ($model) {
-                        return getDateHtml($model->created_at);
+                        return getDateHtml($model->date);
                     })
                     ->addColumn('total', function ($model) {
                         return  currencyFormat($model->grand_total, $code = $model->currency);

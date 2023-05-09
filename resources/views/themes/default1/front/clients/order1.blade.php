@@ -50,7 +50,7 @@ active
             destroy:true,
             processing: true,
             serverSide: true,
-            order: [[ 0, "desc" ]],
+            order: [[ 0, "desc" ]], 
             ajax: {
             "url":  '{!! route('get-my-orders') !!}',
                error: function(xhr) {

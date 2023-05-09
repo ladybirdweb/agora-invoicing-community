@@ -121,13 +121,13 @@ class OrderController extends BaseOrderController
         $query = $orderSearch->advanceOrderSearch($request);
 
         return \DataTables::of($query)
-            ->orderColumn('client', '-client_id $1')
-            ->orderColumn('product_name', '-client_id $1')
-            ->orderColumn('version', '-client_id $1')
-            ->orderColumn('number', '-client_id $1')
-            ->orderColumn('order_status', '-client_id $1')
-            ->orderColumn('order_date', '-client_id $1')
-            ->orderColumn('update_ends_at', '-client_id $1')
+            ->orderColumn('client', '-orders.created_at $1')
+            ->orderColumn('product_name', 'orders.created_at $1')
+            ->orderColumn('version', 'orders.created_at $1')
+            ->orderColumn('number', 'orders.created_at $1')
+            ->orderColumn('order_status', 'orders.created_at $1')
+            ->orderColumn('order_date', 'orders.created_at $1')
+            ->orderColumn('update_ends_at', 'orders.created_at $1')
 
             ->setTotalRecords($query->count())
             ->addColumn('checkbox', function ($model) {
@@ -192,15 +192,6 @@ class OrderController extends BaseOrderController
             ->filterColumn('order_status', function ($query, $keyword) {
                 $query->whereRaw('order_status like ?', ["%{$keyword}%"]);
             })
-
-            ->orderColumn('order_date', 'orders.created_at $1')
-            ->orderColumn('client', 'client_name $1')
-            ->orderColumn('product_name', 'product_name $1')
-            ->orderColumn('version', 'product_version $1')
-            ->orderColumn('number', 'number $1')
-            ->orderColumn('price_override', 'price_override $1')
-            ->orderColumn('order_status', 'order_status $1')
-            ->orderColumn('update_ends_at', 'update_ends_at $1')
 
             ->rawColumns(['checkbox', 'date', 'client', 'version', 'number', 'order_status', 'order_date', 'update_ends_at', 'action'])
             ->make(true);

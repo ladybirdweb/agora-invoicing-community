@@ -148,45 +148,29 @@ class AuthController extends BaseAuthController
 
     public function retryOTP(Request $request)
     {
-        $this->validate($request, [
+         $this->validate($request, [
             'code' => 'required|numeric',
-            'mobile' => 'required|numeric',
+            'mobile' => 'required',
         ]);
 
         try {
-            $code = $request->input('code');
-            $mobile = ltrim($request->input('mobile'), '0');
-            $otp = $request->input('otp');
-            $number = '(+'.$code.') '.$mobile;
+            $code = $request->code;
+            $mobile = ltrim($request->mobile, '0');
+            $formatted_mobile = sprintf('(+%s) %s', $code, $mobile);
 
-            $result = $this->sendForReOtp($mobile, $code, $request->input('type'));
+            $result = $this->sendForReOtp($mobile, $code, $request->type);
 
-            switch ($request->input('type')) {
-                case 'text':
-                    $array = json_decode($result, true);
-                    $response = ['type' => 'success',
-                        'message' => 'OTP has been resent to '.$number.'.Please Enter the OTP to login!!', ];
+            $response = ['type' => 'success'];
+            $response['message'] = match ($request->type) {
+                'text' => 'OTP has been resent to '.$formatted_mobile.'.Please Enter the OTP to login!!',
+                default => 'Voice call has been sent to '.$formatted_mobile.'.Please Enter the OTP received on the call to login!!',
+            };
 
-                    break;
-
-                case 'voice':
-                    $array = json_decode($result, true);
-                    $response = ['type' => 'success',
-                        'message' => 'Voice call has been sent to '.$number.'.Please Enter the OTP received on the call to login!!', ];
-                    break;
-
-                default:
-                    $array = json_decode($result, true);
-                    $response = ['type' => 'success',
-                        'message' => 'Voice call has been sent to '.$number.'.Please Enter the OTP received on the call to login!!', ];
-                    break;
-            }
-
-            return response()->json($response);
-        } catch (\Exception $ex) {
-            $result = [$ex->getMessage()];
-
-            return response()->json(compact('result'), 500);
+            return $response;
+        } catch (\Exception $e) {
+            return response()->json([
+                'response' => $e->getMessage(),
+            ], 500);
         }
     }
 

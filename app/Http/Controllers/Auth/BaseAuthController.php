@@ -51,15 +51,15 @@ class BaseAuthController extends Controller
      */
     public static function sendOtp($mobile, $code)
     {
-       $response = (new Client())->request('GET', 'https://api.msg91.com/api/v5/otp/retry', [
+        $response = (new Client())->request('GET', 'https://api.msg91.com/api/v5/otp/retry', [
             'query' => [
                 'authkey'    => ApiKey::first()->msg91_auth_key,
                 'mobile'     => "{$code}{$mobile}",
                 'retrytype'  => $type,
             ],
         ])
-        ->getBody()
-        ->getContents();
+         ->getBody()
+         ->getContents();
 
         $response_decoded = json_decode($response, true);
 

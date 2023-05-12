@@ -559,6 +559,10 @@ Route::get('new-version-available', [HomeController::class, 'isNewVersionAvailab
 Route::post('update-installation-detail', [HomeController::class, 'updateInstallationDetails']);
 Route::get('verify/third-party-token', [Tenancy\TenantController::class, 'verifyThirdPartyToken']);
 
+Route::post('renewurl', [HomeController::class, 'renewurl']);
+
+
+
 Route::get('404', function () {
     return view('errors.404');
 })->name('error404');

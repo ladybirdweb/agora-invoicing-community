@@ -6,6 +6,11 @@ use App\Model\Order\Order;
 use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
 use Exception;
+use App\Model\Product\Subscription;
+use App\Model\Payment\Plan;
+use App\Http\Controllers\Common\CronController;
+use App\Http\Controllers\Order\RenewController;
+use App\Model\Payment\PlanPrice;
 use Illuminate\Http\Request;
 
 class HomeController extends BaseHomeController
@@ -336,6 +341,7 @@ class HomeController extends BaseHomeController
 
     public function latestVersion(Request $request, Product $product)
     {
+        dd($request->all());
         $v = \Validator::make($request->all(), [
             'title' => 'required',
         ]);
@@ -456,5 +462,36 @@ class HomeController extends BaseHomeController
     private function getPHPCompatibleVersionString(string $version = null): string
     {
         return preg_replace('#v\.|v#', '', str_replace('_', '.', $version));
+    }
+
+     public function renewurl(Request $request)
+    {
+        
+
+      $orderId = \DB::table('installation_details')->Where('installation_path', 'like', '%' . $request->input('domain') . '%')->value('order_id');
+      $subscription = Subscription::where('order_id',$orderId)->first();
+
+      $basecron = new CronController();
+      $order = $basecron->getOrderById($subscription->order_id);
+      $oldinvoice = $basecron->getInvoiceByOrderId($subscription->order_id);
+      $item = $basecron->getInvoiceItemByInvoiceId($oldinvoice->id);
+
+      $product_details = Product::where('name', $item->product_name)->first();
+      $plan = Plan::where('product', $product_details->id)->first('days');
+      $oldcurrency = $oldinvoice->currency;
+
+      $user = \DB::table('users')->where('id', $subscription->user_id)->first();
+      $planid = Plan::where('product', $product_details->id)->value('id');
+      $cost = PlanPrice::where('plan_id', $planid)->where('currency', $oldcurrency)->value('renew_price');
+
+      $renewController = new RenewController();
+      $invoiceItems = $renewController->generateInvoice($product_details, $user, $order->id, $plan->id, $cost, $code = '', $item->agents, $oldcurrency);
+      $invoiceid = $invoiceItems->invoice_id;
+      $url = url("autopaynow/$invoiceid");
+
+      return $url;
+
+
+
     }
 }

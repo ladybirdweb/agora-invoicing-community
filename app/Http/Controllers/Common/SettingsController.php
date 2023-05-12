@@ -524,30 +524,27 @@ class SettingsController extends BaseSettingsController
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
+
     public function debugSettings()
     {
-
         return view('themes.default1.common.setting.debugging');
     }
+
     public function postdebugSettings(Request $request)
     {
-      $request = $request->get('debug');
-      if($request == 'true'){
-             $debug_new = base_path().DIRECTORY_SEPARATOR.'.env';
-             $datacontent = File::get($debug_new);
-             $datacontent = str_replace('APP_DEBUG=false', 'APP_DEBUG=true', $datacontent);
-                File::put($debug_new, $datacontent);
-            }
-         elseif($request == 'false')
-            {
-             $debug_new = base_path().DIRECTORY_SEPARATOR.'.env';
-             $datacontent = File::get($debug_new);
-             $datacontent = str_replace('APP_DEBUG=true','APP_DEBUG=false', $datacontent);
-                File::put($debug_new, $datacontent);
-
-            }
-            return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
-        
-            
+        $request = $request->get('debug');
+        if ($request == 'true') {
+            $debug_new = base_path().DIRECTORY_SEPARATOR.'.env';
+            $datacontent = File::get($debug_new);
+            $datacontent = str_replace('APP_DEBUG=false', 'APP_DEBUG=true', $datacontent);
+            File::put($debug_new, $datacontent);
+        } elseif ($request == 'false') {
+            $debug_new = base_path().DIRECTORY_SEPARATOR.'.env';
+            $datacontent = File::get($debug_new);
+            $datacontent = str_replace('APP_DEBUG=true', 'APP_DEBUG=false', $datacontent);
+            File::put($debug_new, $datacontent);
         }
+
+        return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
+    }
 }

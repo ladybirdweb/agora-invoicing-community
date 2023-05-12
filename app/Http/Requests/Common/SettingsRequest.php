@@ -44,8 +44,8 @@ class SettingsRequest extends FormRequest
             'company.required'           => 'The Company name field is required',
             'company.max'                => 'The Company name must not be greater than 50 characters',
             'logo.mimes'                 => 'The Client Panel Logo must be a file of type: jpeg, jpg, png, gif',
-            'admin-logo.mimes'           =>  'The Admin Panel Logo must be a file of type: jpeg, jpg, png, gif', 
+            'admin-logo.mimes'           =>  'The Admin Panel Logo must be a file of type: jpeg, jpg, png, gif',
             'fav-icon.mimes'             => 'The Favicon must be a file of type: jpeg, jpg, png, gif',
-        ]; 
+        ];
     }
 }

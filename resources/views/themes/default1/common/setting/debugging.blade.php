@@ -1,6 +1,6 @@
 @extends('themes.default1.layouts.master')
 @section('title')
-File Storage
+Debugging Settings
 @stop
 @section('content-header')
     <div class="col-sm-6">
@@ -31,13 +31,13 @@ File Storage
         <div class="row">
             <div class="col-md-4">
                 <div class="form-group">
-                    {!! Form::label('debug',Lang::get('debugging')) !!}
+                    {!! Form::label('debug',Lang::get('Debugging')) !!}
                     <div class="row">
                         <div class="col-sm-3">
-                            <input type="radio" name="debug" value="true" @if($de == true) checked="true" @endif > {{Lang::get('enable')}}
+                            <input type="radio" name="debug" value="true" @if($de == true) checked="true" @endif > {{Lang::get('Enable')}}
                         </div>
                         <div class="col-sm-3">
-                            <input type="radio" name="debug" value="false" @if($de == false) checked="true" @endif> {{Lang::get('disable')}}
+                            <input type="radio" name="debug" value="false" @if($de == false) checked="true" @endif> {{Lang::get('Disable')}}
                         </div>
                     </div>
                 </div> 

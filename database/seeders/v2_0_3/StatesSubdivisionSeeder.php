@@ -431,6 +431,109 @@ class StatesSubdivisionSeeder extends Seeder
             'primary_level_name' => 'municipality',
             'state_subdivision_code' => 'AX-ST',
         ]);
+        State::create([
+            'state_subdivision_id' => 48297,
+            'country_code_char2' => 'SS',
+            'country_code_char3' => 'SSD',
+            'state_subdivision_name' => 'Central Equatoria',
+            'state_subdivision_alternate_names' => '',
+            'primary_level_name' => 'states',
+            'state_subdivision_code' => 'SS-EC',
+        ]);
+         State::create([
+            'state_subdivision_id' => 48298,
+            'country_code_char2' => 'SS',
+            'country_code_char3' => 'SSD',
+            'state_subdivision_name' => 'Central Equatoria',
+            'state_subdivision_alternate_names' => '',
+            'primary_level_name' => 'states',
+            'state_subdivision_code' => 'SS-EC',
+        ]);
+          State::create([
+            'state_subdivision_id' => 48299,
+            'country_code_char2' => 'SS',
+            'country_code_char3' => 'SSD',
+            'state_subdivision_name' => 'Eastern Equatoria',
+            'state_subdivision_alternate_names' => '',
+            'primary_level_name' => 'states',
+            'state_subdivision_code' => 'SS-EE',
+        ]);
+           State::create([
+            'state_subdivision_id' => 48300,
+            'country_code_char2' => 'SS',
+            'country_code_char3' => 'SSD',
+            'state_subdivision_name' => 'Jonglei',
+            'state_subdivision_alternate_names' => '',
+            'primary_level_name' => 'states',
+            'state_subdivision_code' => 'SS-JG',
+        ]);
+            State::create([
+            'state_subdivision_id' => 48301,
+            'country_code_char2' => 'SS',
+            'country_code_char3' => 'SSD',
+            'state_subdivision_name' => 'Lakes',
+            'state_subdivision_alternate_names' => '',
+            'primary_level_name' => 'states',
+            'state_subdivision_code' => 'SS-LK',
+        ]);
+             State::create([
+            'state_subdivision_id' => 48302,
+            'country_code_char2' => 'SS',
+            'country_code_char3' => 'SSD',
+            'state_subdivision_name' => 'Northern Bahr el Ghazal',
+            'state_subdivision_alternate_names' => '',
+            'primary_level_name' => 'states',
+            'state_subdivision_code' => 'SS-BN',
+        ]);
+            State::create([
+            'state_subdivision_id' => 48303,
+            'country_code_char2' => 'SS',
+            'country_code_char3' => 'SSD',
+            'state_subdivision_name' => 'Unity',
+            'state_subdivision_alternate_names' => '',
+            'primary_level_name' => 'states',
+            'state_subdivision_code' => 'SS-UY',
+        ]);
+            State::create([
+            'state_subdivision_id' => 48304,
+            'country_code_char2' => 'SS',
+            'country_code_char3' => 'SSD',
+            'state_subdivision_name' => 'Upper Nile',
+            'state_subdivision_alternate_names' => '',
+            'primary_level_name' => 'states',
+            'state_subdivision_code' => 'SS-NU',
+        ]);
+            State::create([
+            'state_subdivision_id' => 48305,
+            'country_code_char2' => 'SS',
+            'country_code_char3' => 'SSD',
+            'state_subdivision_name' => 'Warrap',
+            'state_subdivision_alternate_names' => '',
+            'primary_level_name' => 'states',
+            'state_subdivision_code' => 'SS-WR',
+        ]);
+             State::create([
+            'state_subdivision_id' => 48306,
+            'country_code_char2' => 'SS',
+            'country_code_char3' => 'SSD',
+            'state_subdivision_name' => 'Western Bahr el Ghazal ',
+            'state_subdivision_alternate_names' => '',
+            'primary_level_name' => 'states',
+            'state_subdivision_code' => 'SS-BW',
+        ]);
+            State::create([
+            'state_subdivision_id' => 48307,
+            'country_code_char2' => 'SS',
+            'country_code_char3' => 'SSD',
+            'state_subdivision_name' => 'Western Equatoria',
+            'state_subdivision_alternate_names' => '',
+            'primary_level_name' => 'states',
+            'state_subdivision_code' => 'SS-EW',
+        ]);
+
+            State::where('state_subdivision_id','18329')->update(['state_subdivision_name' => 'Dushambe']);
+            State::where('state_subdivision_id','18567')->update(['state_subdivision_name' => 'Ashgabat']);
+
 
 
       }

@@ -193,7 +193,7 @@ Settings
                         <div class="settingdivblue">
                             <a href="{{url('debugg')}}">
                                 <span class="fa-stack fa-2x">
-                                   <i style="margin-right: 10px;" class="fa fa-bug" aria-hidden="true"></i>
+                                   <i style="margin-right: 20px;" class="fa fa-bug" aria-hidden="true"></i>
                                 </span>
                             </a>
                         </div>
@@ -206,7 +206,7 @@ Settings
                         <div class="settingdivblue">
                             <a href="{{url('clockwork/app')}}">
                                 <span class="fa-stack fa-2x">
-                                   <i style="margin-right: 10px;" class="fa fa-clock fa-lg" aria-hidden="true"></i>
+                                   <i style="margin-right: 20px;margin-top: 25%;" class="fa fa-clock fa-lg" aria-hidden="true"></i>
                                 </span>
                             </a>
                         </div>

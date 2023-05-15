@@ -47,9 +47,9 @@ class TenantController extends Controller
     {
         try {
             $response = $this->client->request(
-                    'GET',
-                        $this->cloud->cloud_central_domain.'/tenants'
-                );
+                'GET',
+                $this->cloud->cloud_central_domain.'/tenants'
+            );
 
             $responseBody = (string) $response->getBody();
             $response = json_decode($responseBody);

@@ -27,7 +27,6 @@ use Illuminate\Http\Request;
 use Razorpay\Api\Api;
 use Symfony\Component\Mime\Email;
 use Validator;
-use function PHPUnit\Framework\isEmpty;
 
 class ClientController extends BaseClientController
 {

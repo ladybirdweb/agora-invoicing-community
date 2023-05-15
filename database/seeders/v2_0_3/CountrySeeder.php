@@ -3,9 +3,11 @@
 namespace Database\Seeders\v2_0_3;
 
 
+use App\Model\Common\Country;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
-class DatabaseSeeder extends Seeder
+class CountrySeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,7 +16,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $this->call(StatesSubdivisionSeeder::class);
-        $this->call(CountrySeeder::class);
-    }
+
+      Country::where('nicename','Tajikistan')->delete();
+       
+      }
 }

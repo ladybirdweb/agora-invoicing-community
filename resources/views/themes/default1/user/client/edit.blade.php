@@ -179,7 +179,7 @@ Edit User
                     </div>
                     <div class="col-md-3 form-group {{ $errors->has('state') ? 'has-error' : '' }}">
                         <!-- name -->
-                        {!! Form::label('state',Lang::get('message.state'),['class' => 'required']) !!}
+                        {!! Form::label('state',Lang::get('message.state')) !!}
                         <!--{!! Form::select('state',[],null,['class' => 'form-control','id'=>'state-list']) !!}-->
 
 

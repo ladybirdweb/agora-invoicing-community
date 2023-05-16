@@ -192,9 +192,9 @@ class TenantController extends Controller
 
                     $mail->email_log_success($settings->email, $user, 'New instance created', $result->message.'.<br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password);
 
-                    $mail = new \App\Http\Controllers\Common\PhpMailController();
-
-                    $mail->sendEmail($settings->email, $user, $userData, 'New instance created');
+//                    $mail = new \App\Http\Controllers\Common\PhpMailController();
+//
+//                    $mail->sendEmail($settings->email, $user, $userData, 'New instance created');
 
                     return ['status' => $result->status, 'message' => $result->message.'.'];
                 }

@@ -440,17 +440,9 @@ class StatesSubdivisionSeeder extends Seeder
             'primary_level_name' => 'states',
             'state_subdivision_code' => 'SS-EC',
         ]);
-         State::create([
-            'state_subdivision_id' => 48298,
-            'country_code_char2' => 'SS',
-            'country_code_char3' => 'SSD',
-            'state_subdivision_name' => 'Central Equatoria',
-            'state_subdivision_alternate_names' => '',
-            'primary_level_name' => 'states',
-            'state_subdivision_code' => 'SS-EC',
-        ]);
+
           State::create([
-            'state_subdivision_id' => 48299,
+            'state_subdivision_id' => 48298,
             'country_code_char2' => 'SS',
             'country_code_char3' => 'SSD',
             'state_subdivision_name' => 'Eastern Equatoria',
@@ -459,7 +451,7 @@ class StatesSubdivisionSeeder extends Seeder
             'state_subdivision_code' => 'SS-EE',
         ]);
            State::create([
-            'state_subdivision_id' => 48300,
+            'state_subdivision_id' => 48299,
             'country_code_char2' => 'SS',
             'country_code_char3' => 'SSD',
             'state_subdivision_name' => 'Jonglei',
@@ -468,7 +460,7 @@ class StatesSubdivisionSeeder extends Seeder
             'state_subdivision_code' => 'SS-JG',
         ]);
             State::create([
-            'state_subdivision_id' => 48301,
+            'state_subdivision_id' => 48300,
             'country_code_char2' => 'SS',
             'country_code_char3' => 'SSD',
             'state_subdivision_name' => 'Lakes',
@@ -477,7 +469,7 @@ class StatesSubdivisionSeeder extends Seeder
             'state_subdivision_code' => 'SS-LK',
         ]);
              State::create([
-            'state_subdivision_id' => 48302,
+            'state_subdivision_id' => 48301,
             'country_code_char2' => 'SS',
             'country_code_char3' => 'SSD',
             'state_subdivision_name' => 'Northern Bahr el Ghazal',
@@ -486,7 +478,7 @@ class StatesSubdivisionSeeder extends Seeder
             'state_subdivision_code' => 'SS-BN',
         ]);
             State::create([
-            'state_subdivision_id' => 48303,
+            'state_subdivision_id' => 48302,
             'country_code_char2' => 'SS',
             'country_code_char3' => 'SSD',
             'state_subdivision_name' => 'Unity',
@@ -495,7 +487,7 @@ class StatesSubdivisionSeeder extends Seeder
             'state_subdivision_code' => 'SS-UY',
         ]);
             State::create([
-            'state_subdivision_id' => 48304,
+            'state_subdivision_id' => 48303,
             'country_code_char2' => 'SS',
             'country_code_char3' => 'SSD',
             'state_subdivision_name' => 'Upper Nile',
@@ -504,7 +496,7 @@ class StatesSubdivisionSeeder extends Seeder
             'state_subdivision_code' => 'SS-NU',
         ]);
             State::create([
-            'state_subdivision_id' => 48305,
+            'state_subdivision_id' => 48304,
             'country_code_char2' => 'SS',
             'country_code_char3' => 'SSD',
             'state_subdivision_name' => 'Warrap',
@@ -513,7 +505,7 @@ class StatesSubdivisionSeeder extends Seeder
             'state_subdivision_code' => 'SS-WR',
         ]);
              State::create([
-            'state_subdivision_id' => 48306,
+            'state_subdivision_id' => 48305,
             'country_code_char2' => 'SS',
             'country_code_char3' => 'SSD',
             'state_subdivision_name' => 'Western Bahr el Ghazal ',
@@ -522,7 +514,7 @@ class StatesSubdivisionSeeder extends Seeder
             'state_subdivision_code' => 'SS-BW',
         ]);
             State::create([
-            'state_subdivision_id' => 48307,
+            'state_subdivision_id' => 48306,
             'country_code_char2' => 'SS',
             'country_code_char3' => 'SSD',
             'state_subdivision_name' => 'Western Equatoria',

@@ -601,7 +601,7 @@ Sign in or Register
             $('#enterotp').hide();
             if(verify_otp_check()) {
                 $("#verifyOtp").attr('disabled',true);
-                $("#verifyOtp").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Verifying...");
+                // $("#verifyOtp").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Verifying...");
                 var data = {
                     "mobile":   $('#verify_number').val().replace(/[\. ,:-]+/g, ''),
                     "code"  :   $('#verify_country_code').val(),
@@ -627,6 +627,9 @@ Sign in or Register
                         setTimeout(()=>{
                             getLoginTab();
                         },10)
+                        setTimeout(function() {
+                            location.reload();
+                        }, 3000);
                     },
                     error: function (xhr, textStatus, errorThrown) {
                         $("#verifyOtp").attr('disabled',false);
@@ -634,7 +637,7 @@ Sign in or Register
                          var myJSON = xhr.responseJSON.message;
                          console.log(myJSON);
                          console.log(xhr);
-                        var html = '<div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<br><br><ul>';
+                        var html = '<div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<br><ul>';
                               for (var key in xhr.responseJSON.errors)
                         {
                             html += '<li>' + xhr.responseJSON.errors[key][0] + '</li>'
@@ -643,7 +646,7 @@ Sign in or Register
                         }
                         else{
                         var myJSON = JSON.parse(xhr.responseText);
-                        var html = '<div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<br><br><ul>';
+                        var html = '<div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<br><ul>';
                         $("#verifyOtp").html("Verify OTP");
                         for (var key in myJSON)
                         {

@@ -52,9 +52,9 @@ class CloudEmail implements ShouldQueue
 
                     $mail->email_log_success($settings->email, $cloud->user, 'New instance created', $cloud->result_message.'.<br> Email:'.' '.$cloud->user.'<br>'.'Password:'.' '.$cloud->result_password);
 
-                    $mail = new \App\Http\Controllers\Common\PhpMailController();
-
-                    $mail->sendEmail($settings->email, $cloud->user, $userData, 'New instance created');
+//                    $mail = new \App\Http\Controllers\Common\PhpMailController();
+//
+//                    $mail->sendEmail($settings->email, $cloud->user, $userData, 'New instance created');
 
                     cloudemailsend::where('domain', $cloud->domain)->delete();
                 }

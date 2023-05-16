@@ -148,7 +148,7 @@ class AuthController extends BaseAuthController
 
     public function retryOTP(Request $request)
     {
-         $this->validate($request, [
+        $this->validate($request, [
             'code' => 'required|numeric',
             'mobile' => 'required',
         ]);

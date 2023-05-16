@@ -90,7 +90,7 @@ Tenants
             
             <div class="col-md-12">
                
-                 <table id="tenant-table" class="table display" cellspacing="0" width="100%" styleClass="borderless" style="table-layout:fixed;">
+                 <table id="tenant-table" class="table table-bordered table-hover" cellspacing="0" width="100%" styleClass="borderless" style="table-layout:fixed;">
                      
                     <thead><tr>
                             <th>S.No</th>
@@ -103,17 +103,16 @@ Tenants
                         @foreach($de as $key => $data)
                         
                    <tbody>
+                   @if(isset($data))
                        <tr>
                            <td>{{++$key}}</td>
                            <td>{{$data['id']}}</td>
                            <td>{{$data['domain']}}</td>
                            <td>{{$data['database_name']}}</td>
                            <td>{{$data['database_user_name']}}</td>
-                           <td><button 
-                 class='btn btn-sm btn-danger btn-xs delTenant' onclick=delete("{{$data['id']}}")><i class='fa fa-trash'
-                 style='color:white;'> </i></button></td>
+                           <td><button class="btn btn-sm btn-danger btn-xs delTenant" id="delete" value="{{$data['id']}}"><i class="fa fa-trash" style="color:white;"> </i></button></td>
                        </tr>
-                      
+                   @endif
                    </tbody>
                        @endforeach
                       
@@ -139,8 +138,9 @@ Tenants
 
 <script>
 
-  function delete(id) {
-     var id = id;
+    $('#delete').click(function() {
+
+        var id = $(this).val();
       if (confirm("Are you sure you want to destroy this tenant?")) {
          $.ajax({
           url: "{!! url('delete-tenant') !!}",
@@ -164,7 +164,7 @@ Tenants
               $('#error').html(result);
               setInterval(function(){ 
                 $('#error').slideUp(5000); 
-           location.reload(); },10000);
+           location.reload(); },500);
 
             }
              

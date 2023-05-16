@@ -10,7 +10,6 @@ use App\Model\Common\StatusSetting;
 use App\Model\User\AccountActivate;
 use App\User;
 use Illuminate\Http\Request;
-use GuzzleHttp\Client;
 use Symfony\Component\Mime\Email;
 
 class BaseAuthController extends Controller
@@ -52,7 +51,7 @@ class BaseAuthController extends Controller
      */
     public static function sendOtp($mobile, $code)
     {
-         $client = new \GuzzleHttp\Client();
+        $client = new \GuzzleHttp\Client();
         $number = $code.$mobile;
         $key = ApiKey::where('id', 1)->select('msg91_auth_key', 'msg91_sender')->first();
 

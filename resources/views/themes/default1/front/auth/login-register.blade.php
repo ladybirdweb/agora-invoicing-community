@@ -628,9 +628,21 @@ Sign in or Register
                             getLoginTab();
                         },10)
                     },
-                    error: function (ex) {
+                    error: function (xhr, textStatus, errorThrown) {
                         $("#verifyOtp").attr('disabled',false);
-                        var myJSON = JSON.parse(ex.responseText);
+                        if (xhr.status === 422) {
+                         var myJSON = xhr.responseJSON.message;
+                         console.log(myJSON);
+                         console.log(xhr);
+                        var html = '<div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<br><br><ul>';
+                              for (var key in xhr.responseJSON.errors)
+                        {
+                            html += '<li>' + xhr.responseJSON.errors[key][0] + '</li>'
+                        }
+                        html += '</ul></div>';
+                        }
+                        else{
+                        var myJSON = JSON.parse(xhr.responseText);
                         var html = '<div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<br><br><ul>';
                         $("#verifyOtp").html("Verify OTP");
                         for (var key in myJSON)
@@ -638,6 +650,8 @@ Sign in or Register
                             html += '<li>' + myJSON[key][0] + '</li>'
                         }
                         html += '</ul></div>';
+                 
+                        }
                         $('#successMessage2').hide();
                         $('#alertMessage2').hide();
                         $('#error2').show();

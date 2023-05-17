@@ -38,8 +38,7 @@ class TenantController extends Controller
         $response = json_decode($responseBody, true);
 
         $de = collect($response['message'])->paginate(5);
-        $cloudButton = StatusSetting::where('id','1')->value('cloud_button');
-        // $de = $data->all();
+        $cloudButton = StatusSetting::value('cloud_button');
 
         return view('themes.default1.tenant.index', compact('cloud', 'de','cloudButton'));
     }
@@ -47,8 +46,7 @@ class TenantController extends Controller
     public function enableCloud(Request $request)
     {
         try{
-       $debug = $request->input('debug');
-       $debug == 'true' ? StatusSetting::where('id','1')->update(['cloud_button' => '1']) : StatusSetting::where('id','1')->update(['cloud_button' => '0']);
+       $request->input('debug') == 'true' ? StatusSetting::where('id','1')->update(['cloud_button' => '1']) : StatusSetting::where('id','1')->update(['cloud_button' => '0']);
        return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
       }catch(\Exception $ex){
         return redirect()->back()->with('fails', $ex->getMessage());

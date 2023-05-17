@@ -353,8 +353,13 @@ class CronController extends BaseCronController
         ini_set('memory_limit', '-1');
         try {
             $subscriptions_detail = $this->getOnDayExpiryInfoSubs()->get();
-
             foreach ($subscriptions_detail as $subscription) {
+                $productType = Product::find($subscription->product_id);
+                $price = PlanPrice::where('plan_id',$subscription->plan_id)->value('renew_price');
+                if($productType->type == '4' && $price == '0')
+                {
+                    Subscription::where('id',$subscription->id)->update(['is_subscribed' => 0]);
+                }
                 $status = $subscription->is_subscribed;
                 if ($status == '1') {
                     $userid = $subscription->user_id;

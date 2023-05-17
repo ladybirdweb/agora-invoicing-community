@@ -200,6 +200,9 @@ $json = json_encode($data);
  $gateways = \App\Http\Controllers\Common\SettingsController::checkPaymentGateway(\Auth::user()->currency);
 // $processingFee = \DB::table(strtolower($gateways))->where('currencies',\Auth::user()->currency)->value('processing_fee');
 
+ $planid = \App\Model\Payment\Plan::where('product',$product->id)->value('id');
+ $price = \App\Model\Payment\PlanPrice::where('plan_id',$planid)->value('renew_price');
+
 
     
 
@@ -251,17 +254,26 @@ $json = json_encode($data);
            </div>
             <div id="alertMessage-2"></div>
 
-            @component('mini_views.navigational_view', [
-                'navigations'=>[
-                    ['id'=>'license-details', 'name'=>'License Details','active'=>1, 'slot'=>'license','icon'=>'fas fa-file'],
-                    ['id'=>'user-details', 'name'=>'User Details', 'slot'=>'user','icon'=>'fas fa-users'],
-                    ['id'=>'invoice-list', 'name'=>'Invoice List', 'slot'=>'invoice','icon'=>'fas fa-credit-card'],
-                    ['id'=>'payment-receipts', 'name'=>'Payment Receipts', 'slot'=>'payment','icon'=>'fas fa-briefcase'],
-                    ['id'=>'auto-renewals', 'name'=>'Auto Renewal', 'slot'=>'autorenewal','icon'=>'fas fa-bell'],
-                    ['id'=>'upgrade-cloud', 'name'=>'Upgrade Cloud', 'slot'=>'upgrade','icon'=>'fas fa-cloud'],
 
-                ]
-            ])
+            @php
+            $navigations = [
+                 ['id'=>'license-details', 'name'=>'License Details','active'=>1, 'slot'=>'license','icon'=>'fas fa-file'],
+                 ['id'=>'user-details', 'name'=>'User Details', 'slot'=>'user','icon'=>'fas fa-users'],
+                 ['id'=>'invoice-list', 'name'=>'Invoice List', 'slot'=>'invoice','icon'=>'fas fa-credit-card'],
+                 ['id'=>'payment-receipts', 'name'=>'Payment Receipts', 'slot'=>'payment','icon'=>'fas fa-briefcase'],
+            ];
+
+            if ($price != '0' && $product->type != '4') {
+                $navigations[] = ['id'=>'auto-renewals', 'name'=>'Auto Renewal', 'slot'=>'autorenewal','icon'=>'fas fa-bell'];
+            }
+          @endphp
+
+          @component('mini_views.navigational_view', [
+            'navigations' => $navigations
+          ])
+               
+               
+
                 @slot('license')
                  
                     <table class="table">

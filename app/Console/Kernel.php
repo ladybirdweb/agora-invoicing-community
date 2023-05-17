@@ -46,7 +46,7 @@ class Kernel extends ConsoleKernel
                  ->daily();
         $this->execute($schedule, 'subsExpirymail');
         $this->execute($schedule, 'postExpirymail');
-        $schedule->job(new CloudEmail)->everyMinute();
+        $schedule->job(new CloudEmail)->everyFiveMinutes();
     }
 
     public function execute($schedule, $task)

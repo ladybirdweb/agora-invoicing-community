@@ -137,7 +137,7 @@ class TenantController extends Controller
             $token = str_random(32);
             \DB::table('third_party_tokens')->insert(['user_id' => \Auth::user()->id, 'token' => $token]);
             $client = new Client([]);
-            $data = ['domain' => $faveoCloud, 'app_key'=>$keys->app_key, 'token'=>$token, 'lic_code'=>$licCode, 'username'=>$user, 'userId'=>\Auth::user()->id, 'timestamp'=>time(), 'product'=>$product];
+            $data = ['domain' => $faveoCloud, 'app_key'=>$keys->app_key, 'token'=>$token, 'lic_code'=>$licCode, 'username'=>$user, 'userId'=>\Auth::user()->id, 'timestamp'=>time(), 'product'=>$product,'product_id'=>$order[0]->product()->value('id')];
 
             $encodedData = http_build_query($data);
             $hashedSignature = hash_hmac('sha256', $encodedData, $keys->app_secret);

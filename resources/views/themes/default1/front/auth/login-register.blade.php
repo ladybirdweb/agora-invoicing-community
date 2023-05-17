@@ -722,6 +722,9 @@ Sign in or Register
                     $('#error2').hide();
                     var result =  '<div class="alert alert-success"> <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Well Done! </strong>'+response.message+'!</div>';
                     $('#alertMessage3').html(result+ ".");
+                      setTimeout(function(){
+                        $('#alertMessage3').hide();
+                        }, 3000);
                 },
                 error: function (ex) {
                     $("#resendOTP").attr('disabled',false);
@@ -765,6 +768,9 @@ Sign in or Register
                     $('#error2').hide();
                     var result =  '<div class="alert alert-success"> <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Well Done! </strong>'+response.message+'!</div>';
                     $('#alertMessage3').html(result+ ".");
+                     setTimeout(function(){
+                        $('#alertMessage3').hide();
+                        }, 3000);
                 },
                 error: function (ex) {
                     $("#voiceOTP").attr('disabled',false);
@@ -911,6 +917,15 @@ Sign in or Register
                             $("#sendOtp").html("Send");
                             $('#error1').hide();
                         }
+                          setTimeout(function(){
+                                $('#emailsuccess').hide();
+                            }, 3000);
+                            setTimeout(function(){
+                                $('#successMessage1').hide();
+                            }, 3000);
+                            setTimeout(function(){
+                                $('#successMessage2').hide();
+                            }, 3000);
                     },
                     error: function (ex) {
                         $("#sendOtp").attr('disabled',false);
@@ -1420,9 +1435,12 @@ Sign in or Register
                             sessionStorage.setItem('oldenumber',numberverify);
                             verifyForm.elements['email_password'].value = $('#password').val();
                             $("#register").html("Register");
-                            /*setTimeout(function(){
+                            setTimeout(function(){
                                 $('#alertMessage1').hide();
-                            }, 3000);*/
+                            }, 3000);
+                             setTimeout(function(){
+                                $('#successMessage1').hide();
+                            }, 3000);
                         }
                     },
                     error: function (data) {

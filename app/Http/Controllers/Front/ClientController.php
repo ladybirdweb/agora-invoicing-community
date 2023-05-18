@@ -16,6 +16,7 @@ use App\Model\Order\OrderInvoiceRelation;
 use App\Model\Order\Payment;
 use App\Model\Payment\Currency;
 use App\Model\Payment\Plan;
+use App\Model\Payment\PlanPrice;
 use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
 use App\Model\Product\Subscription;
@@ -25,7 +26,6 @@ use Exception;
 use GrahamCampbell\Markdown\Facades\Markdown;
 use Illuminate\Http\Request;
 use Razorpay\Api\Api;
-use App\Model\Payment\PlanPrice;
 use Symfony\Component\Mime\Email;
 use Validator;
 
@@ -573,15 +573,14 @@ class ClientController extends BaseClientController
                             })
 
                             ->addColumn('Action', function ($model) {
-                                $plan = Plan::where('product',$model->product_id)->value('id');
-                                $price = PlanPrice::where('plan_id',$plan)->where('currency',\Auth::user()->currency)->value('renew_price');
+                                $plan = Plan::where('product', $model->product_id)->value('id');
+                                $price = PlanPrice::where('plan_id', $plan)->where('currency', \Auth::user()->currency)->value('renew_price');
                                 $order_cont = new \App\Http\Controllers\Order\OrderController();
                                 $status = $order_cont->checkInvoiceStatusByOrderId($model->id);
                                 $url = '';
                                 if ($status == 'success' && $model->price != '0' && $model->type == '4') {
                                     $url = $this->renewPopup($model->sub_id, $model->product_id);
-                                }
-                                elseif($status == 'success' && $model->price == '0' && $model->type != '4'){
+                                } elseif ($status == 'success' && $model->price == '0' && $model->type != '4') {
                                     $url = $this->renewPopup($model->sub_id, $model->product_id);
                                 }
 
@@ -616,7 +615,7 @@ class ClientController extends BaseClientController
         return Order::leftJoin('products', 'products.id', '=', 'orders.product')
             ->leftJoin('subscriptions', 'orders.id', '=', 'subscriptions.order_id')
             ->leftJoin('invoices', 'orders.invoice_id', 'invoices.id')
-            ->select('products.name as product_name', 'products.github_owner', 'products.github_repository', 'products.type', 'products.id as product_id', 'orders.id', 'orders.number', 'orders.client', 'subscriptions.id as sub_id', 'subscriptions.version', 'subscriptions.update_ends_at', 'products.name', 'orders.client', 'invoices.id as invoice_id', 'invoices.number as invoice_number','orders.price_override as price')
+            ->select('products.name as product_name', 'products.github_owner', 'products.github_repository', 'products.type', 'products.id as product_id', 'orders.id', 'orders.number', 'orders.client', 'subscriptions.id as sub_id', 'subscriptions.version', 'subscriptions.update_ends_at', 'products.name', 'orders.client', 'invoices.id as invoice_id', 'invoices.number as invoice_number', 'orders.price_override as price')
             ->where('orders.client', \Auth::user()->id)
             ->take(50);
     }

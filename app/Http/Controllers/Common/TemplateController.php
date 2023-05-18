@@ -198,16 +198,17 @@ class TemplateController extends Controller
             $plan_form = 'Free'; //No Subscription
             $plans = $plan->where('product', '=', $id)->pluck('name', 'id')->toArray();
             $type = Product::find($id);
-            $planid = Plan::where('product',$id)->value('id');
-            $price = PlanPrice::where('plan_id',$planid)->value('renew_price');
+            $planid = Plan::where('product', $id)->value('id');
+            $price = PlanPrice::where('plan_id', $planid)->value('renew_price');
             $plans = $this->prices($id);
-        
+
             if ($plans) {
                 $plan_form = \Form::select('subscription', ['Plans' => $plans], null);
             }
             $form = \Form::open(['method' => 'get', 'url' => $url]).
         $plan_form.
         \Form::hidden('id', $id);
+
             return $form;
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -235,10 +236,10 @@ class TemplateController extends Controller
                     $prices[] .= $planDetails['symbol'];
                     $prices[] .= $planDetails['currency'];
                 }
-                if(!empty($prices[3])){
-                $format = ($prices[0] != '0') ? currencyFormat(min([$prices[0]]), $code = $prices[2]) :  currencyFormat(min([$prices[3]]), $code = $prices[2]) ;
-                }else{
-                $format = currencyFormat(min([$prices[0]]), $code = $prices[2]);
+                if (! empty($prices[3])) {
+                    $format = ($prices[0] != '0') ? currencyFormat(min([$prices[0]]), $code = $prices[2]) : currencyFormat(min([$prices[3]]), $code = $prices[2]);
+                } else {
+                    $format = currencyFormat(min([$prices[0]]), $code = $prices[2]);
                 }
                 $finalPrice = str_replace($prices[1], '', $format);
                 $cost = '<span class="price-unit">'.$prices[1].'</span>'.$finalPrice;
@@ -254,6 +255,7 @@ class TemplateController extends Controller
     {
         $price1 = currencyFormat($cost, $code = $currency);
         $price[$value->id] = $months.'  '.$price1.' '.$priceDescription;
+
         return $price;
     }
 
@@ -272,15 +274,14 @@ class TemplateController extends Controller
                 $cost = rounding($cost);
                 $duration = $value->periods;
                 $months = count($duration) > 0 ? $duration->first()->name : '';
-                if($product->type != '4'){
-                $price = $this->getPrice($months, $price, $priceDescription, $value, $cost, $currency);
-                 }
-                elseif($cost != '0' &&  $product->type == '4'){
-                 $price = $this->getPrice($months, $price, $priceDescription, $value, $cost, $currency);
+                if ($product->type != '4') {
+                    $price = $this->getPrice($months, $price, $priceDescription, $value, $cost, $currency);
+                } elseif ($cost != '0' && $product->type == '4') {
+                    $price = $this->getPrice($months, $price, $priceDescription, $value, $cost, $currency);
                 }
                 // $price = currencyFormat($cost, $code = $currency);
             }
-            
+
             return $price;
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());

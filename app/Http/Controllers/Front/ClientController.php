@@ -16,7 +16,6 @@ use App\Model\Order\OrderInvoiceRelation;
 use App\Model\Order\Payment;
 use App\Model\Payment\Currency;
 use App\Model\Payment\Plan;
-use App\Model\Payment\PlanPrice;
 use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
 use App\Model\Product\Subscription;
@@ -26,6 +25,7 @@ use Exception;
 use GrahamCampbell\Markdown\Facades\Markdown;
 use Illuminate\Http\Request;
 use Razorpay\Api\Api;
+use App\Model\Payment\PlanPrice;
 use Symfony\Component\Mime\Email;
 use Validator;
 
@@ -578,12 +578,15 @@ class ClientController extends BaseClientController
                             })
 
                             ->addColumn('Action', function ($model) {
-                                $plan = Plan::where('product', $model->product_id)->value('id');
-                                $price = PlanPrice::where('plan_id', $plan)->where('currency', \Auth::user()->currency)->value('renew_price');
+                                $plan = Plan::where('product',$model->product_id)->value('id');
+                                $price = PlanPrice::where('plan_id',$plan)->where('currency',\Auth::user()->currency)->value('renew_price');
                                 $order_cont = new \App\Http\Controllers\Order\OrderController();
                                 $status = $order_cont->checkInvoiceStatusByOrderId($model->id);
                                 $url = '';
-                                if ($status == 'success' && $price != '0') {
+                                if ($status == 'success' && $model->price != '0' && $model->type == '4') {
+                                    $url = $this->renewPopup($model->sub_id, $model->product_id);
+                                }
+                                elseif($status == 'success' && $model->price == '0' && $model->type != '4'){
                                     $url = $this->renewPopup($model->sub_id, $model->product_id);
                                 }
 

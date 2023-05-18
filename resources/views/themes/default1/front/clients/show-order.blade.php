@@ -201,7 +201,8 @@ $json = json_encode($data);
 // $processingFee = \DB::table(strtolower($gateways))->where('currencies',\Auth::user()->currency)->value('processing_fee');
 
  $planid = \App\Model\Payment\Plan::where('product',$product->id)->value('id');
- $price = \App\Model\Payment\PlanPrice::where('plan_id',$planid)->value('renew_price');
+ $price = $order->price_override;
+
 
 
     
@@ -254,7 +255,6 @@ $json = json_encode($data);
            </div>
             <div id="alertMessage-2"></div>
 
-
             @php
             $navigations = [
                  ['id'=>'license-details', 'name'=>'License Details','active'=>1, 'slot'=>'license','icon'=>'fas fa-file'],
@@ -263,8 +263,13 @@ $json = json_encode($data);
                  ['id'=>'payment-receipts', 'name'=>'Payment Receipts', 'slot'=>'payment','icon'=>'fas fa-briefcase'],
             ];
 
-            if ($price != '0' && $product->type != '4') {
+            if ($price == '0' && $product->type != '4') {
                 $navigations[] = ['id'=>'auto-renewals', 'name'=>'Auto Renewal', 'slot'=>'autorenewal','icon'=>'fas fa-bell'];
+            }
+            elseif($price != '0' && $product->type == '4')
+            {
+              $navigations[] = ['id'=>'auto-renewals', 'name'=>'Auto Renewal', 'slot'=>'autorenewal','icon'=>'fas fa-bell'];
+ 
             }
           @endphp
 
@@ -289,9 +294,14 @@ $json = json_encode($data);
                             <tr>
                                 <td><b>Licensed Domain/IP:</b></td>
                                 <td>{{$order->domain}} </td>
-                                <td>                                 
+                                <td>  
+                                @if($product->type != '4' && $price == '0')                               
                                     <button class="btn btn-danger mb-2 btn-sm"  id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}" {{!Storage::disk('public')->exists('faveo-license-{'.$order->number.'}.txt') || $order->license_mode!='File' ? "enabled" : "disabled"}}>
                                         Reissue License</button></td>
+                                        @elseif($product->type == '4' && $price != '0')
+                                          <button class="btn btn-danger mb-2 btn-sm"  id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}" {{!Storage::disk('public')->exists('faveo-license-{'.$order->number.'}.txt') || $order->license_mode!='File' ? "enabled" : "disabled"}}>
+                                        Reissue License</button></td>
+                                        @endif
                             </tr>         
                         @endif
                        

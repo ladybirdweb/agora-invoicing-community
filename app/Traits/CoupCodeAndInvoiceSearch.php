@@ -29,6 +29,7 @@ trait CoupCodeAndInvoiceSearch
             'invoices.id',
             'first_name',
             'invoices.created_at',
+            'invoices.date',
             'invoices.currency',
             'user_id',
             'invoices.grand_total',

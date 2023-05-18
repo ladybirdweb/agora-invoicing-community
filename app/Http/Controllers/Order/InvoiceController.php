@@ -149,7 +149,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         $from = $request->input('from');
         $till = $request->input('till');
         $query = $this->advanceSearch($name, $invoice_no, $currency, $status, $from, $till);
-
+      
         return \DataTables::of($query)
          ->setTotalRecords($query->count())
          ->orderColumn('number', '-invoices.id $1')
@@ -175,7 +175,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                          })
 
                         ->addColumn('date', function ($model) {
-                            return getDateHtml($model->created_at);
+                            return getDateHtml($model->date);
                         })
                          ->addColumn('grand_total', function ($model) {
                              return currencyFormat($model->grand_total, $code = $model->currency);

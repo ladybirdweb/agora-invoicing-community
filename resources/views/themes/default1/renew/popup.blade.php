@@ -10,8 +10,13 @@
                 <!-- Form  -->
                 
                 <?php 
-           
-                $plans = App\Model\Payment\Plan::where('product',$productid)->pluck('name','id')->toArray();
+              $plans = App\Model\Payment\Plan::join('products', 'plans.product', '=', 'products.id')
+                      ->leftJoin('plan_prices','plans.id','=','plan_prices.plan_id')
+                      ->where('plans.product',$productid)
+                      ->where('plan_prices.renew_price','!=','0')
+                      ->pluck('plans.name', 'plans.id')
+                       ->toArray();
+                // $plans = App\Model\Payment\Plan::where('product',$productid)->pluck('name','id')->toArray();
                 $userid = Auth::user()->id;
                 ?>
                 <div class="form-group {{ $errors->has('plan') ? 'has-error' : '' }}">

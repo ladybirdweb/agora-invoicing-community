@@ -521,7 +521,6 @@ class CronController extends BaseCronController
                 $invoiceItem = \DB::table('invoice_items')->where('invoice_id', $invoiceid)->where('product_name', $product_name)->first();
                 $invoice = Invoice::where('id', $invoiceItem->invoice_id)->where('status', 'pending')->first();
                 if ($invoice) {
-                    
                     $this->successRenew($invoiceItem, $subscription, $payment_method = 'Razorpay', $invoice->currency);
                     $this->postRazorpayPayment($invoiceItem, $payment_method = 'Razorpay');
                 }

@@ -14,8 +14,8 @@ class AdminOrderInvoiceController extends Controller
     {
         $client = $this->user->where('id', $id)->first();
         $invoices = Invoice::leftJoin('order_invoice_relations', 'invoices.id', '=', 'order_invoice_relations.invoice_id')
-        ->leftJoin('orders','order_invoice_relations.order_id','=','orders.id')
-        ->select('invoices.id', 'invoices.user_id', 'invoices.date', 'invoices.number', 'invoices.grand_total', 'order_invoice_relations.order_id', 'invoices.is_renewed', 'invoices.status', 'invoices.currency','orders.number as order')
+        ->leftJoin('orders', 'order_invoice_relations.order_id', '=', 'orders.id')
+        ->select('invoices.id', 'invoices.user_id', 'invoices.date', 'invoices.number', 'invoices.grand_total', 'order_invoice_relations.order_id', 'invoices.is_renewed', 'invoices.status', 'invoices.currency', 'orders.number as order')
         ->groupBy('invoices.number')
         ->where('invoices.user_id', '=', $id);
 
@@ -27,7 +27,7 @@ class AdminOrderInvoiceController extends Controller
          ->orderColumn('paid', '-invoices.id $1')
          ->orderColumn('balance', '-invoices.id $1')
          ->orderColumn('status', '-invoices.id $1')
-       
+
                         ->addColumn('checkbox', function ($model) {
                             return "<input type='checkbox' class='invoice_checkbox' 
                             value=".$model->id.' name=select[] id=check>';
@@ -115,20 +115,20 @@ class AdminOrderInvoiceController extends Controller
                             $model->whereRaw('orders.number like ?', ["%$keyword%"]);
                         })
                           ->filterColumn('status', function ($query, $keyword) {
-                        if ($keyword == 'Paid' || $keyword == 'paid') {
-                            $sql = 'status like ?';
-                            $sql2 = 'success';
-                            $query->whereRaw($sql, ["%{$sql2}%"]);
-                        } elseif ($keyword == 'Unpaid' || $keyword == 'unpaid') {
-                            $sql = 'status like ?';
-                            $sql2 = 'pending';
-                            $query->whereRaw($sql, ["%{$sql2}%"]);
-                        } elseif ($keyword == 'Partiallypaid' || $keyword == 'Partially' || $keyword == 'partially') {
-                            $sql = 'status like ?';
-                            $sql2 = 'partially paid';
-                            $query->whereRaw($sql, ["%{$sql2}%"]);
-                        }
-                    })
+                              if ($keyword == 'Paid' || $keyword == 'paid') {
+                                  $sql = 'status like ?';
+                                  $sql2 = 'success';
+                                  $query->whereRaw($sql, ["%{$sql2}%"]);
+                              } elseif ($keyword == 'Unpaid' || $keyword == 'unpaid') {
+                                  $sql = 'status like ?';
+                                  $sql2 = 'pending';
+                                  $query->whereRaw($sql, ["%{$sql2}%"]);
+                              } elseif ($keyword == 'Partiallypaid' || $keyword == 'Partially' || $keyword == 'partially') {
+                                  $sql = 'status like ?';
+                                  $sql2 = 'partially paid';
+                                  $query->whereRaw($sql, ["%{$sql2}%"]);
+                              }
+                          })
                          ->rawColumns(['checkbox', 'date', 'invoice_no', 'order_no', 'total', 'paid', 'balance', 'status', 'action'])
                         ->make(true);
     }
@@ -143,7 +143,7 @@ class AdminOrderInvoiceController extends Controller
                 'orders.id', 'orders.created_at', 'price_override', 'order_status', 'product', 'number', 'serial_key',
                 'subscriptions.update_ends_at as subscription_ends_at', 'subscriptions.id as subscription_id', 'subscriptions.version as product_version', 'subscriptions.updated_at as subscription_updated_at', 'subscriptions.created_at as subscription_created_at',
                 'products.name as product_name', \DB::raw("concat(first_name, ' ', last_name) as client_name"), 'client as client_id',
-            )->orderBy('orders.created_at','desc');
+            )->orderBy('orders.created_at', 'desc');
 
         return DataTables::of($order)
                         ->addColumn('checkbox', function ($model) {
@@ -197,7 +197,7 @@ class AdminOrderInvoiceController extends Controller
     public function getPaymentDetail($id)
     {
         $client = $this->user->where('id', $id)->first();
-        $payments = $client->payment()->orderBy('created_at','desc');
+        $payments = $client->payment()->orderBy('created_at', 'desc');
         $extraAmt = $this->getExtraAmtPaid($id);
 
         return DataTables::of($payments)

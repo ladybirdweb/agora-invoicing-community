@@ -184,7 +184,7 @@ User
                                     "bDestroy": true,
                                     serverSide: true,
                                     stateSave: false,
-                                    order: [[ 0, "desc" ]],
+                                    order: [[ 1, "asc" ]],
                                     ajax: {
                                     "url":  '{{url("get-client-invoice/".$id)}}',
                                        error: function(xhr) {
@@ -410,7 +410,7 @@ User
                                     "bDestroy": true,
                                     serverSide: true,
                                     stateSave: false,
-                                    order: [[ 0, "desc" ]],
+                                    order: [[4, "asc" ]],
                                     ajax: {
                                     "url":  '{{url("getPaymentDetail/".$client->id)}}',
                                        error: function(xhr) {
@@ -428,13 +428,7 @@ User
                                         "sSearch"    : "Search: ",
                                         "sProcessing": ' <div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="text-bold pt-2">Loading...</div></div>'
                                     },
-                                    columnDefs: [
-                                        {
-                                            targets: 'no-sort',
-                                            orderable: false,
-                                            order: []
-                                        }
-                                    ],
+                        
                                     columns: [
                                         {data: 'checkbox', name: 'checkbox'},
                                         {data: 'invoice_no', name: 'invoice_no'},
@@ -529,9 +523,9 @@ User
                                     $('#orderdetail-table').DataTable({
 
                                         processing: true,
-                                        "bDestroy": true,
+                                        // "bDestroy": true,
                                         serverSide: true,
-                                        order: [[ 0, "desc" ]],
+                                        order: [[1, "asc" ]],
                                         ajax: {
                                         "url":  '{{url("getOrderDetail/".$client->id)}}',
                                            error: function(xhr) {
@@ -548,13 +542,13 @@ User
                                             "sSearch"    : "Search: ",
                                             "sProcessing": ' <div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i><div class="text-bold pt-2">Loading...</div></div>'
                                         },
-                                        columnDefs: [
-                                            {
-                                                targets: 'no-sort',
-                                                orderable: false,
-                                                order: []
-                                            }
-                                        ],
+                                         columnDefs: [
+                                        {
+                                            targets: 'no-sort',
+                                            orderable: false,
+                                            order: []
+                                        }
+                                    ],
                                         columns: [
                                             {data: 'checkbox', name: 'checkbox'},
                                             {data: 'date', name: 'date'},
@@ -576,6 +570,7 @@ User
                                         "fnPreDrawCallback": function(oSettings, json) {
                                             $('.loader').css('display', 'block');
                                         },
+
                                     });
                                 });
                             </script>

@@ -161,7 +161,7 @@ class OrderController extends BaseOrderController
                 return ucfirst($model->order_status);
             })
             ->addColumn('order_date', function ($model) {
-                return getDateHtml($model->created_at);
+                return getDateHtmlcopy($model->created_at);
             })
             ->addColumn('update_ends_at', function ($model) {
                 $ends_at = strtotime($model->subscription_ends_at) > 1 ? $model->subscription_ends_at : '--';

@@ -4,11 +4,12 @@ namespace App\Model\Payment;
 
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\LogOptions;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\Activitylog\Traits\LogsActivity;
 
 class PlanPrice extends Model
 {
-    use LogsActivity;
+    use HasFactory,LogsActivity;
 
     protected $table = 'plan_prices';
 

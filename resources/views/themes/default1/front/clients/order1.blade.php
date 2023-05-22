@@ -32,6 +32,7 @@ active
 
                     <thead><tr>
                             <th>Product Name</th>
+                            <th>Date</th>
                             <th>Order No</th>
                             <th>Version</th>
                             <th>Updates Expiry Date</th>
@@ -47,10 +48,9 @@ active
     <script src="//cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript">
         $('#order-table').DataTable({
-            destroy:true,
             processing: true,
             serverSide: true,
-            order: [[ 0, "desc" ]], 
+            order: [[ 4, "asc" ]],
             ajax: {
             "url":  '{!! route('get-my-orders') !!}',
                error: function(xhr) {
@@ -66,12 +66,16 @@ active
                 "sSearch"    : "Search: ",
                 "sProcessing": '<img id="blur-bg" class="backgroundfadein" style="top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;" src="{!! asset("lb-faveo/media/images/gifloader3.gif") !!}">'
             },
+           
+        
+    
     
             columns: [
-                {data: 'product_name', name: 'products.name'},
+                 {data: 'product_name', name: 'products.name'},
+                 {data: 'date', name: 'date'},
                  {data: 'number', name: 'orders.number'},
                  {data: 'version', name: 'version'},
-                {data: 'expiry', name: 'expiry'},
+                 {data: 'expiry', name: 'expiry'},
               
                 // {data: 'group', name: 'Group'},
                 // {data: 'currency', name: 'Currency'},

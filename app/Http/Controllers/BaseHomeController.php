@@ -6,6 +6,8 @@ use App\Model\Order\InstallationDetail;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
 use App\Model\Product\Subscription;
+use App\Model\Product\Product;
+use App\Model\Payment\Plan;
 use Illuminate\Http\Request;
 
 class BaseHomeController extends Controller
@@ -137,14 +139,14 @@ class BaseHomeController extends Controller
 
     public function checkUpdatesExpiry(Request $request)
     {
-        // $v = \Validator::make($request->all(), [
-        //   'order_number' => 'required',
-        // ]);
-        // if ($v->fails()) {
-        //     $error = $v->errors();
+        $v = \Validator::make($request->all(), [
+          'order_number' => 'required',
+        ]);
+        if ($v->fails()) {
+            $error = $v->errors();
 
-        //     return response()->json(compact('error'));
-        // }
+            return response()->json(compact('error'));
+        }
 
         try {
             $order_number = $request->input('order_number');
@@ -152,9 +154,20 @@ class BaseHomeController extends Controller
             if ($order_number) {
                 $orderId = Order::where('number', 'LIKE', $order_number)->pluck('id')->first();
                 if ($orderId) {
-                    $expiryDate = Subscription::where('order_id', $orderId)->pluck('update_ends_at')->first();
+                    $subscription = Subscription::where('order_id', $orderId)->first();
+                    $productName = Product::where('id',$subscription->product_id)->value('name');
+                    $plan = Plan::where('id',$subscription->plan_id)->value('name');
+                    $expiryDate = $subscription->update_ends_at;
                     if (\Carbon\Carbon::now()->toDateTimeString() < $expiryDate) {
-                        return ['status' => 'success', 'message' => 'New version available'];
+                        $data = [
+                            'product' => $productName,
+                            'plan' => $plan,
+                            'update_ends' => $expiryDate,
+                            'version' => $subscription->version,
+                            'support_end' => $subscription->support_ends_at
+
+                        ];
+                        return ['status' => 'success', 'message' => 'New version available','data' => $data];
                     }
                 }
             } elseif ($licenseCode) {
@@ -164,9 +177,20 @@ class BaseHomeController extends Controller
                     }
                 });
                 if (count($orderForLicense) > 0) {
-                    $expiryDate = Subscription::where('order_id', $orderForLicense->first()->id)->pluck('update_ends_at')->first();
+                    $subscription = Subscription::where('order_id', $orderForLicense)->first();
+                    $productName = Product::where('id',$subscription->product_id)->value('name');
+                    $plan = Plan::where('id',$subscription->plan_id)->value('name');
+                    $expiryDate = $subscription->update_ends_at;
+                       $data = [
+                            'product' => $productName,
+                            'plan' => $plan,
+                            'update_ends' => $expiryDate,
+                            'version' => $subscription->version,
+                            'support_end' => $subscription->support_ends_at
+
+                        ];
                     if (\Carbon\Carbon::now()->toDateTimeString() < $expiryDate) {
-                        return ['status' => 'success', 'message' => 'New version available'];
+                        return ['status' => 'success', 'message' => 'New version available','data' => $data];
                     }
                 }
             }

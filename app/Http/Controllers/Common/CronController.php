@@ -469,7 +469,7 @@ class CronController extends BaseCronController
                 $count = Subscription::where('id', $subscription->id)->value('rzp_subattempts');
                 $update_end = $subscription->update_ends_at;
                 $api = new Api($key_id, $secret);
-                $paymentId = \DB::table('rzp_payments')->where('user_id', $user->id)->latest()->value('payment_id');
+                // $paymentId = \DB::table('rzp_payments')->where('user_id', $user->id)->latest()->value('payment_id');
                 $rzp_plan = $api->plan->create(['period' => 'monthly',
                     'interval' => round((int) $days / 30),
                     'item' => [
@@ -521,6 +521,7 @@ class CronController extends BaseCronController
                 $invoiceItem = \DB::table('invoice_items')->where('invoice_id', $invoiceid)->where('product_name', $product_name)->first();
                 $invoice = Invoice::where('id', $invoiceItem->invoice_id)->where('status', 'pending')->first();
                 if ($invoice) {
+                    
                     $this->successRenew($invoiceItem, $subscription, $payment_method = 'Razorpay', $invoice->currency);
                     $this->postRazorpayPayment($invoiceItem, $payment_method = 'Razorpay');
                 }

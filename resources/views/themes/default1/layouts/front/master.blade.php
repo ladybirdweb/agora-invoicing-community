@@ -14,9 +14,7 @@ foreach($scripts as $script)
     .dataTables_wrapper {
         overflow-x: auto;
     }
-    .breadcrumb > li + li:before{
-        content: "\3e";
-    }
+   
 </style>
 <head>
     <!-- Basic -->
@@ -67,31 +65,32 @@ foreach($scripts as $script)
 
 
 </head>
-<style>
-    .alert {
-        font-weight:bolder;
+   <style>
+     .alert {
+      font-weight:bolder;
+     }
+      .breadcrumb > li + li:before {
+        content: "\3e";
     }
-</style>
-<body>
-<?php
-$bussinesses = App\Model\Common\Bussiness::pluck('name', 'short')->toArray();
-$status =  App\Model\Common\StatusSetting::select('recaptcha_status', 'msg91_status', 'emailverification_status', 'terms')->first();
-$apiKeys = App\ApiKey::select('nocaptcha_sitekey', 'captcha_secretCheck', 'msg91_auth_key', 'terms_url')->first();
-$analyticsTag = App\Model\Common\ChatScript::where('google_analytics', 1)->where('on_registration', 1)->value('google_analytics_tag');
-$location = getLocation();
-?>
+   </style>
+    <body>
+        <?php
+         $bussinesses = App\Model\Common\Bussiness::pluck('name', 'short')->toArray();
+            $status =  App\Model\Common\StatusSetting::select('recaptcha_status', 'msg91_status', 'emailverification_status', 'terms')->first();
+            $apiKeys = App\ApiKey::select('nocaptcha_sitekey', 'captcha_secretCheck', 'msg91_auth_key', 'terms_url')->first();
+            $analyticsTag = App\Model\Common\ChatScript::where('google_analytics', 1)->where('on_registration', 1)->value('google_analytics_tag');
+            $location = getLocation();
+        ?>
 
-<?php
-$domain = [];
-$set = new \App\Model\Common\Setting();
-$set = $set->findOrFail(1);
-?>
-<div class="body">
-    <header id="header" data-plugin-options="{'stickyEnabled': true, 'stickyEnableOnBoxed': true, 'stickyEnableOnMobile': true, 'stickyStartAt': 45, 'stickySetTop': '-45px', 'stickyChangeLogo': true}">
-        <div class="header-body"  style="top: -50px;">
-            <div class="header-container container">
-                <div class="header-row">
-                    <div class="header-column">
+        <?php
+        $domain = [];
+        $set = new \App\Model\Common\Setting();
+        $set = $set->findOrFail(1);
+        ?>
+        <div class="body">
+            <header id="header" data-plugin-options="{'stickyEnabled': true, 'stickyEnableOnBoxed': true, 'stickyEnableOnMobile': true, 'stickyStartAt': 45, 'stickySetTop': '-45px', 'stickyChangeLogo': true}">
+            <div class="header-body"  style="top: -50px;">
+                    <div class="header-container container">
                         <div class="header-row">
                             <div class="header-logo">
                                 <a href="{{Auth::check() ? url('my-invoices') : url('login')}}">

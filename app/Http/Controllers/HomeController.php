@@ -341,7 +341,6 @@ class HomeController extends BaseHomeController
 
     public function latestVersion(Request $request, Product $product)
     {
-        dd($request->all());
         $v = \Validator::make($request->all(), [
             'title' => 'required',
         ]);
@@ -466,8 +465,15 @@ class HomeController extends BaseHomeController
 
      public function renewurl(Request $request)
     {
-        
+       
+        $validation = $request->validate([
+        'domain' => ['required',    'ends_with:.com'],
+        ], [
+        'domain.ends_with' => 'The :attribute must end with ".com" and should not contain "http".',
+       ]);
 
+      try{
+        
       $orderId = \DB::table('installation_details')->Where('installation_path', 'like', '%' . $request->input('domain') . '%')->value('order_id');
       $subscription = Subscription::where('order_id',$orderId)->first();
 
@@ -490,8 +496,9 @@ class HomeController extends BaseHomeController
       $url = url("autopaynow/$invoiceid");
 
       return $url;
-
-
-
+      }catch(\Exception $ex){
+      $message = ['error' => $ex->getMessage()];
+      return response()->json($message);
+      }
     }
 }

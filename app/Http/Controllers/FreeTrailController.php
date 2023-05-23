@@ -62,7 +62,7 @@ class FreeTrailController extends Controller
 
                 $this->generateFreetrailInvoice();
 
-                $this->createFreetrailInvoiceItems();
+                $this->createFreetrailInvoiceItems($request->get('product'));
 
                 $this->executeFreetrailOrder();
 
@@ -112,10 +112,21 @@ class FreeTrailController extends Controller
      *
      * @throws \Exception
      */
-    private function createFreetrailInvoiceItems()
+    private function createFreetrailInvoiceItems($product_type)
     {
         try {
-            $product = Product::with('planRelation')->find('117');
+
+            if($product_type=='Helpdesk'){
+                $product = Product::with(['planRelation' => function ($query) {
+                    $query->where('name','LIKE', '%free%');
+                }])->find(117);
+                dd($product);
+            }
+            else{
+                $product=Product::with(['planRelation' => function ($query) {
+                    $query->where('name','LIKE', '%free%');
+                }])->find(119);
+            }
 
             if ($product) {
                 $plan_id = $product->planRelation()->pluck('id');
@@ -183,10 +194,6 @@ class FreeTrailController extends Controller
         try {
             $product = Product::where('name', $item->product_name)->value('id');
             $version = Product::where('name', $item->product_name)->first()->version;
-            if ($version == null) {
-                //Get Version from Product Upload Table
-                $version = $this->product_upload->where('product_id', $product)->pluck('version')->first();
-            }
             $serial_key = $this->generateFreetrailSerialKey($product, $item->agents); //Send Product Id and Agents to generate Serial Key
             $domain = $item->domain;
             //$plan_id = $this->plan($item->id);

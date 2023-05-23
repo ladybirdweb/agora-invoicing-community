@@ -115,16 +115,14 @@ class FreeTrailController extends Controller
     private function createFreetrailInvoiceItems($product_type)
     {
         try {
-
-            if($product_type=='Helpdesk'){
+            if ($product_type == 'Helpdesk') {
                 $product = Product::with(['planRelation' => function ($query) {
-                    $query->where('name','LIKE', '%free%');
+                    $query->where('name', 'LIKE', '%free%');
                 }])->find(117);
                 dd($product);
-            }
-            else{
-                $product=Product::with(['planRelation' => function ($query) {
-                    $query->where('name','LIKE', '%free%');
+            } else {
+                $product = Product::with(['planRelation' => function ($query) {
+                    $query->where('name', 'LIKE', '%free%');
                 }])->find(119);
             }
 

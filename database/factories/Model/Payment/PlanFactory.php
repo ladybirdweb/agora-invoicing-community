@@ -1,6 +1,7 @@
 <?php
 
 namespace Database\Factories\Model\Payment;
+
 use App\Model\Payment\Plan;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -11,8 +12,8 @@ class PlanFactory extends Factory
      *
      * @return array
      */
+    protected $model = Plan::class;
 
-     protected $model = Plan::class;
     public function definition()
     {
         return [

@@ -561,8 +561,6 @@ Route::get('verify/third-party-token', [Tenancy\TenantController::class, 'verify
 
 Route::post('renewurl', [HomeController::class, 'renewurl']);
 
-
-
 Route::get('404', function () {
     return view('errors.404');
 })->name('error404');

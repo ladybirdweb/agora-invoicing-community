@@ -129,7 +129,7 @@ class ExtendedOrderController extends Controller
             //Now make Installation status as inactive
             $updateInstallStatus = $cont->updateInstalledDomain($licenseCode, $order->product);
             //Delete instalation details
-            $installationDetails = \DB::table('installation_details')->Where('order_id',$request->input('id'))->delete();
+            $installationDetails = \DB::table('installation_details')->Where('order_id', $request->input('id'))->delete();
         }
 
         return ['message' => 'success', 'update' => 'License Reissued'];

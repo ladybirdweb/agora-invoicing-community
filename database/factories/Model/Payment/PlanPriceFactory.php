@@ -1,6 +1,7 @@
 <?php
 
 namespace Database\Factories\Model\Payment;
+
 use App\Model\Payment\PlanPrice;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -15,6 +16,7 @@ class PlanPriceFactory extends Factory
      * @return array<string, mixed>
      */
     protected $model = PlanPrice::class;
+
     public function definition()
     {
         return [
@@ -22,5 +24,3 @@ class PlanPriceFactory extends Factory
         ];
     }
 }
-
-

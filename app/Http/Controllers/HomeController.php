@@ -12,6 +12,8 @@ use App\Http\Controllers\Common\CronController;
 use App\Http\Controllers\Order\RenewController;
 use App\Model\Payment\PlanPrice;
 use Illuminate\Http\Request;
+use App\User;
+use App\Model\Order\InstallationDetail;
 
 class HomeController extends BaseHomeController
 {
@@ -467,14 +469,14 @@ class HomeController extends BaseHomeController
     {
        
         $validation = $request->validate([
-        'domain' => ['required',    'ends_with:.com'],
+        'domain' => 'required|no_http',
         ], [
-        'domain.ends_with' => 'The :attribute must end with ".com" and should not contain "http".',
+        'domain.no_http' => 'The :attribute must not contain "http".',
        ]);
 
       try{
         
-      $orderId = \DB::table('installation_details')->Where('installation_path', 'like', '%' . $request->input('domain') . '%')->value('order_id');
+      $orderId = InstallationDetail::Where('installation_path', 'like', '%' . $request->input('domain') . '%')->value('order_id');
       $subscription = Subscription::where('order_id',$orderId)->first();
 
       $basecron = new CronController();
@@ -486,7 +488,7 @@ class HomeController extends BaseHomeController
       $plan = Plan::where('product', $product_details->id)->first('days');
       $oldcurrency = $oldinvoice->currency;
 
-      $user = \DB::table('users')->where('id', $subscription->user_id)->first();
+      $user = User::where('id', $subscription->user_id)->first();
       $planid = Plan::where('product', $product_details->id)->value('id');
       $cost = PlanPrice::where('plan_id', $planid)->where('currency', $oldcurrency)->value('renew_price');
 

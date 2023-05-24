@@ -394,7 +394,6 @@ class CronController extends BaseCronController
                         $updateCount = $api->subscription->fetch($subscriptionId)->update(['remaining_count' => 100]);
                     }
                 }
-                }
 
                 $status = $subscription->is_subscribed;
                 if ($status == '1') {
@@ -521,20 +520,20 @@ class CronController extends BaseCronController
             $key_id = ApiKey::pluck('rzp_key')->first();
             $secret = ApiKey::pluck('rzp_secret')->first();
             $api = new Api($key_id, $secret);
-            if($subscription->autoRenew_status == 'Pending'){
-            $subscriptionStatus = $api->subscription->fetch($subId);
-            if ($subscriptionStatus['status'] == 'authenticated') {
-                Subscription::where('id', $subscription->id)->update(['subscribe_id' => $subId, 'autoRenew_status' => 'Success', 'rzp_subscription' => '1']);
-                $product_name = Product::where('id', $subscription->product_id)->value('name');
-                $invoiceid = \DB::table('order_invoice_relations')->where('order_id', $subscription->order_id)->latest()->value('invoice_id');
-                $invoiceItem = \DB::table('invoice_items')->where('invoice_id', $invoiceid)->where('product_name', $product_name)->first();
-                $invoice = Invoice::where('id', $invoiceItem->invoice_id)->where('status', 'pending')->first();
-                if ($invoice) {
-                    $this->successRenew($invoiceItem, $subscription, $payment_method = 'Razorpay', $invoice->currency);
-                    $this->postRazorpayPayment($invoiceItem, $payment_method = 'Razorpay');
+            if ($subscription->autoRenew_status == 'Pending') {
+                $subscriptionStatus = $api->subscription->fetch($subId);
+                if ($subscriptionStatus['status'] == 'authenticated') {
+                    Subscription::where('id', $subscription->id)->update(['subscribe_id' => $subId, 'autoRenew_status' => 'Success', 'rzp_subscription' => '1']);
+                    $product_name = Product::where('id', $subscription->product_id)->value('name');
+                    $invoiceid = \DB::table('order_invoice_relations')->where('order_id', $subscription->order_id)->latest()->value('invoice_id');
+                    $invoiceItem = \DB::table('invoice_items')->where('invoice_id', $invoiceid)->where('product_name', $product_name)->first();
+                    $invoice = Invoice::where('id', $invoiceItem->invoice_id)->where('status', 'pending')->first();
+                    if ($invoice) {
+                        $this->successRenew($invoiceItem, $subscription, $payment_method = 'Razorpay', $invoice->currency);
+                        $this->postRazorpayPayment($invoiceItem, $payment_method = 'Razorpay');
+                    }
                 }
             }
-        }
         } catch(\Exception $ex) {
             echo $ex->getMessage();
         }
@@ -549,12 +548,12 @@ class CronController extends BaseCronController
             $subscriptionStatus = $api->subscription->fetch($subId);
             if ($subscriptionStatus['status'] == 'active') {
                 $invoices = $api->invoice->all(['subscription_id' => $subId]);
-  
+
                 // Find the most recent paid invoice
                 $recentInvoice = null;
 
                 foreach ($invoices->items as $invoice) {
-                if ($invoice->status === 'paid') {
+                    if ($invoice->status === 'paid') {
                         $recentInvoice = $invoice;
                         break;
                     }

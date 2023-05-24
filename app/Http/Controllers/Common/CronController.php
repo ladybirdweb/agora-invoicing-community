@@ -427,7 +427,7 @@ class CronController extends BaseCronController
                     //define product price and recurring interval
 
                     $price = $stripe->prices->create([
-                        'unit_amount' => $unit_cost,
+                        'unit_amount' => $cost,
                         'currency' => $currency,
                         'recurring' => ['interval' => 'day', 'interval_count' => $plan->days],
                         'product' => $product_id,
@@ -540,6 +540,7 @@ class CronController extends BaseCronController
                     }
                 }
             }
+        }
         } catch(\Exception $ex) {
             echo $ex->getMessage();
         }
@@ -554,7 +555,6 @@ class CronController extends BaseCronController
             $subscriptionStatus = $api->subscription->fetch($subId);
             if ($subscriptionStatus['status'] == 'active') {
                 $invoices = $api->invoice->all(['subscription_id' => $subId]);
-
                 // Find the most recent paid invoice
                 $recentInvoice = null;
 

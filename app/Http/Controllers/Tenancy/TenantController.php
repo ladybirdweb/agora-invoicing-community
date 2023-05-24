@@ -152,8 +152,10 @@ class TenantController extends Controller
 
             $result = json_decode($response);
             if ($result->status == 'fails') {
+                $this->prepareMessages($faveoCloud,$user);
                 return ['status' => 'false', 'message' => $result->message];
             } elseif ($result->status == 'validationFailure') {
+                $this->prepareMessages($faveoCloud,$user);
                 return ['status' => 'validationFailure', 'message' => $result->message];
             } else {
                 if (! strpos($faveoCloud, 'faveocloud.com')) {
@@ -172,7 +174,7 @@ class TenantController extends Controller
                         ],
                     ]);
 
-                    return ['status' => $result->status, 'message' => trans('create_in_progress').'.'];
+                    return ['status' => $result->status, 'message' => trans('message.create_in_progress').'.'];
                 } else {
                     $client->request('GET', env('CLOUD_JOB_URL_NORMAL'), [
                         'auth' => ['clouduser', env('CLOUD_AUTH')],
@@ -182,6 +184,7 @@ class TenantController extends Controller
                         ],
                     ]);
                     $userData = $result->message.'.<br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password;
+                    $this->prepareMessages($faveoCloud,$user,true);
                     $email = (new Email())
                         ->from($settings->email)
                         ->to($user)
@@ -394,5 +397,29 @@ class TenantController extends Controller
         }
 
         return ['message' => 'success', 'update'=>'License installations removed'];
+    }
+    private function prepareMessages($domain,$user, $success = false)
+    {
+        if ($success) {
+            $this->googleChat('Hello, It has come to my notice that this domain has been created successfully Domain name:'.$domain.' and this is their email: '.$user."\u{2705}\u{2705}\u{2705}");
+        } else {
+                $this->googleChat('Hello, It has come to my notice that this domain has not been created successfully Domain name:'.$domain.' and this is their email: '.$user.'&#10060;'."\u{2716}\u{2716}\u{2716}");
+            }
+
+    }
+    private function googleChat($text)
+    {
+        $url = env('GOOGLE_CHAT');
+        $message = [
+            'text' => $text,
+        ];
+        $message_headers = [
+            'Content-Type' => 'application/json; charset=UTF-8',
+        ];
+        $client = new Client();
+        $client->post($url, [
+            'headers' => $message_headers,
+            'body' => json_encode($message),
+        ]);
     }
 }

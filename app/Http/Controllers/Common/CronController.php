@@ -394,6 +394,7 @@ class CronController extends BaseCronController
                         $updateCount = $api->subscription->fetch($subscriptionId)->update(['remaining_count' => 100]);
                     }
                 }
+                }
 
                 $status = $subscription->is_subscribed;
                 if ($status == '1') {
@@ -421,7 +422,7 @@ class CronController extends BaseCronController
                     //define product price and recurring interval
 
                     $price = $stripe->prices->create([
-                        'unit_amount' => $unit_cost,
+                        'unit_amount' => $cost,
                         'currency' => $currency,
                         'recurring' => ['interval' => 'day', 'interval_count' => $plan->days],
                         'product' => $product_id,
@@ -520,6 +521,7 @@ class CronController extends BaseCronController
             $key_id = ApiKey::pluck('rzp_key')->first();
             $secret = ApiKey::pluck('rzp_secret')->first();
             $api = new Api($key_id, $secret);
+            if($subscription->autoRenew_status == 'Pending'){
             $subscriptionStatus = $api->subscription->fetch($subId);
             if ($subscriptionStatus['status'] == 'authenticated') {
                 Subscription::where('id', $subscription->id)->update(['subscribe_id' => $subId, 'autoRenew_status' => 'Success', 'rzp_subscription' => '1']);
@@ -532,6 +534,7 @@ class CronController extends BaseCronController
                     $this->postRazorpayPayment($invoiceItem, $payment_method = 'Razorpay');
                 }
             }
+        }
         } catch(\Exception $ex) {
             echo $ex->getMessage();
         }
@@ -545,12 +548,18 @@ class CronController extends BaseCronController
             $api = new Api($key_id, $secret);
             $subscriptionStatus = $api->subscription->fetch($subId);
             if ($subscriptionStatus['status'] == 'active') {
-                $start_at = date('Y-m-d H:i:s', $subscriptionStatus['start_at']);
-                $end_at = date('Y-m-d H:i:s', $subscriptionStatus['end_at']);
-                $isToday = Carbon::parse($start_at)->isToday();
-                $next365Days = Carbon::now()->addDays(365);
-                $isYear = Carbon::parse($end_at)->lte($next365Days);
-                if ($isToday == true && $isYear == true) {
+                $invoices = $api->invoice->all(['subscription_id' => $subId]);
+  
+                // Find the most recent paid invoice
+                $recentInvoice = null;
+
+                foreach ($invoices->items as $invoice) {
+                if ($invoice->status === 'paid') {
+                        $recentInvoice = $invoice;
+                        break;
+                    }
+                }
+                if ($recentInvoice) {
                     $product_details = Product::where('id', $subscription->product_id)->first();
                     $user = \DB::table('users')->where('id', $subscription->user_id)->first();
                     $order = $this->order->find($subscription->order_id);
@@ -675,45 +684,6 @@ class CronController extends BaseCronController
                   'number' => $number,
                   'expiry' => date('d-m-Y', strtotime($end)),
                   'exception' => $exceptionMessage,
-                  'url' => $url,
-              ]));
-                $mailer->send($email);
-                $mail->email_log_success($setting->email, $user->email, $template->name, $data);
-            } catch (\Exception $ex) {
-                $mail->email_log_fail($setting->email, $user->email, $template->name, $data);
-            }
-        }
-
-        public static function authorizationMail($total, $exceptionMessage, $user, $number, $end, $currency, $order, $product_details, $invoice)
-        {
-            //check in the settings
-            $settings = new \App\Model\Common\Setting();
-            $setting = $settings->where('id', 1)->first();
-
-            Subscription::where('order_id', $order->id)->update(['autoRenew_status' => 'Failed', 'is_subscribed' => '0']);
-
-            $mail = new \App\Http\Controllers\Common\PhpMailController();
-            $mailer = $mail->setMailConfig($setting);
-            //template
-            $templates = new \App\Model\Common\Template();
-            $temp_id = $setting->Authorization_request;
-
-            $template = $templates->where('id', $temp_id)->first();
-            $data = $template->data;
-            // $invoiceid = \DB::table('order_invoice_relations')->where('order_id',$order->id)->value('invoice_id');
-            $url = url("autopaynow/$invoice->invoice_id");
-
-            try {
-                $email = (new Email())
-              ->from($setting->email)
-              ->to($user->email)
-              ->subject($template->name)
-              ->html($mail->mailTemplate($template->data, $templatevariables = [
-                  'name' => ucfirst($user->first_name).' '.ucfirst($user->last_name),
-                  'product' => $product_details->name,
-                  'total' => currencyFormat($total, $code = $currency),
-                  'number' => $number,
-                  'expiry' => date('d-m-Y', strtotime($end)),
                   'url' => $url,
               ]));
                 $mailer->send($email);

@@ -690,6 +690,6 @@ return [
     'cloud_central_domain' => 'Cloud central domain',
     'cron_server_url' => 'Cron server URL',
     'cron_server_key' => 'Cron server key',
-    'create_in_progress' => 'Your Custom cloud has begun it\'s self creation and will be completed in few minutes and you shall be notified in your registered email with username and password. if you fail to receive it feel free to contact our support team. <a href="https://support.faveohelpdesk.com">Raise a ticket here!</a>'
+    'create_in_progress' => 'Your Custom cloud has begun it\'s self creation and will be completed in few minutes and you shall be notified in your registered email with username and password. if you fail to receive it feel free to contact our support team. <a href="https://support.faveohelpdesk.com">Raise a ticket here!</a>',
 
 ];

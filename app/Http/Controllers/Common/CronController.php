@@ -540,7 +540,6 @@ class CronController extends BaseCronController
                     }
                 }
             }
-        }
         } catch(\Exception $ex) {
             echo $ex->getMessage();
         }

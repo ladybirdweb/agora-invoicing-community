@@ -477,7 +477,7 @@ $set = $set->findOrFail(1);
                                 <div class="row">
                                     <div class="col col-6">
                                         <div class="radio-option">
-                                            <input type="radio" name="option" class="product" value="ServiceDesk">
+                                            <input type="radio" name="option" class="product" value="ServiceDesk" checked>
                                             <label style="margin-left: 2px;">Faveo ServiceDesk</label>
                                         </div>
                                     </div>
@@ -867,27 +867,57 @@ $set = $set->findOrFail(1);
             data: {'id':id,'password': password,'domain' : domain,'product':product},
             url: "{{url('first-login')}}",
             success: function (data) {
-                if (data.status == 'true') {
+                $('#createTenant').attr('disabled',false)
+                $("#createTenant").html("<i class='fa fa-check'>&nbsp;&nbsp;</i>Submit");
+                if(data.status == 'validationFailure') {
+
+                    var html = '<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong>Whoops! </strong>Something went wrong<ul>';
+                    for (var key in data.message)
+                    {
+                        html += '<li>' + data.message[key][0] + '</li>'
+                    }
+                    html += '</ul></div>';
+                    $('#error').show();
+                    $('#success').hide();
+                    document.getElementById('error').innerHTML = html;
+                } else if(data.status == 'false') {
+                    $('#error').show();
+                    $('#success').hide();
+                    var result =  '<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>Whoops! </strong>Something went wrong!!<br><ul><li>'+data.message+'</li></ul></div>';
+                    $('#error').html(result);
+                } else if(data.status == 'success_with_warning') {
+                    console.log('here');
+                    $('#error').show();
+                    $('#success').hide();
+                    var result =  '<div class="alert alert-warning alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>Whoops! </strong><br><ul><li>'+data.message+'</li></ul></div>';
+                    $('#error').html(result);
+                } else {
                     $('#error').hide();
                     $('#success').show();
                     var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="fa fa-check"></i>Success! </strong>'+data.message+'!</div>';
                     $('#success').html(result);
-
-                }else if(data.status == 'false') {
-                    console.log('here');
-                    $('#error').show();
-                    $('#success').hide();
-                    var result =  '<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>Whoops! </strong>Something went wrong<br><ul><li>'+data.message+'</li></ul></div>';
-                    $('#error').html(result);
                 }
             },error: function (response) {
                 $('#createTenant').attr('disabled',false)
                 $("#createTenant").html("<i class='fa fa-check'>&nbsp;&nbsp;</i>Submit");
                 $("#generate").html("<i class='fa fa-check'>&nbsp;&nbsp;</i>Submit");
-                $.each(data,function(value){
+                if(response.status == 422) {
+
+                    var html = '<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong>Whoops! </strong>Something went wrong<ul>';
+                    for (var key in response.responseJSON.errors)
+                    {
+                        html += '<li>' + response.responseJSON.errors[key][0] + '</li>'
+                    }
+
+                } else {
                     var html = '<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong>Whoops! </strong>Something went wrong<ul>';
-                    html += '<li>' + value.message + '</li>'
-                });
+                    html += '<li>' + response.responseJSON.message + '</li>'
+                }
+
+                html += '</ul></div>';
+                $('#error').show();
+                $('#success').hide();
+                document.getElementById('error').innerHTML = html;
 
             }
 

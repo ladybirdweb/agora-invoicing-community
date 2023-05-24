@@ -71,16 +71,16 @@ class CloudEmail implements ShouldQueue
             $response = $client->get('https://'.$domain);
             $statusCode = $response->getStatusCode();
             if ($statusCode >= 200 && $statusCode < 300) {
-                $this->prepareMessages($domain, $counter,$user, true);
+                $this->prepareMessages($domain, $counter, $user, true);
 
                 return true;
             }
         } catch (\Exception $e) {
-            $this->prepareMessages($domain, $counter,$user);
+            $this->prepareMessages($domain, $counter, $user);
             // The domain is not reachable or the SSL certificate is invalid.
             return false;
         }
-        $this->prepareMessages($domain, $counter,$user);
+        $this->prepareMessages($domain, $counter, $user);
 
         return false;
     }
@@ -101,7 +101,7 @@ class CloudEmail implements ShouldQueue
         ]);
     }
 
-    private function prepareMessages($domain, $counter,$user, $success = false)
+    private function prepareMessages($domain, $counter, $user, $success = false)
     {
         if ($success) {
             $this->googleChat('Hello, It has come to my notice that this domain has been created successfully Domain name:'.$domain.' and this is their email: '.$user."\u{2705}\u{2705}\u{2705}");

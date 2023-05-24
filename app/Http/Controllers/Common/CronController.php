@@ -419,7 +419,7 @@ class CronController extends BaseCronController
                     //define product price and recurring interval
 
                     $price = $stripe->prices->create([
-                        'unit_amount' => $cost,
+                        'unit_amount' => $unit_cost,
                         'currency' => $currency,
                         'recurring' => ['interval' => 'day', 'interval_count' => $plan->days],
                         'product' => $product_id,

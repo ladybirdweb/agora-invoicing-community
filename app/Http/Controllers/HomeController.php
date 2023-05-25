@@ -12,8 +12,8 @@ use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
 use App\Model\Product\Subscription;
 use App\User;
-use Exception;
-use Illuminate\Http\Request;
+use App\Http\Requests\ProductRenewalRequest;
+use App\Model\Order\InstallationDetail;
 
 class HomeController extends BaseHomeController
 {
@@ -465,41 +465,36 @@ class HomeController extends BaseHomeController
         return preg_replace('#v\.|v#', '', str_replace('_', '.', $version));
     }
 
-     public function renewurl(Request $request)
-     {
-         $validation = $request->validate([
-             'domain' => 'required|no_http',
-         ], [
-             'domain.no_http' => 'The :attribute must not contain "http".',
-         ]);
+     public function renewurl(ProductRenewalRequest $request)
+    {
+       
+      try{
+        
+      $orderId = InstallationDetail::Where('installation_path', 'like', '%' . $request->input('domain') . '%')->value('order_id');
+      $subscription = Subscription::where('order_id',$orderId)->first();
 
-         try {
-             $orderId = InstallationDetail::Where('installation_path', 'like', '%'.$request->input('domain').'%')->value('order_id');
-             $subscription = Subscription::where('order_id', $orderId)->first();
+      $basecron = new CronController();
+      $order = $basecron->getOrderById($subscription->order_id);
+      $oldinvoice = $basecron->getInvoiceByOrderId($subscription->order_id);
+      $item = $basecron->getInvoiceItemByInvoiceId($oldinvoice->id);
 
-             $basecron = new CronController();
-             $order = $basecron->getOrderById($subscription->order_id);
-             $oldinvoice = $basecron->getInvoiceByOrderId($subscription->order_id);
-             $item = $basecron->getInvoiceItemByInvoiceId($oldinvoice->id);
+      $product_details = Product::where('name', $item->product_name)->first();
+      $plan = Plan::where('product', $product_details->id)->first('days');
+      $oldcurrency = $oldinvoice->currency;
 
-             $product_details = Product::where('name', $item->product_name)->first();
-             $plan = Plan::where('product', $product_details->id)->first('days');
-             $oldcurrency = $oldinvoice->currency;
+      $user = User::where('id', $subscription->user_id)->first();
+      $planid = Plan::where('product', $product_details->id)->value('id');
+      $cost = PlanPrice::where('plan_id', $planid)->where('currency', $oldcurrency)->value('renew_price');
 
-             $user = User::where('id', $subscription->user_id)->first();
-             $planid = Plan::where('product', $product_details->id)->value('id');
-             $cost = PlanPrice::where('plan_id', $planid)->where('currency', $oldcurrency)->value('renew_price');
+      $renewController = new RenewController();
+      $invoiceItems = $renewController->generateInvoice($product_details, $user, $order->id, $plan->id, $cost, $code = '', $item->agents, $oldcurrency);
+      $invoiceid = $invoiceItems->invoice_id;
+      $url = url("autopaynow/$invoiceid");
 
-             $renewController = new RenewController();
-             $invoiceItems = $renewController->generateInvoice($product_details, $user, $order->id, $plan->id, $cost, $code = '', $item->agents, $oldcurrency);
-             $invoiceid = $invoiceItems->invoice_id;
-             $url = url("autopaynow/$invoiceid");
-
-             return $url;
-         } catch(\Exception $ex) {
-             $message = ['error' => $ex->getMessage()];
-
-             return response()->json($message);
-         }
-     }
+      return $url;
+      }catch(\Exception $ex){
+      $message = ['error' => $ex->getMessage()];
+      return response()->json($message);
+      }
+    }
 }

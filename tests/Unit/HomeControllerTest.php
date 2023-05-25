@@ -20,7 +20,6 @@ class HomeControllerTest extends DBTestCase
      */
     public function test_validation_when_given_url_empty()
     {
-        $request = new Request(['domain' => 'example.com']);
         $response = $this->post('/renewurl', [
             'domain' => '',
         ]);

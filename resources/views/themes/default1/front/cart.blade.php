@@ -326,13 +326,14 @@
          */
         $(document).ready(function(){
             var currentagtQty = $('#agtqty').val();
-                $('#agentminus').on('click',function(){
+            if(currentagtQty>1) {
+                $('#agentminus').on('click', function () {
 
-                    var $agtqty=$(this).parents('.quantity').find('.qty');
+                    var $agtqty = $(this).parents('.quantity').find('.qty');
                     var $productid = $(this).parents('.quantity').find('.productid');
                     var $agentprice = $(this).parents('.quantity').find('.agentprice');
                     var $currency = $(this).parents('.quantity').find('.currency');
-                    var $symbol  = $(this).parents('.quantity').find('.symbol');
+                    var $symbol = $(this).parents('.quantity').find('.symbol');
                     var currency = $currency.val();//Get the Currency for the Product
                     var symbol = $symbol.val();//Get the Symbol for the Currency
                     var productid = parseInt($productid.val()); //get Product Id
@@ -341,14 +342,14 @@
                     // console.log(productid,currentVal,actualprice);
                     console.log(actualAgentPrice);
                     if (!isNaN(currentAgtQty)) {
-                        var finalAgtqty = $('#agtqty').val(currentAgtQty - 1).val() ; //Quantity After decreasinf
-                        var finalAgtprice = $('#agentprice').val(actualAgentPrice / 2 ).val(); //Final Price aftr decresing  qty
+                        var finalAgtqty = $('#agtqty').val(currentAgtQty - 1).val(); //Quantity After decreasinf
+                        var finalAgtprice = $('#agentprice').val(actualAgentPrice / 2).val(); //Final Price aftr decresing  qty
                     }
                     $.ajax({
                         type: "POST",
-                        data:{'productid':productid},
+                        data: {'productid': productid},
                         beforeSend: function () {
-                            $('#response').html( "<img id='blur-bg' class='backgroundfadein' style='top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
+                            $('#response').html("<img id='blur-bg' class='backgroundfadein' style='top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
                         },
                         url: "{{url('reduce-agent-qty')}}",
                         success: function () {
@@ -357,7 +358,7 @@
                     });
 
                 });
-
+            }
 
         });
 

@@ -28,10 +28,11 @@ class ProductRenewalRequest extends FormRequest
 
         ];
     }
+
       public function messages()
-    {
-        return[
-            'domain.no_http' => 'The :attribute must not contain "http/https".',
-        ];
-    }
+      {
+          return[
+              'domain.no_http' => 'The :attribute must not contain "http/https".',
+          ];
+      }
 }

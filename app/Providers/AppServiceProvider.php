@@ -19,9 +19,9 @@ class AppServiceProvider extends ServiceProvider
     {
         Schema::defaultStringLength(191);
 
-        Validator::extend('no_http', function ($attribute, $value, $parameters, $validator) {
-        return strpos($value, 'http') === false;
-         });
+             Validator::extend('no_http', function ($attribute, $value, $parameters, $validator) {
+            return strpos($value, 'http://') === false && strpos($value, 'https://') === false;
+        });
 
         Collection::macro('paginate', function ($perPage, $total = null, $page = null, $pageName = 'page') {
             $page = $page ?: LengthAwarePaginator::resolveCurrentPage($pageName);

@@ -13,6 +13,7 @@ use App\Http\Controllers\Order\RenewController;
 use App\Model\Payment\PlanPrice;
 use Illuminate\Http\Request;
 use App\User;
+use App\Http\Requests\ProductRenewalRequest;
 use App\Model\Order\InstallationDetail;
 
 class HomeController extends BaseHomeController
@@ -465,15 +466,9 @@ class HomeController extends BaseHomeController
         return preg_replace('#v\.|v#', '', str_replace('_', '.', $version));
     }
 
-     public function renewurl(Request $request)
+     public function renewurl(ProductRenewalRequest $request)
     {
        
-        $validation = $request->validate([
-        'domain' => 'required|no_http',
-        ], [
-        'domain.no_http' => 'The :attribute must not contain "http".',
-       ]);
-
       try{
         
       $orderId = InstallationDetail::Where('installation_path', 'like', '%' . $request->input('domain') . '%')->value('order_id');

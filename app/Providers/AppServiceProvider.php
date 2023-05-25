@@ -19,7 +19,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Schema::defaultStringLength(191);
 
-             Validator::extend('no_http', function ($attribute, $value, $parameters, $validator) {
+        Validator::extend('no_http', function ($attribute, $value, $parameters, $validator) {
             return strpos($value, 'http://') === false && strpos($value, 'https://') === false;
         });
 

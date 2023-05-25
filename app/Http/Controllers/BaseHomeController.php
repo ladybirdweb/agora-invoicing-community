@@ -152,44 +152,23 @@ class BaseHomeController extends Controller
             $order_number = $request->input('order_number');
             $licenseCode = $request->input('license_code');
             if ($order_number) {
-                $orderId = Order::where('number', 'LIKE', $order_number)->pluck('id')->first();
+                $orderId = Order::where('number',$order_number)->value('id');
                 if ($orderId) {
-                    $subscription = Subscription::where('order_id', $orderId)->first();
-                    $productName = Product::where('id', $subscription->product_id)->value('name');
-                    $plan = Plan::where('id', $subscription->plan_id)->value('name');
-                    $expiryDate = $subscription->update_ends_at;
-                    if (\Carbon\Carbon::now()->toDateTimeString() < $expiryDate) {
-                        $data = [
-                            'product' => $productName,
-                            'plan' => $plan,
-                            'update_ends' => $expiryDate,
-                            'version' => $subscription->version,
-                            'support_end' => $subscription->support_ends_at,
-
-                        ];
+                    $subscription = Subscription::where('order_id', $orderId)->select('id','support_ends_at','version','update_ends_at','product_id','plan_id')->first();
+                     $data = $this->getData($subscription);
 
                         return ['status' => 'success', 'message' => 'New version available', 'data' => $data];
                     }
                 }
-            } elseif ($licenseCode) {
+             elseif ($licenseCode) {
                 $orderForLicense = Order::all()->filter(function ($order) use ($licenseCode) {
                     if ($order->serial_key == $licenseCode) {
                         return $order;
                     }
                 });
                 if (count($orderForLicense) > 0) {
-                    $subscription = Subscription::where('order_id', $orderForLicense)->first();
-                    $productName = Product::where('id', $subscription->product_id)->value('name');
-                    $plan = Plan::where('id', $subscription->plan_id)->value('name');
-                    $expiryDate = $subscription->update_ends_at;
-                    $data = [
-                        'product' => $productName,
-                        'plan' => $plan,
-                        'update_ends' => $expiryDate,
-                        'version' => $subscription->version,
-                        'support_end' => $subscription->support_ends_at,
-
-                    ];
+                    $subscription = Subscription::where('order_id', $orderForLicense)->select('id','support_ends_at','version','update_ends_at','product_id','plan_id')->first();
+                    $data = $this->getData($subscription);
                     if (\Carbon\Carbon::now()->toDateTimeString() < $expiryDate) {
                         return ['status' => 'success', 'message' => 'New version available', 'data' => $data];
                     }
@@ -203,6 +182,24 @@ class BaseHomeController extends Controller
             return $result;
         }
     }
+  public function getData($subscription)
+  {
+    $productName = Product::where('id', $subscription->product_id)->value('name');
+    $plan = Plan::where('id', $subscription->plan_id)->value('name');
+    if (\Carbon\Carbon::now()->toDateTimeString() < $subscription->update_ends_at) {
+        $data = [
+            'product' => $productName,
+            'plan' => $plan,
+            'update_ends' => $subscription->update_ends_at,
+            'version' => $subscription->version,
+            'support_end' => $subscription->support_ends_at,
+
+        ];
+        return $data;
+    }
+  }
+
+   
 
     public function updateLatestVersion(Request $request)
     {

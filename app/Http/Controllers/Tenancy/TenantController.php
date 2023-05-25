@@ -205,7 +205,6 @@ class TenantController extends Controller
                 }
             }
         } catch (Exception $e) {
-            dd($e);
             //$mail->email_log_fail($settings->email, $user, 'New instance created', $result->message.'.<br> Email:'.' '.$user.'<br>'.'Password:'.' '.$result->password);
 
             return ['status' => 'false', 'message' => $e->getMessage()];

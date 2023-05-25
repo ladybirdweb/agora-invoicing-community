@@ -119,7 +119,6 @@ class FreeTrailController extends Controller
                 $product = Product::with(['planRelation' => function ($query) {
                     $query->where('name', 'LIKE', '%free%');
                 }])->find(117);
-                dd($product);
             } else {
                 $product = Product::with(['planRelation' => function ($query) {
                     $query->where('name', 'LIKE', '%free%');
@@ -192,7 +191,7 @@ class FreeTrailController extends Controller
         try {
             $product = Product::where('name', $item->product_name)->value('id');
             $version = Product::where('name', $item->product_name)->first()->version;
-            $serial_key = $this->generateFreetrailSerialKey($product, 2); //Send Product Id and Agents to generate Serial Key
+            $serial_key = $this->generateFreetrailSerialKey($product, 1); //Send Product Id and Agents to generate Serial Key
             $domain = $item->domain;
             //$plan_id = $this->plan($item->id);
             $plan_id = Plan::where('product', $product)

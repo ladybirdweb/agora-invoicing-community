@@ -11,6 +11,7 @@ use App\Model\Front\FrontendPage;
 use App\Model\Product\Product;
 use App\Model\Product\ProductGroup;
 use Illuminate\Http\Request;
+use App\Model\Payment\Plan;
 use Symfony\Component\Mime\Email;
 
 class PageController extends Controller
@@ -327,9 +328,17 @@ class PageController extends Controller
             ->orderBy('created_at', 'desc')->get(); //Get ALL the Products Related to the Group
             $trasform = [];
             $templates = $this->getTemplateOne($productsRelatedToGroup, $trasform);
+            $products = Product::all();
+            foreach($productsRelatedToGroup as $product)
+            {
+              $plan = Product::find($product->id)->plan();
+              $description = self::getPriceDescription($product->id);
 
-            return view('themes.default1.common.template.shoppingcart', compact('templates', 'headline', 'tagline'));
+            }
+
+            return view('themes.default1.common.template.shoppingcart', compact('templates', 'headline', 'tagline','description'));
         } catch (\Exception $ex) {
+            dd($ex);
             app('log')->error($ex->getMessage());
 
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -362,6 +371,7 @@ class PageController extends Controller
                 foreach ($helpdesk_products as $product) {
                     //Store all the values in $trasform variable for shortcodes to read from
                     $trasform[$product['id']]['price'] = $temp_controller->leastAmount($product['id']);
+                    $trasform[$product['id']]['price-year'] = $this->YearlyAmount($product['id']);
                     $trasform[$product['id']]['price-description'] = self::getPriceDescription($product['id']);
                     $trasform[$product['id']]['name'] = $product['name'];
                     $trasform[$product['id']]['feature'] = $product['description'];
@@ -379,6 +389,33 @@ class PageController extends Controller
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
+
+public function YearlyAmount($id)
+{
+        $countryCheck = true;
+        try {
+            $cost = 'Free';
+            $plans = Plan::where('product', $id)->get();
+
+            $prices = [];
+            if ($plans->count() > 0) {
+                foreach ($plans as $plan) {
+                    $planDetails = userCurrencyAndPrice('', $plan);
+                    $prices[] = $planDetails['plan']->add_price;
+                    $prices[] .= $planDetails['symbol'];
+                    $prices[] .= $planDetails['currency'];
+                }
+                $prices[0] = $prices[0] * 12;
+                $format = currencyFormat(min([$prices[0]]), $code = $prices[2]);
+                $finalPrice = str_replace($prices[1], '', $format);
+                $cost = '<span class="price-unit">'.$prices[1].'</span>'.$finalPrice;
+             
+            }
+            return $cost;
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+}
 
     /**
      * Get Price Description(eg: Per Year,Per Month ,One-Time) for a Product.
@@ -437,7 +474,7 @@ class PageController extends Controller
         }
 
         $result[5] = Product::where('name', $result[0])->value('highlight') ? "<input type='submit'
-                     value='Order Now' class='btn btn-primary btn-modern py-2 px-4'></form>" : "<input type='submit' 
+                     value='Order Now' class='btn btn-primary btn-modern'></form>" : "<input type='submit' 
                    value='Order Now' class='btn btn-dark btn-modern'></form>";
 
         return $result;

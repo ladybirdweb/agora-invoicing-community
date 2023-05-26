@@ -8,6 +8,7 @@ return[
         'group' => '{{group}}',
         'name' => '{{name}}',
         'price' => '{{price}}',
+        'price-year' => '{{price-year}}',
         'price-description' => '{{price-description}}',
         'feature' => '<li>{{feature}}</li>',
         'subscription' => '{{subscription}}',

@@ -8,10 +8,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Front\PageRequest;
 use App\Model\Common\PricingTemplate;
 use App\Model\Front\FrontendPage;
+use App\Model\Payment\Plan;
 use App\Model\Product\Product;
 use App\Model\Product\ProductGroup;
 use Illuminate\Http\Request;
-use App\Model\Payment\Plan;
 use Symfony\Component\Mime\Email;
 
 class PageController extends Controller
@@ -329,14 +329,12 @@ class PageController extends Controller
             $trasform = [];
             $templates = $this->getTemplateOne($productsRelatedToGroup, $trasform);
             $products = Product::all();
-            foreach($productsRelatedToGroup as $product)
-            {
-              $plan = Product::find($product->id)->plan();
-              $description = self::getPriceDescription($product->id);
-
+            foreach ($productsRelatedToGroup as $product) {
+                $plan = Product::find($product->id)->plan();
+                $description = self::getPriceDescription($product->id);
             }
 
-            return view('themes.default1.common.template.shoppingcart', compact('templates', 'headline', 'tagline','description'));
+            return view('themes.default1.common.template.shoppingcart', compact('templates', 'headline', 'tagline', 'description'));
         } catch (\Exception $ex) {
             dd($ex);
             app('log')->error($ex->getMessage());
@@ -392,29 +390,29 @@ class PageController extends Controller
 
 public function YearlyAmount($id)
 {
-        $countryCheck = true;
-        try {
-            $cost = 'Free';
-            $plans = Plan::where('product', $id)->get();
+    $countryCheck = true;
+    try {
+        $cost = 'Free';
+        $plans = Plan::where('product', $id)->get();
 
-            $prices = [];
-            if ($plans->count() > 0) {
-                foreach ($plans as $plan) {
-                    $planDetails = userCurrencyAndPrice('', $plan);
-                    $prices[] = $planDetails['plan']->add_price;
-                    $prices[] .= $planDetails['symbol'];
-                    $prices[] .= $planDetails['currency'];
-                }
-                $prices[0] = $prices[0] * 12;
-                $format = currencyFormat(min([$prices[0]]), $code = $prices[2]);
-                $finalPrice = str_replace($prices[1], '', $format);
-                $cost = '<span class="price-unit">'.$prices[1].'</span>'.$finalPrice;
-             
+        $prices = [];
+        if ($plans->count() > 0) {
+            foreach ($plans as $plan) {
+                $planDetails = userCurrencyAndPrice('', $plan);
+                $prices[] = $planDetails['plan']->add_price;
+                $prices[] .= $planDetails['symbol'];
+                $prices[] .= $planDetails['currency'];
             }
-            return $cost;
-        } catch (\Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
+            $prices[0] = $prices[0] * 12;
+            $format = currencyFormat(min([$prices[0]]), $code = $prices[2]);
+            $finalPrice = str_replace($prices[1], '', $format);
+            $cost = '<span class="price-unit">'.$prices[1].'</span>'.$finalPrice;
         }
+
+        return $cost;
+    } catch (\Exception $ex) {
+        return redirect()->back()->with('fails', $ex->getMessage());
+    }
 }
 
     /**

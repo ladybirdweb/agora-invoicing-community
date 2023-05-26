@@ -65,11 +65,12 @@ class FreeTrailController extends Controller
 
                 $this->createFreetrailInvoiceItems($request->get('product'));
 
-                $serial_key=$this->executeFreetrailOrder();
+                $serial_key = $this->executeFreetrailOrder();
 
                 $isSuccess = (new TenantController(new Client, new FaveoCloud()))->createTenant(new Request(['orderNo' => $this->orderNo, 'domain' => $request->domain]));
                 if ($isSuccess['status'] == 'false') {
                     (new LicenseController())->deActivateTheLicense($serial_key);
+
                     return $isSuccess;
                 }
 
@@ -223,6 +224,7 @@ class FreeTrailController extends Controller
             if ($mailchimpStatus) {
                 $baseorder->addtoMailchimp($product, $user_id, $item);
             }
+
             return $serial_key;
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());

@@ -27,6 +27,7 @@ class PlanRequest extends FormRequest
             'days' => 'nullable|numeric',
             'product_quantity' => 'required_without:no_of_agents|integer|min:0',
             'no_of_agents' => 'required_without:product_quantity|integer|min:0',
+            'offer_price' => 'numeric|between:0,100|regex:/^\d+(\.\d+)?%$/',
         ];
     }
 
@@ -43,6 +44,7 @@ class PlanRequest extends FormRequest
             'renew_price.array_size_equals' => trans('message.renew_price_array_equals'),
             'add_price.array_size_equals' => trans('message.add_price_array_equals'),
             'currency.*.required_with' => trans('message.currency_missing'),
+            'offer_price.regex' => trans('message.offer_price'),
         ];
     }
 }

@@ -175,6 +175,7 @@ class PlanController extends ExtendedPlanController
     public function store(PlanRequest $request)
     {
         try {
+            dd($request->input('offer_price'));
             $add_prices = $request->add_price;
             $renew_prices = $request->renew_price;
             $this->plan->fill($request->input())->save();

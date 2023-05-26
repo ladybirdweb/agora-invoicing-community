@@ -476,4 +476,14 @@ class LicenseController extends Controller
 
         return $searchLicense['allowedInstalltion'];
     }
+
+    public function deActivateTheLicense($licenseCode){
+        $url = $this->url;
+        $api_key_secret = $this->api_key_secret;
+
+        $OauthDetails = $this->oauthAuthorization();
+        $token = $OauthDetails->access_token;
+
+        $this->postCurl($url.'api/admin/license/deactivate', "api_key_secret=$api_key_secret&license_code=$licenseCode", $token);
+    }
 }

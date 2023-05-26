@@ -44,26 +44,26 @@ return [
         'secret' => '',
     ],
     'github' => [
-    'client_id' => '',
-    'client_secret' => '',
-    'redirect' => '',
-],
-// 'github' => [
-//       'client_id' => 'Iv1.f2bdc32a0799a0a0',
-//       'client_secret' => '92957c0954dc3cd476c855c0ecc3fac69e5f8196',
-//       'redirect' => 'https://developers.productdemourl.com/Agurmeen/agoraBilling/public/auth/callback',
-//     ],
-'facebook' => [
+        'client_id' => '',
+        'client_secret' => '',
+        'redirect' => '',
+    ],
+    // 'github' => [
+    //       'client_id' => 'Iv1.f2bdc32a0799a0a0',
+    //       'client_secret' => '92957c0954dc3cd476c855c0ecc3fac69e5f8196',
+    //       'redirect' => 'https://developers.productdemourl.com/Agurmeen/agoraBilling/public/auth/callback',
+    //     ],
+    'facebook' => [
         'client_id'     => env('FACEBOOK_CLIENT_ID'),
         'client_secret' => env('FACEBOOK_CLIENT_SECRET'),
         'redirect'      => env('FACEBOOK_URL'),
     ],
-'twitter' => [
+    'twitter' => [
         'client_id'     => env('TWITTER_CLIENT_ID'),
         'client_secret' => env('TWITTER_CLIENT_SECRET'),
         'redirect'      => env('TWITTER_URL'),
     ],
-'google' => [
+    'google' => [
         'client_id'     => '915644360529-pufkmq6kgrcj0aqe4e6i23tjvb02a5mg.apps.googleusercontent.com',
         'client_secret' => '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',
         'redirect'      => 'https://developers.productdemourl.com/Agurmeen/agoraBilling/public/auth/callback',

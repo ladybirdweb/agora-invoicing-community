@@ -7,13 +7,13 @@ use App\Http\Controllers\Controller;
 use App\Model\Common\Bussiness;
 use App\Model\Common\ChatScript;
 use App\Model\Common\StatusSetting;
+use App\SocialLogin;
 use App\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
-use Laravel\Socialite\Facades\Socialite;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
-use App\SocialLogin;
+use Illuminate\Support\Str;
+use Laravel\Socialite\Facades\Socialite;
 
 class LoginController extends Controller
 {
@@ -124,10 +124,10 @@ class LoginController extends Controller
     public function redirectPath()
     {
         // dd('vbn');
-       
+
         if (\Session::has('session-url')) {
             $url = \Session::get('session-url');
-// dd($url);
+            // dd($url);
             return property_exists($this, 'redirectTo') ? $this->redirectTo : '/'.$url;
         } else {
             $user = \Auth::user()->role;
@@ -136,13 +136,13 @@ class LoginController extends Controller
             $intendedUrl = $redirectResponse->getTargetUrl();
             if (strpos($intendedUrl, 'autopaynow') == false) {
                 // return ($user == 'user') ? 'mobile/verification' : '/';
-                  return ($user == 'user') ? 'verify' : '/';
+                return ($user == 'user') ? 'verify' : '/';
             }
 
             return property_exists($this, 'redirectTo') ? $intendedUrl : '/';
         }
     }
-   
+
     //  public function redirectToGoogle()
     // {
     //     return Socialite::driver('google')->redirect();
@@ -153,37 +153,36 @@ class LoginController extends Controller
     //     try {
     //          $user = Socialite::driver('github')->stateless()->user();
     // // dd($user);
-     
+
     // $localUser = App\User::updateOrCreate([
     //         'email' => $user->getEmail(),
     //         'password' => Hash::make(Str::random()),
     //         'username' => $user->getNickName(),
     //     ]);
     //     dd($localUser);
-        
+
     // \Auth::login($localUser);
 
     // return redirect('/');
 
-    
             // }
-      
-       
-    // }
-    
-    // 
-    
-    public function redirectToGithub($provider) {
 
+    // }
+
+    //
+
+    public function redirectToGithub($provider)
+    {
         $details = SocialLogin::where('type', $provider)->first();
         \Config::set("services.$provider.redirect", $details->redirect_url);
         \Config::set("services.$provider.client_id", $details->client_id);
         \Config::set("services.$provider.client_secret", $details->client_secret);
-         return Socialite::driver($provider)->redirect();
+
+        return Socialite::driver($provider)->redirect();
     }
-    
-    public function handler($provider) {
-        
+
+    public function handler($provider)
+    {
         $details = SocialLogin::where('type', $provider)->first();
         \Config::set("services.$provider.redirect", $details->redirect_url);
         \Config::set("services.$provider.client_id", $details->client_id);
@@ -191,31 +190,32 @@ class LoginController extends Controller
         $githubUser = Socialite::driver($provider)->user();
 
         $user = User::updateOrCreate([
-          'email' => $githubUser->getemail(),
-        ], 
-        [ 
-          'user_name' => $githubUser->getNickName(),
-          'first_name' => $githubUser->getname(),
-          'role' => 'user',
-          'password' => Hash::make(Str::random()),
-        //   'mobile_verified' => '1',
-          'active' => '1',
-        ]);
- 
-       \Auth::login($user);
-    //   return redirect('/');
-    if ($user && ( $user->mobile_verified !== 1)) {
-                return redirect('verify')->with('user', $user);
-            }
-    return redirect($this->redirectPath());
-    }
-         public function mobileVerification() {
+            'email' => $githubUser->getemail(),
+        ],
+            [
+                'user_name' => $githubUser->getNickName(),
+                'first_name' => $githubUser->getname(),
+                'role' => 'user',
+                'password' => Hash::make(Str::random()),
+                //   'mobile_verified' => '1',
+                'active' => '1',
+            ]);
 
-        dd('hi');
+        \Auth::login($user);
+        //   return redirect('/');
+        if ($user && ($user->mobile_verified !== 1)) {
+            return redirect('verify')->with('user', $user);
+        }
+
+        return redirect($this->redirectPath());
     }
-    
-  
-// 
+
+         public function mobileVerification()
+         {
+             dd('hi');
+         }
+
+//
 //  public function view() {
 //         $socialLogins = SocialLogin::get();
 //         return view("themes.default1.common.socialLogins",compact('socialLogins'));
@@ -235,5 +235,4 @@ class LoginController extends Controller
 //         $socialLogins->save();
 //         return redirect()->back();
 //     }
-   
 }

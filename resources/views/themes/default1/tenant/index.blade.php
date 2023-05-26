@@ -81,8 +81,8 @@ Tenants
 
           
         </div>
-
-        <div id="success"></div>
+         
+        <div id="successmsg"></div>
         <div id="error"></div>
        <div class="card-body table-responsive">
              
@@ -90,7 +90,7 @@ Tenants
             
             <div class="col-md-12">
                
-                 <table id="tenant-table" class="table table-bordered table-hover" cellspacing="0" width="100%" styleClass="borderless" style="table-layout:fixed;">
+                 <table id="tenant-table" class="table display" cellspacing="0" width="100%" styleClass="borderless" style="table-layout:fixed;">
                      
                     <thead><tr>
                             <th>S.No</th>
@@ -103,16 +103,22 @@ Tenants
                         @foreach($de as $key => $data)
                         
                    <tbody>
-                   @if(isset($data))
                        <tr>
                            <td>{{++$key}}</td>
                            <td>{{$data['id']}}</td>
                            <td>{{$data['domain']}}</td>
                            <td>{{$data['database_name']}}</td>
                            <td>{{$data['database_user_name']}}</td>
-                           <td><button class="btn btn-sm btn-danger btn-xs delTenant" id="delete" value="{{$data['id']}}"><i class="fa fa-trash" style="color:white;"> </i></button></td>
+                        
+
+                      <td>
+                      <button class="btn btn-sm btn-danger btn-xs delTenant" onclick="deleteTenant('{{ $data['id'] }}')">
+                        <i class="fa fa-trash" style="color:white;"></i>
+                      </button>
+                    </td>
+
                        </tr>
-                   @endif
+                      
                    </tbody>
                        @endforeach
                       
@@ -138,38 +144,38 @@ Tenants
 
 <script>
 
-    $('#delete').click(function() {
-
-        var id = $(this).val();
+  function deleteTenant(id) {
+     var id = id;
       if (confirm("Are you sure you want to destroy this tenant?")) {
          $.ajax({
           url: "{!! url('delete-tenant') !!}",
           method:"delete",
           data: {'id':id},
           success: function (data) {
-            if(data.success = true) {
+            if(data.success === true) {
+                console.log(data.message);
               var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="fa fa-check"></i>Success! </strong>'+data.message+'!</div>';
-              $('#success').show();
+              $('#successmsg').show();
               $('#error').hide();
-              $('#success').html(result);
+              $('#successmsg').html(result);
               setInterval(function(){ 
                 $('#success').slideUp(5000);
                   location.reload();
             }, 3000);
 
-            } else if(data.success = false) {
-              $('#success').hide();
+            } else if(data.success === false) {
+              $('#successmsg').hide();
               $('#error').show();
               var result =  '<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="fa fa-ban"></i>Whoops! </strong> Something went wrong<br>'+data.message+'!</div>';
               $('#error').html(result);
               setInterval(function(){ 
                 $('#error').slideUp(5000); 
-           location.reload(); },500);
+          location.reload(); },10000);
 
             }
              
           },error: function(data) {
-            $('#success').hide();
+            $('#successmsg').hide();
               $('#error').show();
               var result =  '<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="fa fa-ban"></i>Whoops! </strong> Something went wrong<br>'+data.responseJSON.message+'!</div>';
               $('#error').html(result);

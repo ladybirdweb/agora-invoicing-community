@@ -10,6 +10,10 @@ use App\Model\Common\StatusSetting;
 use App\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
+use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
+use App\SocialLogin;
 
 class LoginController extends Controller
 {
@@ -119,19 +123,117 @@ class LoginController extends Controller
      */
     public function redirectPath()
     {
+        // dd('vbn');
+       
         if (\Session::has('session-url')) {
             $url = \Session::get('session-url');
-
+// dd($url);
             return property_exists($this, 'redirectTo') ? $this->redirectTo : '/'.$url;
         } else {
             $user = \Auth::user()->role;
+            // dd($user);
             $redirectResponse = redirect()->intended('/');
             $intendedUrl = $redirectResponse->getTargetUrl();
             if (strpos($intendedUrl, 'autopaynow') == false) {
-                return ($user == 'user') ? 'my-invoices' : '/';
+                // return ($user == 'user') ? 'mobile/verification' : '/';
+                  return ($user == 'user') ? 'verify' : '/';
             }
 
             return property_exists($this, 'redirectTo') ? $intendedUrl : '/';
         }
     }
+   
+    //  public function redirectToGoogle()
+    // {
+    //     return Socialite::driver('google')->redirect();
+    // }
+
+    // public function handleGoogleCallback()
+    // {
+    //     try {
+    //          $user = Socialite::driver('github')->stateless()->user();
+    // // dd($user);
+     
+    // $localUser = App\User::updateOrCreate([
+    //         'email' => $user->getEmail(),
+    //         'password' => Hash::make(Str::random()),
+    //         'username' => $user->getNickName(),
+    //     ]);
+    //     dd($localUser);
+        
+    // \Auth::login($localUser);
+
+    // return redirect('/');
+
+    
+            // }
+      
+       
+    // }
+    
+    // 
+    
+    public function redirectToGithub($provider) {
+
+        $details = SocialLogin::where('type', $provider)->first();
+        \Config::set("services.$provider.redirect", $details->redirect_url);
+        \Config::set("services.$provider.client_id", $details->client_id);
+        \Config::set("services.$provider.client_secret", $details->client_secret);
+         return Socialite::driver($provider)->redirect();
+    }
+    
+    public function handler($provider) {
+        
+        $details = SocialLogin::where('type', $provider)->first();
+        \Config::set("services.$provider.redirect", $details->redirect_url);
+        \Config::set("services.$provider.client_id", $details->client_id);
+        \Config::set("services.$provider.client_secret", $details->client_secret);
+        $githubUser = Socialite::driver($provider)->user();
+
+        $user = User::updateOrCreate([
+          'email' => $githubUser->getemail(),
+        ], 
+        [ 
+          'user_name' => $githubUser->getNickName(),
+          'first_name' => $githubUser->getname(),
+          'role' => 'user',
+          'password' => Hash::make(Str::random()),
+        //   'mobile_verified' => '1',
+          'active' => '1',
+        ]);
+ 
+       \Auth::login($user);
+    //   return redirect('/');
+    if ($user && ( $user->mobile_verified !== 1)) {
+                return redirect('verify')->with('user', $user);
+            }
+    return redirect($this->redirectPath());
+    }
+         public function mobileVerification() {
+
+        dd('hi');
+    }
+    
+  
+// 
+//  public function view() {
+//         $socialLogins = SocialLogin::get();
+//         return view("themes.default1.common.socialLogins",compact('socialLogins'));
+//     }
+
+//     public function edit($id) {
+//         $socialLogins = SocialLogin::where('id',$id)->first();
+//         return view("themes.default1.common.editSocialLogins",compact('socialLogins'));
+//     }
+
+//     public function update(Request $request) {
+//         $socialLogins= SocialLogin::where('type',$request->type)->first();
+//         $socialLogins->type=$request->type;
+//         $socialLogins->client_id=$request->client_id;
+//         $socialLogins->client_secret=$request->client_secret;
+//         $socialLogins->redirect_url=$request->redirect_url;
+//         $socialLogins->save();
+//         return redirect()->back();
+//     }
+   
 }

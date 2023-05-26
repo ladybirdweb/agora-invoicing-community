@@ -186,6 +186,19 @@ Settings
                         <p class="box-title">Localized License</p>
                     </div>
                 </div>
+                <!---->
+                 <div class="col-md-2 col-sm-6">
+                <div class="settingiconblue">
+                    <div class="settingdivblue">
+                        <a href="{{url('SocialLogins')}}">
+                            <span class="fa-stack fa-2x">
+                                <i class="fas fa-globe fa-stack-1x"></i>
+                            </span>
+                        </a>
+                    </div>
+                    <p class="box-title">Social Logins</p>
+                </div>
+            </div>
                   
             </div>
     </div>

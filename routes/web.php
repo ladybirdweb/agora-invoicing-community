@@ -21,9 +21,12 @@ use App\Http\Controllers\Tenancy;
 use App\Http\Controllers\ThirdPartyAppController;
 use App\Http\Controllers\User;
 use App\Http\Controllers\WelcomeController;
+use App\Http\Controllers\SocialLoginsController;
+use App\Http\Controllers\PhoneVerificationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
+use Illuminate\Support\Str;
+use Laravel\Socialite\Facades\Socialite;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -41,7 +44,33 @@ Route::post('refresh-csrf', function () {
         'token' => csrf_token(), ],
         200);
 });
+// gurmeeen
+ Route::get('SocialLogins', [SocialLoginsController::class, 'view'])->middleware('auth');
+    Route::get('edit/SocialLogins/{id}', [SocialLoginsController::class, 'edit'])->middleware('auth');
+    Route::post('update-social-login', [SocialLoginsController::class, 'update'])->name('update-social-login');
+    
+    // mobile verification routes  verify/phone
+    // Route::get('/verify/phone', [PhoneVerificationController::class, 'showVerificationPage'])->name('verification.page');
+Route::post('verifying/phone', [PhoneVerificationController::class, 'create']);
+// Route::post('verify', [PhoneVerificationController::class, 'verify'])->name('verify');
 
+  Route::get('mobile/verification', [SocialLoginsController::class, 'mobileVerification'])->name('mobile/verification');
+    // Route::get('verify/phone', [SocialLoginsController::class, 'mobileVerification']);
+    // Route::post('verify/phone', function () {
+//   dd('fgvbh');
+// });
+//  Route::get('/auth/redirect/{provider}', [SocialLoginsController::class, 'redirectToGithub']);
+//   Route::get('/auth/callback/{provider}', [SocialLoginsController::class, 'handler']);
+//  Route::get('auth/logout', [Auth\LoginController::class, 'logout'])->name('logout');
+//  Route::get('SocialLogins', [Auth\LoginController::class, 'view'])->middleware('auth');
+//     Route::get('edit/SocialLogins/{id}', [Auth\LoginController::class, 'edit'])->middleware('auth');
+//     Route::post('update-social-login', [Auth\LoginController::class, 'update'])->name('update-social-login');
+   
+ 
+
+    // return redirect((new Auth\LoginController())->redirectPath());
+
+// gurmeenend'
 /*
 * Installer Routes
 */
@@ -95,6 +124,7 @@ Route::middleware('installAgora')->group(function () {
      */
 
     Route::post('first-login', [FreeTrailController::class, 'firstLoginAttempt']);
+    
 
     Route::get('my-invoices', [Front\ClientController::class, 'invoices'])->name('my-invoices');
 
@@ -131,6 +161,16 @@ Route::middleware('installAgora')->group(function () {
     Route::get('LocalizedLicense/downloadLicense/{fileName}', [License\LocalizedLicenseController::class, 'downloadFileAdmin']);
     Route::get('request', [License\LocalizedLicenseController::class, 'tempOrderLink']);
     Route::get('LocalizedLicense/downloadPrivateKey/{fileName}', [License\LocalizedLicenseController::class, 'downloadPrivateKeyAdmin']);
+    
+    // Social Logins routes
+     
+      
+    
+    
+    
+    
+    
+    // social Logins routes end
 
     /*
      * 2FA Routes
@@ -162,7 +202,10 @@ Route::middleware('installAgora')->group(function () {
     Route::post('auth/register', [Auth\RegisterController::class, 'postRegister'])->name('auth/register');
     Route::get('auth/logout', [Auth\LoginController::class, 'logout'])->name('logout');
     Route::get('/', [DashboardController::class, 'index']);
-
+    // gurmeen
+    Route::get('/auth/redirect/{provider}', [Auth\LoginController::class, 'redirectToGithub']);
+  Route::get('/auth/callback/{provider}', [Auth\LoginController::class, 'handler']);
+// gurmeenend
     Route::get('activate/{token}', [Auth\AuthController::class, 'activate']);
 
     /*
@@ -538,6 +581,7 @@ Route::middleware('installAgora')->group(function () {
     Route::get('resend_otp', [Auth\AuthController::class, 'retryOTP']);
     Route::get('verify', function () {
         $user = \Session::get('user');
+        // dd($user);
         if ($user) {
             return view('themes.default1.user.verify', compact('user'));
         }
@@ -563,3 +607,5 @@ Route::get('404', function () {
     return view('errors.404');
 })->name('error404');
 // });
+
+

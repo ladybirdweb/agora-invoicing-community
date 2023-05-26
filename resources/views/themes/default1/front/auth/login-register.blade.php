@@ -172,7 +172,7 @@ Sign in or Register
                                                 </div>
                                                 <div class="form-row">
                                                     <div class="form-group col {{ $errors->has('password1') ? 'has-error' : '' }}">
-
+                                                         <!--@csrf-->
                                                         <a class="pull-right" href="{{url('password/reset')}}">({{Lang::get('message.forgot-my-password')}})</a>
                                                         <label class="required">Password</label>
                                                         <div class="input-group">
@@ -205,6 +205,18 @@ Sign in or Register
                                                     </div>
                                                     <div class="form-group col-lg-6">
                                                         <input type="submit" value="Login" id="submitbtn" class="btn btn-primary pull-right mb-xl" data-loading-text="Loading...">
+                                                        <a href="{{ url('/auth/redirect/github') }}">
+                    <img src="https://developers.google.com/identity/images/btn_google_signin_dark_normal_web.png" style="margin-left: 3em;">
+                </a>
+                <a href="{{ url('/auth/redirect/google') }}">
+                    <img src="https://developers.google.com/identity/images/btn_google_signin_dark_normal_web.png" style="margin-left: 3em;">
+                </a>
+                  <a href="{{ url('/auth/redirect/linkedin') }}">
+                    <img src="https://developers.google.com/identity/images/btn_google_signin_dark_normal_web.png" style="margin-left: 3em;">
+                </a>
+                  <a href="{{ url('/auth/redirect/twitter') }}">
+                    <img src="https://developers.google.com/identity/images/btn_google_signin_dark_normal_web.png" style="margin-left: 3em;">
+                </a>
                                                         <!-- <button type="button" class="btn btn-primary mb-xl next-step float-right" name="sendOtp" id="login" onclick="loginUser()">
                                                                     Send Email
                                                         </button> -->

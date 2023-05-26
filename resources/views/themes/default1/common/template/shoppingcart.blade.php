@@ -21,7 +21,7 @@ main
 @section('content')
 <style>
   .highlight_batch {
-    background: #000;
+    background: green;
     padding: 0px 5px;
     font-size: smaller;
     color: #FFF;
@@ -103,23 +103,24 @@ main
 <div class="row">
 
  <div class="col-md-12">
-
+@if($description == "Per Month")
   <div class="row mb-5">
             <div class="col text-center">
               <div class="d-flex justify-content-center align-items-center">
-                <div class="text-3 p-relative bottom-7">Monthly</div>
+                <div class="text-3 p-relative bottom-7">Yearly</div>
                 <div class="px-2">
                   <label class="switch toggle_event_editing">
 
-                    <input data-content-switcher data-content-switcher-content-id="pricingTable1" type="checkbox" class="form-check-input checkbox">
+                    <input data-content-switcher data-content-switcher-content-id="pricingTable1" type="checkbox" class="form-check-input checkbox" checked>
                     <span class="slider round"></span>
                   </label>
                   
                 </div>
-                <div class="text-3 p-relative bottom-7">Yearly</div>
+                <div class="text-3 p-relative bottom-7">Monthly</div>
               </div>
             </div>
           </div>
+          @endif
            <h4 style="text-align: center;">{{$tagline}} </h4>
         <div class="pricing-table mb-4">
           

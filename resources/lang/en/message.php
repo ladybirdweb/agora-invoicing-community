@@ -691,5 +691,6 @@ return [
     'cloud_central_domain' => 'Cloud central domain',
     'cron_server_url' => 'Cron server URL',
     'cron_server_key' => 'Cron server key',
+    'offer_price' => 'Offer Price must be a % value',
 
 ];

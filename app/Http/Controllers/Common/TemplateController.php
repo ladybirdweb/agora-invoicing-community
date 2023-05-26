@@ -233,8 +233,8 @@ class TemplateController extends Controller
                 $format = currencyFormat(min([$prices[0]]), $code = $prices[2]);
                 $finalPrice = str_replace($prices[1], '', $format);
                 $cost = '<span class="price-unit">'.$prices[1].'</span>'.$finalPrice;
+             
             }
-
             return $cost;
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());

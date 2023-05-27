@@ -22,6 +22,11 @@ active
 @stop
 
 @section('content')
+<style>
+[type=search] {
+        padding-right: 20px !important;
+}
+</style>
 
     <div class="col-md-12 pull-center">
 
@@ -42,6 +47,8 @@ active
 
                 </table>
                 </div>   
+                    <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+
      <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css" />
     <script src="{{asset("common/js/jquery-2.1.4.js")}}" type="text/javascript"></script>
     <script src="{{asset("common/js/jquery2.1.1.min.js")}}" type="text/javascript"></script>

@@ -101,7 +101,7 @@ Tenants
                             <th>Action</th>
                         </tr></thead>
                         @foreach($de as $key => $data)
-                        
+                        @if(empty($data))
                    <tbody>
                        <tr>
                            <td>{{++$key}}</td>
@@ -120,6 +120,7 @@ Tenants
                        </tr>
                       
                    </tbody>
+                         @endif
                        @endforeach
                       
 

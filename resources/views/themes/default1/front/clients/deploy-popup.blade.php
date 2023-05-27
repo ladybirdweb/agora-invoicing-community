@@ -18,10 +18,15 @@
                     <form action="" method="post" style="width:500px; margin: auto auto;" class="card card-body">
                         <input type="hidden" id="orderNo" name="order" value={{$orderNumber}}>
                         <div class="form-group">
-                            <label>Domain</label>
+                            <div class="card" style="background-color: #0088CC;; color: white;">
+                                <div class="card-body">
+                                    {!! trans('message.cloud_live_info') !!}
+                                </div>
+                            </div>
+                            <label>Enter your cloud domain here!</label>
                             <div class="row" style="margin-left: 2px; margin-right: 2px;">
                                 <input type="hidden"  name="order" id="orderId" value=""/>
-                                <input  type="text" name="domain" autocomplete="off" id= "userdomain"  class="form-control col col-12" placeholder="https://yourCloud.faveocloud.com">
+                                <input  type="text" name="domain" autocomplete="off" id= "userdomain"  class="form-control col col-12" placeholder="YourCloudName.faveocloud.com">
                             </div>
                         </div>
                     </form>

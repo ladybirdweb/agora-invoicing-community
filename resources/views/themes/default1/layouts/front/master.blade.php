@@ -474,6 +474,7 @@ $set = $set->findOrFail(1);
                                             {!! trans('message.cloud_info') !!}
                                         </div>
                                     </div>
+                                    <br>
                                     <label>Enter your cloud domain here!</label>
                                     <div class="row" style="margin-left: 2px; margin-right: 2px;">
 

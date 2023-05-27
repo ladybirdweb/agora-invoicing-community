@@ -4,7 +4,7 @@
         <div class="modal-content">
             {!! Form::open() !!}
             <div class="modal-header">
-                <h4 class="modal-title">Create your Faveo cloud instance!</h4>
+                <h4 class="modal-title">Hey, Lets create a Faveo cloud instance!</h4>
             </div>
 
             <div class="modal-body">
@@ -24,7 +24,7 @@
                                 </div>
                             </div>
                             <br>
-                            <label>Hey, Lets create a Faveo cloud instance!</label>
+                            <label>Enter your cloud domain here!</label>
                             <div class="row" style="margin-left: 2px; margin-right: 2px;">
                                 <input type="hidden"  name="order" id="orderId" value=""/>
                                 <input  type="text" name="domain" autocomplete="off" id= "userdomain"  class="form-control col col-12" placeholder="YourCloudName.faveocloud.com">

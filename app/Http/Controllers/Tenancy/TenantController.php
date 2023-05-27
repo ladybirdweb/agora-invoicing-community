@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Tenancy;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\License\LicenseController;
 use App\Model\Common\FaveoCloud;
 use App\Model\Common\Setting;
 use App\Model\Mailjob\CloudEmail;
@@ -250,7 +251,7 @@ class TenantController extends Controller
             $response = json_decode($responseBody);
             if ($response->status == 'success') {
                 $this->deleteCronForTenant($request->input('id'));
-
+                (new LicenseController())->reissueDomain($request->input('id'));
                 return successResponse($response->message);
             } else {
                 return errorResponse($response->message);

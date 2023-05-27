@@ -127,7 +127,7 @@ class TenantController extends Controller
             $dns_record = dns_get_record($faveoCloud, DNS_CNAME);
             if (! strpos($faveoCloud, 'faveocloud.com')) {
                 if (empty($dns_record) || ! in_array('faveocloud.com', array_column($dns_record, 'target'))) {
-                    throw new Exception('Your Domains DNS CNAME record is not pointing to our cloud!(CNAME record is missing) Please do it to proceed');
+                    return ['status' => 'false', 'message' => trans('message.cname')];
                 }
             }
             $licCode = Order::where('number', $request->input('orderNo'))->first()->serial_key;

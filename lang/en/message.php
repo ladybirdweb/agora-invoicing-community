@@ -694,5 +694,6 @@ return [
     'something_bad'    =>'Oops! Something went wrong, we would suggest try creating another cloud instance. If issue persists contact <a href="https://support.faveohelpdesk.com">Support Center</a>',
     'cloud_info' => 'Welcome to Faveo! You can deploy your free trial cloud instance with just one click. if you wish to use our domain you can just enter CloudName.faveocloud.com and the instance creation will begin instantly. Also, we do provide support to create a cloud instance with your own custom domain as well. Please create a cloud instance for either helpdesk or servicedesk and choose the one which you wish to purchase. Further queries contact our <a href="https://support.faveohelpdesk.com" style="color:white"><u>Support Center</u></a>',
     'cloud_live_info'=> 'Welcome to Faveo! You can deploy your cloud instance with just one click. if you wish to use our domain you can just enter CloudName.faveocloud.com and the instance creation will begin instantly. Also, we do provide support to create a cloud instance with your own custom domain as well. Further queries contact our <a href="https://support.faveohelpdesk.com" style="color:white"><u>Support Center</u></a>',
+    'cname' => 'Your Domains DNS CNAME record is not pointing to our cloud!(CNAME record is missing) Please do it to proceed',
 
 ];

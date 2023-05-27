@@ -4,7 +4,7 @@
         <div class="modal-content">
             {!! Form::open() !!}
             <div class="modal-header">
-                <h4 class="modal-title">Create an instance</h4>
+                <h4 class="modal-title">Create your Faveo cloud instance!</h4>
             </div>
 
             <div class="modal-body">
@@ -19,11 +19,12 @@
                         <input type="hidden" id="orderNo" name="order" value={{$orderNumber}}>
                         <div class="form-group">
                             <div class="card" style="background-color: #0088CC;; color: white;">
-                                <div class="card-body">
+                                <div class="card-body" style="text-align: justify">
                                     {!! trans('message.cloud_live_info') !!}
                                 </div>
                             </div>
-                            <label>Enter your cloud domain here!</label>
+                            <br>
+                            <label>Hey, Lets create a Faveo cloud instance!</label>
                             <div class="row" style="margin-left: 2px; margin-right: 2px;">
                                 <input type="hidden"  name="order" id="orderId" value=""/>
                                 <input  type="text" name="domain" autocomplete="off" id= "userdomain"  class="form-control col col-12" placeholder="YourCloudName.faveocloud.com">

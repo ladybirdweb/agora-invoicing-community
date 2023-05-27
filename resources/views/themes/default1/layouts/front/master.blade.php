@@ -151,7 +151,10 @@ $set = $set->findOrFail(1);
 
                                                     <li class="dropdown">
                                                         <a  class="nav-link open-createTenantDialog" style="cursor: pointer;">
-                                                            Faveo Cloud-Free Trial
+                                                            <div>
+                                                                <i class="fas fa-cloud"></i>
+                                                                <span style="margin-left: 3px;">Faveo Cloud</span>
+                                                            </div>
                                                         </a>
                                                     </li>
 
@@ -453,7 +456,7 @@ $set = $set->findOrFail(1);
                 <div class="modal-content">
                     {!! Form::open() !!}
                     <div class="modal-header">
-                        <h4 class="modal-title">Create an instance</h4>
+                        <h4 class="modal-title">Hey, Lets create a Faveo cloud instance!</h4>
                     </div>
 
                     <div class="modal-body">
@@ -467,7 +470,7 @@ $set = $set->findOrFail(1);
                             <form action="" method="post" style="width:500px; margin: auto auto;" class="card card-body">
                                 <div class="form-group">
                                     <div class="card" style="background-color: #0088CC;; color: white;">
-                                        <div class="card-body">
+                                        <div class="card-body" style="text-align: justify">
                                             {!! trans('message.cloud_info') !!}
                                         </div>
                                     </div>

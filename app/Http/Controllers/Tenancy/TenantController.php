@@ -252,6 +252,7 @@ class TenantController extends Controller
             if ($response->status == 'success') {
                 $this->deleteCronForTenant($request->input('id'));
                 (new LicenseController())->reissueDomain($request->input('id'));
+
                 return successResponse($response->message);
             } else {
                 return errorResponse($response->message);

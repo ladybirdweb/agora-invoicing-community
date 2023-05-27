@@ -552,11 +552,11 @@ class ClientController extends BaseClientController
             $orders = $this->getClientPanelOrdersData();
 
             return \DataTables::of($orders)
-                        ->orderColumn('product_name', '-orders.created_at $1')
-                        ->orderColumn('date', '-orders.created_at $1')
-                        ->orderColumn('number', '-orders.created_at $1')
-                        ->orderColumn('version', '-orders.created_at $1')
-                         ->orderColumn('expiry', '-orders.created_at $1')
+                        ->orderColumn('product_name', '-orders.id $1')
+                        ->orderColumn('date', '-orders.id $1')
+                        ->orderColumn('number', '-orders.id $1')
+                        ->orderColumn('version', '-orders.id $1')
+                         ->orderColumn('expiry', '-orders.id $1')
 
                             ->addColumn('id', function ($model) {
                                 return $model->id;

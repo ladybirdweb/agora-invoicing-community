@@ -691,5 +691,8 @@ return [
     'cron_server_url' => 'Cron server URL',
     'cron_server_key' => 'Cron server key',
     'create_in_progress' => 'Your Custom cloud has begun it\'s self creation and will be completed in few minutes and you shall be notified in your registered email with username and password. if you fail to receive it feel free to contact our support team. <a href="https://support.faveohelpdesk.com">Raise a ticket here!</a>',
+    'something_bad'    =>'Oops! Something went wrong, we would suggest try creating another cloud instance. If issue persists contact <a href="https://support.faveohelpdesk.com">Support Center</a>',
+    'cloud_info' => 'Welcome to Faveo! You can deploy your free trial cloud instance with just one click. if you wish to use our domain you can just enter YourCloudDomainName.faveocloud.com and the instance creation will begin instantly, Also we do provide support to create a cloud instance with your own custom domain as well. Please create a cloud instance for either helpdesk or servicedesk and choose the one which you wish to purchase. Further queries contact our <a href="https://support.faveohelpdesk.com" style="color:white"><u>Support Center</u></a>',
+    'cloud_live_info'=> 'Welcome to Faveo! You can deploy your cloud instance with just one click. if you wish to use our domain you can just enter YourCloudDomainName.faveocloud.com and the instance creation will begin instantly, Also we do provide support to create a cloud instance with your own custom domain as well. Further queries contact our <a href="https://support.faveohelpdesk.com" style="color:white"><u>Support Center</u></a>',
 
 ];

@@ -487,4 +487,14 @@ class LicenseController extends Controller
 
         $this->postCurl($url.'api/admin/license/deactivate', "api_key_secret=$api_key_secret&license_code=$licenseCode", $token);
     }
+    public function reissueDomain($installationPath)
+    {
+        $url = $this->url;
+        $api_key_secret = $this->api_key_secret;
+
+        $OauthDetails = $this->oauthAuthorization();
+        $token = $OauthDetails->access_token;
+
+        $this->postCurl($url.'api/admin/installation/reissue', "api_key_secret=$api_key_secret&installation_path=$installationPath", $token);
+    }
 }

@@ -49,9 +49,25 @@ class Kernel extends ConsoleKernel
             ->daily();
         $this->execute($schedule, 'subsExpirymail');
         $this->execute($schedule, 'postExpirymail');
+
+        // Schedule the cloudEmail method
+        //Should not be touched unless you are changing something with cloud
         $schedule->call(function () {
-            $this->cloudEmail();
-        })->everyFiveMinutes();
+            $lockFilePath = storage_path('cloudEmail.lock');
+
+            // Check if the lock file exists
+            if (!file_exists($lockFilePath)) {
+                // Create the lock file
+                file_put_contents($lockFilePath, '');
+
+                // Execute the cloudEmail method
+                $this->cloudEmail();
+
+                // Remove the lock file
+                unlink($lockFilePath);
+            }
+        })->everyFiveMinutes()->name('sendCloudEmail');
+
     }
 
     public function execute($schedule, $task)
@@ -215,13 +231,26 @@ class Kernel extends ConsoleKernel
 
     private function prepareMessages($domain, $counter, $user, $success = false)
     {
-        if ($success) {
-            $this->googleChat('Hello, It has come to my notice that this domain has been created successfully Domain name:'.$domain.' and this is their email: '.$user."\u{2705}\u{2705}\u{2705}");
-        } else {
-            cloudemailsend::where('domain', $domain)->increment('counter');
-            if ($counter == 30) {
-                $this->googleChat('Hello, It has come to my notice that this domain has not been created successfully Domain name:'.$domain.' and this is their email: '.$user.'&#10060;'."\u{2716}\u{2716}\u{2716}");
+        $lockFilePath = storage_path('cloudMessage.lock');
+
+        // Check if the lock file exists
+        if (!file_exists($lockFilePath)) {
+            // Create the lock file
+            file_put_contents($lockFilePath, '');
+
+            // Execute the cloudEmail method
+            if ($success) {
+                $this->googleChat('Hello, It has come to my notice that this domain has been created successfully Domain name:'.$domain.' and this is their email: '.$user."\u{2705}\u{2705}\u{2705}");
+            } else {
+                cloudemailsend::where('domain', $domain)->increment('counter');
+                if ($counter == 30) {
+                    $this->googleChat('Hello, It has come to my notice that this domain has not been created successfully Domain name:'.$domain.' and this is their email: '.$user.'&#10060;'."\u{2716}\u{2716}\u{2716}");
+                }
             }
+            // Remove the lock file
+            unlink($lockFilePath);
         }
+
+
     }
 }

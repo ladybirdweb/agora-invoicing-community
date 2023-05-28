@@ -3,16 +3,16 @@
 namespace App\Console;
 
 use App\Console\Commands\SetupTestEnv;
+use App\Model\Common\Setting;
 use App\Model\Common\StatusSetting;
 use App\Model\Mailjob\ActivityLogDay;
+use App\Model\Mailjob\CloudEmail as cloudemailsend;
+use GuzzleHttp\Client;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Illuminate\Support\Facades\Schema;
-use Torann\Currency\Console\Manage as CurrencyManage;
-use App\Model\Common\Setting;
-use App\Model\Mailjob\CloudEmail as cloudemailsend;
-use GuzzleHttp\Client;
 use Symfony\Component\Mime\Email;
+use Torann\Currency\Console\Manage as CurrencyManage;
 
 class Kernel extends ConsoleKernel
 {
@@ -142,14 +142,9 @@ class Kernel extends ConsoleKernel
         require base_path('routes/console.php');
     }
 
-
-
-
-
     //This is to send an email to the client when the custom domain has been created properly
     public function cloudEmail()
     {
-
         try {
             $settings = Setting::find(1);
             $mail = new \App\Http\Controllers\Common\PhpMailController();

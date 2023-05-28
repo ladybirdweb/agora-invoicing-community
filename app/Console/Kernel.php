@@ -56,7 +56,7 @@ class Kernel extends ConsoleKernel
             $lockFilePath = storage_path('cloudEmail.lock');
 
             // Check if the lock file exists
-            if (!file_exists($lockFilePath)) {
+            if (! file_exists($lockFilePath)) {
                 // Create the lock file
                 file_put_contents($lockFilePath, '');
 
@@ -67,7 +67,6 @@ class Kernel extends ConsoleKernel
                 unlink($lockFilePath);
             }
         })->everyFiveMinutes()->name('sendCloudEmail');
-
     }
 
     public function execute($schedule, $task)
@@ -234,7 +233,7 @@ class Kernel extends ConsoleKernel
         $lockFilePath = storage_path('cloudMessage.lock');
 
         // Check if the lock file exists
-        if (!file_exists($lockFilePath)) {
+        if (! file_exists($lockFilePath)) {
             // Create the lock file
             file_put_contents($lockFilePath, '');
 
@@ -250,7 +249,5 @@ class Kernel extends ConsoleKernel
             // Remove the lock file
             unlink($lockFilePath);
         }
-
-
     }
 }

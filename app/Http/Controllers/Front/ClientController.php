@@ -578,15 +578,19 @@ class ClientController extends BaseClientController
                                 $order_cont = new \App\Http\Controllers\Order\OrderController();
                                 $status = $order_cont->checkInvoiceStatusByOrderId($model->id);
                                 $url = '';
+                                $deleteCloud = '';
                                 if ($status == 'success' && $model->price != '0' && $model->type == '4') {
                                     $url = $this->renewPopup($model->sub_id, $model->product_id);
+                                    $deleteCloud = $this->getCloudDeletePopup($model, $model->product_id);
+
                                 } elseif ($status == 'success' && $model->price == '0' && $model->type != '4') {
                                     $url = $this->renewPopup($model->sub_id, $model->product_id);
+                                    $deleteCloud = $this->getCloudDeletePopup($model, $model->product_id);
+
                                 }
 
                                 $listUrl = $this->getPopup($model, $model->product_id);
 
-                                $deleteCloud = $this->getCloudDeletePopup($model, $model->product_id);
 
                                 $changeDomain = $this->changeDomain($model, $model->product_id); // Need to add this if the client requirement intensifies.
 

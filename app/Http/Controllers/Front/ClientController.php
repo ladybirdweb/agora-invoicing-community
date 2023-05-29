@@ -562,7 +562,7 @@ class ClientController extends BaseClientController
                                 return $model->id;
                             })
                             ->addColumn('date', function ($model) {
-                             return getDateHtml($model->date);
+                                return getDateHtml($model->date);
                             })
                             ->addColumn('product_name', function ($model) {
                                 return $model->product_name;
@@ -599,7 +599,7 @@ class ClientController extends BaseClientController
                                  $sql = 'orders.number like ?';
                                  $query->whereRaw($sql, ["%{$keyword}%"]);
                              })
-                            ->rawColumns(['id', 'product_name','date', 'number', 'version', 'expiry', 'Action'])
+                            ->rawColumns(['id', 'product_name', 'date', 'number', 'version', 'expiry', 'Action'])
                             ->make(true);
         } catch (Exception $ex) {
             app('log')->error($ex->getMessage());
@@ -612,7 +612,7 @@ class ClientController extends BaseClientController
         return Order::leftJoin('products', 'products.id', '=', 'orders.product')
             ->leftJoin('subscriptions', 'orders.id', '=', 'subscriptions.order_id')
             ->leftJoin('invoices', 'orders.invoice_id', 'invoices.id')
-            ->select('products.name as product_name', 'products.github_owner', 'products.github_repository', 'products.type', 'products.id as product_id', 'orders.id', 'orders.number', 'orders.client', 'subscriptions.id as sub_id', 'subscriptions.version', 'subscriptions.update_ends_at', 'products.name', 'orders.client', 'invoices.id as invoice_id', 'invoices.number as invoice_number','orders.created_at as date')
+            ->select('products.name as product_name', 'products.github_owner', 'products.github_repository', 'products.type', 'products.id as product_id', 'orders.id', 'orders.number', 'orders.client', 'subscriptions.id as sub_id', 'subscriptions.version', 'subscriptions.update_ends_at', 'products.name', 'orders.client', 'invoices.id as invoice_id', 'invoices.number as invoice_number', 'orders.created_at as date')
             ->where('orders.client', \Auth::user()->id);
     }
 

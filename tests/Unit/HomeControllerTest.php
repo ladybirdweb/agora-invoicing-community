@@ -8,7 +8,6 @@ use App\Model\Payment\PlanPrice;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
 use App\User;
-use Illuminate\Http\Request;
 use Tests\DBTestCase;
 
 class HomeControllerTest extends DBTestCase

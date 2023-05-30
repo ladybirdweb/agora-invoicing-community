@@ -354,47 +354,53 @@ class CronController extends BaseCronController
         try {
             $subscriptions_detail = $this->getOnDayExpiryInfoSubs()->get();
             foreach ($subscriptions_detail as $subscription) {
+                $userid = $subscription->user_id;
+                $end = $subscription->update_ends_at;
+                $order = $this->getOrderById($subscription->order_id);
+                $oldinvoice = $this->getInvoiceByOrderId($subscription->order_id);
+                $item = $this->getInvoiceItemByInvoiceId($oldinvoice->id);
+                // $product = $item->product_name;
+                $product_details = Product::where('name', $item->product_name)->first();
+                $plan = Plan::where('product', $product_details->id)->first('days');
+                $oldcurrency = $oldinvoice->currency;
+
+                $stripeSecretKey = ApiKey::pluck('stripe_secret')->first();
+                $stripe = new \Stripe\StripeClient($stripeSecretKey);
+
+                $user = \DB::table('users')->where('id', $userid)->first();
+                $customer_id = Auto_renewal::where('user_id', $userid)->latest()->value('customer_id');
+                $planid = Plan::where('product', $product_details->id)->value('id');
+                $cost = PlanPrice::where('plan_id', $planid)->where('currency', $oldcurrency)->value('renew_price');
+
+                //razorpay sunscription status
+
+                $subscriptionId = Subscription::where('id', $subscription->id)->value('subscribe_id');
+                $rzp_sta = Subscription::where('id', $subscription->id)->value('rzp_subscription');
+
+                if ($subscriptionId != null) {
+                    $authenticatesubs = $this->authenticatesubs($subscriptionId, $subscription);
+                    if ($rzp_sta != '0') {
+                        $activeSubs = $this->activeSubs($subscriptionId, $subscription);
+                        $key_id = ApiKey::pluck('rzp_key')->first();
+                        $secret = ApiKey::pluck('rzp_secret')->first();
+                        $api = new Api($key_id, $secret);
+
+                        $invoiceCount = $api->invoice->all(['subscription_id'=> $subscriptionId]);
+                        if ($invoiceCount['count'] > 99) {
+                            $updateCount = $api->subscription->fetch($subscriptionId)->update(['remaining_count' => 100]);
+                        }
+                    }
+                }
                 $productType = Product::find($subscription->product_id);
                 $price = PlanPrice::where('plan_id', $subscription->plan_id)->value('renew_price');
                 if ($productType->type == '4' && $price == '0') {
                     Subscription::where('id', $subscription->id)->update(['is_subscribed' => 0]);
                 }
-                $status = $subscription->is_subscribed;
-                if ($status == '1') {
-                    $userid = $subscription->user_id;
-                    $end = $subscription->update_ends_at;
-                    $order = $this->getOrderById($subscription->order_id);
-                    $oldinvoice = $this->getInvoiceByOrderId($subscription->order_id);
-                    $item = $this->getInvoiceItemByInvoiceId($oldinvoice->id);
-                    // $product = $item->product_name;
-                    $product_details = Product::where('name', $item->product_name)->first();
-                    $plan = Plan::where('product', $product_details->id)->first('days');
-                    $oldcurrency = $oldinvoice->currency;
-
-                    $stripeSecretKey = ApiKey::pluck('stripe_secret')->first();
-                    $stripe = new \Stripe\StripeClient($stripeSecretKey);
-
-                    $user = \DB::table('users')->where('id', $userid)->first();
-                    $customer_id = Auto_renewal::where('user_id', $userid)->latest()->value('customer_id');
-                    $planid = Plan::where('product', $product_details->id)->value('id');
-                    $cost = PlanPrice::where('plan_id', $planid)->where('currency', $oldcurrency)->value('renew_price');
-
-                    //razorpay sunscription status
-
-                    $subscriptionId = Subscription::where('id',$subscription->id)->value('subscribe_id');
-                    if($subscriptionId != null){
-                       $authenticatesubs = $this->authenticatesubs($subscriptionId,$subscription);
-                       $activeSubs = $this->activeSubs($subscriptionId,$subscription);
-                       $key_id = ApiKey::pluck('rzp_key')->first();
-                       $secret = ApiKey::pluck('rzp_secret')->first();
-                       $api = new Api($key_id, $secret);
-                       $invoiceCount = $api->invoice->all(['subscription_id'=> $subscriptionId]);
-                       if($invoiceCount['count'] > 99)
-                       {
-                        $updateCount = $api->subscription->fetch($subscriptionId)->update(['remaining_count' => 100]);
-                    }
+                $productType = Product::find($subscription->product_id);
+                $price = PlanPrice::where('plan_id', $subscription->plan_id)->value('renew_price');
+                if ($productType->type == '4' && $price == '0') {
+                    Subscription::where('id', $subscription->id)->update(['is_subscribed' => 0]);
                 }
-
                 $status = $subscription->is_subscribed;
                 if ($status == '1') {
                     //create invoice

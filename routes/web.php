@@ -529,7 +529,6 @@ Route::middleware('installAgora')->group(function () {
     Route::post('cloud-details', [Tenancy\TenantController::class, 'saveCloudDetails'])->name('cloud-details')->middleware('admin');
     Route::post('enable/cloud', [Tenancy\TenantController::class, 'enableCloud'])->name('enable-cloud')->middleware('admin');
 
-
     Route::post('upgrade-plan-for-cloud', [Tenancy\CloudExtraActivities::class, 'upgradePlan']);
 
     Route::get('api/domain', [Tenancy\CloudExtraActivities::class, 'domainCloudAutofill']);

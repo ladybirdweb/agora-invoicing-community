@@ -692,5 +692,7 @@ return [
     'cron_server_url' => 'Cron server URL',
     'cron_server_key' => 'Cron server key',
     'offer_price' => 'Offer Price must be a % value',
+    'offer_price_integer' => 'The offer price must be between 0 and 100.',
+    'offer_price_limit' => 'The offer price must be a positive number',
 
 ];

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Product\ProductController;
 use App\Model\Common\Template;
 use App\Model\Common\TemplateType;
+use App\Model\Payment\PlanPrice;
 use App\Model\Payment\Plan;
 use App\Model\Payment\PlanPrice;
 use App\Model\Product\Product;
@@ -206,8 +207,8 @@ class TemplateController extends Controller
                 $plan_form = \Form::select('subscription', ['Plans' => $plans], null);
             }
             $form = \Form::open(['method' => 'get', 'url' => $url]).
-        $plan_form.
-        \Form::hidden('id', $id);
+            $plan_form.
+            \Form::hidden('id', $id);
 
             return $form;
         } catch (\Exception $ex) {
@@ -231,6 +232,7 @@ class TemplateController extends Controller
             $prices = [];
             if ($plans->count() > 0) {
                 foreach ($plans as $plan) {
+                    $offerprice = PlanPrice::where('plan_id',$plan->id)->value('offer_price');
                     $planDetails = userCurrencyAndPrice('', $plan);
                     $prices[] = $planDetails['plan']->add_price;
                     $prices[] .= $planDetails['symbol'];

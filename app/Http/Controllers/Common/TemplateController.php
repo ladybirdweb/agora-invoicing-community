@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Product\ProductController;
 use App\Model\Common\Template;
 use App\Model\Common\TemplateType;
-use App\Model\Payment\PlanPrice;
 use App\Model\Payment\Plan;
+use App\Model\Payment\PlanPrice;
 use Illuminate\Http\Request;
 
 class TemplateController extends Controller
@@ -226,7 +226,7 @@ class TemplateController extends Controller
             $prices = [];
             if ($plans->count() > 0) {
                 foreach ($plans as $plan) {
-                    $offerprice = PlanPrice::where('plan_id',$plan->id)->value('offer_price');
+                    $offerprice = PlanPrice::where('plan_id', $plan->id)->value('offer_price');
                     $planDetails = userCurrencyAndPrice('', $plan);
                     $prices[] = $planDetails['plan']->add_price;
                     $prices[] .= $planDetails['symbol'];

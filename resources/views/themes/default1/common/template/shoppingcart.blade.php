@@ -31,6 +31,17 @@ main
     right: -20px;
     top: -25px;
 }
+.strike
+{
+    text-decoration: line-through;
+    font-weight: normal;
+    font-size: 20px;
+    color: #212529;
+    font-weight: 300;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
     .subscription {
     display: block;
     width: 100%;

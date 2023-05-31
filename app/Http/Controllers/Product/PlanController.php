@@ -175,7 +175,6 @@ class PlanController extends ExtendedPlanController
     public function store(PlanRequest $request)
     {
         try {
-            dd($request->input('offer_price'));
             $add_prices = $request->add_price;
             $renew_prices = $request->renew_price;
             $this->plan->fill($request->input())->save();
@@ -196,6 +195,7 @@ class PlanController extends ExtendedPlanController
                         'price_description' => $request->price_description,
                         'product_quantity' => $request->product_quantity,
                         'no_of_agents' => $request->no_of_agents,
+                        'offer_price' => $request->offer_price
                     ];
                 }
                 $this->plan->planPrice()->insert($dataForCreating);
@@ -273,6 +273,7 @@ class PlanController extends ExtendedPlanController
                     'price_description' => $request->price_description,
                     'product_quantity' => $request->product_quantity,
                     'no_of_agents' => $request->no_of_agents,
+                    'offer_price' => $request->offer_price
                 ];
             }
             $plan->planPrice()->insert($dataForCreating);

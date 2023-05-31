@@ -93,11 +93,12 @@
                       <th class="col-sm-3" style="width:20%">{{ Lang::get('message.currency') }} <span class="text-red">*</span></th>
                       <th class="col-sm-3" style="width:20%">{{ Lang::get('message.regular-price') }} <span class="text-red">*</span></th>
                       <th class="col-sm-3" style="width:20%">
-                        {{ Lang::get('message.renew-price') }} <span class="text-red">*</span>
+                        {{ Lang::get('Offer Price') }} <span class="text-bold">(%)</span>
                       </th>
                       <th class="col-sm-3" style="width:20%">
-                        {{ Lang::get('Offer Price') }} 
+                        {{ Lang::get('message.renew-price') }} <span class="text-red">*</span>
                       </th>
+                      
                     </tr>
                     </thead>
 
@@ -131,13 +132,15 @@
                           <input type="text" class="form-control" name="add_price[]" class="{{ $errors->has('add_prices') ? 'has-error' : '' }}" value="{{old('add_price.0')}}">
                         </td>
 
+                         <td>
+                            <input type="text" class="form-control" value="" name="offer_price">
+                        </td>
+
                         <td>
                             <input type="text" class="form-control" value="{{old('renew_price.0')}}" name="renew_price[]">
                         </td>
 
-                        <td>
-                            <input type="text" class="form-control" value="{{old('offer_price.0')}}" name="offer_price[]">
-                        </td>
+                       
 
 
                       </tr>
@@ -254,6 +257,9 @@ $("#close-plan").click(function() {
 
           <td>
             <input type="text" class="form-control" name="add_price[]">
+          </td>
+           <td>
+            <input type="text" class="form-control" name="offer_price">
           </td>
 
           <td>

@@ -27,13 +27,17 @@ class PlanRequest extends FormRequest
             'days' => 'nullable|numeric',
             'product_quantity' => 'required_without:no_of_agents|integer|min:0',
             'no_of_agents' => 'required_without:product_quantity|integer|min:0',
-            'offer_price' => 'numeric|between:0,100|regex:/^\d+(\.\d+)?%$/',
+            'offer_price' => 'integer|min:0|max:100',
         ];
     }
 
     public function messages(): array
     {
         return [
+            'name.required' => 'The name field is required',
+            'product_quantity.required_without' => 'The product quantity field is required when no of agents is not present.',
+            'no_of_agents.required_without' => 'The no of agents field is required when product quantity is not present.',
+            'product.required' => 'the product field is required',
             'country_id.*.required' => trans('message.country_missing'),
             'add_price.*.numeric' => trans('message.regular_price_numeric'),
             'add_price.*.required_with_all' => trans('message.add_price_required'),
@@ -44,7 +48,10 @@ class PlanRequest extends FormRequest
             'renew_price.array_size_equals' => trans('message.renew_price_array_equals'),
             'add_price.array_size_equals' => trans('message.add_price_array_equals'),
             'currency.*.required_with' => trans('message.currency_missing'),
-            'offer_price.regex' => trans('message.offer_price'),
+            'offer_price.min' => trans('message.offer_price_integer'),
+            'offer_price.max' => trans('message.offer_price_integer'),
+            'offer_price.integer' => trans('message.offer_price_limit'),
+
         ];
     }
 }

@@ -100,7 +100,7 @@ foreach($scripts as $script)
                         </div>
                     </div>
                     <div class="header-column justify-content-end">
-                        <div class="header-row pt-3">
+                        <div class="header-row pt-3" style="margin-right: 310px;">
                             <nav class="header-nav-top">
                                 <ul class="nav nav-pills">
 
@@ -118,13 +118,7 @@ foreach($scripts as $script)
                                                     </span>
                                         </li>
                                     @endif
-                                    @if(!Auth::user())
-                                        <li class="nav-item nav-item-left-border nav-item-left-border-remove nav-item-left-border-md-show">
-                                                    <span class="ws-nowrap">
-                                                        <a style="color: inherit"   data-toggle="modal" data-target="#login-modal">My Account</a>
-                                                    </span>
-                                        </li>
-                                    @endif
+                                
 
                                 </ul>
                             </nav>
@@ -132,7 +126,7 @@ foreach($scripts as $script)
 
 
                         <div class="header-row">
-                            <div class="header-nav pt-1" style="margin-top: 0px; margin-bottom: -10px;">
+                            <div class="header-nav pt-1" style="margin-top: 0px; margin-bottom: -10px; margin-right: 320px;">
 
                                 <button class="btn btn-sm header-btn-collapse-nav" data-toggle="collapse" data-target=".header-nav-main nav">
                                     <i class="fa fa-bars"></i>
@@ -145,19 +139,12 @@ foreach($scripts as $script)
                                             @auth
                                                 <?php
                                                 $id = \Auth::user()->id;
-                                                $user = \App\User::where('id', '=', $id)->value('first_time_login');?>
+                                                $cloud = \App\Model\Common\StatusSetting::where('id','1')->value('cloud_button');
+                                                ?>
 
-                                                @if(Auth::check() && $user == 0)
+                                                @if(Auth::check() && $cloud == 1)
 
-                                                      @auth 
-                                                    <?php
-                                                    $id = \Auth::user()->id;
-                                                    $user = \App\User::where('id', '=', $id)->value('first_time_login');
-                                                    $cloud = \App\Model\Common\StatusSetting::where('id','1')->value('cloud_button');
-                                                    ?>
 
-                                                     @if(Auth::check() && $user == 0 && $cloud == 1)
-                                                    
 
                                                     <li class="dropdown">
                                                         <a  class="nav-link open-createTenantDialog" style="cursor: pointer;">

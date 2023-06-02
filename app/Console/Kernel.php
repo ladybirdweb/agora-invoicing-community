@@ -3,8 +3,8 @@
 namespace App\Console;
 
 use App\Console\Commands\SetupTestEnv;
-use App\Model\Common\Setting;
 use App\Jobs\NotifyMail;
+use App\Model\Common\Setting;
 use App\Model\Common\StatusSetting;
 use App\Model\Mailjob\ActivityLogDay;
 use App\Model\Mailjob\CloudEmail as cloudemailsend;

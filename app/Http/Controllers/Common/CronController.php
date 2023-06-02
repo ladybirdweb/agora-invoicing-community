@@ -479,7 +479,7 @@ class CronController extends BaseCronController
                 $key_id = ApiKey::pluck('rzp_key')->first();
                 $secret = ApiKey::pluck('rzp_secret')->first();
                 $amount = $cost;
-                $count = Subscription::where('id', $subscription->id)->value('rzp_subattempts');
+                // $count = Subscription::where('id', $subscription->id)->value('rzp_subattempts');
                 $update_end = $subscription->update_ends_at;
                 $api = new Api($key_id, $secret);
                 // $paymentId = \DB::table('rzp_payments')->where('user_id', $user->id)->latest()->value('payment_id');

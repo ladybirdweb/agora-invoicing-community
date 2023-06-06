@@ -71,8 +71,8 @@ class PageControllerTest extends TestCase
     public function test_getPrice()
     {
         $product = Product::factory()->create([
-            'id' => 1,
-            'name' => 'Example Product',
+            'id' => 40,
+            'name' => 'demo Product',
         ]);
         $months = 12;
         $price = [];

@@ -266,6 +266,8 @@ Route::middleware('installAgora')->group(function () {
     Route::patch('upload/{id}', [Product\ProductController::class, 'uploadUpdate']);
     Route::get('get-group-url', [Product\GroupController::class, 'generateGroupUrl']);
 
+    
+
     /*
      * Plan
      */

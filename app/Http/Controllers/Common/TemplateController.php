@@ -9,7 +9,9 @@ use App\Model\Common\TemplateType;
 use App\Model\Payment\Plan;
 use App\Model\Payment\PlanPrice;
 use App\Model\Product\Product;
+use App\Http\Controllers\Front\PageController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class TemplateController extends Controller
 {
@@ -200,15 +202,14 @@ class TemplateController extends Controller
             $type = Product::find($id);
             $planid = Plan::where('product', $id)->value('id');
             $price = PlanPrice::where('plan_id', $planid)->value('renew_price');
-            $plans = $this->prices($id);
 
+            $plans = $this->prices($id);
             if ($plans) {
                 $plan_form = \Form::select('subscription', ['Plans' => $plans], null);
             }
             $form = \Form::open(['method' => 'get', 'url' => $url]).
             $plan_form.
             \Form::hidden('id', $id);
-
             return $form;
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -252,11 +253,13 @@ class TemplateController extends Controller
         }
     }
 
-    public function getPrice($months, $price, $priceDescription, $value, $cost, $currency)
+    public function getPrice($months, $price, $priceDescription, $value, $cost, $currency,$offer,$product)
     {
+        if(isset($offer) || $offer != '' || $offer != null){
+             $cost = $cost - ($offer / 100 * $cost);
+        }
         $price1 = currencyFormat($cost, $code = $currency);
         $price[$value->id] = $months.'  '.$price1.' '.$priceDescription;
-
         return $price;
     }
 
@@ -266,6 +269,7 @@ class TemplateController extends Controller
             $plans = Plan::where('product', $id)->orderBy('id', 'desc')->get();
             $price = [];
             foreach ($plans as $value) {
+                $offer = PlanPrice::where('plan_id',$value->id)->value('offer_price');
                 $product = Product::find($value->product);
                 $currencyAndSymbol = userCurrencyAndPrice('', $value);
                 $currency = $currencyAndSymbol['currency'];
@@ -276,9 +280,9 @@ class TemplateController extends Controller
                 $duration = $value->periods;
                 $months = count($duration) > 0 ? $duration->first()->name : '';
                 if ($product->type != '4') {
-                    $price = $this->getPrice($months, $price, $priceDescription, $value, $cost, $currency);
+                    $price = $this->getPrice($months, $price, $priceDescription, $value, $cost, $currency,$offer,$product);
                 } elseif ($cost != '0' && $product->type == '4') {
-                    $price = $this->getPrice($months, $price, $priceDescription, $value, $cost, $currency);
+                    $price = $this->getPrice($months, $price, $priceDescription, $value, $cost, $currency,$offer,$product);
                 }
                 // $price = currencyFormat($cost, $code = $currency);
             }

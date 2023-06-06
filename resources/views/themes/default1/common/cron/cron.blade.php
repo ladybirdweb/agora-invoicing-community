@@ -166,7 +166,14 @@ Cron Setting
                   <option value="{{$key}}" <?php echo (in_array($key, $Auto_expiryday)) ?  "selected" : "" ;  ?>>{{$value}}</option>
                    @endforeach
                    
-              <div class="col-md-6">
+          
+                </select>
+                @endif
+              </div>
+              <!-- /.form-group -->
+            </div>
+
+                <div class="col-md-6">
               <div class="form-group">
                 <label>{{Lang::get('Expiry Mail sent for Faveo Cloud')}}</label>
                   @if ($cloudStatus == 0)
@@ -181,7 +188,6 @@ Cron Setting
                 </select>
                 @endif
               </div>
-              <!-- /.form-group -->
             </div>
 
 

@@ -134,7 +134,6 @@ main
           @endif
            <h4 style="text-align: center;">{{$tagline}} </h4>
         <div class="pricing-table mb-4">
-          
         {!! html_entity_decode($templates) !!}
    
         </div>
@@ -153,6 +152,17 @@ main
 
 
 </div>
+<script type="text/javascript">
+$(document).ready(function() {
+  $('.checkbox').on('change', function() {
+    var isChecked = $(this).is(':checked');
+    
+    // Store the checked value in a cookie
+    document.cookie = 'isChecked=' + isChecked + '; path=/';
+    
+  });
+});
+</script>
 
 @stop
 

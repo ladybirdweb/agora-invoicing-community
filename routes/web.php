@@ -484,7 +484,9 @@ Route::middleware('installAgora')->group(function () {
     Route::get('expired-subscriptions', [Common\CronController::class, 'eachSubscription']);
 
     /*
-     * Renew
+
+
+     /* Renew
      */
 
     Route::get('renew/{id}', [Order\RenewController::class, 'renewForm']);

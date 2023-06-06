@@ -241,7 +241,7 @@ class BaseSettingsController extends PaymentSettingsController
             'Subs_expiry',
             'Auto_expiryday',
             'post_expiry',
-            'post_expiryday'
+            'post_expiryday',
             'cloudDays',
             'beforeCloudDay'
         ));
@@ -278,30 +278,35 @@ class BaseSettingsController extends PaymentSettingsController
     }
 
     //Save the Cron Days for expiry Mails and Activity Log
-    public function saveCronDays(Request $request)
-    {
-        $daysList = new \App\Model\Mailjob\ExpiryMailDay();
-        $lists = $daysList->get();
-        if ($lists->count() > 0) {
-            foreach ($lists as $list) {
-                $list->delete();
-            }
+public function saveCronDays(Request $request)
+{
+    $daysList = new \App\Model\Mailjob\ExpiryMailDay();
+    $lists = $daysList->get();
+    
+    if ($lists->count() > 0) {
+        foreach ($lists as $list) {
+            $list->delete();
         }
+    }
 
-        ExpiryMailDay::create(['days' => $request->input('expiryday'), 'autorenewal_days' => $request->input('subexpiryday'), 'postexpiry_days' => $request->input('postsubexpiry_days')]);
+    ExpiryMailDay::create(['days' => $request->input('expiryday'), 'autorenewal_days' => $request->input('subexpiryday'), 'postexpiry_days' => $request->input('postsubexpiry_days')]);
 
-        if ($request['expiryday'] != null) {
+    if ($request['expiryday'] != null) {
+        if (is_array($request['expiryday'])) {
             foreach ($request['expiryday'] as $key => $value) {
                 $daysList->create([
                     'days' => $value,
                 ]);
             }
         }
-        \DB::table('expiry_mail_days')->update(['cloud_days' => $request->input('cloud_days')]);
-        ActivityLogDay::findorFail(1)->update(['days' => $request->logdelday]);
-
-        return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
     }
+    
+    \DB::table('expiry_mail_days')->update(['cloud_days' => $request->input('cloud_days')]);
+    ActivityLogDay::findOrFail(1)->update(['days' => $request->logdelday]);
+
+    return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
+}
+
 
     //Save Google recaptch site key and secret in Database
     public function captchaDetails(Request $request)

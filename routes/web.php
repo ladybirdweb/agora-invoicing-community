@@ -261,6 +261,8 @@ Route::middleware('installAgora')->group(function () {
     Route::patch('upload/{id}', [Product\ProductController::class, 'uploadUpdate']);
     Route::get('get-group-url', [Product\GroupController::class, 'generateGroupUrl']);
 
+    
+
     /*
      * Plan
      */
@@ -521,7 +523,6 @@ Route::middleware('installAgora')->group(function () {
     Route::post('enable/cloud', [Tenancy\TenantController::class, 'enableCloud'])->name('enable-cloud')->middleware('admin');
 
     Route::post('upgrade-plan-for-cloud', [Tenancy\CloudExtraActivities::class, 'upgradePlan']);
-
     /*
      * Api
      */

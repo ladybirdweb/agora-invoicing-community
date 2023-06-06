@@ -160,13 +160,12 @@ class CartController extends BaseCartController
     public function showCart()
     {
         try {
-
             $cartCollection = Cart::getContent();
             foreach ($cartCollection as $item) {
-                $planid = Plan::where('product',$item->id)->value('id');
-                $offerprice = PlanPrice::where('plan_id',$planid)->value('offer_price');
-                if($offerprice){
-                    $item->price = $item->price  - ($offerprice / 100 * $item->price );
+                $planid = Plan::where('product', $item->id)->value('id');
+                $offerprice = PlanPrice::where('plan_id', $planid)->value('offer_price');
+                if ($offerprice) {
+                    $item->price = $item->price - ($offerprice / 100 * $item->price);
                 }
                 $cart_currency = $item->attributes->currency;
                 \Session::put('currency', $cart_currency);
@@ -179,10 +178,6 @@ class CartController extends BaseCartController
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-
-
-
-
 
     public function cartRemove(Request $request)
     {

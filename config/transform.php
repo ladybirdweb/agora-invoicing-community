@@ -14,6 +14,7 @@ return[
         'strike-priceyear' => '{{strike-priceyear}}',
         'feature' => '<li>{{feature}}</li>',
         'subscription' => '{{subscription}}',
+        'subscription-year' => '{{subscription-year}}',
         'url' => '{{url}}',
     ],
     /*

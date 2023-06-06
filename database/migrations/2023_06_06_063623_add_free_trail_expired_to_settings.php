@@ -13,12 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-         if (! Schema::hasColumn('free_trail_expired','Free_trail_gonna_expired')) {
-        Schema::table('settings', function (Blueprint $table) {
-            $table->string('free_trail_expired')->nullable();
-            $table->string('Free_trail_gonna_expired')->nullable();
-        });
-    }
+        if (! Schema::hasColumn('free_trail_expired', 'Free_trail_gonna_expired')) {
+            Schema::table('settings', function (Blueprint $table) {
+                $table->string('free_trail_expired')->nullable();
+                $table->string('Free_trail_gonna_expired')->nullable();
+            });
+        }
     }
 
     /**

@@ -282,7 +282,7 @@ public function saveCronDays(Request $request)
 {
     $daysList = new \App\Model\Mailjob\ExpiryMailDay();
     $lists = $daysList->get();
-    
+
     if ($lists->count() > 0) {
         foreach ($lists as $list) {
             $list->delete();
@@ -300,13 +300,12 @@ public function saveCronDays(Request $request)
             }
         }
     }
-    
+
     \DB::table('expiry_mail_days')->update(['cloud_days' => $request->input('cloud_days')]);
     ActivityLogDay::findOrFail(1)->update(['days' => $request->logdelday]);
 
     return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
 }
-
 
     //Save Google recaptch site key and secret in Database
     public function captchaDetails(Request $request)

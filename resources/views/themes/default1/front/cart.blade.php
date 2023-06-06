@@ -164,6 +164,7 @@
 
                                                 <td class="product-subtotal">
                                                       <span class="amount">
+
                                                         {{currencyFormat($item->getPriceSum(),$item->attributes->currency)}}
                                                     </span>
 

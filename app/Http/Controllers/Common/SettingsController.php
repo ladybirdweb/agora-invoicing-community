@@ -554,4 +554,6 @@ class SettingsController extends BaseSettingsController
 
         return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
     }
+
+    
 }

@@ -151,24 +151,22 @@
                     <div class="col-md-6" id="subfetching">
                         {!! Form::select('subexpiry-commands',$commands,$condition->getConditionValue('subsExpirymail')['condition'],['class'=>'form-control','id'=>'subfetching-command']) !!}
                           <div id='subfetching-daily-at'>
-                            {!! Form::text('subexpiry-dailyAt',$condition->getConditionValue('subsExpirymail')['at'],['class'=>'form-control time-picker',"placeholder" => "HH:MM"]) !!}
-                            {!! Form::label('cloud_fetching',Lang::get('Cloud Expiry Mail')) !!}<br>
-                            {!! Form::checkbox('cloud_cron',1,$condition->checkActiveJob()['cloud'],['id'=>'cloud_fetching']) !!}&nbsp;{{Lang::get('Enable Faveo Cloud')}}
+                        {!! Form::text('subexpiry-dailyAt',$condition->getConditionValue('subsExpirymail')['at'],['class'=>'form-control time-picker',"placeholder" => "HH:MM"]) !!}
+
                         </div>
 
                     </div>
-                    <div class="col-md-6" id="cloud">
-                        {!! Form::select('cloud-commands',$commands,$condition->getConditionValue('cloud')['condition'],['class'=>'form-control','id'=>'cloud-command']) !!}
-                          <div id='cloud-daily-at'>
-                            {!! Form::text('cloud-dailyAt',$condition->getConditionValue('cloud')['at'],['class'=>'form-control time-picker',"placeholder" => "HH:MM"]) !!}
 
-                        </div>
-                      
-                    </div>
+
+                   
                 </div>
             </div><!-- /.info-box-content -->
 
         </div><!-- /.info-box -->
+
+
+
+
 
         <div class="col-md-6">
             <div class="info-box">
@@ -193,6 +191,35 @@
                         </div>
                       
                     </div>
+                </div>
+            </div><!-- /.info-box-content -->
+
+        </div><!-- /.info-box -->
+
+         <div class="col-md-6">
+            <div class="info-box">
+                <span class="info-box-icon bg-info" style="height: 70px;"><i class="fa fa-cloud"></i></span>
+                <!-- Apply any bg-* class to to the icon to color it -->
+                <div class="info-box-content" style="display: block;">
+               
+                    <div class="col-md-6">
+
+                        <div class="form-group">
+
+                            {!! Form::label('cloud_fetching',Lang::get('Cloud Expiry Mail')) !!}<br>
+                            {!! Form::checkbox('cloud_cron',1,$condition->checkActiveJob()['cloud'],['id'=>'cloud_fetching']) !!}&nbsp;{{Lang::get('Enable Faveo Cloud')}}
+                        </div>
+
+                    </div>
+                         <div class="col-md-6" id="cloud">
+                        {!! Form::select('cloud-commands',$commands,$condition->getConditionValue('cloud')['condition'],['class'=>'form-control','id'=>'cloud-command']) !!}
+                          <div id='cloud-daily-at'>
+                            {!! Form::text('cloud-dailyAt',$condition->getConditionValue('cloud')['at'],['class'=>'form-control time-picker',"placeholder" => "HH:MM"]) !!}
+                        </div>
+                    </div>
+
+
+                   
                 </div>
             </div><!-- /.info-box-content -->
 

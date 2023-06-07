@@ -142,12 +142,11 @@ class AuthController extends BaseAuthController
             return response()->json($response);
         } catch (\Exception $ex) {
             $result = [$ex->getMessage()];
-            \Log::error('Error: ' . $ex->getMessage()); 
+            \Log::error('Error: '.$ex->getMessage());
+
             return response()->json(compact('result'), 500);
         }
     }
-    
-    
 
     public function retryOTP(Request $request)
     {

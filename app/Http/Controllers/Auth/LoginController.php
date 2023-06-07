@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
@@ -135,41 +136,37 @@ class LoginController extends Controller
             $redirectResponse = redirect()->intended('/');
             $intendedUrl = $redirectResponse->getTargetUrl();
             if (strpos($intendedUrl, 'autopaynow') == false) {
-                // return ($user == 'user') ? 'mobile/verification' : '/';
-                return ($user == 'user') ? 'verify' : '/';
+                return ($user == 'user') ? 'my-invoices' : '/';
+                // return ($user == 'user') ? 'verify' : '/';
             }
 
             return property_exists($this, 'redirectTo') ? $intendedUrl : '/';
         }
     }
 
-    //  public function redirectToGoogle()
-    // {
-    //     return Socialite::driver('google')->redirect();
-    // }
+  public function redirectPath2()
+{
+    if (\Session::has('session-url')) {
+        $url = \Session::get('session-url');
+        return property_exists($this, 'redirectTo') ? $this->redirectTo : '/'.$url;
+    } else {
+        $intendedUrl = '/'; 
 
-    // public function handleGoogleCallback()
-    // {
-    //     try {
-    //          $user = Socialite::driver('github')->stateless()->user();
-    // // dd($user);
+        if (\Auth::check()) {
+            $user = \Auth::user();
+            $redirectResponse = redirect()->intended('/');
+            $intendedUrl = $redirectResponse->getTargetUrl();
 
-    // $localUser = App\User::updateOrCreate([
-    //         'email' => $user->getEmail(),
-    //         'password' => Hash::make(Str::random()),
-    //         'username' => $user->getNickName(),
-    //     ]);
-    //     dd($localUser);
+            if (strpos($intendedUrl, 'autopaynow') === false) {
+                return ($user->role === 'user') ? 'my-invoices' : '/';
+            }
+        }
 
-    // \Auth::login($localUser);
+        return property_exists($this, 'redirectTo') ? $intendedUrl : '/';
+    }
+}
 
-    // return redirect('/');
 
-            // }
-
-    // }
-
-    //
 
     public function redirectToGithub($provider)
     {
@@ -180,10 +177,9 @@ class LoginController extends Controller
 
         return Socialite::driver($provider)->redirect();
     }
-
     public function handler($provider)
     {
-        $details = SocialLogin::where('type', $provider)->first();
+             $details = SocialLogin::where('type', $provider)->first();
         \Config::set("services.$provider.redirect", $details->redirect_url);
         \Config::set("services.$provider.client_id", $details->client_id);
         \Config::set("services.$provider.client_secret", $details->client_secret);
@@ -197,23 +193,73 @@ class LoginController extends Controller
                 'first_name' => $githubUser->getname(),
                 'role' => 'user',
                 'password' => Hash::make(Str::random()),
-                //   'mobile_verified' => '1',
                 'active' => '1',
             ]);
-
-        \Auth::login($user);
-        //   return redirect('/');
-        if ($user && ($user->mobile_verified !== 1)) {
-            return redirect('verify')->with('user', $user);
-        }
-
+            // Auth::login($user);
+         if ($user && ($user->active == 1 && $user->mobile_verified !== 1)) {
+                return redirect('verify')->with('user', $user);
+            }
+            // else{
+             Auth::login($user);
         return redirect($this->redirectPath());
+                
+            // }
+       
+        // \Log::debug('coooper',(array)$exception);
+    
     }
+ 
+    
 
-         public function mobileVerification()
-         {
-             dd('hi');
-         }
+    public function handler2($provider)
+    {
+        
+             
+             $details = SocialLogin::where('type', $provider)->first();
+        \Config::set("services.$provider.redirect", $details->redirect_url);
+        \Config::set("services.$provider.client_id", $details->client_id);
+        \Config::set("services.$provider.client_secret", $details->client_secret);
+        $githubUser = Socialite::driver($provider)->user();
+
+        $user = User::updateOrCreate([
+            'email' => $githubUser->getemail(),
+        ],
+            [
+                'user_name' => $githubUser->getNickName(),
+                'first_name' => $githubUser->getname(),
+                'role' => 'user',
+                'password' => Hash::make(Str::random()),
+                'active' => '1',
+            ]);
+            Auth::login($user);
+         if ($user && ($user->active == 1 && $user->mobile_verified !== 1)) {
+                return redirect('basic-details')->with('user', $user);
+            }
+            // else{;
+        return redirect($this->redirectPath());
+                
+            // }
+       
+        // \Log::debug('coooper',(array)$exception);
+    
+    }
+    public function basicDetailsView() {
+         try {
+            $bussinesses = Bussiness::pluck('name', 'short')->toArray();
+            $status = StatusSetting::select('recaptcha_status', 'msg91_status', 'emailverification_status', 'terms')->first();
+            $apiKeys = ApiKey::select('nocaptcha_sitekey', 'captcha_secretCheck', 'msg91_auth_key', 'terms_url')->first();
+            $analyticsTag = ChatScript::where('google_analytics', 1)->where('on_registration', 1)->value('google_analytics_tag');
+            $location = getLocation();
+
+             return view('themes.default1.user.basic_details', compact('bussinesses', 'location', 'status', 'apiKeys', 'analyticsTag'));
+        } catch (\Exception $ex) {
+            app('log')->error($ex->getMessage());
+            $error = $ex->getMessage();
+        }
+          
+// 
+    }
+     
 
 //
 //  public function view() {

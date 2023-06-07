@@ -80,6 +80,22 @@ Sign in or Register
         font-size: 0.85rem;*/
         line-height: normal;
     }
+    /**/
+    .social-icon  button {
+    font-size: 20px;
+    color: white;
+    height: 50px;
+    width: 50px;
+    background: #00a1f2;;
+    /*border-radius: 60%;*/
+    margin: 0px 10px;
+    border: none;
+    cursor: pointer;
+}
+
+/*.login-form button:hover{*/
+/*  opacity: 0.9;*/
+/*}*/
 
 
 
@@ -203,23 +219,38 @@ Sign in or Register
 
                                                         </div>
                                                     </div>
-                                                    <div class="form-group col-lg-6">
-                                                        <input type="submit" value="Login" id="submitbtn" class="btn btn-primary pull-right mb-xl" data-loading-text="Loading...">
-                                                        <a href="{{ url('/auth/redirect/github') }}">
-                    <img src="https://developers.google.com/identity/images/btn_google_signin_dark_normal_web.png" style="margin-left: 3em;">
-                </a>
-                <a href="{{ url('/auth/redirect/google') }}">
-                    <img src="https://developers.google.com/identity/images/btn_google_signin_dark_normal_web.png" style="margin-left: 3em;">
-                </a>
-                  <a href="{{ url('/auth/redirect/linkedin') }}">
-                    <img src="https://developers.google.com/identity/images/btn_google_signin_dark_normal_web.png" style="margin-left: 3em;">
-                </a>
-                  <a href="{{ url('/auth/redirect/twitter') }}">
-                    <img src="https://developers.google.com/identity/images/btn_google_signin_dark_normal_web.png" style="margin-left: 3em;">
-                </a>
-                                                        <!-- <button type="button" class="btn btn-primary mb-xl next-step float-right" name="sendOtp" id="login" onclick="loginUser()">
-                                                                    Send Email
-                                                        </button> -->
+                                                   
+									<div class="form-group col-12 ">
+									    <div class="row">
+									<div class="form-group col">
+										<button type="submit" class="btn btn-primary  btn-modern w-100 text-uppercase rounded-2 font-weight-bold text-3 py-2" id="submitbtn"  data-loading-text="Loading...">Login</button>
+										<div class="divider">
+											<span class="bg-light px-4 position-absolute left-50pct top-50pct transform3dxy-n50">or</span>
+										</div>
+									<a href="{{ url('/auth/redirect/google') }}" class="btn btn-primary-scale-2 m-1  btn-modern w-100 text-transform-none rounded-2 font-weight-bold align-items-center d-inline-flex justify-content-center text-3 py-2" data-loading-text="Loading..."><i class="fab fa-google text-5 me-2"></i>&nbsp Login With Google</a>
+										<a href="#" class="btn btn-primary-scale-2 m-1 social_buttons btn-modern w-100 text-transform-none rounded-2 font-weight-bold align-items-center d-inline-flex justify-content-center text-3 py-2" data-loading-text="Loading..."><i class="fab fa-twitter text-5 me-2"></i>&nbsp  Login With Twitter</a>
+									<a href="{{ url('/auth/redirect/github') }}" class="btn btn-primary-scale-2 m-1 social_buttons btn-modern w-100 text-transform-none rounded-2 font-weight-bold align-items-center d-inline-flex justify-content-center text-3 py-2" data-loading-text="Loading..."><i class="fab fa-github text-5 me-2"></i>&nbsp  Login With Github</a>
+										<a href="#" class="btn btn-primary-scale-2 btn-modern w-100 text-transform-none rounded-2 m-1 font-weight-bold align-items-center d-inline-flex justify-content-center text-3 py-2" data-loading-text="Loading..."><i class="fab fa-linkedin text-5 me-2"></i>&nbsp  Login With Linkedin</a>
+									</div>
+								</div>
+									
+      <!-- Social login buttons -->
+   
+								
+                                                        <!--<input type="submit" value="Login" id="submitbtn" class="btn btn-primary pull-right mb-xl" data-loading-text="Loading...">-->
+                <!--                                        <a href="{{ url('/auth/redirect/github') }}">-->
+                <!--    <img src="https://developers.google.com/identity/images/btn_google_signin_dark_normal_web.png" style="margin-left: 3em;">-->
+                <!--</a>-->
+                <!--<a href="{{ url('/auth/redirect/google') }}">-->
+                <!--    <img src="https://developers.google.com/identity/images/btn_google_signin_dark_normal_web.png" style="margin-left: 3em;">-->
+                <!--</a>-->
+                <!--  <a href="{{ url('/auth/redirect/linkedin') }}">-->
+                <!--    <img src="https://developers.google.com/identity/images/btn_google_signin_dark_normal_web.png" style="margin-left: 3em;">-->
+                <!--</a>-->
+                <!--  <a href="{{ url('/auth/redirect/twitter') }}">-->
+                <!--    <img src="https://developers.google.com/identity/images/btn_google_signin_dark_normal_web.png" style="margin-left: 3em;">-->
+                <!--</a>-->
+                                                       
 
                                                     </div>
                                                 </div>

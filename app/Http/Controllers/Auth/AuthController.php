@@ -122,14 +122,15 @@ class AuthController extends BaseAuthController
 
     public function requestOtp(Request $request)
     {
+        // dd($request);
         $this->validate($request, [
-            'code' => 'required|numeric',
+            // 'code' => 'required|numeric',
             'mobile' => 'required|numeric',
         ]);
 
-        $number = ltrim($request->oldnumber, '0');
+        // $number = ltrim($request->oldnumber, '0');
         $newNumber = ltrim($request->newnumber, '0');
-        User::where('mobile', $number)->update(['mobile' => $newNumber]);
+        User::where('id', $request->id)->update(['mobile' => $newNumber]);
 
         try {
             $code = $request->input('code');
@@ -141,10 +142,12 @@ class AuthController extends BaseAuthController
             return response()->json($response);
         } catch (\Exception $ex) {
             $result = [$ex->getMessage()];
-
+            \Log::error('Error: ' . $ex->getMessage()); 
             return response()->json(compact('result'), 500);
         }
     }
+    
+    
 
     public function retryOTP(Request $request)
     {

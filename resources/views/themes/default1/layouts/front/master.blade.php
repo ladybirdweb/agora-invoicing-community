@@ -23,7 +23,7 @@ foreach($scripts as $script)
    .highlight {
     border: 2px solid;
     border-radius: 5px;
-    padding: 8px;
+    padding: 10px;
     transition: background-color 0.3s;
     height: 90%;
 }
@@ -40,8 +40,6 @@ foreach($scripts as $script)
     cursor: pointer;
     background-color: #00AEEF !important;
     margin-top: -7px !important;*/
-    
-
    
 </style>
 <head>
@@ -131,7 +129,7 @@ foreach($scripts as $script)
                         </div>
                     </div>
                     <div class="header-column justify-content-end">
-                        <div class="header-row pt-3">
+                        <div class="header-row pt-3" style="margin-right: 310px;">
                             <nav class="header-nav-top">
                                 <ul class="nav nav-pills">
 
@@ -372,7 +370,7 @@ foreach($scripts as $script)
                                                 </li>&nbsp&nbsp&nbsp
 
                                                   <li class="dropdown">
-                                                    <a  class="nav-link highlight" id="demo-req">
+                                                    <a  class="nav-link highlight"  href="{{url('demo-request')}} ">
                                                         REQUEST FOR DEMO
                                                     </a>
                                                 </li>

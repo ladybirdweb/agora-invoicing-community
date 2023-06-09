@@ -67,39 +67,31 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
-    $status = StatusSetting::value('v3recaptcha_status');
-    $apiKeys = StatusSetting::value('recaptcha_status');
-    $captchaRule = $apiKeys ? 'required' : 'sometimes';
-    
-    $rules = [
-        'email1' => 'required',
-        'password1' => 'required',
-    ];
-    
-    if ($status == 1) {
-        $rules['g-recaptcha-response'] = [
-            'required',
-            function ($attribute, $value, $fail) use ($request) {
-                $response = \Illuminate\Support\Facades\Http::asForm()->post("https://www.google.com/recaptcha/api/siteverify", [
-                    'secret' => config('services.recaptcha.secret_key'),
-                    'response' => $value,
-                    'remoteip' => $request->ip()
-                ]);
-    
-                if (!$response->json('success')) {
-                    $fail("The {$attribute} is invalid.");
+        $apiKeys = StatusSetting::value('recaptcha_status');
+        $captchaRule = $apiKeys ? 'required|' : 'sometimes|';
+        
+        $this->validate($request, [
+            'email1' => 'required',
+            'password1' => 'required',
+            'g-recaptcha-response' => [
+                $captchaRule . 'required',
+                function ($attribute, $value, $fail) use ($request) {
+                    $response = Http::asForm()->post("https://www.google.com/recaptcha/api/siteverify", [
+                        'secret' => config('services.recaptcha.secret_key'),
+                        'response' => $value,
+                        'remoteip' => $request->ip()
+                    ]);
+        
+                    if (!$response->json('success')) {
+                        $fail("The {$attribute} is invalid.");
+                    }
                 }
-            }
-        ];
-    } else {
-        $rules['g-recaptcha-response'] = $captchaRule.'|captcha';
-    }
-    
-    $this->validate($request, $rules, [
-        'g-recaptcha-response.required' => 'Robot Verification Failed. Please Try Again.',
-        'email1.required' => 'Please Enter an Email',
-        'password1.required' => 'Please Enter Password',
-    ]);
+            ]
+        ], [
+            'g-recaptcha-response.required' => 'Robot Verification Failed. Please Try Again.',
+            'email1.required' => 'Please Enter an Email',
+            'password1.required' => 'Please Enter Password',
+]);
         $usernameinput = $request->input('email1');
         $password = $request->input('password1');
         $credentialsForEmail = ['email' => $usernameinput, 'password' => $password, 'active' => '1', 'mobile_verified' => '1'];

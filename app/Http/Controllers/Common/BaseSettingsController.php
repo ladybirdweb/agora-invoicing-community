@@ -312,7 +312,7 @@ public function saveCronDays(Request $request)
     //Save Google recaptch site key and secret in Database
     public function captchaDetails(Request $request)
     {
-        $status = $request->input('status');
+          $status = $request->input('status');
         if ($status == 1) {
             $nocaptcha_sitekey = $request->input('nocaptcha_sitekey');
             $captcha_secretCheck = $request->input('nocaptcha_secret');
@@ -353,6 +353,57 @@ public function saveCronDays(Request $request)
         StatusSetting::where('id', 1)->update(['recaptcha_status' => $status]);
         ApiKey::where('id', 1)->update(['nocaptcha_sitekey' => $nocaptcha_sitekey,
             'captcha_secretCheck' => $captcha_secretCheck, ]);
+
+        return ['message' => 'success', 'update' => 'Recaptcha Settings Updated'];
+    }
+    
+    
+      //Save Google recaptch site key and secret in Database
+    public function v3captchaDetails(Request $request)
+    { 
+       
+       
+        $status = $request->input('status');
+        if ($status == 1) {
+            $nocaptcha_sitekey = $request->input('captcha_sitekey');
+            $captcha_secretCheck = $request->input('captcha_secret');
+            $values = ['RECAPTCHA_SITE_KEY' => $nocaptcha_sitekey, 'RECAPTCHA_SECRET_KEY' => $captcha_secretCheck];
+
+            $envFile = app()->environmentFilePath();
+            $str = file_get_contents($envFile);
+
+            if (count($values) > 0) {
+                foreach ($values as $envKey => $envValue) {
+                    $str .= "\n"; // In case the searched variable is in the last line without \n
+                    $keyPosition = strpos($str, "{$envKey}=");
+                    $endOfLinePosition = strpos($str, "\n", $keyPosition);
+                    $oldLine = substr($str, $keyPosition, $endOfLinePosition - $keyPosition);
+
+                    // If key does not exist, add it
+                    if (! $keyPosition || ! $endOfLinePosition || ! $oldLine) {
+                        $str .= "{$envKey}={$envValue}\n";
+                    } else {
+                        $str = str_replace($oldLine, "{$envKey}={$envValue}", $str);
+                    }
+                }
+            }
+
+            $str = substr($str, 0, -1);
+            if (! file_put_contents($envFile, $str)) {
+                return false;
+            }
+        } else {
+            $nocaptcha_sitekey = '00';
+            $captcha_secretCheck = '00';
+            $path_to_file = base_path('.env');
+            $file_contents = file_get_contents($path_to_file);
+            $file_contents_secretchek = str_replace([env('RECAPTCHA_SITE_KEY'), env('RECAPTCHA_SITE_KEY')], [$captcha_secretCheck, $nocaptcha_sitekey], $file_contents);
+            file_put_contents($path_to_file, $file_contents_secretchek);
+        }
+
+        StatusSetting::where('id', 1)->update(['v3recaptcha_status' => $status]);
+        ApiKey::where('id', 1)->update(['v3captcha_sitekey' => $nocaptcha_sitekey,
+            'v3captcha_secretCheck' => $captcha_secretCheck, ]);
 
         return ['message' => 'success', 'update' => 'Recaptcha Settings Updated'];
     }

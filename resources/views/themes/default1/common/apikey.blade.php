@@ -287,6 +287,67 @@
                                 </td>
                                 <td class="col-md-2"><button type="submit" class="form-group btn btn-primary" onclick="captchaDetails()" id="submit2"><i class="fa fa-save">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
                             </tr>
+                            
+
+
+
+
+                                  <tr>
+                                <td class="col-md-2">Google reCAPTCHA(v3)</td>
+                                <td class="col-md-2">
+                                    <label class="switch toggle_event_editing">
+
+                                        <input type="checkbox" value="{{$v3captchaStatus}}"  name="modules_settings"
+                                               class="checkbox3" id="v3captcha">
+                                        <span class="slider round"></span>
+                                    </label>
+
+                                </td>
+
+                                <td class="col-md-4 v3captchaEmptyField">
+                                    {!! Form::label('nocaptcha_secret',Lang::get('message.nocaptcha_secret')) !!}
+                                    {!! Form::text('captcha_secret1',null,['class' => 'form-control v3nocapsecretHide','disabled'=>'disabled']) !!}
+                                    <h6 id=""></h6>
+
+
+                                    <!-- last name -->
+                                    {!! Form::label('nocaptcha_sitekey',Lang::get('message.nocaptcha_sitekey')) !!} :
+                                    {!! Form::text('captcha_sitekey1',null,['class' => 'form-control v3siteKeyHide','disabled'=>'disabled']) !!}
+                                    <h6 id=""></h6>
+                                </td>
+                                <td class="col-md-4 v3captchaField hide">
+
+
+                                    <!-- last name -->
+                                    {!! Form::label('nocaptcha_secret',Lang::get('message.nocaptcha_secret')) !!}
+                                    {!! Form::text('captcha_secret',$v3secretKey,['class' => 'form-control','id'=>'captcha_secret']) !!}
+                                    <h6 id="v3captcha_secretCheck"></h6>
+                                    <br/>
+
+                                    <!-- last name -->
+                                    {!! Form::label('nocaptcha_sitekey',Lang::get('message.nocaptcha_sitekey')) !!} :
+                                    {!! Form::text('captcha_sitekey',$v3siteKey,['class' => 'form-control','id'=>'captcha_sitekey']) !!}
+                                    <h6 id="captcha_sitekeyCheck"></h6>
+
+                                </td>
+                                <td class="col-md-2"><button type="submit" class="form-group btn btn-primary" onclick="v3captchaDetails()" id="submitv3"><i class="fa fa-save">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
+                            </tr>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                            
 
                             <tr>
 
@@ -740,6 +801,7 @@
          *
          */
         $(document).ready(function(){
+         
             var status = $('.checkbox2').val();
             if(status ==1) {
                 $('#captcha').prop('checked', true);
@@ -771,6 +833,7 @@
         });
 
         function captchaDetails(){
+      
             if ($('#captcha').prop("checked")) {
                 var checkboxvalue = 1;
                 if ($('#nocaptcha_secret').val() =="" ) {
@@ -817,6 +880,84 @@
 
 
 
+
+
+
+ $(document).ready(function(){
+            var status = $('.checkbox3').val();
+            if(status ==1) {
+                $('#v3captcha').prop('checked', true);
+                $('.v3captchaField').show();
+                $('.v3captchaEmptyField').hide();
+            } else if(status ==0) {
+                $('.v3captchaField').hide();
+                $('.v3captchaEmptyField').show();
+
+            }
+        });
+        $('#v3captcha_secretCheck').hide();
+        $('#v3captcha').change(function () {
+            if ($(this).prop("checked")) {
+                // checked
+                $('#captcha_secret').val();
+                $('#captcha_sitekey').val();
+                $('.v3captchaField').show();
+                $('.v3captchaEmptyField').hide();
+            }
+            else{
+                $('.v3captchaField').hide();
+                $('.v3nocapsecretHide').val('');
+                $('.v3urlHide').val('');
+                $('.v3captchaEmptyField').show();
+
+
+            }
+        });
+
+        function v3captchaDetails(){
+            if ($('#v3captcha').prop("checked")) {
+                var checkboxvalue = 1;
+                if ($('#captcha_secret').val() =="" ) {
+                    $('#v3captcha_secretCheck').show();
+                    $('#v3captcha_secretCheck').html("Please Enter Secret Key");
+                    $('#captcha_secret').css("border-color","red");
+                    $('#v3captcha_secretCheck').css({"color":"red","margin-top":"5px"});
+                    return false;
+                }
+                if ($('#captcha_sitekey').val() =="" ) {
+                    $('#captcha_sitekeyCheck').show();
+                    $('#captcha_sitekeyCheck').html("Please Enter Sitekey");
+                    $('#captcha_sitekey').css("border-color","red");
+                    $('#captcha_sitekeyCheck').css({"color":"red","margin-top":"5px"});
+                    return false;
+                }
+
+            }
+            else{
+                var checkboxvalue = 0;
+            }
+            // $("#submitv3").html("<i class='fas fa-circle-notch fa-spin'></i>Please Wait...");
+            $.ajax({
+
+                url : '{{url("v3captchaDetails")}}',
+                type : 'post',
+                data: {
+                    "status": checkboxvalue,
+                    "captcha_sitekey": $('#captcha_sitekey').val(),
+                    "captcha_secret" :$('#captcha_secret').val(),
+                },
+                success: function (data) {
+                    $('#alertMessage').show();
+                    var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>'+data.update+'.</div>';
+                    $('#alertMessage').html(result+ ".");
+                    $("#submit3").html("<i class='fa fa-save'>&nbsp;&nbsp;</i>Save");
+                    setInterval(function(){
+                        $('#alertMessage').slideUp(3000);
+                    }, 1000);
+                },
+
+            });
+        };
 
  <!--------------------------------------------------------------------------------------------->
         /*

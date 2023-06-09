@@ -77,7 +77,7 @@ Tenants
     <div class="card-header">
 
         <div id="response"></div>
-        <h5>Set Cloud Free Trial Button display Option
+        <h5>Set Cloud Free Trial Button Display Option
           </h5>
     </div>
  
@@ -100,7 +100,7 @@ Tenants
 
     </div>
     <div>
-    <button type="submit" class="btn btn-primary">save</button>
+    <button type="submit" class="btn btn-primary pull-right" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-save">&nbsp;&nbsp;</i>save</button>
     </div>
 
 </div>

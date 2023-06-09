@@ -312,7 +312,7 @@ class BaseSettingsController extends PaymentSettingsController
     //Save Google recaptch site key and secret in Database
     public function captchaDetails(Request $request)
     {
-        $status = $request->input('status');
+          $status = $request->input('status');
         if ($status == 1) {
             $nocaptcha_sitekey = $request->input('nocaptcha_sitekey');
             $captcha_secretCheck = $request->input('nocaptcha_secret');
@@ -356,12 +356,15 @@ class BaseSettingsController extends PaymentSettingsController
 
         return ['message' => 'success', 'update' => 'Recaptcha Settings Updated'];
     }
-
-    //Save Google recaptch site key and secret in Database
+    
+    
+      //Save Google recaptch site key and secret in Database
     public function v3captchaDetails(Request $request)
-    {
+    { 
+       
+       
         $status = $request->input('status');
-        if ($status) {
+        if ($status == 1) {
             $nocaptcha_sitekey = $request->input('captcha_sitekey');
             $captcha_secretCheck = $request->input('captcha_secret');
             $values = ['RECAPTCHA_SITE_KEY' => $nocaptcha_sitekey, 'RECAPTCHA_SECRET_KEY' => $captcha_secretCheck];
@@ -398,11 +401,9 @@ class BaseSettingsController extends PaymentSettingsController
             file_put_contents($path_to_file, $file_contents_secretchek);
         }
 
-        StatusSetting::findOrFail(1)->update(['v3recaptcha_status' => $status]);
-        ApiKey::findOrFail(1)->update([
-            'v3captcha_sitekey' => $nocaptcha_sitekey,
-            'v3captcha_secretCheck' => $captcha_secretCheck,
-        ]);
+        StatusSetting::where('id', 1)->update(['v3recaptcha_status' => $status]);
+        ApiKey::where('id', 1)->update(['v3captcha_sitekey' => $nocaptcha_sitekey,
+            'v3captcha_secretCheck' => $captcha_secretCheck, ]);
 
         return ['message' => 'success', 'update' => 'Recaptcha Settings Updated'];
     }

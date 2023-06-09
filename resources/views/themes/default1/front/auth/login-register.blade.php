@@ -227,6 +227,7 @@ Sign in or Register
                                                     </div>
                                                 </div>                          </div>
                                                 {!! Form::close() !!}
+
                                             </div>
                                         </div>
                                     </div>
@@ -568,6 +569,7 @@ Sign in or Register
 @stop
 @section('script')
     <script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo $analyticsTag; ?>"></script>
+     <script src="https://www.google.com/recaptcha/api.js"></script>
 
     <script>
         ///////////////////////////////////////////////////////////////////////////////
@@ -579,6 +581,12 @@ Sign in or Register
         }
         ///////////////////////////////////////////////////////////////////////////////////
     </script>
+
+  <script>
+       function onSubmit(token) {
+         document.getElementById("formoid").submit();
+       }
+     </script>
 
     <script type="text/javascript">
 

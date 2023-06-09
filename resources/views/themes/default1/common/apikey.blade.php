@@ -291,48 +291,6 @@
 
 
 
-                         
-                                  <tr>
-                                <td class="col-md-2">Google reCAPTCHA(v3)</td>
-                                <td class="col-md-2">
-                                    <label class="switch toggle_event_editing">
-
-                                        <input type="checkbox" value="{{$v3captchaStatus}}"  name="modules_settings"
-                                               class="checkbox3" id="v3captcha"  @if($captchaStatus === 1) disabled  @endif>
-                                        <span class="slider round"></span>
-                                    </label>
-
-                                </td>
-
-                                <td class="col-md-4 v3captchaEmptyField">
-                                    {!! Form::label('nocaptcha_secret',Lang::get('message.nocaptcha_secret')) !!}
-                                    {!! Form::text('captcha_secret1',null,['class' => 'form-control v3nocapsecretHide','disabled'=>'disabled']) !!}
-                                    <h6 id=""></h6>
-
-
-                                    <!-- last name -->
-                                    {!! Form::label('nocaptcha_sitekey',Lang::get('message.nocaptcha_sitekey')) !!} :
-                                    {!! Form::text('captcha_sitekey1',null,['class' => 'form-control v3siteKeyHide','disabled'=>'disabled']) !!}
-                                    <h6 id=""></h6>
-                                </td>
-                                <td class="col-md-4 v3captchaField hide">
-
-
-                                    <!-- last name -->
-                                    {!! Form::label('nocaptcha_secret',Lang::get('message.nocaptcha_secret')) !!}
-                                    {!! Form::text('captcha_secret',$v3secretKey,['class' => 'form-control','id'=>'captcha_secret']) !!}
-                                    <h6 id="v3captcha_secretCheck"></h6>
-                                    <br/>
-
-                                    <!-- last name -->
-                                    {!! Form::label('nocaptcha_sitekey',Lang::get('message.nocaptcha_sitekey')) !!} :
-                                    {!! Form::text('captcha_sitekey',$v3siteKey,['class' => 'form-control','id'=>'captcha_sitekey']) !!}
-                                    <h6 id="captcha_sitekeyCheck"></h6>
-
-                                </td>
-                                <td class="col-md-2"><button type="submit" class="form-group btn btn-primary" onclick="v3captchaDetails()" id="submitv3"><i class="fa fa-save">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
-                            </tr>
-                       
 
 
 

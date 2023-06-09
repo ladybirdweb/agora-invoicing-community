@@ -14,6 +14,32 @@ foreach($scripts as $script)
     .dataTables_wrapper {
         overflow-x: auto;
     }
+    .highlight-button {
+    background-color: #0088CC;
+    color: white !important;
+
+    font-weight: bold;
+}
+   .highlight {
+    border: 2px solid;
+    border-radius: 5px;
+    padding: 10px;
+    transition: background-color 0.3s;
+    height: 90%;
+}
+
+.highlight:hover {
+    background-color: blue;
+    color: white;
+}
+  /* border: none;
+    color: white !important;
+    padding: 8px 12px !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    cursor: pointer;
+    background-color: #00AEEF !important;
+    margin-top: -7px !important;*/
    
 </style>
 <head>
@@ -100,7 +126,7 @@ foreach($scripts as $script)
                         </div>
                     </div>
                     <div class="header-column justify-content-end">
-                        <div class="header-row pt-3">
+                        <div class="header-row pt-3" style="margin-right: 310px;">
                             <nav class="header-nav-top">
                                 <ul class="nav nav-pills">
 
@@ -121,7 +147,9 @@ foreach($scripts as $script)
                                     @if(!Auth::user())
                                         <li class="nav-item nav-item-left-border nav-item-left-border-remove nav-item-left-border-md-show">
                                                     <span class="ws-nowrap">
-                                                        <a style="color: inherit"   data-toggle="modal" data-target="#login-modal">My Account</a>
+                                                        <a style="color: inherit" href="{{url('login')}}">
+                                                             <i class="fas fa-user"></i>
+                                                        My Account</a>
                                                     </span>
                                         </li>
                                     @endif
@@ -132,7 +160,7 @@ foreach($scripts as $script)
 
 
                         <div class="header-row">
-                            <div class="header-nav pt-1" style="margin-top: 0px; margin-bottom: -10px;">
+                            <div class="header-nav pt-1" style="margin-top: 0px; margin-bottom: -10px;margin-right: 320px;">
 
                                 <button class="btn btn-sm header-btn-collapse-nav" data-toggle="collapse" data-target=".header-nav-main nav">
                                     <i class="fa fa-bars"></i>
@@ -152,10 +180,10 @@ foreach($scripts as $script)
 
 
                                                     <li class="dropdown">
-                                                        <a  class="nav-link open-createTenantDialog" style="cursor: pointer;">
+                                                        <a  class="nav-link open-createTenantDialog" style="cursor: pointer;background-color: #0088CC;color: white !important;font-weight: bold;">
                                                             <div>
-                                                                <i class="fas fa-cloud"></i>
-                                                                <span style="margin-left: 3px;">Faveo Cloud</span>
+                                                                <i class="fas fa-cloud "></i>
+                                                                <span style="margin-left: 3px;">START FREE TRAIL</span>
                                                             </div>
                                                         </a>
                                                     </li>
@@ -330,18 +358,22 @@ foreach($scripts as $script)
 
                                             @if(!Auth::user())
                                                 <li class="dropdown">
-                                                    <a  class="nav-link"  href="{{url('login')}}">
-                                                        Login
+                                                    <a  class="nav-link highlight-button"  href="{{url('login')}} ">
+                                                        SIGNUP FOR FREE
+                                                    </a>
+                                                </li>&nbsp&nbsp&nbsp
+
+                                                  <li class="dropdown">
+                                                    <a  class="nav-link highlight"  href="{{url('demo-request')}} ">
+                                                        REQUEST FOR DEMO
                                                     </a>
                                                 </li>
 
 
 
-
-
                                             @else
                                                 <li class="dropdown">
-                                                    <a class="dropdown-item dropdown-toggle" href="#">
+                                                    <a class="dropdown-item dropdown-toggle" href="{{url('login')}}">
                                                         My Account
                                                     </a>
                                                     <ul class="dropdown-menu">
@@ -355,6 +387,8 @@ foreach($scripts as $script)
                                                     </ul>
                                                 </li>
                                             @endif
+
+                                          
 
 
                                         </ul>

@@ -19,7 +19,7 @@ class PageController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth', ['except' => ['pageTemplates', 'contactUs']]);
+        $this->middleware('auth', ['except' => ['pageTemplates', 'contactUs','postDemoReq']]);
 
         $page = new FrontendPage();
         $this->page = $page;
@@ -459,9 +459,7 @@ class PageController extends Controller
             $data .= 'Mobile: '.strip_tags($request->input('country_code').' '.$request->input('Mobile')).'<br/>';
             $subject = 'Faveo billing enquiry';
             if (emailSendingStatus()) {
-                $mail = new \App\Http\Controllers\Common\PhpMailController();
-                $mail->sendEmail($from, $to, $data, $subject);
-
+           
                 $email = (new Email())
                    ->from($set->email)
                    ->to($set->company_email)
@@ -473,6 +471,60 @@ class PageController extends Controller
 
             //$this->templateController->Mailing($from, $to, $data, $subject);
             return redirect()->back()->with('success', 'Your message was sent successfully. Thanks.');
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
+
+    public function viewDemoReq()
+    {
+        try {
+            return view('themes.default1.front.demoForm');
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
+
+    public function postDemoReq(Request $request)
+    {
+        $this->validate($request, [
+            'name' => 'required',
+            'email' => 'required|email',
+            'message' => 'required',
+        ]);
+
+        $set = new \App\Model\Common\Setting();
+        $set = $set->findOrFail(1);
+        $mail = new \App\Http\Controllers\Common\PhpMailController();
+        $mailer = $mail->setMailConfig($set);
+
+        try {
+            $from = $set->email;
+            $fromname = $set->company;
+            $toname = '';
+            $to = $set->company_email;
+            $data = '';
+            $data .= 'Name: '.strip_tags($request->input('name')).'<br/>';
+            $data .= 'Email: '.strip_tags($request->input('email')).'<br/>';
+            $data .= 'Message: '.strip_tags($request->input('message')).'<br/>';
+            $data .= 'Mobile: '.strip_tags($request->input('country_code').' '.$request->input('Mobile')).'<br/>';
+            $subject = 'Faveo billing enquiry';
+            if (emailSendingStatus()) {
+            
+
+                $email = (new Email())
+                   ->from($set->email)
+                   ->to($set->company_email)
+                   ->subject('Requesting for Demo')
+                   ->html($data);
+
+                $mailer->send($email);
+            }
+
+            //$this->templateController->Mailing($from, $to, $data, $subject);
+            return redirect()->back()->with('success', 'Your Request for booking demo was sent successfully. Thanks.');
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }

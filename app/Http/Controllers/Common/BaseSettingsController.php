@@ -287,7 +287,7 @@ class BaseSettingsController extends PaymentSettingsController
     //Save Google recaptch site key and secret in Database
     public function captchaDetails(Request $request)
     {
-          $status = $request->input('status');
+        $status = $request->input('status');
         if ($status == 1) {
             $nocaptcha_sitekey = $request->input('nocaptcha_sitekey');
             $captcha_secretCheck = $request->input('nocaptcha_secret');
@@ -331,13 +331,10 @@ class BaseSettingsController extends PaymentSettingsController
 
         return ['message' => 'success', 'update' => 'Recaptcha Settings Updated'];
     }
-    
-    
+
       //Save Google recaptch site key and secret in Database
     public function v3captchaDetails(Request $request)
-    { 
-       
-       
+    {
         $status = $request->input('status');
         if ($status == 1) {
             $nocaptcha_sitekey = $request->input('captcha_sitekey');

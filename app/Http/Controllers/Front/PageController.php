@@ -460,7 +460,6 @@ class PageController extends Controller
             $data .= 'Mobile: '.strip_tags($request->input('country_code').' '.$request->input('Mobile')).'<br/>';
             $subject = 'Faveo billing enquiry';
             if (emailSendingStatus()) {
-           
                 $email = (new Email())
                    ->from($set->email)
                    ->to($set->company_email)
@@ -477,7 +476,6 @@ class PageController extends Controller
         }
     }
 
-
     public function viewDemoReq()
     {
         try {
@@ -486,7 +484,6 @@ class PageController extends Controller
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-
 
     public function postDemoReq(Request $request)
     {
@@ -508,8 +505,6 @@ class PageController extends Controller
             $data .= 'Message: '.strip_tags($request->input('message')).'<br/>';
             $data .= 'Mobile: '.strip_tags($request->input('country_code').' '.$request->input('Mobile')).'<br/>';
             if (emailSendingStatus()) {
-            
-
                 $email = (new Email())
                    ->from($set->email)
                    ->to($set->company_email)

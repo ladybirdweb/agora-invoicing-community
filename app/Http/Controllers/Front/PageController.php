@@ -19,7 +19,7 @@ class PageController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth', ['except' => ['pageTemplates', 'contactUs', 'postDemoReq']]);
+        $this->middleware('auth', ['except' => ['pageTemplates', 'contactUs','postDemoReq']]);
 
         $page = new FrontendPage();
         $this->page = $page;
@@ -459,6 +459,7 @@ class PageController extends Controller
             $data .= 'Mobile: '.strip_tags($request->input('country_code').' '.$request->input('Mobile')).'<br/>';
             $subject = 'Faveo billing enquiry';
             if (emailSendingStatus()) {
+           
                 $email = (new Email())
                    ->from($set->email)
                    ->to($set->company_email)
@@ -470,6 +471,16 @@ class PageController extends Controller
 
             //$this->templateController->Mailing($from, $to, $data, $subject);
             return redirect()->back()->with('success', 'Your message was sent successfully. Thanks.');
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
+
+    public function viewDemoReq()
+    {
+        try {
+            return view('themes.default1.front.demoForm');
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -501,6 +512,8 @@ class PageController extends Controller
             $data .= 'Mobile: '.strip_tags($request->input('country_code').' '.$request->input('Mobile')).'<br/>';
             $subject = 'Faveo billing enquiry';
             if (emailSendingStatus()) {
+            
+
                 $email = (new Email())
                    ->from($set->email)
                    ->to($set->company_email)

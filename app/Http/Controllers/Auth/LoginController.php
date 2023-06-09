@@ -11,9 +11,10 @@ use App\SocialLogin;
 use App\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
-use Session;
+use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
@@ -62,6 +63,7 @@ class LoginController extends Controller
 
             return view('themes.default1.front.auth.login-register', compact('bussinesses', 'location', 'status', 'apiKeys', 'analyticsTag', 'google_status', 'github_status', 'linkedin_status', 'twitter_status'));
         } catch (\Exception $ex) {
+            dd($ex);
             app('log')->error($ex->getMessage());
             $error = $ex->getMessage();
         }
@@ -71,29 +73,29 @@ class LoginController extends Controller
     {
         $apiKeys = StatusSetting::value('recaptcha_status');
         $captchaRule = $apiKeys ? 'required|' : 'sometimes|';
-
+        
         $this->validate($request, [
             'email1' => 'required',
             'password1' => 'required',
             'g-recaptcha-response' => [
-                $captchaRule.'required',
+                $captchaRule . 'required',
                 function ($attribute, $value, $fail) use ($request) {
-                    $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+                    $response = Http::asForm()->post("https://www.google.com/recaptcha/api/siteverify", [
                         'secret' => config('services.recaptcha.secret_key'),
                         'response' => $value,
-                        'remoteip' => $request->ip(),
+                        'remoteip' => $request->ip()
                     ]);
-
-                    if (! $response->json('success')) {
+        
+                    if (!$response->json('success')) {
                         $fail("The {$attribute} is invalid.");
                     }
-                },
-            ],
+                }
+            ]
         ], [
             'g-recaptcha-response.required' => 'Robot Verification Failed. Please Try Again.',
             'email1.required' => 'Please Enter an Email',
             'password1.required' => 'Please Enter Password',
-        ]);
+]);
         $usernameinput = $request->input('email1');
         $password = $request->input('password1');
         $credentialsForEmail = ['email' => $usernameinput, 'password' => $password, 'active' => '1', 'mobile_verified' => '1'];
@@ -145,23 +147,51 @@ class LoginController extends Controller
      */
     public function redirectPath()
     {
+        // dd('vbn');
+
         if (\Session::has('session-url')) {
             $url = \Session::get('session-url');
-
+            // dd($url);
             return property_exists($this, 'redirectTo') ? $this->redirectTo : '/'.$url;
         } else {
             $user = \Auth::user()->role;
+            // dd($user);
             $redirectResponse = redirect()->intended('/');
             $intendedUrl = $redirectResponse->getTargetUrl();
             if (strpos($intendedUrl, 'autopaynow') == false) {
                 return ($user == 'user') ? 'my-invoices' : '/';
+                // return ($user == 'user') ? 'verify' : '/';
             }
 
             return property_exists($this, 'redirectTo') ? $intendedUrl : '/';
         }
     }
 
-    public function redirectToGithub($provider)//redirect to twitter ,github,google and linkedin
+  public function redirectPath2()
+{
+    if (\Session::has('session-url')) {
+        $url = \Session::get('session-url');
+        return property_exists($this, 'redirectTo') ? $this->redirectTo : '/'.$url;
+    } else {
+        $intendedUrl = '/'; 
+
+        if (\Auth::check()) {
+            $user = \Auth::user();
+            $redirectResponse = redirect()->intended('/');
+            $intendedUrl = $redirectResponse->getTargetUrl();
+
+            if (strpos($intendedUrl, 'autopaynow') === false) {
+                return ($user->role === 'user') ? 'my-invoices' : '/';
+            }
+        }
+
+        return property_exists($this, 'redirectTo') ? $intendedUrl : '/';
+    }
+}
+
+
+
+    public function redirectToGithub($provider)
     {
         $details = SocialLogin::where('type', $provider)->first();
         \Config::set("services.$provider.redirect", $details->redirect_url);
@@ -170,75 +200,107 @@ class LoginController extends Controller
 
         return Socialite::driver($provider)->redirect();
     }
-
     public function handler($provider)
     {
-        $details = SocialLogin::where('type', $provider)->first();
+             $details = SocialLogin::where('type', $provider)->first();
         \Config::set("services.$provider.redirect", $details->redirect_url);
         \Config::set("services.$provider.client_id", $details->client_id);
         \Config::set("services.$provider.client_secret", $details->client_secret);
-
         $githubUser = Socialite::driver($provider)->user();
-
-        $existingUser = User::where('email', $githubUser->getEmail())->first();
-
-        if ($existingUser) {
-            $existingUser->user_name = $githubUser->getName().substr($githubUser->getId(), -2);
-            $existingUser->first_name = $githubUser->getName();
-            $existingUser->active = '1';
-
-            if ($existingUser->role == 'admin') {
-                $existingUser->role = 'admin';
-            } else {
-                $existingUser->role = 'user';
-            }
-
-            $existingUser->save();
-            $user = $existingUser;
-        } else {
-            $user = User::create([
-                'email' => $githubUser->getEmail(),
-                'user_name' => $githubUser->getName().substr($githubUser->getId(), -2),
-                'first_name' => $githubUser->getName(),
-                'active' => '1',
+//  dd($githubUser);
+        $user = User::updateOrCreate([
+            'email' => $githubUser->getemail(),
+        ],
+            [
+                'user_name' => $githubUser->getNickName(),
+                'first_name' => $githubUser->getname(),
                 'role' => 'user',
+                'password' => Hash::make(Str::random()),
+                'active' => '1',
             ]);
-        }
-        if ($user && ($user->active == 1 && $user->mobile_verified !== 1)) {//check for mobile verification
-            return redirect('verify')->with('user', $user);
-        }
-
-        Auth::login($user);
-
-        if (\Auth::user()->is_2fa_enabled == 1) {//check for 2fa
-            $userId = \Auth::user()->id;
-            Session::put('2fa:user:id', $userId);
-            \Auth::logout();
-
-            return redirect('2fa/validate');
-        }
-        if (Auth::check()) {
-            return redirect($this->redirectPath());
-        }
+            // Auth::login($user);
+         if ($user && ($user->active == 1 && $user->mobile_verified !== 1)) {
+                return redirect('verify')->with('user', $user);
+            }
+            // else{
+             Auth::login($user);
+        return redirect($this->redirectPath());
+                
+            // }
+       
+        // \Log::debug('coooper',(array)$exception);
+    
     }
+ 
+    
 
-    //stores basic details for social logins
-    public function storeBasicDetailsss(Request $request)
+    public function handler2($provider)
     {
-        try {
-            $this->validate($request, [
-                'company' => 'required|string',
-                'address' => 'required|string',
+        
+             
+             $details = SocialLogin::where('type', $provider)->first();
+        \Config::set("services.$provider.redirect", $details->redirect_url);
+        \Config::set("services.$provider.client_id", $details->client_id);
+        \Config::set("services.$provider.client_secret", $details->client_secret);
+        $githubUser = Socialite::driver($provider)->user();
+        dd($githubUser);
+        $user = User::updateOrCreate([
+            'email' => $githubUser->getemail(),
+        ],
+            [
+                'user_name' => $githubUser->getNickName(),
+                'first_name' => $githubUser->getname(),
+                'role' => 'user',
+                'password' => Hash::make(Str::random()),
+                'active' => '1',
             ]);
-
-            $user = Auth::user();
-            $user->company = $request->company;
-            $user->address = $request->address;
-            $user->save();
-
-            return redirect()->back();
-        } catch (\Exception $e) {
-            Session::flash('error', 'Please Enter the Details');
-        }
+            Auth::login($user);
+         if ($user && ($user->active == 1 && $user->mobile_verified !== 1)) {
+                return redirect('basic-details')->with('user', $user);
+            }
+            // else{;
+        return redirect($this->redirectPath());
+                
+            // }
+       
+        // \Log::debug('coooper',(array)$exception);
+    
     }
+    public function storeBasicDetailsss(Request $request) {
+        // dd($request);
+       $userId = Auth::id();
+    //   dd($userId);
+        
+        $user = User::find($userId);
+$user->company = $request->company;
+$user->address = $request->address;
+$user->save();
+// dd($user);
+ return redirect()->back();
+         
+          
+// 
+    }
+     
+
+//
+//  public function view() {
+//         $socialLogins = SocialLogin::get();
+//         return view("themes.default1.common.socialLogins",compact('socialLogins'));
+//     }
+
+//     public function edit($id) {
+//         $socialLogins = SocialLogin::where('id',$id)->first();
+//         return view("themes.default1.common.editSocialLogins",compact('socialLogins'));
+//     }
+
+//     public function update(Request $request) {
+//         $socialLogins= SocialLogin::where('type',$request->type)->first();
+//         $socialLogins->type=$request->type;
+//         $socialLogins->client_id=$request->client_id;
+//         $socialLogins->client_secret=$request->client_secret;
+//         $socialLogins->redirect_url=$request->redirect_url;
+//         $socialLogins->save();
+//         return redirect()->back();
+//     }
 }

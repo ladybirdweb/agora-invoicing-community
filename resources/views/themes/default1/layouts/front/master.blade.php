@@ -47,8 +47,6 @@ foreach($scripts as $script)
     cursor: pointer;
     background-color: #00AEEF !important;
     margin-top: -7px !important;*/
-    
-
    
 </style>
 <head>
@@ -137,7 +135,7 @@ $days = $pay->where('product','117')->value('days');
                         </div>
                     </div>
                     <div class="header-column justify-content-end">
-                        <div class="header-row pt-3">
+                        <div class="header-row pt-3" style="margin-right: 310px;">
                             <nav class="header-nav-top">
                                 <ul class="nav nav-pills">
 
@@ -390,7 +388,7 @@ $days = $pay->where('product','117')->value('days');
                                                 </li>&nbsp&nbsp&nbsp
 
                                                   <li class="dropdown">
-                                                    <a  class="nav-link highlight" id="demo-req">
+                                                    <a  class="nav-link highlight"  href="{{url('demo-request')}} ">
                                                         REQUEST FOR DEMO
                                                     </a>
                                                 </li>

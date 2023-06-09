@@ -204,7 +204,7 @@ Sign in or Register
                                                         </div>
                                                     </div>
                                                     <div class="form-group col-lg-6">
-                                                        <input type="submit" value="Login" id="submitbtn" class="btn btn-primary pull-right mb-xl" data-loading-text="Loading...">
+                                                        <input type="submit" value="Login" id="submitbtn" class="btn btn-primary pull-right mb-xl g-recaptcha" data-loading-text="Loading..." data-sitekey="{{ config('services.recaptcha.site_key')}}" data-callback='onSubmit' data-action='submit'>
                                                         <!-- <button type="button" class="btn btn-primary mb-xl next-step float-right" name="sendOtp" id="login" onclick="loginUser()">
                                                                     Send Email
                                                         </button> -->
@@ -212,6 +212,7 @@ Sign in or Register
                                                     </div>
                                                 </div>
                                                 {!! Form::close() !!}
+
                                             </div>
                                         </div>
                                     </div>
@@ -560,6 +561,7 @@ Sign in or Register
 @stop
 @section('script')
     <script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo $analyticsTag; ?>"></script>
+     <script src="https://www.google.com/recaptcha/api.js"></script>
 
     <script>
         ///////////////////////////////////////////////////////////////////////////////
@@ -571,6 +573,12 @@ Sign in or Register
         }
         ///////////////////////////////////////////////////////////////////////////////////
     </script>
+
+  <script>
+       function onSubmit(token) {
+         document.getElementById("formoid").submit();
+       }
+     </script>
 
     <script type="text/javascript">
 

@@ -143,7 +143,9 @@ $days = $pay->where('product','117')->value('days');
                                     @if(!Auth::user())
                                         <li class="nav-item nav-item-left-border nav-item-left-border-remove nav-item-left-border-md-show">
                                                     <span class="ws-nowrap">
-                                                        <a style="color: inherit"   data-toggle="modal" data-target="#login-modal"><i class="fas fa-user"></i>My Account</a>
+                                                        <a style="color: inherit" href="{{url('login')}}">
+                                                             <i class="fas fa-user"></i>
+                                                        My Account</a>
                                                     </span>
                                         </li>
                                     @endif
@@ -154,7 +156,7 @@ $days = $pay->where('product','117')->value('days');
 
 
                         <div class="header-row">
-                            <div class="header-nav pt-1" style="margin-top: 0px; margin-bottom: -10px;">
+                            <div class="header-nav pt-1" style="margin-top: 0px; margin-bottom: -10px;margin-right: 320px;">
 
                                 <button class="btn btn-sm header-btn-collapse-nav" data-toggle="collapse" data-target=".header-nav-main nav">
                                     <i class="fa fa-bars"></i>
@@ -369,9 +371,13 @@ $days = $pay->where('product','117')->value('days');
                                                 <a class="nav-link highlight-button" href="{{url('login')}} ">
                                                         SIGNUP FOR FREE
                                                     </a>
+                                                </li>&nbsp&nbsp&nbsp
+
+                                                  <li class="dropdown">
+                                                    <a  class="nav-link highlight"  href="{{url('demo-request')}} ">
+                                                        REQUEST FOR DEMO
+                                                    </a>
                                                 </li>
-
-
 
 
 
@@ -391,6 +397,8 @@ $days = $pay->where('product','117')->value('days');
                                                     </ul>
                                                 </li>
                                             @endif
+
+                                          
 
 
                                         </ul>

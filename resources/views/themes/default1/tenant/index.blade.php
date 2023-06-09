@@ -86,13 +86,13 @@ Tenants
         <div class="row">
             <div class="col-md-4">
                 <div class="form-group">
-                    {!! Form::label('debug',Lang::get('Clount Free Trial')) !!}
+                    {!! Form::label('debug',Lang::get('Cloud Free Trial')) !!}
                     <div class="row">
                         <div class="col-sm-3">
-                            <input type="radio" name="debug" value="true" @if($cloudButton == 1) checked="true" @endif > {{Lang::get('enable')}}
+                            <input type="radio" name="debug" value="true" @if($cloudButton == 1) checked="true" @endif > {{Lang::get('Enable')}}
                         </div>
                         <div class="col-sm-3">
-                            <input type="radio" name="debug" value="false"@if($cloudButton == 0) checked="true" @endif > {{Lang::get('disable')}}
+                            <input type="radio" name="debug" value="false"@if($cloudButton == 0) checked="true" @endif > {{Lang::get('Disable')}}
                         </div>
                     </div>
                 </div> 

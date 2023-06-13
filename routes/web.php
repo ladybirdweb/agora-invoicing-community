@@ -230,7 +230,6 @@ Route::middleware('installAgora')->group(function () {
     Route::post('save/debugg', [Common\SettingsController::class, 'postdebugSettings']);
     Route::post('v3captchaDetails', [Common\BaseSettingsController::class, 'v3captchaDetails'])->name('v3captchaDetails');
 
-
     /*
      * Client
      */

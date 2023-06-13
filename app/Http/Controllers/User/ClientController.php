@@ -515,7 +515,7 @@ class ClientController extends AdvanceSearchController
     /**
      * Gets baseQuery for user search by appending all the allowed filters.
      *
-     * @param $request
+     * @param  $request
      * @return mixed
      */
     private function getBaseQueryForUserSearch(Request $request)

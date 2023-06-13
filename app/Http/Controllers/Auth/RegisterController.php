@@ -9,7 +9,6 @@ use App\Model\Common\StatusSetting;
 use App\User;
 use Facades\Spatie\Referer\Referer;
 use Illuminate\Foundation\Auth\RegistersUsers;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\Mime\Email;
 

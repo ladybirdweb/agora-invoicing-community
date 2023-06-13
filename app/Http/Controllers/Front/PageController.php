@@ -344,9 +344,9 @@ class PageController extends Controller
     /**
      * Get  Template For Products.
      *
-     * @param $helpdesk_products
-     * @param $data
-     * @param $trasform
+     * @param  $helpdesk_products
+     * @param  $data
+     * @param  $trasform
      * @return string
      */
     public function getTemplateOne($helpdesk_products, $data, $trasform)

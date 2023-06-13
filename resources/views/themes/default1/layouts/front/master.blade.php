@@ -40,6 +40,8 @@ foreach($scripts as $script)
     cursor: pointer;
     background-color: #00AEEF !important;
     margin-top: -7px !important;*/
+    
+
    
 </style>
 <head>
@@ -112,7 +114,13 @@ foreach($scripts as $script)
         $domain = [];
         $set = new \App\Model\Common\Setting();
         $set = $set->findOrFail(1);
+        $pay = new \App\Model\Payment\Plan();
+        $days = $pay->where('product','117')->value('days');
+     
         ?>
+        
+                       @include('themes.default1.front.demoForm')
+
         <div class="body">
             <header id="header" data-plugin-options="{'stickyEnabled': true, 'stickyEnableOnBoxed': true, 'stickyEnableOnMobile': true, 'stickyStartAt': 45, 'stickySetTop': '-45px', 'stickyChangeLogo': true}">
             <div class="header-body"  style="top: -50px;">
@@ -157,6 +165,7 @@ foreach($scripts as $script)
                                 </ul>
                             </nav>
                         </div>
+                       
 
 
                         <div class="header-row">
@@ -365,7 +374,7 @@ foreach($scripts as $script)
                                                 </li>&nbsp&nbsp&nbsp
 
                                                   <li class="dropdown">
-                                                    <a  class="nav-link highlight"  href="{{url('demo-request')}} ">
+                                                    <a  class="nav-link highlight" id="demo-req">
                                                         REQUEST FOR DEMO
                                                     </a>
                                                 </li>
@@ -979,7 +988,13 @@ foreach($scripts as $script)
     $('.closebutton').on('click',function(){
         location.reload();
     });
+   $(document).on("click", "#demo-req", function () {
 
+        $('#demo-req').modal('show');
+    });
+    $('.closebutton').on('click',function(){
+        location.reload();
+    });
 
 
 </script>

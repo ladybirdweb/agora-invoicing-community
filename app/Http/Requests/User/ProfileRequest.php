@@ -77,7 +77,7 @@ class ProfileRequest extends Request
                 'terms'                 => 'accepted',
                 'password'              => 'required|min:6',
                 'password_confirmation' => 'required|same:password',
-                'country'               => 'required|exists:countries,country_code_char2',
+                // 'country'               => 'required|exists:countries,country_code_char2',
             ];
         }
     }

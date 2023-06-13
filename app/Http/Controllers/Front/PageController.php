@@ -462,13 +462,13 @@ class PageController extends Controller
                     ->plans($product['shoping_cart_link'], $product['id']);
                     $trasform[$product['id']]['subscription-year'] = $this
                     ->plansYear($product['shoping_cart_link'], $product['id']);
-                    if($trasform[$product['id']]['price'] !== "Contact Sales"){
-                    $trasform[$product['id']]['url'] = Product::where('name', $product['name'])->value('highlight') ? "<input type='submit'
+                    if ($trasform[$product['id']]['price'] !== 'Contact Sales') {
+                        $trasform[$product['id']]['url'] = Product::where('name', $product['name'])->value('highlight') ? "<input type='submit'
                      value='Order Now' class='btn btn-primary btn-modern'></form>" : "<input type='submit' 
                    value='Order Now' class='btn btn-dark btn-modern'></form>";
-                    }else{
-                  $trasform[$product['id']]['url'] = "<a class='btn btn-dark btn-modern' href='https://www.faveohelpdesk.com/contact-us/'>Contact Sales</a>";
-                  }
+                    } else {
+                        $trasform[$product['id']]['url'] = "<a class='btn btn-dark btn-modern' href='https://www.faveohelpdesk.com/contact-us/'>Contact Sales</a>";
+                    }
                 }
                 $data = PricingTemplate::findorFail(1)->data;
                 $template = $this->transform('cart', $data, $trasform);
@@ -507,7 +507,7 @@ class PageController extends Controller
         public function getPrice($months, $price, $priceDescription, $value, $cost, $currency, $offer, $product)
         {
             $cost = $cost * 12;
-            if (isset($offer) && $offer !== "" && $offer !== null) {
+            if (isset($offer) && $offer !== '' && $offer !== null) {
                 $cost = $cost - ($offer / 100 * $cost);
             }
             $price1 = currencyFormat($cost, $code = $currency);
@@ -599,6 +599,7 @@ public function YearlyAmount($id)
             $plan = Product::find($productid)->plan();
             $description = $plan ? $plan->planPrice->first() : '';
             $priceDescription = $description ? $description->price_description : '';
+
             return  $priceDescription;
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());

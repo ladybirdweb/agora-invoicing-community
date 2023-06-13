@@ -155,6 +155,7 @@ class ClientController extends BaseClientController
             $rzp_key = ApiKey::where('id', 1)->value('rzp_key');
             $rzp_secret = ApiKey::where('id', 1)->value('rzp_secret');
             $api = new Api($rzp_key, $rzp_secret);
+            if(isset($subscription->subscribe_id) && $subscription->subscribe_id != null && $subscription->subscribe_id != ''){
             $subscribe = $api->subscription->fetch($subscription->subscribe_id);
             if (isset($subscribe) && $subscribe['status'] == 'paused') {
                 $data = $api->subscription->fetch($subscription->subscribe_id)->resume(['resume_at'=>'now']);
@@ -162,16 +163,17 @@ class ClientController extends BaseClientController
                     subscription::where('order_id', $orderid)->update(['rzp_subscription' => '1', 'is_subscribed' => '1']);
                 }
             }
+        }
             $payment = $api->payment->fetch($input['razorpay_payment_id']);
             $response = $api->payment->fetch($input['razorpay_payment_id']);
             if ($response['status'] == 'authorized') {
                 $invoice_id = OrderInvoiceRelation::where('order_id', $orderid)->value('invoice_id');
                 $number = Invoice::where('id', $invoice_id)->value('number');
-                $customer_details = [
-                    'user_id' => \Auth::user()->id,
-                    'customer_id' => $payment['customer']['id'],
-                ];
-                Auto_renewal::create($customer_details);
+                // $customer_details = [
+                //     'user_id' => \Auth::user()->id,
+                //     'customer_id' => $payment['customer']['id'],
+                // ];
+                // Auto_renewal::create($customer_details);
                 // Auto_renewal::where('invoice_number', $number)->update(['customer_id' => $response['id']]);
                 Subscription::where('order_id', $orderid)->update(['is_subscribed' => '1']);
 

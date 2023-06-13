@@ -23,7 +23,7 @@ foreach($scripts as $script)
    .highlight {
     border: 2px solid;
     border-radius: 5px;
-    padding: 10px;
+    padding: 8px;
     transition: background-color 0.3s;
     height: 90%;
 }

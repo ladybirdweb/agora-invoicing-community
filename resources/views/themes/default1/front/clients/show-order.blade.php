@@ -118,7 +118,7 @@ $orderData = [
 'receipt'         => 3456,
 'amount'          => round(1.00*100), // 2000 rupees in paise
 
-'currency'        => 'INR',
+'currency'        => \Auth::user()->currency,
 'payment_capture' => 0 // auto capture
  
 ];
@@ -137,7 +137,7 @@ $orderData = [
 'receipt'         => 3456,
 'amount'          =>  round(1.00*100), // 2000 rupees in paise
 
-'currency'        => 'INR',
+'currency'        => \Auth::user()->currency,
 'payment_capture' => 0 // auto capture
      
 ];

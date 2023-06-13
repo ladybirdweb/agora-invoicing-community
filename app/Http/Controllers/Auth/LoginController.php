@@ -7,14 +7,9 @@ use App\Http\Controllers\Controller;
 use App\Model\Common\Bussiness;
 use App\Model\Common\ChatScript;
 use App\Model\Common\StatusSetting;
-use App\SocialLogin;
 use App\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
-use Laravel\Socialite\Facades\Socialite;
-use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
@@ -50,7 +45,6 @@ class LoginController extends Controller
     public function showLoginForm()
     {
         try {
-         
             $bussinesses = Bussiness::pluck('name', 'short')->toArray();
             $status = StatusSetting::select('recaptcha_status', 'msg91_status', 'emailverification_status', 'terms')->first();
             $apiKeys = ApiKey::select('nocaptcha_sitekey', 'captcha_secretCheck', 'msg91_auth_key', 'terms_url')->first();
@@ -59,7 +53,6 @@ class LoginController extends Controller
 
             return view('themes.default1.front.auth.login-register', compact('bussinesses', 'location', 'status', 'apiKeys', 'analyticsTag'));
         } catch (\Exception $ex) {
-            
             app('log')->error($ex->getMessage());
             $error = $ex->getMessage();
         }
@@ -67,39 +60,39 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
-    $status = StatusSetting::value('v3recaptcha_status');
-    $apiKeys = StatusSetting::value('recaptcha_status');
-    $captchaRule = $apiKeys ? 'required' : 'sometimes';
-    
-    $rules = [
-        'email1' => 'required',
-        'password1' => 'required',
-    ];
-    
-    if ($status == 1) {
-        $rules['g-recaptcha-response'] = [
-            'required',
-            function ($attribute, $value, $fail) use ($request) {
-                $response = \Illuminate\Support\Facades\Http::asForm()->post("https://www.google.com/recaptcha/api/siteverify", [
-                    'secret' => config('services.recaptcha.secret_key'),
-                    'response' => $value,
-                    'remoteip' => $request->ip()
-                ]);
-    
-                if (!$response->json('success')) {
-                    $fail("The {$attribute} is invalid.");
-                }
-            }
+        $status = StatusSetting::value('v3recaptcha_status');
+        $apiKeys = StatusSetting::value('recaptcha_status');
+        $captchaRule = $apiKeys ? 'required' : 'sometimes';
+
+        $rules = [
+            'email1' => 'required',
+            'password1' => 'required',
         ];
-    } else {
-        $rules['g-recaptcha-response'] = $captchaRule.'|captcha';
-    }
-    
-    $this->validate($request, $rules, [
-        'g-recaptcha-response.required' => 'Robot Verification Failed. Please Try Again.',
-        'email1.required' => 'Please Enter an Email',
-        'password1.required' => 'Please Enter Password',
-    ]);
+
+        if ($status == 1) {
+            $rules['g-recaptcha-response'] = [
+                'required',
+                function ($attribute, $value, $fail) use ($request) {
+                    $response = \Illuminate\Support\Facades\Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+                        'secret' => config('services.recaptcha.secret_key'),
+                        'response' => $value,
+                        'remoteip' => $request->ip(),
+                    ]);
+
+                    if (! $response->json('success')) {
+                        $fail("The {$attribute} is invalid.");
+                    }
+                },
+            ];
+        } else {
+            $rules['g-recaptcha-response'] = $captchaRule.'|captcha';
+        }
+
+        $this->validate($request, $rules, [
+            'g-recaptcha-response.required' => 'Robot Verification Failed. Please Try Again.',
+            'email1.required' => 'Please Enter an Email',
+            'password1.required' => 'Please Enter Password',
+        ]);
         $usernameinput = $request->input('email1');
         $password = $request->input('password1');
         $credentialsForEmail = ['email' => $usernameinput, 'password' => $password, 'active' => '1', 'mobile_verified' => '1'];
@@ -167,10 +160,4 @@ class LoginController extends Controller
             return property_exists($this, 'redirectTo') ? $intendedUrl : '/';
         }
     }
-
-
-
-
-  
-
 }

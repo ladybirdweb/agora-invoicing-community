@@ -101,9 +101,6 @@ Route::middleware('installAgora')->group(function () {
     
     Route::post('demo-request', [Front\PageController::class, 'postDemoReq'])->withoutMiddleware(['auth']);
 
-    Route::get('demo-request', [Front\PageController::class, 'viewDemoReq'])->withoutMiddleware(['auth']);
-    Route::post('demo-request', [Front\PageController::class, 'postDemoReq'])->withoutMiddleware(['auth']);
-
     /*
      * Front Client Pages
      */

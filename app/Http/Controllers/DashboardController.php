@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Model\Common\Setting;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
-use App\Model\Order\Payment;
 use App\Model\Payment\Currency;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
@@ -111,7 +110,7 @@ class DashboardController extends Controller
     /**
      * Calculates total sales.
      *
-     * @param $allowedCurrencies The currency in which total needs to be calculated
+     * @param  $allowedCurrencies  The currency in which total needs to be calculated
      * @return float|int
      */
     public function getTotalSales($allowedCurrencies)
@@ -128,7 +127,7 @@ class DashboardController extends Controller
     /**
      * Calculates yearly sales.
      *
-     * @param $allowedCurrencies The currency in which yearly sales needs to be calculated
+     * @param  $allowedCurrencies  The currency in which yearly sales needs to be calculated
      * @return float|int
      */
     public function getYearlySales($allowedCurrencies)
@@ -147,7 +146,7 @@ class DashboardController extends Controller
     /**
      * Calculates monthly sales.
      *
-     * @param $allowedCurrencies Currency in which monthly sales needs to be calculated
+     * @param  $allowedCurrencies  Currency in which monthly sales needs to be calculated
      * @return float|int
      */
     public function getMonthlySales($allowedCurrencies)
@@ -167,7 +166,7 @@ class DashboardController extends Controller
     /**
      * Calculates pending payments in the system.
      *
-     * @param $allowedCurrencies Currency in which pending payment need to be calculated
+     * @param  $allowedCurrencies  Currency in which pending payment need to be calculated
      * @return float|int
      */
     public function getPendingPayments($allowedCurrencies)

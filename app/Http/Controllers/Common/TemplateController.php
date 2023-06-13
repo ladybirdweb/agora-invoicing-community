@@ -202,7 +202,7 @@ class TemplateController extends Controller
             $price = PlanPrice::where('plan_id', $planid)->value('renew_price');
 
             $plans = $this->prices($id);
-            if($plans == []){
+            if ($plans == []) {
                 return '';
             }
             if ($plans) {
@@ -230,10 +230,9 @@ class TemplateController extends Controller
         try {
             $cost = 'Free';
             $plans = Plan::where('product', $id)->get();
-            if($plans->count() == 0){
-                return "Contact Sales";
+            if ($plans->count() == 0) {
+                return 'Contact Sales';
             }
-
 
             $prices = [];
             if ($plans->count() > 0) {
@@ -261,7 +260,7 @@ class TemplateController extends Controller
 
     public function getPrice($months, $price, $priceDescription, $value, $cost, $currency, $offer, $product)
     {
-        if (isset($offer) && $offer !== "" && $offer !== null) {
+        if (isset($offer) && $offer !== '' && $offer !== null) {
             $cost = $cost - ($offer / 100 * $cost);
         }
         $price1 = currencyFormat($cost, $code = $currency);

@@ -35,6 +35,21 @@ foreach($scripts as $script)
     label.required:after {
         color: red;
      }
+.highlight:hover {
+    background-color: blue;
+    color: white;
+}
+  /* border: none;
+    color: white !important;
+    padding: 8px 12px !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    cursor: pointer;
+    background-color: #00AEEF !important;
+    margin-top: -7px !important;*/
+    
+
+   
 </style>
 <head>
     <!-- Basic -->
@@ -153,6 +168,7 @@ $days = $pay->where('product','117')->value('days');
                                 </ul>
                             </nav>
                         </div>
+                       
 
 
                         <div class="header-row">
@@ -374,7 +390,7 @@ $days = $pay->where('product','117')->value('days');
                                                 </li>&nbsp&nbsp&nbsp
 
                                                   <li class="dropdown">
-                                                    <a  class="nav-link highlight"  href="{{url('demo-request')}} ">
+                                                    <a  class="nav-link highlight" id="demo-req">
                                                         REQUEST FOR DEMO
                                                     </a>
                                                 </li>
@@ -1007,8 +1023,8 @@ $days = $pay->where('product','117')->value('days');
     $('.closebutton').on('click',function(){
         location.reload();
     });
+   $(document).on("click", "#demo-req", function () {
 
-    $(document).on("click", "#demo-req", function () {
         $('#demo-req').modal('show');
     });
     $('.closebutton').on('click',function(){

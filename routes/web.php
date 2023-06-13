@@ -92,6 +92,8 @@ Route::middleware('installAgora')->group(function () {
     
     Route::post('demo-request', [Front\PageController::class, 'postDemoReq'])->withoutMiddleware(['auth']);
 
+    Route::post('demo-request', [Front\PageController::class, 'postDemoReq'])->withoutMiddleware(['auth']);
+
     /*
      * Front Client Pages
      */
@@ -231,7 +233,6 @@ Route::middleware('installAgora')->group(function () {
     Route::get('debugg', [Common\SettingsController::class, 'debugSettings']);
     Route::post('save/debugg', [Common\SettingsController::class, 'postdebugSettings']);
     Route::post('v3captchaDetails', [Common\BaseSettingsController::class, 'v3captchaDetails'])->name('v3captchaDetails');
-
 
     /*
      * Client

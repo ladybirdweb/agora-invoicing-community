@@ -40,6 +40,8 @@ foreach($scripts as $script)
     cursor: pointer;
     background-color: #00AEEF !important;
     margin-top: -7px !important;*/
+    
+
    
 </style>
 <head>
@@ -95,30 +97,31 @@ foreach($scripts as $script)
     .alert {
         font-weight:bolder;
     }
-    .breadcrumb > li + li:before {
-        content: "\3e";
-    }
-</style>
-<body>
-<?php
-$bussinesses = App\Model\Common\Bussiness::pluck('name', 'short')->toArray();
-$status =  App\Model\Common\StatusSetting::select('recaptcha_status', 'msg91_status', 'emailverification_status', 'terms')->first();
-$apiKeys = App\ApiKey::select('nocaptcha_sitekey', 'captcha_secretCheck', 'msg91_auth_key', 'terms_url')->first();
-$analyticsTag = App\Model\Common\ChatScript::where('google_analytics', 1)->where('on_registration', 1)->value('google_analytics_tag');
-$location = getLocation();
-?>
+   </style>
+    <body>
+        <?php
+         $bussinesses = App\Model\Common\Bussiness::pluck('name', 'short')->toArray();
+            $status =  App\Model\Common\StatusSetting::select('recaptcha_status', 'msg91_status', 'emailverification_status', 'terms')->first();
+            $apiKeys = App\ApiKey::select('nocaptcha_sitekey', 'captcha_secretCheck', 'msg91_auth_key', 'terms_url')->first();
+            $analyticsTag = App\Model\Common\ChatScript::where('google_analytics', 1)->where('on_registration', 1)->value('google_analytics_tag');
+            $location = getLocation();
+        ?>
 
-<?php
-$domain = [];
-$set = new \App\Model\Common\Setting();
-$set = $set->findOrFail(1);
-?>
-<div class="body">
-    <header id="header" data-plugin-options="{'stickyEnabled': true, 'stickyEnableOnBoxed': true, 'stickyEnableOnMobile': true, 'stickyStartAt': 45, 'stickySetTop': '-45px', 'stickyChangeLogo': true}">
-        <div class="header-body"  style="top: -50px;">
-            <div class="header-container container">
-                <div class="header-row">
-                    <div class="header-column">
+        <?php
+        $domain = [];
+        $set = new \App\Model\Common\Setting();
+        $set = $set->findOrFail(1);
+        $pay = new \App\Model\Payment\Plan();
+        $days = $pay->where('product','117')->value('days');
+     
+        ?>
+        
+                       @include('themes.default1.front.demoForm')
+
+        <div class="body">
+            <header id="header" data-plugin-options="{'stickyEnabled': true, 'stickyEnableOnBoxed': true, 'stickyEnableOnMobile': true, 'stickyStartAt': 45, 'stickySetTop': '-45px', 'stickyChangeLogo': true}">
+            <div class="header-body"  style="top: -50px;">
+                    <div class="header-container container">
                         <div class="header-row">
                             <div class="header-logo">
                                 <a href="{{Auth::check() ? url('my-invoices') : url('login')}}">
@@ -159,6 +162,7 @@ $set = $set->findOrFail(1);
                                 </ul>
                             </nav>
                         </div>
+                       
 
 
                         <div class="header-row">
@@ -368,7 +372,7 @@ $set = $set->findOrFail(1);
                                                 </li>&nbsp&nbsp&nbsp
 
                                                   <li class="dropdown">
-                                                    <a  class="nav-link highlight"  href="{{url('demo-request')}} ">
+                                                    <a  class="nav-link highlight" id="demo-req">
                                                         REQUEST FOR DEMO
                                                     </a>
                                                 </li>
@@ -1001,11 +1005,12 @@ $set = $set->findOrFail(1);
     $('.closebutton').on('click',function(){
         location.reload();
     });
+   $(document).on("click", "#demo-req", function () {
 
-        $(document).ready(function() {
-        $('#tenant').on('shown.bs.modal', function () {
-            $('#userdomain').focus();
-        });
+        $('#demo-req').modal('show');
+    });
+    $('.closebutton').on('click',function(){
+        location.reload();
     });
 
 const domainInput = document.getElementById("userdomain");

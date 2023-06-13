@@ -476,7 +476,6 @@ class PageController extends Controller
         }
     }
 
-
     public function postDemoReq(Request $request)
     {
         $this->validate($request, [

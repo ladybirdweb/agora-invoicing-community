@@ -127,10 +127,9 @@ class LoginController extends Controller
             $user = \Auth::user()->role;
             $redirectResponse = redirect()->intended('/');
             $intendedUrl = $redirectResponse->getTargetUrl();
-            if (strpos($intendedUrl, 'autopaynow') == false) {
+              if (strpos($intendedUrl, 'autopaynow') === false && strpos($intendedUrl, 'orders') === false) {
                 return ($user == 'user') ? 'my-invoices' : '/';
             }
-
             return property_exists($this, 'redirectTo') ? $intendedUrl : '/';
         }
     }

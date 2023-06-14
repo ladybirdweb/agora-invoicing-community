@@ -1,4 +1,3 @@
-
    <div class="container">
       <div >
             <div>
@@ -51,7 +50,7 @@
         <h2 style="margin-top:40px ; margin-bottom:10px;">Order Details</h2>
             @foreach($orders as $order)  
             <?php 
-            $product = \App\Model\Product\Product::where('id', $order->product)->select('id', 'name')->first();
+            $product = \App\Model\Product\Product::where('id', $order->product)->select('id', 'name','type')->first();
             $cont = new \App\Http\Controllers\License\LicensePermissionsController();
             $downloadPermission = $cont->getPermissionsForProduct($order->product);
             ?>
@@ -99,8 +98,18 @@
                     </tr>
         </tfoot>
     </table>
-      @if($downloadPermission['downloadPermission'] == 1)
+    @include('themes.default1.front.clients.deploy-popup', ['orderNumber' => $order->number])
+
+
+      @if($downloadPermission['downloadPermission'] == 1 && $product->type !== '4')
       <a href= product/download/{{$order->product}}/{{$invoice->number}} " class="btn btn-sm btn-primary btn-xs" style="margin-bottom:15px;"><i class="fa fa-download" style="color:white;"> </i>&nbsp;&nbsp;Download the Latest Version here</a>
+      @else
+     <button style="visibility: hidden;" class="btn btn-sm btn-primary btn-xs deploy-button" value="{{$order->number}}" style="margin-bottom:15px;" onclick="deploy(this)">
+  <i class="fa fa-download" style="color:white;"></i>&nbsp;&nbsp;Deploy
+    </button>
+    <div class="modal fade open-createTenantDialog" id="tenant" data-backdrop="static" data-keyboard="false">
+      <!-- Modal content -->
+    </div>
       @endif
     @endforeach
     <br>
@@ -123,3 +132,14 @@
     
     </div>
         </div>
+<script>
+  function deploy(button) {
+    var orderNumber = button.value;
+    openModal(orderNumber);
+  }
+
+  function openModal(orderNumber) {
+    $('#tenant .modal-body').text('Order Number: ' + orderNumber);
+    $('#tenant').modal('show');
+  }
+</script>

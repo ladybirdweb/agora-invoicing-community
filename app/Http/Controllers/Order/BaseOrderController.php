@@ -274,7 +274,7 @@ class BaseOrderController extends ExtendedOrderController
 
     public function getMail($setting, $user, $downloadurl, $invoiceurl, $order, $product, $orderid, $myaccounturl)
     {
-        $value = Product::where('name',$product)->value('type');
+        $value = Product::where('name', $product)->value('type');
         $mail = new \App\Http\Controllers\Common\PhpMailController();
         $mailer = $mail->setMailConfig($setting);
         $templates = new \App\Model\Common\Template();
@@ -284,65 +284,63 @@ class BaseOrderController extends ExtendedOrderController
         $html = $template->data;
 
         try {
-            if($value !== '4'){
-            $knowledgeBaseUrl = $setting->company_url;
-            $type = '';
-            if ($template) {
-                $type_id = $template->type;
-                $temp_type = new \App\Model\Common\TemplateType();
-                $type = $temp_type->where('id', $type_id)->first()->name;
-            }
-             $url = url('my-orders');
-
-            $email = (new Email())
-                    ->from($setting->email)
-                    ->to($user->email)
-                    ->subject($template->name)
-                    ->html($mail->mailTemplate($template->data, $templatevariables = [
-                        'name' => $user->first_name.' '.$user->last_name,
-                        'serialkeyurl' => $myaccounturl,
-                        'url' => $url,
-                        'invoiceurl' => $invoiceurl,
-                        'product' => $product,
-                        'number' => $order->number,
-                        'expiry' => app(\App\Http\Controllers\Order\OrderController::class)->expiry($orderid),
-                        'url' => app(\App\Http\Controllers\Order\OrderController::class)->renew($orderid),
-                        'knowledge_base' => $knowledgeBaseUrl,
-
-                    ]));
-
-            $mailer->send($email);
-        }
-            else{
+            if ($value !== '4') {
                 $knowledgeBaseUrl = $setting->company_url;
-            $type = '';
-            if ($template) {
-                $type_id = $template->type;
-                $temp_type = new \App\Model\Common\TemplateType();
-                $type = $temp_type->where('id', $type_id)->first()->name;
+                $type = '';
+                if ($template) {
+                    $type_id = $template->type;
+                    $temp_type = new \App\Model\Common\TemplateType();
+                    $type = $temp_type->where('id', $type_id)->first()->name;
+                }
+                $url = url('my-orders');
+
+                $email = (new Email())
+                        ->from($setting->email)
+                        ->to($user->email)
+                        ->subject($template->name)
+                        ->html($mail->mailTemplate($template->data, $templatevariables = [
+                            'name' => $user->first_name.' '.$user->last_name,
+                            'serialkeyurl' => $myaccounturl,
+                            'url' => $url,
+                            'invoiceurl' => $invoiceurl,
+                            'product' => $product,
+                            'number' => $order->number,
+                            'expiry' => app(\App\Http\Controllers\Order\OrderController::class)->expiry($orderid),
+                            'url' => app(\App\Http\Controllers\Order\OrderController::class)->renew($orderid),
+                            'knowledge_base' => $knowledgeBaseUrl,
+
+                        ]));
+
+                $mailer->send($email);
+            } else {
+                $knowledgeBaseUrl = $setting->company_url;
+                $type = '';
+                if ($template) {
+                    $type_id = $template->type;
+                    $temp_type = new \App\Model\Common\TemplateType();
+                    $type = $temp_type->where('id', $type_id)->first()->name;
+                }
+
+                $email = (new Email())
+                        ->from($setting->email)
+                        ->to($user->email)
+                        ->subject($template->name)
+                        ->html($mail->mailTemplate($template->data, $templatevariables = [
+                            'name' => $user->first_name.' '.$user->last_name,
+                            'serialkeyurl' => $myaccounturl,
+                            'downloadurl' => $downloadurl,
+                            'invoiceurl' => $invoiceurl,
+                            'product' => $product,
+                            'number' => $order->number,
+                            'expiry' => app(\App\Http\Controllers\Order\OrderController::class)->expiry($orderid),
+                            'url' => app(\App\Http\Controllers\Order\OrderController::class)->renew($orderid),
+                            'knowledge_base' => $knowledgeBaseUrl,
+
+                        ]));
+
+                $mailer->send($email);
             }
 
-            $email = (new Email())
-                    ->from($setting->email)
-                    ->to($user->email)
-                    ->subject($template->name)
-                    ->html($mail->mailTemplate($template->data, $templatevariables = [
-                        'name' => $user->first_name.' '.$user->last_name,
-                        'serialkeyurl' => $myaccounturl,
-                        'downloadurl' => $downloadurl,
-                        'invoiceurl' => $invoiceurl,
-                        'product' => $product,
-                        'number' => $order->number,
-                        'expiry' => app(\App\Http\Controllers\Order\OrderController::class)->expiry($orderid),
-                        'url' => app(\App\Http\Controllers\Order\OrderController::class)->renew($orderid),
-                        'knowledge_base' => $knowledgeBaseUrl,
-
-                    ]));
-
-            $mailer->send($email);
-        }
-
-            
             $mail->email_log_success($setting->email, $user->email, $template->name, $html);
 
             if ($order->invoice->grand_total) {

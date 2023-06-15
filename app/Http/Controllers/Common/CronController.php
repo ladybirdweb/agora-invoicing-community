@@ -391,11 +391,7 @@ class CronController extends BaseCronController
                         }
                     }
                 }
-                $productType = Product::find($subscription->product_id);
-                $price = PlanPrice::where('plan_id', $subscription->plan_id)->value('renew_price');
-                if ($productType->type == '4' && $price == '0') {
-                    Subscription::where('id', $subscription->id)->update(['is_subscribed' => 0]);
-                }
+        
                 $productType = Product::find($subscription->product_id);
                 $price = PlanPrice::where('plan_id', $subscription->plan_id)->value('renew_price');
                 if ($productType->type == '4' && $price == '0') {

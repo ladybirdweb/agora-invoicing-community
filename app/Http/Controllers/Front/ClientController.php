@@ -155,15 +155,15 @@ class ClientController extends BaseClientController
             $rzp_key = ApiKey::where('id', 1)->value('rzp_key');
             $rzp_secret = ApiKey::where('id', 1)->value('rzp_secret');
             $api = new Api($rzp_key, $rzp_secret);
-            if(isset($subscription->subscribe_id) && $subscription->subscribe_id != null && $subscription->subscribe_id != ''){
-            $subscribe = $api->subscription->fetch($subscription->subscribe_id);
-            if (isset($subscribe) && $subscribe['status'] == 'paused') {
-                $data = $api->subscription->fetch($subscription->subscribe_id)->resume(['resume_at'=>'now']);
-                if ($data['status'] == 'active') {
-                    subscription::where('order_id', $orderid)->update(['rzp_subscription' => '1', 'is_subscribed' => '1']);
+            if (isset($subscription->subscribe_id) && $subscription->subscribe_id != null && $subscription->subscribe_id != '') {
+                $subscribe = $api->subscription->fetch($subscription->subscribe_id);
+                if (isset($subscribe) && $subscribe['status'] == 'paused') {
+                    $data = $api->subscription->fetch($subscription->subscribe_id)->resume(['resume_at'=>'now']);
+                    if ($data['status'] == 'active') {
+                        subscription::where('order_id', $orderid)->update(['rzp_subscription' => '1', 'is_subscribed' => '1']);
+                    }
                 }
             }
-        }
             $payment = $api->payment->fetch($input['razorpay_payment_id']);
             $response = $api->payment->fetch($input['razorpay_payment_id']);
             if ($response['status'] == 'authorized') {
@@ -562,7 +562,7 @@ class ClientController extends BaseClientController
                                 if ($status == 'success' && $model->price != '0' && $model->type == '4') {
                                     // $url = $this->renewPopup($model->sub_id, $model->product_id);
                                     $deleteCloud = $this->getCloudDeletePopup($model, $model->product_id);
-                                } elseif ($status == 'success'&& $model->type != '4') {
+                                } elseif ($status == 'success' && $model->type != '4') {
                                     $url = $this->renewPopup($model->sub_id, $model->product_id);
                                     // $deleteCloud = $this->getCloudDeletePopup($model, $model->product_id);
                                 }

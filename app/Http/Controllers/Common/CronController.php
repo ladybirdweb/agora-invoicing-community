@@ -625,10 +625,8 @@ class CronController extends BaseCronController
          ]));
             $mailer->send($email);
             $mail->email_log_fail($setting->email, $user->email, $template->name, $data);
-
         } catch (\Exception $ex) {
             throw new Exception($ex->getMessage());
-
         }
     }
 
@@ -664,7 +662,6 @@ class CronController extends BaseCronController
             $mail->email_log_success($setting->email, $user->email, $template->name, $data);
         } catch (\Exception $ex) {
             throw new Exception($ex->getMessage());
-
         }
     }
 
@@ -703,10 +700,8 @@ class CronController extends BaseCronController
               ]));
                 $mailer->send($email);
                 $mail->email_log_fail($setting->email, $user->email, $template->name, $data);
-
             } catch (\Exception $ex) {
                 throw new Exception($ex->getMessage());
-
             }
         }
 

@@ -528,7 +528,7 @@ class CronController extends BaseCronController
                 if ($subscriptionStatus['status'] == 'authenticated') {
                     // Subscription::where('id', $subscription->id)->update(['subscribe_id' => $subId, 'autoRenew_status' => 'Success', 'rzp_subscription' => '1']);
                     $subscription = Subscription::find($subscription->id);
-                    
+
                     $subscription->subscribe_id = $subId;
                     $subscription->autoRenew_status = 'Success';
                     $subscription->rzp_subscription = '1';
@@ -542,13 +542,11 @@ class CronController extends BaseCronController
                     if ($invoice) {
                         $this->successRenew($invoiceItem, $subscription, $payment_method = 'Razorpay', $invoice->currency);
                         $this->postRazorpayPayment($invoiceItem, $payment_method = 'Razorpay');
-                        
                     }
-                 return $subscription;
+
+                    return $subscription;
                 }
-               
             }
-            
         } catch(\Exception $ex) {
             echo $ex->getMessage();
         }

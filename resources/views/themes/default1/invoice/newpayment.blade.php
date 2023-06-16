@@ -234,7 +234,6 @@ Payment
     $("#submit").html("<i class='fas fa-circle-notch fa-spin'></i>Please Wait...");
    var invoice = [];
    var invoiceAmount = [];
-   alert('test');
    $(":checked").each(function() {
      if($(this).val() != ""){
       var value = $('#'+ $(this).val()).val();

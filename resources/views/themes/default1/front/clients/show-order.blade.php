@@ -118,7 +118,7 @@ $orderData = [
 'receipt'         => 3456,
 'amount'          => round(1.00*100), // 2000 rupees in paise
 
-'currency'        => 'INR',
+'currency'        => \Auth::user()->currency,
 'payment_capture' => 0 // auto capture
  
 ];
@@ -137,7 +137,7 @@ $orderData = [
 'receipt'         => 3456,
 'amount'          =>  round(1.00*100), // 2000 rupees in paise
 
-'currency'        => 'INR',
+'currency'        => \Auth::user()->currency,
 'payment_capture' => 0 // auto capture
      
 ];
@@ -266,10 +266,9 @@ $json = json_encode($data);
             if ($price == '0' && $product->type != '4') {
                 $navigations[] = ['id'=>'auto-renewals', 'name'=>'Auto Renewal', 'slot'=>'autorenewal','icon'=>'fas fa-bell'];
             }
-            elseif($price != '0' && $product->type == '4')
+            elseif($price != '0')
             {
               $navigations[] = ['id'=>'auto-renewals', 'name'=>'Auto Renewal', 'slot'=>'autorenewal','icon'=>'fas fa-bell'];
- 
             }
           @endphp
 

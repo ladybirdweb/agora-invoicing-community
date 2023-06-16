@@ -391,14 +391,14 @@ class CronController extends BaseCronController
                         }
                     }
                 }
-
+                $subscription = $subscription->refresh();
                 $productType = Product::find($subscription->product_id);
                 $price = PlanPrice::where('plan_id', $subscription->plan_id)->value('renew_price');
                 if ($productType->type == '4' && $price == '0') {
                     Subscription::where('id', $subscription->id)->update(['is_subscribed' => 0]);
                 }
                 $status = $subscription->is_subscribed;
-                if ($status == '1') {
+                if ($status == '1' && $subscription->rzp_subscription == '0') {
                     //create invoice
                     $renewController = new BaseRenewController();
                     $invoice = $renewController->generateInvoice($product_details, $user, $order->id, $plan->id, $cost, $code = '', $item->agents, $oldcurrency);
@@ -460,6 +460,7 @@ class CronController extends BaseCronController
 
             return redirect()->route('checkout');
         } catch (\Exception $ex) {
+            // dd($ex);
             // $this->sendFailedPayment($cost, $ex->getMessage(), $user, $order->number, $end, $currency, $order, $product_details, $invoice);
 
             // $gateways = \App\Http\Controllers\Common\SettingsController::checkPaymentGateway($currency);
@@ -525,7 +526,15 @@ class CronController extends BaseCronController
             if ($subscription->autoRenew_status == 'Pending') {
                 $subscriptionStatus = $api->subscription->fetch($subId);
                 if ($subscriptionStatus['status'] == 'authenticated') {
-                    Subscription::where('id', $subscription->id)->update(['subscribe_id' => $subId, 'autoRenew_status' => 'Success', 'rzp_subscription' => '1']);
+                    // Subscription::where('id', $subscription->id)->update(['subscribe_id' => $subId, 'autoRenew_status' => 'Success', 'rzp_subscription' => '1']);
+                    $subscription = Subscription::find($subscription->id);
+                    
+                    $subscription->subscribe_id = $subId;
+                    $subscription->autoRenew_status = 'Success';
+                    $subscription->rzp_subscription = '1';
+                    $subscription->save();
+                    // $subscription = Subscription::find($subscription->id);
+
                     $product_name = Product::where('id', $subscription->product_id)->value('name');
                     $invoiceid = \DB::table('order_invoice_relations')->where('order_id', $subscription->order_id)->latest()->value('invoice_id');
                     $invoiceItem = \DB::table('invoice_items')->where('invoice_id', $invoiceid)->where('product_name', $product_name)->first();
@@ -533,9 +542,13 @@ class CronController extends BaseCronController
                     if ($invoice) {
                         $this->successRenew($invoiceItem, $subscription, $payment_method = 'Razorpay', $invoice->currency);
                         $this->postRazorpayPayment($invoiceItem, $payment_method = 'Razorpay');
+                        
                     }
+                 return $subscription;
                 }
+               
             }
+            
         } catch(\Exception $ex) {
             echo $ex->getMessage();
         }

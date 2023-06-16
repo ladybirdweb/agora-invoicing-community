@@ -105,6 +105,7 @@ class ExtendedBaseInvoiceController extends Controller
             'totalAmt' => 'required|numeric|not_in:0',
         ], [
             'totalAmt.required' => 'The amount field is required',
+            'totalAmt.numeric' => 'The amount must be a number',
         ]);
 
         try {

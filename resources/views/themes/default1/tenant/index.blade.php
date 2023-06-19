@@ -111,7 +111,7 @@ Tenants
 
 
 
- 
+ @if($cloud != null)
     <div class="card card-secondary card-outline">
         <div class="card-header">
             <h3 class="card-title">Tenants</h3>
@@ -172,6 +172,7 @@ Tenants
 
 
 </div>
+@endif
 
 
 

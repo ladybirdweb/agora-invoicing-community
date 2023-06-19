@@ -361,7 +361,7 @@ public function saveCronDays(Request $request)
     public function v3captchaDetails(Request $request)
     {
         $status = $request->input('status');
-        if ($status == 1) {
+        if ($status) {
             $nocaptcha_sitekey = $request->input('captcha_sitekey');
             $captcha_secretCheck = $request->input('captcha_secret');
             $values = ['RECAPTCHA_SITE_KEY' => $nocaptcha_sitekey, 'RECAPTCHA_SECRET_KEY' => $captcha_secretCheck];
